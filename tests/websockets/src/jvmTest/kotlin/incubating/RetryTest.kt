@@ -3,6 +3,7 @@ package incubating
 import app.cash.turbine.test
 import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
@@ -24,7 +25,7 @@ class RetryTest {
     var sampleServer = SampleServer(tag = "tag1")
     ApolloClient.Builder()
         .serverUrl(sampleServer.graphqlUrl())
-        .retryNetworkErrorsInterceptor(RetryOnErrorInterceptor())
+        .retryOnErrorInterceptor(RetryOnErrorInterceptor { it.operation is Subscription })
         .subscriptionNetworkTransport(
             WebSocketNetworkTransport.Builder()
                 .serverUrl(sampleServer.subscriptionsUrl())
@@ -60,7 +61,7 @@ class RetryTest {
     val sampleServer = SampleServer(tag = "tag1")
     ApolloClient.Builder()
         .serverUrl(sampleServer.graphqlUrl())
-        .retryNetworkErrorsInterceptor(RetryOnErrorInterceptor())
+        .retryOnErrorInterceptor(RetryOnErrorInterceptor { it.operation is Subscription })
         .subscriptionNetworkTransport(
             WebSocketNetworkTransport.Builder()
                 .serverUrl(sampleServer.subscriptionsUrl())
@@ -69,7 +70,7 @@ class RetryTest {
         )
         .build().use { apolloClient ->
           apolloClient.subscription(TagSubscription(intervalMillis = Int.MAX_VALUE))
-              .retryNetworkErrors(false)
+              .retryOnError(false)
               .toFlow()
               .test {
                 val item1 = awaitItem()
@@ -85,7 +86,40 @@ class RetryTest {
   }
 
   @Test
-  fun queriesAreNotRetriedByDefault() = mockServerTest(skipDelays = false) {
+  fun subscriptionsAreNotRetriedByDefault() = runTest(skipDelays = false) {
+    val sampleServer = SampleServer(tag = "tag1")
+    ApolloClient.Builder()
+        .serverUrl(sampleServer.graphqlUrl())
+        .subscriptionNetworkTransport(
+            WebSocketNetworkTransport.Builder()
+                .serverUrl(sampleServer.subscriptionsUrl())
+                .wsProtocol(SubscriptionWsProtocol { null })
+                .build()
+        )
+        .build().use { apolloClient ->
+          apolloClient.subscription(TagSubscription(intervalMillis = Int.MAX_VALUE))
+              .retryOnError(false)
+              .toFlow()
+              .test {
+                val item1 = awaitItem()
+                assertEquals("tag1", item1.data?.state?.tag)
+
+                sampleServer.close()
+
+                val item2 = awaitItem()
+                assertIs<ApolloNetworkException>(item2.exception)
+                awaitComplete()
+              }
+        }
+  }
+
+  @Test
+  fun queriesAreNotRetriedWhenRetrySubscriptionsIsTrue() = mockServerTest(
+      clientBuilder = {
+        retryOnErrorInterceptor(RetryOnErrorInterceptor { it.operation is Subscription })
+      },
+      skipDelays = false
+  ) {
     mockServer.enqueue(MockResponse.Builder().statusCode(500).build())
 
     apolloClient.query(ZeroQuery())

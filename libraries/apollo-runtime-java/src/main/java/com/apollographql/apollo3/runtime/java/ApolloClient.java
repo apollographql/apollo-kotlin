@@ -188,7 +188,7 @@ public class ApolloClient implements Closeable {
     private Boolean enableAutoPersistedQueries;
     private Boolean canBeBatched;
     private Boolean httpExposeErrorBody;
-    private Boolean retryNetworkErrors;
+    private Boolean retryOnError;
 
     public Builder() {
     }
@@ -357,9 +357,9 @@ public class ApolloClient implements Closeable {
       return this;
     }
 
-    public Builder retryNetworkErrors(Boolean retryNetworkErrors) {
+    public Builder retryOnError(Boolean retryOnError) {
       throw new IllegalStateException("Not supported yet");
-//      this.retryNetworkErrors = retryNetworkErrors;
+//      this.retryOnError = retryOnError;
 //      return this;
     }
 
@@ -533,8 +533,8 @@ public class ApolloClient implements Closeable {
       return canBeBatched;
     }
 
-    @Nullable @Override public Boolean getRetryNetworkErrors() {
-      return retryNetworkErrors;
+    @Nullable @Override public Boolean getRetryOnError() {
+      return retryOnError;
     }
 
     @Override public Builder addExecutionContext(@NotNull ExecutionContext executionContext) {

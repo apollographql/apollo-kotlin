@@ -50,7 +50,7 @@ interface ExecutionOptions {
    * Whether to enable retrying the request on network errors
    */
   @ApolloExperimental
-  val retryNetworkErrors: Boolean?
+  val retryOnError: Boolean?
 
   companion object {
     /**
@@ -91,5 +91,5 @@ interface MutableExecutionOptions<T> : ExecutionOptions {
   fun canBeBatched(canBeBatched: Boolean?): T
 
   @ApolloExperimental
-  fun retryNetworkErrors(retryNetworkErrors: Boolean?): T
+  fun retryOnError(retryOnError: Boolean?): T
 }

@@ -4,7 +4,6 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.SubscriptionOperationException
 import com.benasher44.uuid.uuid4
@@ -18,17 +17,10 @@ import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
 
 @ApolloExperimental
-class RetryOnErrorInterceptor(shouldIntercept: ((ApolloRequest<*>) -> Boolean)? = null): ApolloInterceptor {
-  private val shouldIntercept: ((ApolloRequest<*>) -> Boolean) = shouldIntercept ?: {
-    when (it.retryNetworkErrors) {
-      true -> true
-      false -> false
-      null -> it.operation is Subscription
-    }
-  }
-
+class RetryOnErrorInterceptor(private val defaultRetryOnError: ((ApolloRequest<*>) -> Boolean)): ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    if (!shouldIntercept(request)) {
+    val retryOnError = request.retryOnError ?: defaultRetryOnError(request)
+    if (!retryOnError) {
       return chain.proceed(request)
     }
 

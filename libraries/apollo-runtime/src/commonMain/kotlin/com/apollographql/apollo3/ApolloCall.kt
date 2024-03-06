@@ -35,7 +35,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
   override var canBeBatched: Boolean? = null
     private set
   @ApolloExperimental
-  override var retryNetworkErrors: Boolean? = null
+  override var retryOnError: Boolean? = null
     private set
 
   /**
@@ -92,8 +92,8 @@ class ApolloCall<D : Operation.Data> internal constructor(
   }
 
   @ApolloExperimental
-  override fun retryNetworkErrors(retryNetworkErrors: Boolean?): ApolloCall<D> = apply {
-    this.retryNetworkErrors = retryNetworkErrors
+  override fun retryOnError(retryOnError: Boolean?): ApolloCall<D> = apply {
+    this.retryOnError = retryOnError
   }
   /**
    * If set to true, the HTTP headers set on [ApolloClient] will not be used for the call, only the ones set on this [ApolloCall] will be
@@ -115,7 +115,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
-        .retryNetworkErrors(retryNetworkErrors)
+        .retryOnError(retryOnError)
   }
 
   /**
@@ -162,7 +162,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
-        .retryNetworkErrors(retryNetworkErrors)
+        .retryOnError(retryOnError)
         .build()
   }
 

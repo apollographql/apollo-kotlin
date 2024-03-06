@@ -21,7 +21,7 @@ private constructor(
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
     @ApolloExperimental
-    override val retryNetworkErrors: Boolean?,
+    override val retryOnError: Boolean?,
 ) : ExecutionOptions {
 
   fun newBuilder(): Builder<D> = newBuilder(operation)
@@ -37,7 +37,7 @@ private constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
-        .retryNetworkErrors(retryNetworkErrors)
+        .retryOnError(retryOnError)
   }
 
   class Builder<D : Operation.Data>(
@@ -60,7 +60,7 @@ private constructor(
     override var canBeBatched: Boolean? = null
       private set
     @ApolloExperimental
-    override var retryNetworkErrors: Boolean? = null
+    override var retryOnError: Boolean? = null
       private set
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder<D> = apply {
@@ -92,8 +92,8 @@ private constructor(
     }
 
     @ApolloExperimental
-    override fun retryNetworkErrors(retryNetworkErrors: Boolean?): Builder<D> = apply {
-      this.retryNetworkErrors = retryNetworkErrors
+    override fun retryOnError(retryOnError: Boolean?): Builder<D> = apply {
+      this.retryOnError = retryOnError
     }
 
     fun requestUuid(requestUuid: Uuid) = apply {
@@ -119,7 +119,7 @@ private constructor(
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
-          retryNetworkErrors = retryNetworkErrors
+          retryOnError = retryOnError
       )
     }
   }
