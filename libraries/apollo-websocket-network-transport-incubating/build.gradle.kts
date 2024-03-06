@@ -14,7 +14,7 @@ kotlin {
       dependencies {
         api(project(":apollo-runtime"))
         api(project(":apollo-mpp-utils"))
-        api(libs.atomicfu)
+        api(libs.atomicfu.library)
       }
     }
 
