@@ -21,9 +21,7 @@ import kotlin.test.assertIs
 class RetryTest {
   @Test
   fun retryIsWorking() = runTest(skipDelays = false) {
-    // Hopefully it's really a free port, if not this test will fail
-    val freePort = 8392
-    var sampleServer = SampleServer(freePort, "tag1")
+    var sampleServer = SampleServer(tag = "tag1")
     ApolloClient.Builder()
         .serverUrl(sampleServer.graphqlUrl())
         .retryNetworkErrorsInterceptor(RetryOnErrorInterceptor())
@@ -40,8 +38,10 @@ class RetryTest {
                 val item1 = awaitItem()
                 assertEquals("tag1", item1.data?.state?.tag)
 
+                // Reuse the port to keep the url unchanged
+                val port = sampleServer.subscriptionsUrl().extractPort()
                 sampleServer.close()
-                sampleServer = SampleServer(freePort, "tag2")
+                sampleServer = SampleServer(port, "tag2")
 
                 val item2 = awaitItem()
                 assertEquals("tag2", item2.data?.state?.tag)
@@ -57,9 +57,7 @@ class RetryTest {
 
   @Test
   fun retryCanBeDisabled() = runTest(skipDelays = false) {
-    // Hopefully it's really a free port, if not this test will fail
-    val freePort = 8393
-    val sampleServer = SampleServer(freePort, "tag1")
+    val sampleServer = SampleServer(tag = "tag1")
     ApolloClient.Builder()
         .serverUrl(sampleServer.graphqlUrl())
         .retryNetworkErrorsInterceptor(RetryOnErrorInterceptor())
@@ -97,4 +95,8 @@ class RetryTest {
           awaitComplete()
         }
   }
+}
+
+private fun String.extractPort(): Int {
+  return Regex("[a-z]*://[a-zA-Z0-9.]*:([0-9]*)").matchAt(this, 0)?.groupValues?.get(1)?.toInt() ?: error("No port found in $this")
 }
