@@ -47,7 +47,11 @@ We can add the following definition to an `extra.graphqls` file in the same dire
 extend type Book @typePolicy(keyFields: "id")
 ```
 
-Apollo Kotlin now knows to use the `id` field of a `Book` type to generate its cache ID.
+Apollo Kotlin now knows to use the `id` field of a `Book` type to generate its cache ID. A cache record may now look like
+
+```
+"Book:bk123": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"}
+```
 
 You can specify _multiple_ key fields for an object if they're all required to uniquely identify a particular cache entry:
 
@@ -56,12 +60,28 @@ You can specify _multiple_ key fields for an object if they're all required to u
 extend type Author @typePolicy(keyFields: "firstName lastName")
 ```
 
-In this case, the cache ID for an `Author` object includes the values of both its `firstName` and `lastName` fields.
+In this case, the cache ID for an `Author` object includes the values of both its `firstName` and `lastName` fields:
+
+```
+"Author:PierreBordage": {"id": "au456", "firstName": "Pierre", "lastName": "Bordage"}
+```
 
 > All of an object type's key fields must return a [scalar type](https://www.apollographql.com/docs/apollo-server/schema/schema/#scalar-types).
 
 > Note that the **key fields** specified this way will automatically be added during code generation to selections on the object type, since they are always needed to identify the object in the cache.
 > This means you don't need to include them in your queries.
+
+## Adding `__typename` to your operations
+
+In addition to the key fields, the declarative cache requires the `__typename` of each object by default. These typenames are not included by default as they make query larger for non-cache users. To avoid cache misses, add `__typename` to every selection using [addTypename](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo3.gradle.api/-service/add-typename.html):
+
+```kotlin
+apollo {
+  service("service") {
+    addTypename.set("always")
+  }
+}
+```
 
 ## `@fieldPolicy`
 

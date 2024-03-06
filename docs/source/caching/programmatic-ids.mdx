@@ -55,11 +55,13 @@ You can also use the current object's typename to use _different_ cache ID gener
 
 Note that for cache ID generation to work, your GraphQL operations must return whatever fields your custom code relies on (such as `id` above). If a query does not return a required field, the cache ID will be inconsistent, resulting in data duplication.
 Also, using `context.field.type.leafType().name` yields the typename of the Union as opposed to the expected runtime value of Union received in the response. Instead querying for the `__typename` is safer.
-To make sure `__typename` is included in all operations set the `adTypename` gradle config:
+To make sure `__typename` is included in all operations set the [addTypename](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo3.gradle.api/-service/add-typename.html) gradle config:
+
 ```
 apollo {
-  addTypename.set("always")
-  //
+  service("service") {
+    addTypename.set("always")
+  }
 }
 ```
 
