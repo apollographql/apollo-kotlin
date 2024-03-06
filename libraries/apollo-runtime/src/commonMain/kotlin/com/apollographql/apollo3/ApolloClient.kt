@@ -43,27 +43,109 @@ import kotlin.jvm.JvmStatic
  */
 class ApolloClient
 private constructor(
-    val networkTransport: NetworkTransport,
-    val customScalarAdapters: CustomScalarAdapters,
-    val subscriptionNetworkTransport: NetworkTransport,
-    val interceptors: List<ApolloInterceptor>,
-    override val executionContext: ExecutionContext,
-    private val dispatcher: CoroutineDispatcher?,
-    override val httpMethod: HttpMethod?,
-    override val httpHeaders: List<HttpHeader>?,
-    override val sendApqExtensions: Boolean?,
-    override val sendDocument: Boolean?,
-    override val enableAutoPersistedQueries: Boolean?,
-    override val canBeBatched: Boolean?,
     private val builder: Builder,
 ) : ExecutionOptions, Closeable {
   private val concurrencyInfo: ConcurrencyInfo
+  val networkTransport: NetworkTransport
+  val subscriptionNetworkTransport: NetworkTransport
+  val interceptors: List<ApolloInterceptor> = builder.interceptors
+  val customScalarAdapters: CustomScalarAdapters = builder.customScalarAdapters
+  override val executionContext: ExecutionContext = builder.executionContext
+  override val httpMethod: HttpMethod? = builder.httpMethod
+  override val httpHeaders: List<HttpHeader>? = builder.httpHeaders
+  override val sendApqExtensions: Boolean? = builder.sendApqExtensions
+  override val sendDocument: Boolean? = builder.sendDocument
+  override val enableAutoPersistedQueries: Boolean? = builder.enableAutoPersistedQueries
+  override val canBeBatched: Boolean? = builder.canBeBatched
 
   init {
-    val dispatcher = dispatcher ?: defaultDispatcher
+    networkTransport = if (builder.networkTransport != null) {
+      check(builder.httpServerUrl == null) {
+        "Apollo: 'httpServerUrl' has no effect if 'networkTransport' is set"
+      }
+      check(builder.httpEngine == null) {
+        "Apollo: 'httpEngine' has no effect if 'networkTransport' is set"
+      }
+      check(builder.httpInterceptors.isEmpty()) {
+        "Apollo: 'addHttpInterceptor' has no effect if 'networkTransport' is set"
+      }
+      check(builder.httpExposeErrorBody == null) {
+        "Apollo: 'httpExposeErrorBody' has no effect if 'networkTransport' is set"
+      }
+      builder.networkTransport!!
+    } else {
+      check(builder.httpServerUrl != null) {
+        "Apollo: 'serverUrl' is required"
+      }
+      HttpNetworkTransport.Builder()
+          .serverUrl(builder.httpServerUrl!!)
+          .apply {
+            if (builder.httpEngine != null) {
+              httpEngine(builder.httpEngine!!)
+            }
+            if (builder.httpExposeErrorBody != null) {
+              exposeErrorBody(builder.httpExposeErrorBody!!)
+            }
+          }
+          .interceptors(builder.httpInterceptors)
+          .build()
+    }
+
+    subscriptionNetworkTransport = if (builder.subscriptionNetworkTransport != null) {
+      check(builder.webSocketServerUrl == null) {
+        "Apollo: 'webSocketServerUrl' has no effect if 'subscriptionNetworkTransport' is set"
+      }
+      check(builder.webSocketEngine == null) {
+        "Apollo: 'webSocketEngine' has no effect if 'subscriptionNetworkTransport' is set"
+      }
+      check(builder.webSocketIdleTimeoutMillis == null) {
+        "Apollo: 'webSocketIdleTimeoutMillis' has no effect if 'subscriptionNetworkTransport' is set"
+      }
+      check(builder.wsProtocolFactory == null) {
+        "Apollo: 'wsProtocolFactory' has no effect if 'subscriptionNetworkTransport' is set"
+      }
+      check(builder.webSocketReopenWhen == null) {
+        "Apollo: 'webSocketReopenWhen' has no effect if 'subscriptionNetworkTransport' is set"
+      }
+      check(builder.webSocketReopenServerUrl == null) {
+        "Apollo: 'webSocketReopenServerUrl' has no effect if 'subscriptionNetworkTransport' is set"
+      }
+      builder.subscriptionNetworkTransport!!
+    } else {
+      val url = builder.webSocketServerUrl ?: builder.httpServerUrl
+      if (url == null) {
+        // Fallback to the regular [NetworkTransport]. This is unlikely to work but chances are
+        // that the user is not going to use subscription, so it's better than failing
+        networkTransport
+      } else {
+        WebSocketNetworkTransport.Builder()
+            .serverUrl(url)
+            .apply {
+              if (builder.webSocketEngine != null) {
+                webSocketEngine(builder.webSocketEngine!!)
+              }
+              if (builder.webSocketIdleTimeoutMillis != null) {
+                idleTimeoutMillis(builder.webSocketIdleTimeoutMillis!!)
+              }
+              if (builder.wsProtocolFactory != null) {
+                protocol(builder.wsProtocolFactory!!)
+              }
+              if (builder.webSocketReopenWhen != null) {
+                reopenWhen(builder.webSocketReopenWhen)
+              }
+              if (builder.webSocketReopenServerUrl != null) {
+                serverUrl(builder.webSocketReopenServerUrl)
+              }
+            }
+            .build()
+      }
+    }
+
+    val dispatcher = builder.dispatcher ?: defaultDispatcher
     concurrencyInfo = ConcurrencyInfo(
         dispatcher,
-        CoroutineScope(dispatcher))
+        CoroutineScope(dispatcher)
+    )
   }
 
   /**
@@ -185,34 +267,57 @@ private constructor(
    * A Builder used to create instances of [ApolloClient]
    */
   class Builder : MutableExecutionOptions<Builder> {
-    private var _networkTransport: NetworkTransport? = null
-    private var subscriptionNetworkTransport: NetworkTransport? = null
-    private val customScalarAdaptersBuilder = CustomScalarAdapters.Builder()
+    private val _customScalarAdaptersBuilder = CustomScalarAdapters.Builder()
+    val customScalarAdapters: CustomScalarAdapters get() = _customScalarAdaptersBuilder.build()
+
     private val _interceptors: MutableList<ApolloInterceptor> = mutableListOf()
     val interceptors: List<ApolloInterceptor> = _interceptors
-    private val httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
-    private var dispatcher: CoroutineDispatcher? = null
+
+    private val _httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
+    val httpInterceptors: List<HttpInterceptor> = _httpInterceptors
+
+    var networkTransport: NetworkTransport? = null
+      private set
+    var subscriptionNetworkTransport: NetworkTransport? = null
+      private set
+    var dispatcher: CoroutineDispatcher? = null
+      private set
+    var httpServerUrl: String? = null
+      private set
+    var httpEngine: HttpEngine? = null
+      private set
+    var webSocketServerUrl: String? = null
+      private set
+    var webSocketIdleTimeoutMillis: Long? = null
+      private set
+    var wsProtocolFactory: WsProtocol.Factory? = null
+      private set
+    var httpExposeErrorBody: Boolean? = null
+      private set
+    var webSocketEngine: WebSocketEngine? = null
+      private set
+    var webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
+      private set
+    var webSocketReopenServerUrl: (suspend () -> String)? = null
+      private set
     override var executionContext: ExecutionContext = ExecutionContext.Empty
       private set
-    private var httpServerUrl: String? = null
-    private var httpEngine: HttpEngine? = null
-    private var webSocketServerUrl: String? = null
-    private var webSocketIdleTimeoutMillis: Long? = null
-    private var wsProtocolFactory: WsProtocol.Factory? = null
-    private var httpExposeErrorBody: Boolean? = null
-    private var webSocketEngine: WebSocketEngine? = null
-    private var webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
-    private var webSocketReopenServerUrl: (suspend () -> String)? = null
-
     override var httpMethod: HttpMethod? = null
+      private set
+    override var httpHeaders: List<HttpHeader>? = null
+      private set
+    override var sendApqExtensions: Boolean? = null
+      private set
+    override var sendDocument: Boolean? = null
+      private set
+    override var enableAutoPersistedQueries: Boolean? = null
+      private set
+    override var canBeBatched: Boolean? = null
       private set
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder = apply {
       this.httpMethod = httpMethod
     }
-
-    override var httpHeaders: List<HttpHeader>? = null
-      private set
 
     override fun httpHeaders(httpHeaders: List<HttpHeader>?): Builder = apply {
       this.httpHeaders = httpHeaders
@@ -222,29 +327,17 @@ private constructor(
       this.httpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
     }
 
-    override var sendApqExtensions: Boolean? = null
-      private set
-
     override fun sendApqExtensions(sendApqExtensions: Boolean?): Builder = apply {
       this.sendApqExtensions = sendApqExtensions
     }
-
-    override var sendDocument: Boolean? = null
-      private set
 
     override fun sendDocument(sendDocument: Boolean?): Builder = apply {
       this.sendDocument = sendDocument
     }
 
-    override var enableAutoPersistedQueries: Boolean? = null
-      private set
-
     override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): Builder = apply {
       this.enableAutoPersistedQueries = enableAutoPersistedQueries
     }
-
-    override var canBeBatched: Boolean? = null
-      private set
 
     override fun canBeBatched(canBeBatched: Boolean?): Builder = apply {
       this.canBeBatched = canBeBatched
@@ -266,7 +359,7 @@ private constructor(
      *
      * See also [networkTransport] for more customization
      */
-    fun httpServerUrl(httpServerUrl: String) = apply {
+    fun httpServerUrl(httpServerUrl: String?) = apply {
       this.httpServerUrl = httpServerUrl
     }
 
@@ -275,7 +368,7 @@ private constructor(
      *
      * See also [networkTransport] for more customization
      */
-    fun httpEngine(httpEngine: HttpEngine) = apply {
+    fun httpEngine(httpEngine: HttpEngine?) = apply {
       this.httpEngine = httpEngine
     }
 
@@ -287,7 +380,7 @@ private constructor(
      *
      * Default: false
      */
-    fun httpExposeErrorBody(httpExposeErrorBody: Boolean) = apply {
+    fun httpExposeErrorBody(httpExposeErrorBody: Boolean?) = apply {
       this.httpExposeErrorBody = httpExposeErrorBody
     }
 
@@ -296,8 +389,18 @@ private constructor(
      *
      * See also [networkTransport] for more customization
      */
+    fun httpInterceptors(httpInterceptors: List<HttpInterceptor>) = apply {
+      _httpInterceptors.clear()
+      _httpInterceptors.addAll(httpInterceptors)
+    }
+
+    /**
+     * Adds [httpInterceptor] to the list of HTTP interceptors
+     *
+     * See also [networkTransport] for more customization
+     */
     fun addHttpInterceptor(httpInterceptor: HttpInterceptor) = apply {
-      httpInterceptors += httpInterceptor
+      _httpInterceptors += httpInterceptor
     }
 
     /**
@@ -306,7 +409,7 @@ private constructor(
      *
      * See also [subscriptionNetworkTransport] for more customization
      */
-    fun webSocketServerUrl(webSocketServerUrl: String) = apply {
+    fun webSocketServerUrl(webSocketServerUrl: String?) = apply {
       this.webSocketServerUrl = webSocketServerUrl
     }
 
@@ -320,7 +423,7 @@ private constructor(
      *
      * It is a suspending function, so it can be used to introduce delay before setting the new server URL.
      */
-    fun webSocketServerUrl(webSocketServerUrl: (suspend () -> String)) = apply {
+    fun webSocketServerUrl(webSocketServerUrl: (suspend () -> String)?) = apply {
       this.webSocketReopenServerUrl = webSocketServerUrl
     }
 
@@ -329,7 +432,7 @@ private constructor(
      *
      * See also [subscriptionNetworkTransport] for more customization
      */
-    fun webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis: Long) = apply {
+    fun webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis: Long?) = apply {
       this.webSocketIdleTimeoutMillis = webSocketIdleTimeoutMillis
     }
 
@@ -338,7 +441,7 @@ private constructor(
      *
      * See also [subscriptionNetworkTransport] for more customization
      */
-    fun wsProtocol(wsProtocolFactory: WsProtocol.Factory) = apply {
+    fun wsProtocol(wsProtocolFactory: WsProtocol.Factory?) = apply {
       this.wsProtocolFactory = wsProtocolFactory
     }
 
@@ -347,7 +450,7 @@ private constructor(
      *
      * See also [subscriptionNetworkTransport] for more customization
      */
-    fun webSocketEngine(webSocketEngine: WebSocketEngine) = apply {
+    fun webSocketEngine(webSocketEngine: WebSocketEngine?) = apply {
       this.webSocketEngine = webSocketEngine
     }
 
@@ -363,21 +466,21 @@ private constructor(
      *
      * See also [subscriptionNetworkTransport] for more customization
      */
-    fun webSocketReopenWhen(webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)) = apply {
+    fun webSocketReopenWhen(webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)?) = apply {
       this.webSocketReopenWhen = webSocketReopenWhen
     }
 
-    fun networkTransport(networkTransport: NetworkTransport) = apply {
-      _networkTransport = networkTransport
+    fun networkTransport(networkTransport: NetworkTransport?) = apply {
+      this.networkTransport = networkTransport
     }
 
-    fun subscriptionNetworkTransport(subscriptionNetworkTransport: NetworkTransport) = apply {
+    fun subscriptionNetworkTransport(subscriptionNetworkTransport: NetworkTransport?) = apply {
       this.subscriptionNetworkTransport = subscriptionNetworkTransport
     }
 
     fun customScalarAdapters(customScalarAdapters: CustomScalarAdapters) = apply {
-      customScalarAdaptersBuilder.clear()
-      customScalarAdaptersBuilder.addAll(customScalarAdapters)
+      _customScalarAdaptersBuilder.clear()
+      _customScalarAdaptersBuilder.addAll(customScalarAdapters)
     }
 
     /**
@@ -389,7 +492,7 @@ private constructor(
      * @param customScalarAdapter the [Adapter] to use for this custom scalar
      */
     fun <T> addCustomScalarAdapter(customScalarType: CustomScalarType, customScalarAdapter: Adapter<T>) = apply {
-      customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter)
+      _customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter)
     }
 
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {
@@ -480,136 +583,35 @@ private constructor(
      * Creates an [ApolloClient] from this [Builder]
      */
     fun build(): ApolloClient {
-      val networkTransport = if (_networkTransport != null) {
-        check(httpServerUrl == null) {
-          "Apollo: 'httpServerUrl' has no effect if 'networkTransport' is set"
-        }
-        check(httpEngine == null) {
-          "Apollo: 'httpEngine' has no effect if 'networkTransport' is set"
-        }
-        check(httpInterceptors.isEmpty()) {
-          "Apollo: 'addHttpInterceptor' has no effect if 'networkTransport' is set"
-        }
-        check(httpExposeErrorBody == null) {
-          "Apollo: 'httpExposeErrorBody' has no effect if 'networkTransport' is set"
-        }
-        _networkTransport!!
-      } else {
-        check(httpServerUrl != null) {
-          "Apollo: 'serverUrl' is required"
-        }
-        HttpNetworkTransport.Builder()
-            .serverUrl(httpServerUrl!!)
-            .apply {
-              if (httpEngine != null) {
-                httpEngine(httpEngine!!)
-              }
-              if (httpExposeErrorBody != null) {
-                exposeErrorBody(httpExposeErrorBody!!)
-              }
-            }
-            .interceptors(httpInterceptors)
-            .build()
-      }
-
-      val subscriptionNetworkTransport = if (subscriptionNetworkTransport != null) {
-        check(webSocketServerUrl == null) {
-          "Apollo: 'webSocketServerUrl' has no effect if 'subscriptionNetworkTransport' is set"
-        }
-        check(webSocketEngine == null) {
-          "Apollo: 'webSocketEngine' has no effect if 'subscriptionNetworkTransport' is set"
-        }
-        check(webSocketIdleTimeoutMillis == null) {
-          "Apollo: 'webSocketIdleTimeoutMillis' has no effect if 'subscriptionNetworkTransport' is set"
-        }
-        check(wsProtocolFactory == null) {
-          "Apollo: 'wsProtocolFactory' has no effect if 'subscriptionNetworkTransport' is set"
-        }
-        check(webSocketReopenWhen == null) {
-          "Apollo: 'webSocketReopenWhen' has no effect if 'subscriptionNetworkTransport' is set"
-        }
-        check(webSocketReopenServerUrl == null) {
-          "Apollo: 'webSocketReopenServerUrl' has no effect if 'subscriptionNetworkTransport' is set"
-        }
-        subscriptionNetworkTransport!!
-      } else {
-        val url = webSocketServerUrl ?: httpServerUrl
-        if (url == null) {
-          // Fallback to the regular [NetworkTransport]. This is unlikely to work but chances are
-          // that the user is not going to use subscription, so it's better than failing
-          networkTransport
-        } else {
-          WebSocketNetworkTransport.Builder()
-              .serverUrl(url)
-              .apply {
-                if (webSocketEngine != null) {
-                  webSocketEngine(webSocketEngine!!)
-                }
-                if (webSocketIdleTimeoutMillis != null) {
-                  idleTimeoutMillis(webSocketIdleTimeoutMillis!!)
-                }
-                if (wsProtocolFactory != null) {
-                  protocol(wsProtocolFactory!!)
-                }
-                if (webSocketReopenWhen != null) {
-                  reopenWhen(webSocketReopenWhen)
-                }
-                if (webSocketReopenServerUrl != null) {
-                  serverUrl(webSocketReopenServerUrl)
-                }
-              }
-              .build()
-        }
-      }
-
       return ApolloClient(
-          networkTransport = networkTransport,
-          subscriptionNetworkTransport = subscriptionNetworkTransport,
-          customScalarAdapters = customScalarAdaptersBuilder.build(),
-          interceptors = _interceptors,
-          dispatcher = dispatcher,
-          executionContext = executionContext,
-          httpMethod = httpMethod,
-          httpHeaders = httpHeaders,
-          sendApqExtensions = sendApqExtensions,
-          sendDocument = sendDocument,
-          enableAutoPersistedQueries = enableAutoPersistedQueries,
-          canBeBatched = canBeBatched,
-
-          // Keep a reference to the Builder so we can keep track of `httpEngine` and other properties that 
-          // are important to rebuild `networkTransport` (and potentially others)
-          builder = this,
+          this.copy()
       )
     }
 
     fun copy(): Builder {
-      @Suppress("DEPRECATION")
       val builder = Builder()
-          .customScalarAdapters(customScalarAdaptersBuilder.build())
+          .customScalarAdapters(_customScalarAdaptersBuilder.build())
           .interceptors(interceptors)
           .dispatcher(dispatcher)
           .executionContext(executionContext)
           .httpMethod(httpMethod)
           .httpHeaders(httpHeaders)
+          .httpServerUrl(httpServerUrl)
+          .httpEngine(httpEngine)
+          .httpExposeErrorBody(httpExposeErrorBody)
+          .httpInterceptors(httpInterceptors)
           .sendApqExtensions(sendApqExtensions)
           .sendDocument(sendDocument)
           .enableAutoPersistedQueries(enableAutoPersistedQueries)
           .canBeBatched(canBeBatched)
-
-      _networkTransport?.let { builder.networkTransport(it) }
-      httpServerUrl?.let { builder.httpServerUrl(it) }
-      httpEngine?.let { builder.httpEngine(it) }
-      httpExposeErrorBody?.let { builder.httpExposeErrorBody(it) }
-      for (httpInterceptor in httpInterceptors) {
-        builder.addHttpInterceptor(httpInterceptor)
-      }
-      subscriptionNetworkTransport?.let { builder.subscriptionNetworkTransport(it) }
-      webSocketServerUrl?.let { builder.webSocketServerUrl(it) }
-      webSocketReopenServerUrl?.let { builder.webSocketServerUrl(it) }
-      webSocketEngine?.let { builder.webSocketEngine(it) }
-      webSocketReopenWhen?.let { builder.webSocketReopenWhen(it) }
-      webSocketIdleTimeoutMillis?.let { builder.webSocketIdleTimeoutMillis(it) }
-      wsProtocolFactory?.let { builder.wsProtocol(it) }
+          .networkTransport(networkTransport)
+          .subscriptionNetworkTransport(subscriptionNetworkTransport)
+          .webSocketServerUrl(webSocketServerUrl)
+          .webSocketServerUrl(webSocketReopenServerUrl)
+          .webSocketEngine(webSocketEngine)
+          .webSocketReopenWhen(webSocketReopenWhen)
+          .webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis)
+          .wsProtocol(wsProtocolFactory)
       return builder
     }
   }
