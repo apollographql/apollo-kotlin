@@ -1,5 +1,5 @@
 package com.apollographql.apollo3.network
 
-actual fun NetworkMonitor(): NetworkMonitor? {
+internal actual fun platformNetworkMonitor(): PlatformNetworkMonitor? {
   return null
 }

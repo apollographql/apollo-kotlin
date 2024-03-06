@@ -23,7 +23,46 @@ internal fun Context.isPermissionGranted(permission: String): Boolean {
   return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
 }
 
-actual fun NetworkMonitor(): NetworkMonitor? {
+
+@RequiresApi(M)
+@SuppressLint("MissingPermission")
+internal class AndroidPlatformNetworkMonitor(private val connectivityManager: ConnectivityManager) : PlatformNetworkMonitor {
+  private var listener: WeakReference<PlatformNetworkMonitor.Listener>? = null
+
+  private val networkCallback: NetworkCallback = object : NetworkCallback() {
+    override fun onAvailable(network: Network) = onConnectivityChange(true)
+    override fun onLost(network: Network) = onConnectivityChange(false)
+  }
+
+
+  private fun onConnectivityChange(isOnline: Boolean) {
+    val listener = listener!!.get()
+    if (listener == null) {
+      close()
+    } else {
+      listener.networkChanged(isOnline)
+    }
+  }
+
+  override fun setListener(listener: PlatformNetworkMonitor.Listener) {
+    check(this.listener == null) {
+      "There can be only one listener"
+    }
+    val request = NetworkRequest.Builder()
+        .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        .build()
+    this.listener = WeakReference(listener)
+
+    connectivityManager.registerNetworkCallback(request, networkCallback)
+  }
+
+  override fun close() {
+    connectivityManager.unregisterNetworkCallback(networkCallback)
+    listener = null
+  }
+}
+
+internal actual fun platformNetworkMonitor(): PlatformNetworkMonitor? {
   return if (VERSION.SDK_INT >= M) {
     val connectivityManager = ApolloInitializer.context.getSystemService(ConnectivityManager::class.java)
     if (connectivityManager == null || !ApolloInitializer.context.isPermissionGranted(Manifest.permission.ACCESS_NETWORK_STATE)) {
@@ -31,53 +70,8 @@ actual fun NetworkMonitor(): NetworkMonitor? {
       return null
     }
 
-    DefaultNetworkMonitor(connectivityManager)
+    AndroidPlatformNetworkMonitor(connectivityManager)
   } else {
     null
-  }
-}
-
-@RequiresApi(M)
-@SuppressLint("MissingPermission")
-internal class DefaultNetworkMonitor(private val connectivityManager: ConnectivityManager) : NetworkMonitor {
-  private val listeners = mutableListOf<WeakReference<NetworkMonitor.Listener>>()
-
-  private val networkCallback: NetworkCallback = object : NetworkCallback() {
-    override fun onAvailable(network: Network) = onConnectivityChange(true)
-    override fun onLost(network: Network) = onConnectivityChange(false)
-  }
-
-  init {
-    val request = NetworkRequest.Builder()
-        .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-        .build()
-    connectivityManager.registerNetworkCallback(request, networkCallback)
-  }
-
-  private fun onConnectivityChange(isOnline: Boolean) = synchronized(this) {
-    val iterator = listeners.iterator()
-    while (iterator.hasNext()) {
-      when (val listener = iterator.next().get()) {
-        null -> iterator.remove()
-        else -> listener.networkChanged(isOnline)
-      }
-    }
-    if (listeners.isEmpty()) {
-      connectivityManager.unregisterNetworkCallback(networkCallback)
-    }
-  }
-
-  override fun registerListener(listener: NetworkMonitor.Listener): Unit = synchronized(this) {
-    listeners.add(WeakReference(listener))
-  }
-
-  override fun unregisterListener(listener: NetworkMonitor.Listener): Unit = synchronized(this) {
-    val iterator = listeners.iterator()
-    while (iterator.hasNext()) {
-      when (iterator.next().get()) {
-        null -> iterator.remove()
-        listener -> iterator.remove()
-      }
-    }
   }
 }
