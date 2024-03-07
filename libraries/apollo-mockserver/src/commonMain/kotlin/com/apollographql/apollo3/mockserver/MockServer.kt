@@ -278,7 +278,7 @@ fun MockServer.enqueueString(string: String, delayMs: Long = 0, statusCode: Int 
   )
 }
 
-fun MockServer.enqueueError(statusCode: Int = 200) {
+fun MockServer.enqueueError(statusCode: Int) {
   enqueue(MockResponse.Builder()
       .statusCode(statusCode)
       .build()

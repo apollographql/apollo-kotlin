@@ -81,7 +81,6 @@ public final class com/apollographql/apollo3/mockserver/MockServerKt {
 	public static final fun enqueue (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;JI)V
 	public static synthetic fun enqueue$default (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;JIILjava/lang/Object;)V
 	public static final fun enqueueError (Lcom/apollographql/apollo3/mockserver/MockServer;I)V
-	public static synthetic fun enqueueError$default (Lcom/apollographql/apollo3/mockserver/MockServer;IILjava/lang/Object;)V
 	public static final fun enqueueGraphQLString (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;J)V
 	public static synthetic fun enqueueGraphQLString$default (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;JILjava/lang/Object;)V
 	public static final fun enqueueMultipart (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/util/List;)Ljava/lang/Void;
