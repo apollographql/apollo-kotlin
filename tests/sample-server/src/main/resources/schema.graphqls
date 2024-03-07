@@ -1,6 +1,8 @@
 type Query {
   random: Int!
-  time: Int!
+  zero: Int!
+  secondsSinceEpoch: Float!
+  valueSharedWithSubscriptions: Int!
 }
 
 type Mutation {
@@ -10,9 +12,9 @@ type Mutation {
 
 type Subscription {
   "Count from 0 until 'to', waiting 'delayMillis' after each response"
-  count(delayMillis: Int!, to: Int!): Int!
+  count(intervalMillis: Int!, to: Int!): Int!
   "Count from 0 until 'to', waiting 'delayMillis' after each response and returns each result as a String"
-  countString(delayMillis: Int!, to: Int!): String!
+  countString(intervalMillis: Int!, to: Int!): String!
   "Trigger an error when accessed"
   operationError: String!
   "Returns a GraphQL error after 'after' items"
@@ -21,5 +23,19 @@ type Subscription {
   "Force close the websocket this subscription is executing on"
   closeWebSocket: String!
 
-  time: Int!
+  "Returns the current seconds every intervalMillis"
+  secondsSinceEpoch(intervalMillis: Int! = 1000): Float!
+
+  "Returns the subscription state"
+  state(intervalMillis: Int! = 1000): State
+
+  valueSharedWithSubscriptions: Int!
+}
+
+type State {
+  "The tag of this server"
+  tag: String!
+
+  "The subscription id"
+  subscriptionId: String!
 }

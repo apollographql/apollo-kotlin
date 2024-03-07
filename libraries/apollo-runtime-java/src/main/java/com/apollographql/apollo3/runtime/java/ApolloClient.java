@@ -188,6 +188,7 @@ public class ApolloClient implements Closeable {
     private Boolean enableAutoPersistedQueries;
     private Boolean canBeBatched;
     private Boolean httpExposeErrorBody;
+    private Boolean retryOnError;
 
     public Builder() {
     }
@@ -196,16 +197,16 @@ public class ApolloClient implements Closeable {
      * The url of the GraphQL server used for HTTP. This is the same as {@link #httpServerUrl(String)}. See also
      * {@link #networkTransport(NetworkTransport)} for more customization
      */
-    public Builder serverUrl(@NotNull String serverUrl) {
-      this.httpServerUrl = checkNotNull(serverUrl, "serverUrl is null");
+    public Builder serverUrl(String serverUrl) {
+      this.httpServerUrl = serverUrl;
       return this;
     }
 
     /**
      * The url of the GraphQL server used for HTTP. See also {@link #networkTransport(NetworkTransport)} for more customization
      */
-    public Builder httpServerUrl(@NotNull String httpServerUrl) {
-      this.httpServerUrl = checkNotNull(httpServerUrl, "httpServerUrl is null");
+    public Builder httpServerUrl(String httpServerUrl) {
+      this.httpServerUrl = httpServerUrl;
       return this;
     }
 
@@ -213,8 +214,8 @@ public class ApolloClient implements Closeable {
      * The url of the GraphQL server used for WebSockets. See also {@link #subscriptionNetworkTransport(NetworkTransport)} for more
      * customization
      */
-    public Builder webSocketServerUrl(@NotNull String webSocketServerUrl) {
-      this.webSocketServerUrl = checkNotNull(webSocketServerUrl, "webSocketServerUrl is null");
+    public Builder webSocketServerUrl(String webSocketServerUrl) {
+      this.webSocketServerUrl = webSocketServerUrl;
       return this;
     }
 
@@ -224,8 +225,8 @@ public class ApolloClient implements Closeable {
      * @param okHttpClient the client to use.
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder okHttpClient(@NotNull OkHttpClient okHttpClient) {
-      this.callFactory = checkNotNull(okHttpClient, "okHttpClient is null");
+    public Builder okHttpClient(OkHttpClient okHttpClient) {
+      this.callFactory = okHttpClient;
       this.webSocketFactory = okHttpClient;
       return null;
     }
@@ -234,8 +235,8 @@ public class ApolloClient implements Closeable {
      * Set the custom call factory for creating {@link Call} instances. <p> Note: Calling {@link #okHttpClient(OkHttpClient)} automatically
      * sets this value.
      */
-    public Builder callFactory(@NotNull Call.Factory factory) {
-      this.callFactory = checkNotNull(factory, "factory is null");
+    public Builder callFactory(Call.Factory factory) {
+      this.callFactory = factory;
       return this;
     }
 
@@ -243,8 +244,8 @@ public class ApolloClient implements Closeable {
      * Set the custom call factory for creating {@link WebSocket} instances. <p> Note: Calling {@link #okHttpClient(OkHttpClient)}
      * automatically sets this value.
      */
-    public Builder webSocketFactory(@NotNull WebSocket.Factory factory) {
-      this.webSocketFactory = checkNotNull(factory, "factory is null");
+    public Builder webSocketFactory(WebSocket.Factory factory) {
+      this.webSocketFactory = factory;
       return this;
     }
 
@@ -253,13 +254,13 @@ public class ApolloClient implements Closeable {
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder dispatcher(@NotNull Executor dispatcher) {
-      this.executor = checkNotNull(dispatcher, "dispatcher is null");
+    public Builder dispatcher(Executor dispatcher) {
+      this.executor = dispatcher;
       return this;
     }
 
-    public Builder addInterceptor(@NotNull ApolloInterceptor interceptor) {
-      this.interceptors.add(checkNotNull(interceptor, "interceptor is null"));
+    public Builder addInterceptor(ApolloInterceptor interceptor) {
+      this.interceptors.add(interceptor);
       return this;
     }
 
@@ -306,8 +307,8 @@ public class ApolloClient implements Closeable {
       return this;
     }
 
-    public Builder wsProtocolFactory(@NotNull WsProtocol.Factory wsProtocolFactory) {
-      this.wsProtocolFactory = checkNotNull(wsProtocolFactory, "wsProtocolFactory is null");
+    public Builder wsProtocolFactory(WsProtocol.Factory wsProtocolFactory) {
+      this.wsProtocolFactory = wsProtocolFactory;
       return this;
     }
 
@@ -326,8 +327,8 @@ public class ApolloClient implements Closeable {
       return this;
     }
 
-    public Builder wsReopenWhen(@NotNull WebSocketNetworkTransport.ReopenWhen reopenWhen) {
-      this.wsReopenWhen = checkNotNull(reopenWhen, "reopenWhen is null");
+    public Builder wsReopenWhen(WebSocketNetworkTransport.ReopenWhen reopenWhen) {
+      this.wsReopenWhen = reopenWhen;
       return this;
     }
 
@@ -336,8 +337,8 @@ public class ApolloClient implements Closeable {
       return this;
     }
 
-    public Builder httpEngine(@NotNull HttpEngine httpEngine) {
-      this.httpEngine = checkNotNull(httpEngine, "httpEngine is null");
+    public Builder httpEngine(HttpEngine httpEngine) {
+      this.httpEngine = httpEngine;
       return this;
     }
 
@@ -346,15 +347,22 @@ public class ApolloClient implements Closeable {
       return this;
     }
 
-    public Builder networkTransport(@NotNull NetworkTransport networkTransport) {
-      this.networkTransport = checkNotNull(networkTransport, "networkTransport is null");
+    public Builder networkTransport(NetworkTransport networkTransport) {
+      this.networkTransport = networkTransport;
       return this;
     }
 
-    public Builder subscriptionNetworkTransport(@NotNull NetworkTransport subscriptionNetworkTransport) {
-      this.subscriptionNetworkTransport = checkNotNull(subscriptionNetworkTransport, "subscriptionNetworkTransport is null");
+    public Builder subscriptionNetworkTransport(NetworkTransport subscriptionNetworkTransport) {
+      this.subscriptionNetworkTransport = subscriptionNetworkTransport;
       return this;
     }
+
+    public Builder retryOnError(Boolean retryOnError) {
+      throw new IllegalStateException("Not supported yet");
+//      this.retryOnError = retryOnError;
+//      return this;
+    }
+
 
     public ApolloClient build() {
       if (executor == null) {
@@ -523,6 +531,10 @@ public class ApolloClient implements Closeable {
 
     @Nullable @Override public Boolean getCanBeBatched() {
       return canBeBatched;
+    }
+
+    @Nullable @Override public Boolean getRetryOnError() {
+      return retryOnError;
     }
 
     @Override public Builder addExecutionContext(@NotNull ExecutionContext executionContext) {

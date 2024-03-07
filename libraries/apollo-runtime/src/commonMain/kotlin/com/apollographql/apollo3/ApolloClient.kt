@@ -1,6 +1,7 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -57,6 +58,10 @@ private constructor(
   override val sendDocument: Boolean? = builder.sendDocument
   override val enableAutoPersistedQueries: Boolean? = builder.enableAutoPersistedQueries
   override val canBeBatched: Boolean? = builder.canBeBatched
+  @ApolloExperimental
+  override val retryOnError: Boolean? = builder.retryOnError
+  @ApolloExperimental
+  val retryOnErrorInterceptor = builder.retryOnErrorInterceptor
 
   init {
     networkTransport = if (builder.networkTransport != null) {
@@ -245,10 +250,20 @@ private constructor(
             // canBeBatched(apolloRequest.canBeBatched)
             addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
           }
+          if (apolloRequest.retryOnError != null) {
+            retryOnError(apolloRequest.retryOnError)
+          }
         }
         .build()
 
-    return DefaultInterceptorChain(interceptors + networkInterceptor, 0)
+    val allInterceptors = buildList{
+      addAll(interceptors)
+      if (retryOnErrorInterceptor != null) {
+        add(retryOnErrorInterceptor)
+      }
+      add(networkInterceptor)
+    }
+    return DefaultInterceptorChain(allInterceptors, 0)
         .proceed(request)
         .let {
           if (throwing) {
@@ -263,6 +278,10 @@ private constructor(
         }
   }
 
+  fun newBuilder(): Builder {
+    return builder.copy()
+  }
+
   /**
    * A Builder used to create instances of [ApolloClient]
    */
@@ -275,6 +294,24 @@ private constructor(
 
     private val _httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
     val httpInterceptors: List<HttpInterceptor> = _httpInterceptors
+
+    override var executionContext: ExecutionContext = ExecutionContext.Empty
+      private set
+    override var httpMethod: HttpMethod? = null
+      private set
+    override var httpHeaders: List<HttpHeader>? = null
+      private set
+    override var sendApqExtensions: Boolean? = null
+      private set
+    override var sendDocument: Boolean? = null
+      private set
+    override var enableAutoPersistedQueries: Boolean? = null
+      private set
+    override var canBeBatched: Boolean? = null
+      private set
+    @ApolloExperimental
+    override var retryOnError: Boolean? = null
+      private set
 
     var networkTransport: NetworkTransport? = null
       private set
@@ -300,20 +337,19 @@ private constructor(
       private set
     var webSocketReopenServerUrl: (suspend () -> String)? = null
       private set
-    override var executionContext: ExecutionContext = ExecutionContext.Empty
+    @ApolloExperimental
+    var retryOnErrorInterceptor: ApolloInterceptor? = null
       private set
-    override var httpMethod: HttpMethod? = null
-      private set
-    override var httpHeaders: List<HttpHeader>? = null
-      private set
-    override var sendApqExtensions: Boolean? = null
-      private set
-    override var sendDocument: Boolean? = null
-      private set
-    override var enableAutoPersistedQueries: Boolean? = null
-      private set
-    override var canBeBatched: Boolean? = null
-      private set
+
+    @ApolloExperimental
+    fun retryOnErrorInterceptor(retryOnErrorInterceptor: ApolloInterceptor?): Builder = apply {
+      this.retryOnErrorInterceptor = retryOnErrorInterceptor
+    }
+
+    @ApolloExperimental
+    override fun retryOnError(retryOnError: Boolean?): Builder = apply {
+      this.retryOnError = retryOnError
+    }
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder = apply {
       this.httpMethod = httpMethod
@@ -612,12 +648,10 @@ private constructor(
           .webSocketReopenWhen(webSocketReopenWhen)
           .webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis)
           .wsProtocol(wsProtocolFactory)
+          .retryOnError(retryOnError)
+          .retryOnErrorInterceptor(retryOnErrorInterceptor)
       return builder
     }
-  }
-
-  fun newBuilder(): Builder {
-    return builder.copy()
   }
 
   companion object {

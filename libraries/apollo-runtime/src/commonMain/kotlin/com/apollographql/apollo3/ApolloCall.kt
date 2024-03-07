@@ -1,6 +1,7 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
@@ -33,7 +34,10 @@ class ApolloCall<D : Operation.Data> internal constructor(
     private set
   override var canBeBatched: Boolean? = null
     private set
-  
+  @ApolloExperimental
+  override var retryOnError: Boolean? = null
+    private set
+
   /**
    * The HTTP headers to be sent with the request.
    * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)`
@@ -87,6 +91,10 @@ class ApolloCall<D : Operation.Data> internal constructor(
     this.canBeBatched = canBeBatched
   }
 
+  @ApolloExperimental
+  override fun retryOnError(retryOnError: Boolean?): ApolloCall<D> = apply {
+    this.retryOnError = retryOnError
+  }
   /**
    * If set to true, the HTTP headers set on [ApolloClient] will not be used for the call, only the ones set on this [ApolloCall] will be
    * used. If set to false, both sets of headers will be concatenated and used.
@@ -107,6 +115,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
+        .retryOnError(retryOnError)
   }
 
   /**
@@ -153,6 +162,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
+        .retryOnError(retryOnError)
         .build()
   }
 

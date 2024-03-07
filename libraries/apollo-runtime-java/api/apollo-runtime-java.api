@@ -45,6 +45,7 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/a
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
+	public fun getRetryOnError ()Ljava/lang/Boolean;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
 	public fun httpBatching (JIZ)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
@@ -59,6 +60,8 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/a
 	public fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun networkTransport (Lcom/apollographql/apollo3/runtime/java/network/NetworkTransport;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun okHttpClient (Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun retryOnError (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public synthetic fun retryOnError (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;

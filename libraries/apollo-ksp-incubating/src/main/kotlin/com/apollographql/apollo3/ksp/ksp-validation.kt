@@ -118,7 +118,7 @@ internal class ValidationScope(
             val possibleTypes: Set<String>? = possibleTypes[className]
             if (possibleTypes == null) {
               if (typeDefinition is GQLObjectTypeDefinition) {
-                error("Expected a Kotlin object for type '${typeDefinition.name}' but none found. Did you forget a @ApolloObject? at ${ksTypeReference.location}")
+                error("Expected a Kotlin object for type '${typeDefinition.name}' but none found. Did you forget a @GraphQLObject? at ${ksTypeReference.location}")
               } else {
                 error("Expected that Kotlin '$className' is an object or interface for type '${typeDefinition.name}' but none found.")
               }

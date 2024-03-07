@@ -25,6 +25,7 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
   private Boolean sendDocument;
   private Boolean enableAutoPersistedQueries;
   private Boolean canBeBatched;
+  private Boolean retryOnError;
 
   public DefaultApolloCall(ApolloClient apolloClient, Operation<D> operation) {
     this.apolloClient = apolloClient;
@@ -40,6 +41,7 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
+        .retryOnError(retryOnError)
         .build();
 
     return apolloClient.execute(apolloRequest, callback);
@@ -71,6 +73,10 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
 
   @Nullable @Override public Boolean getCanBeBatched() {
     return canBeBatched;
+  }
+
+  @Nullable @Override public Boolean getRetryOnError() {
+    return retryOnError;
   }
 
   @Override public ApolloCall<D> addExecutionContext(@NotNull ExecutionContext executionContext) {
@@ -114,5 +120,11 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
   @Override public ApolloCall<D> canBeBatched(@Nullable Boolean canBeBatched) {
     this.canBeBatched = canBeBatched;
     return this;
+  }
+
+  @Override public ApolloCall<D> retryOnError(@Nullable Boolean retryOnError) {
+    throw new IllegalStateException("Not supported yet");
+    //this.retryOnError = retryOnError;
+    //return this;
   }
 }

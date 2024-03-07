@@ -3,7 +3,7 @@ query GetRandom {
 }
 
 query TimeQuery {
-  time
+  zero
 }
 
 
@@ -11,8 +11,8 @@ subscription OperationError {
   operationError
 }
 
-subscription Count($to: Int!, $delayMillis: Int!)  {
-  count(to: $to, delayMillis: $delayMillis)
+subscription Count($to: Int!, $intervalMillis: Int!)  {
+  count(to: $to, intervalMillis: $intervalMillis)
 }
 
 mutation CloseSocketMutation {

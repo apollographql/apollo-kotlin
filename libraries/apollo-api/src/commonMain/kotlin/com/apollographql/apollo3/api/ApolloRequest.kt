@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.benasher44.uuid.Uuid
@@ -21,13 +20,14 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
+    @ApolloExperimental
+    override val retryOnError: Boolean?,
 ) : ExecutionOptions {
 
   fun newBuilder(): Builder<D> = newBuilder(operation)
 
   @ApolloExperimental
-  fun <E: Operation.Data> newBuilder(operation: Operation<E>): Builder<E> {
-    @Suppress("DEPRECATION")
+  fun <E : Operation.Data> newBuilder(operation: Operation<E>): Builder<E> {
     return Builder(operation)
         .requestUuid(requestUuid)
         .executionContext(executionContext)
@@ -37,6 +37,7 @@ private constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
+        .retryOnError(retryOnError)
   }
 
   class Builder<D : Operation.Data>(
@@ -48,13 +49,23 @@ private constructor(
 
     override var httpMethod: HttpMethod? = null
       private set
+    override var httpHeaders: List<HttpHeader>? = null
+      private set
+    override var enableAutoPersistedQueries: Boolean? = null
+      private set
+    override var sendApqExtensions: Boolean? = null
+      private set
+    override var sendDocument: Boolean? = null
+      private set
+    override var canBeBatched: Boolean? = null
+      private set
+    @ApolloExperimental
+    override var retryOnError: Boolean? = null
+      private set
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder<D> = apply {
       this.httpMethod = httpMethod
     }
-
-    override var httpHeaders: List<HttpHeader>? = null
-      private set
 
     override fun httpHeaders(httpHeaders: List<HttpHeader>?): Builder<D> = apply {
       this.httpHeaders = httpHeaders
@@ -64,32 +75,25 @@ private constructor(
       this.httpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
     }
 
-    override var sendApqExtensions: Boolean? = null
-      private set
-
     override fun sendApqExtensions(sendApqExtensions: Boolean?): Builder<D> = apply {
       this.sendApqExtensions = sendApqExtensions
     }
-
-    override var sendDocument: Boolean? = null
-      private set
 
     override fun sendDocument(sendDocument: Boolean?): Builder<D> = apply {
       this.sendDocument = sendDocument
     }
 
-    override var enableAutoPersistedQueries: Boolean? = null
-      private set
-
     override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): Builder<D> = apply {
       this.enableAutoPersistedQueries = enableAutoPersistedQueries
     }
 
-    override var canBeBatched: Boolean? = null
-      private set
-
     override fun canBeBatched(canBeBatched: Boolean?): Builder<D> = apply {
       this.canBeBatched = canBeBatched
+    }
+
+    @ApolloExperimental
+    override fun retryOnError(retryOnError: Boolean?): Builder<D> = apply {
+      this.retryOnError = retryOnError
     }
 
     fun requestUuid(requestUuid: Uuid) = apply {
@@ -105,7 +109,6 @@ private constructor(
     }
 
     fun build(): ApolloRequest<D> {
-      @Suppress("DEPRECATION")
       return ApolloRequest(
           operation = operation,
           requestUuid = requestUuid,
@@ -116,6 +119,7 @@ private constructor(
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
+          retryOnError = retryOnError
       )
     }
   }
