@@ -68,7 +68,7 @@ private constructor(
   override val canBeBatched: Boolean? = builder.canBeBatched
 
   init {
-    networkMonitor = builder.networkMonitor ?: (platformConnectivityManager()?.let { DefaultNetworkMonitor(it) })
+    networkMonitor = builder.networkMonitor ?: NetworkMonitor()
     retryOnErrorInterceptor = builder.retryOnErrorInterceptor ?: RetryOnErrorInterceptor(networkMonitor)
 
     networkTransport = if (builder.networkTransport != null) {
