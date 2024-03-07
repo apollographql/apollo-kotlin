@@ -75,11 +75,15 @@ public abstract interface class com/apollographql/apollo3/mockserver/MockServerH
 public final class com/apollographql/apollo3/mockserver/MockServerKt {
 	public static final fun MockServer ()Lcom/apollographql/apollo3/mockserver/MockServer;
 	public static final fun MockServer (Lcom/apollographql/apollo3/mockserver/MockServerHandler;)Lcom/apollographql/apollo3/mockserver/MockServer;
+	public static final fun assertNoRequest (Lcom/apollographql/apollo3/mockserver/MockServer;)V
 	public static final fun awaitRequest-8Mi8wO0 (Lcom/apollographql/apollo3/mockserver/MockServer;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun awaitRequest-8Mi8wO0$default (Lcom/apollographql/apollo3/mockserver/MockServer;JLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun enqueue (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;JI)V
 	public static synthetic fun enqueue$default (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;JIILjava/lang/Object;)V
-	public static final fun enqueueGraphQLString (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;)V
+	public static final fun enqueueError (Lcom/apollographql/apollo3/mockserver/MockServer;I)V
+	public static synthetic fun enqueueError$default (Lcom/apollographql/apollo3/mockserver/MockServer;IILjava/lang/Object;)V
+	public static final fun enqueueGraphQLString (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;J)V
+	public static synthetic fun enqueueGraphQLString$default (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;JILjava/lang/Object;)V
 	public static final fun enqueueMultipart (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/util/List;)Ljava/lang/Void;
 	public static final fun enqueueString (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;JILjava/lang/String;)V
 	public static synthetic fun enqueueString$default (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;JILjava/lang/String;ILjava/lang/Object;)V

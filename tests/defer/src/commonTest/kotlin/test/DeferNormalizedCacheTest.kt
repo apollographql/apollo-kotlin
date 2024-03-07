@@ -18,6 +18,7 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.assertNoRequest
 import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueMultipart
 import com.apollographql.apollo3.mockserver.enqueueString
@@ -83,7 +84,7 @@ class DeferNormalizedCacheTest {
 
     // Cache is not empty, so this doesn't go to the server
     val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).execute().dataOrThrow()
-    assertFails { mockServer.takeRequest() }
+    mockServer.assertNoRequest()
 
     // We get the last/fully formed data
     val cacheExpected = WithFragmentSpreadsQuery.Data(
