@@ -47,7 +47,7 @@ gradlePlugin {
 // So remove it
 val apiDependencies = project.configurations.getByName("api").dependencies
 apiDependencies.firstOrNull {
-  it is SelfResolvingDependency
+  it is FileCollectionDependency
 }.let {
   apiDependencies.remove(it)
 }
