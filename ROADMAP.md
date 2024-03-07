@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2024-02-22**
+**Last updated: 2024-03-07**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -19,9 +19,9 @@ For up to date release notes, refer to the project [Changelog](https://github.co
 
 ## [4.0](https://github.com/apollographql/apollo-kotlin/milestone/29)
 
-_Approximate GA Date: February 2024 (GA)_
+_Approximate GA Date: June 2024 (depends on Kotlin 2.0 GA date)_
 
-Our next major release is currently in the beta stage. Expect new beta to be released as we make progress towards a GA release candidate. This major version removes some deprecated APIs but will otherwise contain mostly incremental changes and most of the API will stay compatible.  We are hoping to do a GA release after Kotlin 2.0.0 is generally available.
+Our next major release is currently in the beta stage. Expect new beta to be released as we make progress towards a GA release candidate. This major version removes some deprecated APIs but will otherwise contain mostly incremental changes and most of the API will stay compatible.  We plan to do a GA release after Kotlin 2.0.0 is generally available.
 
 Here's a high-level overview of the feature set:
 
@@ -35,6 +35,8 @@ Here's a high-level overview of the feature set:
 - Support `@oneOf` for Input Objects
 - Support Wasm JS target
 - [Low-level compiler APIs](https://github.com/apollographql/apollo-kotlin/issues/5415)
+- Network-awareness APIs for integration with Android and iOS connectivity managers
+- Retry functionality for HTTP Multipart and WebSockets protocols
 
 ## Jetpack Compose extensions
 
