@@ -104,5 +104,3 @@ com.apollographql.apollo3.testing
 com.apollographql.apollo3.testing.internal
 module:apollo-tooling
 com.apollographql.apollo3.tooling
-module:apollo-websocket-network-transport-incubating
-com.apollographql.apollo3.network.ws.incubating
