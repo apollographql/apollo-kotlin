@@ -26,8 +26,8 @@ internal fun Context.isPermissionGranted(permission: String): Boolean {
 
 @RequiresApi(M)
 @SuppressLint("MissingPermission")
-internal class AndroidPlatformNetworkMonitor(private val connectivityManager: ConnectivityManager) : PlatformNetworkMonitor {
-  private var listener: WeakReference<PlatformNetworkMonitor.Listener>? = null
+internal class AndroidPlatformConnectivityManager(private val connectivityManager: ConnectivityManager) : PlatformConnectivityManager {
+  private var listener: WeakReference<PlatformConnectivityManager.Listener>? = null
 
   private val networkCallback: NetworkCallback = object : NetworkCallback() {
     override fun onAvailable(network: Network) = onConnectivityChange(true)
@@ -44,7 +44,7 @@ internal class AndroidPlatformNetworkMonitor(private val connectivityManager: Co
     }
   }
 
-  override fun setListener(listener: PlatformNetworkMonitor.Listener) {
+  override fun setListener(listener: PlatformConnectivityManager.Listener) {
     check(this.listener == null) {
       "There can be only one listener"
     }
@@ -62,7 +62,7 @@ internal class AndroidPlatformNetworkMonitor(private val connectivityManager: Co
   }
 }
 
-internal actual fun platformNetworkMonitor(): PlatformNetworkMonitor? {
+internal actual fun platformConnectivityManager(): PlatformConnectivityManager? {
   return if (VERSION.SDK_INT >= M) {
     val connectivityManager = ApolloInitializer.context.getSystemService(ConnectivityManager::class.java)
     if (connectivityManager == null || !ApolloInitializer.context.isPermissionGranted(Manifest.permission.ACCESS_NETWORK_STATE)) {
@@ -70,7 +70,7 @@ internal actual fun platformNetworkMonitor(): PlatformNetworkMonitor? {
       return null
     }
 
-    AndroidPlatformNetworkMonitor(connectivityManager)
+    AndroidPlatformConnectivityManager(connectivityManager)
   } else {
     null
   }

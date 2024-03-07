@@ -7,16 +7,6 @@ import kotlinx.coroutines.flow.takeWhile
 import okio.Closeable
 import kotlin.js.JsName
 
-internal interface PlatformNetworkMonitor: Closeable {
-  fun setListener(listener: Listener)
-
-  interface Listener {
-    fun networkChanged(isOnline: Boolean)
-  }
-}
-
-internal expect fun platformNetworkMonitor(): PlatformNetworkMonitor?
-
 @ApolloExperimental
 interface NetworkMonitor: Closeable {
   val isOnline: Boolean
@@ -25,12 +15,12 @@ interface NetworkMonitor: Closeable {
 
 @ApolloExperimental
 @JsName("createNetworkMonitor")
-fun NetworkMonitor(): NetworkMonitor? = platformNetworkMonitor()?.let { DefaultNetworkMonitor(it) }
+fun NetworkMonitor(): NetworkMonitor? = platformConnectivityManager()?.let { DefaultNetworkMonitor(it) }
 
-internal class DefaultNetworkMonitor(private val platformNetworkMonitor: PlatformNetworkMonitor): NetworkMonitor, PlatformNetworkMonitor.Listener {
+internal class DefaultNetworkMonitor(private val platformConnectivityManager: PlatformConnectivityManager): NetworkMonitor, PlatformConnectivityManager.Listener {
   private val _isOnline = MutableStateFlow(false)
   init {
-    platformNetworkMonitor.setListener(this)
+    platformConnectivityManager.setListener(this)
   }
 
   override val isOnline: Boolean
@@ -41,7 +31,7 @@ internal class DefaultNetworkMonitor(private val platformNetworkMonitor: Platfor
   }
 
   override fun close() {
-    platformNetworkMonitor.close()
+    platformConnectivityManager.close()
   }
 
   override fun networkChanged(isOnline: Boolean) {
