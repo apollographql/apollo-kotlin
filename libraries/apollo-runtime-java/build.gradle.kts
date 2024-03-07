@@ -3,7 +3,7 @@ plugins {
 }
 
 apolloLibrary(
-  javaModuleName = "com.apollographql.apollo3.runtime.java",
+  namespace = "com.apollographql.apollo3.runtime.java",
 )
 
 dependencies {

@@ -3,8 +3,8 @@ plugins {
 }
 
 apolloLibrary(
-    javaModuleName = "com.apollographql.apollo3.runtime",
-    withLinux = false
+    namespace = "com.apollographql.apollo3.runtime",
+    withLinux = false,
 )
 
 kotlin {

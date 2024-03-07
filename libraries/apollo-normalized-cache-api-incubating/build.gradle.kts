@@ -4,7 +4,7 @@ plugins {
 }
 
 apolloLibrary(
-    javaModuleName = "com.apollographql.apollo3.cache.normalized.api",
+    namespace = "com.apollographql.apollo3.cache.normalized.api",
     withLinux = false,
 )
 

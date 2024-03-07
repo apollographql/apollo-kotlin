@@ -8,19 +8,27 @@ import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
 import org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask
 
+class AndroidOptions(
+    val withCompose: Boolean
+)
+
 fun Project.apolloLibrary(
-    javaModuleName: String?,
+    namespace: String,
     jvmTarget: Int? = null,
     withJs: Boolean = true,
     withLinux: Boolean = true,
     withApple: Boolean = true,
     withJvm: Boolean = true,
     withWasm: Boolean = true,
+    androidOptions: AndroidOptions? = null,
     publish: Boolean = true
 ) {
   group = property("GROUP")!!
   version = property("VERSION_NAME")!!
 
+  if (androidOptions != null) {
+    configureAndroid(namespace, androidOptions)
+  }
   commonSetup()
   configureJavaAndKotlinCompilers(jvmTarget)
 
@@ -54,11 +62,9 @@ fun Project.apolloLibrary(
     )
   }
 
-  if (javaModuleName != null) {
-    tasks.withType(Jar::class.java).configureEach {
-      manifest {
-        attributes(mapOf("Automatic-Module-Name" to javaModuleName))
-      }
+  tasks.withType(Jar::class.java).configureEach {
+    manifest {
+      attributes(mapOf("Automatic-Module-Name" to namespace))
     }
   }
 }

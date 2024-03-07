@@ -6,7 +6,7 @@ plugins {
 }
 
 apolloLibrary(
-  javaModuleName  = "com.apollographql.apollo3.rx3.java"
+  namespace  = "com.apollographql.apollo3.rx3.java"
 )
 
 dependencies {

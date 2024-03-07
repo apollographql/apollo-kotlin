@@ -7,7 +7,7 @@ plugins {
 }
 
 apolloLibrary(
-    javaModuleName = "com.apollographql.apollo3.gradle",
+    namespace = "com.apollographql.apollo3.gradle",
     jvmTarget = 11 // AGP requires 11
 )
 

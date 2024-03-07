@@ -6,7 +6,7 @@ plugins {
 }
 
 apolloLibrary(
-    javaModuleName = null,
+    namespace = "com.apollographql.apollo3.gradle.relocated",
     jvmTarget = 11 // AGP requires 11
 )
 
