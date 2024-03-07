@@ -56,6 +56,8 @@ private constructor(
   val interceptors: List<ApolloInterceptor> = builder.interceptors
   val customScalarAdapters: CustomScalarAdapters = builder.customScalarAdapters
   private val networkMonitor: NetworkMonitor?
+  private val retryOnError: ((ApolloRequest<*>) -> Boolean)? = builder.retryOnError
+  private val retryOnErrorInterceptor: ApolloInterceptor
 
   override val executionContext: ExecutionContext = builder.executionContext
   override val httpMethod: HttpMethod? = builder.httpMethod
@@ -64,10 +66,6 @@ private constructor(
   override val sendDocument: Boolean? = builder.sendDocument
   override val enableAutoPersistedQueries: Boolean? = builder.enableAutoPersistedQueries
   override val canBeBatched: Boolean? = builder.canBeBatched
-  @ApolloExperimental
-  override val retryOnError: Boolean? = builder.retryOnError
-  @ApolloExperimental
-  val retryOnErrorInterceptor: ApolloInterceptor
 
   init {
     networkMonitor = builder.networkMonitor ?: (platformNetworkMonitor()?.let { DefaultNetworkMonitor(it) })
@@ -262,10 +260,7 @@ private constructor(
 
           var retryOnError = apolloRequest.retryOnError
           if (retryOnError == null) {
-            retryOnError = this@ApolloClient.retryOnError
-          }
-          if (retryOnError == null) {
-            retryOnError = this@ApolloClient.builder.defaultRetryOnError?.invoke(apolloRequest)
+            retryOnError = this@ApolloClient.retryOnError?.invoke(apolloRequest) ?: false
           }
           retryOnError(retryOnError)
         }
@@ -322,10 +317,6 @@ private constructor(
       private set
     override var canBeBatched: Boolean? = null
       private set
-    @ApolloExperimental
-    override var retryOnError: Boolean? = null
-      private set
-
     var networkTransport: NetworkTransport? = null
       private set
     var subscriptionNetworkTransport: NetworkTransport? = null
@@ -357,7 +348,7 @@ private constructor(
     var networkMonitor: NetworkMonitor? = null
       private set
     @ApolloExperimental
-    var defaultRetryOnError: ((ApolloRequest<*>) -> Boolean)? = null
+    var retryOnError: ((ApolloRequest<*>) -> Boolean)? = null
       private set
 
     @ApolloExperimental
@@ -366,18 +357,13 @@ private constructor(
     }
 
     @ApolloExperimental
-    fun retryOnError(defaultRetryOnError: ((ApolloRequest<*>) -> Boolean)?): Builder = apply {
-      this.defaultRetryOnError = defaultRetryOnError
+    fun retryOnError(retryOnError: ((ApolloRequest<*>) -> Boolean)?): Builder = apply {
+      this.retryOnError = retryOnError
     }
 
     @ApolloExperimental
     fun retryOnErrorInterceptor(retryOnErrorInterceptor: ApolloInterceptor?): Builder = apply {
       this.retryOnErrorInterceptor = retryOnErrorInterceptor
-    }
-
-    @ApolloExperimental
-    override fun retryOnError(retryOnError: Boolean?): Builder = apply {
-      this.retryOnError = retryOnError
     }
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder = apply {
@@ -678,7 +664,7 @@ private constructor(
           .webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis)
           .wsProtocol(wsProtocolFactory)
           .retryOnError(retryOnError)
-          .retryOnError(defaultRetryOnError)
+          .retryOnError(retryOnError)
           .retryOnErrorInterceptor(retryOnErrorInterceptor)
           .networkMonitor(networkMonitor)
       return builder

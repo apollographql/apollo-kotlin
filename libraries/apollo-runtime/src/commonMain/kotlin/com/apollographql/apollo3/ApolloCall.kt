@@ -35,7 +35,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
   override var canBeBatched: Boolean? = null
     private set
   @ApolloExperimental
-  override var retryOnError: Boolean? = null
+  var retryOnError: Boolean? = null
     private set
 
   /**
@@ -92,7 +92,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
   }
 
   @ApolloExperimental
-  override fun retryOnError(retryOnError: Boolean?): ApolloCall<D> = apply {
+  fun retryOnError(retryOnError: Boolean?): ApolloCall<D> = apply {
     this.retryOnError = retryOnError
   }
   /**

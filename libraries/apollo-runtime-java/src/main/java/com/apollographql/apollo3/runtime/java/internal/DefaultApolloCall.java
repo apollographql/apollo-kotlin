@@ -75,7 +75,7 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
     return canBeBatched;
   }
 
-  @Nullable @Override public Boolean getRetryOnError() {
+  @Nullable public Boolean getRetryOnError() {
     return retryOnError;
   }
 
@@ -122,7 +122,7 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
     return this;
   }
 
-  @Override public ApolloCall<D> retryOnError(@Nullable Boolean retryOnError) {
+  public ApolloCall<D> retryOnError(@Nullable Boolean retryOnError) {
     throw new IllegalStateException("Not supported yet");
     //this.retryOnError = retryOnError;
     //return this;

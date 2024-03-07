@@ -21,7 +21,7 @@ private constructor(
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
     @ApolloExperimental
-    override val retryOnError: Boolean?,
+    val retryOnError: Boolean?,
 ) : ExecutionOptions {
 
   fun newBuilder(): Builder<D> = newBuilder(operation)
@@ -60,7 +60,7 @@ private constructor(
     override var canBeBatched: Boolean? = null
       private set
     @ApolloExperimental
-    override var retryOnError: Boolean? = null
+    var retryOnError: Boolean? = null
       private set
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder<D> = apply {
@@ -92,7 +92,7 @@ private constructor(
     }
 
     @ApolloExperimental
-    override fun retryOnError(retryOnError: Boolean?): Builder<D> = apply {
+    fun retryOnError(retryOnError: Boolean?): Builder<D> = apply {
       this.retryOnError = retryOnError
     }
 
