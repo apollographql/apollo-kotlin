@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.runtime.java;
 
+import com.apollographql.apollo3.annotations.ApolloExperimental;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
@@ -357,7 +358,8 @@ public class ApolloClient implements Closeable {
       return this;
     }
 
-    public Builder retryOnError(Boolean retryOnError) {
+    @ApolloExperimental
+    public Builder retryOnError(RetryOnError retryOnError) {
       throw new IllegalStateException("Not supported yet");
 //      this.retryOnError = retryOnError;
 //      return this;
@@ -533,10 +535,6 @@ public class ApolloClient implements Closeable {
       return canBeBatched;
     }
 
-    @Nullable @Override public Boolean getRetryOnError() {
-      return retryOnError;
-    }
-
     @Override public Builder addExecutionContext(@NotNull ExecutionContext executionContext) {
       this.executionContext = this.executionContext.plus(executionContext);
       return this;
@@ -593,5 +591,10 @@ public class ApolloClient implements Closeable {
 
   static private Executor defaultExecutor() {
     return new ApolloDefaultExecutor();
+  }
+
+  @ApolloExperimental
+  interface RetryOnError {
+    boolean retryOnError(ApolloRequest request);
   }
 }

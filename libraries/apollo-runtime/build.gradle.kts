@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
+
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
 }
@@ -5,6 +7,7 @@ plugins {
 apolloLibrary(
     namespace = "com.apollographql.apollo3.runtime",
     withLinux = false,
+    androidOptions = AndroidOptions(withCompose = false)
 )
 
 kotlin {
@@ -20,23 +23,40 @@ kotlin {
       }
     }
 
+    fun KotlinDependencyHandler.commonTestDependencies() {
+      implementation(project(":apollo-mockserver"))
+      implementation(project(":apollo-testing-support")) {
+        because("runTest")
+        // We have a circular dependency here that creates a warning in JS
+        // w: duplicate library name: com.apollographql.apollo3:apollo-mockserver
+        // See https://youtrack.jetbrains.com/issue/KT-51110
+        // We should probably remove this circular dependency but for the time being, just use excludes
+        exclude(group = "com.apollographql.apollo3", module = "apollo-runtime")
+      }
+    }
     findByName("commonTest")?.apply {
       dependencies {
-        implementation(project(":apollo-mockserver"))
-        implementation(project(":apollo-testing-support")) {
-          because("runTest")
-          // We have a circular dependency here that creates a warning in JS
-          // w: duplicate library name: com.apollographql.apollo3:apollo-mockserver
-          // See https://youtrack.jetbrains.com/issue/KT-51110
-          // We should probably remove this circular dependency but for the time being, just use excludes
-          exclude(group = "com.apollographql.apollo3", module = "apollo-runtime")
-        }
+        commonTestDependencies()
       }
     }
 
-    findByName("jvmMain")?.apply {
+    findByName("androidInstrumentedTest")?.apply {
+      dependencies {
+        commonTestDependencies()
+      }
+    }
+
+    findByName("jvmCommonMain")?.apply {
       dependencies {
         api(libs.okhttp)
+      }
+    }
+
+    findByName("androidMain")?.apply {
+      dependencies {
+        implementation(libs.androidx.startup.runtime)
+        implementation(libs.androidx.annotation)
+        implementation(libs.androidx.core)
       }
     }
 

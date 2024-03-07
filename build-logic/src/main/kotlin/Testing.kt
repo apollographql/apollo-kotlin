@@ -5,6 +5,8 @@ import org.gradle.api.tasks.testing.AbstractTestTask
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 fun Project.configureTesting() {
   tasks.withType(Test::class.java) {
@@ -30,6 +32,31 @@ fun Project.configureTesting() {
       events.add(TestLogEvent.PASSED)
       events.add(TestLogEvent.FAILED)
       showStandardStreams = true
+    }
+  }
+
+  addTestDependencies()
+}
+
+private fun Project.addTestDependencies() {
+  kotlinExtensionOrNull?.apply {
+    when (this) {
+      is KotlinMultiplatformExtension -> {
+        sourceSets.getByName("commonTest") {
+          dependencies {
+            implementation(getCatalogLib("kotlin.test"))
+          }
+        }
+        sourceSets.findByName("androidInstrumentedTest")?.apply {
+          dependencies {
+            implementation(getCatalogLib("kotlin.test"))
+            implementation(getCatalogLib("android.test.runner"))
+          }
+        }
+      }
+      is KotlinJvmProjectExtension -> {
+        dependencies.add("testImplementation", getCatalogLib("kotlin.test"))
+      }
     }
   }
 }

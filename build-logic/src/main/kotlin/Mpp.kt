@@ -113,7 +113,6 @@ fun Project.configureMpp(
     }
 
     configureSourceSetGraph()
-    addTestDependencies()
   }
 }
 
@@ -154,19 +153,15 @@ private fun KotlinMultiplatformExtension.configureSourceSetGraph() {
         group("native") {
           group("apple")
         }
-        withJvm()
+        group("jvmCommon") {
+          withJvm()
+          withAndroidTarget()
+        }
       }
     }
   }
 }
 
-private fun KotlinMultiplatformExtension.addTestDependencies() {
-  sourceSets.getByName("commonTest") {
-    dependencies {
-      implementation(kotlin("test"))
-    }
-  }
-}
 
 /**
  * Registers a new testRun that substitutes the Kotlin models by the Java models.

@@ -6,7 +6,6 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.network.ws.incubating.SubscriptionWsProtocol
 import com.apollographql.apollo3.network.ws.incubating.WebSocketNetworkTransport
@@ -25,7 +24,7 @@ class RetryTest {
     var sampleServer = SampleServer(tag = "tag1")
     ApolloClient.Builder()
         .serverUrl(sampleServer.graphqlUrl())
-        .retryOnErrorInterceptor(RetryOnErrorInterceptor { it.operation is Subscription })
+        .retryOnError { it.operation is Subscription }
         .subscriptionNetworkTransport(
             WebSocketNetworkTransport.Builder()
                 .serverUrl(sampleServer.subscriptionsUrl())
@@ -61,7 +60,7 @@ class RetryTest {
     val sampleServer = SampleServer(tag = "tag1")
     ApolloClient.Builder()
         .serverUrl(sampleServer.graphqlUrl())
-        .retryOnErrorInterceptor(RetryOnErrorInterceptor { it.operation is Subscription })
+        .retryOnError { it.operation is Subscription }
         .subscriptionNetworkTransport(
             WebSocketNetworkTransport.Builder()
                 .serverUrl(sampleServer.subscriptionsUrl())
@@ -116,7 +115,7 @@ class RetryTest {
   @Test
   fun queriesAreNotRetriedWhenRetrySubscriptionsIsTrue() = mockServerTest(
       clientBuilder = {
-        retryOnErrorInterceptor(RetryOnErrorInterceptor { it.operation is Subscription })
+        retryOnError { it.operation is Subscription }
       },
       skipDelays = false
   ) {

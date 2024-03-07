@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 
@@ -46,12 +45,6 @@ interface ExecutionOptions {
    */
   val canBeBatched: Boolean?
 
-  /**
-   * Whether to enable retrying the request on network errors
-   */
-  @ApolloExperimental
-  val retryOnError: Boolean?
-
   companion object {
     /**
      * Used by [com.apollographql.apollo3.network.http.BatchingHttpInterceptor]
@@ -89,7 +82,4 @@ interface MutableExecutionOptions<T> : ExecutionOptions {
   fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): T
 
   fun canBeBatched(canBeBatched: Boolean?): T
-
-  @ApolloExperimental
-  fun retryOnError(retryOnError: Boolean?): T
 }

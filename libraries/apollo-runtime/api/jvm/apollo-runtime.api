@@ -24,7 +24,6 @@ public final class com/apollographql/apollo3/ApolloCall : com/apollographql/apol
 	public fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/ApolloCall;
 	public synthetic fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Ljava/lang/Object;
 	public final fun ignoreApolloClientHttpHeaders (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
-	public synthetic fun retryOnError (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
@@ -118,7 +117,6 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public final fun httpServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun networkTransport (Lcom/apollographql/apollo3/network/NetworkTransport;)Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public synthetic fun retryOnError (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
@@ -182,6 +180,9 @@ public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInter
 }
 
 public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInterceptor$Companion {
+}
+
+public final class com/apollographql/apollo3/network/NetworkMonitorKt {
 }
 
 public abstract interface class com/apollographql/apollo3/network/NetworkTransport {

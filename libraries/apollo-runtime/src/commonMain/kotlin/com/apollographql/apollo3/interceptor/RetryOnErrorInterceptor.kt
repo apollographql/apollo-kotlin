@@ -1,11 +1,11 @@
 package com.apollographql.apollo3.interceptor
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.SubscriptionOperationException
+import com.apollographql.apollo3.network.NetworkMonitor
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -16,11 +16,9 @@ import kotlinx.coroutines.flow.retryWhen
 import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
 
-@ApolloExperimental
-class RetryOnErrorInterceptor(private val defaultRetryOnError: ((ApolloRequest<*>) -> Boolean)): ApolloInterceptor {
+internal class RetryOnErrorInterceptor(private val networkMonitor: NetworkMonitor?): ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    val retryOnError = request.retryOnError ?: defaultRetryOnError(request)
-    if (!retryOnError) {
+    if (request.retryOnError != true) {
       return chain.proceed(request)
     }
 
@@ -41,22 +39,29 @@ class RetryOnErrorInterceptor(private val defaultRetryOnError: ((ApolloRequest<*
         attempt = 0
       }
     }.retryWhen { cause, _ ->
-      attempt++
-
-      delay(2.0.pow(attempt).seconds)
-      cause is RetryException
+      if (cause is RetryException) {
+        attempt++
+        if (networkMonitor != null && !networkMonitor.isOnline) {
+          networkMonitor.waitForNetwork()
+        } else {
+          delay(2.0.pow(attempt).seconds)
+        }
+        true
+      } else {
+        // Not a RetryException, probably a programming error, pass it through
+        false
+      }
     }
   }
 }
 
-
 private fun ApolloException.isTerminalAndRecoverable(): Boolean {
-  when (this) {
+  return when (this) {
     is SubscriptionOperationException -> {
-      // This often means a validation error on the subscription. It is unrecoverable
-      return false
+      // This means a validation error on the subscription. It is unrecoverable
+      false
     }
-    else -> return true
+    else -> true
   }
 }
 

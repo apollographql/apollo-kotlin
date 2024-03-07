@@ -21,12 +21,16 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
+import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
 import com.apollographql.apollo3.internal.defaultDispatcher
+import com.apollographql.apollo3.network.DefaultNetworkMonitor
+import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
 import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.apollographql.apollo3.network.platformConnectivityManager
 import com.apollographql.apollo3.network.ws.WebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.ws.WsProtocol
@@ -51,6 +55,10 @@ private constructor(
   val subscriptionNetworkTransport: NetworkTransport
   val interceptors: List<ApolloInterceptor> = builder.interceptors
   val customScalarAdapters: CustomScalarAdapters = builder.customScalarAdapters
+  private val networkMonitor: NetworkMonitor?
+  private val retryOnError: ((ApolloRequest<*>) -> Boolean)? = builder.retryOnError
+  private val retryOnErrorInterceptor: ApolloInterceptor
+
   override val executionContext: ExecutionContext = builder.executionContext
   override val httpMethod: HttpMethod? = builder.httpMethod
   override val httpHeaders: List<HttpHeader>? = builder.httpHeaders
@@ -58,12 +66,11 @@ private constructor(
   override val sendDocument: Boolean? = builder.sendDocument
   override val enableAutoPersistedQueries: Boolean? = builder.enableAutoPersistedQueries
   override val canBeBatched: Boolean? = builder.canBeBatched
-  @ApolloExperimental
-  override val retryOnError: Boolean? = builder.retryOnError
-  @ApolloExperimental
-  val retryOnErrorInterceptor = builder.retryOnErrorInterceptor
 
   init {
+    networkMonitor = builder.networkMonitor ?: NetworkMonitor()
+    retryOnErrorInterceptor = builder.retryOnErrorInterceptor ?: RetryOnErrorInterceptor(networkMonitor)
+
     networkTransport = if (builder.networkTransport != null) {
       check(builder.httpServerUrl == null) {
         "Apollo: 'httpServerUrl' has no effect if 'networkTransport' is set"
@@ -250,17 +257,18 @@ private constructor(
             // canBeBatched(apolloRequest.canBeBatched)
             addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
           }
-          if (apolloRequest.retryOnError != null) {
-            retryOnError(apolloRequest.retryOnError)
+
+          var retryOnError = apolloRequest.retryOnError
+          if (retryOnError == null) {
+            retryOnError = this@ApolloClient.retryOnError?.invoke(apolloRequest) ?: false
           }
+          retryOnError(retryOnError)
         }
         .build()
 
     val allInterceptors = buildList{
       addAll(interceptors)
-      if (retryOnErrorInterceptor != null) {
-        add(retryOnErrorInterceptor)
-      }
+      add(retryOnErrorInterceptor)
       add(networkInterceptor)
     }
     return DefaultInterceptorChain(allInterceptors, 0)
@@ -309,10 +317,6 @@ private constructor(
       private set
     override var canBeBatched: Boolean? = null
       private set
-    @ApolloExperimental
-    override var retryOnError: Boolean? = null
-      private set
-
     var networkTransport: NetworkTransport? = null
       private set
     var subscriptionNetworkTransport: NetworkTransport? = null
@@ -340,15 +344,26 @@ private constructor(
     @ApolloExperimental
     var retryOnErrorInterceptor: ApolloInterceptor? = null
       private set
+    @ApolloExperimental
+    var networkMonitor: NetworkMonitor? = null
+      private set
+    @ApolloExperimental
+    var retryOnError: ((ApolloRequest<*>) -> Boolean)? = null
+      private set
+
+    @ApolloExperimental
+    fun networkMonitor(networkMonitor: NetworkMonitor?): Builder = apply {
+      this.networkMonitor = networkMonitor
+    }
+
+    @ApolloExperimental
+    fun retryOnError(retryOnError: ((ApolloRequest<*>) -> Boolean)?): Builder = apply {
+      this.retryOnError = retryOnError
+    }
 
     @ApolloExperimental
     fun retryOnErrorInterceptor(retryOnErrorInterceptor: ApolloInterceptor?): Builder = apply {
       this.retryOnErrorInterceptor = retryOnErrorInterceptor
-    }
-
-    @ApolloExperimental
-    override fun retryOnError(retryOnError: Boolean?): Builder = apply {
-      this.retryOnError = retryOnError
     }
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder = apply {
@@ -566,16 +581,16 @@ private constructor(
     /**
      * Configures auto persisted queries.
      *
-     * @param httpMethodForHashedQueries: the [HttpMethod] to use for the initial hashed query that does not send the actual Graphql document.
+     * @param httpMethodForHashedQueries the [HttpMethod] to use for the initial hashed query that does not send the actual Graphql document.
      * [HttpMethod.Get] allows to use caching when available while [HttpMethod.Post] usually allows bigger document sizes. Mutations are
      * always sent using [HttpMethod.Post] regardless of this setting.
      * Default: [HttpMethod.Get]
      *
-     * @param httpMethodForDocumentQueries: the [HttpMethod] to use for the follow-up query that sends the full document if the initial
+     * @param httpMethodForDocumentQueries the [HttpMethod] to use for the follow-up query that sends the full document if the initial
      * hashed query was not found. Mutations are always sent using [HttpMethod.Post] regardless of this setting.
      * Default: [HttpMethod.Post]
      *
-     * @param enableByDefault: whether to enable Auto Persisted Queries by default. You can later use
+     * @param enableByDefault whether to enable Auto Persisted Queries by default. You can later use
      * [ApolloCall.enableAutoPersistedQueries] on to enable/disable them on individual calls.
      */
     @JvmOverloads
@@ -649,7 +664,9 @@ private constructor(
           .webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis)
           .wsProtocol(wsProtocolFactory)
           .retryOnError(retryOnError)
+          .retryOnError(retryOnError)
           .retryOnErrorInterceptor(retryOnErrorInterceptor)
+          .networkMonitor(networkMonitor)
       return builder
     }
   }

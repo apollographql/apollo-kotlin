@@ -1,4 +1,6 @@
+
 import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Project
 
 fun Project.configureAndroid(
@@ -18,6 +20,12 @@ fun Project.configureAndroid(
       } else {
         getCatalogVersion("android.sdkversion.compose.min").toInt()
       }
+      testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    if (this is LibraryExtension) {
+      @Suppress("UnstableApiUsage")
+      testOptions.targetSdk = getCatalogVersion("android.sdkversion.target").toInt()
     }
 
     if (androidOptions.withCompose) {
