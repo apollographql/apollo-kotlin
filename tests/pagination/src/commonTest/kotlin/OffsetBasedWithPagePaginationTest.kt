@@ -10,10 +10,9 @@ import com.apollographql.apollo3.cache.normalized.api.MetadataGeneratorContext
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
+import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticNormalizedCache
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.internal.runTest
-import kotlinx.atomicfu.atomic
 import pagination.offsetBasedWithPage.UsersQuery
 import pagination.offsetBasedWithPage.type.buildUser
 import pagination.offsetBasedWithPage.type.buildUserPage
@@ -233,13 +232,11 @@ class OffsetBasedWithPagePaginationTest {
 }
 
 internal fun assertChainedCachesAreEqual(apolloStore: ApolloStore) {
-  val hasNextCache = atomic(false)
-  apolloStore.accessCache { cache ->
-    // First cache is always OptimisticCache
-    hasNextCache.value = cache.nextCache!!.nextCache != null
+  val dump = apolloStore.dump().filterKeys {
+    // Ignore optimistic cache for comparison
+    it != OptimisticNormalizedCache::class
   }
-  if (!hasNextCache.value) return
-  val dump = apolloStore.dump().filterKeys { it != OptimisticCache::class }
+  if (dump.size < 2) return
   val caches = dump.values.toList()
   val cache1: Map<String, Record> = caches[0]
   val cache2: Map<String, Record> = caches[1]

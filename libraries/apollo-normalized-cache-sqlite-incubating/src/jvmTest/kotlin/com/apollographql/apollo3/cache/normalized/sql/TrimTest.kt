@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.sql.TrimmableNormalizedCacheFactory
 import org.junit.Test
@@ -28,7 +29,7 @@ class TrimTest {
         date = mapOf("key" to 0L),
         metadata = emptyMap()
     )
-    cache.merge(oldRecord, CacheHeaders.NONE)
+    cache.merge(oldRecord, CacheHeaders.NONE, recordMerger = DefaultRecordMerger)
 
     val newRecords = 0.until(2*1024).map {
       Record(
@@ -39,7 +40,7 @@ class TrimTest {
           metadata = emptyMap()
       )
     }
-    cache.merge(newRecords, CacheHeaders.NONE)
+    cache.merge(newRecords, CacheHeaders.NONE, recordMerger = DefaultRecordMerger)
 
     assertEquals(9596928, dbFile.length())
 

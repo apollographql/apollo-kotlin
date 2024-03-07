@@ -13,7 +13,7 @@ kotlin {
       dependencies {
         api(project(":apollo-annotations"))
         api(libs.okio)
-        implementation(libs.atomicfu.get().toString()) {
+        implementation(libs.atomicfu.library.get().toString()) {
           because("We need locks for native (we don't use the gradle plugin rewrite)")
         }
         api(libs.kotlinx.coroutines)

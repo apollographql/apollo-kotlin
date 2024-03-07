@@ -19,7 +19,7 @@ kotlin {
 
     findByName("commonTest")?.apply {
       dependencies {
-        implementation(libs.atomicfu)
+        implementation(libs.atomicfu.library)
         implementation(libs.apollo.testingsupport)
         implementation(libs.apollo.normalizedcache.incubating)
         implementation(libs.apollo.normalizedcache.sqlite.incubating)

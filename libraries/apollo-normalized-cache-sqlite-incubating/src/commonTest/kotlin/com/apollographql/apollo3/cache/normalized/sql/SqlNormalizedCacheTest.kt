@@ -1,25 +1,21 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
+import app.cash.sqldelight.Query
+import app.cash.sqldelight.Transacter
+import app.cash.sqldelight.db.QueryResult
+import app.cash.sqldelight.db.SqlCursor
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlPreparedStatement
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.sql.internal.JsonRecordDatabase
 import com.apollographql.apollo3.cache.normalized.sql.internal.json.JsonQueries
-import com.apollographql.apollo3.cache.normalized.sql.internal.json.RecordForKey
-import com.apollographql.apollo3.cache.normalized.sql.internal.json.Records
-import com.apollographql.apollo3.cache.normalized.sql.internal.json.RecordsForKeys
 import com.apollographql.apollo3.exception.apolloExceptionHandler
-import app.cash.sqldelight.Query
-import app.cash.sqldelight.Transacter
-import app.cash.sqldelight.TransactionWithReturn
-import app.cash.sqldelight.TransactionWithoutReturn
-import app.cash.sqldelight.db.QueryResult
-import app.cash.sqldelight.db.SqlCursor
-import app.cash.sqldelight.db.SqlDriver
-import app.cash.sqldelight.db.SqlPreparedStatement
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -91,6 +87,7 @@ class SqlNormalizedCacheTest {
             ),
         ),
         cacheHeaders = CacheHeaders.NONE,
+        recordMerger = DefaultRecordMerger,
     )
     val record = cache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
     assertNotNull(record)
@@ -110,66 +107,11 @@ class SqlNormalizedCacheTest {
             ),
         ),
         cacheHeaders = CacheHeaders.NONE,
+        recordMerger = DefaultRecordMerger,
     )
     cache.remove(cacheKey = CacheKey(STANDARD_KEY), cascade = false)
     val record = cache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
     assertNull(record)
-  }
-
-  @Test
-  fun testSqlThenMemoryMergeAndDeleteCascade() {
-    val chainedCache = cache.chain(MemoryCacheFactory().create())
-    testChainedMergeAndDeleteCascade(chainedCache)
-  }
-
-  @Test
-  fun testMemoryThenSqlMergeAndDeleteCascade() {
-    val chainedCache = MemoryCacheFactory().create().chain(cache)
-    testChainedMergeAndDeleteCascade(chainedCache)
-  }
-
-  private fun testChainedMergeAndDeleteCascade(chainedCache: NormalizedCache) {
-    chainedCache.merge(
-        record = Record(
-            key = "referencedKey",
-            fields = mapOf(
-                "field1" to true,
-            ),
-        ),
-        cacheHeaders = CacheHeaders.NONE,
-    )
-    chainedCache.merge(
-        record = Record(
-            key = STANDARD_KEY,
-            fields = mapOf(
-                "field1" to "value1",
-                "field2" to CacheKey("referencedKey"),
-            ),
-        ),
-        cacheHeaders = CacheHeaders.NONE,
-    )
-    chainedCache.onEach {
-      val record1 = it.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
-      assertNotNull(record1)
-      val record2 = it.loadRecord("referencedKey", CacheHeaders.NONE)
-      assertNotNull(record2)
-    }
-    chainedCache.remove(cacheKey = CacheKey(STANDARD_KEY), cascade = true)
-    chainedCache.onEach {
-      val record1 = it.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
-      assertNull(record1)
-      val record2 = it.loadRecord("referencedKey", CacheHeaders.NONE)
-      assertNull(record2)
-    }
-  }
-
-  private fun NormalizedCache.onEach(block: (NormalizedCache) -> Unit): NormalizedCache? {
-    var c: NormalizedCache? = this
-    while (c != null) {
-      block(c)
-      c = c.nextCache
-    }
-    return c
   }
 
   @Test
@@ -214,6 +156,7 @@ class SqlNormalizedCacheTest {
             fields = emptyMap(),
         ),
         cacheHeaders = CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build(),
+        recordMerger = DefaultRecordMerger,
     )
     val record = cache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
     assertNull(record)
@@ -230,6 +173,7 @@ class SqlNormalizedCacheTest {
             ),
         ),
         cacheHeaders = CacheHeaders.NONE,
+        recordMerger = DefaultRecordMerger,
     )
     val record = cache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
     assertNotNull(record)
@@ -249,7 +193,8 @@ class SqlNormalizedCacheTest {
                 "newFieldKey" to true,
             ),
         ),
-        cacheHeaders = CacheHeaders.NONE
+        cacheHeaders = CacheHeaders.NONE,
+        recordMerger = DefaultRecordMerger,
     )
     val record = cache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
     assertNotNull(record)
@@ -299,10 +244,12 @@ class SqlNormalizedCacheTest {
             ),
         ),
         cacheHeaders = CacheHeaders.NONE,
+        recordMerger = DefaultRecordMerger,
     )
     assertEquals("Unable to merge a record from the database", throwable!!.message)
     assertEquals("bad cache", throwable!!.cause!!.message)
   }
+
   private val BadDriver = object : SqlDriver {
     override fun close() {
       throw IllegalStateException("bad cache")
@@ -353,6 +300,7 @@ class SqlNormalizedCacheTest {
             ),
         ),
         cacheHeaders = CacheHeaders.NONE,
+        recordMerger = DefaultRecordMerger,
     )
   }
 
