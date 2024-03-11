@@ -33,6 +33,7 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.awaitRequest
+import com.apollographql.apollo3.mockserver.enqueueError
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
@@ -391,7 +392,7 @@ class FetchPolicyTest {
 
     // Initial state: everything fails
     // Cache Error + Network Error => Error
-    mockServer.enqueueString(statusCode = 500)
+    mockServer.enqueueError(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).execute().exception.let {
       assertIs<CacheMissException>(it)
       assertIs<ApolloHttpException>(it.suppressedExceptions.first())
@@ -413,7 +414,7 @@ class FetchPolicyTest {
     // Now cache is populated but make the network fail again
     // Cache Success + Network Error => 1 response with cache value + 1 response with network exception
     caught = null
-    mockServer.enqueueString(statusCode = 500)
+    mockServer.enqueueError(statusCode = 500)
     responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().catch { caught = it }.toList()
 
     assertNull(caught)
@@ -462,7 +463,7 @@ class FetchPolicyTest {
     var caught: Throwable? = null
     // Initial state: everything fails
     // Cache Error + Network Error => Error
-    mockServer.enqueueString(statusCode = 500)
+    mockServer.enqueueError(statusCode = 500)
 
     @Suppress("DEPRECATION")
     assertFailsWith<ApolloCompositeException> {
@@ -489,7 +490,7 @@ class FetchPolicyTest {
     // Now cache is populated but make the network fail again
     // Cache Success + Network Error => 1 response + 1 network exception
     caught = null
-    mockServer.enqueueString(statusCode = 500)
+    mockServer.enqueueError(statusCode = 500)
     @Suppress("DEPRECATION")
     responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlowV3().catch { caught = it }.toList()
 

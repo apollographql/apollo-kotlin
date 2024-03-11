@@ -268,7 +268,7 @@ fun MockServer(handler: MockServerHandler): MockServer =
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun MockServer.enqueue(string: String = "", delayMs: Long = 0, statusCode: Int = 200) = enqueueString(string, delayMs, statusCode)
 
-fun MockServer.enqueueString(string: String, delayMs: Long = 0, statusCode: Int = 200, contentType: String = "text/plain") {
+fun MockServer.enqueueString(string: String = "", delayMs: Long = 0, statusCode: Int = 200, contentType: String = "text/plain") {
   enqueue(MockResponse.Builder()
       .statusCode(statusCode)
       .body(string)

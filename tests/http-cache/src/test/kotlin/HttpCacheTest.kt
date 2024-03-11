@@ -8,6 +8,7 @@ import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.awaitRequest
+import com.apollographql.apollo3.mockserver.enqueueError
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.testing.enqueueData
@@ -88,7 +89,7 @@ class HttpCacheTest {
   @Test
   fun NetworkOnly() = runTest(before = { before() }, after = { tearDown() }) {
     mockServer.enqueueData(data)
-    mockServer.enqueueString(statusCode = 500)
+    mockServer.enqueueError(statusCode = 500)
 
     runBlocking {
       val response = apolloClient.query(GetRandomQuery()).execute()
@@ -107,7 +108,7 @@ class HttpCacheTest {
   @Test
   fun NetworkFirst() = runTest(before = { before() }, after = { tearDown() }) {
     mockServer.enqueueData(data)
-    mockServer.enqueueString(statusCode = 500)
+    mockServer.enqueueError(statusCode = 500)
 
     runBlocking {
       var response = apolloClient.query(GetRandomQuery())
@@ -171,7 +172,7 @@ class HttpCacheTest {
     val okHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
     val mockServer = MockServer()
-    mockServer.enqueueString(statusCode = 200)
+    mockServer.enqueueString("")
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .okHttpClient(okHttpClient)

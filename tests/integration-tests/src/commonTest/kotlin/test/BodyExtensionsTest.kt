@@ -14,7 +14,7 @@ import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.integration.fullstack.LaunchDetailsQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.awaitRequest
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.apollo3.mockserver.enqueueError
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
@@ -58,7 +58,7 @@ class BodyExtensionsTest {
         )
         .build()
 
-    mockServer.enqueueString(statusCode = 500)
+    mockServer.enqueueError(statusCode = 500)
     apolloClient.query(LaunchDetailsQuery("42")).execute()
 
     val request = mockServer.awaitRequest()

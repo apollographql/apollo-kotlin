@@ -9,6 +9,7 @@ import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.enqueueError
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.flow.toList
@@ -40,7 +41,7 @@ class ExceptionsTest {
 
   @Test
   fun whenHttpErrorAssertExecuteFails() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueueString(statusCode = 404)
+    mockServer.enqueueError(statusCode = 404)
 
     val response = apolloClient.query(HeroNameQuery()).execute()
     val exception = response.exception
