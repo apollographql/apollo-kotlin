@@ -15,7 +15,7 @@ class ConnectionErrorServerMessage(val payload: Any?) : ServerMessage
  * @param response, a GraphQL response, possibly containing errors.
  * @param complete, whether this is a terminal message for the given operation.
  */
-class ResponseServerMessage(val id: String, val response: Any?, val complete: Boolean) : ServerMessage
+class ResponseServerMessage(val id: String, val response: ApolloJsonElement, val complete: Boolean) : ServerMessage
 
 /**
  * The subscription completed normally

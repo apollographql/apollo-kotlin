@@ -39,11 +39,11 @@ class GraphQLWsProtocol(
     ).toClientMessage()
   }
 
-  override fun ping(): ClientMessage? {
+  override fun ping(): ClientMessage {
     return mapOf("type" to "ping").toClientMessage()
   }
 
-  override fun pong(): ClientMessage? {
+  override fun pong(): ClientMessage {
     return mapOf("type" to "pong").toClientMessage()
   }
 
