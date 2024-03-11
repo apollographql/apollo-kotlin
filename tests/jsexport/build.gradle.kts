@@ -17,6 +17,15 @@ kotlin {
     findByName("commonMain")?.apply {
       dependencies {
         implementation(libs.apollo.runtime)
+        implementation(libs.apollo.websocket.network.transport.incubating)
+      }
+    }
+
+    getByName("commonTest") {
+      dependencies {
+        implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.mockserver)
+        implementation(libs.turbine)
       }
     }
 
