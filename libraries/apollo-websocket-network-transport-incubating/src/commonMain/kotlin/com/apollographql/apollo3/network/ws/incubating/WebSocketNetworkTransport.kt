@@ -207,7 +207,7 @@ private class DefaultOperationListener<D : Operation.Data>(
   val deferredJsonMerger = DeferredJsonMerger()
   val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
-  override fun onResponse(response: Any?) {
+  override fun onResponse(response: ApolloJsonElement) {
     @Suppress("UNCHECKED_CAST")
     val responseMap = response as? Map<String, Any?>
     if (responseMap == null) {
