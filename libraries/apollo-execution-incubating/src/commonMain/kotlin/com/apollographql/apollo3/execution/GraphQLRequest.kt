@@ -335,6 +335,6 @@ internal fun String.parseApolloWebsocketClientMessage(): ApolloWebsocketClientMe
       return ApolloWebsocketTerminate
     }
 
-    else -> return ApolloWebsocketClientMessageParseError("Unknonw message type '$type'")
+    else -> return ApolloWebsocketClientMessageParseError("Unknown message type '$type'")
   }
 }
