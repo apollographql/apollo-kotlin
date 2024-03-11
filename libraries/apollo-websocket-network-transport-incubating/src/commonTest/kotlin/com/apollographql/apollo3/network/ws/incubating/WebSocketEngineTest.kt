@@ -34,28 +34,22 @@ private data class Item(
 
 private class Listener(private val channel: Channel<Item>) : WebSocketListener {
   override fun onOpen() {
-    println("onOpen")
     channel.trySend(Item(open = true))
   }
 
   override fun onMessage(text: String) {
-    println("onMessage: $text")
     channel.trySend(TextMessage(text))
   }
 
   override fun onMessage(data: ByteArray) {
-    println("onMessage data")
     channel.trySend(DataMessage(data))
   }
 
   override fun onError(cause: ApolloException) {
-    println("onError $cause")
-    cause.printStackTrace()
     channel.trySend(Item(exception = cause))
   }
 
   override fun onClosed(code: Int?, reason: String?) {
-    println("onClosed $code, $reason")
     channel.trySend(CloseFrame(code, reason))
   }
 }
@@ -113,10 +107,8 @@ class WebSocketEngineTest {
     val serverWriter = mockServer.enqueueWebSocket()
     val clientWriter = engine.newWebSocket(mockServer.url(), emptyList(), Listener(clientReader))
 
-    println("await client request")
     val serverReader = mockServer.awaitWebSocketRequest()
 
-    println("await open")
     clientReader.awaitOpen()
 
     Scope(clientReader, clientWriter, serverReader, serverWriter).block()
@@ -128,28 +120,24 @@ class WebSocketEngineTest {
   @Test
   fun simpleSessionWithClientClose() = whenHandshakeDone {
     clientWriter.send("Client Text")
-    println("await client text")
     serverReader.awaitMessage().apply {
       assertIs<TextMessage>(this)
       assertEquals("Client Text", this.text)
     }
 
     serverWriter.enqueueMessage(TextMessage("Server Text"))
-    println("await server text")
     clientReader.awaitMessage().apply {
       assertIs<TextMessage>(this)
       assertEquals("Server Text", this.text)
     }
 
     clientWriter.send("Client Data".encodeToByteArray())
-    println("await client data")
     serverReader.awaitMessage().apply {
       assertIs<DataMessage>(this)
       assertEquals("Client Data", this.data.decodeToString())
     }
 
     serverWriter.enqueueMessage(DataMessage("Server Data".encodeToByteArray()))
-    println("await server data")
     clientReader.awaitMessage().apply {
       assertIs<DataMessage>(this)
       assertEquals("Server Data", this.data.decodeToString())
@@ -158,7 +146,6 @@ class WebSocketEngineTest {
     clientWriter.close(1003, "Client Bye")
     if (platform() != Platform.Native) {
       // Apple sometimes does not send the Close frame. See https://developer.apple.com/forums/thread/679446
-      println("await client bye")
       serverReader.awaitMessage().apply {
         assertIs<CloseFrame>(this)
         assertEquals(1003, this.code)
