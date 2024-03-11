@@ -10,6 +10,7 @@ import kotlinx.cinterop.convert
 import okio.ByteString.Companion.toByteString
 import platform.Foundation.NSData
 import platform.Foundation.NSMutableURLRequest
+import platform.Foundation.NSOperationQueue
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLSession
 import platform.Foundation.NSURLSessionConfiguration
@@ -28,7 +29,7 @@ internal class AppleWebSocketEngine : WebSocketEngine {
   private val nsUrlSession = NSURLSession.sessionWithConfiguration(
       configuration = NSURLSessionConfiguration.defaultSessionConfiguration,
       delegate = delegate,
-      delegateQueue = null
+      delegateQueue = NSOperationQueue()
   )
 
   override fun newWebSocket(url: String, headers: List<HttpHeader>, listener: WebSocketListener): WebSocket {
