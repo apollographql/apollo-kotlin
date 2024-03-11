@@ -52,35 +52,22 @@ apollo {
 
 By default, Apollo Kotlin generates all the types in your schema module. This is because there is no way to know in advance what types are going to be used by feature modules. 
 
-For large schemas, this can generate a lot of code and increase your build time significantly. In this case, you can opt in auto-detection of used types. This works by splitting the codegen task in different steps so that feature modules can let the schema module know what types are used before actually generating the models. To opt in, you need to add the "opposite" link by using `isADependencyOf()`:
+For large schemas, this can generate a lot of code and increase your build time significantly. In this case, you can opt in auto-detection of used types. This works by splitting the codegen task in different steps so that feature modules can let the schema module know what types are used before actually generating the models. To opt in, call `dependsOn()` with the `bidirectional` argument set to true:
 
 ```kotlin
-// schema/build.gradle.kts
-apollo {
-  service("service") {
-    packageName.set("schema")
-    generateApolloMetadata.set(true)
-    
-    // Get the used types from the downstream module
-    isADependencyOf(project(":feature1")) // highlight-line
-    
-    // you can have several feature modules
-    isADependencyOf(project(":feature2"))
-    // ...
-  }
-}
-```
-
-```kotlin
-// feature1/build.gradle.kts
+// feature/build.gradle.kts
 apollo {
   service("service") {
     packageName.set("feature")
-    
-    // Get the generated schema types (and fragments) from the upstream schema module 
-    dependsOn(project(":schema")) // highlight-line
+
+    // Use `bidirectional` to have the schema module get the used types from this module
+    dependsOn(dependencyNotation = project(":schema"), bidirectional = true) // highlight-line
   }
 }
 ```
+
+<Note>
+The `bidirectional` parameter is experimental because it may break [Gradle project isolation](https://docs.gradle.org/current/userguide/build_environment.html). For a project-isolation compatible method, try [isADependencyOf](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo3.gradle.api/-service/is-a-dependency-of.html) 
+</Note>
 
 Once you opt in auto-detection of used types, it's important that **all** modules are doubly linked like above. If not the feature modules will fail to compile due to some missing schema classes.
