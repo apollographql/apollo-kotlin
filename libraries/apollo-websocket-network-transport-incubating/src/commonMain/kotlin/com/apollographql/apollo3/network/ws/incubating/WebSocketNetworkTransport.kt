@@ -186,11 +186,6 @@ class WebSocketNetworkTransport private constructor(
       this.connectionAcknowledgeTimeoutMillis = connectionAcknowledgeTimeoutMillis
     }
 
-    /**
-     * The maximum number of milliseconds between a "connection_init" message and its acknowledgement
-     *
-     * Default: 10_000
-     */
     @ApolloExperimental
     fun parserFactory(parserFactory: SubscriptionParserFactory?) = apply {
       this.parserFactory = parserFactory
