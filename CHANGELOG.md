@@ -9,6 +9,7 @@ Change Log
 * **Reduced lock contention on apollo-normalized-cache-incubating**: the incubating normalized cache now uses lock-free memory structures inspired by guava and [MobileNativeFoundation](https://github.com/MobileNativeFoundation/Store/). We have seen improvements by up to 20% in some scenarios. Please share your numbers if you notice any positive (or negative) change. 
 * **Nullability directives**: The version of the supported nullability directives was bumped from 0.1 to 0.3 (See [apollographql/specs#42](https://github.com/apollographql/specs/pull/42) and [apollographql/specs#48](https://github.com/apollographql/specs/pull/48)). If you are using `@semanticNonNull` or `@catch` you should bump your `@link` directives. See the [nullability documentation page](https://www.apollographql.com/docs/kotlin/v4/advanced/nullability) for more details.
 * **New snapshot repository for the IntelliJ/Android Studio plugin**: The repository to use for the weekly snapshots has changed. You can now use `https://go.apollo.dev/ij-plugin-snapshots` to get the latest weekly snapshots. (#5600)
+* **Multi-version KDoc**: The [published KDoc](https://www.apollographql.com/docs/kotlin/kdoc/index.html) now includes both v3 and v4 versions.
 
 Many thanks to @ribafish, @rohandhruva and @baconz for their help in this release 💙!
 
@@ -72,6 +73,15 @@ Many thanks to @ribafish, @rohandhruva and @baconz for their help in this releas
 [intellij-plugin] Add debugging logs around the cache viewer (#5475)
 [debug-server] Debug server: don't crash when a client has no caches (#5479)
 [gradle-plugin] add apollo.deps (#5460)
+
+# Version 3.8.3
+
+Version 3.8.3 is a maintenance release with two new convenience APIs and a Kotlin update. New developments happen in the 4.x versions. 
+
+[all] update Kotlin to 1.9 (#5412)
+[runtime] Add ApolloClient.Builder(ApolloHttpCache) (#5638) (#5640)
+[runtime] Allow buildPostBody to write operation extensions (#5631)
+[runtime] compose support: Catch exceptions and expose them in .exception (#5018)
 
 # Version 4.0.0-beta.4
 
