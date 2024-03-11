@@ -95,7 +95,7 @@ In order to opt-in error aware parsing, create an `extra.graphqls` file next to 
 # Import the `@catch` directive definition. 
 # When it is imported, parsers generate extra code to deal with errors.
 extend schema @link(
-  url: "https://specs.apollo.dev/nullability/v0.2", 
+  url: "https://specs.apollo.dev/nullability/v0.3", 
   import: ["@catch", "CatchTo"]
 )
 ```
@@ -244,7 +244,7 @@ In those cases, you can mark a field as "semantic non-null" and the Apollo Kotli
 
 # Import the `@semanticNonNull` directive definition in addition to `@catch` and `CatchTo`. 
 extend schema @link(
-  url: "https://specs.apollo.dev/nullability/v0.2", 
+  url: "https://specs.apollo.dev/nullability/v0.3", 
   import: ["@catch", "CatchTo", "@semanticNonNullField"]
 )
 
@@ -295,7 +295,7 @@ To enable it, import it like `@catch`, `CatchTo` and `@semanticNonNullField`:
 
 ```graphql
 extend schema @link(
-  url: "https://specs.apollo.dev/nullability/v0.2",
+  url: "https://specs.apollo.dev/nullability/v0.3",
   import: ["@catch", "CatchTo", "@semanticNonNullField", "@ignoreErrors"]
 )
 ```
