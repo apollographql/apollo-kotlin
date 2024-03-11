@@ -16,9 +16,9 @@ fun Project.configureAndroid(
 
     defaultConfig {
       minSdk = if (androidOptions.withCompose) {
-        getCatalogVersion("android.sdkversion.min").toInt()
-      } else {
         getCatalogVersion("android.sdkversion.compose.min").toInt()
+      } else {
+        getCatalogVersion("android.sdkversion.min").toInt()
       }
       testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
