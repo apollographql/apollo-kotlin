@@ -99,7 +99,6 @@ class WebSocketNetworkTransport private constructor(
     holder.closeCurrentConnection(reason)
   }
 
-
   class Builder {
     private var serverUrl: String? = null
     private var httpHeaders: List<HttpHeader>? = null
@@ -206,7 +205,7 @@ private class DefaultOperationListener<D : Operation.Data>(
     private val producerScope: ProducerScope<ApolloResponse<D>>,
 ) : OperationListener {
   val deferredJsonMerger = DeferredJsonMerger()
-  val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters]!!
+  val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
   override fun onResponse(response: Any?) {
     @Suppress("UNCHECKED_CAST")
