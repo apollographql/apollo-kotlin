@@ -7,7 +7,7 @@ object ConnectionAckServerMessage : ServerMessage
 object ConnectionKeepAliveServerMessage : ServerMessage
 object PingServerMessage : ServerMessage
 object PongServerMessage : ServerMessage
-class ConnectionErrorServerMessage(val payload: Any?) : ServerMessage
+class ConnectionErrorServerMessage(val payload: ApolloJsonElement) : ServerMessage
 
 /**
  * A GraphQL response was received
