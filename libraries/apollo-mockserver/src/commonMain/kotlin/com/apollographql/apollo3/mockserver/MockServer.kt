@@ -102,9 +102,9 @@ interface MockServer : Closeable {
     fun listener(listener: Listener) = apply {
       this.listener = listener
     }
-    
+
     fun build(): MockServer {
-      check (tcpServer == null || port == null) {
+      check(tcpServer == null || port == null) {
         "It is an error to set both tcpServer and port"
       }
       val server = tcpServer ?: TcpServer(port ?: 0)
@@ -122,7 +122,7 @@ internal class MockServerImpl(
     private val mockServerHandler: MockServerHandler,
     private val handlePings: Boolean,
     private val server: TcpServer,
-    private val listener: MockServer.Listener?
+    private val listener: MockServer.Listener?,
 ) : MockServer {
   private val requests = Channel<MockRequestBase>(Channel.UNLIMITED)
   private val scope = CoroutineScope(SupervisorJob())
@@ -165,7 +165,7 @@ internal class MockServerImpl(
       handler: MockServerHandler,
       socket: TcpSocket,
       listener: MockServer.Listener?,
-      onRequest: (MockRequestBase) -> Unit
+      onRequest: (MockRequestBase) -> Unit,
   ) {
     val buffer = Buffer()
     val reader = object : Reader {
@@ -251,16 +251,18 @@ fun MockServer(): MockServer = MockServerImpl(
     QueueMockServerHandler(),
     true,
     TcpServer(0),
-    null)
+    null
+)
 
 @Deprecated("Use MockServer.Builder() instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun MockServer(handler: MockServerHandler): MockServer =
-    MockServerImpl(
-        handler,
-        true,
-        TcpServer(0),
-        null)
+  MockServerImpl(
+      handler,
+      true,
+      TcpServer(0),
+      null
+  )
 
 @Deprecated("Use enqueueString instead", ReplaceWith("enqueueString(string = string, delayMs = delayMs, statusCode = statusCode)"), DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
@@ -272,16 +274,37 @@ fun MockServer.enqueueString(string: String = "", delayMs: Long = 0, statusCode:
       .body(string)
       .addHeader("Content-Type", contentType)
       .delayMillis(delayMs)
-      .build())
+      .build()
+  )
 }
 
-fun MockServer.enqueueGraphQLString(string: String) {
+fun MockServer.enqueueError(statusCode: Int) {
   enqueue(MockResponse.Builder()
-      .statusCode(200)
-      .addHeader("content-type", "application/graphql-response+json")
-      .body(string)
-      .build())
+      .statusCode(statusCode)
+      .body("")
+      .addHeader("Content-Type", "text/plain")
+      .build()
+  )
 }
+
+fun MockServer.enqueueGraphQLString(
+    string: String,
+    delayMs: Long = 0,
+) = enqueueString(
+    string = string,
+    delayMs = delayMs,
+    contentType = "application/graphql-response+json"
+)
+
+fun MockServer.assertNoRequest() {
+  try {
+    takeRequest()
+    error("Apollo: response(s) were received")
+  } catch (_: Exception) {
+
+  }
+}
+
 
 @ApolloExperimental
 interface MultipartBody {
@@ -302,7 +325,7 @@ fun MultipartBody.enqueueStrings(parts: List<String>, responseDelayMillis: Long 
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 @Suppress("UNUSED_PARAMETER")
 fun MockServer.enqueueMultipart(
-    parts: List<String>
+    parts: List<String>,
 ): Nothing = TODO()
 
 @ApolloExperimental

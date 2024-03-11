@@ -1,12 +1,12 @@
 package instrumented
 
 import com.apollographql.apollo3.mockserver.MockResponse
+import com.apollographql.apollo3.mockserver.assertNoRequest
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.FooQuery
 import com.apollographql.apollo3.testing.mockServerTest
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.fail
 
 class NetworkMonitorTest {
   /**
@@ -29,9 +29,6 @@ class NetworkMonitorTest {
 
     mockServer.takeRequest()
     mockServer.takeRequest()
-    try {
-      mockServer.takeRequest()
-      fail("An exception was expected")
-    } catch (_: Exception) {}
+    mockServer.assertNoRequest()
   }
 }

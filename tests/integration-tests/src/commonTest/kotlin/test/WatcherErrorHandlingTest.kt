@@ -15,6 +15,7 @@ import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.enqueueError
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.receiveOrTimeout
@@ -50,7 +51,7 @@ class WatcherErrorHandlingTest {
     val jobs = mutableListOf<Job>()
 
     jobs += launch {
-      mockServer.enqueueString(statusCode = 500)
+      mockServer.enqueueError(statusCode = 500)
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
           .watch()
@@ -69,7 +70,7 @@ class WatcherErrorHandlingTest {
     }
 
     jobs += launch {
-      mockServer.enqueueString(statusCode = 500)
+      mockServer.enqueueError(statusCode = 500)
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
           .watch()
@@ -79,7 +80,7 @@ class WatcherErrorHandlingTest {
     }
 
     jobs += launch {
-      mockServer.enqueueString(statusCode = 500)
+      mockServer.enqueueError(statusCode = 500)
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkOnly)
           .watch()
@@ -89,7 +90,7 @@ class WatcherErrorHandlingTest {
     }
 
     jobs += launch {
-      mockServer.enqueueString(statusCode = 500)
+      mockServer.enqueueError(statusCode = 500)
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheAndNetwork)
           .watch()
@@ -125,7 +126,7 @@ class WatcherErrorHandlingTest {
     // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
     // we enqueue an error so a network exception is emitted
     mockServer.enqueueString(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
-    mockServer.enqueueString(statusCode = 500)
+    mockServer.enqueueError(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     assertIs<ApolloHttpException>(channel.receiveOrTimeout().exception)
@@ -134,7 +135,7 @@ class WatcherErrorHandlingTest {
 
   @Test
   fun fetchEmitsExceptions() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueueString(statusCode = 500)
+    mockServer.enqueueError(statusCode = 500)
     assertIs<CacheMissException>(
         apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
             .fetchPolicy(FetchPolicy.CacheFirst)
@@ -151,7 +152,7 @@ class WatcherErrorHandlingTest {
             .exception
     )
 
-    mockServer.enqueueString(statusCode = 500)
+    mockServer.enqueueError(statusCode = 500)
     assertIs<ApolloHttpException>(
         apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
             .fetchPolicy(FetchPolicy.NetworkFirst)
@@ -160,7 +161,7 @@ class WatcherErrorHandlingTest {
             .exception
     )
 
-    mockServer.enqueueString(statusCode = 500)
+    mockServer.enqueueError(statusCode = 500)
     assertIs<ApolloHttpException>(
         apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
             .fetchPolicy(FetchPolicy.NetworkOnly)
@@ -169,7 +170,7 @@ class WatcherErrorHandlingTest {
             .exception
     )
 
-    mockServer.enqueueString(statusCode = 500)
+    mockServer.enqueueError(statusCode = 500)
     assertIs<CacheMissException>(
         apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
             .fetchPolicy(FetchPolicy.CacheAndNetwork)
@@ -205,7 +206,7 @@ class WatcherErrorHandlingTest {
     // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
     // we enqueue an error so a network exception is emitted
     mockServer.enqueueString(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
-    mockServer.enqueueString(statusCode = 500)
+    mockServer.enqueueError(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     assertIs<ApolloHttpException>(channel.receiveOrTimeout().exception)

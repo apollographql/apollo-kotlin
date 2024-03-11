@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.enqueueError
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
@@ -41,12 +42,12 @@ class ExecutionContextTest {
           .build().use { apolloClient ->
 
             // we don't need a response
-            mockServer.enqueueString(statusCode = 404)
+            mockServer.enqueueError(statusCode = 404)
             apolloClient.query(HeroNameQuery())
                 .addExecutionContext(MyExecutionContext("value0"))
                 .execute()
 
-            mockServer.enqueueString(statusCode = 404)
+            mockServer.enqueueError(statusCode = 404)
             apolloClient.query(HeroNameQuery())
                 .addExecutionContext(MyExecutionContext("value1"))
                 .execute()
