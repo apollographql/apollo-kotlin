@@ -62,7 +62,10 @@ kotlin {
 
     findByName("jsMain")?.apply {
       dependencies {
-        api(libs.ktor.client.js)
+        implementation(npm("node-fetch", libs.versions.node.fetch.get()))
+        implementation(libs.ktor.client.js.get().toString()) {
+          because("We use in the ktor client in DefaultWebSocketEngine")
+        }
       }
     }
 
@@ -80,4 +83,3 @@ kotlin {
     }
   }
 }
-

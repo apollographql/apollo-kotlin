@@ -2,6 +2,7 @@ package com.apollographql.apollo3.network.ws.incubating
 
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.DefaultApolloException
+import com.apollographql.apollo3.mpp.isNode
 import node.buffer.Buffer
 import org.khronos.webgl.Uint8Array
 import org.w3c.dom.WebSocket as PlatformWebSocket
@@ -114,24 +115,6 @@ internal class JsWebSocket(
  */
 private val MAX_BUFFERED = 100_000_000
 
-/**
- * Copyright 2014-2019 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
- * From https://github.com/ktorio/ktor/blob/6cd529b2dcedfcfc4ca2af0f62704764e160d7fd/ktor-utils/js/src/io/ktor/util/PlatformUtilsJs.kt#L16
- */
-fun isNode(): Boolean {
-  return js(
-      """
-                (typeof process !== 'undefined' 
-                    && process.versions != null 
-                    && process.versions.node != null) ||
-                (typeof window !== 'undefined' 
-                    && typeof window.process !== 'undefined' 
-                    && window.process.versions != null 
-                    && window.process.versions.node != null)
-                """
-  ) as Boolean
-}
-
 /*
  * The following applies for lines below
  * Copyright 2014-2019 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
@@ -148,7 +131,7 @@ fun isNode(): Boolean {
 private fun createWebSocket(urlString_capturingHack: String, headers: List<HttpHeader>, listener: WebSocketListener): PlatformWebSocket? {
   val (protocolHeaders, otherHeaders) = headers.partition { it.name.equals("sec-websocket-protocol", true) }
   val protocols = protocolHeaders.map { it.value }.toTypedArray()
-  return if (isNode()) {
+  return if (isNode) {
     val ws_capturingHack = js("eval('require')('ws')")
     val headers_capturingHack: dynamic = object {}
     headers.forEach {

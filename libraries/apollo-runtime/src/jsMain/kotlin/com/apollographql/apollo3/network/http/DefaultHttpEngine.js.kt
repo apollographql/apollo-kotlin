@@ -1,85 +1,158 @@
 package com.apollographql.apollo3.network.http
 
-import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.exception.ApolloNetworkException
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.engine.js.Js
-import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.request.header
-import io.ktor.client.request.request
-import io.ktor.client.request.setBody
-import io.ktor.http.HttpHeaders
-import io.ktor.util.flattenEntries
-import io.ktor.utils.io.CancellationException
+import com.apollographql.apollo3.mpp.isNode
+import kotlinx.coroutines.await
+import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.Buffer
+import okio.BufferedSource
+import org.khronos.webgl.ArrayBuffer
+import org.khronos.webgl.Uint8Array
+import org.w3c.fetch.Response
+import kotlin.coroutines.cancellation.CancellationException
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.js.Promise
 
+/**
+ * @param timeoutMillis: The timeout in milliseconds used both for the connection and the request.
+ */
 actual fun DefaultHttpEngine(timeoutMillis: Long): HttpEngine = JsHttpEngine(timeoutMillis)
-
-fun DefaultHttpEngine(connectTimeoutMillis: Long, readTimeoutMillis: Long): HttpEngine =
-    JsHttpEngine(connectTimeoutMillis, readTimeoutMillis)
 
 /**
  * @param connectTimeoutMillis The connection timeout in milliseconds. The connection timeout is the time period in which a client should establish a connection with a server.
  * @param readTimeoutMillis The request timeout in milliseconds. The request timeout is the time period required to process an HTTP call: from sending a request to receiving a response.
  */
-private class JsHttpEngine constructor(private val connectTimeoutMillis: Long, private val readTimeoutMillis: Long) : HttpEngine {
-  var disposed = false
+fun DefaultHttpEngine(connectTimeoutMillis: Long, readTimeoutMillis: Long): HttpEngine =
+    JsHttpEngine(connectTimeoutMillis, readTimeoutMillis)
 
-  /**
-   * @param timeoutMillis: The timeout in milliseconds used both for the connection and the request.
-   */
+private class JsHttpEngine(
+    private val connectTimeoutMillis: Long,
+    private val readTimeoutMillis: Long,
+) : HttpEngine {
   constructor(timeoutMillis: Long) : this(timeoutMillis, timeoutMillis)
 
-  private val client = HttpClient(Js) {
-    expectSuccess = false
-    install(HttpTimeout) {
-      this.connectTimeoutMillis = this@JsHttpEngine.connectTimeoutMillis
+  private val nodeFetch: dynamic = if (isNode) requireNodeFetch() else null
 
-      // socketTimeoutMillis would make more sense but doesn't seem to work on JS. See https://youtrack.jetbrains.com/issue/KTOR-6211
-      this.requestTimeoutMillis = this@JsHttpEngine.readTimeoutMillis
-    }
-  }
-
+  @Suppress("UnsafeCastFromDynamic")
   override suspend fun execute(request: HttpRequest): HttpResponse {
-    try {
-      val response = client.request(request.url) {
-        method = when (request.method) {
-          HttpMethod.Get -> io.ktor.http.HttpMethod.Get
-          HttpMethod.Post -> io.ktor.http.HttpMethod.Post
-        }
-        request.headers.forEach {
-          header(it.name, it.value)
-        }
-        request.body?.let {
-          header(HttpHeaders.ContentType, it.contentType)
-          val buffer = Buffer()
-          it.writeTo(buffer)
-          setBody(buffer.readUtf8())
-        }
-      }
-      val responseByteArray: ByteArray = response.body()
-      val responseBufferedSource = Buffer().write(responseByteArray)
+    val abortController = AbortController()
+    val connectTimeoutId = setTimeout({ abortController.abort() }, connectTimeoutMillis)
 
-      return HttpResponse.Builder(statusCode = response.status.value)
-          .body(responseBufferedSource)
-          .addHeaders(response.headers.flattenEntries().map { HttpHeader(it.first, it.second) })
+    val fetchOptions = request.toFetchOptions(abortSignal = abortController.signal)
+    val responsePromise: Promise<Response> = if (isNode) {
+      nodeFetch(
+          resource = request.url,
+          options = fetchOptions
+      )
+    } else {
+      fetch(
+          resource = request.url,
+          options = fetchOptions
+      )
+    }
+    return try {
+      val response = responsePromise.await()
+      clearTimeout(connectTimeoutId)
+      val responseBodySource = if (isNode) {
+        readBodyNode(response.body, readTimeoutMillis, abortController)
+      } else {
+        readBodyBrowser(response.body, readTimeoutMillis, abortController)
+      }
+      HttpResponse.Builder(response.status.toInt())
+          .body(responseBodySource)
+          .apply {
+            @Suppress("UnsafeCastFromDynamic")
+            response.headers.asDynamic().forEach { value: String, key: String ->
+              addHeader(key, value)
+            }
+          }
           .build()
-    } catch (e: CancellationException) {
-      // Cancellation Exception is passthrough
-      throw e
     } catch (t: Throwable) {
-      throw ApolloNetworkException(t.message, t)
+      if (t is CancellationException) {
+        abortController.abort()
+        throw t
+      } else {
+        throw ApolloNetworkException("Failed to execute GraphQL http network request", t)
+      }
     }
   }
 
   override fun close() {
-    if (!disposed) {
-      client.close()
-      disposed = true
+  }
+}
+
+private fun HttpRequest.toFetchOptions(abortSignal: dynamic): dynamic {
+  val method = when (method) {
+    HttpMethod.Get -> "GET"
+    HttpMethod.Post -> "POST"
+  }
+  val headers = js("({})")
+  for (header in this.headers) {
+    headers[header.name] = header.value
+  }
+  val bodyBytes: ByteArray? = body?.let { body ->
+    headers["Content-Type"] = body.contentType
+    body.contentLength.takeIf { it >= 0 }?.let { contentLength ->
+      headers["Content-Length"] = contentLength.toString()
+    }
+    val bodyBuffer = Buffer()
+    body.writeTo(bodyBuffer)
+    bodyBuffer.readByteArray()
+  }
+  return dynamicObject {
+    this.signal = abortSignal
+    this.method = method
+    this.headers = headers
+    if (bodyBytes != null) {
+      this.body = bodyBytes
     }
   }
+}
+
+@Suppress("UnsafeCastFromDynamic")
+private suspend fun readBodyNode(body: dynamic, readTimeoutMillis: Long, abortController: dynamic): BufferedSource {
+  var readTimeoutId = setTimeout({ abortController.abort() }, readTimeoutMillis)
+  val bufferedSource = Buffer()
+  return suspendCancellableCoroutine { continuation ->
+    body.on("data") { chunk: ArrayBuffer ->
+      clearTimeout(readTimeoutId)
+      readTimeoutId = setTimeout({ abortController.abort() }, readTimeoutMillis)
+      val chunkBytes = Uint8Array(chunk).asByteArray()
+      bufferedSource.write(chunkBytes)
+    }
+    body.on("end") {
+      continuation.resume(bufferedSource)
+    }
+    body.on("error") { error: Throwable ->
+      continuation.resumeWithException(error)
+    }
+    Unit
+  }
+}
+
+@Suppress("UnsafeCastFromDynamic")
+private suspend fun readBodyBrowser(body: dynamic, readTimeoutMillis: Long, abortController: dynamic): BufferedSource {
+  var readTimeoutId = setTimeout({ abortController.abort() }, readTimeoutMillis)
+  val bufferedSource = Buffer()
+  val stream: ReadableStream<Uint8Array> = body ?: return Buffer()
+  val reader = stream.getReader()
+  while (true) {
+    try {
+      val chunk: Uint8Array? = reader.readChunk()
+      clearTimeout(readTimeoutId)
+      readTimeoutId = setTimeout({ abortController.abort() }, readTimeoutMillis)
+      if (chunk == null) {
+        break
+      }
+      bufferedSource.write(chunk.asByteArray())
+    } catch (cause: Throwable) {
+      reader.cancel(cause)
+      throw cause
+    }
+  }
+  return bufferedSource
 }
