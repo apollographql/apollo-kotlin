@@ -5,6 +5,15 @@ type Query {
   bookOrLion: BookOrLion
 }
 
+type Subscription {
+  event: Event
+}
+
+type Event {
+  time: String
+  currentTimeMillis: Int
+}
+
 interface Animal {
   species: String!
 }

@@ -1,8 +1,15 @@
 package com.apollographql.apollo3.network.ws.incubating
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 
+/**
+ * A [WsProtocol] manages different flavours of WebSocket protocols.
+ *
+ * See [GraphQLWsProtocol], [AppSyncWsProtocol] and [SubscriptionWsProtocol]
+ */
+@ApolloExperimental
 interface WsProtocol {
   val name: String
 

@@ -17,3 +17,11 @@ query GetAnimal {
     }
   }
 }
+
+
+subscription Event {
+  event {
+    time
+    currentTimeMillis
+  }
+}

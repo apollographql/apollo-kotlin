@@ -1,13 +1,17 @@
-package com.apollographql.apollo3.network.ws.incubating
+package com.apollographql.apollo3.network.ws.incubating.internal
 
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.mpp.currentTimeMillis
+import com.apollographql.apollo3.network.ws.incubating.CLOSE_GOING_AWAY
+import com.apollographql.apollo3.network.ws.incubating.WebSocketEngine
+import com.apollographql.apollo3.network.ws.incubating.WsProtocol
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -27,7 +31,7 @@ internal class WebSocketHolder(
   private var lock = reentrantLock()
 
   init {
-    // Make sure we do not busy loop 
+    // Make sure we do not busy loop
     check(idleTimeoutMillis > 0) {
       "Apollo: 'idleTimeoutMillis' must be > 0"
     }
@@ -87,6 +91,7 @@ internal class WebSocketHolder(
   }
 
   fun close() = lock.withLock {
+    scope.cancel()
     webSocketEngine.close()
     if (subscribableWebSocket != null) {
       subscribableWebSocket!!.shutdown(null, CLOSE_GOING_AWAY, "Canceled")
