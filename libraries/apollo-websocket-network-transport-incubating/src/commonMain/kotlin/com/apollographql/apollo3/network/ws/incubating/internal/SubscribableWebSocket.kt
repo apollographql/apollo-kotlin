@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.network.ws.incubating
+package com.apollographql.apollo3.network.ws.incubating.internal
 
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
@@ -8,6 +8,24 @@ import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.exception.SubscriptionConnectionException
 import com.apollographql.apollo3.mpp.currentTimeMillis
+import com.apollographql.apollo3.network.ws.incubating.CLOSE_GOING_AWAY
+import com.apollographql.apollo3.network.ws.incubating.CLOSE_NORMAL
+import com.apollographql.apollo3.network.ws.incubating.ClientMessage
+import com.apollographql.apollo3.network.ws.incubating.CompleteServerMessage
+import com.apollographql.apollo3.network.ws.incubating.ConnectionAckServerMessage
+import com.apollographql.apollo3.network.ws.incubating.ConnectionErrorServerMessage
+import com.apollographql.apollo3.network.ws.incubating.ConnectionKeepAliveServerMessage
+import com.apollographql.apollo3.network.ws.incubating.DataClientMessage
+import com.apollographql.apollo3.network.ws.incubating.OperationErrorServerMessage
+import com.apollographql.apollo3.network.ws.incubating.ParseErrorServerMessage
+import com.apollographql.apollo3.network.ws.incubating.PingServerMessage
+import com.apollographql.apollo3.network.ws.incubating.PongServerMessage
+import com.apollographql.apollo3.network.ws.incubating.ResponseServerMessage
+import com.apollographql.apollo3.network.ws.incubating.TextClientMessage
+import com.apollographql.apollo3.network.ws.incubating.WebSocket
+import com.apollographql.apollo3.network.ws.incubating.WebSocketEngine
+import com.apollographql.apollo3.network.ws.incubating.WebSocketListener
+import com.apollographql.apollo3.network.ws.incubating.WsProtocol
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 import kotlinx.coroutines.CoroutineDispatcher

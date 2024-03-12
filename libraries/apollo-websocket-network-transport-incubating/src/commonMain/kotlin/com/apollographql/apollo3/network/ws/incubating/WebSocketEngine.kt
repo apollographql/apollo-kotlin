@@ -4,6 +4,9 @@ import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloException
 import okio.Closeable
 
+/**
+ * The low-level WebSocket API. Implement this interface to customize how WebSockets are handled
+ */
 interface WebSocketEngine: Closeable {
   /**
    * Creates a new [WebSocket].
