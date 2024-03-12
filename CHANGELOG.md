@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+# Version 3.8.3
+
+_2024-_
+
+Version 3.8.3 is a maintenance release with two new convenience APIs and a Kotlin update. New developments happen in the 4.x versions.
+
+[all] update Kotlin to 1.9 (#5412)
+[runtime] Add ApolloClient.Builder(ApolloHttpCache) (#5638) (#5640)
+[runtime] Allow buildPostBody to write operation extensions (#5631)
+[runtime] compose support: Catch exceptions and expose them in .exception (#5018)
+
 # Version 4.0.0-beta.4
 
 _2023-12-12_
