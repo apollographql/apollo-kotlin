@@ -35,6 +35,8 @@ private class JsHttpEngine(
 ) : HttpEngine {
   constructor(timeoutMillis: Long) : this(timeoutMillis, timeoutMillis)
 
+  private val nodeFetch: dynamic = if (isNode) requireNodeFetch() else null
+
   @Suppress("UnsafeCastFromDynamic")
   override suspend fun execute(request: HttpRequest): HttpResponse {
     val abortController = AbortController()
@@ -42,7 +44,7 @@ private class JsHttpEngine(
 
     val fetchOptions = request.toFetchOptions(abortSignal = abortController.signal)
     val responsePromise: Promise<Response> = if (isNode) {
-      requireNodeFetch()(
+      nodeFetch(
           resource = request.url,
           options = fetchOptions
       )
