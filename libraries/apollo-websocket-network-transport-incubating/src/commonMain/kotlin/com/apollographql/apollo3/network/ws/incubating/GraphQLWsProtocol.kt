@@ -13,7 +13,7 @@ import okio.Buffer
  * [GraphQLWsProtocol] can execute queries and mutations in addition to subscriptions
  */
 class GraphQLWsProtocol(
-    val connectionParams: suspend () -> Any?,
+    val connectionParams: suspend () -> Any? = { null },
 ) : WsProtocol {
   override val name: String
     get() = "graphql-transport-ws"

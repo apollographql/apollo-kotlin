@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network.ws.incubating
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -134,9 +135,18 @@ class WebSocketNetworkTransport private constructor(
     }
 
     /**
-     * Headers to add to the HTTP handshake query.
+     * Add a [HttpHeader] to the handshake query.
      */
-    fun addHttpHeaders(name: String, value: String) = apply {
+    fun addHttpHeader(name: String, value: String) = apply {
+      this.httpHeaders = this.httpHeaders.orEmpty() + HttpHeader(name, value)
+    }
+
+    /**
+     * Add a [HttpHeader] to the handshake query.
+     */
+    @Deprecated("use addHttpHeader instead", ReplaceWith("addHttpHeader"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+    fun addHeader(name: String, value: String) = apply {
       this.httpHeaders = this.httpHeaders.orEmpty() + HttpHeader(name, value)
     }
 
