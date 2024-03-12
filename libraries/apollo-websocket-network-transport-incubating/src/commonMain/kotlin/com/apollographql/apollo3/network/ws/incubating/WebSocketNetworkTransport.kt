@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network.ws.incubating
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -36,6 +37,7 @@ class WebSocketNetworkTransport private constructor(
     private val connectionAcknowledgeTimeoutMillis: Long,
     private val pingIntervalMillis: Long,
     private val idleTimeoutMillis: Long,
+    private val parserFactory: SubscriptionParserFactory
 ) : NetworkTransport {
 
   private val holder = WebSocketHolder(
@@ -70,7 +72,7 @@ class WebSocketNetworkTransport private constructor(
       }
       renewUuid = true
 
-      val operationListener = DefaultOperationListener(newRequest, this)
+      val operationListener = DefaultOperationListener(newRequest, this, parserFactory.createParser(request))
 
       val webSocket = holder.acquire()
       webSocket.startOperation(newRequest, operationListener)
@@ -99,7 +101,6 @@ class WebSocketNetworkTransport private constructor(
     holder.closeCurrentConnection(reason)
   }
 
-
   class Builder {
     private var serverUrl: String? = null
     private var httpHeaders: List<HttpHeader>? = null
@@ -108,6 +109,7 @@ class WebSocketNetworkTransport private constructor(
     private var connectionAcknowledgeTimeoutMillis: Long? = null
     private var pingIntervalMillis: Long? = null
     private var idleTimeoutMillis: Long? = null
+    private var parserFactory: SubscriptionParserFactory? = null
 
     /**
      * @param serverUrl a server url that is called every time a WebSocket
@@ -118,7 +120,7 @@ class WebSocketNetworkTransport private constructor(
      * - "http://" (same as "ws://")
      * - "https://" (same as "wss://")
      */
-    fun serverUrl(serverUrl: String) = apply {
+    fun serverUrl(serverUrl: String?) = apply {
       this.serverUrl = serverUrl
     }
 
@@ -139,7 +141,7 @@ class WebSocketNetworkTransport private constructor(
     /**
      * Set the [WebSocketEngine] to use.
      */
-    fun webSocketEngine(webSocketEngine: WebSocketEngine) = apply {
+    fun webSocketEngine(webSocketEngine: WebSocketEngine?) = apply {
       this.webSocketEngine = webSocketEngine
     }
 
@@ -148,7 +150,7 @@ class WebSocketNetworkTransport private constructor(
      *
      * Default: `60_000`
      */
-    fun idleTimeoutMillis(idleTimeoutMillis: Long) = apply {
+    fun idleTimeoutMillis(idleTimeoutMillis: Long?) = apply {
       this.idleTimeoutMillis = idleTimeoutMillis
     }
 
@@ -161,7 +163,7 @@ class WebSocketNetworkTransport private constructor(
      * @see [AppSyncWsProtocol]
      * @see [GraphQLWsProtocol]
      */
-    fun wsProtocol(wsProtocol: WsProtocol) = apply {
+    fun wsProtocol(wsProtocol: WsProtocol?) = apply {
       this.wsProtocol = wsProtocol
     }
 
@@ -171,7 +173,7 @@ class WebSocketNetworkTransport private constructor(
      *
      * Default: -1
      */
-    fun pingIntervalMillis(pingIntervalMillis: Long) = apply {
+    fun pingIntervalMillis(pingIntervalMillis: Long?) = apply {
       this.pingIntervalMillis = pingIntervalMillis
     }
 
@@ -180,9 +182,15 @@ class WebSocketNetworkTransport private constructor(
      *
      * Default: 10_000
      */
-    fun connectionAcknowledgeTimeoutMillis(connectionAcknowledgeTimeoutMillis: Long) = apply {
+    fun connectionAcknowledgeTimeoutMillis(connectionAcknowledgeTimeoutMillis: Long?) = apply {
       this.connectionAcknowledgeTimeoutMillis = connectionAcknowledgeTimeoutMillis
     }
+
+    @ApolloExperimental
+    fun parserFactory(parserFactory: SubscriptionParserFactory?) = apply {
+      this.parserFactory = parserFactory
+    }
+
 
     /**
      * Builds the [WebSocketNetworkTransport]
@@ -196,27 +204,31 @@ class WebSocketNetworkTransport private constructor(
           wsProtocol = wsProtocol ?: GraphQLWsProtocol { null },
           pingIntervalMillis = pingIntervalMillis ?: -1L,
           connectionAcknowledgeTimeoutMillis = connectionAcknowledgeTimeoutMillis ?: 10_000L,
+          parserFactory = parserFactory ?: DefaultSubscriptionParserFactory
       )
     }
   }
 }
 
-private class DefaultOperationListener<D : Operation.Data>(
-    private val request: ApolloRequest<D>,
-    private val producerScope: ProducerScope<ApolloResponse<D>>,
-) : OperationListener {
-  val deferredJsonMerger = DeferredJsonMerger()
-  val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters]!!
+private object DefaultSubscriptionParserFactory: SubscriptionParserFactory {
+  override fun <D : Operation.Data> createParser(request: ApolloRequest<D>): SubscriptionParser<D> {
+    return DefaultSubscriptionParser(request)
+  }
+}
 
-  override fun onResponse(response: Any?) {
+private class DefaultSubscriptionParser<D : Operation.Data>(private val request: ApolloRequest<D>) : SubscriptionParser<D> {
+  private var deferredJsonMerger: DeferredJsonMerger = DeferredJsonMerger()
+  private val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
+
+  @Suppress("NAME_SHADOWING")
+  override fun parse(payload: ApolloJsonElement): ApolloResponse<D>? {
     @Suppress("UNCHECKED_CAST")
-    val responseMap = response as? Map<String, Any?>
+    val responseMap = payload as? Map<String, Any?>
     if (responseMap == null) {
-      producerScope.trySend(ApolloResponse.Builder(request.operation, request.requestUuid)
+      return ApolloResponse.Builder(request.operation, request.requestUuid)
           .exception(DefaultApolloException("Invalid payload")).build()
-      )
-      return
     }
+
     val (payload, mergedFragmentIds) = if (responseMap.isDeferred()) {
       deferredJsonMerger.merge(responseMap) to deferredJsonMerger.mergedFragmentIds
     } else {
@@ -234,8 +246,22 @@ private class DefaultOperationListener<D : Operation.Data>(
       deferredJsonMerger.reset()
     }
 
-    if (!deferredJsonMerger.isEmptyPayload) {
-      producerScope.trySend(apolloResponse)
+    if (deferredJsonMerger.isEmptyPayload) {
+      return null
+    } else {
+      return apolloResponse
+    }
+  }
+}
+
+private class DefaultOperationListener<D : Operation.Data>(
+    private val request: ApolloRequest<D>,
+    private val producerScope: ProducerScope<ApolloResponse<D>>,
+    private val parser: SubscriptionParser<D>
+) : OperationListener {
+  override fun onResponse(response: ApolloJsonElement) {
+    parser.parse(response)?.let {
+      producerScope.trySend(it)
     }
   }
 
