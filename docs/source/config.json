@@ -76,6 +76,7 @@
       "Using with Java": "/advanced/java",
       "Kotlin native": "/advanced/kotlin-native",
       "Apollo AST": "/advanced/apollo-ast",
+      "Compiler plugins": "/advanced/compiler-plugins",
       "JS Interoperability": "/advanced/js-interop",
       "Response based codegen": "/advanced/response-based"
     }

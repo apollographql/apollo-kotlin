@@ -96,48 +96,17 @@ apolloClient.query(myQuery).enableAutoPersistedQueries(false).toFlow()
 
 ## Generating custom IDs for persisted queries
 
-By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the query. To provide custom ID generation logic, use the `operationIdGenerator` option. It accepts an `instance` that implements the `OperationIdGenerator` interface (`com.apollographql.apollo3.compiler.OperationIdGenerator`) as the input. You can use this option to either specify a different hashing algorithm or to fetch the persisted query ID from a different location, for example, from a service or a CLI.
+By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the query. To provide custom ID generation logic, use [Apollo compiler plugins](../advanced/compiler-plugins). 
+
+The `Plugin` interface has an `operationIds()` method that you can override to customize the operation ids. It takes a list of `OperationDescriptor` including the source document and name and returns a list of `OperationId` mapping each name to the generated id. 
 
 Example Md5 hash generator:
 
-<MultiCodeBlock>
-
 ```kotlin
-apollo {
-  service("service") {
-    operationIdGenerator.set(object : com.apollographql.apollo3.compiler.OperationIdGenerator {
-      override val version = "my-md5-version1"
-
-      override fun apply(operationDocument: String, operationName: String): String {
-        return operationDocument.md5()
-      }
-    })
+class MyPlugin: Plugin {
+  override fun operationIds(descriptors: List<OperationDescriptor>): List<OperationId> {
+    return descriptors.map { OperationId(it.source.md5(), it.name) }
   }
 }
 ```
 
-```groovy
-import com.apollographql.apollo3.compiler.OperationIdGenerator
-
-apollo {
-  service("service") {
-    operationIdGenerator = new OperationIdGenerator() {
-      String apply(String operationDocument, String operationName) {
-        return operationDocument.md5()
-      }
-
-      /**
-       * Use this version override to indicate an update to the implementation.
-       * This forces gradle to recompile models.
-       */
-      String version = "my-md5-v1"
-    }
-  }
-}
-```
-
-</MultiCodeBlock>
-
-### ID generator versioning
-
-The result of the ID generator is cached. The cache is not updated when the implementation of the ID Generator changes. To indicate an update to the implementation of the ID Generator, change the `version` override as shown in the above example.
