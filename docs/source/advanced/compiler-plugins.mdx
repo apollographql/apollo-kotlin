@@ -44,7 +44,7 @@ import com.apollographql.apollo3.compiler.operationoutput.OperationId
 class MyPlugin: Plugin {
   override fun operationIds(descriptors: List<OperationDescriptor>): List<OperationId> {
     // This assumes the returned ids are in the same order as the descriptors
-    return registerOperations().withIndex().map { OperationId(it.value, descriptors[it.index].name) }
+    return registerOperations(descriptors).withIndex().map { OperationId(it.value, descriptors[it.index].name) }
   }
 
   /**
