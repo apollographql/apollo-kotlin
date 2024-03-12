@@ -7,6 +7,11 @@ import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
 import okio.Buffer
 
+/**
+ * An [WsProtocol] for https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md
+ *
+ * [GraphQLWsProtocol] can execute queries and mutations in addition to subscriptions
+ */
 class GraphQLWsProtocol(
     val connectionParams: suspend () -> Any?,
 ) : WsProtocol {

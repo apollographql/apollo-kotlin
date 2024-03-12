@@ -1,12 +1,21 @@
 package com.apollographql.apollo3.network.ws.incubating
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
+import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
 import okio.Buffer
 
+/**
+ * A [WsProtocol] for https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md
+ *
+ * Note: This protocol is no longer actively maintained, and [GraphQLWsProtocol] should be favored instead.
+ */
+@Deprecated("Migrate your server to GraphQLWsProtocol instead")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 class SubscriptionWsProtocol(
     val connectionParams: suspend () -> Any?,
 ) : WsProtocol {

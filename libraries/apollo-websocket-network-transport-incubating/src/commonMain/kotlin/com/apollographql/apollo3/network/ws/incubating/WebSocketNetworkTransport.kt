@@ -14,6 +14,8 @@ import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.exception.SubscriptionOperationException
 import com.apollographql.apollo3.internal.DeferredJsonMerger
 import com.apollographql.apollo3.network.NetworkTransport
+import com.apollographql.apollo3.network.ws.incubating.internal.OperationListener
+import com.apollographql.apollo3.network.ws.incubating.internal.WebSocketHolder
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ProducerScope
@@ -221,9 +223,9 @@ private class DefaultSubscriptionParser<D : Operation.Data>(private val request:
   private val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
   @Suppress("NAME_SHADOWING")
-  override fun parse(payload: ApolloJsonElement): ApolloResponse<D>? {
+  override fun parse(response: ApolloJsonElement): ApolloResponse<D>? {
     @Suppress("UNCHECKED_CAST")
-    val responseMap = payload as? Map<String, Any?>
+    val responseMap = response as? Map<String, Any?>
     if (responseMap == null) {
       return ApolloResponse.Builder(request.operation, request.requestUuid)
           .exception(DefaultApolloException("Invalid payload")).build()

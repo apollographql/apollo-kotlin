@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.network.ws.incubating
+package com.apollographql.apollo3.network.ws.incubating.internal
 
 import com.apollographql.apollo3.api.json.ApolloJsonElement
 import com.apollographql.apollo3.exception.ApolloException
@@ -33,5 +33,3 @@ internal interface OperationListener {
    */
   fun onTransportError(cause: ApolloException)
 }
-
-
