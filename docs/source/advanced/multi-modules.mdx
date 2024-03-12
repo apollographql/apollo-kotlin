@@ -67,7 +67,7 @@ apollo {
 ```
 
 <Note>
-The `bidirectional` parameter is experimental because it may break [Gradle project isolation](https://docs.gradle.org/current/userguide/build_environment.html). For a project-isolation compatible method, try [isADependencyOf](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo3.gradle.api/-service/is-a-dependency-of.html) 
+The `bidirectional` parameter is experimental because it may break <a href="https://docs.gradle.org/current/userguide/build_environment.html">Gradle project isolation</a>. For a project-isolation compatible method, try <a href="https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo3.gradle.api/-service/is-a-dependency-of.html">isADependencyOf</a> 
 </Note>
 
 Once you opt in auto-detection of used types, it's important that **all** modules are doubly linked like above. If not the feature modules will fail to compile due to some missing schema classes.
