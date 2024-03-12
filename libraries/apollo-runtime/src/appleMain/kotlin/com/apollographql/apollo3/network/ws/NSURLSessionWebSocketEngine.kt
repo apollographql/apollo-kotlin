@@ -20,6 +20,7 @@ import platform.Foundation.NSURL
 import platform.Foundation.NSURLRequest
 import platform.Foundation.NSURLSession
 import platform.Foundation.NSURLSessionConfiguration
+import platform.Foundation.NSURLSessionTask
 import platform.Foundation.NSURLSessionWebSocketCloseCode
 import platform.Foundation.NSURLSessionWebSocketDelegateProtocol
 import platform.Foundation.NSURLSessionWebSocketMessage
@@ -36,6 +37,8 @@ interface WebSocketConnectionListener {
   fun onOpen(webSocket: NSURLSessionWebSocketTask)
 
   fun onClose(webSocket: NSURLSessionWebSocketTask, code: NSURLSessionWebSocketCloseCode)
+
+  fun onError(error: NSError?)
 }
 
 typealias NSWebSocketFactory = (NSURLRequest, WebSocketConnectionListener) -> NSURLSessionWebSocketTask
@@ -79,6 +82,13 @@ actual class DefaultWebSocketEngine(
       override fun onClose(webSocket: NSURLSessionWebSocketTask, code: NSURLSessionWebSocketCloseCode) {
         isOpen.cancel()
         messageChannel.close()
+      }
+
+      override fun onError(error: NSError?) {
+        if (error != null) {
+          isOpen.cancel()
+          messageChannel.close()
+        }
       }
     }
 
@@ -209,6 +219,14 @@ private class NSURLSessionWebSocketDelegate(
       reason: NSData?,
   ) {
     webSocketConnectionListener.onClose(webSocket = webSocketTask, code = didCloseWithCode)
+  }
+
+  override fun URLSession(
+      session: NSURLSession,
+      task: NSURLSessionTask,
+      didCompleteWithError: NSError?
+  ) {
+    webSocketConnectionListener.onError(error = didCompleteWithError)
   }
 }
 
