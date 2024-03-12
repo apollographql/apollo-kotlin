@@ -1,9 +1,11 @@
 Change Log
 ==========
 
-# Version "Next"
+# Version 4.0.0-beta.5
 
-4.0.0-beta.5 main changes (see full details below):
+_2024-03-12_
+
+Main changes:
 
 * **Apollo compiler plugins**: The GraphQL compiler now has APIs that you can use to customize the generated code. This can be used for changing visibility of some symbols, renaming them or more generally customizing the output for any advanced use cases. Moving forward, Apollo compiler plugins are the preferred way to customize operation IDs as well as package names and both `PackageNameGenerator` and `OperationOutputGenerator` are deprecated. See the [documentation page about Apollo compiler plugins](https://www.apollographql.com/docs/kotlin/v4/advanced/compiler-plugins) for more details.
 * **Reduced lock contention on apollo-normalized-cache-incubating**: the incubating normalized cache now uses lock-free memory structures inspired by guava and [MobileNativeFoundation](https://github.com/MobileNativeFoundation/Store/). We have seen improvements by up to 20% in some scenarios. Please share your numbers if you notice any positive (or negative) change. 
@@ -11,7 +13,7 @@ Change Log
 * **New snapshot repository for the IntelliJ/Android Studio plugin**: The repository to use for the weekly snapshots has changed. You can now use `https://go.apollo.dev/ij-plugin-snapshots` to get the latest weekly snapshots. (#5600)
 * **Multi-version KDoc**: The [published KDoc](https://www.apollographql.com/docs/kotlin/kdoc/index.html) now includes both v3 and v4 versions.
 
-Many thanks to @ribafish, @rohandhruva and @baconz for their help in this release 💙!
+Many thanks to @ribafish, @molundb, @mboyd1993, @rohandhruva and @baconz for their help in this release 💙!
 
 ## 👷‍ All changes
 * [mockserver] Add MockServer.enqueueError() and MockServer.assertNoRequest() (#5694)
