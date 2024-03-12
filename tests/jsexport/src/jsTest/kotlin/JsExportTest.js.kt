@@ -1,7 +1,6 @@
 
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.ApolloJsonElement
 import com.apollographql.apollo3.network.ws.incubating.ClientMessage
@@ -20,16 +19,14 @@ import com.apollographql.apollo3.network.ws.incubating.WsProtocol
 actual val parserFactory: SubscriptionParserFactory?
   get() = JsSubscriptionParserFactory
 
-class ApolloDynamic(val value: dynamic)
 
 object JsSubscriptionParserFactory : SubscriptionParserFactory {
   override fun <D : Operation.Data> createParser(request: ApolloRequest<D>): SubscriptionParser<D> {
     return object : SubscriptionParser<D> {
       override fun parse(payload: ApolloJsonElement): ApolloResponse<D> {
-        payload as ApolloDynamic
         return ApolloResponse.Builder(request.operation, request.requestUuid)
-            .data(payload.value.data.unsafeCast<D>())
-            .errors(payload.value.errors.unsafeCast<List<Error>?>())
+            .data(payload.asDynamic().data.unsafeCast<D>())
+            .errors(null) // TODO: Error doesn't use @JsExport
             .build()
       }
     }
@@ -80,9 +77,9 @@ object JsWsProtocol : WsProtocol {
         val id = map.id
         when {
           id == null -> ParseErrorServerMessage("No 'id' found in message: '$text'")
-          type == "next" -> ResponseServerMessage(id, ApolloDynamic(map.payload), false)
+          type == "next" -> ResponseServerMessage(id, map.payload, false)
           type == "complete" -> CompleteServerMessage(id)
-          type == "error" -> ResponseServerMessage(id, ApolloDynamic(map.payload), true)
+          type == "error" -> ResponseServerMessage(id, map.payload, true)
           else -> error("") // make the compiler happy
         }
       }

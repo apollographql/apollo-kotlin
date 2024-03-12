@@ -426,6 +426,7 @@ constructor(
  * - null
  * - Map<String, ApolloJsonElement> where values are any of these values recursively
  * - List<ApolloJsonElement> where values are any of these values recursively
+ * - dynamic for advanced use cases using @JsExport
  *
  * Anything else is undefined
  */
