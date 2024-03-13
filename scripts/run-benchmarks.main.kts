@@ -5,11 +5,15 @@
 @file:DependsOn("net.mbonnin.bare-graphql:bare-graphql:0.0.2")
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.2")
 @file:DependsOn("com.squareup.okhttp3:okhttp:4.10.0")
+@file:DependsOn("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
 import Run_benchmarks_main.TestResult
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.storage.Storage
 import com.google.cloud.storage.StorageOptions
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -503,11 +507,19 @@ fun runTest(gcloud: GCloud, testApk: String): TestResult {
   val testOutput = runTest(gcloud.projectId, testApk)
   return getTestResult(testOutput, gcloud.storage)
 }
-fun main() {
+
+fun main() = runBlocking {
   val gcloud = authenticate()
 
-  val stableTestResult = runTest(gcloud, stableTestApk)
-  val incubatingTestResult = runTest(gcloud, incubatingTestApk)
+  val stableTestResultDeferred = async(Dispatchers.Default) {
+    runTest(gcloud, stableTestApk)
+  }
+  val incubatingTestResultDeferred = async(Dispatchers.Default) {
+    runTest(gcloud, incubatingTestApk)
+  }
+
+  val stableTestResult = stableTestResultDeferred.await()
+  val incubatingTestResult = incubatingTestResultDeferred.await()
 
   val githubToken = getOptionalEnvVariable("GITHUB_TOKEN")
   if (githubToken != null) {
@@ -518,5 +530,6 @@ fun main() {
     uploadToDatadog(datadogApiKey, stableTestResult.cases + incubatingTestResult.cases, stableTestResult.extraMetrics + incubatingTestResult.extraMetrics)
   }
 }
+
 
 main()
