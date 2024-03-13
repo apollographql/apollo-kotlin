@@ -40,6 +40,9 @@ class ApolloCall<D : Operation.Data> internal constructor(
   @ApolloExperimental
   var retryOnError: Boolean? = null
     private set
+  @ApolloExperimental
+  var failFastIfOffline: Boolean? = null
+    private set
 
   /**
    * The HTTP headers to be sent with the request.
@@ -51,6 +54,10 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   var ignoreApolloClientHttpHeaders: Boolean? = null
     private set
+
+  fun failFastIfOffline(failFastIfOffline: Boolean?) = apply {
+    this.failFastIfOffline = failFastIfOffline
+  }
 
   override fun addExecutionContext(executionContext: ExecutionContext) = apply {
     this.executionContext = this.executionContext + executionContext
@@ -119,6 +126,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
         .retryOnError(retryOnError)
+        .failFastIfOffline(failFastIfOffline)
   }
 
   /**
@@ -166,6 +174,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
         .retryOnError(retryOnError)
+        .failFastIfOffline(failFastIfOffline)
         .build()
   }
 
