@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.network
+package test.network
 
 import com.apollographql.apollo3.internal.MultipartReader
 import okio.Buffer

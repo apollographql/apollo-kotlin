@@ -1,9 +1,8 @@
-package com.apollographql.apollo3.network
+package test.network
 
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.mpp.currentTimeMillis
-import com.apollographql.apollo3.network.AuthorizationInterceptor.TokenProvider
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import kotlinx.coroutines.sync.Mutex
