@@ -25,6 +25,7 @@ kotlin {
 
     fun KotlinDependencyHandler.commonTestDependencies() {
       implementation(project(":apollo-mockserver"))
+      implementation(libs.turbine)
       implementation(project(":apollo-testing-support")) {
         because("runTest")
         // We have a circular dependency here that creates a warning in JS
