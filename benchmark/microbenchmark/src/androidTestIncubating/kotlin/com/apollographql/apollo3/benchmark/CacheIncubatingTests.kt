@@ -26,7 +26,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 
-class CacheTests {
+class CacheIncubatingTests {
   @get:Rule
   val benchmarkRule = BenchmarkRule()
 

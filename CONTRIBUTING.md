@@ -15,18 +15,16 @@ You will need:
 * A recent version of IntelliJ IDEA community. Android Studio might work too, but we find out the experience for
   multiplatform code to be better with IntelliJ IDEA.
 * MacOS and the Xcode developer tools for iOS/MacOS targets.
-* Simulators for iOS/watchOS tests. It might work out of the box but if you get an error like this:
+* Simulators for iOS/watchOS tests.
 
-```
-> Task :libraries:apollo-normalized-cache-api:iosSimulatorArm64Test FAILED
-Invalid device: iPhone 12
-```
+## Composite builds
 
-You can create an emulator with:
+This repository contains several Gradle builds:
 
-```
-xcrun simctl create "iPhone 12" "iPhone 12"
-```
+* root build: the main libraries
+* `build-logic`: the shared Gradle logic
+* `tests`: integration tests
+* `benchmarks`: Android micro and macro benchmarks
 
 We recommend opening the `tests` folder in IntelliJ. It's a composite build that includes the main build and
 integration-tests, so it's easy to add GraphQL and test the codegen end-to-end. If you only want to do small changes,

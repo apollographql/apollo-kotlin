@@ -47,8 +47,8 @@ import kotlin.math.roundToLong
  */
 
 val appApk = "benchmark/app/build/outputs/apk/release/app-release.apk"
-val incubatingTestApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/incubating/release/microbenchmark-incubating-release-androidTest.apk"
 val stableTestApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/stable/release/microbenchmark-stable-release-androidTest.apk"
+val incubatingTestApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/incubating/release/microbenchmark-incubating-release-androidTest.apk"
 val deviceModel = "redfin,locale=en,orientation=portrait"
 val directoriesToPull = "/sdcard/Download"
 val environmentVariables = "clearPackageData=true,additionalTestOutputDir=/sdcard/Download,no-isolated-storage=true"
