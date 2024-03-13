@@ -1,5 +1,3 @@
-import org.gradle.api.artifacts.type.ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE
-
 plugins {
   id("com.android.library")
   id("org.jetbrains.kotlin.android")
