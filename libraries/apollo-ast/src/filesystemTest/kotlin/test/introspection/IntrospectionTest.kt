@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.graphql.ast.test.introspection
+package test.introspection
 
 import com.apollographql.apollo3.ast.SourceAwareException
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
@@ -15,7 +15,7 @@ class IntrospectionTest {
   @Test
   fun parseSchema() {
     try {
-      "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/introspection/duplicate.json"
+      "${CWD}/src/filesystemTest/kotlin/test/introspection/duplicate.json"
           .toPath()
           .toGQLDocument(allowJson = true)
           .toSchema()

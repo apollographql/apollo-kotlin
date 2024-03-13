@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.graphql.ast.test.validation
+package test.validation
 
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toSchema
@@ -12,12 +12,12 @@ import kotlin.test.assertNotNull
 class OperationValidationTest {
   @Test
   fun deprecatedInputField() {
-    val schema = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/validation/inputTypeDeprecatedField.graphqls"
+    val schema = "${CWD}/src/filesystemTest/kotlin/test/validation/inputTypeDeprecatedField.graphqls"
         .toPath()
         .toGQLDocument()
         .toSchema()
 
-    val operations = "${CWD}/src/commonTest/kotlin/com/apollographql/apollo3/graphql/ast/test/validation/inputTypeDeprecatedField.graphql"
+    val operations = "${CWD}/src/filesystemTest/kotlin/test/validation/inputTypeDeprecatedField.graphql"
         .toPath()
         .toGQLDocument()
 
