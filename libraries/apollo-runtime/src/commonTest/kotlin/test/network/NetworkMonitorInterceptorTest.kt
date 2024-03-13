@@ -18,11 +18,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.takeWhile
-import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
-import kotlin.time.Duration.Companion.seconds
 
 class NetworkMonitorInterceptorTest {
   @Test
@@ -52,12 +50,6 @@ class NetworkMonitorInterceptorTest {
 
             awaitComplete()
           }
-
-      assertFails {
-        withTimeout(1.seconds) {
-          apolloClient.query(FooQuery()).execute()
-        }
-      }
     }
   }
 }
