@@ -43,7 +43,8 @@ import kotlin.math.roundToLong
  */
 
 val appApk = "benchmark/app/build/outputs/apk/release/app-release.apk"
-val testApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/release/microbenchmark-release-androidTest.apk"
+val incubatingTestApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/incubating/release/microbenchmark-incubating-release-androidTest.apk"
+val stableTestApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/stable/release/microbenchmark-stable-release-androidTest.apk"
 val deviceModel = "redfin,locale=en,orientation=portrait"
 val directoriesToPull = "/sdcard/Download"
 val environmentVariables = "clearPackageData=true,additionalTestOutputDir=/sdcard/Download,no-isolated-storage=true"
@@ -152,7 +153,7 @@ fun authenticate(): GCloud {
 
 data class GCloud(val storage: Storage, val projectId: String)
 
-fun runTest(projectId: String): String {
+fun runTest(projectId: String, testApk: String): String {
   val args = mutableListOf(
       "gcloud",
       "-q", // Disable all interactive prompts
@@ -356,8 +357,9 @@ data class Case(
   val fqName = "${clazz}.$test"
 }
 
-fun issueBody(testResult: TestResult): String {
+fun formattedTestResult(title: String, testResult: TestResult): String {
   return buildString {
+    appendLine("## $title")
     appendLine("### Last Run: ${Date()}")
     appendLine("* Firebase console: [link](${testResult.firebaseUrl})")
     appendLine("* Datadog dashboard: [link](${ddDashboardUrl})")
@@ -372,7 +374,7 @@ fun issueBody(testResult: TestResult): String {
 }
 
 val issueTitle = "Benchmarks dashboard"
-fun updateOrCreateGithubIssue(testResult: TestResult, githubToken: String) {
+fun updateOrCreateGithubIssue(stableTestResult: TestResult, incubatingTestResult: TestResult, githubToken: String) {
   val ghRepo = getRequiredEnvVariable("GITHUB_REPOSITORY")
   val ghRepositoryOwner = ghRepo.split("/")[0]
   val ghRepositoryName = ghRepo.split("/")[1]
@@ -399,6 +401,7 @@ fun updateOrCreateGithubIssue(testResult: TestResult, githubToken: String) {
   val response = ghGraphQL(query, githubToken)
   val existingIssues = response.get("search").asMap.get("edges").asList
 
+  val body = formattedTestResult("Stable", stableTestResult) + "\n\n" + formattedTestResult("Incubating", incubatingTestResult)
   val mutation: String
   val variables: Map<String, String>
   if (existingIssues.isEmpty()) {
@@ -411,7 +414,7 @@ mutation createIssue(${'$'}repositoryId: ID!, ${'$'}title: String!, ${'$'}body: 
     """.trimIndent()
     variables = mapOf(
         "title" to issueTitle,
-        "body" to issueBody(testResult),
+        "body" to body,
         "repositoryId" to response.get("repository").asMap["id"].cast<String>()
     )
     println("creating issue")
@@ -425,7 +428,7 @@ mutation updateIssue(${'$'}id: ID!, ${'$'}body: String!) {
     """.trimIndent()
     variables = mapOf(
         "id" to existingIssues.first().asMap["node"].asMap["id"].cast<String>(),
-        "body" to issueBody(testResult)
+        "body" to body
     )
     println("updating issue")
   }
@@ -496,18 +499,23 @@ fun uploadToDatadog(datadogApiKey: String, cases: List<Case>, extraMetrics: List
   println("posted to Datadog")
 }
 
+fun runTest(gcloud: GCloud, testApk: String): TestResult {
+  val testOutput = runTest(gcloud.projectId, testApk)
+  return getTestResult(testOutput, gcloud.storage)
+}
 fun main() {
   val gcloud = authenticate()
-  val testOutput = runTest(gcloud.projectId)
-  val testResult = getTestResult(testOutput, gcloud.storage)
+
+  val stableTestResult = runTest(gcloud, stableTestApk)
+  val incubatingTestResult = runTest(gcloud, incubatingTestApk)
 
   val githubToken = getOptionalEnvVariable("GITHUB_TOKEN")
   if (githubToken != null) {
-    updateOrCreateGithubIssue(testResult, githubToken)
+    updateOrCreateGithubIssue(stableTestResult, incubatingTestResult, githubToken)
   }
   val datadogApiKey = getOptionalEnvVariable("DD_API_KEY")
   if (datadogApiKey != null) {
-    uploadToDatadog(datadogApiKey, testResult.cases, testResult.extraMetrics)
+    uploadToDatadog(datadogApiKey, stableTestResult.cases + incubatingTestResult.cases, stableTestResult.extraMetrics + incubatingTestResult.extraMetrics)
   }
 }
 

@@ -24,3 +24,5 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
     }
   }
 }
+
+includeBuild("../")

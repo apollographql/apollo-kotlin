@@ -11,10 +11,7 @@ dependencies {
   implementation(libs.okio)
   implementation(libs.ksp)
   implementation(libs.android.plugin)
-
-  implementation(libs.jar.relocator)
   implementation(libs.benchmark.gradle.plugin)
-  implementation(libs.asm)
 }
 
 
