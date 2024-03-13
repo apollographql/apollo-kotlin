@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.api
 
 import okio.FileSystem
+import okio.NodeJsFileSystem
 
 internal actual val systemFileSystem: FileSystem
-  get() = throw IllegalStateException("There is no SYSTEM filesystem on JS")
+  get() = NodeJsFileSystem

@@ -1,12 +1,12 @@
+@file:JvmMultifileClass
+@file:JvmName("DefaultUploadKt")
 package com.apollographql.apollo3.api
 
 import okio.BufferedSink
 import okio.ByteString
-import okio.FileSystem
-import okio.Path
-import okio.buffer
-import okio.use
 import okio.utf8Size
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
 
 /**
  * A default [Upload] that can upload from a wide variety of content
@@ -91,14 +91,3 @@ class DefaultUpload internal constructor(
   }
 }
 
-fun Path.toUpload(contentType: String, fileSystem: FileSystem = systemFileSystem): Upload {
-  return DefaultUpload.Builder()
-      .content { sink ->
-        fileSystem.openReadOnly(this).use {
-          sink.writeAll(it.source().buffer())
-        }
-      }
-      .contentType(contentType)
-      .contentLength(fileSystem.metadata(this).size ?: -1L)
-      .build()
-}
