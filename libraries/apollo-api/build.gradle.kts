@@ -15,12 +15,6 @@ kotlin {
         api(project(":apollo-annotations"))
       }
     }
-
-    findByName("jsMain")?.apply {
-      dependencies {
-        implementation(libs.okio.nodefilesystem)
-      }
-    }
   }
 }
 
