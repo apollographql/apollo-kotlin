@@ -2,6 +2,7 @@ package com.apollographql.apollo3.benchmark
 
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.jsonReader
@@ -14,6 +15,7 @@ import com.apollographql.apollo3.benchmark.Utils.resource
 import com.apollographql.apollo3.benchmark.Utils.responseBasedQuery
 import com.apollographql.apollo3.benchmark.test.R
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
@@ -48,6 +50,7 @@ class CacheTests {
     readFromCache("cacheResponseSql", responseBasedQuery, sql = true, Utils::checkResponseBased)
   }
 
+  @OptIn(ApolloExperimental::class)
   private fun <D : Query.Data> readFromCache(testName: String, query: Query<D>, sql: Boolean, check: (D) -> Unit) {
     val cache = if (sql) {
       dbFile.delete()
@@ -64,7 +67,7 @@ class CacheTests {
     )
 
     runBlocking {
-      cache.merge(records.values.toList(), CacheHeaders.NONE)
+      cache.merge(records.values.toList(), CacheHeaders.NONE, DefaultRecordMerger)
     }
 
     if (sql) {
