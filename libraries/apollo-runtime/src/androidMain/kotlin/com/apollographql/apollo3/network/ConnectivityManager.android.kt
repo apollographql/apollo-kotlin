@@ -34,7 +34,6 @@ internal class AndroidPlatformConnectivityManager(private val connectivityManage
     override fun onLost(network: Network) = onConnectivityChange(false)
   }
 
-
   private fun onConnectivityChange(isOnline: Boolean) {
     val listener = listener!!.get()
     if (listener == null) {
@@ -64,8 +63,9 @@ internal class AndroidPlatformConnectivityManager(private val connectivityManage
 
 internal actual fun platformConnectivityManager(): PlatformConnectivityManager? {
   return if (VERSION.SDK_INT >= M) {
-    val connectivityManager = ApolloInitializer.context.getSystemService(ConnectivityManager::class.java)
-    if (connectivityManager == null || !ApolloInitializer.context.isPermissionGranted(Manifest.permission.ACCESS_NETWORK_STATE)) {
+    val connectivityManager = ApolloInitializer.context?.getSystemService(ConnectivityManager::class.java)
+    val hasPermission = ApolloInitializer.context?.isPermissionGranted(Manifest.permission.ACCESS_NETWORK_STATE) ?: false
+    if (connectivityManager == null || !hasPermission) {
       println("Cannot get ConnectivityManager")
       return null
     }

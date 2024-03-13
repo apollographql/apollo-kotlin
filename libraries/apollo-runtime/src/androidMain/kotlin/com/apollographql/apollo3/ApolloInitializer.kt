@@ -1,5 +1,6 @@
 package com.apollographql.apollo3
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.startup.Initializer
 
@@ -14,6 +15,7 @@ class ApolloInitializer: Initializer<Unit> {
   }
 
   companion object {
-    internal lateinit var context: Context
+    @SuppressLint("StaticFieldLeak")
+    internal var context: Context? = null
   }
 }
