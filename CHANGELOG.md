@@ -11,6 +11,7 @@ Version 3.8.3 is a maintenance release with two new convenience APIs and a Kotli
 [runtime] Add ApolloClient.Builder(ApolloHttpCache) (#5638) (#5640)
 [runtime] Allow buildPostBody to write operation extensions (#5631)
 [runtime] compose support: Catch exceptions and expose them in .exception (#5018)
+[http-cache] Ignore IOException when calling ApolloHttpCache.remove (#5730)
 
 # Version 4.0.0-beta.4
 
