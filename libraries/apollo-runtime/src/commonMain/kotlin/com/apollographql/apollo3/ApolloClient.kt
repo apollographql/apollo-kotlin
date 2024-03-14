@@ -725,7 +725,7 @@ private constructor(
     }
 
     /**
-     * Sets the [ApolloInterceptor] on this [ApolloClient].
+     * Sets the [ApolloInterceptor]s on this [ApolloClient].
      *
      * [ApolloInterceptor]s monitor, rewrite and retry an [ApolloCall]. Internally, [ApolloInterceptor] is used for features
      * such as normalized cache and auto persisted queries. [ApolloClient] also inserts a terminating [ApolloInterceptor] that
