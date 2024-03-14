@@ -141,7 +141,7 @@ fun ApolloClient.Builder.httpCache(
                 val cacheKey = synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey[request.requestUuid.toString()] }
                 if (response.hasErrors()) {
                   try {
-                    cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
+                    try {cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
                   } catch (_: IOException) {
                   }
                 }
