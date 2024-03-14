@@ -250,25 +250,82 @@ fun getTestResult(output: String, storage: Storage): TestResult {
 fun locateBenchmarkData(storage: Storage, bucket: String, prefix: String): List<Case>? {
   val candidates = storage.list(bucket, Storage.BlobListOption.prefix(prefix)).values
   return candidates.singleOrNull {
-  it.name.endsWith("benchmarkData.json")
-}?.let {
-  downloadBlob(storage, bucket, it.name)
-}?.let {
-  Json.parseToJsonElement(it).toAny()
-}?.parseCasesFromBenchmarkData()
+    it.name.endsWith("benchmarkData.json")
+  }?.let {
+    downloadBlob(storage, bucket, it.name)
+  }?.let {
+    Json.parseToJsonElement(it).toAny()
+  }?.parseCasesFromBenchmarkData()
 }
 
 fun locateExtraMetrics(storage: Storage, bucket: String, prefix: String): List<Map<String, Any>>? {
   val candidates = storage.list(bucket, Storage.BlobListOption.prefix(prefix)).values
   return candidates.singleOrNull {
-  it.name.endsWith("extraMetrics.json")
-}?.let {
-  downloadBlob(storage, bucket, it.name)
-}?.let {
-  Json.parseToJsonElement(it).toAny()
-}?.parseCasesFromExtraMetrics()
+    it.name.endsWith("extraMetrics.json")
+  }?.let {
+    downloadBlob(storage, bucket, it.name)
+  }?.let {
+    Json.parseToJsonElement(it).toAny()
+  }?.parseCasesFromExtraMetrics()
 }
 
+/**
+ * ```
+ * {
+ *     "context": {
+ *         "build": {
+ *             "brand": "google",
+ *             "device": "redfin",
+ *             "fingerprint": "google/redfin/redfin:11/RQ3A.211001.001/7641976:user/release-keys",
+ *             "model": "Pixel 5",
+ *             "version": {
+ *                 "sdk": 30
+ *             }
+ *         },
+ *         "cpuCoreCount": 8,
+ *         "cpuLocked": true,
+ *         "cpuMaxFreqHz": 2400000000,
+ *         "memTotalBytes": 7819997184,
+ *         "sustainedPerformanceModeEnabled": false
+ *     },
+ *     "benchmarks": [
+ *         {
+ *             "name": "concurrentReadWritesSql",
+ *             "params": {},
+ *             "className": "com.apollographql.apollo3.benchmark.ApolloStoreTests",
+ *             "totalRunTimeNs": 35949947123,
+ *             "metrics": {
+ *                 "timeNs": {
+ *                     "minimum": 3.36396648E8,
+ *                     "maximum": 4.54433847E8,
+ *                     "median": 3.828202985E8,
+ *                     "runs": [
+ *                         4.54433847E8,
+ *                         4.30116918E8,
+ *                         ...
+ *                     ]
+ *                 },
+ *                 "allocationCount": {
+ *                     "minimum": 585424.0,
+ *                     "maximum": 593386.0,
+ *                     "median": 589660.0,
+ *                     "runs": [
+ *                         589660.0,
+ *                         585424.0,
+ *                         ...,
+ *                     ]
+ *                 }
+ *             },
+ *             "sampledMetrics": {},
+ *             "warmupIterations": 30,
+ *             "repeatIterations": 1,
+ *             "thermalThrottleSleepSeconds": 0
+ *         },
+ *         ...
+ *     ]
+ * }
+ * ```
+ */
 fun Any.parseCasesFromBenchmarkData(): List<Case> {
   return this.asMap["benchmarks"].asList.map { it.asMap }.map {
     Case(
@@ -280,6 +337,28 @@ fun Any.parseCasesFromBenchmarkData(): List<Case> {
   }
 }
 
+/**
+ * ```
+ * [
+ *   {
+ *     "name": "bytes",
+ *     "value": 2994176,
+ *     "tags": [
+ *       "class:com.apollographql.apollo3.benchmark.CacheTests",
+ *       "test:cacheOperationSql"
+ *     ]
+ *   },
+ *   {
+ *     "name": "bytes",
+ *     "value": 2994176,
+ *     "tags": [
+ *       "class:com.apollographql.apollo3.benchmark.CacheTests",
+ *       "test:cacheResponseSql"
+ *     ]
+ *   }
+ * ]
+ * ```
+ */
 fun Any.parseCasesFromExtraMetrics(): List<Map<String, Any>> {
   return this.asList.map { it.asMap }.map {
     Serie(
