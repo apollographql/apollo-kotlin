@@ -1,16 +1,19 @@
-@file:OptIn(ApolloInternal::class)
+package test.defer
 
-package com.apollographql.apollo3.internal
-
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.DeferredFragmentIdentifier
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.readAny
+import com.apollographql.apollo3.internal.DeferredJsonMerger
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+
+private fun String.buffer() = Buffer().writeUtf8(this)
+
+@Suppress("UNCHECKED_CAST")
+private fun jsonToMap(json: String): Map<String, Any?> = BufferedSourceJsonReader(json.buffer()).readAny() as Map<String, Any?>
 
 class DeferredJsonMergerTest {
     @Test
@@ -39,8 +42,8 @@ class DeferredJsonMergerTest {
       }
     """
     deferredJsonMerger.merge(payload1.buffer())
-    assertEquals(jsonToMap(payload1), deferredJsonMerger.merged)
-    assertEquals(setOf(), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(jsonToMap(payload1), deferredJsonMerger.merged)
+      assertEquals(setOf(), deferredJsonMerger.mergedFragmentIds)
 
 
     val payload2 = """
@@ -105,10 +108,11 @@ class DeferredJsonMergerTest {
       }      
     """
     deferredJsonMerger.merge(payload2.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
-    assertEquals(setOf(
-        DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-    ), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+      assertEquals(setOf(
+          DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+      ), deferredJsonMerger.mergedFragmentIds
+      )
 
 
     val payload3 = """
@@ -176,11 +180,12 @@ class DeferredJsonMergerTest {
       }
     """
     deferredJsonMerger.merge(payload3.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
-    assertEquals(setOf(
-        DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-        DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
-    ), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+      assertEquals(setOf(
+          DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+          DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+      ), deferredJsonMerger.mergedFragmentIds
+      )
 
 
     val payload4 = """
@@ -261,11 +266,12 @@ class DeferredJsonMergerTest {
       }
     """
     deferredJsonMerger.merge(payload4.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2_3_4), deferredJsonMerger.merged)
-    assertEquals(setOf(
-        DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-        DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
-    ), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(jsonToMap(mergedPayloads_1_2_3_4), deferredJsonMerger.merged)
+      assertEquals(setOf(
+          DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+          DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+      ), deferredJsonMerger.mergedFragmentIds
+      )
 
 
     val payload5 = """
@@ -355,12 +361,13 @@ class DeferredJsonMergerTest {
       }
     """
         deferredJsonMerger.merge(payload5.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), deferredJsonMerger.merged)
-        assertEquals(setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
-            DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
-        ), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), deferredJsonMerger.merged)
+      assertEquals(setOf(
+          DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+          DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+          DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
+      ), deferredJsonMerger.mergedFragmentIds
+      )
     }
 
     @Test
@@ -389,8 +396,8 @@ class DeferredJsonMergerTest {
       }
     """
         deferredJsonMerger.merge(payload1.buffer())
-        assertEquals(jsonToMap(payload1), deferredJsonMerger.merged)
-        assertEquals(setOf(), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(jsonToMap(payload1), deferredJsonMerger.merged)
+      assertEquals(setOf(), deferredJsonMerger.mergedFragmentIds)
 
 
         val payload2_3 = """
@@ -484,11 +491,12 @@ class DeferredJsonMergerTest {
       }
     """
         deferredJsonMerger.merge(payload2_3.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
-        assertEquals(setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
-        ), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+      assertEquals(setOf(
+          DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+          DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+      ), deferredJsonMerger.mergedFragmentIds
+      )
 
 
         val payload4_5 = """
@@ -619,12 +627,13 @@ class DeferredJsonMergerTest {
       }
     """
         deferredJsonMerger.merge(payload4_5.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), deferredJsonMerger.merged)
-        assertEquals(setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
-            DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
-        ), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), deferredJsonMerger.merged)
+      assertEquals(setOf(
+          DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+          DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+          DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
+      ), deferredJsonMerger.mergedFragmentIds
+      )
     }
 
     @Test
@@ -653,7 +662,7 @@ class DeferredJsonMergerTest {
       }
     """
         deferredJsonMerger.merge(payload1.buffer())
-        assertFalse(deferredJsonMerger.isEmptyPayload)
+      assertFalse(deferredJsonMerger.isEmptyPayload)
 
         val payload2 = """
       {
@@ -661,7 +670,7 @@ class DeferredJsonMergerTest {
       }
     """
         deferredJsonMerger.merge(payload2.buffer())
-        assertTrue(deferredJsonMerger.isEmptyPayload)
+      assertTrue(deferredJsonMerger.isEmptyPayload)
 
         val payload3 = """
       {
@@ -691,7 +700,7 @@ class DeferredJsonMergerTest {
       }
     """
         deferredJsonMerger.merge(payload3.buffer())
-        assertFalse(deferredJsonMerger.isEmptyPayload)
+      assertFalse(deferredJsonMerger.isEmptyPayload)
 
         val payload4 = """
       {
@@ -699,12 +708,6 @@ class DeferredJsonMergerTest {
       }
     """
         deferredJsonMerger.merge(payload4.buffer())
-        assertTrue(deferredJsonMerger.isEmptyPayload)
+      assertTrue(deferredJsonMerger.isEmptyPayload)
     }
 }
-
-private fun String.buffer() = Buffer().writeUtf8(this)
-
-@Suppress("UNCHECKED_CAST")
-private fun jsonToMap(json: String): Map<String, Any?> = BufferedSourceJsonReader(json.buffer()).readAny() as Map<String, Any?>
-
