@@ -149,14 +149,17 @@ fun Project.configureMpp(
 private fun KotlinMultiplatformExtension.configureSourceSetGraph() {
   applyDefaultHierarchyTemplate {
     group("common") {
-      group("concurrent") {
-        group("native") {
-          group("apple")
+      group("filesystem") {
+        group("concurrent") {
+          group("native") {
+            group("apple")
+          }
+          group("jvmCommon") {
+            withJvm()
+            withAndroidTarget()
+          }
         }
-        group("jvmCommon") {
-          withJvm()
-          withAndroidTarget()
-        }
+        group("js")
       }
     }
   }

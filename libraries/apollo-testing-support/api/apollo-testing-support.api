@@ -37,8 +37,10 @@ public final class com/apollographql/apollo3/testing/MockserverKt {
 	public static synthetic fun enqueueData$default (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/util/Map;Lcom/apollographql/apollo3/api/CustomScalarAdapters;JIILjava/lang/Object;)V
 }
 
-public final class com/apollographql/apollo3/testing/ReadFileJvmKt {
-	public static final fun getHostFileSystem ()Lokio/FileSystem;
+public final class com/apollographql/apollo3/testing/ReadFile_concurrentKt {
+}
+
+public final class com/apollographql/apollo3/testing/ReadFile_jvmKt {
 	public static final fun getTestsPath ()Ljava/lang/String;
 	public static final fun shouldUpdateTestFixtures ()Z
 }
