@@ -49,7 +49,8 @@ suspend fun test() {
 
   apolloClient!!.apolloStore.clearAll()
 
-  apolloClient!!.apolloStore().clearAll()
+  // apolloStore() -> apolloStore doesn't work due to https://youtrack.jetbrains.com/issue/KTIJ-29078/
+  // apolloClient!!.apolloStore().clearAll()
 
   val cacheHeaders: CacheHeaders = CacheHeaders.NONE.toBuilder().build()
 

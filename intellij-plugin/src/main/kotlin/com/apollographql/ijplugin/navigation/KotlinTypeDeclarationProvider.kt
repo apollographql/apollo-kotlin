@@ -4,7 +4,6 @@ import com.apollographql.ijplugin.project.apolloProjectService
 import com.intellij.codeInsight.navigation.actions.TypeDeclarationProvider
 import com.intellij.lang.jsgraphql.psi.GraphQLNamedElement
 import com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.idea.codeInsight.KotlinTypeDeclarationProvider
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtElement
 
@@ -20,9 +19,9 @@ class KotlinTypeDeclarationProvider : TypeDeclarationProvider {
     if (symbol !is KtElement) return null
 
     // Get the original declaration(s)
-    val ktTypeDeclarations = TypeDeclarationProvider.EP_NAME.extensionList.firstOrNull { it is KotlinTypeDeclarationProvider }
-        ?.getSymbolTypeDeclarations(symbol) ?: return null
-    val ktTypeDeclaration = ktTypeDeclarations.firstOrNull() ?: return null
+    val ktTypeDeclarations = TypeDeclarationProvider.EP_NAME.extensionList.filterNot { it is KotlinTypeDeclarationProvider }
+        .map { it.getSymbolTypeDeclarations(symbol) }.filterNotNull().firstOrNull()
+    val ktTypeDeclaration = ktTypeDeclarations?.firstOrNull() ?: return null
 
     val gqlElements = when {
       ktTypeDeclaration is KtClass && ktTypeDeclaration.isApolloOperationOrFragment() -> {

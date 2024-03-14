@@ -6,12 +6,15 @@ import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLIdentifier
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.runReadAction
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtReferenceExpression
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.util.concurrent.Callable
 
 @RunWith(JUnit4::class)
 class KotlinTypeDeclarationProviderTest : ApolloTestCase() {
@@ -34,7 +37,13 @@ class KotlinTypeDeclarationProviderTest : ApolloTestCase() {
     val ktElement = fromElement()!!
 
     // Simulate navigation
-    val foundGqlDeclarationElements = kotlinTypeDeclarationProvider.getSymbolTypeDeclarations(ktElement)!!
+    // XXX TypeDeclarationProvider.getSymbolTypeDeclarations() throws KtInaccessibleLifetimeOwnerAccessException when called from the EDT
+    val foundGqlDeclarationElements = ApplicationManager.getApplication().executeOnPooledThread(Callable {
+      runReadAction {
+        kotlinTypeDeclarationProvider.getSymbolTypeDeclarations(ktElement)!!
+      }
+    }).get()
+
     // We want our target (gql), but also the original targets (Kotlin)
     assertTrue(foundGqlDeclarationElements.size > 1)
 

@@ -12,7 +12,9 @@ suspend fun main() {
     .build()
 
   val myMutation: Mutation<*, *, *>? = null
-  apolloClient.mutate(myMutation!!).await()
+  val call = apolloClient!!.mutate(myMutation!!)
+  // await() -> execute() doesn't work due to https://youtrack.jetbrains.com/issue/KTIJ-29093/ but actually works in AS
+  // call.await()
 
   val mySubscription: Subscription<*, *, *>? = null
   apolloClient.subscribe(mySubscription!!).toFlow()
