@@ -68,7 +68,7 @@ class CacheTests {
     }
 
     if (sql) {
-      registerCacheSize("com.apollographql.apollo3.benchmark.CacheTests", testName, dbFile.length())
+      registerCacheSize("CacheTests", testName, dbFile.length())
     }
 
     benchmarkRule.measureRepeated {
