@@ -15,8 +15,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 
 /**
- * An [ApolloCall] is a thin class that builds a [ApolloRequest] and calls [ApolloClient].execute() with it.
- * [ApolloCall] is mutable and designed to allow chaining calls.
+ * An [ApolloCall] is a thin class that binds an [ApolloRequest] with its [ApolloClient].
+ *
+ * - call [ApolloCall.execute] for simple request/response cases.
+ * - call [ApolloCall.toFlow] for other cases that may return more than one [ApolloResponse]. For an example
+ * subscriptions, `@defer` queries, cache queries, etc...
  */
 class ApolloCall<D : Operation.Data> internal constructor(
     internal val apolloClient: ApolloClient,

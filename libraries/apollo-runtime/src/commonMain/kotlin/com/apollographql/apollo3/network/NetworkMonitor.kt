@@ -12,7 +12,8 @@ import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
 /**
- * Monitors the network state to determine when to retry requests
+ * Monitors the network state.
+ * A [NetworkMonitor] is used to retry requests when network is available.
  */
 @ApolloExperimental
 interface NetworkMonitor: Closeable {
