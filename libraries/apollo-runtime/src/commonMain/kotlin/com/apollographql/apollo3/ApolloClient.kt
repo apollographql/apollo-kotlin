@@ -461,7 +461,8 @@ private constructor(
     /**
      * Whether to send the [GraphQL Document](https://spec.graphql.org/October2021/#Document).
      *
-     * Some servers may support
+     * Set [sendDocument] to `false` if your server supports [persisted queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries/) and
+     * can execute an operation base on an id instead.
      */
     override fun sendDocument(sendDocument: Boolean?): Builder = apply {
       this.sendDocument = sendDocument
