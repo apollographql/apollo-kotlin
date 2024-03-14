@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import okio.FileSystem
 import java.io.File
+import java.io.IOException
 
 enum class HttpFetchPolicy {
   /**
@@ -129,13 +130,19 @@ fun ApolloClient.Builder.httpCache(
               catch { throwable ->
                 // Revert caching of responses with errors
                 val cacheKey = synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey[request.requestUuid.toString()] }
-                cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
+                try {
+                  cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
+                } catch (_: IOException) {
+                }
                 throw throwable
               }.onEach { response ->
                 // Revert caching of responses with errors
                 val cacheKey = synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey[request.requestUuid.toString()] }
                 if (response.hasErrors()) {
-                  cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
+                  try {
+                    cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
+                  } catch (_: IOException) {
+                  }
                 }
               }.onCompletion {
                 synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey.remove(request.requestUuid.toString()) }
