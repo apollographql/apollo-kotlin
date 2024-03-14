@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mockserver.assertNoRequest
@@ -21,8 +22,34 @@ import kotlinx.coroutines.flow.takeWhile
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import kotlin.test.assertIs
+import kotlin.test.assertNull
 
-class NetworkMonitorInterceptorTest {
+class NetworkMonitorTest {
+  @Test
+  fun failFastIfOfflineTest(): ApolloTestResult {
+    val fakeNetworkMonitor = FakeNetworkMonitor()
+
+    return mockServerTest(clientBuilder = {
+      networkMonitor(fakeNetworkMonitor)
+      failFastIfOffline(true)
+    }) {
+
+      fakeNetworkMonitor._isOnline.value = false
+
+      apolloClient.query(FooQuery()).toFlow()
+          .test {
+            awaitItem().apply {
+              assertNull(data)
+              assertIs<ApolloNetworkException>(exception)
+              assertEquals("The device is offline", exception?.message)
+            }
+            mockServer.assertNoRequest()
+            awaitComplete()
+          }
+    }
+  }
+
   @Test
   fun networkMonitorInterceptorTest(): ApolloTestResult {
     val fakeNetworkMonitor = FakeNetworkMonitor()

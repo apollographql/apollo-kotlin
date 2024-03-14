@@ -22,6 +22,8 @@ private constructor(
     override val canBeBatched: Boolean?,
     @ApolloExperimental
     val retryOnError: Boolean?,
+    @ApolloExperimental
+    val failFastIfOffline: Boolean?,
 ) : ExecutionOptions {
 
   fun newBuilder(): Builder<D> = newBuilder(operation)
@@ -38,6 +40,7 @@ private constructor(
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
         .retryOnError(retryOnError)
+        .failFastIfOffline(failFastIfOffline)
   }
 
   class Builder<D : Operation.Data>(
@@ -62,6 +65,14 @@ private constructor(
     @ApolloExperimental
     var retryOnError: Boolean? = null
       private set
+    @ApolloExperimental
+    var failFastIfOffline: Boolean? = null
+      private set
+
+    @ApolloExperimental
+    fun failFastIfOffline(failFastIfOffline: Boolean?): Builder<D> = apply {
+      this.failFastIfOffline = failFastIfOffline
+    }
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder<D> = apply {
       this.httpMethod = httpMethod
@@ -119,7 +130,8 @@ private constructor(
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
-          retryOnError = retryOnError
+          retryOnError = retryOnError,
+          failFastIfOffline = failFastIfOffline,
       )
     }
   }

@@ -78,6 +78,7 @@ private constructor(
   private val networkMonitor: NetworkMonitor?
   private val retryOnError: ((ApolloRequest<*>) -> Boolean)? = builder.retryOnError
   private val retryOnErrorInterceptor: ApolloInterceptor
+  private val failFastIfOffline = builder.failFastIfOffline
 
   override val executionContext: ExecutionContext = builder.executionContext
   override val httpMethod: HttpMethod? = builder.httpMethod
@@ -287,6 +288,12 @@ private constructor(
             retryOnError = this@ApolloClient.retryOnError?.invoke(apolloRequest) ?: false
           }
           retryOnError(retryOnError)
+
+          var failFastIfOffline = apolloRequest.failFastIfOffline
+          if (failFastIfOffline == null) {
+            failFastIfOffline = this@ApolloClient.failFastIfOffline ?: false
+          }
+          failFastIfOffline(failFastIfOffline)
         }
         .build()
 
@@ -377,6 +384,21 @@ private constructor(
     @ApolloExperimental
     var retryOnError: ((ApolloRequest<*>) -> Boolean)? = null
       private set
+    @ApolloExperimental
+    var failFastIfOffline: Boolean? = null
+      private set
+
+    /**
+     * Whether to fail fast if the device is offline.
+     *
+     * In that case, the returned [ApolloResponse.exception] is an instance of [com.apollographql.apollo3.exception.ApolloNetworkException]
+     *
+     * @see NetworkMonitor
+     */
+    @ApolloExperimental
+    fun failFastIfOffline(failFastIfOffline: Boolean?): Builder = apply {
+      this.failFastIfOffline = failFastIfOffline
+    }
 
     /**
      * Configures the [NetworkMonitor] for this [ApolloClient]
@@ -848,6 +870,7 @@ private constructor(
           .retryOnError(retryOnError)
           .retryOnErrorInterceptor(retryOnErrorInterceptor)
           .networkMonitor(networkMonitor)
+          .failFastIfOffline(failFastIfOffline)
     }
   }
 
