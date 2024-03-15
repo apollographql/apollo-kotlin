@@ -26,9 +26,11 @@ configure<com.android.build.gradle.LibraryExtension> {
   productFlavors {
     create("incubating") {
       dimension = "stability"
+      testApplicationId = "com.apollographql.apollo3.benchmark.incubating"
     }
     create("stable") {
       dimension = "stability"
+      testApplicationId = "com.apollographql.apollo3.benchmark.stable"
     }
   }
 }

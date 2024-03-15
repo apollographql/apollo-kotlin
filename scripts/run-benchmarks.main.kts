@@ -161,7 +161,12 @@ data class GCloud(val storage: Storage, val projectId: String)
  * Run the test remotely. To do the same thing locally, run
  *
  * adb install benchmark/microbenchmark/build/outputs/apk/androidTest/stable/release/microbenchmark-stable-release-androidTest.apk
- * adb shell am instrument -w com.apollographql.apollo3.benchmark.test/androidx.benchmark.junit4.AndroidBenchmarkRunner
+ * adb shell am instrument -w com.apollographql.apollo3.benchmark.stable/androidx.benchmark.junit4.AndroidBenchmarkRunner
+ *
+ * Or just
+ *
+ * ./gradlew -p benchmark :microbenchmark:connectedIncubatingReleaseAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.apollographql.apollo3.benchmark.CacheIncubatingIntegrationTests#concurrentQueriesTestNetworkTransportMemoryThenSql
+ * cat 'benchmark/microbenchmark/build/outputs/androidTest-results/connected/release/flavors/incubating/Pixel 6a - 14/testlog/test-results.log'
  */
 fun runTest(projectId: String, testApk: String): String {
   val args = mutableListOf(
