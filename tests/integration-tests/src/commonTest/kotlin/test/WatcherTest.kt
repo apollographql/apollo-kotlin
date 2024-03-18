@@ -92,8 +92,9 @@ class WatcherTest {
       apolloClient.enqueueTestResponse(query, episodeHeroNameData)
       apolloClient.enqueueTestResponse(query, episodeHeroNameChangedData)
 
-      val job = launch {
-        apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).watch().collect {
+      val job = launch(start = CoroutineStart.UNDISPATCHED) {
+        val flow =  apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).watch()
+        flow.collect {
           channel.send(it.data)
         }
       }

@@ -3,7 +3,6 @@
 package com.apollographql.apollo3.cache.http
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.ConcurrencyInfo
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
@@ -23,7 +22,6 @@ import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import okio.FileSystem
@@ -139,7 +137,7 @@ fun ApolloClient.Builder.httpCache(
                 }
               }.onCompletion {
                 synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey.remove(request.requestUuid.toString()) }
-              }.flowOn(request.executionContext[ConcurrencyInfo]!!.dispatcher)
+              }
             } else {
               this
             }

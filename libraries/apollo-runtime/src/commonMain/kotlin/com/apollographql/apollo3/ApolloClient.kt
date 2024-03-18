@@ -36,6 +36,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import okio.Closeable
 import kotlin.jvm.JvmOverloads
@@ -221,7 +222,6 @@ private constructor(
   private val networkInterceptor = NetworkInterceptor(
       networkTransport = networkTransport,
       subscriptionNetworkTransport = subscriptionNetworkTransport,
-      dispatcher = concurrencyInfo.dispatcher
   )
 
   /**
@@ -314,7 +314,7 @@ private constructor(
           } else {
             it
           }
-        }
+        }.flowOn(concurrencyInfo.dispatcher)
   }
 
   /**
