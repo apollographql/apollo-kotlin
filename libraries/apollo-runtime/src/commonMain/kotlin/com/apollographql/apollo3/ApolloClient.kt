@@ -22,7 +22,6 @@ import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
-import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
@@ -34,8 +33,11 @@ import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.ws.WsProtocol
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import okio.Closeable
@@ -175,7 +177,7 @@ private constructor(
       }
     }
 
-    val dispatcher = builder.dispatcher ?: defaultDispatcher
+    val dispatcher = builder.dispatcher ?: Dispatchers.Default
     concurrencyInfo = ConcurrencyInfo(
         dispatcher,
         CoroutineScope(dispatcher)
@@ -315,6 +317,7 @@ private constructor(
             it
           }
         }.flowOn(concurrencyInfo.dispatcher)
+        .buffer(Channel.UNLIMITED)
   }
 
   /**
@@ -788,11 +791,9 @@ private constructor(
     }
 
     /**
-     * Changes the [CoroutineDispatcher] used for I/O intensive work like reading the
-     * network or the cache
-     * On the JVM the dispatcher is [kotlinx.coroutines.Dispatchers.IO] by default.
-     * On native this function has no effect. Network request use the default NSURLConnection
-     * threads and the cache uses a background dispatch queue.
+     * Changes the [CoroutineDispatcher] used by [ApolloCall.toFlow]
+     *
+     * @see [ApolloCall.toFlow]
      */
     fun dispatcher(dispatcher: CoroutineDispatcher?) = apply {
       this.dispatcher = dispatcher
