@@ -855,7 +855,7 @@ private constructor(
     }
 
     /**
-     * Sets the [CoroutineDispatcher] used by [ApolloCall.toFlow].
+     * Sets the [CoroutineDispatcher] that the return value of [ApolloCall.toFlow] will flow on.
      *
      * By default, [ApolloClient] uses [kotlinx.coroutines.Dispatchers.IO] for JVM/native targets and [kotlinx.coroutines.Dispatchers.Default] for JS and other targets.
      *
