@@ -40,7 +40,7 @@ class ApiKeyDialog(
     val isEdit = apolloKotlinServiceId != null
     title = ApolloBundle.message(if (isEdit) "settings.studio.apiKeyDialog.title.edit" else "settings.studio.apiKeyDialog.title.add")
     gradleProjectName = if (isEdit) {
-      apolloKotlinServiceId!!.gradleProjectName
+      apolloKotlinServiceId!!.gradleProjectPath
     } else {
       getGradleProjectNames().firstOrNull() ?: ""
     }
@@ -106,12 +106,12 @@ class ApiKeyDialog(
   }.withPreferredWidth(450)
 
   private fun getGradleProjectNames(): List<String> {
-    return GradleToolingModelService.getApolloKotlinServices(project).map { it.id.gradleProjectName }.distinct().sorted()
+    return GradleToolingModelService.getApolloKotlinServices(project).map { it.id.gradleProjectPath }.distinct().sorted()
   }
 
   private fun getApolloKotlinServiceNames(gradleProjectName: String): List<String> {
     return GradleToolingModelService.getApolloKotlinServices(project)
-        .filter { it.id.gradleProjectName == gradleProjectName }
+        .filter { it.id.gradleProjectPath == gradleProjectName }
         .map { it.id.serviceName }
         .sorted()
   }

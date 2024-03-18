@@ -12,15 +12,18 @@ interface ApolloKotlinServiceListener {
 }
 
 data class ApolloKotlinService(
-    val gradleProjectName: String,
+    val gradleProjectPath: String,
     val serviceName: String,
     val schemaPaths: List<String>,
     val operationPaths: List<String>,
     val endpointUrl: String?,
     val endpointHeaders: Map<String, String>?,
 ) {
-  data class Id(val gradleProjectName: String, val serviceName: String) {
-    override fun toString() = "$gradleProjectName/$serviceName"
+  data class Id(val gradleProjectPath: String, val serviceName: String) {
+    override fun toString(): String {
+      val formattedPath = gradleProjectPath.split(":").filterNot { it.isEmpty() }.joinToString("-")
+      return "$formattedPath/$serviceName"
+    }
 
     companion object {
       fun fromString(string: String): Id? {
@@ -31,5 +34,5 @@ data class ApolloKotlinService(
     }
   }
 
-  val id = Id(gradleProjectName, serviceName)
+  val id = Id(gradleProjectPath, serviceName)
 }

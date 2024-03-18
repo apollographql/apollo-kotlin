@@ -6,7 +6,12 @@ interface ApolloGradleToolingModel {
   val versionMajor: Int
   val versionMinor: Int
 
+  @Deprecated("Use projectPath instead", ReplaceWith("projectPath"))
   val projectName: String
+
+  // Introduced in 1.3
+  val projectPath: String
+
   val serviceInfos: List<ServiceInfo>
 
   // Introduced in 1.2
@@ -16,7 +21,11 @@ interface ApolloGradleToolingModel {
     val name: String
     val schemaFiles: Set<File>
     val graphqlSrcDirs: Set<File>
+    @Deprecated("Use upstreamProjectPaths instead", ReplaceWith("upstreamProjectPaths"))
     val upstreamProjects: Set<String>
+
+    // Introduced in 1.3
+    val upstreamProjectPaths: Set<String>
 
     // Introduced in 1.1
     val endpointUrl: String?
@@ -78,6 +87,6 @@ interface ApolloGradleToolingModel {
      * Current minor version of the tooling model.
      * Increment this value when the model changes in compatible ways (additions).
      */
-    const val VERSION_MINOR = 2
+    internal const val VERSION_MINOR = 3
   }
 }
