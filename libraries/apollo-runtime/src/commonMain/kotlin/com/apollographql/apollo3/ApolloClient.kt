@@ -40,7 +40,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import okio.Closeable
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
@@ -796,7 +795,9 @@ private constructor(
     }
 
     /**
-     * Changes the [CoroutineDispatcher] used by [ApolloCall.toFlow]
+     * Sets the [CoroutineDispatcher] used by [ApolloCall.toFlow].
+     *
+     * By default, [ApolloClient] uses [kotlinx.coroutines.Dispatchers.IO] for JVM/native targets and [kotlinx.coroutines.Dispatchers.Default] for JS and other targets.
      *
      * @see [ApolloCall.toFlow]
      */
