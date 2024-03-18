@@ -32,8 +32,8 @@ internal class DefaultApolloStore(
       // If multiple watchers start notifying each other and potentially themselves, the buffer of changedKeysEvent will grow forever.
       // I think as long as the refetchPolicy is [FetchPolicy.CacheOnly] everything should be fine as there is no reentrant emission.
       // If the refetechPolicy is something else, we should certainly try to detect it in the cache interceptor
-      extraBufferCapacity = Int.MAX_VALUE,
-      onBufferOverflow = BufferOverflow.SUSPEND
+      extraBufferCapacity = 10,
+      onBufferOverflow = BufferOverflow.DROP_LATEST
   )
 
   override val changedKeys = changedKeysEvents.asSharedFlow()
