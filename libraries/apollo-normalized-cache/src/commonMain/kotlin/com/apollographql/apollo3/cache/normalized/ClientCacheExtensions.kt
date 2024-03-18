@@ -145,7 +145,13 @@ fun <D : Query.Data> ApolloCall<D>.watch(
 
 /**
  * Gets initial response(s) then observes the cache for any changes.
+ *
+ * There is a guarantee that the cache is subscribed before the initial response(s) finish emitting. Any update to the cache done after the initial response(s) are received will be received.
+ *
  * [fetchPolicy] controls how the result is first queried, while [refetchPolicy] will control the subsequent fetches.
+ *
+ * @see fetchPolicy
+ * @see refetchPolicy
  */
 fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
   return flow {
