@@ -457,6 +457,7 @@ private constructor(
      * Configures the [HttpHeader]s to use. These headers are added with the [ApolloCall] headers.
      *
      * @see [ApolloCall.httpHeaders]
+     * @see [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
      */
     override fun httpHeaders(httpHeaders: List<HttpHeader>?): Builder = apply {
       this.httpHeaders = httpHeaders
@@ -466,6 +467,7 @@ private constructor(
      * Adds a [HttpHeader] to the [ApolloClient] headers. The [ApolloClient] headers are added to the [ApolloCall] headers.
      *
      * @see [ApolloCall.httpHeaders]
+     * @see [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
      */
     override fun addHttpHeader(name: String, value: String): Builder = apply {
       this.httpHeaders = this.httpHeaders.orEmpty() + HttpHeader(name, value)
@@ -474,7 +476,20 @@ private constructor(
     /**
      * Whether to send the Auto Persisted Queries ([APQs](https://www.apollographql.com/docs/apollo-server/performance/apq/) extensions.
      *
+     * This is the low level API used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer] to determine whether to send the APQ extensions:
+     *
+     * ```json
+     * {
+     *   "query": "{ __typename }"
+     *   "extensions": {"persistedQuery":{"version":1,"sha256Hash":"ecf4edb46db40b5132295c0291d62fb65d6759a9eedfa4d5d612dd5ec54a6b38"}}
+     * }
+     * ```
+     *
+     * To configure APQs in general, including retry behaviour, use [autoPersistedQueries] and [enableAutoPersistedQueries].
+     *
      * @see autoPersistedQueries
+     * @see enableAutoPersistedQueries
+     * @see com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
      */
     override fun sendApqExtensions(sendApqExtensions: Boolean?): Builder = apply {
       this.sendApqExtensions = sendApqExtensions
@@ -483,8 +498,16 @@ private constructor(
     /**
      * Whether to send the [GraphQL Document](https://spec.graphql.org/October2021/#Document).
      *
+     * This is the low level API used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer] to determine whether to send the "query" GraphQL document.
+     *
      * Set [sendDocument] to `false` if your server supports [persisted queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries/) and
      * can execute an operation base on an id instead.
+     *
+     * To configure APQs in general, including retry behaviour, use [autoPersistedQueries] and [enableAutoPersistedQueries].
+     *
+     * @see autoPersistedQueries
+     * @see enableAutoPersistedQueries
+     * @see com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
      */
     override fun sendDocument(sendDocument: Boolean?): Builder = apply {
       this.sendDocument = sendDocument
@@ -743,6 +766,8 @@ private constructor(
      * **The order is important**. The [ApolloInterceptor]s are executed in the order they are added. Because cache and APQs also
      * use interceptors, the order of the cache/APQs configuration also influences the final interceptor list.
      */
+    @Deprecated("Use addInterceptor() or interceptors()")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     fun addInterceptors(interceptors: List<ApolloInterceptor>) = apply {
       this._interceptors += interceptors
     }
