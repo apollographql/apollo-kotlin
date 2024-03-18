@@ -174,7 +174,7 @@ class GradleToolingModelService(
       project.telemetryService.gradleModuleCount = rootGradleProject.children.size + 1
 
       // We're only interested in projects that apply the Apollo plugin - and thus have the codegen task registered
-      val allApolloGradleProjects: List<GradleProject> = (rootGradleProject.children + rootGradleProject)
+      val allApolloGradleProjects: List<GradleProject> = rootGradleProject.allChildrenRecursively()
           .filter { gradleProject -> gradleProject.tasks.any { task -> task.name == CODEGEN_GRADLE_TASK_NAME } }
       logd("allApolloGradleProjects=${allApolloGradleProjects.map { it.name }}")
       project.telemetryService.apolloKotlinModuleCount = allApolloGradleProjects.size
@@ -291,6 +291,10 @@ class GradleToolingModelService(
       return project.service<GradleToolingModelService>().apolloKotlinServices
     }
   }
+}
+
+private fun GradleProject.allChildrenRecursively(): List<GradleProject> {
+  return listOf(this) + children.flatMap { it.allChildrenRecursively() }
 }
 
 val Project.gradleToolingModelService get() = service<GradleToolingModelService>()
