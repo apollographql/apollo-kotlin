@@ -162,7 +162,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
    * @see ApolloClient.Builder.dispatcher
    */
   fun toFlow(): Flow<ApolloResponse<D>> {
-    return apolloClient.executeAsFlow(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, false)
+    return apolloClient.executeAsFlowInternal(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, false)
   }
 
   /**
@@ -177,7 +177,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
     @Suppress("DEPRECATION")
     return conflateFetchPolicyInterceptorResponses(true)
         .apolloClient
-        .executeAsFlow(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, true)
+        .executeAsFlowInternal(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, true)
   }
 
   private fun toApolloRequest(): ApolloRequest<D> {

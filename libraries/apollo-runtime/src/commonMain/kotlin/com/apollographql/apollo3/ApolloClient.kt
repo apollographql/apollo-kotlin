@@ -2,6 +2,7 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -22,6 +23,7 @@ import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
+import com.apollographql.apollo3.internal.ApolloClientListener
 import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.network.NetworkTransport
@@ -34,12 +36,15 @@ import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.ws.WsProtocol
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.withContext
 import okio.Closeable
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
@@ -82,6 +87,7 @@ private constructor(
   private val retryOnError: ((ApolloRequest<*>) -> Boolean)? = builder.retryOnError
   private val retryOnErrorInterceptor: ApolloInterceptor
   private val failFastIfOffline = builder.failFastIfOffline
+  private val listeners = builder.listeners
 
   override val executionContext: ExecutionContext = builder.executionContext
   override val httpMethod: HttpMethod? = builder.httpMethod
@@ -242,10 +248,47 @@ private constructor(
   fun <D : Operation.Data> executeAsFlow(
       apolloRequest: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
-    return executeAsFlow(apolloRequest, false, false)
+    return executeAsFlowInternal(apolloRequest, false, false)
   }
 
-  internal fun <D : Operation.Data> executeAsFlow(
+  internal fun <D : Operation.Data> executeAsFlowInternal(
+      apolloRequest: ApolloRequest<D>,
+      ignoreApolloClientHttpHeaders: Boolean,
+      throwing: Boolean,
+  ): Flow<ApolloResponse<D>> {
+    val flow = channelFlow {
+      listeners.forEach {
+        it.requestStarted(apolloRequest)
+      }
+
+      try {
+        withContext(concurrencyInfo.dispatcher) {
+          apolloResponses(apolloRequest, ignoreApolloClientHttpHeaders, throwing).collect {
+            send(it)
+          }
+        }
+      } finally {
+        listeners.forEach {
+          it.requestCompleted(apolloRequest)
+        }
+      }
+    }
+
+    return flow
+        /**
+         * The `Unconfined` dispatcher is needed to let the IdlingResource monitor collection synchronously. Without this, `channelFlow` dispatches and the current stack frame terminates with the IdlingResource still being idle.
+         *
+         * See [idlingResourceSingleQuery](https://github.com/apollographql/apollo-kotlin/blob/215a845f38bcdfc9c72ffc7c58d077ac54e297bb/tests/idling-resource/src/test/java/IdlingResourceTest.kt#L33).
+         * See https://slack-chats.kotlinlang.org/t/16714036/can-i-have-a-channelflow-that-does-not-dispatch-until-after-#d48ebff5-676e-4109-8dd5-b2320245faa3.
+         */
+        .flowOn(Dispatchers.Unconfined)
+        /**
+         * Default to [Channel.UNLIMITED] so as not to lose any item. If a consumer is very slow, the channel may grow boundless. The caller should call [buffer] and change the default in those cases.
+         */
+        .buffer(Channel.UNLIMITED)
+  }
+
+  internal fun <D : Operation.Data> apolloResponses(
       apolloRequest: ApolloRequest<D>,
       ignoreApolloClientHttpHeaders: Boolean,
       throwing: Boolean,
@@ -303,7 +346,7 @@ private constructor(
         }
         .build()
 
-    val allInterceptors = buildList{
+    val allInterceptors = buildList {
       addAll(interceptors)
       add(retryOnErrorInterceptor)
       add(networkInterceptor)
@@ -320,8 +363,7 @@ private constructor(
           } else {
             it
           }
-        }.flowOn(concurrencyInfo.dispatcher)
-        .buffer(Channel.UNLIMITED)
+        }
   }
 
   /**
@@ -343,6 +385,9 @@ private constructor(
 
     private val _httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
     val httpInterceptors: List<HttpInterceptor> = _httpInterceptors
+
+    private val _listeners: MutableList<ApolloClientListener> = mutableListOf()
+    internal val listeners: List<ApolloClientListener> = _listeners
 
     override var executionContext: ExecutionContext = ExecutionContext.Empty
       private set
@@ -382,15 +427,19 @@ private constructor(
       private set
     var webSocketReopenServerUrl: (suspend () -> String)? = null
       private set
+
     @ApolloExperimental
     var retryOnErrorInterceptor: ApolloInterceptor? = null
       private set
+
     @ApolloExperimental
     var networkMonitor: NetworkMonitor? = null
       private set
+
     @ApolloExperimental
     var retryOnError: ((ApolloRequest<*>) -> Boolean)? = null
       private set
+
     @ApolloExperimental
     var failFastIfOffline: Boolean? = null
       private set
@@ -749,6 +798,17 @@ private constructor(
       _customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter)
     }
 
+    @ApolloInternal
+    fun addListener(listener: ApolloClientListener) = apply {
+      _listeners.add(listener)
+    }
+
+    @ApolloInternal
+    fun listeners(listeners: List<ApolloClientListener>) = apply {
+      _listeners.clear()
+      _listeners.addAll(listeners)
+    }
+
     /**
      * Adds an [ApolloInterceptor] to this [ApolloClient].
      *
@@ -760,7 +820,7 @@ private constructor(
      * use interceptors, the order of the cache/APQs configuration also influences the final interceptor list.
      */
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {
-      _interceptors += interceptor
+      _interceptors.add(interceptor)
     }
 
     /**
@@ -903,6 +963,7 @@ private constructor(
           .retryOnErrorInterceptor(retryOnErrorInterceptor)
           .networkMonitor(networkMonitor)
           .failFastIfOffline(failFastIfOffline)
+          .listeners(listeners)
     }
   }
 

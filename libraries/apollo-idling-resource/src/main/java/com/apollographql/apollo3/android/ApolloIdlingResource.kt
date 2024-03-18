@@ -3,14 +3,7 @@ package com.apollographql.apollo3.android
 import androidx.test.espresso.IdlingResource
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.interceptor.ApolloInterceptor
-import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
+import com.apollographql.apollo3.internal.ApolloClientListener
 
 class ApolloIdlingResource(
     private val resourceName: String,
@@ -46,21 +39,15 @@ class ApolloIdlingResource(
 }
 
 fun ApolloClient.Builder.idlingResource(idlingResource: ApolloIdlingResource): ApolloClient.Builder {
-  check(!interceptors.any { it is IdlingResourceInterceptor }) { "idlingResource was already set, can only be set once" }
-  return addInterceptor(IdlingResourceInterceptor(idlingResource))
+  return addListener(IdlingResourceListener(idlingResource))
 }
 
-private class IdlingResourceInterceptor(private val idlingResource: ApolloIdlingResource) : ApolloInterceptor {
-  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    // Do not update the idling resource on subscriptions as they never terminate
-    return if (request.operation !is Subscription) {
-      chain.proceed(request).onStart {
-        idlingResource.operationStart()
-      }.onCompletion {
-        idlingResource.operationEnd()
-      }
-    } else {
-      chain.proceed(request)
-    }
+private class IdlingResourceListener(private val idlingResource: ApolloIdlingResource) : ApolloClientListener {
+  override fun requestStarted(request: ApolloRequest<*>) {
+    idlingResource.operationStart()
+  }
+
+  override fun requestCompleted(request: ApolloRequest<*>) {
+    idlingResource.operationEnd()
   }
 }
