@@ -16,16 +16,18 @@ import com.apollographql.apollo3.benchmark.Utils.registerCacheSize
 import com.apollographql.apollo3.benchmark.Utils.resource
 import com.apollographql.apollo3.benchmark.Utils.responseBasedQuery
 import com.apollographql.apollo3.benchmark.test.R
-import com.apollographql.apollo3.cache.normalized.incubating.api.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.incubating.api.CacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.incubating.api.CacheResolver
-import com.apollographql.apollo3.cache.normalized.incubating.api.DefaultRecordMerger
-import com.apollographql.apollo3.cache.normalized.incubating.api.FieldPolicyCacheResolver
-import com.apollographql.apollo3.cache.normalized.incubating.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.incubating.api.ReadOnlyNormalizedCache
-import com.apollographql.apollo3.cache.normalized.incubating.api.Record
-import com.apollographql.apollo3.cache.normalized.incubating.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.incubating.sql.SqlNormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
+import com.apollographql.apollo3.cache.normalized.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
+import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
+import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
+import com.apollographql.apollo3.cache.normalized.api.Record
+import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo3.cache.normalized.api.normalize
+import com.apollographql.apollo3.cache.normalized.api.readDataFromCache
+import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Rule
@@ -82,20 +84,17 @@ class CacheIncubatingTests {
   private fun <D : Query.Data> readFromCache(testName: String, query: Query<D>, sql: Boolean, check: (D) -> Unit) {
     val cache = if (sql) {
       Utils.dbFile.delete()
-      // Pass context explicitly here because androidx.startup fails due to relocation
-      SqlNormalizedCacheFactory(InstrumentationRegistry.getInstrumentation().context, Utils.dbName, withDates = true).create()
+      SqlNormalizedCacheFactory(Utils.dbName, withDates = true).create()
     } else {
       MemoryCacheFactory().create()
     }
     val data = query.parseJsonResponse(resource(R.raw.calendar_response).jsonReader()).data!!
 
-    val records = normalizeMethod.invoke(
-        null,
-        query,
+    val records = query.normalize(
         data,
         CustomScalarAdapters.Empty,
         TypePolicyCacheKeyGenerator,
-    ) as Map<String, Record>
+    )
 
     runBlocking {
       cache.merge(records.values.toList(), CacheHeaders.NONE, DefaultRecordMerger)
@@ -105,14 +104,12 @@ class CacheIncubatingTests {
       registerCacheSize("CacheIncubatingTests", testName, Utils.dbFile.length())
     }
     benchmarkRule.measureRepeated {
-      val data2 = readDataFromCacheMethod.invoke(
-          null,
-          query,
+      val data2 = query.readDataFromCache(
           CustomScalarAdapters.Empty,
           cache,
           FieldPolicyCacheResolver,
           CacheHeaders.NONE
-      ) as D
+      )
       check(data2)
     }
   }
@@ -120,20 +117,17 @@ class CacheIncubatingTests {
   private fun <D : Query.Data> concurrentReadWriteFromCache(query: Query<D>, sql: Boolean) {
     val cache = if (sql) {
       Utils.dbFile.delete()
-      // Pass context explicitly here because androidx.startup fails due to relocation
-      SqlNormalizedCacheFactory(InstrumentationRegistry.getInstrumentation().context, Utils.dbName, withDates = true).create()
+      SqlNormalizedCacheFactory(Utils.dbName, withDates = true).create()
     } else {
       MemoryCacheFactory().create()
     }
     val data = query.parseJsonResponse(resource(R.raw.calendar_response_simple).jsonReader()).data!!
 
-    val records = normalizeMethod.invoke(
-        null,
-        query,
+    val records = query.normalize(
         data,
         CustomScalarAdapters.Empty,
         TypePolicyCacheKeyGenerator,
-    ) as Map<String, Record>
+    )
 
     val threadPool = Executors.newFixedThreadPool(CONCURRENCY)
     benchmarkRule.measureRepeated {
@@ -143,14 +137,12 @@ class CacheIncubatingTests {
           repeat(WORK_LOAD) {
             cache.merge(records.values.toList(), CacheHeaders.NONE, DefaultRecordMerger)
 
-            val data2 = readDataFromCacheMethod.invoke(
-                null,
-                query,
+            val data2 = query.readDataFromCache(
                 CustomScalarAdapters.Empty,
                 cache,
                 FieldPolicyCacheResolver,
                 CacheHeaders.NONE
-            ) as D
+            )
 
             Assert.assertEquals(data, data2)
           }
@@ -165,28 +157,5 @@ class CacheIncubatingTests {
   companion object {
     private const val CONCURRENCY = 15
     private const val WORK_LOAD = 15
-
-    /**
-     * There doesn't seem to be a way to relocate Kotlin metdata and kotlin_module files so we rely on reflection to call top-level
-     * methods
-     * See https://discuss.kotlinlang.org/t/what-is-the-proper-way-to-repackage-shade-kotlin-dependencies/10869
-     */
-    private val clazz = Class.forName("com.apollographql.apollo3.cache.normalized.incubating.api.OperationCacheExtensionsKt")
-    private val normalizeMethod: Method = clazz.getMethod(
-        "normalize",
-        Operation::class.java,
-        Operation.Data::class.java,
-        CustomScalarAdapters::class.java,
-        CacheKeyGenerator::class.java
-    )
-
-    private val readDataFromCacheMethod: Method = clazz.getMethod(
-        "readDataFromCache",
-        Executable::class.java,
-        CustomScalarAdapters::class.java,
-        ReadOnlyNormalizedCache::class.java,
-        CacheResolver::class.java,
-        CacheHeaders::class.java
-    )
   }
 }

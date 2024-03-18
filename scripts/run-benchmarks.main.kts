@@ -5,11 +5,15 @@
 @file:DependsOn("net.mbonnin.bare-graphql:bare-graphql:0.0.2")
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.2")
 @file:DependsOn("com.squareup.okhttp3:okhttp:4.10.0")
+@file:DependsOn("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
 import Run_benchmarks_main.TestResult
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.storage.Storage
 import com.google.cloud.storage.StorageOptions
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -43,7 +47,8 @@ import kotlin.math.roundToLong
  */
 
 val appApk = "benchmark/app/build/outputs/apk/release/app-release.apk"
-val testApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/release/microbenchmark-release-androidTest.apk"
+val stableTestApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/stable/release/microbenchmark-stable-release-androidTest.apk"
+val incubatingTestApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/incubating/release/microbenchmark-incubating-release-androidTest.apk"
 val deviceModel = "redfin,locale=en,orientation=portrait"
 val directoriesToPull = "/sdcard/Download"
 val environmentVariables = "clearPackageData=true,additionalTestOutputDir=/sdcard/Download,no-isolated-storage=true"
@@ -152,7 +157,18 @@ fun authenticate(): GCloud {
 
 data class GCloud(val storage: Storage, val projectId: String)
 
-fun runTest(projectId: String): String {
+/**
+ * Run the test remotely. To do the same thing locally, run
+ *
+ * adb install benchmark/microbenchmark/build/outputs/apk/androidTest/stable/release/microbenchmark-stable-release-androidTest.apk
+ * adb shell am instrument -w com.apollographql.apollo3.benchmark.stable/androidx.benchmark.junit4.AndroidBenchmarkRunner
+ *
+ * Or just
+ *
+ * ./gradlew -p benchmark :microbenchmark:connectedIncubatingReleaseAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.apollographql.apollo3.benchmark.CacheIncubatingIntegrationTests#concurrentQueriesTestNetworkTransportMemoryThenSql
+ * cat 'benchmark/microbenchmark/build/outputs/androidTest-results/connected/release/flavors/incubating/Pixel 6a - 14/testlog/test-results.log'
+ */
+fun runTest(projectId: String, testApk: String): String {
   val args = mutableListOf(
       "gcloud",
       "-q", // Disable all interactive prompts
@@ -239,25 +255,82 @@ fun getTestResult(output: String, storage: Storage): TestResult {
 fun locateBenchmarkData(storage: Storage, bucket: String, prefix: String): List<Case>? {
   val candidates = storage.list(bucket, Storage.BlobListOption.prefix(prefix)).values
   return candidates.singleOrNull {
-  it.name.endsWith("benchmarkData.json")
-}?.let {
-  downloadBlob(storage, bucket, it.name)
-}?.let {
-  Json.parseToJsonElement(it).toAny()
-}?.parseCasesFromBenchmarkData()
+    it.name.endsWith("benchmarkData.json")
+  }?.let {
+    downloadBlob(storage, bucket, it.name)
+  }?.let {
+    Json.parseToJsonElement(it).toAny()
+  }?.parseCasesFromBenchmarkData()
 }
 
 fun locateExtraMetrics(storage: Storage, bucket: String, prefix: String): List<Map<String, Any>>? {
   val candidates = storage.list(bucket, Storage.BlobListOption.prefix(prefix)).values
   return candidates.singleOrNull {
-  it.name.endsWith("extraMetrics.json")
-}?.let {
-  downloadBlob(storage, bucket, it.name)
-}?.let {
-  Json.parseToJsonElement(it).toAny()
-}?.parseCasesFromExtraMetrics()
+    it.name.endsWith("extraMetrics.json")
+  }?.let {
+    downloadBlob(storage, bucket, it.name)
+  }?.let {
+    Json.parseToJsonElement(it).toAny()
+  }?.parseCasesFromExtraMetrics()
 }
 
+/**
+ * ```
+ * {
+ *     "context": {
+ *         "build": {
+ *             "brand": "google",
+ *             "device": "redfin",
+ *             "fingerprint": "google/redfin/redfin:11/RQ3A.211001.001/7641976:user/release-keys",
+ *             "model": "Pixel 5",
+ *             "version": {
+ *                 "sdk": 30
+ *             }
+ *         },
+ *         "cpuCoreCount": 8,
+ *         "cpuLocked": true,
+ *         "cpuMaxFreqHz": 2400000000,
+ *         "memTotalBytes": 7819997184,
+ *         "sustainedPerformanceModeEnabled": false
+ *     },
+ *     "benchmarks": [
+ *         {
+ *             "name": "concurrentReadWritesSql",
+ *             "params": {},
+ *             "className": "com.apollographql.apollo3.benchmark.ApolloStoreTests",
+ *             "totalRunTimeNs": 35949947123,
+ *             "metrics": {
+ *                 "timeNs": {
+ *                     "minimum": 3.36396648E8,
+ *                     "maximum": 4.54433847E8,
+ *                     "median": 3.828202985E8,
+ *                     "runs": [
+ *                         4.54433847E8,
+ *                         4.30116918E8,
+ *                         ...
+ *                     ]
+ *                 },
+ *                 "allocationCount": {
+ *                     "minimum": 585424.0,
+ *                     "maximum": 593386.0,
+ *                     "median": 589660.0,
+ *                     "runs": [
+ *                         589660.0,
+ *                         585424.0,
+ *                         ...,
+ *                     ]
+ *                 }
+ *             },
+ *             "sampledMetrics": {},
+ *             "warmupIterations": 30,
+ *             "repeatIterations": 1,
+ *             "thermalThrottleSleepSeconds": 0
+ *         },
+ *         ...
+ *     ]
+ * }
+ * ```
+ */
 fun Any.parseCasesFromBenchmarkData(): List<Case> {
   return this.asMap["benchmarks"].asList.map { it.asMap }.map {
     Case(
@@ -269,6 +342,28 @@ fun Any.parseCasesFromBenchmarkData(): List<Case> {
   }
 }
 
+/**
+ * ```
+ * [
+ *   {
+ *     "name": "bytes",
+ *     "value": 2994176,
+ *     "tags": [
+ *       "class:com.apollographql.apollo3.benchmark.CacheTests",
+ *       "test:cacheOperationSql"
+ *     ]
+ *   },
+ *   {
+ *     "name": "bytes",
+ *     "value": 2994176,
+ *     "tags": [
+ *       "class:com.apollographql.apollo3.benchmark.CacheTests",
+ *       "test:cacheResponseSql"
+ *     ]
+ *   }
+ * ]
+ * ```
+ */
 fun Any.parseCasesFromExtraMetrics(): List<Map<String, Any>> {
   return this.asList.map { it.asMap }.map {
     Serie(
@@ -356,8 +451,9 @@ data class Case(
   val fqName = "${clazz}.$test"
 }
 
-fun issueBody(testResult: TestResult): String {
+fun formattedTestResult(title: String, testResult: TestResult): String {
   return buildString {
+    appendLine("## $title")
     appendLine("### Last Run: ${Date()}")
     appendLine("* Firebase console: [link](${testResult.firebaseUrl})")
     appendLine("* Datadog dashboard: [link](${ddDashboardUrl})")
@@ -372,7 +468,7 @@ fun issueBody(testResult: TestResult): String {
 }
 
 val issueTitle = "Benchmarks dashboard"
-fun updateOrCreateGithubIssue(testResult: TestResult, githubToken: String) {
+fun updateOrCreateGithubIssue(stableTestResult: TestResult, incubatingTestResult: TestResult, githubToken: String) {
   val ghRepo = getRequiredEnvVariable("GITHUB_REPOSITORY")
   val ghRepositoryOwner = ghRepo.split("/")[0]
   val ghRepositoryName = ghRepo.split("/")[1]
@@ -399,6 +495,7 @@ fun updateOrCreateGithubIssue(testResult: TestResult, githubToken: String) {
   val response = ghGraphQL(query, githubToken)
   val existingIssues = response.get("search").asMap.get("edges").asList
 
+  val body = formattedTestResult("Stable", stableTestResult) + "\n\n" + formattedTestResult("Incubating", incubatingTestResult)
   val mutation: String
   val variables: Map<String, String>
   if (existingIssues.isEmpty()) {
@@ -411,7 +508,7 @@ mutation createIssue(${'$'}repositoryId: ID!, ${'$'}title: String!, ${'$'}body: 
     """.trimIndent()
     variables = mapOf(
         "title" to issueTitle,
-        "body" to issueBody(testResult),
+        "body" to body,
         "repositoryId" to response.get("repository").asMap["id"].cast<String>()
     )
     println("creating issue")
@@ -425,7 +522,7 @@ mutation updateIssue(${'$'}id: ID!, ${'$'}body: String!) {
     """.trimIndent()
     variables = mapOf(
         "id" to existingIssues.first().asMap["node"].asMap["id"].cast<String>(),
-        "body" to issueBody(testResult)
+        "body" to body
     )
     println("updating issue")
   }
@@ -496,19 +593,33 @@ fun uploadToDatadog(datadogApiKey: String, cases: List<Case>, extraMetrics: List
   println("posted to Datadog")
 }
 
-fun main() {
+fun runTest(gcloud: GCloud, testApk: String): TestResult {
+  val testOutput = runTest(gcloud.projectId, testApk)
+  return getTestResult(testOutput, gcloud.storage)
+}
+
+fun main() = runBlocking {
   val gcloud = authenticate()
-  val testOutput = runTest(gcloud.projectId)
-  val testResult = getTestResult(testOutput, gcloud.storage)
+
+  val stableTestResultDeferred = async(Dispatchers.Default) {
+    runTest(gcloud, stableTestApk)
+  }
+  val incubatingTestResultDeferred = async(Dispatchers.Default) {
+    runTest(gcloud, incubatingTestApk)
+  }
+
+  val stableTestResult = stableTestResultDeferred.await()
+  val incubatingTestResult = incubatingTestResultDeferred.await()
 
   val githubToken = getOptionalEnvVariable("GITHUB_TOKEN")
   if (githubToken != null) {
-    updateOrCreateGithubIssue(testResult, githubToken)
+    updateOrCreateGithubIssue(stableTestResult, incubatingTestResult, githubToken)
   }
   val datadogApiKey = getOptionalEnvVariable("DD_API_KEY")
   if (datadogApiKey != null) {
-    uploadToDatadog(datadogApiKey, testResult.cases, testResult.extraMetrics)
+    uploadToDatadog(datadogApiKey, stableTestResult.cases + incubatingTestResult.cases, stableTestResult.extraMetrics + incubatingTestResult.extraMetrics)
   }
 }
+
 
 main()
