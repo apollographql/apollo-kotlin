@@ -56,6 +56,7 @@ abstract class DefaultApolloExtension(
         schemaFiles = service.schemaFilesSnapshot(project),
         graphqlSrcDirs = service.graphqlSourceDirectorySet.srcDirs,
         upstreamProjects = service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.name }.toSet(),
+        upstreamProjectPaths = service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.dependencyProject.path }.toSet(),
         endpointUrl = service.introspection?.endpointUrl?.orNull,
         endpointHeaders = service.introspection?.headers?.orNull,
     )

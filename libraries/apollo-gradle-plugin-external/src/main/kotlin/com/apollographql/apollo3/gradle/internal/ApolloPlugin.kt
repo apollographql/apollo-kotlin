@@ -24,6 +24,7 @@ constructor(private val toolingModelRegistry: ToolingModelBuilderRegistry) : Plu
           override fun buildAll(modelName: String, project: Project): ApolloGradleToolingModel {
             return DefaultApolloGradleToolingModel(
                 projectName = project.name,
+                projectPath = project.path,
                 serviceInfos = apolloExtension.getServiceInfos(project),
                 telemetryData = getTelemetryData(project, apolloExtension),
             )

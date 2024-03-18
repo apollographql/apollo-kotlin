@@ -5,7 +5,9 @@ import java.io.File
 import java.io.Serializable
 
 internal data class DefaultApolloGradleToolingModel(
+    @Deprecated("Use projectPath instead", replaceWith = ReplaceWith("projectPath"))
     override val projectName: String,
+    override val projectPath: String,
     override val serviceInfos: List<ApolloGradleToolingModel.ServiceInfo>,
     override val telemetryData: ApolloGradleToolingModel.TelemetryData,
 ) : ApolloGradleToolingModel, Serializable {
@@ -17,7 +19,9 @@ internal data class DefaultServiceInfo(
     override val name: String,
     override val schemaFiles: Set<File>,
     override val graphqlSrcDirs: Set<File>,
+    @Deprecated("Use upstreamProjectPaths instead", replaceWith = ReplaceWith("upstreamProjectPaths"))
     override val upstreamProjects: Set<String>,
+    override val upstreamProjectPaths: Set<String>,
     override val endpointUrl: String?,
     override val endpointHeaders: Map<String, String>?,
 ) : ApolloGradleToolingModel.ServiceInfo, Serializable
