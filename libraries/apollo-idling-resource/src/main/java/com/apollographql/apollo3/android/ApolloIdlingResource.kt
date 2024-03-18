@@ -52,7 +52,7 @@ fun ApolloClient.Builder.idlingResource(idlingResource: ApolloIdlingResource): A
 
 private class IdlingResourceInterceptor(private val idlingResource: ApolloIdlingResource) : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    // Do not update the idling resource on subscriptions as they will never terminate
+    // Do not update the idling resource on subscriptions as they never terminate
     return if (request.operation !is Subscription) {
       chain.proceed(request).onStart {
         idlingResource.operationStart()

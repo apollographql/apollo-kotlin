@@ -154,8 +154,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
    *                  }
    * ```
    *
-   * The returned [Flow] flows on the dispatcher configured in [ApolloClient.Builder.dispatcher] or [kotlinx.coroutines.Dispatchers.Default] by default. There is no need to change the coroutine context before calling [execute].
-   *
+   * The returned [Flow] flows on the dispatcher configured in [ApolloClient.Builder.dispatcher] or a default dispatcher else. There is no need to change the coroutine context before calling [toFlow]. See [ApolloClient.Builder.dispatcher] for more details.
    *
    * The returned [Flow] has [kotlinx.coroutines.channels.Channel.UNLIMITED] buffering so that no response is missed in the case of a slow consumer. Use [kotlinx.coroutines.flow.buffer] to change that behaviour.
    *
@@ -230,9 +229,12 @@ class ApolloCall<D : Operation.Data> internal constructor(
    * }
    * ```
    *
-   * The coroutine is executed on the dispatcher configured in [ApolloClient.Builder.dispatcher] or [kotlinx.coroutines.Dispatchers.Default] by default. There is no need to change the coroutine context before calling [execute].
+   * The work is executed on the dispatcher configured in [ApolloClient.Builder.dispatcher] or a default dispatcher else. There is no need to change the coroutine context before calling [execute]. See [ApolloClient.Builder.dispatcher] for more details.
    *
    * @throws ApolloException if the call returns zero or multiple valid GraphQL responses.
+   *
+   * @see executeV3
+   * @see ApolloClient.Builder.dispatcher
    */
   suspend fun execute(): ApolloResponse<D> {
     return singleSuccessOrException(toFlow())
