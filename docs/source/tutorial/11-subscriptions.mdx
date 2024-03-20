@@ -119,7 +119,7 @@ Scaffold(
 
 Like for queries and mutations, the subscription will throw an error if the connection is lost or any other protocol error happens. To handle these situations, you can configure the client to retry the subscription with the `webSocketReopenWhen` function. Return `true` to retry, `false` to stop. To avoid retrying too often, you can use the `attempt` parameter to delay the retry:
 
-```kotlin title="MainActivity.kt"
+```kotlin title="Apollo.kt"
 val apolloClient = ApolloClient.Builder()
     (...)
     .webSocketReopenWhen { throwable, attempt -> // highlight-line
