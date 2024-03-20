@@ -12,6 +12,7 @@ import org.jetbrains.kotlin.idea.references.mainReference
 import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtConstructor
 import org.jetbrains.kotlin.psi.KtDeclaration
 import org.jetbrains.kotlin.psi.KtExpression
@@ -19,6 +20,7 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.KtLambdaArgument
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
+import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtReferenceExpression
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
@@ -84,3 +86,7 @@ fun KtExpression.type(): KotlinType? = safeAnalyze(getResolutionFacade()).getTyp
 fun KtReferenceExpression.resolve() = mainReference.resolve()
 
 fun KotlinType.canBeNull() = isMarkedNullable || isNullabilityFlexible()
+
+fun KtClassOrObject.findFunctionsByName(name: String): List<KtNamedFunction> {
+  return declarations.filterIsInstance<KtNamedFunction>().filter { it.name == name }
+}

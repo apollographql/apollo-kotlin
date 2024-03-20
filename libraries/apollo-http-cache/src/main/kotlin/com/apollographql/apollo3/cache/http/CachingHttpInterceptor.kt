@@ -14,6 +14,7 @@ import okio.Buffer
 import okio.ByteString.Companion.toByteString
 import okio.FileSystem
 import java.io.File
+import java.io.IOException
 import java.time.Instant
 import java.time.format.DateTimeParseException
 
@@ -144,7 +145,10 @@ class CachingHttpInterceptor internal constructor(
 
     val expireAfterRead = request.headers.valueOf(CACHE_EXPIRE_AFTER_READ_HEADER)?.lowercase() == "true"
     if (expireAfterRead) {
-      lruHttpCache.remove(cacheKey)
+      try {
+        lruHttpCache.remove(cacheKey)
+      } catch (_: IOException) {
+      }
     }
 
     val timeoutMillis = request.headers.valueOf(CACHE_EXPIRE_TIMEOUT_HEADER)?.toLongOrNull() ?: 0

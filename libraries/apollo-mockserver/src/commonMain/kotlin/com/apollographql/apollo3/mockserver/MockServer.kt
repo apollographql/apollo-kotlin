@@ -374,10 +374,10 @@ fun MockServer.enqueueWebSocket(
 }
 
 @ApolloExperimental
-suspend fun MockServer.awaitWebSocketRequest(timeout: Duration = 1.seconds): WebsocketMockRequest {
+suspend fun MockServer.awaitWebSocketRequest(timeout: Duration = 30.seconds): WebsocketMockRequest {
   return awaitAnyRequest(timeout) as WebsocketMockRequest
 }
 
-suspend fun MockServer.awaitRequest(timeout: Duration = 1.seconds): MockRequest {
+suspend fun MockServer.awaitRequest(timeout: Duration = 30.seconds): MockRequest {
   return awaitAnyRequest(timeout) as MockRequest
 }

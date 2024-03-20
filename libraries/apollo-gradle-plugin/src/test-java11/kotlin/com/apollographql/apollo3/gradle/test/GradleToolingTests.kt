@@ -53,8 +53,10 @@ class GradleToolingTests {
             connection.getModel(ApolloGradleToolingModel::class.java)
           }
       Assert.assertEquals(ApolloGradleToolingModel.VERSION_MAJOR, toolingModel.versionMajor)
-      Assert.assertEquals(ApolloGradleToolingModel.VERSION_MINOR, toolingModel.versionMinor)
+      Assert.assertEquals(3, toolingModel.versionMinor)
+      @Suppress("DEPRECATION")
       Assert.assertEquals(emptyList<String>(), toolingModel.serviceInfos.flatMap { it.upstreamProjects })
+      Assert.assertEquals(emptyList<String>(), toolingModel.serviceInfos.flatMap { it.upstreamProjectPaths })
 
       val serviceInfo0 = toolingModel.serviceInfos[0]
       Assert.assertEquals("starwars", serviceInfo0.name)
@@ -80,8 +82,10 @@ class GradleToolingTests {
             connection.getModel(ApolloGradleToolingModel::class.java)
           }
       Assert.assertEquals(ApolloGradleToolingModel.VERSION_MAJOR, toolingModel.versionMajor)
-      Assert.assertEquals(ApolloGradleToolingModel.VERSION_MINOR, toolingModel.versionMinor)
+      Assert.assertEquals(3, toolingModel.versionMinor)
+      @Suppress("DEPRECATION")
       Assert.assertEquals(listOf("node1", "node2"), toolingModel.serviceInfos.flatMap { it.upstreamProjects }.sorted())
+      Assert.assertEquals(listOf(":node1", ":node2"), toolingModel.serviceInfos.flatMap { it.upstreamProjectPaths }.sorted())
     }
   }
 }

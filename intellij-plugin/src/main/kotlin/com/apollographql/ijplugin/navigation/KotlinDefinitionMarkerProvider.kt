@@ -9,7 +9,7 @@ import com.apollographql.ijplugin.util.originalClassName
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
-import com.intellij.codeInsight.navigation.NavigationUtil
+import com.intellij.codeInsight.navigation.getPsiElementPopup
 import com.intellij.ide.util.DefaultPsiElementCellRenderer
 import com.intellij.ide.util.EditSourceUtil
 import com.intellij.psi.PsiElement
@@ -49,7 +49,7 @@ class KotlinDefinitionMarkerProvider : RelatedItemLineMarkerProvider() {
           if (graphQLDefinitions.size == 1) {
             graphQLDefinitions[0].navigate()
           } else {
-            val popup = NavigationUtil.getPsiElementPopup(graphQLDefinitions.toTypedArray(), DefaultPsiElementCellRenderer(), "") { element: PsiElement ->
+            val popup = getPsiElementPopup(graphQLDefinitions.toTypedArray(), DefaultPsiElementCellRenderer(), "") { element: PsiElement ->
               element.navigate()
               true
             }

@@ -122,7 +122,7 @@ class ApiKeysModel : AddEditRemovePanel.TableModel<ApolloKotlinServiceConfigurat
   }
 
   override fun getField(o: ApolloKotlinServiceConfiguration, columnIndex: Int) = when (columnIndex) {
-    0 -> o.apolloKotlinServiceId.gradleProjectName
+    0 -> o.apolloKotlinServiceId.gradleProjectPath
     1 -> o.apolloKotlinServiceId.serviceName
     2 -> "••••••••"
     3 -> o.graphOsGraphName

@@ -2,6 +2,7 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -22,29 +23,56 @@ import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
+import com.apollographql.apollo3.internal.ApolloClientListener
 import com.apollographql.apollo3.internal.defaultDispatcher
-import com.apollographql.apollo3.network.DefaultNetworkMonitor
 import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
 import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.network.platformConnectivityManager
 import com.apollographql.apollo3.network.ws.WebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.ws.WsProtocol
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.withContext
 import okio.Closeable
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
+ *
+ * Use [ApolloClient.Builder] to create a new [ApolloClient]:
+ *
+ * ```
+ * val apolloClient = ApolloClient.Builder()
+ *     .serverUrl("https://example.com/graphql")
+ *     .build()
+ *
+ * val response = apolloClient.query(MyQuery()).execute()
+ * if (response.data != null) {
+ *   // Handle (potentially partial) data
+ * } else {
+ *   // Something wrong happened
+ *   if (response.exception != null) {
+ *     // Handle non-GraphQL errors
+ *   } else {
+ *     // Handle GraphQL errors in response.errors
+ *   }
+ * }
+ * ```
+ *
+ * On native targets, [ApolloClient.close] must be called to release resources when not in use anymore.
  */
 class ApolloClient
 private constructor(
@@ -58,6 +86,8 @@ private constructor(
   private val networkMonitor: NetworkMonitor?
   private val retryOnError: ((ApolloRequest<*>) -> Boolean)? = builder.retryOnError
   private val retryOnErrorInterceptor: ApolloInterceptor
+  private val failFastIfOffline = builder.failFastIfOffline
+  private val listeners = builder.listeners
 
   override val executionContext: ExecutionContext = builder.executionContext
   override val httpMethod: HttpMethod? = builder.httpMethod
@@ -161,21 +191,21 @@ private constructor(
   }
 
   /**
-   * Creates a new [ApolloCall] that you can customize and/or execute.
+   * Creates a new [ApolloCall] for the given [Query].
    */
   fun <D : Query.Data> query(query: Query<D>): ApolloCall<D> {
     return ApolloCall(this, query)
   }
 
   /**
-   * Creates a new [ApolloCall] that you can customize and/or execute.
+   * Creates a new [ApolloCall] for the given [Mutation].
    */
   fun <D : Mutation.Data> mutation(mutation: Mutation<D>): ApolloCall<D> {
     return ApolloCall(this, mutation)
   }
 
   /**
-   * Creates a new [ApolloCall] that you can customize and/or execute.
+   * Creates a new [ApolloCall] for the given [Subscription].
    */
   fun <D : Subscription.Data> subscription(subscription: Subscription<D>): ApolloCall<D> {
     return ApolloCall(this, subscription)
@@ -187,6 +217,10 @@ private constructor(
     close()
   }
 
+  /**
+   * Disposes resources held by this [ApolloClient]. On JVM platforms, resources are ultimately garbage collected but calling [close] is necessary
+   * on other platform or to reclaim those resources earlier.
+   */
   override fun close() {
     concurrencyInfo.coroutineScope.cancel()
     networkTransport.dispose()
@@ -196,7 +230,6 @@ private constructor(
   private val networkInterceptor = NetworkInterceptor(
       networkTransport = networkTransport,
       subscriptionNetworkTransport = subscriptionNetworkTransport,
-      dispatcher = concurrencyInfo.dispatcher
   )
 
   /**
@@ -204,17 +237,58 @@ private constructor(
    *
    * Prefer [query], [mutation] or [subscription] when possible.
    *
-   * For simple queries, the returned [Flow] will contain only one element.
+   * For simple queries, the returned [Flow] contains only one element.
    * For more advanced use cases like watchers or subscriptions, it may contain any number of elements and never
    * finish. You can cancel the corresponding coroutine to terminate the [Flow] in this case.
+   *
+   * @see query
+   * @see mutation
+   * @see subscription
    */
   fun <D : Operation.Data> executeAsFlow(
       apolloRequest: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
-    return executeAsFlow(apolloRequest, false, false)
+    return executeAsFlowInternal(apolloRequest, false, false)
   }
 
-  internal fun <D : Operation.Data> executeAsFlow(
+  internal fun <D : Operation.Data> executeAsFlowInternal(
+      apolloRequest: ApolloRequest<D>,
+      ignoreApolloClientHttpHeaders: Boolean,
+      throwing: Boolean,
+  ): Flow<ApolloResponse<D>> {
+    val flow = channelFlow {
+      listeners.forEach {
+        it.requestStarted(apolloRequest)
+      }
+
+      try {
+        withContext(concurrencyInfo.dispatcher) {
+          apolloResponses(apolloRequest, ignoreApolloClientHttpHeaders, throwing).collect {
+            send(it)
+          }
+        }
+      } finally {
+        listeners.forEach {
+          it.requestCompleted(apolloRequest)
+        }
+      }
+    }
+
+    return flow
+        /**
+         * The `Unconfined` dispatcher is needed to let the IdlingResource monitor collection synchronously. Without this, `channelFlow` dispatches and the current stack frame terminates with the IdlingResource still being idle.
+         *
+         * See [idlingResourceSingleQuery](https://github.com/apollographql/apollo-kotlin/blob/215a845f38bcdfc9c72ffc7c58d077ac54e297bb/tests/idling-resource/src/test/java/IdlingResourceTest.kt#L33).
+         * See https://slack-chats.kotlinlang.org/t/16714036/can-i-have-a-channelflow-that-does-not-dispatch-until-after-#d48ebff5-676e-4109-8dd5-b2320245faa3.
+         */
+        .flowOn(Dispatchers.Unconfined)
+        /**
+         * Default to [Channel.UNLIMITED] so as not to lose any item. If a consumer is very slow, the channel may grow boundless. The caller should call [buffer] and change the default in those cases.
+         */
+        .buffer(Channel.UNLIMITED)
+  }
+
+  internal fun <D : Operation.Data> apolloResponses(
       apolloRequest: ApolloRequest<D>,
       ignoreApolloClientHttpHeaders: Boolean,
       throwing: Boolean,
@@ -263,10 +337,16 @@ private constructor(
             retryOnError = this@ApolloClient.retryOnError?.invoke(apolloRequest) ?: false
           }
           retryOnError(retryOnError)
+
+          var failFastIfOffline = apolloRequest.failFastIfOffline
+          if (failFastIfOffline == null) {
+            failFastIfOffline = this@ApolloClient.failFastIfOffline ?: false
+          }
+          failFastIfOffline(failFastIfOffline)
         }
         .build()
 
-    val allInterceptors = buildList{
+    val allInterceptors = buildList {
       addAll(interceptors)
       add(retryOnErrorInterceptor)
       add(networkInterceptor)
@@ -286,12 +366,15 @@ private constructor(
         }
   }
 
+  /**
+   * Creates a new [Builder] from this [ApolloClient].
+   */
   fun newBuilder(): Builder {
     return builder.copy()
   }
 
   /**
-   * A Builder used to create instances of [ApolloClient]
+   * A Builder used to create instances of [ApolloClient].
    */
   class Builder : MutableExecutionOptions<Builder> {
     private val _customScalarAdaptersBuilder = CustomScalarAdapters.Builder()
@@ -302,6 +385,9 @@ private constructor(
 
     private val _httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
     val httpInterceptors: List<HttpInterceptor> = _httpInterceptors
+
+    private val _listeners: MutableList<ApolloClientListener> = mutableListOf()
+    internal val listeners: List<ApolloClientListener> = _listeners
 
     override var executionContext: ExecutionContext = ExecutionContext.Empty
       private set
@@ -341,83 +427,200 @@ private constructor(
       private set
     var webSocketReopenServerUrl: (suspend () -> String)? = null
       private set
+
     @ApolloExperimental
     var retryOnErrorInterceptor: ApolloInterceptor? = null
       private set
+
     @ApolloExperimental
     var networkMonitor: NetworkMonitor? = null
       private set
+
     @ApolloExperimental
     var retryOnError: ((ApolloRequest<*>) -> Boolean)? = null
       private set
 
     @ApolloExperimental
+    var failFastIfOffline: Boolean? = null
+      private set
+
+    /**
+     * Whether to fail fast if the device is offline.
+     *
+     * In that case, the returned [ApolloResponse.exception] is an instance of [com.apollographql.apollo3.exception.ApolloNetworkException]
+     *
+     * @see NetworkMonitor
+     */
+    @ApolloExperimental
+    fun failFastIfOffline(failFastIfOffline: Boolean?): Builder = apply {
+      this.failFastIfOffline = failFastIfOffline
+    }
+
+    /**
+     * Configures the [NetworkMonitor] for this [ApolloClient]
+     *
+     * @param networkMonitor or `null` to use the default [NetworkMonitor]
+     */
+    @ApolloExperimental
     fun networkMonitor(networkMonitor: NetworkMonitor?): Builder = apply {
       this.networkMonitor = networkMonitor
     }
 
+    /**
+     * Configures the [retryOnError] default if [ApolloRequest.retryOnError] is not set.
+     *
+     * For an example, to retry all subscriptions by default:
+     * ```
+     * val apolloClient = ApolloClient.Builder()
+     *     .retryOnError { it.operation is Subscription }
+     *     .serverUrl("...")
+     *     .build()
+     * ```
+     *
+     * @param retryOnError a function called if [ApolloRequest.retryOnError] is `null` and returns a default value. Pass `null` to use the default `{ false }`
+     * @see [ApolloRequest.retryOnError], [ApolloCall.retryOnError]
+     */
     @ApolloExperimental
     fun retryOnError(retryOnError: ((ApolloRequest<*>) -> Boolean)?): Builder = apply {
       this.retryOnError = retryOnError
     }
 
+    /**
+     * Configures the [ApolloInterceptor] to use for retrying operations.
+     *
+     * The retry interceptor is a regular [ApolloInterceptor]. The only difference with [addInterceptor] is that [retryOnErrorInterceptor] always adds the
+     * interceptor last.
+     *
+     * @see [addInterceptor]
+     */
     @ApolloExperimental
     fun retryOnErrorInterceptor(retryOnErrorInterceptor: ApolloInterceptor?): Builder = apply {
       this.retryOnErrorInterceptor = retryOnErrorInterceptor
     }
 
+    /**
+     * Configures the [HttpMethod] to use.
+     *
+     * @param httpMethod the [HttpMethod] to use or `null` to use the default [HttpMethod.Post].
+     *
+     * @see [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
+     */
     override fun httpMethod(httpMethod: HttpMethod?): Builder = apply {
       this.httpMethod = httpMethod
     }
 
+    /**
+     * Configures the [HttpHeader]s to use. These headers are added with the [ApolloCall] headers.
+     *
+     * @see [ApolloCall.httpHeaders]
+     * @see [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
+     */
     override fun httpHeaders(httpHeaders: List<HttpHeader>?): Builder = apply {
       this.httpHeaders = httpHeaders
     }
 
+    /**
+     * Adds a [HttpHeader] to the [ApolloClient] headers. The [ApolloClient] headers are added to the [ApolloCall] headers.
+     *
+     * @see [ApolloCall.httpHeaders]
+     * @see [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
+     */
     override fun addHttpHeader(name: String, value: String): Builder = apply {
-      this.httpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
+      this.httpHeaders = this.httpHeaders.orEmpty() + HttpHeader(name, value)
     }
 
+    /**
+     * Whether to send the Auto Persisted Queries ([APQs](https://www.apollographql.com/docs/apollo-server/performance/apq/) extensions.
+     *
+     * This is the low level API used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer] to determine whether to send the APQ extensions:
+     *
+     * ```json
+     * {
+     *   "query": "{ __typename }"
+     *   "extensions": {"persistedQuery":{"version":1,"sha256Hash":"ecf4edb46db40b5132295c0291d62fb65d6759a9eedfa4d5d612dd5ec54a6b38"}}
+     * }
+     * ```
+     *
+     * To configure APQs in general, including retry behaviour, use [autoPersistedQueries] and [enableAutoPersistedQueries].
+     *
+     * @see autoPersistedQueries
+     * @see enableAutoPersistedQueries
+     * @see com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+     */
     override fun sendApqExtensions(sendApqExtensions: Boolean?): Builder = apply {
       this.sendApqExtensions = sendApqExtensions
     }
 
+    /**
+     * Whether to send the [GraphQL Document](https://spec.graphql.org/October2021/#Document).
+     *
+     * This is the low level API used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer] to determine whether to send the "query" GraphQL document.
+     *
+     * Set [sendDocument] to `false` if your server supports [persisted queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries/) and
+     * can execute an operation base on an id instead.
+     *
+     * To configure APQs in general, including retry behaviour, use [autoPersistedQueries] and [enableAutoPersistedQueries].
+     *
+     * @see autoPersistedQueries
+     * @see enableAutoPersistedQueries
+     * @see com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+     */
     override fun sendDocument(sendDocument: Boolean?): Builder = apply {
       this.sendDocument = sendDocument
     }
 
+    /**
+     * Whether to enable Auto Persisted Queries ([APQs](https://www.apollographql.com/docs/apollo-server/performance/apq/) for this operation.
+     *
+     * APQs may retry the request if the server is sent an unknown id.
+     *
+     * @see autoPersistedQueries
+     */
     override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): Builder = apply {
       this.enableAutoPersistedQueries = enableAutoPersistedQueries
     }
 
+    /**
+     * Whether this operation can be [batched](https://www.apollographql.com/docs/router/executing-operations/query-batching/).
+     *
+     * @see httpBatching
+     */
     override fun canBeBatched(canBeBatched: Boolean?): Builder = apply {
       this.canBeBatched = canBeBatched
     }
 
     /**
-     * The url of the GraphQL server used for HTTP
+     * The http:// or https:// url of the GraphQL server.
      *
-     * This is the same as [httpServerUrl]
+     * This is the same as [httpServerUrl].
      *
-     * See also [networkTransport] for more customization
+     * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
+     *
+     * @see networkTransport
      */
     fun serverUrl(serverUrl: String) = apply {
       httpServerUrl = serverUrl
     }
 
     /**
-     * The url of the GraphQL server used for HTTP
+     * The http:// or https:// url of the GraphQL server.
      *
-     * See also [networkTransport] for more customization
+     * This is the same as [serverUrl].
+     *
+     * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
+     *
+     * @see networkTransport
      */
     fun httpServerUrl(httpServerUrl: String?) = apply {
       this.httpServerUrl = httpServerUrl
     }
 
     /**
-     * The [HttpEngine] to use for HTTP requests
+     * The [HttpEngine] to use for HTTP requests.
      *
-     * See also [networkTransport] for more customization
+     * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
+     *
+     * @see networkTransport
      */
     fun httpEngine(httpEngine: HttpEngine?) = apply {
       this.httpEngine = httpEngine
@@ -426,19 +629,23 @@ private constructor(
     /**
      * Configures whether to expose the error body in [ApolloHttpException].
      *
-     * If you're setting this to `true`, you **must** catch [ApolloHttpException] and close the body explicitly
+     * If you're setting this to `true`, you **must** read [ApolloResponse.exception] and close the body explicitly in case of an [ApolloHttpException]
      * to avoid sockets and other resources leaking.
      *
-     * Default: false
+     * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
+     *
+     * @param httpExposeErrorBody whether to expose the error body or `null` to use the `false` default.
      */
     fun httpExposeErrorBody(httpExposeErrorBody: Boolean?) = apply {
       this.httpExposeErrorBody = httpExposeErrorBody
     }
 
     /**
-     * Adds [httpInterceptor] to the list of HTTP interceptors
+     * Adds [httpInterceptor] to the list of HTTP interceptors.
      *
-     * See also [networkTransport] for more customization
+     * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
+     *
+     * @see networkTransport
      */
     fun httpInterceptors(httpInterceptors: List<HttpInterceptor>) = apply {
       _httpInterceptors.clear()
@@ -448,7 +655,9 @@ private constructor(
     /**
      * Adds [httpInterceptor] to the list of HTTP interceptors
      *
-     * See also [networkTransport] for more customization
+     * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
+     *
+     * @see networkTransport
      */
     fun addHttpInterceptor(httpInterceptor: HttpInterceptor) = apply {
       _httpInterceptors += httpInterceptor
@@ -458,7 +667,9 @@ private constructor(
      * The url of the GraphQL server used for WebSockets
      * Use this function or webSocketServerUrl((suspend () -> String)) but not both.
      *
-     * See also [subscriptionNetworkTransport] for more customization
+     * This is a convenience function that configures the underlying [WebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
+     *
+     * @see subscriptionNetworkTransport
      */
     fun webSocketServerUrl(webSocketServerUrl: String?) = apply {
       this.webSocketServerUrl = webSocketServerUrl
@@ -473,6 +684,10 @@ private constructor(
      * auth credentials in case of an unauthorized error.
      *
      * It is a suspending function, so it can be used to introduce delay before setting the new server URL.
+     *
+     * This is a convenience function that configures the underlying [WebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
+     *
+     * @see subscriptionNetworkTransport
      */
     fun webSocketServerUrl(webSocketServerUrl: (suspend () -> String)?) = apply {
       this.webSocketReopenServerUrl = webSocketServerUrl
@@ -481,7 +696,11 @@ private constructor(
     /**
      * The timeout after which an inactive WebSocket will be closed
      *
-     * See also [subscriptionNetworkTransport] for more customization
+     * This is a convenience function that configures the underlying [WebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
+     *
+     * @param webSocketIdleTimeoutMillis the timeout in milliseconds or null to use the `60_000` default.
+     *
+     * @see subscriptionNetworkTransport
      */
     fun webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis: Long?) = apply {
       this.webSocketIdleTimeoutMillis = webSocketIdleTimeoutMillis
@@ -490,7 +709,9 @@ private constructor(
     /**
      * The [WsProtocol.Factory] to use for websockets
      *
-     * See also [subscriptionNetworkTransport] for more customization
+     * This is a convenience function that configures the underlying [WebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
+     *
+     * @see subscriptionNetworkTransport
      */
     fun wsProtocol(wsProtocolFactory: WsProtocol.Factory?) = apply {
       this.wsProtocolFactory = wsProtocolFactory
@@ -499,7 +720,9 @@ private constructor(
     /**
      * The [WebSocketEngine] to use for WebSocket requests
      *
-     * See also [subscriptionNetworkTransport] for more customization
+     * This is a convenience function that configures the underlying [WebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
+     *
+     * @see subscriptionNetworkTransport
      */
     fun webSocketEngine(webSocketEngine: WebSocketEngine?) = apply {
       this.webSocketEngine = webSocketEngine
@@ -515,56 +738,128 @@ private constructor(
      * It is a suspending function, so it can be used to introduce delay before retry (e.g. backoff strategy).
      * attempt is reset after a successful connection.
      *
-     * See also [subscriptionNetworkTransport] for more customization
+     * This is a convenience function that configures the underlying [WebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
+     *
+     * @see subscriptionNetworkTransport
      */
     fun webSocketReopenWhen(webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)?) = apply {
       this.webSocketReopenWhen = webSocketReopenWhen
     }
 
+    /**
+     * Configures the [NetworkTransport] to use for queries and mutations.
+     *
+     * By default, an instance of [HttpNetworkTransport] is created.
+     *
+     * @see HttpNetworkTransport
+     */
     fun networkTransport(networkTransport: NetworkTransport?) = apply {
       this.networkTransport = networkTransport
     }
 
+    /**
+     * Configures the [NetworkTransport] to use for queries and mutations.
+     *
+     * By default, an instance of [WebSocketNetworkTransport] using [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md) is created.
+     *
+     * @see WebSocketNetworkTransport
+     */
     fun subscriptionNetworkTransport(subscriptionNetworkTransport: NetworkTransport?) = apply {
       this.subscriptionNetworkTransport = subscriptionNetworkTransport
     }
 
+    /**
+     * Configures the [CustomScalarAdapters].
+     *
+     * [Custom scalars](https://www.apollographql.com/docs/apollo-server/schema/custom-scalars/) allow schema designers to extend the GraphQL type
+     * system with custom types such as `Date` or `Long`.
+     *
+     * See [the Apollo Kotlin documentation page](https://www.apollographql.com/docs/kotlin/essentials/custom-scalars/) and [scalars.graphql.org](https://scalars.graphql.org/) for more information.
+     */
     fun customScalarAdapters(customScalarAdapters: CustomScalarAdapters) = apply {
       _customScalarAdaptersBuilder.clear()
       _customScalarAdaptersBuilder.addAll(customScalarAdapters)
     }
 
     /**
-     * Registers the given [customScalarAdapter]
+     * Adds the given [customScalarAdapter] to this [ApolloClient].
      *
+     * [Custom scalars](https://www.apollographql.com/docs/apollo-server/schema/custom-scalars/) allow schema designers to extend the GraphQL type
+     * system with custom types such as `Date` or `Long`.
+     *
+     * See [the Apollo Kotlin documentation page](https://www.apollographql.com/docs/kotlin/essentials/custom-scalars/) and [scalars.graphql.org](https://scalars.graphql.org/) for more information.
+
      * @param customScalarType a generated [CustomScalarType]. Every GraphQL custom scalar has a
      * generated class with a static `type` property. For an example, for a `Date` custom scalar,
      * you can use `com.example.Date.type`
-     * @param customScalarAdapter the [Adapter] to use for this custom scalar
+     * @param customScalarAdapter the [Adapter] to use for this custom scalar.
      */
     fun <T> addCustomScalarAdapter(customScalarType: CustomScalarType, customScalarAdapter: Adapter<T>) = apply {
       _customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter)
     }
 
-    fun addInterceptor(interceptor: ApolloInterceptor) = apply {
-      _interceptors += interceptor
+    @ApolloInternal
+    fun addListener(listener: ApolloClientListener) = apply {
+      _listeners.add(listener)
     }
 
+    @ApolloInternal
+    fun listeners(listeners: List<ApolloClientListener>) = apply {
+      _listeners.clear()
+      _listeners.addAll(listeners)
+    }
+
+    /**
+     * Adds an [ApolloInterceptor] to this [ApolloClient].
+     *
+     * [ApolloInterceptor]s monitor, rewrite and retry an [ApolloCall]. Internally, [ApolloInterceptor] is used for features
+     * such as normalized cache and auto persisted queries. [ApolloClient] also inserts a terminating [ApolloInterceptor] that
+     * executes the request.
+     *
+     * **The order is important**. The [ApolloInterceptor]s are executed in the order they are added. Because cache and APQs also
+     * use interceptors, the order of the cache/APQs configuration also influences the final interceptor list.
+     */
+    fun addInterceptor(interceptor: ApolloInterceptor) = apply {
+      _interceptors.add(interceptor)
+    }
+
+    /**
+     * Adds several [ApolloInterceptor]s to this [ApolloClient].
+     *
+     * [ApolloInterceptor]s monitor, rewrite and retry an [ApolloCall]. Internally, [ApolloInterceptor] is used for features
+     * such as normalized cache and auto persisted queries. [ApolloClient] also inserts a terminating [ApolloInterceptor] that
+     * executes the request.
+     *
+     * **The order is important**. The [ApolloInterceptor]s are executed in the order they are added. Because cache and APQs also
+     * use interceptors, the order of the cache/APQs configuration also influences the final interceptor list.
+     */
+    @Deprecated("Use addInterceptor() or interceptors()")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     fun addInterceptors(interceptors: List<ApolloInterceptor>) = apply {
       this._interceptors += interceptors
     }
 
+    /**
+     * Sets the [ApolloInterceptor]s on this [ApolloClient].
+     *
+     * [ApolloInterceptor]s monitor, rewrite and retry an [ApolloCall]. Internally, [ApolloInterceptor] is used for features
+     * such as normalized cache and auto persisted queries. [ApolloClient] also inserts a terminating [ApolloInterceptor] that
+     * executes the request.
+     *
+     * **The order is important**. The [ApolloInterceptor]s are executed in the order they are added. Because cache and APQs also
+     * use interceptors, the order of the cache/APQs configuration also influences the final interceptor list.
+     */
     fun interceptors(interceptors: List<ApolloInterceptor>) = apply {
       this._interceptors.clear()
       this._interceptors += interceptors
     }
 
     /**
-     * Changes the [CoroutineDispatcher] used for I/O intensive work like reading the
-     * network or the cache
-     * On the JVM the dispatcher is [kotlinx.coroutines.Dispatchers.IO] by default.
-     * On native this function has no effect. Network request use the default NSURLConnection
-     * threads and the cache uses a background dispatch queue.
+     * Sets the [CoroutineDispatcher] that the return value of [ApolloCall.toFlow] will flow on.
+     *
+     * By default, [ApolloClient] uses [kotlinx.coroutines.Dispatchers.IO] for JVM/native targets and [kotlinx.coroutines.Dispatchers.Default] for JS and other targets.
+     *
+     * @see [ApolloCall.toFlow]
      */
     fun dispatcher(dispatcher: CoroutineDispatcher?) = apply {
       this.dispatcher = dispatcher
@@ -640,7 +935,7 @@ private constructor(
     }
 
     fun copy(): Builder {
-      val builder = Builder()
+      return Builder()
           .customScalarAdapters(_customScalarAdaptersBuilder.build())
           .interceptors(interceptors)
           .dispatcher(dispatcher)
@@ -667,7 +962,8 @@ private constructor(
           .retryOnError(retryOnError)
           .retryOnErrorInterceptor(retryOnErrorInterceptor)
           .networkMonitor(networkMonitor)
-      return builder
+          .failFastIfOffline(failFastIfOffline)
+          .listeners(listeners)
     }
   }
 

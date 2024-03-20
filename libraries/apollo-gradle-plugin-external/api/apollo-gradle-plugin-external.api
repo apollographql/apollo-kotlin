@@ -29,8 +29,8 @@ public abstract interface class com/apollographql/apollo3/gradle/api/ApolloExten
 public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel {
 	public static final field Companion Lcom/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$Companion;
 	public static final field VERSION_MAJOR I
-	public static final field VERSION_MINOR I
 	public abstract fun getProjectName ()Ljava/lang/String;
+	public abstract fun getProjectPath ()Ljava/lang/String;
 	public abstract fun getServiceInfos ()Ljava/util/List;
 	public abstract fun getTelemetryData ()Lcom/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$TelemetryData;
 	public abstract fun getVersionMajor ()I
@@ -39,7 +39,6 @@ public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradl
 
 public final class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$Companion {
 	public static final field VERSION_MAJOR I
-	public static final field VERSION_MINOR I
 }
 
 public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$ServiceInfo {
@@ -48,6 +47,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradl
 	public abstract fun getGraphqlSrcDirs ()Ljava/util/Set;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getSchemaFiles ()Ljava/util/Set;
+	public abstract fun getUpstreamProjectPaths ()Ljava/util/Set;
 	public abstract fun getUpstreamProjects ()Ljava/util/Set;
 }
 

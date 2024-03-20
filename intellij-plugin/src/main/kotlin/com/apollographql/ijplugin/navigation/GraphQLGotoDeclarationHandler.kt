@@ -14,6 +14,7 @@ import com.intellij.lang.jsgraphql.psi.GraphQLInputValueDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.options.advanced.AdvancedSettings
 import com.intellij.psi.PsiElement
 
 /**
@@ -28,6 +29,7 @@ class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
   override fun getGotoDeclarationTargets(sourceElement: PsiElement?, offset: Int, editor: Editor?): Array<PsiElement>? {
     val gqlElement = sourceElement?.parent?.parent as? GraphQLElement ?: return null
     if (!gqlElement.project.apolloProjectService.apolloVersion.isAtLeastV3) return null
+    val enabledInAdvancedSettings = AdvancedSettings.getBoolean("apollo.graphQLGoToDeclarationGeneratedCode")
 
     val kotlinDefinitions = when (gqlElement) {
       is GraphQLTypedOperationDefinition -> {
@@ -39,14 +41,17 @@ class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
       }
 
       is GraphQLFragmentSpread -> {
+        if (!enabledInAdvancedSettings) return null
         findKotlinFragmentClassDefinitions(gqlElement)
       }
 
       is GraphQLField -> {
+        if (!enabledInAdvancedSettings) return null
         findKotlinFieldDefinitions(gqlElement)
       }
 
       is GraphQLTypeNameDefinition -> {
+        if (!enabledInAdvancedSettings) return null
         when (val parent = gqlElement.parent) {
           is GraphQLEnumTypeDefinition -> findKotlinEnumClassDefinitions(parent)
           is GraphQLInputObjectTypeDefinition -> findKotlinInputClassDefinitions(parent)
@@ -55,10 +60,12 @@ class GraphQLGotoDeclarationHandler : GotoDeclarationHandler {
       }
 
       is GraphQLEnumValue -> {
+        if (!enabledInAdvancedSettings) return null
         findKotlinEnumValueDefinitions(gqlElement)
       }
 
       is GraphQLInputValueDefinition -> {
+        if (!enabledInAdvancedSettings) return null
         findKotlinInputFieldDefinitions(gqlElement)
       }
 

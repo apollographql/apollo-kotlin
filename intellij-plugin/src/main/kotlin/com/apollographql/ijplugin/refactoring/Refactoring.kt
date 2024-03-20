@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.refactoring
 
+import com.apollographql.ijplugin.util.findFunctionsByName
 import com.apollographql.ijplugin.util.logw
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.project.Project
@@ -15,7 +16,6 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.AllClassesSearch
 import com.intellij.psi.search.searches.ClassInheritorsSearch
 import com.intellij.psi.search.searches.ReferencesSearch
-import com.intellij.refactoring.rename.RenamePsiElementProcessor
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.psi.psiUtil.findPropertyByName
 
@@ -45,7 +45,7 @@ fun PsiElement.bindReferencesToElement(element: PsiElement): PsiElement? {
 }
 
 fun findReferences(psiElement: PsiElement, project: Project): Collection<PsiReference> {
-  return ReferencesSearch.search(psiElement, GlobalSearchScope.projectScope(project), false).toList()
+  return ReferencesSearch.search(psiElement, GlobalSearchScope.projectScope(project), false).findAll()
 }
 
 fun findMethodReferences(
@@ -56,35 +56,36 @@ fun findMethodReferences(
     methodPredicate: (PsiMethod) -> Boolean = { true },
 ): Collection<PsiReference> {
   val psiLookupClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project)) ?: return emptyList()
-  val methods = psiLookupClass.findMethodsByName(methodName, false)
-      .filter { method ->
-        if (extensionTargetClassName == null) return@filter methodPredicate(method)
-        // In Kotlin extensions, the target is passed to the first parameter
-        if (method.parameterList.parametersCount < 1) return@filter false
-        val firstParameter = method.parameterList.parameters.first()
-        val firstParameterType = (firstParameter.type as? PsiClassType)?.rawType()?.canonicalText
-        firstParameterType == extensionTargetClassName && methodPredicate(method)
-      }
+  val methods =
+      // Try Kotlin first
+      (psiLookupClass as? KtLightClass)?.kotlinOrigin?.findFunctionsByName(methodName)?.takeIf { it.isNotEmpty() }
+      // Fallback to Java
+          ?: psiLookupClass.findMethodsByName(methodName, false)
+              .filter { method ->
+                if (extensionTargetClassName == null) return@filter methodPredicate(method)
+                // In Kotlin extensions, the target is passed to the first parameter
+                if (method.parameterList.parametersCount < 1) return@filter false
+                val firstParameter = method.parameterList.parameters.first()
+                val firstParameterType = (firstParameter.type as? PsiClassType)?.rawType()?.canonicalText
+                firstParameterType == extensionTargetClassName && methodPredicate(method)
+              }
   return methods.flatMap { method ->
-    val processor = RenamePsiElementProcessor.forElement(method)
-    processor.findReferences(method, GlobalSearchScope.projectScope(project), false)
+    findReferences(method, project)
   }
 }
 
 fun findFieldReferences(project: Project, className: String, fieldName: String): Collection<PsiReference> {
   val psiLookupClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project)) ?: return emptyList()
   val field = psiLookupClass.findFieldByName(fieldName, true)
-      // Fallback to Kotlin property
+  // Fallback to Kotlin property
       ?: (psiLookupClass as? KtLightClass)?.kotlinOrigin?.findPropertyByName(fieldName)
       ?: return emptyList()
-  val processor = RenamePsiElementProcessor.forElement(field)
-  return processor.findReferences(field, GlobalSearchScope.projectScope(project), false)
+  return findReferences(field, project)
 }
 
 fun findClassReferences(project: Project, className: String): Collection<PsiReference> {
   val clazz = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project)) ?: return emptyList()
-  val processor = RenamePsiElementProcessor.forElement(clazz)
-  return processor.findReferences(clazz, GlobalSearchScope.projectScope(project), false)
+  return findReferences(clazz, project)
 }
 
 fun findPackageReferences(project: Project, packageName: String): Collection<PsiReference> {

@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.api
 
 /**
- * Represents a GraphQL mutation operation that will be sent to the server.
+ * Type safe representation of a [GraphQL mutation](https://graphql.org/learn/queries/#mutations).
  */
 interface Mutation<D : Mutation.Data> : Operation<D> {
   interface Data: Operation.Data

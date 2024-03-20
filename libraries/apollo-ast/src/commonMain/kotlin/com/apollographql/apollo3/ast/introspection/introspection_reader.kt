@@ -30,13 +30,11 @@ import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLValue
-import com.apollographql.apollo3.ast.HOST_FILESYSTEM
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.parseAsGQLValue
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
@@ -44,8 +42,6 @@ import kotlinx.serialization.json.Json
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString.Companion.decodeHex
-import okio.Path
-import okio.buffer
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
@@ -90,14 +86,6 @@ fun BufferedSource.toIntrospectionSchema(filePath: String? = null): Introspectio
 }
 
 fun String.toIntrospectionSchema(): IntrospectionSchema = Buffer().writeUtf8(this).toIntrospectionSchema()
-
-@ApolloExperimental
-fun Path.toIntrospectionSchema(): IntrospectionSchema {
-  return HOST_FILESYSTEM
-      .source(this)
-      .buffer()
-      .toIntrospectionSchema(toString())
-}
 
 /**
  * Parses the [RSchema] into a [GQLDocument]

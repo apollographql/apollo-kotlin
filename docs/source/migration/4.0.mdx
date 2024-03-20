@@ -148,6 +148,23 @@ Because of the number of different options in 3.x and the complexity of error ha
 
 ### HTTP headers
 
+`X-APOLLO-OPERATION-NAME` and `X-APOLLO-OPERATION-ID` are non-standard headers and are not sent by default anymore. If you used them for logging purposes or if you are using Apollo Server [CSRF prevention](https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf), you can add them back using an [ApolloInterceptor](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo3.interceptor/-apollo-interceptor/index.html?query=interface%20ApolloInterceptor):
+
+```kotlin
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .addInterceptor(object : ApolloInterceptor {
+          override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+            return chain.proceed(request.newBuilder()
+                .addHttpHeader("X-APOLLO-OPERATION-NAME", request.operation.name())
+                .addHttpHeader("X-APOLLO-OPERATION-ID", request.operation.id())
+                .build()
+            )
+          }
+        })
+        .build()
+```
+
 In v3, if HTTP headers were set on an `ApolloCall`, they would replace the ones set on `ApolloClient`. In v4 they are added instead by default. To replace them, call `ApolloCall.Builder.ignoreApolloClientHttpHeaders(true)`.
 
 ```kotlin
@@ -280,11 +297,42 @@ mapScalarToKotlinLong("MyLong")
 
 ```
 
+### schemaFile is deprecated
+
+Because there might be several schema files, `schemaFile` is deprecated. Instead use `schemaFiles`:
+
+```kotlin
+    // replace
+    schemaFile.set("src/main/graphql/com/example/schema.graphqls")
+
+    // with
+    schemaFiles.from("src/main/graphql/com/example/schema.graphqls")
+```
+
+If you are using `packageNamesFromFilePaths` and `schemaFile`, you'll need to use a [Gradle FileTree](https://docs.gradle.org/current/javadoc/org/gradle/api/file/FileTree.html) to carry the appropriate normalized path. 
+
+```kotlin
+    packageNameFromFilePaths()
+
+    // replace
+    schemaFile.set("src/main/graphql/com/example/schema.graphqls")
+
+    // with
+    schemaFiles.from(fileTree("src/main/graphql/").apply {
+      include("com/example/schema.graphqls")
+    })
+```
+
+<Note>
+Apollo Kotlin 3 was using the operation root directories to compute the schema normalized path which could be wrong in some edge cases. Using fileTree ensures the normalized path is consistent.
+</Note>
+
 ### Misc
 
 * Publishing is no longer configured automatically.
 * Because Apollo Kotlin now supports different operation manifest formats, `operationOutput.json` has moved from `"build/generated/operationOutput/apollo/$service/operationOutput.json"` to `"build/generated/manifest/apollo/$service/operationOutput.json"`
 * useSchemaPackageNameForFragments is removed
+
 
 ## Apollo Compiler
 

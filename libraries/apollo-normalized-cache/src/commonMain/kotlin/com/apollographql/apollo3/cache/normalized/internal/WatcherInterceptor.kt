@@ -8,14 +8,20 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.dependentKeys
 import com.apollographql.apollo3.cache.normalized.watchContext
+import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onSubscription
+
+internal val WatcherSentinel = DefaultApolloException("The watcher has started")
 
 internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
@@ -30,16 +36,26 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
     @Suppress("UNCHECKED_CAST")
     var watchedKeys: Set<String>? = watchContext.data?.let { store.normalize(request.operation, it as D, customScalarAdapters).values.dependentKeys() }
 
-    return store.changedKeys
+    return (store.changedKeys as SharedFlow<Any>)
+        .onSubscription {
+          emit(Unit)
+        }
         .filter { changedKeys ->
+          if (changedKeys !is Set<*>) {
+            return@filter true
+          }
           watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()
         }.map {
-          chain.proceed(request.newBuilder().build())
-              .onEach { response ->
-                if (response.data != null) {
-                  watchedKeys = store.normalize(request.operation, response.data!!, customScalarAdapters).values.dependentKeys()
+          if (it == Unit) {
+            flowOf(ApolloResponse.Builder(request.operation, request.requestUuid).exception(WatcherSentinel).build())
+          } else {
+            chain.proceed(request.newBuilder().build())
+                .onEach { response ->
+                  if (response.data != null) {
+                    watchedKeys = store.normalize(request.operation, response.data!!, customScalarAdapters).values.dependentKeys()
+                  }
                 }
-              }
+          }
         }
         .flattenConcatPolyfill()
   }

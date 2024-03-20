@@ -10,11 +10,7 @@ import com.apollographql.apollo3.ast.internal.LexerException
 import com.apollographql.apollo3.ast.internal.Parser
 import com.apollographql.apollo3.ast.internal.ParserException
 import com.apollographql.apollo3.ast.internal.validateSchema
-import com.apollographql.apollo3.ast.introspection.toGQLDocument
-import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import okio.BufferedSource
-import okio.Path
-import okio.buffer
 import okio.use
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
@@ -135,18 +131,6 @@ fun String.parseAsGQLSelections(options: ParserOptions = ParserOptions.Default):
 
 fun String.toGQLSelections(options: ParserOptions = ParserOptions.Default): List<GQLSelection> {
   return parseAsGQLSelections(options).getOrThrow()
-}
-
-fun Path.parseAsGQLDocument(options: ParserOptions = ParserOptions.Default): GQLResult<GQLDocument> {
-  return HOST_FILESYSTEM.source(this).buffer().parseAsGQLDocument(filePath = toString(), options = options)
-}
-
-fun Path.toGQLDocument(options: ParserOptions = ParserOptions.Default, allowJson: Boolean = false): GQLDocument {
-  return if (allowJson && name.endsWith(".json")) {
-    toIntrospectionSchema().toGQLDocument()
-  } else {
-    parseAsGQLDocument(options).getOrThrow()
-  }
 }
 
 /**

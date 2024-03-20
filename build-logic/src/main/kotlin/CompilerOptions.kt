@@ -20,7 +20,10 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
-fun KotlinCommonCompilerOptions.configure(baseJvmTarget: Int, isAndroid: Boolean) {
+/**
+ * @param target the JVM version we want to be compatible with (bytecode + bootstrap classpath)
+ */
+fun KotlinCommonCompilerOptions.configure(target: Int) {
   freeCompilerArgs.add("-Xexpect-actual-classes")
 
   /**
@@ -37,16 +40,8 @@ fun KotlinCommonCompilerOptions.configure(baseJvmTarget: Int, isAndroid: Boolean
   when (this) {
     is KotlinJvmCompilerOptions -> {
       freeCompilerArgs.add("-Xjvm-default=all")
-      val target = when {
-        isAndroid -> {
-          // https://blog.blundellapps.co.uk/setting-jdk-level-in-android-gradle-builds/
-          // D8 can dex Java17 bytecode
-          JvmTarget.JVM_17
-        }
-        baseJvmTarget == 8 -> JvmTarget.JVM_1_8
-        else -> JvmTarget.fromTarget(baseJvmTarget.toString())
-      }
-      jvmTarget.set(target)
+      freeCompilerArgs.add("-Xjdk-release=${target.toJvmTarget().target}")
+      jvmTarget.set(target.toJvmTarget())
     }
 
     is KotlinNativeCompilerOptions -> {
@@ -57,6 +52,13 @@ fun KotlinCommonCompilerOptions.configure(baseJvmTarget: Int, isAndroid: Boolean
     is KotlinJsCompilerOptions -> {
       // nothing!
     }
+  }
+}
+
+private fun Int.toJvmTarget(): JvmTarget {
+  return when(this) {
+    8 -> JvmTarget.JVM_1_8
+    else -> JvmTarget.fromTarget(this.toString())
   }
 }
 
@@ -94,8 +96,17 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?) {
   @Suppress("NAME_SHADOWING")
   val jvmTarget = jvmTarget?: 8
 
-  kotlinExtensionOrNull?.forEachCompilerOptions {
-    configure(jvmTarget, it)
+  kotlinExtensionOrNull?.forEachCompilerOptions { isAndroid ->
+    val target = when {
+      isAndroid -> {
+        // https://blog.blundellapps.co.uk/setting-jdk-level-in-android-gradle-builds/
+        // D8 can dex Java17 bytecode
+        17
+      }
+      else -> jvmTarget
+    }
+
+    configure(target)
   }
   project.tasks.withType(JavaCompile::class.java).configureEach {
     // For JVM only modules, this dictates the "org.gradle.jvm.version" Gradle attribute

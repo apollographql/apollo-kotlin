@@ -10,6 +10,7 @@ public final class com/apollographql/apollo3/ApolloCall : com/apollographql/apol
 	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun executeV3 (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun failFastIfOffline (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
@@ -147,14 +148,6 @@ public final class com/apollographql/apollo3/AutoPersistedQueryInfo$Key : com/ap
 
 public final class com/apollographql/apollo3/AutoPersistedQueryInfoKt {
 	public static final fun getAutoPersistedQueryInfo (Lcom/apollographql/apollo3/api/ApolloResponse;)Lcom/apollographql/apollo3/AutoPersistedQueryInfo;
-}
-
-public final class com/apollographql/apollo3/ConcurrencyInfo : com/apollographql/apollo3/api/ExecutionContext$Element {
-	public static final field Key Lcom/apollographql/apollo3/ConcurrencyInfo$Key;
-	public fun <init> (Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineScope;)V
-	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
-	public final fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
-	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
 }
 
 public final class com/apollographql/apollo3/ConcurrencyInfo$Key : com/apollographql/apollo3/api/ExecutionContext$Key {

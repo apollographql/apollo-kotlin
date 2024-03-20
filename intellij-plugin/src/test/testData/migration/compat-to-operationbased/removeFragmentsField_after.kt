@@ -60,13 +60,13 @@ suspend fun main() {
   //@formatter:off
   val launch = MyQuery.Launch(
       __typename = "Launch",
-          launchFields = LaunchFields(
-              id = "id",
-              site = "site",
-              mission = LaunchFields.Mission(
-                  name = "name",
-                  missionPatch = "missionPatch",
-              ),
+      launchFields = LaunchFields(
+          id = "id",
+          site = "site",
+          mission = LaunchFields.Mission(
+              name = "name",
+              missionPatch = "missionPatch",
           ),
+      ),
   )
 }

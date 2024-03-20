@@ -22,17 +22,8 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
       - run: |
-          ulimit -c unlimited
-          # Workaround an issue where kotlinNpmInstall outputs
-          # 'Resolving NPM dependencies using yarn' returns 137
-          ./gradlew compileKotlinJs
-          ./gradlew --stop
-      - run: |
-          # Build the libs
-          ./gradlew publishAllPublicationsToPluginTestRepository
-      - run: |
           # Build the benchmark apks
-          ./gradlew -p benchmark assembleRelease assembleReleaseAndroidTest
+          ./gradlew -p benchmark assembleRelease assembleIncubatingReleaseAndroidTest assembleStableReleaseAndroidTest
       # Step can be removed if/when gcloud is added to the macos image - See https://github.com/actions/virtual-environments/issues/4639
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@98ddc00a17442e89a24bbf282954a3b65ce6d200 #v2.1.0
