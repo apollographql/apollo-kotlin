@@ -63,7 +63,6 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
   return ResponseParser.parse(
       jsonReader,
       this,
-      @Suppress("DEPRECATION")
       customScalarAdapters.newBuilder()
           .adapterContext(customScalarAdapters.adapterContext.newBuilder()
               .variables(variables)

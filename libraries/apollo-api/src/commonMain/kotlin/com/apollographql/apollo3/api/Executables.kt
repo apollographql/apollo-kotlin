@@ -36,7 +36,6 @@ fun <D : Executable.Data> Executable<D>.variables(
   return Executable.Variables(valueMap)
 }
 
-@Suppress("DEPRECATION")
 private fun CustomScalarAdapters.serializeVariablesWithDefaultBooleanValues() = newBuilder()
     .adapterContext(
         adapterContext.newBuilder()
