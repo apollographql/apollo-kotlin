@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.navigation
 
 import com.apollographql.ijplugin.ApolloTestCase
+import com.intellij.openapi.options.advanced.AdvancedSettings
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtEnumEntry
@@ -18,6 +19,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
       fromElement: () -> PsiElement?,
       toFile: String,
       toElement: () -> PsiElement?,
+      navigateEvenWithAdvancedSettingChecked: Boolean = false,
       multipleTarget: Boolean = false,
   ) {
     // Open the destination file
@@ -30,8 +32,18 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
     // Find the element to navigate from
     val gqlElement = fromElement()!!
 
-    // Simulate navigation
-    val foundKtDeclarationElements = graphQLGotoDeclarationHandler.getGotoDeclarationTargets(gqlElement, 0, editor)!!
+    // Simulate navigation, with advanced setting unchecked
+    AdvancedSettings.setBoolean("apollo.graphQLGoToDeclarationGeneratedCode", false)
+    var foundKtDeclarationElements = graphQLGotoDeclarationHandler.getGotoDeclarationTargets(gqlElement, 0, editor)
+    if (navigateEvenWithAdvancedSettingChecked) {
+      assertNotNull(foundKtDeclarationElements)
+    } else {
+      assertNull(foundKtDeclarationElements)
+      return
+    }
+    // Simulate navigation, with advanced setting checked
+    AdvancedSettings.setBoolean("apollo.graphQLGoToDeclarationGeneratedCode", true)
+    foundKtDeclarationElements = graphQLGotoDeclarationHandler.getGotoDeclarationTargets(gqlElement, 0, editor)!!
 
     if (multipleTarget) {
       // We want our target (Kotlin), but also the original targets (GraphQL)
@@ -50,6 +62,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
       fromElement = { elementAt<PsiElement>("animals")!! },
       toFile = "build/generated/source/apollo/main/com/example/generated/AnimalsQuery.kt",
       toElement = { elementAt<KtClass>("class AnimalsQuery")!! },
+      navigateEvenWithAdvancedSettingChecked = true,
   )
 
   @Test
@@ -58,6 +71,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
       fromElement = { elementAt<PsiElement>("computerFields")!! },
       toFile = "build/generated/source/apollo/main/com/example/generated/fragment/ComputerFields.kt",
       toElement = { elementAt<KtClass>("class ComputerFields")!! },
+      navigateEvenWithAdvancedSettingChecked = true,
       multipleTarget = true
   )
 

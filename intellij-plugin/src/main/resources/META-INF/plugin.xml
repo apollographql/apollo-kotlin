@@ -231,6 +231,13 @@
         coordinate="com.apollographql.apollo3:apollo-api-jvm"
         displayName="Apollo Kotlin"
     />
+
+    <!-- Advanced settings -->
+    <advancedSetting
+        id="apollo.graphQLGoToDeclarationGeneratedCode"
+        groupKey="advanced.setting.apollo"
+        default="false"
+    />
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij.lang.jsgraphql">
