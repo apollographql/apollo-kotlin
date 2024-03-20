@@ -178,6 +178,7 @@ object FieldPolicyCacheResolver : CacheResolver {
       parentId: String,
   ): Any? {
     val keyArgsValues = field.arguments.filter { it.isKey }.map {
+      @Suppress("DEPRECATION")
       resolveVariables(it.value, variables).toString()
     }
 

@@ -61,6 +61,7 @@ class AdapterContext private constructor(
 }
 
 @ApolloInternal
+@Suppress("DEPRECATION")
 fun CustomScalarAdapters.withDeferredFragmentIds(deferredFragmentIds: Set<DeferredFragmentIdentifier>) = newBuilder()
     .adapterContext(
         adapterContext.newBuilder()

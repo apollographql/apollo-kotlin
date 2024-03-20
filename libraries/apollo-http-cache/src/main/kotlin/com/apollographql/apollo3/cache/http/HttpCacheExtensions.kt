@@ -78,6 +78,7 @@ fun ApolloClient.Builder.httpCache(
 }
 
 @JvmName("configureApolloClientBuilder")
+@Suppress("DEPRECATION")
 fun ApolloClient.Builder.httpCache(
     apolloHttpCache: ApolloHttpCache,
 ): ApolloClient.Builder {
@@ -163,6 +164,7 @@ private fun defaultPolicy(operation: Operation<*>): HttpFetchPolicy {
   }
 }
 
+@Suppress("DEPRECATION")
 val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache
   get() = executionContext[HttpInfo]?.headers?.any {
     // This will return true whatever the value in the header. We might want to fine tune this
@@ -179,6 +181,7 @@ fun <T> MutableExecutionOptions<T>.httpFetchPolicy(httpFetchPolicy: HttpFetchPol
 /**
  * Configures httpExpireTimeout. Entries will be removed from the cache after this timeout.
  */
+@Suppress("DEPRECATION")
 fun <T> MutableExecutionOptions<T>.httpExpireTimeout(httpExpireTimeout: Long) = addHttpHeader(
     CachingHttpInterceptor.CACHE_EXPIRE_TIMEOUT_HEADER, httpExpireTimeout.toString()
 )
@@ -186,6 +189,7 @@ fun <T> MutableExecutionOptions<T>.httpExpireTimeout(httpExpireTimeout: Long) = 
 /**
  * Configures httpExpireAfterRead. Entries will be removed from the cache after read if set to true.
  */
+@Suppress("DEPRECATION")
 fun <T> MutableExecutionOptions<T>.httpExpireAfterRead(httpExpireAfterRead: Boolean) = addHttpHeader(
     CachingHttpInterceptor.CACHE_EXPIRE_AFTER_READ_HEADER, httpExpireAfterRead.toString()
 )
@@ -193,6 +197,7 @@ fun <T> MutableExecutionOptions<T>.httpExpireAfterRead(httpExpireAfterRead: Bool
 /**
  * Configures httpDoNotStore. Entries will never be stored if set to true.
  */
+@Suppress("DEPRECATION")
 fun <T> MutableExecutionOptions<T>.httpDoNotStore(httpDoNotStore: Boolean) = addHttpHeader(
     CachingHttpInterceptor.CACHE_DO_NOT_STORE, httpDoNotStore.toString()
 )

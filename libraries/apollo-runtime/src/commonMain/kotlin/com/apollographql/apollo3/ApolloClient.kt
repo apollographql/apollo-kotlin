@@ -220,42 +220,67 @@ private constructor(
     }
 
     override var httpMethod: HttpMethod? = null
+      @Deprecated("Use httpMethod() instead")
+      @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_8_4)
+      set
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder = apply {
+      @Suppress("DEPRECATION")
       this.httpMethod = httpMethod
     }
 
     override var httpHeaders: List<HttpHeader>? = null
+      @Deprecated("Use httpHeaders() instead")
+      @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_8_4)
+      set
 
     override fun httpHeaders(httpHeaders: List<HttpHeader>?): Builder = apply {
+      @Suppress("DEPRECATION")
       this.httpHeaders = httpHeaders
     }
 
     override fun addHttpHeader(name: String, value: String): Builder = apply {
+      @Suppress("DEPRECATION")
       this.httpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
     }
 
     override var sendApqExtensions: Boolean? = null
+      @Deprecated("Use sendApqExtensions() instead")
+      @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_8_4)
+      set
 
     override fun sendApqExtensions(sendApqExtensions: Boolean?): Builder = apply {
+      @Suppress("DEPRECATION")
       this.sendApqExtensions = sendApqExtensions
     }
 
     override var sendDocument: Boolean? = null
+      @Deprecated("Use sendDocument() instead")
+      @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_8_4)
+      set
 
     override fun sendDocument(sendDocument: Boolean?): Builder = apply {
+      @Suppress("DEPRECATION")
       this.sendDocument = sendDocument
     }
 
     override var enableAutoPersistedQueries: Boolean? = null
+      @Deprecated("Use enableAutoPersistedQueries() instead")
+      @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_8_4)
+      set
 
     override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): Builder = apply {
+      @Suppress("DEPRECATION")
       this.enableAutoPersistedQueries = enableAutoPersistedQueries
     }
 
     override var canBeBatched: Boolean? = null
+      @Deprecated("Use canBeBatched() instead")
+      @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_8_4)
+      set
 
     override fun canBeBatched(canBeBatched: Boolean?): Builder = apply {
+      @Suppress("DEPRECATION")
       this.canBeBatched = canBeBatched
     }
 

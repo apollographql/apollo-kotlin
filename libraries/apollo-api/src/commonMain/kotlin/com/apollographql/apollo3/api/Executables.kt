@@ -8,7 +8,6 @@ import com.apollographql.apollo3.api.json.MapJsonWriter
 import okio.Buffer
 import kotlin.jvm.JvmName
 
-@Suppress("UNCHECKED_CAST")
 fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters): Executable.Variables {
   return variables(customScalarAdapters, false)
 }
@@ -37,6 +36,7 @@ fun <D : Executable.Data> Executable<D>.variables(
   return Executable.Variables(valueMap)
 }
 
+@Suppress("DEPRECATION")
 private fun CustomScalarAdapters.serializeVariablesWithDefaultBooleanValues() = newBuilder()
     .adapterContext(
         adapterContext.newBuilder()

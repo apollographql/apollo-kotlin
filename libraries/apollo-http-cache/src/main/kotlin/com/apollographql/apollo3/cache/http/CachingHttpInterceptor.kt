@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.cache.http
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_8_4
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
@@ -33,6 +34,7 @@ class CachingHttpInterceptor internal constructor(
 
   val cache: ApolloHttpCache = lruHttpCache
 
+  @Suppress("DEPRECATION")
   override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
     val policy = request.headers.valueOf(CACHE_FETCH_POLICY_HEADER) ?: defaultPolicy(request)
     val cacheKey = request.headers.valueOf(CACHE_KEY_HEADER)!!
@@ -98,6 +100,7 @@ class CachingHttpInterceptor internal constructor(
     }
   }
 
+  @Suppress("DEPRECATION")
   private fun defaultPolicy(request: HttpRequest): String {
     return if (request.headers.firstOrNull { it.name == CACHE_OPERATION_TYPE_HEADER }?.value == "query") {
       CACHE_FIRST
@@ -106,6 +109,7 @@ class CachingHttpInterceptor internal constructor(
     }
   }
 
+  @Suppress("DEPRECATION")
   private suspend fun networkMightThrow(request: HttpRequest, chain: HttpInterceptorChain, cacheKey: String): HttpResponse {
     val response = chain.proceed(request)
 
@@ -127,6 +131,7 @@ class CachingHttpInterceptor internal constructor(
     return response
   }
 
+  @Suppress("DEPRECATION")
   private fun cacheMightThrow(request: HttpRequest, cacheKey: String): HttpResponse {
     val operationName = request.headers.valueOf(DefaultHttpRequestComposer.HEADER_APOLLO_OPERATION_NAME)
     val response = try {
@@ -193,9 +198,8 @@ class CachingHttpInterceptor internal constructor(
       }
     }
 
-    /**
-     *
-     */
+    @Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+    @ApolloDeprecatedSince(v3_8_4)
     const val CACHE_KEY_HEADER = "X-APOLLO-CACHE-KEY"
 
     internal const val REQUEST_UUID_HEADER = "X-APOLLO-REQUEST-UUID"
@@ -203,41 +207,66 @@ class CachingHttpInterceptor internal constructor(
     /**
      * Cache fetch strategy http header
      */
+    @Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+    @ApolloDeprecatedSince(v3_8_4)
     const val CACHE_FETCH_POLICY_HEADER = "X-APOLLO-CACHE-FETCH-POLICY"
 
     /**
      * Cache operation type http header
      */
+    @Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+    @ApolloDeprecatedSince(v3_8_4)
     const val CACHE_OPERATION_TYPE_HEADER = "X-APOLLO-CACHE-OPERATION-TYPE"
 
+    @Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+    @ApolloDeprecatedSince(v3_8_4)
     const val CACHE_ONLY = "CACHE_ONLY"
+
+    @Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+    @ApolloDeprecatedSince(v3_8_4)
     const val NETWORK_ONLY = "NETWORK_ONLY"
+
+    @Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+    @ApolloDeprecatedSince(v3_8_4)
     const val CACHE_FIRST = "CACHE_FIRST"
+
+    @Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+    @ApolloDeprecatedSince(v3_8_4)
     const val NETWORK_FIRST = "NETWORK_FIRST"
 
     /**
      * Request served Date/time http header
      */
+    @Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+    @ApolloDeprecatedSince(v3_8_4)
     const val CACHE_SERVED_DATE_HEADER = "X-APOLLO-SERVED-DATE"
 
     /**
      * Cached response expiration timeout http header (in millisecond)
      */
+    @Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+    @ApolloDeprecatedSince(v3_8_4)
     const val CACHE_EXPIRE_TIMEOUT_HEADER = "X-APOLLO-EXPIRE-TIMEOUT"
 
     /**
      * Expire cached response flag http header
      */
+    @Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+    @ApolloDeprecatedSince(v3_8_4)
     const val CACHE_EXPIRE_AFTER_READ_HEADER = "X-APOLLO-EXPIRE-AFTER-READ"
 
     /**
      * Do not store the http response
      */
+    @Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+    @ApolloDeprecatedSince(v3_8_4)
     const val CACHE_DO_NOT_STORE = "X-APOLLO-CACHE-DO-NOT-STORE"
 
     /**
      * Signals that HTTP response comes from the local cache
      */
+    @Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+    @ApolloDeprecatedSince(v3_8_4)
     const val FROM_CACHE = "X-APOLLO-FROM-CACHE"
   }
 }
