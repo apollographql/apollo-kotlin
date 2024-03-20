@@ -37,9 +37,11 @@ class ApolloCall<D : Operation.Data> internal constructor(
     private set
   override var canBeBatched: Boolean? = null
     private set
+
   @ApolloExperimental
   var retryOnError: Boolean? = null
     private set
+
   @ApolloExperimental
   var failFastIfOffline: Boolean? = null
     private set
@@ -105,6 +107,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
   fun retryOnError(retryOnError: Boolean?): ApolloCall<D> = apply {
     this.retryOnError = retryOnError
   }
+
   /**
    * If set to true, the HTTP headers set on [ApolloClient] will not be used for the call, only the ones set on this [ApolloCall] will be
    * used. If set to false, both sets of headers will be concatenated and used.
@@ -131,22 +134,35 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   /**
    * Returns a cold Flow that produces [ApolloResponse]s from this [ApolloCall].
-   * Note that the execution happens when collecting the Flow.
-   * This method can be called several times to execute a call again.
    *
-   * The returned [Flow] does not throw unless [ApolloClient.useV3ExceptionHandling] is set to true.
+   * The returned [Flow] does not throw on I/O errors or cache misses. Errors are not always terminal and some can be recovered. Check [ApolloResponse.exception] to handle errors:
    *
-   * Example:
    * ```
    * apolloClient.subscription(NewOrders())
    *                  .toFlow()
    *                  .collect {
-   *                    println("order received: ${it.data?.order?.id"})
+   *                    if (it.data != null) {
+   *                      // Handle (potentially partial) data
+   *                    } else {
+   *                      // Something wrong happened
+   *                      if (it.exception != null) {
+   *                        // Handle non-GraphQL errors
+   *                      } else {
+   *                        // Handle GraphQL errors in response.errors
+   *                      }
+   *                    }
    *                  }
    * ```
+   *
+   * The returned [Flow] flows on the dispatcher configured in [ApolloClient.Builder.dispatcher] or a default dispatcher else. There is no need to change the coroutine context before calling [toFlow]. See [ApolloClient.Builder.dispatcher] for more details.
+   *
+   * The returned [Flow] has [kotlinx.coroutines.channels.Channel.UNLIMITED] buffering so that no response is missed in the case of a slow consumer. Use [kotlinx.coroutines.flow.buffer] to change that behaviour.
+   *
+   * @see toFlowV3
+   * @see ApolloClient.Builder.dispatcher
    */
   fun toFlow(): Flow<ApolloResponse<D>> {
-    return apolloClient.executeAsFlow(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, false)
+    return apolloClient.executeAsFlowInternal(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, false)
   }
 
   /**
@@ -161,7 +177,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
     @Suppress("DEPRECATION")
     return conflateFetchPolicyInterceptorResponses(true)
         .apolloClient
-        .executeAsFlow(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, true)
+        .executeAsFlowInternal(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, true)
   }
 
   private fun toApolloRequest(): ApolloRequest<D> {
@@ -192,12 +208,33 @@ class ApolloCall<D : Operation.Data> internal constructor(
   }
 
   /**
-   * Retrieve a single [ApolloResponse] from this [ApolloCall], ignoring any cache misses or network errors.
+   * Retrieves a single [ApolloResponse] from this [ApolloCall].
    *
    * Use this for queries and mutations to get a single value from the network or the cache.
-   * For subscriptions or operations using `@defer`, you usually want to use [toFlow] instead to listen to all values.
+   * For subscriptions or operations using `@defer` that may return multiple values, use [toFlow] instead.
+   *
+   * [execute] may fail due to an I/O error, a cache miss or other reasons. In that case, check [ApolloResponse.exception]:
+   *
+   * ```
+   * val response = apolloClient.execute(ProductQuery())
+   * if (response.data != null) {
+   *   // Handle (potentially partial) data
+   * } else {
+   *   // Something wrong happened
+   *   if (it.exception != null) {
+   *     // Handle non-GraphQL errors
+   *   } else {
+   *     // Handle GraphQL errors in response.errors
+   *   }
+   * }
+   * ```
+   *
+   * The work is executed on the dispatcher configured in [ApolloClient.Builder.dispatcher] or a default dispatcher else. There is no need to change the coroutine context before calling [execute]. See [ApolloClient.Builder.dispatcher] for more details.
    *
    * @throws ApolloException if the call returns zero or multiple valid GraphQL responses.
+   *
+   * @see executeV3
+   * @see ApolloClient.Builder.dispatcher
    */
   suspend fun execute(): ApolloResponse<D> {
     return singleSuccessOrException(toFlow())

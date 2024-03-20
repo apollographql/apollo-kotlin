@@ -7,8 +7,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import okio.Closeable
 
-internal actual val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
-
 internal actual class CloseableSingleThreadDispatcher actual constructor() : Closeable {
   private var closed = false
 

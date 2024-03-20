@@ -24,6 +24,7 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
 import com.apollographql.apollo3.cache.normalized.internal.WatcherInterceptor
+import com.apollographql.apollo3.cache.normalized.internal.WatcherSentinel
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -32,9 +33,9 @@ import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.network.http.HttpInfo
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 
@@ -144,7 +145,13 @@ fun <D : Query.Data> ApolloCall<D>.watch(
 
 /**
  * Gets initial response(s) then observes the cache for any changes.
+ *
+ * There is a guarantee that the cache is subscribed before the initial response(s) finish emitting. Any update to the cache done after the initial response(s) are received will be received.
+ *
  * [fetchPolicy] controls how the result is first queried, while [refetchPolicy] will control the subsequent fetches.
+ *
+ * @see fetchPolicy
+ * @see refetchPolicy
  */
 fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
   return flow {
@@ -178,14 +185,18 @@ fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
           }
         }
 
+
     copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
-        .watch(response?.data)
-        .onStart {
-          if (lastResponse != null) {
-            emit(lastResponse!!)
+        .watchInternal(response?.data)
+        .collect {
+          if (it.exception === WatcherSentinel) {
+            if (lastResponse != null) {
+              emit(lastResponse!!)
+              lastResponse = null
+            }
+          } else {
+            emit(it)
           }
-        }.collect {
-          emit(it)
         }
   }
 }
@@ -195,6 +206,14 @@ fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
  * The fetch policy set by [fetchPolicy] will be used.
  */
 fun <D : Query.Data> ApolloCall<D>.watch(data: D?): Flow<ApolloResponse<D>> {
+  return watchInternal(data).filter { it.exception !== WatcherSentinel }
+}
+
+/**
+ * Observes the cache for the given data. Unlike [watch], no initial request is executed on the network.
+ * The fetch policy set by [fetchPolicy] will be used.
+ */
+internal fun <D : Query.Data> ApolloCall<D>.watchInternal(data: D?): Flow<ApolloResponse<D>> {
   return copy().addExecutionContext(WatchContext(data)).toFlow()
 }
 

@@ -2,6 +2,7 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -22,6 +23,7 @@ import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
+import com.apollographql.apollo3.internal.ApolloClientListener
 import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.network.NetworkTransport
@@ -34,9 +36,15 @@ import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.ws.WsProtocol
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.withContext
 import okio.Closeable
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
@@ -79,6 +87,7 @@ private constructor(
   private val retryOnError: ((ApolloRequest<*>) -> Boolean)? = builder.retryOnError
   private val retryOnErrorInterceptor: ApolloInterceptor
   private val failFastIfOffline = builder.failFastIfOffline
+  private val listeners = builder.listeners
 
   override val executionContext: ExecutionContext = builder.executionContext
   override val httpMethod: HttpMethod? = builder.httpMethod
@@ -221,7 +230,6 @@ private constructor(
   private val networkInterceptor = NetworkInterceptor(
       networkTransport = networkTransport,
       subscriptionNetworkTransport = subscriptionNetworkTransport,
-      dispatcher = concurrencyInfo.dispatcher
   )
 
   /**
@@ -232,14 +240,55 @@ private constructor(
    * For simple queries, the returned [Flow] contains only one element.
    * For more advanced use cases like watchers or subscriptions, it may contain any number of elements and never
    * finish. You can cancel the corresponding coroutine to terminate the [Flow] in this case.
+   *
+   * @see query
+   * @see mutation
+   * @see subscription
    */
   fun <D : Operation.Data> executeAsFlow(
       apolloRequest: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
-    return executeAsFlow(apolloRequest, false, false)
+    return executeAsFlowInternal(apolloRequest, false, false)
   }
 
-  internal fun <D : Operation.Data> executeAsFlow(
+  internal fun <D : Operation.Data> executeAsFlowInternal(
+      apolloRequest: ApolloRequest<D>,
+      ignoreApolloClientHttpHeaders: Boolean,
+      throwing: Boolean,
+  ): Flow<ApolloResponse<D>> {
+    val flow = channelFlow {
+      listeners.forEach {
+        it.requestStarted(apolloRequest)
+      }
+
+      try {
+        withContext(concurrencyInfo.dispatcher) {
+          apolloResponses(apolloRequest, ignoreApolloClientHttpHeaders, throwing).collect {
+            send(it)
+          }
+        }
+      } finally {
+        listeners.forEach {
+          it.requestCompleted(apolloRequest)
+        }
+      }
+    }
+
+    return flow
+        /**
+         * The `Unconfined` dispatcher is needed to let the IdlingResource monitor collection synchronously. Without this, `channelFlow` dispatches and the current stack frame terminates with the IdlingResource still being idle.
+         *
+         * See [idlingResourceSingleQuery](https://github.com/apollographql/apollo-kotlin/blob/215a845f38bcdfc9c72ffc7c58d077ac54e297bb/tests/idling-resource/src/test/java/IdlingResourceTest.kt#L33).
+         * See https://slack-chats.kotlinlang.org/t/16714036/can-i-have-a-channelflow-that-does-not-dispatch-until-after-#d48ebff5-676e-4109-8dd5-b2320245faa3.
+         */
+        .flowOn(Dispatchers.Unconfined)
+        /**
+         * Default to [Channel.UNLIMITED] so as not to lose any item. If a consumer is very slow, the channel may grow boundless. The caller should call [buffer] and change the default in those cases.
+         */
+        .buffer(Channel.UNLIMITED)
+  }
+
+  internal fun <D : Operation.Data> apolloResponses(
       apolloRequest: ApolloRequest<D>,
       ignoreApolloClientHttpHeaders: Boolean,
       throwing: Boolean,
@@ -297,7 +346,7 @@ private constructor(
         }
         .build()
 
-    val allInterceptors = buildList{
+    val allInterceptors = buildList {
       addAll(interceptors)
       add(retryOnErrorInterceptor)
       add(networkInterceptor)
@@ -337,6 +386,9 @@ private constructor(
     private val _httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
     val httpInterceptors: List<HttpInterceptor> = _httpInterceptors
 
+    private val _listeners: MutableList<ApolloClientListener> = mutableListOf()
+    internal val listeners: List<ApolloClientListener> = _listeners
+
     override var executionContext: ExecutionContext = ExecutionContext.Empty
       private set
     override var httpMethod: HttpMethod? = null
@@ -375,15 +427,19 @@ private constructor(
       private set
     var webSocketReopenServerUrl: (suspend () -> String)? = null
       private set
+
     @ApolloExperimental
     var retryOnErrorInterceptor: ApolloInterceptor? = null
       private set
+
     @ApolloExperimental
     var networkMonitor: NetworkMonitor? = null
       private set
+
     @ApolloExperimental
     var retryOnError: ((ApolloRequest<*>) -> Boolean)? = null
       private set
+
     @ApolloExperimental
     var failFastIfOffline: Boolean? = null
       private set
@@ -742,6 +798,17 @@ private constructor(
       _customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter)
     }
 
+    @ApolloInternal
+    fun addListener(listener: ApolloClientListener) = apply {
+      _listeners.add(listener)
+    }
+
+    @ApolloInternal
+    fun listeners(listeners: List<ApolloClientListener>) = apply {
+      _listeners.clear()
+      _listeners.addAll(listeners)
+    }
+
     /**
      * Adds an [ApolloInterceptor] to this [ApolloClient].
      *
@@ -753,7 +820,7 @@ private constructor(
      * use interceptors, the order of the cache/APQs configuration also influences the final interceptor list.
      */
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {
-      _interceptors += interceptor
+      _interceptors.add(interceptor)
     }
 
     /**
@@ -788,11 +855,11 @@ private constructor(
     }
 
     /**
-     * Changes the [CoroutineDispatcher] used for I/O intensive work like reading the
-     * network or the cache
-     * On the JVM the dispatcher is [kotlinx.coroutines.Dispatchers.IO] by default.
-     * On native this function has no effect. Network request use the default NSURLConnection
-     * threads and the cache uses a background dispatch queue.
+     * Sets the [CoroutineDispatcher] that the return value of [ApolloCall.toFlow] will flow on.
+     *
+     * By default, [ApolloClient] uses [kotlinx.coroutines.Dispatchers.IO] for JVM/native targets and [kotlinx.coroutines.Dispatchers.Default] for JS and other targets.
+     *
+     * @see [ApolloCall.toFlow]
      */
     fun dispatcher(dispatcher: CoroutineDispatcher?) = apply {
       this.dispatcher = dispatcher
@@ -896,6 +963,7 @@ private constructor(
           .retryOnErrorInterceptor(retryOnErrorInterceptor)
           .networkMonitor(networkMonitor)
           .failFastIfOffline(failFastIfOffline)
+          .listeners(listeners)
     }
   }
 

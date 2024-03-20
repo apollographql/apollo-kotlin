@@ -30,7 +30,6 @@ import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -107,7 +106,7 @@ internal class ApolloCacheInterceptor(
       }
 
       else -> error("Unknown operation ${request.operation}")
-    }.flowOn(request.executionContext[ConcurrencyInfo]!!.dispatcher)
+    }
   }
 
   /**

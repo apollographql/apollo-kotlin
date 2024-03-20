@@ -6,8 +6,6 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import okio.Closeable
 import java.util.concurrent.Executors
 
-internal actual val defaultDispatcher = Dispatchers.IO
-
 internal actual class CloseableSingleThreadDispatcher actual constructor() : Closeable {
   private var closed = false
   private val _dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
