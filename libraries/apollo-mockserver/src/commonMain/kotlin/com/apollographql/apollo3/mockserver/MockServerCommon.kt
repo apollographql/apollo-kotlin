@@ -2,6 +2,7 @@ package com.apollographql.apollo3.mockserver
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_1
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_8_3
 import com.apollographql.apollo3.annotations.ApolloInternal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -13,6 +14,8 @@ import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.jvm.JvmOverloads
 
+@Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+@ApolloDeprecatedSince(v3_8_3)
 fun parseHeader(line: String): Pair<String, String> {
   val index = line.indexOfFirst { it == ':' }
   check(index >= 0) {
@@ -30,6 +33,8 @@ class MockRequest(
     val body: ByteString = ByteString.EMPTY,
 )
 
+@Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+@ApolloDeprecatedSince(v3_8_3)
 suspend fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: String) {
   sink.writeUtf8("$version ${mockResponse.statusCode}\r\n")
   // We don't support 'Connection: Keep-Alive', so indicate it to the client
@@ -137,7 +142,7 @@ internal fun readRequest(source: BufferedSource): MockRequest? {
     return null
   }
 
-  val (method, path, version) = parseRequestLine(line)
+  val (method, path, version) = @Suppress("DEPRECATION") parseRequestLine(line)
 
   val headers = mutableMapOf<String, String>()
   /**
@@ -150,7 +155,7 @@ internal fun readRequest(source: BufferedSource): MockRequest? {
       break
     }
 
-    val (key, value) = parseHeader(line)
+    val (key, value) = @Suppress("DEPRECATION") parseHeader(line)
     headers.put(key, value)
   }
 
@@ -196,6 +201,8 @@ fun BufferedSource.readChunked(buffer: Buffer) {
   }
 }
 
+@Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+@ApolloDeprecatedSince(v3_8_3)
 fun parseRequestLine(line: String): Triple<String, String, String> {
   val regex = Regex("([A-Z-a-z]*) ([^ ]*) (.*)")
   val match = regex.matchEntire(line)

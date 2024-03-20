@@ -8,7 +8,6 @@ import com.apollographql.apollo3.api.json.MapJsonWriter
 import okio.Buffer
 import kotlin.jvm.JvmName
 
-@Suppress("UNCHECKED_CAST")
 fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters): Executable.Variables {
   return variables(customScalarAdapters, false)
 }

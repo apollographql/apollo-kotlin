@@ -4,6 +4,7 @@ import com.android.build.gradle.api.BaseVariant
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_8_3
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
@@ -334,6 +335,8 @@ interface Service {
    *
    * Default value: false
    */
+  @Deprecated("Used for backward compat with 2.x, will be removed in a future version")
+  @ApolloDeprecatedSince(v3_8_3)
   val useSchemaPackageNameForFragments: Property<Boolean>
 
   /**
@@ -540,8 +543,10 @@ interface Service {
    * The directory where the test builders will be written.
    * If you want a [DirectoryProperty] that carries the task dependency, use [outputDirConnection]
    */
+  @Deprecated("Test builders are operation based and generate a lot of code. Use data builders instead")
+  @ApolloDeprecatedSince(v3_8_3)
   val testDir: DirectoryProperty
-  
+
   /**
    * Whether to generate the operationOutput.json
    *
@@ -853,6 +858,8 @@ interface Service {
    * - commonTest sourceSet for Kotlin multiplatform projects
    * - test *and* androidTest variants for Android projects
    */
+  @Deprecated("Test builders are operation based and generate a lot of code. Use data builders instead")
+  @ApolloDeprecatedSince(v3_8_3)
   fun testDirConnection(action: Action<in DirectoryConnection>)
 
   /**

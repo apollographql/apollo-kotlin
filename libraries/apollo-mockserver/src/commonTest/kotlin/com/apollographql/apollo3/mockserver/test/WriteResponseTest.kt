@@ -21,6 +21,7 @@ class WriteResponseTest {
         .build()
 
     val buffer = Buffer()
+    @Suppress("DEPRECATION")
     writeResponse(buffer, mockResponse, "1.1")
     assertEquals(
         "1.1 404\r\n" +
@@ -42,6 +43,7 @@ class WriteResponseTest {
         .build()
 
     val buffer = Buffer()
+    @Suppress("DEPRECATION")
     writeResponse(buffer, mockResponse, "1.1")
     assertEquals(
         "1.1 404\r\n" +
@@ -67,6 +69,7 @@ class WriteResponseTest {
     ))
 
     val buffer = Buffer()
+    @Suppress("DEPRECATION")
     writeResponse(buffer, mockResponse, "1.1")
     assertEquals(
         listOf(

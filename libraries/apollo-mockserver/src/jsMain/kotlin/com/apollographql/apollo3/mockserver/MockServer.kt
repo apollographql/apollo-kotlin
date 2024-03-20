@@ -43,6 +43,7 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
 
       GlobalScope.launch {
         delay(mockResponse.delayMillis)
+        @Suppress("DEPRECATION")
         writeResponse(SocketSink(socket).buffer(), mockResponse, request.version)
         socket.end()
       }

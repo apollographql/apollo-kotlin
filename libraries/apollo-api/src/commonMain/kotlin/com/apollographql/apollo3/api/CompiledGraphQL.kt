@@ -5,6 +5,7 @@ package com.apollographql.apollo3.api
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_3
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_8_3
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.writeAny
@@ -36,6 +37,7 @@ class CompiledField internal constructor(
       name: String,
       variables: Executable.Variables,
   ): Any? {
+    @Suppress("DEPRECATION")
     return resolveVariables(arguments.firstOrNull { it.name == name }?.value, variables)
   }
 
@@ -55,6 +57,7 @@ class CompiledField internal constructor(
       return name
     }
     val map = arguments.associateBy { it.name }.mapValues { it.value.value }
+    @Suppress("DEPRECATION")
     val resolvedArguments = resolveVariables(map, variables)
     return try {
       val buffer = Buffer()
@@ -136,7 +139,7 @@ class CompiledFragment internal constructor(
 }
 
 data class CompiledCondition(val name: String, val inverted: Boolean, val defaultValue: Boolean) {
-  constructor(name: String, inverted: Boolean): this(name, inverted, true)
+  constructor(name: String, inverted: Boolean) : this(name, inverted, true)
 
   fun copy(name: String = this.name, inverted: Boolean = this.inverted) = CompiledCondition(name, inverted, defaultValue)
 }
@@ -168,7 +171,7 @@ sealed class CompiledNamedType(val name: String) : CompiledType() {
 /**
  * A GraphQL scalar type that is mapped to a Kotlin. This is named "Custom" for historical reasons
  * but is also used for builtin scalars
- * 
+ *
  * TODO v4: rename this to ScalarType
  */
 class CustomScalarType(
@@ -302,11 +305,11 @@ class InputObjectType(
 
 class EnumType(
     name: String,
-    val values: List<String>
+    val values: List<String>,
 ) : CompiledNamedType(name) {
   @Deprecated("Use the primary constructor instead")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_5_1)
-  constructor(name: String): this(name, emptyList())
+  constructor(name: String) : this(name, emptyList())
 }
 
 /**
@@ -383,13 +386,16 @@ class CompiledArgument private constructor(
 /**
  * Resolve all variables that may be contained inside `value`
  */
-@Suppress("UNCHECKED_CAST")
+@Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
+@ApolloDeprecatedSince(v3_8_3)
+@Suppress("UNCHECKED_CAST", "DEPRECATION")
 fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
   return when (value) {
     null -> null
     is CompiledVariable -> {
       variables.valueMap[value.name]
     }
+
     is Map<*, *> -> {
       value as Map<String, Any?>
       value.mapValues {
@@ -398,11 +404,13 @@ fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
           .sortedBy { it.first }
           .toMap()
     }
+
     is List<*> -> {
       value.map {
         resolveVariables(it, variables)
       }
     }
+
     else -> value
   }
 }
@@ -467,6 +475,7 @@ fun CompiledNamedType.isComposite(): Boolean {
     is InterfaceType,
     is ObjectType,
     -> true
+
     else
     -> false
   }

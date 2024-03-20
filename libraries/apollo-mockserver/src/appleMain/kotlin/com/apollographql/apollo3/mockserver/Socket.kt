@@ -145,7 +145,10 @@ class Socket(
         }
 
         try {
-          runBlocking { writeResponse(sink, mockResponse, request.version) }
+          runBlocking {
+            @Suppress("DEPRECATION")
+            writeResponse(sink, mockResponse, request.version)
+          }
         } catch (e: IOException) {
           debug("'$connectionFd': writeResponse error")
           return

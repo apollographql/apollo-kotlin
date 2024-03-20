@@ -50,6 +50,7 @@ actual class MockServer actual constructor(
 
       val mockResponse = mockServerHandler.handle(mockRequest)
       delay(mockResponse.delayMillis)
+      @Suppress("DEPRECATION")
       writeResponse(clientSink, mockResponse, mockRequest.version)
     } catch (e: CancellationException) {
       // This is expected when the MockServer is closed
