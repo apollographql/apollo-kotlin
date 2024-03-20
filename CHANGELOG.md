@@ -3,7 +3,7 @@ Change Log
 
 # Version 3.8.3
 
-_2024-_
+_2024-03-20_
 
 Version 3.8.3 is a maintenance release with two new convenience APIs and a Kotlin update. New developments happen in the 4.x versions.
 
@@ -12,6 +12,7 @@ Version 3.8.3 is a maintenance release with two new convenience APIs and a Kotli
 [runtime] Allow buildPostBody to write operation extensions (#5631)
 [runtime] compose support: Catch exceptions and expose them in .exception (#5018)
 [http-cache] Ignore IOException when calling ApolloHttpCache.remove (#5730)
+[all] Add deprecations on symbols that are getting removed in v4 (#5746)
 
 # Version 4.0.0-beta.4
 
