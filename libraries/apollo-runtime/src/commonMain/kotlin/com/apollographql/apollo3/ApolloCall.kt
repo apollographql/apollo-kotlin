@@ -1,6 +1,7 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_8_3
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
@@ -21,32 +22,32 @@ class ApolloCall<D : Operation.Data> internal constructor(
 ) : MutableExecutionOptions<ApolloCall<D>> {
   override var executionContext: ExecutionContext = ExecutionContext.Empty
     @Deprecated("Use addExecutionContext() instead")
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_8_4)
+    @ApolloDeprecatedSince(v3_8_3)
     set
 
   override var httpMethod: HttpMethod? = null
     @Deprecated("Use httpMethod() instead")
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_8_4)
+    @ApolloDeprecatedSince(v3_8_3)
     set
 
   override var sendApqExtensions: Boolean? = null
     @Deprecated("Use sendApqExtensions() instead")
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_8_4)
+    @ApolloDeprecatedSince(v3_8_3)
     set
 
   override var sendDocument: Boolean? = null
     @Deprecated("Use sendDocument() instead")
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_8_4)
+    @ApolloDeprecatedSince(v3_8_3)
     set
 
   override var enableAutoPersistedQueries: Boolean? = null
     @Deprecated("Use enableAutoPersistedQueries() instead")
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_8_4)
+    @ApolloDeprecatedSince(v3_8_3)
     set
 
   override var httpHeaders: List<HttpHeader>? = null
     @Deprecated("Use httpHeaders() instead")
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_8_4)
+    @ApolloDeprecatedSince(v3_8_3)
     set
 
   private var ignoreApolloClientHttpHeaders: Boolean? = null
@@ -104,7 +105,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   override var canBeBatched: Boolean? = null
     @Deprecated("Use canBeBatched() instead")
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_8_4)
+    @ApolloDeprecatedSince(v3_8_3)
     set
 
   override fun canBeBatched(canBeBatched: Boolean?) = apply {

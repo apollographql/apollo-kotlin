@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_8_4
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_8_3
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
@@ -46,12 +46,12 @@ private constructor(
     private var requestUuid: Uuid = uuid4()
     override var executionContext: ExecutionContext = ExecutionContext.Empty
       @Deprecated("Use addExecutionContext() instead")
-      @ApolloDeprecatedSince(v3_8_4)
+      @ApolloDeprecatedSince(v3_8_3)
       set
 
     override var httpMethod: HttpMethod? = null
       @Deprecated("Use httpMethod() instead")
-      @ApolloDeprecatedSince(v3_8_4)
+      @ApolloDeprecatedSince(v3_8_3)
       set
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder<D> = apply {
@@ -61,7 +61,7 @@ private constructor(
 
     override var httpHeaders: List<HttpHeader>? = null
       @Deprecated("Use httpHeaders() instead")
-      @ApolloDeprecatedSince(v3_8_4)
+      @ApolloDeprecatedSince(v3_8_3)
       set
 
     override fun httpHeaders(httpHeaders: List<HttpHeader>?): Builder<D> = apply {
@@ -76,7 +76,7 @@ private constructor(
 
     override var sendApqExtensions: Boolean? = null
       @Deprecated("Use sendApqExtensions() instead")
-      @ApolloDeprecatedSince(v3_8_4)
+      @ApolloDeprecatedSince(v3_8_3)
       set
 
     override fun sendApqExtensions(sendApqExtensions: Boolean?): Builder<D> = apply {
@@ -86,7 +86,7 @@ private constructor(
 
     override var sendDocument: Boolean? = null
       @Deprecated("Use sendDocument() instead")
-      @ApolloDeprecatedSince(v3_8_4)
+      @ApolloDeprecatedSince(v3_8_3)
       set
 
     override fun sendDocument(sendDocument: Boolean?): Builder<D> = apply {
@@ -96,7 +96,7 @@ private constructor(
 
     override var enableAutoPersistedQueries: Boolean? = null
       @Deprecated("Use enableAutoPersistedQueries() instead")
-      @ApolloDeprecatedSince(v3_8_4)
+      @ApolloDeprecatedSince(v3_8_3)
       set
 
     override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): Builder<D> = apply {
@@ -106,7 +106,7 @@ private constructor(
 
     override var canBeBatched: Boolean? = null
       @Deprecated("Use canBeBatched() instead")
-      @ApolloDeprecatedSince(v3_8_4)
+      @ApolloDeprecatedSince(v3_8_3)
       set
 
     override fun canBeBatched(canBeBatched: Boolean?): Builder<D> = apply {

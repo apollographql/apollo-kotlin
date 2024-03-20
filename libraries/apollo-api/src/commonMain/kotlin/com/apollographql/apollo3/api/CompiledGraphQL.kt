@@ -5,7 +5,7 @@ package com.apollographql.apollo3.api
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_3
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_8_4
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_8_3
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.writeAny
@@ -387,7 +387,7 @@ class CompiledArgument private constructor(
  * Resolve all variables that may be contained inside `value`
  */
 @Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
-@ApolloDeprecatedSince(v3_8_4)
+@ApolloDeprecatedSince(v3_8_3)
 @Suppress("UNCHECKED_CAST", "DEPRECATION")
 fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
   return when (value) {

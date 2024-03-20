@@ -3,7 +3,7 @@ package com.apollographql.apollo3.api
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_1
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_8_4
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_8_3
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import kotlin.jvm.JvmField
@@ -18,7 +18,7 @@ class CustomScalarAdapters private constructor(
     // Ideally it should be passed as its own parameter, but we're avoiding a breaking change.
     // See https://github.com/apollographql/apollo-kotlin/pull/3813
     @Deprecated("This shouldn't be part of the public API and will be removed in Apollo Kotlin 4. If you needed this, please open an issue.")
-    @ApolloDeprecatedSince(v3_8_4)
+    @ApolloDeprecatedSince(v3_8_3)
     val adapterContext: AdapterContext,
     private val unsafe: Boolean
 ) : ExecutionContext.Element {
