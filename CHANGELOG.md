@@ -7,7 +7,7 @@ _2024-03-20_
 
 Version 3.8.3 is a maintenance release with two new convenience APIs and a Kotlin update. New developments happen in the 4.x versions.
 
-Note: this release upgrades the library's Kotlin dependency to 1.9 - this means projects using Apollo can depend on Kotlin 1.8+.
+Note: because Apollo Kotlin now depends on kotlin-stdlib version 1.9, you need the 1.8+ Kotlin compiler to compile your project.
 
 * [all] update Kotlin to 1.9 (#5412)
 * [runtime] Add `ApolloClient.Builder(ApolloHttpCache)` (#5638) (#5640)
