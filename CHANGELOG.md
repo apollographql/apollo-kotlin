@@ -1,6 +1,252 @@
 Change Log
 ==========
 
+# Version 3.8.3
+
+_2024-03-20_
+
+Version 3.8.3 is a maintenance release with two new convenience APIs and a Kotlin update. New developments happen in the 4.x versions.
+
+Note: because Apollo Kotlin now depends on kotlin-stdlib version 1.9, you need the 1.8+ Kotlin compiler to compile your project. 
+
+* [all] update Kotlin to 1.9 (#5412)
+* [runtime] Add `ApolloClient.Builder(ApolloHttpCache)` (#5638) (#5640)
+* [runtime] Allow `buildPostBody` to write operation extensions (#5631)
+* [runtime] compose support: Catch exceptions and expose them in `.exception` (#5018)
+* [http-cache] Ignore `IOException` when calling `ApolloHttpCache.remove` (#5730)
+* [all] Add deprecations on symbols that are getting removed in v4 (#5746)
+
+# Version 3.8.2
+
+_2023-05-25_
+
+A maintenance release with bugfixes, mostly around WebSockets and subscriptions as well as a LocalTime adapter and options to work with operation manifests.
+
+Huge THANK YOU to @baconz, @AlexHartford, @Oleur for the love they put in WebSocket contributions as well as @Jephuff for their first contribution 💙 .
+
+## 👷‍ All changes
+
+* add `Service.operationManifestFormat` (#4981)
+* WebSockets: Fix fan out in websocket network transport (#4972)
+* Test: Throw inside flow in MapTestNetworkTransport (#4982)
+* Doc: Add Optional.Absent in documentation (#4979)
+* Doc: clarify that operationBased codegen is the recommendation (#4966)
+* AST: use existing as the base for copying enum values (#4943)
+* Cache: Fix deleting records in the SqlNormalizedCache with cascade-true (#4938)
+* Compiler: Fix deprecated input field usage false positive (#4935)
+* Doc: Clarify KDoc of `watch()` (#4914)
+* WebSockets: allow changing the serverUrl of WebSocketNetworkTransport (#4885)
+* WebSockets: accept connectionPayload lambda instead of static auth (#4855)
+* Add LocalTime adapter for Java and Kotlin (#4829)
+* Doc: Add a section about the operationBased codegen (3.x) (#4940)
+
+# Version 3.8.1
+
+_2023-04-21_
+
+This patch release contains 2 bug fixes.
+
+## 👷‍ All changes
+
+* Add ignoreApolloClientHttpHeaders (#4838)
+* Download introspection: handle GraphQL errors (#4861)
+
+# Version 3.8.0
+
+_2023-03-28_
+
+This release adds two new artifacts that contain Jetpack compose extensions amongst other fixes.
+
+## 💙️ External contributors
+
+Many thanks to @slinstacart and @hbmartin for their contributions to this release!
+
+## ✨ [New] Jetpack compose extension (#4802)
+
+You can now use the `apollo-compose-support` artifact:
+
+```kotlin
+// build.gradle.kts
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-compose-support")
+}
+```
+
+This artifact contains the `toState()` and `watchAsState()` extensions:
+
+```kotlin
+/**
+ * A stateful composable that retrieves your data
+ */
+@OptIn(ApolloExperimental::class)
+@Composable
+fun LaunchDetails(launchId: String) {
+    val response by apolloClient.query(LaunchDetailsQuery(launchId)).toState()
+    val r = response
+    when {
+        r == null -> Loading() // no response yet
+        r.exception != null -> ErrorMessage("Oh no... A network error happened: ${r.exception!!.message}")
+        r.hasErrors() -> ErrorMessage("Oh no... A GraphQL error happened ${r.errors[0].message}.")
+        else -> LaunchDetails(r.data!!, navigateToLogin)
+    }
+}
+
+/**
+ * A stateless composable that displays your data
+ */
+@Composable
+private fun LaunchDetails(
+        data: LaunchDetailsQuery.Data,
+) {
+  // Your UI code goes here
+}
+```
+
+If you are working with paginated data, you can also add `apollo-compose-paging-support` to your dependencies:
+
+```kotlin
+// build.gradle.kts
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-compose-paging-support")
+}
+```
+
+This artifact contains a helper function to create `androidx.pagin.Pager` instances ([androix documentation](https://developer.android.com/reference/androidx/paging/Pager)):
+
+```kotlin
+@OptIn(ApolloExperimental::class)
+@Composable
+fun LaunchList(onLaunchClick: (launchId: String) -> Unit) {
+  val lazyPagingItems = rememberAndCollectPager<LaunchListQuery.Data, LaunchListQuery.Launch>(
+          config = PagingConfig(pageSize = 10),
+          appendCall = { response, loadSize ->
+            if (response?.data?.launches?.hasMore == false) {
+              // No more pages
+              null
+            } else {
+              // Compute the next call from the current response
+              apolloClient.query(
+                      LaunchListQuery(
+                              cursor = Optional.present(response?.data?.launches?.cursor),
+                              pageSize = Optional.present(loadSize)
+                      )
+              )
+            }
+          },
+          getItems = { response ->
+            // Compute the items to be added to the page from the current response
+            if (response.hasErrors()) {
+              Result.failure(ApolloException(response.errors!![0].message))
+            } else {
+              Result.success(response.data!!.launches.launches.filterNotNull())
+            }
+          },
+  )
+  
+  // Use your paging items:
+  if (lazyPagingItems.loadState.refresh is LoadState.Loading) {
+    Loading()
+  } else {
+    LazyColumn {
+      items(lazyPagingItems) { launch ->
+        // Your UI code goes here
+      }
+      item {
+        when (val append = lazyPagingItems.loadState.append) {
+          is LoadState.Error -> // Add error indicator here 
+          LoadState.Loading -> // Add loading indicator here
+        }
+      }
+    }
+  }
+}
+```
+
+As always, feedback is very welcome. Let us know what you think of the feature by
+either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-android/issues)
+, [joining the community](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client)
+or [stopping by our channel in the KotlinLang Slack](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your
+invite [here](https://slack.kotl.in/)).
+
+## ✨ [New] Gradle plugin: run codegen after gradle sync
+
+If you import a new project or run a Gradle sync, your GraphQL models are now automatically generated so that the IDE can find the symbols and your files do not show red underlines. This takes into account Gradle up-to-date checks and it should be pretty fast. If you want to opt-out, you can do so with `generateSourcesDuringGradleSync.set(false)`:
+
+```kotlin
+apollo {
+  // Enable automatic generation of models during Gradle sync (default)
+  generateSourcesDuringGradleSync.set(true)
+
+  // Or disable automatic generation of models to save on your Gradle sync times
+  generateSourcesDuringGradleSync.set(false)
+
+  service("api") {
+    // Your  GraphQL configuration
+  }
+}
+```
+
+## 👷‍ All changes
+
+* Allow to add HTTP headers on top of ApolloClient ones (#4754)
+* Kotlin 1.8 (#4776)
+* Move cache creation outside the main thread (#4781)
+* Cache: ignore hardcoded @include(if: false) directives (#4795)
+* Add % to reserved characters to encode in URL (#4804)
+* First drop of experimental Compose support libraries (#4783)
+* Consider variable default values with @skip/@include/@defer (#4785)
+* Gradle plugin: run codegen after gradle sync (#4796)
+* Allow custom SqlDriver (#4806)
+* Multipart subscriptions (#4768, #4807, #4738)
+* GQLNode.print for type extensions (#4814)
+
+# Version 3.7.5
+
+_2023-03-14_
+
+This release contains a bunch of fixes and minor improvements.
+
+Many thanks to @adubovkin and @ndwhelan for contributing to the project, and to all the people who sent feedback! 💜
+
+## 🐛 Bug fixes
+
+* Fix CacheFirst + emitCacheMisses(true) (#4708)
+* Fix content-length for the String constructor in MockServer (#4683)
+* Fix same shape validation (#4641)
+* Add a `@JsName` annotation to Operation.name() (#4643)
+* Remove unreachable lenient mode from JSON writer/reader (#4656)
+* Remove deprecation on connectToAndroidSourceSet because alternative have issues too (#4674)
+* Fail fast if trying to set browser WebSocket headers (#4676)
+* Make sure the fallback type is always last (#4692)
+* Fix normalizing data when using `@include` or `@skip` with default values (#4700)
+* Java codegen: fix h nameclash in hashCode (#4715)
+
+## 🔍 Deprecation warnings (#4610)
+
+As we're starting to work on version 4.0 which will drop support for the "compat" codegen and a few other options dating from version 2, we've added in this release some deprecation warnings that will warn when they're used. If you haven't done already, now is a good time to migrate!
+
+## 👷‍ Other changes
+
+* Data builders: support for `@skip` and `@include` (#4645)
+* SchemaDownloader: Update to download deprecated input fields (#4678)
+* Include deprecated arguments and directives in introspection (#4702)
+* Update JS dependencies (#4634)
+
+# Version 3.7.4
+
+_2023-01-13_
+
+This release contains a handful of bug fixes and improvements.
+
+## 👷‍ All changes
+
+- Kotlin codegen: automatically escape 'companion' fields (#4630)
+- Runtime: fix a case where APQ + cache could be misconfigured and throw an exception (#4628)
+- Update KTOR to 2.2.2 (#4627)
+- Allow having an empty last part in multipart (#4598)
+- Add data builders for unknown interface and union types (v3) (#4613)
+- Http cache: don't access the disk from the main thread in error case (#4606)
+
 # Version 3.7.3
 
 _2022-12-20_
