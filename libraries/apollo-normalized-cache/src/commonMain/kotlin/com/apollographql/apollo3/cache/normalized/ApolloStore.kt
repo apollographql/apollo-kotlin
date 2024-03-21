@@ -75,12 +75,28 @@ interface ApolloStore {
    * @param publish       whether to publish the changed keys to listeners
    * @return the changed keys
    */
-  fun <D : Operation.Data> writeOperation(
+  suspend fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
       customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
       publish: Boolean = true,
+  ): Set<String>
+
+  /**
+   * Write an operation data to the store and optionally publish changes of [Record] which have changed,
+   * that will notify any watcher that depends on these [Record] to re-fetch.
+   * This is a synchronous operation that might block if the underlying cache is doing IO
+   *
+   * @param operation     [Operation] response data of which should be written to the store
+   * @param operationData [Operation.Data] operation response data to be written to the store
+   * @return the changed keys
+   */
+  fun <D : Operation.Data> writeOperation(
+      operation: Operation<D>,
+      operationData: D,
+      customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+      cacheHeaders: CacheHeaders = CacheHeaders.NONE,
   ): Set<String>
 
   /**
@@ -94,12 +110,47 @@ interface ApolloStore {
    * @param publish whether to publish the changed keys to listeners
    * @return the changed keys
    */
+  suspend fun <D : Fragment.Data> writeFragment(
+      fragment: Fragment<D>,
+      cacheKey: CacheKey,
+      fragmentData: D,
+      customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+      cacheHeaders: CacheHeaders = CacheHeaders.NONE,
+      publish: Boolean = true,
+  ): Set<String>
+
+  /**
+   * Write a fragment data to the store and optionally publish changes of [Record] which have changed,
+   * that will notify any watcher that depends on these [Record] to re-fetch.
+   * This is a synchronous operation that might block if the underlying cache is doing IO
+   *
+   * @param fragment data to be written to the store
+   * @param cacheKey [CacheKey] to be used as root record key
+   * @param fragmentData [Fragment.Data] to be written to the store
+   * @return the changed keys
+   */
   fun <D : Fragment.Data> writeFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
       customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
+  ): Set<String>
+
+  /**
+   * Write operation data to the optimistic store.
+   * This is a synchronous operation that might block if the underlying cache is doing IO.
+   *
+   * @param operation     [Operation] response data of which should be written to the store
+   * @param operationData [Operation.Data] operation response data to be written to the store
+   * @param mutationId    mutation unique identifier
+   * @return the changed keys
+   */
+  suspend fun <D : Operation.Data> writeOptimisticUpdates(
+      operation: Operation<D>,
+      operationData: D,
+      mutationId: Uuid,
+      customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
       publish: Boolean = true,
   ): Set<String>
 
@@ -117,6 +168,17 @@ interface ApolloStore {
       operationData: D,
       mutationId: Uuid,
       customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+  ): Set<String>
+
+  /**
+   * Rollback operation data optimistic updates.
+   * This is a synchronous operation that might block if the underlying cache is doing IO.
+   *
+   * @param mutationId mutation unique identifier
+   * @return the changed keys
+   */
+  suspend fun rollbackOptimisticUpdates(
+      mutationId: Uuid,
       publish: Boolean = true,
   ): Set<String>
 
@@ -129,7 +191,6 @@ interface ApolloStore {
    */
   fun rollbackOptimisticUpdates(
       mutationId: Uuid,
-      publish: Boolean = true,
   ): Set<String>
 
   /**
@@ -172,7 +233,7 @@ interface ApolloStore {
   /**
    * @param keys A set of keys of [Record] which have changed.
    */
-  fun publish(keys: Set<String>)
+  suspend fun publish(keys: Set<String>)
 
   /**
    * Direct access to the cache.

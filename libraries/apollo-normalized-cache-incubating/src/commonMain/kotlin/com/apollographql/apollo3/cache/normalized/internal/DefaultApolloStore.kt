@@ -64,14 +64,12 @@ internal class DefaultApolloStore(
     OptimisticNormalizedCache(normalizedCacheFactory.create())
   }
 
-  override fun publish(keys: Set<String>) {
+  override suspend fun publish(keys: Set<String>) {
     if (keys.isEmpty()) {
       return
     }
 
-    if (!changedKeysEvents.tryEmit(keys)) {
-      println("Apollo: changedKeys event lost, your watchers may be collecting too slowly")
-    }
+    changedKeysEvents.emit(keys)
   }
 
   override fun clearAll(): Boolean {
@@ -153,15 +151,15 @@ internal class DefaultApolloStore(
       operationData: D,
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
-      publish: Boolean,
   ): Set<String> {
-    return writeOperationWithRecords(
-        operation = operation,
-        operationData = operationData,
-        cacheHeaders = cacheHeaders,
-        publish = publish,
-        customScalarAdapters = customScalarAdapters
-    ).second
+    val records = operation.normalize(
+        data = operationData,
+        customScalarAdapters = customScalarAdapters,
+        cacheKeyGenerator = cacheKeyGenerator,
+        metadataGenerator = metadataGenerator,
+    ).values.toSet()
+
+    return cache.merge(records, cacheHeaders, recordMerger)
   }
 
   override fun <D : Fragment.Data> writeFragment(
@@ -170,7 +168,6 @@ internal class DefaultApolloStore(
       fragmentData: D,
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
-      publish: Boolean,
   ): Set<String> {
     val records = fragment.normalize(
         data = fragmentData,
@@ -180,43 +177,14 @@ internal class DefaultApolloStore(
         rootKey = cacheKey.key
     ).values
 
-    val changedKeys = cache.merge(records, cacheHeaders, recordMerger)
-    if (publish) {
-      publish(changedKeys)
-    }
-
-    return changedKeys
+    return cache.merge(records, cacheHeaders, recordMerger)
   }
-
-  private fun <D : Operation.Data> writeOperationWithRecords(
-      operation: Operation<D>,
-      operationData: D,
-      cacheHeaders: CacheHeaders,
-      publish: Boolean,
-      customScalarAdapters: CustomScalarAdapters,
-  ): Pair<Set<Record>, Set<String>> {
-    val records = operation.normalize(
-        data = operationData,
-        customScalarAdapters = customScalarAdapters,
-        cacheKeyGenerator = cacheKeyGenerator,
-        metadataGenerator = metadataGenerator,
-    ).values.toSet()
-
-    val changedKeys = cache.merge(records, cacheHeaders, recordMerger)
-    if (publish) {
-      publish(changedKeys)
-    }
-
-    return records to changedKeys
-  }
-
 
   override fun <D : Operation.Data> writeOptimisticUpdates(
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
       customScalarAdapters: CustomScalarAdapters,
-      publish: Boolean,
   ): Set<String> {
     val records = operation.normalize(
         data = operationData,
@@ -234,24 +202,13 @@ internal class DefaultApolloStore(
     /**
      * TODO: should we forward the cache headers to the optimistic store?
      */
-    val changedKeys = cache.addOptimisticUpdates(records)
-    if (publish) {
-      publish(changedKeys)
-    }
-
-    return changedKeys
+    return cache.addOptimisticUpdates(records)
   }
 
   override fun rollbackOptimisticUpdates(
       mutationId: Uuid,
-      publish: Boolean,
   ): Set<String> {
-    val changedKeys = cache.removeOptimisticUpdates(mutationId)
-    if (publish) {
-      publish(changedKeys)
-    }
-
-    return changedKeys
+    return cache.removeOptimisticUpdates(mutationId)
   }
 
   fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {

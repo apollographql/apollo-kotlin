@@ -58,14 +58,12 @@ internal class DefaultApolloStore(
 
   private val lock = Lock()
 
-  override fun publish(keys: Set<String>) {
+  override suspend fun publish(keys: Set<String>) {
     if (keys.isEmpty()) {
       return
     }
 
-    if (!changedKeysEvents.tryEmit(keys)) {
-      println("Apollo: changedKeys event lost, your watchers may be collecting too slowly")
-    }
+    changedKeysEvents.emit(keys)
   }
 
   override fun clearAll(): Boolean {
@@ -152,20 +150,56 @@ internal class DefaultApolloStore(
     return lock.write { block(cache) }
   }
 
-  override fun <D : Operation.Data> writeOperation(
+  override suspend fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
-    return writeOperationWithRecords(
+    val changedKeys =  writeOperation(
         operation = operation,
         operationData = operationData,
         cacheHeaders = cacheHeaders,
-        publish = publish,
         customScalarAdapters = customScalarAdapters
-    ).second
+    )
+
+    if (publish) {
+      publish(changedKeys)
+    }
+
+    return changedKeys
+  }
+
+  override fun <D : Operation.Data> writeOperation(operation: Operation<D>, operationData: D, customScalarAdapters: CustomScalarAdapters, cacheHeaders: CacheHeaders): Set<String> {
+    val records = operation.normalize(
+        data = operationData,
+        customScalarAdapters = customScalarAdapters,
+        cacheKeyGenerator = cacheKeyGenerator
+    ).values
+
+    val changedKeys = lock.write {
+      cache.merge(records, cacheHeaders)
+    }
+
+    return changedKeys
+  }
+
+  override suspend fun <D : Fragment.Data> writeFragment(
+      fragment: Fragment<D>,
+      cacheKey: CacheKey,
+      fragmentData: D,
+      customScalarAdapters: CustomScalarAdapters,
+      cacheHeaders: CacheHeaders,
+      publish: Boolean,
+  ): Set<String> {
+    val changedKeys = writeFragment(fragment, cacheKey, fragmentData, customScalarAdapters, cacheHeaders)
+
+    if (publish) {
+      publish(changedKeys)
+    }
+
+    return changedKeys
   }
 
   override fun <D : Fragment.Data> writeFragment(
@@ -174,7 +208,6 @@ internal class DefaultApolloStore(
       fragmentData: D,
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
-      publish: Boolean,
   ): Set<String> {
     val records = fragment.normalize(
         data = fragmentData,
@@ -187,6 +220,18 @@ internal class DefaultApolloStore(
       cache.merge(records, cacheHeaders)
     }
 
+    return changedKeys
+  }
+
+  override suspend fun <D : Operation.Data> writeOptimisticUpdates(
+      operation: Operation<D>,
+      operationData: D,
+      mutationId: Uuid,
+      customScalarAdapters: CustomScalarAdapters,
+      publish: Boolean,
+  ): Set<String> {
+    val changedKeys = writeOptimisticUpdates(operation, operationData, mutationId, customScalarAdapters)
+
     if (publish) {
       publish(changedKeys)
     }
@@ -194,37 +239,11 @@ internal class DefaultApolloStore(
     return changedKeys
   }
 
-  private fun <D : Operation.Data> writeOperationWithRecords(
-      operation: Operation<D>,
-      operationData: D,
-      cacheHeaders: CacheHeaders,
-      publish: Boolean,
-      customScalarAdapters: CustomScalarAdapters,
-  ): Pair<Set<Record>, Set<String>> {
-    val records = operation.normalize(
-        data = operationData,
-        customScalarAdapters = customScalarAdapters,
-        cacheKeyGenerator = cacheKeyGenerator
-    ).values.toSet()
-
-    val changedKeys = lock.write {
-      cache.merge(records, cacheHeaders)
-    }
-
-    if (publish) {
-      publish(changedKeys)
-    }
-
-    return records to changedKeys
-  }
-
-
   override fun <D : Operation.Data> writeOptimisticUpdates(
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
       customScalarAdapters: CustomScalarAdapters,
-      publish: Boolean,
   ): Set<String> {
     val records = operation.normalize(
         data = operationData,
@@ -244,6 +263,15 @@ internal class DefaultApolloStore(
       cache.addOptimisticUpdates(records)
     }
 
+    return changedKeys
+  }
+
+  override suspend fun rollbackOptimisticUpdates(
+      mutationId: Uuid,
+      publish: Boolean,
+  ): Set<String> {
+    val changedKeys = rollbackOptimisticUpdates(mutationId)
+
     if (publish) {
       publish(changedKeys)
     }
@@ -253,14 +281,9 @@ internal class DefaultApolloStore(
 
   override fun rollbackOptimisticUpdates(
       mutationId: Uuid,
-      publish: Boolean,
   ): Set<String> {
     val changedKeys = lock.write {
       cache.removeOptimisticUpdates(mutationId)
-    }
-
-    if (publish) {
-      publish(changedKeys)
     }
 
     return changedKeys

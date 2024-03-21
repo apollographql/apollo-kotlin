@@ -32,6 +32,7 @@ import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
@@ -330,13 +331,16 @@ class WatcherTest {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     // This will initially miss as the cache should be empty
-    val job = launch(start = CoroutineStart.UNDISPATCHED) {
+    val job = launch {
       apolloClient.query(query)
           .watch(null)
           .collect {
             channel.send(it.data)
           }
     }
+
+    // Because subscribe is called from a background thread, give some time to be effective
+    delay(500)
 
     // Another newer call gets updated information with "R2-D2"
     apolloClient.enqueueTestResponse(query, episodeHeroNameData)

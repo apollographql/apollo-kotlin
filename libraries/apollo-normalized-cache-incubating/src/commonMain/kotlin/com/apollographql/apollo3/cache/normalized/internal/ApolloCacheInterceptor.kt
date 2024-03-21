@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 internal class ApolloCacheInterceptor(
     val store: ApolloStore,
 ) : ApolloInterceptor {
-  private fun <D : Operation.Data> maybeAsync(request: ApolloRequest<D>, block: () -> Unit) {
+  private suspend fun <D : Operation.Data> maybeAsync(request: ApolloRequest<D>, block: suspend () -> Unit) {
     if (request.writeToCacheAsynchronously) {
       val scope = request.executionContext[ConcurrencyInfo]!!.coroutineScope
       scope.launch {
@@ -55,7 +55,7 @@ internal class ApolloCacheInterceptor(
   /**
    * @param extraKeys extra keys to publish in case there is optimistic data
    */
-  private fun <D : Operation.Data> maybeWriteToCache(
+  private suspend fun <D : Operation.Data> maybeWriteToCache(
       request: ApolloRequest<D>,
       response: ApolloResponse<D>,
       customScalarAdapters: CustomScalarAdapters,
@@ -77,7 +77,7 @@ internal class ApolloCacheInterceptor(
         if (request.storeReceiveDate) {
           cacheHeaders += nowDateCacheHeaders()
         }
-        store.writeOperation(request.operation, response.data!!, customScalarAdapters, cacheHeaders, publish = false)
+        store.writeOperation(request.operation, response.data!!, customScalarAdapters, cacheHeaders)
       } else {
         emptySet()
       }
@@ -141,8 +141,7 @@ internal class ApolloCacheInterceptor(
             operationData = optimisticData as D,
             mutationId = request.requestUuid,
             customScalarAdapters = customScalarAdapters,
-            publish = true
-        )
+        ).also { store.publish(it) }
       }
 
       /**
@@ -163,7 +162,7 @@ internal class ApolloCacheInterceptor(
         }
         previousResponse = response
         if (optimisticKeys == null) optimisticKeys = if (optimisticData != null) {
-          store.rollbackOptimisticUpdates(request.requestUuid, publish = false)
+          store.rollbackOptimisticUpdates(request.requestUuid)
         } else {
           emptySet()
         }
@@ -174,7 +173,7 @@ internal class ApolloCacheInterceptor(
 
       if (networkException != null) {
         if (optimisticKeys == null) optimisticKeys = if (optimisticData != null) {
-          store.rollbackOptimisticUpdates(request.requestUuid, publish = false)
+          store.rollbackOptimisticUpdates(request.requestUuid)
         } else {
           emptySet()
         }
