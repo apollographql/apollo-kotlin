@@ -21,8 +21,8 @@ import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.apollo3.testing.awaitElement
 import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.receiveOrTimeout
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -271,7 +271,7 @@ class OptimisticCacheTest {
     assertEquals(watcherData?.reviews?.get(2)?.commentary, "Amazing")
 
     // after mutation with rolled back optimistic updates
-    watcherData = channel.receiveOrTimeout()
+    watcherData = channel.awaitElement()
     assertEquals(watcherData?.reviews?.size, 3)
     assertEquals(watcherData?.reviews?.get(0)?.id, "empireReview1")
     assertEquals(watcherData?.reviews?.get(0)?.stars, 1)

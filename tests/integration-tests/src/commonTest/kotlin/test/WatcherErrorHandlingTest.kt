@@ -17,8 +17,8 @@ import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueError
 import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.apollo3.testing.awaitElement
 import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.receiveOrTimeout
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.catch
@@ -120,7 +120,7 @@ class WatcherErrorHandlingTest {
             channel.send(it)
           }
     }
-    assertEquals(channel.receiveOrTimeout().data?.hero?.name, "R2-D2")
+    assertEquals(channel.awaitElement().data?.hero?.name, "R2-D2")
 
     // Another newer call gets updated information with "Artoo"
     // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
@@ -129,7 +129,7 @@ class WatcherErrorHandlingTest {
     mockServer.enqueueError(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
-    assertIs<ApolloHttpException>(channel.receiveOrTimeout().exception)
+    assertIs<ApolloHttpException>(channel.awaitElement().exception)
     job.cancel()
   }
 
@@ -200,7 +200,7 @@ class WatcherErrorHandlingTest {
             channel.send(it)
           }
     }
-    assertEquals(channel.receiveOrTimeout().data?.hero?.name, "R2-D2")
+    assertEquals(channel.awaitElement().data?.hero?.name, "R2-D2")
 
     // Another newer call gets updated information with "Artoo"
     // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
@@ -209,7 +209,7 @@ class WatcherErrorHandlingTest {
     mockServer.enqueueError(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
-    assertIs<ApolloHttpException>(channel.receiveOrTimeout().exception)
+    assertIs<ApolloHttpException>(channel.awaitElement().exception)
 
     assertNull(throwable)
 

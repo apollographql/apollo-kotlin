@@ -7,8 +7,8 @@ import com.apollographql.apollo3.cache.http.httpFetchPolicy
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueMultipart
 import com.apollographql.apollo3.mpp.currentTimeMillis
+import com.apollographql.apollo3.testing.awaitElement
 import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.receiveOrTimeout
 import defer.WithFragmentSpreadsQuery
 import defer.fragment.ComputerFields
 import defer.fragment.ScreenFields
@@ -112,9 +112,9 @@ class DeferJvmTest {
         channel.close()
       }
 
-      assertNull(channel.receiveOrTimeout(1000)?.product?.productInfoInventory)
+      assertNull(channel.awaitElement()?.product?.productInfoInventory)
       delay(4500)
-      assertNotNull(channel.receiveOrTimeout(1000)?.product?.productInfoInventory)
+      assertNotNull(channel.awaitElement()?.product?.productInfoInventory)
       client.close()
     }
   }

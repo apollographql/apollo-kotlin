@@ -36,12 +36,25 @@ internal class DefaultApolloStore(
     private val recordMerger: RecordMerger,
 ) : ApolloStore {
   private val changedKeysEvents = MutableSharedFlow<Set<String>>(
-      // XXX: this is a potential code smell
-      // If multiple watchers start notifying each other and potentially themselves, the buffer of changedKeysEvent will grow forever.
-      // I think as long as the refetchPolicy is [FetchPolicy.CacheOnly] everything should be fine as there is no reentrant emission.
-      // If the refetechPolicy is something else, we should certainly try to detect it in the cache interceptor
-      extraBufferCapacity = 10,
-      onBufferOverflow = BufferOverflow.DROP_OLDEST
+      /**
+       * The '64' magic number here is a potential code smell
+       *
+       * If a watcher is very slow to collect, cache writes continue buffering changedKeys events until the buffer is full.
+       * If that ever happens, this is probably an issue in the calling code, and we currently log that to the user. A more
+       * advanced version of this code could also expose the buffer size to the caller for better control.
+       *
+       * Also, we have had issues before where one or several watchers would loop forever, creating useless network requests.
+       * There is unfortunately very little evidence of how it could happen, but I could reproduce under the following conditions:
+       * 1. A field that returns ever-changing values (think current time for an example)
+       * 2. A refetch policy that uses the network ([NetworkOnly] or [CacheFirst] do for an example)
+       *
+       * In that case, a single watcher will trigger itself endlessly.
+       *
+       * My current understanding is that here as well, the fix is probably best done at the callsite by not using [NetworkOnly]
+       * as a refetchPolicy. If that ever becomes an issue again, please make sure to write a test about it.
+       */
+      extraBufferCapacity = 64,
+      onBufferOverflow = BufferOverflow.SUSPEND
   )
 
   override val changedKeys = changedKeysEvents.asSharedFlow()
@@ -56,7 +69,9 @@ internal class DefaultApolloStore(
       return
     }
 
-    changedKeysEvents.tryEmit(keys)
+    if (!changedKeysEvents.tryEmit(keys)) {
+      println("Apollo: changedKeys event lost, your watchers may be collecting too slowly")
+    }
   }
 
   override fun clearAll(): Boolean {
