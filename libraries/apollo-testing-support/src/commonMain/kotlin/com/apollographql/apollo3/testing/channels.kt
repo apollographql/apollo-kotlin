@@ -16,7 +16,7 @@ suspend fun <T> Channel<T>.assertNoElement(timeoutMillis: Long = 300): Unit {
     withTimeout(timeoutMillis) {
       receive()
     }
-    error("An item was received and no item was ")
+    error("An item was unexpectedly received")
   } catch (_: TimeoutCancellationException) {
     // nothing
   }
