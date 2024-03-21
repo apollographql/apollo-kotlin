@@ -9,12 +9,12 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.apollographql.apollo3.testing.assertNoElement
+import com.apollographql.apollo3.testing.awaitElement
 import com.apollographql.apollo3.testing.internal.ApolloTestResult
 import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.receiveOrTimeout
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
@@ -30,7 +30,6 @@ import okio.ByteString.Companion.encodeUtf8
 import okio.use
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.milliseconds
@@ -137,10 +136,8 @@ class MultipartSubscriptionsMockServerTest {
       }
     }
 
-    assertEquals("world", channel.receiveOrTimeout().dataOrThrow().hello)
-    assertFailsWith<TimeoutCancellationException> {
-      channel.receiveOrTimeout()
-    }
+    assertEquals("world", channel.awaitElement().dataOrThrow().hello)
+    channel.assertNoElement()
   }
 
   @Test

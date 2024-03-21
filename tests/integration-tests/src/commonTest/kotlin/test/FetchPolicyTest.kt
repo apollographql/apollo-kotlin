@@ -35,10 +35,10 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueError
 import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.apollo3.testing.assertNoElement
+import com.apollographql.apollo3.testing.awaitElement
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.receiveOrTimeout
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -561,11 +561,7 @@ class FetchPolicyTest {
      * Because the query was disjoint, the watcher will see a cache miss and not receive anything.
      * Because initially the refetchPolicy uses CacheOnly, no network request will be made
      */
-    try {
-      channel.receiveOrTimeout(50)
-      error("An exception was expected")
-    } catch (_: TimeoutCancellationException) {
-    }
+    channel.assertNoElement()
 
     mockServer.enqueueString(
         buildJsonString {
@@ -587,7 +583,7 @@ class FetchPolicyTest {
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
 
-    var response = channel.receiveOrTimeout()
+    var response = channel.awaitElement()
     assertTrue(response.isFromCache)
     assertEquals("Leila", response.data?.hero?.name)
 
@@ -613,7 +609,7 @@ class FetchPolicyTest {
     /**
      * This time the watcher should do a network request
      */
-    response = channel.receiveOrTimeout()
+    response = channel.awaitElement()
     assertFalse(response.isFromCache)
     assertEquals("Chewbacca", response.data?.hero?.name)
 
