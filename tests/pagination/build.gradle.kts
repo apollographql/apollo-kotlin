@@ -58,4 +58,10 @@ apollo {
     @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
   }
+  service("pagination.connectionWithNodes") {
+    packageName.set("pagination.connectionWithNodes")
+    srcDir("src/commonMain/graphql/pagination/connectionWithNodes")
+    @OptIn(ApolloExperimental::class)
+    generateDataBuilders.set(true)
+  }
 }

@@ -232,7 +232,7 @@ internal fun GQLInterfaceTypeDefinition.toIr(schema: Schema, usedFields: Map<Str
  */
 private fun connectionTypeEmbeddedFields(typeName: String, schema: Schema): Set<String> {
   return if (typeName in schema.connectionTypes) {
-    setOf("edges")
+    setOf("edges", "pageInfo")
   } else {
     emptySet()
   }

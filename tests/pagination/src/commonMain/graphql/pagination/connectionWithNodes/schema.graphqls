@@ -5,6 +5,7 @@ type Query {
 type UserConnection {
   pageInfo: PageInfo!
   edges: [UserEdge!]!
+  nodes: [User!]!
 }
 
 type PageInfo {

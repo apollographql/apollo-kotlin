@@ -111,41 +111,95 @@ private object ConnectionFieldMerger : FieldRecordMerger.FieldMerger {
     return if (incomingBeforeArgument == null && incomingAfterArgument == null) {
       // Not a pagination query
       incoming
-    } else if (existingStartCursor == null || existingEndCursor == null) {
+    } else if (existingStartCursor == null && existingEndCursor == null) {
       // Existing is empty
       incoming
-    } else if (incomingStartCursor == null || incomingEndCursor == null) {
+    } else if (incomingStartCursor == null && incomingEndCursor == null) {
       // Incoming is empty
       existing
     } else {
       val existingValue = existing.value as Map<String, Any?>
-      val existingList = existingValue["edges"] as List<*>
-      val incomingList = (incoming.value as Map<String, Any?>)["edges"] as List<*>
+      val existingEdges = existingValue["edges"] as? List<*>
+      val existingNodes = existingValue["nodes"] as? List<*>
+      val existingPageInfo = existingValue["pageInfo"] as? Map<String, Any?>
+      val existingHasPreviousPage = existingPageInfo?.get("hasPreviousPage") as? Boolean
+      val existingHasNextPage = existingPageInfo?.get("hasNextPage") as? Boolean
 
-      val mergedList: List<*>
-      val newStartCursor: String
-      val newEndCursor: String
+      val incomingValue = incoming.value as Map<String, Any?>
+      val incomingEdges = incomingValue["edges"] as? List<*>
+      val incomingNodes = incomingValue["nodes"] as? List<*>
+      val incomingPageInfo = incomingValue["pageInfo"] as? Map<String, Any?>
+      val incomingHasPreviousPage = incomingPageInfo?.get("hasPreviousPage") as? Boolean
+      val incomingHasNextPage = incomingPageInfo?.get("hasNextPage") as? Boolean
+
+      val mergedEdges: List<*>?
+      val mergedNodes: List<*>?
+      val mergedStartCursor: String?
+      val mergedEndCursor: String?
+      val mergedHasPreviousPage: Boolean?
+      val mergedHasNextPage: Boolean?
       if (incomingAfterArgument == existingEndCursor) {
-        mergedList = existingList + incomingList
-        newStartCursor = existingStartCursor
-        newEndCursor = incomingEndCursor
+        // Append to the end
+        mergedStartCursor = existingStartCursor
+        mergedEndCursor = incomingEndCursor
+        mergedEdges = if (existingEdges == null || incomingEdges == null) {
+          null
+        } else {
+          existingEdges + incomingEdges
+        }
+        mergedNodes = if (existingNodes == null || incomingNodes == null) {
+          null
+        } else {
+          existingNodes + incomingNodes
+        }
+        mergedHasPreviousPage = existingHasPreviousPage
+        mergedHasNextPage = incomingHasNextPage
       } else if (incomingBeforeArgument == existingStartCursor) {
-        mergedList = incomingList + existingList
-        newStartCursor = incomingStartCursor
-        newEndCursor = existingEndCursor
+        // Prepend to the start
+        mergedStartCursor = incomingStartCursor
+        mergedEndCursor = existingEndCursor
+        mergedEdges = if (existingEdges == null || incomingEdges == null) {
+          null
+        } else {
+          incomingEdges + existingEdges
+        }
+        mergedNodes = if (existingNodes == null || incomingNodes == null) {
+          null
+        } else {
+          incomingNodes + existingNodes
+        }
+        mergedHasPreviousPage = incomingHasPreviousPage
+        mergedHasNextPage = existingHasNextPage
       } else {
         // We received a list which is neither the previous nor the next page.
         // Handle this case by resetting the cache with this page
-        mergedList = incomingList
-        newStartCursor = incomingStartCursor
-        newEndCursor = incomingEndCursor
+        mergedStartCursor = incomingStartCursor
+        mergedEndCursor = incomingEndCursor
+        mergedEdges = incomingEdges
+        mergedNodes = incomingNodes
+        mergedHasPreviousPage = incomingHasPreviousPage
+        mergedHasNextPage = incomingHasNextPage
       }
 
-      val mergedFieldValue = existingValue.toMutableMap()
-      mergedFieldValue["edges"] = mergedList
+      val mergedPageInfo: Map<String, Any?>? = if (existingPageInfo == null && incomingPageInfo == null) {
+        null
+      } else {
+        (existingPageInfo.orEmpty() + incomingPageInfo.orEmpty()).toMutableMap().also { mergedPageInfo ->
+          if (mergedHasNextPage != null) mergedPageInfo["hasNextPage"] = mergedHasNextPage
+          if (mergedHasPreviousPage != null) mergedPageInfo["hasPreviousPage"] = mergedHasPreviousPage
+          if (mergedStartCursor != null) mergedPageInfo["startCursor"] = mergedStartCursor
+          if (mergedEndCursor != null) mergedPageInfo["endCursor"] = mergedEndCursor
+        }
+      }
+
+      val mergedValue = (existingValue + incomingValue).toMutableMap()
+      if (mergedEdges != null) mergedValue["edges"] = mergedEdges
+      if (mergedNodes != null) mergedValue["nodes"] = mergedNodes
+      if (mergedPageInfo != null) mergedValue["pageInfo"] = mergedPageInfo
+
       FieldRecordMerger.FieldInfo(
-          value = mergedFieldValue,
-          metadata = mapOf("startCursor" to newStartCursor, "endCursor" to newEndCursor)
+          value = mergedValue,
+          metadata = mapOf("startCursor" to mergedStartCursor, "endCursor" to mergedEndCursor)
       )
     }
   }
