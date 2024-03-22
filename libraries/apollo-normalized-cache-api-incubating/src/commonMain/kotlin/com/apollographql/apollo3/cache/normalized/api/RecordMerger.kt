@@ -95,6 +95,16 @@ class FieldRecordMerger(private val fieldMerger: FieldMerger) : RecordMerger {
   }
 }
 
+/**
+ * A [RecordMerger] that merges lists in Relay style Connection types.
+ *
+ * It will merge the `edges` and `nodes` lists and update the `pageInfo` field.
+ *
+ * If the incoming data can't be merged with the existing data, it will replace the existing data.
+ *
+ * Note: although `nodes` is not a standard field in Relay, it is often used - see
+ * [this issue on the Relay spec](https://github.com/facebook/relay/issues/3850) that discusses this pattern.
+ */
 @ApolloExperimental
 val ConnectionRecordMerger = FieldRecordMerger(ConnectionFieldMerger)
 
