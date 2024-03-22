@@ -15,121 +15,96 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 
 /**
- * An [ApolloCall] is a thin class that binds an [ApolloRequest] with its [ApolloClient].
+ * An [ApolloCall] is a thin class that binds an [ApolloRequest] with its [ApolloClient] and offers a fluent way to build an [ApolloRequest].
  *
- * - call [ApolloCall.execute] for simple request/response cases.
- * - call [ApolloCall.toFlow] for other cases that may return more than one [ApolloResponse]. For an example
- * subscriptions, `@defer` queries, cache queries, etc...
+ * Contrary to an [ApolloRequest], an [ApolloCall] doesn't have a request id and a new request id is allocated every time [execute] or [toFlow] is called.
+ *
+ * - call [execute] for simple cases that expect a single response:
+ *
+ * ```
+ * val response = apolloClient.query(myQuery).fetchPolicy(CacheOnly).execute()
+ * ```
+ *
+ *
+ * - call [toFlow] for other cases that expect multiple [ApolloResponse] like subscriptions and `@defer`:
+ *
+ * ```
+ * apolloClient.subscription(mySubscription).toFlow().collect { response ->
+ *   println(response.data)
+ * }
+ * ```
+ *
+ * @see execute
+ * @see toFlow
  */
 class ApolloCall<D : Operation.Data> internal constructor(
     internal val apolloClient: ApolloClient,
-    val operation: Operation<D>,
+    private val requestBuilder: ApolloRequest.Builder<D>,
 ) : MutableExecutionOptions<ApolloCall<D>> {
-  override var executionContext: ExecutionContext = ExecutionContext.Empty
-    private set
-  override var httpMethod: HttpMethod? = null
-    private set
-  override var sendApqExtensions: Boolean? = null
-    private set
-  override var sendDocument: Boolean? = null
-    private set
-  override var enableAutoPersistedQueries: Boolean? = null
-    private set
-  override var canBeBatched: Boolean? = null
-    private set
 
+  internal constructor(apolloClient: ApolloClient, operation: Operation<D>) : this(apolloClient, ApolloRequest.Builder(operation))
+
+  val operation: Operation<D> get() = requestBuilder.operation
+  override val executionContext: ExecutionContext get() = requestBuilder.executionContext
+  override val httpMethod: HttpMethod? get() = requestBuilder.httpMethod
+  override val sendApqExtensions: Boolean? get() = requestBuilder.sendApqExtensions
+  override val sendDocument: Boolean? get() = requestBuilder.sendDocument
+  override val enableAutoPersistedQueries: Boolean? get() = requestBuilder.enableAutoPersistedQueries
+  override val canBeBatched: Boolean? get() = requestBuilder.canBeBatched
+  override val httpHeaders: List<HttpHeader>? get() = requestBuilder.httpHeaders
+  val ignoreApolloClientHttpHeaders: Boolean? get() = requestBuilder.ignoreApolloClientHttpHeaders
   @ApolloExperimental
-  var retryOnError: Boolean? = null
-    private set
-
+  val retryOnError: Boolean? get() = requestBuilder.retryOnError
   @ApolloExperimental
-  var failFastIfOffline: Boolean? = null
-    private set
-
-  /**
-   * The HTTP headers to be sent with the request.
-   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)`
-   * to instead *ignore* the ones set on [ApolloClient].
-   */
-  override var httpHeaders: List<HttpHeader>? = null
-    private set
-
-  var ignoreApolloClientHttpHeaders: Boolean? = null
-    private set
+  val failFastIfOffline: Boolean? get() = requestBuilder.failFastIfOffline
 
   fun failFastIfOffline(failFastIfOffline: Boolean?) = apply {
-    this.failFastIfOffline = failFastIfOffline
+    requestBuilder.failFastIfOffline(failFastIfOffline)
   }
 
   override fun addExecutionContext(executionContext: ExecutionContext) = apply {
-    this.executionContext = this.executionContext + executionContext
+    requestBuilder.addExecutionContext(executionContext)
   }
 
   override fun httpMethod(httpMethod: HttpMethod?) = apply {
-    this.httpMethod = httpMethod
+    requestBuilder.httpMethod(httpMethod)
   }
 
-  /**
-   * Sets the HTTP headers to be sent with the request.
-   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)`
-   * to instead *ignore* the ones set on [ApolloClient].
-   */
   override fun httpHeaders(httpHeaders: List<HttpHeader>?) = apply {
-    this.httpHeaders = httpHeaders
+    requestBuilder.httpHeaders(httpHeaders)
   }
 
-  /**
-   * Add an HTTP header to be sent with the request.
-   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)`
-   * to instead *ignore* the ones set on [ApolloClient].
-   */
   override fun addHttpHeader(name: String, value: String) = apply {
-    this.httpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
+    requestBuilder.addHttpHeader(name, value)
   }
 
   override fun sendApqExtensions(sendApqExtensions: Boolean?) = apply {
-    this.sendApqExtensions = sendApqExtensions
+    requestBuilder.sendApqExtensions(sendApqExtensions)
   }
 
   override fun sendDocument(sendDocument: Boolean?) = apply {
-    this.sendDocument = sendDocument
+    requestBuilder.sendDocument(sendDocument)
   }
 
   override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?) = apply {
-    this.enableAutoPersistedQueries = enableAutoPersistedQueries
+    requestBuilder.enableAutoPersistedQueries(enableAutoPersistedQueries)
   }
 
   override fun canBeBatched(canBeBatched: Boolean?) = apply {
-    this.canBeBatched = canBeBatched
+    requestBuilder.canBeBatched(canBeBatched)
   }
 
   @ApolloExperimental
   fun retryOnError(retryOnError: Boolean?): ApolloCall<D> = apply {
-    this.retryOnError = retryOnError
+    requestBuilder.retryOnError(retryOnError)
   }
 
-  /**
-   * If set to true, the HTTP headers set on [ApolloClient] will not be used for the call, only the ones set on this [ApolloCall] will be
-   * used. If set to false, both sets of headers will be concatenated and used.
-   *
-   * Default: false
-   */
   fun ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders: Boolean?) = apply {
-    this.ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders
+    requestBuilder.ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders)
   }
 
   fun copy(): ApolloCall<D> {
-    return ApolloCall(apolloClient, operation)
-        .addExecutionContext(executionContext)
-        .httpMethod(httpMethod)
-        .httpHeaders(httpHeaders)
-        .ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders)
-        .sendApqExtensions(sendApqExtensions)
-        .sendDocument(sendDocument)
-        .enableAutoPersistedQueries(enableAutoPersistedQueries)
-        .canBeBatched(canBeBatched)
-        .retryOnError(retryOnError)
-        .failFastIfOffline(failFastIfOffline)
+    return ApolloCall(apolloClient, requestBuilder.build().newBuilder())
   }
 
   /**
@@ -162,7 +137,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
    * @see ApolloClient.Builder.dispatcher
    */
   fun toFlow(): Flow<ApolloResponse<D>> {
-    return apolloClient.executeAsFlowInternal(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, false)
+    return apolloClient.executeAsFlowInternal(requestBuilder.build(), false)
   }
 
   /**
@@ -177,21 +152,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
     @Suppress("DEPRECATION")
     return conflateFetchPolicyInterceptorResponses(true)
         .apolloClient
-        .executeAsFlowInternal(toApolloRequest(), ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true, true)
-  }
-
-  private fun toApolloRequest(): ApolloRequest<D> {
-    return ApolloRequest.Builder(operation)
-        .executionContext(executionContext)
-        .httpMethod(httpMethod)
-        .httpHeaders(httpHeaders)
-        .sendApqExtensions(sendApqExtensions)
-        .sendDocument(sendDocument)
-        .enableAutoPersistedQueries(enableAutoPersistedQueries)
-        .canBeBatched(canBeBatched)
-        .retryOnError(retryOnError)
-        .failFastIfOffline(failFastIfOffline)
-        .build()
+        .executeAsFlowInternal(requestBuilder.build(), true)
   }
 
   /**
@@ -210,11 +171,12 @@ class ApolloCall<D : Operation.Data> internal constructor(
   /**
    * Retrieves a single [ApolloResponse] from this [ApolloCall].
    *
-   * Use this for queries and mutations to get a single value from the network or the cache.
-   * For subscriptions or operations using `@defer` that may return multiple values, use [toFlow] instead.
+   * [execute] calls [toFlow] and filters out cache or network errors to return a single success [ApolloResponse].
+   *
+   * [execute] throws is more than one success [ApolloResponse] is returned, for an example, if [operation] is a subscription or a `@defer` query.
+   * In those cases use [toFlow] instead.
    *
    * [execute] may fail due to an I/O error, a cache miss or other reasons. In that case, check [ApolloResponse.exception]:
-   *
    * ```
    * val response = apolloClient.execute(ProductQuery())
    * if (response.data != null) {

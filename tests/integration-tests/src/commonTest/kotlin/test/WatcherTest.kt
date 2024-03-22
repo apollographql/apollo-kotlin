@@ -289,14 +289,15 @@ class WatcherTest {
     // - Because the network only watcher will also store in the cache a different name value, it will trigger itself again
     // Enqueue a stable response to avoid errors during tests
     apolloClient.enqueueTestResponse(episodeHeroNameQuery, episodeHeroNameChangedTwoData)
+
+    // Trigger a refetch
     val response = apolloClient.query(episodeHeroNameQuery)
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
-
     assertEquals(response.data?.hero?.name, "Artoo")
 
-    // The watcher should see "ArTwo"
-    assertEquals(channel.awaitElement()?.hero?.name, "ArTwo")
+    // The watcher should refetch from the network and now see "ArTwo"
+    assertEquals("ArTwo", channel.awaitElement()?.hero?.name, )
 
     job.cancel()
   }

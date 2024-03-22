@@ -4,11 +4,14 @@ import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 
 interface ExecutionOptions {
+  /**
+   * The [ExecutionContext] to use for the request.
+   */
   val executionContext: ExecutionContext
 
   /**
    *
-   * The HTTP method to use for the request
+   * The HTTP method to use for the request.
    *
    * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
    */
@@ -16,7 +19,7 @@ interface ExecutionOptions {
 
   /**
    *
-   * HTTP headers to use for the request
+   * HTTP headers to use for the request.
    * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
    */
   val httpHeaders: List<HttpHeader>?

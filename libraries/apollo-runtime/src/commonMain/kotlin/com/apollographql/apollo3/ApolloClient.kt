@@ -248,12 +248,11 @@ private constructor(
   fun <D : Operation.Data> executeAsFlow(
       apolloRequest: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
-    return executeAsFlowInternal(apolloRequest, false, false)
+    return executeAsFlowInternal(apolloRequest, false)
   }
 
   internal fun <D : Operation.Data> executeAsFlowInternal(
       apolloRequest: ApolloRequest<D>,
-      ignoreApolloClientHttpHeaders: Boolean,
       throwing: Boolean,
   ): Flow<ApolloResponse<D>> {
     val flow = channelFlow {
@@ -263,7 +262,7 @@ private constructor(
 
       try {
         withContext(concurrencyInfo.dispatcher) {
-          apolloResponses(apolloRequest, ignoreApolloClientHttpHeaders, throwing).collect {
+          apolloResponses(apolloRequest, throwing).collect {
             send(it)
           }
         }
@@ -290,61 +289,34 @@ private constructor(
 
   internal fun <D : Operation.Data> apolloResponses(
       apolloRequest: ApolloRequest<D>,
-      ignoreApolloClientHttpHeaders: Boolean,
       throwing: Boolean,
   ): Flow<ApolloResponse<D>> {
-    val executionContext = concurrencyInfo + customScalarAdapters + executionContext + apolloRequest.executionContext
+    val apolloClient = this
+    val request = apolloRequest.newBuilder().apply {
+      executionContext(concurrencyInfo + customScalarAdapters + apolloClient.executionContext + executionContext)
+      httpMethod(httpMethod ?: apolloClient.httpMethod)
+      sendApqExtensions(sendApqExtensions ?: apolloClient.sendApqExtensions)
+      sendDocument(sendDocument ?: apolloClient.sendDocument)
+      enableAutoPersistedQueries(enableAutoPersistedQueries ?: apolloClient.enableAutoPersistedQueries)
 
-    val request = ApolloRequest.Builder(apolloRequest.operation)
-        .addExecutionContext(concurrencyInfo)
-        .addExecutionContext(customScalarAdapters)
-        .addExecutionContext(executionContext)
-        .addExecutionContext(apolloRequest.executionContext)
-        .httpMethod(httpMethod)
-        .sendApqExtensions(sendApqExtensions)
-        .sendDocument(sendDocument)
-        .enableAutoPersistedQueries(enableAutoPersistedQueries)
-        .apply {
-          if (apolloRequest.httpMethod != null) {
-            httpMethod(apolloRequest.httpMethod)
-          }
-          val requestHttpHeaders = apolloRequest.httpHeaders.orEmpty()
-          httpHeaders(
-              if (ignoreApolloClientHttpHeaders) {
-                requestHttpHeaders
-              } else {
-                this@ApolloClient.httpHeaders.orEmpty() + requestHttpHeaders
-              }
-          )
-          if (apolloRequest.sendApqExtensions != null) {
-            sendApqExtensions(apolloRequest.sendApqExtensions)
-          }
-          if (apolloRequest.sendDocument != null) {
-            sendDocument(apolloRequest.sendDocument)
-          }
-          if (apolloRequest.enableAutoPersistedQueries != null) {
-            enableAutoPersistedQueries(apolloRequest.enableAutoPersistedQueries)
-          }
-          val canBeBatched = apolloRequest.canBeBatched ?: this@ApolloClient.canBeBatched
-          if (canBeBatched != null) {
-            // Because batching is handled at the HTTP level, move the information to HTTP headers
-            // canBeBatched(apolloRequest.canBeBatched)
-            addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
-          }
-
-          var retryOnError = apolloRequest.retryOnError
-          if (retryOnError == null) {
-            retryOnError = this@ApolloClient.retryOnError?.invoke(apolloRequest) ?: false
-          }
-          retryOnError(retryOnError)
-
-          var failFastIfOffline = apolloRequest.failFastIfOffline
-          if (failFastIfOffline == null) {
-            failFastIfOffline = this@ApolloClient.failFastIfOffline ?: false
-          }
-          failFastIfOffline(failFastIfOffline)
+      val headers = buildList {
+        if (ignoreApolloClientHttpHeaders != true) {
+          addAll(apolloClient.httpHeaders.orEmpty())
         }
-        .build()
+        addAll(httpHeaders.orEmpty())
+      }
+      httpHeaders(headers)
+
+      val canBeBatched = canBeBatched ?: apolloClient.canBeBatched
+      if (canBeBatched != null) {
+        // Because batching is handled at the HTTP level, move the information to HTTP headers
+        // canBeBatched(apolloRequest.canBeBatched)
+        addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
+      }
+
+      retryOnError(retryOnError ?: apolloClient.retryOnError?.invoke(apolloRequest))
+      failFastIfOffline(failFastIfOffline ?: apolloClient.failFastIfOffline)
+    }.build()
 
     val allInterceptors = buildList {
       addAll(interceptors)
