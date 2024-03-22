@@ -446,6 +446,26 @@ extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.2/", import: [
 
 This is a backward compatible change.
 
+### Directive usages are validated and require a matching directive definition
+
+In Apollo 4, all directive usages are validated against their definition. If you have queries using client side directives:
+
+```graphql
+query HeroName {
+  hero {
+    # WARNING: '@required' is not defined by the schema
+    name @required
+  }
+}
+```
+
+Those queries now required to have a matching directive definition in the schema. If the directive is a server directive, and you downloaded your schema using introspection, the directive definition should be present.
+
+In some cases, for client directives and/or if you did n ot use introspection, the directive definition might be missing. For those cases, you can add it explicitely in a `extra.graphqls` file:
+
+```graphql
+directive @required on FIELD
+```
 
 ## Cache
 
