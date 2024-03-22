@@ -51,7 +51,7 @@ fun List<GQLDirective>.findOptInFeature(schema: Schema): String? = filter { sche
     }.firstOrNull()
 
 @ApolloInternal
-fun List<GQLDirective>.findTargetName(schema: Schema): String? = firstOrNull { schema.originalDirectiveName(it.name) == "targetName" }
+fun List<GQLDirective>.findTargetName(schema: Schema): String? = firstOrNull { schema.originalDirectiveName(it.name) == Schema.TARGET_NAME }
     ?.let {
       it.arguments
           .firstOrNull { it.name == "name" }

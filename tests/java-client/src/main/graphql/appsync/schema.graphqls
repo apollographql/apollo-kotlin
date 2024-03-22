@@ -51,6 +51,8 @@ type Query {
   listEvents(filter: TableEventFilterInput, limit: Int, nextToken: String): EventConnection
 }
 
+directive @aws_subscribe(mutations: [String]!) on FIELD_DEFINITION
+
 type Subscription {
   subscribeToEventComments(eventId: String!): Comment @aws_subscribe(mutations : ["commentOnEvent"])
 }
