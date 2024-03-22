@@ -204,6 +204,7 @@ class Schema internal constructor(
     const val NONNULL = "nonnull"
     const val OPTIONAL = "optional"
     const val REQUIRES_OPT_IN = "requiresOptIn"
+    const val TARGET_NAME = "targetName"
 
     @ApolloExperimental
     const val ONE_OF = "oneOf"

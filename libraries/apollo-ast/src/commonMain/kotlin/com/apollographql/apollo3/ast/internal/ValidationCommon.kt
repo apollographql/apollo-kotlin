@@ -153,18 +153,22 @@ internal fun ValidationScope.validateDirectives(
     val directiveDefinition = directiveDefinitions[directive.name]
     if (directiveDefinition == null) {
       when (val originalName = originalDirectiveName(directive.name)) {
-        Schema.ONE_OF,
-        Schema.CATCH,
-        Schema.SEMANTIC_NON_NULL,
-        Schema.IGNORE_ERRORS,
+        Schema.OPTIONAL,
+        Schema.NONNULL,
+        Schema.TYPE_POLICY,
+        Schema.FIELD_POLICY,
+        Schema.REQUIRES_OPT_IN,
+        Schema.TARGET_NAME,
         -> {
-          // Require full schemas to allow the usage of newest directives
-          // See https://github.com/apollographql/apollo-kotlin/issues/2673
-          issues.add(UnknownDirective("No directive definition found for '@${originalName}'", directive.sourceLocation, requireDefinition = true))
-        }
-
-        else -> {
+          /**
+           * This validation is lenient for historical reasons. We don't want to break users relying on this.
+           * If you're reading this and there's a good reason to, you can move directives out of this branch and require user to
+           * specify the correct `@link` directive
+           */
           issues.add(UnknownDirective("Unknown directive '@${directive.name}'", directive.sourceLocation, requireDefinition = false))
+        }
+        else -> {
+          issues.add(UnknownDirective("No directive definition found for '@${originalName}'", directive.sourceLocation, requireDefinition = true))
         }
       }
 
