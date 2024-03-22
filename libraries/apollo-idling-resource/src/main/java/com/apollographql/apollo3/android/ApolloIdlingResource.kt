@@ -2,9 +2,21 @@ package com.apollographql.apollo3.android
 
 import androidx.test.espresso.IdlingResource
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.internal.ApolloClientListener
 
+/**
+ * An [Espresso](https://developer.android.com/training/testing/espresso/idling-resource) [IdlingResource] that monitors calls to:
+ * - [com.apollographql.apollo3.ApolloCall.execute]
+ * - [com.apollographql.apollo3.ApolloCall.toFlow]
+ * - [com.apollographql.apollo3.ApolloClient.executeAsFlow]
+ *
+ * [ApolloIdlingResource] is deprecated, and you should wait for your UI to change instead. See [this article about ways to do so](https://medium.com/androiddevelopers/alternatives-to-idling-resources-in-compose-tests-8ae71f9fc473).
+ *
+ */
+@Deprecated("Wait for your UI to change instead.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 class ApolloIdlingResource(
     private val resourceName: String,
 ) : IdlingResource {
@@ -37,7 +49,13 @@ class ApolloIdlingResource(
     this.callback = callback
   }
 }
-
+/**
+ * Registers the given [ApolloIdlingResource] in this [ApolloClient]
+ *
+ * [ApolloIdlingResource] is deprecated, and you should wait for your UI to change instead. See [this article about ways to do so](https://medium.com/androiddevelopers/alternatives-to-idling-resources-in-compose-tests-8ae71f9fc473).
+ */
+@Deprecated("Wait for your UI to change instead.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun ApolloClient.Builder.idlingResource(idlingResource: ApolloIdlingResource): ApolloClient.Builder {
   return addListener(IdlingResourceListener(idlingResource))
 }
