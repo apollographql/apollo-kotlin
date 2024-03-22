@@ -9,7 +9,15 @@ import com.benasher44.uuid.uuid4
 /**
  * An [ApolloRequest] represents a GraphQL request to execute.
  *
- * [ApolloRequest] is immutable and is usually constructed from [com.apollographql.apollo3.ApolloCall]
+ * [ApolloRequest] is immutable and is usually constructed from [com.apollographql.apollo3.ApolloCall].
+ *
+ * You can mutate an [ApolloRequest] by calling [newBuilder]:
+ *
+ * ```
+ * val newRequest = apolloRequest.newBuilder().addHttpHeader("Authorization", "Bearer $token").build()
+ * ```
+ *
+ * @see [com.apollographql.apollo3.ApolloCall]
  */
 class ApolloRequest<D : Operation.Data>
 private constructor(
