@@ -160,6 +160,7 @@ data class GCloud(val storage: Storage, val projectId: String)
 /**
  * Run the test remotely. To do the same thing locally, run
  *
+ * ./gradlew -p benchmark assembleRelease assembleStableReleaseAndroidTest
  * adb install benchmark/microbenchmark/build/outputs/apk/androidTest/stable/release/microbenchmark-stable-release-androidTest.apk
  * adb shell am instrument -w com.apollographql.apollo3.benchmark.stable/androidx.benchmark.junit4.AndroidBenchmarkRunner
  *
@@ -185,7 +186,9 @@ fun runTest(projectId: String, testApk: String): String {
       "--test",
       testApk,
       "--app",
-      appApk
+      appApk,
+      "--timeout",
+      "30m"
   )
 
   directoriesToPull.let {
