@@ -84,13 +84,14 @@ interface ApolloStore {
   ): Set<String>
 
   /**
-   * Write an operation data to the store and optionally publish changes of [Record] which have changed,
-   * that will notify any watcher that depends on these [Record] to re-fetch.
+   * Write an operation data to the store.
    * This is a synchronous operation that might block if the underlying cache is doing IO
    *
    * @param operation     [Operation] response data of which should be written to the store
    * @param operationData [Operation.Data] operation response data to be written to the store
    * @return the changed keys
+   *
+   * @see publish
    */
   fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
@@ -120,14 +121,15 @@ interface ApolloStore {
   ): Set<String>
 
   /**
-   * Write a fragment data to the store and optionally publish changes of [Record] which have changed,
-   * that will notify any watcher that depends on these [Record] to re-fetch.
+   * Write a fragment data to the store.
    * This is a synchronous operation that might block if the underlying cache is doing IO
    *
    * @param fragment data to be written to the store
    * @param cacheKey [CacheKey] to be used as root record key
    * @param fragmentData [Fragment.Data] to be written to the store
    * @return the changed keys
+   *
+   * @see publish
    */
   fun <D : Fragment.Data> writeFragment(
       fragment: Fragment<D>,
@@ -138,7 +140,8 @@ interface ApolloStore {
   ): Set<String>
 
   /**
-   * Write operation data to the optimistic store.
+   * Write operation data to the optimistic store and optionally publish changes of [Record] which have changed,
+   * that will notify any watcher that depends on these [Record] to re-fetch.
    * This is a synchronous operation that might block if the underlying cache is doing IO.
    *
    * @param operation     [Operation] response data of which should be written to the store
@@ -162,6 +165,8 @@ interface ApolloStore {
    * @param operationData [Operation.Data] operation response data to be written to the store
    * @param mutationId    mutation unique identifier
    * @return the changed keys
+   *
+   *  @see publish
    */
   fun <D : Operation.Data> writeOptimisticUpdates(
       operation: Operation<D>,
