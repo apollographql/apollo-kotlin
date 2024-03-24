@@ -176,7 +176,6 @@ public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInter
 }
 
 public final class com/apollographql/apollo3/network/NetworkMonitorKt {
-	public static final fun getAlwaysOnlineNetworkMonitor ()Lcom/apollographql/apollo3/network/NetworkMonitor;
 }
 
 public final class com/apollographql/apollo3/network/NetworkObserver_androidKt {
