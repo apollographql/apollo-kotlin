@@ -25,7 +25,6 @@ import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.interceptor.RetryOnNetworkErrorInterceptor
 import com.apollographql.apollo3.internal.ApolloClientListener
 import com.apollographql.apollo3.internal.defaultDispatcher
-import com.apollographql.apollo3.network.AlwaysOnlineNetworkMonitor
 import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
@@ -84,7 +83,7 @@ private constructor(
   val subscriptionNetworkTransport: NetworkTransport
   val interceptors: List<ApolloInterceptor> = builder.interceptors
   val customScalarAdapters: CustomScalarAdapters = builder.customScalarAdapters
-  private val networkMonitor: NetworkMonitor
+  private val networkMonitor: NetworkMonitor?
   private val retryOnError: ((ApolloRequest<*>) -> Boolean)? = builder.retryOnError
   private val failFastIfOffline = builder.failFastIfOffline
   private val listeners = builder.listeners
@@ -98,7 +97,7 @@ private constructor(
   override val canBeBatched: Boolean? = builder.canBeBatched
 
   init {
-    networkMonitor = builder.networkMonitor ?: AlwaysOnlineNetworkMonitor
+    networkMonitor = builder.networkMonitor
 
     networkTransport = if (builder.networkTransport != null) {
       check(builder.httpServerUrl == null) {

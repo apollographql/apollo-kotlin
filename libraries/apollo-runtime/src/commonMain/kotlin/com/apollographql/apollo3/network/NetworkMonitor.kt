@@ -30,15 +30,6 @@ interface NetworkMonitor : Closeable {
   suspend fun waitForNetwork()
 }
 
-val AlwaysOnlineNetworkMonitor = object : NetworkMonitor {
-  override suspend fun isOnline(): Boolean {
-    return true
-  }
-
-  override suspend fun waitForNetwork() {}
-  override fun close() {}
-}
-
 internal class DefaultNetworkMonitor(private val networkObserverFactory: () -> NetworkObserver) : NetworkMonitor, NetworkObserver.Listener {
   private val _isOnline: MutableStateFlow<Boolean?> = MutableStateFlow(null)
 
