@@ -9,8 +9,11 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 /**
  * Returns a new [NetworkMonitor] for the given [Context]
  *
- * @return the network monitor or `null` if the [ConnectivityManager](https://developer.android.com/reference/android/net/ConnectivityManager) cannot be found
- * or if the [ACCESS_NETWORK_STATE](https://developer.android.com/reference/android/Manifest.permission#ACCESS_NETWORK_STATE) permission is missing.
+ * In order to work correctly, this requires:
+ * - minSdk >= 23
+ * - declaring the [ACCESS_NETWORK_STATE](https://developer.android.com/reference/android/Manifest.permission#ACCESS_NETWORK_STATE) permission in your Manifest
+ *
+ * If one of these conditions is not satisfied, the returned [NetworkMonitor] will behave as if the device were always online.
  */
 @ApolloExperimental
-fun NetworkMonitor(context: Context): NetworkMonitor? = platformConnectivityManager(context)?.toNetworkMonitor()
+fun NetworkMonitor(context: Context): NetworkMonitor = DefaultNetworkMonitor { networkObserver(context) }

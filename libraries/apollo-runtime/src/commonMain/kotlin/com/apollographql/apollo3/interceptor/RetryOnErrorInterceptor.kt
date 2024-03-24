@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.SubscriptionOperationException
+import com.apollographql.apollo3.network.AlwaysOnlineNetworkMonitor
 import com.apollographql.apollo3.network.NetworkMonitor
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.delay
@@ -18,7 +19,7 @@ import kotlinx.coroutines.flow.retryWhen
 import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
 
-internal class RetryOnErrorInterceptor(private val networkMonitor: NetworkMonitor?): ApolloInterceptor {
+internal class RetryOnErrorInterceptor(private val networkMonitor: NetworkMonitor): ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     var first = true
     var attempt = 0
@@ -30,7 +31,7 @@ internal class RetryOnErrorInterceptor(private val networkMonitor: NetworkMonito
         request.newBuilder().requestUuid(uuid4()).build()
       }
 
-      if (request.failFastIfOffline == true && networkMonitor?.isOnline == false) {
+      if (request.failFastIfOffline == true && !networkMonitor.isOnline()) {
         throw OfflineException
       }
 
@@ -50,7 +51,7 @@ internal class RetryOnErrorInterceptor(private val networkMonitor: NetworkMonito
     }.retryWhen { cause, _ ->
       if (cause is RetryException) {
         attempt++
-        if (networkMonitor != null && !networkMonitor.isOnline) {
+        if (networkMonitor != AlwaysOnlineNetworkMonitor) {
           networkMonitor.waitForNetwork()
         } else {
           delay(2.0.pow(attempt).seconds)
