@@ -1,6 +1,7 @@
 
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.LibraryExtension
+import com.android.build.api.dsl.LibraryVariantDimension
 import org.gradle.api.Project
 
 fun Project.configureAndroid(
@@ -8,6 +9,7 @@ fun Project.configureAndroid(
     androidOptions: AndroidOptions
 ) {
   plugins.apply("com.android.library")
+
   extensions.findByName("android")?.apply {
     this as CommonExtension<*, *, *, *, *>
 
@@ -21,6 +23,10 @@ fun Project.configureAndroid(
         getCatalogVersion("android.sdkversion.min").toInt()
       }
       testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+      if (this is LibraryVariantDimension) {
+        multiDexEnabled = true
+      }
     }
 
     if (this is LibraryExtension) {
@@ -38,4 +44,6 @@ fun Project.configureAndroid(
       }
     }
   }
+
+  dependencies.add("implementation", getCatalogLib("androidx.multidex"))
 }

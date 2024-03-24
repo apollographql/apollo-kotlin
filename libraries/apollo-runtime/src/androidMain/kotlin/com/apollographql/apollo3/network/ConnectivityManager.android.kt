@@ -13,7 +13,6 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES.M
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import com.apollographql.apollo3.ApolloInitializer
 import java.lang.ref.WeakReference
 
 /**
@@ -22,7 +21,6 @@ import java.lang.ref.WeakReference
 internal fun Context.isPermissionGranted(permission: String): Boolean {
   return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
 }
-
 
 @RequiresApi(M)
 @SuppressLint("MissingPermission")
@@ -77,10 +75,5 @@ internal fun platformConnectivityManager(context: Context): AndroidPlatformConne
 }
 
 internal actual fun platformConnectivityManager(): PlatformConnectivityManager? {
-  val context = ApolloInitializer.context
-  if (context == null) {
-    return null
-  }
-
-  return platformConnectivityManager(context)
+  return null
 }

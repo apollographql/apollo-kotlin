@@ -37,8 +37,6 @@ fun Project.apolloLibrary(
       "com.apollographql.apollo3.annotations.ApolloInternal"
   )
 
-  configureTesting()
-
   if (publish) {
     configurePublishing()
   }
@@ -62,6 +60,8 @@ fun Project.apolloLibrary(
     )
   }
 
+  configureTesting()
+
   tasks.withType(Jar::class.java).configureEach {
     manifest {
       attributes(mapOf("Automatic-Module-Name" to namespace))
@@ -81,7 +81,6 @@ fun Project.apolloTest(
       "com.apollographql.apollo3.annotations.ApolloExperimental",
       "com.apollographql.apollo3.annotations.ApolloInternal",
   )
-  configureTesting()
 
   if (extensions.findByName("kotlin") is KotlinMultiplatformExtension) {
     configureMpp(
@@ -94,6 +93,7 @@ fun Project.apolloTest(
         withWasm = false
     )
   }
+  configureTesting()
 }
 
 fun Project.apolloRoot(ciBuild: TaskProvider<Task>) {

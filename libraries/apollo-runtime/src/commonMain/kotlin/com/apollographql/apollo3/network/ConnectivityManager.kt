@@ -11,3 +11,7 @@ internal interface PlatformConnectivityManager: Closeable {
 }
 
 internal expect fun platformConnectivityManager(): PlatformConnectivityManager?
+
+internal fun PlatformConnectivityManager.toNetworkMonitor(): NetworkMonitor {
+  return DefaultNetworkMonitor(this)
+}

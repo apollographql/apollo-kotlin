@@ -27,6 +27,7 @@ import com.apollographql.apollo3.internal.ApolloClientListener
 import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.network.NetworkTransport
+import com.apollographql.apollo3.network.NoOpNetworkMonitor
 import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
 import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.network.http.HttpInterceptor
@@ -98,7 +99,7 @@ private constructor(
   override val canBeBatched: Boolean? = builder.canBeBatched
 
   init {
-    networkMonitor = builder.networkMonitor ?: NetworkMonitor()
+    networkMonitor = builder.networkMonitor ?: NoOpNetworkMonitor
     retryOnErrorInterceptor = builder.retryOnErrorInterceptor ?: RetryOnErrorInterceptor(networkMonitor)
 
     networkTransport = if (builder.networkTransport != null) {

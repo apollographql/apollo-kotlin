@@ -9,7 +9,8 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 /**
  * Returns a new [NetworkMonitor] for the given [Context]
  *
- * Use this function in contexts where androidx.startup is not available
+ * @return the network monitor or `null` if the [ConnectivityManager](https://developer.android.com/reference/android/net/ConnectivityManager) cannot be found
+ * or if the [ACCESS_NETWORK_STATE](https://developer.android.com/reference/android/Manifest.permission#ACCESS_NETWORK_STATE) permission is missing.
  */
 @ApolloExperimental
-fun NetworkMonitor(context: Context): NetworkMonitor? = platformConnectivityManager(context)?.let { DefaultNetworkMonitor(it) }
+fun NetworkMonitor(context: Context): NetworkMonitor? = platformConnectivityManager(context)?.toNetworkMonitor()

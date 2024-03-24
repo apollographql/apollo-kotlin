@@ -1,11 +1,13 @@
 package instrumented
 
+import androidx.test.platform.app.InstrumentationRegistry
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.assertNoRequest
 import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.testing.FooQuery
 import com.apollographql.apollo3.testing.mockServerTest
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class NetworkMonitorTest {
@@ -17,7 +19,8 @@ class NetworkMonitorTest {
   fun test() = mockServerTest(
       skipDelays = false,
       clientBuilder = {
-        retryOnError(true)
+        networkMonitor(NetworkMonitor(InstrumentationRegistry.getInstrumentation().context))
+        retryOnError { true }
       }
   ) {
     mockServer.enqueue(MockResponse.Builder().statusCode(500).build())

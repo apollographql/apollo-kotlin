@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.takeWhile
 import okio.Closeable
-import kotlin.js.JsName
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
@@ -28,17 +27,12 @@ interface NetworkMonitor: Closeable {
   suspend fun waitForNetwork()
 }
 
-/**
- * Returns a default [NetworkMonitor] or null if no [NetworkMonitor] is available
- *
- * - On Android, uses [ConnectivityManager](https://developer.android.com/reference/android/net/ConnectivityManager)
- * - On iOS, uses [NWPathMonitor](https://developer.apple.com/documentation/network/nwpathmonitor)
- *
- * On Android, [NetworkMonitor] additionally requires the [ACCESS_NETWORK_STATE](https://developer.android.com/reference/android/Manifest.permission#ACCESS_NETWORK_STATE) permission
- */
-@ApolloExperimental
-@JsName("createNetworkMonitor")
-fun NetworkMonitor(): NetworkMonitor? = platformConnectivityManager()?.let { DefaultNetworkMonitor(it) }
+val NoOpNetworkMonitor = object : NetworkMonitor {
+  override val isOnline: Boolean
+    get() = true
+  override suspend fun waitForNetwork() {}
+  override fun close() {}
+}
 
 internal class DefaultNetworkMonitor(private val platformConnectivityManager: PlatformConnectivityManager): NetworkMonitor, PlatformConnectivityManager.Listener {
   private val _isOnline = MutableStateFlow(false)
