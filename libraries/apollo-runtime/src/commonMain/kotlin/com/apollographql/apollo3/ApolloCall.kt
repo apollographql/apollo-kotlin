@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 
 /**
- * An [ApolloCall] is a thin class that binds an [ApolloRequest] with its [ApolloClient] and offers a fluent way to build an [ApolloRequest].
+ * An [ApolloCall] is a thin class that binds an [ApolloRequest] with its [ApolloClient]. It offers a fluent way to configure the [ApolloRequest].
  *
  * Contrary to an [ApolloRequest], an [ApolloCall] doesn't have a request id and a new request id is allocated every time [execute] or [toFlow] is called.
  *
