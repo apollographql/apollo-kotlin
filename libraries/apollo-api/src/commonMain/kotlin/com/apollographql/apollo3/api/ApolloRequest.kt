@@ -7,7 +7,17 @@ import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 
 /**
- * A GraphQL request to execute. Execution can be customized with [executionContext]
+ * An [ApolloRequest] represents a GraphQL request to execute.
+ *
+ * [ApolloRequest] is immutable and is usually constructed from [com.apollographql.apollo3.ApolloCall].
+ *
+ * You can mutate an [ApolloRequest] by calling [newBuilder]:
+ *
+ * ```
+ * val newRequest = apolloRequest.newBuilder().addHttpHeader("Authorization", "Bearer $token").build()
+ * ```
+ *
+ * @see [com.apollographql.apollo3.ApolloCall]
  */
 class ApolloRequest<D : Operation.Data>
 private constructor(
@@ -20,6 +30,7 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
+    val ignoreApolloClientHttpHeaders: Boolean?,
     @ApolloExperimental
     val retryOnError: Boolean?,
     @ApolloExperimental
@@ -41,15 +52,16 @@ private constructor(
         .canBeBatched(canBeBatched)
         .retryOnError(retryOnError)
         .failFastIfOffline(failFastIfOffline)
+        .ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders)
   }
 
   class Builder<D : Operation.Data>(
-      private var operation: Operation<D>,
+      val operation: Operation<D>,
   ) : MutableExecutionOptions<Builder<D>> {
-    private var requestUuid: Uuid = uuid4()
+    var requestUuid: Uuid? = null
+      private set
     override var executionContext: ExecutionContext = ExecutionContext.Empty
       private set
-
     override var httpMethod: HttpMethod? = null
       private set
     override var httpHeaders: List<HttpHeader>? = null
@@ -62,6 +74,8 @@ private constructor(
       private set
     override var canBeBatched: Boolean? = null
       private set
+    var ignoreApolloClientHttpHeaders: Boolean? = null
+      private set
     @ApolloExperimental
     var retryOnError: Boolean? = null
       private set
@@ -69,9 +83,21 @@ private constructor(
     var failFastIfOffline: Boolean? = null
       private set
 
-    @ApolloExperimental
-    fun failFastIfOffline(failFastIfOffline: Boolean?): Builder<D> = apply {
-      this.failFastIfOffline = failFastIfOffline
+
+    fun requestUuid(requestUuid: Uuid) = apply {
+      this.requestUuid = requestUuid
+    }
+
+    fun executionContext(executionContext: ExecutionContext) = apply {
+      this.executionContext = executionContext
+    }
+
+    override fun addExecutionContext(executionContext: ExecutionContext) = apply {
+      this.executionContext = this.executionContext + executionContext
+    }
+
+    fun ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders: Boolean?) = apply {
+      this.ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders
     }
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder<D> = apply {
@@ -107,22 +133,15 @@ private constructor(
       this.retryOnError = retryOnError
     }
 
-    fun requestUuid(requestUuid: Uuid) = apply {
-      this.requestUuid = requestUuid
-    }
-
-    fun executionContext(executionContext: ExecutionContext) = apply {
-      this.executionContext = executionContext
-    }
-
-    override fun addExecutionContext(executionContext: ExecutionContext) = apply {
-      this.executionContext = this.executionContext + executionContext
+    @ApolloExperimental
+    fun failFastIfOffline(failFastIfOffline: Boolean?): Builder<D> = apply {
+      this.failFastIfOffline = failFastIfOffline
     }
 
     fun build(): ApolloRequest<D> {
       return ApolloRequest(
           operation = operation,
-          requestUuid = requestUuid,
+          requestUuid = requestUuid ?: uuid4(),
           executionContext = executionContext,
           httpMethod = httpMethod,
           httpHeaders = httpHeaders,
@@ -130,6 +149,7 @@ private constructor(
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
+          ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders,
           retryOnError = retryOnError,
           failFastIfOffline = failFastIfOffline,
       )

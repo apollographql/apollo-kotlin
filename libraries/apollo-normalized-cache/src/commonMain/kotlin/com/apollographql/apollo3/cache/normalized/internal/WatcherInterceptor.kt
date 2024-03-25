@@ -49,7 +49,7 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
           if (it == Unit) {
             flowOf(ApolloResponse.Builder(request.operation, request.requestUuid).exception(WatcherSentinel).build())
           } else {
-            chain.proceed(request.newBuilder().build())
+            chain.proceed(request)
                 .onEach { response ->
                   if (response.data != null) {
                     watchedKeys = store.normalize(request.operation, response.data!!, customScalarAdapters).values.dependentKeys()
