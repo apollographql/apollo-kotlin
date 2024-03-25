@@ -15,59 +15,61 @@ internal val kotlinLabsDefinitions = """
   Since: 3.0.0
   ""${'"'}
   directive @optional(if: Boolean = true) on FIELD | VARIABLE_DEFINITION
-
+  
   ""${'"'}
   Marks a field as non-null. The corresponding Kotlin property will be made non-nullable even if the GraphQL type is nullable.
   When used on an object definition in a schema document, `fields` must be non-empty and contain a selection set of fields that should be non-null
   When used on a field from an executable document, `fields` must always be empty
-
+  
   Setting the directive at the schema level is usually easier as there is little reason that a field would be non-null in one place
   and null in the other
   Since: 3.0.0
   ""${'"'}
   directive @nonnull(fields: String! = "") on OBJECT | FIELD
-
+  
   ""${'"'}
   Attach extra information to a given type
   Since: 3.0.0
   ""${'"'}
   directive @typePolicy(
-    ""${'"'}
-    a selection set containing fields used to compute the cache key of an object. Order is important.
-    ""${'"'}
-    keyFields: String! = "",
-    ""${'"'}
-    a selection set containing fields that shouldn't create a new cache Record and should be
-    embedded in their parent instead. Order is unimportant.
-    ""${'"'}
-    embeddedFields: String! = "",
-    ""${'"'}
-    a selection set containing fields that should be treated as Relay Connection fields. Order is unimportant.
-    Since: 3.4.1
-    ""${'"'}
-    connectionFields: String! = ""
-  ) on OBJECT | INTERFACE | UNION
-
+      ""${'"'}
+      a selection set containing fields used to compute the cache key of an object. Order is important.
+      ""${'"'}
+      keyFields: String! = "",
+      ""${'"'}
+      (experimental) a selection set containing fields that shouldn't create a new cache Record and should be
+      embedded in their parent instead. Order is unimportant.
+      ""${'"'}
+      embeddedFields: String! = "",
+      ""${'"'}
+      (experimental) a selection set containing fields that should be treated as [Relay Connection](https://relay.dev/graphql/connections.htm) fields.
+      Order is unimportant.
+      This works in conjunction with `ConnectionMetadataGenerator` and `ConnectionRecordMerger` which must be configured on the `ApolloStore`.
+      Since: 3.4.1
+      ""${'"'}
+      connectionFields: String! = ""
+  ) on OBJECT | INTERFACE
+  
   ""${'"'}
   Attach extra information to a given field
   Since: 3.3.0
   ""${'"'}
   directive @fieldPolicy(
-    forField: String!,
-    ""${'"'}
-    a list of arguments used to compute the cache key of the object this field is pointing to.
-    The list is parsed as a selection set: both spaces and comas are valid separators.
-    ""${'"'}
-    keyArgs: String! = "",
-    ""${'"'}
-    (experimental) a list of arguments that vary when requesting different pages.
-    These arguments are omitted when computing the cache key of this field.
-    The list is parsed as a selection set: both spaces and comas are valid separators.
-    Since: 3.4.1
-    ""${'"'}
-    paginationArgs: String! = ""
+      forField: String!,
+      ""${'"'}
+      a list of arguments used to compute the cache key of the object this field is pointing to.
+      The list is parsed as a selection set: both spaces and comas are valid separators.
+      ""${'"'}
+      keyArgs: String! = "",
+      ""${'"'}
+      (experimental) a list of arguments that vary when requesting different pages.
+      These arguments are omitted when computing the cache key of this field.
+      The list is parsed as a selection set: both spaces and comas are valid separators.
+      Since: 3.4.1
+      ""${'"'}
+      paginationArgs: String! = ""
   ) repeatable on OBJECT
-
+  
   ""${'"'}
   Indicates that the given field, argument, input field or enum value requires
   giving explicit consent before being used.
@@ -78,7 +80,7 @@ internal val kotlinLabsDefinitions = """
       | ARGUMENT_DEFINITION
       | INPUT_FIELD_DEFINITION
       | ENUM_VALUE
-
+  
   ""${'"'}
   Use the specified name in the generated code instead of the GraphQL name.
   Use this for instance when the name would clash with a reserved keyword or field in the generated code.

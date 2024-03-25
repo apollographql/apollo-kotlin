@@ -80,7 +80,7 @@ fun builtinDefinitions() = definitionsFromString(builtinsDefinitionsStr)
  */
 fun linkDefinitions() = definitionsFromString(linkDefinitionsStr)
 
-@ApolloInternal const val KOTLIN_LABS_VERSION = "v0.2"
+@ApolloInternal const val KOTLIN_LABS_VERSION = "v0.3"
 
 /**
  * Extra apollo Kotlin specific definitions from https://specs.apollo.dev/kotlin_labs/<[version]>
