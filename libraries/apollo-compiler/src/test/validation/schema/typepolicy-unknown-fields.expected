@@ -22,6 +22,9 @@ No such field: 'Person.foo'
 OtherValidationIssue (11:53)
 No such field: 'Person.bar'
 ------------
+OtherValidationIssue (24:18)
+Directive 'typePolicy' cannot be applied on 'UNION'
+------------
 OtherValidationIssue (24:30)
 No such field: 'Foo.id'
 ------------
