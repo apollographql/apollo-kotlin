@@ -70,7 +70,7 @@
   <div class="breadcrumbs"><a href="../../../index.html">apollo-api</a><span class="delimiter">/</span><a href="../../index.html">com.apollographql.apollo3.api</a><span class="delimiter">/</span><a href="../index.html">ApolloRequest</a><span class="delimiter">/</span><span class="current">Builder</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Builder</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">Builder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator"> : </span><a href="../../-operation/-data/index.html">Operation.Data</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">operation<span class="token operator">: </span><a href="../../-operation/index.html">Operation</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="../../-mutable-execution-options/index.html">MutableExecutionOptions</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">ApolloRequest.Builder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">Builder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator"> : </span><a href="../../-operation/-data/index.html">Operation.Data</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>operation<span class="token operator">: </span><a href="../../-operation/index.html">Operation</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="../../-mutable-execution-options/index.html">MutableExecutionOptions</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">ApolloRequest.Builder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
@@ -136,7 +136,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">var </span><a href="execution-context.html">executionContext</a><span class="token operator">: </span><a href="../../-execution-context/index.html">ExecutionContext</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">var </span><a href="execution-context.html">executionContext</a><span class="token operator">: </span><a href="../../-execution-context/index.html">ExecutionContext</a></div><div class="brief "><p class="paragraph">The <a href="../../-execution-context/index.html">ExecutionContext</a> to use for the request.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -166,7 +166,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">var </span><a href="http-headers.html">httpHeaders</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../com.apollographql.apollo3.api.http/-http-header/index.html">HttpHeader</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">HTTP headers to use for the request Used by <a href="../../../com.apollographql.apollo3.api.http/-default-http-request-composer/index.html">com.apollographql.apollo3.api.http.DefaultHttpRequestComposer</a></p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">var </span><a href="http-headers.html">httpHeaders</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../com.apollographql.apollo3.api.http/-http-header/index.html">HttpHeader</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">HTTP headers to use for the request. Used by <a href="../../../com.apollographql.apollo3.api.http/-default-http-request-composer/index.html">com.apollographql.apollo3.api.http.DefaultHttpRequestComposer</a></p></div></div></div>
                 </div>
               </div>
             </div>
@@ -181,7 +181,52 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">var </span><a href="http-method.html">httpMethod</a><span class="token operator">: </span><a href="../../../com.apollographql.apollo3.api.http/-http-method/index.html">HttpMethod</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The HTTP method to use for the request</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">var </span><a href="http-method.html">httpMethod</a><span class="token operator">: </span><a href="../../../com.apollographql.apollo3.api.http/-http-method/index.html">HttpMethod</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The HTTP method to use for the request.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-69453363%2FProperties%2F-745234393" anchor-label="ignoreApolloClientHttpHeaders" id="-69453363%2FProperties%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="ignore-apollo-client-http-headers.html"><span>ignore</span><wbr><span>Apollo</span><wbr><span>Client</span><wbr><span>Http</span><wbr><span><span>Headers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-69453363%2FProperties%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="ignore-apollo-client-http-headers.html">ignoreApolloClientHttpHeaders</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1106749656%2FProperties%2F-745234393" anchor-label="operation" id="1106749656%2FProperties%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="operation.html"><span><span>operation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1106749656%2FProperties%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="operation.html">operation</a><span class="token operator">: </span><a href="../../-operation/index.html">Operation</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1266774987%2FProperties%2F-745234393" anchor-label="requestUuid" id="-1266774987%2FProperties%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="request-uuid.html"><span>request</span><wbr><span><span>Uuid</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1266774987%2FProperties%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="request-uuid.html">requestUuid</a><span class="token operator">: </span><span data-unresolved-link="com.benasher44.uuid/Uuid///PointingToDeclaration/">Uuid</span><span class="token operator">?</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -366,6 +411,21 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="http-method.html"><span class="token function">httpMethod</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">httpMethod<span class="token operator">: </span><a href="../../../com.apollographql.apollo3.api.http/-http-method/index.html">HttpMethod</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloRequest.Builder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Configures whether the request should use GET or POST Usually, POST request can transfer bigger GraphQL documents but are more difficult to cache</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2081199407%2FFunctions%2F-745234393" anchor-label="ignoreApolloClientHttpHeaders" id="-2081199407%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="ignore-apollo-client-http-headers.html"><span>ignore</span><wbr><span>Apollo</span><wbr><span>Client</span><wbr><span>Http</span><wbr><span><span>Headers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2081199407%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="ignore-apollo-client-http-headers.html"><span class="token function">ignoreApolloClientHttpHeaders</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ignoreApolloClientHttpHeaders<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloRequest.Builder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
