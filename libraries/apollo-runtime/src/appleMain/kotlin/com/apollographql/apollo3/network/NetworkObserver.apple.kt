@@ -12,13 +12,9 @@ import platform.Network.nw_path_status_satisfied
 import platform.Network.nw_path_t
 import platform.darwin.dispatch_queue_create
 
-internal actual fun platformConnectivityManager(): PlatformConnectivityManager? {
-  return ApplePlatformMonitor()
-}
-
-private class ApplePlatformMonitor: PlatformConnectivityManager, nw_path_monitor_update_handler_t {
+internal class AppleNetworkObserver: NetworkObserver, nw_path_monitor_update_handler_t {
   var monitor: nw_path_monitor_t = null
-  var listener: PlatformConnectivityManager.Listener? = null
+  var listener: NetworkObserver.Listener? = null
 
   override fun close() {
     if (monitor != null) {
@@ -26,9 +22,9 @@ private class ApplePlatformMonitor: PlatformConnectivityManager, nw_path_monitor
     }
   }
 
-  override fun setListener(listener: PlatformConnectivityManager.Listener) {
+  override fun setListener(listener: NetworkObserver.Listener) {
     check(monitor == null) {
-      "Apollo: there can be only one monitor"
+      "Apollo: there can be only one listener"
     }
     monitor = nw_path_monitor_create()
     this.listener = listener

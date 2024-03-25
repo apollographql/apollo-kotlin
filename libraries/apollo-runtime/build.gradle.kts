@@ -55,7 +55,6 @@ kotlin {
 
     findByName("androidMain")?.apply {
       dependencies {
-        implementation(libs.androidx.startup.runtime)
         implementation(libs.androidx.annotation)
         implementation(libs.androidx.core)
       }

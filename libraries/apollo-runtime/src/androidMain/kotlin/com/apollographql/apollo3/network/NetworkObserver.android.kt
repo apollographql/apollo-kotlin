@@ -11,11 +11,10 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES.M
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import com.apollographql.apollo3.ApolloInitializer
 import java.lang.ref.WeakReference
-
 /**
  * isPermissionGranted, WeakReferences and other things here inspired by Coil [NetworkObserver](https://github.com/coil-kt/coil/blob/24375db1775fb46f0e184501646cd9e150185608/coil-core/src/androidMain/kotlin/coil3/util/NetworkObserver.kt)
  */
@@ -23,15 +22,27 @@ internal fun Context.isPermissionGranted(permission: String): Boolean {
   return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
 }
 
-
 @RequiresApi(M)
 @SuppressLint("MissingPermission")
-internal class AndroidPlatformConnectivityManager(private val connectivityManager: ConnectivityManager) : PlatformConnectivityManager {
-  private var listener: WeakReference<PlatformConnectivityManager.Listener>? = null
+internal class AndroidNetworkObserver(private val connectivityManager: ConnectivityManager) : NetworkObserver {
+  private var listener: WeakReference<NetworkObserver.Listener>? = null
+
+  /**
+   * Not locked because I'm assuming the [NetworkCallback] is always called on the same thread
+   * and the thread safety comes from [DefaultNetworkMonitor._isOnline]
+   */
+  private var onlineNetworks = mutableSetOf<Long>()
 
   private val networkCallback: NetworkCallback = object : NetworkCallback() {
-    override fun onAvailable(network: Network) = onConnectivityChange(true)
-    override fun onLost(network: Network) = onConnectivityChange(false)
+    override fun onAvailable(network: Network) {
+      onlineNetworks.add(network.networkHandle)
+      onConnectivityChange(onlineNetworks.isNotEmpty())
+    }
+
+    override fun onLost(network: Network) {
+      onlineNetworks.remove(network.networkHandle)
+      onConnectivityChange(onlineNetworks.isNotEmpty())
+    }
   }
 
   private fun onConnectivityChange(isOnline: Boolean) {
@@ -43,7 +54,7 @@ internal class AndroidPlatformConnectivityManager(private val connectivityManage
     }
   }
 
-  override fun setListener(listener: PlatformConnectivityManager.Listener) {
+  override fun setListener(listener: NetworkObserver.Listener) {
     check(this.listener == null) {
       "There can be only one listener"
     }
@@ -61,26 +72,23 @@ internal class AndroidPlatformConnectivityManager(private val connectivityManage
   }
 }
 
-internal fun platformConnectivityManager(context: Context): AndroidPlatformConnectivityManager? {
-  return if (VERSION.SDK_INT >= M) {
-    val connectivityManager = context.getSystemService(ConnectivityManager::class.java)
-    val hasPermission = context.isPermissionGranted(Manifest.permission.ACCESS_NETWORK_STATE)
-    if (connectivityManager == null || !hasPermission) {
-      println("Cannot get ConnectivityManager")
-      return null
-    }
+private val TAG = "Apollo"
 
-    AndroidPlatformConnectivityManager(connectivityManager)
-  } else {
-    null
+internal fun networkObserver(context: Context): NetworkObserver {
+  if (VERSION.SDK_INT < M) {
+    Log.w(TAG, "network monitoring requires minSdk of 23 or more")
+    return NoOpNetworkObserver
   }
-}
-
-internal actual fun platformConnectivityManager(): PlatformConnectivityManager? {
-  val context = ApolloInitializer.context
-  if (context == null) {
-    return null
+  val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE)
+  if (connectivityManager !is ConnectivityManager) {
+    Log.w(TAG, "Cannot get ConnectivityManager")
+    return NoOpNetworkObserver
+  }
+  val hasPermission = context.isPermissionGranted(Manifest.permission.ACCESS_NETWORK_STATE)
+  if (!hasPermission) {
+    Log.w(TAG, "No ACCESS_NETWORK_STATE")
+    return NoOpNetworkObserver
   }
 
-  return platformConnectivityManager(context)
+  return AndroidNetworkObserver(connectivityManager)
 }

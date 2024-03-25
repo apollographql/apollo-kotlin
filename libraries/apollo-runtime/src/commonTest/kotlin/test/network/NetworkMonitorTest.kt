@@ -17,7 +17,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.takeWhile
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -86,11 +88,12 @@ class FakeNetworkMonitor: NetworkMonitor {
 
   override fun close() {}
 
-  override val isOnline: Boolean
-    get() = _isOnline.value
-
   override suspend fun waitForNetwork() {
     _isOnline.takeWhile { !it }.collect()
+  }
+
+  override suspend fun isOnline(): Boolean {
+    return _isOnline.mapNotNull { it }.first()
   }
 }
 
