@@ -72,7 +72,7 @@ internal class AndroidNetworkObserver(private val connectivityManager: Connectiv
   }
 }
 
-val TAG = "Apollo"
+private val TAG = "Apollo"
 
 internal fun networkObserver(context: Context): NetworkObserver {
   if (VERSION.SDK_INT < M) {
