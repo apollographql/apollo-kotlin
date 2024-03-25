@@ -10,15 +10,15 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.internal.runTest
-import pagination.connection.UsersQuery
-import pagination.connection.pagination.Pagination
-import pagination.connection.type.buildUser
-import pagination.connection.type.buildUserConnection
-import pagination.connection.type.buildUserEdge
+import pagination.connectionWithNodes.UsersQuery
+import pagination.connectionWithNodes.pagination.Pagination
+import pagination.connectionWithNodes.type.buildPageInfo
+import pagination.connectionWithNodes.type.buildUser
+import pagination.connectionWithNodes.type.buildUserConnection
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class TypePolicyConnectionFieldsTest {
+class ConnectionWithNodesPaginationTest {
   @Test
   fun typePolicyConnectionFieldsMemoryCache() {
     typePolicyConnectionFields(MemoryCacheFactory())
@@ -53,18 +53,16 @@ class TypePolicyConnectionFieldsTest {
     val query1 = UsersQuery(first = Optional.Present(2))
     val data1 = UsersQuery.Data {
       users = buildUserConnection {
-        edges = listOf(
-            buildUserEdge {
-              cursor = "xx42"
-              node = buildUser {
-                id = "42"
-              }
+        pageInfo = buildPageInfo {
+          startCursor = "xx42"
+          endCursor = "xx43"
+        }
+        nodes = listOf(
+            buildUser {
+              id = "42"
             },
-            buildUserEdge {
-              cursor = "xx43"
-              node = buildUser {
-                id = "43"
-              }
+            buildUser {
+              id = "43"
             },
         )
       }
@@ -78,18 +76,16 @@ class TypePolicyConnectionFieldsTest {
     val query2 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx43"))
     val data2 = UsersQuery.Data {
       users = buildUserConnection {
-        edges = listOf(
-            buildUserEdge {
-              cursor = "xx44"
-              node = buildUser {
-                id = "44"
-              }
+        pageInfo = buildPageInfo {
+          startCursor = "xx44"
+          endCursor = "xx45"
+        }
+        nodes = listOf(
+            buildUser {
+              id = "44"
             },
-            buildUserEdge {
-              cursor = "xx45"
-              node = buildUser {
-                id = "45"
-              }
+            buildUser {
+              id = "45"
             },
         )
       }
@@ -98,30 +94,22 @@ class TypePolicyConnectionFieldsTest {
     dataFromStore = apolloStore.readOperation(query1)
     var expectedData = UsersQuery.Data {
       users = buildUserConnection {
-        edges = listOf(
-            buildUserEdge {
-              cursor = "xx42"
-              node = buildUser {
-                id = "42"
-              }
+        pageInfo = buildPageInfo {
+          startCursor = "xx42"
+          endCursor = "xx45"
+        }
+        nodes = listOf(
+            buildUser {
+              id = "42"
             },
-            buildUserEdge {
-              cursor = "xx43"
-              node = buildUser {
-                id = "43"
-              }
+            buildUser {
+              id = "43"
             },
-            buildUserEdge {
-              cursor = "xx44"
-              node = buildUser {
-                id = "44"
-              }
+            buildUser {
+              id = "44"
             },
-            buildUserEdge {
-              cursor = "xx45"
-              node = buildUser {
-                id = "45"
-              }
+            buildUser {
+              id = "45"
             },
         )
       }
@@ -133,18 +121,16 @@ class TypePolicyConnectionFieldsTest {
     val query3 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx45"))
     val data3 = UsersQuery.Data {
       users = buildUserConnection {
-        edges = listOf(
-            buildUserEdge {
-              cursor = "xx46"
-              node = buildUser {
-                id = "46"
-              }
+        pageInfo = buildPageInfo {
+          startCursor = "xx46"
+          endCursor = "xx47"
+        }
+        nodes = listOf(
+            buildUser {
+              id = "46"
             },
-            buildUserEdge {
-              cursor = "xx47"
-              node = buildUser {
-                id = "47"
-              }
+            buildUser {
+              id = "47"
             },
         )
       }
@@ -153,42 +139,28 @@ class TypePolicyConnectionFieldsTest {
     dataFromStore = apolloStore.readOperation(query1)
     expectedData = UsersQuery.Data {
       users = buildUserConnection {
-        edges = listOf(
-            buildUserEdge {
-              cursor = "xx42"
-              node = buildUser {
-                id = "42"
-              }
+        pageInfo = buildPageInfo {
+          startCursor = "xx42"
+          endCursor = "xx47"
+        }
+        nodes = listOf(
+            buildUser {
+              id = "42"
             },
-            buildUserEdge {
-              cursor = "xx43"
-              node = buildUser {
-                id = "43"
-              }
+            buildUser {
+              id = "43"
             },
-            buildUserEdge {
-              cursor = "xx44"
-              node = buildUser {
-                id = "44"
-              }
+            buildUser {
+              id = "44"
             },
-            buildUserEdge {
-              cursor = "xx45"
-              node = buildUser {
-                id = "45"
-              }
+            buildUser {
+              id = "45"
             },
-            buildUserEdge {
-              cursor = "xx46"
-              node = buildUser {
-                id = "46"
-              }
+            buildUser {
+              id = "46"
             },
-            buildUserEdge {
-              cursor = "xx47"
-              node = buildUser {
-                id = "47"
-              }
+            buildUser {
+              id = "47"
             },
         )
       }
@@ -200,18 +172,16 @@ class TypePolicyConnectionFieldsTest {
     val query4 = UsersQuery(last = Optional.Present(2), before = Optional.Present("xx42"))
     val data4 = UsersQuery.Data {
       users = buildUserConnection {
-        edges = listOf(
-            buildUserEdge {
-              cursor = "xx40"
-              node = buildUser {
-                id = "40"
-              }
+        pageInfo = buildPageInfo {
+          startCursor = "xx40"
+          endCursor = "xx41"
+        }
+        nodes = listOf(
+            buildUser {
+              id = "40"
             },
-            buildUserEdge {
-              cursor = "xx41"
-              node = buildUser {
-                id = "41"
-              }
+            buildUser {
+              id = "41"
             },
         )
       }
@@ -220,54 +190,34 @@ class TypePolicyConnectionFieldsTest {
     dataFromStore = apolloStore.readOperation(query1)
     expectedData = UsersQuery.Data {
       users = buildUserConnection {
-        edges = listOf(
-            buildUserEdge {
-              cursor = "xx40"
-              node = buildUser {
-                id = "40"
-              }
+        pageInfo = buildPageInfo {
+          startCursor = "xx40"
+          endCursor = "xx47"
+        }
+        nodes = listOf(
+            buildUser {
+              id = "40"
             },
-            buildUserEdge {
-              cursor = "xx41"
-              node = buildUser {
-                id = "41"
-              }
+            buildUser {
+              id = "41"
             },
-            buildUserEdge {
-              cursor = "xx42"
-              node = buildUser {
-                id = "42"
-              }
+            buildUser {
+              id = "42"
             },
-            buildUserEdge {
-              cursor = "xx43"
-              node = buildUser {
-                id = "43"
-              }
+            buildUser {
+              id = "43"
             },
-            buildUserEdge {
-              cursor = "xx44"
-              node = buildUser {
-                id = "44"
-              }
+            buildUser {
+              id = "44"
             },
-            buildUserEdge {
-              cursor = "xx45"
-              node = buildUser {
-                id = "45"
-              }
+            buildUser {
+              id = "45"
             },
-            buildUserEdge {
-              cursor = "xx46"
-              node = buildUser {
-                id = "46"
-              }
+            buildUser {
+              id = "46"
             },
-            buildUserEdge {
-              cursor = "xx47"
-              node = buildUser {
-                id = "47"
-              }
+            buildUser {
+              id = "47"
             },
         )
       }
@@ -279,18 +229,16 @@ class TypePolicyConnectionFieldsTest {
     val query5 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx50"))
     val data5 = UsersQuery.Data {
       users = buildUserConnection {
-        edges = listOf(
-            buildUserEdge {
-              cursor = "xx50"
-              node = buildUser {
-                id = "50"
-              }
+        pageInfo = buildPageInfo {
+          startCursor = "xx50"
+          endCursor = "xx51"
+        }
+        nodes = listOf(
+            buildUser {
+              id = "50"
             },
-            buildUserEdge {
-              cursor = "xx51"
-              node = buildUser {
-                id = "51"
-              }
+            buildUser {
+              id = "51"
             },
         )
       }
@@ -304,7 +252,12 @@ class TypePolicyConnectionFieldsTest {
     val query6 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx51"))
     val data6 = UsersQuery.Data {
       users = buildUserConnection {
-        edges = emptyList()
+        pageInfo = buildPageInfo {
+          startCursor = null
+          endCursor = null
+        }
+        nodes = emptyList()
+
       }
     }
     apolloStore.writeOperation(query6, data6)
