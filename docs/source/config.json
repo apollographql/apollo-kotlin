@@ -72,6 +72,7 @@
     "Advanced": {
       "Uploading files": "/advanced/upload",
       "Handling nullability (experimental)": "/advanced/nullability",
+      "Monitoring your network": "/advanced/network-connectivity",
       "Using aliases": "/advanced/using-aliases",
       "Using with Java": "/advanced/java",
       "Kotlin native": "/advanced/kotlin-native",
