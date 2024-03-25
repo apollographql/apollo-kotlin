@@ -71,6 +71,7 @@
     },
     "Advanced": {
       "Uploading files": "/advanced/upload",
+      "Monitoring your network": "/advanced/network-connectivity",
       "Handling nullability": "/advanced/nullability",
       "Using aliases": "/advanced/using-aliases",
       "Using with Java": "/advanced/java",
