@@ -80,6 +80,7 @@ fun builtinDefinitions() = definitionsFromString(builtinsDefinitionsStr)
  */
 fun linkDefinitions() = definitionsFromString(linkDefinitionsStr)
 
+private const val KOTLIN_LABS_VERSION_0_2 = "v0.2"
 @ApolloInternal const val KOTLIN_LABS_VERSION = "v0.3"
 
 /**
@@ -87,7 +88,8 @@ fun linkDefinitions() = definitionsFromString(linkDefinitionsStr)
  */
 fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
   return definitionsFromString(when (version) {
-    KOTLIN_LABS_VERSION -> kotlinLabsDefinitions
+    // v0.3 has no behavior change over v0.2, so both versions are allowed as a convenience
+    KOTLIN_LABS_VERSION_0_2, KOTLIN_LABS_VERSION -> kotlinLabsDefinitions
     else -> error("kotlin_labs/$version definitions are not supported, please use $KOTLIN_LABS_VERSION")
   })
 }
