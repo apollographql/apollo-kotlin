@@ -16,7 +16,9 @@ internal interface NetworkObserver: Closeable {
 }
 
 internal val NoOpNetworkObserver = object : NetworkObserver {
-  override fun setListener(listener: NetworkObserver.Listener) {}
+  override fun setListener(listener: NetworkObserver.Listener) {
+    listener.networkChanged(true)
+  }
 
   override fun close() {}
 }
