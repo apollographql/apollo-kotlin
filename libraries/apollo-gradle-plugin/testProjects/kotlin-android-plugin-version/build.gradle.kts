@@ -1,4 +1,3 @@
-import com.android.build.gradle.BaseExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -41,5 +40,6 @@ tasks.withType<KotlinCompile>().configureEach {
     // Required for Kotlin < 1.6.10
     // See https://kotlinlang.org/docs/whatsnew1620.html#compatibility-changes-in-the-xjvm-default-modes
     freeCompilerArgs += "-Xjvm-default=all"
+    freeCompilerArgs += "-Xskip-prerelease-check"
   }
 }
