@@ -1,5 +1,5 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
@@ -44,9 +44,9 @@ apollo {
 //}
 
 
-tasks.withType(KotlinCompile::class.java).configureEach {
-  kotlinOptions {
-    apiVersion = "1.9"
-    languageVersion = "1.9"
+tasks.withType(KotlinCompilationTask::class.java).configureEach {
+  compilerOptions {
+    apiVersion.set(KotlinVersion.KOTLIN_1_9)
+    languageVersion.set(KotlinVersion.KOTLIN_1_9)
   }
 }
