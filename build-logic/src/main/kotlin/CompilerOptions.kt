@@ -35,7 +35,7 @@ fun KotlinCommonCompilerOptions.configure(target: Int) {
   freeCompilerArgs.add("-opt-in=com.apollographql.apollo3.annotations.ApolloInternal")
 
   apiVersion.set(KotlinVersion.KOTLIN_1_9)
-  languageVersion.set(KotlinVersion.KOTLIN_1_9)
+  languageVersion.set(KotlinVersion.KOTLIN_2_0)
 
   when (this) {
     is KotlinJvmCompilerOptions -> {
