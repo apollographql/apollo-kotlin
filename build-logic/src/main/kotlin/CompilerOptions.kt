@@ -10,7 +10,6 @@ import org.gradle.jvm.toolchain.JavaToolchainService
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinCommonCompilerOptions
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
@@ -19,6 +18,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinNativeCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 /**
  * @param target the JVM version we want to be compatible with (bytecode + bootstrap classpath)
@@ -70,8 +70,10 @@ private fun KotlinProjectExtension.forEachCompilerOptions(block: KotlinCommonCom
       targets.all {
         val isAndroid = platformType == KotlinPlatformType.androidJvm
         compilations.all {
-          compilerOptions.configure {
-            block(isAndroid)
+          compileTaskProvider.configure {
+            compilerOptions {
+              block(isAndroid)
+            }
           }
         }
       }
@@ -159,9 +161,9 @@ fun setTestToolchain(project: Project, test: Test, javaVersion: Int) {
 }
 
 internal fun Project.addOptIn(vararg annotations: String) {
-  tasks.withType(KotlinCompile::class.java).configureEach {
-    kotlinOptions {
-      freeCompilerArgs = freeCompilerArgs + annotations.map { "-opt-in=$it" }
+  tasks.withType(KotlinCompilationTask::class.java).configureEach {
+    compilerOptions {
+      freeCompilerArgs.addAll(annotations.map { "-opt-in=$it" })
     }
   }
 }
