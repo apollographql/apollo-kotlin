@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.json.JsonWriter
-import okio.IOException
 import kotlin.js.JsName
 
 /**
@@ -28,13 +26,6 @@ interface Operation<D : Operation.Data> : Executable<D> {
    */
   @JsName("operationId")
   fun id(): String
-
-  override fun adapter(): Adapter<D>
-
-  @Throws(IOException::class)
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, withDefaultValues: Boolean)
-
-  override fun rootField(): CompiledField
 
   /**
    * Marker interface for generated models built from data returned by the server in response to this operation.
