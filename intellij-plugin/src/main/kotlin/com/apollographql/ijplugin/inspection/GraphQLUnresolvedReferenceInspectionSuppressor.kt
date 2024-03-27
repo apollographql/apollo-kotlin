@@ -20,7 +20,7 @@ private val KNOWN_DIRECTIVES: List<GQLDirectiveDefinition> by lazy {
  */
 class GraphQLUnresolvedReferenceInspectionSuppressor : InspectionSuppressor {
   override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
-    val parent = element.parent
+    val parent = element.parent ?: return false
     return when (toolId) {
       "GraphQLUnresolvedReference" -> parent.isKnownDirective() || parent.isKnownDirectiveArgument()
 
