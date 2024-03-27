@@ -8,10 +8,11 @@ import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
 import kotlin.js.Promise
 
-// https://youtrack.jetbrains.com/issue/KT-21846/
-@Suppress("ACTUAL_WITHOUT_EXPECT", "ACTUAL_TYPE_ALIAS_TO_CLASS_WITH_DECLARATION_SITE_VARIANCE", "INCOMPATIBLE_MATCHING")
+// https://youtrack.jetbrains.com/issue/KT-60561
+class PromiseOfUnit(executor: (resolve: (Unit) -> Unit, reject: (Throwable) -> Unit) -> Unit) : Promise<Unit>(executor = executor)
+
 @ApolloInternal
-actual typealias ApolloTestResult = Promise<Any>
+actual typealias ApolloTestResult = PromiseOfUnit
 
 @ApolloInternal
 @OptIn(DelicateCoroutinesApi::class)
@@ -40,5 +41,5 @@ actual fun runTest(
         after()
       }
     }
-  }
+  }.unsafeCast<ApolloTestResult>()
 }
