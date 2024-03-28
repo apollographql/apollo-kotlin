@@ -28,26 +28,26 @@ import kotlin.test.assertEquals
 
 class CursorBasedPaginationTest {
   @Test
-  fun cursorBasedMemoryCache() {
-    cursorBased(MemoryCacheFactory())
+  fun memoryCache() {
+    test(MemoryCacheFactory())
   }
 
   @Test
-  fun cursorBasedBlobSqlCache() {
-    cursorBased(SqlNormalizedCacheFactory(name = "blob", withDates = true))
+  fun blobSqlCache() {
+    test(SqlNormalizedCacheFactory(name = "blob", withDates = true))
   }
 
   @Test
-  fun cursorBasedJsonSqlCache() {
-    cursorBased(SqlNormalizedCacheFactory(name = "json", withDates = false))
+  fun jsonSqlCache() {
+    test(SqlNormalizedCacheFactory(name = "json", withDates = false))
   }
 
   @Test
-  fun cursorBasedChainedCache() {
-    cursorBased(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(name = "json", withDates = false)))
+  fun chainedCache() {
+    test(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(name = "json", withDates = false)))
   }
 
-  private fun cursorBased(cacheFactory: NormalizedCacheFactory) = runTest {
+  private fun test(cacheFactory: NormalizedCacheFactory) = runTest {
     val apolloStore = ApolloStore(
         normalizedCacheFactory = cacheFactory,
         cacheKeyGenerator = TypePolicyCacheKeyGenerator,

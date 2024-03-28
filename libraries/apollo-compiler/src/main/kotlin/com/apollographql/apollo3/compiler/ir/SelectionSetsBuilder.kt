@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.ir
 
-import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
@@ -62,15 +61,6 @@ internal class SelectionSetsBuilder(
     }
   }
 
-  private fun GQLArgument.toIr(keyArgs: Set<String>, paginationArgs: Set<String>): IrArgument {
-    return IrArgument(
-        name = name,
-        value = value.toIrValue(),
-        isKey = keyArgs.contains(name),
-        isPagination = paginationArgs.contains(name)
-    )
-  }
-
   private fun GQLField.walk(parentType: String): WalkResult? {
     val expression = directives.toIncludeBooleanExpression()
     if (expression == BooleanExpression.False) {
@@ -90,16 +80,19 @@ internal class SelectionSetsBuilder(
 
       val keyArgs = typeDefinition.keyArgs(name, schema)
       val paginationArgs = typeDefinition.paginationArgs(name, schema)
+      val argumentDefinition = IrArgumentDefinition(
+          name = schemaArgument.name,
+          isKey = keyArgs.contains(schemaArgument.name),
+          isPagination = paginationArgs.contains(schemaArgument.name)
+      )
 
       /**
        * When passed explicitly, the argument values are coerced (but not their default value)
        */
       val userValue = operationArgument?.value?.coerceInExecutableContextOrThrow(schemaArgument.type, schema)
       IrArgument(
-          name = schemaArgument.name,
+          definition = argumentDefinition,
           value = (userValue ?: schemaArgument.defaultValue)?.toIrValue(),
-          isKey =  keyArgs.contains(schemaArgument.name),
-          isPagination = paginationArgs.contains(schemaArgument.name)
       )
     }
 
@@ -119,7 +112,7 @@ internal class SelectionSetsBuilder(
   /**
    * This doesn't register the used types like [IrOperationsBuilder.toIr] but since it's going through the same AST, that's not a bad thing
    */
-  private fun GQLType.toIrTypeRef(): IrTypeRef = when(this) {
+  private fun GQLType.toIrTypeRef(): IrTypeRef = when (this) {
     is GQLNonNullType -> IrNonNullTypeRef(this.type.toIrTypeRef())
     is GQLListType -> IrListTypeRef(type.toIrTypeRef())
     is GQLNamedType -> IrNamedTypeRef(name)

@@ -155,7 +155,7 @@ class NormalizationTest {
                 cacheResolver = object : CacheKeyResolver() {
                   override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
                     // Same behavior as FieldPolicyCacheResolver
-                    val keyArgsValues = field.argumentValues(variables) { it.isKey }.values.map { it.toString() }
+                    val keyArgsValues = field.argumentValues(variables) { it.definition.isKey }.values.map { it.toString() }
                     if (keyArgsValues.isNotEmpty()) {
                       return CacheKey(field.type.rawType().name, keyArgsValues)
                     }

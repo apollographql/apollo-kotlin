@@ -56,7 +56,7 @@ class CompiledField internal constructor(
       name: String,
       variables: Executable.Variables,
   ): Optional<ApolloJsonElement> {
-    val argument = arguments.firstOrNull { it.name == name }
+    val argument = arguments.firstOrNull { it.definition.name == name }
     if (argument == null) {
       // no such argument
       return Optional.Absent
@@ -86,12 +86,12 @@ class CompiledField internal constructor(
    * Absent arguments are not returned
    */
   @ApolloExperimental
-  fun argumentValues(variables: Executable.Variables, filter: (CompiledArgument) -> Boolean= {true}): Map<String, ApolloJsonElement> {
+  fun argumentValues(variables: Executable.Variables, filter: (CompiledArgument) -> Boolean = { true }): Map<String, ApolloJsonElement> {
     val arguments = arguments.filter(filter).filter { it.value is Optional.Present<*> }
     if (arguments.isEmpty()) {
       return emptyMap()
     }
-    val map = arguments.associate { it.name to it.value.getOrThrow() }
+    val map = arguments.associate { it.definition.name to it.value.getOrThrow() }
 
     @Suppress("UNCHECKED_CAST")
     return resolveVariables(map, variables) as Map<String, ApolloJsonElement>
@@ -148,7 +148,7 @@ class CompiledField internal constructor(
    * CacheKey1: `users({"ids": 42})`
    */
   fun nameWithArguments(variables: Executable.Variables): String {
-    val arguments = argumentValues(variables) { !it.isPagination }
+    val arguments = argumentValues(variables) { !it.definition.isPagination }
     if (arguments.isEmpty()) {
       return name
     }
@@ -412,8 +412,45 @@ class CompiledVariable(val name: String)
  */
 typealias CompiledValue = Any?
 
-class CompiledArgument private constructor(
+class CompiledArgumentDefinition private constructor(
     val name: String,
+    val isKey: Boolean,
+
+    @ApolloExperimental
+    val isPagination: Boolean,
+) {
+  fun newBuilder(): Builder = Builder(this)
+
+  class Builder(
+      private val name: String,
+  ) {
+    constructor(argumentDefinition: CompiledArgumentDefinition) : this(argumentDefinition.name) {
+      this.isKey = argumentDefinition.isKey
+      this.isPagination = argumentDefinition.isPagination
+    }
+
+    private var isKey: Boolean = false
+    private var isPagination: Boolean = false
+
+    fun isKey(isKey: Boolean) = apply {
+      this.isKey = isKey
+    }
+
+    @ApolloExperimental
+    fun isPagination(isPagination: Boolean) = apply {
+      this.isPagination = isPagination
+    }
+
+    fun build(): CompiledArgumentDefinition = CompiledArgumentDefinition(
+        name = name,
+        isKey = isKey,
+        isPagination = isPagination,
+    )
+  }
+}
+
+class CompiledArgument private constructor(
+    val definition: CompiledArgumentDefinition,
     /**
      * The compile-time value of that argument.
      *
@@ -422,36 +459,19 @@ class CompiledArgument private constructor(
      * Can be [Optional.Absent] if no value is passed
      */
     val value: Optional<CompiledValue>,
-    val isKey: Boolean = false,
-    @ApolloExperimental
-    val isPagination: Boolean = false,
 ) {
   class Builder(
-      private val name: String,
+      private val definition: CompiledArgumentDefinition,
   ) {
     private var value: Optional<CompiledValue> = Optional.absent()
-    private var isKey: Boolean = false
-    private var isPagination: Boolean = false
-
-    fun isKey(isKey: Boolean) = apply {
-      this.isKey = isKey
-    }
 
     fun value(value: CompiledValue) = apply {
       this.value = Optional.present(value)
     }
 
-    @ApolloExperimental
-    fun isPagination(isPagination: Boolean) = apply {
-      this.isPagination = isPagination
-    }
-
-
     fun build(): CompiledArgument = CompiledArgument(
-        name = name,
+        definition = definition,
         value = value,
-        isKey = isKey,
-        isPagination = isPagination,
     )
   }
 }

@@ -40,6 +40,7 @@ internal object JavaClassNames {
   val CustomScalarType = ClassNames.CustomScalarType.toJavaPoetClassName()
   val True = ClassNames.True.toJavaPoetClassName()
   val False = ClassNames.False.toJavaPoetClassName()
+  val CompiledArgumentDefinition = ClassNames.CompiledArgumentDefinition.toJavaPoetClassName()
   val CompiledArgument = ClassNames.CompiledArgument.toJavaPoetClassName()
   val CompiledVariable = ClassNames.CompiledVariable.toJavaPoetClassName()
   val JsonNumber = ClassNames.JsonNumber.toJavaPoetClassName()
