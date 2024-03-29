@@ -8,12 +8,12 @@ import com.apollographql.apollo3.api.CompiledNotNullType
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.InterfaceType
-import com.apollographql.apollo3.api.ObjectType
 import com.apollographql.apollo3.api.isComposite
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
+import com.apollographql.apollo3.cache.normalized.api.EmbeddedFieldsContext
+import com.apollographql.apollo3.cache.normalized.api.EmbeddedFieldsProvider
 import com.apollographql.apollo3.cache.normalized.api.FieldNameContext
 import com.apollographql.apollo3.cache.normalized.api.FieldNameGenerator
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
@@ -30,11 +30,12 @@ internal class Normalizer(
     private val cacheKeyGenerator: CacheKeyGenerator,
     private val metadataGenerator: MetadataGenerator,
     private val fieldNameGenerator: FieldNameGenerator,
+    private val embeddedFieldsProvider: EmbeddedFieldsProvider,
 ) {
   private val records = mutableMapOf<String, Record>()
 
   fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>, parentType: CompiledNamedType): Map<String, Record> {
-    buildRecord(map, rootKey, selections, parentType.name, parentType.embeddedFields)
+    buildRecord(map, rootKey, selections, parentType)
 
     return records
   }
@@ -56,12 +57,11 @@ internal class Normalizer(
       obj: Map<String, Any?>,
       key: String,
       selections: List<CompiledSelection>,
-      parentType: String,
-      embeddedFields: List<String>,
+      parentType: CompiledNamedType,
   ): Map<String, FieldInfo> {
 
     val typename = obj["__typename"] as? String
-    val allFields = collectFields(selections, parentType, typename)
+    val allFields = collectFields(selections, parentType.name, typename)
 
     val fields = obj.entries.mapNotNull { entry ->
       val compiledFields = allFields.filter { it.responseName == entry.key }
@@ -83,7 +83,7 @@ internal class Normalizer(
           .condition(emptyList())
           .build()
 
-      val fieldKey = fieldNameGenerator.getFieldName(FieldNameContext(parentType, mergedField, variables))
+      val fieldKey = fieldNameGenerator.getFieldName(FieldNameContext(parentType.name, mergedField, variables))
 
       val base = if (key == CacheKey.rootKey().key) {
         // If we're at the root level, skip `QUERY_ROOT` altogether to save a few bytes
@@ -92,11 +92,11 @@ internal class Normalizer(
         key
       }
       val value = replaceObjects(
-          entry.value,
-          mergedField,
-          mergedField.type,
-          base.append(fieldKey),
-          embeddedFields
+          value = entry.value,
+          field = mergedField,
+          type_ = mergedField.type,
+          path = base.append(fieldKey),
+          embeddedFields = embeddedFieldsProvider.getEmbeddedFields(EmbeddedFieldsContext(parentType)),
       )
       val metadata = metadataGenerator.metadataForObject(entry.value, MetadataGeneratorContext(field = mergedField, variables))
       fieldKey to FieldInfo(value, metadata)
@@ -117,10 +117,9 @@ internal class Normalizer(
       obj: Map<String, Any?>,
       key: String,
       selections: List<CompiledSelection>,
-      parentType: String,
-      embeddedFields: List<String>,
+      parentType: CompiledNamedType,
   ): CacheKey {
-    val fields = buildFields(obj, key, selections, parentType, embeddedFields)
+    val fields = buildFields(obj, key, selections, parentType)
     val fieldValues = fields.mapValues { it.value.fieldValue }
     val metadata = fields.mapValues { it.value.metadata }.filterValues { it.isNotEmpty() }
     val record = Record(
@@ -197,25 +196,19 @@ internal class Normalizer(
           key = path
         }
         if (embeddedFields.contains(field.name)) {
-          buildFields(value, key, field.selections, field.type.rawType().name, field.type.rawType().embeddedFields)
+          buildFields(value, key, field.selections, field.type.rawType())
               .mapValues { it.value.fieldValue }
         } else {
-          buildRecord(value, key, field.selections, field.type.rawType().name, field.type.rawType().embeddedFields)
+          buildRecord(value, key, field.selections, field.type.rawType())
         }
       }
+
       else -> {
         // scalar
         value
       }
     }
   }
-
-  private val CompiledNamedType.embeddedFields: List<String>
-    get() = when (this) {
-      is ObjectType -> embeddedFields
-      is InterfaceType -> embeddedFields
-      else -> emptyList()
-    }
 
   private class CollectState {
     val fields = mutableListOf<CompiledField>()
@@ -227,6 +220,7 @@ internal class Normalizer(
         is CompiledField -> {
           state.fields.add(it)
         }
+
         is CompiledFragment -> {
           if (typename in it.possibleTypes || it.typeCondition == parentType) {
             collectFields(it.selections, parentType, typename, state)

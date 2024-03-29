@@ -70,4 +70,10 @@ apollo {
     @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
   }
+  service("pagination.connectionProgrammatic") {
+    packageName.set("pagination.connectionProgrammatic")
+    srcDir("src/commonMain/graphql/pagination/connectionProgrammatic")
+    @OptIn(ApolloExperimental::class)
+    generateDataBuilders.set(true)
+  }
 }

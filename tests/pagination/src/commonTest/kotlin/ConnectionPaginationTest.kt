@@ -12,6 +12,7 @@ import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.internal.runTest
 import pagination.connection.UsersQuery
 import pagination.connection.pagination.Pagination
+import pagination.connection.type.buildPageInfo
 import pagination.connection.type.buildUser
 import pagination.connection.type.buildUserConnection
 import pagination.connection.type.buildUserEdge
@@ -53,6 +54,10 @@ class ConnectionPaginationTest {
     val query1 = UsersQuery(first = Optional.Present(2))
     val data1 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx42"
+          endCursor = "xx43"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"
@@ -78,6 +83,10 @@ class ConnectionPaginationTest {
     val query2 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx43"))
     val data2 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx44"
+          endCursor = "xx45"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx44"
@@ -98,6 +107,10 @@ class ConnectionPaginationTest {
     dataFromStore = apolloStore.readOperation(query1)
     var expectedData = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx42"
+          endCursor = "xx45"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"
@@ -133,6 +146,10 @@ class ConnectionPaginationTest {
     val query3 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx45"))
     val data3 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx46"
+          endCursor = "xx47"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx46"
@@ -153,6 +170,10 @@ class ConnectionPaginationTest {
     dataFromStore = apolloStore.readOperation(query1)
     expectedData = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx42"
+          endCursor = "xx47"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"
@@ -200,6 +221,10 @@ class ConnectionPaginationTest {
     val query4 = UsersQuery(last = Optional.Present(2), before = Optional.Present("xx42"))
     val data4 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx40"
+          endCursor = "xx41"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx40"
@@ -220,6 +245,10 @@ class ConnectionPaginationTest {
     dataFromStore = apolloStore.readOperation(query1)
     expectedData = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx40"
+          endCursor = "xx47"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx40"
@@ -279,6 +308,10 @@ class ConnectionPaginationTest {
     val query5 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx50"))
     val data5 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx50"
+          endCursor = "xx51"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx50"
@@ -304,6 +337,10 @@ class ConnectionPaginationTest {
     val query6 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx51"))
     val data6 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = null
+          endCursor = null
+        }
         edges = emptyList()
       }
     }

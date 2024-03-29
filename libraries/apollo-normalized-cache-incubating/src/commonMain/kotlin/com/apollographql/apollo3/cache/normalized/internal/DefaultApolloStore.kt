@@ -12,6 +12,7 @@ import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.api.EmbeddedFieldsProvider
 import com.apollographql.apollo3.cache.normalized.api.FieldNameGenerator
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
@@ -36,6 +37,7 @@ internal class DefaultApolloStore(
     private val metadataGenerator: MetadataGenerator,
     private val cacheResolver: Any,
     private val recordMerger: RecordMerger,
+    private val embeddedFieldsProvider: EmbeddedFieldsProvider,
 ) : ApolloStore {
   private val changedKeysEvents = MutableSharedFlow<Set<String>>(
       /**
@@ -110,6 +112,7 @@ internal class DefaultApolloStore(
         cacheKeyGenerator = cacheKeyGenerator,
         metadataGenerator = metadataGenerator,
         fieldNameGenerator = fieldNameGenerator,
+        embeddedFieldsProvider = embeddedFieldsProvider,
     )
   }
 
@@ -163,6 +166,7 @@ internal class DefaultApolloStore(
         cacheKeyGenerator = cacheKeyGenerator,
         metadataGenerator = metadataGenerator,
         fieldNameGenerator = fieldNameGenerator,
+        embeddedFieldsProvider = embeddedFieldsProvider,
     ).values.toSet()
 
     return cache.merge(records, cacheHeaders, recordMerger)
@@ -181,6 +185,7 @@ internal class DefaultApolloStore(
         cacheKeyGenerator = cacheKeyGenerator,
         metadataGenerator = metadataGenerator,
         fieldNameGenerator = fieldNameGenerator,
+        embeddedFieldsProvider = embeddedFieldsProvider,
         rootKey = cacheKey.key
     ).values
 
@@ -199,6 +204,7 @@ internal class DefaultApolloStore(
         cacheKeyGenerator = cacheKeyGenerator,
         metadataGenerator = metadataGenerator,
         fieldNameGenerator = fieldNameGenerator,
+        embeddedFieldsProvider = embeddedFieldsProvider,
     ).values.map { record ->
       Record(
           key = record.key,
