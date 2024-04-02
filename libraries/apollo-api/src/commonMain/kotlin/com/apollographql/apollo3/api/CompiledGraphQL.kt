@@ -42,8 +42,12 @@ class CompiledField internal constructor(
   ): Any? {
     return argumentValue(name, variables).getOrNull()
   }
+
   /**
    * Resolves field argument value by [name].
+   *
+   * This does not return the argument defautValue if any is present. That information is not stored in codegen at the moment.
+   * Variables are usually not coerced and the result might be slightly off if they needed coercion.
    *
    * @return [Optional.Absent] if no runtime value is present for this argument else returns the argument
    * value with variables substituted for their values.
@@ -62,12 +66,18 @@ class CompiledField internal constructor(
       return Optional.Absent
     }
 
-    val result = resolveVariables(argument.value.getOrThrow(), variables)
-    if (result is Optional.Absent) {
-      // this argument has a variable value that is absent
-      return Optional.Absent
+    val value = argument.value.getOrThrow()
+    return if (value is CompiledVariable) {
+       if (variables.valueMap.containsKey(value.name)) {
+        Optional.present(variables.valueMap[value.name])
+      } else {
+        // this argument has a variable value that is absent
+        // This is where we should use the argument defaultValue if any
+        Optional.Absent
+      }
+    } else {
+      Optional.present(resolveVariables(value, variables))
     }
-    return Optional.present(result)
   }
 
   /**
@@ -90,7 +100,52 @@ class CompiledField internal constructor(
   /**
    * Returns a String containing the name of this field as well as encoded arguments. For an example:
    * `hero({"episode": "Jedi"})`
-   * This is mostly used internally to compute records
+   * This is mostly used internally to compute records.
+   *
+   * ## Note1:
+   * The argument defaultValues are not added to the name. If the schema changes from:
+   *
+   * ```graphql
+   * type Query {
+   *   users(first: Int = 10): [User]
+   * }
+   * ```
+   *
+   * to:
+   *
+   * ```graphql
+   * type Query {
+   *   users(first: Int = 10_000): [User]
+   * }
+   * ```
+   *
+   * The nameWithArguments will stay "users" in both cases.
+   *
+   * ## Note2:
+   * While the defaultValues of variables are taken into account, the variables are not fully coerced. These 2 queries
+   * will have different cache keys despite being identical:
+   *
+   * Query1:
+   * ```graphql
+   * query GetUsers($ids: [ID]) {
+   *   users(ids: $ids) { id }
+   * }
+   * ```
+   * Variables1:
+   * ```json
+   * {
+   *   "ids": [42]
+   * }
+   * ```
+   * CacheKey1: `users({"ids": ["42"]})`
+   *
+   * Variables2, coercing a single item to a list:
+   * ```json
+   * {
+   *   "ids": 42
+   * }
+   * ```
+   * CacheKey1: `users({"ids": 42})`
    */
   fun nameWithArguments(variables: Executable.Variables): String {
     val arguments = argumentValues(variables) { !it.isPagination }
@@ -364,9 +419,7 @@ class CompiledArgument private constructor(
      *
      * Can be the defaultValue if no argument is defined in the operation.
      * Can contain variables.
-     * Can be [Optional.Absent] if:
-     * - no value is passed and no default value is present
-     * - or if a variable value is passed but no variable with that name is present
+     * Can be [Optional.Absent] if no value is passed
      */
     val value: Optional<CompiledValue>,
     val isKey: Boolean = false,
@@ -406,49 +459,51 @@ class CompiledArgument private constructor(
 /**
  * Resolve all variables that may be contained inside `value`
  *
- * If a variable is absent, the key is removed from the containing Map or List.
+ * In input objects, absent variables are omitted.
+ * In lists, absent variables are coerced to null.
  *
- * @param value an [ApolloJsonElement] or [CompiledVariable] instance
+ * @param value an [ApolloJsonElement] instance
  *
- * @return [ApolloJsonElement] or [Optional.Absent] if a variable is absent
+ * @return [ApolloJsonElement]
  */
 @Suppress("UNCHECKED_CAST")
-private fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
+private fun resolveVariables(value: ApolloJsonElement, variables: Executable.Variables): Any? {
   return when (value) {
     null -> null
-    is CompiledVariable -> {
-      if (variables.valueMap.containsKey(value.name)) {
-        variables.valueMap[value.name]
-      } else {
-        Optional.Absent
-      }
-    }
-
+    is CompiledVariable -> error("must be checked by the caller")
     is Map<*, *> -> {
       value as Map<String, Any?>
-      value.mapValues {
-        resolveVariables(it.value, variables)
-      }.filter { it.value !is Optional.Absent }
-          .toList()
+      value.mapNotNull {
+        val fieldValue = it.value
+        if (fieldValue is CompiledVariable) {
+          if (variables.valueMap.containsKey(fieldValue.name)) {
+            it.key to variables.valueMap.get(fieldValue.name)
+          } else {
+            null
+          }
+        } else {
+          it.key to resolveVariables(fieldValue, variables)
+        }
+      }.toList()
           .sortedBy { it.first }
           .toMap()
     }
 
     is List<*> -> {
       value.map {
-        resolveVariables(it, variables)
-      }.filter {
-        /**
-         * Not sure if this is correct
-         *
-         * ```
-         * {
-         *   # what if c is not present?
-         *   a(b: [$c])
-         * }
-         * ```
-         */
-        it !is Optional.Absent
+        if (it is CompiledVariable) {
+          if (variables.valueMap.containsKey(it.name)) {
+            variables.valueMap.get(it.name)
+          } else {
+            /**
+             * Absent items in lists are coerced to null
+             * See https://github.com/graphql/graphql-spec/pull/1058#discussion_r1435230534
+             */
+            null
+          }
+        } else {
+          resolveVariables(it, variables)
+        }
       }
     }
 
