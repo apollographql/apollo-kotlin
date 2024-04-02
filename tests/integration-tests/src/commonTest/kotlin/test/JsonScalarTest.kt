@@ -35,7 +35,7 @@ class JsonScalarTest {
     mockServer.close()
   }
 
-  // see https://github.com/apollographql/apollo-android/issues/2854
+  // see https://github.com/apollographql/apollo-kotlin/issues/2854
   @Test
   fun jsonScalar() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueueString(testFixtureToUtf8("JsonScalar.json"))

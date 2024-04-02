@@ -28,7 +28,7 @@ object TestUtils {
     }
     dest.deleteRecursively()
 
-    // See https://github.com/apollographql/apollo-android/issues/2184
+    // See https://github.com/apollographql/apollo-kotlin/issues/2184
     dest.mkdirs()
     File(dest, "gradle.properties").writeText("""
       |org.gradle.jvmargs=-Xmx4g 

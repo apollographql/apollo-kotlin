@@ -231,7 +231,7 @@ Here are the steps to do a new release:
   takes a few minutes). If you're on MacOS, you can
   use [dependency-watch](https://github.com/JakeWharton/dependency-watch): `dependency-watch await 'com.apollographql.apollo3:apollo-runtime:$version' && osascript -e 'display notification "Release is ready 🚀"'`
 * merge pending documentation/tutorial updates. Make sure the tutorial compiles and runs well.
-* paste the changelog in a new release on [GitHub](https://github.com/apollographql/apollo-android/releases)
+* paste the changelog in a new release on [GitHub](https://github.com/apollographql/apollo-kotlin/releases)
 * if it's a significant release, tweet about it 🐦
 * relax 🍹
 
@@ -273,12 +273,12 @@ where:
 
 The project uses [GitHub Actions](https://docs.github.com/en/actions) to automate the build process.
 
-We have [3 workflows](https://github.com/apollographql/apollo-android/tree/main/.github/workflows), triggered by the
+We have [3 workflows](https://github.com/apollographql/apollo-kotlin/tree/main/.github/workflows), triggered by the
 following events:
 
 ### On PRs
 
-**Workflow:** [`pr.yml`](https://github.com/apollographql/apollo-android/blob/main/.github/workflows/pr.yml)
+**Workflow:** [`pr.yml`](https://github.com/apollographql/apollo-kotlin/blob/main/.github/workflows/pr.yml)
 
 **Jobs (run in parallel):**
 
@@ -294,7 +294,7 @@ following events:
 
 ### On pushes to `main` branch
 
-**Workflow:** [`push.yml`](https://github.com/apollographql/apollo-android/blob/main/.github/workflows/push.yml)
+**Workflow:** [`push.yml`](https://github.com/apollographql/apollo-kotlin/blob/main/.github/workflows/push.yml)
 
 **Job:**
 
@@ -307,7 +307,7 @@ following events:
 
 ### On new tags
 
-**Workflow:** [`tag.yml`](https://github.com/apollographql/apollo-android/blob/main/.github/workflows/tag.yml)
+**Workflow:** [`tag.yml`](https://github.com/apollographql/apollo-kotlin/blob/main/.github/workflows/tag.yml)
 
 **Job:**
 

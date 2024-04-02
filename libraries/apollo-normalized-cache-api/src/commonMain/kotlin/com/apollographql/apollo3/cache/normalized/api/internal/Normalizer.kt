@@ -53,7 +53,7 @@ internal class Normalizer(
           val compiledFields = allFields.filter { it.responseName == entry.key }
           if (compiledFields.isEmpty()) {
             // If we come here, `obj` contains more data than the CompiledSelections can understand
-            // This happened previously (see https://github.com/apollographql/apollo-android/pull/3636)
+            // This happened previously (see https://github.com/apollographql/apollo-kotlin/pull/3636)
             // It also happens if there's an always false @include directive (see https://github.com/apollographql/apollo-kotlin/issues/4772)
             // For all cache purposes, this is not part of the response and we therefore do not include this in the response
             return@mapNotNull null

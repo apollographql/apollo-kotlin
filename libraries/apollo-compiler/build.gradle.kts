@@ -64,8 +64,6 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
 }
 
 tasks.withType(KotlinCompile::class.java) {
-  // Fixes the warning below:
-  // "Task ':apollo-android:apollo-compiler:kaptGenerateStubsKotlin' uses the output of task ':apollo-android:apollo-compiler:pluginVersion', without declaring an explicit dependency"
   dependsOn(pluginVersionTaskProvider)
 }
 

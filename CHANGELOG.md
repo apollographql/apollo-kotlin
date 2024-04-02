@@ -930,7 +930,7 @@ fun LaunchList(onLaunchClick: (launchId: String) -> Unit) {
 ```
 
 As always, feedback is very welcome. Let us know what you think of the feature by
-either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-android/issues)
+either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-kotlin/issues)
 , [joining the community](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client)
 or [stopping by our channel in the KotlinLang Slack](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your
 invite [here](https://slack.kotl.in/)).
@@ -1392,7 +1392,7 @@ apolloClient.query(query).toFlow().collectIndexed { index, response ->
 You can read more about it in [the documentation](https://www.apollographql.com/docs/kotlin/fetching/defer).
 
 As always, feedback is very welcome. Let us know what you think of the feature by
-either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-android/issues)
+either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-kotlin/issues)
 , [joining the community](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client)
 or [stopping by our channel in the KotlinLang Slack](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your
 invite [here](https://slack.kotl.in/)).
@@ -2238,7 +2238,7 @@ In a nutshell, Apollo Kotlin 3 brings:
   time, so you don't have to deal with them in your UI code
 
 Feel free to ask questions by
-either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-android/issues)
+either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-kotlin/issues)
 , [joining the community](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client)
 or [stopping by our channel in the KotlinLang Slack](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your
 invite [here](https://slack.kotl.in/)).
@@ -2339,7 +2339,7 @@ apolloClient = ApolloClient.Builder()
 _2021-12-07_
 
 This version is the release candidate for Apollo Android 3 🚀. Please try it
-and [report any issues](https://github.com/apollographql/apollo-android/issues/new/choose), we'll fix them urgently.
+and [report any issues](https://github.com/apollographql/apollo-kotlin/issues/new/choose), we'll fix them urgently.
 
 There is [documentation](https://www.apollographql.com/docs/android/) and
 a [migration guide](https://www.apollographql.com/docs/android/migration/3.0/). More details are coming soon. In a

@@ -144,7 +144,7 @@ abstract class DefaultApolloExtension(
   // Called when the plugin is applied
   init {
     require(GradleVersion.current() >= GradleVersion.version(MIN_GRADLE_VERSION)) {
-      "apollo-android requires Gradle version $MIN_GRADLE_VERSION or greater"
+      "apollo-kotlin requires Gradle version $MIN_GRADLE_VERSION or greater"
     }
 
     adhocComponentWithVariants = softwareComponentFactory.adhoc("apollo")

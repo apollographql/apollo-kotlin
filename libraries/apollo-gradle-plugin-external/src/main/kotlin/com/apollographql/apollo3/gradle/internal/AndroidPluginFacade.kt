@@ -78,7 +78,7 @@ fun connectToAndroidSourceSet(
         // The kotlinSourceSet carries task dependencies, calling srcDir() above is enough
         // to setup task dependencies
         // addJavaSourceFoldersToModel is still required for AS to see the sources
-        // See https://github.com/apollographql/apollo-android/issues/3351
+        // See https://github.com/apollographql/apollo-kotlin/issues/3351
         it.addJavaSourceFoldersToModel(outputDir.get().asFile)
       }
     }
