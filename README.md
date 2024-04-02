@@ -1,9 +1,9 @@
 
 # Apollo Kotlin
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/apollographql/apollo-android/main/LICENSE)
+[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/apollographql/apollo-kotlin/main/LICENSE)
 [![Join the community](https://img.shields.io/discourse/status?label=Join%20the%20community&server=https%3A%2F%2Fcommunity.apollographql.com)](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client)
-[![Slack](https://img.shields.io/static/v1?label=kotlinlang&message=apollo-android&color=15a2f5&logo=slack)](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)
+[![Slack](https://img.shields.io/static/v1?label=kotlinlang&message=apollo-kotlin&color=15a2f5&logo=slack)](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)
 [![Discord](https://img.shields.io/discord/1022972389463687228.svg?color=7389D8&labelColor=6A7EC2&logo=discord&logoColor=ffffff&style=flat-square)](https://discord.com/invite/graphos)
 [![CI](https://img.shields.io/github/actions/workflow/status/apollographql/apollo-kotlin/push.yml?branch=main)](https://github.com/apollographql/apollo-kotlin/actions/workflows/push.yml?query=branch%3Amain)
 [![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo3/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo3/)
@@ -181,7 +181,7 @@ Installation instructions and more information can be found [here](https://githu
 
 The latest version is [![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo3/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo3/)
 
-Check the [changelog](https://github.com/apollographql/apollo-android/releases) for the release history.
+Check the [changelog](https://github.com/apollographql/apollo-kotlin/releases) for the release history.
 
 Releases are hosted on [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo3/). The plugin is additionally hosted on the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.apollographql.apollo3)
 

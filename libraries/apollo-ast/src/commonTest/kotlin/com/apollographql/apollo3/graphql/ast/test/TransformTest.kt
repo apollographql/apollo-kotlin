@@ -12,7 +12,7 @@ import kotlin.test.assertEquals
 class TransformTest {
   private val query = """
         query GetRepo {
-          repository(name: "apollo-android", owner: "apollographql") {
+          repository(name: "apollo-kotlin", owner: "apollographql") {
               fieldThatHasBeenThereForever
               newFieldInVersion3 @since(version: 3) @optional
               newFieldInVersion5 @since(version: 5) @optional
@@ -35,7 +35,7 @@ class TransformTest {
 
     val expected = """
       query GetRepo {
-        repository(name: "apollo-android", owner: "apollographql") {
+        repository(name: "apollo-kotlin", owner: "apollographql") {
           fieldThatHasBeenThereForever
           newFieldInVersion3 @since(version: 3) @optional
         }

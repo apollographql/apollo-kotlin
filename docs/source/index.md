@@ -5,7 +5,7 @@ description: A strongly-typed, caching GraphQL client for Java and Kotlin multip
 
 > 📣 **Apollo Kotlin 3 is generally available.** If you're using Apollo Android 2.x, see the [migration guide](./migration/3.0/). You can also [view the 2.x docs](https://www.apollographql.com/docs/kotlin/v2).
 
-[Apollo Kotlin](https://github.com/apollographql/apollo-android) (formerly Apollo Android) is a GraphQL client that generates Kotlin and Java models from GraphQL queries.
+[Apollo Kotlin](https://github.com/apollographql/apollo-kotlin) (formerly Apollo Android) is a GraphQL client that generates Kotlin and Java models from GraphQL queries.
 
 Apollo Kotlin executes queries and mutations against a GraphQL server and returns results as query-specific Kotlin types. This means you don't have to deal with parsing JSON, or passing around `Map`s and making clients cast values to the right type manually. You also don't have to write model types yourself, because these are generated from the GraphQL definitions your UI uses.
 
@@ -161,7 +161,7 @@ Installation instructions and more information can be found [here](testing/andro
 
 The latest version is [![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo3/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo3/)
 
-Check the [changelog](https://github.com/apollographql/apollo-android/releases) for the release history.
+Check the [changelog](https://github.com/apollographql/apollo-kotlin/releases) for the release history.
 
 Releases are hosted on [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo3/). The plugin is additionally hosted on the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.apollographql.apollo3)
 

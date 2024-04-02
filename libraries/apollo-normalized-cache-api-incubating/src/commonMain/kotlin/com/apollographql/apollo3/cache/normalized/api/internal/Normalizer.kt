@@ -64,7 +64,7 @@ internal class Normalizer(
       val compiledFields = allFields.filter { it.responseName == entry.key }
       if (compiledFields.isEmpty()) {
         // If we come here, `obj` contains more data than the CompiledSelections can understand
-        // This happened previously (see https://github.com/apollographql/apollo-android/pull/3636)
+        // This happened previously (see https://github.com/apollographql/apollo-kotlin/pull/3636)
         // This should not happen anymore but in case it does, we're logging some info here
         throw RuntimeException("Cannot find a CompiledField for entry: {${entry.key}: ${entry.value}}, __typename = $typename, key = $key")
       }

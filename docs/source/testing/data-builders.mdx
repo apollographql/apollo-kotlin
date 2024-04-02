@@ -2,7 +2,7 @@
 title: Data builders (experimental)
 ---
 
-> ⚠️ **Data builders are experimental and subject to change.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-android/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Data%20Builders]) or in the [Kotlin Slack community](https://slack.kotl.in/).
+> ⚠️ **Data builders are experimental and subject to change.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Data%20Builders]) or in the [Kotlin Slack community](https://slack.kotl.in/).
 
 Apollo Kotlin generates models for your operations and parsers that create instances of these models from your network responses. Sometimes though, during tests or in other occasions, it is useful to instantiate models manually with known values. Doing so is not as straightforward as it may seem, especially when fragments are used. Creating `operationBased` models requires instantiating every fragment as well as choosing an appropriate `__typename` for each composite type. Data builders make this easier by providing builders that match the structure of the Json document.
 
