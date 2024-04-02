@@ -35,7 +35,7 @@ class CompiledField internal constructor(
    * value with variables substituted for their values.
    */
   @Deprecated("This function does not distinguish between null and absent arguments. Use argumentValue instead", ReplaceWith("argumentValue(name = name, variables = variables)"))
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+  @ApolloDeprecatedSince(v4_0_0)
   fun resolveArgument(
       name: String,
       variables: Executable.Variables,
@@ -460,6 +460,14 @@ class CompiledArgument private constructor(
      */
     val value: Optional<CompiledValue>,
 ) {
+  @Deprecated("Use definition.name instead", ReplaceWith("definition.name"))
+  @ApolloDeprecatedSince(v4_0_0)
+  val name get() = definition.name
+
+  @Deprecated("Use definition.isKey instead", ReplaceWith("definition.isKey"))
+  @ApolloDeprecatedSince(v4_0_0)
+  val isKey get() = definition.isKey
+
   class Builder(
       private val definition: CompiledArgumentDefinition,
   ) {

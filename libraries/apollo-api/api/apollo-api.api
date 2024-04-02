@@ -268,7 +268,9 @@ public abstract interface class com/apollographql/apollo3/api/BuilderScope {
 public final class com/apollographql/apollo3/api/CompiledArgument {
 	public synthetic fun <init> (Lcom/apollographql/apollo3/api/CompiledArgumentDefinition;Lcom/apollographql/apollo3/api/Optional;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getDefinition ()Lcom/apollographql/apollo3/api/CompiledArgumentDefinition;
+	public final fun getName ()Ljava/lang/String;
 	public final fun getValue ()Lcom/apollographql/apollo3/api/Optional;
+	public final fun isKey ()Z
 }
 
 public final class com/apollographql/apollo3/api/CompiledArgument$Builder {
