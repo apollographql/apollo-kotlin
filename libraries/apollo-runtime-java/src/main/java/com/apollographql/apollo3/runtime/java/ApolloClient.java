@@ -229,7 +229,7 @@ public class ApolloClient implements Closeable {
     public Builder okHttpClient(OkHttpClient okHttpClient) {
       this.callFactory = okHttpClient;
       this.webSocketFactory = okHttpClient;
-      return null;
+      return this;
     }
 
     /**
