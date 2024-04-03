@@ -488,6 +488,7 @@ internal class IrOperationsBuilder(
       val condition: BooleanExpression<BVariable>,
       val selections: List<GQLSelection>,
       val parentType: String,
+      val definitionHasArguments: Boolean
   ) {
     val responseName = alias ?: name
   }
@@ -530,7 +531,8 @@ internal class IrOperationsBuilder(
           semanticNonNulls = semanticNonNulls,
           forceOptional = gqlField.directives.optionalValue(schema) == true,
           parentType = fieldWithParent.parentType,
-          catch = gqlField.findCatch(fieldDefinition, schema)
+          catch = gqlField.findCatch(fieldDefinition, schema),
+          definitionHasArguments = fieldDefinition.arguments.isNotEmpty()
       )
     }.groupBy {
       it.responseName
@@ -595,6 +597,11 @@ internal class IrOperationsBuilder(
        * }
        */
       usedFields.putType(first.type.rawType().name)
+
+      // When a field with arguments is selected, its parent type is referenced in the compiled selections
+      if (first.definitionHasArguments) {
+        usedFields.putType(first.parentType)
+      }
 
       val irType = first
           .type
