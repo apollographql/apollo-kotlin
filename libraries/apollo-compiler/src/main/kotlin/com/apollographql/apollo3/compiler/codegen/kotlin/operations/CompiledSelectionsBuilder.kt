@@ -9,7 +9,6 @@ import com.apollographql.apollo3.compiler.internal.applyIf
 import com.apollographql.apollo3.compiler.ir.BVariable
 import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.apollographql.apollo3.compiler.ir.IrArgument
-import com.apollographql.apollo3.compiler.ir.IrArgumentDefinition
 import com.apollographql.apollo3.compiler.ir.IrField
 import com.apollographql.apollo3.compiler.ir.IrFragment
 import com.apollographql.apollo3.compiler.ir.IrSelection
@@ -64,7 +63,7 @@ internal class CompiledSelectionsBuilder(
       builder.add(".condition(%L)\n", condition.toCompiledConditionInitializer())
     }
     if (arguments.isNotEmpty()) {
-      builder.add(".arguments(%L)\n", arguments.sortedBy { it.definition.name }.map { it.codeBlock() }.toListInitializerCodeblock(true))
+      builder.add(".arguments(%L)\n", arguments.sortedBy { it.name }.map { it.codeBlock() }.toListInitializerCodeblock(true))
     }
     if (selectionSetName != null) {
       builder.add(".selections(%N)\n", "__$selectionSetName")
@@ -123,30 +122,14 @@ internal class CompiledSelectionsBuilder(
     return CodeBlock.of("%T(%S,·%L)", KotlinSymbols.CompiledCondition, expression.value.name, inverted.toString())
   }
 
-  private fun IrArgumentDefinition.codeBlock(): CodeBlock {
-    val argumentBuilder = CodeBlock.builder()
-    argumentBuilder.add(
-        "%T(%S)",
-        KotlinSymbols.CompiledArgumentDefinition,
-        name,
-    )
-
-    if (isKey) {
-      argumentBuilder.add(".isKey(true)")
-    }
-    if (isPagination) {
-      argumentBuilder.add(".isPagination(true)")
-    }
-    argumentBuilder.add(".build()")
-    return argumentBuilder.build()
-  }
-
   private fun IrArgument.codeBlock(): CodeBlock {
     val argumentBuilder = CodeBlock.builder()
     argumentBuilder.add(
-        "%T(%L)",
+        "%T(%T.%N.%N)",
         KotlinSymbols.CompiledArgument,
-        definition.codeBlock(),
+        context.resolver.resolveSchemaType(parentType),
+        context.layout.className(parentField),
+        name,
     )
 
     if (this.value != null) {

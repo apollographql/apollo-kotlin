@@ -1,9 +1,12 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.schema
 
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.codegen.SchemaLayout
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSchemaContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols.CompiledArgumentDefinitionBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.concreteBuilderTypeSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.concreteMapTypeSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
@@ -12,10 +15,14 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeImplementB
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.topLevelBuildFunSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.schema.util.typePropertySpec
 import com.apollographql.apollo3.compiler.codegen.typePackageName
+import com.apollographql.apollo3.compiler.ir.IrArgumentDefinition
+import com.apollographql.apollo3.compiler.ir.IrFieldDefinition
 import com.apollographql.apollo3.compiler.ir.IrObject
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class ObjectBuilder(
@@ -75,6 +82,7 @@ internal class ObjectBuilder(
         .classBuilder(simpleName)
         .maybeAddDescription(description)
         .maybeAddDeprecation(deprecationReason)
+        .addTypes(fieldDefinitions.typeSpecs(layout))
         .addType(companionTypeSpec())
         .build()
   }
@@ -85,4 +93,55 @@ internal class ObjectBuilder(
         .maybeImplementBuilderFactory(generateDataBuilders, context.resolver.resolveBuilderType(name))
         .build()
   }
+}
+
+internal fun List<IrFieldDefinition>.typeSpecs(layout: SchemaLayout): List<TypeSpec> {
+  return mapNotNull { fieldDefinition ->
+    if (fieldDefinition.argumentDefinitions.isEmpty()) {
+      null
+    } else {
+      fieldDefinition.typeSpec(layout)
+    }
+  }
+}
+
+private fun IrFieldDefinition.typeSpec(layout: SchemaLayout): TypeSpec {
+  return TypeSpec
+      .interfaceBuilder(layout.className(name))
+      .addType(argumentDefinitions.companionTypeSpec())
+      .build()
+}
+
+private fun List<IrArgumentDefinition>.companionTypeSpec(): TypeSpec {
+  return TypeSpec.companionObjectBuilder()
+      .addProperties(
+          map { argumentDefinition ->
+            PropertySpec.builder(
+                name = argumentDefinition.name,
+                type = KotlinSymbols.CompiledArgumentDefinition,
+            )
+                .initializer(argumentDefinition.codeBlock())
+                .addAnnotation(JvmField::class)
+                .build()
+          }
+      )
+      .build()
+}
+
+private fun IrArgumentDefinition.codeBlock(): CodeBlock {
+  val argumentBuilder = CodeBlock.builder()
+  argumentBuilder.add(
+      "%T(%S)",
+      CompiledArgumentDefinitionBuilder,
+      name,
+  )
+
+  if (isKey) {
+    argumentBuilder.add(".isKey(true)")
+  }
+  if (isPagination) {
+    argumentBuilder.add(".isPagination(true)")
+  }
+  argumentBuilder.add(".build()")
+  return argumentBuilder.build()
 }

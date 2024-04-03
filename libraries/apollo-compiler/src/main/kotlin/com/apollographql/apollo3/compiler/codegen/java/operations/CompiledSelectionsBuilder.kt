@@ -8,10 +8,10 @@ import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.codeBlock
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializerCodeblock
+import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.ir.BVariable
 import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.apollographql.apollo3.compiler.ir.IrArgument
-import com.apollographql.apollo3.compiler.ir.IrArgumentDefinition
 import com.apollographql.apollo3.compiler.ir.IrField
 import com.apollographql.apollo3.compiler.ir.IrFragment
 import com.apollographql.apollo3.compiler.ir.IrSelection
@@ -60,7 +60,7 @@ internal class CompiledSelectionsBuilder(
       builder.add(".condition($L)", condition.toCompiledConditionInitializer())
     }
     if (arguments.isNotEmpty()) {
-      builder.add(".arguments($L)", arguments.sortedBy { it.definition.name }.map { it.codeBlock() }.toListInitializerCodeblock())
+      builder.add(".arguments($L)", arguments.sortedBy { it.name }.map { it.codeBlock() }.toListInitializerCodeblock())
     }
     if (selectionSetName != null) {
       builder.add(".selections($L)", "__$selectionSetName")
@@ -118,29 +118,14 @@ internal class CompiledSelectionsBuilder(
     return CodeBlock.of("new $T($S, $L)", JavaClassNames.CompiledCondition, expression.value.name, inverted.toString())
   }
 
-  private fun IrArgumentDefinition.codeBlock(): CodeBlock {
-    val builder = CodeBlock.builder()
-    builder.add(
-        "new $T($S)",
-        JavaClassNames.CompiledArgumentDefinition,
-        name,
-    )
-    if (isKey) {
-      builder.add(".isKey(true)")
-    }
-    if (isPagination) {
-      builder.add(".isPagination(true)")
-    }
-    builder.add(".build()")
-    return builder.build()
-  }
-
   private fun IrArgument.codeBlock(): CodeBlock {
     val argumentBuilder = CodeBlock.builder()
     argumentBuilder.add(
-        "new $T($L)",
+        "new $T($T.$L.${'$'}N)",
         JavaClassNames.CompiledArgument,
-        definition.codeBlock(),
+        context.resolver.resolveSchemaType(parentType),
+        context.layout.className(parentField),
+        name.escapeJavaReservedWord(),
     )
     if (this.value != null) {
       argumentBuilder.add(".value($L)", value.codeBlock())

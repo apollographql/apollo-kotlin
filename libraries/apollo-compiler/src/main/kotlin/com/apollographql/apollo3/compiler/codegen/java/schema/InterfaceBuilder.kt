@@ -36,6 +36,7 @@ internal class InterfaceBuilder(
         .addModifiers(Modifier.PUBLIC)
         .maybeAddDescription(description)
         .maybeAddDeprecation(deprecationReason)
+        .addTypes(fieldDefinitions.typeSpecs(layout))
         .addField(typeFieldSpec(context.resolver))
         .build()
   }

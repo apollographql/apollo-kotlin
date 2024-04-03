@@ -14,8 +14,6 @@ import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.codegen.keyArgs
-import com.apollographql.apollo3.compiler.codegen.paginationArgs
 
 internal class SelectionSetsBuilder(
     val schema: Schema,
@@ -74,24 +72,17 @@ internal class SelectionSetsBuilder(
     /**
      * Pull all arguments from the schema as we need them to compute the cache key
      */
-    val typeDefinition = schema.typeDefinition(parentType)
     val actualArguments = fieldDefinition.arguments.map { schemaArgument ->
       val operationArgument = arguments.firstOrNull { it.name == schemaArgument.name }
-
-      val keyArgs = typeDefinition.keyArgs(name, schema)
-      val paginationArgs = typeDefinition.paginationArgs(name, schema)
-      val argumentDefinition = IrArgumentDefinition(
-          name = schemaArgument.name,
-          isKey = keyArgs.contains(schemaArgument.name),
-          isPagination = paginationArgs.contains(schemaArgument.name)
-      )
 
       /**
        * When passed explicitly, the argument values are coerced (but not their default value)
        */
       val userValue = operationArgument?.value?.coerceInExecutableContextOrThrow(schemaArgument.type, schema)
       IrArgument(
-          definition = argumentDefinition,
+          parentType = parentType,
+          parentField = fieldDefinition.name,
+          name = schemaArgument.name,
           value = (userValue ?: schemaArgument.defaultValue)?.toIrValue(),
       )
     }

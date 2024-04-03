@@ -21,6 +21,8 @@ import com.apollographql.apollo3.ast.findOptInFeature
 import com.apollographql.apollo3.ast.findTargetName
 import com.apollographql.apollo3.ast.internal.toConnectionFields
 import com.apollographql.apollo3.ast.internal.toEmbeddedFields
+import com.apollographql.apollo3.compiler.codegen.keyArgs
+import com.apollographql.apollo3.compiler.codegen.paginationArgs
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -62,6 +64,7 @@ internal data class IrObject(
     val deprecationReason: String?,
     val embeddedFields: List<String>,
     val mapProperties: List<IrMapProperty>,
+    val fieldDefinitions: List<IrFieldDefinition>,
 ) : IrSchemaType
 
 
@@ -74,6 +77,7 @@ internal data class IrInterface(
     val deprecationReason: String?,
     val embeddedFields: List<String>,
     val mapProperties: List<IrMapProperty>,
+    val fieldDefinitions: List<IrFieldDefinition>,
 ) : IrSchemaType
 
 @Serializable
@@ -111,9 +115,23 @@ internal class IrEnumType2(val name: String) : IrType2
 internal class IrCompositeType2(val name: String) : IrType2
 
 @Serializable
+internal data class IrArgumentDefinition(
+    val name: String,
+    val isKey: Boolean,
+    val isPagination: Boolean,
+)
+
+@Serializable
 internal data class IrMapProperty(
     val name: String,
     val type: IrType2,
+)
+
+@Serializable
+internal data class IrFieldDefinition(
+    val name: String,
+    val type: IrType2,
+    val argumentDefinitions: List<IrArgumentDefinition>,
 )
 
 @Serializable
@@ -220,7 +238,10 @@ internal fun GQLInterfaceTypeDefinition.toIr(schema: Schema, usedFields: Map<Str
         fields.contains(it.name)
       }.map {
         it.toIrMapProperty(schema)
-      }
+      },
+      fieldDefinitions = this.fields.map {
+        it.toIrFieldDefinition(schema, name)
+      },
   )
 }
 
@@ -256,6 +277,9 @@ internal fun GQLObjectTypeDefinition.toIr(schema: Schema, usedFields: Map<String
       }.map {
         it.toIrMapProperty(schema)
       },
+      fieldDefinitions = this.fields.map {
+        it.toIrFieldDefinition(schema, name)
+      },
       superTypes = schema.superTypes(this).toList()
   )
 }
@@ -264,6 +288,23 @@ private fun GQLFieldDefinition.toIrMapProperty(schema: Schema): IrMapProperty {
   return IrMapProperty(
       name,
       type.toIrType2(schema)
+  )
+}
+
+private fun GQLFieldDefinition.toIrFieldDefinition(schema: Schema, parentType: String): IrFieldDefinition {
+  val typeDefinition = schema.typeDefinition(parentType)
+  val keyArgs = typeDefinition.keyArgs(name, schema)
+  val paginationArgs = typeDefinition.paginationArgs(name, schema)
+  return IrFieldDefinition(
+      name = name,
+      type = type.toIrType2(schema),
+      argumentDefinitions = arguments.map {
+        IrArgumentDefinition(
+            name = it.name,
+            isKey = keyArgs.contains(it.name),
+            isPagination = paginationArgs.contains(it.name)
+        )
+      }
   )
 }
 

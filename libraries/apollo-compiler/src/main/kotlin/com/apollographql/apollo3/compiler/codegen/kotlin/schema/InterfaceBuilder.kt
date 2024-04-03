@@ -85,6 +85,7 @@ internal class InterfaceBuilder(
         .classBuilder(simpleName)
         .maybeAddDescription(description)
         .maybeAddDeprecation(deprecationReason)
+        .addTypes(fieldDefinitions.typeSpecs(layout))
         .addType(companionTypeSpec())
         .build()
   }
