@@ -34,7 +34,7 @@ class ConnectionFieldNameGenerator(private val connectionFields: Map<String, Lis
       context.field.newBuilder()
           .arguments(
               context.field.arguments.filter { argument ->
-                argument.definition.name !in paginationArguments
+                argument.name !in paginationArguments
               }
           )
           .build()
