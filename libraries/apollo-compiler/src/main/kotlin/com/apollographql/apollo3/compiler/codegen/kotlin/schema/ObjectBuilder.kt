@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.schema
 
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.codegen.SchemaLayout
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSchemaContext
@@ -82,50 +81,30 @@ internal class ObjectBuilder(
         .classBuilder(simpleName)
         .maybeAddDescription(description)
         .maybeAddDeprecation(deprecationReason)
-        .addTypes(fieldDefinitions.typeSpecs(layout))
         .addType(companionTypeSpec())
         .build()
   }
 
   private fun IrObject.companionTypeSpec(): TypeSpec {
     return TypeSpec.companionObjectBuilder()
+        .addProperties(fieldDefinitions.propertySpecs())
         .addProperty(typePropertySpec(context.resolver))
         .maybeImplementBuilderFactory(generateDataBuilders, context.resolver.resolveBuilderType(name))
         .build()
   }
 }
 
-internal fun List<IrFieldDefinition>.typeSpecs(layout: SchemaLayout): List<TypeSpec> {
-  return mapNotNull { fieldDefinition ->
-    if (fieldDefinition.argumentDefinitions.isEmpty()) {
-      null
-    } else {
-      fieldDefinition.typeSpec(layout)
+internal fun List<IrFieldDefinition>.propertySpecs(): List<PropertySpec> {
+  return flatMap { fieldDefinition ->
+    fieldDefinition.argumentDefinitions.map { argumentDefinition ->
+      PropertySpec.builder(
+          name = "${fieldDefinition.name}__${argumentDefinition.name}",
+          type = KotlinSymbols.CompiledArgumentDefinition,
+      )
+          .initializer(argumentDefinition.codeBlock())
+          .build()
     }
   }
-}
-
-private fun IrFieldDefinition.typeSpec(layout: SchemaLayout): TypeSpec {
-  return TypeSpec
-      .interfaceBuilder(layout.className(name))
-      .addType(argumentDefinitions.companionTypeSpec())
-      .build()
-}
-
-private fun List<IrArgumentDefinition>.companionTypeSpec(): TypeSpec {
-  return TypeSpec.companionObjectBuilder()
-      .addProperties(
-          map { argumentDefinition ->
-            PropertySpec.builder(
-                name = argumentDefinition.name,
-                type = KotlinSymbols.CompiledArgumentDefinition,
-            )
-                .initializer(argumentDefinition.codeBlock())
-                .addAnnotation(JvmField::class)
-                .build()
-          }
-      )
-      .build()
 }
 
 private fun IrArgumentDefinition.codeBlock(): CodeBlock {

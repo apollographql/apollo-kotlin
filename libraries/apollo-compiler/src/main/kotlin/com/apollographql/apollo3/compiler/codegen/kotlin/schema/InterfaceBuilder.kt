@@ -85,13 +85,13 @@ internal class InterfaceBuilder(
         .classBuilder(simpleName)
         .maybeAddDescription(description)
         .maybeAddDeprecation(deprecationReason)
-        .addTypes(fieldDefinitions.typeSpecs(layout))
         .addType(companionTypeSpec())
         .build()
   }
 
   private fun IrInterface.companionTypeSpec(): TypeSpec {
     return TypeSpec.companionObjectBuilder()
+        .addProperties(fieldDefinitions.propertySpecs())
         .addProperty(typePropertySpec(context.resolver))
         .maybeImplementBuilderFactory(generateDataBuilders, ClassName(packageName, otherBuilderName))
         .build()

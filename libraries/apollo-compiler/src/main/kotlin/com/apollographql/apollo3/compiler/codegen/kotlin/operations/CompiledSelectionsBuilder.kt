@@ -125,10 +125,10 @@ internal class CompiledSelectionsBuilder(
   private fun IrArgument.codeBlock(): CodeBlock {
     val argumentBuilder = CodeBlock.builder()
     argumentBuilder.add(
-        "%T(%T.%N.%N)",
+        "%T(%T.%L__%L)",
         KotlinSymbols.CompiledArgument,
         context.resolver.resolveSchemaType(parentType),
-        context.layout.className(parentField),
+        parentField,
         name,
     )
 

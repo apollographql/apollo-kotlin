@@ -8,7 +8,6 @@ import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.codeBlock
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializerCodeblock
-import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.ir.BVariable
 import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.apollographql.apollo3.compiler.ir.IrArgument
@@ -121,11 +120,11 @@ internal class CompiledSelectionsBuilder(
   private fun IrArgument.codeBlock(): CodeBlock {
     val argumentBuilder = CodeBlock.builder()
     argumentBuilder.add(
-        "new $T($T.$L.${'$'}N)",
+        "new $T($T.${L}__$L)",
         JavaClassNames.CompiledArgument,
         context.resolver.resolveSchemaType(parentType),
-        context.layout.className(parentField),
-        name.escapeJavaReservedWord(),
+        parentField,
+        name,
     )
     if (this.value != null) {
       argumentBuilder.add(".value($L)", value.codeBlock())

@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.java.schema
 
-import com.apollographql.apollo3.compiler.codegen.SchemaLayout
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -10,7 +9,6 @@ import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.typePackageName
-import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.ir.IrArgumentDefinition
 import com.apollographql.apollo3.compiler.ir.IrFieldDefinition
 import com.apollographql.apollo3.compiler.ir.IrObject
@@ -45,38 +43,26 @@ internal class ObjectBuilder(
         .addModifiers(Modifier.PUBLIC)
         .maybeAddDescription(description)
         .maybeAddDeprecation(deprecationReason)
-        .addTypes(fieldDefinitions.typeSpecs(layout))
+        .addFields(fieldDefinitions.fieldSpecs())
         .addField(typeFieldSpec(context.resolver))
         .build()
   }
 }
 
-internal fun List<IrFieldDefinition>.typeSpecs(layout: SchemaLayout) = mapNotNull { fieldDefinition ->
-  if (fieldDefinition.argumentDefinitions.isEmpty()) {
-    null
-  } else {
-    fieldDefinition.typeSpec(layout)
-  }
-}
-
-private fun IrFieldDefinition.typeSpec(layout: SchemaLayout): TypeSpec {
-  return TypeSpec
-      .interfaceBuilder(layout.className(name))
-      .addModifiers(Modifier.PUBLIC)
-      .addFields(
-          argumentDefinitions.map { argumentDefinition ->
-            FieldSpec.builder(
-                JavaClassNames.CompiledArgumentDefinition,
-                argumentDefinition.name.escapeJavaReservedWord(),
-                Modifier.PUBLIC,
-                Modifier.STATIC,
-                Modifier.FINAL,
-            )
-                .initializer(argumentDefinition.codeBlock())
-                .build()
-          }
+internal fun List<IrFieldDefinition>.fieldSpecs(): List<FieldSpec> {
+  return flatMap { fieldDefinition ->
+    fieldDefinition.argumentDefinitions.map { argumentDefinition ->
+      FieldSpec.builder(
+          JavaClassNames.CompiledArgumentDefinition,
+          "${fieldDefinition.name}__${argumentDefinition.name}",
+          Modifier.PUBLIC,
+          Modifier.STATIC,
+          Modifier.FINAL,
       )
-      .build()
+          .initializer(argumentDefinition.codeBlock())
+          .build()
+    }
+  }
 }
 
 private fun IrArgumentDefinition.codeBlock(): CodeBlock {
