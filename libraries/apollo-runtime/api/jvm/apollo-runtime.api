@@ -181,6 +181,7 @@ public abstract interface class com/apollographql/apollo3/network/NetworkTranspo
 }
 
 public final class com/apollographql/apollo3/network/OkHttpExtensionsKt {
+	public static final fun okHttpCallFactory (Lcom/apollographql/apollo3/ApolloClient$Builder;Lkotlin/jvm/functions/Function0;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun okHttpCallFactory (Lcom/apollographql/apollo3/ApolloClient$Builder;Lokhttp3/Call$Factory;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun okHttpCallFactory (Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;Lokhttp3/Call$Factory;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
 	public static final fun okHttpClient (Lcom/apollographql/apollo3/ApolloClient$Builder;Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo3/ApolloClient$Builder;
@@ -220,6 +221,7 @@ public final class com/apollographql/apollo3/network/http/BatchingHttpIntercepto
 public final class com/apollographql/apollo3/network/http/DefaultHttpEngine {
 	public static final fun DefaultHttpEngine (J)Lcom/apollographql/apollo3/network/http/HttpEngine;
 	public static final fun DefaultHttpEngine (JJ)Lcom/apollographql/apollo3/network/http/HttpEngine;
+	public static final fun DefaultHttpEngine (Lkotlin/jvm/functions/Function0;)Lcom/apollographql/apollo3/network/http/HttpEngine;
 	public static final fun DefaultHttpEngine (Lokhttp3/Call$Factory;)Lcom/apollographql/apollo3/network/http/HttpEngine;
 	public static final fun DefaultHttpEngine (Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo3/network/http/HttpEngine;
 	public static synthetic fun DefaultHttpEngine$default (JILjava/lang/Object;)Lcom/apollographql/apollo3/network/http/HttpEngine;
