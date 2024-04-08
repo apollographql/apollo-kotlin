@@ -26,16 +26,18 @@ actual fun DefaultHttpEngine(timeoutMillis: Long): HttpEngine = JvmHttpEngine(ti
 
 fun DefaultHttpEngine(httpCallFactory: Call.Factory): HttpEngine = JvmHttpEngine(httpCallFactory)
 
+fun DefaultHttpEngine(httpCallFactory: () -> Call.Factory): HttpEngine = JvmHttpEngine(httpCallFactory)
+
 fun DefaultHttpEngine(okHttpClient: OkHttpClient): HttpEngine = JvmHttpEngine(okHttpClient)
 
 fun DefaultHttpEngine(connectTimeoutMillis: Long, readTimeoutMillis: Long): HttpEngine = JvmHttpEngine(connectTimeoutMillis, readTimeoutMillis)
 
 private class JvmHttpEngine(
-    private val httpCallFactory: Call.Factory,
+    private val httpCallFactory: () -> Call.Factory,
 ) : HttpEngine {
+  private val callFactory by lazy { httpCallFactory() }
 
-  // an overload that takes an OkHttpClient for easier discovery
-  constructor(okHttpClient: OkHttpClient) : this(okHttpClient as Call.Factory)
+  constructor(httpCallFactory: Call.Factory) : this({ httpCallFactory })
 
   constructor(timeoutMillis: Long) : this(timeoutMillis, timeoutMillis)
 
@@ -47,7 +49,7 @@ private class JvmHttpEngine(
   )
 
   override suspend fun execute(request: HttpRequest): HttpResponse {
-    return httpCallFactory.execute(request.toOkHttpRequest()).toApolloHttpResponse()
+    return callFactory.execute(request.toOkHttpRequest()).toApolloHttpResponse()
   }
 
   override fun close() {

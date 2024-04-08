@@ -29,6 +29,13 @@ fun ApolloClient.Builder.okHttpCallFactory(callFactory: Call.Factory) = apply {
 }
 
 /**
+ * Configures the [ApolloClient] to use the lazily initialized [callFactory] for network requests.
+ */
+fun ApolloClient.Builder.okHttpCallFactory(callFactory: () -> Call.Factory) = apply {
+  httpEngine(DefaultHttpEngine(callFactory))
+}
+
+/**
  * Configures the [HttpNetworkTransport] to use the [DefaultHttpEngine] for network requests.
  */
 fun HttpNetworkTransport.Builder.okHttpClient(okHttpClient: OkHttpClient) = apply {
