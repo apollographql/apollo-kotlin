@@ -1,0 +1,20 @@
+type Query {
+  users(usersInput: UsersInput!): UserPage!
+}
+
+input UsersInput {
+  sessionId: ID!
+  offset: Int = 0
+  limit: Int = 10
+}
+
+type UserPage {
+  users: [User!]!
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  admin: Boolean
+}

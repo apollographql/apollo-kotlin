@@ -18,6 +18,7 @@ import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.flow.toList
 import pagination.cursorBased.UsersQuery
+import pagination.cursorBased.type.buildPageInfo
 import pagination.cursorBased.type.buildUser
 import pagination.cursorBased.type.buildUserConnection
 import pagination.cursorBased.type.buildUserEdge
@@ -60,6 +61,10 @@ class CursorBasedPaginationTest {
     val query1 = UsersQuery(first = Optional.Present(2))
     val data1 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx42"
+          endCursor = "xx43"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"
@@ -85,6 +90,10 @@ class CursorBasedPaginationTest {
     val query2 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx43"))
     val data2 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx44"
+          endCursor = "xx45"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx44"
@@ -105,6 +114,10 @@ class CursorBasedPaginationTest {
     dataFromStore = apolloStore.readOperation(query1)
     var expectedData = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx42"
+          endCursor = "xx45"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"
@@ -140,6 +153,10 @@ class CursorBasedPaginationTest {
     val query3 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx45"))
     val data3 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx46"
+          endCursor = "xx47"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx46"
@@ -160,6 +177,10 @@ class CursorBasedPaginationTest {
     dataFromStore = apolloStore.readOperation(query1)
     expectedData = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx42"
+          endCursor = "xx47"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"
@@ -207,6 +228,10 @@ class CursorBasedPaginationTest {
     val query4 = UsersQuery(last = Optional.Present(2), before = Optional.Present("xx42"))
     val data4 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx40"
+          endCursor = "xx41"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx40"
@@ -227,6 +252,10 @@ class CursorBasedPaginationTest {
     dataFromStore = apolloStore.readOperation(query1)
     expectedData = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx40"
+          endCursor = "xx47"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx40"
@@ -286,6 +315,10 @@ class CursorBasedPaginationTest {
     val query5 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx50"))
     val data5 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx50"
+          endCursor = "xx51"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx50"
@@ -311,6 +344,10 @@ class CursorBasedPaginationTest {
     val query6 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx51"))
     val data6 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = null
+          endCursor = null
+        }
         edges = emptyList()
       }
     }
@@ -337,6 +374,10 @@ class CursorBasedPaginationTest {
     val query1 = UsersQuery(first = Optional.Present(2))
     val data1 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx42"
+          endCursor = "xx43"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"
@@ -364,6 +405,10 @@ class CursorBasedPaginationTest {
     val query2 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx43"))
     val data2 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx44"
+          endCursor = "xx45"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx44"
@@ -391,6 +436,10 @@ class CursorBasedPaginationTest {
     val query3 = UsersQuery(first = Optional.Present(2), after = Optional.Present("xx45"))
     val data3 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx46"
+          endCursor = "xx47"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx46"
@@ -412,6 +461,10 @@ class CursorBasedPaginationTest {
     // Cache: data1 merged with data2
     val data1MergedWith2 = UsersQuery.Data {
       users = buildUserConnection {
+        pageInfo = buildPageInfo {
+          startCursor = "xx42"
+          endCursor = "xx45"
+        }
         edges = listOf(
             buildUserEdge {
               cursor = "xx42"

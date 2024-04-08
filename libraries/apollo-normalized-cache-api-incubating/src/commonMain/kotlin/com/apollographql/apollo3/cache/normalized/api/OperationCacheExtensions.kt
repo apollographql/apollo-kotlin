@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.api
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -11,71 +10,42 @@ import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.normalized.api.internal.CacheBatchReader
 import com.apollographql.apollo3.cache.normalized.api.internal.Normalizer
+import kotlin.jvm.JvmOverloads
 
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
     cacheKeyGenerator: CacheKeyGenerator,
-) = normalize(data, customScalarAdapters, cacheKeyGenerator, EmptyMetadataGenerator, CacheKey.rootKey().key)
+    metadataGenerator: MetadataGenerator = EmptyMetadataGenerator,
+    fieldNameGenerator: FieldNameGenerator = DefaultFieldNameGenerator,
+    embeddedFieldsProvider: EmbeddedFieldsProvider = DefaultEmbeddedFieldsProvider,
+) = normalize(data, customScalarAdapters, cacheKeyGenerator, metadataGenerator, fieldNameGenerator, embeddedFieldsProvider, CacheKey.rootKey().key)
 
-@ApolloExperimental
-fun <D : Operation.Data> Operation<D>.normalize(
-    data: D,
-    customScalarAdapters: CustomScalarAdapters,
-    cacheKeyGenerator: CacheKeyGenerator,
-    metadataGenerator: MetadataGenerator,
-) = normalize(data, customScalarAdapters, cacheKeyGenerator, metadataGenerator, CacheKey.rootKey().key)
-
-
-@Suppress("UNCHECKED_CAST")
 fun <D : Executable.Data> Executable<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
     cacheKeyGenerator: CacheKeyGenerator,
-    rootKey: String,
-): Map<String, Record> {
-  val writer = MapJsonWriter()
-  adapter().toJson(writer, customScalarAdapters, data)
-  val variables = variables(customScalarAdapters, true)
-  return Normalizer(variables, rootKey, cacheKeyGenerator, EmptyMetadataGenerator)
-      .normalize(writer.root() as Map<String, Any?>, rootField().selections, rootField().type.rawType())
-}
-
-@ApolloExperimental
-@Suppress("UNCHECKED_CAST")
-fun <D : Executable.Data> Executable<D>.normalize(
-    data: D,
-    customScalarAdapters: CustomScalarAdapters,
-    cacheKeyGenerator: CacheKeyGenerator,
-    metadataGenerator: MetadataGenerator,
+    metadataGenerator: MetadataGenerator = EmptyMetadataGenerator,
+    fieldNameGenerator: FieldNameGenerator = DefaultFieldNameGenerator,
+    embeddedFieldsProvider: EmbeddedFieldsProvider = DefaultEmbeddedFieldsProvider,
     rootKey: String,
 ): Map<String, Record> {
   val writer = MapJsonWriter()
   adapter().toJson(writer, customScalarAdapters, data)
   val variables = variables(customScalarAdapters)
-  return Normalizer(variables, rootKey, cacheKeyGenerator, metadataGenerator)
+  @Suppress("UNCHECKED_CAST")
+  return Normalizer(variables, rootKey, cacheKeyGenerator, metadataGenerator, fieldNameGenerator, embeddedFieldsProvider)
       .normalize(writer.root() as Map<String, Any?>, rootField().selections, rootField().type.rawType())
 }
 
-fun <D : Executable.Data> Executable<D>.readDataFromCache(
-    customScalarAdapters: CustomScalarAdapters,
-    cache: ReadOnlyNormalizedCache,
-    cacheResolver: CacheResolver,
-    cacheHeaders: CacheHeaders,
-): D = readDataFromCache(
-    cacheKey = CacheKey.rootKey(),
-    customScalarAdapters = customScalarAdapters,
-    cache = cache,
-    cacheResolver = cacheResolver,
-    cacheHeaders = cacheHeaders,
-)
-
+@JvmOverloads
 fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cacheKey: CacheKey,
     customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
     cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
+    fieldNameGenerator: FieldNameGenerator = DefaultFieldNameGenerator,
 ): D {
   val variables = variables(customScalarAdapters, true)
   return readInternal(
@@ -83,16 +53,19 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
       cache = cache,
       cacheResolver = cacheResolver,
       cacheHeaders = cacheHeaders,
-      variables = variables
+      variables = variables,
+      fieldNameGenerator = fieldNameGenerator,
   ).toData(adapter(), customScalarAdapters, variables)
 }
 
+@JvmOverloads
 fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cacheKey: CacheKey,
     customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
     cacheResolver: ApolloResolver,
     cacheHeaders: CacheHeaders,
+    fieldNameGenerator: FieldNameGenerator = DefaultFieldNameGenerator,
 ): D {
   val variables = variables(customScalarAdapters, true)
   return readInternal(
@@ -100,7 +73,8 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
       cache = cache,
       cacheResolver = cacheResolver,
       cacheHeaders = cacheHeaders,
-      variables = variables
+      variables = variables,
+      fieldNameGenerator = fieldNameGenerator,
   ).toData(adapter(), customScalarAdapters, variables)
 }
 
@@ -111,12 +85,14 @@ fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
     cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
     variables: Executable.Variables,
+    fieldNameGenerator: FieldNameGenerator,
 ): CacheData = readInternal(
     cacheKey = cacheKey,
     cache = cache,
     cacheResolver = cacheResolver,
     cacheHeaders = cacheHeaders,
     variables = variables,
+    fieldNameGenerator = fieldNameGenerator,
 )
 
 @ApolloInternal
@@ -126,12 +102,14 @@ fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
     cacheResolver: ApolloResolver,
     cacheHeaders: CacheHeaders,
     variables: Executable.Variables,
+    fieldNameGenerator: FieldNameGenerator,
 ): CacheData = readInternal(
     cacheKey = cacheKey,
     cache = cache,
     cacheResolver = cacheResolver,
     cacheHeaders = cacheHeaders,
-    variables
+    variables = variables,
+    fieldNameGenerator = fieldNameGenerator,
 )
 
 
@@ -141,6 +119,7 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
     cacheResolver: Any,
     cacheHeaders: CacheHeaders,
     variables: Executable.Variables,
+    fieldNameGenerator: FieldNameGenerator,
 ): CacheData {
   return CacheBatchReader(
       cache = cache,
@@ -149,7 +128,8 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
       variables = variables,
       rootKey = cacheKey.key,
       rootSelections = rootField().selections,
-      rootTypename = rootField().type.rawType().name
+      rootTypename = rootField().type.rawType().name,
+      fieldNameGenerator = fieldNameGenerator,
   ).collectData()
 }
 

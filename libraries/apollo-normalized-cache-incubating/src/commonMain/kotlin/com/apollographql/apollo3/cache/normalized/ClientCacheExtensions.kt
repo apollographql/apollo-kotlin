@@ -20,6 +20,13 @@ import com.apollographql.apollo3.cache.normalized.api.ApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.api.DefaultEmbeddedFieldsProvider
+import com.apollographql.apollo3.cache.normalized.api.DefaultFieldNameGenerator
+import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
+import com.apollographql.apollo3.cache.normalized.api.EmbeddedFieldsProvider
+import com.apollographql.apollo3.cache.normalized.api.EmptyMetadataGenerator
+import com.apollographql.apollo3.cache.normalized.api.FieldNameGenerator
+import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
@@ -115,10 +122,12 @@ fun ApolloClient.Builder.normalizedCache(
 @JvmName("configureApolloClientBuilder2")
 fun ApolloClient.Builder.normalizedCache(
     normalizedCacheFactory: NormalizedCacheFactory,
-    cacheKeyGenerator: CacheKeyGenerator,
-    metadataGenerator: MetadataGenerator,
-    apolloResolver: ApolloResolver,
-    recordMerger: RecordMerger,
+    cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,
+    metadataGenerator: MetadataGenerator = EmptyMetadataGenerator,
+    apolloResolver: ApolloResolver = FieldPolicyApolloResolver,
+    recordMerger: RecordMerger = DefaultRecordMerger,
+    fieldNameGenerator: FieldNameGenerator = DefaultFieldNameGenerator,
+    embeddedFieldsProvider: EmbeddedFieldsProvider = DefaultEmbeddedFieldsProvider,
     writeToCacheAsynchronously: Boolean = false,
 ): ApolloClient.Builder {
   return store(
@@ -127,7 +136,9 @@ fun ApolloClient.Builder.normalizedCache(
           cacheKeyGenerator = cacheKeyGenerator,
           metadataGenerator = metadataGenerator,
           apolloResolver = apolloResolver,
-          recordMerger = recordMerger
+          recordMerger = recordMerger,
+          fieldNameGenerator = fieldNameGenerator,
+          embeddedFieldsProvider = embeddedFieldsProvider
       ), writeToCacheAsynchronously)
 }
 

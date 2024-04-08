@@ -9,8 +9,13 @@ import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.api.DefaultEmbeddedFieldsProvider
+import com.apollographql.apollo3.cache.normalized.api.DefaultFieldNameGenerator
 import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
+import com.apollographql.apollo3.cache.normalized.api.EmbeddedFieldsProvider
 import com.apollographql.apollo3.cache.normalized.api.EmptyMetadataGenerator
+import com.apollographql.apollo3.cache.normalized.api.FieldNameGenerator
+import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
@@ -207,20 +212,26 @@ fun ApolloStore(
     cacheKeyGenerator = cacheKeyGenerator,
     metadataGenerator = EmptyMetadataGenerator,
     cacheResolver = cacheResolver,
-    recordMerger = DefaultRecordMerger
+    recordMerger = DefaultRecordMerger,
+    fieldNameGenerator = DefaultFieldNameGenerator,
+    embeddedFieldsProvider = DefaultEmbeddedFieldsProvider,
 )
 
 @ApolloExperimental
 fun ApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
-    cacheKeyGenerator: CacheKeyGenerator,
-    metadataGenerator: MetadataGenerator,
-    apolloResolver: ApolloResolver,
+    cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,
+    metadataGenerator: MetadataGenerator = EmptyMetadataGenerator,
+    apolloResolver: ApolloResolver = FieldPolicyApolloResolver,
     recordMerger: RecordMerger = DefaultRecordMerger,
+    fieldNameGenerator: FieldNameGenerator = DefaultFieldNameGenerator,
+    embeddedFieldsProvider: EmbeddedFieldsProvider = DefaultEmbeddedFieldsProvider,
 ): ApolloStore = DefaultApolloStore(
     normalizedCacheFactory = normalizedCacheFactory,
     cacheKeyGenerator = cacheKeyGenerator,
     metadataGenerator = metadataGenerator,
     cacheResolver = apolloResolver,
-    recordMerger = recordMerger
+    recordMerger = recordMerger,
+    fieldNameGenerator = fieldNameGenerator,
+    embeddedFieldsProvider = embeddedFieldsProvider,
 )

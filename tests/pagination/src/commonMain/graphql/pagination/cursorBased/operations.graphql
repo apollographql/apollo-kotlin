@@ -1,5 +1,9 @@
 query Users($first: Int, $after: String, $last: Int, $before: String) {
   users(first: $first, after: $after, last: $last, before: $before) {
+    pageInfo {
+      startCursor
+      endCursor
+    }
     edges {
       cursor
       node {
