@@ -3,6 +3,7 @@ package com.apollographql.apollo3.network.websocket
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.network.websocket.WebSocket
+import com.apollographql.apollo3.network.websocket.WebSocketEngine
 import com.apollographql.apollo3.network.websocket.WebSocketListener
 import okhttp3.Headers
 import okhttp3.OkHttpClient
@@ -10,8 +11,6 @@ import okhttp3.Request
 import okhttp3.Response
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
-import com.apollographql.apollo3.network.websocket.JvmWebSocket
-import com.apollographql.apollo3.network.websocket.JvmWebSocketEngine
 import java.util.concurrent.atomic.AtomicBoolean
 import okhttp3.WebSocket as PlatformWebSocket
 import okhttp3.WebSocketListener as PlatformWebSocketListener
