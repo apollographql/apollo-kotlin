@@ -11,6 +11,10 @@ import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.isAbstract
 import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.rootTypeDefinition
+import com.apollographql.apollo3.compiler.ADD_TYPENAME_ALWAYS
+import com.apollographql.apollo3.compiler.ADD_TYPENAME_IF_ABSTRACT
+import com.apollographql.apollo3.compiler.ADD_TYPENAME_IF_FRAGMENTS
+import com.apollographql.apollo3.compiler.ADD_TYPENAME_IF_POLYMORPHIC
 
 internal fun addRequiredFields(
     operation: GQLOperationDefinition,
@@ -76,12 +80,12 @@ private fun List<GQLSelection>.addRequiredFields(
   val selectionSet = this
 
   val requiresTypename = when(addTypename) {
-    "ifPolymorphic" -> isRoot && isPolymorphic(schema, fragments, parentType)
-    "ifFragments" -> {
+    ADD_TYPENAME_IF_POLYMORPHIC -> isRoot && isPolymorphic(schema, fragments, parentType)
+    ADD_TYPENAME_IF_FRAGMENTS -> {
       selectionSet.any { it is GQLFragmentSpread || it is GQLInlineFragment }
     }
-    "ifAbstract" -> isRoot && schema.typeDefinition(parentType).isAbstract()
-    "always" -> isRoot
+    ADD_TYPENAME_IF_ABSTRACT -> isRoot && schema.typeDefinition(parentType).isAbstract()
+    ADD_TYPENAME_ALWAYS -> isRoot
     else -> error("Unknown addTypename option: $addTypename")
   }
   val requiredFieldNames = schema.keyFields(parentType).toMutableSet()
