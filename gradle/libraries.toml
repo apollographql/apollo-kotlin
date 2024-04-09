@@ -80,7 +80,6 @@ apollo-normalizedcache-sqlite-incubating = { group = "com.apollographql.apollo3"
 apollo-rx2-support-java = { group = "com.apollographql.apollo3", name = "apollo-rx2-support-java", version.ref = "apollo" }
 apollo-plugin = { group = "com.apollographql.apollo3", name = "apollo-gradle-plugin", version.ref = "apollo" }
 apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
-apollo-websocket-network-transport-incubating = { group = "com.apollographql.apollo3", name = "apollo-websocket-network-transport-incubating", version.ref = "apollo" }
 apollo-compiler = { group = "com.apollographql.apollo3", name = "apollo-compiler", version.ref = "apollo" }
 apollo-execution = { group = "com.apollographql.apollo3", name = "apollo-execution-incubating", version.ref = "apollo" }
 # Used by the apollo-tooling project which uses a published version of Apollo
