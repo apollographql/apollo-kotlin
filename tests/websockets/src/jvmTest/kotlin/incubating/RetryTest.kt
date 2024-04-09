@@ -7,8 +7,8 @@ import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.mockserver.MockResponse
-import com.apollographql.apollo3.network.ws.incubating.SubscriptionWsProtocol
-import com.apollographql.apollo3.network.ws.incubating.WebSocketNetworkTransport
+import com.apollographql.apollo3.network.websocket.SubscriptionWsProtocol
+import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.mockServerTest
 import org.junit.Assert.assertEquals

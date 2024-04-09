@@ -3,8 +3,8 @@ package incubating
 import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.SubscriptionOperationException
-import com.apollographql.apollo3.network.ws.incubating.SubscriptionWsProtocol
-import com.apollographql.apollo3.network.ws.incubating.WebSocketNetworkTransport
+import com.apollographql.apollo3.network.websocket.SubscriptionWsProtocol
+import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay

@@ -1,26 +1,22 @@
-package com.apollographql.apollo3.network.ws.incubating
+package com.apollographql.apollo3.network.websocket
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
-import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
 import okio.Buffer
 
 /**
- * A [WsProtocol] for https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md
+ * An [WsProtocol] for https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md
  *
- * Note: This protocol is no longer actively maintained, and [GraphQLWsProtocol] should be favored instead.
+ * [GraphQLWsProtocol] can execute queries and mutations in addition to subscriptions
  */
-@Deprecated("Migrate your server to GraphQLWsProtocol instead")
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-class SubscriptionWsProtocol(
+class GraphQLWsProtocol(
     val connectionParams: suspend () -> Any? = { null },
 ) : WsProtocol {
   override val name: String
-    get() = "graphql-ws"
+    get() = "graphql-transport-ws"
 
   override suspend fun connectionInit(): ClientMessage {
     val map = mutableMapOf<String, Any?>()
@@ -35,25 +31,25 @@ class SubscriptionWsProtocol(
 
   override suspend fun <D : Operation.Data> operationStart(request: ApolloRequest<D>): ClientMessage {
     return mapOf(
+        "type" to "subscribe",
         "id" to request.requestUuid.toString(),
-        "type" to "start",
         "payload" to DefaultHttpRequestComposer.composePayload(request)
     ).toClientMessage()
   }
 
   override fun <D : Operation.Data> operationStop(request: ApolloRequest<D>): ClientMessage {
     return mapOf(
-        "type" to "stop",
+        "type" to "complete",
         "id" to request.requestUuid.toString(),
     ).toClientMessage()
   }
 
-  override fun ping(): ClientMessage? {
-    return null
+  override fun ping(): ClientMessage {
+    return mapOf("type" to "ping").toClientMessage()
   }
 
-  override fun pong(): ClientMessage? {
-    return null
+  override fun pong(): ClientMessage {
+    return mapOf("type" to "pong").toClientMessage()
   }
 
   override fun parseServerMessage(text: String): ServerMessage {
@@ -71,17 +67,15 @@ class SubscriptionWsProtocol(
 
     return when (type) {
       "connection_ack" -> ConnectionAckServerMessage
-      "connection_error" -> ConnectionErrorServerMessage(map["payload"])
-      "data", "complete", "error" -> {
+      "ping" -> PingServerMessage
+      "pong" -> PongServerMessage
+      "next", "complete", "error" -> {
         val id = map["id"] as? String
         when {
           id == null -> ParseErrorServerMessage("No 'id' found in message: '$text'")
-          type == "data" -> ResponseServerMessage(id, map["payload"], false)
+          type == "next" -> ResponseServerMessage(id, map["payload"], false)
           type == "complete" -> CompleteServerMessage(id)
-          /**
-           * "error" is followed by "complete" but we send the terminal [OperationErrorServerMessage] right away
-           */
-          type == "error" -> OperationErrorServerMessage(id, map["payload"], true)
+          type == "error" -> ResponseServerMessage(id, mapOf("errors" to map["payload"]), true)
           else -> error("") // make the compiler happy
         }
       }
@@ -90,4 +84,3 @@ class SubscriptionWsProtocol(
     }
   }
 }
-

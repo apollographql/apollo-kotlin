@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.network.ws.incubating
+package com.apollographql.apollo3.network.websocket
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
@@ -15,8 +15,8 @@ import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.exception.SubscriptionOperationException
 import com.apollographql.apollo3.internal.DeferredJsonMerger
 import com.apollographql.apollo3.network.NetworkTransport
-import com.apollographql.apollo3.network.ws.incubating.internal.OperationListener
-import com.apollographql.apollo3.network.ws.incubating.internal.WebSocketHolder
+import com.apollographql.apollo3.network.websocket.internal.OperationListener
+import com.apollographql.apollo3.network.websocket.internal.WebSocketHolder
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ProducerScope

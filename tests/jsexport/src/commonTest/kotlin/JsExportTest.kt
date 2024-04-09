@@ -12,9 +12,9 @@ import com.apollographql.apollo3.mockserver.TextMessage
 import com.apollographql.apollo3.mockserver.WebSocketMessage
 import com.apollographql.apollo3.mockserver.awaitWebSocketRequest
 import com.apollographql.apollo3.mockserver.enqueueWebSocket
-import com.apollographql.apollo3.network.ws.incubating.SubscriptionParserFactory
-import com.apollographql.apollo3.network.ws.incubating.WebSocketNetworkTransport
-import com.apollographql.apollo3.network.ws.incubating.WsProtocol
+import com.apollographql.apollo3.network.websocket.SubscriptionParserFactory
+import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
+import com.apollographql.apollo3.network.websocket.WsProtocol
 import com.apollographql.apollo3.testing.internal.runTest
 import jsexport.EventSubscription
 import jsexport.GetAnimalQuery

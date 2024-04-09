@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.network.ws.incubating.internal
+package com.apollographql.apollo3.network.websocket.internal
 
 import com.apollographql.apollo3.api.json.ApolloJsonElement
 import com.apollographql.apollo3.exception.ApolloException
