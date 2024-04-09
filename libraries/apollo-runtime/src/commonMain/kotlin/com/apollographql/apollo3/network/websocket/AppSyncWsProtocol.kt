@@ -98,6 +98,7 @@ class AppSyncWsProtocol(
     }
   }
 
+  @ApolloExperimental
   companion object {
     /**
      * Helper method that builds the final URL. It will append the authorization and payload arguments as query parameters.

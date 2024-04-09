@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.callbackFlow
  *
  * @see [WebSocketNetworkTransport.Builder]
  */
+@ApolloExperimental
 class WebSocketNetworkTransport private constructor(
     private val webSocketEngine: WebSocketEngine,
     private val serverUrl: String,
@@ -104,6 +105,7 @@ class WebSocketNetworkTransport private constructor(
     holder.closeCurrentConnection(reason)
   }
 
+  @ApolloExperimental
   class Builder {
     private var serverUrl: String? = null
     private var httpHeaders: List<HttpHeader>? = null

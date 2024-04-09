@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network.websocket
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
@@ -12,6 +13,7 @@ import okio.Buffer
  *
  * [GraphQLWsProtocol] can execute queries and mutations in addition to subscriptions
  */
+@ApolloExperimental
 class GraphQLWsProtocol(
     val connectionParams: suspend () -> Any? = { null },
 ) : WsProtocol {
