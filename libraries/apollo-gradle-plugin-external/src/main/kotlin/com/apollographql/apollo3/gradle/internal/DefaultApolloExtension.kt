@@ -310,6 +310,41 @@ abstract class DefaultApolloExtension(
     }
   }
 
+  /**
+   * Registers the `checkVersions` task.
+   *
+   * `checkVersions` ensures that all declared versions in a build are the same (plugins, direct dependencies but not transitive dependencies).
+   * The main goal is to make sure that the generated code matches the `apollo-api` version as we historically do not provide compatibility guarantees.
+   *
+   * This code has some shortcomings:
+   * 1. it is too restrictive. Most of the time, codegen x is compatible with runtime y as long as y >= x and the same major version.
+   * 2. it doesn't work with transitive dependencies. This is fine because Gradle by default uses the greatest version and because of 1. it works most of the time.
+   * 3. it's a global check and there _could_ be scenarios where this is not desirable.
+   *
+   * All of this makes this check ill-defined, but it hasn't been too much of an issue so far, and it's a net gain to catch the plugin/runtime discrepancies that have happened in the past.
+   *
+   * If you're reading this because there has been an issue, there are several mitigations:
+   *
+   * ## Disabling the task
+   *
+   * This is the most immediate and easy solution:
+   *
+   * ```kotlin
+   * tasks.named("checkApolloVersions").configure {enabled = false}
+   * ```
+   * ## runtime check
+   *
+   * More involved but more correct, check at runtime that the versions match. Requires adding the codegen version in generated sources:
+   *
+   * - a new field in [com.apollographql.apollo3.api.Operation].
+   * - or binding an [com.apollographql.apollo3.ApolloClient] to a given schema (could be useful for other purposes as well such as schema testing).
+   *
+   * ## automatically add the `apollo-api` dependency
+   *
+   * That would have the effect of making sure a compatible `apollo-api` is in the classpath. But won't help if `apollo-runtime` is wrong.
+   *
+   * All in all, the current solution works but if it becomes an issue, do not hesitate to revisit it.
+   */
   // Gradle will consider the task never UP-TO-DATE if we pass a lambda to doLast()
   @Suppress("ObjectLiteralToLambda")
   private fun registerCheckVersionsTask(): TaskProvider<Task> {
