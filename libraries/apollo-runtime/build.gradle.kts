@@ -66,6 +66,14 @@ kotlin {
         implementation(libs.ktor.client.js.get().toString()) {
           because("We use in the ktor client in DefaultWebSocketEngine")
         }
+        /**
+         * Kotlin Node declarations
+         *
+         * The situation is a bit weird because jsMain has both browser and node dependencies but
+         * there is not much we can do about it
+         * See https://youtrack.jetbrains.com/issue/KT-47038
+         */
+        implementation(libs.kotlin.node)
       }
     }
 
