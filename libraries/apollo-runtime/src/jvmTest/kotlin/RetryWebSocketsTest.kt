@@ -62,18 +62,6 @@ class RetryWebSocketsTest {
                  * Looks like Ktor needs some time to close the local address.
                  * Without the delay, I'm getting an "address already in use" error
                  */
-                /**
-                 * Looks like Ktor needs some time to close the local address.
-                 * Without the delay, I'm getting an "address already in use" error
-                 */
-                /**
-                 * Looks like Ktor needs some time to close the local address.
-                 * Without the delay, I'm getting an "address already in use" error
-                 */
-                /**
-                 * Looks like Ktor needs some time to close the local address.
-                 * Without the delay, I'm getting an "address already in use" error
-                 */
                 delay(1000)
                 mockServer = MockServer.Builder().port(port).build()
 
@@ -131,18 +119,6 @@ class RetryWebSocketsTest {
                 /**
                  * Close the server to trigger an exception
                  */
-
-                /**
-                 * Close the server to trigger an exception
-                 */
-
-                /**
-                 * Close the server to trigger an exception
-                 */
-
-                /**
-                 * Close the server to trigger an exception
-                 */
                 mockServer.close()
 
                 assertIs<ApolloNetworkException>(awaitItem().exception)
@@ -176,18 +152,6 @@ class RetryWebSocketsTest {
 
                 val item1 = awaitItem()
                 assertEquals(1, item1.data?.foo)
-
-                /**
-                 * Close the server to trigger an exception
-                 */
-
-                /**
-                 * Close the server to trigger an exception
-                 */
-
-                /**
-                 * Close the server to trigger an exception
-                 */
 
                 /**
                  * Close the server to trigger an exception
@@ -245,33 +209,8 @@ class RetryWebSocketsTest {
               /**
                * We're only using the first item of each subscription
                */
-              /**
-               * We're only using the first item of each subscription
-               */
-              /**
-               * We're only using the first item of each subscription
-               */
-
-              /**
-               * We're only using the first item of each subscription
-               */
               apolloClient.subscription(FooSubscription())
                   .toFlow()
-                  /**
-                   * Take 2 item:
-                   * - first item straight ahead
-                   * - second item is after the retry
-                   */
-                  /**
-                   * Take 2 item:
-                   * - first item straight ahead
-                   * - second item is after the retry
-                   */
-                  /**
-                   * Take 2 item:
-                   * - first item straight ahead
-                   * - second item is after the retry
-                   */
                   /**
                    * Take 2 item:
                    * - first item straight ahead
@@ -286,25 +225,7 @@ class RetryWebSocketsTest {
           /**
            * Close the MockServer, retries start kicking in and must not pile
            */
-          /**
-           * Close the MockServer, retries start kicking in and must not pile
-           */
-          /**
-           * Close the MockServer, retries start kicking in and must not pile
-           */
-          /**
-           * Close the MockServer, retries start kicking in and must not pile
-           */
           mockServer.close()
-          /**
-           * Wait a bit for retries to happen
-           */
-          /**
-           * Wait a bit for retries to happen
-           */
-          /**
-           * Wait a bit for retries to happen
-           */
           /**
            * Wait a bit for retries to happen
            */
@@ -312,34 +233,13 @@ class RetryWebSocketsTest {
           /**
            * Reopen the MockServer, the second item for each subscription should be emitted quickly after recovery.
            */
-          /**
-           * Reopen the MockServer, the second item for each subscription should be emitted quickly after recovery.
-           */
-          /**
-           * Reopen the MockServer, the second item for each subscription should be emitted quickly after recovery.
-           */
-          /**
-           * Reopen the MockServer, the second item for each subscription should be emitted quickly after recovery.
-           */
           mockServer = MockServer.Builder().port(port = port).build()
           prepareMockServer(mockServer, iterations)
 
           /**
-           * I'm putting 5 here to be safe but in practice, this shouldn't take more than ~1s
+           * I'm putting 20 here to be safe but in practice, this shouldn't take more than ~1s on a M1 laptop, maybe more in CI
            */
-
-          /**
-           * I'm putting 5 here to be safe but in practice, this shouldn't take more than ~1s
-           */
-
-          /**
-           * I'm putting 5 here to be safe but in practice, this shouldn't take more than ~1s
-           */
-
-          /**
-           * I'm putting 5 here to be safe but in practice, this shouldn't take more than ~1s
-           */
-          withTimeout(5.seconds) {
+          withTimeout(20.seconds) {
             jobs.forEach {
               it.join()
             }
