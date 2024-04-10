@@ -7,23 +7,11 @@ public final class com/apollographql/apollo3/testing/-FileSystemCommon {
 public final class com/apollographql/apollo3/testing/ChannelsKt {
 }
 
-public final class com/apollographql/apollo3/testing/FooQuery : com/apollographql/apollo3/api/Query {
-	public static final field Companion Lcom/apollographql/apollo3/testing/FooQuery$Companion;
-	public fun <init> ()V
-	public fun adapter ()Lcom/apollographql/apollo3/api/Adapter;
-	public fun document ()Ljava/lang/String;
-	public fun getIgnoreErrors ()Z
-	public fun id ()Ljava/lang/String;
-	public fun name ()Ljava/lang/String;
-	public fun rootField ()Lcom/apollographql/apollo3/api/CompiledField;
-	public fun serializeVariables (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Z)V
-}
-
-public final class com/apollographql/apollo3/testing/FooQuery$Companion {
+public final class com/apollographql/apollo3/testing/FooOperation$Companion {
 	public final fun getSuccessResponse ()Ljava/lang/String;
 }
 
-public final class com/apollographql/apollo3/testing/FooQuery$Data : com/apollographql/apollo3/api/Query$Data {
+public final class com/apollographql/apollo3/testing/FooOperation$Data : com/apollographql/apollo3/api/Query$Data, com/apollographql/apollo3/api/Subscription$Data {
 	public fun <init> (I)V
 	public final fun getFoo ()I
 }

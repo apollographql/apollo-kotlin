@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.testing
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -16,6 +17,7 @@ import com.apollographql.apollo3.api.missingField
  *
  * Use it to test parts of the runtime without having to use included builds.
  */
+@ApolloExperimental
 class FooQuery: FooOperation(), Query<FooOperation.Data>
 
 /**
@@ -23,12 +25,14 @@ class FooQuery: FooOperation(), Query<FooOperation.Data>
  *
  * Use it to test parts of the runtime without having to use included builds.
  */
+@ApolloExperimental
 class FooSubscription: FooOperation(), Subscription<FooOperation.Data>
 
 /**
  * Base class for test queries.
  * Note we can't make [FooOperation] extend both [Query] and [Subscription] because that confuses [ApolloClient] when deciding whant NetworkTransport to use.
  */
+@ApolloExperimental
 abstract class FooOperation: Operation<FooOperation.Data> {
   class Data(val foo: Int): Query.Data, Subscription.Data
 
