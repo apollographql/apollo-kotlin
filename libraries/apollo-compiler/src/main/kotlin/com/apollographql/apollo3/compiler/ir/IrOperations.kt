@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.ir
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLType
+import com.apollographql.apollo3.compiler.UsedCoordinates
 import com.apollographql.apollo3.compiler.internal.BooleanExpressionSerializer
 import com.apollographql.apollo3.compiler.internal.GQLFragmentDefinitionSerializer
 import com.apollographql.apollo3.compiler.internal.GQLTypeSerializer
@@ -33,7 +34,7 @@ import kotlinx.serialization.json.Json
 data class IrOperations(
     val operations: List<IrOperation>,
     val fragments: List<IrFragmentDefinition>,
-    val usedFields: Map<String, Set<String>>,
+    val usedCoordinates: UsedCoordinates,
 
     val flattenModels: Boolean,
     val decapitalizeFields: Boolean,

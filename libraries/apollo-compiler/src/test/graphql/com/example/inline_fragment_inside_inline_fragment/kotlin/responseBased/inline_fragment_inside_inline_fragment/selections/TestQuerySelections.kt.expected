@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.inline_fragment_inside_inline_fragment.type.GraphQLString
+import com.example.inline_fragment_inside_inline_fragment.type.Query
 import com.example.inline_fragment_inside_inline_fragment.type.SearchResult
 import kotlin.collections.List
 
@@ -68,7 +69,7 @@ public object TestQuerySelections {
           name = "search",
           type = SearchResult.type.list()
         ).arguments(listOf(
-          CompiledArgument.Builder("text").value("bla-bla").build()
+          CompiledArgument.Builder(Query.search__text).value("bla-bla").build()
         ))
         .selections(__search)
         .build()

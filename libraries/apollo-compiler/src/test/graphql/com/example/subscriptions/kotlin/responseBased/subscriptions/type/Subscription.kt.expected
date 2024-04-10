@@ -5,10 +5,14 @@
 //
 package com.example.subscriptions.type
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition
 import com.apollographql.apollo3.api.ObjectType
 
 public class Subscription {
   public companion object {
+    public val commentAdded__repoFullName: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("repoFullName").build()
+
     public val type: ObjectType = ObjectType.Builder(name = "Subscription").build()
   }
 }

@@ -5,7 +5,6 @@
 //
 package com.example.inline_fragments_with_friends.selections;
 
-import com.apollographql.apollo3.api.CompiledArgument;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledFragment;
 import com.apollographql.apollo3.api.CompiledListType;
@@ -25,7 +24,7 @@ public class TestQuerySelections {
   );
 
   private static List<CompiledSelection> __onHuman = Arrays.asList(
-    new CompiledField.Builder("height", GraphQLFloat.type).arguments(Arrays.asList(new CompiledArgument.Builder("unit").value("METER").build())).build(),
+    new CompiledField.Builder("height", GraphQLFloat.type).build(),
     new CompiledField.Builder("friends", new CompiledListType(Character.type)).selections(__friends).build()
   );
 
@@ -46,6 +45,6 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("hero", Character.type).arguments(Arrays.asList(new CompiledArgument.Builder("episode").build(), new CompiledArgument.Builder("listOfListOfStringArgs").build())).selections(__hero).build()
+    new CompiledField.Builder("hero", Character.type).selections(__hero).build()
   );
 }

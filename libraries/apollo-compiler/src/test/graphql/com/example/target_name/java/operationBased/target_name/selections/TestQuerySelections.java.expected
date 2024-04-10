@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.apollographql.apollo3.api.CompiledVariable;
 import com.example.target_name.type.GraphQLString;
+import com.example.target_name.type.Query;
 import com.example.target_name.type.RenamedEnum;
 import com.example.target_name.type.RenamedInterface;
 import com.example.target_name.type.RenamedObject;
@@ -39,10 +40,10 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("object", RenamedObject.type).arguments(Arrays.asList(new CompiledArgument.Builder("input").value(new CompiledVariable("input")).build())).selections(__object).build(),
+    new CompiledField.Builder("object", RenamedObject.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.object__input).value(new CompiledVariable("input")).build())).selections(__object).build(),
     new CompiledField.Builder("interface", RenamedInterface.type).selections(__interface).build(),
     new CompiledField.Builder("union", RenamedUnion.type).selections(__union).build(),
-    new CompiledField.Builder("scalar", RenamedScalar.type).arguments(Arrays.asList(new CompiledArgument.Builder("scalar").value(new CompiledVariable("scalar")).build())).build(),
-    new CompiledField.Builder("enum", RenamedEnum.type).arguments(Arrays.asList(new CompiledArgument.Builder("enum").value(new CompiledVariable("enum")).build())).build()
+    new CompiledField.Builder("scalar", RenamedScalar.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.scalar__scalar).value(new CompiledVariable("scalar")).build())).build(),
+    new CompiledField.Builder("enum", RenamedEnum.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.enum__enum).value(new CompiledVariable("enum")).build())).build()
   );
 }

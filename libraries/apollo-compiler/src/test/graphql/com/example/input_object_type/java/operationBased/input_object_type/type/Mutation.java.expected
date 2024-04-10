@@ -5,11 +5,16 @@
 //
 package com.example.input_object_type.type;
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 
 /**
  * The mutation type, represents all updates we can make to our data
  */
 public class Mutation {
+  public static final CompiledArgumentDefinition createReview__episode = new CompiledArgumentDefinition.Builder("episode").build();
+
+  public static final CompiledArgumentDefinition createReview__review = new CompiledArgumentDefinition.Builder("review").build();
+
   public static ObjectType type = (new ObjectType.Builder("Mutation")).build();
 }

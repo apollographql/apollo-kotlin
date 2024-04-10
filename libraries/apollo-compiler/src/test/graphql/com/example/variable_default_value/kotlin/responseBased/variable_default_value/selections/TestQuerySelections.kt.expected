@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.variable_default_value.type.Character
 import com.example.variable_default_value.type.GraphQLString
+import com.example.variable_default_value.type.Query
 import kotlin.collections.List
 
 public object TestQuerySelections {
@@ -27,8 +28,7 @@ public object TestQuerySelections {
           name = "hero",
           type = Character.type
         ).arguments(listOf(
-          CompiledArgument.Builder("episode").value(CompiledVariable("episode")).build(),
-          CompiledArgument.Builder("listOfListOfStringArgs").build()
+          CompiledArgument.Builder(Query.hero__episode).value(CompiledVariable("episode")).build()
         ))
         .selections(__hero)
         .build()

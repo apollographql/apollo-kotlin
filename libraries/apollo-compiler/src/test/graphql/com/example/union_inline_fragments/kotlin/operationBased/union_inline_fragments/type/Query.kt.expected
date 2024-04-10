@@ -5,6 +5,7 @@
 //
 package com.example.union_inline_fragments.type
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition
 import com.apollographql.apollo3.api.ObjectType
 
 /**
@@ -12,6 +13,9 @@ import com.apollographql.apollo3.api.ObjectType
  */
 public class Query {
   public companion object {
+    public val search__text: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("text").build()
+
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()
   }
 }

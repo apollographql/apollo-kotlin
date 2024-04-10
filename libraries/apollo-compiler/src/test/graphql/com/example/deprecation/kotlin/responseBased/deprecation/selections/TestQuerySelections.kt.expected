@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.deprecation.type.Character
 import com.example.deprecation.type.GraphQLBoolean
 import com.example.deprecation.type.GraphQLString
+import com.example.deprecation.type.Query
 import kotlin.collections.List
 
 public object TestQuerySelections {
@@ -36,7 +37,7 @@ public object TestQuerySelections {
           name = "hero",
           type = Character.type
         ).arguments(listOf(
-          CompiledArgument.Builder("episode").value(CompiledVariable("episode")).build()
+          CompiledArgument.Builder(Query.hero__episode).value(CompiledVariable("episode")).build()
         ))
         .selections(__hero)
         .build()

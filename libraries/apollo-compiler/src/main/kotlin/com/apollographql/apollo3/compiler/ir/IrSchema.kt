@@ -15,12 +15,14 @@ import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
+import com.apollographql.apollo3.ast.fieldDefinitions
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findOneOf
 import com.apollographql.apollo3.ast.findOptInFeature
 import com.apollographql.apollo3.ast.findTargetName
 import com.apollographql.apollo3.ast.internal.toConnectionFields
 import com.apollographql.apollo3.ast.internal.toEmbeddedFields
+import com.apollographql.apollo3.compiler.UsedCoordinates
 import com.apollographql.apollo3.compiler.codegen.keyArgs
 import com.apollographql.apollo3.compiler.codegen.paginationArgs
 import kotlinx.serialization.Serializable
@@ -64,6 +66,9 @@ internal data class IrObject(
     val deprecationReason: String?,
     val embeddedFields: List<String>,
     val mapProperties: List<IrMapProperty>,
+    /**
+     * Only contains fields that have arguments used in operations.
+     */
     val fieldDefinitions: List<IrFieldDefinition>,
 ) : IrSchemaType
 
@@ -77,6 +82,9 @@ internal data class IrInterface(
     val deprecationReason: String?,
     val embeddedFields: List<String>,
     val mapProperties: List<IrMapProperty>,
+    /**
+     * Only contains fields that have arguments used in operations.
+     */
     val fieldDefinitions: List<IrFieldDefinition>,
 ) : IrSchemaType
 
@@ -103,14 +111,19 @@ internal data class IrScalar(
  */
 @Serializable
 internal sealed interface IrType2
+
 @Serializable
 internal class IrNonNullType2(val ofType: IrType2) : IrType2
+
 @Serializable
 internal class IrListType2(val ofType: IrType2) : IrType2
+
 @Serializable
 internal class IrScalarType2(val name: String) : IrType2
+
 @Serializable
 internal class IrEnumType2(val name: String) : IrType2
+
 @Serializable
 internal class IrCompositeType2(val name: String) : IrType2
 
@@ -217,12 +230,7 @@ internal fun GQLInputObjectTypeDefinition.toIr(schema: Schema): IrInputObject {
   )
 }
 
-internal fun GQLInterfaceTypeDefinition.toIr(schema: Schema, usedFields: Map<String, Set<String>>): IrInterface {
-  /**
-   * If generateDataBuilders is false, we do not track usedFields, fallback to an emptySet
-   */
-  val fields = usedFields.get(name) ?: emptySet()
-
+internal fun GQLInterfaceTypeDefinition.toIr(schema: Schema, usedCoordinates: UsedCoordinates): IrInterface {
   return IrInterface(
       name = name,
       implements = implementsInterfaces,
@@ -235,12 +243,16 @@ internal fun GQLInterfaceTypeDefinition.toIr(schema: Schema, usedFields: Map<Str
           directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields() +
           connectionTypeEmbeddedFields(name, schema),
       mapProperties = this.fields.filter {
-        fields.contains(it.name)
+        usedCoordinates.hasField(type = name, field = it.name)
       }.map {
         it.toIrMapProperty(schema)
       },
-      fieldDefinitions = this.fields.map {
-        it.toIrFieldDefinition(schema, name)
+      fieldDefinitions = this.fieldDefinitions(schema).filter {
+        usedCoordinates.hasField(type = name, field = it.name)
+      }.mapNotNull {
+        it.toIrFieldDefinition(schema, name, usedCoordinates)
+            // Only include fields that have arguments used in operations
+            .takeIf { it.argumentDefinitions.isNotEmpty() }
       },
   )
 }
@@ -259,9 +271,7 @@ private fun connectionTypeEmbeddedFields(typeName: String, schema: Schema): Set<
   }
 }
 
-internal fun GQLObjectTypeDefinition.toIr(schema: Schema, usedFields: Map<String, Set<String>>): IrObject {
-  val fields = usedFields.get(name) ?: emptySet()
-
+internal fun GQLObjectTypeDefinition.toIr(schema: Schema, usedCoordinates: UsedCoordinates): IrObject {
   return IrObject(
       name = name,
       implements = implementsInterfaces,
@@ -273,12 +283,16 @@ internal fun GQLObjectTypeDefinition.toIr(schema: Schema, usedFields: Map<String
           directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields() +
           connectionTypeEmbeddedFields(name, schema),
       mapProperties = this.fields.filter {
-        fields.contains(it.name)
+        usedCoordinates.hasField(type = name, field = it.name)
       }.map {
         it.toIrMapProperty(schema)
       },
-      fieldDefinitions = this.fields.map {
-        it.toIrFieldDefinition(schema, name)
+      fieldDefinitions = this.fieldDefinitions(schema).filter {
+        usedCoordinates.hasField(type = name, field = it.name)
+      }.mapNotNull {
+        it.toIrFieldDefinition(schema, name, usedCoordinates)
+            // Only include fields that have arguments used in operations
+            .takeIf { it.argumentDefinitions.isNotEmpty() }
       },
       superTypes = schema.superTypes(this).toList()
   )
@@ -291,19 +305,28 @@ private fun GQLFieldDefinition.toIrMapProperty(schema: Schema): IrMapProperty {
   )
 }
 
-private fun GQLFieldDefinition.toIrFieldDefinition(schema: Schema, parentType: String): IrFieldDefinition {
+private fun GQLFieldDefinition.toIrFieldDefinition(
+    schema: Schema,
+    parentType: String,
+    usedCoordinates: UsedCoordinates,
+): IrFieldDefinition {
   val typeDefinition = schema.typeDefinition(parentType)
   val keyArgs = typeDefinition.keyArgs(name, schema)
   val paginationArgs = typeDefinition.paginationArgs(name, schema)
   return IrFieldDefinition(
       name = name,
       type = type.toIrType2(schema),
-      argumentDefinitions = arguments.map {
-        IrArgumentDefinition(
-            name = it.name,
-            isKey = keyArgs.contains(it.name),
-            isPagination = paginationArgs.contains(it.name)
-        )
+      argumentDefinitions = arguments.mapNotNull {
+        // We only include arguments that are used in operations
+        if (!usedCoordinates.hasArgument(type = parentType, field = name, argument = it.name)) {
+          null
+        } else {
+          IrArgumentDefinition(
+              name = it.name,
+              isKey = keyArgs.contains(it.name),
+              isPagination = paginationArgs.contains(it.name)
+          )
+        }
       }
   )
 }

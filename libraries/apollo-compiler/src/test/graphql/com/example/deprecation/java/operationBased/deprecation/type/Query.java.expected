@@ -5,8 +5,11 @@
 //
 package com.example.deprecation.type;
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 
 public class Query {
+  public static final CompiledArgumentDefinition hero__episode = new CompiledArgumentDefinition.Builder("episode").build();
+
   public static ObjectType type = (new ObjectType.Builder("Query")).build();
 }

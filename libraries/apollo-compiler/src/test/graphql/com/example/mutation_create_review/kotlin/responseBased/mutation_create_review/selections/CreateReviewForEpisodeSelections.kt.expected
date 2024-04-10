@@ -16,6 +16,7 @@ import com.example.mutation_create_review.type.Date
 import com.example.mutation_create_review.type.Episode
 import com.example.mutation_create_review.type.GraphQLInt
 import com.example.mutation_create_review.type.GraphQLString
+import com.example.mutation_create_review.type.Mutation
 import com.example.mutation_create_review.type.Review
 import kotlin.collections.List
 
@@ -60,8 +61,8 @@ internal object CreateReviewForEpisodeSelections {
           name = "createReview",
           type = Review.type
         ).arguments(listOf(
-          CompiledArgument.Builder("episode").value(CompiledVariable("ep")).build(),
-          CompiledArgument.Builder("review").value(CompiledVariable("review")).build()
+          CompiledArgument.Builder(Mutation.createReview__episode).value(CompiledVariable("ep")).build(),
+          CompiledArgument.Builder(Mutation.createReview__review).value(CompiledVariable("review")).build()
         ))
         .selections(__createReview)
         .build()

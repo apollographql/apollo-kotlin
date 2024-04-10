@@ -5,10 +5,20 @@
 //
 package com.example.target_name.type
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition
 import com.apollographql.apollo3.api.ObjectType
 
 public class Query {
   public companion object {
+    public val object__input: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("input").build()
+
+    public val scalar__scalar: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("scalar").build()
+
+    public val enum__enum: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("enum").build()
+
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()
   }
 }

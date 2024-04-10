@@ -5,8 +5,11 @@
 //
 package com.example.named_fragment_with_variables.type;
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 
 public class Organization {
+  public static final CompiledArgumentDefinition user__query = new CompiledArgumentDefinition.Builder("query").build();
+
   public static ObjectType type = (new ObjectType.Builder("Organization")).build();
 }

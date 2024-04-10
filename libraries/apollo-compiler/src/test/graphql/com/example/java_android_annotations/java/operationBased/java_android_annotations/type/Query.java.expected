@@ -5,8 +5,33 @@
 //
 package com.example.java_android_annotations.type;
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 
 public class Query {
+  public static final CompiledArgumentDefinition nullableInt__nullableInt = new CompiledArgumentDefinition.Builder("nullableInt").build();
+
+  public static final CompiledArgumentDefinition nullableInt__nonNullableInt = new CompiledArgumentDefinition.Builder("nonNullableInt").build();
+
+  public static final CompiledArgumentDefinition nullableInt__nonNullableIntWithDefault = new CompiledArgumentDefinition.Builder("nonNullableIntWithDefault").build();
+
+  public static final CompiledArgumentDefinition nullableInt__nullableInput = new CompiledArgumentDefinition.Builder("nullableInput").build();
+
+  public static final CompiledArgumentDefinition nullableInt__nonNullableInput = new CompiledArgumentDefinition.Builder("nonNullableInput").build();
+
+  public static final CompiledArgumentDefinition nullableInt__nonNullableInputWithDefault = new CompiledArgumentDefinition.Builder("nonNullableInputWithDefault").build();
+
+  public static final CompiledArgumentDefinition nonNullableInt__nullableInt = new CompiledArgumentDefinition.Builder("nullableInt").build();
+
+  public static final CompiledArgumentDefinition nonNullableInt__nonNullableInt = new CompiledArgumentDefinition.Builder("nonNullableInt").build();
+
+  public static final CompiledArgumentDefinition nonNullableInt__nonNullableIntWithDefault = new CompiledArgumentDefinition.Builder("nonNullableIntWithDefault").build();
+
+  public static final CompiledArgumentDefinition nonNullableInt__nullableInput = new CompiledArgumentDefinition.Builder("nullableInput").build();
+
+  public static final CompiledArgumentDefinition nonNullableInt__nonNullableInput = new CompiledArgumentDefinition.Builder("nonNullableInput").build();
+
+  public static final CompiledArgumentDefinition nonNullableInt__nonNullableInputWithDefault = new CompiledArgumentDefinition.Builder("nonNullableInputWithDefault").build();
+
   public static ObjectType type = (new ObjectType.Builder("Query")).build();
 }

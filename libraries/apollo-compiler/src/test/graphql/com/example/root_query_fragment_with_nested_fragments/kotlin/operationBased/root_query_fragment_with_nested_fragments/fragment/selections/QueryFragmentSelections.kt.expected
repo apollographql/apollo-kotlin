@@ -14,6 +14,7 @@ import com.example.root_query_fragment_with_nested_fragments.type.Character
 import com.example.root_query_fragment_with_nested_fragments.type.Droid
 import com.example.root_query_fragment_with_nested_fragments.type.GraphQLString
 import com.example.root_query_fragment_with_nested_fragments.type.Human
+import com.example.root_query_fragment_with_nested_fragments.type.Query
 import kotlin.collections.List
 
 public object QueryFragmentSelections {
@@ -72,17 +73,13 @@ public object QueryFragmentSelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).arguments(listOf(
-          CompiledArgument.Builder("episode").build(),
-          CompiledArgument.Builder("listOfListOfStringArgs").build()
-        ))
-        .selections(__hero)
+        ).selections(__hero)
         .build(),
         CompiledField.Builder(
           name = "droid",
           type = Droid.type
         ).arguments(listOf(
-          CompiledArgument.Builder("id").value(1).build()
+          CompiledArgument.Builder(Query.droid__id).value(1).build()
         ))
         .selections(__droid)
         .build(),
@@ -90,7 +87,7 @@ public object QueryFragmentSelections {
           name = "human",
           type = Human.type
         ).arguments(listOf(
-          CompiledArgument.Builder("id").value(1).build()
+          CompiledArgument.Builder(Query.human__id).value(1).build()
         ))
         .selections(__human)
         .build()

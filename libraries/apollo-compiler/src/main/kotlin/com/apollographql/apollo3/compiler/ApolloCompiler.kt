@@ -287,12 +287,12 @@ object ApolloCompiler {
   ): IrSchema {
 
     @Suppress("NAME_SHADOWING")
-    val usedCoordinates = usedCoordinates?.mergeWith((codegenSchema.scalarMapping.keys + setOf("Int", "Float", "String", "ID", "Boolean")).associateWith { emptySet() })
-        ?: codegenSchema.schema.typeDefinitions.keys.associateWith { emptySet() }
+    val usedCoordinates = usedCoordinates?.mergeWith((codegenSchema.scalarMapping.keys + setOf("Int", "Float", "String", "ID", "Boolean")).toUsedCoordinates()  )
+        ?: codegenSchema.schema.typeDefinitions.keys.toUsedCoordinates()
 
     return IrSchemaBuilder.build(
         schema = codegenSchema.schema,
-        usedFields = usedCoordinates,
+        usedCoordinates = usedCoordinates,
         alreadyVisitedTypes = emptySet(),
     )
   }
@@ -418,7 +418,7 @@ object ApolloCompiler {
     if (upstreamCodegenMetadata.isEmpty()) {
       sourceOutput = sourceOutput plus buildSchemaSources(
           codegenSchema = codegenSchema,
-          usedCoordinates = downstreamUsedCoordinates?.mergeWith(irOperations.usedFields),
+          usedCoordinates = downstreamUsedCoordinates?.mergeWith(irOperations.usedCoordinates),
           codegenOptions = codegenOptions,
           schemaLayout = layout,
           javaOutputTransform = javaOutputTransform,
@@ -486,7 +486,7 @@ object ApolloCompiler {
     val sourceOutput = buildSchemaAndOperationsSourcesFromIr(
         codegenSchema = codegenSchema,
         irOperations = irOperations,
-        downstreamUsedCoordinates = emptyMap(),
+        downstreamUsedCoordinates = UsedCoordinates(),
         upstreamCodegenMetadata = emptyList(),
         codegenOptions = codegenOptions,
         layout = layoutFactory?.create(codegenSchema),

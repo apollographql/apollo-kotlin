@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.suppressed_warnings.type.Cat
 import com.example.suppressed_warnings.type.Direction
 import com.example.suppressed_warnings.type.GraphQLInt
+import com.example.suppressed_warnings.type.Query
 import kotlin.collections.List
 
 public object CatQuerySelections {
@@ -28,7 +29,7 @@ public object CatQuerySelections {
           name = "search",
           type = Cat.type
         ).arguments(listOf(
-          CompiledArgument.Builder("filter").value(CompiledVariable("filter")).build()
+          CompiledArgument.Builder(Query.search__filter).value(CompiledVariable("filter")).build()
         ))
         .selections(__search)
         .build(),

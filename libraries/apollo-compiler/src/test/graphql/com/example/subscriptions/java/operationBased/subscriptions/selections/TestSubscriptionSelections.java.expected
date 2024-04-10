@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.CompiledVariable;
 import com.example.subscriptions.type.Comment;
 import com.example.subscriptions.type.GraphQLInt;
 import com.example.subscriptions.type.GraphQLString;
+import com.example.subscriptions.type.Subscription;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,6 +24,6 @@ public class TestSubscriptionSelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("commentAdded", Comment.type).arguments(Arrays.asList(new CompiledArgument.Builder("repoFullName").value(new CompiledVariable("repo")).build())).selections(__commentAdded).build()
+    new CompiledField.Builder("commentAdded", Comment.type).arguments(Arrays.asList(new CompiledArgument.Builder(Subscription.commentAdded__repoFullName).value(new CompiledVariable("repo")).build())).selections(__commentAdded).build()
   );
 }

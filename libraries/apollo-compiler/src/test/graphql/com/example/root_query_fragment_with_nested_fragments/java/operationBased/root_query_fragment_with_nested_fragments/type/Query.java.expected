@@ -5,11 +5,16 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.type;
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 
 /**
  * The query type, represents all of the entry points into our object graph
  */
 public class Query {
+  public static final CompiledArgumentDefinition droid__id = new CompiledArgumentDefinition.Builder("id").build();
+
+  public static final CompiledArgumentDefinition human__id = new CompiledArgumentDefinition.Builder("id").build();
+
   public static ObjectType type = (new ObjectType.Builder("Query")).build();
 }

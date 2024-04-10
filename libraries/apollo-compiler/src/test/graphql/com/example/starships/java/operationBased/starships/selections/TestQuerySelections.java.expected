@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.CompiledVariable;
 import com.example.starships.type.GraphQLFloat;
 import com.example.starships.type.GraphQLID;
 import com.example.starships.type.GraphQLString;
+import com.example.starships.type.Query;
 import com.example.starships.type.Starship;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +27,6 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("starship", Starship.type).arguments(Arrays.asList(new CompiledArgument.Builder("id").value(new CompiledVariable("id")).build())).selections(__starship).build()
+    new CompiledField.Builder("starship", Starship.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.starship__id).value(new CompiledVariable("id")).build())).selections(__starship).build()
   );
 }

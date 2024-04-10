@@ -5,7 +5,6 @@
 //
 package com.example.nested_named_fragments.fragment.selections;
 
-import com.apollographql.apollo3.api.CompiledArgument;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledFragment;
 import com.apollographql.apollo3.api.CompiledListType;
@@ -36,6 +35,6 @@ public class StarshipFragmentSelections {
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("id", new CompiledNotNullType(GraphQLID.type)).build(),
     new CompiledField.Builder("name", GraphQLString.type).build(),
-    new CompiledField.Builder("pilotConnection", StarshipPilotsConnection.type).arguments(Arrays.asList(new CompiledArgument.Builder("after").build(), new CompiledArgument.Builder("before").build(), new CompiledArgument.Builder("first").build(), new CompiledArgument.Builder("last").build())).selections(__pilotConnection).build()
+    new CompiledField.Builder("pilotConnection", StarshipPilotsConnection.type).selections(__pilotConnection).build()
   );
 }

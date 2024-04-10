@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.reserved_keywords.type.Character
 import com.example.reserved_keywords.type.GraphQLID
 import com.example.reserved_keywords.type.GraphQLString
+import com.example.reserved_keywords.type.Query
 import com.example.reserved_keywords.type.SearchResult
 import kotlin.collections.List
 
@@ -55,10 +56,6 @@ public object TestQuerySelections {
           name = "hero",
           type = Character.type
         ).alias("yield")
-        .arguments(listOf(
-          CompiledArgument.Builder("episode").build(),
-          CompiledArgument.Builder("listOfListOfStringArgs").build()
-        ))
         .selections(__hero)
         .build(),
         CompiledField.Builder(
@@ -66,7 +63,7 @@ public object TestQuerySelections {
           type = SearchResult.type.list()
         ).alias("objects")
         .arguments(listOf(
-          CompiledArgument.Builder("text").value("abc").build()
+          CompiledArgument.Builder(Query.search__text).value("abc").build()
         ))
         .selections(__search)
         .build()

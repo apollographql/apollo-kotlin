@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CompiledListType;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.example.inline_fragment_inside_inline_fragment.type.GraphQLString;
+import com.example.inline_fragment_inside_inline_fragment.type.Query;
 import com.example.inline_fragment_inside_inline_fragment.type.SearchResult;
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +39,6 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument.Builder("text").value("bla-bla").build())).selections(__search).build()
+    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument.Builder(Query.search__text).value("bla-bla").build())).selections(__search).build()
   );
 }

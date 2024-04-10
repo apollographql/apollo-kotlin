@@ -5,6 +5,7 @@
 //
 package com.example.input_object_variable_and_argument.type
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition
 import com.apollographql.apollo3.api.ObjectType
 
 /**
@@ -12,6 +13,15 @@ import com.apollographql.apollo3.api.ObjectType
  */
 public class Query {
   public companion object {
+    public val heroWithReview__episode: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("episode").build()
+
+    public val heroWithReview__review: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("review").build()
+
+    public val heroWithReview__listOfInts: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("listOfInts").build()
+
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()
   }
 }

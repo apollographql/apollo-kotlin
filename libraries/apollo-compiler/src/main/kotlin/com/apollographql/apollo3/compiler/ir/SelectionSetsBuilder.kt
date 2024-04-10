@@ -69,24 +69,16 @@ internal class SelectionSetsBuilder(
 
     val selectionSetName = resolveNameClashes(usedNames, name)
 
-    /**
-     * Pull all arguments from the schema as we need them to compute the cache key
-     */
-    val actualArguments = fieldDefinition.arguments.map { schemaArgument ->
-      val operationArgument = arguments.firstOrNull { it.name == schemaArgument.name }
-
-      /**
-       * When passed explicitly, the argument values are coerced (but not their default value)
-       */
-      val userValue = operationArgument?.value?.coerceInExecutableContextOrThrow(schemaArgument.type, schema)
+    val actualArguments = arguments.map { fieldArgument ->
+      val schemaArgument = fieldDefinition.arguments.first { it.name == fieldArgument.name }
+      val userValue = fieldArgument.value.coerceInExecutableContextOrThrow(schemaArgument.type, schema)
       IrArgument(
           parentType = parentType,
           parentField = fieldDefinition.name,
           name = schemaArgument.name,
-          value = (userValue ?: schemaArgument.defaultValue)?.toIrValue(),
+          value = userValue.toIrValue(),
       )
     }
-
     return WalkResult(
         self = IrField(
             name = name,

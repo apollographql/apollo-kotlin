@@ -5,8 +5,11 @@
 //
 package com.example.java8annotation.type;
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 
 public class Mutation {
+  public static final CompiledArgumentDefinition login__input = new CompiledArgumentDefinition.Builder("input").build();
+
   public static ObjectType type = (new ObjectType.Builder("Mutation")).build();
 }

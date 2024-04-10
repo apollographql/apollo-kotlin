@@ -5,10 +5,47 @@
 //
 package com.example.java_jetbrains_annotations.type
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition
 import com.apollographql.apollo3.api.ObjectType
 
 public class Query {
   public companion object {
+    public val nullableInt__nullableInt: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("nullableInt").build()
+
+    public val nullableInt__nonNullableInt: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("nonNullableInt").build()
+
+    public val nullableInt__nonNullableIntWithDefault: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("nonNullableIntWithDefault").build()
+
+    public val nullableInt__nullableInput: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("nullableInput").build()
+
+    public val nullableInt__nonNullableInput: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("nonNullableInput").build()
+
+    public val nullableInt__nonNullableInputWithDefault: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("nonNullableInputWithDefault").build()
+
+    public val nonNullableInt__nullableInt: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("nullableInt").build()
+
+    public val nonNullableInt__nonNullableInt: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("nonNullableInt").build()
+
+    public val nonNullableInt__nonNullableIntWithDefault: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("nonNullableIntWithDefault").build()
+
+    public val nonNullableInt__nullableInput: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("nullableInput").build()
+
+    public val nonNullableInt__nonNullableInput: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("nonNullableInput").build()
+
+    public val nonNullableInt__nonNullableInputWithDefault: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("nonNullableInputWithDefault").build()
+
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()
   }
 }

@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.apollographql.apollo3.api.CompiledVariable;
 import com.example.input_object_oneof.type.GraphQLID;
+import com.example.input_object_oneof.type.Query;
 import com.example.input_object_oneof.type.User;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +22,6 @@ public class FindUserQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("findUser", User.type).arguments(Arrays.asList(new CompiledArgument.Builder("findUserInput").value(new CompiledVariable("findUserInput")).build())).selections(__findUser).build()
+    new CompiledField.Builder("findUser", User.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.findUser__findUserInput).value(new CompiledVariable("findUserInput")).build())).selections(__findUser).build()
   );
 }

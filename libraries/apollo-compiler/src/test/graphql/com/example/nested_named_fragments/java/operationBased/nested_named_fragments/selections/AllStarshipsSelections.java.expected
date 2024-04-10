@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.example.nested_named_fragments.fragment.selections.StarshipFragmentSelections;
 import com.example.nested_named_fragments.type.GraphQLString;
+import com.example.nested_named_fragments.type.Root;
 import com.example.nested_named_fragments.type.Starship;
 import com.example.nested_named_fragments.type.StarshipsConnection;
 import com.example.nested_named_fragments.type.StarshipsEdge;
@@ -34,6 +35,6 @@ public class AllStarshipsSelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("allStarships", StarshipsConnection.type).arguments(Arrays.asList(new CompiledArgument.Builder("after").build(), new CompiledArgument.Builder("before").build(), new CompiledArgument.Builder("first").value(7).build(), new CompiledArgument.Builder("last").build())).selections(__allStarships).build()
+    new CompiledField.Builder("allStarships", StarshipsConnection.type).arguments(Arrays.asList(new CompiledArgument.Builder(Root.allStarships__first).value(7).build())).selections(__allStarships).build()
   );
 }

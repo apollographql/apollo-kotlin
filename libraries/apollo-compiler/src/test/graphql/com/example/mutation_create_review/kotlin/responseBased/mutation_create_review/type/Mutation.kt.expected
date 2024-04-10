@@ -7,6 +7,7 @@ package com.example.mutation_create_review.type
 
 import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderScope
+import com.apollographql.apollo3.api.CompiledArgumentDefinition
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.ObjectType
@@ -20,6 +21,12 @@ import kotlin.collections.Map
  */
 internal class Mutation {
   public companion object : BuilderFactory<MutationBuilder> {
+    public val createReview__episode: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("episode").build()
+
+    public val createReview__review: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("review").build()
+
     public val type: ObjectType = ObjectType.Builder(name = "Mutation").build()
 
     override fun newBuilder(customScalarAdapters: CustomScalarAdapters): MutationBuilder =

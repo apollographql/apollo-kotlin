@@ -15,6 +15,7 @@ import com.example.union_inline_fragments.type.Character;
 import com.example.union_inline_fragments.type.Episode;
 import com.example.union_inline_fragments.type.GraphQLID;
 import com.example.union_inline_fragments.type.GraphQLString;
+import com.example.union_inline_fragments.type.Query;
 import com.example.union_inline_fragments.type.SearchResult;
 import java.util.Arrays;
 import java.util.List;
@@ -71,6 +72,6 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument.Builder("text").value("test").build())).selections(__search).build()
+    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument.Builder(Query.search__text).value("test").build())).selections(__search).build()
   );
 }

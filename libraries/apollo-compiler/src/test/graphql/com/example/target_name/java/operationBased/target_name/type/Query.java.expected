@@ -5,8 +5,15 @@
 //
 package com.example.target_name.type;
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 
 public class Query {
+  public static final CompiledArgumentDefinition object__input = new CompiledArgumentDefinition.Builder("input").build();
+
+  public static final CompiledArgumentDefinition scalar__scalar = new CompiledArgumentDefinition.Builder("scalar").build();
+
+  public static final CompiledArgumentDefinition enum__enum = new CompiledArgumentDefinition.Builder("enum").build();
+
   public static ObjectType type = (new ObjectType.Builder("Query")).build();
 }

@@ -5,7 +5,6 @@
 //
 package com.example.fragments_with_type_condition.fragment.selections
 
-import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
@@ -22,9 +21,6 @@ public object HumanDetailsSelections {
         CompiledField.Builder(
           name = "height",
           type = GraphQLFloat.type
-        ).arguments(listOf(
-          CompiledArgument.Builder("unit").value("METER").build()
-        ))
-        .build()
+        ).build()
       )
 }

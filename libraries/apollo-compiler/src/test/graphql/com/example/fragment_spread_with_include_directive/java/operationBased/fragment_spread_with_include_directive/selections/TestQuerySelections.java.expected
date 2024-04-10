@@ -20,6 +20,7 @@ import com.example.fragment_spread_with_include_directive.type.Character;
 import com.example.fragment_spread_with_include_directive.type.GraphQLBoolean;
 import com.example.fragment_spread_with_include_directive.type.GraphQLID;
 import com.example.fragment_spread_with_include_directive.type.GraphQLString;
+import com.example.fragment_spread_with_include_directive.type.Query;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("hero", Character.type).arguments(Arrays.asList(new CompiledArgument.Builder("episode").build(), new CompiledArgument.Builder("listOfListOfStringArgs").build())).selections(__hero).build(),
-    new CompiledField.Builder("getBoolean", GraphQLBoolean.type).arguments(Arrays.asList(new CompiledArgument.Builder("booleanArg").value(new CompiledVariable("optionalWithNoDefault")).build())).build()
+    new CompiledField.Builder("hero", Character.type).selections(__hero).build(),
+    new CompiledField.Builder("getBoolean", GraphQLBoolean.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.getBoolean__booleanArg).value(new CompiledVariable("optionalWithNoDefault")).build())).build()
   );
 }

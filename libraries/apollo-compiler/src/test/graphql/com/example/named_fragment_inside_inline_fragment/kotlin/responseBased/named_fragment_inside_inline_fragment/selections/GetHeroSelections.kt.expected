@@ -5,7 +5,6 @@
 //
 package com.example.named_fragment_inside_inline_fragment.selections
 
-import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
@@ -50,11 +49,7 @@ public object GetHeroSelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).arguments(listOf(
-          CompiledArgument.Builder("episode").build(),
-          CompiledArgument.Builder("listOfListOfStringArgs").build()
-        ))
-        .selections(__hero)
+        ).selections(__hero)
         .build()
       )
 }

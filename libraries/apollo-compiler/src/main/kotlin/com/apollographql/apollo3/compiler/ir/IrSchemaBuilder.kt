@@ -7,11 +7,12 @@ import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.compiler.UsedCoordinates
 
 internal object IrSchemaBuilder {
   fun build(
       schema: Schema,
-      usedFields: Map<String, Set<String>>,
+      usedCoordinates: UsedCoordinates,
       alreadyVisitedTypes: Set<String>,
   ): IrSchema {
 
@@ -23,7 +24,7 @@ internal object IrSchemaBuilder {
     val irObjects = mutableListOf<IrObject>()
 
     val visitedTypes = alreadyVisitedTypes.toMutableSet()
-    val typesStack = usedFields.keys.toMutableList()
+    val typesStack = usedCoordinates.getTypes().toMutableList()
     while (typesStack.isNotEmpty()) {
       val name = typesStack.removeFirst()
       if (visitedTypes.contains(name)) {
@@ -47,10 +48,10 @@ internal object IrSchemaBuilder {
           irUnions.add(typeDefinition.toIr())
         }
         typeDefinition is GQLInterfaceTypeDefinition -> {
-          irInterfaces.add(typeDefinition.toIr(schema, usedFields))
+          irInterfaces.add(typeDefinition.toIr(schema, usedCoordinates))
         }
         typeDefinition is GQLObjectTypeDefinition -> {
-          irObjects.add(typeDefinition.toIr(schema, usedFields))
+          irObjects.add(typeDefinition.toIr(schema, usedCoordinates))
         }
       }
     }

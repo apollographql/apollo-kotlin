@@ -5,7 +5,6 @@
 //
 package com.example.simple_fragment_with_inline_fragments.fragment.selections;
 
-import com.apollographql.apollo3.api.CompiledArgument;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledFragment;
 import com.apollographql.apollo3.api.CompiledListType;
@@ -19,7 +18,7 @@ import java.util.List;
 
 public class HeroDetailsSelections {
   private static List<CompiledSelection> __onHuman = Arrays.asList(
-    new CompiledField.Builder("height", GraphQLFloat.type).arguments(Arrays.asList(new CompiledArgument.Builder("unit").value("METER").build())).build()
+    new CompiledField.Builder("height", GraphQLFloat.type).build()
   );
 
   private static List<CompiledSelection> __onDroid = Arrays.asList(

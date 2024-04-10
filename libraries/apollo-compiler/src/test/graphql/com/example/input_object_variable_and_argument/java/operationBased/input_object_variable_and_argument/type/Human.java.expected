@@ -5,6 +5,7 @@
 //
 package com.example.input_object_variable_and_argument.type;
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 import java.util.Arrays;
 
@@ -12,5 +13,7 @@ import java.util.Arrays;
  * A humanoid creature from the Star Wars universe
  */
 public class Human {
+  public static final CompiledArgumentDefinition height__unit = new CompiledArgumentDefinition.Builder("unit").build();
+
   public static ObjectType type = (new ObjectType.Builder("Human")).interfaces(Arrays.asList(Character.type)).build();
 }

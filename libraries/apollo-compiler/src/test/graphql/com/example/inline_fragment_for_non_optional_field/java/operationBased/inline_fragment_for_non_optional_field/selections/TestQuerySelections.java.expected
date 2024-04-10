@@ -13,12 +13,13 @@ import com.apollographql.apollo3.api.CompiledSelection;
 import com.example.inline_fragment_for_non_optional_field.type.Character;
 import com.example.inline_fragment_for_non_optional_field.type.GraphQLFloat;
 import com.example.inline_fragment_for_non_optional_field.type.GraphQLString;
+import com.example.inline_fragment_for_non_optional_field.type.Query;
 import java.util.Arrays;
 import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> __onHuman = Arrays.asList(
-    new CompiledField.Builder("height", GraphQLFloat.type).arguments(Arrays.asList(new CompiledArgument.Builder("unit").value("METER").build())).build()
+    new CompiledField.Builder("height", GraphQLFloat.type).build()
   );
 
   private static List<CompiledSelection> __nonOptionalHero = Arrays.asList(
@@ -28,6 +29,6 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("nonOptionalHero", new CompiledNotNullType(Character.type)).arguments(Arrays.asList(new CompiledArgument.Builder("episode").value("EMPIRE").build())).selections(__nonOptionalHero).build()
+    new CompiledField.Builder("nonOptionalHero", new CompiledNotNullType(Character.type)).arguments(Arrays.asList(new CompiledArgument.Builder(Query.nonOptionalHero__episode).value("EMPIRE").build())).selections(__nonOptionalHero).build()
   );
 }

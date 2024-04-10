@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.nested_named_fragments.fragment.selections.StarshipFragmentSelections
 import com.example.nested_named_fragments.type.GraphQLString
+import com.example.nested_named_fragments.type.Root
 import com.example.nested_named_fragments.type.Starship
 import com.example.nested_named_fragments.type.StarshipsConnection
 import com.example.nested_named_fragments.type.StarshipsEdge
@@ -52,10 +53,7 @@ public object AllStarshipsSelections {
           name = "allStarships",
           type = StarshipsConnection.type
         ).arguments(listOf(
-          CompiledArgument.Builder("after").build(),
-          CompiledArgument.Builder("before").build(),
-          CompiledArgument.Builder("first").value(7).build(),
-          CompiledArgument.Builder("last").build()
+          CompiledArgument.Builder(Root.allStarships__first).value(7).build()
         ))
         .selections(__allStarships)
         .build()

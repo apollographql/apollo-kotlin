@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.inline_fragment_for_non_optional_field.type.Character
 import com.example.inline_fragment_for_non_optional_field.type.GraphQLFloat
 import com.example.inline_fragment_for_non_optional_field.type.GraphQLString
+import com.example.inline_fragment_for_non_optional_field.type.Query
 import kotlin.collections.List
 
 public object TestQuerySelections {
@@ -20,10 +21,7 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "height",
           type = GraphQLFloat.type
-        ).arguments(listOf(
-          CompiledArgument.Builder("unit").value("METER").build()
-        ))
-        .build()
+        ).build()
       )
 
   private val __nonOptionalHero: List<CompiledSelection> = listOf(
@@ -47,7 +45,7 @@ public object TestQuerySelections {
           name = "nonOptionalHero",
           type = Character.type.notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder("episode").value("EMPIRE").build()
+          CompiledArgument.Builder(Query.nonOptionalHero__episode).value("EMPIRE").build()
         ))
         .selections(__nonOptionalHero)
         .build()

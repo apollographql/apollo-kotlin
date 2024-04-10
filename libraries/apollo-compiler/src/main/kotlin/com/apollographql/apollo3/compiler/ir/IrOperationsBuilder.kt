@@ -6,8 +6,11 @@ import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
+import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFloatValue
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
+import com.apollographql.apollo3.ast.GQLFragmentSpread
+import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLIntValue
 import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
@@ -50,6 +53,7 @@ import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED_WITH_INTERFACES
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
+import com.apollographql.apollo3.compiler.UsedCoordinates
 
 internal class IrOperationsBuilder(
     private val schema: Schema,
@@ -66,7 +70,7 @@ internal class IrOperationsBuilder(
     private val generateDataBuilders: Boolean,
     private val fragmentVariableUsages: Map<String, List<VariableUsage>>,
 ) : FieldMerger {
-  private val usedFields = mutableMapOf<String, MutableSet<String>>()
+  private val usedCoordinates = UsedCoordinates()
   private val responseBasedBuilder = ResponseBasedModelGroupBuilder(
       schema,
       allFragmentDefinitions,
@@ -94,7 +98,7 @@ internal class IrOperationsBuilder(
     val operations = operationDefinitions.map { it.toIr() }
     val fragments = fragmentDefinitions.map { it.toIr() }
 
-    addUserCoordinates(schema, alwaysGenerateTypesMatching, usedFields)
+    addUserCoordinates(schema, alwaysGenerateTypesMatching, usedCoordinates)
 
     /**
      * Loop to add referenced types
@@ -103,7 +107,7 @@ internal class IrOperationsBuilder(
      * - Add the types that are referenced in CompiledGraphQL
      */
     val visitedTypes = mutableSetOf<String>()
-    val typesToVisit = usedFields.keys.toMutableList()
+    val typesToVisit = usedCoordinates.getTypes().toMutableList()
     while (typesToVisit.isNotEmpty()) {
       val name = typesToVisit.removeFirst()
       if (visitedTypes.contains(name)) {
@@ -127,7 +131,7 @@ internal class IrOperationsBuilder(
               }
             }.forEach {
               typesToVisit.add(it.name)
-              usedFields.putType(it.name)
+              usedCoordinates.putType(it.name)
             }
           }
 
@@ -144,7 +148,7 @@ internal class IrOperationsBuilder(
            * Also Make sure data builders generate the map interface
            */
           typeDefinition.implementsInterfaces.forEach {
-            usedFields.putType(it)
+            usedCoordinates.putType(it)
             typesToVisit.add(it)
           }
         }
@@ -168,7 +172,7 @@ internal class IrOperationsBuilder(
                    * This is suboptimal. We should traverse from the bottom most types
                    * and collect used fields as we go up the type hierarchy
                    */
-                  usedFields.putAllFields(it.name, usedFields[name].orEmpty())
+                  usedCoordinates.putAllFields(type = it.name, fields = usedCoordinates.getFields(name))
                   typesToVisit.add(it.name)
                 }
           }
@@ -183,7 +187,7 @@ internal class IrOperationsBuilder(
            * also Make sure data builders generate the map interface
            */
           typeDefinition.implementsInterfaces.forEach {
-            usedFields.putType(it)
+            usedCoordinates.putType(it)
             typesToVisit.add(it)
           }
         }
@@ -202,9 +206,9 @@ internal class IrOperationsBuilder(
            */
           typeDefinition.memberTypes.forEach {
             if (generateDataBuilders) {
-              usedFields.putAllFields(it.name, usedFields[name].orEmpty())
+              usedCoordinates.putAllFields(type = it.name, fields = usedCoordinates.getFields(name))
             } else {
-              usedFields.putType(it.name)
+              usedCoordinates.putType(it.name)
             }
             typesToVisit.add(it.name)
           }
@@ -221,17 +225,17 @@ internal class IrOperationsBuilder(
             when (val fieldType = schema.typeDefinition(it.type.rawType().name)) {
               is GQLScalarTypeDefinition -> {
                 typesToVisit.add(fieldType.name)
-                usedFields.putType(fieldType.name)
+                usedCoordinates.putType(fieldType.name)
               }
 
               is GQLEnumTypeDefinition -> {
                 typesToVisit.add(fieldType.name)
-                usedFields.putType(fieldType.name)
+                usedCoordinates.putType(fieldType.name)
               }
 
               is GQLInputObjectTypeDefinition -> {
                 typesToVisit.add(fieldType.name)
-                usedFields.putType(fieldType.name)
+                usedCoordinates.putType(fieldType.name)
               }
 
               else -> error("output type '${fieldType.name}' used in input position")
@@ -246,7 +250,7 @@ internal class IrOperationsBuilder(
     return IrOperations(
         operations = operations,
         fragments = fragments,
-        usedFields = usedFields,
+        usedCoordinates = usedCoordinates,
         flattenModels = flattenModels,
         decapitalizeFields = decapitalizeFields,
         fragmentDefinitions = fragmentDefinitions,
@@ -295,7 +299,11 @@ internal class IrOperationsBuilder(
     )
 
     // Add the root type to use from the selections
-    usedFields.putType(typeDefinition.name)
+    usedCoordinates.putType(typeDefinition.name)
+
+    // Track all used arguments
+    usedCoordinates.putAllUsedArguments(this, allFragmentDefinitions)
+
     return IrOperation(
         name = name!!,
         description = description,
@@ -334,7 +342,7 @@ internal class IrOperationsBuilder(
     )
 
     // Add the root type to use from the fragment selections
-    usedFields.putType(typeCondition.name)
+    usedCoordinates.putType(typeCondition.name)
     return IrFragmentDefinition(
         name = name,
         description = description,
@@ -460,7 +468,7 @@ internal class IrOperationsBuilder(
    * Maps to [IrType]
    */
   private fun GQLType.toIr(): IrType {
-    usedFields.putType(rawType().name)
+    usedCoordinates.putType(rawType().name)
     return toIr(schema)
   }
 
@@ -488,7 +496,7 @@ internal class IrOperationsBuilder(
       val condition: BooleanExpression<BVariable>,
       val selections: List<GQLSelection>,
       val parentType: String,
-      val definitionHasArguments: Boolean
+      val definitionHasArguments: Boolean,
   ) {
     val responseName = alias ?: name
   }
@@ -584,7 +592,7 @@ internal class IrOperationsBuilder(
          * In the above case, there's no reason a data builder would need to create a fallback animal
          * yet `buildOtherAnimal` will be generated
          */
-        usedFields.putField(first.parentType, first.name)
+        usedCoordinates.putField(first.parentType, first.name)
       }
 
       /**
@@ -596,11 +604,11 @@ internal class IrOperationsBuilder(
        *   }
        * }
        */
-      usedFields.putType(first.type.rawType().name)
+      usedCoordinates.putType(first.type.rawType().name)
 
       // When a field with arguments is selected, its parent type is referenced in the compiled selections
       if (first.definitionHasArguments) {
-        usedFields.putType(first.parentType)
+        usedCoordinates.putType(first.parentType)
       }
 
       val irType = first
@@ -713,35 +721,10 @@ internal class IrOperationsBuilder(
       }
     }
 
-    private fun MutableMap<String, MutableSet<String>>.putField(typeName: String, fieldName: String) {
-      compute(typeName) { _, v ->
-        if (v == null) {
-          mutableSetOf(fieldName)
-        } else {
-          v.add(fieldName)
-          v
-        }
-      }
-    }
-
-    private fun MutableMap<String, MutableSet<String>>.putAllFields(typeName: String, fields: Set<String>) {
-      compute(typeName) { _, v ->
-        (v ?: mutableSetOf()).apply {
-          this.addAll(fields)
-        }
-      }
-    }
-
-    private fun MutableMap<String, MutableSet<String>>.putType(typeName: String) {
-      compute(typeName) { _, v ->
-        v ?: mutableSetOf()
-      }
-    }
-
     fun addUserCoordinates(
         schema: Schema,
         alwaysGenerateTypesMatching: Set<String>,
-        usedFields: MutableMap<String, MutableSet<String>>,
+        usedCoordinates: UsedCoordinates,
     ) {
       val regexes = alwaysGenerateTypesMatching.map { Regex(it) }
 
@@ -758,13 +741,13 @@ internal class IrOperationsBuilder(
         visitedTypes.add(type)
 
         if (regexes.any { it.matches(type) }) {
-          usedFields.putType(type)
+          usedCoordinates.putType(type)
         }
 
         val gqlTypeDefinition = schema.typeDefinition(type)
         gqlTypeDefinition.fieldDefinitions(schema).forEach { gqlFieldDefinition ->
           if (regexes.any { it.matches("${gqlTypeDefinition.name}.${gqlFieldDefinition.name}") }) {
-            usedFields.putField(gqlTypeDefinition.name, gqlFieldDefinition.name)
+            usedCoordinates.putField(gqlTypeDefinition.name, gqlFieldDefinition.name)
             // Recursively add types used by this field
             typesToVisit.add(gqlFieldDefinition.type.rawType().name)
           }
@@ -772,6 +755,46 @@ internal class IrOperationsBuilder(
       }
     }
   }
+
+  private fun UsedCoordinates.putAllUsedArguments(
+      operationDefinition: GQLOperationDefinition,
+      allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
+  ) {
+    fun UsedCoordinates.putAllArguments(
+        parentType: String,
+        selections: List<GQLSelection>,
+        allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
+    ) {
+      for (selection in selections) {
+        when (selection) {
+          is GQLField -> {
+            for (argument in selection.arguments) {
+              putArgument(type = parentType, field = selection.name, argument = argument.name)
+            }
+            val fieldType = selection.definitionFromScope(schema, parentType)!!.type.rawType().name
+            putAllArguments(parentType = fieldType, selections = selection.selections, allFragmentDefinitions = allFragmentDefinitions)
+          }
+
+          is GQLInlineFragment -> {
+            val fragmentType = selection.typeCondition?.name ?: parentType
+            putAllArguments(parentType = fragmentType, selections = selection.selections, allFragmentDefinitions = allFragmentDefinitions)
+          }
+
+          is GQLFragmentSpread -> {
+            val fragmentDefinition = allFragmentDefinitions[selection.name]!!
+            val fragmentType = fragmentDefinition.typeCondition.name
+            putAllArguments(parentType = fragmentType, selections = fragmentDefinition.selections, allFragmentDefinitions = allFragmentDefinitions)
+          }
+        }
+      }
+    }
+    putAllArguments(
+        parentType = operationDefinition.rootTypeDefinition(schema)!!.name,
+        selections = operationDefinition.selections,
+        allFragmentDefinitions = allFragmentDefinitions,
+    )
+  }
+
 }
 
 internal fun GQLValue.toIrValue(): IrValue {

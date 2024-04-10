@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CompiledSelection;
 import com.apollographql.apollo3.api.CompiledVariable;
 import com.example.input_object_type.type.GraphQLInt;
 import com.example.input_object_type.type.GraphQLString;
+import com.example.input_object_type.type.Mutation;
 import com.example.input_object_type.type.Review;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +24,6 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("createReview", Review.type).arguments(Arrays.asList(new CompiledArgument.Builder("episode").value(new CompiledVariable("ep")).build(), new CompiledArgument.Builder("review").value(new CompiledVariable("review")).build())).selections(__createReview).build()
+    new CompiledField.Builder("createReview", Review.type).arguments(Arrays.asList(new CompiledArgument.Builder(Mutation.createReview__episode).value(new CompiledVariable("ep")).build(), new CompiledArgument.Builder(Mutation.createReview__review).value(new CompiledVariable("review")).build())).selections(__createReview).build()
   );
 }

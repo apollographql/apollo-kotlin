@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.arguments_hardcoded.type.GraphQLInt
 import com.example.arguments_hardcoded.type.GraphQLString
+import com.example.arguments_hardcoded.type.Query
 import com.example.arguments_hardcoded.type.Review
 import kotlin.collections.List
 
@@ -32,9 +33,9 @@ public object TestQuerySelections {
           name = "reviews",
           type = Review.type.list()
         ).arguments(listOf(
-          CompiledArgument.Builder("episode").value("JEDI").build(),
-          CompiledArgument.Builder("starsFloat").value(9.9).build(),
-          CompiledArgument.Builder("starsInt").value(10).build()
+          CompiledArgument.Builder(Query.reviews__episode).value("JEDI").build(),
+          CompiledArgument.Builder(Query.reviews__starsFloat).value(9.9).build(),
+          CompiledArgument.Builder(Query.reviews__starsInt).value(10).build()
         ))
         .selections(__reviews)
         .build(),
@@ -42,13 +43,13 @@ public object TestQuerySelections {
           name = "testNullableArguments",
           type = GraphQLInt.type.notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder("boolean").value(null).build(),
-          CompiledArgument.Builder("episode").value(null).build(),
-          CompiledArgument.Builder("float").value(null).build(),
-          CompiledArgument.Builder("int").value(null).build(),
-          CompiledArgument.Builder("list").value(null).build(),
-          CompiledArgument.Builder("review").value(null).build(),
-          CompiledArgument.Builder("string").value(null).build()
+          CompiledArgument.Builder(Query.testNullableArguments__boolean).value(null).build(),
+          CompiledArgument.Builder(Query.testNullableArguments__episode).value(null).build(),
+          CompiledArgument.Builder(Query.testNullableArguments__float).value(null).build(),
+          CompiledArgument.Builder(Query.testNullableArguments__int).value(null).build(),
+          CompiledArgument.Builder(Query.testNullableArguments__list).value(null).build(),
+          CompiledArgument.Builder(Query.testNullableArguments__review).value(null).build(),
+          CompiledArgument.Builder(Query.testNullableArguments__string).value(null).build()
         ))
         .build()
       )

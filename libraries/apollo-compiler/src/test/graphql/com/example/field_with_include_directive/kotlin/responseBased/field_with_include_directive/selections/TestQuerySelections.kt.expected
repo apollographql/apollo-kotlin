@@ -5,7 +5,6 @@
 //
 package com.example.field_with_include_directive.selections
 
-import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledCondition
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
@@ -34,10 +33,6 @@ public object TestQuerySelections {
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
         ).condition(listOf(CompiledCondition("skipFriends", true)))
-        .arguments(listOf(
-          CompiledArgument.Builder("after").build(),
-          CompiledArgument.Builder("first").build()
-        ))
         .selections(__friendsConnection)
         .build()
       )
@@ -46,11 +41,7 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).arguments(listOf(
-          CompiledArgument.Builder("episode").build(),
-          CompiledArgument.Builder("listOfListOfStringArgs").build()
-        ))
-        .selections(__hero)
+        ).selections(__hero)
         .build()
       )
 }
