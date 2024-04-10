@@ -746,6 +746,16 @@ internal class IrOperationsBuilder(
 
         if (regexes.any { it.matches(type) }) {
           usedCoordinates.putType(type)
+
+          // Add all arguments of all fields
+          val gqlTypeDefinition = schema.typeDefinition(type)
+          gqlTypeDefinition.fieldDefinitions(schema).forEach { gqlFieldDefinition ->
+            gqlFieldDefinition.arguments.forEach { gqlArgumentDefinition ->
+              usedCoordinates.putArgument(gqlTypeDefinition.name, gqlFieldDefinition.name, gqlArgumentDefinition.name)
+              // Recursively add type of this argument
+              typesToVisit.add(gqlArgumentDefinition.type.rawType().name)
+            }
+          }
         }
 
         val gqlTypeDefinition = schema.typeDefinition(type)
