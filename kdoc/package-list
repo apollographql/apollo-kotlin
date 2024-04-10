@@ -80,6 +80,7 @@ com.apollographql.apollo3.interceptor
 com.apollographql.apollo3.internal
 com.apollographql.apollo3.network
 com.apollographql.apollo3.network.http
+com.apollographql.apollo3.network.websocket
 com.apollographql.apollo3.network.ws
 module:apollo-runtime-java
 com.apollographql.apollo3.runtime.java
@@ -104,5 +105,3 @@ com.apollographql.apollo3.testing
 com.apollographql.apollo3.testing.internal
 module:apollo-tooling
 com.apollographql.apollo3.tooling
-module:apollo-websocket-network-transport-incubating
-com.apollographql.apollo3.network.ws.incubating
