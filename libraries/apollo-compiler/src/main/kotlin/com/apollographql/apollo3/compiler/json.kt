@@ -81,3 +81,5 @@ fun CodegenMetadata.writeTo(file: File) = encodeToJson(file)
 fun PersistedQueryManifest.writeTo(file: File) = encodeToJson(file)
 @JvmName("writeOperationOutput")
 fun OperationOutput.writeTo(file: File) = this.encodeToJson(file)
+
+internal fun UsedCoordinates.writeTo(file: File) = encodeToJson(file)
