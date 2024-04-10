@@ -60,19 +60,16 @@ class CachedSubscriptionTest {
             .map { it.data!!.valueSharedWithSubscriptions }
             .collect {
               channel.send(it)
-              println("watcher received: $it")
             }
       }
 
       assertEquals(0, channel.receive())
 
-      println("starting subscription")
       apolloClient.subscription(ValueSharedWithSubscriptionsSubscription())
           .toFlow()
           .take(3)
           .map { it.data!!.valueSharedWithSubscriptions }
           .collect {
-            println("subscription received: $it")
           }
 
       withTimeout(600) {

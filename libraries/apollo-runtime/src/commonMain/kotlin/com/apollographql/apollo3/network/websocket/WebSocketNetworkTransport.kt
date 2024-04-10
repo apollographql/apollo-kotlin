@@ -305,3 +305,22 @@ private class DefaultOperationListener<D : Operation.Data>(
 private fun Map<String, Any?>.isDeferred(): Boolean {
   return keys.contains("hasNext")
 }
+
+/**
+ * Closes the websocket connection if the transport is a [WebSocketNetworkTransport].
+ *
+ * [exception] is passed down to [ApolloResponse.exception] so you can decide how to handle the exception for active subscriptions.
+ *
+ * ```
+ * apolloClient.subscriptionNetworkTransport.closeConnection(DefaultApolloException("oh no!"))
+ * ```
+ *
+ * @throws IllegalArgumentException if transport is not a [WebSocketNetworkTransport]
+ * @see DefaultApolloException
+ */
+@ApolloExperimental
+fun NetworkTransport.closeConnection(exception: ApolloException) {
+  val webSocketNetworkTransport = (this as? WebSocketNetworkTransport) ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo3.websocket.WebSocketNetworkTransport")
+
+  webSocketNetworkTransport.closeConnection(exception)
+}
