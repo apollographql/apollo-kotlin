@@ -448,10 +448,11 @@ private constructor(
 }
 
 /**
- * A shorthand for [WebSocketNetworkTransport.closeConnection]. If the NetworkTransport is not a [WebSocketNetworkTransport], a
- * NotImplementedError is thrown.
+ * Closes the websocket connection if the transport is a [WebSocketNetworkTransport].
+ *
+ * @throws IllegalArgumentException if transport is not a [WebSocketNetworkTransport].
  */
 fun NetworkTransport.closeConnection(reason: Throwable) {
   (this as? WebSocketNetworkTransport
-      ?: throw NotImplementedError("closeConnection is only for WebSocketNetworkTransport")).closeConnection(reason)
+      ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo3.ws.WebSocketNetworkTransport")).closeConnection(reason)
 }

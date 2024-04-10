@@ -51,9 +51,12 @@ class SubscriptionOperationException(
     val payload: Any?,
 ) : ApolloException(message = "Operation error $operationName")
 
+/**
+ * The server responded with an error to the subscription init message.
+ */
 class SubscriptionConnectionException(
     val payload: Any?,
-) : ApolloException(message = "Websocket error")
+) : ApolloException(message = "Subscription connection error")
 
 
 /**

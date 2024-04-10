@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.exception.SubscriptionConnectionException
@@ -111,7 +112,7 @@ internal class SubscribableWebSocket(
           }
           ackTimeoutJob = scope.launch(dispatcher) {
             delay(connectionAcknowledgeTimeoutMillis)
-            shutdown(DefaultApolloException("Timeout while waiting for ack"), CLOSE_GOING_AWAY, "Timeout while waiting for connection_ack")
+            shutdown(ApolloNetworkException("Timeout while waiting for subscription connection ack"), CLOSE_GOING_AWAY, "Timeout while waiting for connection_ack")
           }
           state = SocketState.AwaitAck
         }

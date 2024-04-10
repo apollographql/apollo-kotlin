@@ -3,7 +3,6 @@ package com.apollographql.apollo3.network.websocket
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.network.websocket.WebSocket
-import com.apollographql.apollo3.network.websocket.WebSocketEngine
 import com.apollographql.apollo3.network.websocket.WebSocketListener
 import okhttp3.Headers
 import okhttp3.OkHttpClient
@@ -65,7 +64,11 @@ internal class JvmWebSocket(
   override fun onClosing(webSocket: PlatformWebSocket, code: Int, reason: String) {
     if (disposed.compareAndSet(false, true)) {
       listener.onClosed(code, reason)
-      platformWebSocket.cancel()
+      /**
+       * Acknowledge the close
+       * Note: just calling cancel() here leaks the connection
+       */
+      platformWebSocket.close(code, reason)
     }
   }
 

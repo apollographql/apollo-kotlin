@@ -1,7 +1,7 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
+import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import defer.WithFragmentSpreadsSubscription
 import defer.WithInlineFragmentsSubscription
@@ -23,8 +23,11 @@ class DeferSubscriptionsTest {
   private fun setUp() {
     apolloClient = ApolloClient.Builder()
         .serverUrl("http://localhost:4000/graphql")
-        .webSocketServerUrl("ws://localhost:4000/graphql")
-        .wsProtocol(GraphQLWsProtocol.Factory())
+        .subscriptionNetworkTransport(
+            WebSocketNetworkTransport.Builder()
+                .serverUrl("ws://localhost:4000/graphql")
+                .build()
+        )
         .build()
   }
 
