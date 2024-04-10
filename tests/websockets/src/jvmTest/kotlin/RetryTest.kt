@@ -1,8 +1,4 @@
-@file:Suppress("DEPRECATION")
 
-package incubating
-
-import addRetryOnErrorInterceptor
 import app.cash.turbine.test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Subscription

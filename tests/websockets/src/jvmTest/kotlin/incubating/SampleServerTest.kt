@@ -1,99 +1,96 @@
 package incubating
 
-import com.apollographql.apollo.sample.server.SampleServer
-import com.apollographql.apollo3.ApolloClient
+import app.cash.turbine.test
 import com.apollographql.apollo3.exception.SubscriptionOperationException
-import com.apollographql.apollo3.network.websocket.SubscriptionWsProtocol
-import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
-import com.apollographql.apollo3.testing.internal.runTest
-import kotlinx.coroutines.CoroutineScope
+import com.apollographql.apollo3.testing.FooSubscription
+import com.apollographql.apollo3.testing.FooSubscription.Companion.completeMessage
+import com.apollographql.apollo3.testing.FooSubscription.Companion.nextMessage
+import com.apollographql.apollo3.testing.mockServerWebSocketTest
+import com.apollographql.apollo3.testing.operationId
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 import org.junit.Test
-import sample.server.CountSubscription
 import sample.server.OperationErrorSubscription
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 class SampleServerTest {
-  private class Scope(val apolloClient: ApolloClient, val sampleServer: SampleServer, val coroutineScope: CoroutineScope)
-
-  private fun test(customizeTransport: WebSocketNetworkTransport.Builder.() -> Unit = {}, block: suspend Scope.() -> Unit) {
-    runTest {
-      SampleServer().use { sampleServer ->
-        ApolloClient.Builder()
-            .serverUrl(sampleServer.graphqlUrl())
-            .subscriptionNetworkTransport(
-                WebSocketNetworkTransport.Builder()
-                    .serverUrl(sampleServer.subscriptionsUrl())
-                    .wsProtocol(SubscriptionWsProtocol { null })
-                    .apply(customizeTransport)
-                    .build()
-            )
-            .build().use { apolloClient ->
-              Scope(apolloClient, sampleServer, this@runTest).block()
-            }
-      }
-    }
-  }
-
 
   @Test
-  fun simple() = test {
-    val list = apolloClient.subscription(CountSubscription(5, 0))
+  fun simple() = mockServerWebSocketTest {
+    apolloClient.subscription(FooSubscription())
         .toFlow()
-        .map {
-          it.data?.count
-        }
-        .toList()
-    assertEquals(0.until(5).toList(), list)
-  }
-
-  @Test
-  fun interleavedSubscriptions() = test {
-    val items = mutableListOf<Int>()
-    coroutineScope.launch {
-      apolloClient.subscription(CountSubscription(5, 1000))
-          .toFlow()
-          .collect {
-            items.add(it.data!!.count * 2)
+        .test {
+          awaitConnectionInit()
+          val operationId = serverReader.awaitMessage().operationId()
+          repeat(5) {
+            serverWriter.enqueueMessage(nextMessage(operationId, it))
+            assertEquals(it, awaitItem().data?.foo)
           }
-    }
-    delay(500)
-    apolloClient.subscription(CountSubscription(5, 1000))
-        .toFlow()
-        .collect {
-          items.add(2 * it.data!!.count + 1)
+          serverWriter.enqueueMessage(completeMessage(operationId))
+
+          awaitComplete()
         }
-    assertEquals(0.until(10).toList(), items)
   }
 
   @Test
-  fun slowConsumer() = test {
+  fun interleavedSubscriptions() = mockServerWebSocketTest {
+    0.until(2).map {
+      apolloClient.subscription(FooSubscription()).toFlow()
+    }.merge()
+        .test {
+          awaitConnectionInit()
+          val operationId1 = serverReader.awaitMessage().operationId()
+          val operationId2 = serverReader.awaitMessage().operationId()
+
+          repeat(3) {
+            serverWriter.enqueueMessage(nextMessage(operationId1, it))
+            awaitItem().apply {
+              assertEquals(operationId1, requestUuid.toString())
+              assertEquals(it, data?.foo)
+            }
+            serverWriter.enqueueMessage(nextMessage(operationId2, it))
+            awaitItem().apply {
+              assertEquals(operationId2, requestUuid.toString())
+              assertEquals(it, data?.foo)
+            }
+          }
+
+          serverWriter.enqueueMessage(completeMessage(operationId1))
+          serverWriter.enqueueMessage(completeMessage(operationId2))
+
+          awaitComplete()
+        }
+  }
+
+  @Test
+  fun slowConsumer() = mockServerWebSocketTest {
     /**
      * Simulate a low read on the first 5 items.
      * During that time, the server should continue sending.
      * Then resume reading as fast as possible and make sure we didn't drop any items.
      */
-    val items = apolloClient.subscription(CountSubscription(1000, 0))
+    apolloClient.subscription(FooSubscription())
         .toFlow()
-        .map { it.data!!.count }
-        .onEach {
-          if (it < 5) {
-            delay(100)
+        .test {
+          awaitConnectionInit()
+          val operationId = serverReader.awaitMessage().operationId()
+          repeat(1000) {
+            serverWriter.enqueueMessage(nextMessage(operationId, it))
           }
-        }
-        .toList()
+          delay(3000)
+          repeat(1000) {
+            assertEquals(it, awaitItem().data?.foo)
+          }
+          serverWriter.enqueueMessage(completeMessage(operationId))
 
-    assertEquals(0.until(1000).toList(), items)
+          awaitComplete()
+        }
   }
 
   @Test
-  fun operationError() = test {
+  fun operationError() = mockServerWebSocketTest {
     val response = apolloClient.subscription(OperationErrorSubscription())
         .toFlow()
         .single()

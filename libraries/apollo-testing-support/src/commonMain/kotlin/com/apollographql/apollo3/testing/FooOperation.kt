@@ -21,7 +21,7 @@ import com.apollographql.apollo3.mockserver.TextMessage
  * Use it to test parts of the runtime without having to use included builds.
  */
 @ApolloExperimental
-class FooQuery: FooOperation(), Query<FooOperation.Data> {
+class FooQuery: FooOperation("query"), Query<FooOperation.Data> {
   companion object {
     val successResponse = "{\"data\": {\"foo\": 42}}"
   }
@@ -33,7 +33,7 @@ class FooQuery: FooOperation(), Query<FooOperation.Data> {
  * Use it to test parts of the runtime without having to use included builds.
  */
 @ApolloExperimental
-class FooSubscription: FooOperation(), Subscription<FooOperation.Data> {
+class FooSubscription: FooOperation("subscription"), Subscription<FooOperation.Data> {
   companion object {
     fun nextMessage(id: String, foo: Int): TextMessage {
       return buildJsonString {
@@ -72,7 +72,7 @@ class FooSubscription: FooOperation(), Subscription<FooOperation.Data> {
  * Note we can't make [FooOperation] extend both [Query] and [Subscription] because that confuses [ApolloClient] when deciding whant NetworkTransport to use.
  */
 @ApolloExperimental
-abstract class FooOperation: Operation<FooOperation.Data> {
+abstract class FooOperation(private val operationType: String): Operation<FooOperation.Data> {
   class Data(val foo: Int): Query.Data, Subscription.Data {
     override fun toString(): String {
       return "Data(foo: $foo)"
@@ -80,11 +80,11 @@ abstract class FooOperation: Operation<FooOperation.Data> {
   }
 
   override fun document(): String {
-    return "query GetFoo { foo }"
+    return "$operationType FooOperation { foo }"
   }
 
   override fun name(): String {
-    return "FooQuery"
+    return "FooOperation"
   }
 
   override fun id(): String {
