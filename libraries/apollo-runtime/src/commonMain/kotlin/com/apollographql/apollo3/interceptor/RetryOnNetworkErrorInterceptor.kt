@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.interceptor
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -103,4 +104,27 @@ internal fun <T, R> Flow<T>.flatMapConcatPolyfill(transform: suspend (value: T) 
 
 internal fun <T> Flow<Flow<T>>.flattenConcatPolyfill(): Flow<T> = flow {
   collect { value -> emitAll(value) }
+}
+
+private fun <D : Operation.Data> Flow<ApolloResponse<D>>.retryOnError(block: suspend (ApolloException, Int) -> Boolean): Flow<ApolloResponse<D>> {
+  var attempt = 0
+  return onEach {
+    if (it.exception != null && block(it.exception!!, attempt)) {
+      attempt++
+      throw RetryException
+    }
+  }.retryWhen { cause, _ ->
+    cause is RetryException
+  }
+}
+
+internal class RetryOnErrorInterceptor(private val retryWhen: suspend (ApolloException, Int) -> Boolean) : ApolloInterceptor {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    return chain.proceed(request).retryOnError(retryWhen)
+  }
+}
+
+@ApolloExperimental
+fun ApolloClient.Builder.addRetryOnErrorInterceptor(retryWhen: suspend (ApolloException, Int) -> Boolean) = apply {
+  addInterceptor(RetryOnErrorInterceptor(retryWhen))
 }

@@ -7,13 +7,20 @@ public final class com/apollographql/apollo3/testing/-FileSystemCommon {
 public final class com/apollographql/apollo3/testing/ChannelsKt {
 }
 
-public final class com/apollographql/apollo3/testing/FooOperation$Companion {
-	public final fun getSuccessResponse ()Ljava/lang/String;
-}
-
 public final class com/apollographql/apollo3/testing/FooOperation$Data : com/apollographql/apollo3/api/Query$Data, com/apollographql/apollo3/api/Subscription$Data {
 	public fun <init> (I)V
 	public final fun getFoo ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/testing/FooQuery$Companion {
+	public final fun getSuccessResponse ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/testing/FooSubscription$Companion {
+	public final fun completeMessage (Ljava/lang/String;)Lcom/apollographql/apollo3/mockserver/TextMessage;
+	public final fun errorMessage (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/mockserver/TextMessage;
+	public final fun nextMessage (Ljava/lang/String;I)Lcom/apollographql/apollo3/mockserver/TextMessage;
 }
 
 public final class com/apollographql/apollo3/testing/MockserverKt {

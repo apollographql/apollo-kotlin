@@ -1,9 +1,11 @@
+package test.network
 
 import app.cash.turbine.test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.interceptor.addRetryOnErrorInterceptor
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.awaitWebSocketRequest
@@ -11,8 +13,6 @@ import com.apollographql.apollo3.mockserver.enqueueWebSocket
 import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo3.testing.FooQuery
 import com.apollographql.apollo3.testing.FooSubscription
-import com.apollographql.apollo3.testing.FooSubscription.Companion.completeMessage
-import com.apollographql.apollo3.testing.FooSubscription.Companion.nextMessage
 import com.apollographql.apollo3.testing.ackMessage
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.mockServerTest
@@ -23,13 +23,14 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
-import org.junit.Test
+import okio.use
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertNotEquals
 import kotlin.time.Duration.Companion.seconds
 
-class RetryTest {
+class RetryWebSocketsTest {
   @Test
   fun retryIsWorking() = runTest(skipDelays = false) {
     var mockServer = MockServer()
@@ -52,13 +53,17 @@ class RetryTest {
                 serverWriter.enqueueMessage(ackMessage())
 
                 val operationId1 = serverReader.awaitMessage().operationId()
-                serverWriter.enqueueMessage(nextMessage(operationId1, 1))
+                serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId1, 1))
 
                 val item1 = awaitItem()
                 assertEquals(1, item1.data?.foo)
 
                 val port = mockServer.port()
                 mockServer.close()
+                /**
+                 * Looks like Ktor needs some time to close the local address.
+                 * Without the delay, I'm getting an "address already in use" error
+                 */
                 /**
                  * Looks like Ktor needs some time to close the local address.
                  * Without the delay, I'm getting an "address already in use" error
@@ -73,7 +78,7 @@ class RetryTest {
                 serverWriter.enqueueMessage(ackMessage())
 
                 val operationId2 = serverReader.awaitMessage().operationId()
-                serverWriter.enqueueMessage(nextMessage(operationId2, 2))
+                serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId2, 2))
 
                 val item2 = awaitItem()
                 assertEquals(2, item2.data?.foo)
@@ -81,7 +86,7 @@ class RetryTest {
                 // The subscriptions MUST use different operationIds
                 assertNotEquals(operationId1, operationId2)
 
-                serverWriter.enqueueMessage(completeMessage(operationId2))
+                serverWriter.enqueueMessage(FooSubscription.completeMessage(operationId2))
 
                 awaitComplete()
               }
@@ -91,42 +96,46 @@ class RetryTest {
 
   @Test
   fun retryCanBeDisabled() = runTest(skipDelays = false) {
-        val mockServer = MockServer()
-        ApolloClient.Builder()
-            .serverUrl(mockServer.url())
-            .retryOnError { it.operation is Subscription }
-            .subscriptionNetworkTransport(
-                WebSocketNetworkTransport.Builder()
-                    .serverUrl(mockServer.url())
-                    .build()
-            )
-            .build().use { apolloClient ->
-              apolloClient.subscription(FooSubscription())
-                  .retryOnError(false)
-                  .toFlow()
-                  .test {
-                    val serverWriter = mockServer.enqueueWebSocket()
-                    val serverReader = mockServer.awaitWebSocketRequest()
+    val mockServer = MockServer()
+    ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .retryOnError { it.operation is Subscription }
+        .subscriptionNetworkTransport(
+            WebSocketNetworkTransport.Builder()
+                .serverUrl(mockServer.url())
+                .build()
+        )
+        .build().use { apolloClient ->
+          apolloClient.subscription(FooSubscription())
+              .retryOnError(false)
+              .toFlow()
+              .test {
+                val serverWriter = mockServer.enqueueWebSocket()
+                val serverReader = mockServer.awaitWebSocketRequest()
 
-                    serverReader.awaitMessage() // connection_init
-                    serverWriter.enqueueMessage(ackMessage())
+                serverReader.awaitMessage() // connection_init
+                serverWriter.enqueueMessage(ackMessage())
 
-                    val operationId1 = serverReader.awaitMessage().operationId()
-                    serverWriter.enqueueMessage(nextMessage(operationId1, 1))
+                val operationId1 = serverReader.awaitMessage().operationId()
+                serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId1, 1))
 
-                    val item1 = awaitItem()
-                    assertEquals(1, item1.data?.foo)
+                val item1 = awaitItem()
+                assertEquals(1, item1.data?.foo)
 
-                    /**
-                     * Close the server to trigger an exception
-                     */
-                    mockServer.close()
+                /**
+                 * Close the server to trigger an exception
+                 */
 
-                    assertIs<ApolloNetworkException>(awaitItem().exception)
-                    awaitComplete()
-                  }
-            }
-      }
+                /**
+                 * Close the server to trigger an exception
+                 */
+                mockServer.close()
+
+                assertIs<ApolloNetworkException>(awaitItem().exception)
+                awaitComplete()
+              }
+        }
+  }
 
   @Test
   fun subscriptionsAreNotRetriedByDefault() = runTest(skipDelays = false) {
@@ -149,10 +158,14 @@ class RetryTest {
                 serverWriter.enqueueMessage(ackMessage())
 
                 val operationId1 = serverReader.awaitMessage().operationId()
-                serverWriter.enqueueMessage(nextMessage(operationId1, 1))
+                serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId1, 1))
 
                 val item1 = awaitItem()
                 assertEquals(1, item1.data?.foo)
+
+                /**
+                 * Close the server to trigger an exception
+                 */
 
                 /**
                  * Close the server to trigger an exception
@@ -210,8 +223,16 @@ class RetryTest {
               /**
                * We're only using the first item of each subscription
                */
+              /**
+               * We're only using the first item of each subscription
+               */
               apolloClient.subscription(FooSubscription())
                   .toFlow()
+                  /**
+                   * Take 2 item:
+                   * - first item straight ahead
+                   * - second item is after the retry
+                   */
                   /**
                    * Take 2 item:
                    * - first item straight ahead
@@ -226,7 +247,13 @@ class RetryTest {
           /**
            * Close the MockServer, retries start kicking in and must not pile
            */
+          /**
+           * Close the MockServer, retries start kicking in and must not pile
+           */
           mockServer.close()
+          /**
+           * Wait a bit for retries to happen
+           */
           /**
            * Wait a bit for retries to happen
            */
@@ -234,8 +261,15 @@ class RetryTest {
           /**
            * Reopen the MockServer, the second item for each subscription should be emitted quickly after recovery.
            */
+          /**
+           * Reopen the MockServer, the second item for each subscription should be emitted quickly after recovery.
+           */
           mockServer = MockServer.Builder().port(port = port).build()
           prepareMockServer(mockServer, iterations)
+
+          /**
+           * I'm putting 5 here to be safe but in practice, this shouldn't take more than ~1s
+           */
 
           /**
            * I'm putting 5 here to be safe but in practice, this shouldn't take more than ~1s
@@ -264,8 +298,4 @@ class RetryTest {
       }
     }
   }
-}
-
-private fun String.extractPort(): Int {
-  return Regex("[a-z]*://[a-zA-Z0-9.]*:([0-9]*)").matchAt(this, 0)?.groupValues?.get(1)?.toInt() ?: error("No port found in $this")
 }

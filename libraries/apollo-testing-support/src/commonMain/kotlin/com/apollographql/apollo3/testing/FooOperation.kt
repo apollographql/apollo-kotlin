@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.checkFieldNotMissing
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.buildJsonString
+import com.apollographql.apollo3.api.json.writeArray
 import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.api.missingField
 import com.apollographql.apollo3.mockserver.TextMessage
@@ -61,6 +62,24 @@ class FooSubscription: FooOperation("subscription"), Subscription<FooOperation.D
           value(id)
           name("type")
           value("complete")
+        }
+      }.let { TextMessage(it) }
+    }
+
+    fun errorMessage(id: String, message: String): TextMessage {
+      return buildJsonString {
+        writeObject {
+          name("id")
+          value(id)
+          name("type")
+          value("error")
+          name("payload")
+          writeArray {
+            writeObject {
+              name("message")
+              value(message)
+            }
+          }
         }
       }.let { TextMessage(it) }
     }

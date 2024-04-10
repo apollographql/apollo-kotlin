@@ -78,12 +78,12 @@ class SubscriptionWsProtocol(
         val id = map["id"] as? String
         when {
           id == null -> ParseErrorServerMessage("No 'id' found in message: '$text'")
-          type == "data" -> ResponseServerMessage(id, map["payload"], false)
+          type == "data" -> ResponseServerMessage(id, map["payload"])
           type == "complete" -> CompleteServerMessage(id)
           /**
            * "error" is followed by "complete" but we send the terminal [OperationErrorServerMessage] right away
            */
-          type == "error" -> OperationErrorServerMessage(id, map["payload"], true)
+          type == "error" -> OperationErrorServerMessage(id, map["payload"])
           else -> error("") // make the compiler happy
         }
       }

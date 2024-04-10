@@ -24,9 +24,10 @@ internal interface OperationListener {
   fun onComplete()
 
   /**
-   * The server sent an error. That error may be terminal in which case, no future calls to this listener are made.
+   * The server sent an error for this operation.
+   * That error is terminal. No future calls to this listener are made.
    */
-  fun onError(payload: ApolloJsonElement, terminal: Boolean)
+  fun onError(payload: ApolloJsonElement)
 
   /**
    * The transport failed. No future calls to this listener are made.

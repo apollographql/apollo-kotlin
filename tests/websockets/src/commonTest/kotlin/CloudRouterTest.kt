@@ -1,10 +1,7 @@
-
 import cloud.router.GetReviewSubscription
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.network.http.LoggingInterceptor
 import com.apollographql.apollo3.testing.internal.runTest
-import fullstack.tutorial.TripsBookedSubscription
 import kotlin.test.Ignore
 import kotlin.test.Test
 
@@ -12,7 +9,7 @@ import kotlin.test.Test
 @Ignore
 class CloudRouterTest {
   @Test
-  fun simple() = runTest {
+  fun simple() = runTest(skipDelays = false) {
     val apolloClient = ApolloClient.Builder()
         .serverUrl("")
         .subscriptionNetworkTransport(

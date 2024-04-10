@@ -289,11 +289,9 @@ private class DefaultOperationListener<D : Operation.Data>(
         .build()
   }
 
-  override fun onError(payload: ApolloJsonElement, terminal: Boolean) {
+  override fun onError(payload: ApolloJsonElement) {
     producerScope.trySend(errorResponse(SubscriptionOperationException(request.operation.name(), payload)))
-    if (terminal) {
-      producerScope.close()
-    }
+    producerScope.close()
   }
 
   override fun onTransportError(cause: ApolloException) {

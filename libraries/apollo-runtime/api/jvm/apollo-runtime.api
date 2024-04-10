@@ -175,6 +175,9 @@ public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInter
 public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInterceptor$Companion {
 }
 
+public final class com/apollographql/apollo3/interceptor/RetryOnNetworkErrorInterceptorKt {
+}
+
 public abstract interface class com/apollographql/apollo3/network/NetworkTransport {
 	public abstract fun dispose ()V
 	public abstract fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;

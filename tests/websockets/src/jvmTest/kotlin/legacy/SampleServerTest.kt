@@ -1,4 +1,4 @@
-package stable
+package legacy
 
 import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo3.ApolloClient

@@ -80,7 +80,7 @@ class AppSyncWsProtocol(
         val id = map["id"] as? String
         when {
           id == null -> ParseErrorServerMessage("No 'id' found in message: '$text'")
-          type == "data" -> ResponseServerMessage(id, map["payload"], false)
+          type == "data" -> ResponseServerMessage(id, map["payload"])
           type == "complete" -> CompleteServerMessage(id)
           else -> error("") // make the compiler happy
         }
@@ -88,7 +88,7 @@ class AppSyncWsProtocol(
       "error" -> {
         val id = map["id"] as? String
         if (id != null) {
-          OperationErrorServerMessage(id, map["payload"], true)
+          OperationErrorServerMessage(id, map["payload"])
         } else {
           ParseErrorServerMessage("General error: $text")
         }
