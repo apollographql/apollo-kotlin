@@ -302,7 +302,7 @@ internal class IrOperationsBuilder(
     usedCoordinates.putType(typeDefinition.name)
 
     // Track all used arguments
-    usedCoordinates.putAllUsedArguments(this, allFragmentDefinitions)
+    usedCoordinates.putAllArguments(this, allFragmentDefinitions)
 
     return IrOperation(
         name = name!!,
@@ -343,6 +343,10 @@ internal class IrOperationsBuilder(
 
     // Add the root type to use from the fragment selections
     usedCoordinates.putType(typeCondition.name)
+
+    // Track all used arguments
+    usedCoordinates.putAllArguments(this, allFragmentDefinitions)
+
     return IrFragmentDefinition(
         name = name,
         description = description,
@@ -756,38 +760,38 @@ internal class IrOperationsBuilder(
     }
   }
 
-  private fun UsedCoordinates.putAllUsedArguments(
-      operationDefinition: GQLOperationDefinition,
+  private fun UsedCoordinates.putAllArguments(
+      parentType: String,
+      selections: List<GQLSelection>,
       allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
   ) {
-    fun UsedCoordinates.putAllArguments(
-        parentType: String,
-        selections: List<GQLSelection>,
-        allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    ) {
-      for (selection in selections) {
-        when (selection) {
-          is GQLField -> {
-            for (argument in selection.arguments) {
-              putArgument(type = parentType, field = selection.name, argument = argument.name)
-            }
-            val fieldType = selection.definitionFromScope(schema, parentType)!!.type.rawType().name
-            putAllArguments(parentType = fieldType, selections = selection.selections, allFragmentDefinitions = allFragmentDefinitions)
+    for (selection in selections) {
+      when (selection) {
+        is GQLField -> {
+          for (argument in selection.arguments) {
+            putArgument(type = parentType, field = selection.name, argument = argument.name)
           }
+          val fieldType = selection.definitionFromScope(schema, parentType)!!.type.rawType().name
+          putAllArguments(parentType = fieldType, selections = selection.selections, allFragmentDefinitions = allFragmentDefinitions)
+        }
 
-          is GQLInlineFragment -> {
-            val fragmentType = selection.typeCondition?.name ?: parentType
-            putAllArguments(parentType = fragmentType, selections = selection.selections, allFragmentDefinitions = allFragmentDefinitions)
-          }
+        is GQLInlineFragment -> {
+          val fragmentType = selection.typeCondition?.name ?: parentType
+          putAllArguments(parentType = fragmentType, selections = selection.selections, allFragmentDefinitions = allFragmentDefinitions)
+        }
 
-          is GQLFragmentSpread -> {
-            val fragmentDefinition = allFragmentDefinitions[selection.name]!!
-            val fragmentType = fragmentDefinition.typeCondition.name
-            putAllArguments(parentType = fragmentType, selections = fragmentDefinition.selections, allFragmentDefinitions = allFragmentDefinitions)
-          }
+        is GQLFragmentSpread -> {
+          val fragmentDefinition = allFragmentDefinitions[selection.name]!!
+          putAllArguments(fragmentDefinition, allFragmentDefinitions)
         }
       }
     }
+  }
+
+  private fun UsedCoordinates.putAllArguments(
+      operationDefinition: GQLOperationDefinition,
+      allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
+  ) {
     putAllArguments(
         parentType = operationDefinition.rootTypeDefinition(schema)!!.name,
         selections = operationDefinition.selections,
@@ -795,6 +799,16 @@ internal class IrOperationsBuilder(
     )
   }
 
+  private fun UsedCoordinates.putAllArguments(
+      fragmentDefinition: GQLFragmentDefinition,
+      allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
+  ) {
+    putAllArguments(
+        parentType = fragmentDefinition.typeCondition.name,
+        selections = fragmentDefinition.selections,
+        allFragmentDefinitions = allFragmentDefinitions,
+    )
+  }
 }
 
 internal fun GQLValue.toIrValue(): IrValue {
