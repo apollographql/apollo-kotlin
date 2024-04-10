@@ -3,18 +3,18 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.ApolloJsonElement
-import com.apollographql.apollo3.network.ws.incubating.ClientMessage
-import com.apollographql.apollo3.network.ws.incubating.CompleteServerMessage
-import com.apollographql.apollo3.network.ws.incubating.ConnectionAckServerMessage
-import com.apollographql.apollo3.network.ws.incubating.GraphQLWsProtocol
-import com.apollographql.apollo3.network.ws.incubating.ParseErrorServerMessage
-import com.apollographql.apollo3.network.ws.incubating.PingServerMessage
-import com.apollographql.apollo3.network.ws.incubating.PongServerMessage
-import com.apollographql.apollo3.network.ws.incubating.ResponseServerMessage
-import com.apollographql.apollo3.network.ws.incubating.ServerMessage
-import com.apollographql.apollo3.network.ws.incubating.SubscriptionParser
-import com.apollographql.apollo3.network.ws.incubating.SubscriptionParserFactory
-import com.apollographql.apollo3.network.ws.incubating.WsProtocol
+import com.apollographql.apollo3.network.websocket.ClientMessage
+import com.apollographql.apollo3.network.websocket.CompleteServerMessage
+import com.apollographql.apollo3.network.websocket.ConnectionAckServerMessage
+import com.apollographql.apollo3.network.websocket.GraphQLWsProtocol
+import com.apollographql.apollo3.network.websocket.ParseErrorServerMessage
+import com.apollographql.apollo3.network.websocket.PingServerMessage
+import com.apollographql.apollo3.network.websocket.PongServerMessage
+import com.apollographql.apollo3.network.websocket.ResponseServerMessage
+import com.apollographql.apollo3.network.websocket.ServerMessage
+import com.apollographql.apollo3.network.websocket.SubscriptionParser
+import com.apollographql.apollo3.network.websocket.SubscriptionParserFactory
+import com.apollographql.apollo3.network.websocket.WsProtocol
 
 actual val parserFactory: SubscriptionParserFactory?
   get() = JsSubscriptionParserFactory
