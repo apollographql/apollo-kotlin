@@ -11,6 +11,7 @@ import okhttp3.Response
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 import okhttp3.WebSocket as PlatformWebSocket
 import okhttp3.WebSocketListener as PlatformWebSocketListener
 
@@ -30,7 +31,10 @@ internal class JvmWebSocket(
     headers: List<HttpHeader>,
     private val listener: WebSocketListener,
 ) : WebSocket, PlatformWebSocketListener() {
-  private val platformWebSocket: PlatformWebSocket
+  /**
+   * There's a race where the listener might be called from another thread beform [platformWebSocket] gets initialized
+   */
+  private val platformWebSocket: AtomicReference<PlatformWebSocket> = AtomicReference()
   private val disposed = AtomicBoolean(false)
 
   init {
@@ -39,7 +43,7 @@ internal class JvmWebSocket(
         .headers(headers.toOkHttpHeaders())
         .build()
 
-    platformWebSocket = webSocketFactory.newWebSocket(request, this)
+    platformWebSocket.set(webSocketFactory.newWebSocket(request, this))
   }
 
   override fun onOpen(webSocket: PlatformWebSocket, response: Response) {
@@ -57,7 +61,7 @@ internal class JvmWebSocket(
   override fun onFailure(webSocket: PlatformWebSocket, t: Throwable, response: Response?) {
     if (disposed.compareAndSet(false, true)) {
       listener.onError(ApolloNetworkException(t.message, t))
-      platformWebSocket.cancel()
+      platformWebSocket.get()?.cancel()
     }
   }
 
@@ -68,7 +72,7 @@ internal class JvmWebSocket(
        * Acknowledge the close
        * Note: just calling cancel() here leaks the connection
        */
-      platformWebSocket.close(code, reason)
+      platformWebSocket.get()?.close(code, reason)
     }
   }
 
@@ -87,16 +91,16 @@ internal class JvmWebSocket(
       }.build()
 
   override fun send(data: ByteArray) {
-    platformWebSocket.send(data.toByteString())
+    platformWebSocket.get()?.send(data.toByteString())
   }
 
   override fun send(text: String) {
-    platformWebSocket.send(text)
+    platformWebSocket.get()?.send(text)
   }
 
   override fun close(code: Int, reason: String) {
     if (disposed.compareAndSet(false, true)) {
-      platformWebSocket.close(code, reason)
+      platformWebSocket.get()?.close(code, reason)
     }
   }
 }
