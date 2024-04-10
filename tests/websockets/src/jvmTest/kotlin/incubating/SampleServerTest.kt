@@ -70,7 +70,6 @@ class SampleServerTest {
           items.add(2 * it.data!!.count + 1)
         }
     assertEquals(0.until(10).toList(), items)
-
   }
 
   @Test
