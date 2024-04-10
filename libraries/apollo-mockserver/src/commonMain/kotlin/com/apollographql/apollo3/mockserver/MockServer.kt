@@ -40,6 +40,13 @@ interface MockServer : Closeable {
    */
   suspend fun url(): String
 
+  /**
+   * Returns the port used by this server.
+   *
+   * This function is suspend because finding an available port is an asynchronous operation on some platforms.
+   */
+  suspend fun port(): Int
+
   @Deprecated("use close instead", ReplaceWith("close()"), DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   suspend fun stop() = close()
@@ -133,7 +140,6 @@ internal class MockServerImpl(
 
   private fun onSocket(socket: TcpSocket) {
     scope.launch {
-      //println("Socket bound: ${url()}")
       try {
         handleRequests(mockServerHandler, socket, listener) {
           requests.trySend(it)
@@ -214,6 +220,10 @@ internal class MockServerImpl(
         }
       }
     }
+  }
+
+  override suspend fun port(): Int {
+    return server.address().port
   }
 
   override suspend fun url(): String {

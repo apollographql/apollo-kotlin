@@ -31,7 +31,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
-private fun <D : Operation.Data> Flow<ApolloResponse<D>>.retryOnError(block: (ApolloException, Int) -> Boolean): Flow<ApolloResponse<D>> {
+private fun <D : Operation.Data> Flow<ApolloResponse<D>>.retryOnError(block: suspend (ApolloException, Int) -> Boolean): Flow<ApolloResponse<D>> {
   var attempt = 0
   return onEach {
     if (it.exception != null && block(it.exception!!, attempt)) {
@@ -43,7 +43,7 @@ private fun <D : Operation.Data> Flow<ApolloResponse<D>>.retryOnError(block: (Ap
   }
 }
 
-class RetryOnErrorInterceptor(private val retryWhen: (ApolloException, Int) -> Boolean) : ApolloInterceptor {
+class RetryOnErrorInterceptor(private val retryWhen: suspend (ApolloException, Int) -> Boolean) : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return chain.proceed(request).retryOnError(retryWhen)
   }
@@ -51,7 +51,7 @@ class RetryOnErrorInterceptor(private val retryWhen: (ApolloException, Int) -> B
 
 private object RetryException : Exception()
 
-fun ApolloClient.Builder.addRetryOnErrorInterceptor(retryWhen: (ApolloException, Int) -> Boolean) = apply {
+fun ApolloClient.Builder.addRetryOnErrorInterceptor(retryWhen: suspend (ApolloException, Int) -> Boolean) = apply {
   addInterceptor(RetryOnErrorInterceptor(retryWhen))
 }
 
