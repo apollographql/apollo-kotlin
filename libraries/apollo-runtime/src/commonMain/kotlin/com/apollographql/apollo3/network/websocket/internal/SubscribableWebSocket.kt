@@ -63,8 +63,9 @@ internal class SubscribableWebSocket(
   private var shutdownCause: ApolloException? = null
   private var activeListeners = mutableMapOf<String, OperationListener>()
   private var pending = mutableListOf<ApolloRequest<*>>()
-  private var webSocket: WebSocket = webSocketEngine.newWebSocket(serverUrl, httpHeaders, this)
   private var _lastActiveMillis: Long = 0
+
+  private var webSocket: WebSocket = webSocketEngine.newWebSocket(serverUrl, httpHeaders, this)
 
   val lastActiveMillis: Long
     get() = lock.withLock {
@@ -224,7 +225,7 @@ internal class SubscribableWebSocket(
         }
 
         SocketState.ShutDown -> {
-          cause = DefaultApolloException("Apollo: the WebSocket is shut down")
+          cause = DefaultApolloException("Apollo: the WebSocket is shut down", shutdownCause)
         }
       }
     }

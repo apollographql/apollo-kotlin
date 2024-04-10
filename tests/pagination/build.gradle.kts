@@ -25,6 +25,12 @@ kotlin {
         implementation(libs.apollo.normalizedcache.sqlite.incubating)
       }
     }
+
+    findByName("jvmTest")?.apply {
+      dependencies {
+        implementation(libs.slf4j)
+      }
+    }
   }
 }
 
