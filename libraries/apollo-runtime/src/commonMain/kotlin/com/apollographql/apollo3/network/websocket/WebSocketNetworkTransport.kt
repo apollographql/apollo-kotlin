@@ -318,6 +318,7 @@ private fun Map<String, Any?>.isDeferred(): Boolean {
  * @throws IllegalArgumentException if transport is not a [WebSocketNetworkTransport]
  * @see DefaultApolloException
  */
+@ApolloExperimental
 fun NetworkTransport.closeConnection(exception: ApolloException) {
   val webSocketNetworkTransport = (this as? WebSocketNetworkTransport) ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo3.websocket.WebSocketNetworkTransport")
 

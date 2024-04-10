@@ -19,8 +19,8 @@ constructor(
     webSocketConnection: WebSocketConnection,
     listener: Listener,
     private val connectionAcknowledgeTimeoutMs: Long = 10_000,
-    private val frameType: WsFrameType = WsFrameType.Text,
     private val connectionPayload: suspend () -> Map<String, Any?>? = { null },
+    private val frameType: WsFrameType = WsFrameType.Text,
 ) : WsProtocol(webSocketConnection, listener) {
 
   override suspend fun connectionInit() {
