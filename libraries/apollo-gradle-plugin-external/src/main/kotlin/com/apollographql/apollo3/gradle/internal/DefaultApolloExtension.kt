@@ -6,8 +6,8 @@ import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.compiler.UsedCoordinates
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.mergeWith
 import com.apollographql.apollo3.compiler.toIrOperations
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloDependencies
@@ -674,9 +674,10 @@ abstract class DefaultApolloExtension(
       task.irOperations.set(irOperationsTaskProvider.flatMap { it.irOperationsFile })
       task.upstreamMetadata.from(upstreamCodegenMetadata)
       task.downstreamUsedCoordinates.set(downstreamIrOperations.elements.map {
-        it.map { it.asFile.toIrOperations() }.fold(emptyMap<String, Set<String>>()) { acc, element ->
-          acc.mergeWith(element.usedFields)
+        it.map { it.asFile.toIrOperations() }.fold(UsedCoordinates()) { acc, element ->
+          acc.mergeWith(element.usedCoordinates)
         }
+            .asMap()
       })
       task.downstreamUsedCoordinates.finalizeValueOnRead()
 

@@ -6,6 +6,7 @@ import com.apollographql.apollo3.compiler.toCodegenMetadata
 import com.apollographql.apollo3.compiler.toCodegenOptions
 import com.apollographql.apollo3.compiler.toCodegenSchema
 import com.apollographql.apollo3.compiler.toIrOperations
+import com.apollographql.apollo3.compiler.toUsedCoordinates
 import com.apollographql.apollo3.gradle.internal.ApolloGenerateSourcesFromIrTask.Companion.findCodegenSchemaFile
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -35,7 +36,7 @@ abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBaseTask()
   abstract val irOperations: RegularFileProperty
 
   @get:Input
-  abstract val downstreamUsedCoordinates: MapProperty<String, Set<String>>
+  abstract val downstreamUsedCoordinates: MapProperty<String, Map<String, Set<String>>>
 
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
@@ -53,7 +54,7 @@ abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBaseTask()
       ApolloCompiler.buildSchemaAndOperationsSourcesFromIr(
           codegenSchema = codegenSchemaFile.toCodegenSchema(),
           irOperations = irOperations.get().asFile.toIrOperations(),
-          downstreamUsedCoordinates = downstreamUsedCoordinates.get(),
+          downstreamUsedCoordinates = downstreamUsedCoordinates.get().toUsedCoordinates(),
           upstreamCodegenMetadata = upstreamMetadata.files.map { it.toCodegenMetadata() },
           codegenOptions = codegenOptionsFile.get().asFile.toCodegenOptions(),
           layout = layout().create(codegenSchemaFile.toCodegenSchema()),
@@ -101,7 +102,7 @@ private abstract class GenerateSourcesFromIr : WorkAction<GenerateSourcesFromIrP
       ApolloCompiler.buildSchemaAndOperationsSourcesFromIr(
           codegenSchema = codegenSchema,
           irOperations = irOperations.get().asFile.toIrOperations(),
-          downstreamUsedCoordinates = downstreamUsedCoordinates.get(),
+          downstreamUsedCoordinates = downstreamUsedCoordinates.get().toUsedCoordinates(),
           upstreamCodegenMetadata = upstreamMetadata.files.map { it.toCodegenMetadata() },
           codegenOptions = codegenOptions.get().asFile.toCodegenOptions(),
           layout = plugin?.layout(codegenSchema),
@@ -119,7 +120,7 @@ private interface GenerateSourcesFromIrParameters : WorkParameters {
   val codegenSchemas: ConfigurableFileCollection
   val irOperations: RegularFileProperty
   val codegenOptions: RegularFileProperty
-  val downstreamUsedCoordinates: MapProperty<String, Set<String>>
+  val downstreamUsedCoordinates: MapProperty<String, Map<String, Set<String>>>
   val upstreamMetadata: ConfigurableFileCollection
   val operationManifestFile: RegularFileProperty
   val outputDir: DirectoryProperty
