@@ -3,14 +3,34 @@ package com.apollographql.apollo3.testing
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.checkFieldNotMissing
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.missingField
 
-class FooQuery: Query<FooQuery.Data> {
-  class Data(val foo: Int): Query.Data
+/**
+ * [FooQuery] is a query for tests that doesn't require codegen.
+ *
+ * Use it to test parts of the runtime without having to use included builds.
+ */
+class FooQuery: FooOperation(), Query<FooOperation.Data>
+
+/**
+ * [FooSubscription] is a query for tests that doesn't require codegen.
+ *
+ * Use it to test parts of the runtime without having to use included builds.
+ */
+class FooSubscription: FooOperation(), Subscription<FooOperation.Data>
+
+/**
+ * Base class for test queries.
+ * Note we can't make [FooOperation] extend both [Query] and [Subscription] because that confuses [ApolloClient] when deciding whant NetworkTransport to use.
+ */
+abstract class FooOperation: Operation<FooOperation.Data> {
+  class Data(val foo: Int): Query.Data, Subscription.Data
 
   override fun document(): String {
     return "query GetFoo { foo }"

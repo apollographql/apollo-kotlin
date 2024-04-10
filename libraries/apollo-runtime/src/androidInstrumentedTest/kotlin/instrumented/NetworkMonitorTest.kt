@@ -9,7 +9,7 @@ import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
-import com.apollographql.apollo3.testing.FooQuery
+import com.apollographql.apollo3.testing.FooOperation
 import com.apollographql.apollo3.testing.mockServerTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,9 +43,9 @@ class NetworkMonitorTest {
         httpEngine(FaultyHttpEngine())
       }
   ) {
-    mockServer.enqueueString(FooQuery.successResponse)
+    mockServer.enqueueString(FooOperation.successResponse)
 
-    val response = apolloClient.query(FooQuery()).execute()
+    val response = apolloClient.query(FooOperation()).execute()
 
     assertEquals(42, response.data?.foo)
 

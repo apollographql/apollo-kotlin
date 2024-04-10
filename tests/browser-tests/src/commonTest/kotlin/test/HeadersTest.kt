@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
+import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.runTest
 import okio.use
@@ -21,7 +21,7 @@ class HeadersTest {
         .subscriptionNetworkTransport(
             WebSocketNetworkTransport.Builder()
                 .serverUrl("https://unused.com")
-                .addHeader("foo", "bar")
+                .addHttpHeader("foo", "bar")
                 .build()
         )
         .build()
