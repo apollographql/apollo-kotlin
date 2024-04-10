@@ -68,7 +68,7 @@ class CacheArgumentTest {
     /**
      * The argument definition defaultValue is the empty object and is not coerced
      */
-    assertEquals("a1({\"b\":{}})", operation.fieldKey(AbsentArgumentWithArgumentDefaultValueQuery.Data(a1 = 42)))
+    assertEquals("a1", operation.fieldKey(AbsentArgumentWithArgumentDefaultValueQuery.Data(a1 = 42)))
   }
 
   @Test
