@@ -45,6 +45,7 @@ kotlin {
     findByName("jvmTest")?.apply {
       dependencies {
         implementation(libs.truth)
+        implementation(libs.slf4j)
       }
     }
 
