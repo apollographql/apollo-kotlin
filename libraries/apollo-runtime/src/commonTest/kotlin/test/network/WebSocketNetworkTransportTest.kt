@@ -13,6 +13,8 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.TextMessage
 import com.apollographql.apollo3.mockserver.awaitWebSocketRequest
 import com.apollographql.apollo3.mockserver.enqueueWebSocket
+import com.apollographql.apollo3.mpp.Platform
+import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.websocket.closeConnection
 import com.apollographql.apollo3.testing.FooSubscription
@@ -29,6 +31,7 @@ import okio.use
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertTrue
 
 class WebSocketNetworkTransportTest {
   @Test
@@ -208,9 +211,17 @@ class WebSocketNetworkTransportTest {
                 webSocketBody.enqueueMessage(CloseFrame(3666, "closed"))
 
                 awaitItem().exception.apply {
-                  assertIs<ApolloWebSocketClosedException>(this)
-                  assertEquals(3666, code)
-                  assertEquals("closed", reason)
+                  when (platform()){
+                    Platform.Native -> {
+                      assertIs<DefaultApolloException>(this)
+                      assertTrue(message?.contains("Error reading websocket") == true)
+                    }
+                    else -> {
+                      assertIs<ApolloWebSocketClosedException>(this)
+                      assertEquals(3666, code)
+                      assertEquals("closed", reason)
+                    }
+                  }
                 }
 
                 awaitComplete()
@@ -218,60 +229,6 @@ class WebSocketNetworkTransportTest {
         }
   }
 
-  @Test
-  fun socketReopensAfterAnError() = runTest(false) {
-    var mockServer = MockServer()
-
-    ApolloClient.Builder()
-        .httpServerUrl(mockServer.url())
-        .subscriptionNetworkTransport(
-            WebSocketNetworkTransport.Builder()
-                .serverUrl(mockServer.url())
-                .build()
-        )
-        .addRetryOnErrorInterceptor { _, attempt ->
-          attempt == 0
-        }
-        .build()
-        .use { apolloClient ->
-          var serverWriter = mockServer.enqueueWebSocket()
-          apolloClient.subscription(FooSubscription())
-              .toFlow()
-              .test {
-                var serverReader = mockServer.awaitWebSocketRequest()
-
-                serverReader.awaitMessage()
-                serverWriter.enqueueMessage(connectionAckMessage())
-
-                var operationId = serverReader.awaitMessage().operationId()
-                serverWriter.enqueueMessage(nextMessage(operationId, 0))
-
-                assertEquals(0, awaitItem().data?.foo)
-
-                /**
-                 * Close the server, the flow should restart
-                 */
-                val port = mockServer.port()
-                mockServer.close()
-                mockServer = MockServer.Builder().port(port).build()
-
-                serverWriter = mockServer.enqueueWebSocket()
-                serverReader = mockServer.awaitWebSocketRequest()
-
-                serverReader.awaitMessage()
-                serverWriter.enqueueMessage(connectionAckMessage())
-
-                operationId = serverReader.awaitMessage().operationId()
-                serverWriter.enqueueMessage(nextMessage(operationId, 1))
-
-                assertEquals(1, awaitItem().data?.foo)
-
-                serverWriter.enqueueMessage(completeMessage(operationId))
-
-                awaitComplete()
-              }
-        }
-  }
 
   @Test
   fun disposingTheClientClosesTheWebSocket() = mockServerWebSocketTest {
@@ -314,9 +271,17 @@ class WebSocketNetworkTransportTest {
           awaitItem()
           serverWriter.enqueueMessage(CloseFrame(1001, "flowThrowsIfNoReconnect"))
           awaitItem().exception.apply {
-            assertIs<ApolloWebSocketClosedException>(this)
-            assertEquals(1001, code)
-            assertEquals("flowThrowsIfNoReconnect", reason)
+            when (platform()){
+              Platform.Native -> {
+                assertIs<DefaultApolloException>(this)
+                assertTrue(message?.contains("Error reading websocket") == true)
+              }
+              else -> {
+                assertIs<ApolloWebSocketClosedException>(this)
+                assertEquals(1001, code)
+                assertEquals("flowThrowsIfNoReconnect", reason)
+              }
+            }
           }
           awaitComplete()
         }

@@ -64,7 +64,7 @@ class AppSyncWsProtocol(
       @Suppress("UNCHECKED_CAST")
       Buffer().writeUtf8(text).jsonReader().readAny() as Map<String, Any?>
     } catch (e: Exception) {
-      return ParseErrorServerMessage("Cannot parse server message: '$this'")
+      return ParseErrorServerMessage("Invalid JSON: '$this'")
     }
 
     val type = map["type"] as? String

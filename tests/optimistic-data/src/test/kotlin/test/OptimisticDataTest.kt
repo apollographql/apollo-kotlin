@@ -12,7 +12,6 @@ import com.apollographql.apollo3.mockserver.enqueueString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import optimistic.GetAnimalQuery
@@ -69,9 +68,6 @@ class OptimisticDataTest {
     apolloClient.query(GetAnimalQuery("1"))
         .watch()
         .map { it.data?.animal }
-        .onEach {
-          println(it)
-        }
         .filterNotNull()
         .test {
           awaitItem().let {
