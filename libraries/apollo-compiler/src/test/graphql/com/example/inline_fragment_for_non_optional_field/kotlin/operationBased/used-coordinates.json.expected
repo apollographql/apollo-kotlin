@@ -1,1 +1,17 @@
-{"typeToFieldsToArguments":{"Character":{},"Query":{"nonOptionalHero":["episode"]},"Float":{},"Human":{},"String":{}}}
+{
+    "typeToFieldsToArguments": {
+        "Character": {
+        },
+        "Query": {
+            "nonOptionalHero": [
+                "episode"
+            ]
+        },
+        "Float": {
+        },
+        "Human": {
+        },
+        "String": {
+        }
+    }
+}

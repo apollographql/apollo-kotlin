@@ -1,1 +1,10 @@
-{"typeToFieldsToArguments":{"Gravity":{},"GravityAsEnum":{},"Query":{}}}
+{
+    "typeToFieldsToArguments": {
+        "Gravity": {
+        },
+        "GravityAsEnum": {
+        },
+        "Query": {
+        }
+    }
+}

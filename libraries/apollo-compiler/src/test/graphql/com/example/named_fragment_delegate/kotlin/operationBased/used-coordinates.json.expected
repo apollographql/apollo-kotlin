@@ -1,1 +1,20 @@
-{"typeToFieldsToArguments":{"Character":{},"Query":{},"String":{},"Droid":{},"URL":{},"FriendsConnection":{},"Human":{},"FriendsEdge":{}}}
+{
+    "typeToFieldsToArguments": {
+        "Character": {
+        },
+        "Query": {
+        },
+        "String": {
+        },
+        "Droid": {
+        },
+        "URL": {
+        },
+        "FriendsConnection": {
+        },
+        "Human": {
+        },
+        "FriendsEdge": {
+        }
+    }
+}

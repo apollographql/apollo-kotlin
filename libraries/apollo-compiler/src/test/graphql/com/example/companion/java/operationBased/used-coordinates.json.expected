@@ -1,1 +1,10 @@
-{"typeToFieldsToArguments":{"Companion":{},"Int":{},"Query":{}}}
+{
+    "typeToFieldsToArguments": {
+        "Companion": {
+        },
+        "Int": {
+        },
+        "Query": {
+        }
+    }
+}

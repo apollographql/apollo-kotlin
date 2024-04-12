@@ -1,1 +1,17 @@
-{"typeToFieldsToArguments":{"__Schema":{},"__Type":{},"Query":{"__type":["name"]},"String":{},"__TypeKind":{}}}
+{
+    "typeToFieldsToArguments": {
+        "__Schema": {
+        },
+        "__Type": {
+        },
+        "Query": {
+            "__type": [
+                "name"
+            ]
+        },
+        "String": {
+        },
+        "__TypeKind": {
+        }
+    }
+}

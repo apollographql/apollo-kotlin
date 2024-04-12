@@ -1,1 +1,10 @@
-{"typeToFieldsToArguments":{"Tree":{},"String":{},"Query":{}}}
+{
+    "typeToFieldsToArguments": {
+        "Tree": {
+        },
+        "String": {
+        },
+        "Query": {
+        }
+    }
+}

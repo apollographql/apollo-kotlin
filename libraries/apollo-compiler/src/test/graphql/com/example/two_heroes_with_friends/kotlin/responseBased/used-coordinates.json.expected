@@ -1,1 +1,21 @@
-{"typeToFieldsToArguments":{"Character":{},"Query":{"hero":["episode"]},"String":{},"FriendsConnection":{},"Int":{},"FriendsEdge":{},"ID":{}}}
+{
+    "typeToFieldsToArguments": {
+        "Character": {
+        },
+        "Query": {
+            "hero": [
+                "episode"
+            ]
+        },
+        "String": {
+        },
+        "FriendsConnection": {
+        },
+        "Int": {
+        },
+        "FriendsEdge": {
+        },
+        "ID": {
+        }
+    }
+}

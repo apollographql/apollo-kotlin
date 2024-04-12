@@ -1,1 +1,18 @@
-{"typeToFieldsToArguments":{"Character":{},"Query":{},"Float":{},"Human":{},"Episode":{},"String":{},"ID":{}}}
+{
+    "typeToFieldsToArguments": {
+        "Character": {
+        },
+        "Query": {
+        },
+        "Float": {
+        },
+        "Human": {
+        },
+        "Episode": {
+        },
+        "String": {
+        },
+        "ID": {
+        }
+    }
+}

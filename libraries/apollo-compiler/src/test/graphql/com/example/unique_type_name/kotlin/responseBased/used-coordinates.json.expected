@@ -1,1 +1,22 @@
-{"typeToFieldsToArguments":{"Character":{},"String":{},"Float":{},"Human":{},"Episode":{},"FriendsConnection":{},"Int":{},"FriendsEdge":{},"Query":{}}}
+{
+    "typeToFieldsToArguments": {
+        "Character": {
+        },
+        "String": {
+        },
+        "Float": {
+        },
+        "Human": {
+        },
+        "Episode": {
+        },
+        "FriendsConnection": {
+        },
+        "Int": {
+        },
+        "FriendsEdge": {
+        },
+        "Query": {
+        }
+    }
+}

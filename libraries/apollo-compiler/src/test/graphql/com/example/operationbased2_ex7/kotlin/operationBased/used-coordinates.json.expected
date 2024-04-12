@@ -1,1 +1,12 @@
-{"typeToFieldsToArguments":{"Animal":{},"Int":{},"String":{},"Query":{}}}
+{
+    "typeToFieldsToArguments": {
+        "Animal": {
+        },
+        "Int": {
+        },
+        "String": {
+        },
+        "Query": {
+        }
+    }
+}

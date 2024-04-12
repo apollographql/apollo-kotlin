@@ -1,1 +1,18 @@
-{"typeToFieldsToArguments":{"Character":{},"Query":{},"ID":{},"String":{},"Date":{},"UnsupportedType":{},"URL":{}}}
+{
+    "typeToFieldsToArguments": {
+        "Character": {
+        },
+        "Query": {
+        },
+        "ID": {
+        },
+        "String": {
+        },
+        "Date": {
+        },
+        "UnsupportedType": {
+        },
+        "URL": {
+        }
+    }
+}
