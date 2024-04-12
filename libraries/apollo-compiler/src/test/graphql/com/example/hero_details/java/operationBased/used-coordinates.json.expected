@@ -2,8 +2,6 @@
     "typeToFieldsToArguments": {
         "Character": {
         },
-        "Query": {
-        },
         "hero_type": {
         },
         "String": {
@@ -13,6 +11,8 @@
         "Int": {
         },
         "FriendsEdge": {
+        },
+        "Query": {
         }
     }
 }

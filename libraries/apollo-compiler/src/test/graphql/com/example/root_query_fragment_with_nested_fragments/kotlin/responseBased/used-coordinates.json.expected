@@ -4,6 +4,8 @@
         },
         "Character": {
         },
+        "Droid": {
+        },
         "Query": {
             "droid": [
                 "id"
@@ -11,8 +13,6 @@
             "human": [
                 "id"
             ]
-        },
-        "Droid": {
         },
         "Human": {
         }

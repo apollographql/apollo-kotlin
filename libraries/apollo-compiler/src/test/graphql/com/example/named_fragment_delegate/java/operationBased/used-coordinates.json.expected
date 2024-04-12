@@ -2,9 +2,9 @@
     "typeToFieldsToArguments": {
         "Character": {
         },
-        "Query": {
-        },
         "String": {
+        },
+        "Query": {
         },
         "Droid": {
         },
@@ -12,9 +12,9 @@
         },
         "FriendsConnection": {
         },
-        "Human": {
-        },
         "FriendsEdge": {
+        },
+        "Human": {
         }
     }
 }

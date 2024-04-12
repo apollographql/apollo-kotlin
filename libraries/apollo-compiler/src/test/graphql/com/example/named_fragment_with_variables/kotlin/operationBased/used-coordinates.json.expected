@@ -7,6 +7,10 @@
                 "id"
             ]
         },
+        "UserQuery": {
+        },
+        "Int": {
+        },
         "Organization": {
             "user": [
                 "query"
@@ -16,10 +20,6 @@
             "avatar": [
                 "size"
             ]
-        },
-        "UserQuery": {
-        },
-        "Int": {
         },
         "Boolean": {
         }

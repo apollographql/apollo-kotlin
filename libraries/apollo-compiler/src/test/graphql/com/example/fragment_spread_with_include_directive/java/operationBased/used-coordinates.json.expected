@@ -2,12 +2,12 @@
     "typeToFieldsToArguments": {
         "Character": {
         },
+        "Boolean": {
+        },
         "Query": {
             "getBoolean": [
                 "booleanArg"
             ]
-        },
-        "Boolean": {
         },
         "String": {
         },

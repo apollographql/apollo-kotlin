@@ -2,12 +2,12 @@
     "typeToFieldsToArguments": {
         "Character": {
         },
+        "SearchResult": {
+        },
         "Query": {
             "search": [
                 "text"
             ]
-        },
-        "SearchResult": {
         },
         "ID": {
         },

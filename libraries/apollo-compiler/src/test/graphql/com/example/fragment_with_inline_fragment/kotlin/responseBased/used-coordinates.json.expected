@@ -2,8 +2,6 @@
     "typeToFieldsToArguments": {
         "Character": {
         },
-        "Query": {
-        },
         "String": {
         },
         "FriendsConnection": {
@@ -13,6 +11,8 @@
         "FriendsEdge": {
         },
         "Episode": {
+        },
+        "Query": {
         },
         "Droid": {
         },

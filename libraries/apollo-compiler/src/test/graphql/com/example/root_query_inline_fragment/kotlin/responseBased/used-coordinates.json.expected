@@ -4,18 +4,16 @@
         },
         "Character": {
         },
+        "Droid": {
+        },
         "Query": {
             "droid": [
                 "id"
             ]
         },
-        "Droid": {
-        },
         "Episode": {
         },
         "Float": {
-        },
-        "Human": {
         }
     }
 }

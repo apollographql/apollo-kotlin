@@ -2,8 +2,6 @@
     "typeToFieldsToArguments": {
         "Character": {
         },
-        "Query": {
-        },
         "ID": {
         },
         "String": {
@@ -13,6 +11,8 @@
         "UnsupportedType": {
         },
         "URL": {
+        },
+        "Query": {
         }
     }
 }
