@@ -8,6 +8,11 @@ plugins {
   id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
+val javaVersion: String = System.getProperty("java.version")
+if (javaVersion.substringBefore(".").toInt() < 17) {
+  throw GradleException("Java 17 or higher is required to build this project. You are using Java $javaVersion.")
+}
+
 rootProject.name = "apollo-kotlin"
 
 rootProject.projectDir
@@ -33,3 +38,4 @@ dependencyResolutionManagement {
 
 apply(from = "./gradle/repositories.gradle.kts")
 apply(from = "./gradle/ge.gradle")
+
