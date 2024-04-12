@@ -159,7 +159,14 @@ private fun KotlinMultiplatformExtension.configureSourceSetGraph() {
             withAndroidTarget()
           }
         }
-        group("js")
+        group("jsCommon") {
+          group("js") {
+            withJs()
+          }
+          group("wasmJs") {
+            withWasmJs()
+          }
+        }
       }
     }
   }
