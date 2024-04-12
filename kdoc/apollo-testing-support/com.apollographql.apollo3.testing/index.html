@@ -91,7 +91,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-testing-support/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-foo-operation/index.html">FooOperation</a> : <a href="../../apollo-api/com.apollographql.apollo3.api/-operation/index.html">Operation</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-foo-operation/-data/index.html">FooOperation.Data</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Base class for test queries. Note we can't make <a href="-foo-operation/index.html">FooOperation</a> extend both <a href="../../apollo-api/com.apollographql.apollo3.api/-query/index.html">Query</a> and <a href="../../apollo-api/com.apollographql.apollo3.api/-subscription/index.html">Subscription</a> because that confuses ApolloClient when deciding whant NetworkTransport to use.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-testing-support/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-foo-operation/index.html">FooOperation</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">operationType<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="../../apollo-api/com.apollographql.apollo3.api/-operation/index.html">Operation</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-foo-operation/-data/index.html">FooOperation.Data</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Base class for test queries. Note we can't make <a href="-foo-operation/index.html">FooOperation</a> extend both <a href="../../apollo-api/com.apollographql.apollo3.api/-query/index.html">Query</a> and <a href="../../apollo-api/com.apollographql.apollo3.api/-subscription/index.html">Subscription</a> because that confuses ApolloClient when deciding whant NetworkTransport to use.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -156,6 +156,21 @@
               </div>
             </div>
           </div>
+<a data-name="2051377647%2FClasslikes%2F-873568609" anchor-label="MockServerWebSocketTest" id="2051377647%2FClasslikes%2F-873568609" data-filterable-set=":apollo-testing-support/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-testing-support/commonMain" data-filterable-set=":apollo-testing-support/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-mock-server-web-socket-test/index.html"><span>Mock</span><wbr><span>Server</span><wbr><span>Web</span><wbr><span>Socket</span><wbr><span><span>Test</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2051377647%2FClasslikes%2F-873568609"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-testing-support/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">class </span><a href="-mock-server-web-socket-test/index.html">MockServerWebSocketTest</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>apolloClient<span class="token operator">: </span><a href="../../apollo-runtime/com.apollographql.apollo3/-apollo-client/index.html">ApolloClient</a><span class="token punctuation">, </span></span><span class="parameter ">mockServer<span class="token operator">: </span><a href="../../apollo-mockserver/com.apollographql.apollo3.mockserver/-mock-server/index.html">MockServer</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>coroutineScope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="-681541539%2FClasslikes%2F-873568609" anchor-label="QueueTestNetworkTransport" id="-681541539%2FClasslikes%2F-873568609" data-filterable-set=":apollo-testing-support/commonMain"></a>
           <div class="table-row" data-filterable-current=":apollo-testing-support/commonMain" data-filterable-set=":apollo-testing-support/commonMain">
             <div class="main-subrow keyValue ">
@@ -213,7 +228,22 @@
       </div>
       <div data-togglable="FUNCTION">
         <h2 class="">Functions</h2>
-        <div class="table"><a data-name="-447903655%2FFunctions%2F-873568609" anchor-label="assertNoElement" id="-447903655%2FFunctions%2F-873568609" data-filterable-set=":apollo-testing-support/commonMain"></a>
+        <div class="table"><a data-name="80701818%2FFunctions%2F-873568609" anchor-label="ackMessage" id="80701818%2FFunctions%2F-873568609" data-filterable-set=":apollo-testing-support/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-testing-support/commonMain" data-filterable-set=":apollo-testing-support/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="ack-message.html"><span>ack</span><wbr><span><span>Message</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="80701818%2FFunctions%2F-873568609"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-testing-support/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="ack-message.html"><span class="token function">ackMessage</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../apollo-mockserver/com.apollographql.apollo3.mockserver/-web-socket-message/index.html">WebSocketMessage</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-447903655%2FFunctions%2F-873568609" anchor-label="assertNoElement" id="-447903655%2FFunctions%2F-873568609" data-filterable-set=":apollo-testing-support/commonMain"></a>
           <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-testing-support/commonMain" data-filterable-set=":apollo-testing-support/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
@@ -346,6 +376,36 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-testing-support/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="mock-server-test.html"><span class="token function">mockServerTest</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">skipDelays<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter ">clientBuilder<span class="token operator">: </span><span class="token keyword"></span><a href="../../apollo-runtime/com.apollographql.apollo3/-apollo-client/-builder/index.html">ApolloClient.Builder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{}<span class="token punctuation">, </span></span><span class="parameter ">block<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><a href="-mock-server-test/index.html">MockServerTest</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../com.apollographql.apollo3.testing.internal/-apollo-test-result/index.html">ApolloTestResult</a></div><div class="brief "><p class="paragraph">A convenience function that makes sure the MockServer and ApolloClient are properly closed at the end of the test</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1675004216%2FFunctions%2F-873568609" anchor-label="mockServerWebSocketTest" id="1675004216%2FFunctions%2F-873568609" data-filterable-set=":apollo-testing-support/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-testing-support/commonMain" data-filterable-set=":apollo-testing-support/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="mock-server-web-socket-test.html"><span>mock</span><wbr><span>Server</span><wbr><span>Web</span><wbr><span>Socket</span><wbr><span><span>Test</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1675004216%2FFunctions%2F-873568609"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-testing-support/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="mock-server-web-socket-test.html"><span class="token function">mockServerWebSocketTest</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">customizeTransport<span class="token operator">: </span><span class="token keyword"></span><a href="../../apollo-runtime/com.apollographql.apollo3.network.websocket/-web-socket-network-transport/-builder/index.html">WebSocketNetworkTransport.Builder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{}<span class="token punctuation">, </span></span><span class="parameter ">block<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><a href="-mock-server-web-socket-test/index.html">MockServerWebSocketTest</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../com.apollographql.apollo3.testing.internal/-apollo-test-result/index.html">ApolloTestResult</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1179000146%2FFunctions%2F-873568609" anchor-label="operationId" id="1179000146%2FFunctions%2F-873568609" data-filterable-set=":apollo-testing-support/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-testing-support/commonMain" data-filterable-set=":apollo-testing-support/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="operation-id.html"><span>operation</span><wbr><span><span>Id</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1179000146%2FFunctions%2F-873568609"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-testing-support/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../apollo-mockserver/com.apollographql.apollo3.mockserver/-web-socket-message/index.html">WebSocketMessage</a><span class="token punctuation">.</span><a href="operation-id.html"><span class="token function">operationId</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Extracts the operationId from a graphql-ws message</p></div></div></div>
                 </div>
               </div>
             </div>
