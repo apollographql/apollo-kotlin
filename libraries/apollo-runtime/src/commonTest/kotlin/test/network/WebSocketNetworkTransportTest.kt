@@ -323,15 +323,7 @@ class WebSocketNetworkTransportTest {
                 /**
                  * Prepare next websocket
                  */
-
-                /**
-                 * Prepare next websocket
-                 */
                 serverWriter = mockServer.enqueueWebSocket()
-
-                /**
-                 * call closeConnection
-                 */
 
                 /**
                  * call closeConnection
