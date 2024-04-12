@@ -146,7 +146,7 @@ class WebSocketNetworkTransport private constructor(
     /**
      * Add a [HttpHeader] to the handshake query.
      */
-    @Deprecated("use addHttpHeader instead", ReplaceWith("addHttpHeader"))
+    @Deprecated("use addHttpHeader instead", ReplaceWith("addHttpHeader(name, value)"))
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     fun addHeader(name: String, value: String) = apply {
       this.httpHeaders = this.httpHeaders.orEmpty() + HttpHeader(name, value)

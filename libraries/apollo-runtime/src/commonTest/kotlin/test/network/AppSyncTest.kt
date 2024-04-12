@@ -1,6 +1,6 @@
 package test.network
 
-import com.apollographql.apollo3.network.ws.AppSyncWsProtocol
+import com.apollographql.apollo3.network.websocket.AppSyncWsProtocol
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

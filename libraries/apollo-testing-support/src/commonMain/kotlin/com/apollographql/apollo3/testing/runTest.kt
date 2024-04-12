@@ -3,6 +3,7 @@ package com.apollographql.apollo3.testing
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.CoroutineScope
 import okio.use
 
@@ -17,7 +18,7 @@ fun mockServerTest(
     skipDelays: Boolean = true,
     clientBuilder: ApolloClient.Builder.() -> Unit = {},
     block: suspend MockServerTest.() -> Unit
-) = com.apollographql.apollo3.testing.internal.runTest(skipDelays) {
+) = runTest(skipDelays) {
   val mockServer = MockServer()
 
   val apolloClient = ApolloClient.Builder()
