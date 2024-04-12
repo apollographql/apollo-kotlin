@@ -6,11 +6,8 @@ import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
-import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFloatValue
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.GQLFragmentSpread
-import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLIntValue
 import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
@@ -301,9 +298,6 @@ internal class IrOperationsBuilder(
     // Add the root type to use from the selections
     usedCoordinates.putType(typeDefinition.name)
 
-    // Track all used arguments
-    usedCoordinates.putAllArguments(this, allFragmentDefinitions)
-
     return IrOperation(
         name = name!!,
         description = description,
@@ -343,9 +337,6 @@ internal class IrOperationsBuilder(
 
     // Add the root type to use from the fragment selections
     usedCoordinates.putType(typeCondition.name)
-
-    // Track all used arguments
-    usedCoordinates.putAllArguments(this, allFragmentDefinitions)
 
     return IrFragmentDefinition(
         name = name,
@@ -500,7 +491,7 @@ internal class IrOperationsBuilder(
       val condition: BooleanExpression<BVariable>,
       val selections: List<GQLSelection>,
       val parentType: String,
-      val definitionHasArguments: Boolean,
+      val usedArguments: List<String>,
   ) {
     val responseName = alias ?: name
   }
@@ -544,7 +535,7 @@ internal class IrOperationsBuilder(
           forceOptional = gqlField.directives.optionalValue(schema) == true,
           parentType = fieldWithParent.parentType,
           catch = gqlField.findCatch(fieldDefinition, schema),
-          definitionHasArguments = fieldDefinition.arguments.isNotEmpty()
+          usedArguments = gqlField.arguments.map { it.name },
       )
     }.groupBy {
       it.responseName
@@ -610,9 +601,9 @@ internal class IrOperationsBuilder(
        */
       usedCoordinates.putType(first.type.rawType().name)
 
-      // When a field with arguments is selected, its parent type is referenced in the compiled selections
-      if (first.definitionHasArguments) {
-        usedCoordinates.putType(first.parentType)
+      // Track argument usage
+      for (usedArgument in first.usedArguments) {
+        usedCoordinates.putArgument(first.parentType, first.name, usedArgument)
       }
 
       val irType = first
@@ -768,56 +759,6 @@ internal class IrOperationsBuilder(
         }
       }
     }
-  }
-
-  private fun UsedCoordinates.putAllArguments(
-      parentType: String,
-      selections: List<GQLSelection>,
-      allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-  ) {
-    for (selection in selections) {
-      when (selection) {
-        is GQLField -> {
-          for (argument in selection.arguments) {
-            putArgument(type = parentType, field = selection.name, argument = argument.name)
-          }
-          val fieldType = selection.definitionFromScope(schema, parentType)!!.type.rawType().name
-          putAllArguments(parentType = fieldType, selections = selection.selections, allFragmentDefinitions = allFragmentDefinitions)
-        }
-
-        is GQLInlineFragment -> {
-          val fragmentType = selection.typeCondition?.name ?: parentType
-          putAllArguments(parentType = fragmentType, selections = selection.selections, allFragmentDefinitions = allFragmentDefinitions)
-        }
-
-        is GQLFragmentSpread -> {
-          val fragmentDefinition = allFragmentDefinitions[selection.name]!!
-          putAllArguments(fragmentDefinition, allFragmentDefinitions)
-        }
-      }
-    }
-  }
-
-  private fun UsedCoordinates.putAllArguments(
-      operationDefinition: GQLOperationDefinition,
-      allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-  ) {
-    putAllArguments(
-        parentType = operationDefinition.rootTypeDefinition(schema)!!.name,
-        selections = operationDefinition.selections,
-        allFragmentDefinitions = allFragmentDefinitions,
-    )
-  }
-
-  private fun UsedCoordinates.putAllArguments(
-      fragmentDefinition: GQLFragmentDefinition,
-      allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-  ) {
-    putAllArguments(
-        parentType = fragmentDefinition.typeCondition.name,
-        selections = fragmentDefinition.selections,
-        allFragmentDefinitions = allFragmentDefinitions,
-    )
   }
 }
 
