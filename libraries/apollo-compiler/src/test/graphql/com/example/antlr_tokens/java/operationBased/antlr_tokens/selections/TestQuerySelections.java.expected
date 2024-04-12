@@ -17,8 +17,8 @@ import java.util.List;
 public class TestQuerySelections {
   private static List<CompiledSelection> __typeWithGraphQLKeywords = Arrays.asList(
     new CompiledField.Builder("on", GraphQLString.type).build(),
-    new CompiledField.Builder("null", GraphQLString.type).arguments(Arrays.asList(new CompiledArgument.Builder(TypeWithGraphQLKeywords.null__fragment).value(new CompiledVariable("operation")).build())).build(),
-    new CompiledField.Builder("null", GraphQLString.type).alias("alias").arguments(Arrays.asList(new CompiledArgument.Builder(TypeWithGraphQLKeywords.null__fragment).value("A string\n"
+    new CompiledField.Builder("null", GraphQLString.type).arguments(Arrays.asList(new CompiledArgument.Builder(TypeWithGraphQLKeywords.__null_fragment).value(new CompiledVariable("operation")).build())).build(),
+    new CompiledField.Builder("null", GraphQLString.type).alias("alias").arguments(Arrays.asList(new CompiledArgument.Builder(TypeWithGraphQLKeywords.__null_fragment).value("A string\n"
             + "with a new line").build())).build()
   );
 

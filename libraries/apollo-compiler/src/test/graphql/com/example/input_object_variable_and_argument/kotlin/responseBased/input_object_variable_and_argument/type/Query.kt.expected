@@ -13,13 +13,13 @@ import com.apollographql.apollo3.api.ObjectType
  */
 public class Query {
   public companion object {
-    public val heroWithReview__episode: CompiledArgumentDefinition =
+    public val __heroWithReview_episode: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("episode").build()
 
-    public val heroWithReview__review: CompiledArgumentDefinition =
+    public val __heroWithReview_review: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("review").build()
 
-    public val heroWithReview__listOfInts: CompiledArgumentDefinition =
+    public val __heroWithReview_listOfInts: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("listOfInts").build()
 
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()

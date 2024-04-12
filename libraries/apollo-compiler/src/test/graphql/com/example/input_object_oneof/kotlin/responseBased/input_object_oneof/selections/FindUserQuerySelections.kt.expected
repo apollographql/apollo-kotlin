@@ -28,7 +28,7 @@ public object FindUserQuerySelections {
           name = "findUser",
           type = User.type
         ).arguments(listOf(
-          CompiledArgument.Builder(Query.findUser__findUserInput).value(CompiledVariable("findUserInput")).build()
+          CompiledArgument.Builder(Query.__findUser_findUserInput).value(CompiledVariable("findUserInput")).build()
         ))
         .selections(__findUser)
         .build()

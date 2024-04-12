@@ -13,34 +13,34 @@ import com.apollographql.apollo3.api.ObjectType
  */
 public class Query {
   public companion object {
-    public val testNullableArguments__int: CompiledArgumentDefinition =
+    public val __testNullableArguments_int: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("int").build()
 
-    public val testNullableArguments__float: CompiledArgumentDefinition =
+    public val __testNullableArguments_float: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("float").build()
 
-    public val testNullableArguments__string: CompiledArgumentDefinition =
+    public val __testNullableArguments_string: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("string").build()
 
-    public val testNullableArguments__episode: CompiledArgumentDefinition =
+    public val __testNullableArguments_episode: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("episode").build()
 
-    public val testNullableArguments__review: CompiledArgumentDefinition =
+    public val __testNullableArguments_review: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("review").build()
 
-    public val testNullableArguments__boolean: CompiledArgumentDefinition =
+    public val __testNullableArguments_boolean: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("boolean").build()
 
-    public val testNullableArguments__list: CompiledArgumentDefinition =
+    public val __testNullableArguments_list: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("list").build()
 
-    public val reviews__episode: CompiledArgumentDefinition =
+    public val __reviews_episode: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("episode").build()
 
-    public val reviews__starsInt: CompiledArgumentDefinition =
+    public val __reviews_starsInt: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("starsInt").build()
 
-    public val reviews__starsFloat: CompiledArgumentDefinition =
+    public val __reviews_starsFloat: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("starsFloat").build()
 
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()

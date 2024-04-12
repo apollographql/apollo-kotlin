@@ -39,7 +39,7 @@ public object TestQuerySelections {
           name = "starship",
           type = Starship.type
         ).arguments(listOf(
-          CompiledArgument.Builder(Query.starship__id).value(CompiledVariable("id")).build()
+          CompiledArgument.Builder(Query.__starship_id).value(CompiledVariable("id")).build()
         ))
         .selections(__starship)
         .build()

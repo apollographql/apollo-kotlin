@@ -39,6 +39,6 @@ public class TestQuerySelections {
 
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("__schema", new CompiledNotNullType(__Schema.type)).selections(____schema).build(),
-    new CompiledField.Builder("__type", new CompiledNotNullType(__Type.type)).arguments(Arrays.asList(new CompiledArgument.Builder(Query.__type__name).value("Vehicle").build())).selections(____type).build()
+    new CompiledField.Builder("__type", new CompiledNotNullType(__Type.type)).arguments(Arrays.asList(new CompiledArgument.Builder(Query.____type_name).value("Vehicle").build())).selections(____type).build()
   );
 }

@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 
 public class Query {
-  public static final CompiledArgumentDefinition search__filter = new CompiledArgumentDefinition.Builder("filter").build();
+  public static final CompiledArgumentDefinition __search_filter = new CompiledArgumentDefinition.Builder("filter").build();
 
   public static ObjectType type = (new ObjectType.Builder("Query")).build();
 }

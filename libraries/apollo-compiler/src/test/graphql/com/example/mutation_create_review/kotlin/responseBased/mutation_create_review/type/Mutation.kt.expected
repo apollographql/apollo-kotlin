@@ -21,10 +21,10 @@ import kotlin.collections.Map
  */
 internal class Mutation {
   public companion object : BuilderFactory<MutationBuilder> {
-    public val createReview__episode: CompiledArgumentDefinition =
+    public val __createReview_episode: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("episode").build()
 
-    public val createReview__review: CompiledArgumentDefinition =
+    public val __createReview_review: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("review").build()
 
     public val type: ObjectType = ObjectType.Builder(name = "Mutation").build()

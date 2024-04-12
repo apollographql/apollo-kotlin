@@ -22,6 +22,6 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("hero", Character.type).alias("heroAVeryAVeryAVeryAVeryAVeryAVeryAV").arguments(Arrays.asList(new CompiledArgument.Builder(Query.hero__episode).value(new CompiledVariable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")).build())).selections(__hero).build()
+    new CompiledField.Builder("hero", Character.type).alias("heroAVeryAVeryAVeryAVeryAVeryAVeryAV").arguments(Arrays.asList(new CompiledArgument.Builder(Query.__hero_episode).value(new CompiledVariable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")).build())).selections(__hero).build()
   );
 }

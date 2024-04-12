@@ -29,7 +29,7 @@ public object CatQuerySelections {
           name = "search",
           type = Cat.type
         ).arguments(listOf(
-          CompiledArgument.Builder(Query.search__filter).value(CompiledVariable("filter")).build()
+          CompiledArgument.Builder(Query.__search_filter).value(CompiledVariable("filter")).build()
         ))
         .selections(__search)
         .build(),

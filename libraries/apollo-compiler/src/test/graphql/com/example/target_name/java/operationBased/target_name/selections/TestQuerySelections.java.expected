@@ -40,10 +40,10 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("object", RenamedObject.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.object__input).value(new CompiledVariable("input")).build())).selections(__object).build(),
+    new CompiledField.Builder("object", RenamedObject.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.__object_input).value(new CompiledVariable("input")).build())).selections(__object).build(),
     new CompiledField.Builder("interface", RenamedInterface.type).selections(__interface).build(),
     new CompiledField.Builder("union", RenamedUnion.type).selections(__union).build(),
-    new CompiledField.Builder("scalar", RenamedScalar.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.scalar__scalar).value(new CompiledVariable("scalar")).build())).build(),
-    new CompiledField.Builder("enum", RenamedEnum.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.enum__enum).value(new CompiledVariable("enum")).build())).build()
+    new CompiledField.Builder("scalar", RenamedScalar.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.__scalar_scalar).value(new CompiledVariable("scalar")).build())).build(),
+    new CompiledField.Builder("enum", RenamedEnum.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.__enum_enum).value(new CompiledVariable("enum")).build())).build()
   );
 }

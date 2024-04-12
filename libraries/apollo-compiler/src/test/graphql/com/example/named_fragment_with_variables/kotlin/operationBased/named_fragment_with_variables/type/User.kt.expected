@@ -10,7 +10,7 @@ import com.apollographql.apollo3.api.ObjectType
 
 public class User {
   public companion object {
-    public val avatar__size: CompiledArgumentDefinition =
+    public val __avatar_size: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("size").build()
 
     public val type: ObjectType = ObjectType.Builder(name = "User").build()

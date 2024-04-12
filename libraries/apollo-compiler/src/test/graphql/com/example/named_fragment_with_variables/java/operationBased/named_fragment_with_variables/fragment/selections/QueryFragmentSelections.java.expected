@@ -27,10 +27,10 @@ public class QueryFragmentSelections {
 
   private static List<CompiledSelection> __organization = Arrays.asList(
     new CompiledField.Builder("id", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledField.Builder("user", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(User.type)))).arguments(Arrays.asList(new CompiledArgument.Builder(Organization.user__query).value(new CompiledVariable("query")).build())).selections(__user).build()
+    new CompiledField.Builder("user", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(User.type)))).arguments(Arrays.asList(new CompiledArgument.Builder(Organization.__user_query).value(new CompiledVariable("query")).build())).selections(__user).build()
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("organization", Organization.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.organization__id).value(new CompiledVariable("organizationId")).build())).selections(__organization).build()
+    new CompiledField.Builder("organization", Organization.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.__organization_id).value(new CompiledVariable("organizationId")).build())).selections(__organization).build()
   );
 }

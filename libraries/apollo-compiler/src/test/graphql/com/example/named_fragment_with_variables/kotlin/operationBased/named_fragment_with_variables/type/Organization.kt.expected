@@ -10,7 +10,7 @@ import com.apollographql.apollo3.api.ObjectType
 
 public class Organization {
   public companion object {
-    public val user__query: CompiledArgumentDefinition =
+    public val __user_query: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("query").build()
 
     public val type: ObjectType = ObjectType.Builder(name = "Organization").build()

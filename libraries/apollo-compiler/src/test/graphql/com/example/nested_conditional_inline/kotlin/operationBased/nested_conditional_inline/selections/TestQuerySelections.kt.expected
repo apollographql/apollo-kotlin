@@ -25,7 +25,7 @@ public object TestQuerySelections {
           name = "height",
           type = GraphQLFloat.type
         ).arguments(listOf(
-          CompiledArgument.Builder(Human.height__unit).value("FOOT").build()
+          CompiledArgument.Builder(Human.__height_unit).value("FOOT").build()
         ))
         .build()
       )
@@ -59,7 +59,7 @@ public object TestQuerySelections {
           name = "height",
           type = GraphQLFloat.type
         ).arguments(listOf(
-          CompiledArgument.Builder(Human.height__unit).value("METER").build()
+          CompiledArgument.Builder(Human.__height_unit).value("METER").build()
         ))
         .build()
       )
@@ -114,7 +114,7 @@ public object TestQuerySelections {
           name = "hero",
           type = Character.type
         ).arguments(listOf(
-          CompiledArgument.Builder(Query.hero__episode).value(CompiledVariable("episode")).build()
+          CompiledArgument.Builder(Query.__hero_episode).value(CompiledVariable("episode")).build()
         ))
         .selections(__hero)
         .build()

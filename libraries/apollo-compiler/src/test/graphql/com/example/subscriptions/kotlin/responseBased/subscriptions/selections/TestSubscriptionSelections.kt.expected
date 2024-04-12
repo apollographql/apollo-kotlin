@@ -33,7 +33,7 @@ public object TestSubscriptionSelections {
           name = "commentAdded",
           type = Comment.type
         ).arguments(listOf(
-          CompiledArgument.Builder(Subscription.commentAdded__repoFullName).value(CompiledVariable("repo")).build()
+          CompiledArgument.Builder(Subscription.__commentAdded_repoFullName).value(CompiledVariable("repo")).build()
         ))
         .selections(__commentAdded)
         .build()

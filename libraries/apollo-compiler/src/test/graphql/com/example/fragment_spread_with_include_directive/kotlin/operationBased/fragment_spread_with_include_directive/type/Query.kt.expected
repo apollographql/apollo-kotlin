@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.ObjectType
  */
 public class Query {
   public companion object {
-    public val getBoolean__booleanArg: CompiledArgumentDefinition =
+    public val __getBoolean_booleanArg: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("booleanArg").build()
 
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()

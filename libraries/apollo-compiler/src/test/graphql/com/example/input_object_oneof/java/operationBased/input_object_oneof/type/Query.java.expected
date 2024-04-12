@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 
 public class Query {
-  public static final CompiledArgumentDefinition findUser__findUserInput = new CompiledArgumentDefinition.Builder("findUserInput").build();
+  public static final CompiledArgumentDefinition __findUser_findUserInput = new CompiledArgumentDefinition.Builder("findUserInput").build();
 
   public static ObjectType type = (new ObjectType.Builder("Query")).build();
 }

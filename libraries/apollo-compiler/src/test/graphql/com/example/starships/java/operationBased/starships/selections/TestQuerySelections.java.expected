@@ -27,6 +27,6 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("starship", Starship.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.starship__id).value(new CompiledVariable("id")).build())).selections(__starship).build()
+    new CompiledField.Builder("starship", Starship.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.__starship_id).value(new CompiledVariable("id")).build())).selections(__starship).build()
   );
 }

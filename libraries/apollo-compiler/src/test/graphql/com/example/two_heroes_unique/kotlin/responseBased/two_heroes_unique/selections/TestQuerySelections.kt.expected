@@ -46,7 +46,7 @@ public object TestQuerySelections {
           type = Character.type
         ).alias("luke")
         .arguments(listOf(
-          CompiledArgument.Builder(Query.hero__episode).value("EMPIRE").build()
+          CompiledArgument.Builder(Query.__hero_episode).value("EMPIRE").build()
         ))
         .selections(__hero1)
         .build()

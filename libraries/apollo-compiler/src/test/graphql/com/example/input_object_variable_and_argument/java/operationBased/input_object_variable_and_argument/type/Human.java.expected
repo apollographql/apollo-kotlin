@@ -13,7 +13,7 @@ import java.util.Arrays;
  * A humanoid creature from the Star Wars universe
  */
 public class Human {
-  public static final CompiledArgumentDefinition height__unit = new CompiledArgumentDefinition.Builder("unit").build();
+  public static final CompiledArgumentDefinition __height_unit = new CompiledArgumentDefinition.Builder("unit").build();
 
   public static ObjectType type = (new ObjectType.Builder("Human")).interfaces(Arrays.asList(Character.type)).build();
 }

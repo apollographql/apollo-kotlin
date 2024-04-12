@@ -33,9 +33,9 @@ public object TestQuerySelections {
           name = "reviews",
           type = Review.type.list()
         ).arguments(listOf(
-          CompiledArgument.Builder(Query.reviews__episode).value("JEDI").build(),
-          CompiledArgument.Builder(Query.reviews__starsFloat).value(9.9).build(),
-          CompiledArgument.Builder(Query.reviews__starsInt).value(10).build()
+          CompiledArgument.Builder(Query.__reviews_episode).value("JEDI").build(),
+          CompiledArgument.Builder(Query.__reviews_starsFloat).value(9.9).build(),
+          CompiledArgument.Builder(Query.__reviews_starsInt).value(10).build()
         ))
         .selections(__reviews)
         .build(),
@@ -43,13 +43,13 @@ public object TestQuerySelections {
           name = "testNullableArguments",
           type = GraphQLInt.type.notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder(Query.testNullableArguments__boolean).value(null).build(),
-          CompiledArgument.Builder(Query.testNullableArguments__episode).value(null).build(),
-          CompiledArgument.Builder(Query.testNullableArguments__float).value(null).build(),
-          CompiledArgument.Builder(Query.testNullableArguments__int).value(null).build(),
-          CompiledArgument.Builder(Query.testNullableArguments__list).value(null).build(),
-          CompiledArgument.Builder(Query.testNullableArguments__review).value(null).build(),
-          CompiledArgument.Builder(Query.testNullableArguments__string).value(null).build()
+          CompiledArgument.Builder(Query.__testNullableArguments_boolean).value(null).build(),
+          CompiledArgument.Builder(Query.__testNullableArguments_episode).value(null).build(),
+          CompiledArgument.Builder(Query.__testNullableArguments_float).value(null).build(),
+          CompiledArgument.Builder(Query.__testNullableArguments_int).value(null).build(),
+          CompiledArgument.Builder(Query.__testNullableArguments_list).value(null).build(),
+          CompiledArgument.Builder(Query.__testNullableArguments_review).value(null).build(),
+          CompiledArgument.Builder(Query.__testNullableArguments_string).value(null).build()
         ))
         .build()
       )

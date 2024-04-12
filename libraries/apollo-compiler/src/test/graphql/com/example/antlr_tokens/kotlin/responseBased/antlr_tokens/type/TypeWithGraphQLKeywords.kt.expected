@@ -10,7 +10,7 @@ import com.apollographql.apollo3.api.ObjectType
 
 public class TypeWithGraphQLKeywords {
   public companion object {
-    public val null__fragment: CompiledArgumentDefinition =
+    public val __null_fragment: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("fragment").build()
 
     public val type: ObjectType = ObjectType.Builder(name = "TypeWithGraphQLKeywords").build()

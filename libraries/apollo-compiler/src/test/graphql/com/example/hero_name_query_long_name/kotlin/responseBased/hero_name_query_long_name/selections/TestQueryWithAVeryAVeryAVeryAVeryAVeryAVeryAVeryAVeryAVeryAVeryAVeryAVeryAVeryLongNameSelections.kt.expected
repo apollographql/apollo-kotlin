@@ -32,7 +32,7 @@ public object
           type = Character.type
         ).alias("heroAVeryAVeryAVeryAVeryAVeryAVeryAV")
         .arguments(listOf(
-          CompiledArgument.Builder(Query.hero__episode).value(CompiledVariable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")).build()
+          CompiledArgument.Builder(Query.__hero_episode).value(CompiledVariable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")).build()
         ))
         .selections(__hero)
         .build()

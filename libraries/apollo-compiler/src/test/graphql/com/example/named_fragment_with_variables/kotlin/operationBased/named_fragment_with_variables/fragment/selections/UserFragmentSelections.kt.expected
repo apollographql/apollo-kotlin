@@ -28,7 +28,7 @@ public object UserFragmentSelections {
           name = "avatar",
           type = GraphQLString.type.notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder(User.avatar__size).value(CompiledVariable("size")).build()
+          CompiledArgument.Builder(User.__avatar_size).value(CompiledVariable("size")).build()
         ))
         .build()
       )

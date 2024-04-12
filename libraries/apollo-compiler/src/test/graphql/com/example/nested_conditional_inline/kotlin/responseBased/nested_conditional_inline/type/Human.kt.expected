@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.ObjectType
  */
 public class Human {
   public companion object {
-    public val height__unit: CompiledArgumentDefinition =
+    public val __height_unit: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("unit").build()
 
     public val type: ObjectType =

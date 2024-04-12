@@ -22,6 +22,6 @@ public class FindUserQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("findUser", User.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.findUser__findUserInput).value(new CompiledVariable("findUserInput")).build())).selections(__findUser).build()
+    new CompiledField.Builder("findUser", User.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.__findUser_findUserInput).value(new CompiledVariable("findUserInput")).build())).selections(__findUser).build()
   );
 }

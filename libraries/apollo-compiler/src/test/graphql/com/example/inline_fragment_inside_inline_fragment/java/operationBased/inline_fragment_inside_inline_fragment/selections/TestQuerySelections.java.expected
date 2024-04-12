@@ -39,6 +39,6 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument.Builder(Query.search__text).value("bla-bla").build())).selections(__search).build()
+    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument.Builder(Query.__search_text).value("bla-bla").build())).selections(__search).build()
   );
 }

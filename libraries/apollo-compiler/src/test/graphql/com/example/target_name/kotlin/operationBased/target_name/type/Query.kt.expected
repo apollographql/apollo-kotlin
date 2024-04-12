@@ -10,13 +10,13 @@ import com.apollographql.apollo3.api.ObjectType
 
 public class Query {
   public companion object {
-    public val object__input: CompiledArgumentDefinition =
+    public val __object_input: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("input").build()
 
-    public val scalar__scalar: CompiledArgumentDefinition =
+    public val __scalar_scalar: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("scalar").build()
 
-    public val enum__enum: CompiledArgumentDefinition =
+    public val __enum_enum: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("enum").build()
 
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()

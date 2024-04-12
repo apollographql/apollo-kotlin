@@ -10,7 +10,7 @@ import com.apollographql.apollo3.api.ObjectType
 
 public class Query {
   public companion object {
-    public val search__filter: CompiledArgumentDefinition =
+    public val __search_filter: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("filter").build()
 
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()

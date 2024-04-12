@@ -45,7 +45,7 @@ public object TestQuerySelections {
           name = "nonOptionalHero",
           type = Character.type.notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder(Query.nonOptionalHero__episode).value("EMPIRE").build()
+          CompiledArgument.Builder(Query.__nonOptionalHero_episode).value("EMPIRE").build()
         ))
         .selections(__nonOptionalHero)
         .build()

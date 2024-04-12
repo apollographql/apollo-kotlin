@@ -42,7 +42,7 @@ public class QueryFragmentSelections {
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("hero", Character.type).selections(__hero).build(),
-    new CompiledField.Builder("droid", Droid.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.droid__id).value(1).build())).selections(__droid).build(),
-    new CompiledField.Builder("human", Human.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.human__id).value(1).build())).selections(__human).build()
+    new CompiledField.Builder("droid", Droid.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.__droid_id).value(1).build())).selections(__droid).build(),
+    new CompiledField.Builder("human", Human.type).arguments(Arrays.asList(new CompiledArgument.Builder(Query.__human_id).value(1).build())).selections(__human).build()
   );
 }

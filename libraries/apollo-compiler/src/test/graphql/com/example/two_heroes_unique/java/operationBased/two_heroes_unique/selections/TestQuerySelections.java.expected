@@ -28,6 +28,6 @@ public class TestQuerySelections {
 
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("hero", Character.type).alias("r2").selections(__hero).build(),
-    new CompiledField.Builder("hero", Character.type).alias("luke").arguments(Arrays.asList(new CompiledArgument.Builder(Query.hero__episode).value("EMPIRE").build())).selections(__hero1).build()
+    new CompiledField.Builder("hero", Character.type).alias("luke").arguments(Arrays.asList(new CompiledArgument.Builder(Query.__hero_episode).value("EMPIRE").build())).selections(__hero1).build()
   );
 }

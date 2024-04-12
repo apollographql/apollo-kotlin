@@ -36,6 +36,6 @@ public class CreateReviewForEpisodeSelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("createReview", Review.type).arguments(Arrays.asList(new CompiledArgument.Builder(Mutation.createReview__episode).value(new CompiledVariable("ep")).build(), new CompiledArgument.Builder(Mutation.createReview__review).value(new CompiledVariable("review")).build())).selections(__createReview).build()
+    new CompiledField.Builder("createReview", Review.type).arguments(Arrays.asList(new CompiledArgument.Builder(Mutation.__createReview_episode).value(new CompiledVariable("ep")).build(), new CompiledArgument.Builder(Mutation.__createReview_review).value(new CompiledVariable("review")).build())).selections(__createReview).build()
   );
 }

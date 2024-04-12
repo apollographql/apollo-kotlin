@@ -29,6 +29,6 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("nonOptionalHero", new CompiledNotNullType(Character.type)).arguments(Arrays.asList(new CompiledArgument.Builder(Query.nonOptionalHero__episode).value("EMPIRE").build())).selections(__nonOptionalHero).build()
+    new CompiledField.Builder("nonOptionalHero", new CompiledNotNullType(Character.type)).arguments(Arrays.asList(new CompiledArgument.Builder(Query.__nonOptionalHero_episode).value("EMPIRE").build())).selections(__nonOptionalHero).build()
   );
 }
