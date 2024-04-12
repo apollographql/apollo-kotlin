@@ -10,7 +10,6 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mockserver.assertNoRequest
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.NetworkMonitor
-import com.apollographql.apollo3.testing.FooOperation
 import com.apollographql.apollo3.testing.FooQuery
 import com.apollographql.apollo3.testing.internal.ApolloTestResult
 import com.apollographql.apollo3.testing.mockServerTest
@@ -70,7 +69,7 @@ class NetworkMonitorTest {
             mockServer.assertNoRequest()
 
             // Enqueue response and enable network
-            mockServer.enqueueString(FooOperation.successResponse)
+            mockServer.enqueueString(FooQuery.successResponse)
             fakeNetworkMonitor._isOnline.value = true
 
             // We're expecting an item now

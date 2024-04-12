@@ -23,10 +23,9 @@ class ConnectionErrorServerMessage(val payload: ApolloJsonElement) : ServerMessa
  * A GraphQL response was received
  *
  * @param response, a GraphQL response, possibly containing errors.
- * @param complete, whether this is a terminal message for the given operation.
  */
 @ApolloExperimental
-class ResponseServerMessage(val id: String, val response: ApolloJsonElement, val complete: Boolean) : ServerMessage
+class ResponseServerMessage(val id: String, val response: ApolloJsonElement) : ServerMessage
 
 /**
  * The subscription completed normally
@@ -36,13 +35,14 @@ class ResponseServerMessage(val id: String, val response: ApolloJsonElement, val
 class CompleteServerMessage(val id: String) : ServerMessage
 
 /**
- * There was an error with the operation that cannot be represented by a GraphQL response
+ * There was an error with the operation that cannot be represented by a GraphQL response.
+ * This is a terminal message that terminates the subscription.
  *
- * @param payload additional information regarding the error. It may represent a GraphQL error
- * but it doesn't have to
+ * @param payload additional information regarding the error.
+ * It may represent a GraphQL error, but it doesn't have to.
  */
 @ApolloExperimental
-class OperationErrorServerMessage(val id: String, val payload: ApolloJsonElement, val terminal: Boolean) : ServerMessage
+class OperationErrorServerMessage(val id: String, val payload: ApolloJsonElement) : ServerMessage
 
 /**
  * Special Server message that indicates a malformed message

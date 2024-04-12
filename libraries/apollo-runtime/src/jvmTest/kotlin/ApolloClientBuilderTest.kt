@@ -1,5 +1,4 @@
-package com.apollographql.apollo3
-
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.okHttpClient
 import okhttp3.OkHttpClient
 import kotlin.test.Test
@@ -18,4 +17,3 @@ class ApolloClientBuilderTest {
         .build()
   }
 }
-

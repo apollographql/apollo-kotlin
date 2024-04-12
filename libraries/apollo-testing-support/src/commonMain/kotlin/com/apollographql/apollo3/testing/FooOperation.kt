@@ -10,7 +10,11 @@ import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.checkFieldNotMissing
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.buildJsonString
+import com.apollographql.apollo3.api.json.writeArray
+import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.api.missingField
+import com.apollographql.apollo3.mockserver.TextMessage
 
 /**
  * [FooQuery] is a query for tests that doesn't require codegen.
@@ -18,7 +22,11 @@ import com.apollographql.apollo3.api.missingField
  * Use it to test parts of the runtime without having to use included builds.
  */
 @ApolloExperimental
-class FooQuery: FooOperation(), Query<FooOperation.Data>
+class FooQuery: FooOperation("query"), Query<FooOperation.Data> {
+  companion object {
+    val successResponse = "{\"data\": {\"foo\": 42}}"
+  }
+}
 
 /**
  * [FooSubscription] is a query for tests that doesn't require codegen.
@@ -26,22 +34,76 @@ class FooQuery: FooOperation(), Query<FooOperation.Data>
  * Use it to test parts of the runtime without having to use included builds.
  */
 @ApolloExperimental
-class FooSubscription: FooOperation(), Subscription<FooOperation.Data>
+class FooSubscription: FooOperation("subscription"), Subscription<FooOperation.Data> {
+  companion object {
+    fun nextMessage(id: String, foo: Int): TextMessage {
+      return buildJsonString {
+        writeObject {
+          name("id")
+          value(id)
+          name("type")
+          value("next")
+          name("payload")
+          writeObject {
+            name("data")
+            writeObject {
+              name("foo")
+              value(foo)
+            }
+          }
+        }
+      }.let { TextMessage(it) }
+    }
+
+    fun completeMessage(id: String): TextMessage {
+      return buildJsonString {
+        writeObject {
+          name("id")
+          value(id)
+          name("type")
+          value("complete")
+        }
+      }.let { TextMessage(it) }
+    }
+
+    fun errorMessage(id: String, message: String): TextMessage {
+      return buildJsonString {
+        writeObject {
+          name("id")
+          value(id)
+          name("type")
+          value("error")
+          name("payload")
+          writeArray {
+            writeObject {
+              name("message")
+              value(message)
+            }
+          }
+        }
+      }.let { TextMessage(it) }
+    }
+  }
+}
 
 /**
  * Base class for test queries.
  * Note we can't make [FooOperation] extend both [Query] and [Subscription] because that confuses [ApolloClient] when deciding whant NetworkTransport to use.
  */
 @ApolloExperimental
-abstract class FooOperation: Operation<FooOperation.Data> {
-  class Data(val foo: Int): Query.Data, Subscription.Data
+abstract class FooOperation(private val operationType: String): Operation<FooOperation.Data> {
+  class Data(val foo: Int): Query.Data, Subscription.Data {
+    override fun toString(): String {
+      return "Data(foo: $foo)"
+    }
+  }
 
   override fun document(): String {
-    return "query GetFoo { foo }"
+    return "$operationType FooOperation { foo }"
   }
 
   override fun name(): String {
-    return "FooQuery"
+    return "FooOperation"
   }
 
   override fun id(): String {
@@ -82,9 +144,5 @@ abstract class FooOperation: Operation<FooOperation.Data> {
 
   override val ignoreErrors: Boolean
     get() = false
-
-  companion object {
-    val successResponse = "{\"data\": {\"foo\": 42}}"
-  }
 }
 

@@ -175,6 +175,9 @@ public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInter
 public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInterceptor$Companion {
 }
 
+public final class com/apollographql/apollo3/interceptor/RetryOnNetworkErrorInterceptorKt {
+}
+
 public final class com/apollographql/apollo3/network/NetworkMonitorKt {
 }
 

@@ -77,9 +77,9 @@ object JsWsProtocol : WsProtocol {
         val id = map.id
         when {
           id == null -> ParseErrorServerMessage("No 'id' found in message: '$text'")
-          type == "next" -> ResponseServerMessage(id, map.payload, false)
+          type == "next" -> ResponseServerMessage(id, map.payload)
           type == "complete" -> CompleteServerMessage(id)
-          type == "error" -> ResponseServerMessage(id, map.payload, true)
+          type == "error" -> ResponseServerMessage(id, map.payload)
           else -> error("") // make the compiler happy
         }
       }

@@ -75,9 +75,9 @@ class GraphQLWsProtocol(
         val id = map["id"] as? String
         when {
           id == null -> ParseErrorServerMessage("No 'id' found in message: '$text'")
-          type == "next" -> ResponseServerMessage(id, map["payload"], false)
+          type == "next" -> ResponseServerMessage(id, map["payload"])
           type == "complete" -> CompleteServerMessage(id)
-          type == "error" -> ResponseServerMessage(id, mapOf("errors" to map["payload"]), true)
+          type == "error" -> OperationErrorServerMessage(id, map["payload"])
           else -> error("") // make the compiler happy
         }
       }

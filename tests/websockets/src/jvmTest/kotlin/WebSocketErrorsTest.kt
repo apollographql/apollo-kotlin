@@ -2,25 +2,17 @@
 import app.cash.turbine.test
 import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.exception.SubscriptionConnectionException
-import com.apollographql.apollo3.interceptor.ApolloInterceptor
-import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.interceptor.addRetryOnErrorInterceptor
 import com.apollographql.apollo3.network.websocket.SubscriptionWsProtocol
 import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.websocket.closeConnection
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -31,29 +23,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
-private fun <D : Operation.Data> Flow<ApolloResponse<D>>.retryOnError(block: (ApolloException, Int) -> Boolean): Flow<ApolloResponse<D>> {
-  var attempt = 0
-  return onEach {
-    if (it.exception != null && block(it.exception!!, attempt)) {
-      attempt++
-      throw RetryException
-    }
-  }.retryWhen { cause, _ ->
-    cause is RetryException
-  }
-}
-
-class RetryOnErrorInterceptor(private val retryWhen: (ApolloException, Int) -> Boolean) : ApolloInterceptor {
-  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    return chain.proceed(request).retryOnError(retryWhen)
-  }
-}
-
-private object RetryException : Exception()
-
-fun ApolloClient.Builder.addRetryOnErrorInterceptor(retryWhen: (ApolloException, Int) -> Boolean) = apply {
-  addInterceptor(RetryOnErrorInterceptor(retryWhen))
-}
 
 class WebSocketErrorsTest {
   @Test
