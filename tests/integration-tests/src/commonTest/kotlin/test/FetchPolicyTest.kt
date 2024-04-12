@@ -623,4 +623,70 @@ class FetchPolicyTest {
     job.cancel()
     channel.cancel()
   }
+
+  @Test
+  fun isFromCache() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
+    mockServer.enqueue(query, data)
+
+    // NetworkOnly / hit
+    var response = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.NetworkOnly)
+        .execute()
+    assertNotNull(response.data)
+    assertFalse(response.isFromCache)
+
+    // CacheOnly / hit
+    response = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.CacheOnly)
+        .execute()
+    assertNotNull(response.data)
+    assertTrue(response.isFromCache)
+
+    // CacheOnly / miss
+    store.clearAll()
+    response = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.CacheOnly)
+        .execute()
+    assertNull(response.data)
+    assertTrue(response.isFromCache)
+
+    // NetworkOnly / miss
+    mockServer.enqueueString("malformed")
+    response = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.NetworkOnly)
+        .execute()
+    assertNull(response.data)
+    assertFalse(response.isFromCache)
+
+    // CacheFirst / miss / miss
+    store.clearAll()
+    mockServer.enqueueString("malformed")
+    var responses = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.CacheFirst)
+        .toFlow()
+        .toList()
+    assertTrue(responses[0].isFromCache)
+    assertFalse(responses[1].isFromCache)
+
+    // NetworkFirst / miss / miss
+    store.clearAll()
+    mockServer.enqueueString("malformed")
+    responses = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.NetworkFirst)
+        .toFlow()
+        .toList()
+    assertFalse(responses[0].isFromCache)
+    assertTrue(responses[1].isFromCache)
+
+    // CacheAndNetwork / hit / hit
+    mockServer.enqueue(query, data)
+    responses = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.CacheAndNetwork)
+        .toFlow()
+        .toList()
+    assertTrue(responses[0].isFromCache)
+    assertFalse(responses[1].isFromCache)
+  }
 }
