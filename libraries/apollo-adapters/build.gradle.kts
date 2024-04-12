@@ -5,7 +5,7 @@ plugins {
 apolloLibrary(
     namespace = "com.apollographql.apollo3.adapter",
     withLinux = false,
-    withWasm = false
+    withWasm = true
 )
 
 kotlin {
@@ -18,6 +18,11 @@ kotlin {
       }
     }
     findByName("jsMain")?.apply {
+      dependencies {
+        implementation(npm("big.js", "5.2.2"))
+      }
+    }
+    findByName("wasmJsMain")?.apply {
       dependencies {
         implementation(npm("big.js", "5.2.2"))
       }
