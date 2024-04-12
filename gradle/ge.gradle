@@ -1,18 +1,17 @@
 
 def isCI = System.getenv("CI") != null
 
-gradleEnterprise {
+develocity {
   server = "https://ge.apollographql.com"
   allowUntrustedServer = false
 
   buildScan {
-    publishAlways()
-    publishIfAuthenticated()
+    publishing.onlyIf { it.authenticated }
 
     uploadInBackground = !isCI
 
     capture {
-      taskInputFiles = true
+      fileFingerprints = true
     }
   }
 }
@@ -23,7 +22,7 @@ buildCache {
     enabled = true
     push = true
   }
-  remote(gradleEnterprise.buildCache) {
+  remote(develocity.buildCache) {
     enabled = true
     // Check access key presence to avoid build cache errors on PR builds when access key is not present
     def accessKey = System.getenv("GRADLE_ENTERPRISE_ACCESS_KEY")
