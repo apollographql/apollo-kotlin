@@ -454,7 +454,6 @@ class CompiledArgument private constructor(
     /**
      * The compile-time value of that argument.
      *
-     * Can be the defaultValue if no argument is defined in the operation.
      * Can contain variables.
      * Can be [Optional.Absent] if no value is passed
      */
