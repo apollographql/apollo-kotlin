@@ -71,7 +71,7 @@
     },
     "Advanced": {
       "Uploading files": "/advanced/upload",
-      "Handling nullability": "/advanced/nullability",
+      "Handling nullability (experimental)": "/advanced/nullability",
       "Using aliases": "/advanced/using-aliases",
       "Using with Java": "/advanced/java",
       "Kotlin native": "/advanced/kotlin-native",
