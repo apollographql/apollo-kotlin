@@ -63,7 +63,7 @@ internal class CompiledSelectionsBuilder(
       builder.add(".condition(%L)\n", condition.toCompiledConditionInitializer())
     }
     if (arguments.isNotEmpty()) {
-      builder.add(".arguments(%L)\n", arguments.sortedBy { it.name }.map { it.codeBlock() }.toListInitializerCodeblock(true))
+      builder.add(".arguments(%L)\n", arguments.sortedBy { it.definitionId }.map { it.codeBlock() }.toListInitializerCodeblock(true))
     }
     if (selectionSetName != null) {
       builder.add(".selections(%N)\n", "__$selectionSetName")
@@ -125,11 +125,10 @@ internal class CompiledSelectionsBuilder(
   private fun IrArgument.codeBlock(): CodeBlock {
     val argumentBuilder = CodeBlock.builder()
     argumentBuilder.add(
-        "%T(%T.%L__%L)",
+        "%T(%T.%L)",
         KotlinSymbols.CompiledArgument,
-        context.resolver.resolveSchemaType(parentType),
-        parentField,
-        name,
+        context.resolver.resolveArgumentDefinition(definitionId),
+        definitionPropertyName,
     )
 
     if (this.value != null) {

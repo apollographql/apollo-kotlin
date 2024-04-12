@@ -28,6 +28,11 @@ internal class ObjectBuilder(
 
   override fun prepare() {
     context.resolver.registerSchemaType(obj.name, ClassName.get(packageName, simpleName))
+    for (fieldDefinition in obj.fieldDefinitions) {
+      fieldDefinition.argumentDefinitions.forEach { argumentDefinition ->
+        context.resolver.registerArgumentDefinition(argumentDefinition.id, ClassName.get(packageName, simpleName))
+      }
+    }
   }
 
   override fun build(): CodegenJavaFile {
@@ -54,7 +59,7 @@ internal fun List<IrFieldDefinition>.fieldSpecs(): List<FieldSpec> {
     fieldDefinition.argumentDefinitions.map { argumentDefinition ->
       FieldSpec.builder(
           JavaClassNames.CompiledArgumentDefinition,
-          "${fieldDefinition.name}__${argumentDefinition.name}",
+          argumentDefinition.propertyName,
           Modifier.PUBLIC,
           Modifier.STATIC,
           Modifier.FINAL,

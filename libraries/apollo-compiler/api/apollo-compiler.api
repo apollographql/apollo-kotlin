@@ -554,6 +554,7 @@ public final class com/apollographql/apollo3/compiler/codegen/ResolverKey$Compan
 }
 
 public final class com/apollographql/apollo3/compiler/codegen/ResolverKeyKind : java/lang/Enum {
+	public static final field ArgumentDefinition Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field BuilderFun Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field BuilderType Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field CustomScalarAdapters Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;

@@ -73,9 +73,8 @@ internal class SelectionSetsBuilder(
       val schemaArgument = fieldDefinition.arguments.first { it.name == fieldArgument.name }
       val userValue = fieldArgument.value.coerceInExecutableContextOrThrow(schemaArgument.type, schema)
       IrArgument(
-          parentType = parentType,
-          parentField = fieldDefinition.name,
-          name = schemaArgument.name,
+          definitionId = IrArgumentDefinition.id(parentType, fieldDefinition.name, schemaArgument.name),
+          definitionPropertyName = IrArgumentDefinition.propertyName(fieldDefinition.name, schemaArgument.name),
           value = userValue.toIrValue(),
       )
     }

@@ -424,6 +424,9 @@ internal class JavaResolver(
 
   fun registerSchema(className: ClassName) = register(ResolverKeyKind.Schema, "", className)
   fun resolveSchema(): ClassName = resolveAndAssert(ResolverKeyKind.Schema, "")
+
+  fun registerArgumentDefinition(id: String, className: ClassName) = register(ResolverKeyKind.ArgumentDefinition, id, className)
+  fun resolveArgumentDefinition(id: String): ClassName = resolveAndAssert(ResolverKeyKind.ArgumentDefinition, id)
 }
 
 

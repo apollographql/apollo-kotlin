@@ -129,10 +129,17 @@ internal class IrCompositeType2(val name: String) : IrType2
 
 @Serializable
 internal data class IrArgumentDefinition(
+    val id: String,
     val name: String,
+    val propertyName: String,
     val isKey: Boolean,
     val isPagination: Boolean,
-)
+) {
+  companion object {
+    fun id(type: String, field: String, argument: String) = "$type.$field.$argument"
+    fun propertyName(fieldName: String, argumentName: String) = "__${fieldName}_${argumentName}"
+  }
+}
 
 @Serializable
 internal data class IrMapProperty(
@@ -322,6 +329,8 @@ private fun GQLFieldDefinition.toIrFieldDefinition(
           null
         } else {
           IrArgumentDefinition(
+              id = IrArgumentDefinition.id(parentType, name, it.name),
+              propertyName = IrArgumentDefinition.propertyName(name, it.name),
               name = it.name,
               isKey = keyArgs.contains(it.name),
               isPagination = paginationArgs.contains(it.name)

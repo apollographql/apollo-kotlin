@@ -95,9 +95,8 @@ data class IrField(
 @Serializable
 @ApolloExperimental
 data class IrArgument(
-    val parentType: String,
-    val parentField: String,
-    val name: String,
+    val definitionId: String,
+    val definitionPropertyName: String,
     /**
      * The value for this argument. May be null if the argument is absent
      */

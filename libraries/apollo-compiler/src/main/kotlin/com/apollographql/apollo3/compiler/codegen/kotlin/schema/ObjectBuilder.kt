@@ -40,6 +40,11 @@ internal class ObjectBuilder(
     context.resolver.registerMapType(obj.name, ClassName(packageName, mapName))
     context.resolver.registerBuilderType(obj.name, ClassName(packageName, builderName))
     context.resolver.registerBuilderFun(obj.name, MemberName(packageName, "build${obj.name.capitalizeFirstLetter()}"))
+    for (fieldDefinition in obj.fieldDefinitions) {
+      fieldDefinition.argumentDefinitions.forEach { argumentDefinition ->
+        context.resolver.registerArgumentDefinition(argumentDefinition.id, ClassName(packageName, simpleName))
+      }
+    }
   }
 
   override fun build(): CgFile {
@@ -98,7 +103,7 @@ internal fun List<IrFieldDefinition>.propertySpecs(): List<PropertySpec> {
   return flatMap { fieldDefinition ->
     fieldDefinition.argumentDefinitions.map { argumentDefinition ->
       PropertySpec.builder(
-          name = "${fieldDefinition.name}__${argumentDefinition.name}",
+          name = argumentDefinition.propertyName,
           type = KotlinSymbols.CompiledArgumentDefinition,
       )
           .initializer(argumentDefinition.codeBlock())
