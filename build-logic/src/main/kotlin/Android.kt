@@ -38,10 +38,13 @@ fun Project.configureAndroid(
       buildFeatures {
         compose = true
       }
+    }
+  }
 
-      composeOptions {
-        kotlinCompilerExtensionVersion = getCatalogVersion("compose.compiler")
-      }
+  // Workaround for https://youtrack.jetbrains.com/issue/KT-67216
+  if (androidOptions.withCompose) {
+    extensions.configure<org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension> {
+      suppressKotlinVersionCompatibilityCheck.set(getCatalogVersion("kotlin.plugin"))
     }
   }
 
