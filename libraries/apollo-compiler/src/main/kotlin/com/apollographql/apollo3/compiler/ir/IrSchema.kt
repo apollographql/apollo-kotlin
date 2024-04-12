@@ -66,9 +66,6 @@ internal data class IrObject(
     val deprecationReason: String?,
     val embeddedFields: List<String>,
     val mapProperties: List<IrMapProperty>,
-    /**
-     * Only contains fields that have arguments used in operations.
-     */
     val fieldDefinitions: List<IrFieldDefinition>,
 ) : IrSchemaType
 
@@ -82,9 +79,6 @@ internal data class IrInterface(
     val deprecationReason: String?,
     val embeddedFields: List<String>,
     val mapProperties: List<IrMapProperty>,
-    /**
-     * Only contains fields that have arguments used in operations.
-     */
     val fieldDefinitions: List<IrFieldDefinition>,
 ) : IrSchemaType
 
