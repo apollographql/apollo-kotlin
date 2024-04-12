@@ -12,7 +12,7 @@ import com.apollographql.apollo3.testing.FooSubscription
 import com.apollographql.apollo3.testing.FooSubscription.Companion.completeMessage
 import com.apollographql.apollo3.testing.FooSubscription.Companion.errorMessage
 import com.apollographql.apollo3.testing.FooSubscription.Companion.nextMessage
-import com.apollographql.apollo3.testing.ackMessage
+import com.apollographql.apollo3.testing.connectionAckMessage
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.mockServerWebSocketTest
 import com.apollographql.apollo3.testing.operationId
@@ -138,7 +138,7 @@ class WebSocketNetworkTransportTest {
                   val serverReader = mockServer.awaitWebSocketRequest()
                   serverReader.awaitMessage() // Consume connection_init
 
-                  serverWriter.enqueueMessage(ackMessage())
+                  serverWriter.enqueueMessage(connectionAckMessage())
                   val operationId = serverReader.awaitMessage().operationId()
 
                   serverWriter.enqueueMessage(nextMessage(operationId, 42))

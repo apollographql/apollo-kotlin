@@ -79,4 +79,5 @@ fun WebSocketMessage.operationId(): String {
 
 
 @ApolloExperimental
-fun ackMessage(): WebSocketMessage = TextMessage("{\"type\": \"connection_ack\"}")
+fun connectionAckMessage(): WebSocketMessage = TextMessage("{\"type\": \"connection_ack\"}")
+

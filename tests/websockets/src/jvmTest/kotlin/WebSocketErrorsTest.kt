@@ -1,236 +1,249 @@
-
 import app.cash.turbine.test
-import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo3.exception.DefaultApolloException
-import com.apollographql.apollo3.exception.SubscriptionConnectionException
 import com.apollographql.apollo3.interceptor.addRetryOnErrorInterceptor
-import com.apollographql.apollo3.network.websocket.SubscriptionWsProtocol
+import com.apollographql.apollo3.mockserver.CloseFrame
+import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.awaitWebSocketRequest
+import com.apollographql.apollo3.mockserver.enqueueWebSocket
 import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.websocket.closeConnection
-import kotlinx.coroutines.async
+import com.apollographql.apollo3.testing.FooSubscription
+import com.apollographql.apollo3.testing.connectionAckMessage
+import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo3.testing.mockServerWebSocketTest
+import com.apollographql.apollo3.testing.operationId
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import sample.server.CloseSocketMutation
-import sample.server.CountSubscription
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
-import kotlin.test.assertTrue
 
 
 class WebSocketErrorsTest {
   @Test
-  fun connectionErrorEmitsException() = runBlocking {
-    SampleServer().use { sampleServer ->
-      ApolloClient.Builder()
-          .serverUrl(sampleServer.subscriptionsUrl())
-          .subscriptionNetworkTransport(
-              WebSocketNetworkTransport.Builder()
-                  .serverUrl(sampleServer.subscriptionsUrl())
-                  .wsProtocol(SubscriptionWsProtocol { mapOf("return" to "error") })
-                  .build()
-          )
-          .build().use { apolloClient ->
-            apolloClient.subscription(CountSubscription(to = 100, intervalMillis = 100))
-                .toFlow()
-                .test {
-                  val error = awaitItem().exception
-                  assertIs<SubscriptionConnectionException>(error)
-                  assertTrue(error.message?.contains("Subscription connection error") == true)
-                  awaitComplete()
+  fun connectionErrorEmitsException() = mockServerWebSocketTest(
+      customizeTransport = {
+        connectionAcknowledgeTimeoutMillis(500)
+      }
+  ) {
+    apolloClient.subscription(FooSubscription())
+        .toFlow()
+        .test {
+          awaitWebSocketRequest()
+          serverReader.awaitMessage() // connection_init
+
+          // no connection_ack here => timeout
+          awaitItem().exception.apply {
+            assertIs<ApolloNetworkException>(this)
+            assertEquals("Timeout while waiting for connection_ack", message)
+          }
+
+          awaitComplete()
+        }
+  }
+
+  @Test
+  fun socketClosedEmitsException() = runTest(false) {
+    val mockServer = MockServer()
+    ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .subscriptionNetworkTransport(
+            WebSocketNetworkTransport.Builder()
+                .serverUrl(mockServer.url())
+                .build()
+        )
+        .build()
+        .use { apolloClient ->
+          apolloClient.subscription(FooSubscription())
+              .toFlow()
+              .test {
+                val webSocketBody = mockServer.enqueueWebSocket()
+                val webSocketMockRequest = mockServer.awaitWebSocketRequest()
+                webSocketMockRequest.awaitMessage() // connection_init
+
+                webSocketBody.enqueueMessage(CloseFrame(3666, "closed"))
+
+                awaitItem().exception.apply {
+                  assertIs<ApolloWebSocketClosedException>(this)
+                  assertEquals(3666, code)
+                  assertEquals("closed", reason)
                 }
 
-          }
+                awaitComplete()
+              }
+        }
+  }
+
+  @Test
+  fun socketReopensAfterAnError(): Unit = runTest(false) {
+    var mockServer = MockServer()
+
+    ApolloClient.Builder()
+        .httpServerUrl(mockServer.url())
+        .subscriptionNetworkTransport(
+            WebSocketNetworkTransport.Builder()
+                .serverUrl(mockServer.url())
+                .build()
+        )
+        .addRetryOnErrorInterceptor { _, attempt ->
+          attempt == 0
+        }
+        .build()
+        .use { apolloClient ->
+          var serverWriter = mockServer.enqueueWebSocket()
+          apolloClient.subscription(FooSubscription())
+              .toFlow()
+              .test {
+                var serverReader = mockServer.awaitWebSocketRequest()
+
+                serverReader.awaitMessage()
+                serverWriter.enqueueMessage(connectionAckMessage())
+
+                var operationId = serverReader.awaitMessage().operationId()
+                serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId, 0))
+
+                assertEquals(0, awaitItem().data?.foo)
+
+                /**
+                 * Close the server, the flow should restart
+                 */
+                val port = mockServer.port()
+                mockServer.close()
+                mockServer = MockServer.Builder().port(port).build()
+
+                serverWriter = mockServer.enqueueWebSocket()
+                serverReader = mockServer.awaitWebSocketRequest()
+
+                serverReader.awaitMessage()
+                serverWriter.enqueueMessage(connectionAckMessage())
+
+                operationId = serverReader.awaitMessage().operationId()
+                serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId, 1))
+
+                assertEquals(1, awaitItem().data?.foo)
+
+                serverWriter.enqueueMessage(FooSubscription.completeMessage(operationId))
+
+                awaitComplete()
+              }
+        }
+  }
+
+  @Test
+  fun disposingTheClientClosesTheWebSocket(): Unit = mockServerWebSocketTest {
+    apolloClient.subscription(FooSubscription())
+        .toFlow()
+        .test {
+          awaitConnectionInit()
+          val operationId = serverReader.awaitMessage().operationId()
+          serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId, 0))
+          awaitItem()
+          serverWriter.enqueueMessage(FooSubscription.completeMessage(operationId))
+          serverReader.awaitMessage() // consume complete
+          awaitComplete()
+        }
+
+    apolloClient.close()
+
+    delay(100)
+
+    val result = serverReader.awaitMessageOrClose()
+    if (result.isSuccess) {
+      val clientClose = result.getOrThrow()
+      assertIs<CloseFrame>(clientClose)
+      /**
+       * OkHttp keeps the TCP connection alive, do not await a close of the message flow
+       */
+//      serverWriter.enqueueMessage(CloseFrame(clientClose.code, clientClose.reason))
+//      serverReader.awaitClose(5.minutes)
     }
   }
 
   @Test
-  fun socketClosedEmitsException() = runBlocking {
-    SampleServer().use { sampleServer ->
-      ApolloClient.Builder()
-          .serverUrl(sampleServer.subscriptionsUrl())
-          .subscriptionNetworkTransport(
-              WebSocketNetworkTransport.Builder()
-                  .serverUrl(sampleServer.subscriptionsUrl())
-                  .wsProtocol(SubscriptionWsProtocol {
-                    // Not all codes are valid. See RFC-6455
-                    // https://datatracker.ietf.org/doc/html/rfc6455#section-7.4.2
-                    mapOf("return" to "close(3666)")
-                  })
-                  .build()
-          )
-          .build().use { apolloClient ->
-            apolloClient.subscription(CountSubscription(to = 100, intervalMillis = 100))
-                .toFlow()
-                .test {
-                  val error = awaitItem().exception
-                  assertIs<ApolloWebSocketClosedException>(error)
-                  assertEquals(3666, error.code)
-                  assertEquals("closed", error.reason)
-                  awaitComplete()
-                }
+  fun flowThrowsIfNoReconnect() = mockServerWebSocketTest {
+    apolloClient.subscription(FooSubscription())
+        .toFlow()
+        .test {
+          awaitConnectionInit()
+          val operationId = serverReader.awaitMessage().operationId()
+          serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId, 0))
+          awaitItem()
+          serverWriter.enqueueMessage(CloseFrame(1001, "flowThrowsIfNoReconnect"))
+          awaitItem().exception.apply {
+            assertIs<ApolloWebSocketClosedException>(this)
+            assertEquals(1001, code)
+            assertEquals("flowThrowsIfNoReconnect", reason)
           }
-    }
+          awaitComplete()
+        }
   }
 
   @Test
-  fun socketReopensAfterAnError(): Unit = runBlocking {
-    SampleServer().use { sampleServer ->
-      var connectionInitCount = 0
-      var exception: Throwable? = null
+  fun closeConnectionTest(): Unit = runBlocking {
+    val mockServer = MockServer()
+    var exception: ApolloException? = null
 
-      ApolloClient.Builder()
-          .httpServerUrl(sampleServer.graphqlUrl())
-          .subscriptionNetworkTransport(
-              WebSocketNetworkTransport.Builder()
-                  .serverUrl(sampleServer.subscriptionsUrl())
-                  .wsProtocol(SubscriptionWsProtocol {
-                    connectionInitCount++
-                    mapOf("return" to "success")
-                  })
-                  .build()
-          )
-          .addRetryOnErrorInterceptor { e, attempt ->
-            exception = e
-            attempt == 0
-          }
-          .build()
-          .use { apolloClient ->
-            val items = async {
-              apolloClient.subscription(CountSubscription(2, 500))
-                  .toFlow()
-                  .map {
-                    it.dataOrThrow().count
-                  }
-                  .toList()
-            }
+    ApolloClient.Builder()
+        .httpServerUrl(mockServer.url())
+        .subscriptionNetworkTransport(
+            WebSocketNetworkTransport.Builder()
+                .serverUrl(mockServer.url())
+                .build()
+        )
+        .addRetryOnErrorInterceptor { e, _ ->
+          check(exception == null)
+          exception = e
+          true
+        }
+        .build()
+        .use { apolloClient ->
+          var serverWriter = mockServer.enqueueWebSocket()
+          apolloClient.subscription(FooSubscription())
+              .toFlow()
+              .test {
+                var serverReader = mockServer.awaitWebSocketRequest()
 
-            delay(200)
+                serverReader.awaitMessage()
+                serverWriter.enqueueMessage(connectionAckMessage())
 
-            // Trigger an error
-            val response = apolloClient.mutation(CloseSocketMutation()).toFlow().first()
-            assertEquals(response.dataOrThrow().closeAllWebSockets, "Closed 1 session(s)")
+                var operationId = serverReader.awaitMessage().operationId()
+                serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId, 0))
 
-            /**
-             * The subscription should be restarted and complete successfully the second time
-             */
-            assertEquals(listOf(0, 0, 1), items.await())
-            assertEquals(2, connectionInitCount)
-            exception.apply {
-              assertIs<ApolloWebSocketClosedException>(this)
-              assertEquals(1011, code)
-            }
-          }
-    }
-  }
+                assertEquals(0, awaitItem().data?.foo)
 
-  @Test
-  fun disposingTheClientClosesTheWebSocket(): Unit = runBlocking {
-    SampleServer().use { sampleServer ->
-      ApolloClient.Builder()
-          .httpServerUrl(sampleServer.graphqlUrl())
-          .webSocketServerUrl(sampleServer.subscriptionsUrl())
-          .build().use { apolloClient ->
-            apolloClient.subscription(CountSubscription(2, 0))
-                .toFlow()
-                .test {
-                  awaitItem()
-                  awaitItem()
-                  awaitComplete()
-                }
-          }
+                /**
+                 * Prepare next websocket
+                 */
+                serverWriter = mockServer.enqueueWebSocket()
 
-      ApolloClient.Builder()
-          .httpServerUrl(sampleServer.graphqlUrl())
-          .webSocketServerUrl(sampleServer.subscriptionsUrl())
-          .build()
-          .use { apolloClient ->
-            delay(1000)
-            // Check that the server saw the connection close
-            assertEquals("Closed 0 session(s)", apolloClient.mutation(CloseSocketMutation()).execute().data?.closeAllWebSockets)
-          }
-    }
-  }
+                /**
+                 * call closeConnection
+                 */
+                apolloClient.subscriptionNetworkTransport.closeConnection(DefaultApolloException("oh no!"))
 
-  @Test
-  fun flowThrowsIfNoReconnect() = runBlocking {
-    SampleServer().use { sampleServer ->
-      ApolloClient.Builder()
-          .httpServerUrl(sampleServer.graphqlUrl())
-          .subscriptionNetworkTransport(
-              WebSocketNetworkTransport.Builder()
-                  .serverUrl(sampleServer.subscriptionsUrl())
-                  .wsProtocol(SubscriptionWsProtocol {
-                    mapOf("return" to "success")
-                  })
-                  .build()
-          )
-          .build()
-          .use { apolloClient ->
-            launch {
-              delay(200)
-              apolloClient.mutation(CloseSocketMutation()).execute()
-            }
+                serverReader = mockServer.awaitWebSocketRequest()
 
-            apolloClient.subscription(CountSubscription(2, 500))
-                .toFlow()
-                .test {
-                  awaitItem()
-                  awaitItem().exception.apply {
-                    assertIs<ApolloWebSocketClosedException>(this)
-                    assertEquals(1011, code)
-                  }
+                serverReader.awaitMessage()
+                serverWriter.enqueueMessage(connectionAckMessage())
 
-                  cancelAndIgnoreRemainingEvents()
-                }
-          }
-    }
-  }
+                operationId = serverReader.awaitMessage().operationId()
+                serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId, 1))
 
-  @Test
-  fun closeConnectionReconnectsTheWebSocket() = runBlocking {
-    SampleServer().use { sampleServer ->
-      var connectionInitCount = 0
-      ApolloClient.Builder()
-          .httpServerUrl(sampleServer.graphqlUrl())
-          .subscriptionNetworkTransport(
-              WebSocketNetworkTransport.Builder()
-                  .serverUrl(sampleServer.subscriptionsUrl())
-                  .wsProtocol(SubscriptionWsProtocol {
-                    connectionInitCount++
-                    mapOf("return" to "success")
-                  })
-                  .build()
-          )
-          .addRetryOnErrorInterceptor { e, _ ->
-            assertIs<DefaultApolloException>(e)
-            assertEquals("oh no!", e.message)
-            true
-          }
-          .build()
-          .use { apolloClient ->
-            apolloClient.subscription(CountSubscription(2, 100))
-                .toFlow()
-                .test {
-                  awaitItem() // 0
+                assertEquals(1, awaitItem().data?.foo)
 
-                  apolloClient.subscriptionNetworkTransport.closeConnection(DefaultApolloException("oh no!"))
+                serverWriter.enqueueMessage(FooSubscription.completeMessage(operationId))
 
-                  awaitItem() // 0 again since we've re-subscribed
-                  awaitItem() // 1
-                  awaitComplete()
-                }
+                awaitComplete()
+              }
+        }
 
-          }
-
-      // connectionInitCount is 2 since we returned true in webSocketReopenWhen
-      assertEquals(2, connectionInitCount)
+    exception.apply {
+      assertIs<DefaultApolloException>(this)
+      assertEquals("oh no!", message)
     }
   }
 }

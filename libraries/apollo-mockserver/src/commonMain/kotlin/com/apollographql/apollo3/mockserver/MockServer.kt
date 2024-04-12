@@ -197,21 +197,26 @@ internal class MockServerImpl(
       coroutineScope {
         if (request is WebsocketMockRequest) {
           launch {
-            readFrames(reader) { message ->
-              listener?.onMessage(message)
-              when {
-                handlePings && message is PingFrame -> {
-                  socket.send(pongFrame())
-                }
+            try {
+              readFrames(reader) { message ->
+                listener?.onMessage(message)
+                when {
+                  handlePings && message is PingFrame -> {
+                    socket.send(pongFrame())
+                  }
 
-                handlePings && message is PongFrame -> {
-                  // do nothing
-                }
+                  handlePings && message is PongFrame -> {
+                    // do nothing
+                  }
 
-                else -> {
-                  request.messages.trySend(message)
+                  else -> {
+                    request.messages.trySend(Result.success(message))
+                  }
                 }
               }
+            } catch (e: Exception) {
+              request.messages.trySend(Result.failure(e))
+              throw e
             }
           }
         }

@@ -44,13 +44,28 @@ class WebsocketMockRequest(
     override val headers: Map<String, String> = emptyMap(),
 ) : MockRequestBase {
 
-  suspend fun awaitMessage(timeout: Duration = 1.seconds): WebSocketMessage {
+  suspend fun awaitMessageOrClose(timeout: Duration = 1.seconds): Result<WebSocketMessage> {
     return withTimeout(timeout) {
       messages.receive()
     }
   }
 
-  internal val messages = Channel<WebSocketMessage>(Channel.UNLIMITED)
+  suspend fun awaitMessage(timeout: Duration = 1.seconds): WebSocketMessage {
+    val result = awaitMessageOrClose(timeout)
+    check(result.isSuccess) {
+      "A message was expected but the socket was closed instead"
+    }
+    return result.getOrThrow()
+  }
+
+  suspend fun awaitClose(timeout: Duration = 1.seconds) {
+    val result = awaitMessageOrClose(timeout)
+    check(result.isFailure) {
+      "Socket closed was expected but got a message instead"
+    }
+  }
+
+  internal val messages = Channel<Result<WebSocketMessage>>(Channel.UNLIMITED)
 }
 
 @ApolloExperimental
@@ -58,11 +73,16 @@ sealed interface WebSocketMessage
 
 @ApolloExperimental
 class TextMessage(val text: String) : WebSocketMessage
+
 @ApolloExperimental
 class DataMessage(val data: ByteArray) : WebSocketMessage
+
 @ApolloExperimental
 class CloseFrame(val code: Int?, val reason: String?) : WebSocketMessage
+
 @ApolloExperimental
 data object PingFrame : WebSocketMessage
+
 @ApolloExperimental
 data object PongFrame : WebSocketMessage
+

@@ -113,7 +113,7 @@ internal class SubscribableWebSocket(
           }
           ackTimeoutJob = scope.launch(dispatcher) {
             delay(connectionAcknowledgeTimeoutMillis)
-            shutdown(ApolloNetworkException("Timeout while waiting for subscription connection ack"), CLOSE_GOING_AWAY, "Timeout while waiting for connection_ack")
+            shutdown(ApolloNetworkException("Timeout while waiting for connection_ack"), CLOSE_GOING_AWAY, "Timeout while waiting for connection_ack")
           }
           state = SocketState.AwaitAck
         }

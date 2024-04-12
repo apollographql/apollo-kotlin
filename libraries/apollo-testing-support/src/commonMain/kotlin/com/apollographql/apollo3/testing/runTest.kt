@@ -46,31 +46,29 @@ class MockServerWebSocketTest(
     private val mockServer: MockServer,
     val coroutineScope: CoroutineScope,
 ) {
-  private var _serverWriter: WebSocketBody? = null
+  /**
+   * Enqueue the response straight away
+   */
+  val serverWriter: WebSocketBody = mockServer.enqueueWebSocket()
   private var _serverReader: WebsocketMockRequest? = null
-
-  val serverWriter: WebSocketBody
-    get() {
-      check(_serverWriter != null) {
-        "You need to call awaitConnectionInit first"
-      }
-      return _serverWriter!!
-    }
 
   val serverReader: WebsocketMockRequest
     get() {
       check(_serverReader != null) {
-        "You need to call awaitConnectionInit first"
+        "You need to call awaitConnectionInit or awaitWebSocketRequest first"
       }
       return _serverReader!!
     }
 
-  suspend fun awaitConnectionInit(): Unit {
-    _serverWriter = mockServer.enqueueWebSocket()
+  suspend fun awaitWebSocketRequest() {
     _serverReader = mockServer.awaitWebSocketRequest()
+  }
+
+  suspend fun awaitConnectionInit() {
+    awaitWebSocketRequest()
 
     serverReader.awaitMessage()
-    serverWriter.enqueueMessage(ackMessage())
+    serverWriter.enqueueMessage(connectionAckMessage())
   }
 }
 
