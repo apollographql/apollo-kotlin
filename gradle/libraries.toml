@@ -19,8 +19,6 @@ apollo = "4.0.0-beta.6-SNAPSHOT"
 apollo-published = "4.0.0-beta.3"
 atomicfu = "0.23.1"
 cache = "2.0.2"
-# See https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-compose-compiler = "1.5.11-kt-2.0.0-RC1"
 compose = "1.5.1"
 guava = "31.1-jre"
 javaPoet = "1.13.0"
@@ -130,7 +128,7 @@ kotlin-compiletesting = { group = "dev.zacsweers.kctfork", name = "core", versio
 graphql-java = "com.graphql-java:graphql-java:20.4"
 # The main kotlin version for build-logic and Gradle tests
 kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin" }
-kotlin-plugin-compose = { group = "org.jetbrains.kotlin", name = "kotlin-compose-compiler-plugin", version.ref = "kotlin-plugin" }
+kotlin-plugin-compose = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin-plugin" }
 # For Gradle integration tests to make sure we stay compatible with 1.5.0
 kotlin-plugin-min = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin-min" }
 kotlin-plugin-max = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin-max" }

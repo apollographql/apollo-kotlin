@@ -35,16 +35,10 @@ fun Project.configureAndroid(
     }
 
     if (androidOptions.withCompose) {
+      plugins.apply("org.jetbrains.kotlin.plugin.compose")
       buildFeatures {
         compose = true
       }
-    }
-  }
-
-  // Workaround for https://youtrack.jetbrains.com/issue/KT-67216
-  if (androidOptions.withCompose) {
-    extensions.configure<org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension> {
-      suppressKotlinVersionCompatibilityCheck.set(getCatalogVersion("kotlin.plugin"))
     }
   }
 
