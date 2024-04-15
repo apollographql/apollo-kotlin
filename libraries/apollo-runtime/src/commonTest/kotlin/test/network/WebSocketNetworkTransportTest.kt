@@ -21,10 +21,10 @@ import com.apollographql.apollo3.testing.FooSubscription
 import com.apollographql.apollo3.testing.FooSubscription.Companion.completeMessage
 import com.apollographql.apollo3.testing.FooSubscription.Companion.errorMessage
 import com.apollographql.apollo3.testing.FooSubscription.Companion.nextMessage
+import com.apollographql.apollo3.testing.awaitSubscribe
 import com.apollographql.apollo3.testing.connectionAckMessage
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.mockServerWebSocketTest
-import com.apollographql.apollo3.testing.operationId
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.merge
 import okio.use
@@ -40,7 +40,7 @@ class WebSocketNetworkTransportTest {
         .toFlow()
         .test {
           awaitConnectionInit()
-          val operationId = serverReader.awaitMessage().operationId()
+          val operationId = serverReader.awaitSubscribe()
           repeat(5) {
             serverWriter.enqueueMessage(nextMessage(operationId, it))
             assertEquals(it, awaitItem().data?.foo)
@@ -58,8 +58,8 @@ class WebSocketNetworkTransportTest {
     }.merge()
         .test {
           awaitConnectionInit()
-          val operationId1 = serverReader.awaitMessage().operationId()
-          val operationId2 = serverReader.awaitMessage().operationId()
+          val operationId1 = serverReader.awaitSubscribe()
+          val operationId2 = serverReader.awaitSubscribe()
 
           repeat(3) {
             serverWriter.enqueueMessage(nextMessage(operationId1, it))
@@ -97,7 +97,7 @@ class WebSocketNetworkTransportTest {
         .toFlow()
         .test {
           awaitConnectionInit()
-          val operationId = serverReader.awaitMessage().operationId()
+          val operationId = serverReader.awaitSubscribe()
           repeat(1000) {
             serverWriter.enqueueMessage(nextMessage(operationId, it))
           }
@@ -118,7 +118,7 @@ class WebSocketNetworkTransportTest {
         .test {
           awaitConnectionInit()
 
-          val operationId = serverReader.awaitMessage().operationId()
+          val operationId = serverReader.awaitSubscribe()
           serverWriter.enqueueMessage(errorMessage(operationId, "Woops"))
           awaitItem().exception.apply {
             assertIs<SubscriptionOperationException>(this)
@@ -149,7 +149,7 @@ class WebSocketNetworkTransportTest {
                   serverReader.awaitMessage() // Consume connection_init
 
                   serverWriter.enqueueMessage(connectionAckMessage())
-                  val operationId = serverReader.awaitMessage().operationId()
+                  val operationId = serverReader.awaitSubscribe()
 
                   serverWriter.enqueueMessage(nextMessage(operationId, 42))
                   assertEquals(42, awaitItem().data?.foo)
@@ -236,7 +236,7 @@ class WebSocketNetworkTransportTest {
         .toFlow()
         .test {
           awaitConnectionInit()
-          val operationId = serverReader.awaitMessage().operationId()
+          val operationId = serverReader.awaitSubscribe()
           serverWriter.enqueueMessage(nextMessage(operationId, 0))
           awaitItem()
           serverWriter.enqueueMessage(completeMessage(operationId))
@@ -266,7 +266,7 @@ class WebSocketNetworkTransportTest {
         .toFlow()
         .test {
           awaitConnectionInit()
-          val operationId = serverReader.awaitMessage().operationId()
+          val operationId = serverReader.awaitSubscribe()
           serverWriter.enqueueMessage(nextMessage(operationId, 0))
           awaitItem()
           serverWriter.enqueueMessage(CloseFrame(1001, "flowThrowsIfNoReconnect"))
@@ -315,7 +315,7 @@ class WebSocketNetworkTransportTest {
                 serverReader.awaitMessage()
                 serverWriter.enqueueMessage(connectionAckMessage())
 
-                var operationId = serverReader.awaitMessage().operationId()
+                var operationId = serverReader.awaitSubscribe()
                 serverWriter.enqueueMessage(nextMessage(operationId, 0))
 
                 assertEquals(0, awaitItem().data?.foo)
@@ -335,7 +335,7 @@ class WebSocketNetworkTransportTest {
                 serverReader.awaitMessage()
                 serverWriter.enqueueMessage(connectionAckMessage())
 
-                operationId = serverReader.awaitMessage().operationId()
+                operationId = serverReader.awaitSubscribe()
                 serverWriter.enqueueMessage(nextMessage(operationId, 1))
 
                 assertEquals(1, awaitItem().data?.foo)

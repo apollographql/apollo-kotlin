@@ -1,3 +1,4 @@
+
 import app.cash.turbine.test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Subscription
@@ -13,10 +14,10 @@ import com.apollographql.apollo3.testing.FooQuery
 import com.apollographql.apollo3.testing.FooSubscription
 import com.apollographql.apollo3.testing.FooSubscription.Companion.completeMessage
 import com.apollographql.apollo3.testing.FooSubscription.Companion.nextMessage
+import com.apollographql.apollo3.testing.awaitSubscribe
 import com.apollographql.apollo3.testing.connectionAckMessage
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.mockServerTest
-import com.apollographql.apollo3.testing.operationId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -53,7 +54,7 @@ class RetryWebSocketsTest {
                 serverReader.awaitMessage() // connection_init
                 serverWriter.enqueueMessage(connectionAckMessage())
 
-                val operationId1 = serverReader.awaitMessage().operationId()
+                val operationId1 = serverReader.awaitSubscribe()
                 serverWriter.enqueueMessage(nextMessage(operationId1, 1))
 
                 val item1 = awaitItem()
@@ -71,7 +72,7 @@ class RetryWebSocketsTest {
                 serverReader.awaitMessage() // connection_init
                 serverWriter2.enqueueMessage(connectionAckMessage())
 
-                val operationId2 = serverReader.awaitMessage().operationId()
+                val operationId2 = serverReader.awaitSubscribe()
                 serverWriter2.enqueueMessage(nextMessage(operationId2, 2))
 
                 val item2 = awaitItem()
@@ -113,7 +114,7 @@ class RetryWebSocketsTest {
                 serverReader.awaitMessage()
                 serverWriter.enqueueMessage(connectionAckMessage())
 
-                var operationId = serverReader.awaitMessage().operationId()
+                var operationId = serverReader.awaitSubscribe()
                 serverWriter.enqueueMessage(nextMessage(operationId, 0))
 
                 assertEquals(0, awaitItem().data?.foo)
@@ -137,7 +138,7 @@ class RetryWebSocketsTest {
                 serverReader.awaitMessage()
                 serverWriter.enqueueMessage(connectionAckMessage())
 
-                operationId = serverReader.awaitMessage().operationId()
+                operationId = serverReader.awaitSubscribe()
                 serverWriter.enqueueMessage(nextMessage(operationId, 1))
 
                 assertEquals(1, awaitItem().data?.foo)
@@ -171,7 +172,7 @@ class RetryWebSocketsTest {
                 serverReader.awaitMessage() // connection_init
                 serverWriter.enqueueMessage(connectionAckMessage())
 
-                val operationId1 = serverReader.awaitMessage().operationId()
+                val operationId1 = serverReader.awaitSubscribe()
                 serverWriter.enqueueMessage(nextMessage(operationId1, 1))
 
                 val item1 = awaitItem()
@@ -208,7 +209,7 @@ class RetryWebSocketsTest {
                 serverReader.awaitMessage() // connection_init
                 serverWriter.enqueueMessage(connectionAckMessage())
 
-                val operationId1 = serverReader.awaitMessage().operationId()
+                val operationId1 = serverReader.awaitSubscribe()
                 serverWriter.enqueueMessage(nextMessage(operationId1, 1))
 
                 val item1 = awaitItem()
@@ -259,7 +260,7 @@ class RetryWebSocketsTest {
         .serverUrl("https://unused.com/")
         .addRetryOnErrorInterceptor { _, _ ->
           reopenCount++
-          delay(1000)
+          delay(500)
           true
         }
         .build()
@@ -290,7 +291,7 @@ class RetryWebSocketsTest {
           /**
            * Wait a bit for retries to happen
            */
-          delay(10_000)
+          delay(2_000)
           /**
            * Reopen the MockServer, the second item for each subscription should be emitted quickly after recovery.
            */
@@ -319,7 +320,7 @@ class RetryWebSocketsTest {
       webSocket.enqueueMessage(connectionAckMessage())
 
       repeat(repeat) {
-        val operationId = webSocketRequest.awaitMessage().operationId()
+        val operationId = webSocketRequest.awaitSubscribe(messagesToIgnore = setOf("complete"))
         webSocket.enqueueMessage(nextMessage(operationId, 42))
       }
     }

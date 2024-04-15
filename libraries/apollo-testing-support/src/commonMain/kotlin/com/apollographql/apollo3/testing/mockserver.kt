@@ -13,8 +13,11 @@ import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.TextMessage
 import com.apollographql.apollo3.mockserver.WebSocketMessage
+import com.apollographql.apollo3.mockserver.WebsocketMockRequest
 import com.apollographql.apollo3.mockserver.enqueueString
 import okio.Buffer
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 fun <D : Operation.Data> MockServer.enqueue(
     operation: Operation<D>,
@@ -43,7 +46,8 @@ fun MockServer.enqueueData(
       .statusCode(statusCode)
       .body(response)
       .delayMillis(delayMillis)
-      .build())
+      .build()
+  )
 }
 
 
@@ -63,20 +67,47 @@ fun MockServer.enqueueData(
       .statusCode(statusCode)
       .body(response)
       .delayMillis(delayMillis)
-      .build())
+      .build()
+  )
 }
 
 /**
  * Extracts the operationId from a graphql-ws message
  */
 @ApolloExperimental
-fun WebSocketMessage.operationId(): String {
-  if (this !is TextMessage) {
-    TODO()
+suspend fun WebsocketMockRequest.awaitSubscribe(timeout: Duration = 1.seconds, messagesToIgnore: Set<String> = emptySet()): String {
+  while(true) {
+    val message = awaitMessage(timeout)
+    if (message !is TextMessage) {
+      TODO()
+    }
+    val map = (Buffer().writeUtf8(message.text).jsonReader().readAny() as Map<*, *>)
+
+    if (messagesToIgnore.contains(map["type"])) {
+      continue
+    }
+    check(map["type"] == "subscribe") {
+      "Expected subscribe, got '${map.get("type")}'"
+    }
+    return map.get("id") as String
   }
-  return (Buffer().writeUtf8(text).jsonReader().readAny() as Map<*, *>).get("id") as String
 }
 
+/**
+ * Extracts the operationId from a graphql-ws message, ignores "complete messages"
+ */
+@ApolloExperimental
+suspend fun WebsocketMockRequest.awaitComplete(timeout: Duration = 1.seconds) {
+  val message = awaitMessage(timeout)
+  if (message !is TextMessage) {
+    TODO()
+  }
+  val map = (Buffer().writeUtf8(message.text).jsonReader().readAny() as Map<*, *>)
+
+  check(map["type"] == "complete") {
+    "Expected complete, got '${map.get("type")}"
+  }
+}
 
 @ApolloExperimental
 fun connectionAckMessage(): WebSocketMessage = TextMessage("{\"type\": \"connection_ack\"}")
