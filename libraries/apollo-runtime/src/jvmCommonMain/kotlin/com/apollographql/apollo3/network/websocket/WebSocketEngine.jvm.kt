@@ -2,6 +2,7 @@ package com.apollographql.apollo3.network.websocket
 
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.network.defaultOkHttpClientBuilder
 import com.apollographql.apollo3.network.websocket.WebSocket
 import com.apollographql.apollo3.network.websocket.WebSocketListener
 import okhttp3.Headers
