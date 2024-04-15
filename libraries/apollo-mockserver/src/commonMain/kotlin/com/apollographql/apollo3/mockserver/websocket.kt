@@ -4,6 +4,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.takeWhile
 import okio.Buffer
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
@@ -219,16 +220,25 @@ private fun Buffer.writePayloadLength(mask: Boolean, size: Long) {
 
 }
 
+internal interface BodyItem
+internal class MessageItem(val message: WebSocketMessage): BodyItem
+internal object CloseItem: BodyItem
 
 internal class WebSocketBodyImpl: WebSocketBody {
-  private val channel = Channel<WebSocketMessage>(Channel.UNLIMITED)
+  private val channel = Channel<BodyItem>(Channel.UNLIMITED)
 
   internal fun consumeAsFlow(): Flow<ByteString> {
-    return channel.consumeAsFlow().map { it.toFrame() }
+    return channel.consumeAsFlow().takeWhile {
+      it is MessageItem
+    }.map { (it as MessageItem).message.toFrame() }
   }
 
   override fun enqueueMessage(message: WebSocketMessage) {
-    channel.trySend(message)
+    channel.trySend(MessageItem(message))
+  }
+
+  override fun close() {
+    channel.trySend(CloseItem)
   }
 }
 

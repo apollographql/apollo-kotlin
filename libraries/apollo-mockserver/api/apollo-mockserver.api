@@ -20,12 +20,13 @@ public final class com/apollographql/apollo3/mockserver/MockRequestBaseKt {
 }
 
 public final class com/apollographql/apollo3/mockserver/MockResponse {
-	public fun <init> ()V
 	public fun <init> (ILkotlinx/coroutines/flow/Flow;Ljava/util/Map;J)V
 	public synthetic fun <init> (ILkotlinx/coroutines/flow/Flow;Ljava/util/Map;JILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ILkotlinx/coroutines/flow/Flow;Ljava/util/Map;JZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getBody ()Lkotlinx/coroutines/flow/Flow;
 	public final fun getDelayMillis ()J
 	public final fun getHeaders ()Ljava/util/Map;
+	public final fun getKeepAlive ()Z
 	public final fun getStatusCode ()I
 	public final fun newBuilder ()Lcom/apollographql/apollo3/mockserver/MockResponse$Builder;
 }
@@ -39,6 +40,7 @@ public final class com/apollographql/apollo3/mockserver/MockResponse$Builder {
 	public final fun build ()Lcom/apollographql/apollo3/mockserver/MockResponse;
 	public final fun delayMillis (J)Lcom/apollographql/apollo3/mockserver/MockResponse$Builder;
 	public final fun headers (Ljava/util/Map;)Lcom/apollographql/apollo3/mockserver/MockResponse$Builder;
+	public final fun keepAlive (Z)Lcom/apollographql/apollo3/mockserver/MockResponse$Builder;
 	public final fun statusCode (I)Lcom/apollographql/apollo3/mockserver/MockResponse$Builder;
 }
 
