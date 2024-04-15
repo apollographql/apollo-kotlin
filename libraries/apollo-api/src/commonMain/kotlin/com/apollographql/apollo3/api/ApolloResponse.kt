@@ -103,9 +103,6 @@ private constructor(
 
   /**
    * A shorthand property to get a non-nullable `data` if handling partial data is **not** important
-   *
-   * Note: A future version could use [Definitely non nullable types](https://github.com/Kotlin/KEEP/pull/269)
-   * to implement something like `ApolloResponse<D>.assertNoErrors(): ApolloResponse<D & Any>`
    */
   @get:JvmName("dataAssertNoErrors")
   val dataAssertNoErrors: D
