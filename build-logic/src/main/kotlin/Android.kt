@@ -35,12 +35,9 @@ fun Project.configureAndroid(
     }
 
     if (androidOptions.withCompose) {
+      plugins.apply("org.jetbrains.kotlin.plugin.compose")
       buildFeatures {
         compose = true
-      }
-
-      composeOptions {
-        kotlinCompilerExtensionVersion = getCatalogVersion("compose.compiler")
       }
     }
   }
