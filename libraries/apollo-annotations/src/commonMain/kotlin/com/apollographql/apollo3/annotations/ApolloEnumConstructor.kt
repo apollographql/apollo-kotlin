@@ -2,7 +2,7 @@ package com.apollographql.apollo3.annotations
 
 @RequiresOptIn(
     level = RequiresOptIn.Level.WARNING,
-    message = "Applied to the constructor of an enum's UNKNOWN__ value, as instantiating it is usually a mistake."
+    message = "The `UNKNOWN__` class represents GraphQL enums that are not present in the schema and whose `rawValue` cannot be checked at build time. You may want to update your schema instead of calling this constructor directly."
 )
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CONSTRUCTOR)
