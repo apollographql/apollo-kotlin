@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.UploadsHttpBody
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.network.defaultOkHttpClientBuilder
 import com.apollographql.apollo3.network.toOkHttpHeaders
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
@@ -42,7 +43,7 @@ private class JvmHttpEngine(
   constructor(timeoutMillis: Long) : this(timeoutMillis, timeoutMillis)
 
   constructor(connectTimeoutMillis: Long, readTimeoutMillis: Long) : this(
-      OkHttpClient.Builder()
+      defaultOkHttpClientBuilder
           .connectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
           .readTimeout(readTimeoutMillis, TimeUnit.MILLISECONDS)
           .build()

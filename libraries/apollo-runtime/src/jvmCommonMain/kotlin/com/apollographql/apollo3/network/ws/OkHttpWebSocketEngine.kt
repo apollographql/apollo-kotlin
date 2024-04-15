@@ -3,10 +3,10 @@ package com.apollographql.apollo3.network.ws
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
+import com.apollographql.apollo3.network.defaultOkHttpClientBuilder
 import com.apollographql.apollo3.network.toOkHttpHeaders
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.Channel
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
@@ -18,7 +18,7 @@ actual class DefaultWebSocketEngine(
 ) : WebSocketEngine {
 
   actual constructor() : this(
-      webSocketFactory = OkHttpClient()
+      webSocketFactory = defaultOkHttpClientBuilder.build()
   )
 
   actual override suspend fun open(
