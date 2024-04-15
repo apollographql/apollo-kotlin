@@ -184,7 +184,8 @@ internal class MockServerImpl(
       }
     }
 
-    while (true) {
+    var done = false
+    while (!done) {
       val request = readRequest(reader)
       listener?.onRequest(request)
 
@@ -222,6 +223,10 @@ internal class MockServerImpl(
         }
         writeResponse(response, request.version) {
           socket.send(it)
+        }
+        if (!response.keepAlive) {
+          done = true
+          cancel()
         }
       }
     }
@@ -365,12 +370,14 @@ fun MockServer.enqueueMultipart(
 @ApolloExperimental
 interface WebSocketBody {
   fun enqueueMessage(message: WebSocketMessage)
+  fun close()
 }
 
 @ApolloExperimental
 fun MockServer.enqueueWebSocket(
     statusCode: Int = 101,
     headers: Map<String, String> = emptyMap(),
+    keepAlive: Boolean = true,
 ): WebSocketBody {
   val webSocketBody = WebSocketBodyImpl()
   enqueue(
@@ -378,6 +385,7 @@ fun MockServer.enqueueWebSocket(
           .statusCode(statusCode)
           .body(webSocketBody.consumeAsFlow())
           .headers(headers)
+          .keepAlive(keepAlive)
           .addHeader("Upgrade", "websocket")
           .addHeader("Connection", "upgrade")
           .addHeader("Sec-WebSocket-Accept", "APOLLO_REPLACE_ME")

@@ -33,7 +33,8 @@ import kotlin.time.Duration.Companion.seconds
 class RetryWebSocketsTest {
   @Test
   fun retryIsWorking() = runTest(skipDelays = false) {
-    var mockServer = MockServer()
+    MockServer().use { mockServer ->
+
     ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .retryOnError { it.operation is Subscription }
@@ -46,35 +47,32 @@ class RetryWebSocketsTest {
           apolloClient.subscription(FooSubscription())
               .toFlow()
               .test {
-                var serverWriter = mockServer.enqueueWebSocket()
+                val serverWriter = mockServer.enqueueWebSocket(keepAlive = false)
                 var serverReader = mockServer.awaitWebSocketRequest()
 
                 serverReader.awaitMessage() // connection_init
                 serverWriter.enqueueMessage(connectionAckMessage())
 
                 val operationId1 = serverReader.awaitMessage().operationId()
-                serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId1, 1))
+                serverWriter.enqueueMessage(nextMessage(operationId1, 1))
 
                 val item1 = awaitItem()
                 assertEquals(1, item1.data?.foo)
 
-                val port = mockServer.port()
-                mockServer.close()
-                /**
-                 * Looks like Ktor needs some time to close the local address.
-                 * Without the delay, I'm getting an "address already in use" error
-                 */
-                delay(1000)
-                mockServer = MockServer.Builder().port(port).build()
+                val serverWriter2 = mockServer.enqueueWebSocket()
 
-                serverWriter = mockServer.enqueueWebSocket()
+                /**
+                 * Close the response body and the TCP socket
+                 */
+                serverWriter.close()
+
                 serverReader = mockServer.awaitWebSocketRequest()
 
                 serverReader.awaitMessage() // connection_init
-                serverWriter.enqueueMessage(connectionAckMessage())
+                serverWriter2.enqueueMessage(connectionAckMessage())
 
                 val operationId2 = serverReader.awaitMessage().operationId()
-                serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId2, 2))
+                serverWriter2.enqueueMessage(nextMessage(operationId2, 2))
 
                 val item2 = awaitItem()
                 assertEquals(2, item2.data?.foo)
@@ -82,12 +80,12 @@ class RetryWebSocketsTest {
                 // The subscriptions MUST use different operationIds
                 assertNotEquals(operationId1, operationId2)
 
-                serverWriter.enqueueMessage(FooSubscription.completeMessage(operationId2))
+                serverWriter2.enqueueMessage(completeMessage(operationId2))
 
                 awaitComplete()
               }
         }
-    mockServer.close()
+    }
   }
 
   @Test
@@ -174,7 +172,7 @@ class RetryWebSocketsTest {
                 serverWriter.enqueueMessage(connectionAckMessage())
 
                 val operationId1 = serverReader.awaitMessage().operationId()
-                serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId1, 1))
+                serverWriter.enqueueMessage(nextMessage(operationId1, 1))
 
                 val item1 = awaitItem()
                 assertEquals(1, item1.data?.foo)
@@ -211,7 +209,7 @@ class RetryWebSocketsTest {
                 serverWriter.enqueueMessage(connectionAckMessage())
 
                 val operationId1 = serverReader.awaitMessage().operationId()
-                serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId1, 1))
+                serverWriter.enqueueMessage(nextMessage(operationId1, 1))
 
                 val item1 = awaitItem()
                 assertEquals(1, item1.data?.foo)
@@ -322,7 +320,7 @@ class RetryWebSocketsTest {
 
       repeat(repeat) {
         val operationId = webSocketRequest.awaitMessage().operationId()
-        webSocket.enqueueMessage(FooSubscription.nextMessage(operationId, 42))
+        webSocket.enqueueMessage(nextMessage(operationId, 42))
       }
     }
   }
