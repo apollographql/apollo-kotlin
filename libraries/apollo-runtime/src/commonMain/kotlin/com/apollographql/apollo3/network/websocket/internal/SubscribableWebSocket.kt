@@ -160,15 +160,15 @@ internal class SubscribableWebSocket(
       }
 
       is ResponseServerMessage -> {
-        activeListeners.get(message.id)?.onResponse(message.response)
+        lock.withLock { activeListeners.get(message.id) }?.onResponse(message.response)
       }
 
       is CompleteServerMessage -> {
-        activeListeners.get(message.id)?.onComplete()
+        lock.withLock { activeListeners.get(message.id) }?.onComplete()
       }
 
       is OperationErrorServerMessage -> {
-        activeListeners.get(message.id)?.onError(message.payload)
+        lock.withLock { activeListeners.get(message.id) }?.onError(message.payload)
       }
 
       is ParseErrorServerMessage -> {
