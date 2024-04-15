@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.two_heroes_unique.type.Character
 import com.example.two_heroes_unique.type.GraphQLID
 import com.example.two_heroes_unique.type.GraphQLString
+import com.example.two_heroes_unique.type.Query
 import kotlin.collections.List
 
 public object TestQuerySelections {
@@ -38,10 +39,6 @@ public object TestQuerySelections {
           name = "hero",
           type = Character.type
         ).alias("r2")
-        .arguments(listOf(
-          CompiledArgument.Builder("episode").build(),
-          CompiledArgument.Builder("listOfListOfStringArgs").build()
-        ))
         .selections(__hero)
         .build(),
         CompiledField.Builder(
@@ -49,8 +46,7 @@ public object TestQuerySelections {
           type = Character.type
         ).alias("luke")
         .arguments(listOf(
-          CompiledArgument.Builder("episode").value("EMPIRE").build(),
-          CompiledArgument.Builder("listOfListOfStringArgs").build()
+          CompiledArgument.Builder(Query.__hero_episode).value("EMPIRE").build()
         ))
         .selections(__hero1)
         .build()

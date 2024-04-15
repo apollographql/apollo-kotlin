@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.input_object_variable_and_argument_with_generated_methods.type.GraphQLFloat
 import com.example.input_object_variable_and_argument_with_generated_methods.type.GraphQLString
 import com.example.input_object_variable_and_argument_with_generated_methods.type.Human
+import com.example.input_object_variable_and_argument_with_generated_methods.type.Query
 import kotlin.collections.List
 
 public object TestQuerySelections {
@@ -25,7 +26,7 @@ public object TestQuerySelections {
           name = "height",
           type = GraphQLFloat.type
         ).arguments(listOf(
-          CompiledArgument.Builder("unit").value("FOOT").build()
+          CompiledArgument.Builder(Human.__height_unit).value("FOOT").build()
         ))
         .build()
       )
@@ -35,12 +36,12 @@ public object TestQuerySelections {
           name = "heroWithReview",
           type = Human.type
         ).arguments(listOf(
-          CompiledArgument.Builder("episode").value(CompiledVariable("episode")).build(),
-          CompiledArgument.Builder("listOfInts").value(listOf(
+          CompiledArgument.Builder(Query.__heroWithReview_episode).value(CompiledVariable("episode")).build(),
+          CompiledArgument.Builder(Query.__heroWithReview_listOfInts).value(listOf(
             CompiledVariable("stars"),
             CompiledVariable("stars")
           )).build(),
-          CompiledArgument.Builder("review").value(mapOf(
+          CompiledArgument.Builder(Query.__heroWithReview_review).value(mapOf(
             "stars" to CompiledVariable("stars"),
             "nullableIntFieldWithDefaultValue" to 10,
             "favoriteColor" to mapOf(

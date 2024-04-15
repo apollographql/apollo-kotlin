@@ -1,0 +1,10 @@
+{
+    "typeToFieldsToArguments": {
+        "Foo": {
+        },
+        "String": {
+        },
+        "Query": {
+        }
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "typeToFieldsToArguments": {
+        "User": {
+        },
+        "Query": {
+            "findUser": [
+                "findUserInput"
+            ]
+        },
+        "ID": {
+        },
+        "FindUserInput": {
+        },
+        "String": {
+        },
+        "FindUserBySocialNetworkInput": {
+        },
+        "FindUserByFriendInput": {
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "typeToFieldsToArguments": {
+        "TypeWithGraphQLKeywords": {
+            "null": [
+                "fragment"
+            ]
+        },
+        "String": {
+        },
+        "Query": {
+        }
+    }
+}

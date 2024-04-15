@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.java_android_annotations.type.GraphQLInt
 import com.example.java_android_annotations.type.GraphQLString
 import com.example.java_android_annotations.type.MyType
+import com.example.java_android_annotations.type.Query
 import kotlin.collections.List
 
 public object MyQuerySelections {
@@ -44,24 +45,24 @@ public object MyQuerySelections {
           name = "nullableInt",
           type = GraphQLInt.type
         ).arguments(listOf(
-          CompiledArgument.Builder("nonNullableInput").value(CompiledVariable("nonNullableInput")).build(),
-          CompiledArgument.Builder("nonNullableInputWithDefault").value(CompiledVariable("nonNullableInputWithDefault")).build(),
-          CompiledArgument.Builder("nonNullableInt").value(CompiledVariable("nonNullableInt")).build(),
-          CompiledArgument.Builder("nonNullableIntWithDefault").value(CompiledVariable("nonNullableIntWithDefault")).build(),
-          CompiledArgument.Builder("nullableInput").value(CompiledVariable("nullableInput")).build(),
-          CompiledArgument.Builder("nullableInt").value(CompiledVariable("nullableInt")).build()
+          CompiledArgument.Builder(Query.__nullableInt_nonNullableInput).value(CompiledVariable("nonNullableInput")).build(),
+          CompiledArgument.Builder(Query.__nullableInt_nonNullableInputWithDefault).value(CompiledVariable("nonNullableInputWithDefault")).build(),
+          CompiledArgument.Builder(Query.__nullableInt_nonNullableInt).value(CompiledVariable("nonNullableInt")).build(),
+          CompiledArgument.Builder(Query.__nullableInt_nonNullableIntWithDefault).value(CompiledVariable("nonNullableIntWithDefault")).build(),
+          CompiledArgument.Builder(Query.__nullableInt_nullableInput).value(CompiledVariable("nullableInput")).build(),
+          CompiledArgument.Builder(Query.__nullableInt_nullableInt).value(CompiledVariable("nullableInt")).build()
         ))
         .build(),
         CompiledField.Builder(
           name = "nonNullableInt",
           type = GraphQLInt.type.notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder("nonNullableInput").value(CompiledVariable("nonNullableInput")).build(),
-          CompiledArgument.Builder("nonNullableInputWithDefault").value(CompiledVariable("nonNullableInputWithDefault")).build(),
-          CompiledArgument.Builder("nonNullableInt").value(CompiledVariable("nonNullableInt")).build(),
-          CompiledArgument.Builder("nonNullableIntWithDefault").value(CompiledVariable("nonNullableIntWithDefault")).build(),
-          CompiledArgument.Builder("nullableInput").value(CompiledVariable("nullableInput")).build(),
-          CompiledArgument.Builder("nullableInt").value(CompiledVariable("nullableInt")).build()
+          CompiledArgument.Builder(Query.__nonNullableInt_nonNullableInput).value(CompiledVariable("nonNullableInput")).build(),
+          CompiledArgument.Builder(Query.__nonNullableInt_nonNullableInputWithDefault).value(CompiledVariable("nonNullableInputWithDefault")).build(),
+          CompiledArgument.Builder(Query.__nonNullableInt_nonNullableInt).value(CompiledVariable("nonNullableInt")).build(),
+          CompiledArgument.Builder(Query.__nonNullableInt_nonNullableIntWithDefault).value(CompiledVariable("nonNullableIntWithDefault")).build(),
+          CompiledArgument.Builder(Query.__nonNullableInt_nullableInput).value(CompiledVariable("nullableInput")).build(),
+          CompiledArgument.Builder(Query.__nonNullableInt_nullableInt).value(CompiledVariable("nullableInt")).build()
         ))
         .build(),
         CompiledField.Builder(

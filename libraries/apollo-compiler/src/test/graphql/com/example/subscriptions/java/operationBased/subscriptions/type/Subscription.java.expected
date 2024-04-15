@@ -5,8 +5,11 @@
 //
 package com.example.subscriptions.type;
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 
 public class Subscription {
+  public static final CompiledArgumentDefinition __commentAdded_repoFullName = new CompiledArgumentDefinition.Builder("repoFullName").build();
+
   public static ObjectType type = (new ObjectType.Builder("Subscription")).build();
 }

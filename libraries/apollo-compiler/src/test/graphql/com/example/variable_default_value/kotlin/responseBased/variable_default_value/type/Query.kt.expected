@@ -5,6 +5,7 @@
 //
 package com.example.variable_default_value.type
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition
 import com.apollographql.apollo3.api.ObjectType
 
 /**
@@ -12,6 +13,9 @@ import com.apollographql.apollo3.api.ObjectType
  */
 public class Query {
   public companion object {
+    public val __hero_episode: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("episode").build()
+
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()
   }
 }

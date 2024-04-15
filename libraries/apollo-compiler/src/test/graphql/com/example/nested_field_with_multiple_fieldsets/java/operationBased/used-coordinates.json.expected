@@ -1,0 +1,12 @@
+{
+    "typeToFieldsToArguments": {
+        "Iface1": {
+        },
+        "Iface2": {
+        },
+        "String": {
+        },
+        "Query": {
+        }
+    }
+}

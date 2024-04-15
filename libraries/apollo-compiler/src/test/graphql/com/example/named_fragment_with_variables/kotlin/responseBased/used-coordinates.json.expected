@@ -1,0 +1,27 @@
+{
+    "typeToFieldsToArguments": {
+        "Organization": {
+            "user": [
+                "query"
+            ]
+        },
+        "Query": {
+            "organization": [
+                "id"
+            ]
+        },
+        "String": {
+        },
+        "User": {
+            "avatar": [
+                "size"
+            ]
+        },
+        "UserQuery": {
+        },
+        "Int": {
+        },
+        "Boolean": {
+        }
+    }
+}

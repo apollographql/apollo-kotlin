@@ -5,6 +5,7 @@
 //
 package com.example.mutation_create_review_semantic_naming.type
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition
 import com.apollographql.apollo3.api.ObjectType
 
 /**
@@ -12,6 +13,12 @@ import com.apollographql.apollo3.api.ObjectType
  */
 public class Mutation {
   public companion object {
+    public val __createReview_episode: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("episode").build()
+
+    public val __createReview_review: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("review").build()
+
     public val type: ObjectType = ObjectType.Builder(name = "Mutation").build()
   }
 }

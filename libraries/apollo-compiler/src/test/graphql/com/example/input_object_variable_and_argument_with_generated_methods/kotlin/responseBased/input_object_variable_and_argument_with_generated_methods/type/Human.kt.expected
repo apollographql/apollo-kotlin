@@ -5,6 +5,7 @@
 //
 package com.example.input_object_variable_and_argument_with_generated_methods.type
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition
 import com.apollographql.apollo3.api.ObjectType
 
 /**
@@ -12,6 +13,9 @@ import com.apollographql.apollo3.api.ObjectType
  */
 public class Human {
   public companion object {
+    public val __height_unit: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("unit").build()
+
     public val type: ObjectType =
         ObjectType.Builder(name = "Human").interfaces(listOf(Character.type)).build()
   }

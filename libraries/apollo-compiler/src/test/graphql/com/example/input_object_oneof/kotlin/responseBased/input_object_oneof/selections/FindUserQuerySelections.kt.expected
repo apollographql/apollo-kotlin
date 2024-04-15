@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.input_object_oneof.type.GraphQLID
+import com.example.input_object_oneof.type.Query
 import com.example.input_object_oneof.type.User
 import kotlin.collections.List
 
@@ -27,7 +28,7 @@ public object FindUserQuerySelections {
           name = "findUser",
           type = User.type
         ).arguments(listOf(
-          CompiledArgument.Builder("findUserInput").value(CompiledVariable("findUserInput")).build()
+          CompiledArgument.Builder(Query.__findUser_findUserInput).value(CompiledVariable("findUserInput")).build()
         ))
         .selections(__findUser)
         .build()

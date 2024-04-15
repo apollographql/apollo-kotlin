@@ -1,0 +1,20 @@
+{
+    "typeToFieldsToArguments": {
+        "String": {
+        },
+        "Character": {
+        },
+        "Droid": {
+        },
+        "Query": {
+            "droid": [
+                "id"
+            ],
+            "human": [
+                "id"
+            ]
+        },
+        "Human": {
+        }
+    }
+}

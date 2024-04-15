@@ -1,0 +1,12 @@
+{
+    "typeToFieldsToArguments": {
+        "Collection": {
+        },
+        "Item": {
+        },
+        "String": {
+        },
+        "Query": {
+        }
+    }
+}

@@ -5,7 +5,6 @@
 //
 package com.example.nested_named_fragments.fragment.selections
 
-import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
@@ -59,13 +58,7 @@ public object StarshipFragmentSelections {
         CompiledField.Builder(
           name = "pilotConnection",
           type = StarshipPilotsConnection.type
-        ).arguments(listOf(
-          CompiledArgument.Builder("after").build(),
-          CompiledArgument.Builder("before").build(),
-          CompiledArgument.Builder("first").build(),
-          CompiledArgument.Builder("last").build()
-        ))
-        .selections(__pilotConnection)
+        ).selections(__pilotConnection)
         .build()
       )
 }

@@ -21,26 +21,26 @@ import kotlin.test.assertEquals
 
 class ConnectionPaginationTest {
   @Test
-  fun typePolicyConnectionFieldsMemoryCache() {
-    typePolicyConnectionFields(MemoryCacheFactory())
+  fun memoryCache() {
+    test(MemoryCacheFactory())
   }
 
   @Test
-  fun typePolicyConnectionFieldsBlobSqlCache() {
-    typePolicyConnectionFields(SqlNormalizedCacheFactory(name = "blob", withDates = true))
+  fun blobSqlCache() {
+    test(SqlNormalizedCacheFactory(name = "blob", withDates = true))
   }
 
   @Test
-  fun typePolicyConnectionFieldsJsonSqlCache() {
-    typePolicyConnectionFields(SqlNormalizedCacheFactory(name = "json", withDates = false))
+  fun jsonSqlCache() {
+    test(SqlNormalizedCacheFactory(name = "json", withDates = false))
   }
 
   @Test
-  fun typePolicyConnectionFieldsChainedCache() {
-    typePolicyConnectionFields(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(name = "json", withDates = false)))
+  fun chainedCache() {
+    test(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(name = "json", withDates = false)))
   }
 
-  private fun typePolicyConnectionFields(cacheFactory: NormalizedCacheFactory) = runTest {
+  private fun test(cacheFactory: NormalizedCacheFactory) = runTest {
     val apolloStore = ApolloStore(
         normalizedCacheFactory = cacheFactory,
         cacheKeyGenerator = TypePolicyCacheKeyGenerator,

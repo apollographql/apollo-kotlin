@@ -91,6 +91,7 @@ internal class InterfaceBuilder(
 
   private fun IrInterface.companionTypeSpec(): TypeSpec {
     return TypeSpec.companionObjectBuilder()
+        .addProperties(fieldDefinitions.propertySpecs())
         .addProperty(typePropertySpec(context.resolver))
         .maybeImplementBuilderFactory(generateDataBuilders, ClassName(packageName, otherBuilderName))
         .build()

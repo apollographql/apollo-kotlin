@@ -11,7 +11,7 @@ object JavaCompiler {
       // All good
       return
     }
-    val javaFileObjects = files.map {
+    val javaFileObjects = files.filter { it.extension == "java" }.map {
       val qualifiedName = it.path
           .substringBeforeLast(".")
           .split(File.separator)

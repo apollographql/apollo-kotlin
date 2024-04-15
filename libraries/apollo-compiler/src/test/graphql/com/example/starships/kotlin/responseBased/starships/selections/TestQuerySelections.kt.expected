@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.starships.type.GraphQLFloat
 import com.example.starships.type.GraphQLID
 import com.example.starships.type.GraphQLString
+import com.example.starships.type.Query
 import com.example.starships.type.Starship
 import kotlin.collections.List
 
@@ -38,7 +39,7 @@ public object TestQuerySelections {
           name = "starship",
           type = Starship.type
         ).arguments(listOf(
-          CompiledArgument.Builder("id").value(CompiledVariable("id")).build()
+          CompiledArgument.Builder(Query.__starship_id).value(CompiledVariable("id")).build()
         ))
         .selections(__starship)
         .build()

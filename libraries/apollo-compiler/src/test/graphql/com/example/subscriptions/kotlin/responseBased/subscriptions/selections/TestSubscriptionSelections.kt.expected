@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.subscriptions.type.Comment
 import com.example.subscriptions.type.GraphQLInt
 import com.example.subscriptions.type.GraphQLString
+import com.example.subscriptions.type.Subscription
 import kotlin.collections.List
 
 public object TestSubscriptionSelections {
@@ -32,7 +33,7 @@ public object TestSubscriptionSelections {
           name = "commentAdded",
           type = Comment.type
         ).arguments(listOf(
-          CompiledArgument.Builder("repoFullName").value(CompiledVariable("repo")).build()
+          CompiledArgument.Builder(Subscription.__commentAdded_repoFullName).value(CompiledVariable("repo")).build()
         ))
         .selections(__commentAdded)
         .build()

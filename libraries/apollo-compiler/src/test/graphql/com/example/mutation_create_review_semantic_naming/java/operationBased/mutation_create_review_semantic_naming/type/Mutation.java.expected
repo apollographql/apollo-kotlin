@@ -5,11 +5,16 @@
 //
 package com.example.mutation_create_review_semantic_naming.type;
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 
 /**
  * The mutation type, represents all updates we can make to our data
  */
 public class Mutation {
+  public static final CompiledArgumentDefinition __createReview_episode = new CompiledArgumentDefinition.Builder("episode").build();
+
+  public static final CompiledArgumentDefinition __createReview_review = new CompiledArgumentDefinition.Builder("review").build();
+
   public static ObjectType type = (new ObjectType.Builder("Mutation")).build();
 }

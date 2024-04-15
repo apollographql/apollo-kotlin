@@ -1,0 +1,18 @@
+{
+    "typeToFieldsToArguments": {
+        "Character": {
+        },
+        "hero_type": {
+        },
+        "String": {
+        },
+        "FriendsConnection": {
+        },
+        "Int": {
+        },
+        "FriendsEdge": {
+        },
+        "Query": {
+        }
+    }
+}

@@ -5,13 +5,18 @@ import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.compiler.ApolloCompiler.Logger
 import com.apollographql.apollo3.compiler.TargetLanguage.JAVA
 import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_5
 import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_9
 import com.apollographql.apollo3.compiler.TestUtils.checkTestFixture
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateMeasurements
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateTestFixtures
+import com.apollographql.apollo3.compiler.codegen.SourceOutput
+import com.apollographql.apollo3.compiler.codegen.java.JavaOutput
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo3.compiler.codegen.writeTo
+import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.AfterClass
@@ -206,7 +211,8 @@ class CodegenTest {
           writeText("""
             // This file keeps track of the size of generated code to avoid blowing up the codegen size.
             // If you updated the codegen and test fixtures, you should commit this file too.
-          """.trimIndent())
+          """.trimIndent()
+          )
 
           appendText("\n\n")
 
@@ -268,8 +274,9 @@ class CodegenTest {
 
       val generateSchema = folder.name == "__schema"
 
-      val schemaFile = folder.listFiles()!!.find { it.isFile && (it.name == "schema.sdl" || it.name == "schema.json" || it.name == "schema.graphqls") }
-          ?: File("src/test/graphql/schema.sdl")
+      val schemaFile =
+        folder.listFiles()!!.find { it.isFile && (it.name == "schema.sdl" || it.name == "schema.json" || it.name == "schema.graphqls") }
+            ?: File("src/test/graphql/schema.sdl")
 
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
       val operationOutputGenerator = OperationOutputGenerator.Default(operationIdGenerator)
@@ -288,7 +295,9 @@ class CodegenTest {
       val scalarMapping = if (folder.name in listOf(
               "custom_scalar_type",
               "input_object_type",
-              "mutation_create_review")) {
+              "mutation_create_review"
+          )
+      ) {
         if (targetLanguage == JAVA) {
           mapOf(
               "Date" to ScalarInfo("java.util.Date"),
@@ -401,7 +410,7 @@ class CodegenTest {
           decapitalizeFields = decapitalizeFields
       )
 
-      ApolloCompiler.buildSchemaAndOperationsSources(
+      val (irOperations, sourceOutput) = ApolloCompiler.buildSchemaAndOperationsSourcesAndReturnIrOperations(
           schemaFiles = setOf(schemaFile).toInputFiles(),
           executableFiles = graphqlFiles.toInputFiles(),
           codegenSchemaOptions = buildCodegenSchemaOptions(
@@ -421,8 +430,10 @@ class CodegenTest {
           irOperationsTransform = null,
           javaOutputTransform = null,
           kotlinOutputTransform = null,
+      )
 
-      ).writeTo(outputDir, true, null)
+      sourceOutput.writeTo(outputDir, true, null)
+      irOperations.usedCoordinates.writeTo(File(outputDir, "com/example/used-coordinates.json"))
       return outputDir
     }
 
@@ -433,4 +444,53 @@ class CodegenTest {
       return children.any { it.hasFragments() }
     }
   }
+}
+
+/**
+ * Same as ApolloCompiler.buildSchemaAndOperationsSources but also returns the IrOperations so we can inspect their contents.
+ */
+private fun ApolloCompiler.buildSchemaAndOperationsSourcesAndReturnIrOperations(
+    schemaFiles: List<InputFile>,
+    executableFiles: List<InputFile>,
+    codegenSchemaOptions: CodegenSchemaOptions,
+    irOptions: IrOptions,
+    codegenOptions: CodegenOptions,
+    layoutFactory: LayoutFactory?,
+    @Suppress("DEPRECATION") operationOutputGenerator: OperationOutputGenerator?,
+    irOperationsTransform: Transform<IrOperations>?,
+    javaOutputTransform: Transform<JavaOutput>?,
+    kotlinOutputTransform: Transform<KotlinOutput>?,
+    logger: Logger?,
+    operationManifestFile: File?,
+): Pair<IrOperations, SourceOutput> {
+  val codegenSchema = buildCodegenSchema(
+      schemaFiles = schemaFiles,
+      logger = logger,
+      codegenSchemaOptions = codegenSchemaOptions
+  )
+
+  val irOperations = buildIrOperations(
+      codegenSchema = codegenSchema,
+      executableFiles = executableFiles,
+      upstreamCodegenModels = emptyList(),
+      upstreamFragmentDefinitions = emptyList(),
+      options = irOptions,
+      logger = logger
+  )
+
+  val sourceOutput = buildSchemaAndOperationsSourcesFromIr(
+      codegenSchema = codegenSchema,
+      irOperations = irOperations,
+      downstreamUsedCoordinates = UsedCoordinates(),
+      upstreamCodegenMetadata = emptyList(),
+      codegenOptions = codegenOptions,
+      layout = layoutFactory?.create(codegenSchema),
+      irOperationsTransform = irOperationsTransform,
+      javaOutputTransform = javaOutputTransform,
+      kotlinOutputTransform = kotlinOutputTransform,
+      operationManifestFile = operationManifestFile,
+      operationOutputGenerator = operationOutputGenerator,
+  )
+
+  return irOperations to sourceOutput
 }

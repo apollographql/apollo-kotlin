@@ -1,0 +1,14 @@
+{
+    "typeToFieldsToArguments": {
+        "Character": {
+        },
+        "String": {
+        },
+        "Query": {
+        },
+        "Human": {
+        },
+        "Date": {
+        }
+    }
+}

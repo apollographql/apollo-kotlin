@@ -212,7 +212,7 @@ object FieldPolicyCacheResolver : CacheResolver {
       parent: Map<String, @JvmSuppressWildcards Any?>,
       parentId: String,
   ): Any? {
-    val keyArgsValues = field.argumentValues(variables) { it.isKey }.values.map { it.toString() }
+    val keyArgsValues = field.argumentValues(variables) { it.definition.isKey }.values.map { it.toString() }
 
     if (keyArgsValues.isNotEmpty()) {
       return CacheKey(field.type.rawType().name, keyArgsValues)
@@ -227,7 +227,7 @@ object FieldPolicyCacheResolver : CacheResolver {
  */
 object FieldPolicyApolloResolver : ApolloResolver {
   override fun resolveField(context: ResolverContext): Any? {
-    val keyArgsValues = context.field.argumentValues(context.variables) { it.isKey }.values.map { it.toString() }
+    val keyArgsValues = context.field.argumentValues(context.variables) { it.definition.isKey }.values.map { it.toString() }
 
     if (keyArgsValues.isNotEmpty()) {
       return CacheKey(context.field.type.rawType().name, keyArgsValues)

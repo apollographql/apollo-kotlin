@@ -27,26 +27,26 @@ import kotlin.test.assertEquals
 
 class OffsetBasedWithPageAndInputPaginationTest {
   @Test
-  fun offsetBasedWithPageAndInputMemoryCache() {
-    offsetBasedWithPageAndInput(MemoryCacheFactory())
+  fun memoryCache() {
+    test(MemoryCacheFactory())
   }
 
   @Test
-  fun offsetBasedWithPageAndInputBlobSqlCache() {
-    offsetBasedWithPageAndInput(SqlNormalizedCacheFactory(name = "blob", withDates = true))
+  fun blobSqlCache() {
+    test(SqlNormalizedCacheFactory(name = "blob", withDates = true))
   }
 
   @Test
-  fun offsetBasedWithPageAndInputJsonSqlCache() {
-    offsetBasedWithPageAndInput(SqlNormalizedCacheFactory(name = "json", withDates = false))
+  fun jsonSqlCache() {
+    test(SqlNormalizedCacheFactory(name = "json", withDates = false))
   }
 
   @Test
-  fun offsetBasedWithPageAndInputChainedCache() {
-    offsetBasedWithPageAndInput(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(name = "json", withDates = false)))
+  fun chainedCache() {
+    test(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(name = "json", withDates = false)))
   }
 
-  private fun offsetBasedWithPageAndInput(cacheFactory: NormalizedCacheFactory) = runTest {
+  private fun test(cacheFactory: NormalizedCacheFactory) = runTest {
     val apolloStore = ApolloStore(
         normalizedCacheFactory = cacheFactory,
         cacheKeyGenerator = TypePolicyCacheKeyGenerator,
@@ -247,8 +247,8 @@ class OffsetBasedWithPageAndInputPaginationTest {
 
     private fun CompiledField.nameWithoutPaginationArguments(variables: Executable.Variables): String {
       val filteredArguments = arguments.map {
-        if (it.name == "usersInput") {
-          CompiledArgument.Builder(it.name)
+        if (it.definition.name == "usersInput") {
+          CompiledArgument.Builder(it.definition)
               .value((it.value.getOrNull() as? Map<*, *>).orEmpty().filterKeys { it != "offset" && it != "limit" })
               .build()
         } else {

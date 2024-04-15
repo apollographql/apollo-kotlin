@@ -5,7 +5,6 @@
 //
 package com.example.unique_type_name.selections
 
-import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
@@ -54,10 +53,7 @@ public object HeroDetailQuerySelections {
         CompiledField.Builder(
           name = "height",
           type = GraphQLFloat.type
-        ).arguments(listOf(
-          CompiledArgument.Builder("unit").value("METER").build()
-        ))
-        .build(),
+        ).build(),
         CompiledField.Builder(
           name = "friends",
           type = Character.type.list()

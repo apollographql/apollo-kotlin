@@ -19,7 +19,7 @@ class MetadataGeneratorContext(
   }
 
   fun allArgumentValues(): Map<String, Any?> {
-    return field.argumentValues(variables) { !it.isPagination }
+    return field.argumentValues(variables) { !it.definition.isPagination }
   }
 }
 

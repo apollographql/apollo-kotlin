@@ -1,0 +1,12 @@
+{
+    "typeToFieldsToArguments": {
+        "PropertyAmenityCategory": {
+        },
+        "AmenityCategory": {
+        },
+        "String": {
+        },
+        "Query": {
+        }
+    }
+}

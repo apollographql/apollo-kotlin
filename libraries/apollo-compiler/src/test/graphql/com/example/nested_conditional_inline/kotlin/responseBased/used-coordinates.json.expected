@@ -1,0 +1,22 @@
+{
+    "typeToFieldsToArguments": {
+        "Character": {
+        },
+        "Query": {
+            "hero": [
+                "episode"
+            ]
+        },
+        "String": {
+        },
+        "Float": {
+        },
+        "Human": {
+            "height": [
+                "unit"
+            ]
+        },
+        "Episode": {
+        }
+    }
+}

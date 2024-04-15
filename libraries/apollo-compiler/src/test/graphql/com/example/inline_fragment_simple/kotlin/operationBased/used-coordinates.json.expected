@@ -1,0 +1,12 @@
+{
+    "typeToFieldsToArguments": {
+        "Character": {
+        },
+        "Float": {
+        },
+        "String": {
+        },
+        "Query": {
+        }
+    }
+}

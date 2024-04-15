@@ -5,11 +5,18 @@
 //
 package com.example.input_object_variable_and_argument_with_generated_methods.type;
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 
 /**
  * The query type, represents all of the entry points into our object graph
  */
 public class Query {
+  public static final CompiledArgumentDefinition __heroWithReview_episode = new CompiledArgumentDefinition.Builder("episode").build();
+
+  public static final CompiledArgumentDefinition __heroWithReview_review = new CompiledArgumentDefinition.Builder("review").build();
+
+  public static final CompiledArgumentDefinition __heroWithReview_listOfInts = new CompiledArgumentDefinition.Builder("listOfInts").build();
+
   public static ObjectType type = (new ObjectType.Builder("Query")).build();
 }

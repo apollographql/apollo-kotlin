@@ -12,7 +12,7 @@ object KotlinCompiler {
   fun assertCompiles(
       files: Set<File>,
   ) {
-    val kotlinFiles = files.map {
+    val kotlinFiles = files.filter { it.extension == "kt" }.map {
       SourceFile.fromPath(it)
     }.toList()
 

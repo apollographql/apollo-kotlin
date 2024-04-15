@@ -16,6 +16,7 @@ import com.example.two_heroes_with_friends.type.FriendsEdge;
 import com.example.two_heroes_with_friends.type.GraphQLID;
 import com.example.two_heroes_with_friends.type.GraphQLInt;
 import com.example.two_heroes_with_friends.type.GraphQLString;
+import com.example.two_heroes_with_friends.type.Query;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class TestQuerySelections {
 
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).arguments(Arrays.asList(new CompiledArgument.Builder("after").build(), new CompiledArgument.Builder("first").build())).selections(__friendsConnection).build()
+    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(__friendsConnection).build()
   );
 
   private static List<CompiledSelection> __node1 = Arrays.asList(
@@ -54,11 +55,11 @@ public class TestQuerySelections {
   private static List<CompiledSelection> __hero1 = Arrays.asList(
     new CompiledField.Builder("id", new CompiledNotNullType(GraphQLID.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).arguments(Arrays.asList(new CompiledArgument.Builder("after").build(), new CompiledArgument.Builder("first").build())).selections(__friendsConnection1).build()
+    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(__friendsConnection1).build()
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("hero", Character.type).alias("r2").arguments(Arrays.asList(new CompiledArgument.Builder("episode").build(), new CompiledArgument.Builder("listOfListOfStringArgs").build())).selections(__hero).build(),
-    new CompiledField.Builder("hero", Character.type).alias("luke").arguments(Arrays.asList(new CompiledArgument.Builder("episode").value("EMPIRE").build(), new CompiledArgument.Builder("listOfListOfStringArgs").build())).selections(__hero1).build()
+    new CompiledField.Builder("hero", Character.type).alias("r2").selections(__hero).build(),
+    new CompiledField.Builder("hero", Character.type).alias("luke").arguments(Arrays.asList(new CompiledArgument.Builder(Query.__hero_episode).value("EMPIRE").build())).selections(__hero1).build()
   );
 }

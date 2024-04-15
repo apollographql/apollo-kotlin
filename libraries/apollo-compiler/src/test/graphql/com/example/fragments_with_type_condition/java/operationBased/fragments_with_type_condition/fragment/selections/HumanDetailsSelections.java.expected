@@ -5,7 +5,6 @@
 //
 package com.example.fragments_with_type_condition.fragment.selections;
 
-import com.apollographql.apollo3.api.CompiledArgument;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
@@ -17,6 +16,6 @@ import java.util.List;
 public class HumanDetailsSelections {
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledField.Builder("height", GraphQLFloat.type).arguments(Arrays.asList(new CompiledArgument.Builder("unit").value("METER").build())).build()
+    new CompiledField.Builder("height", GraphQLFloat.type).build()
   );
 }

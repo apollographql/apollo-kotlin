@@ -1,0 +1,26 @@
+{
+    "typeToFieldsToArguments": {
+        "Review": {
+        },
+        "Query": {
+            "reviews": [
+                "episode",
+                "starsInt",
+                "starsFloat"
+            ],
+            "testNullableArguments": [
+                "int",
+                "string",
+                "float",
+                "review",
+                "episode",
+                "boolean",
+                "list"
+            ]
+        },
+        "Int": {
+        },
+        "String": {
+        }
+    }
+}

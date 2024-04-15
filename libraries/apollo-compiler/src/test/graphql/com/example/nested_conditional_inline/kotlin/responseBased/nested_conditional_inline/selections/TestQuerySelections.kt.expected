@@ -15,6 +15,8 @@ import com.apollographql.apollo3.api.notNull
 import com.example.nested_conditional_inline.type.Character
 import com.example.nested_conditional_inline.type.GraphQLFloat
 import com.example.nested_conditional_inline.type.GraphQLString
+import com.example.nested_conditional_inline.type.Human
+import com.example.nested_conditional_inline.type.Query
 import kotlin.collections.List
 
 public object TestQuerySelections {
@@ -23,7 +25,7 @@ public object TestQuerySelections {
           name = "height",
           type = GraphQLFloat.type
         ).arguments(listOf(
-          CompiledArgument.Builder("unit").value("FOOT").build()
+          CompiledArgument.Builder(Human.__height_unit).value("FOOT").build()
         ))
         .build()
       )
@@ -57,7 +59,7 @@ public object TestQuerySelections {
           name = "height",
           type = GraphQLFloat.type
         ).arguments(listOf(
-          CompiledArgument.Builder("unit").value("METER").build()
+          CompiledArgument.Builder(Human.__height_unit).value("METER").build()
         ))
         .build()
       )
@@ -112,8 +114,7 @@ public object TestQuerySelections {
           name = "hero",
           type = Character.type
         ).arguments(listOf(
-          CompiledArgument.Builder("episode").value(CompiledVariable("episode")).build(),
-          CompiledArgument.Builder("listOfListOfStringArgs").build()
+          CompiledArgument.Builder(Query.__hero_episode).value(CompiledVariable("episode")).build()
         ))
         .selections(__hero)
         .build()

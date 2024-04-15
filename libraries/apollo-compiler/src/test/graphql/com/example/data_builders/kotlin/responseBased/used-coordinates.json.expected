@@ -1,0 +1,70 @@
+{
+    "typeToFieldsToArguments": {
+        "Query": {
+            "animal": [
+            ],
+            "character": [
+            ],
+            "node": [
+            ]
+        },
+        "Animal": {
+            "__typename": [
+            ]
+        },
+        "Cat": {
+            "meow": [
+            ],
+            "__typename": [
+            ],
+            "id": [
+            ]
+        },
+        "String": {
+        },
+        "Dog": {
+            "woof": [
+            ],
+            "__typename": [
+            ],
+            "id": [
+            ]
+        },
+        "Character": {
+            "__typename": [
+            ],
+            "id": [
+            ],
+            "name": [
+            ]
+        },
+        "Human": {
+            "homePlanet": [
+            ],
+            "__typename": [
+            ],
+            "id": [
+            ],
+            "name": [
+            ]
+        },
+        "Droid": {
+            "primaryFunction": [
+            ],
+            "__typename": [
+            ],
+            "id": [
+            ],
+            "name": [
+            ]
+        },
+        "ID": {
+        },
+        "Node": {
+            "__typename": [
+            ],
+            "id": [
+            ]
+        }
+    }
+}

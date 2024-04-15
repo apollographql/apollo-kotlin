@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.CompiledSelection;
 import com.example.reserved_keywords.type.Character;
 import com.example.reserved_keywords.type.GraphQLID;
 import com.example.reserved_keywords.type.GraphQLString;
+import com.example.reserved_keywords.type.Query;
 import com.example.reserved_keywords.type.SearchResult;
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +35,7 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("hero", Character.type).alias("yield").arguments(Arrays.asList(new CompiledArgument.Builder("episode").build(), new CompiledArgument.Builder("listOfListOfStringArgs").build())).selections(__hero).build(),
-    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).alias("objects").arguments(Arrays.asList(new CompiledArgument.Builder("text").value("abc").build())).selections(__search).build()
+    new CompiledField.Builder("hero", Character.type).alias("yield").selections(__hero).build(),
+    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).alias("objects").arguments(Arrays.asList(new CompiledArgument.Builder(Query.__search_text).value("abc").build())).selections(__search).build()
   );
 }

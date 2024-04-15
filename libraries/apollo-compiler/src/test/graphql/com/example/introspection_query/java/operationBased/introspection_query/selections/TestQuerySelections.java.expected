@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CompiledListType;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.example.introspection_query.type.GraphQLString;
+import com.example.introspection_query.type.Query;
 import com.example.introspection_query.type.__Schema;
 import com.example.introspection_query.type.__Type;
 import com.example.introspection_query.type.__TypeKind;
@@ -38,6 +39,6 @@ public class TestQuerySelections {
 
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("__schema", new CompiledNotNullType(__Schema.type)).selections(____schema).build(),
-    new CompiledField.Builder("__type", new CompiledNotNullType(__Type.type)).arguments(Arrays.asList(new CompiledArgument.Builder("name").value("Vehicle").build())).selections(____type).build()
+    new CompiledField.Builder("__type", new CompiledNotNullType(__Type.type)).arguments(Arrays.asList(new CompiledArgument.Builder(Query.____type_name).value("Vehicle").build())).selections(____type).build()
   );
 }

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.input_object_type.type.GraphQLInt
 import com.example.input_object_type.type.GraphQLString
+import com.example.input_object_type.type.Mutation
 import com.example.input_object_type.type.Review
 import kotlin.collections.List
 
@@ -32,8 +33,8 @@ public object TestQuerySelections {
           name = "createReview",
           type = Review.type
         ).arguments(listOf(
-          CompiledArgument.Builder("episode").value(CompiledVariable("ep")).build(),
-          CompiledArgument.Builder("review").value(CompiledVariable("review")).build()
+          CompiledArgument.Builder(Mutation.__createReview_episode).value(CompiledVariable("ep")).build(),
+          CompiledArgument.Builder(Mutation.__createReview_review).value(CompiledVariable("review")).build()
         ))
         .selections(__createReview)
         .build()

@@ -15,6 +15,7 @@ import com.example.union_inline_fragments.type.Character
 import com.example.union_inline_fragments.type.Episode
 import com.example.union_inline_fragments.type.GraphQLID
 import com.example.union_inline_fragments.type.GraphQLString
+import com.example.union_inline_fragments.type.Query
 import com.example.union_inline_fragments.type.SearchResult
 import kotlin.collections.List
 
@@ -143,7 +144,7 @@ public object TestQuerySelections {
           name = "search",
           type = SearchResult.type.list()
         ).arguments(listOf(
-          CompiledArgument.Builder("text").value("test").build()
+          CompiledArgument.Builder(Query.__search_text).value("test").build()
         ))
         .selections(__search)
         .build()

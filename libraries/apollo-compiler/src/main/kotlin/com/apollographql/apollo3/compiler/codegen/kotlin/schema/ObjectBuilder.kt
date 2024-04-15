@@ -4,6 +4,8 @@ import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSchemaContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols.CompiledArgumentDefinitionBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.concreteBuilderTypeSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.concreteMapTypeSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
@@ -12,10 +14,14 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeImplementB
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.topLevelBuildFunSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.schema.util.typePropertySpec
 import com.apollographql.apollo3.compiler.codegen.typePackageName
+import com.apollographql.apollo3.compiler.ir.IrArgumentDefinition
+import com.apollographql.apollo3.compiler.ir.IrFieldDefinition
 import com.apollographql.apollo3.compiler.ir.IrObject
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class ObjectBuilder(
@@ -34,6 +40,11 @@ internal class ObjectBuilder(
     context.resolver.registerMapType(obj.name, ClassName(packageName, mapName))
     context.resolver.registerBuilderType(obj.name, ClassName(packageName, builderName))
     context.resolver.registerBuilderFun(obj.name, MemberName(packageName, "build${obj.name.capitalizeFirstLetter()}"))
+    for (fieldDefinition in obj.fieldDefinitions) {
+      fieldDefinition.argumentDefinitions.forEach { argumentDefinition ->
+        context.resolver.registerArgumentDefinition(argumentDefinition.id, ClassName(packageName, simpleName))
+      }
+    }
   }
 
   override fun build(): CgFile {
@@ -81,8 +92,40 @@ internal class ObjectBuilder(
 
   private fun IrObject.companionTypeSpec(): TypeSpec {
     return TypeSpec.companionObjectBuilder()
+        .addProperties(fieldDefinitions.propertySpecs())
         .addProperty(typePropertySpec(context.resolver))
         .maybeImplementBuilderFactory(generateDataBuilders, context.resolver.resolveBuilderType(name))
         .build()
   }
+}
+
+internal fun List<IrFieldDefinition>.propertySpecs(): List<PropertySpec> {
+  return flatMap { fieldDefinition ->
+    fieldDefinition.argumentDefinitions.map { argumentDefinition ->
+      PropertySpec.builder(
+          name = argumentDefinition.propertyName,
+          type = KotlinSymbols.CompiledArgumentDefinition,
+      )
+          .initializer(argumentDefinition.codeBlock())
+          .build()
+    }
+  }
+}
+
+private fun IrArgumentDefinition.codeBlock(): CodeBlock {
+  val argumentBuilder = CodeBlock.builder()
+  argumentBuilder.add(
+      "%T(%S)",
+      CompiledArgumentDefinitionBuilder,
+      name,
+  )
+
+  if (isKey) {
+    argumentBuilder.add(".isKey(true)")
+  }
+  if (isPagination) {
+    argumentBuilder.add(".isPagination(true)")
+  }
+  argumentBuilder.add(".build()")
+  return argumentBuilder.build()
 }

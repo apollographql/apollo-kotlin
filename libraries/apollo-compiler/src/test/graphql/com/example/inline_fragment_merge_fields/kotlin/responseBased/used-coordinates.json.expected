@@ -1,0 +1,16 @@
+{
+    "typeToFieldsToArguments": {
+        "Character": {
+        },
+        "String": {
+        },
+        "FriendsConnection": {
+        },
+        "URL": {
+        },
+        "FriendsEdge": {
+        },
+        "Query": {
+        }
+    }
+}

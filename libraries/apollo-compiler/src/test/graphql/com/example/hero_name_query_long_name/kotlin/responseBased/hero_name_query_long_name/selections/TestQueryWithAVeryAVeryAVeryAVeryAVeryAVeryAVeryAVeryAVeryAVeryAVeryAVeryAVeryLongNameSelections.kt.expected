@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.hero_name_query_long_name.type.Character
 import com.example.hero_name_query_long_name.type.GraphQLString
+import com.example.hero_name_query_long_name.type.Query
 import kotlin.collections.List
 
 public object
@@ -31,8 +32,7 @@ public object
           type = Character.type
         ).alias("heroAVeryAVeryAVeryAVeryAVeryAVeryAV")
         .arguments(listOf(
-          CompiledArgument.Builder("episode").value(CompiledVariable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")).build(),
-          CompiledArgument.Builder("listOfListOfStringArgs").build()
+          CompiledArgument.Builder(Query.__hero_episode).value(CompiledVariable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")).build()
         ))
         .selections(__hero)
         .build()

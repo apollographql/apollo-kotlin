@@ -5,7 +5,6 @@
 //
 package com.example.fragment_spread_with_nested_fields.fragment.selections;
 
-import com.apollographql.apollo3.api.CompiledArgument;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledListType;
 import com.apollographql.apollo3.api.CompiledNotNullType;
@@ -34,6 +33,6 @@ public class HeroDetailsSelections {
 
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).arguments(Arrays.asList(new CompiledArgument.Builder("after").build(), new CompiledArgument.Builder("first").build())).selections(__friendsConnection).build()
+    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(__friendsConnection).build()
   );
 }

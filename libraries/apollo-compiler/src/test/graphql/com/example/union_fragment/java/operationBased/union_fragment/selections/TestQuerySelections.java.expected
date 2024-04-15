@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.CompiledSelection;
 import com.example.union_fragment.fragment.selections.StarshipSelections;
 import com.example.union_fragment.type.GraphQLID;
 import com.example.union_fragment.type.GraphQLString;
+import com.example.union_fragment.type.Query;
 import com.example.union_fragment.type.SearchResult;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +31,6 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument.Builder("text").value("test").build())).selections(__search).build()
+    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument.Builder(Query.__search_text).value("test").build())).selections(__search).build()
   );
 }

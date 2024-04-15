@@ -1,0 +1,13 @@
+{
+    "typeToFieldsToArguments": {
+        "Character": {
+        },
+        "Query": {
+            "character": [
+                "id"
+            ]
+        },
+        "String": {
+        }
+    }
+}

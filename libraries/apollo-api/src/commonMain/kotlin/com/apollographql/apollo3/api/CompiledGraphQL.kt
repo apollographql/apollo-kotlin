@@ -35,7 +35,7 @@ class CompiledField internal constructor(
    * value with variables substituted for their values.
    */
   @Deprecated("This function does not distinguish between null and absent arguments. Use argumentValue instead", ReplaceWith("argumentValue(name = name, variables = variables)"))
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+  @ApolloDeprecatedSince(v4_0_0)
   fun resolveArgument(
       name: String,
       variables: Executable.Variables,
@@ -56,7 +56,7 @@ class CompiledField internal constructor(
       name: String,
       variables: Executable.Variables,
   ): Optional<ApolloJsonElement> {
-    val argument = arguments.firstOrNull { it.name == name }
+    val argument = arguments.firstOrNull { it.definition.name == name }
     if (argument == null) {
       // no such argument
       return Optional.Absent
@@ -86,12 +86,12 @@ class CompiledField internal constructor(
    * Absent arguments are not returned
    */
   @ApolloExperimental
-  fun argumentValues(variables: Executable.Variables, filter: (CompiledArgument) -> Boolean= {true}): Map<String, ApolloJsonElement> {
+  fun argumentValues(variables: Executable.Variables, filter: (CompiledArgument) -> Boolean = { true }): Map<String, ApolloJsonElement> {
     val arguments = arguments.filter(filter).filter { it.value is Optional.Present<*> }
     if (arguments.isEmpty()) {
       return emptyMap()
     }
-    val map = arguments.associate { it.name to it.value.getOrThrow() }
+    val map = arguments.associate { it.definition.name to it.value.getOrThrow() }
 
     @Suppress("UNCHECKED_CAST")
     return resolveVariables(map, variables) as Map<String, ApolloJsonElement>
@@ -148,7 +148,7 @@ class CompiledField internal constructor(
    * CacheKey1: `users({"ids": 42})`
    */
   fun nameWithArguments(variables: Executable.Variables): String {
-    val arguments = argumentValues(variables) { !it.isPagination }
+    val arguments = argumentValues(variables) { !it.definition.isPagination }
     if (arguments.isEmpty()) {
       return name
     }
@@ -412,24 +412,23 @@ class CompiledVariable(val name: String)
  */
 typealias CompiledValue = Any?
 
-class CompiledArgument private constructor(
+class CompiledArgumentDefinition private constructor(
     val name: String,
-    /**
-     * The compile-time value of that argument.
-     *
-     * Can be the defaultValue if no argument is defined in the operation.
-     * Can contain variables.
-     * Can be [Optional.Absent] if no value is passed
-     */
-    val value: Optional<CompiledValue>,
-    val isKey: Boolean = false,
+    val isKey: Boolean,
+
     @ApolloExperimental
-    val isPagination: Boolean = false,
+    val isPagination: Boolean,
 ) {
+  fun newBuilder(): Builder = Builder(this)
+
   class Builder(
       private val name: String,
   ) {
-    private var value: Optional<CompiledValue> = Optional.absent()
+    constructor(argumentDefinition: CompiledArgumentDefinition) : this(argumentDefinition.name) {
+      this.isKey = argumentDefinition.isKey
+      this.isPagination = argumentDefinition.isPagination
+    }
+
     private var isKey: Boolean = false
     private var isPagination: Boolean = false
 
@@ -437,21 +436,49 @@ class CompiledArgument private constructor(
       this.isKey = isKey
     }
 
-    fun value(value: CompiledValue) = apply {
-      this.value = Optional.present(value)
-    }
-
     @ApolloExperimental
     fun isPagination(isPagination: Boolean) = apply {
       this.isPagination = isPagination
     }
 
-
-    fun build(): CompiledArgument = CompiledArgument(
+    fun build(): CompiledArgumentDefinition = CompiledArgumentDefinition(
         name = name,
-        value = value,
         isKey = isKey,
         isPagination = isPagination,
+    )
+  }
+}
+
+class CompiledArgument private constructor(
+    val definition: CompiledArgumentDefinition,
+    /**
+     * The compile-time value of that argument.
+     *
+     * Can contain variables.
+     * Can be [Optional.Absent] if no value is passed
+     */
+    val value: Optional<CompiledValue>,
+) {
+  @Deprecated("Use definition.name instead", ReplaceWith("definition.name"))
+  @ApolloDeprecatedSince(v4_0_0)
+  val name get() = definition.name
+
+  @Deprecated("Use definition.isKey instead", ReplaceWith("definition.isKey"))
+  @ApolloDeprecatedSince(v4_0_0)
+  val isKey get() = definition.isKey
+
+  class Builder(
+      private val definition: CompiledArgumentDefinition,
+  ) {
+    private var value: Optional<CompiledValue> = Optional.absent()
+
+    fun value(value: CompiledValue) = apply {
+      this.value = Optional.present(value)
+    }
+
+    fun build(): CompiledArgument = CompiledArgument(
+        definition = definition,
+        value = value,
     )
   }
 }

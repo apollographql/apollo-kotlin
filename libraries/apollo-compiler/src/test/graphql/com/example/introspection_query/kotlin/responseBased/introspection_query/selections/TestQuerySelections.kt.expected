@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.introspection_query.type.GraphQLString
+import com.example.introspection_query.type.Query
 import com.example.introspection_query.type.__Schema
 import com.example.introspection_query.type.__Type
 import com.example.introspection_query.type.__TypeKind
@@ -65,7 +66,7 @@ public object TestQuerySelections {
           name = "__type",
           type = __Type.type.notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder("name").value("Vehicle").build()
+          CompiledArgument.Builder(Query.____type_name).value("Vehicle").build()
         ))
         .selections(____type)
         .build()

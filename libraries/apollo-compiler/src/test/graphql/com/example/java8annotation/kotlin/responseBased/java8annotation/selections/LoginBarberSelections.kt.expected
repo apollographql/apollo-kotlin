@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.java8annotation.type.GraphQLString
+import com.example.java8annotation.type.Mutation
 import com.example.java8annotation.type.User
 import kotlin.collections.List
 
@@ -27,7 +28,7 @@ public object LoginBarberSelections {
           name = "login",
           type = User.type.notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder("input").value(CompiledVariable("input")).build()
+          CompiledArgument.Builder(Mutation.__login_input).value(CompiledVariable("input")).build()
         ))
         .selections(__login)
         .build()

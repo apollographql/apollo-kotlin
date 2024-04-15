@@ -5,11 +5,32 @@
 //
 package com.example.arguments_hardcoded.type;
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 
 /**
  * The query type, represents all of the entry points into our object graph
  */
 public class Query {
+  public static final CompiledArgumentDefinition __testNullableArguments_int = new CompiledArgumentDefinition.Builder("int").build();
+
+  public static final CompiledArgumentDefinition __testNullableArguments_float = new CompiledArgumentDefinition.Builder("float").build();
+
+  public static final CompiledArgumentDefinition __testNullableArguments_string = new CompiledArgumentDefinition.Builder("string").build();
+
+  public static final CompiledArgumentDefinition __testNullableArguments_episode = new CompiledArgumentDefinition.Builder("episode").build();
+
+  public static final CompiledArgumentDefinition __testNullableArguments_review = new CompiledArgumentDefinition.Builder("review").build();
+
+  public static final CompiledArgumentDefinition __testNullableArguments_boolean = new CompiledArgumentDefinition.Builder("boolean").build();
+
+  public static final CompiledArgumentDefinition __testNullableArguments_list = new CompiledArgumentDefinition.Builder("list").build();
+
+  public static final CompiledArgumentDefinition __reviews_episode = new CompiledArgumentDefinition.Builder("episode").build();
+
+  public static final CompiledArgumentDefinition __reviews_starsInt = new CompiledArgumentDefinition.Builder("starsInt").build();
+
+  public static final CompiledArgumentDefinition __reviews_starsFloat = new CompiledArgumentDefinition.Builder("starsFloat").build();
+
   public static ObjectType type = (new ObjectType.Builder("Query")).build();
 }

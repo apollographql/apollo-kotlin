@@ -382,4 +382,7 @@ internal class KotlinResolver(
   }
 
   fun resolveCustomScalarAdapters(): ClassName = resolveAndAssert(ResolverKeyKind.CustomScalarAdapters, "")
+
+  fun registerArgumentDefinition(id: String, className: ClassName) = register(ResolverKeyKind.ArgumentDefinition, id, className)
+  fun resolveArgumentDefinition(id: String) = resolveAndAssert(ResolverKeyKind.ArgumentDefinition, id)
 }

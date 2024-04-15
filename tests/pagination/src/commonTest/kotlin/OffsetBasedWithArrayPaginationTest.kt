@@ -20,26 +20,26 @@ import kotlin.test.assertEquals
 
 class OffsetBasedWithArrayPaginationTest {
   @Test
-  fun offsetBasedWithArrayMemoryCache() {
-    offsetBasedWithArray(MemoryCacheFactory())
+  fun memoryCache() {
+    test(MemoryCacheFactory())
   }
 
   @Test
-  fun offsetBasedWithArrayBlobSqlCache() {
-    offsetBasedWithArray(SqlNormalizedCacheFactory(name = "blob", withDates = true))
+  fun blobSqlCache() {
+    test(SqlNormalizedCacheFactory(name = "blob", withDates = true))
   }
 
   @Test
-  fun offsetBasedWithArrayJsonSqlCache() {
-    offsetBasedWithArray(SqlNormalizedCacheFactory(name = "json", withDates = false))
+  fun jsonSqlCache() {
+    test(SqlNormalizedCacheFactory(name = "json", withDates = false))
   }
 
   @Test
-  fun offsetBasedWithArrayChainedCache() {
-    offsetBasedWithArray(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(name = "json", withDates = false)))
+  fun chainedCache() {
+    test(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(name = "json", withDates = false)))
   }
 
-  private fun offsetBasedWithArray(cacheFactory: NormalizedCacheFactory) = runTest {
+  private fun test(cacheFactory: NormalizedCacheFactory) = runTest {
     val apolloStore = ApolloStore(
         normalizedCacheFactory = cacheFactory,
         cacheKeyGenerator = TypePolicyCacheKeyGenerator,

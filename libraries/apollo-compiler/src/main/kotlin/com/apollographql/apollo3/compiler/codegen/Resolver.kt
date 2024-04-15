@@ -33,6 +33,7 @@ enum class ResolverKeyKind {
   Schema,
   CustomScalarAdapters,
   Pagination,
+  ArgumentDefinition,
 }
 
 @Serializable

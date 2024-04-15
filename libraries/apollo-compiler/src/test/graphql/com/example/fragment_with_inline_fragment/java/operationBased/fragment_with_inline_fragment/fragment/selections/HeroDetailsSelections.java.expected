@@ -5,7 +5,6 @@
 //
 package com.example.fragment_with_inline_fragment.fragment.selections;
 
-import com.apollographql.apollo3.api.CompiledArgument;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledFragment;
 import com.apollographql.apollo3.api.CompiledListType;
@@ -43,6 +42,6 @@ public class HeroDetailsSelections {
     new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(HumanDetailsSelections.__root).build(),
     new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(__onDroid).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).arguments(Arrays.asList(new CompiledArgument.Builder("after").build(), new CompiledArgument.Builder("first").build())).selections(__friendsConnection).build()
+    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(__friendsConnection).build()
   );
 }

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.target_name.type.GraphQLString
+import com.example.target_name.type.Query
 import com.example.target_name.type.RenamedEnum
 import com.example.target_name.type.RenamedInterface
 import com.example.target_name.type.RenamedObject
@@ -58,7 +59,7 @@ public object TestQuerySelections {
           name = "object",
           type = RenamedObject.type
         ).arguments(listOf(
-          CompiledArgument.Builder("input").value(CompiledVariable("input")).build()
+          CompiledArgument.Builder(Query.__object_input).value(CompiledVariable("input")).build()
         ))
         .selections(__object)
         .build(),
@@ -76,14 +77,14 @@ public object TestQuerySelections {
           name = "scalar",
           type = RenamedScalar.type
         ).arguments(listOf(
-          CompiledArgument.Builder("scalar").value(CompiledVariable("scalar")).build()
+          CompiledArgument.Builder(Query.__scalar_scalar).value(CompiledVariable("scalar")).build()
         ))
         .build(),
         CompiledField.Builder(
           name = "enum",
           type = RenamedEnum.type
         ).arguments(listOf(
-          CompiledArgument.Builder("enum").value(CompiledVariable("enum")).build()
+          CompiledArgument.Builder(Query.__enum_enum).value(CompiledVariable("enum")).build()
         ))
         .build()
       )

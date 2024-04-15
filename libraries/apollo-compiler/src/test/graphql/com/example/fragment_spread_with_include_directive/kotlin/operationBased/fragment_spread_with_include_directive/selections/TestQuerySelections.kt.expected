@@ -20,6 +20,7 @@ import com.example.fragment_spread_with_include_directive.type.Character
 import com.example.fragment_spread_with_include_directive.type.GraphQLBoolean
 import com.example.fragment_spread_with_include_directive.type.GraphQLID
 import com.example.fragment_spread_with_include_directive.type.GraphQLString
+import com.example.fragment_spread_with_include_directive.type.Query
 import kotlin.collections.List
 
 public object TestQuerySelections {
@@ -63,17 +64,13 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).arguments(listOf(
-          CompiledArgument.Builder("episode").build(),
-          CompiledArgument.Builder("listOfListOfStringArgs").build()
-        ))
-        .selections(__hero)
+        ).selections(__hero)
         .build(),
         CompiledField.Builder(
           name = "getBoolean",
           type = GraphQLBoolean.type
         ).arguments(listOf(
-          CompiledArgument.Builder("booleanArg").value(CompiledVariable("optionalWithNoDefault")).build()
+          CompiledArgument.Builder(Query.__getBoolean_booleanArg).value(CompiledVariable("optionalWithNoDefault")).build()
         ))
         .build()
       )

@@ -5,10 +5,14 @@
 //
 package com.example.nested_named_fragments.type
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition
 import com.apollographql.apollo3.api.ObjectType
 
 public class Root {
   public companion object {
+    public val __allStarships_first: CompiledArgumentDefinition =
+        CompiledArgumentDefinition.Builder("first").build()
+
     public val type: ObjectType = ObjectType.Builder(name = "Root").build()
   }
 }

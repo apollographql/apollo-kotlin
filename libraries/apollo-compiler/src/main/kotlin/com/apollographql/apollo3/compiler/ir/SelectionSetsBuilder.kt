@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.ir
 
-import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
@@ -15,8 +14,6 @@ import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.codegen.keyArgs
-import com.apollographql.apollo3.compiler.codegen.paginationArgs
 
 internal class SelectionSetsBuilder(
     val schema: Schema,
@@ -62,15 +59,6 @@ internal class SelectionSetsBuilder(
     }
   }
 
-  private fun GQLArgument.toIr(keyArgs: Set<String>, paginationArgs: Set<String>): IrArgument {
-    return IrArgument(
-        name = name,
-        value = value.toIrValue(),
-        isKey = keyArgs.contains(name),
-        isPagination = paginationArgs.contains(name)
-    )
-  }
-
   private fun GQLField.walk(parentType: String): WalkResult? {
     val expression = directives.toIncludeBooleanExpression()
     if (expression == BooleanExpression.False) {
@@ -81,28 +69,15 @@ internal class SelectionSetsBuilder(
 
     val selectionSetName = resolveNameClashes(usedNames, name)
 
-    /**
-     * Pull all arguments from the schema as we need them to compute the cache key
-     */
-    val typeDefinition = schema.typeDefinition(parentType)
-    val actualArguments = fieldDefinition.arguments.map { schemaArgument ->
-      val operationArgument = arguments.firstOrNull { it.name == schemaArgument.name }
-
-      val keyArgs = typeDefinition.keyArgs(name, schema)
-      val paginationArgs = typeDefinition.paginationArgs(name, schema)
-
-      /**
-       * When passed explicitly, the argument values are coerced (but not their default value)
-       */
-      val userValue = operationArgument?.value?.coerceInExecutableContextOrThrow(schemaArgument.type, schema)
+    val actualArguments = arguments.map { fieldArgument ->
+      val schemaArgument = fieldDefinition.arguments.first { it.name == fieldArgument.name }
+      val userValue = fieldArgument.value.coerceInExecutableContextOrThrow(schemaArgument.type, schema)
       IrArgument(
-          name = schemaArgument.name,
-          value = (userValue ?: schemaArgument.defaultValue)?.toIrValue(),
-          isKey =  keyArgs.contains(schemaArgument.name),
-          isPagination = paginationArgs.contains(schemaArgument.name)
+          definitionId = IrArgumentDefinition.id(parentType, fieldDefinition.name, schemaArgument.name),
+          definitionPropertyName = IrArgumentDefinition.propertyName(fieldDefinition.name, schemaArgument.name),
+          value = userValue.toIrValue(),
       )
     }
-
     return WalkResult(
         self = IrField(
             name = name,
@@ -119,7 +94,7 @@ internal class SelectionSetsBuilder(
   /**
    * This doesn't register the used types like [IrOperationsBuilder.toIr] but since it's going through the same AST, that's not a bad thing
    */
-  private fun GQLType.toIrTypeRef(): IrTypeRef = when(this) {
+  private fun GQLType.toIrTypeRef(): IrTypeRef = when (this) {
     is GQLNonNullType -> IrNonNullTypeRef(this.type.toIrTypeRef())
     is GQLListType -> IrListTypeRef(type.toIrTypeRef())
     is GQLNamedType -> IrNamedTypeRef(name)

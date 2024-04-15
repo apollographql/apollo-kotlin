@@ -5,8 +5,11 @@
 //
 package com.example.nested_named_fragments.type;
 
+import com.apollographql.apollo3.api.CompiledArgumentDefinition;
 import com.apollographql.apollo3.api.ObjectType;
 
 public class Root {
+  public static final CompiledArgumentDefinition __allStarships_first = new CompiledArgumentDefinition.Builder("first").build();
+
   public static ObjectType type = (new ObjectType.Builder("Root")).build();
 }
