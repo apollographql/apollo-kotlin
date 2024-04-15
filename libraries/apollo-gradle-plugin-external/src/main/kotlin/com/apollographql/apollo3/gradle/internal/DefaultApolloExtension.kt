@@ -542,7 +542,9 @@ abstract class DefaultApolloExtension(
           schemaConsumerConfiguration = codegenSchemaConsumerConfiguration,
           schemaTaskProvider = codegenSchemaTaskProvider,
           irOptionsTaskProvider = optionsTaskProvider,
-          upstreamIrFiles = upstreamIrConsumerConfiguration)
+          upstreamIrFiles = upstreamIrConsumerConfiguration,
+          classpath = pluginConfiguration
+      )
 
       val sourcesFromIrTaskProvider = registerSourcesFromIrTask(
           project = project,
@@ -780,11 +782,13 @@ abstract class DefaultApolloExtension(
       schemaTaskProvider: TaskProvider<ApolloGenerateCodegenSchemaTask>?,
       irOptionsTaskProvider: TaskProvider<ApolloGenerateOptionsTask>,
       upstreamIrFiles: Configuration,
+      classpath: FileCollection,
   ): TaskProvider<ApolloGenerateIrOperationsTask> {
     return project.tasks.register(ModelNames.generateApolloIrOperations(service), ApolloGenerateIrOperationsTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Generate Apollo IR operations for service '${service.name}'"
 
+      task.classpath.from(classpath)
       task.codegenSchemaFiles.from(schemaConsumerConfiguration)
       if (schemaTaskProvider != null) {
         task.codegenSchemaFiles.from(schemaTaskProvider.flatMap { it.codegenSchemaFile })

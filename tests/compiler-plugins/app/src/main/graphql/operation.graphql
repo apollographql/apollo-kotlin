@@ -19,3 +19,25 @@ query Node {
 fragment UserFragment on User {
   job
 }
+
+query AlwaysGreet {
+  node {
+    ... on User {
+      friend {
+        __typename
+      }
+    }
+  }
+  friend {
+    __typename
+  }
+  ...queryFragment
+}
+
+fragment queryFragment on Query {
+  user {
+    friend {
+      __typename
+    }
+  }
+}

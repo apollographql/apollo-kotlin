@@ -1,6 +1,7 @@
 type Query {
   user: User
   node: Node
+  friend: Friend!
 }
 
 interface Node {
@@ -11,10 +12,15 @@ type User implements Node {
   id: ID!
   name: String!
   job: Job
+  friend: [Friend!]!
 }
 
 enum Job {
   engineer
   designer
   product_manager
+}
+
+type Friend {
+  greet: String
 }

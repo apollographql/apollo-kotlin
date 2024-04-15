@@ -51,6 +51,7 @@ class MetadataTest {
         executableFiles = setOf(rootGraphQLFile(directory)).toInputFiles(),
         upstreamCodegenModels = emptyList(),
         upstreamFragmentDefinitions = emptyList(),
+        documentTransform = null,
         options = irOptionsFile.toIrOptions(),
         logger = null
     ).writeTo(rootIrOperationsFile)
@@ -60,6 +61,7 @@ class MetadataTest {
         executableFiles = setOf(leafGraphQLFile(directory)).toInputFiles(),
         upstreamCodegenModels = rootIrOperationsFile.toIrOperations().codegenModels.let { listOf(it) },
         upstreamFragmentDefinitions = rootIrOperationsFile.toIrOperations().fragmentDefinitions,
+        documentTransform = null,
         options = irOptionsFile.toIrOptions(),
         logger = null
     ).writeTo(leafIrOperationsFile)

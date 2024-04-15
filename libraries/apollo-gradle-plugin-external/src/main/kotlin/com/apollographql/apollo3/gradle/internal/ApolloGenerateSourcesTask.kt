@@ -60,6 +60,7 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
           irOperationsTransform = null,
           javaOutputTransform = null,
           kotlinOutputTransform = null,
+          documentTransform = null,
           operationManifestFile = operationManifestFile.orNull?.asFile
       ).writeTo(outputDir.get().asFile, true, null)
     } else {
@@ -104,6 +105,7 @@ private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
           irOperationsTransform = plugin?.irOperationsTransform(),
           javaOutputTransform = plugin?.javaOutputTransform(),
           kotlinOutputTransform = plugin?.kotlinOutputTransform(),
+          documentTransform = plugin?.documentTransform(),
           operationManifestFile = operationManifestFile.orNull?.asFile
       ).writeTo(outputDir.get().asFile, true, null)
     }
