@@ -16,7 +16,7 @@ group = "com.apollographql.apollo3.build"
 
 dependencies {
   compileOnly(gradleApi())
-  compileOnly(libs.gegp)
+  compileOnly(libs.dgp)
 
   implementation(libs.okhttp)
 
