@@ -69,7 +69,7 @@ public class HttpNetworkTransport implements NetworkTransport {
       }
 
       @Override public void onFailure(@NotNull ApolloNetworkException exception) {
-        callback.onResponse(getExceptionResponse(request, new ApolloParseException("Cannot parse response", exception)));
+        callback.onResponse(getExceptionResponse(request, exception));
       }
     });
   }

@@ -1,6 +1,6 @@
 package test
 
-import com.apollographql.apollo3.exception.DefaultApolloException
+import com.apollographql.apollo3.exception.NullOrMissingField
 import data.builders.fragment.AnimalDetailsImpl
 import data.builders.fragment.CatDetailsImpl
 import data.builders.fragment.TrivialFragmentImpl
@@ -43,7 +43,7 @@ class FragmentTest {
     // __typename is unknown so this fails
     // XXX: we could be smarter about this (the parsers are
     // data.builders.fragment.AnimalDetailsImpl_ResponseAdapter$OnAnimal.fromJson(AnimalDetailsImpl_ResponseAdapter.kt:85)
-    assertFailsWith(DefaultApolloException::class) {
+    assertFailsWith(NullOrMissingField::class) {
       TrivialFragmentImpl.Data(Animal) {
         __typename = "Brontaroc"
         species = "alien"

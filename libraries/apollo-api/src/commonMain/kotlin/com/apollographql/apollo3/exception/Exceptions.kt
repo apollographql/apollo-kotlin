@@ -15,7 +15,7 @@ import okio.BufferedSource
 sealed class ApolloException(message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause)
 
 /**
- * A generic exception when no additional context exists
+ * A generic exception used when there is no additional context besides the message.
  */
 class DefaultApolloException(message: String? = null, cause: Throwable? = null): ApolloException(message, cause)
 
@@ -25,7 +25,10 @@ class DefaultApolloException(message: String? = null, cause: Throwable? = null):
 class NoDataException(cause: Throwable?): ApolloException("No data was found", cause)
 
 /**
- * A network error happened: socket closed, DNS issue, TLS problem, etc...
+ * An I/O error happened: socket closed, DNS issue, TLS problem, file not found, etc...
+ *
+ * This is called [ApolloNetworkException] for historical reasons, but it should have been `ApolloIOException` instead.
+ * [ApolloNetworkException] is thrown when an I/O error happens reading the operation.
  *
  * @param message a message indicating what the error was.
  * @param platformCause the underlying cause. Might be null. When not null, it can be cast to:
@@ -57,7 +60,6 @@ class SubscriptionOperationException(
 class SubscriptionConnectionException(
     val payload: Any?,
 ) : ApolloException(message = "Subscription connection error")
-
 
 /**
  * The router sent one or several errors.
@@ -108,15 +110,26 @@ class JsonEncodingException(message: String) : ApolloException(message)
  *
  * Exceptions of this type should be fixed by either changing the application code to accept the unexpected JSON, or by changing the JSON
  * to conform to the application's expectations.
- *
- * This exception may also be triggered if a document's nesting exceeds 31 levels. This depth is sufficient for all practical applications,
- * but shallow enough to avoid uglier failures like [StackOverflowError].
  */
 class JsonDataException(message: String) : ApolloException(message)
 
 /**
- * The response could not be parsed either because of another issue than [JsonDataException] or [JsonEncodingException]
+ * A field was missing or null in the JSON response.
+ *
+ * Due to the way the parsers work, it is not possible to distinguish between both cases.
  */
+class NullOrMissingField(message: String): ApolloException(message)
+
+/**
+ * The response could not be parsed because of an I/O exception.
+ *
+ * JSON and GraphQL errors are throwing other errors, see [JsonEncodingException], [JsonDataException] and [NullOrMissingField]
+ *
+ * @see JsonEncodingException
+ * @see JsonDataException
+ * @see NullOrMissingField
+ */
+@Deprecated("ApolloParseException was only used for I/O exceptions and is now mapped to ApolloNetworkException.")
 class ApolloParseException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
 class ApolloGraphQLException(val error: Error): ApolloException("GraphQL error: '${error.message}'") {
