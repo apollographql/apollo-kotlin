@@ -5,7 +5,7 @@ import kotlin.test.Test
 class SchemaPackageNameTest {
   @Test
   fun userOnUserNameError() {
-    println(com.example.type.Foo)
-    println(com.example.GetFooQuery)
+    com.example.type.Foo
+    com.example.GetFooQuery
   }
 }

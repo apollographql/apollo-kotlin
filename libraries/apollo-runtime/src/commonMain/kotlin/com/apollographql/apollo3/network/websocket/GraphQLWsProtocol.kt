@@ -59,7 +59,7 @@ class GraphQLWsProtocol(
       @Suppress("UNCHECKED_CAST")
       Buffer().writeUtf8(text).jsonReader().readAny() as Map<String, Any?>
     } catch (e: Exception) {
-      return ParseErrorServerMessage("Cannot parse server message: '$text'")
+      return ParseErrorServerMessage("Invalid JSON: '$text'")
     }
 
     val type = map["type"] as? String

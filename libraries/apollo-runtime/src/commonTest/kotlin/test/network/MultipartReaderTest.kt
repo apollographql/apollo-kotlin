@@ -34,7 +34,7 @@ class MultipartReaderTest {
       while (true) {
         val part = it.nextPart() ?: break
         //assertTrue(part.body.readUtf8().isNotEmpty())
-        println(part.body.readUtf8())
+        //println(part.body.readUtf8())
         partCount++
       }
     }

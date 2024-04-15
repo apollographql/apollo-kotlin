@@ -11,7 +11,9 @@ import com.apollographql.apollo3.mockserver.enqueueWebSocket
 import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo3.testing.FooQuery
 import com.apollographql.apollo3.testing.FooSubscription
-import com.apollographql.apollo3.testing.ackMessage
+import com.apollographql.apollo3.testing.FooSubscription.Companion.completeMessage
+import com.apollographql.apollo3.testing.FooSubscription.Companion.nextMessage
+import com.apollographql.apollo3.testing.connectionAckMessage
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.mockServerTest
 import com.apollographql.apollo3.testing.operationId
@@ -48,7 +50,7 @@ class RetryWebSocketsTest {
                 var serverReader = mockServer.awaitWebSocketRequest()
 
                 serverReader.awaitMessage() // connection_init
-                serverWriter.enqueueMessage(ackMessage())
+                serverWriter.enqueueMessage(connectionAckMessage())
 
                 val operationId1 = serverReader.awaitMessage().operationId()
                 serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId1, 1))
@@ -69,7 +71,7 @@ class RetryWebSocketsTest {
                 serverReader = mockServer.awaitWebSocketRequest()
 
                 serverReader.awaitMessage() // connection_init
-                serverWriter.enqueueMessage(ackMessage())
+                serverWriter.enqueueMessage(connectionAckMessage())
 
                 val operationId2 = serverReader.awaitMessage().operationId()
                 serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId2, 2))
@@ -86,6 +88,67 @@ class RetryWebSocketsTest {
               }
         }
     mockServer.close()
+  }
+
+  @Test
+  fun socketReopensAfterAnError() = runTest(false) {
+    var mockServer = MockServer()
+
+    ApolloClient.Builder()
+        .httpServerUrl(mockServer.url())
+        .subscriptionNetworkTransport(
+            WebSocketNetworkTransport.Builder()
+                .serverUrl(mockServer.url())
+                .build()
+        )
+        .addRetryOnErrorInterceptor { _, _ ->
+          true
+        }
+        .build()
+        .use { apolloClient ->
+          var serverWriter = mockServer.enqueueWebSocket()
+          apolloClient.subscription(FooSubscription())
+              .toFlow()
+              .test {
+                var serverReader = mockServer.awaitWebSocketRequest()
+
+                serverReader.awaitMessage()
+                serverWriter.enqueueMessage(connectionAckMessage())
+
+                var operationId = serverReader.awaitMessage().operationId()
+                serverWriter.enqueueMessage(nextMessage(operationId, 0))
+
+                assertEquals(0, awaitItem().data?.foo)
+
+                /**
+                 * Close the server, the flow should restart
+                 */
+                val port = mockServer.port()
+                mockServer.close()
+
+                /**
+                 * Looks like Ktor needs some time to close the local address.
+                 * Without the delay, I'm getting an "address already in use" error
+                 */
+                delay(1000)
+                mockServer = MockServer.Builder().port(port).build()
+                serverWriter = mockServer.enqueueWebSocket()
+
+                serverReader = mockServer.awaitWebSocketRequest()
+
+                serverReader.awaitMessage()
+                serverWriter.enqueueMessage(connectionAckMessage())
+
+                operationId = serverReader.awaitMessage().operationId()
+                serverWriter.enqueueMessage(nextMessage(operationId, 1))
+
+                assertEquals(1, awaitItem().data?.foo)
+
+                serverWriter.enqueueMessage(completeMessage(operationId))
+
+                awaitComplete()
+              }
+        }
   }
 
   @Test
@@ -108,7 +171,7 @@ class RetryWebSocketsTest {
                 val serverReader = mockServer.awaitWebSocketRequest()
 
                 serverReader.awaitMessage() // connection_init
-                serverWriter.enqueueMessage(ackMessage())
+                serverWriter.enqueueMessage(connectionAckMessage())
 
                 val operationId1 = serverReader.awaitMessage().operationId()
                 serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId1, 1))
@@ -145,7 +208,7 @@ class RetryWebSocketsTest {
                 val serverReader = mockServer.awaitWebSocketRequest()
 
                 serverReader.awaitMessage() // connection_init
-                serverWriter.enqueueMessage(ackMessage())
+                serverWriter.enqueueMessage(connectionAckMessage())
 
                 val operationId1 = serverReader.awaitMessage().operationId()
                 serverWriter.enqueueMessage(FooSubscription.nextMessage(operationId1, 1))
@@ -255,7 +318,7 @@ class RetryWebSocketsTest {
 
       // connection_init
       webSocketRequest.awaitMessage()
-      webSocket.enqueueMessage(ackMessage())
+      webSocket.enqueueMessage(connectionAckMessage())
 
       repeat(repeat) {
         val operationId = webSocketRequest.awaitMessage().operationId()

@@ -299,7 +299,7 @@ class NormalizationTest {
 
     // Fetch from network
     apolloClient.query(GetBooksByIdsPaginatedQuery(listOf("book-1", "book-2"))).fetchPolicy(FetchPolicy.NetworkOnly).execute()
-    println(NormalizedCache.prettifyDump(apolloClient.apolloStore.dump()))
+    // println(NormalizedCache.prettifyDump(apolloClient.apolloStore.dump()))
 
     // Fetch from the cache
     val fromCache1 = apolloClient.query(GetBooksByIdsPaginatedNoCursorsQuery(listOf("book-1"))).fetchPolicy(FetchPolicy.CacheOnly).execute()

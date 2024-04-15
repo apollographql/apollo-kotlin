@@ -52,7 +52,7 @@ class SubscriptionOperationException(
 ) : ApolloException(message = "Operation error $operationName")
 
 /**
- * The server responded with an error to the subscription init message.
+ * The server responded with an error to the 'connection_init' message.
  */
 class SubscriptionConnectionException(
     val payload: Any?,
