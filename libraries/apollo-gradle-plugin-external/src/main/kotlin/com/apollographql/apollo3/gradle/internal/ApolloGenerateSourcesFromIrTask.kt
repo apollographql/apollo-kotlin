@@ -78,6 +78,7 @@ abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBaseTask()
         it.operationManifestFile.set(operationManifestFile)
         it.outputDir.set(outputDir)
         it.metadataOutputFile.set(metadataOutputFile)
+        it.hasPlugin = hasPlugin.get()
       }
     }
   }
@@ -97,7 +98,7 @@ private abstract class GenerateSourcesFromIr : WorkAction<GenerateSourcesFromIrP
       val codegenSchemaFile = codegenSchemas.findCodegenSchemaFile()
 
       val codegenSchema = codegenSchemaFile.toCodegenSchema()
-      val plugin = apolloCompilerPlugin()
+      val plugin = apolloCompilerPlugin(hasPlugin)
 
       ApolloCompiler.buildSchemaAndOperationsSourcesFromIr(
           codegenSchema = codegenSchema,
@@ -117,6 +118,7 @@ private abstract class GenerateSourcesFromIr : WorkAction<GenerateSourcesFromIrP
 }
 
 private interface GenerateSourcesFromIrParameters : WorkParameters {
+  var hasPlugin: Boolean
   val codegenSchemas: ConfigurableFileCollection
   val irOperations: RegularFileProperty
   val codegenOptions: RegularFileProperty

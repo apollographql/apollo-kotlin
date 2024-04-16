@@ -69,6 +69,7 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
       }
 
       workQueue.submit(GenerateSources::class.java) {
+        it.hasPlugin = hasPlugin.get()
         it.graphqlFiles = graphqlFiles.isolate()
         it.schemaFiles = schemaFiles.isolate()
         it.fallbackSchemaFiles = fallbackSchemaFiles.isolate()
@@ -87,7 +88,7 @@ private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
     with(parameters) {
       val schemaInputFiles = (schemaFiles.takeIf { it.isNotEmpty() } ?: fallbackSchemaFiles).toInputFiles()
       val executableInputFiles = graphqlFiles.toInputFiles()
-      val plugin = apolloCompilerPlugin()
+      val plugin = apolloCompilerPlugin(hasPlugin)
 
       ApolloCompiler.buildSchemaAndOperationsSources(
           schemaFiles = schemaInputFiles,
@@ -113,6 +114,7 @@ private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
 }
 
 private interface GenerateSourcesParameters : WorkParameters {
+  var hasPlugin: Boolean
   var graphqlFiles: List<Pair<String, File>>
   var schemaFiles: List<Pair<String, File>>
   var fallbackSchemaFiles: List<Pair<String, File>>
