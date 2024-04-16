@@ -77,6 +77,9 @@ fun ApolloGenerateSourcesBaseTask.requiresBuildscriptClasspath(): Boolean {
     if (operationOutputGenerator != null) {
       logger.lifecycle("Apollo: operationOutputGenerator is deprecated, use Apollo compiler plugins instead. See https://go.apollo.dev/ak-compiler-plugins for more details.")
     }
+    check(classpath.files.isEmpty()) {
+      "Apollo: using ApolloCompilerPlugin and operationOutputGenerator/operationIdGenerator/packageNameGenerator at the same time is not supported. See https://go.apollo.dev/ak-compiler-plugins for more details."
+    }
 
     return true
   }
