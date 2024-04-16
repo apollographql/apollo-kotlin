@@ -115,9 +115,13 @@ More context in [#5799](https://github.com/apollographql/apollo-kotlin/issues/57
 ## Terminology
 
 **Field error**: A GraphQL field error [as in the GraphQL spec](https://spec.graphql.org/draft/#field-error). Typically, a backend resolver fails.
+
 **Request error**: A GraphQL request error [as in the GraphQL spec](https://spec.graphql.org/draft/#request-error). Typically, a query fails validation.
+
 **GraphQL error**: Any GraphQL error returned by the server in `response.errors`. Can be either a field error or a request error.
+
 **Response**: A GraphQL response [as in the GraphQL spec](https://spec.graphql.org/draft/#sec-Response-Format). Typically in JSON format.
+
 **Exception**: A Java/Kotlin Exception. Exceptions contain the stacktrace where they happened. Because they need to capture a stacktrace, they also have an associated cost and shouldn't be used for flow control.
 
 ## Links
