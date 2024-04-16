@@ -14,20 +14,20 @@ Historically, WebSockets have been one of the most complex and error-prone parts
 
 Starting with 4.0.0, Apollo Kotlin provides a new `com.apollographql.apollo3.network.websocket` package containing new `WebSocketNetworkTransport` and `WebSocketEngine` implementations (instead of `com.apollographql.apollo3.network.ws` for the current implementations).
 
-The `com.apollographql.apollo3.network.websocket` implementation:
+The `com.apollographql.apollo3.network.websocket` implementation provides the following:
 
-1. Defaults to the [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md) protocol, which has become the de facto standard. Using the other protocols is still possible but having a main, specified, protocol ensures we can write a good test suite.
-2. Does not inherit from the old memory model design, making the code considerably easier. In particular, `WebSocketEngine` is now event based and no flow control is done. If you buffers grow too much, your subscription fails.
+1. Defaults to the [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md) protocol, which has become the de facto standard. Using the other protocols is still possible but having a main, specified, protocol ensures we can write a good and solid test suite.
+2. Does not inherit from the old memory model design, making the code considerably simpler. In particular, `WebSocketEngine` is now event based and no attempt at flow control is done. If you buffers grow too much, your subscription fails.
 3. Plays nicely with the ApolloClient `retryOnError` API.
-4. Handles different Subscription transport more consistently.
+4. Handles different Subscription transports more consistently.
 
 ## Status
 
-While they are called "experimental", we believe the new APIS to be more robust than the non-experimental ones. They are safe to use in non-lib use cases.
+While they are `@ApolloExperimental`, we believe the new `.websocket` APIS to be more robust than the non-experimental `.ws` ones. They are safe to use in non-lib use cases.
 
-The "experimental" tag is permission to do API breaking change based on community feedback. Ideally there is no change needed.
+The "experimental" tag is to account for required API breaking changes based on community feedback. Ideally no change is needed.
 
-After a feedback phase, the current `ws.` APIs will become deprecated and the `websocket.` one promoted to stable by removing the `@ApolloExperimental` annotations. 
+After a feedback phase, the current `.ws` APIs will become deprecated and the `.websocket` one promoted to stable by removing the `@ApolloExperimental` annotations. 
 
 ## Migration guide
 
@@ -77,7 +77,7 @@ ApolloClient.Builder()
     .build()
 ```
 
-To account for non-websocket transports, like [multipart subscriptions](https://www.apollographql.com/docs/router/executing-operations/subscription-multipart-protocol/), the retry is now handled on the [ApolloClient] instead of the [NetworkTransport].
+To account for non-websocket transports, like [multipart subscriptions](https://www.apollographql.com/docs/router/executing-operations/subscription-multipart-protocol/), the retry is now handled on the `ApolloClient` instead of the `NetworkTransport`.
 
 ```kotlin
 // Replace
@@ -105,8 +105,8 @@ val apolloClient = ApolloClient.Builder()
 
 The above uses the default retry algorithm:
 
-* Wait until the network is available if you configured a [NetworkMonitor](network-connectivity)
-* Or use exponential backoff else
+* Wait until the network is available if you configured a [NetworkMonitor](network-connectivity).
+* Or use exponential backoff else.
 
 To customize the retry logic more, use `addRetryOnErrorInterceptor`:
 
