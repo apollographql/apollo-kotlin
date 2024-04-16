@@ -72,10 +72,10 @@ fun ApolloGenerateSourcesBaseTask.layout(): LayoutFactory {
 fun ApolloGenerateSourcesBaseTask.requiresBuildscriptClasspath(): Boolean {
   if (packageNameGenerator != null || operationOutputGenerator != null) {
     if (packageNameGenerator != null) {
-      logger.lifecycle("Apollo: packageNameGenerator is deprecated, use Apollo compiler plugins instead")
+      logger.lifecycle("Apollo: packageNameGenerator is deprecated, use Apollo compiler plugins instead. See https://go.apollo.dev/ak-compiler-plugins for more details.")
     }
     if (operationOutputGenerator != null) {
-      logger.lifecycle("Apollo: operationOutputGenerator is deprecated, use Apollo compiler plugins instead")
+      logger.lifecycle("Apollo: operationOutputGenerator is deprecated, use Apollo compiler plugins instead. See https://go.apollo.dev/ak-compiler-plugins for more details.")
     }
 
     return true

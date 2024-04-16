@@ -161,6 +161,7 @@ object ApolloCompiler {
       upstreamCodegenModels: List<String>,
       upstreamFragmentDefinitions: List<GQLFragmentDefinition>,
       options: IrOptions,
+      documentTransform: DocumentTransform?,
       logger: Logger?,
   ): IrOperations {
     val schema = codegenSchema.schema
@@ -240,11 +241,15 @@ object ApolloCompiler {
      */
     val fragmentDefinitions = (definitions.filterIsInstance<GQLFragmentDefinition>() + upstreamFragmentDefinitions).associateBy { it.name }
     val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
-      addRequiredFields(it, addTypename, schema, fragmentDefinitions)
+      addRequiredFields(it, addTypename, schema, fragmentDefinitions).let {
+        documentTransform?.transform(schema, it) ?: it
+      }
     }
 
     val operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
-      addRequiredFields(it, addTypename, schema, fragmentDefinitions)
+      addRequiredFields(it, addTypename, schema, fragmentDefinitions).let {
+        documentTransform?.transform(schema, it) ?: it
+      }
     }
 
     // Remember the fragments with the possibly updated fragments
@@ -465,6 +470,7 @@ object ApolloCompiler {
       irOperationsTransform: Transform<IrOperations>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
+      documentTransform: DocumentTransform?,
       logger: Logger?,
       operationManifestFile: File?,
   ): SourceOutput {
@@ -479,6 +485,7 @@ object ApolloCompiler {
         executableFiles = executableFiles,
         upstreamCodegenModels = emptyList(),
         upstreamFragmentDefinitions = emptyList(),
+        documentTransform = documentTransform,
         options = irOptions,
         logger = logger
     )

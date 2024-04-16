@@ -38,6 +38,7 @@ class ConditionalFragmentsTest {
           irOperationsTransform = null,
           javaOutputTransform = null,
           kotlinOutputTransform = null,
+          documentTransform = null,
       )
     }
 
@@ -59,6 +60,7 @@ class ConditionalFragmentsTest {
         irOperationsTransform = null,
         javaOutputTransform = null,
         kotlinOutputTransform = null,
+        documentTransform = null,
     )
   }
 }

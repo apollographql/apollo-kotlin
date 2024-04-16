@@ -1,6 +1,9 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.ast.GQLFragmentDefinition
+import com.apollographql.apollo3.ast.GQLOperationDefinition
+import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo3.compiler.codegen.java.JavaOutput
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
@@ -31,14 +34,6 @@ interface Plugin {
   }
 
   /**
-   * @return the [Transform] to be applied to [IrOperations] or null to use the default [Transform]
-   */
-  @ApolloExperimental
-  fun irOperationsTransform(): Transform<IrOperations>? {
-    return null
-  }
-
-  /**
    * @return the [Transform] to be applied to [JavaOutput] or null to use the default [Transform]
    */
   fun javaOutputTransform(): Transform<JavaOutput>? {
@@ -51,6 +46,41 @@ interface Plugin {
   fun kotlinOutputTransform(): Transform<KotlinOutput>? {
     return null
   }
+
+  /**
+   * @return a [DocumentTransform] to transform operations and/or fragments
+   */
+  @ApolloExperimental
+  fun documentTransform(): DocumentTransform? {
+    return null
+  }
+
+  /**
+   * @return the [Transform] to be applied to [IrOperations] or null to use the default [Transform]
+   */
+  @ApolloExperimental
+  fun irOperationsTransform(): Transform<IrOperations>? {
+    return null
+  }
+}
+
+/**
+ * A [DocumentTransform] transforms operations and fragments at build time. [DocumentTransform] can add or remove fields automatically for an example.
+ */
+@ApolloExperimental
+interface DocumentTransform {
+  /**
+   * Transforms the given operation.
+   *
+   * [transform] is called after any processing done by the Apollo compiler such as adding `__typename`.
+   */
+  fun transform(schema: Schema, operation: GQLOperationDefinition): GQLOperationDefinition
+  /**
+   * Transforms the given fragment.
+   *
+   * [transform] is called after any processing done by the Apollo compiler such as adding `__typename`.
+   */
+  fun transform(schema: Schema, fragment: GQLFragmentDefinition): GQLFragmentDefinition
 }
 
 /**
