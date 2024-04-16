@@ -1304,6 +1304,10 @@ public final class com/apollographql/apollo3/exception/NoDataException : com/apo
 	public fun <init> (Ljava/lang/Throwable;)V
 }
 
+public final class com/apollographql/apollo3/exception/NullOrMissingField : com/apollographql/apollo3/exception/ApolloException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
 public final class com/apollographql/apollo3/exception/RouterError : com/apollographql/apollo3/exception/ApolloException {
 	public fun <init> (Ljava/util/List;)V
 	public final fun getErrors ()Ljava/util/List;

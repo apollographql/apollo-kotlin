@@ -1,10 +1,11 @@
+
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
 import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.httpExpireTimeout
 import com.apollographql.apollo3.cache.http.httpFetchPolicy
 import com.apollographql.apollo3.cache.http.isFromHttpCache
-import com.apollographql.apollo3.exception.ApolloParseException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.awaitRequest
@@ -212,9 +213,9 @@ class HttpCacheTest {
   @Test
   fun incompleteJsonIsNotCached() = runTest(before = { before() }, after = { tearDown() }) {
     mockServer.enqueueString("""{"data":""")
-    assertIs<ApolloParseException>(
-        apolloClient.query(GetRandomQuery()).execute().exception
-    )
+    apolloClient.query(GetRandomQuery()).execute().exception.apply {
+      assertIs<ApolloNetworkException>(this)
+    }
     // Should not have been cached
     assertIs<HttpCacheMissException>(
         apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute().exception

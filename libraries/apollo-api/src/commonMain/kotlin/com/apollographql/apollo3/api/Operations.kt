@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloParseException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.JsonDataException
 import com.apollographql.apollo3.exception.JsonEncodingException
 import com.benasher44.uuid.Uuid
@@ -114,10 +114,9 @@ fun <D : Operation.Data> Operation<D>.parseResponse(
     val apolloException = if (throwable is ApolloException) {
       throwable
     } else {
-      // This happens for null pointer exceptions on missing fields
-      ApolloParseException(
-          message = "Failed to parse GraphQL http network response",
-          cause = throwable
+      ApolloNetworkException(
+          message = "Error while reading JSON response",
+          platformCause = throwable
       )
     }
     return ApolloResponse.Builder(requestUuid = requestUuid ?: uuid4(), operation = this)

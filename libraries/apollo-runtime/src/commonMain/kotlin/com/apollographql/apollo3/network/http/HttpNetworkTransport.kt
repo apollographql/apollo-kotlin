@@ -18,7 +18,7 @@ import com.apollographql.apollo3.api.parseResponse
 import com.apollographql.apollo3.api.toApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.exception.ApolloParseException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.RouterError
 import com.apollographql.apollo3.internal.DeferredJsonMerger
 import com.apollographql.apollo3.internal.isMultipart
@@ -104,10 +104,9 @@ private constructor(
     val apolloException = if (throwable is ApolloException) {
       throwable
     } else {
-      // This happens for null pointer exceptions on missing fields
-      ApolloParseException(
-          message = "Failed to parse GraphQL http network response",
-          cause = throwable
+      ApolloNetworkException(
+          message = "Error while reading JSON response",
+          platformCause = throwable
       )
     }
     return ApolloResponse.Builder(requestUuid = uuid4(), operation = operation)
