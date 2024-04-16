@@ -13,6 +13,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
@@ -52,6 +53,9 @@ abstract class ApolloGenerateSourcesBaseTask : DefaultTask() {
   @get:Classpath
   abstract val classpath: ConfigurableFileCollection
 
+  @get:Input
+  abstract val hasPlugin: Property<Boolean>
+
   @Inject
   abstract fun getWorkerExecutor(): WorkerExecutor
 }
@@ -77,7 +81,7 @@ fun ApolloGenerateSourcesBaseTask.requiresBuildscriptClasspath(): Boolean {
     if (operationOutputGenerator != null) {
       logger.lifecycle("Apollo: operationOutputGenerator is deprecated, use Apollo compiler plugins instead. See https://go.apollo.dev/ak-compiler-plugins for more details.")
     }
-    check(classpath.files.isEmpty()) {
+    check(!hasPlugin.get()) {
       "Apollo: using ApolloCompilerPlugin and operationOutputGenerator/operationIdGenerator/packageNameGenerator at the same time is not supported. See https://go.apollo.dev/ak-compiler-plugins for more details."
     }
 

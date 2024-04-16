@@ -442,11 +442,9 @@ abstract class DefaultApolloExtension(
       it.isCanBeResolved = true
     }
 
-    if (service.pluginDependencies.isNotEmpty()) {
-      pluginConfiguration.dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-compiler:$APOLLO_VERSION"))
-      service.pluginDependencies.forEach {
-        pluginConfiguration.dependencies.add(it)
-      }
+    pluginConfiguration.dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-compiler:$APOLLO_VERSION"))
+    service.pluginDependencies.forEach {
+      pluginConfiguration.dependencies.add(it)
     }
 
     val optionsTaskProvider = registerOptionsTask(project, service, otherOptionsConsumerConfiguration)
@@ -882,6 +880,7 @@ abstract class DefaultApolloExtension(
     task.operationOutputGenerator = service.operationOutputGenerator.orElse(service.operationIdGenerator.map { OperationOutputGenerator.Default(it) }).orNull
     service.operationOutputGenerator.disallowChanges()
 
+    task.hasPlugin.set(service.pluginDependencies.isNotEmpty())
     task.classpath.from(classpath)
 
     task.outputDir.set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)))
