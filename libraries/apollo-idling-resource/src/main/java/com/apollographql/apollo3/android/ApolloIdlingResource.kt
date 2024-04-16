@@ -54,7 +54,7 @@ class ApolloIdlingResource(
  *
  * [ApolloIdlingResource] is deprecated, and you should wait for your UI to change instead. See [this article about ways to do so](https://medium.com/androiddevelopers/alternatives-to-idling-resources-in-compose-tests-8ae71f9fc473).
  */
-@Deprecated("IdlingResource makes tests fragle. How the data is fetched is not relevant to UI tests. Use reactive patterns instead.")
+@Deprecated("IdlingResource makes tests fragile. How the data is fetched is not relevant to UI tests. Use reactive patterns instead.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun ApolloClient.Builder.idlingResource(idlingResource: ApolloIdlingResource): ApolloClient.Builder {
   return addListener(IdlingResourceListener(idlingResource))
