@@ -89,8 +89,8 @@ internal class EnumAsSealedBuilder(
 
   private fun IrEnum.unknownValueTypeSpec(): TypeSpec {
     return TypeSpec.classBuilder("UNKNOWN__")
-        .addKdoc("%L", "An enum value that wasn't known at compile time.\n")
-        .primaryConstructor(primaryConstructorSpec)
+        .addKdoc("An enum value that wasn't known at compile time.\nConstructor is annotated with [%T] to prevent instantiation outside of this file.", KotlinSymbols.ApolloEnumConstructor)
+        .primaryConstructor(unknownValuePrimaryConstructorSpec)
         .superclass(selfClassName)
         .addSuperclassConstructorParameter("rawValue·=·rawValue")
         .addFunction(
@@ -132,7 +132,7 @@ internal class EnumAsSealedBuilder(
                 .map { CodeBlock.of("%S·->·%T", it.name, it.valueClassName()) }
                 .joinToCode(separator = "\n", suffix = "\n")
         )
-        .addCode("else -> %T(rawValue)\n", unknownValueClassName())
+        .addCode("else -> @OptIn(%T::class) %T(rawValue)\n", KotlinSymbols.ApolloEnumConstructor, unknownValueClassName())
         .endControlFlow()
         .build()
   }
@@ -167,19 +167,20 @@ internal class EnumAsSealedBuilder(
     return ClassName(selfClassName.packageName, selfClassName.simpleName, "UNKNOWN__")
   }
 
-  private val primaryConstructorSpec =
-      FunSpec.constructorBuilder()
-          .addParameter("rawValue", KotlinSymbols.String)
-          .build()
+  private val unknownValuePrimaryConstructorSpec =
+    FunSpec.constructorBuilder()
+        .addAnnotation(KotlinSymbols.ApolloEnumConstructor)
+        .addParameter("rawValue", KotlinSymbols.String)
+        .build()
 
   private val primaryConstructorWithOverriddenParamSpec =
-      FunSpec.constructorBuilder()
-          .addParameter("rawValue", KotlinSymbols.String)
-          .build()
+    FunSpec.constructorBuilder()
+        .addParameter("rawValue", KotlinSymbols.String)
+        .build()
 
   private val rawValuePropertySpec =
-      PropertySpec.builder("rawValue", KotlinSymbols.String)
-          .initializer("rawValue")
-          .build()
+    PropertySpec.builder("rawValue", KotlinSymbols.String)
+        .initializer("rawValue")
+        .build()
 
 }

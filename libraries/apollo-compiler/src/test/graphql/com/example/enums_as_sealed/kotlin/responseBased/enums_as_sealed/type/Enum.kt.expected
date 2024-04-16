@@ -5,6 +5,7 @@
 //
 package com.example.enums_as_sealed.type
 
+import com.apollographql.apollo3.annotations.ApolloEnumConstructor
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Any
 import kotlin.Array
@@ -30,7 +31,7 @@ public sealed class Enum(
       "NORTH" -> NORTH
       "SOUTH" -> SOUTH
       "type" -> type_
-      else -> UNKNOWN__(rawValue)
+      else -> @OptIn(ApolloEnumConstructor::class) UNKNOWN__(rawValue)
     }
 
     /**
@@ -59,8 +60,10 @@ public sealed class Enum(
 
   /**
    * An enum value that wasn't known at compile time.
+   * Constructor is annotated with [ApolloEnumConstructor] to prevent instantiation outside of this
+   * file.
    */
-  public class UNKNOWN__(
+  public class UNKNOWN__ @ApolloEnumConstructor constructor(
     rawValue: String,
   ) : Enum(rawValue = rawValue) {
     override fun equals(other: Any?): Boolean {
