@@ -24,6 +24,13 @@ public final class com/apollographql/apollo3/compiler/ApolloCompilerKt {
 	public static final fun toInputFiles (Ljava/util/Collection;)Ljava/util/List;
 }
 
+public abstract interface class com/apollographql/apollo3/compiler/ApolloCompilerPlugin {
+	public fun javaOutputTransform ()Lcom/apollographql/apollo3/compiler/Transform;
+	public fun kotlinOutputTransform ()Lcom/apollographql/apollo3/compiler/Transform;
+	public fun layout (Lcom/apollographql/apollo3/compiler/CodegenSchema;)Lcom/apollographql/apollo3/compiler/codegen/SchemaAndOperationsLayout;
+	public fun operationIds (Ljava/util/List;)Ljava/util/List;
+}
+
 public final class com/apollographql/apollo3/compiler/CodegenMetadata {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/CodegenMetadata$Companion;
 	public fun <init> (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/util/List;)V
@@ -358,13 +365,6 @@ public final class com/apollographql/apollo3/compiler/PackageNameGenerator$Flat 
 public final class com/apollographql/apollo3/compiler/PackageNameGenerator$NormalizedPathAware : com/apollographql/apollo3/compiler/PackageNameGenerator {
 	public fun <init> (Ljava/lang/String;)V
 	public fun packageName (Ljava/lang/String;)Ljava/lang/String;
-}
-
-public abstract interface class com/apollographql/apollo3/compiler/Plugin {
-	public fun javaOutputTransform ()Lcom/apollographql/apollo3/compiler/Transform;
-	public fun kotlinOutputTransform ()Lcom/apollographql/apollo3/compiler/Transform;
-	public fun layout (Lcom/apollographql/apollo3/compiler/CodegenSchema;)Lcom/apollographql/apollo3/compiler/codegen/SchemaAndOperationsLayout;
-	public fun operationIds (Ljava/util/List;)Ljava/util/List;
 }
 
 public final class com/apollographql/apollo3/compiler/RuntimeAdapterInitializer : com/apollographql/apollo3/compiler/AdapterInitializer {

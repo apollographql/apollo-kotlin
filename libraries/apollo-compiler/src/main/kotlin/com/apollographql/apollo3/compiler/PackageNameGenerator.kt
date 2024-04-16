@@ -9,7 +9,7 @@ import java.io.File
  * - schema files containing type definitions or introspection json
  */
 @Suppress("DEPRECATION")
-@Deprecated("Use Apollo compiler plugins instead")
+@Deprecated("Use ApolloCompilerPlugin.layout() instead. See https://go.apollo.dev/ak-compiler-plugins for more details.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 interface PackageNameGenerator {
   /**

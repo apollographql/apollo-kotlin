@@ -7,7 +7,7 @@ import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
 import com.apollographql.apollo3.compiler.MANIFEST_PERSISTED_QUERY
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
-import com.apollographql.apollo3.compiler.Plugin
+import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.OperationId
@@ -88,7 +88,7 @@ internal fun DefaultService.operationManifestFormat(): Provider<String> {
   }
 }
 
-internal fun Plugin.toOperationOutputGenerator(): OperationOutputGenerator {
+internal fun ApolloCompilerPlugin.toOperationOutputGenerator(): OperationOutputGenerator {
   return object : OperationOutputGenerator {
     override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
       var operationIds = operationIds(operationDescriptorList.toList())

@@ -12,7 +12,7 @@ import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
  * If you don't need batch compute, use [OperationOutputGenerator.Default]
  */
 @Suppress("DEPRECATION")
-@Deprecated("Use Apollo compiler plugins instead")
+@Deprecated("Use ApolloCompilerPlugin.operationIds() instead. See https://go.apollo.dev/ak-compiler-plugins for more details.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 interface OperationOutputGenerator {
   /**

@@ -11,11 +11,13 @@ import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.OperationId
 
+@Deprecated("Plugin is renamed to ApolloCompilerPlugin", ReplaceWith("ApolloCompilerPlugin"), DeprecationLevel.ERROR)
+typealias Plugin = ApolloCompilerPlugin
 /**
  * Entry point for customizing the behaviour of the Apollo Compiler besides the
  * already existing options
  */
-interface Plugin {
+interface ApolloCompilerPlugin {
   /**
    * @return the layout or null to use the default layout
    * @param codegenSchema the codegenSchema

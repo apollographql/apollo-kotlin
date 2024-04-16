@@ -1,13 +1,13 @@
 package hooks
 
-import com.apollographql.apollo3.compiler.Plugin
+import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo3.compiler.Transform
 import com.apollographql.apollo3.compiler.codegen.java.JavaOutput
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
 import javax.lang.model.element.Modifier
 
-class TestPlugin : Plugin {
+class TestPlugin : ApolloCompilerPlugin {
   override fun javaOutputTransform(): Transform<JavaOutput> {
     return object : Transform<JavaOutput> {
       override fun transform(input: JavaOutput): JavaOutput {
