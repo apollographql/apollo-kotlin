@@ -5,31 +5,33 @@ title: Experimental websockets
 > ⚠️ **Experimental websockets APIs are [experimental](https://www.apollographql.com/docs/resources/release-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Defer%20Support]) or in the [Kotlin Slack community](https://slack.kotl.in/).
 
 
-Historically, WebSockets have been one of the most complex and error prone parts of Apollo Kotlin because:
+Historically, WebSockets have been one of the most complex and error-prone parts of Apollo Kotlin because:
 
-1. The transport is not specified and different implementations have different behaviours.
-2. WebSockets are stateful and making them work using the old memory model was challenging.
+1. The WebSocket transport protocol has no official specification and different implementations have different behaviours.
+2. WebSockets are stateful and making them work using the old Kotlin native memory model was challenging.
 3. Because WebSockets are long-lived connections, they are more exposed to errors and knowing when (or if) to retry is hard.
+4. Not all subscriptions happen on WebSockets. Some use [HTTP multipart](https://www.apollographql.com/docs/router/executing-operations/subscription-multipart-protocol/) for an example.
 
-Starting with 4.0.0, Apollo Kotlin provides `WebSocketNetworkTransport` and `WebSocketEngine` in the `com.apollographql.apollo3.network.websocket` package (instead of `com.apollographql.apollo3.network.ws` for the current implementation).
+Starting with 4.0.0, Apollo Kotlin provides a new `com.apollographql.apollo3.network.websocket` package containing new `WebSocketNetworkTransport` and `WebSocketEngine` implementations (instead of `com.apollographql.apollo3.network.ws` for the current implementations).
 
-They:
+The `com.apollographql.apollo3.network.websocket` implementation:
 
-1. Default to the [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md) protocol, which has become the de facto standard. Using the other protocols is still possible but having a main, specified, protocol ensures we can write a good test suite.
-2. Do inherit from the old memory model design, making the code considerably easier. In particular, `WebSocketEngine` is now event based and no flow control is done. If you buffers grow too much, your subscription fails.
-3. Play nicely with the ApolloClient `retryOnError` API.
+1. Defaults to the [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md) protocol, which has become the de facto standard. Using the other protocols is still possible but having a main, specified, protocol ensures we can write a good test suite.
+2. Does not inherit from the old memory model design, making the code considerably easier. In particular, `WebSocketEngine` is now event based and no flow control is done. If you buffers grow too much, your subscription fails.
+3. Plays nicely with the ApolloClient `retryOnError` API.
+4. Handles different Subscription transport more consistently.
 
 ## Status
 
-While they are called "experimental", we believe the new APIS to be more robust that the non-experimental ones. They are safe to use in non-lib use cases.
+While they are called "experimental", we believe the new APIS to be more robust than the non-experimental ones. They are safe to use in non-lib use cases.
 
 The "experimental" tag is permission to do API breaking change based on community feedback. Ideally there is no change needed.
 
-After a feedback phase, the current `ws.` APIs will become deprecated and the `websocket.` one promoted to stable. 
+After a feedback phase, the current `ws.` APIs will become deprecated and the `websocket.` one promoted to stable by removing the `@ApolloExperimental` annotations. 
 
 ## Migration guide
 
-Replace `com.apollographql.apollo3.network.ws` with `com.apollographql.apollo3.network.websocket` everywhere:
+In simple cases where you did not configure the underlying `WsProtocol` or retry logic, the migration should be about replacing `com.apollographql.apollo3.network.ws` with `com.apollographql.apollo3.network.websocket` everywhere:
 
 ```kotlin
 // Replace
@@ -43,7 +45,7 @@ import com.apollographql.apollo3.network.websocket.WebSocketEngine
 // etc...
 ```
 
-Replace `ApolloClient.Builder` function with their equivalent on `WebSocketNetworkTransport`:
+Because we can't remove the current APIs just yet, the `ApolloClient.Builder` shortcut APIs are still pointing to the `.ws` implementations. To use the newer `.websocket` implementation, pass a `websocket.WebSocketNetworkTransport` directly:
 
 ```kotlin
 // Replace
@@ -55,8 +57,10 @@ val apolloClient = ApolloClient.Builder()
     .build()
 
 // With
-import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
+import com.apollographql.apollo3.network.websocket.*
     
+// [...]
+
 ApolloClient.Builder()
     .serverUrl(serverUrl)
     .subscriptionNetworkTransport(
