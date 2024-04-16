@@ -552,9 +552,15 @@ class CacheInfo private constructor(
   }
 }
 
+/**
+ * True if this response comes from the cache, false if it comes from the network.
+ *
+ * Note that this can be true regardless of whether the data was found in the cache.
+ * To know whether the **data** is from the cache, use `cacheInfo?.isCacheHit == true`.
+ */
 val <D : Operation.Data> ApolloResponse<D>.isFromCache: Boolean
   get() {
-    return cacheInfo?.isCacheHit == true
+    return cacheInfo?.isCacheHit == true || exception is CacheMissException
   }
 
 val <D : Operation.Data> ApolloResponse<D>.cacheInfo
