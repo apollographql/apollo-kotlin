@@ -30,16 +30,7 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         // For org.jetbrains.changelog
         includeModule("org.jetbrains.changelog", "org.jetbrains.changelog.gradle.plugin")
         includeModule("org.jetbrains.intellij.plugins", "gradle-changelog-plugin")
-      }
-    }
 
-    exclusiveContent {
-      // TODO Currently, org.jetbrains.intellij.platform is only available in the snapshots repository.
-      // It will be available at the gradlePluginPortal when stable.
-      forRepository {
-        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
-      }
-      filter {
         // For org.jetbrains.intellij.platform
         includeModule("org.jetbrains.intellij.platform", "intellij-platform-gradle-plugin")
       }
