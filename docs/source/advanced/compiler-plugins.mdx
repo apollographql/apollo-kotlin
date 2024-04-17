@@ -37,11 +37,11 @@ Next create your plugin in a `src/main/kotlin/mypackage/MyPlugin` file:
 package mypackage
 
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
-import com.apollographql.apollo3.compiler.Plugin
+import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.OperationId
 
-class MyPlugin: Plugin {
+class MyPlugin: ApolloCompilerPlugin {
   override fun operationIds(descriptors: List<OperationDescriptor>): List<OperationId> {
     // This assumes the returned ids are in the same order as the descriptors
     return registerOperations(descriptors).withIndex().map { OperationId(it.value, descriptors[it.index].name) }
@@ -56,14 +56,14 @@ class MyPlugin: Plugin {
 }
 ```
 
-Make your plugin discoverable by [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) using a resource in `src/main/resources/META-INF/services/com.apollographql.apollo3.compiler.Plugin`. This file contains the fully qualified name of your plugin: 
+Make your plugin discoverable by [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) using a resource in `src/main/resources/META-INF/services/com.apollographql.apollo3.compiler.ApolloCompilerPlugin`. This file contains the fully qualified name of your plugin: 
 
 ```
 mypackage.MyPlugin
 ```
 
 > [!NOTE]  
-> The name of the resource file is important. It must be `com.apollographql.apollo3.compiler.Plugin` and be in the `META-INF/services` folder. This is how `ServiceLoader` looks up `Plugins` at runtime.
+> The name of the resource file is important. It must be `com.apollographql.apollo3.compiler.ApolloCompilerPlugin` and be in the `META-INF/services` folder. This is how `ServiceLoader` looks up plugins at runtime.
 
 # Adding a plugin to the Apollo compiler classpath
 
@@ -90,6 +90,6 @@ The plugin code will now be invoked the next time the compiler is invoked.
 
 # Other references
 
-For other plugin APIs like layout, IR, JavaPoet and KotlinPoet transforms, check out the [Plugin API docs](https://www.apollographql.com/docs/kotlin/kdoc/apollo-compiler/com.apollographql.apollo3.compiler/-plugin/index.html)
+For other plugin APIs like layout, IR, JavaPoet and KotlinPoet transforms, check out the [ApolloCompilerPlugin API docs](https://www.apollographql.com/docs/kotlin/kdoc/apollo-compiler/com.apollographql.apollo3.compiler/-apollocompilerplugin/index.html)
 
 For more examples, check out the [integration-tests](https://github.com/apollographql/apollo-kotlin/tree/main/tests/compiler-plugins).
