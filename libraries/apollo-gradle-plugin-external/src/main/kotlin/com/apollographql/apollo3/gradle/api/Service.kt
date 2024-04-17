@@ -271,7 +271,7 @@ interface Service {
    * Default value: [OperationIdGenerator.Sha256]
    */
   @Suppress("DEPRECATION")
-  @Deprecated("Use Apollo compiler plugins instead")
+  @Deprecated("Use ApolloCompilerPlugin.operationIds() instead. See https://go.apollo.dev/ak-compiler-plugins for more details.")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val operationOutputGenerator: Property<OperationOutputGenerator>
 
@@ -301,7 +301,7 @@ interface Service {
    *
    * @see [packageName]
    */
-  @Deprecated("Use Apollo compiler plugins instead")
+  @Deprecated("Use ApolloCompilerPlugin.layout() instead. See https://go.apollo.dev/ak-compiler-plugins for more details.")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val packageNameGenerator: Property<PackageNameGenerator>
 

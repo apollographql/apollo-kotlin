@@ -1,12 +1,12 @@
 package hooks
 
-import com.apollographql.apollo3.compiler.Plugin
+import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo3.compiler.Transform
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeSpec
 
-class TestPlugin : Plugin {
+class TestPlugin : ApolloCompilerPlugin {
   override fun kotlinOutputTransform(): Transform<KotlinOutput> {
     return object : Transform<KotlinOutput> {
       override fun transform(input: KotlinOutput): KotlinOutput {

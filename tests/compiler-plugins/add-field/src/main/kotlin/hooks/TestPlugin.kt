@@ -12,9 +12,9 @@ import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.compiler.DocumentTransform
-import com.apollographql.apollo3.compiler.Plugin
+import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
 
-class TestPlugin : Plugin {
+class TestPlugin : ApolloCompilerPlugin {
   override fun documentTransform(): DocumentTransform {
     return object : DocumentTransform {
       override fun transform(schema: Schema, operation: GQLOperationDefinition): GQLOperationDefinition {

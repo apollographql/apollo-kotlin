@@ -12,7 +12,7 @@ import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
  * If you don't need batch compute, use [OperationOutputGenerator.Default]
  */
 @Suppress("DEPRECATION")
-@Deprecated("Use Apollo compiler plugins instead")
+@Deprecated("Use ApolloCompilerPlugin.operationIds() instead. See https://go.apollo.dev/ak-compiler-plugins for more details.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 interface OperationOutputGenerator {
   /**
@@ -31,7 +31,7 @@ interface OperationOutputGenerator {
    * When using the compiler outside a Gradle context, [version] is not used, making it the empty string is fine.
    */
   val version: String
-    get() = error("Use Apollo compiler plugins instead of passing operationOutputGenerator from your Gradle classpath")
+    get() = error("OperationOutputGenerator implementations must override `version`.")
 
   class Default(private val operationIdGenerator: OperationIdGenerator) : OperationOutputGenerator {
     override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {

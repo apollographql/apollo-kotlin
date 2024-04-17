@@ -1,10 +1,10 @@
 package hooks
 
 import com.apollographql.apollo3.compiler.CodegenSchema
-import com.apollographql.apollo3.compiler.Plugin
+import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
 
-class TestPlugin : Plugin {
+class TestPlugin : ApolloCompilerPlugin {
   private val prefix: String = "GQL"
 
   override fun layout(codegenSchema: CodegenSchema): SchemaAndOperationsLayout {

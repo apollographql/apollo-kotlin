@@ -9,7 +9,7 @@ import java.io.File
  * - schema files containing type definitions or introspection json
  */
 @Suppress("DEPRECATION")
-@Deprecated("Use Apollo compiler plugins instead")
+@Deprecated("Use ApolloCompilerPlugin.layout() instead. See https://go.apollo.dev/ak-compiler-plugins for more details.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 interface PackageNameGenerator {
   /**
@@ -29,7 +29,7 @@ interface PackageNameGenerator {
    * When using the compiler outside a Gradle context, [version] is not used, making it the empty string is fine.
    */
   val version: String
-    get() = error("Use Apollo compiler plugins instead of passing packageNameGenerator from your Gradle classpath")
+    get() = error("PackageNameGenerator implementations must override `version`.")
 
   class Flat(private val packageName: String): PackageNameGenerator {
     override fun packageName(filePath: String): String {

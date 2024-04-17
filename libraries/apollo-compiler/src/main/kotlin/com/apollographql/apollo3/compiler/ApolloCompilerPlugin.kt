@@ -11,11 +11,18 @@ import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.OperationId
 
+@Deprecated(
+    "Use ApolloCompilerPlugin instead (don't forget to replace the META-INF.service file to `com.apollographql.apollo3.compiler.ApolloCompilerPlugin`",
+    ReplaceWith("ApolloCompilerPlugin"),
+    DeprecationLevel.ERROR
+)
+typealias Plugin = ApolloCompilerPlugin
+
 /**
  * Entry point for customizing the behaviour of the Apollo Compiler besides the
  * already existing options
  */
-interface Plugin {
+interface ApolloCompilerPlugin {
   /**
    * @return the layout or null to use the default layout
    * @param codegenSchema the codegenSchema
@@ -75,6 +82,7 @@ interface DocumentTransform {
    * [transform] is called after any processing done by the Apollo compiler such as adding `__typename`.
    */
   fun transform(schema: Schema, operation: GQLOperationDefinition): GQLOperationDefinition
+
   /**
    * Transforms the given fragment.
    *

@@ -1,10 +1,10 @@
 package hooks
 
-import com.apollographql.apollo3.compiler.Plugin
+import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo3.compiler.Transform
 import com.apollographql.apollo3.compiler.ir.IrOperations
 
-class TestPlugin : Plugin {
+class TestPlugin : ApolloCompilerPlugin {
   override fun irOperationsTransform(): Transform<IrOperations> {
     return object : Transform<IrOperations> {
       override fun transform(input: IrOperations): IrOperations {

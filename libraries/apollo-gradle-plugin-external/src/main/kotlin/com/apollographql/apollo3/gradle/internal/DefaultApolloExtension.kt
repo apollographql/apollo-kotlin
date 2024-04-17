@@ -880,6 +880,7 @@ abstract class DefaultApolloExtension(
     task.operationOutputGenerator = service.operationOutputGenerator.orElse(service.operationIdGenerator.map { OperationOutputGenerator.Default(it) }).orNull
     service.operationOutputGenerator.disallowChanges()
 
+    task.hasPlugin.set(service.pluginDependencies.isNotEmpty())
     task.classpath.from(classpath)
 
     task.outputDir.set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)))
