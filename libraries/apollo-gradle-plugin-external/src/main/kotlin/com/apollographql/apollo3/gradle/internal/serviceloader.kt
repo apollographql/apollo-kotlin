@@ -11,7 +11,7 @@ internal fun apolloCompilerPlugin(warnIfNotFound: Boolean = false): ApolloCompil
   }
 
   if (plugins.isEmpty() && warnIfNotFound) {
-    println("Apollo: a compiler plugin was added with `Service.plugin()` but could not be loaded by the ServiceLoader. Check your META-INF.services/com.apollographql.apollo3.compiler.ApolloCompilerPlugin file.")
+    println("Apollo: a compiler plugin was added with `Service.plugin()` but could not be loaded by the ServiceLoader. Check your META-INF/services/com.apollographql.apollo3.compiler.ApolloCompilerPlugin file.")
   }
 
   return plugins.singleOrNull()
