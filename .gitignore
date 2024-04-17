@@ -49,3 +49,4 @@ package-lock.json
 
 # IntelliJ plugin
 intellij-plugin/mockJDK
+.intellijPlatform
