@@ -1,9 +1,8 @@
-
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.extensions.TestFrameworkType
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -50,8 +49,8 @@ kotlin {
 }
 
 tasks {
-  withType<KotlinCompile> {
-    kotlinOptions {
+  withType<KotlinCompilationTask<*>> {
+    compilerOptions {
       freeCompilerArgs = listOf("-Xcontext-receivers")
     }
   }
@@ -95,7 +94,9 @@ tasks.register("downloadMockJdk") {
     val rtJar = mockJdkRoot.resolve("java/mockJDK-1.7/jre/lib/rt.jar")
     if (!rtJar.exists()) {
       rtJar.parentFile.mkdirs()
-      rtJar.writeBytes(URL("https://github.com/JetBrains/intellij-community/raw/master/java/mockJDK-1.7/jre/lib/rt.jar").openStream().readBytes())
+      rtJar.writeBytes(URL("https://github.com/JetBrains/intellij-community/raw/master/java/mockJDK-1.7/jre/lib/rt.jar").openStream()
+          .readBytes()
+      )
     }
   }
 }
@@ -126,7 +127,8 @@ tasks.configureEach {
   }
 }
 
-// Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
+// IntelliJ Platform Gradle Plugin configuration
+// See https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-extension.html#intellijPlatform-pluginConfiguration
 intellijPlatform {
   pluginConfiguration {
     id.set(properties("pluginId"))
