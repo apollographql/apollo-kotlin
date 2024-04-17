@@ -188,6 +188,7 @@ dependencies {
     instrumentationTools()
     pluginVerifier()
     testFramework(TestFrameworkType.Plugin.Java)
+    zipSigner()
   }
   implementation(project(":apollo-gradle-plugin-external"))
   implementation(project(":apollo-ast"))
