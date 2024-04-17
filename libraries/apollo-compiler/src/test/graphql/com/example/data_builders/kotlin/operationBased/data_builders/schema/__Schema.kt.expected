@@ -22,4 +22,14 @@ public object __Schema {
 
   public fun possibleTypes(type: CompiledNamedType): List<ObjectType> =
       com.apollographql.apollo3.api.possibleTypes(all, type)
+
+  public fun characterPossibleTypes(): List<ObjectType> =
+      listOf(com.example.data_builders.type.Human.type, com.example.data_builders.type.Droid.type)
+
+  public fun nodePossibleTypes(): List<ObjectType> = listOf(com.example.data_builders.type.Cat.type,
+      com.example.data_builders.type.Dog.type, com.example.data_builders.type.Human.type,
+      com.example.data_builders.type.Droid.type)
+
+  public fun animalPossibleTypes(): List<ObjectType> =
+      listOf(com.example.data_builders.type.Cat.type, com.example.data_builders.type.Dog.type)
 }
