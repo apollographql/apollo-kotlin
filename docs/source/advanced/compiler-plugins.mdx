@@ -88,6 +88,35 @@ apollo {
 
 The plugin code will now be invoked the next time the compiler is invoked.
 
+# Passing arguments to your Apollo compiler plugin
+
+Because the compiler plugin runs in an isolated classpath, you can't use classes or data from your main build logic classpath. 
+
+In order to pass build-time arguments to your Apollo compiler plugin, you can use code generation and tools like [gradle-buildconfig-plugin](https://github.com/gmazzo/gradle-buildconfig-plugin):
+
+```kotlin
+// my-plugin/build.gradle.kts
+plugins {
+  id("com.github.gmazzo.buildconfig")
+}
+
+buildConfig {
+  useKotlinOutput()
+  packageName("com.example.myplugin")
+
+  buildConfigField("arg1", arg1Value)
+  buildConfigField("arg2", arg2Value)
+  // etc...
+}
+```
+
+# Limitations 
+
+Because codegen is run in a separate classloader when using compiler plugins, it's not possible to use `packageNameGenerator`, `operationIdGenerator` or `operationOutputGenerator` at the same time as compiler plugins. If you want to use them, you'll have to:
+
+* use `ApolloCompilerPlugin.layout()` instead of `packageNameGenerator`
+* use `ApolloCompilerPlugin.operationIds()` instead of `operationIdGenerator` and `operationOutputGenerator`
+
 # Other references
 
 For other plugin APIs like layout, IR, JavaPoet and KotlinPoet transforms, check out the [ApolloCompilerPlugin API docs](https://www.apollographql.com/docs/kotlin/kdoc/apollo-compiler/com.apollographql.apollo3.compiler/-apollocompilerplugin/index.html)
