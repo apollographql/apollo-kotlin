@@ -1,14 +1,17 @@
 package com.apollographql.ijplugin.normalizedcache
 
+import com.android.adblib.syncRecv
 import com.android.ddmlib.AndroidDebugBridge
 import com.android.ddmlib.IDevice
-import com.android.ddmlib.SyncService
 import com.android.tools.idea.adb.AdbShellCommandsUtil
+import com.android.tools.idea.adblib.AdbLibApplicationService
+import com.android.tools.idea.adblib.ddmlibcompatibility.toDeviceSelector
 import com.apollographql.ijplugin.util.execute
 import com.apollographql.ijplugin.util.executeCatching
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
 import java.io.File
+import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 
 val isAndroidPluginPresent = try {
@@ -60,7 +63,7 @@ fun IDevice.getDatabaseList(packageName: String, databasesDir: String): Result<L
   return Result.success(result.output.filter { it.isDatabaseFileName() }.sorted())
 }
 
-fun pullFile(device: IDevice, appPackageName: String, remoteDirName: String, remoteFileName: String): Result<File> {
+suspend fun pullFile(device: IDevice, appPackageName: String, remoteDirName: String, remoteFileName: String): Result<File> {
   val remoteFilePath = "$remoteDirName/$remoteFileName"
   val localFile = File.createTempFile(remoteFileName.substringBeforeLast(".") + "-tmp", ".db")
   logd("Pulling $remoteFilePath to ${localFile.absolutePath}")
@@ -76,7 +79,11 @@ fun pullFile(device: IDevice, appPackageName: String, remoteDirName: String, rem
       throw Exception("'copy' command failed")
     }
     try {
-      device.syncService.pullFile(intermediateRemoteFilePath, localFile.absolutePath, NullSyncProgressMonitor)
+      val adbLibSession = AdbLibApplicationService.instance.session
+      val fileChannel = adbLibSession.channelFactory.createFile(Paths.get(localFile.absolutePath))
+      fileChannel.use {
+        adbLibSession.deviceServices.syncRecv(device.toDeviceSelector(), intermediateRemoteFilePath, fileChannel)
+      }
     } finally {
       commandResult = shellCommandsUtil.execute("rm $intermediateRemoteFilePath")
       if (commandResult.isError) {
@@ -85,14 +92,6 @@ fun pullFile(device: IDevice, appPackageName: String, remoteDirName: String, rem
     }
     localFile
   }
-}
-
-private object NullSyncProgressMonitor : SyncService.ISyncProgressMonitor {
-  override fun isCanceled() = false
-  override fun start(totalWork: Int) {}
-  override fun startSubTask(name: String) {}
-  override fun advance(work: Int) {}
-  override fun stop() {}
 }
 
 // See https://www.sqlite.org/tempfiles.html
