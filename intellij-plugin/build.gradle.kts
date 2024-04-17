@@ -2,6 +2,7 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.intellij.platform.gradle.extensions.TestFrameworkType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -184,7 +185,7 @@ dependencies {
     plugins(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
     instrumentationTools()
     pluginVerifier()
-    testFramework()
+    testFramework(TestFrameworkType.Plugin.Java)
   }
   implementation(project(":apollo-gradle-plugin-external"))
   implementation(project(":apollo-ast"))
