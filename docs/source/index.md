@@ -24,7 +24,6 @@ This library is designed primarily with Android in mind, but you can use it in a
 * Auto Persisted Queries
 * Query batching
 * File uploads
-* Espresso IdlingResource
 * Fake models for tests
 * AppSync and graphql-ws websockets
 * GraphQL AST parser
