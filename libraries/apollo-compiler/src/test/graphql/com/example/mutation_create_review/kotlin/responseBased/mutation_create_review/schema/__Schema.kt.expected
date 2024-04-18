@@ -24,15 +24,15 @@ internal object __Schema {
             com.example.mutation_create_review.type.Starship.type)
 
 
-  public fun possibleTypes(type: CompiledNamedType): List<ObjectType> =
-      com.apollographql.apollo3.api.possibleTypes(all, type)
-
-  public fun characterPossibleTypes(): List<ObjectType> =
+  public val characterPossibleTypes: List<ObjectType> =
       listOf(com.example.mutation_create_review.type.Droid.type,
       com.example.mutation_create_review.type.Human.type)
 
-  public fun searchResultPossibleTypes(): List<ObjectType> =
+  public val searchResultPossibleTypes: List<ObjectType> =
       listOf(com.example.mutation_create_review.type.Human.type,
       com.example.mutation_create_review.type.Droid.type,
       com.example.mutation_create_review.type.Starship.type)
+
+  public fun possibleTypes(type: CompiledNamedType): List<ObjectType> =
+      com.apollographql.apollo3.api.possibleTypes(all, type)
 }
