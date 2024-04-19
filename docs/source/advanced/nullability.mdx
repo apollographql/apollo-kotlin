@@ -249,7 +249,7 @@ extend schema @link(
 )
 
 # mark User.name as semantic non-null
-extend type User @semanticNonNullField(field: "name")
+extend type User @semanticNonNullField(name: "name")
 ```
 
 `name` is now a non-null Kotlin types:
@@ -275,7 +275,7 @@ Similarly to `@catch`, `@semanticNonNullField` supports a `levels` argument for 
 ```graphql
 # User.friends is generated a nullable
 # User.friends[0], User.friends[1], User.friends[2], etc.. is generated a non-null
-extend type User @semanticNonNullField(field: "friends", levels: [1])
+extend type User @semanticNonNullField(name: "friends", levels: [1])
 ```
 
 ## Migrate progressively with `@ignoreErrors`
