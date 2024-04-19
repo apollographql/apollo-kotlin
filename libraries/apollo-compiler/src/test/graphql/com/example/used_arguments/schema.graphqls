@@ -1,0 +1,15 @@
+interface A {
+  field(arg: Int!): Int
+}
+
+type B implements A {
+  field(arg: Int!): Int
+}
+
+type C implements A {
+  field(arg: Int!): Int
+}
+
+type Query {
+  a: A
+}
