@@ -134,7 +134,6 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?) {
    * remove this in the future if compileJava and others remove it from their inputs.
    * See https://issuetracker.google.com/issues/283097109
    */
-  @Suppress("UnstableApiUsage")
   project.extensions.getByType(JavaPluginExtension::class.java).apply {
     // Keep in sync with build-logic/build.gradle.kts
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
@@ -151,7 +150,6 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?) {
   allWarningsAsErrors(false)
 }
 
-@Suppress("UnstableApiUsage")
 fun setTestToolchain(project: Project, test: Test, javaVersion: Int) {
   val javaToolchains = project.extensions.getByName("javaToolchains") as JavaToolchainService
   test.javaLauncher.set(javaToolchains.launcherFor {
