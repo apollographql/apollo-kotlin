@@ -10,7 +10,7 @@ apolloLibrary(
 )
 
 dependencies {
-  implementation(project(":apollo-ast"))
+  api(project(":apollo-ast"))
   api(libs.poet.kotlin) {
     // We don't use any of the KotlinPoet kotlin-reflect features
     exclude(module = "kotlin-reflect")
