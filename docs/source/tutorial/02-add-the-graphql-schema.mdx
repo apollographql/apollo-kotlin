@@ -2,7 +2,7 @@
 title: "2. Add the GraphQL schema"
 ---
 
-This tutorial uses a modified version of the GraphQL server you build as part of [the Apollo full-stack tutorial](https://www.apollographql.com/docs/tutorial/introduction/). You can visit [that server's Apollo Studio Sandbox Explorer](https://studio.apollographql.com/sandbox/explorer?endpoint=https%3A%2F%2Fapollo-fullstack-tutorial.herokuapp.com%2Fgraphql) to explore its schema without needing to be logged in:
+This tutorial uses a modified version of the GraphQL server you build as part of [the Apollo full-stack tutorial](https://www.apollographql.com/docs/tutorial/introduction/). You can visit [that server's GraphOS Studio Sandbox Explorer](https://studio.apollographql.com/sandbox/explorer?endpoint=https%3A%2F%2Fapollo-fullstack-tutorial.herokuapp.com%2Fgraphql) to explore its schema without needing to be logged in:
 
 <img src="images/sandbox_landing.png" alt="The Sandbox query explorer" class="screenshot"/>
 
@@ -20,7 +20,7 @@ In the **Reference** tab, you can now see a list of all of the things available 
 
 ## Download your server's schema
 
-Apollo Kotlin requires a schema to generate type-safe models and code from your queries. There are multiple ways to get a schema. For example, you can go to the SDL tab and download the raw SDL schema using Apollo Studio Sandbox.
+Apollo Kotlin requires a schema to generate type-safe models and code from your queries. There are multiple ways to get a schema. For example, you can go to the SDL tab and download the raw SDL schema using GraphOS Studio Sandbox.
 
 In this tutorial, we will use the `downloadApolloSchema` Gradle task that is created by our plugin automatically. Since GraphQL supports [introspection](https://graphql.org/learn/introspection/), this will work with any GraphQL endpoint that has introspection enabled.
 
