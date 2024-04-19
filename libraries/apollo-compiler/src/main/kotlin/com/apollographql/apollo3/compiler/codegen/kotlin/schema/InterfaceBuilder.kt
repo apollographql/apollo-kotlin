@@ -35,6 +35,11 @@ internal class InterfaceBuilder(
     context.resolver.registerSchemaType(iface.name, ClassName(packageName, simpleName))
     context.resolver.registerMapType(iface.name, ClassName(packageName, mapName))
     context.resolver.registerBuilderType(iface.name, ClassName(packageName, builderName))
+    for (fieldDefinition in iface.fieldDefinitions) {
+      fieldDefinition.argumentDefinitions.forEach { argumentDefinition ->
+        context.resolver.registerArgumentDefinition(argumentDefinition.id, ClassName(packageName, simpleName))
+      }
+    }
   }
 
   override fun build(): CgFile {

@@ -602,8 +602,10 @@ internal class IrOperationsBuilder(
       usedCoordinates.putType(first.type.rawType().name)
 
       // Track argument usage
-      for (usedArgument in first.usedArguments) {
-        usedCoordinates.putArgument(first.parentType, first.name, usedArgument)
+      fields.map { it.parentType }.distinct().forEach { parentType ->
+        for (usedArgument in first.usedArguments) {
+          usedCoordinates.putArgument(parentType, first.name, usedArgument)
+        }
       }
 
       val irType = first

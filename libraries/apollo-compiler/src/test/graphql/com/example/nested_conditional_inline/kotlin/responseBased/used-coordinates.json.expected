@@ -1,6 +1,9 @@
 {
     "typeToFieldsToArguments": {
         "Character": {
+            "height": [
+                "unit"
+            ]
         },
         "Query": {
             "hero": [

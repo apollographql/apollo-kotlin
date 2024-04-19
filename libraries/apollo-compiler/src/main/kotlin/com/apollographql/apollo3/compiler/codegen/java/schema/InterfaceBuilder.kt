@@ -21,6 +21,11 @@ internal class InterfaceBuilder(
 
   override fun prepare() {
     context.resolver.registerSchemaType(iface.name, ClassName.get(packageName, simpleName))
+    for (fieldDefinition in iface.fieldDefinitions) {
+      fieldDefinition.argumentDefinitions.forEach { argumentDefinition ->
+        context.resolver.registerArgumentDefinition(argumentDefinition.id, ClassName.get(packageName, simpleName))
+      }
+    }
   }
 
   override fun build(): CodegenJavaFile {

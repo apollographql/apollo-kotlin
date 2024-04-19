@@ -1,0 +1,14 @@
+fragment ADetails on A {
+  field(arg: 42)
+}
+
+query GetA {
+  a {
+    ... on B {
+      field(arg: 42)
+    }
+    ... on C {
+      field(arg: 42)
+    }
+  }
+}
