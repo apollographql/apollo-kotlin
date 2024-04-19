@@ -2,6 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.extensions.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -55,22 +56,22 @@ tasks {
     }
   }
 
-  runIde {
+  withType<RunIdeTask> {
     // Enables debug logging for the plugin
     systemProperty("idea.log.debug.categories", "Apollo")
 
     // Disable hiding frequent exceptions in logs (annoying for debugging). See com.intellij.idea.IdeaLogger.
     systemProperty("idea.logger.exception.expiration.minutes", "0")
 
-    // Use a custom IntelliJ installation. Set this property in your local ~/.gradle/gradle.properties file.
-    // (for AS, it should be something like '/Applications/Android Studio.app/Contents')
-    // See https://plugins.jetbrains.com/docs/intellij/android-studio.html#configuring-the-plugin-gradle-build-script
-    if (project.hasProperty("apolloIntellijPlugin.ideDir")) {
-      localPath.set(file(project.property("apolloIntellijPlugin.ideDir")!!))
-    }
-
     // Uncomment to disable internal mode - see https://plugins.jetbrains.com/docs/intellij/enabling-internal.html
     // systemProperty("idea.is.internal", "false")
+  }
+
+  val runLocalIde by registering(RunIdeTask::class) {
+    // Use a custom IJ/AS installation. Set this property in your local ~/.gradle/gradle.properties file.
+    // (for AS, it should be something like '/Applications/Android Studio.app/Contents')
+    // See https://plugins.jetbrains.com/docs/intellij/android-studio.html#configuring-the-plugin-gradle-build-script
+    localPath = providers.gradleProperty("apolloIntellijPlugin.ideDir").orNull?.let { file(it) }
   }
 
   // Log tests
