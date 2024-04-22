@@ -5,6 +5,7 @@ plugins {
   id("com.android.application")
   id("org.jetbrains.kotlin.android")
   id("com.apollographql.apollo3")
+  alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -42,10 +43,6 @@ android {
   @Suppress("UnstableApiUsage")
   buildFeatures {
     compose = true
-  }
-
-  composeOptions {
-    kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
   }
 }
 

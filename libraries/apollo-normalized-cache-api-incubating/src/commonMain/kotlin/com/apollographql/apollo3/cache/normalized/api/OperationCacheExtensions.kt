@@ -40,6 +40,25 @@ fun <D : Executable.Data> Executable<D>.normalize(
 
 @JvmOverloads
 fun <D : Executable.Data> Executable<D>.readDataFromCache(
+    customScalarAdapters: CustomScalarAdapters,
+    cache: ReadOnlyNormalizedCache,
+    cacheResolver: CacheResolver,
+    cacheHeaders: CacheHeaders,
+    fieldNameGenerator: FieldNameGenerator = DefaultFieldNameGenerator,
+): D {
+  val variables = variables(customScalarAdapters, true)
+  return readInternal(
+      cacheKey = CacheKey.rootKey(),
+      cache = cache,
+      cacheResolver = cacheResolver,
+      cacheHeaders = cacheHeaders,
+      variables = variables,
+      fieldNameGenerator = fieldNameGenerator,
+  ).toData(adapter(), customScalarAdapters, variables)
+}
+
+@JvmOverloads
+fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cacheKey: CacheKey,
     customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
@@ -50,6 +69,25 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
   val variables = variables(customScalarAdapters, true)
   return readInternal(
       cacheKey = cacheKey,
+      cache = cache,
+      cacheResolver = cacheResolver,
+      cacheHeaders = cacheHeaders,
+      variables = variables,
+      fieldNameGenerator = fieldNameGenerator,
+  ).toData(adapter(), customScalarAdapters, variables)
+}
+
+@JvmOverloads
+fun <D : Executable.Data> Executable<D>.readDataFromCache(
+    customScalarAdapters: CustomScalarAdapters,
+    cache: ReadOnlyNormalizedCache,
+    cacheResolver: ApolloResolver,
+    cacheHeaders: CacheHeaders,
+    fieldNameGenerator: FieldNameGenerator = DefaultFieldNameGenerator,
+): D {
+  val variables = variables(customScalarAdapters, true)
+  return readInternal(
+      cacheKey = CacheKey.rootKey(),
       cache = cache,
       cacheResolver = cacheResolver,
       cacheHeaders = cacheHeaders,
