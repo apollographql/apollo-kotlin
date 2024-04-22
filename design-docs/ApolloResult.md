@@ -1,3 +1,6 @@
+> [!Warning]
+> This document is work in progress and meant as a record/central place to gather discussions happening on the topic.
+
 # Modeling GraphQL results in Kotlin
 
 Data modeling and error handling is a complex topic, in general but in GraphQL even more.
