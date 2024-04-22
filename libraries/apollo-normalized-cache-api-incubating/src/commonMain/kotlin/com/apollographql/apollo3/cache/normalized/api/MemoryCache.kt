@@ -18,8 +18,8 @@ import kotlin.reflect.KClass
  * (there is no any sort of GC that runs in the background).
  */
 class MemoryCache(
-    private val maxSizeBytes: Int = Int.MAX_VALUE,
-    private val expireAfterMillis: Long = -1,
+  private val maxSizeBytes: Int = Int.MAX_VALUE,
+  private val expireAfterMillis: Long = -1,
 ) : NormalizedCache() {
   /**
    * A lock that is only used during read accesses on the JVM because
@@ -47,8 +47,8 @@ class MemoryCache(
 
     cacheEntry?.takeUnless { it.isExpired }?.record ?: nextCache?.loadRecord(key, cacheHeaders)?.also { nextCachedRecord ->
       lruCache[key] = CacheEntry(
-          record = nextCachedRecord,
-          expireAfterMillis = expireAfterMillis
+        record = nextCachedRecord,
+        expireAfterMillis = expireAfterMillis
       )
     }
   }
@@ -104,22 +104,7 @@ class MemoryCache(
       return emptySet()
     }
 
-    val oldRecord = loadRecord(record.key, cacheHeaders)
-    val changedKeys = if (oldRecord == null) {
-      lruCache[record.key] = CacheEntry(
-          record = record,
-          expireAfterMillis = expireAfterMillis
-      )
-      record.fieldKeys()
-    } else {
-      val (mergedRecord, changedKeys) = recordMerger.merge(existing = oldRecord, incoming = record, newDate = null)
-      lruCache[record.key] = CacheEntry(
-          record = mergedRecord,
-          expireAfterMillis = expireAfterMillis
-      )
-      changedKeys
-    }
-
+    val changedKeys = internalMerge(record, cacheHeaders, recordMerger)
     return changedKeys + nextCache?.merge(record, cacheHeaders, recordMerger).orEmpty()
   }
 
@@ -128,12 +113,32 @@ class MemoryCache(
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
     }
-    return records.flatMap { record -> merge(record, cacheHeaders, recordMerger) }.toSet()
+    val changedKeys = records.flatMap { record -> internalMerge(record, cacheHeaders, recordMerger) }.toSet()
+    return changedKeys + nextCache?.merge(records, cacheHeaders, recordMerger).orEmpty()
+  }
+
+  private fun internalMerge(record: Record, cacheHeaders: CacheHeaders, recordMerger: RecordMerger): Set<String> {
+    val oldRecord = loadRecord(record.key, cacheHeaders)
+    val changedKeys = if (oldRecord == null) {
+      lruCache[record.key] = CacheEntry(
+        record = record,
+        expireAfterMillis = expireAfterMillis
+      )
+      record.fieldKeys()
+    } else {
+      val (mergedRecord, changedKeys) = recordMerger.merge(existing = oldRecord, incoming = record, newDate = null)
+      lruCache[record.key] = CacheEntry(
+        record = mergedRecord,
+        expireAfterMillis = expireAfterMillis
+      )
+      changedKeys
+    }
+    return changedKeys
   }
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
     return mapOf(
-        this::class to lruCache.dump().mapValues { (_, entry) -> entry.record }
+      this::class to lruCache.dump().mapValues { (_, entry) -> entry.record }
     ) + nextCache?.dump().orEmpty()
   }
 
@@ -142,8 +147,8 @@ class MemoryCache(
   }
 
   private class CacheEntry(
-      val record: Record,
-      val expireAfterMillis: Long,
+    val record: Record,
+    val expireAfterMillis: Long,
   ) {
     val cachedAtMillis: Long = currentTimeMillis()
 
@@ -161,14 +166,14 @@ class MemoryCache(
 }
 
 class MemoryCacheFactory @JvmOverloads constructor(
-    private val maxSizeBytes: Int = Int.MAX_VALUE,
-    private val expireAfterMillis: Long = -1,
+  private val maxSizeBytes: Int = Int.MAX_VALUE,
+  private val expireAfterMillis: Long = -1,
 ) : NormalizedCacheFactory() {
 
   override fun create(): MemoryCache {
     return MemoryCache(
-        maxSizeBytes = maxSizeBytes,
-        expireAfterMillis = expireAfterMillis,
+      maxSizeBytes = maxSizeBytes,
+      expireAfterMillis = expireAfterMillis,
     )
   }
 }

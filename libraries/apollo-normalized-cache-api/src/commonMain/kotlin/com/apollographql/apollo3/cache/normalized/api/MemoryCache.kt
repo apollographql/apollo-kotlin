@@ -94,6 +94,19 @@ class MemoryCache(
       return emptySet()
     }
 
+    val changedKeys = internalMerge(record, cacheHeaders)
+    return changedKeys + nextCache?.merge(record, cacheHeaders).orEmpty()
+  }
+
+  override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
+    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
+      return emptySet()
+    }
+    val changedKeys = records.flatMap { record -> internalMerge(record, cacheHeaders) }.toSet()
+    return changedKeys + nextCache?.merge(records, cacheHeaders).orEmpty()
+  }
+
+  private fun internalMerge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
     val oldRecord = loadRecord(record.key, cacheHeaders)
     val changedKeys = if (oldRecord == null) {
       lruCache[record.key] = CacheEntry(
@@ -109,15 +122,7 @@ class MemoryCache(
       )
       changedKeys
     }
-
-    return changedKeys + nextCache?.merge(record, cacheHeaders).orEmpty()
-  }
-
-  override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
-    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
-      return emptySet()
-    }
-    return records.flatMap { record -> merge(record, cacheHeaders) }.toSet()
+    return changedKeys
   }
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
