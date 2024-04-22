@@ -1,0 +1,23 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.apollographql.apollo3:apollo-mpp-utils>
+final enum class com.apollographql.apollo3.mpp/Platform : kotlin/Enum<com.apollographql.apollo3.mpp/Platform> { // com.apollographql.apollo3.mpp/Platform|null[0]
+    enum entry Js // com.apollographql.apollo3.mpp/Platform.Js|null[0]
+    enum entry Jvm // com.apollographql.apollo3.mpp/Platform.Jvm|null[0]
+    enum entry Native // com.apollographql.apollo3.mpp/Platform.Native|null[0]
+    enum entry WasmJs // com.apollographql.apollo3.mpp/Platform.WasmJs|null[0]
+    final fun valueOf(kotlin/String): com.apollographql.apollo3.mpp/Platform // com.apollographql.apollo3.mpp/Platform.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.apollographql.apollo3.mpp/Platform> // com.apollographql.apollo3.mpp/Platform.values|values#static(){}[0]
+    final val entries // com.apollographql.apollo3.mpp/Platform.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.apollographql.apollo3.mpp/Platform> // com.apollographql.apollo3.mpp/Platform.entries.<get-entries>|<get-entries>#static(){}[0]
+}
+final fun com.apollographql.apollo3.mpp/currentThreadId(): kotlin/String // com.apollographql.apollo3.mpp/currentThreadId|currentThreadId(){}[0]
+final fun com.apollographql.apollo3.mpp/currentThreadName(): kotlin/String // com.apollographql.apollo3.mpp/currentThreadName|currentThreadName(){}[0]
+final fun com.apollographql.apollo3.mpp/currentTimeFormatted(): kotlin/String // com.apollographql.apollo3.mpp/currentTimeFormatted|currentTimeFormatted(){}[0]
+final fun com.apollographql.apollo3.mpp/currentTimeMillis(): kotlin/Long // com.apollographql.apollo3.mpp/currentTimeMillis|currentTimeMillis(){}[0]
+final fun com.apollographql.apollo3.mpp/platform(): com.apollographql.apollo3.mpp/Platform // com.apollographql.apollo3.mpp/platform|platform(){}[0]

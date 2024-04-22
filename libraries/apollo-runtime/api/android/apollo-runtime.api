@@ -154,9 +154,6 @@ public final class com/apollographql/apollo3/AutoPersistedQueryInfoKt {
 public final class com/apollographql/apollo3/ConcurrencyInfo$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
 }
 
-public final class com/apollographql/apollo3/ConflatedResponsesKt {
-}
-
 public abstract interface class com/apollographql/apollo3/interceptor/ApolloInterceptor {
 	public abstract fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;)Lkotlinx/coroutines/flow/Flow;
 }
@@ -174,12 +171,6 @@ public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInter
 }
 
 public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInterceptor$Companion {
-}
-
-public final class com/apollographql/apollo3/interceptor/RetryOnNetworkErrorInterceptorKt {
-}
-
-public final class com/apollographql/apollo3/network/NetworkMonitorKt {
 }
 
 public abstract interface class com/apollographql/apollo3/network/NetworkTransport {
@@ -332,9 +323,6 @@ public final class com/apollographql/apollo3/network/http/LoggingInterceptor$Lev
 
 public final class com/apollographql/apollo3/network/websocket/WebSocketEngine_jvmKt {
 	public static final fun WebSocketEngine ()Lcom/apollographql/apollo3/network/websocket/WebSocketEngine;
-}
-
-public final class com/apollographql/apollo3/network/websocket/WebSocketNetworkTransportKt {
 }
 
 public final class com/apollographql/apollo3/network/ws/AppSyncWsProtocol : com/apollographql/apollo3/network/ws/WsProtocol {

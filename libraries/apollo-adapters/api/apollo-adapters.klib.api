@@ -1,0 +1,76 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.apollographql.apollo3:apollo-adapters>
+final fun (com.apollographql.apollo3.adapter/BigDecimal).com.apollographql.apollo3.adapter/toNumber(): kotlin/Number // com.apollographql.apollo3.adapter/toNumber|toNumber@com.apollographql.apollo3.adapter.BigDecimal(){}[0]
+final object com.apollographql.apollo3.adapter/BigDecimalAdapter : com.apollographql.apollo3.api/Adapter<com.apollographql.apollo3.adapter/BigDecimal> { // com.apollographql.apollo3.adapter/BigDecimalAdapter|null[0]
+    final fun fromJson(com.apollographql.apollo3.api.json/JsonReader, com.apollographql.apollo3.api/CustomScalarAdapters): com.apollographql.apollo3.adapter/BigDecimal // com.apollographql.apollo3.adapter/BigDecimalAdapter.fromJson|fromJson(com.apollographql.apollo3.api.json.JsonReader;com.apollographql.apollo3.api.CustomScalarAdapters){}[0]
+    final fun toJson(com.apollographql.apollo3.api.json/JsonWriter, com.apollographql.apollo3.api/CustomScalarAdapters, com.apollographql.apollo3.adapter/BigDecimal) // com.apollographql.apollo3.adapter/BigDecimalAdapter.toJson|toJson(com.apollographql.apollo3.api.json.JsonWriter;com.apollographql.apollo3.api.CustomScalarAdapters;com.apollographql.apollo3.adapter.BigDecimal){}[0]
+}
+final object com.apollographql.apollo3.adapter/KotlinxInstantAdapter : com.apollographql.apollo3.api/Adapter<kotlinx.datetime/Instant> { // com.apollographql.apollo3.adapter/KotlinxInstantAdapter|null[0]
+    final fun fromJson(com.apollographql.apollo3.api.json/JsonReader, com.apollographql.apollo3.api/CustomScalarAdapters): kotlinx.datetime/Instant // com.apollographql.apollo3.adapter/KotlinxInstantAdapter.fromJson|fromJson(com.apollographql.apollo3.api.json.JsonReader;com.apollographql.apollo3.api.CustomScalarAdapters){}[0]
+    final fun toJson(com.apollographql.apollo3.api.json/JsonWriter, com.apollographql.apollo3.api/CustomScalarAdapters, kotlinx.datetime/Instant) // com.apollographql.apollo3.adapter/KotlinxInstantAdapter.toJson|toJson(com.apollographql.apollo3.api.json.JsonWriter;com.apollographql.apollo3.api.CustomScalarAdapters;kotlinx.datetime.Instant){}[0]
+}
+final object com.apollographql.apollo3.adapter/KotlinxLocalDateAdapter : com.apollographql.apollo3.api/Adapter<kotlinx.datetime/LocalDate> { // com.apollographql.apollo3.adapter/KotlinxLocalDateAdapter|null[0]
+    final fun fromJson(com.apollographql.apollo3.api.json/JsonReader, com.apollographql.apollo3.api/CustomScalarAdapters): kotlinx.datetime/LocalDate // com.apollographql.apollo3.adapter/KotlinxLocalDateAdapter.fromJson|fromJson(com.apollographql.apollo3.api.json.JsonReader;com.apollographql.apollo3.api.CustomScalarAdapters){}[0]
+    final fun toJson(com.apollographql.apollo3.api.json/JsonWriter, com.apollographql.apollo3.api/CustomScalarAdapters, kotlinx.datetime/LocalDate) // com.apollographql.apollo3.adapter/KotlinxLocalDateAdapter.toJson|toJson(com.apollographql.apollo3.api.json.JsonWriter;com.apollographql.apollo3.api.CustomScalarAdapters;kotlinx.datetime.LocalDate){}[0]
+}
+final object com.apollographql.apollo3.adapter/KotlinxLocalDateTimeAdapter : com.apollographql.apollo3.api/Adapter<kotlinx.datetime/LocalDateTime> { // com.apollographql.apollo3.adapter/KotlinxLocalDateTimeAdapter|null[0]
+    final fun fromJson(com.apollographql.apollo3.api.json/JsonReader, com.apollographql.apollo3.api/CustomScalarAdapters): kotlinx.datetime/LocalDateTime // com.apollographql.apollo3.adapter/KotlinxLocalDateTimeAdapter.fromJson|fromJson(com.apollographql.apollo3.api.json.JsonReader;com.apollographql.apollo3.api.CustomScalarAdapters){}[0]
+    final fun toJson(com.apollographql.apollo3.api.json/JsonWriter, com.apollographql.apollo3.api/CustomScalarAdapters, kotlinx.datetime/LocalDateTime) // com.apollographql.apollo3.adapter/KotlinxLocalDateTimeAdapter.toJson|toJson(com.apollographql.apollo3.api.json.JsonWriter;com.apollographql.apollo3.api.CustomScalarAdapters;kotlinx.datetime.LocalDateTime){}[0]
+}
+final object com.apollographql.apollo3.adapter/KotlinxLocalTimeAdapter : com.apollographql.apollo3.api/Adapter<kotlinx.datetime/LocalTime> { // com.apollographql.apollo3.adapter/KotlinxLocalTimeAdapter|null[0]
+    final fun fromJson(com.apollographql.apollo3.api.json/JsonReader, com.apollographql.apollo3.api/CustomScalarAdapters): kotlinx.datetime/LocalTime // com.apollographql.apollo3.adapter/KotlinxLocalTimeAdapter.fromJson|fromJson(com.apollographql.apollo3.api.json.JsonReader;com.apollographql.apollo3.api.CustomScalarAdapters){}[0]
+    final fun toJson(com.apollographql.apollo3.api.json/JsonWriter, com.apollographql.apollo3.api/CustomScalarAdapters, kotlinx.datetime/LocalTime) // com.apollographql.apollo3.adapter/KotlinxLocalTimeAdapter.toJson|toJson(com.apollographql.apollo3.api.json.JsonWriter;com.apollographql.apollo3.api.CustomScalarAdapters;kotlinx.datetime.LocalTime){}[0]
+}
+// Targets: [apple]
+final class com.apollographql.apollo3.adapter/BigDecimal : kotlin/Number { // com.apollographql.apollo3.adapter/BigDecimal|null[0]
+    constructor <init>(kotlin/Double) // com.apollographql.apollo3.adapter/BigDecimal.<init>|<init>(kotlin.Double){}[0]
+    constructor <init>(kotlin/Int) // com.apollographql.apollo3.adapter/BigDecimal.<init>|<init>(kotlin.Int){}[0]
+    constructor <init>(kotlin/Long) // com.apollographql.apollo3.adapter/BigDecimal.<init>|<init>(kotlin.Long){}[0]
+    constructor <init>(kotlin/String) // com.apollographql.apollo3.adapter/BigDecimal.<init>|<init>(kotlin.String){}[0]
+    final fun add(com.apollographql.apollo3.adapter/BigDecimal): com.apollographql.apollo3.adapter/BigDecimal // com.apollographql.apollo3.adapter/BigDecimal.add|add(com.apollographql.apollo3.adapter.BigDecimal){}[0]
+    final fun divide(com.apollographql.apollo3.adapter/BigDecimal): com.apollographql.apollo3.adapter/BigDecimal // com.apollographql.apollo3.adapter/BigDecimal.divide|divide(com.apollographql.apollo3.adapter.BigDecimal){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.apollographql.apollo3.adapter/BigDecimal.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.apollographql.apollo3.adapter/BigDecimal.hashCode|hashCode(){}[0]
+    final fun multiply(com.apollographql.apollo3.adapter/BigDecimal): com.apollographql.apollo3.adapter/BigDecimal // com.apollographql.apollo3.adapter/BigDecimal.multiply|multiply(com.apollographql.apollo3.adapter.BigDecimal){}[0]
+    final fun negate(): com.apollographql.apollo3.adapter/BigDecimal // com.apollographql.apollo3.adapter/BigDecimal.negate|negate(){}[0]
+    final fun signum(): kotlin/Int // com.apollographql.apollo3.adapter/BigDecimal.signum|signum(){}[0]
+    final fun subtract(com.apollographql.apollo3.adapter/BigDecimal): com.apollographql.apollo3.adapter/BigDecimal // com.apollographql.apollo3.adapter/BigDecimal.subtract|subtract(com.apollographql.apollo3.adapter.BigDecimal){}[0]
+    final fun toByte(): kotlin/Byte // com.apollographql.apollo3.adapter/BigDecimal.toByte|toByte(){}[0]
+    final fun toDouble(): kotlin/Double // com.apollographql.apollo3.adapter/BigDecimal.toDouble|toDouble(){}[0]
+    final fun toFloat(): kotlin/Float // com.apollographql.apollo3.adapter/BigDecimal.toFloat|toFloat(){}[0]
+    final fun toInt(): kotlin/Int // com.apollographql.apollo3.adapter/BigDecimal.toInt|toInt(){}[0]
+    final fun toLong(): kotlin/Long // com.apollographql.apollo3.adapter/BigDecimal.toLong|toLong(){}[0]
+    final fun toShort(): kotlin/Short // com.apollographql.apollo3.adapter/BigDecimal.toShort|toShort(){}[0]
+    final fun toString(): kotlin/String // com.apollographql.apollo3.adapter/BigDecimal.toString|toString(){}[0]
+}
+// Targets: [js]
+final class com.apollographql.apollo3.adapter/BigDecimal { // com.apollographql.apollo3.adapter/BigDecimal|null[0]
+    constructor <init>() // com.apollographql.apollo3.adapter/BigDecimal.<init>|<init>(){}[0]
+    constructor <init>(kotlin/Double) // com.apollographql.apollo3.adapter/BigDecimal.<init>|<init>(kotlin.Double){}[0]
+    constructor <init>(kotlin/Int) // com.apollographql.apollo3.adapter/BigDecimal.<init>|<init>(kotlin.Int){}[0]
+    constructor <init>(kotlin/Long) // com.apollographql.apollo3.adapter/BigDecimal.<init>|<init>(kotlin.Long){}[0]
+    constructor <init>(kotlin/String) // com.apollographql.apollo3.adapter/BigDecimal.<init>|<init>(kotlin.String){}[0]
+    final fun add(com.apollographql.apollo3.adapter/BigDecimal): com.apollographql.apollo3.adapter/BigDecimal // com.apollographql.apollo3.adapter/BigDecimal.add|add(com.apollographql.apollo3.adapter.BigDecimal){}[0]
+    final fun divide(com.apollographql.apollo3.adapter/BigDecimal): com.apollographql.apollo3.adapter/BigDecimal // com.apollographql.apollo3.adapter/BigDecimal.divide|divide(com.apollographql.apollo3.adapter.BigDecimal){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.apollographql.apollo3.adapter/BigDecimal.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.apollographql.apollo3.adapter/BigDecimal.hashCode|hashCode(){}[0]
+    final fun multiply(com.apollographql.apollo3.adapter/BigDecimal): com.apollographql.apollo3.adapter/BigDecimal // com.apollographql.apollo3.adapter/BigDecimal.multiply|multiply(com.apollographql.apollo3.adapter.BigDecimal){}[0]
+    final fun negate(): com.apollographql.apollo3.adapter/BigDecimal // com.apollographql.apollo3.adapter/BigDecimal.negate|negate(){}[0]
+    final fun signum(): kotlin/Int // com.apollographql.apollo3.adapter/BigDecimal.signum|signum(){}[0]
+    final fun subtract(com.apollographql.apollo3.adapter/BigDecimal): com.apollographql.apollo3.adapter/BigDecimal // com.apollographql.apollo3.adapter/BigDecimal.subtract|subtract(com.apollographql.apollo3.adapter.BigDecimal){}[0]
+    final fun toByte(): kotlin/Byte // com.apollographql.apollo3.adapter/BigDecimal.toByte|toByte(){}[0]
+    final fun toChar(): kotlin/Char // com.apollographql.apollo3.adapter/BigDecimal.toChar|toChar(){}[0]
+    final fun toDouble(): kotlin/Double // com.apollographql.apollo3.adapter/BigDecimal.toDouble|toDouble(){}[0]
+    final fun toFloat(): kotlin/Float // com.apollographql.apollo3.adapter/BigDecimal.toFloat|toFloat(){}[0]
+    final fun toInt(): kotlin/Int // com.apollographql.apollo3.adapter/BigDecimal.toInt|toInt(){}[0]
+    final fun toLong(): kotlin/Long // com.apollographql.apollo3.adapter/BigDecimal.toLong|toLong(){}[0]
+    final fun toShort(): kotlin/Short // com.apollographql.apollo3.adapter/BigDecimal.toShort|toShort(){}[0]
+    final fun toString(): kotlin/String // com.apollographql.apollo3.adapter/BigDecimal.toString|toString(){}[0]
+}

@@ -12,9 +12,6 @@ public final class com/apollographql/apollo3/tooling/PermissionError : com/apoll
 	public final fun getMessage ()Ljava/lang/String;
 }
 
-public final class com/apollographql/apollo3/tooling/PersistedQueriesUploaderKt {
-}
-
 public final class com/apollographql/apollo3/tooling/PersistedQuery {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public final fun getBody ()Ljava/lang/String;

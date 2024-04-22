@@ -1,0 +1,28 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosSimulatorArm64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.apollographql.apollo3:apollo-testing-support>
+final fun (com.apollographql.apollo3.mockserver/MockServer).com.apollographql.apollo3.testing/enqueueData(com.apollographql.apollo3.api/Operation.Data, com.apollographql.apollo3.api/CustomScalarAdapters =..., kotlin/Long =..., kotlin/Int =...) // com.apollographql.apollo3.testing/enqueueData|enqueueData@com.apollographql.apollo3.mockserver.MockServer(com.apollographql.apollo3.api.Operation.Data;com.apollographql.apollo3.api.CustomScalarAdapters;kotlin.Long;kotlin.Int){}[0]
+final fun (com.apollographql.apollo3.mockserver/MockServer).com.apollographql.apollo3.testing/enqueueData(kotlin.collections/Map<kotlin/String, kotlin/Any?>, com.apollographql.apollo3.api/CustomScalarAdapters =..., kotlin/Long =..., kotlin/Int =...) // com.apollographql.apollo3.testing/enqueueData|enqueueData@com.apollographql.apollo3.mockserver.MockServer(kotlin.collections.Map<kotlin.String,kotlin.Any?>;com.apollographql.apollo3.api.CustomScalarAdapters;kotlin.Long;kotlin.Int){}[0]
+final fun <#A: com.apollographql.apollo3.api/Operation.Data> (com.apollographql.apollo3.mockserver/MockServer).com.apollographql.apollo3.testing/enqueue(com.apollographql.apollo3.api/Operation<#A>, #A, com.apollographql.apollo3.api/CustomScalarAdapters =..., kotlin/Long =...) // com.apollographql.apollo3.testing/enqueue|enqueue@com.apollographql.apollo3.mockserver.MockServer(com.apollographql.apollo3.api.Operation<0:0>;0:0;com.apollographql.apollo3.api.CustomScalarAdapters;kotlin.Long){0§<com.apollographql.apollo3.api.Operation.Data>}[0]
+final fun com.apollographql.apollo3.testing/checkFile(kotlin/String, kotlin/String) // com.apollographql.apollo3.testing/checkFile|checkFile(kotlin.String;kotlin.String){}[0]
+final fun com.apollographql.apollo3.testing/pathToJsonReader(kotlin/String): com.apollographql.apollo3.api.json/JsonReader // com.apollographql.apollo3.testing/pathToJsonReader|pathToJsonReader(kotlin.String){}[0]
+final fun com.apollographql.apollo3.testing/pathToUtf8(kotlin/String): kotlin/String // com.apollographql.apollo3.testing/pathToUtf8|pathToUtf8(kotlin.String){}[0]
+// Targets: [apple, js]
+final fun com.apollographql.apollo3.testing/shouldUpdateTestFixtures(): kotlin/Boolean // com.apollographql.apollo3.testing/shouldUpdateTestFixtures|shouldUpdateTestFixtures(){}[0]
+// Targets: [apple, js]
+final val com.apollographql.apollo3.testing/testsPath // com.apollographql.apollo3.testing/testsPath|{}testsPath[0]
+    final fun <get-testsPath>(): kotlin/String // com.apollographql.apollo3.testing/testsPath.<get-testsPath>|<get-testsPath>(){}[0]
+// Targets: [apple]
+final fun com.apollographql.apollo3.testing/cwd(): kotlin/String // com.apollographql.apollo3.testing/cwd|cwd(){}[0]
+// Targets: [js]
+final val com.apollographql.apollo3.testing/HostFileSystem // com.apollographql.apollo3.testing/HostFileSystem|{}HostFileSystem[0]
+    final fun <get-HostFileSystem>(): okio/FileSystem // com.apollographql.apollo3.testing/HostFileSystem.<get-HostFileSystem>|<get-HostFileSystem>(){}[0]
+// Targets: [wasmJs]
+final val com.apollographql.apollo3.testing.internal/empty // com.apollographql.apollo3.testing.internal/empty|{}empty[0]
+    final fun <get-empty>(): kotlin.js/JsAny // com.apollographql.apollo3.testing.internal/empty.<get-empty>|<get-empty>(){}[0]

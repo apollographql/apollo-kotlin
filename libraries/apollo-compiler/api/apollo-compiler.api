@@ -54,9 +54,6 @@ public final class com/apollographql/apollo3/compiler/CodegenMetadata$Companion 
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/apollographql/apollo3/compiler/CodegenMetadataKt {
-}
-
 public final class com/apollographql/apollo3/compiler/CodegenOptions : com/apollographql/apollo3/compiler/OperationsCodegenOptions, com/apollographql/apollo3/compiler/SchemaCodegenOptions {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/CodegenOptions$Companion;
 	public fun <init> (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Lcom/apollographql/apollo3/compiler/JavaNullable;Ljava/lang/Boolean;Ljava/lang/Boolean;)V
@@ -1132,9 +1129,6 @@ public final class com/apollographql/apollo3/compiler/ir/IrStringValue$Companion
 
 public final class com/apollographql/apollo3/compiler/ir/IrType$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
-}
-
-public final class com/apollographql/apollo3/compiler/ir/IrTypeKt {
 }
 
 public final class com/apollographql/apollo3/compiler/ir/IrTypeRef$Companion {

@@ -1,0 +1,63 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64.linux, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.apollographql.apollo3:apollo-annotations>
+open annotation class com.apollographql.apollo3.annotations/ApolloAdaptableWith : kotlin/Annotation { // com.apollographql.apollo3.annotations/ApolloAdaptableWith|null[0]
+    constructor <init>(kotlin.reflect/KClass<*>) // com.apollographql.apollo3.annotations/ApolloAdaptableWith.<init>|<init>(kotlin.reflect.KClass<*>){}[0]
+    final val adapter // com.apollographql.apollo3.annotations/ApolloAdaptableWith.adapter|{}adapter[0]
+        final fun <get-adapter>(): kotlin.reflect/KClass<*> // com.apollographql.apollo3.annotations/ApolloAdaptableWith.adapter.<get-adapter>|<get-adapter>(){}[0]
+}
+open annotation class com.apollographql.apollo3.annotations/ApolloDeprecatedSince : kotlin/Annotation { // com.apollographql.apollo3.annotations/ApolloDeprecatedSince|null[0]
+    constructor <init>(com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version) // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.<init>|<init>(com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version){}[0]
+    final enum class Version : kotlin/Enum<com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version> { // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version|null[0]
+        enum entry v3_0_0 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v3_0_0|null[0]
+        enum entry v3_0_1 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v3_0_1|null[0]
+        enum entry v3_1_1 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v3_1_1|null[0]
+        enum entry v3_2_1 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v3_2_1|null[0]
+        enum entry v3_2_2 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v3_2_2|null[0]
+        enum entry v3_2_3 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v3_2_3|null[0]
+        enum entry v3_3_1 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v3_3_1|null[0]
+        enum entry v3_3_2 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v3_3_2|null[0]
+        enum entry v3_3_3 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v3_3_3|null[0]
+        enum entry v3_4_1 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v3_4_1|null[0]
+        enum entry v3_5_1 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v3_5_1|null[0]
+        enum entry v3_6_3 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v3_6_3|null[0]
+        enum entry v3_7_2 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v3_7_2|null[0]
+        enum entry v3_7_5 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v3_7_5|null[0]
+        enum entry v4_0_0 // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.v4_0_0|null[0]
+        final fun valueOf(kotlin/String): com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.valueOf|valueOf#static(kotlin.String){}[0]
+        final fun values(): kotlin/Array<com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version> // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.values|values#static(){}[0]
+        final val entries // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.entries|#static{}entries[0]
+            final fun <get-entries>(): kotlin.enums/EnumEntries<com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version> // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version.entries.<get-entries>|<get-entries>#static(){}[0]
+    }
+    final val version // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.version|{}version[0]
+        final fun <get-version>(): com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.version.<get-version>|<get-version>(){}[0]
+}
+open annotation class com.apollographql.apollo3.annotations/ApolloExperimental : kotlin/Annotation { // com.apollographql.apollo3.annotations/ApolloExperimental|null[0]
+    constructor <init>() // com.apollographql.apollo3.annotations/ApolloExperimental.<init>|<init>(){}[0]
+}
+open annotation class com.apollographql.apollo3.annotations/ApolloInternal : kotlin/Annotation { // com.apollographql.apollo3.annotations/ApolloInternal|null[0]
+    constructor <init>() // com.apollographql.apollo3.annotations/ApolloInternal.<init>|<init>(){}[0]
+}
+open annotation class com.apollographql.apollo3.annotations/ApolloRequiresOptIn : kotlin/Annotation { // com.apollographql.apollo3.annotations/ApolloRequiresOptIn|null[0]
+    constructor <init>() // com.apollographql.apollo3.annotations/ApolloRequiresOptIn.<init>|<init>(){}[0]
+}
+open annotation class com.apollographql.apollo3.annotations/GraphQLAdapter : kotlin/Annotation { // com.apollographql.apollo3.annotations/GraphQLAdapter|null[0]
+    constructor <init>(kotlin/String) // com.apollographql.apollo3.annotations/GraphQLAdapter.<init>|<init>(kotlin.String){}[0]
+    final val forScalar // com.apollographql.apollo3.annotations/GraphQLAdapter.forScalar|{}forScalar[0]
+        final fun <get-forScalar>(): kotlin/String // com.apollographql.apollo3.annotations/GraphQLAdapter.forScalar.<get-forScalar>|<get-forScalar>(){}[0]
+}
+open annotation class com.apollographql.apollo3.annotations/GraphQLName : kotlin/Annotation { // com.apollographql.apollo3.annotations/GraphQLName|null[0]
+    constructor <init>(kotlin/String) // com.apollographql.apollo3.annotations/GraphQLName.<init>|<init>(kotlin.String){}[0]
+    final val name // com.apollographql.apollo3.annotations/GraphQLName.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.apollographql.apollo3.annotations/GraphQLName.name.<get-name>|<get-name>(){}[0]
+}
+open annotation class com.apollographql.apollo3.annotations/GraphQLObject : kotlin/Annotation { // com.apollographql.apollo3.annotations/GraphQLObject|null[0]
+    constructor <init>(kotlin/String =...) // com.apollographql.apollo3.annotations/GraphQLObject.<init>|<init>(kotlin.String){}[0]
+    final val name // com.apollographql.apollo3.annotations/GraphQLObject.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.apollographql.apollo3.annotations/GraphQLObject.name.<get-name>|<get-name>(){}[0]
+}

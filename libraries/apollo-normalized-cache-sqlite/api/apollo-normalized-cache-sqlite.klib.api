@@ -1,0 +1,24 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.apollographql.apollo3:apollo-normalized-cache-sqlite>
+final class com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCache : com.apollographql.apollo3.cache.normalized.api/NormalizedCache { // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCache|null[0]
+    final fun clearAll() // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCache.clearAll|clearAll(){}[0]
+    final fun dump(): kotlin.collections/Map<kotlin.reflect/KClass<*>, kotlin.collections/Map<kotlin/String, com.apollographql.apollo3.cache.normalized.api/Record>> // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCache.dump|dump(){}[0]
+    final fun loadRecord(kotlin/String, com.apollographql.apollo3.cache.normalized.api/CacheHeaders): com.apollographql.apollo3.cache.normalized.api/Record? // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCache.loadRecord|loadRecord(kotlin.String;com.apollographql.apollo3.cache.normalized.api.CacheHeaders){}[0]
+    final fun loadRecords(kotlin.collections/Collection<kotlin/String>, com.apollographql.apollo3.cache.normalized.api/CacheHeaders): kotlin.collections/Collection<com.apollographql.apollo3.cache.normalized.api/Record> // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCache.loadRecords|loadRecords(kotlin.collections.Collection<kotlin.String>;com.apollographql.apollo3.cache.normalized.api.CacheHeaders){}[0]
+    final fun merge(com.apollographql.apollo3.cache.normalized.api/Record, com.apollographql.apollo3.cache.normalized.api/CacheHeaders): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCache.merge|merge(com.apollographql.apollo3.cache.normalized.api.Record;com.apollographql.apollo3.cache.normalized.api.CacheHeaders){}[0]
+    final fun merge(kotlin.collections/Collection<com.apollographql.apollo3.cache.normalized.api/Record>, com.apollographql.apollo3.cache.normalized.api/CacheHeaders): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCache.merge|merge(kotlin.collections.Collection<com.apollographql.apollo3.cache.normalized.api.Record>;com.apollographql.apollo3.cache.normalized.api.CacheHeaders){}[0]
+    final fun remove(com.apollographql.apollo3.cache.normalized.api/CacheKey, kotlin/Boolean): kotlin/Boolean // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCache.remove|remove(com.apollographql.apollo3.cache.normalized.api.CacheKey;kotlin.Boolean){}[0]
+    final fun remove(kotlin/String): kotlin/Int // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCache.remove|remove(kotlin.String){}[0]
+}
+final class com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCacheFactory : com.apollographql.apollo3.cache.normalized.api/NormalizedCacheFactory { // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCacheFactory|null[0]
+    constructor <init>() // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCacheFactory.<init>|<init>(){}[0]
+    constructor <init>(kotlin/String? =...) // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCacheFactory.<init>|<init>(kotlin.String?){}[0]
+    constructor <init>(kotlin/String?, kotlin/String?) // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCacheFactory.<init>|<init>(kotlin.String?;kotlin.String?){}[0]
+    final fun create(): com.apollographql.apollo3.cache.normalized.api/NormalizedCache // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCacheFactory.create|create(){}[0]
+}
