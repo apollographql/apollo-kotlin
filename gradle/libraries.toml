@@ -207,6 +207,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin" }
 kotlin-android-min = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin-min" }
 kotlin-android-max = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin-max" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-plugin" }
 kotlin-jvm-min = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin-min" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-plugin" }
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
