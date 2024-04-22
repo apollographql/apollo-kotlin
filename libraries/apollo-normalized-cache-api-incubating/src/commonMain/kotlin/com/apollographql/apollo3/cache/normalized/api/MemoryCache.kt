@@ -98,15 +98,7 @@ class MemoryCache(
       return emptySet()
     }
     return lockWrite {
-      val oldRecord = loadRecord(record.key, cacheHeaders)
-      val changedKeys = if (oldRecord == null) {
-        lruCache[record.key] = record
-        record.fieldKeys()
-      } else {
-        val (mergedRecord, changedKeys) = recordMerger.merge(existing = oldRecord, incoming = record, newDate = null)
-        lruCache[record.key] = mergedRecord
-        changedKeys
-      }
+      val changedKeys = internalMerge(record, cacheHeaders, recordMerger)
       changedKeys + nextCache?.merge(record, cacheHeaders, recordMerger).orEmpty()
     }
   }
@@ -115,7 +107,23 @@ class MemoryCache(
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
     }
-    return lockWrite { records.flatMap { record -> merge(record, cacheHeaders, recordMerger) } }.toSet()
+    return lockWrite {
+      val changedKeys = records.flatMap { record -> internalMerge(record, cacheHeaders, recordMerger) }.toSet()
+      changedKeys + nextCache?.merge(records, cacheHeaders, recordMerger).orEmpty()
+    }
+  }
+
+  private fun internalMerge(record: Record, cacheHeaders: CacheHeaders, recordMerger: RecordMerger): Set<String> {
+    val oldRecord = loadRecord(record.key, cacheHeaders)
+    val changedKeys = if (oldRecord == null) {
+      lruCache[record.key] = record
+      record.fieldKeys()
+    } else {
+      val (mergedRecord, changedKeys) = recordMerger.merge(existing = oldRecord, incoming = record, newDate = null)
+      lruCache[record.key] = mergedRecord
+      changedKeys
+    }
+    return changedKeys
   }
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
