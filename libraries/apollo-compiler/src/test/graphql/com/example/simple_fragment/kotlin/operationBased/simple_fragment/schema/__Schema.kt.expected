@@ -22,14 +22,6 @@ internal object __Schema {
             com.example.simple_fragment.type.Starship.type)
 
 
-  public val characterPossibleTypes: List<ObjectType> =
-      listOf(com.example.simple_fragment.type.Droid.type,
-      com.example.simple_fragment.type.Human.type)
-
-  public val searchResultPossibleTypes: List<ObjectType> =
-      listOf(com.example.simple_fragment.type.Human.type,
-      com.example.simple_fragment.type.Droid.type, com.example.simple_fragment.type.Starship.type)
-
   public fun possibleTypes(type: CompiledNamedType): List<ObjectType> =
       com.apollographql.apollo3.api.possibleTypes(all, type)
 }

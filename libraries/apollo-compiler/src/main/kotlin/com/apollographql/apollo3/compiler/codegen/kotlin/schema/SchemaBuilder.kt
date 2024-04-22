@@ -1,14 +1,12 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.schema
 
 
-import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSchemaContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.schemaSubPackageName
-import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
@@ -20,12 +18,9 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.buildCodeBlock
-import com.squareup.kotlinpoet.joinToCode
 
 internal class SchemaBuilder(
     private val context: KotlinSchemaContext,
-    private val schema: Schema,
     private val objects: List<IrObject>,
     private val interfaces: List<IrInterface>,
     private val unions: List<IrUnion>,
@@ -70,25 +65,6 @@ internal class SchemaBuilder(
         .addKdoc("A __Schema object containing all the composite types and a possibleTypes helper function")
         .addProperty(typesPropertySpec())
         .addFunction(possibleTypesFunSpec())
-        .apply {
-          (interfaces + unions).forEach {
-            addProperty(possibleTypesPropertySpec(it.name, schema.possibleTypes(schema.typeDefinition(it.name))))
-          }
-        }
-        .build()
-  }
-
-  private fun possibleTypesPropertySpec(name: String, possibleTypes: Set<String>): PropertySpec {
-    return PropertySpec.builder("${name.decapitalizeFirstLetter()}PossibleTypes", KotlinSymbols.List.parameterizedBy(KotlinSymbols.ObjectType))
-        .initializer(
-            buildCodeBlock {
-              add("listOf(")
-              add(possibleTypes.map {
-                CodeBlock.of("%L.$type", context.resolver.resolveSchemaType(it))
-              }.joinToCode(", "))
-              add(")")
-            }
-        )
         .build()
   }
 

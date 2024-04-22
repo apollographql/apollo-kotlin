@@ -203,7 +203,7 @@ internal object KotlinCodegen {
         builders.add(ObjectBuilder(context, irObject, generateDataBuilders))
       }
       if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
-        builders.add(SchemaBuilder(context, codegenSchema.schema, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
+        builders.add(SchemaBuilder(context, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
         builders.add(CustomScalarAdaptersBuilder(context, scalarMapping))
       }
 
