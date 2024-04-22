@@ -72,17 +72,18 @@ internal class SchemaBuilder(
         .addFunction(possibleTypesFunSpec())
         .apply {
           (interfaces + unions).forEach {
-            addProperty(possibleTypesPropertySpec(it.name, schema.possibleTypes(schema.typeDefinition(it.name))))
+            addFunction(possibleTypesFunSpec(it.name, schema.possibleTypes(schema.typeDefinition(it.name))))
           }
         }
         .build()
   }
 
-  private fun possibleTypesPropertySpec(name: String, possibleTypes: Set<String>): PropertySpec {
-    return PropertySpec.builder("${name.decapitalizeFirstLetter()}PossibleTypes", KotlinSymbols.List.parameterizedBy(KotlinSymbols.ObjectType))
-        .initializer(
+  private fun possibleTypesFunSpec(name: String, possibleTypes: Set<String>): FunSpec {
+    return FunSpec.builder("${name.decapitalizeFirstLetter()}PossibleTypes")
+        .returns(KotlinSymbols.List.parameterizedBy(KotlinSymbols.ObjectType))
+        .addCode(
             buildCodeBlock {
-              add("listOf(")
+              add("return listOf(")
               add(possibleTypes.map {
                 CodeBlock.of("%L.$type", context.resolver.resolveSchemaType(it))
               }.joinToCode(", "))

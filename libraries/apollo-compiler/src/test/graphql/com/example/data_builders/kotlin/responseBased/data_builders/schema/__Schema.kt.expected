@@ -20,16 +20,16 @@ public object __Schema {
             com.example.data_builders.type.Node.type, com.example.data_builders.type.Query.type)
 
 
-  public val characterPossibleTypes: List<ObjectType> =
+  public fun possibleTypes(type: CompiledNamedType): List<ObjectType> =
+      com.apollographql.apollo3.api.possibleTypes(all, type)
+
+  public fun characterPossibleTypes(): List<ObjectType> =
       listOf(com.example.data_builders.type.Human.type, com.example.data_builders.type.Droid.type)
 
-  public val nodePossibleTypes: List<ObjectType> = listOf(com.example.data_builders.type.Cat.type,
+  public fun nodePossibleTypes(): List<ObjectType> = listOf(com.example.data_builders.type.Cat.type,
       com.example.data_builders.type.Dog.type, com.example.data_builders.type.Human.type,
       com.example.data_builders.type.Droid.type)
 
-  public val animalPossibleTypes: List<ObjectType> = listOf(com.example.data_builders.type.Cat.type,
-      com.example.data_builders.type.Dog.type)
-
-  public fun possibleTypes(type: CompiledNamedType): List<ObjectType> =
-      com.apollographql.apollo3.api.possibleTypes(all, type)
+  public fun animalPossibleTypes(): List<ObjectType> =
+      listOf(com.example.data_builders.type.Cat.type, com.example.data_builders.type.Dog.type)
 }
