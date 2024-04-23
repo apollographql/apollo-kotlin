@@ -8,7 +8,7 @@ _2024-04-23_
 
 ## SQL cache performance improvements
 
-If you're using a chained memory + SQL cache, #5840 makes sure cache writes are wrapped in a transaction, make them much faster.
+If you're using a chained memory + SQL cache, #5840 makes sure cache writes are wrapped in a transaction, making them much faster.
 
 ## Apollo Compiler Plugins
 
