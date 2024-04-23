@@ -12,11 +12,11 @@ If you're using a chained memory + SQL cache, #5840 makes sure cache writes are 
 
 ## Apollo Compiler Plugins
 
-`Plugin` is renamed to `ApolloCompilerPlugin`. There is a new `documentTransform` API as well as other fixes. More details in the [compiler plugins documentation](https://deploy-preview-5759--apollo-android-docs.netlify.app/advanced/compiler-plugins).
+`Plugin` is renamed to `ApolloCompilerPlugin`. There is a new `documentTransform` API as well as other fixes. More details in the [compiler plugins documentation](https://www.apollographql.com/docs/kotlin/v4/advanced/compiler-plugins).
 
 ## Experimental WebSockets
 
-A new `.websocket` package is available that makes it easier to retry WebSockets and handle errors. More details and migration guide in the [experimental websockets documentation](https://deploy-preview-5759--apollo-android-docs.netlify.app/advanced/experimental-websockets).
+A new `.websocket` package is available that makes it easier to retry WebSockets and handle errors. More details and migration guide in the [experimental websockets documentation](https://www.apollographql.com/docs/kotlin/v4/advanced/experimental-websockets).
 
 ## ApolloIdlingResource is deprecated
 
@@ -24,7 +24,7 @@ We recommend using reactive patterns to test your UI instead. See [this article 
 
 ## Removed androidx.startup dependency
 
-androidx.startup was introduced in beta.5 but is problematic for unit tests and other cases. beta.6 removes that dependency. More details in the [network connectivity documentation](https://deploy-preview-5759--apollo-android-docs.netlify.app/advanced/network-connectivity).
+androidx.startup was introduced in beta.5 but is problematic for unit tests and other cases. beta.6 removes that dependency. More details in the [network connectivity documentation](https://www.apollographql.com/docs/kotlin/v4/advanced/network-connectivity).
 
 ##  WasmJS support for apollo-adapter
 
@@ -43,6 +43,7 @@ Many thanks to @joreilly, @ychescale9 and @japhib for their contributions to thi
 * [compiler] Add DocumentTransform API (#5809)
 * [idling-resource] Deprecate ApolloIdlingResource (#5817, #5764)
 * [runtime] Share the default OkHttpBuilder (#5811)
+* [runtime] [BREAKING] change `isOnline` to a suspend fun
 * [adapters] Support Kotlin/Wasm for apollo-adapters (#5803)
 * [all] Bump Kotlin to 2.0.0-RC1 (#5802)
 * [Codegen] Add CompiledArgumentDefinition (#5797, #5837)
