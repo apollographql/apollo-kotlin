@@ -1,6 +1,75 @@
 Change Log
 ==========
 
+# Version 4.0.0-beta.6
+
+_2024-04-23_
+
+
+## SQL cache performance improvements
+
+If you're using a chained memory + SQL cache, #5840 makes sure cache writes are wrapped in a transaction, making them much faster.
+
+## Apollo Compiler Plugins
+
+`Plugin` is renamed to `ApolloCompilerPlugin`. There is a new `documentTransform` API as well as other fixes. More details in the [compiler plugins documentation](https://deploy-preview-5759--apollo-android-docs.netlify.app/advanced/compiler-plugins).
+
+## Experimental WebSockets
+
+A new `.websocket` package is available that makes it easier to retry WebSockets and handle errors. More details and migration guide in the [experimental websockets documentation](https://deploy-preview-5759--apollo-android-docs.netlify.app/advanced/experimental-websockets).
+
+## ApolloIdlingResource is deprecated
+
+We recommend using reactive patterns to test your UI instead. See [this article about ways to do so](https://medium.com/androiddevelopers/alternatives-to-idling-resources-in-compose-tests-8ae71f9fc473).
+
+## Removed androidx.startup dependency
+
+androidx.startup was introduced in beta.5 but is problematic for unit tests and other cases. beta.6 removes that dependency. More details in the [network connectivity documentation](https://deploy-preview-5759--apollo-android-docs.netlify.app/advanced/network-connectivity).
+
+##  WasmJS support for apollo-adapter
+
+You can see Wasm in action at https://wasm.confetti-app.dev/ 
+
+Many thanks to @joreilly, @ychescale9 and @japhib for their contributions to this release 💙!
+
+## 👷‍ All changes
+* [normalized-cache]: use a single SQL transaction when using MemoryCache chaining (#5840)
+* [compiler] expose apollo-ast as an api dependency (#5838)
+* [compiler] Rename `Plugin` to `ApolloCompilerPlugin` and add error message for bad configurations (#5821)
+* [IJ Plugin] Fix pulling file from device not working on AS Koala (#5822)
+* [compiler] Add `@ApolloEnumConstructor` and make enum as sealed class Unknown constructor opt-in (#5813)
+* [runtime] Move ApolloParseException to ApolloNetworkException (#5816)
+* [normalized-cache] Let isFromCache be about the ApolloResponse (#5805)
+* [compiler] Add DocumentTransform API (#5809)
+* [idling-resource] Deprecate ApolloIdlingResource (#5817, #5764)
+* [runtime] Share the default OkHttpBuilder (#5811)
+* [adapters] Support Kotlin/Wasm for apollo-adapters (#5803)
+* [all] Bump Kotlin to 2.0.0-RC1 (#5802)
+* [Codegen] Add CompiledArgumentDefinition (#5797, #5837)
+* [runtime] Merge experimental WebSocketNetworkTransport in apollo-runtime (#5790)
+* [normalized-cache] Cache pagination: add FieldNameGenerator and EmbeddedFieldsProvider (#5772)
+* [runtime] Support configuring `ApolloClient` with lazily initialized `Call.Factory`. (#5784)
+* [runtime] fix ApolloClient.Builder.okHttpClient() returns null instead of this (#5778)
+* [normalized-cache] Fix variable coercion in lists. Absent variables are coerced to null (#5773)
+* [IJ Plugin] Fix an NPE (#5770)
+* [runtime] Simplify ApolloCall (#5765)
+* [runtime] remove `androidx.startup` dependency (#5761, #5720)
+* [compiler] Bump kotlin_labs definitions to v0.3 (#5762)
+* [Pagination] Support nodes in Connection types (#5754)
+* [compiler] Directive validation is now enforced by default (#5758)
+* [cache] Make ApolloStore.publish() suspend (#5755)
+* [runtime] Change the dispatcher earlier in the chain (#4319)
+* [IJ Plugin] Add an advanced setting to include generated code references in GraphQL "Go To Declaration" (#5743)
+* [IJ Plugin] Fix presentation of Kotlin elements when navigating to them from GraphQL (#5739)
+* [IJ Plugin] Consider all Gradle projects recursively (#5734)
+* [runtime] Deprecate ApolloClient.Builder.addInterceptors() (#5733)
+* [all] use jdk-release (#5731)
+* [http-cache] Ignore IOException when calling ApolloHttpCache.remove (#5729)
+* [IJ plugin] Bump platformVersion and pluginSinceBuild from 232 to 233 (#5726)
+* [runtime] add ApolloClient.failFastIfOffline (#5725)
+* [all] Introduce "filesystem" sourceSet and use okio 3.9.0 (#5719)
+* [runtime] Do not use Ktor in Js HttpEngine, use fetch directly instead (#5702)
+
 # Version 3.8.3
 
 _2024-03-20_

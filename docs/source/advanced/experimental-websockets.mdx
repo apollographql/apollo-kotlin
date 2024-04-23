@@ -1,0 +1,126 @@
+---
+title: Experimental websockets
+---
+
+> ⚠️ **Experimental websockets APIs are [experimental](https://www.apollographql.com/docs/resources/release-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Defer%20Support]) or in the [Kotlin Slack community](https://slack.kotl.in/).
+
+
+Historically, WebSockets have been one of the most complex and error-prone parts of Apollo Kotlin because:
+
+1. The WebSocket transport protocol has no official specification and different implementations have different behaviours.
+2. WebSockets are stateful and making them work using the old Kotlin native memory model was challenging.
+3. Because WebSockets are long-lived connections, they are more exposed to errors and knowing when (or if) to retry is hard.
+4. Not all subscriptions happen on WebSockets. Some use [HTTP multipart](https://www.apollographql.com/docs/router/executing-operations/subscription-multipart-protocol/) for an example.
+
+Starting with 4.0.0, Apollo Kotlin provides a new `com.apollographql.apollo3.network.websocket` package containing new `WebSocketNetworkTransport` and `WebSocketEngine` implementations (instead of `com.apollographql.apollo3.network.ws` for the current implementations).
+
+The `com.apollographql.apollo3.network.websocket` implementation provides the following:
+
+1. Defaults to the [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md) protocol, which has become the de facto standard. Using the other protocols is still possible but having a main, specified, protocol ensures we can write a good and solid test suite.
+2. Does not inherit from the old memory model design, making the code considerably simpler. In particular, `WebSocketEngine` is now event based and no attempt at flow control is done. If you buffers grow too much, your subscription fails.
+3. Plays nicely with the ApolloClient `retryOnError` API.
+4. Handles different Subscription transports more consistently.
+
+## Status
+
+While they are `@ApolloExperimental`, we believe the new `.websocket` APIS to be more robust than the non-experimental `.ws` ones. They are safe to use in non-lib use cases.
+
+The "experimental" tag is to account for required API breaking changes based on community feedback. Ideally no change is needed.
+
+After a feedback phase, the current `.ws` APIs will become deprecated and the `.websocket` one promoted to stable by removing the `@ApolloExperimental` annotations. 
+
+## Migration guide
+
+In simple cases where you did not configure the underlying `WsProtocol` or retry logic, the migration should be about replacing `com.apollographql.apollo3.network.ws` with `com.apollographql.apollo3.network.websocket` everywhere:
+
+```kotlin
+// Replace
+import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
+import com.apollographql.apollo3.network.ws.WebSocketEngine
+// etc...
+
+// With
+import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
+import com.apollographql.apollo3.network.websocket.WebSocketEngine
+// etc...
+```
+
+Because we can't remove the current APIs just yet, the `ApolloClient.Builder` shortcut APIs are still pointing to the `.ws` implementations. To use the newer `.websocket` implementation, pass a `websocket.WebSocketNetworkTransport` directly:
+
+```kotlin
+// Replace
+val apolloClient = ApolloClient.Builder()
+    .serverUrl(serverUrl)
+    .webSocketServerUrl(webSocketServerUrl)
+    .webSocketEngine(myWebSocketEngine)
+    .webSocketIdleTimeoutMillis(10_000)
+    .build()
+
+// With
+import com.apollographql.apollo3.network.websocket.*
+    
+// [...]
+
+ApolloClient.Builder()
+    .serverUrl(serverUrl)
+    .subscriptionNetworkTransport(
+        WebSocketNetworkTransport.Builder()
+            .serverUrl(webSocketServerUrl)
+            // If you didn't set a WsProtocol before, make sure to include this 
+            .wsProtocol(SubscriptionWsProtocol())
+            // If you were already using GraphQLWsProtocol, this is now the default
+            //.wsProtocol(GraphQLWsProtocol())
+            .webSocketEngine(myWebSocketEngine)
+            .idleTimeoutMillis(10_000)
+            .build()
+    )
+    .build()
+```
+
+To account for non-websocket transports, like [multipart subscriptions](https://www.apollographql.com/docs/router/executing-operations/subscription-multipart-protocol/), the retry is now handled on the `ApolloClient` instead of the `NetworkTransport`.
+
+```kotlin
+// Replace
+val apolloClient = ApolloClient.Builder()
+    .subscriptionNetworkTransport(
+        WebSocketNetworkTransport.Builder()
+            .serverUrl(url)
+            .reopenWhen { _, _ ->
+              delay(1000)
+              true
+            }
+            .build()
+    )
+
+// With
+val apolloClient = ApolloClient.Builder()
+    .subscriptionNetworkTransport(
+        WebSocketNetworkTransport.Builder()
+            .serverUrl(url)
+            .build()
+    )
+    // Only retry subscriptions
+    .retryOnError { it.operation is Subscription }
+```
+
+The above uses the default retry algorithm:
+
+* Wait until the network is available if you configured a [NetworkMonitor](network-connectivity).
+* Or use exponential backoff else.
+
+To customize the retry logic more, use `addRetryOnErrorInterceptor`:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .subscriptionNetworkTransport(
+        WebSocketNetworkTransport.Builder()
+            .serverUrl(url)
+            .build()
+    )
+    .addRetryOnErrorInterceptor { apolloRequest, exception, attempt -> 
+      // retry logic here
+      
+      // return true to retry or false to terminate the Flow
+      true
+    }
+```

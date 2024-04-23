@@ -1,0 +1,80 @@
+---
+title: Monitor your network state to reduce latency (experimental)
+---
+
+> ⚠️ **Network Monitor APIs are [experimental](https://www.apollographql.com/docs/resources/release-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Defer%20Support]) or in the [Kotlin Slack community](https://slack.kotl.in/).
+> 
+Android and Apple targets provide APIs to monitor the network state of your device:
+
+- [ConnectivityManager](https://developer.android.com/training/monitoring-device-state/) on Android targets.
+- [NWPathMonitor](https://developer.apple.com/documentation/network/nwpathmonitor) on Apple targets.
+
+You can configure your [ApolloClient](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/index.html) to use these APIs to improve latency of your requests using the `NetworkMonitor` API:
+
+```kotlin
+// androidMain
+val networkMonitor = NetworkMonitor(context)
+
+// appleMain
+val networkMonitor = NetworkMonitor()
+
+// commonMain
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://example.com/graphql")
+    .networkMonitor(networkMonitor)
+    .build()
+```
+
+### `failFastIfOffline`
+
+When a `NetworkMonitor` is configured, you can use `failFastIfOffline` to avoid trying out request if the device is offline:
+
+```kotlin
+// Opt-in `failFastIfOffline` on all queries
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://example.com/graphql")
+    .failFastIfOffline(true)
+    .build()
+
+val response = apolloClient.query(myQuery).execute()
+println(response.exception?.message)
+// "The device is offline"
+
+// Opt-out `failFastIfOffline` on a single query
+val response = apolloClient.query(myQuery).failFastIfOffline(false).execute()
+```
+
+### `retryOnError`
+
+When a `NetworkMonitor` is configured, `retryOnError` uses `NetworkMonitor.waitForNetwork()` instead of the default exponential backoff algorithm in order to reconnect faster when connectivity is back.
+
+### customizing the retry algorithm
+
+You can customize the retry algorithm further by defining you won interceptor. Make sure to:
+
+- add your interceptor last, so that it wraps the network call and doesn't get cache misses or any other errors that may be emitted by upstream interceptors.
+- call `retryOnError(false)` when forwarding the request downstream so that the retry is not made twice.
+
+```kotlin
+internal class MyRetryInterceptor(private val networkMonitor: NetworkMonitor?): ApolloInterceptor {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    // Disable Apollo's built-in retry mechanism
+    val newRequest = request.newBuilder().retryOnError(false).build()
+    return chain.proceed(newRequest)
+        .onEach { 
+          if (it.exception != null && it.exception.shouldRetry()) {
+            throw RetryException
+          }
+        }.retryWhen { cause, _-> 
+          if (cause is RetryException) {
+            // Add your logic here
+            true
+          } else {
+            // Programming error, re-throw it
+            false
+          }
+        }
+  }
+}
+```
+
