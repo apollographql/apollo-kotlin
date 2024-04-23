@@ -73,7 +73,7 @@
       "Uploading files": "/advanced/upload",
       "Monitoring your network (experimental)": "/advanced/network-connectivity",
       "Handling nullability (experimental)": "/advanced/nullability",
-      "Experimental websockets (experimental)": "/advanced/experimental-websockets",
+      "Experimental WebSocketNetworkTransport (experimental)": "/advanced/experimental-websockets",
       "Using aliases": "/advanced/using-aliases",
       "Using with Java": "/advanced/java",
       "Kotlin native": "/advanced/kotlin-native",
