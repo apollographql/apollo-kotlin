@@ -5,13 +5,30 @@ Change Log
 
 _2024-04-23_
 
-Main changes:
 
-* **SQL cache performance improvements**: If you're using a chained memory + SQL cache, #5840 makes sure cache writes are wrapped in a transaction, make them much faster.
-* **Apollo Compiler Plugins**: `Plugin` is renamed to `ApolloCompilerPlugin`. There is a new `documentTransform` API as well as other fixes. More details in the [compiler plugins documentation](https://deploy-preview-5759--apollo-android-docs.netlify.app/advanced/compiler-plugins).
-* **Experimental WebSockets**: A new `.websocket` package is available that makes it easier to retry WebSockets and handle errors. More details and migration guide in the [experimental websockets documentation](https://deploy-preview-5759--apollo-android-docs.netlify.app/advanced/experimental-websockets).
-* **ApolloIdlingResource is deprecated**: We recommend using reactive patterns to test your UI instead. See [this article about ways to do so](https://medium.com/androiddevelopers/alternatives-to-idling-resources-in-compose-tests-8ae71f9fc473).
-* **Removed androidx.startup dependency**: androidx.startup was introduced in beta.5 but is problematic in unit tests and other cases. beta.6 removes that dependency. More details in the [network connectivity documentation](https://deploy-preview-5759--apollo-android-docs.netlify.app/advanced/network-connectivity).
+## SQL cache performance improvements
+
+If you're using a chained memory + SQL cache, #5840 makes sure cache writes are wrapped in a transaction, make them much faster.
+
+## Apollo Compiler Plugins
+
+`Plugin` is renamed to `ApolloCompilerPlugin`. There is a new `documentTransform` API as well as other fixes. More details in the [compiler plugins documentation](https://deploy-preview-5759--apollo-android-docs.netlify.app/advanced/compiler-plugins).
+
+## Experimental WebSockets
+
+A new `.websocket` package is available that makes it easier to retry WebSockets and handle errors. More details and migration guide in the [experimental websockets documentation](https://deploy-preview-5759--apollo-android-docs.netlify.app/advanced/experimental-websockets).
+
+## ApolloIdlingResource is deprecated
+
+We recommend using reactive patterns to test your UI instead. See [this article about ways to do so](https://medium.com/androiddevelopers/alternatives-to-idling-resources-in-compose-tests-8ae71f9fc473).
+
+## Removed androidx.startup dependency
+
+androidx.startup was introduced in beta.5 but is problematic for unit tests and other cases. beta.6 removes that dependency. More details in the [network connectivity documentation](https://deploy-preview-5759--apollo-android-docs.netlify.app/advanced/network-connectivity).
+
+##  WasmJS support for apollo-adapter
+
+You can see Wasm in action at https://wasm.confetti-app.dev/ 
 
 Many thanks to @joreilly, @ychescale9 and @japhib for their contributions to this release 💙!
 
