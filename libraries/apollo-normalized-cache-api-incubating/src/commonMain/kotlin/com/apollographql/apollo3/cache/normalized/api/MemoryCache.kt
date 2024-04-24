@@ -39,19 +39,28 @@ class MemoryCache(
     get() = lockRead { lruCache.weight() }
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? = lockRead {
-    val record = lruCache[key]?.also {
-      if (cacheHeaders.hasHeader(ApolloCacheHeaders.EVICT_AFTER_READ)) {
-        lruCache.remove(key)
-      }
-    }
-
+    val record = internalLoadRecord(key, cacheHeaders)
     record ?: nextCache?.loadRecord(key, cacheHeaders)?.also { nextCachedRecord ->
       lruCache[key] = nextCachedRecord
     }
   }
 
-  override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
-    return keys.mapNotNull { key -> loadRecord(key, cacheHeaders) }
+  override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> = lockRead {
+    val recordsByKey: Map<String, Record?> = keys.associateWith { key -> internalLoadRecord(key, cacheHeaders) }
+    val missingKeys = recordsByKey.filterValues { it == null }.keys
+    val nextCachedRecords = nextCache?.loadRecords(missingKeys, cacheHeaders).orEmpty()
+    for (record in nextCachedRecords) {
+      lruCache[record.key] = record
+    }
+    recordsByKey.values.filterNotNull() + nextCachedRecords
+  }
+
+  private fun internalLoadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
+    return lruCache[key]?.also {
+      if (cacheHeaders.hasHeader(ApolloCacheHeaders.EVICT_AFTER_READ)) {
+        lruCache.remove(key)
+      }
+    }
   }
 
   override fun clearAll() {

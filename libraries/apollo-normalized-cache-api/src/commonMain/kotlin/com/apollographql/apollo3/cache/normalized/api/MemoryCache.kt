@@ -38,13 +38,8 @@ class MemoryCache(
     get() = lruCache.size()
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? = lock.lock {
-    val cacheEntry = lruCache[key]?.also { cacheEntry ->
-      if (cacheEntry.isExpired || cacheHeaders.hasHeader(ApolloCacheHeaders.EVICT_AFTER_READ)) {
-        lruCache.remove(key)
-      }
-    }
-
-    cacheEntry?.takeUnless { it.isExpired }?.record ?: nextCache?.loadRecord(key, cacheHeaders)?.also { nextCachedRecord ->
+    val record = internalLoadRecord(key, cacheHeaders)
+    record ?: nextCache?.loadRecord(key, cacheHeaders)?.also { nextCachedRecord ->
       lruCache[key] = CacheEntry(
           record = nextCachedRecord,
           expireAfterMillis = expireAfterMillis
@@ -52,8 +47,25 @@ class MemoryCache(
     }
   }
 
-  override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
-    return keys.mapNotNull { key -> loadRecord(key, cacheHeaders) }
+  override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> = lock.lock {
+    val recordsByKey: Map<String, Record?> = keys.associateWith { key -> internalLoadRecord(key, cacheHeaders) }
+    val missingKeys = recordsByKey.filterValues { it == null }.keys
+    val nextCachedRecords = nextCache?.loadRecords(missingKeys, cacheHeaders).orEmpty()
+    for (record in nextCachedRecords) {
+      lruCache[record.key] = CacheEntry(
+          record = record,
+          expireAfterMillis = expireAfterMillis
+      )
+    }
+    recordsByKey.values.filterNotNull() + nextCachedRecords
+  }
+
+  private fun internalLoadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
+    return lruCache[key]?.also { cacheEntry ->
+      if (cacheEntry.isExpired || cacheHeaders.hasHeader(ApolloCacheHeaders.EVICT_AFTER_READ)) {
+        lruCache.remove(key)
+      }
+    }?.takeUnless { it.isExpired }?.record
   }
 
   override fun clearAll() {
@@ -79,7 +91,7 @@ class MemoryCache(
     var total = 0
     val keys = HashSet(lruCache.keys()) // local copy to avoid concurrent modification
     keys.forEach {
-      if (regex.matches(it)){
+      if (regex.matches(it)) {
         lruCache.remove(it)
         total++
       }
@@ -137,7 +149,7 @@ class MemoryCache(
 
   private class CacheEntry(
       val record: Record,
-      val expireAfterMillis: Long
+      val expireAfterMillis: Long,
   ) {
     val cachedAtMillis: Long = currentTimeMillis()
 
