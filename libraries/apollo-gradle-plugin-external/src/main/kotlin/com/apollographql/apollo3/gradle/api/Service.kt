@@ -240,6 +240,9 @@ interface Service {
    *
    * Default value: [OperationIdGenerator.Sha256]
    */
+  @Suppress("DEPRECATION")
+  @Deprecated("Use ApolloCompilerPlugin.operationIds() instead. See https://go.apollo.dev/ak-compiler-plugins for more details.")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val operationIdGenerator: Property<OperationIdGenerator>
 
   /**
