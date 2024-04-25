@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.network.http
+package com.apollographql.apollo3.network.httpengine
 
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
