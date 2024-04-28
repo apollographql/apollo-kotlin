@@ -777,6 +777,15 @@ private constructor(
     }
 
     /**
+     * Removes an [ApolloInterceptor] from this [ApolloClient].
+     *
+     * **The order is important**. This method removes the first occurrence of the [ApolloInterceptor] in the list.
+     */
+    fun removeInterceptor(interceptor: ApolloInterceptor) = apply {
+      _interceptors.remove(interceptor)
+    }
+
+    /**
      * Adds several [ApolloInterceptor]s to this [ApolloClient].
      *
      * [ApolloInterceptor]s monitor, rewrite and retry an [ApolloCall]. Internally, [ApolloInterceptor] is used for features

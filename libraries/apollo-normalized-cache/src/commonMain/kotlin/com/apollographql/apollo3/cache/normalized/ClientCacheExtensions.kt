@@ -122,6 +122,13 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
   check(interceptors.none { it is AutoPersistedQueryInterceptor }) {
     "Apollo: the normalized cache must be configured before the auto persisted queries"
   }
+  // Removing existing interceptors added for configuring an [ApolloStore].
+  // If a builder is reused from an existing client using `newBuilder()` and we try to configure a new `store()` on it, we first need to
+  // remove the old interceptors.
+  val storeInterceptors = interceptors.filterIsInstance<ApolloStoreInterceptor>()
+  storeInterceptors.forEach {
+    removeInterceptor(it)
+  }
   return addInterceptor(WatcherInterceptor(store))
       .addInterceptor(FetchPolicyRouterInterceptor)
       .addInterceptor(ApolloCacheInterceptor(store))
