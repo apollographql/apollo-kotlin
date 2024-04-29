@@ -19,14 +19,14 @@ import java.time.Instant
 import java.time.format.DateTimeParseException
 
 class CachingHttpInterceptor internal constructor(
-    private val lruHttpCache: ApolloHttpCache
+    private val lruHttpCache: ApolloHttpCache,
 ) : HttpInterceptor {
 
   constructor(
       directory: File,
       maxSize: Long,
       fileSystem: FileSystem = FileSystem.SYSTEM,
-  ): this(DiskLruHttpCache(fileSystem, directory, maxSize))
+  ) : this(DiskLruHttpCache(fileSystem, directory, maxSize))
 
   val cache: ApolloHttpCache = lruHttpCache
 
@@ -122,7 +122,8 @@ class CachingHttpInterceptor internal constructor(
                   )
               )
               .build(),
-          cacheKey)
+          cacheKey
+      )
     }
     return response
   }
@@ -152,11 +153,13 @@ class CachingHttpInterceptor internal constructor(
     }
 
     val timeoutMillis = request.headers.valueOf(CACHE_EXPIRE_TIMEOUT_HEADER)?.toLongOrNull() ?: 0
-    val servedDateMillis = try {
-      Instant.parse(response.headers.valueOf(CACHE_SERVED_DATE_HEADER)).toEpochMilli()
-    } catch (e: DateTimeParseException) {
-      0L
-    }
+    val servedDateMillis = response.headers.valueOf(CACHE_SERVED_DATE_HEADER)?.let {
+      try {
+        Instant.parse(it).toEpochMilli()
+      } catch (e: DateTimeParseException) {
+        0
+      }
+    } ?: 0
     val nowMillis = Instant.now().toEpochMilli()
 
     if (timeoutMillis > 0 && servedDateMillis > 0 && nowMillis - servedDateMillis > timeoutMillis) {
