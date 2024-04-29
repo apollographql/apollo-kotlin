@@ -891,6 +891,7 @@ private constructor(
         maxBatchSize: Int = 10,
         enableByDefault: Boolean = true,
     ) = apply {
+      _httpInterceptors.removeAll { it is BatchingHttpInterceptor }
       addHttpInterceptor(BatchingHttpInterceptor(batchIntervalMillis, maxBatchSize))
       canBeBatched(enableByDefault)
     }
