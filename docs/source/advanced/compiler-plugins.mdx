@@ -17,7 +17,7 @@ In this example we will implement a plugin that uses custom [persisted queries](
 
 The Apollo compiler use the [ServiceLoader API](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) to load plugins at runtime. Plugins need to be implemented in a separate module that is added to the classpath.
 
-To start, create a new Gradle module and add `apollo-compiler` as a dependency to the module `build.gradle[.kts]` file. In this example, we'll use `apollo-compiler-plugin` for the module name:
+To start, create a new Gradle module and add `apollo-compiler` as a dependency to the module `build.gradle[.kts]` file. In this example, we'll use `apollo-compiler-plugin` as module name:
 
 ```kotlin
 // apollo-compiler-plugin/build.gradle.kts
@@ -56,15 +56,25 @@ class MyPlugin: ApolloCompilerPlugin {
 }
 ```
 
-Make your plugin discoverable by [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) using a resource in `src/main/resources/META-INF/services/com.apollographql.apollo3.compiler.ApolloCompilerPlugin`. This file contains the fully qualified name of your plugin: 
+Next, create an `ApolloCompilerPluginProvider`. This is the entry point of compiler plugins. It is loaded using the [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) API.
+
+```kotlin
+class MyPluginProvider: ApolloCompilerPluginProvider {
+  override fun create(environment: ApolloCompilerPluginEnvironment): ApolloCompilerPlugin {
+    return MyPlugin()
+  }
+}
+```
+
+Make your plugin discoverable by [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) by adding a resource in `src/main/resources/META-INF/services/com.apollographql.apollo3.compiler.ApolloCompilerPluginProvider`. This file contains the fully qualified name of your plugin: 
 
 ```
-mypackage.MyPlugin
+mypackage.MyPluginProvider
 ```
 
 <Note>
 
-The name of the resource file is important. It must be `com.apollographql.apollo3.compiler.ApolloCompilerPlugin` and be in the `META-INF/services` folder. This is how `ServiceLoader` looks up plugins at runtime.
+The name of the resource file is important. It must be `com.apollographql.apollo3.compiler.ApolloCompilerPluginProvider` and be in the `META-INF/services` folder. This is how `ServiceLoader` looks up plugins at runtime.
 </Note>
 
 # Adding a plugin to the Apollo compiler classpath
@@ -94,23 +104,32 @@ The plugin code will now be invoked the next time the compiler is invoked.
 
 Because the compiler plugin runs in an isolated classpath, you can't use classes or data from your main build logic classpath. 
 
-In order to pass build-time arguments to your Apollo compiler plugin, you can use code generation and tools like [gradle-buildconfig-plugin](https://github.com/gmazzo/gradle-buildconfig-plugin):
+In order to pass build-time arguments to your Apollo compiler plugin, use the `argument()` function:
 
 ```kotlin
-// my-plugin/build.gradle.kts
-plugins {
-  id("com.github.gmazzo.buildconfig")
-}
-
-buildConfig {
-  useKotlinOutput()
-  packageName("com.example.myplugin")
-
-  buildConfigField("arg1", arg1Value)
-  buildConfigField("arg2", arg2Value)
-  // etc...
+apollo {
+  service("service") {
+    packageName.set("com.example")
+    
+    // Add your plugin to the Apollo compiler classpath
+    plugin(project(":apollo-compiler-plugin")) {
+      argument("token", token) // highlight-line
+    }
+  }
 }
 ```
+
+The arguments are available in `ApolloCompilerPluginEvnironment.arguments`:
+
+```kotlin
+class MyPluginProvider: ApolloCompilerPluginProvider {
+  override fun create(environment: ApolloCompilerPluginEnvironment): ApolloCompilerPlugin {
+    return MyPlugin(environment.arguments.get("token") as String)
+  }
+}
+```
+
+Arguments must be serializable and be instances of classes accessible from the bootstrap classloader. In practice, built-in types and collections are supported.
 
 # Limitations 
 
