@@ -1,6 +1,7 @@
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.cache.http.ApolloHttpCache
+import com.apollographql.apollo3.cache.http.DiskLruHttpCache
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
 import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.httpExpireTimeout
@@ -23,6 +24,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okio.FileSystem
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -302,16 +304,19 @@ class HttpCacheTest {
 }
 
 private class CountingApolloHttpCache : ApolloHttpCache {
+  private val wrapped = run  {
+    val dir = File("build/httpCache")
+    dir.deleteRecursively()
+    DiskLruHttpCache(FileSystem.SYSTEM, dir, Long.MAX_VALUE)
+  }
   var writes = 0
-  var response: HttpResponse? = null
   override fun write(response: HttpResponse, cacheKey: String): HttpResponse {
     writes++
-    this.response = response
-    return response
+    return wrapped.write(response, cacheKey)
   }
 
   override fun read(cacheKey: String): HttpResponse {
-    return response!!
+    return wrapped.read(cacheKey)
   }
 
   override fun clearAll() {}
