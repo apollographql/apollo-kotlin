@@ -10,7 +10,7 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 @ApolloExperimental
 fun interface ApolloCompilerPluginProvider {
   /**
-   * Called by Kotlin Symbol Processing to create the processor.
+   * Creates the [ApolloCompilerPlugin]
    */
   fun create(environment: ApolloCompilerPluginEnvironment): ApolloCompilerPlugin
 }
