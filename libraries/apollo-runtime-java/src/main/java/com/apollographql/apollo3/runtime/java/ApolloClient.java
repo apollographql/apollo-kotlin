@@ -225,7 +225,7 @@ public class ApolloClient implements Closeable {
     public Builder okHttpClient(@NotNull OkHttpClient okHttpClient) {
       this.callFactory = checkNotNull(okHttpClient, "okHttpClient is null");
       this.webSocketFactory = okHttpClient;
-      return null;
+      return this;
     }
 
     /**
