@@ -1,10 +1,19 @@
 Change Log
 ==========
 
+# Version 3.8.4
+
+_2024-04-29_
+
+Version 3.8.4 is a maintenance release with one bug fix and 2 performance improvements. New developments happen in the 4.x versions.
+
+* [java-runtime] Fix `ApolloClient.Builder.okHttpClient()` returns null instead of this (#5860)
+* [normalized-cache] Use a single transaction when using MemoryCache chaining (#5861)
+* [normalized-cache] Call through to loadRecords from the MemoryCache to the SQL one (#5863)
+
 # Version 4.0.0-beta.6
 
 _2024-04-23_
-
 
 ## SQL cache performance improvements
 
