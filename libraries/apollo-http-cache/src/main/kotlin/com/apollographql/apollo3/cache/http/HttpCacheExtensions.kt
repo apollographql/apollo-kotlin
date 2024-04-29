@@ -7,13 +7,9 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.api.http.valueOf
+import com.apollographql.apollo3.cache.http.internal.CacheHeadersHttpInterceptor
 import com.apollographql.apollo3.cache.http.internal.HttpCacheApolloInterceptor
 import com.apollographql.apollo3.network.http.HttpInfo
-import com.apollographql.apollo3.network.http.HttpInterceptor
-import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import okio.FileSystem
 import java.io.File
@@ -70,26 +66,18 @@ fun ApolloClient.Builder.httpCache(
     apolloHttpCache: ApolloHttpCache,
 ): ApolloClient.Builder {
   val cachingHttpInterceptor = CachingHttpInterceptor(apolloHttpCache)
-
   val apolloRequestToCacheKey = mutableMapOf<String, String>()
-  return addHttpInterceptor(object : HttpInterceptor {
-    override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
-      val cacheKey = CachingHttpInterceptor.cacheKey(request)
-      val requestUuid = request.headers.valueOf(CachingHttpInterceptor.REQUEST_UUID_HEADER)!!
-      synchronized(apolloRequestToCacheKey) {
-        apolloRequestToCacheKey[requestUuid] = cacheKey
-      }
-      return chain.proceed(
-          request.newBuilder()
-              .headers(request.headers.filterNot { it.name == CachingHttpInterceptor.REQUEST_UUID_HEADER })
-              .addHeader(CachingHttpInterceptor.CACHE_KEY_HEADER, cacheKey)
-              .build()
-      )
+  return apply {
+    httpInterceptors.firstOrNull { it is CacheHeadersHttpInterceptor }?.let {
+      removeHttpInterceptor(it)
     }
-  })
+    httpInterceptors.firstOrNull { it is CachingHttpInterceptor }?.let {
+      removeHttpInterceptor(it)
+    }
+  }
+      .addHttpInterceptor(CacheHeadersHttpInterceptor(apolloRequestToCacheKey))
       .addHttpInterceptor(cachingHttpInterceptor)
       .apply {
-        // Remove any existing HttpCacheApolloInterceptor
         interceptors.firstOrNull { it is HttpCacheApolloInterceptor }?.let {
           removeInterceptor(it)
         }
