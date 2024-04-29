@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.ApolloStoreInterceptor
 import com.apollographql.apollo3.cache.normalized.api.dependentKeys
 import com.apollographql.apollo3.cache.normalized.watchContext
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -17,7 +18,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
-internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
+internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor, ApolloStoreInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     val watchContext = request.watchContext ?: return chain.proceed(request)
 

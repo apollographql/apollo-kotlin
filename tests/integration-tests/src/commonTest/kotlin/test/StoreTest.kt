@@ -120,6 +120,17 @@ class StoreTest {
     assertFriendIsNotCached("1003")
   }
 
+  @Test
+  fun testNewBuilderNewStore() = runTest(before = { setUp() }) {
+    storeAllFriends()
+    assertFriendIsCached("1000", "Luke Skywalker")
+
+    val newStore = ApolloStore(MemoryCacheFactory())
+    val newClient = apolloClient.newBuilder().store(newStore).build()
+
+    assertFriendIsNotCached("1000", newClient)
+  }
+
   private suspend fun storeAllFriends() {
     val query = HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)
     apolloClient.enqueueTestResponse(query, HeroAndFriendsNamesWithIDsQuery.Data(
@@ -158,9 +169,12 @@ class StoreTest {
     assertEquals2(characterResponse.data?.character?.name, name)
   }
 
-  private suspend fun assertFriendIsNotCached(id: String) {
+  private suspend fun assertFriendIsNotCached(
+      id: String,
+      apolloClientToUse: ApolloClient = apolloClient,
+  ) {
     assertIs<CacheMissException>(
-        apolloClient.query(CharacterNameByIdQuery(id))
+        apolloClientToUse.query(CharacterNameByIdQuery(id))
             .fetchPolicy(FetchPolicy.CacheOnly)
             .execute()
             .exception

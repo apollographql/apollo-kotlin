@@ -118,6 +118,7 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public final fun httpServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun networkTransport (Lcom/apollographql/apollo3/network/NetworkTransport;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun removeInterceptor (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;

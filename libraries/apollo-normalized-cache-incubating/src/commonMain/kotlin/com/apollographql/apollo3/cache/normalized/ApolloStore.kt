@@ -24,6 +24,7 @@ import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.RecordMerger
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
 import kotlin.reflect.KClass
@@ -235,3 +236,8 @@ fun ApolloStore(
     fieldNameGenerator = fieldNameGenerator,
     embeddedFieldsProvider = embeddedFieldsProvider,
 )
+
+/**
+ * Interface that marks all interceptors added when configuring a `store()` on ApolloClient.Builder.
+ */
+internal interface ApolloStoreInterceptor : ApolloInterceptor

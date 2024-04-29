@@ -13,6 +13,7 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
 import kotlin.reflect.KClass
@@ -265,3 +266,8 @@ fun ApolloStore(
     cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,
     cacheResolver: CacheResolver = FieldPolicyCacheResolver,
 ): ApolloStore = DefaultApolloStore(normalizedCacheFactory, cacheKeyGenerator, cacheResolver)
+
+/**
+ * Interface that marks all interceptors added when configuring a `store()` on ApolloClient.Builder.
+ */
+internal interface ApolloStoreInterceptor : ApolloInterceptor
