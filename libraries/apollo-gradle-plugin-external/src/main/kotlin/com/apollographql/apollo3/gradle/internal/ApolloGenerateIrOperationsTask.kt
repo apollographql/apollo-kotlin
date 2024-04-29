@@ -6,10 +6,8 @@ import com.apollographql.apollo3.compiler.toIrOperations
 import com.apollographql.apollo3.compiler.toIrOptions
 import com.apollographql.apollo3.compiler.writeTo
 import com.apollographql.apollo3.gradle.internal.ApolloGenerateSourcesFromIrTask.Companion.findCodegenSchemaFile
-import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
@@ -22,7 +20,7 @@ import org.gradle.workers.WorkerExecutor
 import java.io.File
 import javax.inject.Inject
 
-abstract class ApolloGenerateIrOperationsTask: DefaultTask() {
+abstract class ApolloGenerateIrOperationsTask: ApolloTaskWithClasspath() {
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val codegenSchemaFiles: ConfigurableFileCollection
@@ -42,9 +40,6 @@ abstract class ApolloGenerateIrOperationsTask: DefaultTask() {
   @get:OutputFile
   abstract val irOperationsFile: RegularFileProperty
 
-  @get:Classpath
-  abstract val classpath: ConfigurableFileCollection
-
   @Inject
   abstract fun getWorkerExecutor(): WorkerExecutor
 
@@ -61,6 +56,8 @@ abstract class ApolloGenerateIrOperationsTask: DefaultTask() {
       it.upstreamIrFiles = upstreamIrFiles.isolate()
       it.irOptionsFile.set(irOptionsFile)
       it.irOperationsFile.set(irOperationsFile)
+      it.arguments = arguments.get()
+      it.logLevel = logLevel.get().ordinal
     }
   }
 }
@@ -69,7 +66,7 @@ private abstract class GenerateIrOperations : WorkAction<GenerateIrOperationsPar
   override fun execute() {
     with(parameters) {
       val upstreamIrOperations = upstreamIrFiles.toInputFiles().map { it.file.toIrOperations() }
-      val plugin = apolloCompilerPlugin()
+      val plugin = apolloCompilerPlugin(arguments, logLevel)
 
       ApolloCompiler.buildIrOperations(
           executableFiles = graphqlFiles.toInputFiles(),
@@ -89,4 +86,6 @@ private interface GenerateIrOperationsParameters : WorkParameters {
   var upstreamIrFiles: List<Pair<String, File>>
   val irOptionsFile: RegularFileProperty
   val irOperationsFile: RegularFileProperty
+  var arguments: Map<String, Any?>
+  var logLevel: Int
 }

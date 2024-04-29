@@ -653,6 +653,9 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/Add
 	public static final fun addInternal (Lcom/squareup/kotlinpoet/FileSpec$Builder;Ljava/util/List;)Lcom/squareup/kotlinpoet/FileSpec$Builder;
 }
 
+public final class com/apollographql/apollo3/compiler/internal/GradleCompilerPluginLogger$Companion {
+}
+
 public final class com/apollographql/apollo3/compiler/ir/IrAccessor$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }

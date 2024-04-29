@@ -2,6 +2,7 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.gradle.api.ApolloExtension
+import com.apollographql.apollo3.gradle.api.CompilerPlugin
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
 import com.apollographql.apollo3.gradle.api.Registry
@@ -21,14 +22,14 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   internal val upstreamDependencies = mutableListOf<Dependency>()
   internal val downstreamDependencies = mutableListOf<Dependency>()
-  internal val pluginDependencies = mutableListOf<Dependency>()
+  internal var pluginDependency: Dependency? = null
+  internal var compilerPlugin: CompilerPlugin? = null
 
   private val objects = project.objects
   internal var registered = false
   internal var rootPackageName: String? = null
 
   init {
-    @Suppress("LeakingThis", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     // This allows users to call includes.put("Date", "java.util.Date")
     // see https://github.com/gradle/gradle/issues/7485
     includes.convention(null as List<String>?)
@@ -220,7 +221,17 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   internal fun isSchemaModule(): Boolean = upstreamDependencies.isEmpty()
 
   override fun plugin(dependencyNotation: Any) {
-    pluginDependencies.add(project.dependencies.create(dependencyNotation))
+    plugin(dependencyNotation) {}
+  }
+
+  override fun plugin(dependencyNotation: Any, block: Action<CompilerPlugin>) {
+    require (compilerPlugin == null) {
+      "Apollo: only one Apollo Compiler Plugin is allowed."
+    }
+    compilerPlugin = DefaultCompilerPlugin()
+    block.execute(compilerPlugin!!)
+
+    pluginDependency = project.dependencies.create(dependencyNotation)
   }
 }
 

@@ -1,11 +1,19 @@
 package hooks
 
-import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
+import com.apollographql.apollo3.compiler.ApolloCompilerPluginEnvironment
+import com.apollographql.apollo3.compiler.ApolloCompilerPluginLogger
+import com.apollographql.apollo3.compiler.ApolloCompilerPluginProvider
+import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
 
-class TestPlugin : ApolloCompilerPlugin {
-  private val prefix: String = "GQL"
+class TestPlugin(
+    val prefix: String,
+    logger: ApolloCompilerPluginLogger,
+) : ApolloCompilerPlugin {
+  init {
+    logger.info("TestPlugin.prefix=$prefix")
+  }
 
   override fun layout(codegenSchema: CodegenSchema): SchemaAndOperationsLayout {
     val delegate = SchemaAndOperationsLayout(
@@ -18,7 +26,7 @@ class TestPlugin : ApolloCompilerPlugin {
     )
 
     return object : SchemaAndOperationsLayout by delegate {
-      
+
       override fun schemaTypeName(schemaTypeName: String): String {
         return delegate.schemaTypeName(schemaTypeName).prefixed()
       }
@@ -48,4 +56,11 @@ class TestPlugin : ApolloCompilerPlugin {
       }
     }
   }
+}
+
+class TestPluginProvider : ApolloCompilerPluginProvider {
+  override fun create(environment: ApolloCompilerPluginEnvironment): ApolloCompilerPlugin {
+    return TestPlugin(environment.arguments.get("prefix") as String, environment.logger)
+  }
+
 }
