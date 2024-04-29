@@ -3,30 +3,20 @@
 package com.apollographql.apollo3.cache.http
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.MutableExecutionOptions
-import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
-import com.apollographql.apollo3.cache.http.CachingHttpInterceptor.Companion.OPERATION_NAME_HEADER
-import com.apollographql.apollo3.interceptor.ApolloInterceptor
-import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.cache.http.internal.HttpCacheApolloInterceptor
 import com.apollographql.apollo3.network.http.HttpInfo
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
 import okio.FileSystem
 import java.io.File
-import java.io.IOException
 
 enum class HttpFetchPolicy {
   /**
@@ -96,64 +86,17 @@ fun ApolloClient.Builder.httpCache(
               .build()
       )
     }
-  }).addHttpInterceptor(
-      cachingHttpInterceptor
-  ).addInterceptor(object : ApolloInterceptor {
-    override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-      val policy = getPolicy(request)
-      val policyStr = when (policy) {
-        HttpFetchPolicy.CacheFirst -> CachingHttpInterceptor.CACHE_FIRST
-        HttpFetchPolicy.CacheOnly -> CachingHttpInterceptor.CACHE_ONLY
-        HttpFetchPolicy.NetworkFirst -> CachingHttpInterceptor.NETWORK_FIRST
-        HttpFetchPolicy.NetworkOnly -> CachingHttpInterceptor.NETWORK_ONLY
-      }
-
-      return chain.proceed(
-          request.newBuilder()
-              .addHttpHeader(
-                  CachingHttpInterceptor.CACHE_OPERATION_TYPE_HEADER,
-                  when (request.operation) {
-                    is Query<*> -> "query"
-                    is Mutation<*> -> "mutation"
-                    is Subscription<*> -> "subscription"
-                    else -> error("Unknown operation type")
-                  }
-              )
-              .addHttpHeader(CachingHttpInterceptor.CACHE_FETCH_POLICY_HEADER, policyStr)
-              .addHttpHeader(CachingHttpInterceptor.REQUEST_UUID_HEADER, request.requestUuid.toString())
-              .addHttpHeader(OPERATION_NAME_HEADER, request.operation.name())
-              .build()
-      )
-          .run {
-            if (request.operation is Query<*>) {
-              onEach { response ->
-                // Revert caching of responses with errors
-                val cacheKey = synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey[request.requestUuid.toString()] }
-                if (response.hasErrors() || response.exception != null) {
-                  try {
-                    cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
-                  } catch (_: IOException) {
-                  }
-                }
-              }.onCompletion {
-                synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey.remove(request.requestUuid.toString()) }
-              }
-            } else {
-              this
-            }
-          }
-    }
   })
+      .addHttpInterceptor(cachingHttpInterceptor)
+      .apply {
+        // Remove any existing HttpCacheApolloInterceptor
+        interceptors.firstOrNull { it is HttpCacheApolloInterceptor }?.let {
+          removeInterceptor(it)
+        }
+      }
+      .addInterceptor(HttpCacheApolloInterceptor(apolloRequestToCacheKey, cachingHttpInterceptor))
 }
 
-private fun getPolicy(request: ApolloRequest<*>): HttpFetchPolicy {
-  return if (request.operation is Mutation<*>) {
-    // Don't cache mutations
-    HttpFetchPolicy.NetworkOnly
-  } else {
-    request.executionContext[HttpFetchPolicyContext]?.httpFetchPolicy ?: HttpFetchPolicy.CacheFirst
-  }
-}
 
 val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache
   get() = executionContext[HttpInfo]?.headers?.any {
