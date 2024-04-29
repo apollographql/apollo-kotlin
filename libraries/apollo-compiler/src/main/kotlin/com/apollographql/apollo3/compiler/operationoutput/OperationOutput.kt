@@ -30,6 +30,14 @@ class OperationDescriptor(
 
 /**
  * The id of an operation associated with its name so that it can be looked up.
+ *
+ * @param id the generated id for the operation
+ * @param name the name of the operation, such as "FooQuery" below
+ * ```graphql
+ * query FooQuery {
+ *   foo
+ * }
+ * ```
  */
 class OperationId(val id: String, val name: String)
 

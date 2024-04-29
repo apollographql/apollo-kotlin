@@ -330,8 +330,45 @@ If you are using `packageNamesFromFilePaths` and `schemaFile`, you'll need to us
 ```
 
 <Note>
+
 Apollo Kotlin 3 was using the operation root directories to compute the schema normalized path which could be wrong in some edge cases. Using fileTree ensures the normalized path is consistent.
 </Note>
+
+### Migrating to ApolloCompilerPlugin
+
+4.0 introduces `ApolloCompilerPlugin` as a way to customize code generation. `ApolloCompilerPlugin` are loaded using the [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) API and run in a separate classloader from your Gradle build. As a result, using  `Service.operationIdGenerator`/`Service.operationOutputGenerator` together with `ApolloCompilerPlugin` is not possible.
+
+`Service.operationIdGenerator`/`Service.operationOutputGenerator` are deprecated and will be removed in a future release. You can migrate to `ApolloCompilerPlugin` using the instructions [from the dedicated page](https://www.apollographql.com/docs/kotlin/v4/advanced/compiler-plugins) and the `ApolloCompilerPlugin.operationIds()` method:
+
+```kotlin
+// Replace (in your build scripts) 
+val operationOutputGenerator = object: OperationOutputGenerator {
+  override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
+    return operationDescriptorList.associateBy {
+      it.source.sha1()
+    }
+  }
+  override val version: String = "v1"
+}
+
+// Or, if using OperationIdGenerator, replace
+val operationIdGenerator = object: OperationIdGenerator {
+  override fun apply(operationDocument: String, operationName: String): String {
+    return operationDocument.sha1()
+  }
+
+  override val version: String = "v1"
+}
+
+// With (in your build compiler plugin module) 
+class MyPlugin: ApolloCompilerPlugin {
+  override fun operationIds(descriptors: List<OperationDescriptor>): List<OperationId>? {
+    return descriptors.map {
+      OperationId(it.source.sha1(), it.name)
+    }
+  }
+}
+```
 
 ### Misc
 
@@ -525,6 +562,7 @@ apolloClient.query().rxSingle()
 // With
 apolloClient.query().toFlow().asFlowable().firstOrError()
 ```
+
 
 ## Example of a migration
 
