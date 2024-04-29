@@ -19,7 +19,7 @@ class OperationDescriptor(
      */
     val name: String,
     /**
-     * The source of the operation as it is sent over the wire, including fragments
+     * The source of the operation document as it is sent over the wire, including fragments
      */
     val source: String,
     /**
