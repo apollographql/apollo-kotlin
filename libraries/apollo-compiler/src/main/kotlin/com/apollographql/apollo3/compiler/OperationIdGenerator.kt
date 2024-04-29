@@ -1,8 +1,12 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 
+@Suppress("DEPRECATION")
+@Deprecated("Use ApolloCompilerPlugin.operationIds() instead. See https://go.apollo.dev/ak-compiler-plugins for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 interface OperationIdGenerator {
   /**
    * computes an id for the given operation
