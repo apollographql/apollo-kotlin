@@ -8,7 +8,7 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 @ApolloExperimental
 class ApolloCompilerPluginEnvironment(
     /**
-     * arguments as passed from the Gradle plugin
+     * Arguments as passed from the Gradle plugin
      */
     val arguments: Map<String, Any?>,
     /**
