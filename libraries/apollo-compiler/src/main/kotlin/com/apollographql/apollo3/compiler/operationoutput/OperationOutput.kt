@@ -19,7 +19,7 @@ class OperationDescriptor(
      */
     val name: String,
     /**
-     * The source of the operation as it is sent over the wire, including fragments
+     * The source of the operation document as it is sent over the wire, including fragments
      */
     val source: String,
     /**
@@ -30,6 +30,14 @@ class OperationDescriptor(
 
 /**
  * The id of an operation associated with its name so that it can be looked up.
+ *
+ * @param id the generated id for the operation
+ * @param name the name of the operation, such as "FooQuery" below
+ * ```graphql
+ * query FooQuery {
+ *   foo
+ * }
+ * ```
  */
 class OperationId(val id: String, val name: String)
 

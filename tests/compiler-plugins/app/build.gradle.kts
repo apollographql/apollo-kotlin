@@ -1,3 +1,6 @@
+@file:OptIn(ApolloExperimental::class)
+
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 
 plugins {
@@ -24,7 +27,13 @@ apollo {
         val name = dir.name.replace("-", "")
         service(name) {
           packageName.set("hooks.$name")
-          plugin(project(":compiler-plugins-${dir.name}"))
+          plugin(project(":compiler-plugins-${dir.name}")) {
+            when(name) {
+              "prefixnames" -> {
+                argument("prefix", "GQL")
+              }
+            }
+          }
           languageVersion.set("1.5")
 
           when (name) {

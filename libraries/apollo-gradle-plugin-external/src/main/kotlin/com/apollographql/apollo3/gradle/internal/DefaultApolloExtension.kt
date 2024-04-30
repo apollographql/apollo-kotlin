@@ -27,6 +27,7 @@ import org.gradle.api.component.AdhocComponentWithVariants
 import org.gradle.api.component.SoftwareComponentFactory
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.logging.LogLevel
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
@@ -437,19 +438,26 @@ abstract class DefaultApolloExtension(
         serviceName = service.name,
     )
 
-    val pluginConfiguration = project.configurations.create(ModelNames.pluginConfiguration(service)) {
+    val compilerConfiguration = project.configurations.create(ModelNames.compilerConfiguration(service)) {
       it.isCanBeConsumed = false
       it.isCanBeResolved = true
     }
 
-    pluginConfiguration.dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-compiler:$APOLLO_VERSION"))
-    service.pluginDependencies.forEach {
-      pluginConfiguration.dependencies.add(it)
+    compilerConfiguration.dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-compiler:$APOLLO_VERSION"))
+    service.pluginDependency?.let {
+      compilerConfiguration.dependencies.add(it)
     }
+
+    val classpathOptions = ApolloTaskWithClasspath.Options(
+        compilerConfiguration,
+        service.pluginDependency != null,
+        (service.compilerPlugin as DefaultCompilerPlugin?)?.arguments.orEmpty(),
+        LogLevel.entries.first { project.logger.isEnabled(it) },
+    )
 
     val optionsTaskProvider = registerOptionsTask(project, service, otherOptionsConsumerConfiguration)
     if (!service.isMultiModule()) {
-      sourcesBaseTaskProvider = registerSourcesTask(project, optionsTaskProvider, service, pluginConfiguration)
+      sourcesBaseTaskProvider = registerSourcesTask(project, optionsTaskProvider, service, classpathOptions)
     } else {
       val codegenSchemaConsumerConfiguration = createConfiguration(
           name = ModelNames.codegenSchemaConsumerConfiguration(service),
@@ -543,7 +551,7 @@ abstract class DefaultApolloExtension(
           schemaTaskProvider = codegenSchemaTaskProvider,
           irOptionsTaskProvider = optionsTaskProvider,
           upstreamIrFiles = upstreamIrConsumerConfiguration,
-          classpath = pluginConfiguration
+          classpathOptions = classpathOptions
       )
 
       val sourcesFromIrTaskProvider = registerSourcesFromIrTask(
@@ -555,7 +563,7 @@ abstract class DefaultApolloExtension(
           downstreamIrOperations = downstreamIrConsumerConfiguration,
           irOperationsTaskProvider = irOperationsTaskProvider,
           upstreamCodegenMetadata = codegenMetadataConsumerConfiguration,
-          classpath = pluginConfiguration,
+          classpathOptions = classpathOptions,
       )
 
       sourcesBaseTaskProvider = sourcesFromIrTaskProvider
@@ -661,13 +669,13 @@ abstract class DefaultApolloExtension(
       downstreamIrOperations: FileCollection,
       irOperationsTaskProvider: TaskProvider<ApolloGenerateIrOperationsTask>,
       upstreamCodegenMetadata: Configuration,
-      classpath: FileCollection,
+      classpathOptions: ApolloTaskWithClasspath.Options,
   ): TaskProvider<ApolloGenerateSourcesFromIrTask> {
     return project.tasks.register(ModelNames.generateApolloSources(service), ApolloGenerateSourcesFromIrTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Generate Apollo models for service '${service.name}'"
 
-      configureBaseCodegenTask(project, task, generateOptionsTaskProvider, service, classpath)
+      configureBaseCodegenTask(project, task, generateOptionsTaskProvider, service, classpathOptions)
 
       task.codegenSchemas.from(schemaConsumerConfiguration)
       if (codegenSchemaTaskProvider != null) {
@@ -782,13 +790,13 @@ abstract class DefaultApolloExtension(
       schemaTaskProvider: TaskProvider<ApolloGenerateCodegenSchemaTask>?,
       irOptionsTaskProvider: TaskProvider<ApolloGenerateOptionsTask>,
       upstreamIrFiles: Configuration,
-      classpath: FileCollection,
+      classpathOptions: ApolloTaskWithClasspath.Options,
   ): TaskProvider<ApolloGenerateIrOperationsTask> {
     return project.tasks.register(ModelNames.generateApolloIrOperations(service), ApolloGenerateIrOperationsTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Generate Apollo IR operations for service '${service.name}'"
 
-      task.classpath.from(classpath)
+      configureTaskWithClassPath(task, classpathOptions)
       task.codegenSchemaFiles.from(schemaConsumerConfiguration)
       if (schemaTaskProvider != null) {
         task.codegenSchemaFiles.from(schemaTaskProvider.flatMap { it.codegenSchemaFile })
@@ -865,13 +873,25 @@ abstract class DefaultApolloExtension(
     }
   }
 
+  private fun configureTaskWithClassPath(
+      task: ApolloTaskWithClasspath,
+      classpathOptions: ApolloTaskWithClasspath.Options
+  ) {
+    task.hasPlugin.set(classpathOptions.hasPlugin)
+    task.classpath.from(classpathOptions.classpath)
+    task.arguments.set(classpathOptions.arguments)
+    task.logLevel.set(classpathOptions.logLevel)
+  }
+
   private fun configureBaseCodegenTask(
       project: Project,
       task: ApolloGenerateSourcesBaseTask,
       generateOptionsTask: TaskProvider<ApolloGenerateOptionsTask>,
       service: DefaultService,
-      classpath: FileCollection,
+      classpathOptions: ApolloTaskWithClasspath.Options,
   ) {
+    configureTaskWithClassPath(task, classpathOptions)
+
     task.codegenOptionsFile.set(generateOptionsTask.flatMap { it.codegenOptions })
 
     task.packageNameGenerator = service.packageNameGenerator.orNull
@@ -880,8 +900,6 @@ abstract class DefaultApolloExtension(
     task.operationOutputGenerator = service.operationOutputGenerator.orElse(service.operationIdGenerator.map { OperationOutputGenerator.Default(it) }).orNull
     service.operationOutputGenerator.disallowChanges()
 
-    task.hasPlugin.set(service.pluginDependencies.isNotEmpty())
-    task.classpath.from(classpath)
 
     task.outputDir.set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)))
     task.operationManifestFile.set(service.operationManifestFile())
@@ -891,13 +909,13 @@ abstract class DefaultApolloExtension(
       project: Project,
       optionsTaskProvider: TaskProvider<ApolloGenerateOptionsTask>,
       service: DefaultService,
-      classpath: FileCollection,
+      classpathOptions: ApolloTaskWithClasspath.Options,
   ): TaskProvider<ApolloGenerateSourcesTask> {
     return project.tasks.register(ModelNames.generateApolloSources(service), ApolloGenerateSourcesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Generate Apollo models for service '${service.name}'"
 
-      configureBaseCodegenTask(project, task, optionsTaskProvider, service, classpath)
+      configureBaseCodegenTask(project, task, optionsTaskProvider, service, classpathOptions)
 
       task.graphqlFiles.from(service.graphqlSourceDirectorySet)
       task.schemaFiles.from(service.schemaFiles(project))

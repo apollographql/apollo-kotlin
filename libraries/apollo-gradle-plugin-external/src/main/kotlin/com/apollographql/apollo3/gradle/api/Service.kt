@@ -907,4 +907,7 @@ interface Service {
   }
 
   fun plugin(dependencyNotation: Any)
+
+  @ApolloExperimental
+  fun plugin(dependencyNotation: Any, block: Action<CompilerPlugin>)
 }

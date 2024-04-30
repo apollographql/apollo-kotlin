@@ -78,6 +78,8 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
         it.codegenOptions.set(codegenOptionsFile)
         it.operationManifestFile.set(operationManifestFile)
         it.outputDir.set(outputDir)
+        it.arguments = arguments.get()
+        it.logLevel = logLevel.get().ordinal
       }
     }
   }
@@ -88,7 +90,11 @@ private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
     with(parameters) {
       val schemaInputFiles = (schemaFiles.takeIf { it.isNotEmpty() } ?: fallbackSchemaFiles).toInputFiles()
       val executableInputFiles = graphqlFiles.toInputFiles()
-      val plugin = apolloCompilerPlugin(hasPlugin)
+      val plugin = apolloCompilerPlugin(
+          arguments,
+          logLevel,
+          hasPlugin
+      )
 
       ApolloCompiler.buildSchemaAndOperationsSources(
           schemaFiles = schemaInputFiles,
@@ -123,4 +129,6 @@ private interface GenerateSourcesParameters : WorkParameters {
   val irOptions: RegularFileProperty
   val operationManifestFile: RegularFileProperty
   val outputDir: DirectoryProperty
+  var arguments: Map<String, Any?>
+  var logLevel: Int
 }

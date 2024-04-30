@@ -9,12 +9,8 @@ import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo3.compiler.toCodegenOptions
-import org.gradle.api.DefaultTask
-import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
@@ -26,7 +22,7 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.workers.WorkerExecutor
 import javax.inject.Inject
 
-abstract class ApolloGenerateSourcesBaseTask : DefaultTask() {
+abstract class ApolloGenerateSourcesBaseTask : ApolloTaskWithClasspath() {
   @get:InputFile
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val codegenOptionsFile: RegularFileProperty
@@ -49,12 +45,6 @@ abstract class ApolloGenerateSourcesBaseTask : DefaultTask() {
 
   @get:OutputDirectory
   abstract val outputDir: DirectoryProperty
-
-  @get:Classpath
-  abstract val classpath: ConfigurableFileCollection
-
-  @get:Input
-  abstract val hasPlugin: Property<Boolean>
 
   @Inject
   abstract fun getWorkerExecutor(): WorkerExecutor
