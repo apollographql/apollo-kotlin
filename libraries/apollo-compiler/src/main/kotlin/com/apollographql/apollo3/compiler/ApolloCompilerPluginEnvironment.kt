@@ -12,7 +12,7 @@ class ApolloCompilerPluginEnvironment(
      */
     val arguments: Map<String, Any?>,
     /**
-     * logger
+     * A logger that can be used by the plugin.
      */
     val logger: ApolloCompilerPluginLogger,
 )
