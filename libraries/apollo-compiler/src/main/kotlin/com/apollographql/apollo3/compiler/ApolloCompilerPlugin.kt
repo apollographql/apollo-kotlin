@@ -19,8 +19,11 @@ import com.apollographql.apollo3.compiler.operationoutput.OperationId
 typealias Plugin = ApolloCompilerPlugin
 
 /**
- * Entry point for customizing the behaviour of the Apollo Compiler besides the
- * already existing options
+ * [ApolloCompilerPlugin] allows to customize the behaviour of the Apollo Compiler.
+ *
+ * [ApolloCompilerPlugin] is run in an isolated classloader. You may throw from [ApolloCompilerPlugin] methods to fail the build
+ * but custom exception classes are not accessible from the calling environment like Gradle for an example.
+ * Prefer throwing regular Java exception classes.
  */
 interface ApolloCompilerPlugin {
   /**
