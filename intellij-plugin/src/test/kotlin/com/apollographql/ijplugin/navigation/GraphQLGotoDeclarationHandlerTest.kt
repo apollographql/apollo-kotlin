@@ -67,7 +67,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
 
   @Test
   fun goToFragmentClass() = testNavigation(
-      fromFile = "src/main/graphql/ComputerFields.graphql",
+      fromFile = "src/main/graphql/fragments/ComputerFields.graphql",
       fromElement = { elementAt<PsiElement>("computerFields")!! },
       toFile = "build/generated/source/apollo/main/com/example/generated/fragment/ComputerFields.kt",
       toElement = { elementAt<KtClass>("class ComputerFields")!! },
@@ -77,7 +77,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
 
   @Test
   fun goToField() = testNavigation(
-      fromFile = "src/main/graphql/ComputerFields.graphql",
+      fromFile = "src/main/graphql/fragments/ComputerFields.graphql",
       fromElement = { elementAt<PsiElement>("resolution")!! },
       toFile = "build/generated/source/apollo/main/com/example/generated/fragment/ComputerFields.kt",
       toElement = { elementAt<KtParameter>("resolution")!! },

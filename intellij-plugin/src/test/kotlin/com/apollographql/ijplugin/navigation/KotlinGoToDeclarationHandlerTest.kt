@@ -62,7 +62,7 @@ class KotlinGoToDeclarationHandlerTest : ApolloTestCase() {
   fun goToFragmentDefinition() = testNavigation(
       fromFile = "src/main/kotlin/com/example/Main.kt",
       fromElement = { elementAt<PsiElement>("ComputerFields(") },
-      toFile = "src/main/graphql/ComputerFields.graphql",
+      toFile = "src/main/graphql/fragments/ComputerFields.graphql",
       toElement = { elementAt<GraphQLFragmentDefinition>("fragment computerFields") }
   )
 
