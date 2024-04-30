@@ -87,7 +87,7 @@ final class com.apollographql.apollo3.cache.normalized.api/CacheKeyGeneratorCont
         final fun <get-variables>(): com.apollographql.apollo3.api/Executable.Variables // com.apollographql.apollo3.cache.normalized.api/CacheKeyGeneratorContext.variables.<get-variables>|<get-variables>(){}[0]
 }
 final class com.apollographql.apollo3.cache.normalized.api/MemoryCache : com.apollographql.apollo3.cache.normalized.api/NormalizedCache { // com.apollographql.apollo3.cache.normalized.api/MemoryCache|null[0]
-    constructor <init>(kotlin/Int =..., kotlin/Long =...) // com.apollographql.apollo3.cache.normalized.api/MemoryCache.<init>|<init>(kotlin.Int;kotlin.Long){}[0]
+    constructor <init>(kotlin/Int = ..., kotlin/Long = ...) // com.apollographql.apollo3.cache.normalized.api/MemoryCache.<init>|<init>(kotlin.Int;kotlin.Long){}[0]
     final fun clearAll() // com.apollographql.apollo3.cache.normalized.api/MemoryCache.clearAll|clearAll(){}[0]
     final fun dump(): kotlin.collections/Map<kotlin.reflect/KClass<*>, kotlin.collections/Map<kotlin/String, com.apollographql.apollo3.cache.normalized.api/Record>> // com.apollographql.apollo3.cache.normalized.api/MemoryCache.dump|dump(){}[0]
     final fun loadRecord(kotlin/String, com.apollographql.apollo3.cache.normalized.api/CacheHeaders): com.apollographql.apollo3.cache.normalized.api/Record? // com.apollographql.apollo3.cache.normalized.api/MemoryCache.loadRecord|loadRecord(kotlin.String;com.apollographql.apollo3.cache.normalized.api.CacheHeaders){}[0]
@@ -100,11 +100,11 @@ final class com.apollographql.apollo3.cache.normalized.api/MemoryCache : com.apo
         final fun <get-size>(): kotlin/Int // com.apollographql.apollo3.cache.normalized.api/MemoryCache.size.<get-size>|<get-size>(){}[0]
 }
 final class com.apollographql.apollo3.cache.normalized.api/MemoryCacheFactory : com.apollographql.apollo3.cache.normalized.api/NormalizedCacheFactory { // com.apollographql.apollo3.cache.normalized.api/MemoryCacheFactory|null[0]
-    constructor <init>(kotlin/Int =..., kotlin/Long =...) // com.apollographql.apollo3.cache.normalized.api/MemoryCacheFactory.<init>|<init>(kotlin.Int;kotlin.Long){}[0]
+    constructor <init>(kotlin/Int = ..., kotlin/Long = ...) // com.apollographql.apollo3.cache.normalized.api/MemoryCacheFactory.<init>|<init>(kotlin.Int;kotlin.Long){}[0]
     final fun create(): com.apollographql.apollo3.cache.normalized.api/MemoryCache // com.apollographql.apollo3.cache.normalized.api/MemoryCacheFactory.create|create(){}[0]
 }
 final class com.apollographql.apollo3.cache.normalized.api/Record : kotlin.collections/Map<kotlin/String, kotlin/Any?> { // com.apollographql.apollo3.cache.normalized.api/Record|null[0]
-    constructor <init>(kotlin/String, kotlin.collections/Map<kotlin/String, kotlin/Any?>, com.benasher44.uuid/Uuid? =...) // com.apollographql.apollo3.cache.normalized.api/Record.<init>|<init>(kotlin.String;kotlin.collections.Map<kotlin.String,kotlin.Any?>;com.benasher44.uuid.Uuid?){}[0]
+    constructor <init>(kotlin/String, kotlin.collections/Map<kotlin/String, kotlin/Any?>, com.benasher44.uuid/Uuid? = ...) // com.apollographql.apollo3.cache.normalized.api/Record.<init>|<init>(kotlin.String;kotlin.collections.Map<kotlin.String,kotlin.Any?>;com.benasher44.uuid.Uuid?){}[0]
     final fun containsKey(kotlin/String): kotlin/Boolean // com.apollographql.apollo3.cache.normalized.api/Record.containsKey|containsKey(kotlin.String){}[0]
     final fun containsValue(kotlin/Any?): kotlin/Boolean // com.apollographql.apollo3.cache.normalized.api/Record.containsValue|containsValue(kotlin.Any?){}[0]
     final fun fieldKeys(): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo3.cache.normalized.api/Record.fieldKeys|fieldKeys(){}[0]

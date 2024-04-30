@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64]
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosSimulatorArm64]
 // Alias: apple => [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
@@ -50,7 +50,7 @@ final class com.apollographql.apollo3.adapter/BigDecimal : kotlin/Number { // co
     final fun toShort(): kotlin/Short // com.apollographql.apollo3.adapter/BigDecimal.toShort|toShort(){}[0]
     final fun toString(): kotlin/String // com.apollographql.apollo3.adapter/BigDecimal.toString|toString(){}[0]
 }
-// Targets: [js]
+// Targets: [js, wasmJs]
 final class com.apollographql.apollo3.adapter/BigDecimal { // com.apollographql.apollo3.adapter/BigDecimal|null[0]
     constructor <init>() // com.apollographql.apollo3.adapter/BigDecimal.<init>|<init>(){}[0]
     constructor <init>(kotlin/Double) // com.apollographql.apollo3.adapter/BigDecimal.<init>|<init>(kotlin.Double){}[0]
