@@ -758,9 +758,6 @@ public final class com/apollographql/apollo3/ast/GQLVariableValue : com/apollogr
 	public fun writeInternal (Lcom/apollographql/apollo3/ast/SDLWriter;)V
 }
 
-public final class com/apollographql/apollo3/ast/GqlKt {
-}
-
 public final class com/apollographql/apollo3/ast/GqldirectiveKt {
 	public static final fun findDeprecationReason (Ljava/util/List;)Ljava/lang/String;
 	public static final fun findOneOf (Ljava/util/List;)Z
@@ -1056,9 +1053,6 @@ public final class com/apollographql/apollo3/ast/VariableUsage {
 	public final fun getLocationType ()Lcom/apollographql/apollo3/ast/GQLType;
 	public final fun getVariable ()Lcom/apollographql/apollo3/ast/GQLVariableValue;
 	public final fun isOneOfInputField ()Z
-}
-
-public final class com/apollographql/apollo3/ast/internal/SchemaValidationScopeKt {
 }
 
 public final class com/apollographql/apollo3/ast/introspection/ApolloIntrospectionSchema {

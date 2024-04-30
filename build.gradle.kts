@@ -1,4 +1,5 @@
 import JapiCmp.configureJapiCmp
+import kotlinx.validation.ExperimentalBCVApi
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeHostTest
 
 plugins {
@@ -122,6 +123,9 @@ rootProject.configureNode()
 rootProject.configureJapiCmp()
 
 configure<kotlinx.validation.ApiValidationExtension> {
+  @OptIn(ExperimentalBCVApi::class)
+  klib.enabled = true
+
   ignoredPackages.addAll(
       listOf(
           /**

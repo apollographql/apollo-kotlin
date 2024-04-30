@@ -946,9 +946,6 @@ public final class com/apollographql/apollo3/api/http/HttpHeaders {
 	public static final fun valueOf (Ljava/util/List;Ljava/lang/String;)Ljava/lang/String;
 }
 
-public final class com/apollographql/apollo3/api/http/HttpKt {
-}
-
 public final class com/apollographql/apollo3/api/http/HttpMethod : java/lang/Enum {
 	public static final field Get Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public static final field Post Lcom/apollographql/apollo3/api/http/HttpMethod;
@@ -1006,9 +1003,6 @@ public final class com/apollographql/apollo3/api/http/HttpResponse$Builder {
 public final class com/apollographql/apollo3/api/http/internal/UrlEncodeKt {
 	public static final fun urlDecode (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun urlEncode (Ljava/lang/String;)Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/api/internal/ResponseParserKt {
 }
 
 public final class com/apollographql/apollo3/api/json/-JsonReaders {
@@ -1223,9 +1217,6 @@ public final class com/apollographql/apollo3/exception/ApolloCompositeException 
 public abstract class com/apollographql/apollo3/exception/ApolloException : java/lang/RuntimeException {
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-}
-
-public final class com/apollographql/apollo3/exception/ApolloExceptionHandlerKt {
 }
 
 public final class com/apollographql/apollo3/exception/ApolloGraphQLException : com/apollographql/apollo3/exception/ApolloException {
