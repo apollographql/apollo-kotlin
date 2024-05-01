@@ -39,6 +39,12 @@ androidx.startup was introduced in beta.5 but is problematic for unit tests and 
 
 You can see Wasm in action at https://wasm.confetti-app.dev/ 
 
+##  Threading changes
+
+In a effort to minimize the number of thread switches, the whole request is now run in the same dispatcher. See [Threading.md](https://github.com/apollographql/apollo-kotlin/blob/39d76630277476004bbaed0e3a897feb5a959084/design-docs/Threading.md) for more details.
+
+## Contributors 💙
+
 Many thanks to @joreilly, @ychescale9 and @japhib for their contributions to this release 💙!
 
 ## 👷‍ All changes

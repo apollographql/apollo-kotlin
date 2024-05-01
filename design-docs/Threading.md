@@ -16,7 +16,7 @@ Most of the above steps need to happen in a background thread as they are potent
 
 ## Mutable, shared state that requires synchronization
 
-Some state in the pipeline is shared require synchronisation:
+Some state in the pipeline is shared and requires synchronisation:
 
 * Normalized cache
 * Store listeners
@@ -37,3 +37,9 @@ that would mean that we pay the context switching price in all cases and also th
 nothing so a coroutine is way more efficient there.
 
 **On the JVM**, there are less restrictions. OkHttp has as synchronous API that [has proven to be quite efficient](https://github.com/grpc/grpc-java/issues/6696)/
+
+## Current state
+
+The dispatcher is changed very early in the chain. On the JVM, everything runs synchronously from that dispatcher.
+
+The only thing happening before the dispatcher change is notification of the ApolloIdlingResources that need to happen from the same call stack. ApolloIdlingResource is deprecated and that should be removed when ApolloIdlingResource goes away. 
