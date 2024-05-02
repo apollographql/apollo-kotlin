@@ -1,5 +1,7 @@
-
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.cache.http.ApolloHttpCache
+import com.apollographql.apollo3.cache.http.DiskLruHttpCache
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
 import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.httpExpireTimeout
@@ -22,6 +24,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okio.FileSystem
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -200,7 +203,8 @@ class HttpCacheTest {
             "setRandom": "42"
           }
         }
-      """.trimIndent())
+      """.trimIndent()
+      )
       apolloClient.mutation(mutation)
           .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
           .execute()
@@ -231,7 +235,8 @@ class HttpCacheTest {
           },
           "errors": [ { "message": "GraphQL error" } ]
         }
-      """)
+      """
+    )
     apolloClient.query(GetRandomQuery()).execute()
     // Should not have been cached
     assertIs<HttpCacheMissException>(
@@ -275,4 +280,46 @@ class HttpCacheTest {
     }
   }
 
+  @Test
+  fun httpCacheCleansPreviousInterceptor() = runTest {
+    mockServer = MockServer()
+    val httpCache1 = CountingApolloHttpCache()
+    mockServer.enqueueData(data)
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .httpCache(httpCache1)
+        .build()
+    apolloClient.query(GetRandomQuery()).execute()
+    assertEquals(1, httpCache1.writes)
+
+    val httpCache2 = CountingApolloHttpCache()
+    val apolloClient2 = apolloClient.newBuilder()
+        .httpCache(httpCache2)
+        .build()
+    mockServer.enqueueData(data)
+    apolloClient2.query(GetRandomQuery()).execute()
+    assertEquals(1, httpCache1.writes)
+    assertEquals(1, httpCache2.writes)
+  }
+}
+
+private class CountingApolloHttpCache : ApolloHttpCache {
+  private val wrapped = run  {
+    val dir = File("build/httpCache")
+    dir.deleteRecursively()
+    DiskLruHttpCache(FileSystem.SYSTEM, dir, Long.MAX_VALUE)
+  }
+  var writes = 0
+  override fun write(response: HttpResponse, cacheKey: String): HttpResponse {
+    writes++
+    return wrapped.write(response, cacheKey)
+  }
+
+  override fun read(cacheKey: String): HttpResponse {
+    return wrapped.read(cacheKey)
+  }
+
+  override fun clearAll() {}
+
+  override fun remove(cacheKey: String) {}
 }

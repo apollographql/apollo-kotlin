@@ -617,6 +617,13 @@ private constructor(
     }
 
     /**
+     * Removes [httpInterceptor] from the list of HTTP interceptors.
+     */
+    fun removeHttpInterceptor(httpInterceptor: HttpInterceptor) = apply {
+      _httpInterceptors -= httpInterceptor
+    }
+
+    /**
      * The url of the GraphQL server used for WebSockets
      * Use this function or webSocketServerUrl((suspend () -> String)) but not both.
      *
@@ -856,6 +863,7 @@ private constructor(
         httpMethodForDocumentQueries: HttpMethod = HttpMethod.Post,
         enableByDefault: Boolean = true,
     ) = apply {
+      _interceptors.removeAll { it is AutoPersistedQueryInterceptor }
       addInterceptor(
           AutoPersistedQueryInterceptor(
               httpMethodForHashedQueries,
@@ -883,6 +891,7 @@ private constructor(
         maxBatchSize: Int = 10,
         enableByDefault: Boolean = true,
     ) = apply {
+      _httpInterceptors.removeAll { it is BatchingHttpInterceptor }
       addHttpInterceptor(BatchingHttpInterceptor(batchIntervalMillis, maxBatchSize))
       canBeBatched(enableByDefault)
     }
