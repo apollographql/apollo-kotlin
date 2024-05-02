@@ -54,7 +54,7 @@ class GraphQLCustomUsageSearcherTest : ApolloTestCase() {
 
   @Test
   fun fragment() = testFindUsages(
-      fromFile = "src/main/graphql/ComputerFields.graphql",
+      fromFile = "src/main/graphql/fragments/ComputerFields.graphql",
       moveCaret = { moveCaret("computerFields") },
       expected = listOf(
           "ComputersQuery.graphql" to "...computerFields",

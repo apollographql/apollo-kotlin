@@ -36,7 +36,7 @@ class ApolloGraphQLConfigContributor : GraphQLConfigContributor {
 
   private fun ApolloKotlinService.toGraphQLRawProjectConfig() = GraphQLRawProjectConfig(
       schema = schemaPaths.map { GraphQLRawSchemaPointer(it) },
-      include = operationPaths.map { "$it/*.graphql" },
+      include = operationPaths.map { "$it/**/*.graphql" },
       extensions = endpointUrl?.let {
         mapOf(
             GraphQLConfigKeys.EXTENSION_ENDPOINTS to mapOf(
