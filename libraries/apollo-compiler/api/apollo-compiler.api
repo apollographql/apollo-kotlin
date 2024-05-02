@@ -434,13 +434,13 @@ public final class com/apollographql/apollo3/compiler/UsedCoordinates {
 	public final fun putType (Ljava/lang/String;)V
 }
 
-public final class com/apollographql/apollo3/compiler/UsedCoordinates$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/apollographql/apollo3/compiler/UsedCoordinates$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/UsedCoordinates$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/UsedCoordinates;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/UsedCoordinates;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/UsedCoordinates;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/UsedCoordinates;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
