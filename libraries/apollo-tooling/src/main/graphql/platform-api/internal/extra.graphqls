@@ -1,9 +1,9 @@
-extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@semanticNonNull", "@catch", "CatchTo"])
+extend schema @link(url: "https://specs.apollo.dev/nullability/v0.3", import: ["@semanticNonNull", "@semanticNonField", "@catch", "CatchTo"])
 extend schema @catch(to: THROW)
 
-extend type Service @semanticNonNull(field: "statsWindow")
-extend type ServiceMutation @semanticNonNull(field: "registerOperationsWithResponse")
-extend type ServiceStatsWindow @semanticNonNull(field: "fieldLatencies")
-extend type RegisterOperationsMutationResponse @semanticNonNull(field: "invalidOperations")
+extend type Service @semanticNonNullField(name: "statsWindow")
+extend type ServiceMutation @semanticNonNullField(name: "registerOperationsWithResponse")
+extend type ServiceStatsWindow @semanticNonNullField(name: "fieldLatencies")
+extend type RegisterOperationsMutationResponse @semanticNonNullField(name: "invalidOperations")
 # Not sure if errors can be null or not
 # extend type InvalidOperation @semanticNonNull(field: "errors")
