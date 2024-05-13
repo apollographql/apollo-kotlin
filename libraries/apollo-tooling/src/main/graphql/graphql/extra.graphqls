@@ -1,2 +1,2 @@
-extend schema @link(url: "https://specs.apollo.dev/nullability/v0.1", import: ["@catch", "CatchTo"])
+extend schema @link(url: "https://specs.apollo.dev/nullability/v0.3", import: ["@catch", "CatchTo"])
 extend schema @catch(to: THROW)
