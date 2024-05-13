@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.api.json.ApolloJsonElement
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.DefaultFieldNameGenerator
 import com.apollographql.apollo3.cache.normalized.api.FieldNameContext
@@ -181,10 +182,10 @@ class OffsetBasedWithPageAndInputPaginationTest {
   }
 
   private class OffsetPaginationMetadataGenerator(private val typeName: String) : MetadataGenerator {
-    override fun metadataForObject(obj: Any?, context: MetadataGeneratorContext): Map<String, Any?> {
+    override fun metadataForObject(obj: ApolloJsonElement, context: MetadataGeneratorContext): Map<String, ApolloJsonElement> {
       if (context.field.type.rawType().name == typeName) {
         @Suppress("UNCHECKED_CAST")
-        return mapOf("offset" to (context.argumentValue("usersInput") as HashMap<String, Any?>)["offset"])
+        return mapOf("offset" to (context.argumentValue("usersInput") as HashMap<String, ApolloJsonElement>)["offset"])
       }
       return emptyMap()
     }

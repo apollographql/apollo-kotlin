@@ -5,16 +5,31 @@ import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.InterfaceType
 import com.apollographql.apollo3.api.ObjectType
 
+/**
+ * Used to provide the fields whose value should be embedded in their [Record], rather than being dereferenced during normalization.
+ *
+ * This can be used in conjunction with [RecordMerger] and [MetadataGenerator] to access multiple fields and their metadata in a single
+ * [Record].
+ */
 @ApolloExperimental
 interface EmbeddedFieldsProvider {
+  /**
+   * Returns the fields that should be embedded, given a [context]`.parentType`.
+   */
   fun getEmbeddedFields(context: EmbeddedFieldsContext): List<String>
 }
 
+/**
+ * Context passed to [EmbeddedFieldsProvider.getEmbeddedFields].
+ */
 @ApolloExperimental
 class EmbeddedFieldsContext(
     val parentType: CompiledNamedType,
 )
 
+/**
+ * Default [EmbeddedFieldsProvider] that returns the fields specified by the `@typePolicy(embeddedFields: "...")` directive.
+ */
 @ApolloExperimental
 object DefaultEmbeddedFieldsProvider : EmbeddedFieldsProvider {
   override fun getEmbeddedFields(context: EmbeddedFieldsContext): List<String> {
@@ -29,9 +44,19 @@ private val CompiledNamedType.embeddedFields: List<String>
     else -> emptyList()
   }
 
+/**
+ * A [Relay connection types](https://relay.dev/graphql/connections.htm#sec-Connection-Types) aware [EmbeddedFieldsProvider].
+ */
 @ApolloExperimental
 class ConnectionEmbeddedFieldsProvider(
+    /**
+     * Fields that are a Connection, associated with their parent type.
+     */
     connectionFields: Map<String, List<String>>,
+
+    /**
+     * The connection type names.
+     */
     connectionTypes: Set<String>,
 ) : EmbeddedFieldsProvider {
   companion object {
