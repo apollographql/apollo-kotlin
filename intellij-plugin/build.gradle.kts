@@ -1,8 +1,8 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
-import org.jetbrains.intellij.platform.gradle.extensions.TestFrameworkType
-import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.tasks.CustomRunIdeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -45,7 +45,7 @@ fun getSnapshotVersionSuffix(): String {
 // Set the JVM language level used to build project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
 kotlin {
   jvmToolchain {
-    (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(properties("javaVersion").toInt()))
+    languageVersion = JavaLanguageVersion.of(17)
   }
 }
 
@@ -56,7 +56,7 @@ tasks {
     }
   }
 
-  withType<RunIdeTask> {
+  withType<CustomRunIdeTask> {
     // Enables debug logging for the plugin
     systemProperty("idea.log.debug.categories", "Apollo")
 
@@ -67,7 +67,7 @@ tasks {
     // systemProperty("idea.is.internal", "false")
   }
 
-  val runLocalIde by registering(RunIdeTask::class) {
+  val runLocalIde by registering(CustomRunIdeTask::class) {
     // Use a custom IJ/AS installation. Set this property in your local ~/.gradle/gradle.properties file.
     // (for AS, it should be something like '/Applications/Android Studio.app/Contents')
     // See https://plugins.jetbrains.com/docs/intellij/android-studio.html#configuring-the-plugin-gradle-build-script
