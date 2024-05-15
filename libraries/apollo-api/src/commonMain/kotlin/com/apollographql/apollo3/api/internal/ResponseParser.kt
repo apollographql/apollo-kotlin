@@ -45,6 +45,10 @@ internal object ResponseParser {
 
     jsonReader.endObject()
 
+    if (jsonReader.peek() != JsonReader.Token.END_DOCUMENT) {
+      println("Apollo: extra tokens after payload")
+    }
+
     return ApolloResponse.Builder(operation = operation, requestUuid = requestUuid ?: uuid4())
         .errors(errors)
         .data(data)
