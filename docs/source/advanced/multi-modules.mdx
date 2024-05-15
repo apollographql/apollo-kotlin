@@ -27,10 +27,14 @@ apollo {
     // If you need to specify the location of your schema files
     schemaFiles.from(/*...*/)
     
-    // define options that must be shared between all modules using this schema
+    // scalar mappings and generateDataBuilders must be defined in the schema module
     mapScalar(/*...*/)
     generateDataBuilders.set(true)
-    // more options...
+    
+    // other options can be different between modules.
+    // if you want those options to be applied to all modules, use a convention plugin and shared build logic.
+    useSemanticNaming.set(true)
+    generateFragmentImplementations.set(true)
   }
 }
 ```
