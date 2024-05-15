@@ -1,6 +1,7 @@
 package pagination
 
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.api.json.ApolloJsonElement
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldRecordMerger
@@ -155,7 +156,7 @@ class OffsetBasedWithArrayPaginationTest {
   }
 
   private class OffsetPaginationMetadataGenerator(private val fieldName: String) : MetadataGenerator {
-    override fun metadataForObject(obj: Any?, context: MetadataGeneratorContext): Map<String, Any?> {
+    override fun metadataForObject(obj: ApolloJsonElement, context: MetadataGeneratorContext): Map<String, ApolloJsonElement> {
       if (context.field.name == fieldName) {
         return mapOf("offset" to context.argumentValue("offset"))
       }

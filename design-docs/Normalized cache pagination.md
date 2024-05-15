@@ -210,7 +210,7 @@ If your schema uses a different pagination style, you can still use the paginati
 
 #### Pagination arguments
 
-The `@fieldPolicy` directive has a `paginationArgs` argument that can be used to specify the arguments that should be omitted from the cache key.
+The `@fieldPolicy` directive has a `paginationArgs` argument that can be used to specify the arguments that should be omitted from the field name.
 
 Going back to the example above with `usersPage`:
 
@@ -220,6 +220,9 @@ extend type Query
 @fieldPolicy(forField: "usersPage" paginationArgs: "page")
 ```
 
+> [!NOTE]
+> This can also be done programmatically by configuring the `ApolloStore` with a `FieldNameGenerator` implementation.
+
 With that in place, after fetching the first page, the cache will look like this:
 
 | Cache Key  | Record                                                  |
@@ -228,7 +231,7 @@ With that in place, after fetching the first page, the cache will look like this
 | user:1     | id: 1, name: John Smith                                 |
 | user:2     | id: 2, name: Jane Doe                                   |
 
-Notice how the cache key no longer includes the `page` argument, which means watching `UsersPage(page = 1)` (or any page) is enough to observe the whole list.
+The field name no longer includes the `page` argument, which means watching `UsersPage(page = 1)` or any page will observe the same list.
 
 Here's what happens when fetching the second page:
 
@@ -240,13 +243,13 @@ Here's what happens when fetching the second page:
 | user:3     | id: 3, name: Peter Parker                           |
 | user:4     | id: 4, name: Bruce Wayne                            |
 
-We can see that the field containing the first page was overwritten by the second page.
+The field containing the first page was overwritten by the second page.
 
-This is because the cache key is now the same for all pages.
+This is because the field name is now the same for all pages and the default merging strategy is to overwrite existing fields with the new value.
 
 #### Record merging
 
-To fix this we need to supply the store with a piece of code that can merge new pages with the existing list.
+To fix this we need to supply the store with a piece of code that can merge the lists in a sensible way.
 This is done by passing a `RecordMerger` to the `ApolloStore` constructor:
 
 ```kotlin
@@ -266,11 +269,11 @@ val apolloStore = ApolloStore(
   normalizedCacheFactory = cacheFactory,
   cacheKeyGenerator = TypePolicyCacheKeyGenerator,
   apolloResolver = FieldPolicyApolloResolver,
-  recordMerger = FieldRecordMerger(MyFieldMerger)
+  recordMerger = FieldRecordMerger(MyFieldMerger), // Configure the store with the custom merger
 )
 ```
 
-With this, the cache will look like this after fetching the second page:
+With this, the cache will be as expected after fetching the second page:
 
 | Cache Key  | Record                                                                        |
 |------------|-------------------------------------------------------------------------------|
@@ -280,13 +283,13 @@ With this, the cache will look like this after fetching the second page:
 | user:3     | id: 3, name: Peter Parker                                                     |
 | user:4     | id: 4, name: Bruce Wayne                                                      |
 
-The `RecordMerger` shown above is simplistic: it can only append new pages to the end of the existing list.  
+The `RecordMerger` shown above is simplistic: it will always append new items to the end of the existing list.
+In a real app, we need to look at the contents of the incoming page and decide if and where to append / insert the items.
 
-A more sophisticated implementation could look at the contents of the incoming page and decide where to append / insert the items into the existing list.
+To do that it is usually necessary to have access to the arguments that were used to fetch the existing/incoming lists (e.g. the page number), to decide what to do with the new items.
+For instance if the existing list is for page 1 and the incoming one is for page 2, we should append.
 
-To do that it is often necessary to have access to the arguments used to fetch a record inside the `RecordMerger`, to decide where to insert the new items.
-
-Fields in records can actually have arbitrary metadata associated with them, in addition to their values. We'll use this to implement more sophisticated merging.
+Fields in records can have arbitrary metadata attached to them, in addition to their value. We'll use this to implement a more capable merging strategy.
 
 #### Metadata
 
@@ -307,10 +310,10 @@ This is done by passing a `MetadataGenerator` to the `ApolloStore` constructor:
 ```kotlin
 class ConnectionMetadataGenerator : MetadataGenerator {
   @Suppress("UNCHECKED_CAST")
-  override fun metadataForObject(obj: Any?, context: MetadataGeneratorContext): Map<String, Any?> {
+  override fun metadataForObject(obj: ApolloJsonElement, context: MetadataGeneratorContext): Map<String, ApolloJsonElement> {
     if (context.field.type.rawType().name == "UserConnection") {
-      obj as Map<String, Any?>
-      val edges = obj["edges"] as List<Map<String, Any?>>
+      obj as Map<String, ApolloJsonElement>
+      val edges = obj["edges"] as List<Map<String, ApolloJsonElement>>
       val startCursor = edges.firstOrNull()?.get("cursor") as String?
       val endCursor = edges.lastOrNull()?.get("cursor") as String?
       return mapOf(
@@ -325,35 +328,46 @@ class ConnectionMetadataGenerator : MetadataGenerator {
 }
 ```
 
-However, this cannot work yet. 
-Normalization will make the `edges` field value be a list of **references** to the `UserEdge` records, and not the actual edges - so the
-cast in `val edges = obj["edges"] as List<Map<String, Any?>>` will fail.
+However, this cannot work yet.
+
+Normalization will make the `usersConnection` field value be a **reference** to the `UserConnection` record, and not the actual connection. 
+Because of this, we won't be able to access its metadata inside the `RecordMerger` implementation.
+Furthermore, the `edges` field value will be a list of **references** to the `UserEdge` records which will contain the item's list index in their cache key (e.g. `usersConnection.edges.0`, `usersConnection.edges.1`) which will break the merging logic.
 
 #### Embedded fields
 
-To remediate this, we can use `embeddedFields` to configure the cache to skip normalization and store the actual list of edges instead of references:
+To remediate this, we can configure the cache to skip normalization for certain fields. When doing so, the value will be embedded directly into the record instead of being referenced. 
+
+This is done with the `embeddedFields` argument of the `@typePolicy` directive:
 
 ```graphql
+# Embed the value of the `usersConnection` field in the record
+extend type Query @typePolicy(embeddedFields: "usersConnection")
+
+# Embed the values of the `edges` field in the record
 extend type UserConnection @typePolicy(embeddedFields: "edges")
 ```
 
-Now that we have the metadata in place, we can access it inside the `RecordMerger` (simplified for brevity):
+> [!NOTE]
+> This can also be done programmatically by configuring the `ApolloStore` with an `EmbeddedFieldsProvider` implementation.
+
+Now that we have the metadata and embedded fields in place, we can implement the `RecordMerger` (simplified for brevity):
 
 ```kotlin
 object ConnectionFieldMerger : FieldRecordMerger.FieldMerger {
   @Suppress("UNCHECKED_CAST")
   override fun mergeFields(existing: FieldRecordMerger.FieldInfo, incoming: FieldRecordMerger.FieldInfo): FieldRecordMerger.FieldInfo {
-    // Get existing record metadata
+    // Get existing field metadata
     val existingStartCursor = existing.metadata["startCursor"]
     val existingEndCursor = existing.metadata["endCursor"]
 
-    // Get incoming record metadata
+    // Get incoming field metadata
     val incomingBeforeArgument = incoming.metadata["before"]
     val incomingAfterArgument = incoming.metadata["after"]
 
-    // Get values
-    val existingList = (existing.value as Map<String, Any?>)["edges"] as List<*>
-    val incomingList = (incoming.value as Map<String, Any?>)["edges"] as List<*>
+    // Get the lists
+    val existingList = (existing.value as Map<String, ApolloJsonElement>)["edges"] as List<*>
+    val incomingList = (incoming.value as Map<String, ApolloJsonElement>)["edges"] as List<*>
 
     // Merge the lists
     val mergedList: List<*> = if (incomingAfterArgument == existingEndCursor) {

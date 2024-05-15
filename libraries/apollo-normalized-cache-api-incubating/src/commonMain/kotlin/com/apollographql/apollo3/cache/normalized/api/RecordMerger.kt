@@ -1,12 +1,26 @@
 package com.apollographql.apollo3.cache.normalized.api
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.json.ApolloJsonElement
+import com.apollographql.apollo3.cache.normalized.api.FieldRecordMerger.FieldMerger
 
+/**
+ * A merger that merges incoming [Record]s from the network with existing ones in the cache.
+ */
 @ApolloExperimental
 interface RecordMerger {
+  /**
+   * Merges the incoming Record with the existing Record.
+   *
+   * @param newDate optional date to associate with the fields of the resulting merged Record. If null, a date will not be set.
+   * @return a pair of the resulting merged Record and a set of field keys which have changed or were added.
+   */
   fun merge(existing: Record, incoming: Record, newDate: Long?): Pair<Record, Set<String>>
 }
 
+/**
+ * A [RecordMerger] that merges fields by replacing them with the incoming fields.
+ */
 @ApolloExperimental
 object DefaultRecordMerger : RecordMerger {
   override fun merge(existing: Record, incoming: Record, newDate: Long?): Pair<Record, Set<String>> {
@@ -21,7 +35,7 @@ object DefaultRecordMerger : RecordMerger {
         mergedFields[fieldKey] = incomingFieldValue
         changedKeys.add("${existing.key}.$fieldKey")
       }
-      // Even if the value did not change update date
+      // Update the date even if the value did not change
       if (newDate != null) {
         date[fieldKey] = newDate
       }
@@ -37,17 +51,35 @@ object DefaultRecordMerger : RecordMerger {
   }
 }
 
+/**
+ * A convenience implementation of [RecordMerger] that simplifies the merging of [Record]s by delegating to a [FieldMerger].
+ */
 @ApolloExperimental
 class FieldRecordMerger(private val fieldMerger: FieldMerger) : RecordMerger {
+  /**
+   * Used to merge Records field by field.
+   */
   @ApolloExperimental
   interface FieldMerger {
+    /**
+     * Merges the existing field with the incoming field.
+     *
+     * @return the merged field and its metadata.
+     */
     fun mergeFields(existing: FieldInfo, incoming: FieldInfo): FieldInfo
   }
 
   @ApolloExperimental
   data class FieldInfo(
-      val value: Any?,
-      val metadata: Map<String, Any?>,
+      /**
+       * Value of the field being merged.
+       */
+      val value: ApolloJsonElement,
+
+      /**
+       * Metadata attached to the field being merged. See also [Record.metadata] and [MetadataGenerator].
+       */
+      val metadata: Map<String, ApolloJsonElement>,
   )
 
   override fun merge(existing: Record, incoming: Record, newDate: Long?): Pair<Record, Set<String>> {
@@ -79,7 +111,7 @@ class FieldRecordMerger(private val fieldMerger: FieldMerger) : RecordMerger {
 
         changedKeys.add("${existing.key}.$fieldKey")
       }
-      // Even if the value did not change update date
+      // Update the date even if the value did not change
       if (newDate != null) {
         date[fieldKey] = newDate
       }
@@ -96,7 +128,7 @@ class FieldRecordMerger(private val fieldMerger: FieldMerger) : RecordMerger {
 }
 
 /**
- * A [RecordMerger] that merges lists in Relay style Connection types.
+ * A [RecordMerger] that merges lists in [Relay connection types](https://relay.dev/graphql/connections.htm#sec-Connection-Types).
  *
  * It will merge the `edges` and `nodes` lists and update the `pageInfo` field.
  *
@@ -108,7 +140,7 @@ class FieldRecordMerger(private val fieldMerger: FieldMerger) : RecordMerger {
 @ApolloExperimental
 val ConnectionRecordMerger = FieldRecordMerger(ConnectionFieldMerger)
 
-private object ConnectionFieldMerger : FieldRecordMerger.FieldMerger {
+private object ConnectionFieldMerger : FieldMerger {
   @Suppress("UNCHECKED_CAST")
   override fun mergeFields(existing: FieldRecordMerger.FieldInfo, incoming: FieldRecordMerger.FieldInfo): FieldRecordMerger.FieldInfo {
     val existingStartCursor = existing.metadata["startCursor"] as? String
@@ -128,17 +160,17 @@ private object ConnectionFieldMerger : FieldRecordMerger.FieldMerger {
       // Incoming is empty
       existing
     } else {
-      val existingValue = existing.value as Map<String, Any?>
+      val existingValue = existing.value as Map<String, ApolloJsonElement>
       val existingEdges = existingValue["edges"] as? List<*>
       val existingNodes = existingValue["nodes"] as? List<*>
-      val existingPageInfo = existingValue["pageInfo"] as? Map<String, Any?>
+      val existingPageInfo = existingValue["pageInfo"] as? Map<String, ApolloJsonElement>
       val existingHasPreviousPage = existingPageInfo?.get("hasPreviousPage") as? Boolean
       val existingHasNextPage = existingPageInfo?.get("hasNextPage") as? Boolean
 
-      val incomingValue = incoming.value as Map<String, Any?>
+      val incomingValue = incoming.value as Map<String, ApolloJsonElement>
       val incomingEdges = incomingValue["edges"] as? List<*>
       val incomingNodes = incomingValue["nodes"] as? List<*>
-      val incomingPageInfo = incomingValue["pageInfo"] as? Map<String, Any?>
+      val incomingPageInfo = incomingValue["pageInfo"] as? Map<String, ApolloJsonElement>
       val incomingHasPreviousPage = incomingPageInfo?.get("hasPreviousPage") as? Boolean
       val incomingHasNextPage = incomingPageInfo?.get("hasNextPage") as? Boolean
 
@@ -191,7 +223,7 @@ private object ConnectionFieldMerger : FieldRecordMerger.FieldMerger {
         mergedHasNextPage = incomingHasNextPage
       }
 
-      val mergedPageInfo: Map<String, Any?>? = if (existingPageInfo == null && incomingPageInfo == null) {
+      val mergedPageInfo: Map<String, ApolloJsonElement>? = if (existingPageInfo == null && incomingPageInfo == null) {
         null
       } else {
         (existingPageInfo.orEmpty() + incomingPageInfo.orEmpty()).toMutableMap().also { mergedPageInfo ->

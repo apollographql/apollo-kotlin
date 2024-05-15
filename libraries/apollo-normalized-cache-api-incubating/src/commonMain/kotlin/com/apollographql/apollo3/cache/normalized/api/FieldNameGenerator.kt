@@ -4,11 +4,22 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
 
+/**
+ * A generator for field names.
+ *
+ * For instance, [FieldNameGenerator] can be used to exclude certain pagination arguments when storing a connection field.
+ */
 @ApolloExperimental
 interface FieldNameGenerator {
+  /**
+   * Returns the field name to use within its parent [Record].
+   */
   fun getFieldName(context: FieldNameContext): String
 }
 
+/**
+ * Context passed to the [FieldNameGenerator.getFieldName] method.
+ */
 @ApolloExperimental
 class FieldNameContext(
     val parentType: String,
@@ -16,6 +27,10 @@ class FieldNameContext(
     val variables: Executable.Variables,
 )
 
+/**
+ * A [FieldNameGenerator] that returns the field name with its arguments, excluding pagination arguments defined with the
+ * `@fieldPolicy(forField: "...", paginationArgs: "...")` directive.
+ */
 @ApolloExperimental
 object DefaultFieldNameGenerator : FieldNameGenerator {
   override fun getFieldName(context: FieldNameContext): String {
@@ -23,6 +38,10 @@ object DefaultFieldNameGenerator : FieldNameGenerator {
   }
 }
 
+/**
+ * A [FieldNameGenerator] that generates field names excluding
+ * [Relay connection types](https://relay.dev/graphql/connections.htm#sec-Connection-Types) pagination arguments.
+ */
 @ApolloExperimental
 class ConnectionFieldNameGenerator(private val connectionFields: Map<String, List<String>>) : FieldNameGenerator {
   companion object {
