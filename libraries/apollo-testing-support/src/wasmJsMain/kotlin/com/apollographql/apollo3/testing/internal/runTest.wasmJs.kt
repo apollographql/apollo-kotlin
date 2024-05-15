@@ -13,7 +13,7 @@ actual typealias ApolloTestResult = JsPromiseInterfaceForTesting
 // https://youtrack.jetbrains.com/issue/KT-60561
 @ApolloInternal
 @JsName("Promise")
-external class JsPromiseInterfaceForTesting {
+external class JsPromiseInterfaceForTesting: JsAny {
   fun then(onFulfilled: ((JsAny) -> Unit), onRejected: ((JsAny) -> Unit)): JsPromiseInterfaceForTesting
   fun then(onFulfilled: ((JsAny) -> Unit)): JsPromiseInterfaceForTesting
 }
@@ -27,7 +27,6 @@ actual fun runTest(
     after: suspend CoroutineScope.() -> Unit,
     block: suspend CoroutineScope.() -> Unit,
 ): ApolloTestResult {
-  @Suppress("INFERRED_TYPE_VARIABLE_INTO_POSSIBLE_EMPTY_INTERSECTION")
   return if (skipDelays) {
     kotlinx.coroutines.test.runTest(context) {
       before()
