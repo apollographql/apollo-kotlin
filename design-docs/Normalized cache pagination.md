@@ -220,7 +220,8 @@ extend type Query
 @fieldPolicy(forField: "usersPage" paginationArgs: "page")
 ```
 
-(Note: this can also be done programmatically by configuring the `ApolloStore` with a `FieldNameGenerator` implementation.)
+> [!NOTE]
+> This can also be done programmatically by configuring the `ApolloStore` with a `FieldNameGenerator` implementation.
 
 With that in place, after fetching the first page, the cache will look like this:
 
@@ -347,8 +348,8 @@ extend type Query @typePolicy(embeddedFields: "usersConnection")
 extend type UserConnection @typePolicy(embeddedFields: "edges")
 ```
 
-(Note: this can also be done programmatically by configuring the `ApolloStore` with an `EmbeddedFieldsProvider` implementation.)
-
+> [!NOTE]
+> This can also be done programmatically by configuring the `ApolloStore` with an `EmbeddedFieldsProvider` implementation.
 
 Now that we have the metadata and embedded fields in place, we can implement the `RecordMerger` (simplified for brevity):
 
