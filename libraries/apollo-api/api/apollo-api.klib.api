@@ -51,21 +51,15 @@ abstract interface <#A: com.apollographql.apollo3.api/Executable.Data> com.apoll
     }
 }
 abstract interface <#A: com.apollographql.apollo3.api/Fragment.Data> com.apollographql.apollo3.api/Fragment : com.apollographql.apollo3.api/Executable<#A> { // com.apollographql.apollo3.api/Fragment|null[0]
-    abstract fun adapter(): com.apollographql.apollo3.api/Adapter<#A> // com.apollographql.apollo3.api/Fragment.adapter|adapter(){}[0]
-    abstract fun rootField(): com.apollographql.apollo3.api/CompiledField // com.apollographql.apollo3.api/Fragment.rootField|rootField(){}[0]
-    abstract fun serializeVariables(com.apollographql.apollo3.api.json/JsonWriter, com.apollographql.apollo3.api/CustomScalarAdapters, kotlin/Boolean) // com.apollographql.apollo3.api/Fragment.serializeVariables|serializeVariables(com.apollographql.apollo3.api.json.JsonWriter;com.apollographql.apollo3.api.CustomScalarAdapters;kotlin.Boolean){}[0]
     abstract interface Data : com.apollographql.apollo3.api/Executable.Data // com.apollographql.apollo3.api/Fragment.Data|null[0]
 }
 abstract interface <#A: com.apollographql.apollo3.api/Mutation.Data> com.apollographql.apollo3.api/Mutation : com.apollographql.apollo3.api/Operation<#A> { // com.apollographql.apollo3.api/Mutation|null[0]
     abstract interface Data : com.apollographql.apollo3.api/Operation.Data // com.apollographql.apollo3.api/Mutation.Data|null[0]
 }
 abstract interface <#A: com.apollographql.apollo3.api/Operation.Data> com.apollographql.apollo3.api/Operation : com.apollographql.apollo3.api/Executable<#A> { // com.apollographql.apollo3.api/Operation|null[0]
-    abstract fun adapter(): com.apollographql.apollo3.api/Adapter<#A> // com.apollographql.apollo3.api/Operation.adapter|adapter(){}[0]
     abstract fun document(): kotlin/String // com.apollographql.apollo3.api/Operation.document|document(){}[0]
     abstract fun id(): kotlin/String // com.apollographql.apollo3.api/Operation.id|id(){}[0]
     abstract fun name(): kotlin/String // com.apollographql.apollo3.api/Operation.name|name(){}[0]
-    abstract fun rootField(): com.apollographql.apollo3.api/CompiledField // com.apollographql.apollo3.api/Operation.rootField|rootField(){}[0]
-    abstract fun serializeVariables(com.apollographql.apollo3.api.json/JsonWriter, com.apollographql.apollo3.api/CustomScalarAdapters, kotlin/Boolean) // com.apollographql.apollo3.api/Operation.serializeVariables|serializeVariables(com.apollographql.apollo3.api.json.JsonWriter;com.apollographql.apollo3.api.CustomScalarAdapters;kotlin.Boolean){}[0]
     abstract interface Data : com.apollographql.apollo3.api/Executable.Data // com.apollographql.apollo3.api/Operation.Data|null[0]
 }
 abstract interface <#A: com.apollographql.apollo3.api/Query.Data> com.apollographql.apollo3.api/Query : com.apollographql.apollo3.api/Operation<#A> { // com.apollographql.apollo3.api/Query|null[0]

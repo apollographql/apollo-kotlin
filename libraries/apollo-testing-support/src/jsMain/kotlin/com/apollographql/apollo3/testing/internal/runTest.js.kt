@@ -6,13 +6,17 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
-import kotlin.js.Promise
-
-// https://youtrack.jetbrains.com/issue/KT-60561
-class PromiseOfUnit(executor: (resolve: (Unit) -> Unit, reject: (Throwable) -> Unit) -> Unit) : Promise<Unit>(executor = executor)
 
 @ApolloInternal
-actual typealias ApolloTestResult = PromiseOfUnit
+actual typealias ApolloTestResult = JsPromiseInterfaceForTesting
+
+// https://youtrack.jetbrains.com/issue/KT-60561
+@ApolloInternal
+@JsName("Promise")
+external class JsPromiseInterfaceForTesting {
+  fun then(onFulfilled: ((Unit) -> Unit), onRejected: ((Throwable) -> Unit)): JsPromiseInterfaceForTesting
+  fun then(onFulfilled: ((Unit) -> Unit)): JsPromiseInterfaceForTesting
+}
 
 @ApolloInternal
 @OptIn(DelicateCoroutinesApi::class)
