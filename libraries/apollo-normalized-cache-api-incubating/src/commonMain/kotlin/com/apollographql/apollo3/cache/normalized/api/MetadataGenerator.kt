@@ -6,14 +6,14 @@ import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.json.ApolloJsonElement
 
 /**
- * Used to associate arbitrary metadata to objects.
+ * A generator for arbitrary metadata associated with objects.
  * For example, information about pagination can later be used to merge pages (see [RecordMerger]).
  *
  * The metadata is stored and attached to the object's field in the [Record] resulting from the normalization.
  * For instance, given the query `query MyQuery { foo }` and an implementation of [metadataForObject] returning
  * `mapOf("key", 0)`, the resulting Record will look like `fields: { foo: bar }, metadata: { foo: { key: 0 } }`.
  *
- * See also [Record.metadata].
+ * @see [Record.metadata]
  */
 @ApolloExperimental
 interface MetadataGenerator {

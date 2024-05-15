@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.json.ApolloJsonElement
 import com.apollographql.apollo3.cache.normalized.api.FieldRecordMerger.FieldMerger
 
 /**
- * Used to merge incoming [Record]s from the network with existing ones in the cache.
+ * A merger that merges incoming [Record]s from the network with existing ones in the cache.
  */
 @ApolloExperimental
 interface RecordMerger {
@@ -19,7 +19,7 @@ interface RecordMerger {
 }
 
 /**
- * Default [RecordMerger] that merges fields by replacing them with the incoming fields.
+ * A [RecordMerger] that merges fields by replacing them with the incoming fields.
  */
 @ApolloExperimental
 object DefaultRecordMerger : RecordMerger {
@@ -52,7 +52,7 @@ object DefaultRecordMerger : RecordMerger {
 }
 
 /**
- * Convenience implementation of [RecordMerger] that simplifies the merging of [Record]s by delegating to a [FieldMerger].
+ * A convenience implementation of [RecordMerger] that simplifies the merging of [Record]s by delegating to a [FieldMerger].
  */
 @ApolloExperimental
 class FieldRecordMerger(private val fieldMerger: FieldMerger) : RecordMerger {

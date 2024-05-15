@@ -6,9 +6,9 @@ import com.apollographql.apollo3.api.InterfaceType
 import com.apollographql.apollo3.api.ObjectType
 
 /**
- * Used to provide the fields whose value should be embedded in their [Record], rather than being dereferenced during normalization.
+ * A provider for fields whose value should be embedded in their [Record], rather than being dereferenced during normalization.
  *
- * This can be used in conjunction with [RecordMerger] and [MetadataGenerator] to access multiple fields and their metadata in a single
+ * An [EmbeddedFieldsProvider] can be used in conjunction with [RecordMerger] and [MetadataGenerator] to access multiple fields and their metadata in a single
  * [Record].
  */
 @ApolloExperimental
@@ -20,7 +20,8 @@ interface EmbeddedFieldsProvider {
 }
 
 /**
- * Context passed to [EmbeddedFieldsProvider.getEmbeddedFields].
+ * A context passed to [EmbeddedFieldsProvider.getEmbeddedFields].
+ * @see [EmbeddedFieldsProvider.getEmbeddedFields]
  */
 @ApolloExperimental
 class EmbeddedFieldsContext(
@@ -28,7 +29,7 @@ class EmbeddedFieldsContext(
 )
 
 /**
- * Default [EmbeddedFieldsProvider] that returns the fields specified by the `@typePolicy(embeddedFields: "...")` directive.
+ * An [EmbeddedFieldsProvider] that returns the fields specified by the `@typePolicy(embeddedFields: "...")` directive.
  */
 @ApolloExperimental
 object DefaultEmbeddedFieldsProvider : EmbeddedFieldsProvider {

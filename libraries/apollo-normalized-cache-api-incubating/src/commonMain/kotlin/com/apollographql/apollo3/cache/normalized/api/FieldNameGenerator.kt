@@ -5,9 +5,9 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
 
 /**
- * Called to get a field's name to use within its parent [Record].
+ * A generator for field names.
  *
- * This is useful for instance to exclude certain pagination arguments when storing a connection field.
+ * For instance, [FieldNameGenerator] can be used to exclude certain pagination arguments when storing a connection field.
  */
 @ApolloExperimental
 interface FieldNameGenerator {
@@ -28,7 +28,7 @@ class FieldNameContext(
 )
 
 /**
- * Default [FieldNameGenerator] that returns the field name with its arguments, excluding pagination arguments defined with the
+ * A [FieldNameGenerator] that returns the field name with its arguments, excluding pagination arguments defined with the
  * `@fieldPolicy(forField: "...", paginationArgs: "...")` directive.
  */
 @ApolloExperimental
