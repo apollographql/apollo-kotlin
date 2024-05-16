@@ -7,6 +7,7 @@ import com.intellij.navigation.NavigationItem
 import com.intellij.platform.backend.navigation.NavigationRequest
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
+import javax.swing.Icon
 
 private class LogNavigationPsiElement(
     private val wrapped: PsiElement,
@@ -24,8 +25,13 @@ private class LogNavigationPsiElement(
     return (wrapped as? NavigationItem)?.name
   }
 
-  override fun getPresentation(): ItemPresentation? {
-    return (wrapped as? NavigationItem)?.presentation
+  override fun getPresentation(): ItemPresentation {
+    return (wrapped as? NavigationItem)?.presentation ?: object : ItemPresentation {
+      // We don't want the presentation to be too wide: fallback to the first line of text, truncated to 80 characters
+      override fun getPresentableText(): String? = wrapped.text.split('\n').firstOrNull()?.take(80)
+
+      override fun getIcon(unused: Boolean): Icon? = null
+    }
   }
 
   @Suppress("UnstableApiUsage")
