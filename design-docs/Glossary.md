@@ -1,9 +1,6 @@
-# Codegen Glossary
+# Glossary
 
-## Glossary
-
-A small Glossary of the terms used during codegen. The [GraphQL Spec](https://spec.graphql.org/draft/) does a nice job of defining the common terms like `Field`, `SelectionSet`, etc... so I'm not adding these terms here. But it misses some concepts that we bumped into during codegen and that I'm trying to clarify here.
-
+The [GraphQL Spec](https://spec.graphql.org/draft/) does a nice job of defining common terms like `Field`, `SelectionSet`, etc. but here are a few other concepts that the library deals with, and their definition.
 
 ### Response shape
 
@@ -105,3 +102,26 @@ Example:
 ### Polymorphic field
 
 A field that can take several shapes
+
+### Record
+
+A normalized entry representing part of a response object. It is a map of key fields to values.
+Records are flat: when a field is a composite type, its value will be a reference to another Record.
+
+### Cache key
+
+A unique identifier for a Record.
+To avoid duplication it should be a function of the object, usually using its key fields, but by default will be a path of field keys from the root of the query to the field.
+
+### Field key
+
+A key that uniquely identifies a field within a Record. By default composed of the field name and the arguments passed to it.
+
+### Key fields
+
+The fields that uniquely identify an object.
+
+### Pagination arguments
+
+Field arguments that control pagination, e.g. `first`, `after`, etc. They should be omitted when computing a field key so different pages can be merged into the same field.
+
