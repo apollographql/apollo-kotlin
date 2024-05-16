@@ -23,6 +23,3 @@ final fun com.apollographql.apollo3.testing/cwd(): kotlin/String // com.apollogr
 // Targets: [js]
 final val com.apollographql.apollo3.testing/HostFileSystem // com.apollographql.apollo3.testing/HostFileSystem|{}HostFileSystem[0]
     final fun <get-HostFileSystem>(): okio/FileSystem // com.apollographql.apollo3.testing/HostFileSystem.<get-HostFileSystem>|<get-HostFileSystem>(){}[0]
-// Targets: [wasmJs]
-final val com.apollographql.apollo3.testing.internal/empty // com.apollographql.apollo3.testing.internal/empty|{}empty[0]
-    final fun <get-empty>(): kotlin.js/JsAny // com.apollographql.apollo3.testing.internal/empty.<get-empty>|<get-empty>(){}[0]

@@ -6,12 +6,17 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
-import kotlin.js.Promise
 
-// https://youtrack.jetbrains.com/issue/KT-21846/
-@Suppress("ACTUAL_WITHOUT_EXPECT", "ACTUAL_TYPE_ALIAS_TO_CLASS_WITH_DECLARATION_SITE_VARIANCE", "INCOMPATIBLE_MATCHING")
 @ApolloInternal
-actual typealias ApolloTestResult = Promise<Any>
+actual typealias ApolloTestResult = JsPromiseInterfaceForTesting
+
+// https://youtrack.jetbrains.com/issue/KT-60561
+@ApolloInternal
+@JsName("Promise")
+external class JsPromiseInterfaceForTesting {
+  fun then(onFulfilled: ((Unit) -> Unit), onRejected: ((Throwable) -> Unit)): JsPromiseInterfaceForTesting
+  fun then(onFulfilled: ((Unit) -> Unit)): JsPromiseInterfaceForTesting
+}
 
 @ApolloInternal
 @OptIn(DelicateCoroutinesApi::class)
@@ -40,5 +45,5 @@ actual fun runTest(
         after()
       }
     }
-  }
+  }.unsafeCast<ApolloTestResult>()
 }

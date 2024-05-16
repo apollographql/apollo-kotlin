@@ -630,9 +630,6 @@ public final class com/apollographql/apollo3/api/FileUpload {
 }
 
 public abstract interface class com/apollographql/apollo3/api/Fragment : com/apollographql/apollo3/api/Executable {
-	public abstract fun adapter ()Lcom/apollographql/apollo3/api/Adapter;
-	public abstract fun rootField ()Lcom/apollographql/apollo3/api/CompiledField;
-	public abstract fun serializeVariables (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Z)V
 }
 
 public abstract interface class com/apollographql/apollo3/api/Fragment$Data : com/apollographql/apollo3/api/Executable$Data {
@@ -773,12 +770,9 @@ public final class com/apollographql/apollo3/api/ObjectType$Builder {
 }
 
 public abstract interface class com/apollographql/apollo3/api/Operation : com/apollographql/apollo3/api/Executable {
-	public abstract fun adapter ()Lcom/apollographql/apollo3/api/Adapter;
 	public abstract fun document ()Ljava/lang/String;
 	public abstract fun id ()Ljava/lang/String;
 	public abstract fun name ()Ljava/lang/String;
-	public abstract fun rootField ()Lcom/apollographql/apollo3/api/CompiledField;
-	public abstract fun serializeVariables (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Z)V
 }
 
 public abstract interface class com/apollographql/apollo3/api/Operation$Data : com/apollographql/apollo3/api/Executable$Data {
