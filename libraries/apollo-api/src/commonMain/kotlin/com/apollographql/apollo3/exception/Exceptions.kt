@@ -17,12 +17,12 @@ sealed class ApolloException(message: String? = null, cause: Throwable? = null) 
 /**
  * A generic exception used when there is no additional context besides the message.
  */
-class DefaultApolloException(message: String? = null, cause: Throwable? = null): ApolloException(message, cause)
+class DefaultApolloException(message: String? = null, cause: Throwable? = null) : ApolloException(message, cause)
 
 /**
  * No data was found
  */
-class NoDataException(cause: Throwable?): ApolloException("No data was found", cause)
+class NoDataException(cause: Throwable?) : ApolloException("No data was found", cause)
 
 /**
  * An I/O error happened: socket closed, DNS issue, TLS problem, file not found, etc...
@@ -118,7 +118,7 @@ class JsonDataException(message: String) : ApolloException(message)
  *
  * Due to the way the parsers work, it is not possible to distinguish between both cases.
  */
-class NullOrMissingField(message: String): ApolloException(message)
+class NullOrMissingField(message: String) : ApolloException(message)
 
 /**
  * The response could not be parsed because of an I/O exception.
@@ -132,8 +132,8 @@ class NullOrMissingField(message: String): ApolloException(message)
 @Deprecated("ApolloParseException was only used for I/O exceptions and is now mapped to ApolloNetworkException.")
 class ApolloParseException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
-class ApolloGraphQLException(val error: Error): ApolloException("GraphQL error: '${error.message}'") {
-  constructor(errors: List<Error>): this(errors.first())
+class ApolloGraphQLException(val error: Error) : ApolloException("GraphQL error: '${error.message}'") {
+  constructor(errors: List<Error>) : this(errors.first())
 
   @Deprecated("Use error instead", level = DeprecationLevel.ERROR)
   val errors: List<Error> = listOf(error)
@@ -143,10 +143,17 @@ class ApolloGraphQLException(val error: Error): ApolloException("GraphQL error: 
  * An object/field was missing in the cache
  * If [fieldName] is null, it means a reference to an object could not be resolved
  */
-
 class CacheMissException @ApolloInternal constructor(
+    /**
+     * The cache key to the missing object, or to the parent of the missing field if [fieldName] is not null.
+     */
     val key: String,
+
+    /**
+     * The field key that was missing. If null, it means the object referenced by [key] was missing.
+     */
     val fieldName: String? = null,
+
     stale: Boolean = false,
 ) : ApolloException(message = message(key, fieldName, stale)) {
 
@@ -156,14 +163,14 @@ class CacheMissException @ApolloInternal constructor(
   constructor(key: String, fieldName: String?) : this(key, fieldName, false)
 
   companion object {
-    internal fun message(key: String?, fieldName: String?, stale: Boolean): String {
-      return if (fieldName == null) {
-        "Object '$key' not found"
+    internal fun message(cacheKey: String?, fieldKey: String?, stale: Boolean): String {
+      return if (fieldKey == null) {
+        "Object '$cacheKey' not found"
       } else {
         if (stale) {
-          "Field '$fieldName' on object '$key' is stale"
+          "Field '$fieldKey' on object '$cacheKey' is stale"
         } else {
-          "Object '$key' has no field named '$fieldName'"
+          "Object '$cacheKey' has no field named '$fieldKey'"
         }
       }
     }

@@ -91,12 +91,12 @@ object DefaultCacheResolver : CacheResolver {
       parent: Map<String, @JvmSuppressWildcards Any?>,
       parentId: String,
   ): Any? {
-    val name = field.nameWithArguments(variables)
-    if (!parent.containsKey(name)) {
-      throw CacheMissException(parentId, name)
+    val fieldKey = field.nameWithArguments(variables)
+    if (!parent.containsKey(fieldKey)) {
+      throw CacheMissException(parentId, fieldKey)
     }
 
-    return parent[name]
+    return parent[fieldKey]
   }
 }
 
@@ -115,22 +115,22 @@ class ReceiveDateCacheResolver(private val maxAge: Int) : CacheResolver {
       parent: Map<String, @JvmSuppressWildcards Any?>,
       parentId: String,
   ): Any? {
-    val name = field.nameWithArguments(variables)
-    if (!parent.containsKey(name)) {
-      throw CacheMissException(parentId, name)
+    val fieldKey = field.nameWithArguments(variables)
+    if (!parent.containsKey(fieldKey)) {
+      throw CacheMissException(parentId, fieldKey)
     }
 
     if (parent is Record) {
-      val lastUpdated = parent.date?.get(name)
+      val lastUpdated = parent.date?.get(fieldKey)
       if (lastUpdated != null) {
-        val age = currentTimeMillis()/1000 - lastUpdated
+        val age = currentTimeMillis() / 1000 - lastUpdated
         if (age > maxAge) {
-          throw CacheMissException(parentId, name, true)
+          throw CacheMissException(parentId, fieldKey, true)
         }
       }
     }
 
-    return parent[name]
+    return parent[fieldKey]
   }
 }
 
@@ -148,21 +148,21 @@ class ExpireDateCacheResolver() : CacheResolver {
       parent: Map<String, @JvmSuppressWildcards Any?>,
       parentId: String,
   ): Any? {
-    val name = field.nameWithArguments(variables)
-    if (!parent.containsKey(name)) {
-      throw CacheMissException(parentId, name)
+    val fieldKey = field.nameWithArguments(variables)
+    if (!parent.containsKey(fieldKey)) {
+      throw CacheMissException(parentId, fieldKey)
     }
 
     if (parent is Record) {
-      val expires = parent.date?.get(name)
+      val expires = parent.date?.get(fieldKey)
       if (expires != null) {
-        if (currentTimeMillis()/1000 - expires >= 0) {
-          throw CacheMissException(parentId, name, true)
+        if (currentTimeMillis() / 1000 - expires >= 0) {
+          throw CacheMissException(parentId, fieldKey, true)
         }
       }
     }
 
-    return parent[name]
+    return parent[fieldKey]
   }
 }
 

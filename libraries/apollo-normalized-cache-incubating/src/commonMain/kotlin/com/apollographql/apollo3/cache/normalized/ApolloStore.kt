@@ -10,11 +10,11 @@ import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.DefaultEmbeddedFieldsProvider
-import com.apollographql.apollo3.cache.normalized.api.DefaultFieldNameGenerator
+import com.apollographql.apollo3.cache.normalized.api.DefaultFieldKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
 import com.apollographql.apollo3.cache.normalized.api.EmbeddedFieldsProvider
 import com.apollographql.apollo3.cache.normalized.api.EmptyMetadataGenerator
-import com.apollographql.apollo3.cache.normalized.api.FieldNameGenerator
+import com.apollographql.apollo3.cache.normalized.api.FieldKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
@@ -214,7 +214,7 @@ fun ApolloStore(
     metadataGenerator = EmptyMetadataGenerator,
     cacheResolver = cacheResolver,
     recordMerger = DefaultRecordMerger,
-    fieldNameGenerator = DefaultFieldNameGenerator,
+    fieldKeyGenerator = DefaultFieldKeyGenerator,
     embeddedFieldsProvider = DefaultEmbeddedFieldsProvider,
 )
 
@@ -225,7 +225,7 @@ fun ApolloStore(
     metadataGenerator: MetadataGenerator = EmptyMetadataGenerator,
     apolloResolver: ApolloResolver = FieldPolicyApolloResolver,
     recordMerger: RecordMerger = DefaultRecordMerger,
-    fieldNameGenerator: FieldNameGenerator = DefaultFieldNameGenerator,
+    fieldKeyGenerator: FieldKeyGenerator = DefaultFieldKeyGenerator,
     embeddedFieldsProvider: EmbeddedFieldsProvider = DefaultEmbeddedFieldsProvider,
 ): ApolloStore = DefaultApolloStore(
     normalizedCacheFactory = normalizedCacheFactory,
@@ -233,7 +233,7 @@ fun ApolloStore(
     metadataGenerator = metadataGenerator,
     cacheResolver = apolloResolver,
     recordMerger = recordMerger,
-    fieldNameGenerator = fieldNameGenerator,
+    fieldKeyGenerator = fieldKeyGenerator,
     embeddedFieldsProvider = embeddedFieldsProvider,
 )
 

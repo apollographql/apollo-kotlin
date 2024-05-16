@@ -9,7 +9,7 @@ import com.apollographql.apollo3.cache.normalized.api.CacheData
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
-import com.apollographql.apollo3.cache.normalized.api.FieldNameGenerator
+import com.apollographql.apollo3.cache.normalized.api.FieldKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.ResolverContext
@@ -30,7 +30,7 @@ internal class CacheBatchReader(
     private val cacheHeaders: CacheHeaders,
     private val rootSelections: List<CompiledSelection>,
     private val rootTypename: String,
-    private val fieldNameGenerator: FieldNameGenerator,
+    private val fieldKeyGenerator: FieldKeyGenerator,
 ) {
   /**
    * @param key: the key of the record we need to fetch
@@ -64,6 +64,7 @@ internal class CacheBatchReader(
         is CompiledField -> {
           state.fields.add(compiledSelection)
         }
+
         is CompiledFragment -> {
           if ((typename in compiledSelection.possibleTypes || compiledSelection.typeCondition == parentType) && !compiledSelection.shouldSkip(state.variables.valueMap)) {
             collect(compiledSelection.selections, parentType, typename, state)
@@ -112,7 +113,8 @@ internal class CacheBatchReader(
           }
         }
 
-        val collectedFields = collectAndMergeSameDirectives(pendingReference.selections, pendingReference.parentType, variables, record["__typename"] as? String)
+        val collectedFields =
+          collectAndMergeSameDirectives(pendingReference.selections, pendingReference.parentType, variables, record["__typename"] as? String)
 
         val map = collectedFields.mapNotNull {
           if (it.shouldSkip(variables.valueMap)) {
@@ -122,16 +124,19 @@ internal class CacheBatchReader(
           val value = when (cacheResolver) {
             is CacheResolver -> cacheResolver.resolveField(it, variables, record, record.key)
             is ApolloResolver -> {
-              cacheResolver.resolveField(ResolverContext(
-                  field = it,
-                  variables = variables,
-                  parent = record,
-                  parentId = record.key,
-                  parentType = pendingReference.parentType,
-                  cacheHeaders = cacheHeaders,
-                  fieldNameGenerator = fieldNameGenerator,
-              ))
+              cacheResolver.resolveField(
+                  ResolverContext(
+                      field = it,
+                      variables = variables,
+                      parent = record,
+                      parentKey = record.key,
+                      parentType = pendingReference.parentType,
+                      cacheHeaders = cacheHeaders,
+                      fieldKeyGenerator = fieldKeyGenerator,
+                  )
+              )
             }
+
             else -> throw IllegalStateException()
           }
           value.registerCacheKeys(pendingReference.path + it.responseName, it.selections, it.type.rawType().name)
@@ -161,11 +166,13 @@ internal class CacheBatchReader(
             )
         )
       }
+
       is List<*> -> {
         forEachIndexed { index, value ->
           value.registerCacheKeys(path + index, selections, parentType)
         }
       }
+
       is Map<*, *> -> {
         @Suppress("UNCHECKED_CAST")
         this as Map<String, @JvmSuppressWildcards Any?>
@@ -178,16 +185,19 @@ internal class CacheBatchReader(
           val value = when (cacheResolver) {
             is CacheResolver -> cacheResolver.resolveField(it, variables, this, "")
             is ApolloResolver -> {
-              cacheResolver.resolveField(ResolverContext(
-                  field = it,
-                  variables = variables,
-                  parent = this,
-                  parentId = "",
-                  parentType = parentType,
-                  cacheHeaders = cacheHeaders,
-                  fieldNameGenerator = fieldNameGenerator,
-              ))
+              cacheResolver.resolveField(
+                  ResolverContext(
+                      field = it,
+                      variables = variables,
+                      parent = this,
+                      parentKey = "",
+                      parentType = parentType,
+                      cacheHeaders = cacheHeaders,
+                      fieldKeyGenerator = fieldKeyGenerator,
+                  )
+              )
             }
+
             else -> throw IllegalStateException()
           }
           value.registerCacheKeys(path + it.responseName, it.selections, it.type.rawType().name)
@@ -200,7 +210,7 @@ internal class CacheBatchReader(
 
   private data class CacheBatchReaderData(
       private val data: Map<List<Any>, Map<String, Any?>>,
-  ): CacheData {
+  ) : CacheData {
     @Suppress("UNCHECKED_CAST")
     override fun toMap(): Map<String, Any?> {
       return data[emptyList()].replaceCacheKeys(emptyList()) as Map<String, Any?>
@@ -211,17 +221,20 @@ internal class CacheBatchReader(
         is CacheKey -> {
           data[path].replaceCacheKeys(path)
         }
+
         is List<*> -> {
           mapIndexed { index, src ->
             src.replaceCacheKeys(path + index)
           }
         }
+
         is Map<*, *> -> {
           // This will traverse Map custom scalars but this is ok as it shouldn't contain any CacheKey
           mapValues {
             it.value.replaceCacheKeys(path + (it.key as String))
           }
         }
+
         else -> {
           // Scalar value
           this

@@ -65,7 +65,7 @@ interface CacheResolver {
    * @param variables the variables of the current operation
    * @param parent the parent object as a map. It can contain the same values as [Record]. Especially, nested objects will be represented
    * by [CacheKey]
-   * @param parentId the id of the parent. Mainly used for debugging
+   * @param parentId the key of the parent. Mainly used for debugging
    *
    * @return a value that can go in a [Record]. No type checking is done. It is the responsibility of implementations to return the correct
    * type
@@ -83,10 +83,10 @@ class ResolverContext(
     val field: CompiledField,
     val variables: Executable.Variables,
     val parent: Map<String, @JvmSuppressWildcards Any?>,
-    val parentId: String,
+    val parentKey: String,
     val parentType: String,
     val cacheHeaders: CacheHeaders,
-    val fieldNameGenerator: FieldNameGenerator,
+    val fieldKeyGenerator: FieldKeyGenerator,
 )
 
 /**
@@ -112,12 +112,12 @@ object DefaultCacheResolver : CacheResolver {
       parent: Map<String, @JvmSuppressWildcards Any?>,
       parentId: String,
   ): Any? {
-    val name = field.nameWithArguments(variables)
-    if (!parent.containsKey(name)) {
-      throw CacheMissException(parentId, name)
+    val fieldKey = field.nameWithArguments(variables)
+    if (!parent.containsKey(fieldKey)) {
+      throw CacheMissException(parentId, fieldKey)
     }
 
-    return parent[name]
+    return parent[fieldKey]
   }
 }
 
@@ -126,12 +126,12 @@ object DefaultCacheResolver : CacheResolver {
  */
 object DefaultApolloResolver : ApolloResolver {
   override fun resolveField(context: ResolverContext): Any? {
-    val name = context.fieldNameGenerator.getFieldName(FieldNameContext(context.parentType, context.field, context.variables))
-    if (!context.parent.containsKey(name)) {
-      throw CacheMissException(context.parentId, name)
+    val fieldKey = context.fieldKeyGenerator.getFieldKey(FieldKeyContext(context.parentType, context.field, context.variables))
+    if (!context.parent.containsKey(fieldKey)) {
+      throw CacheMissException(context.parentKey, fieldKey)
     }
 
-    return context.parent[name]
+    return context.parent[fieldKey]
   }
 }
 
@@ -142,31 +142,29 @@ object DefaultApolloResolver : ApolloResolver {
 class ReceiveDateApolloResolver(private val maxAge: Int) : ApolloResolver {
 
   override fun resolveField(context: ResolverContext): Any? {
-    val field = context.field
     val parent = context.parent
-    val variables = context.variables
-    val parentId = context.parentId
+    val parentKey = context.parentKey
 
-    val name = field.nameWithArguments(variables)
-    if (!parent.containsKey(name)) {
-      throw CacheMissException(parentId, name)
+    val fieldKey = context.fieldKeyGenerator.getFieldKey(FieldKeyContext(context.parentType, context.field, context.variables))
+    if (!parent.containsKey(fieldKey)) {
+      throw CacheMissException(parentKey, fieldKey)
     }
 
     if (parent is Record) {
-      val lastUpdated = parent.dates?.get(name)
+      val lastUpdated = parent.dates?.get(fieldKey)
       if (lastUpdated != null) {
         val maxStale = context.cacheHeaders.headerValue(ApolloCacheHeaders.MAX_STALE)?.toLongOrNull() ?: 0L
         if (maxStale < Long.MAX_VALUE) {
           val age = currentTimeMillis() / 1000 - lastUpdated
           if (maxAge + maxStale - age < 0) {
-            throw CacheMissException(parentId, name, true)
+            throw CacheMissException(parentKey, fieldKey, true)
           }
 
         }
       }
     }
 
-    return parent[name]
+    return parent[fieldKey]
   }
 }
 
@@ -184,21 +182,21 @@ class ExpireDateCacheResolver : CacheResolver {
       parent: Map<String, @JvmSuppressWildcards Any?>,
       parentId: String,
   ): Any? {
-    val name = field.nameWithArguments(variables)
-    if (!parent.containsKey(name)) {
-      throw CacheMissException(parentId, name)
+    val fieldKey = field.nameWithArguments(variables)
+    if (!parent.containsKey(fieldKey)) {
+      throw CacheMissException(parentId, fieldKey)
     }
 
     if (parent is Record) {
-      val expires = parent.dates?.get(name)
+      val expires = parent.dates?.get(fieldKey)
       if (expires != null) {
         if (currentTimeMillis() / 1000 - expires >= 0) {
-          throw CacheMissException(parentId, name, true)
+          throw CacheMissException(parentId, fieldKey, true)
         }
       }
     }
 
-    return parent[name]
+    return parent[fieldKey]
   }
 }
 
