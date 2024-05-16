@@ -11,6 +11,12 @@ $dokka.location:com.apollographql.apollo3.adapter/BigDecimal/toLong/#/PointingTo
 $dokka.location:com.apollographql.apollo3.adapter/BigDecimal/toShort/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo3.adapter/-big-decimal/[wasm-js]to-short.html
 $dokka.location:com.apollographql.apollo3.adapter/BigDecimal/toString/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo3.adapter/-big-decimal/[wasm-js]to-string.html
 $dokka.location:com.apollographql.apollo3.network.http//DefaultHttpEngine/#kotlin.Long#kotlin.Long/PointingToDeclaration/apollo-runtime/com.apollographql.apollo3.network.http/[jvm-common]-default-http-engine.html
+$dokka.location:com.apollographql.apollo3.testing.internal/JsPromiseInterfaceForTesting///PointingToDeclaration/apollo-testing-support/com.apollographql.apollo3.testing.internal/[wasm-js]-js-promise-interface-for-testing/index.html
+$dokka.location:com.apollographql.apollo3.testing.internal/JsPromiseInterfaceForTesting/JsPromiseInterfaceForTesting/#/PointingToDeclaration/apollo-testing-support/com.apollographql.apollo3.testing.internal/[wasm-js]-js-promise-interface-for-testing/-js-promise-interface-for-testing.html
+$dokka.location:com.apollographql.apollo3.testing.internal/JsPromiseInterfaceForTesting/then/#kotlin.Function1[kotlin.Unit,kotlin.Unit]#kotlin.Function1[kotlin.Throwable,kotlin.Unit]/PointingToDeclaration/apollo-testing-support/com.apollographql.apollo3.testing.internal/[js]-js-promise-interface-for-testing/then.html
+$dokka.location:com.apollographql.apollo3.testing.internal/JsPromiseInterfaceForTesting/then/#kotlin.Function1[kotlin.Unit,kotlin.Unit]/PointingToDeclaration/apollo-testing-support/com.apollographql.apollo3.testing.internal/[js]-js-promise-interface-for-testing/then.html
+$dokka.location:com.apollographql.apollo3.testing.internal/JsPromiseInterfaceForTesting/then/#kotlin.Function1[kotlin.js.JsAny,kotlin.Unit]#kotlin.Function1[kotlin.js.JsAny,kotlin.Unit]/PointingToDeclaration/apollo-testing-support/com.apollographql.apollo3.testing.internal/[wasm-js]-js-promise-interface-for-testing/then.html
+$dokka.location:com.apollographql.apollo3.testing.internal/JsPromiseInterfaceForTesting/then/#kotlin.Function1[kotlin.js.JsAny,kotlin.Unit]/PointingToDeclaration/apollo-testing-support/com.apollographql.apollo3.testing.internal/[wasm-js]-js-promise-interface-for-testing/then.html
 module:apollo-adapters
 com.apollographql.apollo3.adapter
 module:apollo-annotations
