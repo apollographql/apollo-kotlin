@@ -8,9 +8,6 @@ class EnumTest {
   @Test
   fun safeValueOf() {
     assertEquals(Episode.EMPIRE, Episode.safeValueOf("EMPIRE"))
-
-    // Note: Episode is generated as a sealed class (sealedClassesForEnumsMatching) for this
-    // to work both with Kotlin and Java codegens
-    assertEquals(Episode.UNKNOWN__("NEW_EPISODE"), Episode.safeValueOf("NEW_EPISODE"))
+    assertEquals(Episode.UNKNOWN__::class, Episode.safeValueOf("NEW_EPISODE")::class)
   }
 }
