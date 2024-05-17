@@ -63,7 +63,10 @@ class EnumsTest {
   fun javaClasses() {
     assertEquals(enums.java.type.Gravity.TOP, enums.java.type.Gravity.safeValueOf("TOP"))
     assertEquals(enums.java.type.Gravity.top2, enums.java.type.Gravity.safeValueOf("top2"))
-    assertEquals(enums.java.type.Gravity.UNKNOWN__("newGravity"), enums.java.type.Gravity.safeValueOf("newGravity"))
+    val unknown = enums.java.type.Gravity.safeValueOf("newGravity")
+    assertEquals(enums.java.type.Gravity.UNKNOWN__::class.java, unknown::class.java)
+    assertEquals("newGravity", unknown.rawValue)
+    assertNotEquals(enums.java.type.Gravity.safeValueOf("newGravity2"), unknown)
     assertEquals(enums.java.type.Gravity.name, enums.java.type.Gravity.safeValueOf("name"))
     assertEquals(enums.java.type.Gravity.ordinal, enums.java.type.Gravity.safeValueOf("ordinal"))
     assertEquals(enums.java.type.Gravity.type__, enums.java.type.Gravity.safeValueOf("type"))
