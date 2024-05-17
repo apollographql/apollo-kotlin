@@ -105,13 +105,13 @@ A field that can take several shapes
 
 ### Record
 
-A normalized entry representing part of a response object. It is a map of key fields to values.
-Records are flat: when a field is a composite type, its value will be a reference to another Record.
+A shallow map of a response object. Nested objects in the map values are replaced by a cache reference to another Record.  
 
 ### Cache key
 
 A unique identifier for a Record.
-To avoid duplication it should be a function of the object, usually using its key fields, but by default will be a path of field keys from the root of the query to the field.
+By default it is the path formed by all the field keys from the root of the query to the field referencing the Record.
+To avoid duplication the Cache key can also be computed from the Record contents, usually using its key fields.
 
 ### Field key
 
@@ -119,7 +119,7 @@ A key that uniquely identifies a field within a Record. By default composed of t
 
 ### Key fields
 
-The fields that uniquely identify an object.
+Fields that are used to compute a Cache key for an object.
 
 ### Pagination arguments
 
