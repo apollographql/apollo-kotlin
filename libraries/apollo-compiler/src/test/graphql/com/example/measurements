@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  204905
+aggregate-all                                                                                  204906
 aggregate-kotlin-responseBased                                                                  65795
 aggregate-kotlin-operationBased                                                                 42408
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   96702
+aggregate-java-operationBased                                                                   96703
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5600
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3488
@@ -175,7 +175,7 @@ kotlin-responseBased-fieldset_with_multiple_super                               
 kotlin-responseBased-input_object_variable_and_argument                                           604
 java-operationBased-inline_fragment_for_non_optional_field                                        602
 kotlin-responseBased-reserved_keywords                                                            600
-java-operationBased-enum_field                                                                    596
+java-operationBased-enum_field                                                                    597
 java-operationBased-two_heroes_unique                                                             591
 java-operationBased-inline_fragment_type_coercion                                                 587
 kotlin-operationBased-test_inline                                                                 581

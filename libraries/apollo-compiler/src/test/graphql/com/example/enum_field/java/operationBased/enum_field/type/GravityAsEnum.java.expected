@@ -10,6 +10,7 @@ import java.lang.Deprecated;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
+import java.util.Objects;
 
 public enum GravityAsEnum {
   TOP("TOP"),
@@ -57,7 +58,7 @@ public enum GravityAsEnum {
 
   @SuppressWarnings("deprecation")
   public static GravityAsEnum safeValueOf(String rawValue) {
-    switch (rawValue) {
+    switch (Objects.requireNonNull(rawValue)) {
       case "TOP": return GravityAsEnum.TOP;
       case "CENTER": return GravityAsEnum.CENTER;
       case "BOTTOM": return GravityAsEnum.BOTTOM;
