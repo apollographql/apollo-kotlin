@@ -10,6 +10,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class AmenityCategory {
   public static EnumType type = new EnumType("AmenityCategory", Arrays.asList("Category0", "Category1"));
@@ -20,12 +21,12 @@ public class AmenityCategory {
 
   public String rawValue;
 
-  public AmenityCategory(String rawValue) {
+  private AmenityCategory(String rawValue) {
     this.rawValue = rawValue;
   }
 
   public static AmenityCategory safeValueOf(String rawValue) {
-    switch(rawValue) {
+    switch (Objects.requireNonNull(rawValue)) {
       case "Category0": return AmenityCategory.Category0;
       case "Category1": return AmenityCategory.Category1;
       default: return new AmenityCategory.UNKNOWN__(rawValue);
@@ -42,7 +43,7 @@ public class AmenityCategory {
 
     private transient volatile String $toString;
 
-    public UNKNOWN__(String rawValue) {
+    private UNKNOWN__(String rawValue) {
       super(rawValue);
     }
 
@@ -52,7 +53,7 @@ public class AmenityCategory {
         return true;
       }
       if (o instanceof UNKNOWN__) {
-        return true;
+        return super.equals(o);
       }
       return false;
     }
@@ -60,7 +61,7 @@ public class AmenityCategory {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int __h = 1;
+        int __h = super.hashCode();
         $hashCode = __h;
         $hashCodeMemoized = true;
       }

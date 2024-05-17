@@ -11,6 +11,7 @@ import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Enum {
   public static EnumType type = new EnumType("Enum", Arrays.asList("north", "North", "NORTH", "SOUTH"));
@@ -25,13 +26,13 @@ public class Enum {
 
   public String rawValue;
 
-  public Enum(String rawValue) {
+  private Enum(String rawValue) {
     this.rawValue = rawValue;
   }
 
   @SuppressWarnings("deprecation")
   public static Enum safeValueOf(String rawValue) {
-    switch(rawValue) {
+    switch (Objects.requireNonNull(rawValue)) {
       case "north": return Enum.north;
       case "North": return Enum.North;
       case "NORTH": return Enum.NORTH;
@@ -50,7 +51,7 @@ public class Enum {
 
     private transient volatile String $toString;
 
-    public UNKNOWN__(String rawValue) {
+    private UNKNOWN__(String rawValue) {
       super(rawValue);
     }
 
@@ -60,7 +61,7 @@ public class Enum {
         return true;
       }
       if (o instanceof UNKNOWN__) {
-        return true;
+        return super.equals(o);
       }
       return false;
     }
@@ -68,7 +69,7 @@ public class Enum {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int __h = 1;
+        int __h = super.hashCode();
         $hashCode = __h;
         $hashCodeMemoized = true;
       }

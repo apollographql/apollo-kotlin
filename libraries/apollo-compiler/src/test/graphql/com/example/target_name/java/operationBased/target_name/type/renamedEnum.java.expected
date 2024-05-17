@@ -10,6 +10,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class RenamedEnum {
   public static EnumType type = new EnumType("ReservedEnum", Arrays.asList("VALUE"));
@@ -18,12 +19,12 @@ public class RenamedEnum {
 
   public String rawValue;
 
-  public RenamedEnum(String rawValue) {
+  private RenamedEnum(String rawValue) {
     this.rawValue = rawValue;
   }
 
   public static RenamedEnum safeValueOf(String rawValue) {
-    switch(rawValue) {
+    switch (Objects.requireNonNull(rawValue)) {
       case "VALUE": return RenamedEnum.VALUE;
       default: return new RenamedEnum.UNKNOWN__(rawValue);
     }
@@ -39,7 +40,7 @@ public class RenamedEnum {
 
     private transient volatile String $toString;
 
-    public UNKNOWN__(String rawValue) {
+    private UNKNOWN__(String rawValue) {
       super(rawValue);
     }
 
@@ -49,7 +50,7 @@ public class RenamedEnum {
         return true;
       }
       if (o instanceof UNKNOWN__) {
-        return true;
+        return super.equals(o);
       }
       return false;
     }
@@ -57,7 +58,7 @@ public class RenamedEnum {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int __h = 1;
+        int __h = super.hashCode();
         $hashCode = __h;
         $hashCodeMemoized = true;
       }

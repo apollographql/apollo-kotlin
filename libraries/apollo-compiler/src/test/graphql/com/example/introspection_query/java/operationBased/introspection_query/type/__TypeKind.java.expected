@@ -10,6 +10,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class __TypeKind {
   public static EnumType type = new EnumType("__TypeKind", Arrays.asList("SCALAR", "OBJECT", "INTERFACE", "UNION", "ENUM", "INPUT_OBJECT", "LIST", "NON_NULL"));
@@ -32,12 +33,12 @@ public class __TypeKind {
 
   public String rawValue;
 
-  public __TypeKind(String rawValue) {
+  private __TypeKind(String rawValue) {
     this.rawValue = rawValue;
   }
 
   public static __TypeKind safeValueOf(String rawValue) {
-    switch(rawValue) {
+    switch (Objects.requireNonNull(rawValue)) {
       case "SCALAR": return __TypeKind.SCALAR;
       case "OBJECT": return __TypeKind.OBJECT;
       case "INTERFACE": return __TypeKind.INTERFACE;
@@ -60,7 +61,7 @@ public class __TypeKind {
 
     private transient volatile String $toString;
 
-    public UNKNOWN__(String rawValue) {
+    private UNKNOWN__(String rawValue) {
       super(rawValue);
     }
 
@@ -70,7 +71,7 @@ public class __TypeKind {
         return true;
       }
       if (o instanceof UNKNOWN__) {
-        return true;
+        return super.equals(o);
       }
       return false;
     }
@@ -78,7 +79,7 @@ public class __TypeKind {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int __h = 1;
+        int __h = super.hashCode();
         $hashCode = __h;
         $hashCodeMemoized = true;
       }

@@ -10,6 +10,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Lower case enum type name
@@ -23,12 +24,12 @@ public class Hero_type {
 
   public String rawValue;
 
-  public Hero_type(String rawValue) {
+  private Hero_type(String rawValue) {
     this.rawValue = rawValue;
   }
 
   public static Hero_type safeValueOf(String rawValue) {
-    switch(rawValue) {
+    switch (Objects.requireNonNull(rawValue)) {
       case "human": return Hero_type.human;
       case "droid": return Hero_type.droid;
       default: return new Hero_type.UNKNOWN__(rawValue);
@@ -45,7 +46,7 @@ public class Hero_type {
 
     private transient volatile String $toString;
 
-    public UNKNOWN__(String rawValue) {
+    private UNKNOWN__(String rawValue) {
       super(rawValue);
     }
 
@@ -55,7 +56,7 @@ public class Hero_type {
         return true;
       }
       if (o instanceof UNKNOWN__) {
-        return true;
+        return super.equals(o);
       }
       return false;
     }
@@ -63,7 +64,7 @@ public class Hero_type {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int __h = 1;
+        int __h = super.hashCode();
         $hashCode = __h;
         $hashCodeMemoized = true;
       }
