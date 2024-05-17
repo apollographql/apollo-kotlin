@@ -30,7 +30,7 @@ import javax.lang.model.element.Modifier
 internal fun TypeSpec.Builder.makeClassFromParameters(
     generateMethods: List<GeneratedMethod>,
     parameters: List<ParameterSpec>,
-    className: ClassName,
+    className: ClassName
 ): TypeSpec.Builder {
   addMethod(
       MethodSpec.constructorBuilder()
@@ -56,7 +56,7 @@ internal fun TypeSpec.Builder.makeClassFromParameters(
 
 internal fun TypeSpec.Builder.addGeneratedMethods(
     className: ClassName,
-    generateMethods: List<GeneratedMethod> = listOf(EQUALS_HASH_CODE, TO_STRING),
+    generateMethods: List<GeneratedMethod> = listOf(EQUALS_HASH_CODE, TO_STRING)
 ): TypeSpec.Builder {
   return applyIf(generateMethods.contains(EQUALS_HASH_CODE)) { withEqualsImplementation(className) }
       .applyIf(generateMethods.contains(EQUALS_HASH_CODE)) { withHashCodeImplementation() }
@@ -69,7 +69,7 @@ internal fun TypeSpec.Builder.addGeneratedMethods(
 internal fun TypeSpec.Builder.makeClassFromProperties(
     generateMethods: List<GeneratedMethod>,
     fields: List<FieldSpec>,
-    className: ClassName,
+    className: ClassName
 ): TypeSpec.Builder {
   addMethod(
       MethodSpec.constructorBuilder()
@@ -117,23 +117,20 @@ internal fun TypeSpec.Builder.withToStringImplementation(className: ClassName): 
             .indent()
             .add("\n+ \$S;\n", "}")
             .unindent()
-            .build()
-        )
+            .build())
         .endControlFlow()
         .addStatement("return \$L", MEMOIZED_TO_STRING_VAR)
         .build()
 
-  return addField(
-      FieldSpec.builder(JavaClassNames.String, MEMOIZED_TO_STRING_VAR, Modifier.PRIVATE, Modifier.VOLATILE, Modifier.TRANSIENT).build()
-  )
-      .addMethod(
-          MethodSpec.methodBuilder("toString")
-              .addAnnotation(JavaClassNames.Override)
-              .addModifiers(Modifier.PUBLIC)
-              .returns(JavaClassNames.String)
-              .addCode(methodCode())
-              .build()
-      )
+  return addField(FieldSpec.builder(JavaClassNames.String, MEMOIZED_TO_STRING_VAR, Modifier.PRIVATE, Modifier.VOLATILE,
+      Modifier.TRANSIENT)
+      .build())
+      .addMethod(MethodSpec.methodBuilder("toString")
+          .addAnnotation(JavaClassNames.Override)
+          .addModifiers(Modifier.PUBLIC)
+          .returns(JavaClassNames.String)
+          .addCode(methodCode())
+          .build())
 }
 
 private fun List<FieldSpec>.equalsCode(): CodeBlock = filter { !it.hasModifier(Modifier.STATIC) }
@@ -146,7 +143,8 @@ private fun FieldSpec.equalsCode() =
       .let {
         if (type.isPrimitive) {
           if (type == TypeName.DOUBLE) {
-            it.add("Double.doubleToLongBits(this.\$L) == Double.doubleToLongBits(that.\$L)", name, name)
+            it.add("Double.doubleToLongBits(this.\$L) == Double.doubleToLongBits(that.\$L)",
+                name, name)
           } else {
             it.add("this.\$L == that.\$L", name, name)
           }
@@ -157,7 +155,6 @@ private fun FieldSpec.equalsCode() =
       .build()
 
 internal fun TypeSpec.Builder.withEqualsImplementation(className: ClassName): TypeSpec.Builder {
-  val hasSuperClass = build().superclass != ClassName.OBJECT
   fun methodCode(typeJavaClass: ClassName) =
     CodeBlock.builder()
         .beginControlFlow("if (o == this)")
@@ -166,18 +163,10 @@ internal fun TypeSpec.Builder.withEqualsImplementation(className: ClassName): Ty
         .beginControlFlow("if (o instanceof \$T)", typeJavaClass)
         .apply {
           if (fieldSpecs.isEmpty()) {
-            if (hasSuperClass) {
-              add("return super.equals(o);\n")
-            } else {
-              add("return true;\n")
-            }
+            add("return true;\n")
           } else {
             addStatement("\$T that = (\$T) o", typeJavaClass, typeJavaClass)
-            if (hasSuperClass) {
-              add("return super.equals(o) && $L;\n", fieldSpecs.equalsCode())
-            } else {
-              add("return $L;\n", fieldSpecs.equalsCode())
-            }
+            add("return $L;\n", if (fieldSpecs.isEmpty()) "true" else fieldSpecs.equalsCode())
           }
         }
         .endControlFlow()
@@ -190,12 +179,10 @@ internal fun TypeSpec.Builder.withEqualsImplementation(className: ClassName): Ty
       .returns(TypeName.BOOLEAN)
       .addParameter(ParameterSpec.builder(TypeName.OBJECT, "o").build())
       .addCode(methodCode(className))
-      .build()
-  )
+      .build())
 }
 
 internal fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder {
-  val hasSuperClass = build().superclass != ClassName.OBJECT
   fun hashFieldCode(field: FieldSpec) =
     CodeBlock.builder()
         .addStatement("$__h *= 1000003")
@@ -215,41 +202,29 @@ internal fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder {
   fun methodCode() =
     CodeBlock.builder()
         .beginControlFlow("if (!\$L)", MEMOIZED_HASH_CODE_FLAG_VAR)
-        .addStatement(
-            if (hasSuperClass) {
-              "int $__h = super.hashCode()"
-            } else {
-              "int $__h = 1"
-            }
-        )
-        .add(
-            fieldSpecs
-                .filter { !it.hasModifier(Modifier.STATIC) }
-                .filter { !it.hasModifier(Modifier.TRANSIENT) }
-                .map(::hashFieldCode)
-                .fold(CodeBlock.builder(), CodeBlock.Builder::add)
-                .build()
-        )
+        .addStatement("int $__h = 1")
+        .add(fieldSpecs
+            .filter { !it.hasModifier(Modifier.STATIC) }
+            .filter { !it.hasModifier(Modifier.TRANSIENT) }
+            .map(::hashFieldCode)
+            .fold(CodeBlock.builder(), CodeBlock.Builder::add)
+            .build())
         .addStatement("\$L = $__h", MEMOIZED_HASH_CODE_VAR)
         .addStatement("\$L = true", MEMOIZED_HASH_CODE_FLAG_VAR)
         .endControlFlow()
         .addStatement("return \$L", MEMOIZED_HASH_CODE_VAR)
         .build()
 
-  return addField(
-      FieldSpec.builder(TypeName.INT, MEMOIZED_HASH_CODE_VAR, Modifier.PRIVATE, Modifier.VOLATILE, Modifier.TRANSIENT).build()
-  )
-      .addField(
-          FieldSpec.builder(TypeName.BOOLEAN, MEMOIZED_HASH_CODE_FLAG_VAR, Modifier.PRIVATE, Modifier.VOLATILE, Modifier.TRANSIENT).build()
-      )
-      .addMethod(
-          MethodSpec.methodBuilder("hashCode")
-              .addAnnotation(JavaClassNames.Override)
-              .addModifiers(Modifier.PUBLIC)
-              .returns(TypeName.INT)
-              .addCode(methodCode())
-              .build()
-      )
+  return addField(FieldSpec.builder(TypeName.INT, MEMOIZED_HASH_CODE_VAR, Modifier.PRIVATE, Modifier.VOLATILE,
+      Modifier.TRANSIENT).build())
+      .addField(FieldSpec.builder(TypeName.BOOLEAN, MEMOIZED_HASH_CODE_FLAG_VAR, Modifier.PRIVATE,
+          Modifier.VOLATILE, Modifier.TRANSIENT).build())
+      .addMethod(MethodSpec.methodBuilder("hashCode")
+          .addAnnotation(JavaClassNames.Override)
+          .addModifiers(Modifier.PUBLIC)
+          .returns(TypeName.INT)
+          .addCode(methodCode())
+          .build())
 }
 
 

@@ -39,44 +39,25 @@ public class Episode {
    * An enum value that wasn't known at compile time.
    */
   public static class UNKNOWN__ extends Episode {
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
     private UNKNOWN__(String rawValue) {
       super(rawValue);
     }
 
     @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof UNKNOWN__) {
-        return super.equals(o);
-      }
-      return false;
+    public boolean equals(Object other) {
+      if (this == other) return true;
+      if (!(other instanceof UNKNOWN__)) return false;
+      return rawValue.equals(((UNKNOWN__) other).rawValue);
     }
 
     @Override
     public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = super.hashCode();
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
+      return rawValue.hashCode();
     }
 
     @Override
     public String toString() {
-      if ($toString == null) {
-        $toString = "UNKNOWN__{"
-          + "}";
-      }
-      return $toString;
+      return "UNKNOWN__(" + rawValue + ")";
     }
   }
 }

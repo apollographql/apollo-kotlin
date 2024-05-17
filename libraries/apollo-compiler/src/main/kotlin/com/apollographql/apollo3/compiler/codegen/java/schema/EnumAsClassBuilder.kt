@@ -10,7 +10,6 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaSchemaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.codegen.java.helpers.addGeneratedMethods
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeSuppressDeprecation
 import com.apollographql.apollo3.compiler.codegen.typePackageName
@@ -22,6 +21,7 @@ import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterSpec
+import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
@@ -118,7 +118,37 @@ internal class EnumAsClassBuilder(
                 .addCode("super($rawValue);\n")
                 .build()
         )
-        .addGeneratedMethods(ClassName.get("", Identifier.UNKNOWN__))
+        .addMethod(
+            MethodSpec.methodBuilder("equals")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(JavaClassNames.Override)
+                .addParameter(ParameterSpec.builder(JavaClassNames.Object, "other").build())
+                .returns(TypeName.BOOLEAN)
+                .addCode(
+                    CodeBlock.builder()
+                        .add("if (this == other) return true;\n")
+                        .add("if (!(other instanceof $L)) return false;\n", Identifier.UNKNOWN__)
+                        .addStatement("return rawValue.equals((($L) other).rawValue)", Identifier.UNKNOWN__)
+                        .build()
+                )
+                .build()
+        )
+        .addMethod(
+            MethodSpec.methodBuilder("hashCode")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(JavaClassNames.Override)
+                .returns(TypeName.INT)
+                .addCode("return rawValue.hashCode();\n")
+                .build()
+        )
+        .addMethod(
+            MethodSpec.methodBuilder("toString")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(JavaClassNames.Override)
+                .returns(JavaClassNames.String)
+                .addCode("return \"$L(\" + rawValue + \")\";\n", Identifier.UNKNOWN__)
+                .build()
+        )
         .build()
   }
 }
