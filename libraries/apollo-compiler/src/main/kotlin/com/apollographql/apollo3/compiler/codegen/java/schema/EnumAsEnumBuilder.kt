@@ -85,7 +85,7 @@ internal class EnumAsEnumBuilder(
                 .returns(selfClassName)
                 .addCode(
                     CodeBlock.builder()
-                        .beginControlFlow("switch ($rawValue)")
+                        .beginControlFlow("switch ($T.requireNonNull($rawValue))", JavaClassNames.Objects)
                         .apply {
                           values.forEach {
                             add("case $S: return $T.$L;\n", it.name, selfClassName, it.targetName.escapeTypeReservedWord()

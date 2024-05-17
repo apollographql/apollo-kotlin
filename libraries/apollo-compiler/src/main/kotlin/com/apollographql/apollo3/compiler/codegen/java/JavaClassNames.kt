@@ -111,6 +111,7 @@ internal object JavaClassNames {
   val Map: ClassName = ClassName.get("java.util", "Map")
   val MapOfStringToObject = ParameterizedTypeName.get(Map, String, Object)
   val JavaOptional = ClassName.get("java.util", "Optional")
+  val Objects = ClassName.get("java.util", "Objects")
 
   val ObjectBuilderKt = ClassName.get(apolloApiPackageName, "ObjectBuilderKt")
   val ObjectMap = ClassName.get(apolloApiPackageName, "ObjectMap")

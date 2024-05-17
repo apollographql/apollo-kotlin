@@ -1,5 +1,6 @@
 package test
 
+import com.apollographql.apollo3.annotations.ApolloEnumConstructor
 import enums.kotlin15.type.Direction
 import enums.kotlin15.type.Foo
 import enums.kotlin15.type.FooEnum
@@ -7,6 +8,9 @@ import enums.kotlin15.type.FooSealed
 import enums.kotlin15.type.Gravity
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
+import kotlin.test.assertIs
+import kotlin.test.assertNotEquals
 
 class EnumsTest {
   @Test
@@ -31,7 +35,7 @@ class EnumsTest {
     assertEquals(Gravity.TOP, Gravity.safeValueOf("TOP"))
     @Suppress("DEPRECATION")
     assertEquals(Gravity.top2, Gravity.safeValueOf("top2"))
-    assertEquals(Gravity.UNKNOWN__("newGravity"), Gravity.safeValueOf("newGravity"))
+    assertEquals(@OptIn(ApolloEnumConstructor::class) Gravity.UNKNOWN__("newGravity"), Gravity.safeValueOf("newGravity"))
     assertEquals(Gravity.name, Gravity.safeValueOf("name"))
     assertEquals(Gravity.ordinal, Gravity.safeValueOf("ordinal"))
     assertEquals(Gravity.type__, Gravity.safeValueOf("type"))
@@ -48,6 +52,11 @@ class EnumsTest {
     assertEquals(enums.java.type.Direction.ordinal, enums.java.type.Direction.safeValueOf("ordinal"))
     assertEquals(enums.java.type.Direction.type__, enums.java.type.Direction.safeValueOf("type"))
     assertEquals(enums.java.type.Direction.Companion, enums.java.type.Direction.safeValueOf("Companion"))
+    assertIs<NullPointerException>(
+        assertFails {
+          enums.java.type.Direction.safeValueOf(null)
+        }
+    )
   }
 
   @Test
@@ -59,6 +68,11 @@ class EnumsTest {
     assertEquals(enums.java.type.Gravity.ordinal, enums.java.type.Gravity.safeValueOf("ordinal"))
     assertEquals(enums.java.type.Gravity.type__, enums.java.type.Gravity.safeValueOf("type"))
     assertEquals(enums.java.type.Gravity.Companion, enums.java.type.Gravity.safeValueOf("Companion"))
+    assertIs<NullPointerException>(
+        assertFails {
+          enums.java.type.Gravity.safeValueOf(null)
+        }
+    )
   }
 
 

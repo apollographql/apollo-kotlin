@@ -63,7 +63,7 @@ internal class EnumAsClassBuilder(
         )
         .addMethod(
             MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
+                .addModifiers(Modifier.PRIVATE)
                 .addParameter(ParameterSpec.builder(JavaClassNames.String, rawValue).build())
                 .addCode("this.$rawValue = $rawValue;\n")
                 .build()
@@ -86,7 +86,7 @@ internal class EnumAsClassBuilder(
                 .returns(selfClassName)
                 .addCode(
                     CodeBlock.builder()
-                        .beginControlFlow("switch($rawValue)")
+                        .beginControlFlow("switch ($T.requireNonNull($rawValue))", JavaClassNames.Objects)
                         .apply {
                           values.forEach {
                             add("case $S: return $T.$L;\n", it.name, selfClassName, it.targetName.escapeTypeReservedWord()
@@ -113,7 +113,7 @@ internal class EnumAsClassBuilder(
         .addJavadoc(L, "An enum value that wasn't known at compile time.\n")
         .addMethod(
             MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
+                .addModifiers(Modifier.PRIVATE)
                 .addParameter(ParameterSpec.builder(JavaClassNames.String, rawValue).build())
                 .addCode("super($rawValue);\n")
                 .build()
