@@ -68,7 +68,7 @@ class CompiledField internal constructor(
 
     val value = argument.value.getOrThrow()
     return if (value is CompiledVariable) {
-       if (variables.valueMap.containsKey(value.name)) {
+      if (variables.valueMap.containsKey(value.name)) {
         Optional.present(variables.valueMap[value.name])
       } else {
         // this argument has a variable value that is absent
@@ -100,7 +100,7 @@ class CompiledField internal constructor(
   /**
    * Returns a String containing the name of this field as well as encoded arguments. For an example:
    * `hero({"episode": "Jedi"})`
-   * This is mostly used internally to compute records.
+   * This is mostly used internally to compute field keys / cache keys.
    *
    * ## Note1:
    * The argument defaultValues are not added to the name. If the schema changes from:

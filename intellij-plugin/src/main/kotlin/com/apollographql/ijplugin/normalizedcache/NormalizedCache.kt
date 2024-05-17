@@ -10,7 +10,7 @@ data class NormalizedCache(
   )
 
   data class Field(
-      val name: String,
+      val key: String,
       val value: FieldValue,
   )
 

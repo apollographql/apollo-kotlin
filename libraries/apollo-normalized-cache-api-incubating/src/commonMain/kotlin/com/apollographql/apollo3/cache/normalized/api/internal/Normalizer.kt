@@ -14,8 +14,8 @@ import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
 import com.apollographql.apollo3.cache.normalized.api.EmbeddedFieldsContext
 import com.apollographql.apollo3.cache.normalized.api.EmbeddedFieldsProvider
-import com.apollographql.apollo3.cache.normalized.api.FieldNameContext
-import com.apollographql.apollo3.cache.normalized.api.FieldNameGenerator
+import com.apollographql.apollo3.cache.normalized.api.FieldKeyContext
+import com.apollographql.apollo3.cache.normalized.api.FieldKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.MetadataGeneratorContext
 import com.apollographql.apollo3.cache.normalized.api.Record
@@ -29,7 +29,7 @@ internal class Normalizer(
     private val rootKey: String,
     private val cacheKeyGenerator: CacheKeyGenerator,
     private val metadataGenerator: MetadataGenerator,
-    private val fieldNameGenerator: FieldNameGenerator,
+    private val fieldKeyGenerator: FieldKeyGenerator,
     private val embeddedFieldsProvider: EmbeddedFieldsProvider,
 ) {
   private val records = mutableMapOf<String, Record>()
@@ -83,7 +83,7 @@ internal class Normalizer(
           .condition(emptyList())
           .build()
 
-      val fieldKey = fieldNameGenerator.getFieldName(FieldNameContext(parentType.name, mergedField, variables))
+      val fieldKey = fieldKeyGenerator.getFieldKey(FieldKeyContext(parentType.name, mergedField, variables))
 
       val base = if (key == CacheKey.rootKey().key) {
         // If we're at the root level, skip `QUERY_ROOT` altogether to save a few bytes

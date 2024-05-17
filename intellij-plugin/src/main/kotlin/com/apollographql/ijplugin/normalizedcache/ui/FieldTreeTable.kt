@@ -40,11 +40,14 @@ class FieldTreeTable(selectRecord: (String) -> Unit) : JBTreeTable(FieldTreeTabl
               is NormalizedCache.FieldValue.StringValue -> append("\"${v.value}\"")
               is NormalizedCache.FieldValue.NumberValue -> append(v.value.toString())
               is NormalizedCache.FieldValue.BooleanValue -> append(v.value.toString())
-              is NormalizedCache.FieldValue.ListValue -> append(when (val size = v.value.size) {
-                0 -> ApolloBundle.message("normalizedCacheViewer.fields.list.empty")
-                1 -> ApolloBundle.message("normalizedCacheViewer.fields.list.single")
-                else -> ApolloBundle.message("normalizedCacheViewer.fields.list.multiple", size)
-              }, SimpleTextAttributes.GRAY_ITALIC_ATTRIBUTES)
+              is NormalizedCache.FieldValue.ListValue -> append(
+                  when (val size = v.value.size) {
+                    0 -> ApolloBundle.message("normalizedCacheViewer.fields.list.empty")
+                    1 -> ApolloBundle.message("normalizedCacheViewer.fields.list.single")
+                    else -> ApolloBundle.message("normalizedCacheViewer.fields.list.multiple", size)
+                  },
+                  SimpleTextAttributes.GRAY_ITALIC_ATTRIBUTES
+              )
 
               is NormalizedCache.FieldValue.CompositeValue -> append("{...}", SimpleTextAttributes.GRAY_ITALIC_ATTRIBUTES)
               NormalizedCache.FieldValue.Null -> append("null")

@@ -210,7 +210,7 @@ If your schema uses a different pagination style, you can still use the paginati
 
 #### Pagination arguments
 
-The `@fieldPolicy` directive has a `paginationArgs` argument that can be used to specify the arguments that should be omitted from the field name.
+The `@fieldPolicy` directive has a `paginationArgs` argument that can be used to specify the arguments that should be omitted from the field key.
 
 Going back to the example above with `usersPage`:
 
@@ -221,7 +221,7 @@ extend type Query
 ```
 
 > [!NOTE]
-> This can also be done programmatically by configuring the `ApolloStore` with a `FieldNameGenerator` implementation.
+> This can also be done programmatically by configuring the `ApolloStore` with a `FieldKeyGenerator` implementation.
 
 With that in place, after fetching the first page, the cache will look like this:
 
@@ -231,7 +231,7 @@ With that in place, after fetching the first page, the cache will look like this
 | user:1     | id: 1, name: John Smith                                 |
 | user:2     | id: 2, name: Jane Doe                                   |
 
-The field name no longer includes the `page` argument, which means watching `UsersPage(page = 1)` or any page will observe the same list.
+The field key no longer includes the `page` argument, which means watching `UsersPage(page = 1)` or any page will observe the same list.
 
 Here's what happens when fetching the second page:
 
@@ -245,7 +245,7 @@ Here's what happens when fetching the second page:
 
 The field containing the first page was overwritten by the second page.
 
-This is because the field name is now the same for all pages and the default merging strategy is to overwrite existing fields with the new value.
+This is because the field key is now the same for all pages and the default merging strategy is to overwrite existing fields with the new value.
 
 #### Record merging
 

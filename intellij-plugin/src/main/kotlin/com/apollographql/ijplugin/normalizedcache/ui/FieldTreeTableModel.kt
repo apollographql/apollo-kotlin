@@ -14,7 +14,8 @@ class FieldTreeTableModel : ListTreeTableModel(
           override fun getColumnClass() = TreeTableModel::class.java
           override fun valueOf(item: Unit) = Unit
         },
-        object : ColumnInfo<NormalizedCacheFieldTreeNode, NormalizedCache.Field>(ApolloBundle.message("normalizedCacheViewer.fields.column.value")) {
+        object :
+          ColumnInfo<NormalizedCacheFieldTreeNode, NormalizedCache.Field>(ApolloBundle.message("normalizedCacheViewer.fields.column.value")) {
           override fun getColumnClass() = NormalizedCache.Field::class.java
           override fun valueOf(item: NormalizedCacheFieldTreeNode) = item.field
         },
@@ -42,7 +43,7 @@ class FieldTreeTableModel : ListTreeTableModel(
 
   class NormalizedCacheFieldTreeNode(val field: NormalizedCache.Field) : DefaultMutableTreeNode() {
     init {
-      userObject = field.name
+      userObject = field.key
     }
   }
 }

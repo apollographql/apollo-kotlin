@@ -93,7 +93,7 @@ An example:
 
 <table>
 <tr>
-<th>Key</th>
+<th>Cache key</th>
 <th>Record</th>
 </tr>
 
@@ -217,7 +217,7 @@ An instance is created when building the `ApolloClient` and held by the `ApolloC
 
 ## Record merging
 
-When a `Record` is stored in the cache, it is _merged_ with the existing one at the same key (if any):
+When a `Record` is stored in the cache, it is _merged_ with the existing one at the same cache key (if any):
 - existing fields are replaced with the new value
 - new fields are added
 

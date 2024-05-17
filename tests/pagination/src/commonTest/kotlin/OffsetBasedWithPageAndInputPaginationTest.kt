@@ -6,9 +6,9 @@ import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.ApolloJsonElement
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.api.DefaultFieldNameGenerator
-import com.apollographql.apollo3.cache.normalized.api.FieldNameContext
-import com.apollographql.apollo3.cache.normalized.api.FieldNameGenerator
+import com.apollographql.apollo3.cache.normalized.api.DefaultFieldKeyGenerator
+import com.apollographql.apollo3.cache.normalized.api.FieldKeyContext
+import com.apollographql.apollo3.cache.normalized.api.FieldKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldRecordMerger
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
@@ -54,7 +54,7 @@ class OffsetBasedWithPageAndInputPaginationTest {
         metadataGenerator = OffsetPaginationMetadataGenerator("UserPage"),
         apolloResolver = FieldPolicyApolloResolver,
         recordMerger = FieldRecordMerger(OffsetPaginationFieldMerger()),
-        fieldNameGenerator = UsersFieldNameGenerator,
+        fieldKeyGenerator = UsersFieldKeyGenerator,
     )
     apolloStore.clearAll()
 
@@ -237,12 +237,12 @@ class OffsetBasedWithPageAndInputPaginationTest {
     }
   }
 
-  object UsersFieldNameGenerator : FieldNameGenerator {
-    override fun getFieldName(context: FieldNameContext): String {
+  object UsersFieldKeyGenerator : FieldKeyGenerator {
+    override fun getFieldKey(context: FieldKeyContext): String {
       return if (context.parentType == "Query" && context.field.name == "users") {
         context.field.nameWithoutPaginationArguments(context.variables)
       } else {
-        DefaultFieldNameGenerator.getFieldName(context)
+        DefaultFieldKeyGenerator.getFieldKey(context)
       }
     }
 

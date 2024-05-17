@@ -3,7 +3,7 @@ package pagination
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.ConnectionEmbeddedFieldsProvider
-import com.apollographql.apollo3.cache.normalized.api.ConnectionFieldNameGenerator
+import com.apollographql.apollo3.cache.normalized.api.ConnectionFieldKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.ConnectionMetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.ConnectionRecordMerger
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
@@ -54,7 +54,7 @@ class ConnectionProgrammaticPaginationTest {
           metadataGenerator = ConnectionMetadataGenerator(connectionTypes),
           apolloResolver = FieldPolicyApolloResolver,
           recordMerger = ConnectionRecordMerger,
-          fieldNameGenerator = ConnectionFieldNameGenerator(connectionFields),
+          fieldKeyGenerator = ConnectionFieldKeyGenerator(connectionFields),
           embeddedFieldsProvider = ConnectionEmbeddedFieldsProvider(
               connectionTypes = connectionTypes,
               connectionFields = connectionFields

@@ -21,11 +21,11 @@ import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.DefaultEmbeddedFieldsProvider
-import com.apollographql.apollo3.cache.normalized.api.DefaultFieldNameGenerator
+import com.apollographql.apollo3.cache.normalized.api.DefaultFieldKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
 import com.apollographql.apollo3.cache.normalized.api.EmbeddedFieldsProvider
 import com.apollographql.apollo3.cache.normalized.api.EmptyMetadataGenerator
-import com.apollographql.apollo3.cache.normalized.api.FieldNameGenerator
+import com.apollographql.apollo3.cache.normalized.api.FieldKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
@@ -127,7 +127,7 @@ fun ApolloClient.Builder.normalizedCache(
     metadataGenerator: MetadataGenerator = EmptyMetadataGenerator,
     apolloResolver: ApolloResolver = FieldPolicyApolloResolver,
     recordMerger: RecordMerger = DefaultRecordMerger,
-    fieldNameGenerator: FieldNameGenerator = DefaultFieldNameGenerator,
+    fieldKeyGenerator: FieldKeyGenerator = DefaultFieldKeyGenerator,
     embeddedFieldsProvider: EmbeddedFieldsProvider = DefaultEmbeddedFieldsProvider,
     writeToCacheAsynchronously: Boolean = false,
 ): ApolloClient.Builder {
@@ -138,9 +138,10 @@ fun ApolloClient.Builder.normalizedCache(
           metadataGenerator = metadataGenerator,
           apolloResolver = apolloResolver,
           recordMerger = recordMerger,
-          fieldNameGenerator = fieldNameGenerator,
+          fieldKeyGenerator = fieldKeyGenerator,
           embeddedFieldsProvider = embeddedFieldsProvider
-      ), writeToCacheAsynchronously)
+      ), writeToCacheAsynchronously
+  )
 }
 
 @JvmName("-logCacheMisses")
@@ -176,14 +177,16 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
 fun <D : Query.Data> ApolloCall<D>.watch(
     fetchThrows: Boolean,
     refetchThrows: Boolean,
-): Flow<ApolloResponse<D>> = throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
+): Flow<ApolloResponse<D>> =
+  throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
 
 @Deprecated(level = DeprecationLevel.ERROR, message = "Exceptions no longer throw", replaceWith = ReplaceWith("watch()"))
 @ApolloDeprecatedSince(v4_0_0)
 @Suppress("UNUSED_PARAMETER")
 fun <D : Query.Data> ApolloCall<D>.watch(
     fetchThrows: Boolean,
-): Flow<ApolloResponse<D>> = throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
+): Flow<ApolloResponse<D>> =
+  throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
 
 /**
  * Gets initial response(s) then observes the cache for any changes.
@@ -589,7 +592,9 @@ val <D : Operation.Data> ApolloResponse<D>.isFromCache: Boolean
 val <D : Operation.Data> ApolloResponse<D>.cacheInfo
   get() = executionContext[CacheInfo]
 
-internal fun <D : Operation.Data> ApolloResponse<D>.withCacheInfo(cacheInfo: CacheInfo) = newBuilder().addExecutionContext(cacheInfo).build()
+internal fun <D : Operation.Data> ApolloResponse<D>.withCacheInfo(cacheInfo: CacheInfo) =
+  newBuilder().addExecutionContext(cacheInfo).build()
+
 internal fun <D : Operation.Data> ApolloResponse.Builder<D>.cacheInfo(cacheInfo: CacheInfo) = addExecutionContext(cacheInfo)
 
 internal class FetchPolicyContext(val interceptor: ApolloInterceptor) : ExecutionContext.Element {
@@ -680,7 +685,7 @@ internal val <D : Operation.Data> ApolloRequest<D>.fetchFromCache
   get() = executionContext[FetchFromCacheContext]?.value ?: false
 
 fun <D : Operation.Data> ApolloResponse.Builder<D>.cacheHeaders(cacheHeaders: CacheHeaders) =
-    addExecutionContext(CacheHeadersContext(cacheHeaders))
+  addExecutionContext(CacheHeadersContext(cacheHeaders))
 
 val <D : Operation.Data> ApolloResponse<D>.cacheHeaders
   get() = executionContext[CacheHeadersContext]?.value ?: CacheHeaders.NONE
