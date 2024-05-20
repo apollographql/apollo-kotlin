@@ -16,6 +16,7 @@ import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodName
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.AddLinkDirective
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.EncloseInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveFieldInService
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveGraphqlConfigFiles
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveMethodInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveWatchMethodArguments
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateEnumClassUpperCase
@@ -99,5 +100,8 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
 
       // Add @link to extra.graphqls
       AddLinkDirective,
+
+      // Graphql Config
+      RemoveGraphqlConfigFiles,
   )
 }
