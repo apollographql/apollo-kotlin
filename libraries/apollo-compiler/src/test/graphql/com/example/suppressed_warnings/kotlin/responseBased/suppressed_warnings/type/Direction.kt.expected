@@ -6,6 +6,7 @@
 package com.example.suppressed_warnings.type
 
 import com.apollographql.apollo3.annotations.ApolloRequiresOptIn
+import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
 import kotlin.Deprecated
@@ -51,6 +52,12 @@ public enum class Direction(
     )
     public fun knownValues(): Array<Direction> = knownEntries.toTypedArray()
 
+    /**
+     * Returns the [Direction] that represents the specified [rawValue].
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
+     * schema instead of calling this function directly.
+     */
+    @ApolloUnknownEnum
     public fun safeValueOf(rawValue: String): Direction = values().find { it.rawValue == rawValue }
         ?: UNKNOWN__
   }

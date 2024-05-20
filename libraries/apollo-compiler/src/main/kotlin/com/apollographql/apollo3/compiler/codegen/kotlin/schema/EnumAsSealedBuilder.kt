@@ -89,7 +89,9 @@ internal class EnumAsSealedBuilder(
 
   private fun IrEnum.unknownValueTypeSpec(): TypeSpec {
     return TypeSpec.classBuilder("UNKNOWN__")
-        .addKdoc("An enum value that wasn't known at compile time.\nConstructor is annotated with [%T] to prevent instantiation outside of this file.", KotlinSymbols.ApolloEnumConstructor)
+        .addKdoc("An enum value that wasn't known at compile time.\n" +
+            "Note: the `UNKNOWN__` class represents GraphQL enums that are not present in the schema and whose `rawValue` cannot be checked at build time. You may want to update your schema instead of instantiating it directly."
+        )
         .primaryConstructor(unknownValuePrimaryConstructorSpec)
         .superclass(selfClassName)
         .addSuperclassConstructorParameter("rawValue·=·rawValue")
@@ -121,7 +123,12 @@ internal class EnumAsSealedBuilder(
 
   private fun IrEnum.safeValueOfFunSpec(): FunSpec {
     return FunSpec.builder(Identifier.safeValueOf)
-        .addKdoc("Returns the [%T] that represents the specified [rawValue].\n", selfClassName)
+        .addKdoc(
+            "Returns the [%T] that represents the specified [rawValue].\n" +
+                "Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.\n",
+            selfClassName
+        )
+        .addAnnotation(KotlinSymbols.ApolloUnknownEnum)
         .addSuppressions(enum.values.any { it.deprecationReason != null })
         .maybeAddOptIn(context.resolver, enum.values)
         .addParameter("rawValue", KotlinSymbols.String)
@@ -132,7 +139,7 @@ internal class EnumAsSealedBuilder(
                 .map { CodeBlock.of("%S·->·%T", it.name, it.valueClassName()) }
                 .joinToCode(separator = "\n", suffix = "\n")
         )
-        .addCode("else -> @OptIn(%T::class) %T(rawValue)\n", KotlinSymbols.ApolloEnumConstructor, unknownValueClassName())
+        .addCode("else -> @OptIn(%T::class) %T(rawValue)\n", KotlinSymbols.ApolloUnknownEnum, unknownValueClassName())
         .endControlFlow()
         .build()
   }
@@ -169,7 +176,7 @@ internal class EnumAsSealedBuilder(
 
   private val unknownValuePrimaryConstructorSpec =
     FunSpec.constructorBuilder()
-        .addAnnotation(KotlinSymbols.ApolloEnumConstructor)
+        .addAnnotation(KotlinSymbols.ApolloUnknownEnum)
         .addParameter("rawValue", KotlinSymbols.String)
         .build()
 

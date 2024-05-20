@@ -25,6 +25,10 @@ public class AmenityCategory {
     this.rawValue = rawValue;
   }
 
+  /**
+   * Returns the AmenityCategory that represents the specified rawValue.
+   * Note: unknown values of rawValue will return UNKNOWN__. You may want to update your schema instead of calling this method directly.
+   */
   public static AmenityCategory safeValueOf(String rawValue) {
     switch (Objects.requireNonNull(rawValue)) {
       case "Category0": return AmenityCategory.Category0;

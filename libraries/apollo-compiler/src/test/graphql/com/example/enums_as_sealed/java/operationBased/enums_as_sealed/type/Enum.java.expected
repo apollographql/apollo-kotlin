@@ -32,6 +32,10 @@ public class Enum {
     this.rawValue = rawValue;
   }
 
+  /**
+   * Returns the Enum that represents the specified rawValue.
+   * Note: unknown values of rawValue will return UNKNOWN__. You may want to update your schema instead of calling this method directly.
+   */
   @SuppressWarnings("deprecation")
   public static Enum safeValueOf(String rawValue) {
     switch (Objects.requireNonNull(rawValue)) {

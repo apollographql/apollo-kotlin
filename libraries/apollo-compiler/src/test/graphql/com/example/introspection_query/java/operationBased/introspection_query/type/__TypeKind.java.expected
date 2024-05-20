@@ -37,6 +37,10 @@ public class __TypeKind {
     this.rawValue = rawValue;
   }
 
+  /**
+   * Returns the __TypeKind that represents the specified rawValue.
+   * Note: unknown values of rawValue will return UNKNOWN__. You may want to update your schema instead of calling this method directly.
+   */
   public static __TypeKind safeValueOf(String rawValue) {
     switch (Objects.requireNonNull(rawValue)) {
       case "SCALAR": return __TypeKind.SCALAR;

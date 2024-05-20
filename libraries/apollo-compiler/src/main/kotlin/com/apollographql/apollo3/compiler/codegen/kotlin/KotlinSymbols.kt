@@ -105,7 +105,7 @@ internal object KotlinSymbols {
 
   val ApolloAdaptableWith = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloAdaptableWith")
   val ApolloExperimental = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloExperimental")
-  val ApolloEnumConstructor = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloEnumConstructor")
+  val ApolloUnknownEnum = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloUnknownEnum")
 
   val JsExport = ClassName("kotlin.js", "JsExport")
 

@@ -5,6 +5,7 @@
 //
 package com.example.target_name.type
 
+import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
 import kotlin.Deprecated
@@ -40,6 +41,12 @@ public enum class RenamedEnum(
     )
     public fun knownValues(): Array<RenamedEnum> = knownEntries.toTypedArray()
 
+    /**
+     * Returns the [RenamedEnum] that represents the specified [rawValue].
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
+     * schema instead of calling this function directly.
+     */
+    @ApolloUnknownEnum
     public fun safeValueOf(rawValue: String): RenamedEnum =
         values().find { it.rawValue == rawValue } ?: UNKNOWN__
   }

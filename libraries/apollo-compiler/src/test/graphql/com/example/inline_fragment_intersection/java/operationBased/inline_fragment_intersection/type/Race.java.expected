@@ -27,6 +27,10 @@ public class Race {
     this.rawValue = rawValue;
   }
 
+  /**
+   * Returns the Race that represents the specified rawValue.
+   * Note: unknown values of rawValue will return UNKNOWN__. You may want to update your schema instead of calling this method directly.
+   */
   public static Race safeValueOf(String rawValue) {
     switch (Objects.requireNonNull(rawValue)) {
       case "WOOKIE": return Race.WOOKIE;

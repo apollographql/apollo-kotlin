@@ -5,6 +5,7 @@
 //
 package com.example.hero_details.type
 
+import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
 import kotlin.Deprecated
@@ -45,6 +46,12 @@ public enum class Hero_type(
     )
     public fun knownValues(): Array<Hero_type> = knownEntries.toTypedArray()
 
+    /**
+     * Returns the [Hero_type] that represents the specified [rawValue].
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
+     * schema instead of calling this function directly.
+     */
+    @ApolloUnknownEnum
     public fun safeValueOf(rawValue: String): Hero_type = values().find { it.rawValue == rawValue }
         ?: UNKNOWN__
   }

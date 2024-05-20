@@ -28,6 +28,10 @@ public class Direction {
     this.rawValue = rawValue;
   }
 
+  /**
+   * Returns the Direction that represents the specified rawValue.
+   * Note: unknown values of rawValue will return UNKNOWN__. You may want to update your schema instead of calling this method directly.
+   */
   @SuppressWarnings("deprecation")
   public static Direction safeValueOf(String rawValue) {
     switch (Objects.requireNonNull(rawValue)) {

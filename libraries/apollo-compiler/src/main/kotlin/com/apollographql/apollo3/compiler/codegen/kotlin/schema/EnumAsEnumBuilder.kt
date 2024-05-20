@@ -123,6 +123,12 @@ internal class EnumAsEnumBuilder(
   private fun IrEnum.safeValueOfFunSpec(): FunSpec {
     val entries = if (context.isTargetLanguageVersionAtLeast(TargetLanguage.KOTLIN_1_9)) "entries" else "values()"
     return FunSpec.builder("safeValueOf")
+        .addKdoc(
+            "Returns the [%T] that represents the specified [rawValue].\n" +
+                "Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.\n",
+            selfClassName
+        )
+        .addAnnotation(KotlinSymbols.ApolloUnknownEnum)
         .addParameter("rawValue", String::
         class)
         .returns(selfClassName)

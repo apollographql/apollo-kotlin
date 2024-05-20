@@ -56,6 +56,10 @@ public enum GravityAsEnum {
     this.rawValue = rawValue;
   }
 
+  /**
+   * Returns the GravityAsEnum that represents the specified rawValue.
+   * Note: unknown values of rawValue will return UNKNOWN__. You may want to update your schema instead of calling this method directly.
+   */
   @SuppressWarnings("deprecation")
   public static GravityAsEnum safeValueOf(String rawValue) {
     switch (Objects.requireNonNull(rawValue)) {

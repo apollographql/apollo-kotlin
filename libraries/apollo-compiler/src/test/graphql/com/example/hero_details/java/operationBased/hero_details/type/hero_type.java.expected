@@ -28,6 +28,10 @@ public class Hero_type {
     this.rawValue = rawValue;
   }
 
+  /**
+   * Returns the hero_type that represents the specified rawValue.
+   * Note: unknown values of rawValue will return UNKNOWN__. You may want to update your schema instead of calling this method directly.
+   */
   public static Hero_type safeValueOf(String rawValue) {
     switch (Objects.requireNonNull(rawValue)) {
       case "human": return Hero_type.human;

@@ -1,6 +1,6 @@
 package test
 
-import com.apollographql.apollo3.annotations.ApolloEnumConstructor
+import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import enums.kotlin15.type.Direction
 import enums.kotlin15.type.Foo
 import enums.kotlin15.type.FooEnum
@@ -14,6 +14,7 @@ import kotlin.test.assertNotEquals
 
 class EnumsTest {
   @Test
+  @OptIn(ApolloUnknownEnum::class)
   fun kotlinEnums() {
     assertEquals(Direction.NORTH, Direction.safeValueOf("NORTH"))
     @Suppress("DEPRECATION")
@@ -27,15 +28,17 @@ class EnumsTest {
 
   @Test
   fun kotlin19Enums() {
+    @OptIn(ApolloUnknownEnum::class)
     assertEquals(enums.kotlin19.type.Direction.safeValueOf("NORTH"), enums.kotlin19.type.Direction.NORTH)
   }
 
   @Test
+  @OptIn(ApolloUnknownEnum::class)
   fun kotlinSealedClasses() {
     assertEquals(Gravity.TOP, Gravity.safeValueOf("TOP"))
     @Suppress("DEPRECATION")
     assertEquals(Gravity.top2, Gravity.safeValueOf("top2"))
-    assertEquals(@OptIn(ApolloEnumConstructor::class) Gravity.UNKNOWN__("newGravity"), Gravity.safeValueOf("newGravity"))
+    assertEquals(Gravity.UNKNOWN__("newGravity"), Gravity.safeValueOf("newGravity"))
     assertEquals(Gravity.name, Gravity.safeValueOf("name"))
     assertEquals(Gravity.ordinal, Gravity.safeValueOf("ordinal"))
     assertEquals(Gravity.type__, Gravity.safeValueOf("type"))
@@ -86,6 +89,7 @@ class EnumsTest {
   }
 
   @Test
+  @OptIn(ApolloUnknownEnum::class)
   fun type() {
     assertEquals(Direction.type__, Direction.safeValueOf("type"))
     assertEquals(Gravity.type__, Gravity.safeValueOf("type"))

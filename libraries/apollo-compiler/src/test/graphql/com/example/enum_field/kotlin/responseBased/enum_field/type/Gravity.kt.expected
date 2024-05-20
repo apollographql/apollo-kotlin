@@ -5,6 +5,7 @@
 //
 package com.example.enum_field.type
 
+import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
 import kotlin.Deprecated
@@ -55,6 +56,12 @@ public enum class Gravity(
     )
     public fun knownValues(): Array<Gravity> = knownEntries.toTypedArray()
 
+    /**
+     * Returns the [Gravity] that represents the specified [rawValue].
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
+     * schema instead of calling this function directly.
+     */
+    @ApolloUnknownEnum
     public fun safeValueOf(rawValue: kotlin.String): Gravity =
         entries.find { it.rawValue == rawValue } ?: UNKNOWN__
   }

@@ -5,6 +5,7 @@
 //
 package com.example.introspection_query.type
 
+import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
 import kotlin.Deprecated
@@ -55,6 +56,12 @@ public enum class __TypeKind(
     )
     public fun knownValues(): Array<__TypeKind> = knownEntries.toTypedArray()
 
+    /**
+     * Returns the [__TypeKind] that represents the specified [rawValue].
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
+     * schema instead of calling this function directly.
+     */
+    @ApolloUnknownEnum
     public fun safeValueOf(rawValue: String): __TypeKind = values().find { it.rawValue == rawValue }
         ?: UNKNOWN__
   }

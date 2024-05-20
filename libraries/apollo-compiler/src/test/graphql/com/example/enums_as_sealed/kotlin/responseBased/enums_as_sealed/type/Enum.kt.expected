@@ -5,7 +5,7 @@
 //
 package com.example.enums_as_sealed.type
 
-import com.apollographql.apollo3.annotations.ApolloEnumConstructor
+import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Any
 import kotlin.Array
@@ -23,7 +23,10 @@ public sealed class Enum(
 
     /**
      * Returns the [Enum] that represents the specified [rawValue].
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
+     * schema instead of calling this function directly.
      */
+    @ApolloUnknownEnum
     @Suppress("DEPRECATION")
     public fun safeValueOf(rawValue: String): Enum = when(rawValue) {
       "north" -> north
@@ -31,7 +34,7 @@ public sealed class Enum(
       "NORTH" -> NORTH
       "SOUTH" -> SOUTH
       "type" -> type_
-      else -> @OptIn(ApolloEnumConstructor::class) UNKNOWN__(rawValue)
+      else -> @OptIn(ApolloUnknownEnum::class) UNKNOWN__(rawValue)
     }
 
     /**
@@ -60,10 +63,11 @@ public sealed class Enum(
 
   /**
    * An enum value that wasn't known at compile time.
-   * Constructor is annotated with [ApolloEnumConstructor] to prevent instantiation outside of this
-   * file.
+   * Note: the `UNKNOWN__` class represents GraphQL enums that are not present in the schema and
+   * whose `rawValue` cannot be checked at build time. You may want to update your schema instead of
+   * instantiating it directly.
    */
-  public class UNKNOWN__ @ApolloEnumConstructor constructor(
+  public class UNKNOWN__ @ApolloUnknownEnum constructor(
     rawValue: String,
   ) : Enum(rawValue = rawValue) {
     override fun equals(other: Any?): Boolean {

@@ -23,6 +23,10 @@ public class RenamedEnum {
     this.rawValue = rawValue;
   }
 
+  /**
+   * Returns the ReservedEnum that represents the specified rawValue.
+   * Note: unknown values of rawValue will return UNKNOWN__. You may want to update your schema instead of calling this method directly.
+   */
   public static RenamedEnum safeValueOf(String rawValue) {
     switch (Objects.requireNonNull(rawValue)) {
       case "VALUE": return RenamedEnum.VALUE;

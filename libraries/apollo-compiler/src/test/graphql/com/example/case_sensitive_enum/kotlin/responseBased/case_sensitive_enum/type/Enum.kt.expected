@@ -5,6 +5,7 @@
 //
 package com.example.case_sensitive_enum.type
 
+import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
 import kotlin.Deprecated
@@ -50,6 +51,12 @@ public enum class Enum(
     )
     public fun knownValues(): Array<Enum> = knownEntries.toTypedArray()
 
+    /**
+     * Returns the [Enum] that represents the specified [rawValue].
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
+     * schema instead of calling this function directly.
+     */
+    @ApolloUnknownEnum
     public fun safeValueOf(rawValue: String): Enum = values().find { it.rawValue == rawValue } ?:
         UNKNOWN__
   }
