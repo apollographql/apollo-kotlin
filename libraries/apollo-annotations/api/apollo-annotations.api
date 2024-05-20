@@ -27,9 +27,6 @@ public final class com/apollographql/apollo3/annotations/ApolloDeprecatedSince$V
 	public static fun values ()[Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
 }
 
-public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloEnumConstructor : java/lang/annotation/Annotation {
-}
-
 public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloExperimental : java/lang/annotation/Annotation {
 }
 
@@ -37,6 +34,9 @@ public abstract interface annotation class com/apollographql/apollo3/annotations
 }
 
 public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloRequiresOptIn : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloUnknownEnum : java/lang/annotation/Annotation {
 }
 
 public abstract interface annotation class com/apollographql/apollo3/annotations/GraphQLAdapter : java/lang/annotation/Annotation {
