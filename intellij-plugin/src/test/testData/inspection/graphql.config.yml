@@ -1,0 +1,11 @@
+<error descr="A GraphQL config file is not needed with Apollo Kotlin 4 projects" textAttributesKey="ERRORS_ATTRIBUTES"><error descr="A GraphQL config file is not needed with Apollo Kotlin 4 projects" textAttributesKey="ERRORS_ATTRIBUTES">
+projects:
+  main:
+    schema: src/main/graphql/schema.graphqls
+    documents: '**/*.graphql'
+    extensions:
+      endpoints:
+        main: "https://apollo-fullstack-tutorial.herokuapp.com/graphql"
+      apollo-key: ${APOLLO_KEY}
+
+</error></error>
