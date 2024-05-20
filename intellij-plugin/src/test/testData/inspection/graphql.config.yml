@@ -1,4 +1,4 @@
-<error descr="A GraphQL config file is not needed with Apollo Kotlin 4 projects" textAttributesKey="ERRORS_ATTRIBUTES"><error descr="A GraphQL config file is not needed with Apollo Kotlin 4 projects" textAttributesKey="ERRORS_ATTRIBUTES">
+<error descr="A GraphQL config file is not needed in Apollo Kotlin 4 projects" textAttributesKey="ERRORS_ATTRIBUTES"><error descr="A GraphQL config file is not needed in Apollo Kotlin 4 projects" textAttributesKey="ERRORS_ATTRIBUTES">
 projects:
   main:
     schema: src/main/graphql/schema.graphqls
