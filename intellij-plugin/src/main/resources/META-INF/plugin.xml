@@ -177,6 +177,39 @@
         level="WARNING"
     />
 
+    <!-- "GraphQL config file present" inspection -->
+    <!--suppress PluginXmlCapitalization, PluginXmlExtensionRegistration -->
+    <localInspection
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.graphQLConfigFilePresent.displayName"
+        enabledByDefault="true"
+        level="ERROR"
+    />
+
+    <annotator
+        language="yaml"
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator"/>
+
+    <annotator
+        language="JSON"
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator"/>
+
+    <annotator
+        language="TEXT"
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator"/>
+
+    <annotator
+        language="TypeScript"
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator"/>
+
+    <annotator
+        language="ECMAScript 6"
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator"/>
+
+    <problemFileHighlightFilter implementation="com.apollographql.ijplugin.inspection.GraphQLConfigFileFilter"/>
+
     <!-- "Change input class constructor to builder" intention -->
     <intentionAction>
       <language>kotlin</language>
