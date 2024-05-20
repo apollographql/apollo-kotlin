@@ -2,8 +2,6 @@ type Query {
     foo: Int
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 type __Schema {
     description: String
 
@@ -18,8 +16,6 @@ type __Schema {
     directives: [__Directive!]!
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 type __Type {
     kind: __TypeKind!
 
@@ -42,8 +38,6 @@ type __Type {
     specifiedByURL: String
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 enum __TypeKind {
     SCALAR
 
@@ -62,8 +56,6 @@ enum __TypeKind {
     NON_NULL
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 type __Field {
     name: String!
 
@@ -78,8 +70,6 @@ type __Field {
     deprecationReason: String
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 type __InputValue {
     name: String!
 
@@ -94,8 +84,6 @@ type __InputValue {
     deprecationReason: String
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 type __EnumValue {
     name: String!
 
@@ -106,8 +94,6 @@ type __EnumValue {
     deprecationReason: String
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 type __Directive {
     name: String!
 
@@ -120,8 +106,6 @@ type __Directive {
     isRepeatable: Boolean!
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 enum __DirectiveLocation {
     QUERY
 
@@ -162,20 +146,12 @@ enum __DirectiveLocation {
     INPUT_FIELD_DEFINITION
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 directive @skip (if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 directive @include (if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 directive @deprecated (reason: String = "No longer supported") on FIELD_DEFINITION|ARGUMENT_DEFINITION|INPUT_FIELD_DEFINITION|ENUM_VALUE
 
 directive @defer (label: String, if: Boolean! = true) on FRAGMENT_SPREAD|INLINE_FRAGMENT
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 directive @specifiedBy (url: String!) on SCALAR

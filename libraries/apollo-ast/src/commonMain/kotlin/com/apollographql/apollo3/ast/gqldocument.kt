@@ -196,12 +196,7 @@ fun GQLDocument.toSDL(indent: String = "  "): String {
 
       definition is GQLTypeDefinition && definition.name in GQLTypeDefinition.builtInTypes ||
           definition is GQLDirectiveDefinition && definition.name in GQLDirectiveDefinition.builtInDirectives -> {
-        // Tools like the GraphQL intelliJ plugin expect a "server" schema, without builtin types
-        // Suppress the errors for now
-        buffer.writeUtf8("# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665\n")
-        buffer.writeUtf8("# noinspection GraphQLTypeRedefinition\n")
         writer.write(definition)
-
       }
 
       else -> {
