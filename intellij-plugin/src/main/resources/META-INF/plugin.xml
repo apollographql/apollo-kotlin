@@ -63,6 +63,10 @@
     <!-- icon per element type -->
     <iconProvider implementation="com.apollographql.ijplugin.icons.GraphQLIconProvider" order="first" />
 
+    <!-- Support for the "New UI" -->
+    <!-- See https://plugins.jetbrains.com/docs/intellij/icons.html#new-ui-icons -->
+    <iconMapper mappingFile="ApolloIconsMapping.json" />
+
     <!-- Fields insights inspection ("expensive field") -->
     <!--suppress PluginXmlCapitalization -->
     <localInspection
