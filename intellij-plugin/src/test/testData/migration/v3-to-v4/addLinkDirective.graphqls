@@ -1,0 +1,4 @@
+extend type dog @typePolicy(keyFields: "id")
+extend type Cat @typePolicy(keyFields: "id")
+
+extend type Query @fieldPolicy(forField: "animal" keyArgs: "id")

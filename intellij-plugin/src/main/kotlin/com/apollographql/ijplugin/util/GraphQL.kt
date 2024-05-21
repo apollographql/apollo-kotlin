@@ -1,6 +1,5 @@
-package com.apollographql.ijplugin.inspection
+package com.apollographql.ijplugin.util
 
-import com.apollographql.ijplugin.util.findPsiFileByUrl
 import com.intellij.lang.jsgraphql.ide.config.GraphQLConfigProvider
 import com.intellij.lang.jsgraphql.psi.GraphQLDirective
 import com.intellij.lang.jsgraphql.psi.GraphQLElement

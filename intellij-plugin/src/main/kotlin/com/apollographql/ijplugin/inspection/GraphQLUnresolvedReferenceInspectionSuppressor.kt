@@ -2,6 +2,11 @@ package com.apollographql.ijplugin.inspection
 
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
 import com.apollographql.apollo3.ast.linkDefinitions
+import com.apollographql.ijplugin.util.NULLABILITY_DEFINITIONS
+import com.apollographql.ijplugin.util.NULLABILITY_URL
+import com.apollographql.ijplugin.util.directives
+import com.apollographql.ijplugin.util.isImported
+import com.apollographql.ijplugin.util.nameWithoutPrefix
 import com.intellij.codeInspection.InspectionSuppressor
 import com.intellij.codeInspection.SuppressQuickFix
 import com.intellij.lang.jsgraphql.psi.GraphQLArgument

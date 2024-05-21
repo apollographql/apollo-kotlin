@@ -1,24 +1,26 @@
 @file:OptIn(ApolloInternal::class)
 
-package com.apollographql.ijplugin.inspection
+package com.apollographql.ijplugin.util
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
+import com.apollographql.apollo3.ast.GQLNamed
 import com.apollographql.apollo3.ast.KOTLIN_LABS_VERSION
 import com.apollographql.apollo3.ast.NULLABILITY_VERSION
 import com.apollographql.apollo3.ast.kotlinLabsDefinitions
 import com.apollographql.apollo3.ast.nullabilityDefinitions
-import com.apollographql.ijplugin.util.quoted
-import com.apollographql.ijplugin.util.unquoted
+import com.apollographql.apollo3.ast.rawType
 import com.intellij.lang.jsgraphql.psi.GraphQLArrayValue
 import com.intellij.lang.jsgraphql.psi.GraphQLDirective
 import com.intellij.lang.jsgraphql.psi.GraphQLElement
+import com.intellij.lang.jsgraphql.psi.GraphQLElementFactory
 import com.intellij.lang.jsgraphql.psi.GraphQLFile
 import com.intellij.lang.jsgraphql.psi.GraphQLNamedElement
 import com.intellij.lang.jsgraphql.psi.GraphQLSchemaDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLSchemaExtension
 import com.intellij.lang.jsgraphql.psi.GraphQLStringValue
+import com.intellij.openapi.project.Project
 
 const val NULLABILITY_URL = "https://specs.apollo.dev/nullability/$NULLABILITY_VERSION"
 
@@ -79,10 +81,48 @@ private fun GraphQLFile.hasImportFor(name: String, isDirective: Boolean, definit
   return false
 }
 
-val String.nameWithoutPrefix get() = substringAfter("__")
+private val String.nameWithoutPrefix get() = substringAfter("__")
 
 val GraphQLNamedElement.nameWithoutPrefix get() = name!!.nameWithoutPrefix
 
 fun String.nameForImport(isDirective: Boolean) = "${if (isDirective) "@" else ""}${this.nameWithoutPrefix}"
 
 val GraphQLNamedElement.nameForImport get() = if (this is GraphQLDirective) "@$nameWithoutPrefix" else nameWithoutPrefix
+
+
+fun createLinkDirectiveSchemaExtension(
+    project: Project,
+    importedNames: Set<String>,
+    definitions: List<GQLDefinition>,
+    definitionsUrl: String,
+): GraphQLSchemaExtension {
+  // If any of the imported name is a directive, add its argument types to the import list
+  val knownDefinitionNames = definitions.filterIsInstance<GQLNamed>().map { it.name }
+  val additionalNames = importedNames.flatMap { importedName ->
+    definitions.directives().firstOrNull { "@${it.name}" == importedName }
+        ?.arguments
+        ?.map { it.type.rawType().name }
+        ?.filter { it in knownDefinitionNames }.orEmpty()
+  }.toSet()
+
+  return GraphQLElementFactory.createFile(
+      project,
+      """
+        extend schema
+        @link(
+          url: "$definitionsUrl",
+          import: [${(importedNames + additionalNames).joinToString { it.quoted() }}]
+        )
+      """.trimIndent()
+  )
+      .findChildrenOfType<GraphQLSchemaExtension>().single()
+}
+
+fun createLinkDirective(
+    project: Project,
+    importedNames: Set<String>,
+    definitions: List<GQLDefinition>,
+    definitionsUrl: String,
+): GraphQLDirective {
+  return createLinkDirectiveSchemaExtension(project, importedNames, definitions, definitionsUrl).directives.single()
+}

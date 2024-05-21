@@ -49,6 +49,9 @@ class ApolloV3ToV4MigrationTest : ApolloTestCase() {
   @Test
   fun testUpdateEnumClassUpperCase() = runMigration()
 
+  @Test
+  fun testAddLinkDirective() = runMigration(extension = "graphqls", fileNameInProject = "extra.graphqls")
+
   private fun runMigration(extension: String = "kt", fileNameInProject: String? = null) {
     val fileBaseName = getTestName(true)
     if (fileNameInProject != null) {
