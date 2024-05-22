@@ -239,10 +239,10 @@
         default="false"
     />
 
-    <!-- Rename operation -->
+    <!-- Rename GraphQL operation or fragment definition -->
     <renamePsiElementProcessor
-        id="apollo.GraphQLOperationRenameProcessor"
-        implementation="com.apollographql.ijplugin.refactoring.GraphQLOperationRenameProcessor"
+        id="apollo.GraphQLDefinitionRenameProcessor"
+        implementation="com.apollographql.ijplugin.refactoring.GraphQLDefinitionRenameProcessor"
         order="first"
     />
   </extensions>

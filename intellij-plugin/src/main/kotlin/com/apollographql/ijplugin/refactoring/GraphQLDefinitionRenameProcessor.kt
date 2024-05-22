@@ -17,7 +17,11 @@ import com.intellij.refactoring.rename.RenamePsiElementProcessor
 import com.intellij.usageView.UsageInfo
 import com.intellij.util.Processor
 
-class GraphQLOperationRenameProcessor : RenamePsiElementProcessor() {
+/**
+ * Allows to rename the corresponding usage in Kotlin code when renaming a GraphQL operation or fragment definition.
+ * The file name is also renamed if it matches the current operation or fragment name (as is customary).
+ */
+class GraphQLDefinitionRenameProcessor : RenamePsiElementProcessor() {
   private var newName: String = ""
 
   override fun canProcessElement(element: PsiElement): Boolean {
