@@ -1,8 +1,10 @@
 package com.apollographql.ijplugin.refactoring
 
 import com.apollographql.ijplugin.navigation.compat.KotlinFindUsagesHandlerFactoryCompat
+import com.apollographql.ijplugin.navigation.findKotlinFragmentClassDefinitions
 import com.apollographql.ijplugin.navigation.findKotlinOperationDefinitions
 import com.apollographql.ijplugin.util.isGenerated
+import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLIdentifier
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
 import com.intellij.openapi.editor.Editor
@@ -19,7 +21,7 @@ class GraphQLOperationRenameProcessor : RenamePsiElementProcessor() {
   private var newName: String = ""
 
   override fun canProcessElement(element: PsiElement): Boolean {
-    return element is GraphQLIdentifier && element.parent is GraphQLTypedOperationDefinition
+    return element is GraphQLIdentifier && (element.parent is GraphQLTypedOperationDefinition || element.parent is GraphQLFragmentDefinition)
   }
 
   override fun createRenameDialog(
@@ -28,6 +30,9 @@ class GraphQLOperationRenameProcessor : RenamePsiElementProcessor() {
       nameSuggestionContext: PsiElement?,
       editor: Editor?,
   ): RenameDialog {
+    if (element.parent !is GraphQLTypedOperationDefinition) {
+      return super.createRenameDialog(project, element, nameSuggestionContext, editor)
+    }
     return object : RenameDialog(project, element, nameSuggestionContext, editor) {
       override fun getFullName(): String {
         val definition = element.parent as GraphQLTypedOperationDefinition
@@ -60,17 +65,29 @@ class GraphQLOperationRenameProcessor : RenamePsiElementProcessor() {
       searchScope: SearchScope,
       searchInCommentsAndStrings: Boolean,
   ): Collection<PsiReference> {
-    if (!(newName.endsWith("Query") || newName.endsWith("Mutation") || newName.endsWith("Subscription"))) {
-      // When useSemanticNaming is true (the default), renaming e.g. FooQuery to FooQuery2 will generate FooQuery2Query.
-      // For now we'll only support the happy case, and won't try to rename references otherwise.
-      // TODO We could support this by looking at the value of useSemanticNaming from the Gradle Tooling Model, and implementing
-      // the same naming logic as the Apollo compiler.
+    val references = mutableListOf<PsiReference>()
+    val kotlinDefinitions = when (val parent = element.parent) {
+      is GraphQLTypedOperationDefinition -> {
+        if (!(newName.endsWith("Query") || newName.endsWith("Mutation") || newName.endsWith("Subscription"))) {
+          // When useSemanticNaming is true (the default), renaming e.g. FooQuery to FooQuery2 will generate FooQuery2Query.
+          // For now we'll only support the happy case, and won't try to rename references otherwise.
+          // TODO: We could support this by looking at the value of useSemanticNaming from the Gradle Tooling Model, and implementing
+          // the same naming logic as the Apollo compiler.
+          return super.findReferences(element, searchScope, searchInCommentsAndStrings)
+        }
+
+        findKotlinOperationDefinitions(parent)
+      }
+
+      is GraphQLFragmentDefinition -> {
+        findKotlinFragmentClassDefinitions(parent)
+      }
+
+      else -> emptyList()
+    }.ifEmpty {
       return super.findReferences(element, searchScope, searchInCommentsAndStrings)
     }
 
-    val references = mutableListOf<PsiReference>()
-    val parent = element.parent as GraphQLTypedOperationDefinition
-    val kotlinDefinitions = findKotlinOperationDefinitions(parent)
     val kotlinFindUsagesHandlerFactory = KotlinFindUsagesHandlerFactoryCompat(element.project)
     val processor = object : Processor<UsageInfo> {
       override fun process(t: UsageInfo): Boolean {
