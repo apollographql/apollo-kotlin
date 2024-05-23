@@ -28,7 +28,7 @@ class CodegenMetadata(
     }
     return CodegenMetadata(
         targetLanguage = targetLanguage,
-        entries = entries + other.entries
+        entries = (entries + other.entries).sortedBy { it.key.id }
     )
   }
 }

@@ -110,7 +110,7 @@ private abstract class GenerateSourcesFromIr : WorkAction<GenerateSourcesFromIrP
           codegenSchema = codegenSchema,
           irOperations = irOperations.get().asFile.toIrOperations(),
           downstreamUsedCoordinates = downstreamUsedCoordinates.get().toUsedCoordinates(),
-          upstreamCodegenMetadata = upstreamMetadata.files.map { it.toCodegenMetadata() },
+          upstreamCodegenMetadata = upstreamMetadata.files.sortedBy { it.name }.map { it.toCodegenMetadata() },
           codegenOptions = codegenOptions.get().asFile.toCodegenOptions(),
           layout = plugin?.layout(codegenSchema),
           irOperationsTransform = plugin?.irOperationsTransform(),

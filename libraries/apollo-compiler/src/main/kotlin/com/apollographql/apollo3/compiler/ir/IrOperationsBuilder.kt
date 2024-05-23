@@ -245,12 +245,12 @@ internal class IrOperationsBuilder(
     }
 
     return IrOperations(
-        operations = operations,
-        fragments = fragments,
+        operations = operations.sortedBy { it.name },
+        fragments = fragments.sortedBy { it.name },
         usedCoordinates = usedCoordinates,
         flattenModels = flattenModels,
         decapitalizeFields = decapitalizeFields,
-        fragmentDefinitions = fragmentDefinitions,
+        fragmentDefinitions = fragmentDefinitions.sortedBy { it.name },
         codegenModels = codegenModels
     )
   }

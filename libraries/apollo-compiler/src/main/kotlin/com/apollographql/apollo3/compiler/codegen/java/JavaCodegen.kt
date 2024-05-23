@@ -106,7 +106,7 @@ private fun buildOutput(
       javaFiles,
       CodegenMetadata(
           targetLanguage = TargetLanguage.JAVA,
-          entries = resolver.entries()
+          entries = resolver.entries().sortedBy { it.key.id }
       )
   ).maybeTransform(javaOutputTransform)
 }

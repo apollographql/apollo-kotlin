@@ -132,7 +132,7 @@ private fun buildOutput(
       }
   return KotlinOutput(
       fileSpecs = fileSpecs,
-      codegenMetadata = CodegenMetadata(targetLanguage = targetLanguage, entries = resolver.entries())
+      codegenMetadata = CodegenMetadata(targetLanguage = targetLanguage, entries = resolver.entries().sortedBy { it.key.id })
   ).maybeTransform(kotlinOutputTransform)
 }
 
