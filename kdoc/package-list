@@ -52,6 +52,7 @@ module:apollo-debug-server
 com.apollographql.apollo3.debugserver
 module:apollo-engine-ktor
 com.apollographql.apollo3.network
+com.apollographql.apollo3.network.adapter
 com.apollographql.apollo3.network.http
 com.apollographql.apollo3.network.ws
 module:apollo-gradle-plugin-external
