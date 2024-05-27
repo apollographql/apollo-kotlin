@@ -2,6 +2,7 @@ package com.apollographql.ijplugin.inspection
 
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
 import com.apollographql.apollo3.ast.linkDefinitions
+import com.apollographql.ijplugin.util.KOTLIN_LABS_DEFINITIONS
 import com.apollographql.ijplugin.util.NULLABILITY_DEFINITIONS
 import com.apollographql.ijplugin.util.NULLABILITY_URL
 import com.apollographql.ijplugin.util.directives
@@ -50,5 +51,6 @@ private fun PsiElement.isKnownDirective(): Boolean {
 private fun PsiElement.isKnownDirectiveArgument(): Boolean {
   return this is GraphQLArgument &&
       parent?.parent?.isKnownDirective() == true &&
-      name in KNOWN_DIRECTIVES.firstOrNull { it.name == (parent.parent as GraphQLDirective).nameWithoutPrefix }?.arguments?.map { it.name }.orEmpty()
+      name in KNOWN_DIRECTIVES.firstOrNull { it.name == (parent.parent as GraphQLDirective).nameWithoutPrefix }?.arguments?.map { it.name }
+      .orEmpty()
 }
