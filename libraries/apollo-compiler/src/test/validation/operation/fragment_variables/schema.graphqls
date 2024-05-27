@@ -5828,8 +5828,6 @@ type UserModData {
     email: String
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 """
 A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations.
 """
@@ -5860,8 +5858,6 @@ type __Schema {
     directives: [__Directive!]!
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 """
 The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
 
@@ -5887,8 +5883,6 @@ type __Type {
     ofType: __Type
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 """
 An enum describing what kind of type a given `__Type` is.
 """
@@ -5934,8 +5928,6 @@ enum __TypeKind {
     NON_NULL
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 """
 Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type.
 """
@@ -5953,8 +5945,6 @@ type __Field {
     deprecationReason: String
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 """
 Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value.
 """
@@ -5971,8 +5961,6 @@ type __InputValue {
     defaultValue: String
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 """
 One possible value for a given Enum. Enum values are unique values, not a placeholder for a string or numeric value. However an Enum value is returned in a JSON response as a string.
 """
@@ -5986,8 +5974,6 @@ type __EnumValue {
     deprecationReason: String
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 """
 A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.
 
@@ -6009,8 +5995,6 @@ type __Directive {
     onField: Boolean! @deprecated(reason: "Use `locations`.")
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 """
 A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies.
 """
@@ -6106,22 +6090,16 @@ enum __DirectiveLocation {
     INPUT_FIELD_DEFINITION
 }
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 """
 Directs the executor to include this field or fragment only when the `if` argument is true.
 """
 directive @include ("Included when true." if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 """
 Directs the executor to skip this field or fragment when the `if` argument is true.
 """
 directive @skip ("Skipped when true." if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
 
-# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
-# noinspection GraphQLTypeRedefinition
 """
 Marks an element of a GraphQL schema as no longer supported.
 """
