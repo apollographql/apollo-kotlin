@@ -1,0 +1,3 @@
+query GetField7 {
+  field7
+}
