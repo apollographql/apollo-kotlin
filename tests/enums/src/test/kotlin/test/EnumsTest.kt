@@ -38,7 +38,7 @@ class EnumsTest {
     assertEquals(Gravity.TOP, Gravity.safeValueOf("TOP"))
     @Suppress("DEPRECATION")
     assertEquals(Gravity.top2, Gravity.safeValueOf("top2"))
-    assertEquals(Gravity.UNKNOWN__("newGravity"), Gravity.safeValueOf("newGravity"))
+    assertIs<Gravity.UNKNOWN__>(Gravity.safeValueOf("newGravity"))
     assertEquals(Gravity.name, Gravity.safeValueOf("name"))
     assertEquals(Gravity.ordinal, Gravity.safeValueOf("ordinal"))
     assertEquals(Gravity.type__, Gravity.safeValueOf("type"))
