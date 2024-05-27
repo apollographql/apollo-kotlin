@@ -173,7 +173,14 @@ object ApolloCompiler {
      * Step 1: parse the documents
      */
     val definitions = mutableListOf<GQLDefinition>()
-    executableFiles.forEach { normalizedFile ->
+    /**
+     * Sort the input files.
+     * The generated Kotlin code does not depend on the order of the inputs but in case we're serializing the
+     * intermediate usedCoordinates, their order depends on the order of the input files.
+     *
+     * See https://github.com/apollographql/apollo-kotlin/pull/5916
+     */
+    executableFiles.sortedBy { it.normalizedPath }.forEach { normalizedFile ->
       val fileDefinitions = normalizedFile.file.definitions()
 
       definitions.addAll(fileDefinitions)
