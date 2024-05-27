@@ -178,6 +178,7 @@ object ApolloCompiler {
      * The generated Kotlin code does not depend on the order of the inputs but in case we're serializing the
      * intermediate usedCoordinates, their order depends on the order of the input files.
      *
+     * See https://github.com/gradle/gradle/issues/29321
      * See https://github.com/apollographql/apollo-kotlin/pull/5916
      */
     executableFiles.sortedBy { it.normalizedPath }.forEach { normalizedFile ->
