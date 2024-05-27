@@ -5,6 +5,7 @@ import org.junit.Assert
 import org.junit.Test
 import util.TestUtils
 import java.io.File
+import kotlin.test.assertEquals
 
 class GradleBuildCacheTests {
 
@@ -52,5 +53,14 @@ class GradleBuildCacheTests {
             "leaf:generateServiceApolloIrOperations", "root:generateServiceApolloIrOperations", "root:generateServiceApolloOptions"
         )
     )
+  }
+
+  @Test
+  fun checkOrder() {
+    TestUtils.withTestProject("multi-modules") { dir ->
+      TestUtils.executeTaskAndAssertSuccess(":leaf:generateServiceApolloSources", dir)
+
+      assertEquals(File("expectedIr.json").readText(), dir.resolve("leaf/build/generated/ir/apollo/service/ir.json").readText())
+    }
   }
 }

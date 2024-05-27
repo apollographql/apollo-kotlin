@@ -16,6 +16,7 @@ apollo {
     packageNamesFromFilePaths()
     generateApolloMetadata.set(true)
     mapScalar("Date", "java.util.Date")
+    generateDataBuilders.set(true)
     isADependencyOf(project(":leaf"))
   }
 }
