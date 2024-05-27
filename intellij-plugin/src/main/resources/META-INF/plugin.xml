@@ -185,7 +185,7 @@
         groupKey="inspection.group.graphql.apolloKotlin"
         key="inspection.graphQLConfigFilePresent.displayName"
         enabledByDefault="true"
-        level="ERROR"
+        level="WARNING"
     />
 
     <annotator

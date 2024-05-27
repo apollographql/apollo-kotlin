@@ -70,7 +70,7 @@ class ApolloGraphQLConfigFilePresentAnnotator : Annotator {
   override fun annotate(element: PsiElement, holder: AnnotationHolder) {
     if (!element.project.apolloProjectService.apolloVersion.isAtLeastV4 || !element.project.projectSettingsState.contributeConfigurationToGraphqlPlugin) return
     if (element.containingFile.name in graphQLConfigFileNames && element.containingFile == element) {
-      holder.newAnnotation(HighlightSeverity.ERROR, ApolloBundle.message("inspection.graphQLConfigFilePresent.reportText"))
+      holder.newAnnotation(HighlightSeverity.WARNING, ApolloBundle.message("inspection.graphQLConfigFilePresent.reportText"))
           .range(element)
           .create()
     }
