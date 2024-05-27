@@ -10,8 +10,8 @@ import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
-import com.apollographql.ijplugin.inspection.schemaFiles
 import com.apollographql.ijplugin.util.logw
+import com.apollographql.ijplugin.util.schemaFiles
 import com.intellij.lang.jsgraphql.psi.GraphQLFile
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiDocumentManager

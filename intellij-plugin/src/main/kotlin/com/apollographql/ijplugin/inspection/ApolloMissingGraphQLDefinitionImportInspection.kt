@@ -12,9 +12,18 @@ import com.apollographql.ijplugin.gradle.gradleToolingModelService
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
+import com.apollographql.ijplugin.util.KOTLIN_LABS_DEFINITIONS
+import com.apollographql.ijplugin.util.KOTLIN_LABS_URL
+import com.apollographql.ijplugin.util.NULLABILITY_DEFINITIONS
+import com.apollographql.ijplugin.util.NULLABILITY_URL
 import com.apollographql.ijplugin.util.cast
-import com.apollographql.ijplugin.util.findChildrenOfType
-import com.apollographql.ijplugin.util.quoted
+import com.apollographql.ijplugin.util.createLinkDirective
+import com.apollographql.ijplugin.util.createLinkDirectiveSchemaExtension
+import com.apollographql.ijplugin.util.directives
+import com.apollographql.ijplugin.util.isImported
+import com.apollographql.ijplugin.util.linkDirectives
+import com.apollographql.ijplugin.util.nameForImport
+import com.apollographql.ijplugin.util.schemaFiles
 import com.apollographql.ijplugin.util.unquoted
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInsight.intention.preview.IntentionPreviewUtils
@@ -26,7 +35,6 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.jsgraphql.psi.GraphQLArrayValue
 import com.intellij.lang.jsgraphql.psi.GraphQLDirective
 import com.intellij.lang.jsgraphql.psi.GraphQLElementFactory
-import com.intellij.lang.jsgraphql.psi.GraphQLSchemaExtension
 import com.intellij.lang.jsgraphql.psi.GraphQLVisitor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
@@ -138,41 +146,4 @@ private class ImportDefinitionQuickFix(
       linkDirective.replace(createLinkDirective(project, importedNames, definitions, definitionsUrl))
     }
   }
-}
-
-private fun createLinkDirectiveSchemaExtension(
-    project: Project,
-    importedNames: Set<String>,
-    definitions: List<GQLDefinition>,
-    definitionsUrl: String,
-): GraphQLSchemaExtension {
-  // If any of the imported name is a directive, add its argument types to the import list
-  val knownDefinitionNames = definitions.filterIsInstance<GQLNamed>().map { it.name }
-  val additionalNames = importedNames.flatMap { importedName ->
-    definitions.directives().firstOrNull { "@${it.name}" == importedName }
-        ?.arguments
-        ?.map { it.type.rawType().name }
-        ?.filter { it in knownDefinitionNames }.orEmpty()
-  }.toSet()
-
-  return GraphQLElementFactory.createFile(
-      project,
-      """
-        extend schema
-        @link(
-          url: "$definitionsUrl",
-          import: [${(importedNames + additionalNames).joinToString { it.quoted() }}]
-        )
-      """.trimIndent()
-  )
-      .findChildrenOfType<GraphQLSchemaExtension>().single()
-}
-
-private fun createLinkDirective(
-    project: Project,
-    importedNames: Set<String>,
-    definitions: List<GQLDefinition>,
-    definitionsUrl: String,
-): GraphQLDirective {
-  return createLinkDirectiveSchemaExtension(project, importedNames, definitions, definitionsUrl).directives.single()
 }
