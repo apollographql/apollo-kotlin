@@ -238,6 +238,13 @@
         groupKey="advanced.setting.apollo"
         default="false"
     />
+
+    <!-- Rename GraphQL operation or fragment definition -->
+    <renamePsiElementProcessor
+        id="apollo.GraphQLDefinitionRenameProcessor"
+        implementation="com.apollographql.ijplugin.refactoring.GraphQLDefinitionRenameProcessor"
+        order="first"
+    />
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij.lang.jsgraphql">
