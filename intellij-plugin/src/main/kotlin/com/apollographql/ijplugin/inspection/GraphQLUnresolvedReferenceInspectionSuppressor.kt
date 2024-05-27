@@ -34,7 +34,7 @@ class GraphQLUnresolvedReferenceInspectionSuppressor : InspectionSuppressor {
 
       // We need to suppress this one too because the plugin doesn't know that certain directives (e.g. @link) are repeatable
       "GraphQLDuplicateDirective" -> element is GraphQLDirective &&
-          (element.name == "link" || KNOWN_DIRECTIVES.any { it.name == element.name && it.repeatable })
+          KNOWN_DIRECTIVES.any { it.name == element.name && it.repeatable }
 
       else -> false
     }
