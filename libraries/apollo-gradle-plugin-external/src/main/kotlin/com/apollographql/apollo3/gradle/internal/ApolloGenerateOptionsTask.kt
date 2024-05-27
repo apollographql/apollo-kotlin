@@ -23,14 +23,18 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
+@CacheableTask
 abstract class ApolloGenerateOptionsTask : DefaultTask() {
   /**
    * CodegenSchemaOptions
@@ -192,6 +196,7 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
    * Gradle model
    */
   @get:InputFiles
+  @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val upstreamOtherOptions: ConfigurableFileCollection
 
   @get:Input

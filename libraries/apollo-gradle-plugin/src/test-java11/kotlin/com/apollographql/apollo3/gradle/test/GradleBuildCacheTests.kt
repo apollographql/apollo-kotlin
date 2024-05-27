@@ -8,17 +8,49 @@ import java.io.File
 
 class GradleBuildCacheTests {
 
-  @Test
-  fun `generate apollo classes task are cached`() {
+  private fun test(testProject: String, task: String, tasksToCheck: List<String>) {
+    val extra = """
+      buildCache {
+      local {
+        directory = "../testProjectBuildCache"
+      }
+    }
+    """.trimIndent()
+
     val buildCacheDir = File(File(System.getProperty("user.dir")), "build/testProjectBuildCache")
     buildCacheDir.deleteRecursively()
-    TestUtils.withTestProject("buildCache", "testProject1") { dir ->
-      val result = TestUtils.executeTask("generateServiceApolloSources", dir, "--build-cache")
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateServiceApolloSources")!!.outcome)
+
+    TestUtils.withTestProject(testProject, "testProject1") { dir ->
+      dir.resolve("settings.gradle.kts").appendText(extra)
+
+      val result = TestUtils.executeTask(task, dir, "--build-cache")
+      (tasksToCheck + task).forEach {
+        Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":$it")!!.outcome)
+      }
     }
-    TestUtils.withTestProject("buildCache", "testProject2") { dir ->
-      val result = TestUtils.executeTask("generateServiceApolloSources", dir, "--build-cache")
-      Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":generateServiceApolloSources")!!.outcome)
+    TestUtils.withTestProject(testProject, "testProject2") { dir ->
+      dir.resolve("settings.gradle.kts").appendText(extra)
+
+      val result = TestUtils.executeTask(task, dir, "--build-cache")
+      (tasksToCheck + task).forEach {
+        Assert.assertEquals("task $it has wrong outcome", TaskOutcome.FROM_CACHE, result.task(":$it")!!.outcome)
+      }
     }
+  }
+
+  @Test
+  fun `generate apollo classes task are cached`() {
+    test("buildCache", "generateServiceApolloSources", emptyList())
+  }
+
+  @Test
+  fun `generate apollo classes task are cached multimodule`() {
+    test(
+        testProject = "multi-modules",
+        task = "leaf:generateServiceApolloSources",
+        tasksToCheck = listOf(
+            "leaf:generateServiceApolloIrOperations", "root:generateServiceApolloIrOperations", "root:generateServiceApolloOptions"
+        )
+    )
   }
 }

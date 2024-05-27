@@ -211,3 +211,8 @@ fun File.replaceInText(oldValue: String, newValue: String) {
   val text = readText()
   writeText(text.replace(oldValue, newValue))
 }
+
+fun File.replaceInText(oldValue: Regex, newValue: String) {
+  val text = readText()
+  writeText(text.replace(oldValue, newValue))
+}
