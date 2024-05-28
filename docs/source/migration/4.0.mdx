@@ -466,6 +466,19 @@ In some cases, for client directives and/or if you did n ot use introspection, t
 ```graphql
 directive @required on FIELD
 ```
+### Sealed class `UNKNOWN__` constructors are private
+
+When generating enums as sealed classes with the `sealedClassesForEnumsMatching` option, the `UNKNOWN__` constructor is now generated as private, to prevent its accidental usage.
+
+It is recommended to update your schema instead of instantiating an `UNKNOWN__` value, but if you need to, use the `safeValueOf` method instead:
+
+```kotlin
+// Replace
+val myEnum = MyEnum.UNKNOWN__("foo")
+
+// With
+val myEnum = MyEnum.safeValueOf("foo")
+```
 
 ## Cache
 
