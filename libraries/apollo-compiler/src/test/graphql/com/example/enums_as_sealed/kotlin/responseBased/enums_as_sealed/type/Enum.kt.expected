@@ -5,7 +5,6 @@
 //
 package com.example.enums_as_sealed.type
 
-import com.apollographql.apollo3.annotations.ApolloEnumConstructor
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Any
 import kotlin.Array
@@ -15,14 +14,16 @@ import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 
-public sealed class Enum(
-  public val rawValue: String,
-) {
+public sealed interface Enum {
+  public val rawValue: String
+
   public companion object {
     public val type: EnumType = EnumType("Enum", listOf("north", "North", "NORTH", "SOUTH", "type"))
 
     /**
      * Returns the [Enum] that represents the specified [rawValue].
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
+     * schema instead of calling this function directly.
      */
     @Suppress("DEPRECATION")
     public fun safeValueOf(rawValue: String): Enum = when(rawValue) {
@@ -31,7 +32,7 @@ public sealed class Enum(
       "NORTH" -> NORTH
       "SOUTH" -> SOUTH
       "type" -> type_
-      else -> @OptIn(ApolloEnumConstructor::class) UNKNOWN__(rawValue)
+      else -> UNKNOWN__Enum(rawValue)
     }
 
     /**
@@ -47,32 +48,44 @@ public sealed class Enum(
   }
 
   @Deprecated(message = "No longer supported")
-  public object north : Enum(rawValue = "north")
+  public object north : Enum {
+    override val rawValue: String = "north"
+  }
 
   @Deprecated(message = "No longer supported")
-  public object North : Enum(rawValue = "North")
+  public object North : Enum {
+    override val rawValue: String = "North"
+  }
 
-  public object NORTH : Enum(rawValue = "NORTH")
+  public object NORTH : Enum {
+    override val rawValue: String = "NORTH"
+  }
 
-  public object SOUTH : Enum(rawValue = "SOUTH")
+  public object SOUTH : Enum {
+    override val rawValue: String = "SOUTH"
+  }
 
-  public object type_ : Enum(rawValue = "type")
+  public object type_ : Enum {
+    override val rawValue: String = "type"
+  }
 
   /**
    * An enum value that wasn't known at compile time.
-   * Constructor is annotated with [ApolloEnumConstructor] to prevent instantiation outside of this
-   * file.
    */
-  public class UNKNOWN__ @ApolloEnumConstructor constructor(
-    rawValue: String,
-  ) : Enum(rawValue = rawValue) {
-    override fun equals(other: Any?): Boolean {
-      if (other !is UNKNOWN__) return false
-      return this.rawValue == other.rawValue
-    }
-
-    override fun hashCode(): Int = this.rawValue.hashCode()
-
-    override fun toString(): String = "UNKNOWN__($rawValue)"
+  public interface UNKNOWN__ : Enum {
+    override val rawValue: String
   }
+}
+
+private class UNKNOWN__Enum(
+  override val rawValue: String,
+) : Enum.UNKNOWN__ {
+  override fun equals(other: Any?): Boolean {
+    if (other !is UNKNOWN__Enum) return false
+    return this.rawValue == other.rawValue
+  }
+
+  override fun hashCode(): Int = this.rawValue.hashCode()
+
+  override fun toString(): String = "UNKNOWN__($rawValue)"
 }

@@ -42,6 +42,11 @@ public enum class AmenityCategory(
     )
     public fun knownValues(): Array<AmenityCategory> = knownEntries.toTypedArray()
 
+    /**
+     * Returns the [AmenityCategory] that represents the specified [rawValue].
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
+     * schema instead of calling this function directly.
+     */
     public fun safeValueOf(rawValue: String): AmenityCategory =
         values().find { it.rawValue == rawValue } ?: UNKNOWN__
   }

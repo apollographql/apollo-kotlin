@@ -50,16 +50,15 @@ internal class EnumAsSealedBuilder(
     return CgFile(
         packageName = packageName,
         fileName = simpleName,
-        typeSpecs = listOf(enum.toSealedClassTypeSpec())
+        typeSpecs = listOf(enum.toSealedClassTypeSpec(), enum.unknownClassTypeSpec())
     )
   }
 
   private fun IrEnum.toSealedClassTypeSpec(): TypeSpec {
-    return TypeSpec.classBuilder(simpleName)
+    return TypeSpec.interfaceBuilder(simpleName)
         .maybeAddDescription(description)
         // XXX: can an enum be made deprecated (and not only its values) ?
         .addModifiers(KModifier.SEALED)
-        .primaryConstructor(primaryConstructorWithOverriddenParamSpec)
         .addProperty(rawValuePropertySpec)
         .addType(companionTypeSpec())
         .addTypes(values.map { value ->
@@ -82,17 +81,30 @@ internal class EnumAsSealedBuilder(
         .maybeAddDeprecation(deprecationReason)
         .maybeAddDescription(description)
         .maybeAddRequiresOptIn(context.resolver, optInFeature)
-        .superclass(superClass)
-        .addSuperclassConstructorParameter("rawValue·=·%S", name)
+        .addSuperinterface(superClass)
+        .addProperty(
+            PropertySpec.builder("rawValue", KotlinSymbols.String)
+                .addModifiers(KModifier.OVERRIDE)
+                .initializer("%S", name)
+                .build()
+        )
         .build()
   }
 
   private fun IrEnum.unknownValueTypeSpec(): TypeSpec {
-    return TypeSpec.classBuilder("UNKNOWN__")
-        .addKdoc("An enum value that wasn't known at compile time.\nConstructor is annotated with [%T] to prevent instantiation outside of this file.", KotlinSymbols.ApolloEnumConstructor)
+    return TypeSpec.interfaceBuilder("UNKNOWN__")
+        .addKdoc("An enum value that wasn't known at compile time.")
+        .addSuperinterface(selfClassName)
+        .addProperty(unknownValueRawValuePropertySpec)
+        .build()
+  }
+
+  private fun IrEnum.unknownClassTypeSpec(): TypeSpec {
+    return TypeSpec.classBuilder("UNKNOWN__${simpleName}")
+        .addSuperinterface(unknownValueInterfaceName())
         .primaryConstructor(unknownValuePrimaryConstructorSpec)
-        .superclass(selfClassName)
-        .addSuperclassConstructorParameter("rawValue·=·rawValue")
+        .addProperty(unknownValueRawValuePropertySpecWithInitializer)
+        .addModifiers(KModifier.PRIVATE)
         .addFunction(
             FunSpec.builder("equals")
                 .addModifiers(KModifier.OVERRIDE)
@@ -121,7 +133,11 @@ internal class EnumAsSealedBuilder(
 
   private fun IrEnum.safeValueOfFunSpec(): FunSpec {
     return FunSpec.builder(Identifier.safeValueOf)
-        .addKdoc("Returns the [%T] that represents the specified [rawValue].\n", selfClassName)
+        .addKdoc(
+            "Returns the [%T] that represents the specified [rawValue].\n" +
+                "Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.\n",
+            selfClassName
+        )
         .addSuppressions(enum.values.any { it.deprecationReason != null })
         .maybeAddOptIn(context.resolver, enum.values)
         .addParameter("rawValue", KotlinSymbols.String)
@@ -132,7 +148,7 @@ internal class EnumAsSealedBuilder(
                 .map { CodeBlock.of("%S·->·%T", it.name, it.valueClassName()) }
                 .joinToCode(separator = "\n", suffix = "\n")
         )
-        .addCode("else -> @OptIn(%T::class) %T(rawValue)\n", KotlinSymbols.ApolloEnumConstructor, unknownValueClassName())
+        .addCode("else -> %T(rawValue)\n", unknownValueClassName())
         .endControlFlow()
         .build()
   }
@@ -163,24 +179,31 @@ internal class EnumAsSealedBuilder(
     return ClassName(selfClassName.packageName, selfClassName.simpleName, targetName.escapeKotlinReservedWordInSealedClass())
   }
 
-  private fun unknownValueClassName(): ClassName {
+  private fun unknownValueInterfaceName(): ClassName {
     return ClassName(selfClassName.packageName, selfClassName.simpleName, "UNKNOWN__")
+  }
+
+  private fun unknownValueClassName(): ClassName {
+    return ClassName(selfClassName.packageName, "UNKNOWN__${selfClassName.simpleName}")
   }
 
   private val unknownValuePrimaryConstructorSpec =
     FunSpec.constructorBuilder()
-        .addAnnotation(KotlinSymbols.ApolloEnumConstructor)
         .addParameter("rawValue", KotlinSymbols.String)
         .build()
 
-  private val primaryConstructorWithOverriddenParamSpec =
-    FunSpec.constructorBuilder()
-        .addParameter("rawValue", KotlinSymbols.String)
+  private val unknownValueRawValuePropertySpec =
+    PropertySpec.builder("rawValue", KotlinSymbols.String)
+        .addModifiers(KModifier.OVERRIDE)
+        .build()
+
+  private val unknownValueRawValuePropertySpecWithInitializer =
+    PropertySpec.builder("rawValue", KotlinSymbols.String)
+        .addModifiers(KModifier.OVERRIDE)
+        .initializer("rawValue")
         .build()
 
   private val rawValuePropertySpec =
     PropertySpec.builder("rawValue", KotlinSymbols.String)
-        .initializer("rawValue")
         .build()
-
 }

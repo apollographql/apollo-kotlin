@@ -55,6 +55,11 @@ public enum class Gravity(
     )
     public fun knownValues(): Array<Gravity> = knownEntries.toTypedArray()
 
+    /**
+     * Returns the [Gravity] that represents the specified [rawValue].
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
+     * schema instead of calling this function directly.
+     */
     public fun safeValueOf(rawValue: kotlin.String): Gravity =
         entries.find { it.rawValue == rawValue } ?: UNKNOWN__
   }

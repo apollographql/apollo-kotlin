@@ -37,9 +37,6 @@ open annotation class com.apollographql.apollo3.annotations/ApolloDeprecatedSinc
     final val version // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.version|{}version[0]
         final fun <get-version>(): com.apollographql.apollo3.annotations/ApolloDeprecatedSince.Version // com.apollographql.apollo3.annotations/ApolloDeprecatedSince.version.<get-version>|<get-version>(){}[0]
 }
-open annotation class com.apollographql.apollo3.annotations/ApolloEnumConstructor : kotlin/Annotation { // com.apollographql.apollo3.annotations/ApolloEnumConstructor|null[0]
-    constructor <init>() // com.apollographql.apollo3.annotations/ApolloEnumConstructor.<init>|<init>(){}[0]
-}
 open annotation class com.apollographql.apollo3.annotations/ApolloExperimental : kotlin/Annotation { // com.apollographql.apollo3.annotations/ApolloExperimental|null[0]
     constructor <init>() // com.apollographql.apollo3.annotations/ApolloExperimental.<init>|<init>(){}[0]
 }

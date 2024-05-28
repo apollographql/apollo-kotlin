@@ -55,6 +55,11 @@ public enum class __TypeKind(
     )
     public fun knownValues(): Array<__TypeKind> = knownEntries.toTypedArray()
 
+    /**
+     * Returns the [__TypeKind] that represents the specified [rawValue].
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
+     * schema instead of calling this function directly.
+     */
     public fun safeValueOf(rawValue: String): __TypeKind = values().find { it.rawValue == rawValue }
         ?: UNKNOWN__
   }

@@ -10,6 +10,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Lower case enum type name
@@ -23,12 +24,16 @@ public class Hero_type {
 
   public String rawValue;
 
-  public Hero_type(String rawValue) {
+  private Hero_type(String rawValue) {
     this.rawValue = rawValue;
   }
 
+  /**
+   * Returns the hero_type that represents the specified rawValue.
+   * Note: unknown values of rawValue will return UNKNOWN__. You may want to update your schema instead of calling this method directly.
+   */
   public static Hero_type safeValueOf(String rawValue) {
-    switch(rawValue) {
+    switch (Objects.requireNonNull(rawValue)) {
       case "human": return Hero_type.human;
       case "droid": return Hero_type.droid;
       default: return new Hero_type.UNKNOWN__(rawValue);
@@ -39,44 +44,25 @@ public class Hero_type {
    * An enum value that wasn't known at compile time.
    */
   public static class UNKNOWN__ extends Hero_type {
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
-    public UNKNOWN__(String rawValue) {
+    private UNKNOWN__(String rawValue) {
       super(rawValue);
     }
 
     @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof UNKNOWN__) {
-        return true;
-      }
-      return false;
+    public boolean equals(Object other) {
+      if (this == other) return true;
+      if (!(other instanceof UNKNOWN__)) return false;
+      return rawValue.equals(((UNKNOWN__) other).rawValue);
     }
 
     @Override
     public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
+      return rawValue.hashCode();
     }
 
     @Override
     public String toString() {
-      if ($toString == null) {
-        $toString = "UNKNOWN__{"
-          + "}";
-      }
-      return $toString;
+      return "UNKNOWN__(" + rawValue + ")";
     }
   }
 }

@@ -45,6 +45,11 @@ public enum class Episode(
     )
     public fun knownValues(): Array<Episode> = knownEntries.toTypedArray()
 
+    /**
+     * Returns the [Episode] that represents the specified [rawValue].
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
+     * schema instead of calling this function directly.
+     */
     public fun safeValueOf(rawValue: String): Episode = values().find { it.rawValue == rawValue } ?:
         UNKNOWN__
   }

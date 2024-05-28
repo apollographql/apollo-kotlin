@@ -1,12 +1,13 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
 import com.apollographql.apollo3.compiler.GeneratedMethod
-import com.apollographql.apollo3.compiler.GeneratedMethod.*
-import com.apollographql.apollo3.compiler.internal.applyIf
+import com.apollographql.apollo3.compiler.GeneratedMethod.EQUALS_HASH_CODE
+import com.apollographql.apollo3.compiler.GeneratedMethod.TO_STRING
 import com.apollographql.apollo3.compiler.codegen.Identifier.__h
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.joinToCode
+import com.apollographql.apollo3.compiler.internal.applyIf
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -30,7 +31,7 @@ internal fun TypeSpec.Builder.makeClassFromParameters(
     generateMethods: List<GeneratedMethod>,
     parameters: List<ParameterSpec>,
     className: ClassName
-    ): TypeSpec.Builder {
+): TypeSpec.Builder {
   addMethod(
       MethodSpec.constructorBuilder()
           .addModifiers(Modifier.PUBLIC)
@@ -69,7 +70,7 @@ internal fun TypeSpec.Builder.makeClassFromProperties(
     generateMethods: List<GeneratedMethod>,
     fields: List<FieldSpec>,
     className: ClassName
-    ): TypeSpec.Builder {
+): TypeSpec.Builder {
   addMethod(
       MethodSpec.constructorBuilder()
           .addModifiers(Modifier.PUBLIC)
@@ -94,36 +95,36 @@ internal fun TypeSpec.Builder.makeClassFromProperties(
 
 internal fun TypeSpec.Builder.withToStringImplementation(className: ClassName): TypeSpec.Builder {
   fun printFieldCode(fieldIndex: Int, fieldName: String) =
-      CodeBlock.builder()
-          .let { if (fieldIndex > 0) it.add(" + \", \"\n") else it.add("\n") }
-          .indent()
-          .add("+ \$S + \$L", "$fieldName=", fieldName)
-          .unindent()
-          .build()
+    CodeBlock.builder()
+        .let { if (fieldIndex > 0) it.add(" + \", \"\n") else it.add("\n") }
+        .indent()
+        .add("+ \$S + \$L", "$fieldName=", fieldName)
+        .unindent()
+        .build()
 
   fun methodCode() =
-      CodeBlock.builder()
-          .beginControlFlow("if (\$L == null)", MEMOIZED_TO_STRING_VAR)
-          .add("\$L = \$S", "\$toString", "${className.simpleName()}{")
-          .add(fieldSpecs
-              .filter { !it.hasModifier(Modifier.STATIC) }
-              .filter { !it.hasModifier(Modifier.TRANSIENT) }
-              .map { it.name }
-              .mapIndexed(::printFieldCode)
-              .fold(CodeBlock.builder(), CodeBlock.Builder::add)
-              .build())
-          .add(CodeBlock.builder()
-              .indent()
-              .add("\n+ \$S;\n", "}")
-              .unindent()
-              .build())
-          .endControlFlow()
-          .addStatement("return \$L", MEMOIZED_TO_STRING_VAR)
-          .build()
+    CodeBlock.builder()
+        .beginControlFlow("if (\$L == null)", MEMOIZED_TO_STRING_VAR)
+        .add("\$L = \$S", "\$toString", "${className.simpleName()}{")
+        .add(fieldSpecs
+            .filter { !it.hasModifier(Modifier.STATIC) }
+            .filter { !it.hasModifier(Modifier.TRANSIENT) }
+            .map { it.name }
+            .mapIndexed(::printFieldCode)
+            .fold(CodeBlock.builder(), CodeBlock.Builder::add)
+            .build())
+        .add(CodeBlock.builder()
+            .indent()
+            .add("\n+ \$S;\n", "}")
+            .unindent()
+            .build())
+        .endControlFlow()
+        .addStatement("return \$L", MEMOIZED_TO_STRING_VAR)
+        .build()
 
   return addField(FieldSpec.builder(JavaClassNames.String, MEMOIZED_TO_STRING_VAR, Modifier.PRIVATE, Modifier.VOLATILE,
-          Modifier.TRANSIENT)
-          .build())
+      Modifier.TRANSIENT)
+      .build())
       .addMethod(MethodSpec.methodBuilder("toString")
           .addAnnotation(JavaClassNames.Override)
           .addModifiers(Modifier.PUBLIC)
@@ -138,84 +139,84 @@ private fun List<FieldSpec>.equalsCode(): CodeBlock = filter { !it.hasModifier(M
     .joinToCode("\n &&")
 
 private fun FieldSpec.equalsCode() =
-    CodeBlock.builder()
-        .let {
-          if (type.isPrimitive) {
-            if (type == TypeName.DOUBLE) {
-              it.add("Double.doubleToLongBits(this.\$L) == Double.doubleToLongBits(that.\$L)",
-                  name, name)
-            } else {
-              it.add("this.\$L == that.\$L", name, name)
-            }
+  CodeBlock.builder()
+      .let {
+        if (type.isPrimitive) {
+          if (type == TypeName.DOUBLE) {
+            it.add("Double.doubleToLongBits(this.\$L) == Double.doubleToLongBits(that.\$L)",
+                name, name)
           } else {
-            it.add("((this.\$L == null) ? (that.\$L == null) : this.\$L.equals(that.\$L))", name, name, name, name)
+            it.add("this.\$L == that.\$L", name, name)
           }
+        } else {
+          it.add("((this.\$L == null) ? (that.\$L == null) : this.\$L.equals(that.\$L))", name, name, name, name)
         }
-        .build()
+      }
+      .build()
 
 internal fun TypeSpec.Builder.withEqualsImplementation(className: ClassName): TypeSpec.Builder {
   fun methodCode(typeJavaClass: ClassName) =
-      CodeBlock.builder()
-          .beginControlFlow("if (o == this)")
-          .addStatement("return true")
-          .endControlFlow()
-          .beginControlFlow("if (o instanceof \$T)", typeJavaClass)
-          .apply {
-            if (fieldSpecs.isEmpty()) {
-              add("return true;\n")
-            } else {
-              addStatement("\$T that = (\$T) o", typeJavaClass, typeJavaClass)
-              add("return $L;\n", if (fieldSpecs.isEmpty()) "true" else fieldSpecs.equalsCode())
-            }
+    CodeBlock.builder()
+        .beginControlFlow("if (o == this)")
+        .addStatement("return true")
+        .endControlFlow()
+        .beginControlFlow("if (o instanceof \$T)", typeJavaClass)
+        .apply {
+          if (fieldSpecs.isEmpty()) {
+            add("return true;\n")
+          } else {
+            addStatement("\$T that = (\$T) o", typeJavaClass, typeJavaClass)
+            add("return $L;\n", if (fieldSpecs.isEmpty()) "true" else fieldSpecs.equalsCode())
           }
-          .endControlFlow()
-          .addStatement("return false")
-          .build()
+        }
+        .endControlFlow()
+        .addStatement("return false")
+        .build()
 
   return addMethod(MethodSpec.methodBuilder("equals")
-          .addAnnotation(JavaClassNames.Override)
-          .addModifiers(Modifier.PUBLIC)
-          .returns(TypeName.BOOLEAN)
-          .addParameter(ParameterSpec.builder(TypeName.OBJECT, "o").build())
-          .addCode(methodCode(className))
-          .build())
+      .addAnnotation(JavaClassNames.Override)
+      .addModifiers(Modifier.PUBLIC)
+      .returns(TypeName.BOOLEAN)
+      .addParameter(ParameterSpec.builder(TypeName.OBJECT, "o").build())
+      .addCode(methodCode(className))
+      .build())
 }
 
 internal fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder {
   fun hashFieldCode(field: FieldSpec) =
-      CodeBlock.builder()
-          .addStatement("$__h *= 1000003")
-          .let {
-            if (field.type.isPrimitive) {
-              when (field.type.withoutAnnotations()) {
-                TypeName.DOUBLE -> it.addStatement("$__h ^= Double.valueOf(\$L).hashCode()", field.name)
-                TypeName.BOOLEAN -> it.addStatement("$__h ^= Boolean.valueOf(\$L).hashCode()", field.name)
-                else -> it.addStatement("$__h ^= \$L", field.name)
-              }
-            } else {
-              it.addStatement("$__h ^= (\$L == null) ? 0 : \$L.hashCode()", field.name, field.name)
+    CodeBlock.builder()
+        .addStatement("$__h *= 1000003")
+        .let {
+          if (field.type.isPrimitive) {
+            when (field.type.withoutAnnotations()) {
+              TypeName.DOUBLE -> it.addStatement("$__h ^= Double.valueOf(\$L).hashCode()", field.name)
+              TypeName.BOOLEAN -> it.addStatement("$__h ^= Boolean.valueOf(\$L).hashCode()", field.name)
+              else -> it.addStatement("$__h ^= \$L", field.name)
             }
+          } else {
+            it.addStatement("$__h ^= (\$L == null) ? 0 : \$L.hashCode()", field.name, field.name)
           }
-          .build()
+        }
+        .build()
 
   fun methodCode() =
-      CodeBlock.builder()
-          .beginControlFlow("if (!\$L)", MEMOIZED_HASH_CODE_FLAG_VAR)
-          .addStatement("int $__h = 1")
-          .add(fieldSpecs
-              .filter { !it.hasModifier(Modifier.STATIC) }
-              .filter { !it.hasModifier(Modifier.TRANSIENT) }
-              .map(::hashFieldCode)
-              .fold(CodeBlock.builder(), CodeBlock.Builder::add)
-              .build())
-          .addStatement("\$L = $__h", MEMOIZED_HASH_CODE_VAR)
-          .addStatement("\$L = true", MEMOIZED_HASH_CODE_FLAG_VAR)
-          .endControlFlow()
-          .addStatement("return \$L", MEMOIZED_HASH_CODE_VAR)
-          .build()
+    CodeBlock.builder()
+        .beginControlFlow("if (!\$L)", MEMOIZED_HASH_CODE_FLAG_VAR)
+        .addStatement("int $__h = 1")
+        .add(fieldSpecs
+            .filter { !it.hasModifier(Modifier.STATIC) }
+            .filter { !it.hasModifier(Modifier.TRANSIENT) }
+            .map(::hashFieldCode)
+            .fold(CodeBlock.builder(), CodeBlock.Builder::add)
+            .build())
+        .addStatement("\$L = $__h", MEMOIZED_HASH_CODE_VAR)
+        .addStatement("\$L = true", MEMOIZED_HASH_CODE_FLAG_VAR)
+        .endControlFlow()
+        .addStatement("return \$L", MEMOIZED_HASH_CODE_VAR)
+        .build()
 
   return addField(FieldSpec.builder(TypeName.INT, MEMOIZED_HASH_CODE_VAR, Modifier.PRIVATE, Modifier.VOLATILE,
-          Modifier.TRANSIENT).build())
+      Modifier.TRANSIENT).build())
       .addField(FieldSpec.builder(TypeName.BOOLEAN, MEMOIZED_HASH_CODE_FLAG_VAR, Modifier.PRIVATE,
           Modifier.VOLATILE, Modifier.TRANSIENT).build())
       .addMethod(MethodSpec.methodBuilder("hashCode")

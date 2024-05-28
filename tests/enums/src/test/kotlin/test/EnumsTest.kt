@@ -7,6 +7,9 @@ import enums.kotlin15.type.FooSealed
 import enums.kotlin15.type.Gravity
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
+import kotlin.test.assertIs
+import kotlin.test.assertNotEquals
 
 class EnumsTest {
   @Test
@@ -31,7 +34,7 @@ class EnumsTest {
     assertEquals(Gravity.TOP, Gravity.safeValueOf("TOP"))
     @Suppress("DEPRECATION")
     assertEquals(Gravity.top2, Gravity.safeValueOf("top2"))
-    assertEquals(Gravity.UNKNOWN__("newGravity"), Gravity.safeValueOf("newGravity"))
+    assertIs<Gravity.UNKNOWN__>(Gravity.safeValueOf("newGravity"))
     assertEquals(Gravity.name, Gravity.safeValueOf("name"))
     assertEquals(Gravity.ordinal, Gravity.safeValueOf("ordinal"))
     assertEquals(Gravity.type__, Gravity.safeValueOf("type"))
@@ -48,17 +51,31 @@ class EnumsTest {
     assertEquals(enums.java.type.Direction.ordinal, enums.java.type.Direction.safeValueOf("ordinal"))
     assertEquals(enums.java.type.Direction.type__, enums.java.type.Direction.safeValueOf("type"))
     assertEquals(enums.java.type.Direction.Companion, enums.java.type.Direction.safeValueOf("Companion"))
+    assertIs<NullPointerException>(
+        assertFails {
+          enums.java.type.Direction.safeValueOf(null)
+        }
+    )
   }
 
   @Test
   fun javaClasses() {
     assertEquals(enums.java.type.Gravity.TOP, enums.java.type.Gravity.safeValueOf("TOP"))
     assertEquals(enums.java.type.Gravity.top2, enums.java.type.Gravity.safeValueOf("top2"))
-    assertEquals(enums.java.type.Gravity.UNKNOWN__("newGravity"), enums.java.type.Gravity.safeValueOf("newGravity"))
+    val unknown = enums.java.type.Gravity.safeValueOf("newGravity")
+    assertEquals(enums.java.type.Gravity.UNKNOWN__::class.java, unknown::class.java)
+    assertEquals("newGravity", unknown.rawValue)
+    assertEquals(enums.java.type.Gravity.safeValueOf("newGravity"), unknown)
+    assertNotEquals(enums.java.type.Gravity.safeValueOf("newGravity2"), unknown)
     assertEquals(enums.java.type.Gravity.name, enums.java.type.Gravity.safeValueOf("name"))
     assertEquals(enums.java.type.Gravity.ordinal, enums.java.type.Gravity.safeValueOf("ordinal"))
     assertEquals(enums.java.type.Gravity.type__, enums.java.type.Gravity.safeValueOf("type"))
     assertEquals(enums.java.type.Gravity.Companion, enums.java.type.Gravity.safeValueOf("Companion"))
+    assertIs<NullPointerException>(
+        assertFails {
+          enums.java.type.Gravity.safeValueOf(null)
+        }
+    )
   }
 
 

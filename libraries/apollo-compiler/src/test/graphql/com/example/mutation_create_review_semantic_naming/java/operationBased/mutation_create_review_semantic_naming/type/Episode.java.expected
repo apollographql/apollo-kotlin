@@ -11,6 +11,7 @@ import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * The episodes in the Star Wars trilogy
@@ -30,13 +31,17 @@ public class Episode {
 
   public String rawValue;
 
-  public Episode(String rawValue) {
+  private Episode(String rawValue) {
     this.rawValue = rawValue;
   }
 
+  /**
+   * Returns the Episode that represents the specified rawValue.
+   * Note: unknown values of rawValue will return UNKNOWN__. You may want to update your schema instead of calling this method directly.
+   */
   @SuppressWarnings("deprecation")
   public static Episode safeValueOf(String rawValue) {
-    switch(rawValue) {
+    switch (Objects.requireNonNull(rawValue)) {
       case "NEWHOPE": return Episode.NEWHOPE;
       case "EMPIRE": return Episode.EMPIRE;
       case "JEDI": return Episode.JEDI;
@@ -50,44 +55,25 @@ public class Episode {
    * An enum value that wasn't known at compile time.
    */
   public static class UNKNOWN__ extends Episode {
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
-    public UNKNOWN__(String rawValue) {
+    private UNKNOWN__(String rawValue) {
       super(rawValue);
     }
 
     @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof UNKNOWN__) {
-        return true;
-      }
-      return false;
+    public boolean equals(Object other) {
+      if (this == other) return true;
+      if (!(other instanceof UNKNOWN__)) return false;
+      return rawValue.equals(((UNKNOWN__) other).rawValue);
     }
 
     @Override
     public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
+      return rawValue.hashCode();
     }
 
     @Override
     public String toString() {
-      if ($toString == null) {
-        $toString = "UNKNOWN__{"
-          + "}";
-      }
-      return $toString;
+      return "UNKNOWN__(" + rawValue + ")";
     }
   }
 }

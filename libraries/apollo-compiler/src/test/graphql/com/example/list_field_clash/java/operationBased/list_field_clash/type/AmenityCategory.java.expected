@@ -10,6 +10,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class AmenityCategory {
   public static EnumType type = new EnumType("AmenityCategory", Arrays.asList("Category0", "Category1"));
@@ -20,12 +21,16 @@ public class AmenityCategory {
 
   public String rawValue;
 
-  public AmenityCategory(String rawValue) {
+  private AmenityCategory(String rawValue) {
     this.rawValue = rawValue;
   }
 
+  /**
+   * Returns the AmenityCategory that represents the specified rawValue.
+   * Note: unknown values of rawValue will return UNKNOWN__. You may want to update your schema instead of calling this method directly.
+   */
   public static AmenityCategory safeValueOf(String rawValue) {
-    switch(rawValue) {
+    switch (Objects.requireNonNull(rawValue)) {
       case "Category0": return AmenityCategory.Category0;
       case "Category1": return AmenityCategory.Category1;
       default: return new AmenityCategory.UNKNOWN__(rawValue);
@@ -36,44 +41,25 @@ public class AmenityCategory {
    * An enum value that wasn't known at compile time.
    */
   public static class UNKNOWN__ extends AmenityCategory {
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
-    public UNKNOWN__(String rawValue) {
+    private UNKNOWN__(String rawValue) {
       super(rawValue);
     }
 
     @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof UNKNOWN__) {
-        return true;
-      }
-      return false;
+    public boolean equals(Object other) {
+      if (this == other) return true;
+      if (!(other instanceof UNKNOWN__)) return false;
+      return rawValue.equals(((UNKNOWN__) other).rawValue);
     }
 
     @Override
     public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int __h = 1;
-        $hashCode = __h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
+      return rawValue.hashCode();
     }
 
     @Override
     public String toString() {
-      if ($toString == null) {
-        $toString = "UNKNOWN__{"
-          + "}";
-      }
-      return $toString;
+      return "UNKNOWN__(" + rawValue + ")";
     }
   }
 }

@@ -78,6 +78,10 @@ internal class EnumAsEnumBuilder(
         }
         .addMethod(
             MethodSpec.methodBuilder(safeValueOf)
+                .addJavadoc(
+                    "Returns the ${enum.name} that represents the specified rawValue.\n" +
+                        "Note: unknown values of rawValue will return UNKNOWN__. You may want to update your schema instead of calling this method directly.\n",
+                )
                 .maybeSuppressDeprecation(enum.values)
                 .addParameter(JavaClassNames.String, rawValue)
                 .addModifiers(Modifier.PUBLIC)
@@ -85,7 +89,7 @@ internal class EnumAsEnumBuilder(
                 .returns(selfClassName)
                 .addCode(
                     CodeBlock.builder()
-                        .beginControlFlow("switch ($rawValue)")
+                        .beginControlFlow("switch ($T.requireNonNull($rawValue))", JavaClassNames.Objects)
                         .apply {
                           values.forEach {
                             add("case $S: return $T.$L;\n", it.name, selfClassName, it.targetName.escapeTypeReservedWord()
