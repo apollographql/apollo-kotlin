@@ -71,7 +71,9 @@ tasks {
     // Use a custom IJ/AS installation. Set this property in your local ~/.gradle/gradle.properties file.
     // (for AS, it should be something like '/Applications/Android Studio.app/Contents')
     // See https://plugins.jetbrains.com/docs/intellij/android-studio.html#configuring-the-plugin-gradle-build-script
-    localPath = providers.gradleProperty("apolloIntellijPlugin.ideDir").orNull?.let { file(it) }
+    providers.gradleProperty("apolloIntellijPlugin.ideDir").orNull?.let {
+      localPath = file(it)
+    }
   }
 
   // Log tests
