@@ -5,16 +5,13 @@
 //
 package com.example.introspection_query.type.adapter
 
-import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.introspection_query.type.__TypeKind
-import kotlin.OptIn
 
 public object __TypeKind_ResponseAdapter : Adapter<__TypeKind> {
-  @OptIn(ApolloUnknownEnum::class)
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       __TypeKind {
     val rawValue = reader.nextString()!!

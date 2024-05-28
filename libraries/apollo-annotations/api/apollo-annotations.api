@@ -36,9 +36,6 @@ public abstract interface annotation class com/apollographql/apollo3/annotations
 public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloRequiresOptIn : java/lang/annotation/Annotation {
 }
 
-public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloUnknownEnum : java/lang/annotation/Annotation {
-}
-
 public abstract interface annotation class com/apollographql/apollo3/annotations/GraphQLAdapter : java/lang/annotation/Annotation {
 	public abstract fun forScalar ()Ljava/lang/String;
 }

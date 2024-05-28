@@ -5,7 +5,6 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSchemaContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.requiresOptInAnnotation
 import com.apollographql.apollo3.compiler.codegen.responseAdapter
 import com.apollographql.apollo3.compiler.codegen.typeAdapterPackageName
 import com.apollographql.apollo3.compiler.ir.IrEnum
@@ -43,7 +42,6 @@ internal class EnumResponseAdapterBuilder(
   private fun IrEnum.typeSpec(): TypeSpec {
     val adaptedTypeName = context.resolver.resolveSchemaType(enum.name)
     val fromResponseFunSpec = FunSpec.builder(Identifier.fromJson)
-        .addAnnotation(requiresOptInAnnotation(KotlinSymbols.ApolloUnknownEnum))
         .addModifiers(KModifier.OVERRIDE)
         .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
         .addParameter(Identifier.customScalarAdapters, KotlinSymbols.CustomScalarAdapters)

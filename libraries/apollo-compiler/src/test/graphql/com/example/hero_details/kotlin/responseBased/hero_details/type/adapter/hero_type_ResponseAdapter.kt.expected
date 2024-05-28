@@ -5,16 +5,13 @@
 //
 package com.example.hero_details.type.adapter
 
-import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.hero_details.type.Hero_type
-import kotlin.OptIn
 
 public object Hero_type_ResponseAdapter : Adapter<Hero_type> {
-  @OptIn(ApolloUnknownEnum::class)
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Hero_type {
     val rawValue = reader.nextString()!!
     return Hero_type.safeValueOf(rawValue)

@@ -46,9 +46,6 @@ open annotation class com.apollographql.apollo3.annotations/ApolloInternal : kot
 open annotation class com.apollographql.apollo3.annotations/ApolloRequiresOptIn : kotlin/Annotation { // com.apollographql.apollo3.annotations/ApolloRequiresOptIn|null[0]
     constructor <init>() // com.apollographql.apollo3.annotations/ApolloRequiresOptIn.<init>|<init>(){}[0]
 }
-open annotation class com.apollographql.apollo3.annotations/ApolloUnknownEnum : kotlin/Annotation { // com.apollographql.apollo3.annotations/ApolloUnknownEnum|null[0]
-    constructor <init>() // com.apollographql.apollo3.annotations/ApolloUnknownEnum.<init>|<init>(){}[0]
-}
 open annotation class com.apollographql.apollo3.annotations/GraphQLAdapter : kotlin/Annotation { // com.apollographql.apollo3.annotations/GraphQLAdapter|null[0]
     constructor <init>(kotlin/String) // com.apollographql.apollo3.annotations/GraphQLAdapter.<init>|<init>(kotlin.String){}[0]
     final val forScalar // com.apollographql.apollo3.annotations/GraphQLAdapter.forScalar|{}forScalar[0]
