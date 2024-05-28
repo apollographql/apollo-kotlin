@@ -265,23 +265,24 @@ abstract class DefaultApolloExtension(
   }
 
   private fun maybeLinkSqlite() {
-    val doLink = when (linkSqlite.orNull) {
+    when (linkSqlite.orNull) {
       false -> return // explicit opt-out
-      true -> true // explicit opt-in
+      true -> {
+        // explicit opt-in
+        linkSqlite(project)
+      }
       null -> { // default: automatic detection
-        project.configurations.any {
-          it.dependencies.any {
+        project.configurations.configureEach {
+          it.dependencies.configureEach {
             // Try to detect if a native version of apollo-normalized-cache-sqlite is in the classpath
-            it.name.contains("apollo-normalized-cache-sqlite")
+            if (it.name.contains("apollo-normalized-cache-sqlite")
                 && !it.name.contains("jvm")
-                && !it.name.contains("android")
+                && !it.name.contains("android")) {
+              linkSqlite(project)
+            }
           }
         }
       }
-    }
-
-    if (doLink) {
-      linkSqlite(project)
     }
   }
 
@@ -600,7 +601,7 @@ abstract class DefaultApolloExtension(
         codegenMetadataConsumerConfiguration.dependencies.add(it)
       }
 
-      val pending = pendingDownstreamDependencies.get(name)
+      val pending = pendingDownstreamDependencies.get(service.name)
       if (pending != null) {
         pending.forEach {
           service.isADependencyOf(project.project(it))

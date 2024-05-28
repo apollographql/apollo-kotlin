@@ -16,6 +16,7 @@ constructor(private val toolingModelRegistry: ToolingModelBuilderRegistry) : Plu
   override fun apply(project: Project) {
     val defaultService = project.objects.newInstance(DefaultService::class.java, project, "service")
     val apolloExtension: DefaultApolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project, defaultService) as DefaultApolloExtension
+
     project.configureDefaultVersionsResolutionStrategy()
     toolingModelRegistry.register(
         object : ToolingModelBuilder {
