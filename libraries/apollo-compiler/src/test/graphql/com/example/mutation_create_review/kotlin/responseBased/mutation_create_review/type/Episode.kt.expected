@@ -5,7 +5,6 @@
 //
 package com.example.mutation_create_review.type
 
-import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
 import kotlin.Deprecated
@@ -77,7 +76,6 @@ internal enum class Episode(
      * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
      * schema instead of calling this function directly.
      */
-    @ApolloUnknownEnum
     public fun safeValueOf(rawValue: String): Episode = values().find { it.rawValue == rawValue } ?:
         UNKNOWN__
   }

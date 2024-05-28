@@ -5,7 +5,6 @@
 //
 package com.example.enums_as_sealed.type
 
-import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Any
 import kotlin.Array
@@ -26,7 +25,6 @@ public sealed interface Enum {
      * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
      * schema instead of calling this function directly.
      */
-    @ApolloUnknownEnum
     @Suppress("DEPRECATION")
     public fun safeValueOf(rawValue: String): Enum = when(rawValue) {
       "north" -> north

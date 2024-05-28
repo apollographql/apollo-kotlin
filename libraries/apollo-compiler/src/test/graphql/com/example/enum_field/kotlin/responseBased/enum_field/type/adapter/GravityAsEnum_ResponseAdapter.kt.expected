@@ -5,16 +5,13 @@
 //
 package com.example.enum_field.type.adapter
 
-import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.enum_field.type.GravityAsEnum
-import kotlin.OptIn
 
 public object GravityAsEnum_ResponseAdapter : Adapter<GravityAsEnum> {
-  @OptIn(ApolloUnknownEnum::class)
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       GravityAsEnum {
     val rawValue = reader.nextString()!!

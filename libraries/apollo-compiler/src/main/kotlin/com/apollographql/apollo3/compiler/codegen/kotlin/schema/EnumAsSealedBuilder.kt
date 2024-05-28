@@ -138,7 +138,6 @@ internal class EnumAsSealedBuilder(
                 "Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.\n",
             selfClassName
         )
-        .addAnnotation(KotlinSymbols.ApolloUnknownEnum)
         .addSuppressions(enum.values.any { it.deprecationReason != null })
         .maybeAddOptIn(context.resolver, enum.values)
         .addParameter("rawValue", KotlinSymbols.String)

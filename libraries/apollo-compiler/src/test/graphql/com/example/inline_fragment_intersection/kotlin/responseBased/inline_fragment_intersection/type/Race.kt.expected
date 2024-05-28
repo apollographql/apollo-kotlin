@@ -5,7 +5,6 @@
 //
 package com.example.inline_fragment_intersection.type
 
-import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
 import kotlin.Deprecated
@@ -50,7 +49,6 @@ public enum class Race(
      * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
      * schema instead of calling this function directly.
      */
-    @ApolloUnknownEnum
     public fun safeValueOf(rawValue: String): Race = values().find { it.rawValue == rawValue } ?:
         UNKNOWN__
   }

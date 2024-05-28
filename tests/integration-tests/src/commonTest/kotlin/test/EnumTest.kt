@@ -1,13 +1,11 @@
 package test
 
-import com.apollographql.apollo3.annotations.ApolloUnknownEnum
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 class EnumTest {
-  @OptIn(ApolloUnknownEnum::class)
   @Test
   fun safeValueOf() {
     assertEquals(Episode.EMPIRE, Episode.safeValueOf("EMPIRE"))
