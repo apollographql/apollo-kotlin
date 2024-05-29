@@ -340,6 +340,11 @@ sealed class TelemetryEvent(
   class ApolloIjApollo4AvailableQuickFix : TelemetryEvent("akij_apollo4_available_quickfix", null)
 
   /**
+   * User applied the quickfix for the 'GraphQL config file present' inspection of the Apollo Kotlin IntelliJ plugin.
+   */
+  class ApolloIjGraphQLConfigFilePresentQuickFix : TelemetryEvent("akij_graphql_config_file_present_quickfix", null)
+
+  /**
    * User applied the quickfix for the 'Endpoint not configured' inspection of the Apollo Kotlin IntelliJ plugin.
    */
   class ApolloIjEndpointNotConfiguredQuickFix : TelemetryEvent("akij_endpoint_not_configured_quickfix", null)

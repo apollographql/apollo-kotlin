@@ -3,6 +3,7 @@ package com.apollographql.ijplugin.migration
 import com.apollographql.ijplugin.ApolloTestCase
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.ApolloV3ToV4MigrationProcessor
 import com.intellij.testFramework.TestDataPath
+import junit.framework.TestCase
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -51,6 +52,13 @@ class ApolloV3ToV4MigrationTest : ApolloTestCase() {
 
   @Test
   fun testAddLinkDirective() = runMigration(extension = "graphqls", fileNameInProject = "extra.graphqls")
+
+  @Test
+  fun testRemoveGraphqlConfigFiles() {
+    myFixture.copyFileToProject("graphql.config.yml")
+    ApolloV3ToV4MigrationProcessor(project).run()
+    TestCase.assertNull(myFixture.tempDirFixture.getFile("graphql.config.yml"))
+  }
 
   private fun runMigration(extension: String = "kt", fileNameInProject: String? = null) {
     val fileBaseName = getTestName(true)

@@ -1,0 +1,11 @@
+<warning descr="The Apollo plugin retrieves the GraphQL configuration from Gradle and doesn't use the GraphQL config file" textAttributesKey="WARNING_ATTRIBUTES"><warning descr="The Apollo plugin retrieves the GraphQL configuration from Gradle and doesn't use the GraphQL config file" textAttributesKey="WARNING_ATTRIBUTES">
+projects:
+  main:
+    schema: src/main/graphql/schema.graphqls
+    documents: '**/*.graphql'
+    extensions:
+      endpoints:
+        main: "https://apollo-fullstack-tutorial.herokuapp.com/graphql"
+      apollo-key: ${APOLLO_KEY}
+
+</warning></warning>
