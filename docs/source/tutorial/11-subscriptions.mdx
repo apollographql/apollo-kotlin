@@ -7,13 +7,13 @@ In this section, you will use subscriptions to get notified whenever someone boo
 
 ## Write your subscription
 
-Open your [Sandbox](https://studio.apollographql.com/sandbox/explorer?endpoint=https%3A%2F%2Fapollo-fullstack-tutorial.herokuapp.com%2Fgraphql) back up, click on the Schema tab at the far left. In addition to `queries` and `mutations`, you will see a third type of operations, `subscriptions`. Click on subscriptions to see the `tripsBooked` subscription:
+Open your [Sandbox](https://studio.apollographql.com/sandbox/explorer?endpoint=https%3A%2F%2Fapollo-fullstack-tutorial.herokuapp.com%2Fgraphql) back up, click on the Schema tab at the far left. In addition to `queries` and `mutations`, you will see a third type of root fields, `subscriptions`. Click on subscriptions to see the `tripsBooked` field:
 
 <img alt="The definition of tripsBooked in the schema" class="screenshot" src="images/schema_tripsBooked_definition.png"/>
 
-This subscription doesn't take any argument and returns a single scalar named `tripsBooked`. Since you can book multiple trips at once, `tripsBooked` is an `Int`. It will contain the number of trips booked at once or -1 if a trip has been cancelled.
+This field doesn't take any argument and returns a single scalar named `tripsBooked`. Since you can book multiple trips at once, `tripsBooked` is an `Int`. It will contain the number of trips booked at once or -1 if a trip has been cancelled.
 
-Click the play button to the left of `tripsBooked` to open the subscription in Explorer. Open a new tab, then check the `tripsBooked` button to have the subscription added:
+Click the play button to the left of `tripsBooked` to open the field in Explorer. Open a new tab, then check the plus button next to `tripsBooked` to have the field added:
 
 <img alt="The initial definition of the TripsBooked subscription" class="screenshot" src="images/explorer_tripsbooked_initial.png"/>
 

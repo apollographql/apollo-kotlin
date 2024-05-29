@@ -2,41 +2,41 @@
 title: "3. Write your first query"
 ---
 
-The most common GraphQL operation is the **query**, which requests data from your graph in a structure that conforms to your server's schema. If you return to [the Sandbox](https://studio.apollographql.com/sandbox/explorer?endpoint=https%3A%2F%2Fapollo-fullstack-tutorial.herokuapp.com%2Fgraphql) for your server, you can see available queries in the Schema Reference tab you opened earlier.
+The most common GraphQL operation is the **query**, which requests data from your graph in a structure that conforms to your server's schema. If you return to [the Sandbox](https://studio.apollographql.com/sandbox/explorer?endpoint=https%3A%2F%2Fapollo-fullstack-tutorial.herokuapp.com%2Fgraphql) for your server, you can see available query fields in the Schema Reference tab you opened earlier.
 
-Scroll down to the `launches` query to get details about it:
+Scroll down to the `launches` field to get details about it:
 
 <img src="images/launches_detail.png" class="screenshot" alt="Detail about launches query"/>
 
-Here, you see both the query term itself, the return type, and information about parameters that can be passed to the query. You can use this information to write a query you'll eventually add to your app.
+Here, you see both the field name itself, its return type, and information about parameters that can be passed to it. You can use this information to write a query you'll eventually add to your app.
 
-To start working with this query in the Sandbox Explorer, select the "play" button to the right side of the information:
+To start working with this field in the Sandbox Explorer, select the "play" button to the right side of the information:
 
 <img src="images/open_in_explorer_launches.png" class="screenshot" alt="Open in Explorer"/>
 
-This brings you back into Sandbox's Explorer tab with the sidebar on the left showing documentation for the query you've selected:
+This brings you back into Sandbox's Explorer tab with the sidebar on the left showing documentation for the field you've selected:
 
 <img src="images/explorer_sandbox_open.png" class="screenshot" alt="Docs open in the left sidebar"/>
 
-Notice the small button next to the `launches` icon. Click this button to add the query to the middle "operations" panel:
+Notice the small plus button next to the `launches` field. Click this button to add the field to the middle "operations" panel:
 
 <img src="images/explorer_add_launches_query.png" class="screenshot" alt="Click the button to add this query"/>
 
-When the query is added, it will look like this:
+When the field is added, it will look like this:
 
 <img src="images/explorer_initial_added_query.png" class="screenshot" alt="The query once it's been added to the Operations section"/>
 
 Let's break down what you're seeing here:
 
-- The type of the operation, `query`, followed by the name of the operation, currently `Query` (we'll make that more specific in a second), is the outermost set of brackets.
-- The actual query being called is the next set of brackets in. Since the `arguments` for this query both have default values, they are not automatically added to the query for you.
-- An error in the empty space between the brackets, which is where you'll put the list of information you want back from each launch.
+- The type of the operation, `query`, followed by the name of the operation, currently `Query` (we'll make that more specific in a second), is the outermost set of braces.
+- The actual field being selected is the next set of braces in. Since the **arguments** for this field both have default values, they are not automatically added for you.
+- An error in the empty space between the braces, which is where you'll put the list of information you want back from each launch.
 
 The Apollo Kotlin SDK requires every query to have a name (even though this isn't required by the GraphQL spec). Since you're going to create more than one query, it's also a good idea to give this operation a specific name other than `Query`. Change the name of the operation to `LaunchList`:
 
 <img src="images/explorer_launch_list_rename.png" class="screenshot" alt="Renaming the query"/>
 
-Next, on the left hand side, you can select what fields you want back in the returned object. Start by clicking the button next to the `cursor` field. It will mark that field as selected, then insert it into your operations:
+Next, on the left hand side, you can select what fields you want back in the returned object. Start by clicking the plus button next to the `cursor` field. It will mark that field as selected, then insert it into your operations:
 
 <img src="images/explorer_check_cursor.png" class="screenshot" alt="After adding the cursor field."/>
 
@@ -48,7 +48,7 @@ However, you can also use auto-complete to help you with this. Add a newline bel
 
 The Sandbox Explorer is a great tool for building and verifying queries so you don't have to repeatedly rebuild your project in Android Studio to try out changes.
 
-As the schema indicates, the `launches` query returns a `LaunchConnection` object. This object includes a list of launches, along with fields related to pagination (`cursor` and `hasMore`). The query you've written so far indicates exactly which fields of this `LaunchConnection` object you want to be returned.
+As the schema indicates, the `launches` field returns a `LaunchConnection` object. This object includes a list of launches, along with fields related to pagination (`cursor` and `hasMore`). The query you've written so far indicates exactly which fields of this `LaunchConnection` object you want to be returned.
 
 Run this query by pressing the "Submit Operation" button, which should now have the name of your query, `LaunchList`:
 
@@ -64,11 +64,13 @@ Click the button next to the `launches` field at the bottom of the left column. 
 
 <img src="images/explorer_launches_drill_in.png" class="screenshot" alt="Status after adding launches field"/>
 
-The fields you add in this set of brackets will be fetched for every launch in the list. Click the buttons next to `id` and `site` properties to add those two fields. When you're done, your operation should look like this:
+The fields you add in this set of braces will be fetched for every launch in the list. Click the buttons next to `id` and `site` properties to add those two fields. When you're done, your operation should look like this:
 
 ```graphql title="(Sandbox Explorer)"
 query LaunchList {
   launches {
+    cursor
+    hasMore
     launches {
       id
       site
