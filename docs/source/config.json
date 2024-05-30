@@ -53,7 +53,7 @@
       "Troubleshooting": "/caching/troubleshooting"
     },
     "Networking": {
-      "HTTP interceptors": "/advanced/interceptors-http",
+      "Interceptors": "/advanced/interceptors-http",
       "Custom HTTP clients": "/advanced/http-engine",
       "Using the models without apollo-runtime": "/advanced/no-runtime",
       "Authentication": "/advanced/authentication",

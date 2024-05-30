@@ -29,48 +29,147 @@ dependencies {
   implementation("com.apollographql.apollo3:apollo-runtime-java:4.0.0-beta.6")
 }
 ```
+Note that the Java runtime currently doesn't support the Http or Normalized caches.
 
-The Java runtime has a callbacks based API. This snippet demonstrates initializing and using an `ApolloClient` in Java:
+The Java runtime has a callbacks based API. This snippet demonstrates initializing an `ApolloClient` and executing a query in Java:
 
 ```java
 import com.apollographql.apollo3.runtime.java.ApolloClient;
 // (...)
 
+// Create and configure an ApolloClient
 ApolloClient client = ApolloClient.Builder builder = new ApolloClient.Builder()
   .serverUrl("http://localhost:4000/graphql")
   .build();
 
-// Use enqueue to execute a query asynchronously
-apolloClient.query(new GetRandomQuery()).enqueue(response -> {
+// Call enqueue() to execute a query asynchronously
+apolloClient.query(new MyQuery()).enqueue(response -> {
   if (response.data != null) {
-    // No errors
+    // Handle (potentially partial) data
     System.out.println(response.data);
   } else {
-    // Errors
-    if (response.exception instanceof ApolloGraphQLException) {
-      // GraphQL errors
-      System.out.println(((ApolloGraphQLException) response.exception).getErrors().get(0));
-    } else {
-      // Network error
+    // Something wrong happened
+    if (response.exception != null) {
+      // Handle non-GraphQL errors, e.g. network issues
       response.exception.printStackTrace();
+    } else {
+      // Handle GraphQL errors in response.errors
+      System.out.println(response.getErrors().get(0));
     }
   }
 });
 ```
-
-Note that as of now, the Java runtime doesn't support the Http or Normalized caches.
 
 ### Cancelling requests
 
 `euqueue` returns an `ApolloDisposable` that can be used to cancel the request:
 
 ```java
-ApolloDisposable disposable = apolloClient.subscription(new MyQuery()).enqueue(response -> ...)
+ApolloDisposable disposable = apolloClient.subscription(new MySubscription()).enqueue(response -> ...)
 // ...
 disposable.dispose();
 
 ```
 
-### RxJava extensions
+### Subscriptions
 
-If your project uses RxJava, you can use Apollo's [RxJava extensions](./rxjava/) with the Java runtime.
+Please refer to the [subscriptions documentation](../advanced/subscriptions/) for more information about subscriptions in general, and the available protocols.
+
+When executing subscriptions with the Java runtime, the callback passed to `enqueue()` can be called several times:
+
+```java
+ApolloClient apolloClient = new ApolloClient.Builder()
+  .serverUrl("http://localhost:4000/graphql")
+  // Configure a protocol factory
+  .wsProtocolFactory(new ApolloWsProtocol.Factory())
+  .build();
+
+// Execute the subscription
+ApolloDisposable disposable = apolloClient.subscription(new MySubscription()).enqueue(response -> {
+  System.out.println(response.dataOrThrow());
+});
+
+// Observe the disposable to know when the subscription is terminated
+disposable.addListener(() -> {
+  // Will be called when an operation terminates (either successfully or due to an error)
+});
+
+```
+### Interceptors
+
+[Like the Kotlin runtime](./interceptors-http), the Java runtime supports interceptors.
+
+- HTTP interceptors (`HttpInterceptor`) can be used to add headers to requests (e.g. for authentication), log requests and responses, etc.
+- GraphQL interceptors (`ApolloInterceptor`) can be used to modify GraphQL requests and responses, implement retry logic, etc.
+
+```java
+// An HTTP interceptor that adds a custom header to each request
+HttpInterceptor httpInterceptor = (request, chain, callback) -> {
+  request = request.newBuilder().addHeader("my-header", "true").build();
+  chain.proceed(request, callback);
+};
+
+// A GraphQL interceptor that logs the name of each operation before executing it
+ApolloInterceptor apolloInterceptor = new ApolloInterceptor() {
+  @Override
+  public <D extends Operation.Data> void intercept(@NotNull ApolloRequest<D> request, @NotNull ApolloInterceptorChain chain, @NotNull ApolloCallback<D> callback) {
+    System.out.println("Executing operation: " + request.getOperation().name());
+    chain.proceed(request, callback);
+  }
+};
+
+// Configure the interceptors when building the ApolloClient
+apolloClient = new ApolloClient.Builder()
+  .serverUrl(...)
+  .addHttpInterceptor(httpInterceptor)
+  .addInterceptor(apolloInterceptor)
+  .build();
+```
+
+If you already have implemented OkHttp interceptors, you can also use them by passing your `OkHttpClient` instance to the `ApolloClient.Builder`:
+
+```java
+OkHttpClient okHttpClient = new OkHttpClient.Builder()
+  .okHttpClient(myOkHttpClient)
+  .build();
+```
+
+## RxJava extensions
+
+If your project uses RxJava, you can use Apollo's RxJava extensions with the Java runtime.
+
+To do so, add the `apollo-rx2-support-java` or `apollo-rx3-support-java` dependency to your project:
+
+```java title="build.gradle[.kts]"
+dependencies {
+  // ...
+
+  // For RxJava 2
+  implementation("com.apollographql.apollo3:apollo-rx2-support-java:4.0.0-beta.6")
+
+  // For RxJava 3
+  implementation("com.apollographql.apollo3:apollo-rx3-support-java:4.0.0-beta.6")
+}
+```
+Then use the `Rx2Apollo` or `Rx3Apollo` classes to execute GraphQL operations and get RxJava observables:
+
+```java
+import com.apollographql.apollo3.rx3.java.Rx3Apollo;
+
+// (...)
+
+// Query
+ApolloCall<MyQuery.Data> queryCall = client.query(new MyQuery());
+Single<ApolloResponse<MyQuery.Data>> queryResponse = Rx3Apollo.single(queryCall);
+queryResponse.subscribe( /* ... */ );
+
+// Mutation
+ApolloCall<MyMutation.Data> mutationCall = client.mutation(new MyMutation("my-parameter"));
+Single<ApolloResponse<MyMutation.Data>> mutationResponse = Rx3Apollo.single(mutationCall);
+mutationResponse.subscribe( /* ... */ );
+
+// Subscription
+ApolloCall<MySubscription.Data> subscriptionCall = client.subscription(new MySubscription());
+Flowable<ApolloResponse<MySubscription.Data>> subscriptionResponse = Rx3Apollo.flowable(subscriptionCall);
+subscriptionResponse.subscribe( /* ... */ );
+```
