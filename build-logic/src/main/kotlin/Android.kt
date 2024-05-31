@@ -41,6 +41,4 @@ fun Project.configureAndroid(
       }
     }
   }
-
-  dependencies.add("implementation", getCatalogLib("androidx.multidex"))
 }
