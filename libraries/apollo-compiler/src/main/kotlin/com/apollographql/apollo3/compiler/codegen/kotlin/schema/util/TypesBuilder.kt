@@ -37,7 +37,7 @@ internal fun IrScalar.typePropertySpec(targetTypeName: String?): PropertySpec {
 
 private fun builtinScalarKotlinName(name: String): String? = when (name) {
   "Int" -> "kotlin.Int"
-  "Float" -> "kotlin.Float"
+  "Float" -> "kotlin.Double"
   "String" -> "kotlin.String"
   "Boolean" -> "kotlin.Boolean"
   "ID" -> "kotlin.String"
