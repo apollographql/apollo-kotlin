@@ -3,6 +3,7 @@ package test;
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.Operation;
+import com.apollographql.apollo3.exception.ApolloHttpException;
 import com.apollographql.apollo3.mockserver.MockRequestBase;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
@@ -15,9 +16,7 @@ import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.runtime.java.network.http.HttpInterceptor;
 import com.google.common.truth.Truth;
 import io.reactivex.rxjava3.annotations.NonNull;
-import scalars.CreateCatMutation;
 import javatest.GetRandomQuery;
-import scalars.LocationQuery;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
@@ -25,6 +24,8 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 import scalar.GeoPointAdapter;
+import scalars.CreateCatMutation;
+import scalars.LocationQuery;
 
 import java.util.Arrays;
 
@@ -57,7 +58,7 @@ public class ClientTest {
   }
 
   @Test
-  public void simple() {
+  public void success() {
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 42}}").build());
     @NonNull ApolloResponse<GetRandomQuery.Data> queryResponse = blockingQuery(apolloClient, GetRandomQuery.builder().build());
     Truth.assertThat(queryResponse.dataOrThrow().random).isEqualTo(42);
@@ -65,6 +66,31 @@ public class ClientTest {
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"createAnimal\": {\"__typename\": \"Cat\", \"species\": \"cat\", \"habitat\": {\"temperature\": 10.5}}}}").build());
     @NonNull ApolloResponse<CreateCatMutation.Data> mutationResponse = blockingMutation(apolloClient, CreateCatMutation.builder().build());
     Truth.assertThat(mutationResponse.dataOrThrow().createAnimal.catFragment.species).isEqualTo("cat");
+  }
+
+  @Test
+  public void graphqlError() {
+    mockServer.enqueue(new MockResponse.Builder().body("{\n" +
+        "  \"errors\": [\n" +
+        "    {\n" +
+        "      \"message\": \"The requested resource could not be found.\",\n" +
+        "      \"path\": [\"user\"]\n" +
+        "    }\n" +
+        "  ]\n" +
+        "}").build());
+    @NonNull ApolloResponse<GetRandomQuery.Data> queryResponse = blockingQuery(apolloClient, GetRandomQuery.builder().build());
+    Truth.assertThat(queryResponse.data).isNull();
+    Truth.assertThat(queryResponse.exception).isNull();
+    Truth.assertThat(queryResponse.errors.get(0).getMessage()).isEqualTo("The requested resource could not be found.");
+  }
+
+  @Test
+  public void httpError() {
+    mockServer.enqueue(new MockResponse.Builder().statusCode(500).build());
+    @NonNull ApolloResponse<GetRandomQuery.Data> queryResponse = blockingQuery(apolloClient, GetRandomQuery.builder().build());
+    Truth.assertThat(queryResponse.data).isNull();
+    Truth.assertThat(queryResponse.errors).isNull();
+    Truth.assertThat(queryResponse.exception).isInstanceOf(ApolloHttpException.class);
   }
 
   @Test
