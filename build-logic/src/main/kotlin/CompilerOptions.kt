@@ -16,14 +16,13 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinNativeCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 /**
  * @param target the JVM version we want to be compatible with (bytecode + bootstrap classpath)
  */
-fun KotlinCommonCompilerOptions.configure(target: Int) {
+fun KotlinCommonCompilerOptions.configure(target: Int, kotlinCompilerOptions: KotlinCompilerOptions) {
   freeCompilerArgs.add("-Xexpect-actual-classes")
 
   /**
@@ -34,8 +33,8 @@ fun KotlinCommonCompilerOptions.configure(target: Int) {
   freeCompilerArgs.add("-opt-in=com.apollographql.apollo3.annotations.ApolloExperimental")
   freeCompilerArgs.add("-opt-in=com.apollographql.apollo3.annotations.ApolloInternal")
 
-  apiVersion.set(KotlinVersion.KOTLIN_1_9)
-  languageVersion.set(KotlinVersion.KOTLIN_1_9)
+  apiVersion.set(kotlinCompilerOptions.version)
+  languageVersion.set(kotlinCompilerOptions.version)
 
   when (this) {
     is KotlinJvmCompilerOptions -> {
@@ -94,7 +93,7 @@ val Project.androidExtensionOrNull: BaseExtension?
     return (extensions.findByName("android") as? BaseExtension)
   }
 
-fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?) {
+fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptions: KotlinCompilerOptions) {
   @Suppress("NAME_SHADOWING")
   val jvmTarget = jvmTarget?: 8
 
@@ -108,7 +107,7 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?) {
       else -> jvmTarget
     }
 
-    configure(target)
+    configure(target, kotlinCompilerOptions)
   }
   project.tasks.withType(JavaCompile::class.java).configureEach {
     // For JVM only modules, this dictates the "org.gradle.jvm.version" Gradle attribute

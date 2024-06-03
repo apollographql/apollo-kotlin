@@ -11,24 +11,36 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.LibraryVariant
 import com.android.build.gradle.api.TestVariant
 import com.android.build.gradle.api.UnitTestVariant
+import com.android.builder.model.SourceProvider
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 
+internal class VariantWrapper(private val _wrapped: BaseVariant) {
+  val name: String
+    get() = _wrapped.name
+
+  val sourceSets: List<SourceProvider>
+    get() = _wrapped.sourceSets
+
+  val wrapped: Any
+    get() = _wrapped
+}
+
 internal object AndroidProject {
-  fun onEachVariant(project: Project, withTestVariants: Boolean = false, block: (BaseVariant) -> Unit) {
+  fun onEachVariant(project: Project, withTestVariants: Boolean = false, block: (VariantWrapper) -> Unit) {
     project.applicationVariants?.configureEach {
-      block(it)
+      block(VariantWrapper(it))
     }
     project.libraryVariants?.configureEach {
-      block(it)
+      block(VariantWrapper(it))
     }
 
     if (withTestVariants) {
       project.testVariants?.configureEach {
-        block(it)
+        block(VariantWrapper(it))
       }
       project.unitTestVariants?.configureEach {
-        block(it)
+        block(VariantWrapper(it))
       }
     }
   }
