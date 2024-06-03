@@ -1,8 +1,12 @@
 package test
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.mockserver.MockResponse
-import com.apollographql.apollo3.testing.mockServerTest
+import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.testing.internal.runTest
+import kotlinx.coroutines.CoroutineScope
 import multipart.MyQuery
+import okio.use
 import kotlin.test.Test
 
 class GraphQLYogaTest {
@@ -27,5 +31,22 @@ class GraphQLYogaTest {
     )
 
     apolloClient.query(MyQuery()).execute()
+  }
+}
+
+class MockServerTest(val mockServer: MockServer, val apolloClient: ApolloClient, val scope: CoroutineScope)
+
+fun mockServerTest(
+    clientBuilder: ApolloClient.Builder.() -> Unit = {},
+    block: suspend MockServerTest.() -> Unit
+) = runTest(true) {
+  MockServer().use { mockServer ->
+    ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .apply(clientBuilder)
+        .build()
+        .use {apolloClient ->
+          MockServerTest(mockServer, apolloClient, this).block()
+        }
   }
 }
