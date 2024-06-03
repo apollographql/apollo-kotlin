@@ -1,16 +1,15 @@
 package benchmarks
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.toResponseJson
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueString
-import com.apollographql.apollo3.testing.enqueueData
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import kotlin.test.AfterClass
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.time.Duration
 import kotlin.time.measureTime
@@ -38,11 +37,11 @@ class BenchmarksTest {
           .build()
     }
 
-    mockServer.enqueueData(
+    mockServer.enqueueString(
         GetRandomQuery.Data {
           random = 42
         }
-    )
+            .toResponseJson())
     client
         .query(GetRandomQuery())
         .execute()

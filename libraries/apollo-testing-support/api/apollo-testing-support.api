@@ -15,9 +15,9 @@ public final class com/apollographql/apollo3/testing/FooQuery$Companion {
 }
 
 public final class com/apollographql/apollo3/testing/FooSubscription$Companion {
-	public final fun completeMessage (Ljava/lang/String;)Lcom/apollographql/apollo3/mockserver/TextMessage;
-	public final fun errorMessage (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/mockserver/TextMessage;
-	public final fun nextMessage (Ljava/lang/String;I)Lcom/apollographql/apollo3/mockserver/TextMessage;
+	public final fun completeMessage (Ljava/lang/String;)Ljava/lang/String;
+	public final fun errorMessage (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public final fun nextMessage (Ljava/lang/String;I)Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/testing/MockserverKt {

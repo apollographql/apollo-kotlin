@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import okio.use
+import test.network.enqueueMessage
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs

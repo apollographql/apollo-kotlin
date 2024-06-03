@@ -11,6 +11,7 @@ import com.apollographql.apollo3.interceptor.addRetryOnErrorInterceptor
 import com.apollographql.apollo3.mockserver.CloseFrame
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.TextMessage
+import com.apollographql.apollo3.mockserver.WebSocketBody
 import com.apollographql.apollo3.mockserver.awaitWebSocketRequest
 import com.apollographql.apollo3.mockserver.enqueueWebSocket
 import com.apollographql.apollo3.mpp.Platform
@@ -351,4 +352,8 @@ class WebSocketNetworkTransportTest {
       assertEquals("oh no!", message)
     }
   }
+}
+
+internal fun WebSocketBody.enqueueMessage(message: String) {
+  enqueueMessage(TextMessage(message))
 }

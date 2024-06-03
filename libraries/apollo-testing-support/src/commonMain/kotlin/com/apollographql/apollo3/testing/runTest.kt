@@ -1,8 +1,10 @@
 package com.apollographql.apollo3.testing
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.TextMessage
 import com.apollographql.apollo3.mockserver.WebSocketBody
 import com.apollographql.apollo3.mockserver.WebsocketMockRequest
 import com.apollographql.apollo3.mockserver.awaitWebSocketRequest
@@ -13,12 +15,17 @@ import kotlinx.coroutines.CoroutineScope
 import okio.use
 
 @ApolloExperimental
+@Deprecated("This is only used for internal Apollo tests and will be removed in a future version.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 class MockServerTest(val mockServer: MockServer, val apolloClient: ApolloClient, val scope: CoroutineScope)
 
 /**
  * A convenience function that makes sure the MockServer and ApolloClient are properly closed at the end of the test
  */
 @ApolloExperimental
+@Deprecated("This is only used for internal Apollo tests and will be removed in a future version.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+@Suppress("DEPRECATION")
 fun mockServerTest(
     skipDelays: Boolean = true,
     clientBuilder: ApolloClient.Builder.() -> Unit = {},
@@ -41,6 +48,8 @@ fun mockServerTest(
 }
 
 @ApolloExperimental
+@Deprecated("This is only used for internal Apollo tests and will be removed in a future version.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 class MockServerWebSocketTest(
     val apolloClient: ApolloClient,
     private val mockServer: MockServer,
@@ -68,11 +77,14 @@ class MockServerWebSocketTest(
     awaitWebSocketRequest()
 
     serverReader.awaitMessage()
-    serverWriter.enqueueMessage(connectionAckMessage())
+    serverWriter.enqueueMessage(TextMessage(connectionAckMessage()))
   }
 }
 
 @ApolloExperimental
+@Deprecated("This is only used for internal Apollo tests and will be removed in a future version.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+@Suppress("DEPRECATION")
 fun mockServerWebSocketTest(customizeTransport: WebSocketNetworkTransport.Builder.() -> Unit = {}, block: suspend MockServerWebSocketTest.() -> Unit) = runTest(false) {
   MockServer().use { mockServer ->
 
@@ -85,6 +97,7 @@ fun mockServerWebSocketTest(customizeTransport: WebSocketNetworkTransport.Builde
                 .build()
         )
         .build().use { apolloClient ->
+          @Suppress("DEPRECATION")
           MockServerWebSocketTest(apolloClient, mockServer, this@runTest).block()
         }
   }

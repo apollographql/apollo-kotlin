@@ -4,6 +4,7 @@ import IdCacheKeyGenerator
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
@@ -22,6 +23,7 @@ import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.assertNoElement
 import com.apollographql.apollo3.testing.awaitElement
@@ -533,7 +535,7 @@ class WatcherTest {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
 
     // Set up the cache with a "R2-D2" name
-    mockServer.enqueue(query, episodeHeroNameData)
+    mockServer.enqueueString(query.composeJsonResponse(episodeHeroNameData))
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     // Prepare next call to be a network error

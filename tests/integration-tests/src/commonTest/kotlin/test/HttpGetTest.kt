@@ -6,7 +6,6 @@ import com.apollographql.apollo3.integration.normalizer.SearchHeroQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueString
-import com.apollographql.apollo3.testing.enqueueData
 import com.apollographql.apollo3.testing.mockServerTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -42,7 +41,7 @@ class HttpGetTest {
   @Test
   fun encodeReservedCharactersTest() = mockServerTest {
     // Response not needed, just testing generated url
-    mockServer.enqueueData(data = emptyMap())
+    mockServer.enqueueString("")
     apolloClient.query(SearchHeroQuery("!#$&'()*+,/:;=?@[]{}% "))
         .httpMethod(HttpMethod.Get)
         .execute()

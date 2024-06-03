@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.testing
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
@@ -14,7 +15,6 @@ import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.json.writeArray
 import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.api.missingField
-import com.apollographql.apollo3.mockserver.TextMessage
 
 /**
  * [FooQuery] is a query for tests that doesn't require codegen.
@@ -22,6 +22,9 @@ import com.apollographql.apollo3.mockserver.TextMessage
  * Use it to test parts of the runtime without having to use included builds.
  */
 @ApolloExperimental
+@Deprecated("This is only used for internal Apollo tests and will be removed in a future version.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+@Suppress("DEPRECATION")
 class FooQuery: FooOperation("query"), Query<FooOperation.Data> {
   companion object {
     val successResponse = "{\"data\": {\"foo\": 42}}"
@@ -34,9 +37,12 @@ class FooQuery: FooOperation("query"), Query<FooOperation.Data> {
  * Use it to test parts of the runtime without having to use included builds.
  */
 @ApolloExperimental
+@Deprecated("This is only used for internal Apollo tests and will be removed in a future version.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+@Suppress("DEPRECATION")
 class FooSubscription: FooOperation("subscription"), Subscription<FooOperation.Data> {
   companion object {
-    fun nextMessage(id: String, foo: Int): TextMessage {
+    fun nextMessage(id: String, foo: Int): String {
       return buildJsonString {
         writeObject {
           name("id")
@@ -52,10 +58,10 @@ class FooSubscription: FooOperation("subscription"), Subscription<FooOperation.D
             }
           }
         }
-      }.let { TextMessage(it) }
+      }
     }
 
-    fun completeMessage(id: String): TextMessage {
+    fun completeMessage(id: String): String {
       return buildJsonString {
         writeObject {
           name("id")
@@ -63,10 +69,10 @@ class FooSubscription: FooOperation("subscription"), Subscription<FooOperation.D
           name("type")
           value("complete")
         }
-      }.let { TextMessage(it) }
+      }
     }
 
-    fun errorMessage(id: String, message: String): TextMessage {
+    fun errorMessage(id: String, message: String): String {
       return buildJsonString {
         writeObject {
           name("id")
@@ -81,7 +87,7 @@ class FooSubscription: FooOperation("subscription"), Subscription<FooOperation.D
             }
           }
         }
-      }.let { TextMessage(it) }
+      }
     }
   }
 }
@@ -91,6 +97,9 @@ class FooSubscription: FooOperation("subscription"), Subscription<FooOperation.D
  * Note we can't make [FooOperation] extend both [Query] and [Subscription] because that confuses [ApolloClient] when deciding whant NetworkTransport to use.
  */
 @ApolloExperimental
+@Deprecated("This is only used for internal Apollo tests and will be removed in a future version.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+@Suppress("DEPRECATION")
 abstract class FooOperation(private val operationType: String): Operation<FooOperation.Data> {
   class Data(val foo: Int): Query.Data, Subscription.Data {
     override fun toString(): String {

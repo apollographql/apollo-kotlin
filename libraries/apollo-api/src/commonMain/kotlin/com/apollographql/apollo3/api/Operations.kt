@@ -6,6 +6,7 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.internal.ResponseParser
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
@@ -139,6 +140,19 @@ fun <D : Operation.Data> Operation<D>.composeJsonResponse(
 ) {
   jsonWriter.use {
     it.writeObject {
+      name("data")
+      adapter().toJson(this, customScalarAdapters, data)
+    }
+  }
+}
+
+@ApolloExperimental
+fun <D : Operation.Data> Operation<D>.composeJsonResponse(
+    data: D,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+): String {
+  return buildJsonString {
+    writeObject {
       name("data")
       adapter().toJson(this, customScalarAdapters, data)
     }
