@@ -1,15 +1,20 @@
-
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
 import org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask
 
 class AndroidOptions(
-    val withCompose: Boolean
+    val withCompose: Boolean,
+)
+
+class KotlinCompilerOptions(
+    val apiVersion: KotlinVersion = KotlinVersion.KOTLIN_2_0,
+    val languageVersion: KotlinVersion = KotlinVersion.KOTLIN_2_0,
 )
 
 fun Project.apolloLibrary(
@@ -21,7 +26,8 @@ fun Project.apolloLibrary(
     withJvm: Boolean = true,
     withWasm: Boolean = true,
     androidOptions: AndroidOptions? = null,
-    publish: Boolean = true
+    publish: Boolean = true,
+    kotlinCompilerOptions: KotlinCompilerOptions = KotlinCompilerOptions(),
 ) {
   group = property("GROUP")!!
   version = property("VERSION_NAME")!!
@@ -30,7 +36,7 @@ fun Project.apolloLibrary(
     configureAndroid(namespace, androidOptions)
   }
   commonSetup()
-  configureJavaAndKotlinCompilers(jvmTarget)
+  configureJavaAndKotlinCompilers(jvmTarget, kotlinCompilerOptions)
 
   addOptIn(
       "com.apollographql.apollo3.annotations.ApolloExperimental",
@@ -74,9 +80,10 @@ fun Project.apolloTest(
     withJvm: Boolean = true,
     appleTargets: Set<String> = setOf(hostTarget),
     browserTest: Boolean = false,
+    kotlinCompilerOptions: KotlinCompilerOptions = KotlinCompilerOptions(),
 ) {
   commonSetup()
-  configureJavaAndKotlinCompilers(null)
+  configureJavaAndKotlinCompilers(null, kotlinCompilerOptions)
   addOptIn(
       "com.apollographql.apollo3.annotations.ApolloExperimental",
       "com.apollographql.apollo3.annotations.ApolloInternal",
