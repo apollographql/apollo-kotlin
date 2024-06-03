@@ -13,8 +13,7 @@ class AndroidOptions(
 )
 
 class KotlinCompilerOptions(
-    val apiVersion: KotlinVersion = KotlinVersion.KOTLIN_2_0,
-    val languageVersion: KotlinVersion = KotlinVersion.KOTLIN_2_0,
+    val version: KotlinVersion = KotlinVersion.KOTLIN_2_0,
 )
 
 fun Project.apolloLibrary(

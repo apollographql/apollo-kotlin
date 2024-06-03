@@ -33,8 +33,8 @@ fun KotlinCommonCompilerOptions.configure(target: Int, kotlinCompilerOptions: Ko
   freeCompilerArgs.add("-opt-in=com.apollographql.apollo3.annotations.ApolloExperimental")
   freeCompilerArgs.add("-opt-in=com.apollographql.apollo3.annotations.ApolloInternal")
 
-  apiVersion.set(kotlinCompilerOptions.apiVersion)
-  languageVersion.set(kotlinCompilerOptions.languageVersion)
+  apiVersion.set(kotlinCompilerOptions.version)
+  languageVersion.set(kotlinCompilerOptions.version)
 
   when (this) {
     is KotlinJvmCompilerOptions -> {
