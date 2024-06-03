@@ -996,7 +996,7 @@ abstract class DefaultApolloExtension(
           service.srcDir("src/${sourceProvider.name}/graphql/$sourceFolder")
         }
         (service as DefaultService).outputDirAction = Action<Service.DirectoryConnection> { connection ->
-          connection.connectToAndroidVariant(variant)
+          connection.connectToAndroidVariant(variant.wrapped)
         }
       }
     }
