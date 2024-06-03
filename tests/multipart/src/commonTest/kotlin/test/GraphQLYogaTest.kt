@@ -39,7 +39,7 @@ class MockServerTest(val mockServer: MockServer, val apolloClient: ApolloClient,
 fun mockServerTest(
     clientBuilder: ApolloClient.Builder.() -> Unit = {},
     block: suspend MockServerTest.() -> Unit
-) = runTest(true) {
+) = runTest() {
   MockServer().use { mockServer ->
     ApolloClient.Builder()
         .serverUrl(mockServer.url())

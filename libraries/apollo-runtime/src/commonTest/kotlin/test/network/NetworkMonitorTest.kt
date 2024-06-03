@@ -13,7 +13,6 @@ import com.apollographql.apollo3.mockserver.assertNoRequest
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.testing.FooQuery
-import com.apollographql.apollo3.testing.internal.ApolloTestResult
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +23,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.takeWhile
+import kotlinx.coroutines.test.TestResult
 import okio.use
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,7 +33,7 @@ import kotlin.test.assertNull
 
 class NetworkMonitorTest {
   @Test
-  fun failFastIfOfflineTest(): ApolloTestResult {
+  fun failFastIfOfflineTest(): TestResult {
     val fakeNetworkMonitor = FakeNetworkMonitor()
 
     return mockServerTest(clientBuilder = {
@@ -57,7 +57,7 @@ class NetworkMonitorTest {
   }
 
   @Test
-  fun networkMonitorInterceptorTest(): ApolloTestResult {
+  fun networkMonitorInterceptorTest(): TestResult {
     val fakeNetworkMonitor = FakeNetworkMonitor()
 
     return mockServerTest(clientBuilder = {
@@ -116,7 +116,7 @@ class MockServerTest(val mockServer: MockServer, val apolloClient: ApolloClient,
 fun mockServerTest(
     clientBuilder: ApolloClient.Builder.() -> Unit = {},
     block: suspend MockServerTest.() -> Unit
-) = runTest(true) {
+) = runTest() {
   MockServer().use { mockServer ->
     ApolloClient.Builder()
         .serverUrl(mockServer.url())

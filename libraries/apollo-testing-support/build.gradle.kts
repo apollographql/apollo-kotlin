@@ -18,7 +18,7 @@ kotlin {
         implementation(libs.atomicfu.library.get().toString()) {
           because("We need locks in TestNetworkTransportHandler (we don't use the gradle plugin rewrite)")
         }
-        implementation(libs.kotlinx.coroutines.test)
+        api(libs.kotlinx.coroutines.test)
       }
     }
 

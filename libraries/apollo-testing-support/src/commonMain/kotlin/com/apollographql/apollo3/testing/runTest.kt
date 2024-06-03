@@ -21,10 +21,9 @@ class MockServerTest(val mockServer: MockServer, val apolloClient: ApolloClient,
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 @Suppress("DEPRECATION")
 fun mockServerTest(
-    skipDelays: Boolean = true,
     clientBuilder: ApolloClient.Builder.() -> Unit = {},
     block: suspend MockServerTest.() -> Unit
-) = runTest(skipDelays) {
+) = runTest {
   MockServer().use { mockServer ->
     ApolloClient.Builder()
         .serverUrl(mockServer.url())

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.withContext
 import testFixtureToUtf8
 import java.util.concurrent.Executors
 import kotlin.test.Test
@@ -47,33 +48,37 @@ class WriteToCacheAsynchronouslyTest {
    * Write to cache asynchronously, make sure records are not in cache when we receive the response
    */
   @Test
-  fun writeToCacheAsynchronously() = runTest(false, dispatcher, { setUp() }, { tearDown() }) {
-    val query = HeroAndFriendsNamesQuery(Episode.JEDI)
+  fun writeToCacheAsynchronously() = runTest({ setUp() }, { tearDown() }) {
+    withContext(dispatcher) {
+      val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
-    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
-    apolloClient.query(query)
-        .writeToCacheAsynchronously(true)
-        .execute()
+      mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
+      apolloClient.query(query)
+          .writeToCacheAsynchronously(true)
+          .execute()
 
 
-    val record = store.accessCache { it.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE) }
-    assertNull(record)
+      val record = store.accessCache { it.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE) }
+      assertNull(record)
+    }
   }
 
   /**
    * Write to cache synchronously, make sure records are in cache when we receive the response
    */
   @Test
-  fun writeToCacheSynchronously() = runTest(false, dispatcher, { setUp() }, { tearDown() }) {
-    val query = HeroAndFriendsNamesQuery(Episode.JEDI)
+  fun writeToCacheSynchronously() = runTest({ setUp() }, { tearDown() }) {
+    withContext(dispatcher) {
+      val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
-    mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
-    apolloClient.query(query)
-        .writeToCacheAsynchronously(false)
-        .execute()
+      mockServer.enqueueString(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
+      apolloClient.query(query)
+          .writeToCacheAsynchronously(false)
+          .execute()
 
-    val record = store.accessCache { it.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE) }
-    assertNotNull(record)
+      val record = store.accessCache { it.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE) }
+      assertNotNull(record)
+    }
   }
 
   companion object {
