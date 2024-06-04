@@ -303,7 +303,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   private fun peekNumber(): Int {
-    var value: Long = 0 // Negative to accommodate Long.MIN_VALUE more easily.
+    var value: Long = 0
     var negative = false
     var fitsInLong = true
     var last = NUMBER_CHAR_NONE
@@ -357,7 +357,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
           when (last) {
             NUMBER_CHAR_SIGN, NUMBER_CHAR_NONE -> {
-              value = -(c - '0'.code.toByte()).toLong()
+              value = (c - '0'.code.toByte()).toLong()
               last = NUMBER_CHAR_DIGIT
             }
 
@@ -365,8 +365,8 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
               if (value == 0L) {
                 return PEEKED_NONE // Leading '0' prefix is not allowed (since it could be octal).
               }
-              val newValue = value * 10 - (c - '0'.code.toByte())
-              fitsInLong = fitsInLong and (value > MIN_INCOMPLETE_INTEGER) || value == MIN_INCOMPLETE_INTEGER && newValue < value
+              val newValue = value * 10 + (c - '0'.code.toByte())
+              fitsInLong = fitsInLong and (value < MAX_INCOMPLETE_INTEGER) || value == MAX_INCOMPLETE_INTEGER && newValue > value
               value = newValue
             }
 
@@ -385,7 +385,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
     // We've read a complete number. Decide if it's a PEEKED_LONG or a PEEKED_NUMBER.
     return if (last == NUMBER_CHAR_DIGIT && fitsInLong && (value != Long.MIN_VALUE || negative)) {
-      peekedLong = if (negative) value else -value
+      peekedLong = if (negative) -value else value
       buffer.skip(i.toLong())
       PEEKED_LONG.also { peeked = it }
     } else if (last == NUMBER_CHAR_DIGIT || last == NUMBER_CHAR_FRACTION_DIGIT || last == NUMBER_CHAR_EXP_DIGIT) {
@@ -851,7 +851,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   private fun throwSyntaxError(message: String): Nothing = throw JsonEncodingException(message + " at path " + getPath())
 
   companion object {
-    private const val MIN_INCOMPLETE_INTEGER = Long.MIN_VALUE / 10
+    private const val MAX_INCOMPLETE_INTEGER = Long.MAX_VALUE / 10
     private val SINGLE_QUOTE_OR_SLASH = "'\\".encodeUtf8()
     private val DOUBLE_QUOTE_OR_SLASH = "\"\\".encodeUtf8()
     private val UNQUOTED_STRING_TERMINALS = "{}[]:, \n\t\r/\\;#=".encodeUtf8()
