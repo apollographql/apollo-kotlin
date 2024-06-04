@@ -22,15 +22,27 @@ In the **Reference** tab, you can now see a list of all of the things available 
 
 Apollo Kotlin requires a schema to generate type-safe models and code from your queries. There are multiple ways to get a schema. For example, you can go to the SDL tab and download the raw SDL schema using GraphOS Studio Sandbox.
 
-In this tutorial, we will use the `downloadApolloSchema` Gradle task that is created by our plugin automatically. Since GraphQL supports [introspection](https://graphql.org/learn/introspection/), this will work with any GraphQL endpoint that has introspection enabled.
+In this tutorial, we will use the Gradle task that is created by the Apollo plugin automatically. Since GraphQL supports [introspection](https://graphql.org/learn/introspection/), this will work with any GraphQL endpoint that has introspection enabled.
 
-From the root of the project, run the following in Android Studio's Terminal tab:
+First, add the URL of the GraphQL endpoint and the desired location of the schena to the Apollo Gradle configuration:
 
-```shell title="(shell)"
-./gradlew :app:downloadApolloSchema --endpoint='https://apollo-fullstack-tutorial.herokuapp.com/graphql' --schema=app/src/main/graphql/schema.graphqls
+```kotlin title="app/build.gradle.kts"
+apollo {
+  service("service") {
+    packageName.set("com.example.rocketreserver")
+    introspection { // highlight-line
+      endpointUrl.set("https://apollo-fullstack-tutorial.herokuapp.com/graphql") // highlight-line
+      schemaFile.set(file("src/main/graphql/schema.graphqls")) // highlight-line
+    } // highlight-line
+  }
+}
 ```
 
-Note that the path given to `--schema` is relative to the root of the project.
+Then, from the root of the project, run this command in Android Studio's Terminal tab:
+
+```shell title="(shell)"
+./gradlew :app:downloadServiceApolloSchemaFromIntrospection
+```
 
 This will download a `schema.graphqls` file from your endpoint to `app/src/main/graphql/schema.graphqls`.
 

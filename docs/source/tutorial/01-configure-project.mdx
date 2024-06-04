@@ -8,7 +8,7 @@ In this step, you'll import the starter project and add the Apollo Kotlin SDK to
 
 ```
 git clone https://github.com/apollographql/apollo-kotlin-tutorial
-cd apollo-kotlin-tutorial/compose
+cd apollo-kotlin-tutorial
 ```
 
 The starter project is in the `start` folder. 
@@ -39,13 +39,25 @@ This tutorial uses `4.0.0-beta.6` because it is the latest version at the time o
 
 ## Apply the plugin
 
-Apply the Apollo plugin in `app/build.gradle.kts`. There are two `build.gradle.kts` in the project. Make sure to use the one in the `app` directory this time. The Apollo plugin ID is `com.apollographql.apollo3`.
+Add the Apollo plugin to the version catalog in `gradle/libs.versions.toml`. The Apollo plugin ID is `com.apollographql.apollo3`:
+
+```toml title="gradle/libs.versions.toml"
+[versions]
+# ...
+apollo = "4.0.0-beta.6"
+
+[plugins]
+# ...
+apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
+```
+
+Then apply the Apollo plugin in `app/build.gradle.kts`. There are two `build.gradle.kts` in the project - make sure to use the one in the `app` directory.
 
 ```kotlin title="app/build.gradle.kts"
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.android.application)
     // ...
-    id("com.apollographql.apollo3") version "4.0.0-beta.6"
+    alias(libs.plugins.apollo)
 }
 ```
 
@@ -67,12 +79,22 @@ apollo {
 
 ## Add dependencies
 
-Now add `apollo-runtime` to the list of dependencies. This is the code that executes queries and parses responses.
+Now add `apollo-runtime` to the list of dependencies. This is the part of the SDK that executes queries and parses responses.
+
+First add the dependency to the version catalog:
+
+```toml title="gradle/libs.versions.toml"
+[libraries]
+# ...
+apollo-runtime = { module = "com.apollographql.apollo3:apollo-runtime", version.ref = "apollo"}
+```
+
+Then add the dependency to the `app/build.gradle.kts` file:
 
 ```kotlin title="app/build.gradle.kts"
 dependencies {
     // ...
-    implementation("com.apollographql.apollo3:apollo-runtime:4.0.0-beta.6")
+  implementation(libs.apollo.runtime)
 }
 ```
 
