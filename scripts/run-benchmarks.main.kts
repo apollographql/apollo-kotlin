@@ -7,7 +7,6 @@
 @file:DependsOn("com.squareup.okhttp3:okhttp:4.10.0")
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
-import Run_benchmarks_main.TestResult
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.storage.Storage
 import com.google.cloud.storage.StorageOptions
