@@ -8,8 +8,8 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.awaitRequest
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.http.HttpInfo
-import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -34,7 +34,7 @@ class HTTPHeadersTest {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
 
     val response = apolloClient.query(query).execute()
 

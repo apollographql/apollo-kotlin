@@ -1,14 +1,13 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.testing.enqueue
+import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import org.junit.Test
 import kotlin.test.fail
@@ -24,8 +23,8 @@ class ApqCacheTest {
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     val query = HeroNameQuery()
 
-    mockServer.enqueue(query, data)
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
+    mockServer.enqueueString(query.composeJsonResponse(data))
 
     try {
      ApolloClient.Builder()

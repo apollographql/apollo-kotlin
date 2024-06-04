@@ -1,5 +1,7 @@
+
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.api.toResponseJson
 import com.apollographql.apollo3.cache.http.ApolloHttpCache
 import com.apollographql.apollo3.cache.http.DiskLruHttpCache
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
@@ -14,7 +16,6 @@ import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueError
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.network.okHttpClient
-import com.apollographql.apollo3.testing.enqueueData
 import com.apollographql.apollo3.testing.internal.runTest
 import httpcache.GetRandom2Query
 import httpcache.GetRandomQuery
@@ -53,14 +54,14 @@ class HttpCacheTest {
         .build()
   }
 
-  private suspend fun tearDown() {
+  private fun tearDown() {
     apolloClient.close()
     mockServer.close()
   }
 
   @Test
   fun DefaultIsCacheFirst() = runTest(before = { before() }, after = { tearDown() }) {
-    mockServer.enqueueData(data)
+    mockServer.enqueueString(data.toResponseJson())
 
     runBlocking {
       var response = apolloClient.query(GetRandomQuery()).execute()
@@ -75,7 +76,7 @@ class HttpCacheTest {
 
   @Test
   fun CacheFirst() = runTest(before = { before() }, after = { tearDown() }) {
-    mockServer.enqueueData(data)
+    mockServer.enqueueString(data.toResponseJson())
 
     runBlocking {
       var response = apolloClient.query(GetRandomQuery()).execute()
@@ -92,7 +93,7 @@ class HttpCacheTest {
 
   @Test
   fun NetworkOnly() = runTest(before = { before() }, after = { tearDown() }) {
-    mockServer.enqueueData(data)
+    mockServer.enqueueString(data.toResponseJson())
     mockServer.enqueueError(statusCode = 500)
 
     runBlocking {
@@ -111,7 +112,7 @@ class HttpCacheTest {
 
   @Test
   fun NetworkFirst() = runTest(before = { before() }, after = { tearDown() }) {
-    mockServer.enqueueData(data)
+    mockServer.enqueueString(data.toResponseJson())
     mockServer.enqueueError(statusCode = 500)
 
     runBlocking {
@@ -130,7 +131,7 @@ class HttpCacheTest {
 
   @Test
   fun Timeout() = runTest(before = { before() }, after = { tearDown() }) {
-    mockServer.enqueueData(data)
+    mockServer.enqueueString(data.toResponseJson())
 
     runBlocking {
       var response = apolloClient.query(GetRandomQuery()).execute()
@@ -154,8 +155,8 @@ class HttpCacheTest {
 
   @Test
   fun DifferentQueriesDoNotOverlap() = runTest(before = { before() }, after = { tearDown() }) {
-    mockServer.enqueueData(data)
-    mockServer.enqueueData(data2)
+    mockServer.enqueueString(data.toResponseJson())
+    mockServer.enqueueString(data2.toResponseJson())
 
     runBlocking {
       val response = apolloClient.query(GetRandomQuery()).execute()
@@ -250,7 +251,7 @@ class HttpCacheTest {
         .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
         .build()
 
-    mockServer.enqueueData(data)
+    mockServer.enqueueString(data.toResponseJson())
 
     assertNotNull(
         apolloClient.query(GetRandomQuery())
@@ -263,12 +264,12 @@ class HttpCacheTest {
   @Test
   fun errorInSubscriptionDoesntRemoveCachedResult() = runTest(before = { before() }, after = { tearDown() }) {
     runBlocking {
-      mockServer.enqueueData(data)
+      mockServer.enqueueString(data.toResponseJson())
       var response = apolloClient.query(GetRandomQuery()).execute()
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
-      mockServer.enqueueData(data)
+      mockServer.enqueueString(data.toResponseJson())
       try {
         apolloClient.subscription(RandomSubscription()).execute()
       } catch (ignored: Exception) {
@@ -284,7 +285,7 @@ class HttpCacheTest {
   fun httpCacheCleansPreviousInterceptor() = runTest {
     mockServer = MockServer()
     val httpCache1 = CountingApolloHttpCache()
-    mockServer.enqueueData(data)
+    mockServer.enqueueString(data.toResponseJson())
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .httpCache(httpCache1)
@@ -296,7 +297,7 @@ class HttpCacheTest {
     val apolloClient2 = apolloClient.newBuilder()
         .httpCache(httpCache2)
         .build()
-    mockServer.enqueueData(data)
+    mockServer.enqueueString(data.toResponseJson())
     apolloClient2.query(GetRandomQuery()).execute()
     assertEquals(1, httpCache1.writes)
     assertEquals(1, httpCache2.writes)

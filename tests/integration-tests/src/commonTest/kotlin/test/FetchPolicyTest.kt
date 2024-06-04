@@ -37,7 +37,6 @@ import com.apollographql.apollo3.mockserver.enqueueError
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.testing.assertNoElement
 import com.apollographql.apollo3.testing.awaitElement
-import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -76,7 +75,7 @@ class FetchPolicyTest {
   fun cacheFirst() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
 
     // First query should hit the network and save in cache
     var response = apolloClient.query(query)
@@ -106,7 +105,7 @@ class FetchPolicyTest {
     apolloClient = apolloClient.newBuilder().build()
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
 
     // First query should hit the network and save in cache
     @Suppress("DEPRECATION")
@@ -146,7 +145,7 @@ class FetchPolicyTest {
 
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
 
     // First query should hit the network and save in cache
     @Suppress("DEPRECATION")
@@ -194,14 +193,14 @@ class FetchPolicyTest {
     val call = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkFirst)
 
     // First query should hit the network and save in cache
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     var response = call.execute()
 
     assertNotNull(response.data)
     assertFalse(response.isFromCache)
 
     // Now data is cached but it shouldn't be used since network will go through
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     response = call.execute()
 
     assertNotNull(response.data)
@@ -233,14 +232,14 @@ class FetchPolicyTest {
     val call = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkFirst)
 
     // First query should hit the network and save in cache
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     var response = call.execute()
 
     assertNotNull(response.data)
     assertFalse(response.isFromCache)
 
     // Now data is cached but it shouldn't be used since network will go through
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     response = call.execute()
 
     assertNotNull(response.data)
@@ -275,7 +274,7 @@ class FetchPolicyTest {
     val call = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkFirst)
 
     // First query should hit the network and save in cache
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     @Suppress("DEPRECATION")
     var responses = call.toFlowV3()
     responses.test {
@@ -286,7 +285,7 @@ class FetchPolicyTest {
     }
 
     // Now data is cached but it shouldn't be used since network will go through
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     @Suppress("DEPRECATION")
     responses = call.toFlowV3()
     responses.test {
@@ -324,7 +323,7 @@ class FetchPolicyTest {
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
     // First query should hit the network and save in cache
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     var response = apolloClient.query(query).execute()
 
     assertNotNull(response.data)
@@ -346,7 +345,7 @@ class FetchPolicyTest {
     val call = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly)
 
     // First query should hit the network and save in cache
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     val response = call.execute()
 
     assertNotNull(response.data)
@@ -366,7 +365,7 @@ class FetchPolicyTest {
     val call = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly)
 
     // First query should hit the network and save in cache
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     @Suppress("DEPRECATION")
     val response = call.executeV3()
 
@@ -400,7 +399,7 @@ class FetchPolicyTest {
 
     // Make the network return something
     // Cache Error + Network Success => 2 responses
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     var responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().catch { caught = it }.toList()
 
     assertNull(caught)
@@ -426,7 +425,7 @@ class FetchPolicyTest {
     assertIs<ApolloHttpException>(responses[1].exception)
 
     // Cache Success + Network Success => 2 responses
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList()
 
     assertEquals(2, responses.size)
@@ -476,7 +475,7 @@ class FetchPolicyTest {
 
     // Make the network return something
     // Cache Error + Network Success => 1 response (no exception)
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     @Suppress("DEPRECATION")
     var responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork)
         .toFlowV3().catch { caught = it }.toList()
@@ -501,7 +500,7 @@ class FetchPolicyTest {
     assertEquals("R2-D2", responses[0].data?.hero?.name)
 
     // Cache Success + Network Success => 1 response
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     @Suppress("DEPRECATION")
     responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlowV3().toList()
 
@@ -628,7 +627,7 @@ class FetchPolicyTest {
   fun isFromCache() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
 
     // NetworkOnly / hit
     var response = apolloClient.query(query)
@@ -681,7 +680,7 @@ class FetchPolicyTest {
     assertTrue(responses[1].isFromCache)
 
     // CacheAndNetwork / hit / hit
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     responses = apolloClient.query(query)
         .fetchPolicy(FetchPolicy.CacheAndNetwork)
         .toFlow()

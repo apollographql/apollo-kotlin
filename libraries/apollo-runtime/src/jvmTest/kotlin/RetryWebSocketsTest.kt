@@ -17,7 +17,6 @@ import com.apollographql.apollo3.testing.FooSubscription.Companion.nextMessage
 import com.apollographql.apollo3.testing.awaitSubscribe
 import com.apollographql.apollo3.testing.connectionAckMessage
 import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.mockServerTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -25,6 +24,8 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import okio.use
+import test.network.enqueueMessage
+import test.network.mockServerTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -231,7 +232,6 @@ class RetryWebSocketsTest {
       clientBuilder = {
         retryOnError { it.operation is Subscription }
       },
-      skipDelays = false
   ) {
     mockServer.enqueue(MockResponse.Builder().statusCode(500).build())
 

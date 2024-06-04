@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.testing
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -12,13 +13,21 @@ import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.TextMessage
-import com.apollographql.apollo3.mockserver.WebSocketMessage
 import com.apollographql.apollo3.mockserver.WebsocketMockRequest
 import com.apollographql.apollo3.mockserver.enqueueString
 import okio.Buffer
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+@Deprecated(
+    "This is only used for internal Apollo tests and will be removed in a future version.",
+    ReplaceWith(
+        "enqueueString(operation.composeJsonResponse(data, customScalarAdapters), delayMs)",
+        "com.apollographql.apollo3.mockserver.enqueueString",
+        "com.apollographql.apollo3.api.composeJsonResponse",
+    )
+)
 fun <D : Operation.Data> MockServer.enqueue(
     operation: Operation<D>,
     data: D,
@@ -31,6 +40,10 @@ fun <D : Operation.Data> MockServer.enqueue(
   enqueueString(json, delayMs)
 }
 
+@Deprecated(
+    "This is only used for internal Apollo tests and will be removed in a future version.",
+)
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun MockServer.enqueueData(
     data: Map<String, Any?>,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
@@ -50,7 +63,15 @@ fun MockServer.enqueueData(
   )
 }
 
-
+@Deprecated(
+    "This is only used for internal Apollo tests and will be removed in a future version.",
+    ReplaceWith(
+        "enqueueString(data.toResponseJson(customScalarAdapters), delayMillis, statusCode)",
+        "com.apollographql.apollo3.mockserver.enqueueString",
+        "com.apollographql.apollo3.api.toResponseJson",
+    )
+)
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun MockServer.enqueueData(
     data: Operation.Data,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
@@ -110,5 +131,5 @@ suspend fun WebsocketMockRequest.awaitComplete(timeout: Duration = 1.seconds) {
 }
 
 @ApolloExperimental
-fun connectionAckMessage(): WebSocketMessage = TextMessage("{\"type\": \"connection_ack\"}")
+fun connectionAckMessage(): String = "{\"type\": \"connection_ack\"}"
 

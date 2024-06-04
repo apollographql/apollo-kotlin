@@ -11,6 +11,8 @@ import com.apollographql.apollo3.interceptor.addRetryOnErrorInterceptor
 import com.apollographql.apollo3.mockserver.CloseFrame
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.TextMessage
+import com.apollographql.apollo3.mockserver.WebSocketBody
+import com.apollographql.apollo3.mockserver.WebsocketMockRequest
 import com.apollographql.apollo3.mockserver.awaitWebSocketRequest
 import com.apollographql.apollo3.mockserver.enqueueWebSocket
 import com.apollographql.apollo3.mpp.Platform
@@ -24,7 +26,7 @@ import com.apollographql.apollo3.testing.FooSubscription.Companion.nextMessage
 import com.apollographql.apollo3.testing.awaitSubscribe
 import com.apollographql.apollo3.testing.connectionAckMessage
 import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.mockServerWebSocketTest
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.merge
 import okio.use
@@ -350,5 +352,58 @@ class WebSocketNetworkTransportTest {
       assertIs<DefaultApolloException>(this)
       assertEquals("oh no!", message)
     }
+  }
+}
+
+internal fun WebSocketBody.enqueueMessage(message: String) {
+  enqueueMessage(TextMessage(message))
+}
+
+class MockServerWebSocketTest(
+    val apolloClient: ApolloClient,
+    private val mockServer: MockServer,
+    val coroutineScope: CoroutineScope,
+) {
+  /**
+   * Enqueue the response straight away
+   */
+  val serverWriter: WebSocketBody = mockServer.enqueueWebSocket()
+  private var _serverReader: WebsocketMockRequest? = null
+
+  val serverReader: WebsocketMockRequest
+    get() {
+      check(_serverReader != null) {
+        "You need to call awaitConnectionInit or awaitWebSocketRequest first"
+      }
+      return _serverReader!!
+    }
+
+  suspend fun awaitWebSocketRequest() {
+    _serverReader = mockServer.awaitWebSocketRequest()
+  }
+
+  suspend fun awaitConnectionInit() {
+    awaitWebSocketRequest()
+
+    serverReader.awaitMessage()
+    serverWriter.enqueueMessage(TextMessage(connectionAckMessage()))
+  }
+}
+
+fun mockServerWebSocketTest(customizeTransport: WebSocketNetworkTransport.Builder.() -> Unit = {}, block: suspend MockServerWebSocketTest.() -> Unit) = runTest(false) {
+  MockServer().use { mockServer ->
+
+    ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .subscriptionNetworkTransport(
+            WebSocketNetworkTransport.Builder()
+                .serverUrl(mockServer.url())
+                .apply(customizeTransport)
+                .build()
+        )
+        .build().use { apolloClient ->
+          @Suppress("DEPRECATION")
+          MockServerWebSocketTest(apolloClient, mockServer, this@runTest).block()
+        }
   }
 }

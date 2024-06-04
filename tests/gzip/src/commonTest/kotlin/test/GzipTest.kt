@@ -1,10 +1,13 @@
 package test
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.mockserver.MockResponse
+import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.testing.HostFileSystem
-import com.apollographql.apollo3.testing.mockServerTest
+import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.testsPath
 import gzip.GetStringQuery
+import kotlinx.coroutines.CoroutineScope
 import okio.Path.Companion.toPath
 import okio.buffer
 import okio.use
@@ -16,6 +19,7 @@ class GzipTest {
   @Test
   fun gzipTest() = mockServerTest {
     // This contains a valid response encoded with gzip
+    @Suppress("DEPRECATION")
     val byteString = HostFileSystem.openReadOnly(testsPath.toPath().resolve("gzip/lorem.txt.gz")).use {
       it.source().buffer().readByteString()
     }
@@ -30,5 +34,22 @@ class GzipTest {
     val response = apolloClient.query(GetStringQuery()).execute()
     assertEquals(2225, response.data?.longString?.length)
     assertTrue(response.data?.longString?.startsWith("Lorem ipsum dolor sit amet") == true)
+  }
+}
+
+class MockServerTest(val mockServer: MockServer, val apolloClient: ApolloClient, val scope: CoroutineScope)
+
+fun mockServerTest(
+    clientBuilder: ApolloClient.Builder.() -> Unit = {},
+    block: suspend MockServerTest.() -> Unit
+) = runTest(true) {
+  MockServer().use { mockServer ->
+    ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .apply(clientBuilder)
+        .build()
+        .use {apolloClient ->
+          MockServerTest(mockServer, apolloClient, this).block()
+        }
   }
 }

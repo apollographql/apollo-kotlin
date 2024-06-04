@@ -1,13 +1,16 @@
 package test
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.SearchHeroQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.awaitRequest
 import com.apollographql.apollo3.mockserver.enqueueString
-import com.apollographql.apollo3.testing.enqueueData
-import com.apollographql.apollo3.testing.mockServerTest
+import com.apollographql.apollo3.testing.internal.runTest
+import kotlinx.coroutines.CoroutineScope
+import okio.use
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -42,7 +45,7 @@ class HttpGetTest {
   @Test
   fun encodeReservedCharactersTest() = mockServerTest {
     // Response not needed, just testing generated url
-    mockServer.enqueueData(data = emptyMap())
+    mockServer.enqueueString("")
     apolloClient.query(SearchHeroQuery("!#$&'()*+,/:;=?@[]{}% "))
         .httpMethod(HttpMethod.Get)
         .execute()
@@ -50,5 +53,22 @@ class HttpGetTest {
         "/?operationName=SearchHero&variables=%7B%22text%22%3A%22%21%23%24%26%27%28%29%2A%2B%2C%2F%3A%3B%3D%3F%40%5B%5D%7B%7D%25%20%22%7D&query=query%20SearchHero%28%24text%3A%20String%29%20%7B%20search%28text%3A%20%24text%29%20%7B%20__typename%20...%20on%20Character%20%7B%20__typename%20name%20...%20on%20Human%20%7B%20homePlanet%20%7D%20...%20on%20Droid%20%7B%20primaryFunction%20%7D%20%7D%20%7D%20%7D",
         mockServer.awaitRequest().path
     )
+  }
+}
+
+class MockServerTest(val mockServer: MockServer, val apolloClient: ApolloClient, val scope: CoroutineScope)
+
+fun mockServerTest(
+    clientBuilder: ApolloClient.Builder.() -> Unit = {},
+    block: suspend MockServerTest.() -> Unit
+) = runTest(true) {
+  MockServer().use { mockServer ->
+    ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .apply(clientBuilder)
+        .build()
+        .use {apolloClient ->
+          MockServerTest(mockServer, apolloClient, this).block()
+        }
   }
 }

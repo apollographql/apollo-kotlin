@@ -4,6 +4,7 @@ import IdCacheKeyGenerator
 import IdCacheResolver
 import assertEquals2
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
@@ -20,7 +21,6 @@ import com.apollographql.apollo3.integration.normalizer.UpdateReviewWithoutVaria
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueString
-import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.datetime.Instant
 import testFixtureToUtf8
@@ -160,7 +160,7 @@ class OtherCacheTest {
     // Store in the cache
     val instant = Instant.fromEpochMilliseconds(0L)
     val data = InstantQuery.Data(instant)
-    mockServer.enqueue(query, data)
+    mockServer.enqueueString(query.composeJsonResponse(data))
     apolloClient.query(query).execute()
 
     // Get from the cache
@@ -181,7 +181,7 @@ class OtherCacheTest {
             "Great"
         )
     )
-    mockServer.enqueue(mutation, data)
+    mockServer.enqueueString(mutation.composeJsonResponse(data))
     apolloClient.mutation(mutation).execute()
 
     val storeData = store.readOperation(mutation)

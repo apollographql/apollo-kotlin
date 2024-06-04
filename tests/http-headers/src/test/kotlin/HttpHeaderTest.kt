@@ -1,11 +1,15 @@
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.DefaultUpload
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.mockserver.headerValueOf
-import com.apollographql.apollo3.testing.mockServerTest
+import com.apollographql.apollo3.testing.internal.runTest
 import httpheaders.GetRandomQuery
 import httpheaders.UploadMutation
+import kotlinx.coroutines.CoroutineScope
+import okio.use
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -52,5 +56,22 @@ class HttpHeadersTest {
       assertEquals("POST", method)
       assertEquals("true", headers.headerValueOf("apollo-require-preflight"))
     }
+  }
+}
+
+class MockServerTest(val mockServer: MockServer, val apolloClient: ApolloClient, val scope: CoroutineScope)
+
+fun mockServerTest(
+    clientBuilder: ApolloClient.Builder.() -> Unit = {},
+    block: suspend MockServerTest.() -> Unit
+) = runTest(true) {
+  MockServer().use { mockServer ->
+    ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .apply(clientBuilder)
+        .build()
+        .use {apolloClient ->
+          MockServerTest(mockServer, apolloClient, this).block()
+        }
   }
 }
