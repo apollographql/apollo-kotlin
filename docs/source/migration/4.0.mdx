@@ -567,6 +567,34 @@ apolloClient.query().rxSingle()
 apolloClient.query().toFlow().asFlowable().firstOrError()
 ```
 
+## New Maven coordinates for some artifacts
+
+Over the years, a lot of support functionality was added alongside `apollo-runtime`. While useful, most of this functionality doesn't share the same level of stability and bundling the release does not make much sense.
+
+Moving forward, `apollo-mockserver` is released separately.
+
+Replace maven coordinates: 
+
+```kotlin
+dependencies {
+  // Replace
+  testImplementation("com.apollographql.apollo3:apollo-mockserver:$apolloVersion")
+  
+  // With
+  testImplementation("com.apollographql.mockserver:apollo-mockserver:$mockServerVersion")
+}
+```
+
+And the package names:
+
+```kotlin
+// Replace
+import com.apollographql.apollo3.mockserver
+
+// With
+import com.apollographql.mockserver
+```
+
 ## Example of a migration
 
 If you are looking for inspiration, we updated the [3.x integration tests to use 4.0](https://github.com/apollographql/apollo-kotlin/pull/5418/). If you have an open source project that migrated, feel free to share it and we'll include it here.
