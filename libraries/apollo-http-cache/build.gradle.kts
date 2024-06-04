@@ -13,7 +13,6 @@ dependencies {
   implementation(libs.moshi)
   implementation(libs.kotlinx.datetime)
 
-  testImplementation(libs.apollo.testingsupport)
   testImplementation(libs.apollo.mockserver)
   testImplementation(libs.kotlin.test.junit)
   testImplementation(libs.truth)
