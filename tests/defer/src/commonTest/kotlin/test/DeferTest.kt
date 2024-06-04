@@ -4,10 +4,10 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.autoPersistedQueryInfo
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueMultipart
-import com.apollographql.apollo3.mockserver.enqueueString
-import com.apollographql.apollo3.mockserver.enqueueStrings
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueMultipart
+import com.apollographql.mockserver.enqueueString
+import com.apollographql.mockserver.enqueueStrings
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.mpp.platform

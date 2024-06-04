@@ -21,8 +21,8 @@ kotlin {
     findByName("commonTest")?.apply {
       dependencies {
         implementation(libs.apollo.adapters)
-        implementation(libs.apollo.mockserver)
         implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.mockserver)
         implementation(libs.kotlinx.coroutines)
         implementation(libs.kotlinx.serialization.json)
         implementation(libs.kotlinx.coroutines.test)

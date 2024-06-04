@@ -8,9 +8,9 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionOptions.Companion.CAN_BE_BATCHED
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.awaitRequest
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.awaitRequest
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay

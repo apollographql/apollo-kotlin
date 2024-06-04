@@ -21,9 +21,9 @@ import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameWithIdQue
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.apollo3.mockserver.MockResponse
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockResponse
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.assertNoElement
 import com.apollographql.apollo3.testing.awaitElement

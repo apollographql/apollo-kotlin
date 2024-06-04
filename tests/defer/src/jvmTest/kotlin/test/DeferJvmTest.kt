@@ -4,8 +4,8 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
 import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.httpFetchPolicy
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueMultipart
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueMultipart
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.testing.awaitElement
 import com.apollographql.apollo3.testing.internal.runTest

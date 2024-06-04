@@ -8,9 +8,9 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.assertNoRequest
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.assertNoRequest
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.testing.FooQuery
 import com.apollographql.apollo3.testing.internal.runTest

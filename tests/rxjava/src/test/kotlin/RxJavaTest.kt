@@ -4,8 +4,8 @@ import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.exception.JsonEncodingException
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueString
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asFlowable
 import rxjava.GetRandomQuery

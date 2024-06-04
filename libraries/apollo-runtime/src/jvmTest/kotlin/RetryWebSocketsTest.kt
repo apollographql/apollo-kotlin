@@ -5,16 +5,15 @@ import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.interceptor.addRetryOnErrorInterceptor
-import com.apollographql.apollo3.mockserver.MockResponse
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.awaitWebSocketRequest
-import com.apollographql.apollo3.mockserver.enqueueWebSocket
+import com.apollographql.mockserver.MockResponse
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.awaitWebSocketRequest
+import com.apollographql.mockserver.enqueueWebSocket
 import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo3.testing.FooQuery
 import com.apollographql.apollo3.testing.FooSubscription
 import com.apollographql.apollo3.testing.FooSubscription.Companion.completeMessage
 import com.apollographql.apollo3.testing.FooSubscription.Companion.nextMessage
-import com.apollographql.apollo3.testing.awaitSubscribe
 import com.apollographql.apollo3.testing.connectionAckMessage
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +30,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNotEquals
 import kotlin.time.Duration.Companion.seconds
+import test.network.awaitSubscribe
 
 class RetryWebSocketsTest {
   @Test

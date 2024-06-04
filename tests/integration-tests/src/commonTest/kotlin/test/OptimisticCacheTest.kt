@@ -19,8 +19,8 @@ import com.apollographql.apollo3.integration.normalizer.UpdateReviewMutation
 import com.apollographql.apollo3.integration.normalizer.type.ColorInput
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.testing.awaitElement
 import com.apollographql.apollo3.testing.internal.runTest
 import com.benasher44.uuid.uuid4

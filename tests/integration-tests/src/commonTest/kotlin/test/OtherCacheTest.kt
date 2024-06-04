@@ -19,8 +19,8 @@ import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithI
 import com.apollographql.apollo3.integration.normalizer.InstantQuery
 import com.apollographql.apollo3.integration.normalizer.UpdateReviewWithoutVariableMutation
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.datetime.Instant
 import testFixtureToUtf8

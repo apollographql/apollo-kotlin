@@ -16,10 +16,10 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.store
-import com.apollographql.apollo3.mockserver.MockRequestBase
-import com.apollographql.apollo3.mockserver.MockResponse
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.MockServerHandler
+import com.apollographql.mockserver.MockRequestBase
+import com.apollographql.mockserver.MockResponse
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.MockServerHandler
 import com.apollographql.apollo3.testing.MapTestNetworkTransport
 import com.apollographql.apollo3.testing.registerTestResponse
 import kotlinx.coroutines.joinAll

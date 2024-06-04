@@ -24,7 +24,8 @@ kotlin {
     }
 
     fun KotlinDependencyHandler.commonTestDependencies() {
-      implementation(project(":apollo-mockserver"))
+      implementation(libs.apollo.testingsupport)
+      implementation(libs.apollo.mockserver)
       implementation(libs.turbine)
       implementation(project(":apollo-testing-support")) {
         because("runTest")

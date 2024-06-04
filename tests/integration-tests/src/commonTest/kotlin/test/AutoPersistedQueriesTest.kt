@@ -7,9 +7,9 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.UpdateReviewMutation
 import com.apollographql.apollo3.integration.normalizer.type.ColorInput
 import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.awaitRequest
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.awaitRequest
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import testFixtureToUtf8
 import kotlin.test.Test

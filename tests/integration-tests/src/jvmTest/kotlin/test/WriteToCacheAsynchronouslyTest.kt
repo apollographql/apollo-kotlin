@@ -8,8 +8,8 @@ import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext

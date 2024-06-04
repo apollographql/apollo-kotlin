@@ -12,10 +12,10 @@ import com.apollographql.apollo3.api.json.buildJsonByteString
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.json.writeObject
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.awaitRequest
-import com.apollographql.apollo3.mockserver.enqueueError
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.awaitRequest
+import com.apollographql.mockserver.enqueueError
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
