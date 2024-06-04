@@ -9,7 +9,7 @@ import kotlin.test.Test
 @Ignore
 class CloudRouterTest {
   @Test
-  fun simple() = runTest(skipDelays = false) {
+  fun simple() = runTest() {
     val apolloClient = ApolloClient.Builder()
         .serverUrl("")
         .subscriptionNetworkTransport(

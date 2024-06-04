@@ -36,7 +36,6 @@ class NetworkMonitorTest {
 
   @Test
   fun test() = mockServerTest(
-      skipDelays = false,
       clientBuilder = {
         networkMonitor(NetworkMonitor(InstrumentationRegistry.getInstrumentation().context))
         retryOnError { true }

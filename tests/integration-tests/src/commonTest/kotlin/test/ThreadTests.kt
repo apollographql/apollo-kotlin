@@ -10,22 +10,15 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.normalizedCache
-import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueString
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.currentThreadId
 import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestResponse
-import com.apollographql.apollo3.testing.internal.runTest
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import testFixtureToUtf8
+import kotlinx.coroutines.test.runTest
 import kotlin.reflect.KClass
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class ThreadTests {
   class MyNormalizedCache(val mainThreadId: String) : NormalizedCache() {
@@ -113,17 +106,5 @@ class ThreadTests {
     apolloClient.query(query).execute()
     apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
     apolloClient.close()
-  }
-
-  @Test
-  @OptIn(ExperimentalCoroutinesApi::class)
-  fun usingKotlinxRunTest() = kotlinx.coroutines.test.runTest {
-    val mockServer = MockServer()
-    mockServer.enqueueString(testFixtureToUtf8("HeroNameResponse.json"))
-
-    val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
-    val response = apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE)).execute()
-    mockServer.close()
-    assertEquals(response.data?.hero?.name, "R2-D2")
   }
 }

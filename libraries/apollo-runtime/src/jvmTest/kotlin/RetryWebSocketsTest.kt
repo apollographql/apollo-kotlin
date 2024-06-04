@@ -34,7 +34,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class RetryWebSocketsTest {
   @Test
-  fun retryIsWorking() = runTest(skipDelays = false) {
+  fun retryIsWorking() = runTest {
     MockServer().use { mockServer ->
 
     ApolloClient.Builder()
@@ -91,7 +91,7 @@ class RetryWebSocketsTest {
   }
 
   @Test
-  fun socketReopensAfterAnError() = runTest(false) {
+  fun socketReopensAfterAnError() = runTest {
     var mockServer = MockServer()
 
     ApolloClient.Builder()
@@ -152,7 +152,7 @@ class RetryWebSocketsTest {
   }
 
   @Test
-  fun retryCanBeDisabled() = runTest(skipDelays = false) {
+  fun retryCanBeDisabled() = runTest {
     val mockServer = MockServer()
     ApolloClient.Builder()
         .serverUrl(mockServer.url())
@@ -191,7 +191,7 @@ class RetryWebSocketsTest {
   }
 
   @Test
-  fun subscriptionsAreNotRetriedByDefault() = runTest(skipDelays = false) {
+  fun subscriptionsAreNotRetriedByDefault() = runTest {
     val mockServer = MockServer()
     ApolloClient.Builder()
         .serverUrl(mockServer.url())

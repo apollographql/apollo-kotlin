@@ -11,7 +11,6 @@ import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.assertNoElement
 import com.apollographql.apollo3.testing.awaitElement
-import com.apollographql.apollo3.testing.internal.ApolloTestResult
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -291,32 +290,30 @@ private class Context(
   }
 }
 
-private fun multipartSubsTest(block: suspend Context.() -> Unit): ApolloTestResult {
-  return runTest {
-    if (platform() != Platform.Js) {
-      MockServer().use { mockServer ->
-        ApolloClient.Builder()
-            .serverUrl(mockServer.url())
-            .subscriptionNetworkTransport(
-                HttpNetworkTransport.Builder()
-                    .serverUrl(mockServer.url())
+private fun multipartSubsTest(block: suspend Context.() -> Unit) = runTest {
+  if (platform() != Platform.Js) {
+    MockServer().use { mockServer ->
+      ApolloClient.Builder()
+          .serverUrl(mockServer.url())
+          .subscriptionNetworkTransport(
+              HttpNetworkTransport.Builder()
+                  .serverUrl(mockServer.url())
+                  .build()
+          )
+          .build()
+          .use { apolloClient ->
+            val channel = Channel<String>(Channel.UNLIMITED)
+            val context = Context(apolloClient, channel)
+
+            mockServer.enqueue(
+                MockResponse.Builder()
+                    .addHeader("Content-Type", "multipart/mixed; boundary=\"graphql\"")
+                    .addHeader("Transfer-Encoding", "chunked")
+                    .body(channel.consumeAsFlow().map { it.encodeUtf8() }.asChunked())
                     .build()
             )
-            .build()
-            .use { apolloClient ->
-              val channel = Channel<String>(Channel.UNLIMITED)
-              val context = Context(apolloClient, channel)
-
-              mockServer.enqueue(
-                  MockResponse.Builder()
-                      .addHeader("Content-Type", "multipart/mixed; boundary=\"graphql\"")
-                      .addHeader("Transfer-Encoding", "chunked")
-                      .body(channel.consumeAsFlow().map { it.encodeUtf8() }.asChunked())
-                      .build()
-              )
-              context.block()
-            }
-      }
+            context.block()
+          }
     }
   }
 }

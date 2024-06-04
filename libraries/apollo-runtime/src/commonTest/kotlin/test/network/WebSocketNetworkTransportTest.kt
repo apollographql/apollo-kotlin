@@ -192,7 +192,7 @@ class WebSocketNetworkTransportTest {
   }
 
   @Test
-  fun socketClosedEmitsException() = runTest(false) {
+  fun socketClosedEmitsException() = runTest() {
     val mockServer = MockServer()
     ApolloClient.Builder()
         .serverUrl(mockServer.url())
@@ -390,7 +390,7 @@ class MockServerWebSocketTest(
   }
 }
 
-fun mockServerWebSocketTest(customizeTransport: WebSocketNetworkTransport.Builder.() -> Unit = {}, block: suspend MockServerWebSocketTest.() -> Unit) = runTest(false) {
+fun mockServerWebSocketTest(customizeTransport: WebSocketNetworkTransport.Builder.() -> Unit = {}, block: suspend MockServerWebSocketTest.() -> Unit) = runTest() {
   MockServer().use { mockServer ->
 
     ApolloClient.Builder()

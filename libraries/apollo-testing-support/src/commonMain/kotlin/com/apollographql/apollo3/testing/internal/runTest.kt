@@ -2,22 +2,40 @@ package com.apollographql.apollo3.testing.internal
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import kotlinx.coroutines.CoroutineScope
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestResult
+import kotlinx.coroutines.withContext
 
 /**
- * Utility method that executes the given [block] with optional [before] and [after] blocks.
- *
- * When [skipDelays] is `true`, the block is executed in [kotlinx.coroutines.test.runTest], otherwise in `runBlocking`.
+ * Utility method that executes the given [block] with optional [before] and [after] blocks and disables
+ * the skipDelay behaviour from the coroutines `runTest`. Our tests use delay() in some situations.
  */
 @ApolloInternal
-expect fun runTest(
-    skipDelays: Boolean = false,
-    context: CoroutineContext = EmptyCoroutineContext,
+fun runTest(
+    block: suspend CoroutineScope.() -> Unit,
+) = runTest(before = {}, after = {}, block)
+
+/**
+ * We should probably deprecate this overload and remove the before/after state and lateinit
+ * variables in various tests.There are > 150 instances of it though, so I'm not pushing the
+ * deprecation button just yet.
+ */
+@OptIn(ExperimentalCoroutinesApi::class)
+@ApolloInternal
+fun runTest(
     before: suspend CoroutineScope.() -> Unit = {},
     after: suspend CoroutineScope.() -> Unit = {},
     block: suspend CoroutineScope.() -> Unit,
-): ApolloTestResult
-
-@ApolloInternal
-expect class ApolloTestResult
+): TestResult {
+  return kotlinx.coroutines.test.runTest {
+    /**
+     * See https://github.com/Kotlin/kotlinx.coroutines/issues/3179
+     */
+    withContext(Dispatchers.Default.limitedParallelism(1)) {
+      before()
+      block()
+      after()
+    }
+  }
+}

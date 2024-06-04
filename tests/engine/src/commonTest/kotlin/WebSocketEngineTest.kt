@@ -1,9 +1,10 @@
+
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
-import com.apollographql.apollo3.mockserver.DataMessage
 import com.apollographql.apollo3.mockserver.CloseFrame
+import com.apollographql.apollo3.mockserver.DataMessage
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.TextMessage
 import com.apollographql.apollo3.mockserver.awaitWebSocketRequest
@@ -111,6 +112,7 @@ class WebSocketEngineTest {
       assertEquals("Bye now", e.reason)
     }
 
+    connection.close()
     webSocketServer.close()
   }
 
