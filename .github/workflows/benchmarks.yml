@@ -5,6 +5,8 @@ on:
 #     branches: [ '*' ]
   schedule:
     - cron: '0 3 * * *'
+  workflow_dispatch:
+
 env:
   GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
 
