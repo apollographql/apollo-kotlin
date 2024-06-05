@@ -20,8 +20,8 @@ import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.storeExpirationDate
 import com.apollographql.apollo3.cache.normalized.storeReceiveDate
 import com.apollographql.apollo3.exception.CacheMissException
-import com.apollographql.apollo3.mockserver.MockResponse
-import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.mockserver.MockResponse
+import com.apollographql.mockserver.MockServer
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.testing.internal.runTest
 import sqlite.GetUserQuery

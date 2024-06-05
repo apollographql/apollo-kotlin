@@ -6,9 +6,9 @@ import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.cache.http.CachingHttpInterceptor
 import com.apollographql.apollo3.exception.HttpCacheMissException
-import com.apollographql.apollo3.mockserver.MockResponse
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockResponse
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import kotlinx.coroutines.Dispatchers

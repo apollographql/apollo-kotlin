@@ -19,8 +19,8 @@ kotlin {
 
     val commonTest = getByName("commonTest").apply {
       dependencies {
-        implementation(libs.apollo.mockserver)
         implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.mockserver)
         implementation(libs.turbine)
       }
     }

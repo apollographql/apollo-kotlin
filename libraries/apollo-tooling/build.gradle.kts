@@ -22,7 +22,7 @@ dependencies {
 
   testImplementation(libs.junit)
   testImplementation(libs.truth)
-  testImplementation(libs.apollo.mockserver.published)
+  testImplementation(libs.apollo.mockserver)
   testImplementation(libs.apollo.testingsupport.published)
 }
 

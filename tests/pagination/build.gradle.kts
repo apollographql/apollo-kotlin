@@ -21,6 +21,7 @@ kotlin {
       dependencies {
         implementation(libs.atomicfu.library)
         implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.mockserver)
         implementation(libs.apollo.normalizedcache.incubating)
         implementation(libs.apollo.normalizedcache.sqlite.incubating)
       }

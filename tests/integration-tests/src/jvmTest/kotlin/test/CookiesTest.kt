@@ -5,10 +5,10 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.mockserver.MockResponse
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.awaitRequest
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockResponse
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.awaitRequest
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.testing.internal.runTest
 import okhttp3.Cookie

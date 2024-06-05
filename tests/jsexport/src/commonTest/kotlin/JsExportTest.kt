@@ -7,11 +7,11 @@ import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.json.writeAny
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.TextMessage
-import com.apollographql.apollo3.mockserver.WebSocketMessage
-import com.apollographql.apollo3.mockserver.awaitWebSocketRequest
-import com.apollographql.apollo3.mockserver.enqueueWebSocket
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.TextMessage
+import com.apollographql.mockserver.WebSocketMessage
+import com.apollographql.mockserver.awaitWebSocketRequest
+import com.apollographql.mockserver.enqueueWebSocket
 import com.apollographql.apollo3.network.websocket.SubscriptionParserFactory
 import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.websocket.WsProtocol

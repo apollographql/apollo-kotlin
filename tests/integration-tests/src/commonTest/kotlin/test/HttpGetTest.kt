@@ -5,9 +5,9 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.SearchHeroQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.awaitRequest
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.awaitRequest
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.CoroutineScope
 import okio.use

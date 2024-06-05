@@ -4,8 +4,8 @@ import app.cash.turbine.test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.RouterError
-import com.apollographql.apollo3.mockserver.MockResponse
-import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.mockserver.MockResponse
+import com.apollographql.mockserver.MockServer
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.network.http.HttpNetworkTransport

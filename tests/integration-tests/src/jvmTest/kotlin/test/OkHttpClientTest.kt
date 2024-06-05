@@ -2,10 +2,10 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.awaitRequest
-import com.apollographql.apollo3.mockserver.enqueueError
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.awaitRequest
+import com.apollographql.mockserver.enqueueError
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.network.okHttpClient
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor

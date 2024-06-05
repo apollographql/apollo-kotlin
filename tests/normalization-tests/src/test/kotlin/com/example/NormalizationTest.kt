@@ -21,8 +21,8 @@ import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.cache.normalized.store
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import com.example.one.Issue2818Query
 import com.example.one.Issue3672Query

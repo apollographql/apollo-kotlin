@@ -3,8 +3,8 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueString
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext

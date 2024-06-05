@@ -4,8 +4,8 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.toResponseJson
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.normalizedCache
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.FileSystem
 import okio.Path.Companion.toPath

@@ -16,13 +16,13 @@ kotlin {
     findByName("commonMain")?.apply {
       dependencies {
         implementation(libs.apollo.runtime)
-        implementation(libs.apollo.mockserver)
       }
     }
 
     findByName("commonTest")?.apply {
       dependencies {
         implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.mockserver)
       }
     }
   }

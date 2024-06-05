@@ -5,9 +5,9 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.awaitRequest
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.awaitRequest
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
 import kotlin.test.Test

@@ -4,8 +4,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.mockserver.assertNoRequest
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.assertNoRequest
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine

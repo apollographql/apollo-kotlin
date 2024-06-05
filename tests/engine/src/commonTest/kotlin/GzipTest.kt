@@ -1,6 +1,6 @@
 
-import com.apollographql.apollo3.mockserver.MockResponse
-import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.mockserver.MockResponse
+import com.apollographql.mockserver.MockServer
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.network.http.get

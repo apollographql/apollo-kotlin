@@ -8,9 +8,9 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueError
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueError
+import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.flow.toList
 import kotlin.test.Test

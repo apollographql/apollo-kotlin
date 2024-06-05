@@ -15,6 +15,7 @@ kotlin {
 
     findByName("commonTest")?.apply {
       dependencies {
+        implementation(libs.apollo.mockserver)
         implementation(libs.apollo.testingsupport)
         implementation(libs.apollo.normalizedcache)
         implementation(libs.turbine)
