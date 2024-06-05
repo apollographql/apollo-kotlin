@@ -120,29 +120,29 @@ fun Project.configureMpp(
  * Current Graph is something like so:
  *
  * ```mermaid
- * graph TB
- * commonMain --> concurrentMain
- * commonMain --> linuxMain
- * commonMain --> jsMain
- * concurrentMain --> jvmMain
- * concurrentMain --> appleMain
- * appleMain --> macosX64
- * appleMain --> macosArm64
- * appleMain --> iosArm64
- * appleMain --> iosX64
- * appleMain --> iosSimulatorArm64
- * appleMain --> watchosArm32
- * appleMain --> watchosArm64
- * appleMain --> watchosSimulatorArm64
- * appleMain --> tvosArm64
- * appleMain --> tvosX64
- * appleMain --> tvosSimulatorArm64
- *
- * classDef kotlinPurple fill:#A97BFF,stroke:#333,stroke-width:2px,color:#333
- * classDef javaOrange fill:#b07289,stroke:#333,stroke-width:2px,color:#333
- * classDef gray fill:#AAA,stroke:#333,stroke-width:2px,color:#333
- * class jvmJavaCodeGen,macOsArm64Test,jvmTest,jsTest kotlinPurple
- * class commonTest javaOrange
+ * graph
+ * common --> fileSystem
+ * fileSystem --> concurrent
+ * fileSystem --> jsCommon
+ * concurrent --> native
+ * concurrent --> jvmCommon
+ * jsCommon --> js
+ * jsCommon --> wasmJs
+ * jvmCommon --> jvm
+ * jvmCommon --> android
+ * native --> linux
+ * native --> apple
+ * apple --> macosX64
+ * apple --> macosArm64
+ * apple --> iosArm64
+ * apple --> iosX64
+ * apple --> iosSimulatorArm64
+ * apple --> watchosArm32
+ * apple --> watchosArm64
+ * apple --> watchosSimulatorArm64
+ * apple --> tvosArm64
+ * apple --> tvosX64
+ * apple --> tvosSimulatorArm64
  * ```
  */
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
