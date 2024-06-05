@@ -13,13 +13,13 @@ Apollo Kotlin 4.0 focuses on tooling, stability and fixing some API regrets that
 
 Because most of the common APIs stayed the same, we [kept the package name unchanged](https://github.com/apollographql/apollo-kotlin/issues/4710). Apollo Kotlin 4.0 removes some deprecated symbols. We strongly recommend removing deprecated usages before migrating to 4.0.  
 
-If you are using a lib that depends on Apollo Kotlin transitively, you need it to update to 4.x before you can update your own app to 4.0.
+If you are using a library that depends on Apollo Kotlin transitively, you need it to update to 4.x before you can update your own application to 4.0.
 
 ## Automatic migration using the Android Studio plugin
 
-Apollo Kotlin 4 ships with a companion [Android Studio plugin that automates most of the migration](https://www.apollographql.com/docs/kotlin/v4/testing/android-studio-plugin#migration-helpers). 
+Apollo Kotlin 4 ships with a companion [Android Studio plugin](../testing/android-studio-plugin#migration-helpers) that automates most of the migration. 
 
-It automates most of the API replacements but cannot deal with behaviour changes like error handling. 
+It automates most of the API changes but cannot deal with behaviour changes like error handling. 
 
 We recommend using the plugin to automate the repetitive tasks but still go through this document for the details. 
 
@@ -112,12 +112,12 @@ apolloClient.query(query).watch().filter { it.exception == null }
 
 ### ApolloCompositeException is not thrown anymore
 
-When using the cache, Apollo Kotlin 3.x threw `ApolloCompositeException` if no response could be found. For an example, a `CacheFirst` fetch policy would throw `ApolloCompositeException(cacheMissException, apolloNetworkException` if both cache and network failed.
+When using the cache, Apollo Kotlin 3.x threw `ApolloCompositeException` if no response could be found. For an example, a `CacheFirst` fetch policy would throw `ApolloCompositeException(cacheMissException, apolloNetworkException)` if both cache and network failed.
 
 In those cases, Apollo Kotlin 4.0 throws the first exception and adds the second as a suppressed exception:
 
 ```kotlin
-    // Replace
+// Replace
 if (exception is ApolloCompositeException) {
   val cacheMissException = exception.first
   val networkException = exception.second
@@ -152,7 +152,7 @@ Because of the number of different options in 3.x and the complexity of error ha
 
 ## Other Apollo Runtime changes
 
-### HTTP headers
+### Non standard HTTP headers are not sent by default
 
 `X-APOLLO-OPERATION-NAME` and `X-APOLLO-OPERATION-ID` are non-standard headers and are not sent by default anymore. If you used them for logging purposes or if you are using Apollo Server [CSRF prevention](https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf), you can add them back using an [ApolloInterceptor](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo3.interceptor/-apollo-interceptor/index.html?query=interface%20ApolloInterceptor):
 
@@ -170,6 +170,8 @@ Because of the number of different options in 3.x and the complexity of error ha
         })
         .build()
 ```
+
+### `ApolloCall.Builder.httpHeaders` is additive
 
 In v3, if HTTP headers were set on an `ApolloCall`, they would replace the ones set on `ApolloClient`. In v4 they are added instead by default. To replace them, call `ApolloCall.Builder.ignoreApolloClientHttpHeaders(true)`.
 
@@ -334,6 +336,7 @@ If you are using `packageNamesFromFilePaths` and `schemaFile`, you'll need to us
 Apollo Kotlin 3 was using the operation root directories to compute the schema normalized path which could be wrong in some edge cases. Using fileTree ensures the normalized path is consistent.
 </Note>
 
+<<<<<<< HEAD
 ### Migrating to ApolloCompilerPlugin
 
 4.0 introduces `ApolloCompilerPlugin` as a way to customize code generation. `ApolloCompilerPlugin` are loaded using the [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) API and run in a separate classloader from your Gradle build. As a result, using  `Service.operationIdGenerator`/`Service.operationOutputGenerator` together with `ApolloCompilerPlugin` is not possible.
@@ -371,11 +374,19 @@ class MyPlugin: ApolloCompilerPlugin {
 ```
 
 ### Misc
+=======
+### Publishing is no longer configured automatically
+>>>>>>> 7f97423f7b (Migration guide tweaks (#5937))
 
-* Publishing is no longer configured automatically.
-* Because Apollo Kotlin now supports different operation manifest formats, `operationOutput.json` has moved from `"build/generated/operationOutput/apollo/$service/operationOutput.json"` to `"build/generated/manifest/apollo/$service/operationOutput.json"`
-* useSchemaPackageNameForFragments is removed
+In Apollo Kotlin 3, maven publishing was automatically configured. In Apollo Kotlin 4, this is no longer the case, and you need to configure the publishing tasks yourself.
 
+### Operation manifest file location
+
+Since Apollo Kotlin now supports [different operation manifest formats](../advanced/persisted-queries), the `operationOutput.json` file will be generated in `"build/generated/manifest/apollo/$service/operationOutput.json"` instead of `"build/generated/operationOutput/apollo/$service/operationOutput.json"`.
+
+### `useSchemaPackageNameForFragments` is removed
+
+This was provided for compatibility with 2.x and is now removed. If you need specific package names for fragments, you can use a [compiler plugin](../advanced/compiler-plugins) and `ApolloCompilerPlugin.layout()` instead. 
 
 ## Apollo Compiler
 
@@ -442,7 +453,11 @@ data.hero.name
  */
 data.hero.onCharacter?.name
 ```
-> The [Android Studio plugin](https://www.apollographql.com/docs/kotlin/v4/testing/android-studio-plugin#migration-helpers) provides a compat to operationBased migration tool which automates a lot of these changes.
+
+<Note>
+The [Android Studio plugin](../testing/android-studio-plugin#migration-helpers) provides a `compat` to `operationBased` migration tool which automates a lot of these changes.
+</Note>
+
 ### Enum class names now have their first letter capitalized
 
 For consistency with other types, GraphQL enums are now capitalized in Kotlin. You can restore the previous behaviour using `@targetName`:
@@ -457,7 +472,7 @@ enum someEnum @targetName(name: "someEnum"){
 
 ### `__Schema` is in the `schema` subpackage
 
-If using the `generateSchema` option, and to avoid a name clash with the introspection type of the same name, the `__Schema` type is now generated in a `schema` subpackage (instead of `type`) when using the `generateSchema` option:
+When using the `generateSchema` option, to avoid a name clash with the introspection type of the same name, the `__Schema` type is now generated in a `schema` subpackage (instead of `type`):
 
 ```kotlin
 // Replace
@@ -498,10 +513,24 @@ query HeroName {
 
 Those queries now required to have a matching directive definition in the schema. If the directive is a server directive, and you downloaded your schema using introspection, the directive definition should be present.
 
-In some cases, for client directives and/or if you did n ot use introspection, the directive definition might be missing. For those cases, you can add it explicitely in a `extra.graphqls` file:
+In some cases, for client directives and/or if you did not use introspection, the directive definition might be missing. For those cases, you can add it explicitely in a `extra.graphqls` file:
 
 ```graphql
 directive @required on FIELD
+```
+
+### Sealed class `UNKNOWN__` constructors are private
+
+When generating enums as sealed classes with the `sealedClassesForEnumsMatching` option, the `UNKNOWN__` constructor is now generated as private, to prevent its accidental usage.
+
+It is recommended to update your schema instead of instantiating an `UNKNOWN__` value, but if you need to, use the `safeValueOf` method instead:
+
+```kotlin
+// Replace
+val myEnum = MyEnum.UNKNOWN__("foo")
+
+// With
+val myEnum = MyEnum.safeValueOf("foo")
 ```
 
 ## Cache
@@ -517,6 +546,22 @@ In Apollo Kotlin 4.0 this is still the case but the functions are no longer mark
 
 The normalized cache must be configured before the auto persisted queries, configuring it after will now fail (see https://github.com/apollographql/apollo-kotlin/pull/4709).
 
+```kotlin
+// Replace
+val apolloClient = ApolloClient.Builder()
+  .serverUrl(...)
+  .autoPersistedQueries(...)
+  .normalizedCache(...)
+  .build()
+
+// With
+val apolloClient = ApolloClient.Builder()
+  .serverUrl(...)
+  .normalizedCache(...)
+  .autoPersistedQueries(...)
+  .build()
+```
+
 ## apollo-ast
 
 The AST classes (`GQLNode` and subclasses) as well as `Introspection` classes are not data classes anymore (see https://github.com/apollographql/apollo-kotlin/pull/4704/). The class hierarchy has been tweaked so that `GQLNamed`, `GQLDescribed` and `GQLHasDirectives` are more consistently inherited from.
@@ -525,7 +570,7 @@ The AST classes (`GQLNode` and subclasses) as well as `Introspection` classes ar
 
 `GQLInlineFragment.typeCondition` is now nullable to account for inline fragments who inherit their type condition.
 
-`SourceLocation.position` is renamed `SourceLocation.column` and is now 1-indexed. `GQLNode.sourceLocation` is now nullable to account for the cases where the nodes are constructed programmatically.
+`SourceLocation.position` is renamed to `SourceLocation.column` and is now 1-indexed. `GQLNode.sourceLocation` is now nullable to account for the cases where the nodes are constructed programmatically.
 
 It is not possible to create a `Schema` from a File or String directly anymore. Instead, create a `GQLDocument` first and convert it to a schema with `toSchema()`.
 
@@ -563,6 +608,33 @@ apolloClient.query().rxSingle()
 apolloClient.query().toFlow().asFlowable().firstOrError()
 ```
 
+## New Maven coordinates for some artifacts
+
+Over the years, a lot of support functionality was added alongside `apollo-runtime`. While useful, most of this functionality doesn't share the same level of stability and bundling the release does not make much sense.
+
+Moving forward, `apollo-mockserver` is released separately.
+
+Replace maven coordinates: 
+
+```kotlin
+dependencies {
+  // Replace
+  testImplementation("com.apollographql.apollo3:apollo-mockserver:$apolloVersion")
+  
+  // With
+  testImplementation("com.apollographql.mockserver:apollo-mockserver:$mockServerVersion")
+}
+```
+
+And the package names:
+
+```kotlin
+// Replace
+import com.apollographql.apollo3.mockserver
+
+// With
+import com.apollographql.mockserver
+```
 
 ## Example of a migration
 
