@@ -15,4 +15,4 @@ apollo-adapters contains adapters for common date and big decimal GraphQL scalar
 | `com.apollographql.apollo3.adapter.JavaOffsetDateTimeAdapter`   | For `java.time.OffsetDateTime` ISO8601 dates                                                        |
 | `com.apollographql.apollo3.adapter.DateAdapter`                 | For `java.util.Date` ISO8601 dates                                                                  |
 | `com.apollographql.apollo3.adapter.BigDecimalAdapter`           | For a Multiplatform `com.apollographql.apollo3.adapter.BigDecimal` class holding big decimal values |
-| `com.apollographql.apollo3.adapter.network.KtorHttpUrlAdapter`  | For `io.ktor.http.Url` class holding url values                                                     |
+| `com.apollographql.apollo3.network.adapter.KtorHttpUrlAdapter`  | For `io.ktor.http.Url` class holding url values                                                     |
