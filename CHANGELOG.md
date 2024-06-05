@@ -1,6 +1,44 @@
 Change Log
 ==========
 
+# Version 4.0.0-beta.7
+
+_2024-06-05_
+
+## K2
+
+#5931: This version is built with K2. You will need Kotlin 1.9+ on the JVM to build it and Kotlin 2.0 for other platforms.
+
+## ApolloCompilerPluginProvider
+
+#5865: `ApolloCompilerPluginProvider` is introduced to allow passing arguments to compiler plugins. See the [compiler plugins documentation](https://go.apollo.dev/ak-compiler-plugins) for more details. 
+
+## 👷‍ All changes
+[testing] Use com.apollographql.mockserver.MockServer (#5939)
+[testing] Simplify our implementation of runTest (#5935)
+[testing] Prepare apollo-testing-support to new MockServer (#5934)
+[runtime] Remove multidex library (#5930)
+[all] Bump languageVersion/apiVersion to Kotlin 2.0 (#5931)
+[codegen] fix mapping of the builtin Float type (#5928)
+[IJ Plugin] Add inspection to warn about the presence of a GraphQL config file (#5908)
+[codegen] Add a null-check to java enum safeValueOf (#5904)
+[gradle-plugin] Remove eager configuration (#5923)
+[gradle-plugin] sort input files (#5919)
+[IJ Plugin] Suppress GraphQLDuplicateDirective for certain directives (#5910)
+[adapters] Add KtorHttpUrlAdapter (#5915)
+[IJ Plugin] Add a "new UI" compatible icon (#5906)
+[IJ Plugin] Operation and fragment definition rename (#5912)
+[IJ Plugin] Add @link directives to extra.graphqls during v3->v4 migration (#5909)
+[IJ Plugin] Remove GraphQL IJ plugin issue workaround (#5907)
+[cache] Pagination: use "field key" instead of "field name" (#5898)
+[IJ Plugin] Improve the presentation of GraphQL elements when navigating to them (#5900)
+[IJ Plugin] Include subfolders when contributing GraphQL config (#5871)
+[runtime] Remove existing interceptors from ApolloClient.Builder before adding new ones (#5858)
+[codegen] Add ApolloCompilerPluginProvider  (#5865)
+[runtime] Clear current ApolloStore related interceptors when calling `.store()` on builder (#5857)
+[cache] Call through to loadRecords from the MemoryCache to the SQL one (#5848)
+[runtime] deprecate operationIdGenerator (#5850)
+
 # Version 3.8.4
 
 _2024-04-29_
