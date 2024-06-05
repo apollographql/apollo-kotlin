@@ -1,21 +1,21 @@
 ---
 title: Introduction to Apollo Kotlin
-description: A strongly-typed, caching GraphQL client for Java and Kotlin multiplatform
+description: A strongly-typed, caching GraphQL client for Kotlin multiplatform and Java
 ---
 
 > 📣 **Apollo Kotlin 3 is generally available.** If you're using Apollo Android 2.x, see the [migration guide](./migration/3.0/). You can also [view the 2.x docs](https://www.apollographql.com/docs/kotlin/v2).
 
-[Apollo Kotlin](https://github.com/apollographql/apollo-kotlin) (formerly Apollo Android) is a GraphQL client that generates Kotlin and Java models from GraphQL queries.
+[Apollo Kotlin](https://github.com/apollographql/apollo-kotlin) (formerly Apollo Android) is a GraphQL client that generates Kotlin and Java models from GraphQL operations.
 
-Apollo Kotlin executes queries and mutations against a GraphQL server and returns results as query-specific Kotlin types. This means you don't have to deal with parsing JSON, or passing around `Map`s and making clients cast values to the right type manually. You also don't have to write model types yourself, because these are generated from the GraphQL definitions your UI uses.
+Apollo Kotlin executes operations against a GraphQL server and returns results as operation-specific Kotlin types. This means you don't have to deal with parsing JSON, or passing around `Map`s and making clients cast values to the right type manually. You also don't have to write model types yourself, because these are generated from the GraphQL definitions your app uses.
 
-Because generated types are query-specific, you can only access data that you actually specify as part of a query. If you don't ask for a particular field in a query, you can't access the corresponding property on the returned data structure.
+Because generated types are operation-specific, you can only access data that you actually specify as part of an operation. If you don't ask for a particular field in an operation, you can't access the corresponding property on the returned data structure.
 
-This library is designed primarily with Android in mind, but you can use it in any Java/Kotlin app, including multiplatform.
+This library is designed primarily with Android in mind, but you can use it in any Kotlin (including multiplatform) and Java app.
 
 ## Features
 
-* Java and Kotlin Multiplatform code generation
+* Kotlin Multiplatform and Java code generation
 * Queries, Mutations and Subscriptions
 * Reflection-free parsing
 * Normalized cache
@@ -27,6 +27,7 @@ This library is designed primarily with Android in mind, but you can use it in a
 * Fake models for tests
 * AppSync and graphql-ws websockets
 * GraphQL AST parser
+* Plugin for Android Studio and IntelliJ
 
 ## Multiplatform
 
@@ -34,14 +35,14 @@ Apollo Kotlin is a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatf
 
 Here's the current matrix of supported features per platform:
 
-|  | `jvm` | `Apple¹` | `js` | `linuxX64`
-| --- | :---: | :---: |:----:| :---: |
-| `apollo-api` (models)|✅|✅|  ✅   |✅|
-| `apollo-runtime` (network, query batching, apq, ...) |✅|✅|  ✅   |🚫|
-| `apollo-normalized-cache` |✅|✅|  ✅   |🚫|
-| `apollo-adapters` |✅|✅|  ✅   |🚫|
-| `apollo-normalized-cache-sqlite` |✅|✅|  🚫  |🚫|
-| `apollo-http-cache` |✅|🚫|  🚫  |🚫|
+|                                                      | `jvm` | `Apple¹` | `js` | `wasmJs` | `linuxX64` |
+|------------------------------------------------------|:-----:|:--------:|:----:|:--------:|:----------:|
+| `apollo-api` (models)                                |   ✅   |    ✅     |  ✅   |    ✅     |     ✅      |
+| `apollo-runtime` (network, query batching, apq, ...) |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
+| `apollo-normalized-cache`                            |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
+| `apollo-adapters`                                    |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
+| `apollo-normalized-cache-sqlite`                     |   ✅   |    ✅     |  🚫   |    🚫     |     🚫      |
+| `apollo-http-cache`                                  |   ✅   |    🚫     |  🚫   |    🚫     |     🚫      |
 
 ¹: Apple currently includes:
 
@@ -59,7 +60,7 @@ Here's the current matrix of supported features per platform:
 
 ## Getting started
 
-If you are new to GraphQL, check out [the tutorial](./tutorial/00-introduction/) that will guide you through building an Android app using Apollo, Kotlin and coroutines.
+If you are new to GraphQL, check out [the tutorial](./tutorial/00-introduction/) that will guide you through building an Android app using Apollo.
 
 If you'd like to add Apollo Kotlin to an existing project, follow these steps:
 
@@ -100,7 +101,7 @@ By default, Apollo Kotlin requires a schema in your module's `src/main/graphql` 
 cp ${schema} ${module}/src/main/graphql/
 ```
 
-Write a query in a `${module}/src/main/graphql/GetRepository.graphql` file:
+Write a query in a `${module}/src/main/graphql/HeroQuery.graphql` file:
 
 ```graphql
 query HeroQuery($id: String!) {
@@ -144,8 +145,7 @@ At build time, it requires:
 
 * Gradle 8.0+
 * Kotlin 1.9+ for JVM projects
-* Kotlin 2.0+ for native projects
-* Kotlin 2.0+ for JS projects
+* Kotlin 2.0+ for native, JS, and Wasm projects
 
 ## Proguard / R8 configuration
 
@@ -153,7 +153,7 @@ As the code generated by Apollo Kotlin doesn't use any reflection, it can safely
 
 ## Android Studio / IntelliJ plugin
 
-An experimental [plugin for Android Studio and IntelliJ](https://plugins.jetbrains.com/plugin/20645-apollo-graphql) is available to help you work with Apollo Kotlin, providing automatic code generation, integration with the [GraphQL IntelliJ Plugin](https://plugins.jetbrains.com/plugin/8097-js-graphql), navigation to GraphQL definitions, migration helpers, and more.
+A [plugin for Android Studio and IntelliJ](https://plugins.jetbrains.com/plugin/20645-apollo-graphql) is available to help you work with Apollo Kotlin, providing automatic code generation, integration with the [GraphQL IntelliJ Plugin](https://plugins.jetbrains.com/plugin/8097-js-graphql), navigation to GraphQL definitions, migration helpers, and more.
 
 Installation instructions and more information can be found [here](testing/android-studio-plugin).
 
@@ -164,7 +164,6 @@ The latest version is [![Maven Central](https://img.shields.io/maven-central/v/c
 Check the [changelog](https://github.com/apollographql/apollo-kotlin/releases) for the release history.
 
 Releases are hosted on [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo3/). The plugin is additionally hosted on the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.apollographql.apollo3)
-
 
 ```kotlin
 plugins {
@@ -178,9 +177,9 @@ repositories {
 dependencies {
   implementation("com.apollographql.apollo3:apollo-runtime:4.0.0-beta.7")
 
-  // optional: if you want to use the normalized cache
+  // Optional: if you want to use the normalized cache
   implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:4.0.0-beta.7")
-  // optional: if you just want the generated models and parsers and write your own HTTP code/cache code, you can remove apollo-runtime
+  // Optional: if you just want the generated models and parsers and write your own HTTP code/cache code, you can remove apollo-runtime
   // and use apollo-api instead
   implementation("com.apollographql.apollo3:apollo-api:4.0.0-beta.7")
 }
@@ -212,6 +211,7 @@ pluginManagement {
   }
 }
 ```
+
 And then use the `4.0.0-beta.8-SNAPSHOT` version for the plugin and libraries.
 
 These snapshots are updated on each push to `main`.
@@ -220,10 +220,10 @@ Weekly snapshots for the Android Studio / IntelliJ plugin [are also available](t
 
 ## Stability of different artifacts
 
-Apollo Kotlin is very modular and publishes several artifacts. 
+Apollo Kotlin is very modular and publishes several artifacts.
 
 * Artifacts ending with `-incubating` are not finalized yet and subject to change any time.
-* Other artifacts observe [Semantic Versioning](https://semver.org/). 
+* Other artifacts observe [Semantic Versioning](https://semver.org/).
   * No breaking change should be introduced in minor or patch releases except for symbols annotated with `@ApolloExperimental` that are subject to change at any time.
   * Deprecated symbols may be removed in the next major release. We strongly recommend removing deprecated usages before migrating to the next major version.
 

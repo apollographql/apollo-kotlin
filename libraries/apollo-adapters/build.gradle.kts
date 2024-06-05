@@ -5,7 +5,6 @@ plugins {
 apolloLibrary(
     namespace = "com.apollographql.apollo3.adapter",
     withLinux = false,
-    withWasm = true
 )
 
 kotlin {
