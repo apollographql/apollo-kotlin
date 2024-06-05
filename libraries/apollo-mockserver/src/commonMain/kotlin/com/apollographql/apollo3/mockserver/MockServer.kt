@@ -32,6 +32,8 @@ import kotlin.time.Duration.Companion.seconds
  * - queued responses from [enqueue] are buffered until they can be transmitted to the network.
  * If you're using [MockServer] to handle large payloads, it will use a lot of memory.
  */
+@Deprecated("MockServer has new maven coordinates at 'com.apollographql.mockserver:apollo-mockserver. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 interface MockServer : Closeable {
   /**
    * Returns the url for this server in the form "http://ip:port/".
@@ -83,6 +85,8 @@ interface MockServer : Closeable {
     fun onMessage(message: WebSocketMessage)
   }
 
+  @Deprecated("MockServer has new maven coordinates at 'com.apollographql.mockserver:apollo-mockserver. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   class Builder {
     private var handler: MockServerHandler? = null
     private var handlePings: Boolean? = null
@@ -267,6 +271,8 @@ internal class MockServerImpl(
 }
 
 @JsName("createMockServer")
+@Deprecated("MockServer has new maven coordinates at 'com.apollographql.mockserver:apollo-mockserver. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun MockServer(): MockServer = MockServerImpl(
     QueueMockServerHandler(),
     true,
