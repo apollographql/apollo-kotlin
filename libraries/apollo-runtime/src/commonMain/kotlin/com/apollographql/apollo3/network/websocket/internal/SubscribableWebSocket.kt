@@ -65,7 +65,15 @@ internal class SubscribableWebSocket(
   private var pending = mutableListOf<ApolloRequest<*>>()
   private var _lastActiveMillis: Long = 0
 
-  private var webSocket: WebSocket = webSocketEngine.newWebSocket(serverUrl, httpHeaders, this)
+  private var webSocket: WebSocket
+  init {
+    val headers = if (httpHeaders.any { it.name.lowercase() == "sec-websocket-protocol" }) {
+      httpHeaders
+    } else {
+      httpHeaders + HttpHeader("Sec-WebSocket-Protocol", wsProtocol.name)
+    }
+    webSocket = webSocketEngine.newWebSocket(serverUrl, headers, this)
+  }
 
   val lastActiveMillis: Long
     get() = lock.withLock {

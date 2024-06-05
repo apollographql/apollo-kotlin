@@ -8,13 +8,6 @@ import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.exception.SubscriptionOperationException
 import com.apollographql.apollo3.interceptor.addRetryOnErrorInterceptor
-import com.apollographql.mockserver.CloseFrame
-import com.apollographql.mockserver.MockServer
-import com.apollographql.mockserver.TextMessage
-import com.apollographql.mockserver.WebSocketBody
-import com.apollographql.mockserver.WebsocketMockRequest
-import com.apollographql.mockserver.awaitWebSocketRequest
-import com.apollographql.mockserver.enqueueWebSocket
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
@@ -25,6 +18,14 @@ import com.apollographql.apollo3.testing.FooSubscription.Companion.errorMessage
 import com.apollographql.apollo3.testing.FooSubscription.Companion.nextMessage
 import com.apollographql.apollo3.testing.connectionAckMessage
 import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.mockserver.CloseFrame
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.TextMessage
+import com.apollographql.mockserver.WebSocketBody
+import com.apollographql.mockserver.WebsocketMockRequest
+import com.apollographql.mockserver.awaitWebSocketRequest
+import com.apollographql.mockserver.enqueueWebSocket
+import com.apollographql.mockserver.headerValueOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.merge
@@ -41,6 +42,9 @@ class WebSocketNetworkTransportTest {
         .toFlow()
         .test {
           awaitConnectionInit()
+
+          assertEquals("graphql-transport-ws", serverReader.headers.headerValueOf("sec-websocket-protocol"))
+
           val operationId = serverReader.awaitSubscribe()
           repeat(5) {
             serverWriter.enqueueMessage(nextMessage(operationId, it))
