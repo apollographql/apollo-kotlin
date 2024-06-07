@@ -1,9 +1,12 @@
 ---
-title: Experimental websockets
+title: Experimental WebSocket APIs
 ---
 
-> ⚠️ **Experimental websockets APIs are [experimental](https://www.apollographql.com/docs/resources/release-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Defer%20Support]) or in the [Kotlin Slack community](https://slack.kotl.in/).
+<ExperimentalFeature>
 
+**The experimental WebSocket APIs are currently [experimental](https://www.apollographql.com/docs/resources/release-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md) or in the [Kotlin Slack community](https://slack.kotl.in/).
+
+</ExperimentalFeature>
 
 Historically, WebSockets have been one of the most complex and error-prone parts of Apollo Kotlin because:
 
@@ -25,7 +28,7 @@ The `com.apollographql.apollo3.network.websocket` implementation provides the fo
 
 While they are `@ApolloExperimental`, we believe the new `.websocket` APIS to be more robust than the non-experimental `.ws` ones. They are safe to use in non-lib use cases.
 
-The "experimental" tag is to account for required API breaking changes based on community feedback. Ideally no change is needed.
+The "experimental" tag is to account for required API breaking changes based on community feedback. Ideally no change will be needed.
 
 After a feedback phase, the current `.ws` APIs will become deprecated and the `.websocket` one promoted to stable by removing the `@ApolloExperimental` annotations. 
 
@@ -117,7 +120,7 @@ val apolloClient = ApolloClient.Builder()
             .serverUrl(url)
             .build()
     )
-    .addRetryOnErrorInterceptor { apolloRequest, exception, attempt -> 
+    .addRetryOnErrorInterceptor { exception, attempt -> 
       // retry logic here
       
       // return true to retry or false to terminate the Flow

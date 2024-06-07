@@ -6,10 +6,8 @@ description: Overview
 Apollo Kotlin provides the following tools to help with testing your code:
 
 - [`MockServer`](./mocking-http-responses) (experimental): an HTTP server that you can use to mock any responses
-- [`TestNetworkTransport`](./mocking-graphql-responses) (experimental): enables you to specify the GraphQL responses returned
-  by `ApolloClient`
+- [`TestNetworkTransport`](./mocking-graphql-responses) (experimental): lets you specify the GraphQL responses returned by `ApolloClient`
 - [Test builders](./test-builders) (experimental): help instantiate your model classes by providing a DSL
-- An [`IdlingResource`](./ui-tests) that you can use in your Espresso UI Tests
 
 `MockServer` creates a full HTTP server. It requires minimal changes to your production code (you only need to change `serverUrl`), which means you can use the same `ApolloClient` for tests and production. `MockServer` is also useful for testing specific server behaviors, such as error cases, HTTP headers, and timeouts.
 

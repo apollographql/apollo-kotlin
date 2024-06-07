@@ -24,7 +24,12 @@ You can use APQs with the following versions of Apollo Kotlin, Apollo Server, an
 - [Apollo Server](/apollo-server/) (v1.0.0+)
 - [Apollo Router](/router) (v0.1.0+)
 
-> **Note:** You can use _either_ Apollo Server _or_ Apollo Router for APQs. They don't need to be used together.
+
+<Note>
+
+You can use _either_ Apollo Server _or_ Apollo Router for APQs. They don't need to be used together.
+
+</Note>
 
 Using persisted queries for safelisting has the following requirements:
 - Apollo Kotlin (v3.8.2+)
@@ -81,7 +86,7 @@ Once you've configured your code generation to include operation IDs, you can up
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
-  .serverUrl("https://...")
+  .serverUrl("https://example.com/graphql")
   .autoPersistedQueries()
   .build()
 ```

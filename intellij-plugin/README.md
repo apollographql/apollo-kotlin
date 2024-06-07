@@ -22,7 +22,7 @@ This plugin for Android Studio and IntelliJ helps you work with the
 
 ## Compatibility
 
-- Most features are intended to work with Apollo Kotlin 4.x which is currently under development
+- Most features are intended to work with Apollo Kotlin 4.x
 - Automatic code generation works with Apollo Kotlin 3.x and above
 
 <!-- Plugin description end -->

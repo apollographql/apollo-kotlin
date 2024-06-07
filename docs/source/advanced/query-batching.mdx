@@ -12,7 +12,7 @@ You enable batching when you initialize your `ApolloClient` instance, like so:
 
 ```kotlin {3}
 val apolloClient = ApolloClient.Builder()
-  .serverUrl("https://...")
+  .serverUrl("https://example.com/graphql")
   .httpBatching()
   .build()
 ```
@@ -43,7 +43,7 @@ You can also require individual operations to _opt in_ to batching. To do so, yo
 
 ```kotlin {4}
 val apolloClient = ApolloClient.Builder()
-  .serverUrl("https://...")
+  .serverUrl("https://example.com/graphql")
   .httpBatching()
   .canBeBatched(false)
   .build()

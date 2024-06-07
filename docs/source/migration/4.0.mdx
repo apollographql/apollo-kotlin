@@ -4,7 +4,9 @@ description: From 3.x
 ---
 
 <Note>
-Version 4 is currently under development and this page itself is a work in progress.
+
+**Version 4 is currently under development and this page itself is a work in progress.**
+
 </Note>
 
 Apollo Kotlin 3.0 was a major rewrite of Apollo in Kotlin multiplatform.
@@ -26,11 +28,13 @@ We recommend using the plugin to automate the repetitive tasks but still go thro
 ## Error handling
 
 <Caution>
+
 Error handling changes are a behaviour change that is not detected at compile time. Usages of `execute`, `toFlow` and `watch` must be updated to the new error handling or changed to their v3 compat equivalent.
 
 See [`executeV3` and `toFlowV3`](#migration-helpers) for temporary methods to help with the migration.
 
 See [nullability](../advanced/nullability) for a quick peek at the future of GraphQL nullability and error handling.
+
 </Caution>
 
 ### Fetch errors do not throw
@@ -102,7 +106,7 @@ client.subscription(MySubscription()).toFlow().collect { response ->
 
 Note that this is true for all `Flows`, including watchers. If you don't want to receive error responses, filter them out:
 
-```
+```kotlin
 // Replace
 apolloClient.query(query).watch()
 
@@ -157,18 +161,18 @@ Because of the number of different options in 3.x and the complexity of error ha
 `X-APOLLO-OPERATION-NAME` and `X-APOLLO-OPERATION-ID` are non-standard headers and are not sent by default anymore. If you used them for logging purposes or if you are using Apollo Server [CSRF prevention](https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf), you can add them back using an [ApolloInterceptor](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo3.interceptor/-apollo-interceptor/index.html?query=interface%20ApolloInterceptor):
 
 ```kotlin
-    val apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
-        .addInterceptor(object : ApolloInterceptor {
-          override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-            return chain.proceed(request.newBuilder()
-                .addHttpHeader("X-APOLLO-OPERATION-NAME", request.operation.name())
-                .addHttpHeader("X-APOLLO-OPERATION-ID", request.operation.id())
-                .build()
-            )
-          }
-        })
-        .build()
+val apolloClient = ApolloClient.Builder()
+    .serverUrl(mockServer.url())
+    .addInterceptor(object : ApolloInterceptor {
+      override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+        return chain.proceed(request.newBuilder()
+            .addHttpHeader("X-APOLLO-OPERATION-NAME", request.operation.name())
+            .addHttpHeader("X-APOLLO-OPERATION-ID", request.operation.id())
+            .build()
+        )
+      }
+    })
+    .build()
 ```
 
 ### `ApolloCall.Builder.httpHeaders` is additive
@@ -334,9 +338,9 @@ If you are using `packageNamesFromFilePaths` and `schemaFile`, you'll need to us
 <Note>
 
 Apollo Kotlin 3 was using the operation root directories to compute the schema normalized path which could be wrong in some edge cases. Using fileTree ensures the normalized path is consistent.
+
 </Note>
 
-<<<<<<< HEAD
 ### Migrating to ApolloCompilerPlugin
 
 4.0 introduces `ApolloCompilerPlugin` as a way to customize code generation. `ApolloCompilerPlugin` are loaded using the [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) API and run in a separate classloader from your Gradle build. As a result, using  `Service.operationIdGenerator`/`Service.operationOutputGenerator` together with `ApolloCompilerPlugin` is not possible.
@@ -373,10 +377,7 @@ class MyPlugin: ApolloCompilerPlugin {
 }
 ```
 
-### Misc
-=======
 ### Publishing is no longer configured automatically
->>>>>>> 7f97423f7b (Migration guide tweaks (#5937))
 
 In Apollo Kotlin 3, maven publishing was automatically configured. In Apollo Kotlin 4, this is no longer the case, and you need to configure the publishing tasks yourself.
 
@@ -455,8 +456,16 @@ data.hero.onCharacter?.name
 ```
 
 <Note>
+
 The [Android Studio plugin](../testing/android-studio-plugin#migration-helpers) provides a `compat` to `operationBased` migration tool which automates a lot of these changes.
+
 </Note>
+
+### Test builders are removed
+
+Test builders were an experimental feature that have been superseded by [data builders](../testing/data-builders), a simpler version that also plays nicer with custom scalars.
+
+In Apollo Kotlin 4.0, dest builders are no longer available - please refer to the data builders documentation for more information.
 
 ### Enum class names now have their first letter capitalized
 
@@ -482,9 +491,9 @@ import com.example.type.__Schema
 import data.builders.schema.__Schema
 ```
 
-### KotlinLabs directives are now version 0.3
+### KotlinLabs directives are now at version 0.3
 
-The embedded [kotlin_labs](https://specs.apollo.dev/kotlin_labs/v0.3/) directives are now version 0.3.
+The embedded [kotlin_labs](https://specs.apollo.dev/kotlin_labs/v0.3/) directives are now at version 0.3.
 
 These are the client directives supported by Apollo Kotlin. They are imported automatically but if you relied on an explicit import for renames or another reason, you'll need to bump the version:
 
@@ -636,7 +645,10 @@ import com.apollographql.apollo3.mockserver
 import com.apollographql.mockserver
 ```
 
+## ApolloIdlingResource is deprecated
+
+We recommend using reactive patterns to test your UI instead. See [this article about ways to do so](https://medium.com/androiddevelopers/alternatives-to-idling-resources-in-compose-tests-8ae71f9fc473).
+
 ## Example of a migration
 
 If you are looking for inspiration, we updated the [3.x integration tests to use 4.0](https://github.com/apollographql/apollo-kotlin/pull/5418/). If you have an open source project that migrated, feel free to share it and we'll include it here.
-

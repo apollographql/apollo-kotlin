@@ -36,13 +36,16 @@ To use subscriptions over WebSocket, use `WebSocketNetworkTransport`:
 val apolloClient = ApolloClient.Builder()
     .subscriptionNetworkTransport(
         WebSocketNetworkTransport.Builder()
-            .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+            .serverUrl("https://example.com/graphql")
             .build()
     )
     .build()
 ```
+<Note>
 
-> **Note:** Apollo Kotlin supports both `https://` (or `http://`) and `wss://` (or `ws://`) protocols. Internally, `wss://` is renamed to `https://` and which one you use does not matter.
+Apollo Kotlin supports both `https://` (or `http://`) and `wss://` (or `ws://`) protocols. Internally, `wss://` is renamed to `https://` and which one you use does not matter.
+
+</Note>
 
 
 ### Customizing your WebSocket protocol
@@ -68,7 +71,7 @@ val apolloClient = ApolloClient.Builder()
     .subscriptionNetworkTransport(
         WebSocketNetworkTransport.Builder()
             .protocol(GraphQLWsProtocol.Factory()) // highlight-line
-            .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+            .serverUrl("https://example.com/graphql")
             .build()
     )
     .build()
@@ -127,7 +130,7 @@ To use HTTP for subscriptions, use `HttpNetworkTransport` like so:
 val apolloClient = ApolloClient.Builder()
     .subscriptionNetworkTransport(
         HttpNetworkTransport.Builder()
-            .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+            .serverUrl("https://example.com/graphql")
             .build()
     )
     .build()
@@ -137,7 +140,7 @@ This is the only configuration required. `HttpNetworkTransport` will use [chunke
 
 ## Listening to a subscription
 
-After you configure the `NetworkTransport`, use `ApolloClient.subscribe` to open the connection and listen for changes:
+After you configure the `NetworkTransport`, use `ApolloClient.subscription` to open the connection and listen for changes:
 
 ```kotlin
 apolloClient.subscription(TripsBookedSubscription())
@@ -147,7 +150,7 @@ apolloClient.subscription(TripsBookedSubscription())
     }
 ```
 
-Because subscriptions are long-lasting operations, they return a `Flow<Response>` instead of a single `Response`.
+Because subscriptions are long-lasting operations, you should call `toFlow()` to get a `Flow<Response>` instead of a single `Response`.
 
 ## Terminating a subscription
 
@@ -162,3 +165,9 @@ Like queries, subscriptions support partial responses with GraphQL errors, which
 Network errors terminate the `Flow`, and you need to retry to get new updates. Depending on the situation, retrying might open a new WebSocket or restart the subscription.
 
 See also [this section](../advanced/websocket-errors) about WebSocket errors handling.
+
+## Experimental WebSocket APIs
+
+Starting with 4.0.0, Apollo Kotlin provides new experimental WebSocket APIs that aim to replace the current implementation in the future.
+
+If you are interested in trying them out, please consult [the dedicated section](../advanced/experimental-websockets).

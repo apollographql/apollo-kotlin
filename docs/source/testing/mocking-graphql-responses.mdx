@@ -1,8 +1,14 @@
 ---
-title: Mocking GraphQL responses (experimental)
+title: Mocking GraphQL responses
 ---
 
-`QueueTestNetworkTransport` is a high-level test API that enables you to specify the GraphQL responses that are returned by your `ApolloClient` instance.
+<ExperimentalFeature>
+
+**The test network transports are currently [experimental](https://www.apollographql.com/docs/resources/product-launch-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md) or in the [Kotlin Slack community](https://slack.kotl.in/).
+
+</ExperimentalFeature>
+
+`QueueTestNetworkTransport` is a high-level test API that lets you specify the GraphQL responses that are returned by your `ApolloClient` instance.
 
 > See also [`MockServer`](./mocking-http-responses), which creates a full HTTP server and helps test specific server behaviors, such as error cases, HTTP headers, and timeouts.
 
@@ -16,7 +22,7 @@ dependencies {
 
 Enable the `QueueTestNetworkTransport` by passing it to the `ApolloClient` builder:
 
-```kotlin{2}
+```kotlin {2}
 val apolloClient = ApolloClient.Builder()
     .networkTransport(QueueTestNetworkTransport())
     .build()
@@ -24,7 +30,7 @@ val apolloClient = ApolloClient.Builder()
 
 You can then use the `enqueueTestResponse` extension function to specify the GraphQL responses to return:
 
-```kotlin{7}
+```kotlin {7}
 val testQuery = GetHeroQuery("001")
 val testData = GetHeroQuery.Data {
   hero = droidHero {
@@ -39,7 +45,7 @@ assertEquals(testData.hero.name, actual.hero.name)
 
 You can pass an `ApolloResponse` to the `enqueueTestResponse` function, or as a shortcut, you can pass a `Data` directly as shown above. If you do pass a `Data`, you _also_ need to pass an operation, because an `ApolloResponse` is built under the hood, which needs a reference to it.
 
-> To help create your mocked response data, you can use [test builders](./test-builders/).
+> To help create your mocked response data, you can use [data builders](./data-builders/).
 
 ### Advanced usage
 
@@ -49,7 +55,7 @@ In certain tests, it might be more convenient to **map** responses to operations
 
 To achieve this, use `MapTestNetworkTransport` instead and call the `registerTestResponse` extension function:
 
-```kotlin{1,3-4}
+```kotlin {1,3-4}
 val apolloClient = ApolloClient.Builder().networkTransport(MapTestNetworkTransport()).build()
 
 apolloClient.registerTestResponse(query1, testData1)

@@ -1,10 +1,10 @@
 ---
-title: Programmatic cache IDs in Apollo Kotlin
+title: Programmatic cache keys in Apollo Kotlin
 ---
 
-In situations where [declarative cache IDs](./declarative-ids/) don't fit your use case, you can **programmatically** generate cache IDs for object types in your normalized cache.
+In situations where [declarative cache keys](./declarative-ids/) don't fit your use case, you can **programmatically** generate cache keys for object types in your normalized cache.
 
-You can generate a given object type's cache ID from one of two sources:
+You can generate a given object type's cache key from one of two sources:
 
 | Source | Class | Description |
 |--------|-----------|-------------|
@@ -15,12 +15,12 @@ Apollo Kotlin provides a class for generating cache keys from each of these sour
 
 ## `CacheKeyGenerator`
 
-The `CacheKeyGenerator` class enables you to generate custom cache IDs from an object's field values. This basic example generates _every_ object type's cache ID from its `id` field:
+The `CacheKeyGenerator` class enables you to generate custom cache keys from an object's field values. This basic example generates _every_ object type's cache key from its `id` field:
 
 ```kotlin
 val cacheKeyGenerator = object : CacheKeyGenerator {
   override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
-    // Generate the cache ID based on the object's id field
+    // Generate the cache key based on the object's id field
     return CacheKey(obj["id"] as String)
   }
 }
@@ -30,7 +30,7 @@ To use your custom `CacheKeyGenerator`, include it in your cache initialization 
 
 ```kotlin {5}
 val apolloClient = ApolloClient.Builder()
-  .serverUrl("https://...")
+  .serverUrl("https://example.com/graphql")
   .normalizedCache(
     normalizedCacheFactory = cacheFactory,
     cacheKeyGenerator = cacheKeyGenerator,
@@ -38,7 +38,7 @@ val apolloClient = ApolloClient.Builder()
   .build()
 ```
 
-You can get the current object's typename from the `context` object and include it in the generated ID, like so:
+You can get the current object's typename from the `context` object and include it in the generated key, like so:
 
 ```kotlin
 val cacheKeyGenerator = object : CacheKeyGenerator {
@@ -51,10 +51,10 @@ val cacheKeyGenerator = object : CacheKeyGenerator {
 }
 ```
 
-You can also use the current object's typename to use _different_ cache ID generation logic for different object types.
+You can also use the current object's typename to use _different_ cache key generation logic for different object types.
 
-Note that for cache ID generation to work, your GraphQL operations must return whatever fields your custom code relies on (such as `id` above). If a query does not return a required field, the cache ID will be inconsistent, resulting in data duplication.
-Also, using `context.field.type.leafType().name` yields the typename of the Union as opposed to the expected runtime value of Union received in the response. Instead querying for the `__typename` is safer.
+Note that for cache key generation to work, your GraphQL operations must return whatever fields your custom code relies on (such as `id` above). If a query does not return a required field, the cache key will be inconsistent, resulting in data duplication.
+Also, using `context.field.type.leafType().name` yields the typename of an Union as opposed to the expected runtime value of the type received in the response. Instead querying for the `__typename` is safer.
 To make sure `__typename` is included in all operations set the [addTypename](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo3.gradle.api/-service/add-typename.html) gradle config:
 
 ```
@@ -67,7 +67,7 @@ apollo {
 
 ## `CacheKeyResolver`
 
-The `CacheKeyResolver` class enables you to generate custom cache IDs from an field's arguments. This basic example generates _every_ object type's cache ID from the `id` argument _if it's present_:
+The `CacheKeyResolver` class enables you to generate custom cache keys from a field's arguments. This basic example generates _every_ object type's cache key from the `id` argument _if it's present_:
 
 ```kotlin
 val cacheKeyResolver = object: CacheKeyResolver() {
@@ -95,7 +95,7 @@ To use your custom `CacheKeyResolver`, include it in your cache initialization c
 
 ```kotlin {6}
 val apolloClient = ApolloClient.Builder()
-  .serverUrl("https://...")
+  .serverUrl("https://example.com/graphql")
   .normalizedCache(
     normalizedCacheFactory = cacheFactory,
     cacheKeyGenerator = cacheKeyGenerator,

@@ -28,7 +28,6 @@
       "File types": "/essentials/file-types",
       "Client Awareness": "/advanced/client-awareness",
       "Multi Modules": "/advanced/multi-modules",
-      "Connecting source sets": "/advanced/source-sets",
       "Gradle plugin configuration": "/advanced/plugin-configuration"
     },
     "Fetching": {
@@ -39,14 +38,14 @@
       "Error handling": "/essentials/errors",
       "Custom scalars": "/essentials/custom-scalars",
       "Fragments": "/essentials/fragments",
-      "@defer support (experimental)": "/fetching/defer",
+      "@defer support": "/fetching/defer",
       "Persisted queries": "/advanced/persisted-queries"
     },
     "Caching": {
       "Introduction": "/caching/introduction",
       "Normalized caches": "/caching/normalized-cache",
-      "Declarative cache IDs": "/caching/declarative-ids",
-      "Programmatic cache IDs": "/caching/programmatic-ids",
+      "Declarative cache keys": "/caching/declarative-ids",
+      "Programmatic cache keys": "/caching/programmatic-ids",
       "Watching cached data": "/caching/query-watchers",
       "ApolloStore": "/caching/store",
       "HTTP cache": "/caching/http-cache",
@@ -66,17 +65,15 @@
       "Mocking HTTP responses": "/testing/mocking-http-responses",
       "Mocking GraphQL responses": "/testing/mocking-graphql-responses",
       "Data builders": "/testing/data-builders",
-      "UI Tests": "/testing/ui-tests",
       "Apollo Debug Server": "/testing/apollo-debug-server"
     },
     "Advanced": {
       "Uploading files": "/advanced/upload",
-      "Monitoring your network (experimental)": "/advanced/network-connectivity",
-      "Handling nullability (experimental)": "/advanced/nullability",
-      "Experimental WebSocketNetworkTransport (experimental)": "/advanced/experimental-websockets",
+      "Monitoring the network state": "/advanced/network-connectivity",
+      "Handling nullability": "/advanced/nullability",
+      "Experimental WebSocket APIs": "/advanced/experimental-websockets",
       "Using aliases": "/advanced/using-aliases",
-      "Using with Java": "/advanced/java",
-      "Kotlin native": "/advanced/kotlin-native",
+      "Using Java": "/advanced/java",
       "Apollo AST": "/advanced/apollo-ast",
       "Compiler plugins": "/advanced/compiler-plugins",
       "JS Interoperability": "/advanced/js-interop",

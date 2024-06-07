@@ -3,7 +3,11 @@ title: Handling nullability and errors
 description: Make your queries even more typesafe
 ---
 
-> ⚠️ **Nullability annotations are currently [experimental](https://www.apollographql.com/docs/resources/product-launch-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Defer%20Support]), in the [Kotlin Slack community](https://slack.kotl.in/), or in the [GraphQL nullability working group](https://github.com/graphql/nullability-wg/).
+<ExperimentalFeature>
+
+**Nullability annotations are currently [experimental](https://www.apollographql.com/docs/resources/product-launch-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md), in the [Kotlin Slack community](https://slack.kotl.in/), or in the [GraphQL nullability working group](https://github.com/graphql/nullability-wg/).
+
+</ExperimentalFeature>
 
 ## Nullability in GraphQL
 
@@ -50,11 +54,13 @@ The server returns the following response in case of error:
 
 GraphQL best practices recommend using nullable types by default. From [graphql.org](https://graphql.org/learn/best-practices/#nullability):
 
-```
-In a GraphQL type system, every field is nullable by default. 
+<blockquote style="background-color: rgba(255, 255, 0, 0.05)">
+
+_In a GraphQL type system, every field is nullable by default. 
 This is because there are many things that can go awry in a networked
-service backed by databases and other services.
-```
+service backed by databases and other services._
+
+</blockquote>
 
 This default makes sense in distributed environments where microservices might fail and some data fail to resolve. This behaviour is robust by default: if part of your query fails, you still get the rest of the data.
 

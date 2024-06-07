@@ -28,11 +28,11 @@ query HeroQuery($id: String!) {
 }
 ```
 
-If we define this query in its own `.graphql` file, Apollo Kotlin will generate a corresponding `HeroQuery` class that we can then use to [execute the query](#executing).
+Apollo Kotlin will generate a corresponding `HeroQuery` class that we can then use to [execute the query](#executing).
 
 To generate classes, Apollo Kotlin requires your server's schema, along with all of the `.graphql` files that contain your defined operations. It uses these to generate code you can use to execute queries and access typed results.
 
-> All `.graphql` files in your project (or the subset you specify as input to `apollo-codegen` if you customize the script for your code generation build phase) are combined and treated as _one_ GraphQL document. This means that fragments defined in one `.graphql` file are available across _all_ `.graphql` files. However, it _also_ means that operation and fragment names must be unique (and validation errors will occur if they aren't).
+> All `.graphql` files in your project are combined and treated as _one_ GraphQL document. This means that fragments defined in one `.graphql` file are available across _all_ `.graphql` files. However, it _also_ means that operation and fragment names must be unique (and validation errors will occur if they aren't).
 
 
 ## Executing
@@ -40,13 +40,13 @@ To generate classes, Apollo Kotlin requires your server's schema, along with all
 To execute the query we [just defined](#defining), we pass a `HeroQuery` instance to the `query` method of `ApolloClient`, like so:
 
 ```kotlin {2}
-val apolloClient = ApolloClient.Builder().serverUrl("https://your.domain/graphql").build()
+val apolloClient = ApolloClient.Builder().serverUrl("https://example.com/graphql").build()
 val response = apolloClient.query(HeroQuery(id = "12")).execute()
 ```
 
 By default, Apollo Kotlin offloads I/O work to a background thread, which means it's safe to start GraphQL operations on the main thread. The result is also dispatched to the calling thread, and you can use the response directly to update your data.
 
-* On the JVM, the I/O work is using `Dispatchers.IO` by default. You can change this dispatcher with `ApolloClient.Builder.dispatcher`.
+* On the Android and JVM, the I/O work is using `Dispatchers.IO` by default. You can change this dispatcher with `ApolloClient.Builder.dispatcher`.
 * On [Kotlin/native](https://kotlinlang.org/docs/native-overview.html) (iOS, macOS, ...), the request offloads the cache and network I/O to background threads that resume in the main dispatch queue. For this reason,
   the `ApolloClient` APIs assume they are called from the main thread. It isn't possible to customize the dispatcher, but cache and network
   I/O are always done in background threads.

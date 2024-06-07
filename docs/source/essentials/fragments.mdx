@@ -2,7 +2,11 @@
 title: Fragments in Apollo Kotlin
 ---
 
-> **Note:** This article describes the behavior of fragments when using the default `operationBased` codegen in Apollo Kotlin. For the `responseBased` codegen, see [this page](../advanced/codegen-methods).
+<Note>
+
+This article describes the behavior of fragments when using the default `operationBased` codegen in Apollo Kotlin. For the `responseBased` codegen, see [this page](../advanced/response-based).
+
+</Note>
 
 Apollo Kotlin supports both forms of [GraphQL fragments](https://graphql.org/learn/queries/#fragments):
 
@@ -16,7 +20,7 @@ Take a look at the following GraphQL definitions:
 
 ```graphql title="Launch.graphql"
 # Declaration of named fragment
-fragment launchFragment on Launch {
+fragment LaunchFragment on Launch {
   id
   site
   mission {
@@ -27,7 +31,7 @@ fragment launchFragment on Launch {
 query LaunchDetails($id:ID!) {
   launch(id: $id) {
     # Usage of named fragment
-    ...launchFragment
+    ...LaunchFragment
   }
 }
 ```
@@ -58,7 +62,7 @@ You can reuse the fragment in any number of operations:
 query LaunchList {
   launches {
     launches {
-      ...launchFragment
+      ...LaunchFragment
     }
   }
 }
@@ -70,7 +74,7 @@ You can even use a fragment in operations that are defined in a different `.grap
 
 Take a look at this query definition that uses two inline fragments:
 
-```graphql {4-9} title="HeroQuery.graphql"
+```graphql {4-9} title="HeroForEpisode.graphql"
 query HeroForEpisode($ep: Episode!) {
   hero(episode: $ep) {
     name
@@ -91,4 +95,4 @@ println("Droid primaryFunction: ${hero.onDroid?.primaryFunction}")
 println("Human height: ${hero.onHuman?.height}")
 ```
 
-> These `on<ShapeName>` fields (`onDroid` and `onHuman`) are `null` if the returned object is _not_ the corresponding type.
+> These `on<ShapeName>` fields (`onDroid` and `onHuman`) are `null` if the returned object is _not_ of the corresponding type.

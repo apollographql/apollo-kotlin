@@ -8,7 +8,7 @@ The store is accessible with the `ApolloClient.apolloStore` extension:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
-  .serverUrl("https://...")
+  .serverUrl("https://example.com/graphql")
   .normalizedCache(MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024))
   .build()
 
