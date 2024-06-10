@@ -44,8 +44,8 @@
     "Caching": {
       "Introduction": "/caching/introduction",
       "Normalized caches": "/caching/normalized-cache",
-      "Declarative cache keys": "/caching/declarative-ids",
-      "Programmatic cache keys": "/caching/programmatic-ids",
+      "Declarative cache IDs": "/caching/declarative-ids",
+      "Programmatic cache IDs": "/caching/programmatic-ids",
       "Watching cached data": "/caching/query-watchers",
       "ApolloStore": "/caching/store",
       "HTTP cache": "/caching/http-cache",

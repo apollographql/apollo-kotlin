@@ -13,7 +13,7 @@ You can use one ([or both!](#chaining-caches)) of these caches in your app to im
 
 ## What is a normalized cache?
 
-In a GraphQL client, a normalized cache breaks each of your GraphQL operation responses into the individual objects it contains. Then, each object is cached as a _separate entry_ based on its **cache key**. This means that if multiple responses include the _same_ object, that object can be deduplicated into a single cache entry. This reduces the overall size of the cache and helps keep your cached data consistent and fresh.
+In a GraphQL client, a normalized cache breaks each of your GraphQL operation responses into the individual objects it contains. Then, each object is cached as a _separate entry_ based on its **cache ID**. This means that if multiple responses include the _same_ object, that object can be deduplicated into a single cache entry. This reduces the overall size of the cache and helps keep your cached data consistent and fresh.
 
 You can also use a normalized cache as a single source of truth for your UI, enabling it to react to changes in the cache. To learn more about the normalization process, [see this blog post](https://www.apollographql.com/blog/apollo-client/caching/demystifying-cache-normalization/).
 
@@ -59,7 +59,7 @@ A normalized cache does _not_ store this response directly. Instead, it breaks i
 
 <Note>
 
-These default generated cache keys (`favoriteBook` and `favoriteBook.author`) are undesirable for data deduplication. See [Specifying cache keys](#specifying-cache-ids).
+These default generated cache IDs (`favoriteBook` and `favoriteBook.author`) are undesirable for data deduplication. See [Specifying cache IDs](#specifying-cache-ids).
 
 </Note>
 
@@ -196,9 +196,9 @@ As with `normalizedCache(NormalizedCacheFactory)`, `fetchPolicy(FetchPolicy)` is
 
 Because the normalized cache deduplicates data, it enables you to react to cache changes. You do this with `watchers` that listen for cache changes. [Learn more about query watchers.](./query-watchers/)
 
-## Specifying cache keys
+## Specifying cache IDs
 
-By default, Apollo Kotlin uses an object's GraphQL field path as its cache key. For example, recall the following query and its resulting cache entries from earlier:
+By default, Apollo Kotlin uses an object's GraphQL field path as its cache ID. For example, recall the following query and its resulting cache entries from earlier:
 
 ```graphql
 query GetFavoriteBook {
@@ -245,7 +245,7 @@ We're now caching two identical entries for the same `Author` object! This is un
 * It takes up more space.
 * Modifying one of these objects does _not_ notify any watchers of the _other_ object.
 
-We want to deduplicate entries like these by making sure they're assigned the _same_ cache key when they're written, resulting in a cache that looks more like this:
+We want to deduplicate entries like these by making sure they're assigned the _same_ cache ID when they're written, resulting in a cache that looks more like this:
 
 ```json title="Cache"
 "Book:bk123": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{Author:au456}"}
@@ -253,14 +253,14 @@ We want to deduplicate entries like these by making sure they're assigned the _s
 "QUERY_ROOT": {"favoriteBook": "ApolloCacheReference(Book:bk123)", "author(\"id\": \"au456\")": "ApolloCacheReference{Author:au456}"}
 ```
 
-Fortunately, all of our objects have an `id` field that we can use for this purpose. If an `id` is unique across _all_ objects in your graph, you can use its value directly as a cache key. Otherwise if it's unique _per object type_, you can prefix it with the type name (as shown above).
+Fortunately, all of our objects have an `id` field that we can use for this purpose. If an `id` is unique across _all_ objects in your graph, you can use its value directly as a cache ID. Otherwise if it's unique _per object type_, you can prefix it with the type name (as shown above).
 
 ### Methods
 
-There are two methods for specifying an object's cache key:
+There are two methods for specifying an object's cache ID:
 
-* **[Declaratively](declarative-ids)** (recommended). You can specify schema extensions that tell the codegen in which field(s) to find the ID and make sure at compile time that all these fields are requested in operations so that all objects can be identified. Declarative keys also prefix each ID with the typename to ensure global uniqueness.
-* **[Programmatically](programmatic-ids).** You can implement custom APIs that provide the cache key for an object. Because you can execute arbitrary code, this solution is more flexible, but it's also more error prone and requires that your operations request the key fields.
+* **[Declaratively](declarative-ids)** (recommended). You can specify schema extensions that tell the codegen in which field(s) to find the ID and make sure at compile time that all these fields are requested in operations so that all objects can be identified. Declarative IDs also prefix each ID with the typename to ensure global uniqueness.
+* **[Programmatically](programmatic-ids).** You can implement custom APIs that provide the cache ID for an object. Because you can execute arbitrary code, this solution is more flexible, but it's also more error prone and requires that your operations request the key fields.
 
 ## Clearing the cache
 
