@@ -190,7 +190,7 @@ Note that cache misses **will** emit a response with a non null `.exception`, me
 - `NetworkFirst` can emit 1 or 2 values
 - `CacheAndNetwork` will emit 2 values
 
-For that reason you should use `.toFlow()` rather than `.execute()` when using these policies.
+Note: `.execute()` filters out cache or network errors to return a single success response, however since `CacheAndNetwork` can emit 2 success responses, you should use `.toFlow()` when using that policy.
 
 As with `normalizedCache(NormalizedCacheFactory)`, `fetchPolicy(FetchPolicy)` is an extension function on `ApolloClient.Builder()`, so you need `apollo-normalized-cache` in your classpath for this to work.
 
