@@ -71,7 +71,7 @@
       "Uploading files": "/advanced/upload",
       "Monitoring the network state": "/advanced/network-connectivity",
       "Handling nullability": "/advanced/nullability",
-      "Experimental WebSocket APIs": "/advanced/experimental-websockets",
+      "Experimental WebSockets": "/advanced/experimental-websockets",
       "Using aliases": "/advanced/using-aliases",
       "Using Java": "/advanced/java",
       "Apollo AST": "/advanced/apollo-ast",
