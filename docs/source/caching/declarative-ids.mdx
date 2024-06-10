@@ -16,16 +16,16 @@ extend type Book @typePolicy(keyFields: "id")
 
 With declarative cache IDs, the codegen process adds ID fields automatically and generates type-safe code that can return a valid cache ID for any object.
 
-To do this, Apollo Kotlin extends your back-end schema. The GraphQL spec supports [object extensions](https://spec.graphql.org/draft/#sec-Object-Extensions) using the `extend type` keywords. We can use this together with the `@typePolicy` and `@fieldPolicy` directives, along with an extra `.graphqls` file named `extra.graphqls`.
+To do this, Apollo Kotlin extends your backend schema. The GraphQL spec supports [object extensions](https://spec.graphql.org/draft/#sec-Object-Extensions) using the `extend type` keywords. We can use this together with the `@typePolicy` and `@fieldPolicy` directives, along with an extra `.graphqls` file named `extra.graphqls`.
 
 Note that you'll need to make sure that the `extra.graphqls` file is included in your [schema configuration](https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration#combining-multiple-schema-files).
 
 You can obtain a given object type's cache ID from one of two sources:
 
-| Source | Directive | Description |
-|--------|-----------|-------------|
-| From a response object's fields (e.g., `Book.id`) | [`@typePolicy`](#typepolicy) | This happens _after_ a network request and is essential to merging a query result with existing cached data. This is the most common case. |
-| From a GraphQL operation's arguments (e.g., `author(id: "au456")`) | [`@fieldPolicy`](#fieldpolicy) | This happens _before_ a network request and enables you to avoid a network round trip if all requested data is in the cache already. This is an optional optimization that can avoid some cache misses. |
+| Source                                                 | Directive | Description |
+|--------------------------------------------------------|-----------|-------------|
+| From a response object's fields (e.g., `Book.id`)      | [`@typePolicy`](#typepolicy) | This happens _after_ a network request and is essential to merging a query result with existing cached data. This is the most common case. |
+| From a field's arguments (e.g., `author(id: "au456")`) | [`@fieldPolicy`](#fieldpolicy) | This happens _before_ a network request and enables you to avoid a network round trip if all requested data is in the cache already. This is an optional optimization that can avoid some cache misses. |
 
 ## `@typePolicy`
 

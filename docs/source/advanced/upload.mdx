@@ -4,7 +4,7 @@ title: Uploading files
 
 Apollo Kotlin supports file uploads via the [GraphQL multipart request specification](https://github.com/jaydenseric/graphql-multipart-request-spec) with a few caveats:
 
-- Uploading files with GraphQL is most often suitable for proof-of-concept applications. In production, using purpose-built tools for file uploads may be preferable. Refer to this [blog post](https://www.apollographql.com/blog/backend/file-uploads/file-upload-best-practices/) for the advantages and disadvantages of multiple approaches.
+- Uploading files with GraphQL is most often suitable for proof-of-concept applications. In production, using purpose-built tools for file uploads may be preferable. Refer to this [blog post](https://www.apollographql.com/blog/backend/file-uploads/file-upload-best-practices/) for possible approaches and their advantages and disadvantages.
 - The [Apollo Router](/router/) doesn't support `multipart/form-data` uploads.
 
 ## Uploading files with Apollo Kotlin
@@ -21,7 +21,11 @@ apollo {
 
 In this example, the GraphQL schema defines a custom scalar type named `Upload`. You can use a different name as needed for your schema.
 
-> **Note:** You don't need to register a type adapter for `Upload`, because the `mapScalarToUpload` method registers it automatically.
+<Note>
+
+You don't need to register a type adapter for `Upload`, because the `mapScalarToUpload` method registers it automatically.
+
+</Note>
 
 Now let's consider a mutation that takes an `Upload` as a parameter:
 

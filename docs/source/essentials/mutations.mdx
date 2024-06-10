@@ -19,7 +19,7 @@ mutation UpvotePost($postId: Int!) {
 
 And here's an example schema snippet that supports this mutation:
 
-```graphql title="schema.graphql"
+```graphql title="schema.graphqls"
 type Mutation {
   upvotePost(postId: Int!): Post
 }
@@ -57,7 +57,7 @@ For more information on mutation return types, see [Designing mutations](https:/
 
 Similar to queries, mutations are represented by instances of generated classes, conforming to the `Mutation` interface.
 Constructor arguments are used to define mutation variables. You pass a mutation object
-to `ApolloClient#mutation(mutation)` to send the mutation to the server, execute it, and receive typed results:
+to `ApolloClient.mutation(mutation)` to send the mutation to the server, execute it, and receive typed results:
 
 
 ```kotlin

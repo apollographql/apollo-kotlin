@@ -110,7 +110,7 @@ Make sure you pass the full class name including the package, because imports ar
 You can also register adapters on your `ApolloClient` instance by calling `ApolloClient.Builder.addCustomScalarAdapter` once for each adapter:
 
 ```kotlin
-val apolloClient = ApolloClient.Builder().serverUrl("https://")
+val apolloClient = ApolloClient.Builder().serverUrl("https://example.com/graphql")
     .addCustomScalarAdapter(GeoPoint.type, geoPointAdapter)
     .build()
 ```
@@ -144,7 +144,11 @@ In addition, the `com.apollographql.apollo3:apollo-adapters` artifact provides t
 | `com.apollographql.apollo3.adapter.DateAdapter`                 | For `java.util.Date` ISO8601 dates                                                                  |
 | `com.apollographql.apollo3.adapter.BigDecimalAdapter`           | For a Multiplatform `com.apollographql.apollo3.adapter.BigDecimal` class holding big decimal values |
 
-> **Note:** Because some adapters use `kotlinx.datetime` (which itself uses `java.time`), you need to enable [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26
+<Note>
+
+Because some adapters use `kotlinx.datetime` (which itself uses `java.time`), you need to enable [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26
+
+</Note>
 
 For example, to use `DateAdapter`, configure your Gradle scripts like so:
 

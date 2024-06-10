@@ -5,7 +5,7 @@ description: Update your UI in response to cache changes
 
 Because your [normalized cache](./normalized-cache/) can deduplicate your GraphQL data (using proper [cache IDs](./declarative-ids/)), you can use the cache as the source of truth for populating your UI.
 
-When executing an operation, you can use the `ApolloCall.watch` method to automatically notify that operation whenever its associated cached data changes:
+When executing an operation, you can use the `ApolloCall.watch` method to automatically be notified whenever its associated cached data changes:
 
 ```kotlin {2}
 apolloClient.query(TodoDetailsQuery())
@@ -61,12 +61,12 @@ The app's main view executes the `AllTodos` query to display a list of todo `Ite
     "items": [
       {
         "id": "0",
-        "title": "Write code for Apollo Kotlin 3",
+        "title": "Write code for Apollo Kotlin",
         "completed": true,
       },
       {
         "id": "1",
-        "title": "Write documentation for Apollo Kotlin 3",
+        "title": "Write documentation for Apollo Kotlin",
         "completed": false,
       }
     ]
@@ -83,7 +83,7 @@ In this case, the `TodoDetails` query might return something like this:
   "data": {
     "item": {
       "id": "1",
-      "title": "Write documentation for Apollo Kotlin 3",
+      "title": "Write documentation for Apollo Kotlin",
       "completed": true,
       "content": "Don't forget docs about the normalized cache!"
     }

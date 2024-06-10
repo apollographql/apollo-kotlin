@@ -57,7 +57,11 @@ A normalized cache does _not_ store this response directly. Instead, it breaks i
 "QUERY_ROOT": {"favoriteBook": "ApolloCacheReference{favoriteBook}"}
 ```
 
-> ⚠️ These default generated cache IDs (`favoriteBook` and `favoriteBook.author`) are undesirable for data deduplication. See [Specifying cache IDs](#specifying-cache-ids).
+<Note>
+
+These default generated cache IDs (`favoriteBook` and `favoriteBook.author`) are undesirable for data deduplication. See [Specifying cache IDs](#specifying-cache-ids).
+
+</Note>
 
 * Notice that the `author` field of the `Book` entry now contains the string `ApolloCacheReference{favoriteBook.author}`. This is a **reference** to the `Author` cache entry.
 * Notice also the `QUERY_ROOT` entry, which is always present if you've cached results from at least one query. This entry contains a reference for each top-level field you've included in a query (e.g., `favoriteBook`).
@@ -81,7 +85,7 @@ Then include the cache in your `ApolloClient` initialization, like so:
 val cacheFactory = MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024)
 // Build the ApolloClient
 val apolloClient = ApolloClient.Builder()
-  .serverUrl("https://...")
+  .serverUrl("https://example.com/graphql")
   // normalizedCache() is an extension function on ApolloClient.Builder
   .normalizedCache(cacheFactory)
   .build()
@@ -122,7 +126,7 @@ val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory("apollo.db")
 
 // Build the ApolloClient
 val apolloClient = ApolloClient.Builder()
-  .serverUrl("https://...")
+  .serverUrl("https://example.com/graphql")
   .normalizedCache(sqlNormalizedCacheFactory)
   .build()
 ```
@@ -149,7 +153,7 @@ After you add a normalized cache to your `ApolloClient` initialization, Apollo K
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
-    .serverUrl("https://...")
+    .serverUrl("https://example.com/graphql")
     .fetchPolicy(FetchPolicy.NetworkOnly)
     .build()
 ```
@@ -172,23 +176,21 @@ val response = apolloClient.query(query)
 
   // Always use the network and never check the cache, even if network fails
   .fetchPolicy(FetchPolicy.NetworkOnly)
-
-  // Execute the query
-  .execute()
-```
-The `CacheAndNetwork` policy can emit multiple values, so you call `toFlow()` instead of `execute()`:
-
-```kotlin
-apolloClient.query(query)
-
-  // Check the cache and also use the network (1 or 2 values can be emitted)
+  
+  // Check the cache and also use the network
   .fetchPolicy(FetchPolicy.CacheAndNetwork)
 
   // Execute the query and collect the responses
   .toFlow().collect { response ->
-      // ...
+    // ...
   }
 ```
+Note that cache misses **will** emit a response with a non null `.exception`, meaning that some of these policies can emit multiple values:
+- `CacheFirst` can emit 1 or 2 values
+- `NetworkFirst` can emit 1 or 2 values
+- `CacheAndNetwork` will emit 2 values
+
+Note: `.execute()` filters out cache or network errors to return a single success response, however since `CacheAndNetwork` can emit 2 success responses, you should use `.toFlow()` when using that policy.
 
 As with `normalizedCache(NormalizedCacheFactory)`, `fetchPolicy(FetchPolicy)` is an extension function on `ApolloClient.Builder()`, so you need `apollo-normalized-cache` in your classpath for this to work.
 
@@ -257,17 +259,9 @@ Fortunately, all of our objects have an `id` field that we can use for this purp
 
 There are two methods for specifying an object's cache ID:
 
-* **[Declaratively](declarative-ids)** (recommended). You can specify schema extensions that tell the codegen where to find the ID and make sure at compile time that all the `id` fields are requested so that all objects can be identified. Declarative IDs also prefix each ID with the typename to ensure global uniqueness.
-* **[Programmatically](programmatic-ids).** You can implement custom APIs that retrieve the ID for an object. Because you can execute arbitrary code, this solution is more flexible, but it's also more error prone and requires that you manually request `id` fields.
+* **[Declaratively](declarative-ids)** (recommended). You can specify schema extensions that tell the codegen in which field(s) to find the ID and make sure at compile time that all these fields are requested in operations so that all objects can be identified. Declarative IDs also prefix each ID with the typename to ensure global uniqueness.
+* **[Programmatically](programmatic-ids).** You can implement custom APIs that provide the cache ID for an object. Because you can execute arbitrary code, this solution is more flexible, but it's also more error prone and requires that your operations request the key fields.
 
 ## Clearing the cache
 
-Call below to clear the cache of all entries, note that retrieving `apolloClient.apolloStore` will throw an exception if a cache has not been configured on the client.
-
-```kotlin
-try {
-    apolloClient.apolloStore.clearAll()
-} catch (e: IllegalStateException) {
-    println("Failed to clear Apollo normalized cache because none was found")
-}
-```
+Call `apolloClient.apolloStore.clearAll()` to clear the cache of all entries. Note that calling `apolloClient.apolloStore` throws an exception if a cache has not been configured.

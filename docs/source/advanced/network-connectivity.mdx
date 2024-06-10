@@ -1,9 +1,13 @@
 ---
-title: Monitor your network state to reduce latency (experimental)
+title: Monitor the network state to reduce latency
 ---
 
-> ⚠️ **Network Monitor APIs are [experimental](https://www.apollographql.com/docs/resources/release-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Defer%20Support]) or in the [Kotlin Slack community](https://slack.kotl.in/).
-> 
+<ExperimentalFeature>
+
+**Network Monitor APIs are currently [experimental](https://www.apollographql.com/docs/resources/release-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md) or in the [Kotlin Slack community](https://slack.kotl.in/).
+
+</ExperimentalFeature> 
+
 Android and Apple targets provide APIs to monitor the network state of your device:
 
 - [ConnectivityManager](https://developer.android.com/training/monitoring-device-state/) on Android targets.
@@ -48,7 +52,7 @@ val response = apolloClient.query(myQuery).failFastIfOffline(false).execute()
 
 When a `NetworkMonitor` is configured, `retryOnError` uses `NetworkMonitor.waitForNetwork()` instead of the default exponential backoff algorithm in order to reconnect faster when connectivity is back.
 
-### customizing the retry algorithm
+### Customizing the retry algorithm
 
 You can customize the retry algorithm further by defining you won interceptor. Make sure to:
 

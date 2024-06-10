@@ -2,6 +2,12 @@
 title: Apollo compiler plugins
 ---
 
+<ExperimentalFeature>
+
+**Compiler plugins are currently [experimental](https://www.apollographql.com/docs/resources/release-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md) or in the [Kotlin Slack community](https://slack.kotl.in/).
+
+</ExperimentalFeature>
+
 The Apollo compiler supports [a wide range of options](../advanced/plugin-configuration). For the cases where these options are not enough, you can use Apollo compiler plugins to modify the behaviour of the compiler. 
 
 Apollo compiler plugins allow to:
@@ -140,6 +146,6 @@ Because codegen is run in a separate classloader when using compiler plugins, it
 
 ## Other references
 
-For other plugin APIs like layout, IR, JavaPoet and KotlinPoet transforms, check out the [ApolloCompilerPlugin API docs](https://www.apollographql.com/docs/kotlin/kdoc/apollo-compiler/com.apollographql.apollo3.compiler/-apollocompilerplugin/index.html)
+For other plugin APIs like layout, IR, JavaPoet and KotlinPoet transforms, check out the [ApolloCompilerPlugin API docs](https://www.apollographql.com/docs/kotlin/kdoc/apollo-compiler/com.apollographql.apollo3.compiler/-apollo-compiler-plugin/index.html)
 
 For more examples, check out the [integration-tests](https://github.com/apollographql/apollo-kotlin/tree/main/tests/compiler-plugins).

@@ -2,7 +2,11 @@
 title: Mocking HTTP responses (experimental)
 ---
 
-> ℹ️ `MockServer` is still experimental and most of the APIs are designed for Kotlin. `MockServer` is multiplatform but if you're using Java only, we recommend using [OkHttp MockWebServer](https://github.com/square/okhttp/tree/master/mockwebserver) which will provide idiomatic Java APIs.
+<ExperimentalFeature>
+
+`MockServer` is still experimental and most of the APIs are designed for Kotlin. `MockServer` is multiplatform but if you're using Java only, we recommend using [OkHttp MockWebServer](https://github.com/square/okhttp/tree/master/mockwebserver) which will provide idiomatic Java APIs.
+
+</ExperimentalFeature>
 
 `MockServer` implements an HTTP server that you can use to mock responses. It's useful for testing specific server behaviors, such as error cases, HTTP headers, and timeouts. Using it requires minimal changes to your production code, because you only need to change your `serverUrl`.
 
@@ -12,7 +16,7 @@ Add the dependency to your project's `build.gradle` file:
 
 ```kotlin title="build.gradle[.kts]"
 dependencies {
-  testImplementation("com.apollographql.apollo3:apollo-mockserver:4.0.0-beta.7")
+  testImplementation("com.apollographql.mockserver:apollo-mockserver:0.0.1")
 }
 ```
 

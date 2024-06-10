@@ -84,7 +84,7 @@ interface Service {
    * - main schema file first (the main schema file is the file that contains the schema definition or the Query type)
    * - lexicographic order of the filename for other schema files
    *
-   * If not set or empty, the plugin collects all "schema.[json|sdl|graphqls]" files in the [srcDir] roots.
+   * If not set or empty, the plugin collects all "*.[json|sdl|graphqls]" files in the [srcDir] roots.
    *
    * Example:
    *
@@ -469,7 +469,7 @@ interface Service {
    * - "dataClass" (Kotlin only and redundant with all other methods) generates the class as a [data class](https://kotlinlang.org/docs/data-classes.html)
    * which will automatically generate `toString`, `copy`, `equals` and `hashCode`.
    *
-   * Default for kotlin: `listOf("data")`
+   * Default for kotlin: `listOf("dataClass")`
    * Default for Java: `listOf("equalsHashCode", "toString")`
    */
   val generateMethods: ListProperty<String>

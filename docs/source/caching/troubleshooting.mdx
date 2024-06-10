@@ -9,12 +9,12 @@ If you are still experiencing cache misses, you can dump the contents of the cac
 
 ```kotlin
 val dump = apolloClient.apolloStore.dump()
-NormalizedCache.prettifyDump(dump)
+println(NormalizedCache.prettifyDump(dump))
 ```
 
 A graphical [normalized cache viewer](../testing/android-studio-plugin#normalized-cache-viewer) is also available in the Android Studio plugin.
 
-Make sure that no data is duplicated in the dump. If it is the case, it probably means that some objects have a wrong `CacheKey`. Make sure to provide a `CacheKeyResolver` that can work with your graph. All objects should have a unique and stable ID. That means that the ID should be the same no matter what path the object is in the graph. That also mean you have to include the identifier field in your queries to be able to use in from the `CacheKeyResolver`.
+Make sure that no data is duplicated in the dump. If it is the case, it probably means that some objects have a wrong `CacheKey`. Make sure to provide a `CacheKeyResolver` that can work with your graph. All objects should have a unique and stable cache ID. That means that the cache ID should be the same no matter what path the object is in the graph. That also mean you have to include the key field(s) in your queries to be able to use them in the `CacheKeyResolver`.
 
 Finally, make sure to design your queries so that you can reuse fields. A single missing field in the cache for a query will trigger a network fetch. Sometimes it might be useful to query an extra field early on so that it can be reused by other later queries.
 

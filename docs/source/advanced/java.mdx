@@ -1,12 +1,12 @@
 ---
-title: Using with Java
+title: Using Java
 ---
 
 This article describes how to use Apollo Kotlin in Java projects.
 
 ## Use the Java codegen
 
-Apollo Kotlin generates Kotlin code by default, but you can configure it to use the Java codegen instead:
+Apollo Kotlin generates Kotlin code by default, but you can configure it to generate Java code instead:
 
 ```kotlin title="build.gradle[.kts]"
 apollo {
@@ -39,7 +39,7 @@ import com.apollographql.apollo3.runtime.java.ApolloClient;
 
 // Create and configure an ApolloClient
 ApolloClient client = ApolloClient.Builder builder = new ApolloClient.Builder()
-  .serverUrl("http://localhost:4000/graphql")
+  .serverUrl("https://example.com/graphql")
   .build();
 
 // Call enqueue() to execute a query asynchronously
@@ -79,7 +79,7 @@ When executing subscriptions with the Java runtime, the callback passed to `enqu
 
 ```java
 ApolloClient apolloClient = new ApolloClient.Builder()
-  .serverUrl("http://localhost:4000/graphql")
+  .serverUrl("https://example.com/graphql")
   // Configure a protocol factory
   .wsProtocolFactory(new ApolloWsProtocol.Factory())
   .build();

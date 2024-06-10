@@ -2,29 +2,19 @@
 title: Connecting source sets
 ---
 
-By default, Apollo Kotlin adds the generated files to the `main` (for JVM/Android projects) or `commonMain` (for multiplatform projects) source sets. 
+By default, Apollo Kotlin adds generated sources:
 
-If you only need them in a specific source set, you can use `outputDirConnection` to add them to a different source set.
+- to the `main` sourceSet for JVM projects
+- to `commonMain` for multiplatform projects
+- to all non-test variants for Android projects
 
-For an example, you can add them to the "test" source set:
+You can customize this behavior with the `outputDirConnection` property. For example, to wire a service to the test source set of a Kotlin JVM project:
 
 ```kotlin
 apollo {
   service("service") {
     outputDirConnection {
       connectToKotlinSourceSet("test")
-    }
-  }
-}
-```
-
-On Android, because the generated files are added to the `main` source set, they are available in all your [build variants](https://developer.android.com/studio/build/build-variants#build-types). If you need them available to only a specific build variant, you can do so with:
-
-```kotlin
-apollo {
-  service("service") {
-    outputDirConnection {
-      connectToAndroidSourceSet("demoDebug")
     }
   }
 }

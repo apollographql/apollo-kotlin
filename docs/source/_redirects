@@ -19,3 +19,4 @@
 /advanced/test-builders/ /docs/kotlin/testing/test-builders/
 /advanced/response-based-codegen/ /docs/kotlin/advanced/response-based/
 /advanced/codegen-methods/ /docs/kotlin/advanced/response-based/
+/advanced/source-sets/ /docs/kotlin/advanced/plugin-configuration/#wiring-generated-sources

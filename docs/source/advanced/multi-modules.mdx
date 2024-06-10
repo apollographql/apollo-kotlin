@@ -5,7 +5,9 @@ title: Multi Modules codegen
 For multi-modules projects, Apollo Kotlin enables you to define queries in a feature module and reuse fragments and types from another module dependency. This helps with better separation of concerns and build times.
 
 <Note>
+
 This page is for sharing a schema between different modules and defining your `.graphql` operations in different modules. If all your `.graphql` files are in a single module, you can use `apollo-runtime` like any other Kotlin dependency without any of this.
+
 </Note>
 
 
@@ -21,18 +23,18 @@ apollo {
   service("service") {
     packageName.set("schema")
     
-    // enable generation of metadata for use by downstream modules 
+    // Enable generation of metadata for use by downstream modules 
     generateApolloMetadata.set(true)
     
     // If you need to specify the location of your schema files
     schemaFiles.from(/*...*/)
     
-    // scalar mappings and generateDataBuilders must be defined in the schema module
+    // Scalar mappings and generateDataBuilders must be defined in the schema module
     mapScalar(/*...*/)
     generateDataBuilders.set(true)
     
-    // other options can be different between modules.
-    // if you want those options to be applied to all modules, use a convention plugin and shared build logic.
+    // Other options can be different between modules.
+    // If you want those options to be applied to all modules, use a convention plugin and shared build logic.
     useSemanticNaming.set(true)
     generateFragmentImplementations.set(true)
   }
@@ -44,7 +46,7 @@ In your feature module, declare your schema module as a dependency:
 ```kotlin
 // feature/build.gradle.kts
 apollo {
-  // service names must match
+  // Service names must match
   service("service") {
     packageName.set("feature")
     
@@ -72,8 +74,10 @@ apollo {
 }
 ```
 
-<Note>
+<ExperimentalFeature>
+
 The `bidirectional` parameter is experimental because it may break <a href="https://docs.gradle.org/current/userguide/build_environment.html">Gradle project isolation</a>. For a project-isolation compatible method, try <a href="https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo3.gradle.api/-service/is-a-dependency-of.html">isADependencyOf</a> 
-</Note>
+
+</ExperimentalFeature>
 
 Once you opt in auto-detection of used types, it's important that **all** modules are doubly linked like above. If not the feature modules will fail to compile due to some missing schema classes.

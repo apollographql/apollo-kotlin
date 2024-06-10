@@ -1,16 +1,19 @@
 ---
 title: 'Using the @defer directive in Apollo Kotlin'
 description: 'Fetch slower schema fields asynchronously'
-minVersion: 3.6.0
 ---
 
-> ⚠️ **The `@defer` directive is currently [experimental](https://www.apollographql.com/docs/resources/product-launch-stages/#experimental-features) in Apollo Kotlin and enabled for use by default.** If you have feedback on it, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Defer%20Support]) or in the [Kotlin Slack community](https://slack.kotl.in/).
+<ExperimentalFeature>
 
-Beginning with version `3.6.0`, Apollo Kotlin provides experimental support of [the `@defer` directive](https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md), which enables your queries to receive data for specific fields asynchronously. This is helpful whenever some fields in a query take much longer to resolve than the others.
+**The `@defer` directive is currently [experimental](https://www.apollographql.com/docs/resources/product-launch-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on it, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md) or in the [Kotlin Slack community](https://slack.kotl.in/).
+
+</ExperimentalFeature>
+
+Apollo Kotlin provides experimental support of [the `@defer` directive](https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md), which enables your queries to receive data for specific fields asynchronously. This is helpful whenever some fields in a query take much longer to resolve than the others.
 
 For example, let's say we're building a social media application that can quickly fetch a user's basic profile information, but retrieving that user's friends takes longer. If we include _all_ of those fields in a single query, we want to be able to display the profile information as soon as it's available, instead of waiting for the friend fields to resolve.
 
-To achieve this, we can apply the `@defer` directive to an in-line fragment that contains all slow-resolving fields related to friend data:
+To achieve this, we can apply the `@defer` directive to an inline fragment that contains all slow-resolving fields related to friend data:
 
 ```graphql
 query PersonQuery($personId: ID!) {
@@ -39,7 +42,7 @@ When the fields of the fragment are available, a new `Person` will be emitted, t
 ```kotlin
 apolloClient.query(PersonQuery(personId)).toFlow().collect {
   println("Received: $it")
-  if (it.dataAssertNoErrors.person.onUser == null) {
+  if (it.dataOrThrow().person.onUser == null) {
     // Initial payload: basic info only
     // ...
   } else {
@@ -58,11 +61,11 @@ Received: Person(id=1, firstName=John, lastName=Doe, onUser=OnUser(friends=[Frie
 
 ### Limitations/known issues
 * `@defer` cannot be used with `responseBased` codegen.
-* Some servers might send an empty payload to signal the end of the stream. In such a case you will receive an extra terminal emission. You can filter it out by using `distinct()`:
+* Some servers might send an empty payload to signal the end of the stream. In such a case you will receive an extra terminal emission. You can filter it out by using `distinctUntilChangedBy()`:
 
 ```kotlin
 apolloClient.query(MyQuery()).toFlow()
-    .distinct() // filter out duplicates
+    .distinctUntilChangedBy { it.data }  // filter out duplicates
     .collect { /* ... */ }
 ```
 

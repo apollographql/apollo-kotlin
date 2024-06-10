@@ -25,6 +25,10 @@
       <option name="CONTINUATION_INDENT_IN_ELVIS" value="true" />
       <option name="ALLOW_TRAILING_COMMA" value="true" />
     </JetCodeStyleSettings>
+    <Markdown>
+      <option name="WRAP_TEXT_IF_LONG" value="false" />
+      <option name="WRAP_TEXT_INSIDE_BLOCKQUOTES" value="false" />
+    </Markdown>
     <Properties>
       <option name="KEEP_BLANK_LINES" value="true" />
     </Properties>
@@ -58,7 +62,7 @@
       </indentOptions>
     </codeStyleSettings>
     <codeStyleSettings language="Markdown">
-      <option name="RIGHT_MARGIN" value="120" />
+      <option name="RIGHT_MARGIN" value="600" />
       <option name="WRAP_ON_TYPING" value="0" />
     </codeStyleSettings>
     <codeStyleSettings language="XML">

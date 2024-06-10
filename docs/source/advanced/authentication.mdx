@@ -2,13 +2,13 @@
 title: Authenticate your operations
 ---
 
-> Authentication is not included in the GraphQL specification. This page aims at giving some guidance for the most common scenarios but doesn't pretend to be exhaustive.
+> Authentication is not included in the GraphQL specification. This page aims at giving some guidance for the most common scenarios but doesn't intend to be exhaustive.
 
 ## Authenticating your HTTP requests with OkHttp
 
 [OkHttp Interceptors](https://square.github.io/okhttp/features/interceptors/) are an easy way to add an `"Authorization"` header to your HTTP requests.
 
-OkHttp Interceptors have been around for a long time and work well but only work on Android and the JVM.
+OkHttp Interceptors have been around for a long time and work well but can only be used with Apollo Kotlin on Android and the JVM.
 
 ## Authenticating your HTTP requests with Apollo HttpInterceptor
 
@@ -69,10 +69,10 @@ Alternatively, you can also send headers in the initial WebSocket handshake requ
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
-    .httpServerUrl("http://localhost:8080/graphql")
+    .httpServerUrl("https://example.com/graphql")
     .subscriptionNetworkTransport(
         WebSocketNetworkTransport.Builder()
-            .serverUrl("http://localhost:8080/subscriptions")
+            .serverUrl("https://example.com/subscriptions")
             .addHeader("Authorization", authorization) // highlight-line
             .build()
     )
@@ -83,7 +83,11 @@ val apolloClient = ApolloClient.Builder()
 
 When using authenticated subscriptions over WebSockets, you might want to refresh your authentication token because it was invalidated or simply because it expired.
 
-> Note: if your user logged out, you might want to consider creating a new `ApolloClient` instead. This will make sure that all other state besides the WebSocket, like cache for an example, is new and not shared amongst different users.
+<Note>
+
+If your user logged out, you might want to consider creating a new `ApolloClient` instead. This will make sure that all other state besides the WebSocket, like cache for an example, is new and not shared amongst different users.
+
+</Note>
 
 Sometimes the websocket will emit an error that you can use in `webSocketReopenWhen` to create a new WebSocket. Other times that information will come from elsewhere in your app and you will have to force disconnect the WebSocket.
 

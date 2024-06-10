@@ -37,14 +37,14 @@ apollo {
 }
 ```
 
-> By default, Apollo Kotlin combines all files in your project that match the pattern `schema.[graphqls|json|sdl]`.
+> By default, Apollo Kotlin combines all `*.[graphqls|json|sdl]` files in `src/main/graphql/` (Android/JVM projects) or `src/commonMain/graphql/` (multiplatform projects).
 
 ## Combining multiple schema files
 
 Apollo Kotlin supports a collection of client directives, including `@nonnull`, `@optional`, and `@typePolicy`. These
 directives enable you to extend your server's base schema with client-specific types and fields.
 
-If you expand your schema in a separate file, you can instruct Apollo Kotlin to construct its schema from a combination
+If you expand your schema in a separate file (usually named `extra.graphqls`), you can instruct Apollo Kotlin to construct its schema from a combination
 of multiple files, like so:
 
 ```kotlin
@@ -55,19 +55,17 @@ apollo {
 }
 ```
 
-> By default, Apollo Kotlin combines all files in your project that match the pattern `schema.[graphqls|json|sdl]`.
+> By default, Apollo Kotlin combines all `*.[graphqls|json|sdl]` files in `src/main/graphql/` (Android/JVM projects) or `src/commonMain/graphql/` (multiplatform projects).
 
-## Wiring generated source
+## Wiring generated sources
 
-By default, Apollo Kotlin adds generated source:
+By default, Apollo Kotlin adds the generated sources:
 
 - to the `main` sourceSet for JVM projects
 - to `commonMain` for multiplatform projects
 - to all non-test variants for Android projects
 
-You can customize this behavior with the `outputDirConnection` property. For example, to wire a service to the test
-source set of a Kotlin
-JVM project:
+You can customize this behavior with the `outputDirConnection` property. For example, to wire a service to the test source set of a Kotlin JVM project:
 
 ```kotlin
 apollo {
@@ -81,10 +79,9 @@ apollo {
 
 ## Android variants support
 
-It is sometimes useful to have different operations or schemas depending on
-the [variant](https://developer.android.com/studio/build/build-variants) of your Android project.
+It is sometimes useful to have different operations or schemas depending on the [variant](https://developer.android.com/build/build-variants) of your Android project.
 
-To do this, you can instruct the Gradle plugin to automatically configure a Service per variant, like so:
+To do this, you can instruct the Gradle plugin to automatically configure a Service per variant:
 
 ```kotlin
 apollo {
@@ -95,13 +92,12 @@ apollo {
 }
 ```
 
-- `sourceFolder` where to find the GraphQL relative to "src/$sourceSetName/graphql". Pass "." to look into "
-  src/$sourceSetName/graphql".
-- `nameSuffix` a suffix to use for the service name. Leave blank to use the variant name as is.
+- `sourceFolder` is where to find the GraphQL relative to "src/$sourceSetName/graphql". Pass "." to look into "src/$sourceSetName/graphql".
+- `nameSuffix` is the suffix to use for the service name. Leave blank to use the variant name as is.
 
-Similarly to what the Android variant system does with source code, the GraphQL files are handled additively, and files
-in `src/main/graphql` are included in all services. This means your project could look like this (e.g. when certain
-operations must only exist in debug builds):
+Similarly to what the Android variant system does with source code, the GraphQL files are handled **additively**, and files in `src/main/graphql` are included in all services.
+
+For instance, if certain operations should only exist in debug builds, your project structure could look like this:
 
 ```
 - main
@@ -113,7 +109,7 @@ operations must only exist in debug builds):
         - operations.graphql // Operations specific to the 'debug' build type
 ```
 
-Or for instance like this (specific backend per flavor):
+Or if you have a specific backend per flavor, it could look like this:
 
 ```
 - main
@@ -127,8 +123,7 @@ Or for instance like this (specific backend per flavor):
         - operations.graphql // Operations specific to the 'full' flavor
 ```
 
-If you have many variants and don't need to configure an Apollo Service for each one of them, it may be simpler to
-declare the Services manually, for instance:
+If you have a lot of variants and don't need to configure an Apollo Service for each, it may be simpler to declare the Services manually rather than using `createAllAndroidVariantServices`. For instance:
 
 ```kotlin
 apollo {
@@ -214,7 +209,7 @@ or a subset of the data class methods. To do this, set `generateMethods` to a li
 - "equalsHashCode" generates `equals` and `hashCode` methods that will compare generated class properties.
 - "toString" generates a method that will print a pretty string representing the data in the class.
 - "copy" (Kotlin only) generates a method that will copy the class with named parameters and default values.
-- "dataClass" (Kotlin only and redundant with all other methods) generates the class as a [data class](https://kotlinlang.org/docs/data-classes.html)
+- "dataClass" (Kotlin only and redundant with all other methods) generates the class as a [data class](https://kotlinlang.org/docs/data-classes.html).
 which will automatically generate `toString`, `copy`, `equals` and `hashCode`.
 
 Here are some possible configurations:
@@ -222,13 +217,13 @@ Here are some possible configurations:
 ```kotlin
 apollo {
   service("service") {
-    // Generates equals/hashCode
+    // Generates equals and hashCode
     generateMethods.set(listOf("equalsHashCode"))
-    // Also generates toString, equals, and hashcode
+    // Generates toString, equals, and hashcode (the default for Java)
     generateMethods.set(listOf("equalsHashCode", "toString"))
     // Only generates copy
     generateMethods.set(listOf("copy"))
-    // Generates data classes
+    // Generates data classes (the default for Kotlin)
     generateMethods.set(listOf("dataClass"))
   }
 }

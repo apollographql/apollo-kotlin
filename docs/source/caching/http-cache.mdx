@@ -5,7 +5,11 @@ title: HTTP cache
 
 > This page focuses on the HTTP cache. If you want to deduplicate the storage of your objects and/or notify your UI when your data changes, take a look at the [normalized cache](./normalized-cache) instead.
 
-> ℹ️ The HTTP cache is only available on the JVM.
+<Note>
+
+The HTTP cache is only available on Android and the JVM.
+
+</Note>
 
 ## Setup
 
@@ -45,19 +49,26 @@ apolloClient = ApolloClient.Builder()
 
 The HTTP cache is a least recently used (LRU) cache with a configurable max size.
 
-Once your cache setup is complete, the cache will be used by default by all your queries (mutations are never cached). By default, queries will try to find a result in the cache first and go the network if it's not there. This is the `HttpFetchPolicy.CacheFirst`. You can customize that behaviour with `httpFetchPolicy(HttpFetchPolicy)`:
+Once your cache setup is complete, the cache will be used by default by all your queries. By default, queries will try to find a result in the cache first and go the network if it's not there. This is the `HttpFetchPolicy.CacheFirst` policy. You can customize that behaviour with `httpFetchPolicy(HttpFetchPolicy)`:
 
 ```kotlin
 val response = apolloClient.query(query)
-                 // Don't use the cache
-                 .httpFetchPolicy(HttpFetchPolicy.NetworkOnly)
+  // Try the cache first - if it's a miss, try the network 
+  .httpFetchPolicy(HttpFetchPolicy.CacheFirst)
 
-                 // Or only use the cache
-                 .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
+  // Only use the cache
+  .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
 
-                 // Finally, execute your query
-                 .execute()
+  // Try the network first - if there's an error, try the cache 
+  .httpFetchPolicy(HttpFetchPolicy.NetworkFirst)
+
+  // Don't use the cache
+  .httpFetchPolicy(HttpFetchPolicy.NetworkOnly)
+  
+  // Finally, execute your query
+  .execute()
 ```
+Note: mutations and subscriptions don't go through the cache.
 
 If the query is present in cache, it will be used to return `response.data`. If not, a `HttpCacheMissException` will be thrown.
 

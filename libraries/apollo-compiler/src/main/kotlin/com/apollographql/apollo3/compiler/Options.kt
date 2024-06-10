@@ -253,7 +253,7 @@ interface CommonCodegenOpt {
    * - "dataClass" (Kotlin only and redundant with all other methods) generates the class as a [data class](https://kotlinlang.org/docs/data-classes.html)
    * which will automatically generate `toString`, `copy`, `equals` and `hashCode`.
    *
-   * Default for kotlin: `listOf("data")`
+   * Default for kotlin: `listOf("dataClass")`
    * Default for Java: `listOf("equalsHashCode", "toString")`
    */
   val generateMethods: List<GeneratedMethod>?
