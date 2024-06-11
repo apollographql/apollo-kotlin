@@ -158,7 +158,11 @@ fun <D : Operation.Data> JsonReader.toApolloResponse(
     deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null,
 ): ApolloResponse<D> {
   return use {
-    operation.parseResponse(it, requestUuid, customScalarAdapters, deferredFragmentIdentifiers)
+    val response = operation.parseResponse(it, requestUuid, customScalarAdapters, deferredFragmentIdentifiers)
+    if (peek() != JsonReader.Token.END_DOCUMENT) {
+      throw JsonDataException("Expected END_DOCUMENT but was ${peek()}")
+    }
+    response
   }
 }
 
