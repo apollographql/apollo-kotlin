@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.exception.JsonDataException
 import com.benasher44.uuid.uuid4
 import okio.use
 
@@ -40,7 +41,7 @@ internal object ResponseParser {
       jsonReader.endObject()
 
       if (jsonReader.peek() != JsonReader.Token.END_DOCUMENT) {
-        println("Apollo: extra tokens after payload")
+        throw JsonDataException("Expected END_DOCUMENT but was ${jsonReader.peek()}")
       }
 
       ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, data = data).errors(errors)
