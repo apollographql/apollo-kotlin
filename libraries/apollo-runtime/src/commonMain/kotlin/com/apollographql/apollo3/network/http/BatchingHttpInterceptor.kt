@@ -18,6 +18,7 @@ import com.apollographql.apollo3.api.json.buildJsonByteString
 import com.apollographql.apollo3.api.json.writeArray
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.JsonDataException
 import com.apollographql.apollo3.internal.CloseableSingleThreadDispatcher
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlinx.coroutines.CompletableDeferred
@@ -185,7 +186,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         // TODO: this is most likely going to transform BigNumbers into strings, not sure how much of an issue that is
         AnyAdapter.fromJson(jsonReader, CustomScalarAdapters.Empty).also {
           if (jsonReader.peek() != JsonReader.Token.END_DOCUMENT) {
-            println("Apollo: extra tokens after payload")
+            throw JsonDataException("Expected END_DOCUMENT but was ${jsonReader.peek()}")
           }
         }
       }
