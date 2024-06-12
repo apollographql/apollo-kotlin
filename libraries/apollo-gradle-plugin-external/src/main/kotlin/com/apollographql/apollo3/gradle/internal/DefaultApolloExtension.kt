@@ -34,7 +34,6 @@ import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
 import java.io.File
-import java.util.concurrent.Callable
 import javax.inject.Inject
 
 abstract class DefaultApolloExtension(
@@ -353,7 +352,7 @@ abstract class DefaultApolloExtension(
     return project.tasks.register(ModelNames.checkApolloVersions()) {
       val outputFile = BuildDirLayout.versionCheck(project)
 
-      it.inputs.property("allVersions", Callable {
+      it.inputs.property("allVersions", project.provider {
         val allDeps = (
             getDeps(project.rootProject.buildscript.configurations) +
                 getDeps(project.buildscript.configurations) +
