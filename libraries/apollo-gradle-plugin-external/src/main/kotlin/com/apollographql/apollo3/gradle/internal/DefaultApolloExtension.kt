@@ -1028,7 +1028,9 @@ abstract class DefaultApolloExtension(
     private const val USAGE_APOLLO_OTHER_OPTIONS = "apollo-other-options"
 
     private fun getDeps(configurations: ConfigurationContainer): List<String> {
-      return configurations.flatMap { configuration ->
+      // See https://github.com/apollographql/apollo-kotlin/pull/5657
+      val currentConfigurations = configurations.toList()
+      return currentConfigurations.flatMap { configuration ->
         configuration.dependencies
             .filter {
               /**
