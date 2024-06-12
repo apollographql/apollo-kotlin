@@ -14,7 +14,6 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.Url
 import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
-import io.ktor.websocket.close
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -105,8 +104,9 @@ class KtorWebSocketEngine(
 
               is Frame.Pong -> {}
               is Frame.Close -> {
-                close()
+                sendFrameChannel.trySend(frame)
                 receiveMessageChannel.close()
+                break
               }
 
               else -> error("unknown frame type")
