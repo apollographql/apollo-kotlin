@@ -44,7 +44,8 @@ class GradleToolingModelService(
 
   private var fetchToolingModelsTask: FetchToolingModelsTask? = null
 
-  var apolloKotlinServices: List<ApolloKotlinService> = emptyList()
+  var apolloKotlinServices: List<ApolloKotlinService> = project.projectSettingsState.apolloKotlinServices
+      private set
 
   init {
     logd("project=${project.name}")
@@ -52,6 +53,11 @@ class GradleToolingModelService(
     startOrStopObserveGradleHasSynced()
     startOrAbortFetchToolingModels()
     startObserveSettings()
+
+    if (apolloKotlinServices.isNotEmpty()) {
+      // Services are available, notify interested parties
+      project.messageBus.syncPublisher(ApolloKotlinServiceListener.TOPIC).apolloKotlinServicesAvailable()
+    }
   }
 
   private fun startObserveApolloProject() {
@@ -261,10 +267,12 @@ class GradleToolingModelService(
         apolloKotlinServices += getApolloKotlinService(toolingModel.projectPathCompat, serviceInfo.name)
       }
     }
-    this.apolloKotlinServices = apolloKotlinServices
     logd("apolloKotlinServices=$apolloKotlinServices")
+    this.apolloKotlinServices = apolloKotlinServices
+    // Cache the ApolloKotlinServices into the project settings
+    project.projectSettingsState.apolloKotlinServices = apolloKotlinServices
 
-    // Project files are available, notify interested parties
+    // Services are available, notify interested parties
     project.messageBus.syncPublisher(ApolloKotlinServiceListener.TOPIC).apolloKotlinServicesAvailable()
   }
 
