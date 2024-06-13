@@ -21,7 +21,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ChannelResult
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -46,17 +45,6 @@ class KtorWebSocketEngine(
       url: String,
       headers: List<HttpHeader>,
   ): WebSocketConnection = open(Url(url), headers)
-
-  private suspend fun debugExceptions(name: String, block: suspend () -> Unit) {
-    try {
-      println("$name...")
-      block()
-    } catch (e: Throwable) {
-      println("$name e$e")
-    } finally {
-      println("$name finally")
-    }
-  }
 
   private suspend fun open(url: Url, headers: List<HttpHeader>): WebSocketConnection {
     val newUrl = URLBuilder(url).apply {
@@ -157,21 +145,15 @@ class KtorWebSocketEngine(
       val frame = incoming.receive()
       when (frame) {
         is Frame.Text -> {
-          receiveMessageChannel.trySend(frame.readText()).assertSuccess()
+          receiveMessageChannel.trySend(frame.readText())
         }
 
         is Frame.Binary -> {
-          receiveMessageChannel.trySend(frame.data.decodeToString()).assertSuccess()
+          receiveMessageChannel.trySend(frame.data.decodeToString())
         }
 
         else -> error("unknown frame type")
       }
     }
-  }
-}
-
-private fun <T> ChannelResult<T>.assertSuccess() {
-  if (!this.isSuccess) {
-    println("Cannot trySend...")
   }
 }
