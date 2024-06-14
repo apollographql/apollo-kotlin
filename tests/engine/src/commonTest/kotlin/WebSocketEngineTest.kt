@@ -3,15 +3,16 @@ import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
+import com.apollographql.apollo3.mpp.Platform
+import com.apollographql.apollo3.mpp.platform
+import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.mockserver.CloseFrame
 import com.apollographql.mockserver.DataMessage
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.TextMessage
 import com.apollographql.mockserver.awaitWebSocketRequest
 import com.apollographql.mockserver.enqueueWebSocket
-import com.apollographql.apollo3.mpp.Platform
-import com.apollographql.apollo3.mpp.platform
-import com.apollographql.apollo3.testing.internal.runTest
+import kotlinx.coroutines.delay
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,7 +21,6 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class WebSocketEngineTest {
-
   /**
    * NSURLSession has a bug that sometimes skips the close frame
    * See https://developer.apple.com/forums/thread/679446
@@ -57,7 +57,6 @@ class WebSocketEngineTest {
 
     webSocketServer.close()
   }
-
 
   @Test
   fun binaryFrames() = runTest {
@@ -99,6 +98,9 @@ class WebSocketEngineTest {
 
     val responseBody = webSocketServer.enqueueWebSocket()
     val connection = webSocketEngine.open(webSocketServer.url())
+
+    // See https://youtrack.jetbrains.com/issue/KTOR-7099/Race-condition-in-darwin-websockets-client-runIncomingProcessor
+    delay(1000)
 
     responseBody.enqueueMessage(CloseFrame(4200, "Bye now"))
     val e = assertFailsWith<ApolloException> {

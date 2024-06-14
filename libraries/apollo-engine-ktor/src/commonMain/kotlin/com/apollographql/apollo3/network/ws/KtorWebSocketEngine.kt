@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.headers
@@ -14,14 +15,14 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.Url
 import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
-import io.ktor.websocket.close
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import okio.ByteString
 
@@ -37,6 +38,8 @@ class KtorWebSocketEngine(
   )
 
   private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+  private val receiveMessageChannel = Channel<String>(Channel.UNLIMITED)
+  private val sendFrameChannel = Channel<Frame>(Channel.UNLIMITED)
 
   override suspend fun open(
       url: String,
@@ -52,8 +55,6 @@ class KtorWebSocketEngine(
         /* URLProtocol.SOCKS */else -> throw UnsupportedOperationException("SOCKS is not a supported protocol")
       }
     }.build()
-    val receiveMessageChannel = Channel<String>(Channel.UNLIMITED)
-    val sendFrameChannel = Channel<Frame>(Channel.UNLIMITED)
     coroutineScope.launch {
       try {
         client.webSocket(
@@ -66,56 +67,36 @@ class KtorWebSocketEngine(
               url(newUrl)
             },
         ) {
-          launch {
-            while (true) {
-              val frame = sendFrameChannel.receive()
-              try {
-                send(frame)
-
-                // Also close the connection if the sent frame is a close frame
-                if (frame is Frame.Close) {
-                  receiveMessageChannel.close()
-                  sendFrameChannel.close()
-                  break
-                }
-              } catch (e: Exception) {
-                handleNetworkException(e, closeReason, receiveMessageChannel, sendFrameChannel)
-                break
-              }
+          coroutineScope {
+            launch {
+              sendFrames(this@webSocket)
             }
-          }
-          while (true) {
-            when (val frame = try {
-              incoming.receive()
-            } catch (e: Exception) {
-              handleNetworkException(e, closeReason, receiveMessageChannel, sendFrameChannel)
-              break
-            }) {
-              is Frame.Text -> {
-                receiveMessageChannel.send(frame.readText())
+            try {
+              receiveFrames(incoming)
+            } catch (e: Throwable) {
+              val closeReason = closeReasonOrNull()
+              val apolloException = if (closeReason != null) {
+                ApolloWebSocketClosedException(
+                    code = closeReason.code.toInt(),
+                    reason = closeReason.message,
+                    cause = e
+                )
+              } else {
+                ApolloNetworkException(
+                    message = "Web socket communication error",
+                    platformCause = e
+                )
               }
-
-              is Frame.Binary -> {
-                receiveMessageChannel.send(frame.data.decodeToString())
-              }
-
-              is Frame.Ping -> {
-                send(Frame.Pong(frame.data))
-              }
-
-              is Frame.Pong -> {}
-              is Frame.Close -> {
-                close()
-                receiveMessageChannel.close()
-              }
-
-              else -> error("unknown frame type")
+              receiveMessageChannel.close(apolloException)
+              throw e
             }
           }
         }
-      } catch (e: Exception) {
+      } catch (e: Throwable) {
         receiveMessageChannel.close(ApolloNetworkException(message = "Web socket communication error", platformCause = e))
-        sendFrameChannel.close(e)
+      } finally {
+        // Not 100% sure this can happen. Better safe than sorry. close() is idempotent so it shouldn't hurt
+        receiveMessageChannel.close(ApolloNetworkException(message = "Web socket communication error", platformCause = null))
       }
     }
     return object : WebSocketConnection {
@@ -137,31 +118,42 @@ class KtorWebSocketEngine(
     }
   }
 
-  private suspend fun handleNetworkException(
-      e: Exception,
-      deferredCloseReason: Deferred<CloseReason?>,
-      receiveMessageChannel: Channel<String>,
-      sendFrameChannel: Channel<Frame>,
-  ) {
-    if (e is CancellationException) throw e
-    val closeReason = try {
-      deferredCloseReason.await()
-    } catch (e: Exception) {
+  private suspend fun DefaultClientWebSocketSession.closeReasonOrNull(): CloseReason? {
+    return try {
+      closeReason.await()
+    } catch (t: Throwable) {
+      if (t is CancellationException) {
+        throw t
+      }
       null
     }
-    val apolloException = if (closeReason != null) {
-      ApolloWebSocketClosedException(
-          code = closeReason.code.toInt(),
-          reason = closeReason.message,
-          cause = e
-      )
-    } else {
-      ApolloNetworkException(
-          message = "Web socket communication error",
-          platformCause = e
-      )
+  }
+
+  private suspend fun sendFrames(session: DefaultClientWebSocketSession) {
+    while (true) {
+      val frame = sendFrameChannel.receive()
+      session.send(frame)
+      if (frame is Frame.Close) {
+        // normal termination
+        receiveMessageChannel.close()
+      }
     }
-    receiveMessageChannel.close(apolloException)
-    sendFrameChannel.close(apolloException)
+  }
+
+  private suspend fun receiveFrames(incoming: ReceiveChannel<Frame>) {
+    while (true) {
+      val frame = incoming.receive()
+      when (frame) {
+        is Frame.Text -> {
+          receiveMessageChannel.trySend(frame.readText())
+        }
+
+        is Frame.Binary -> {
+          receiveMessageChannel.trySend(frame.data.decodeToString())
+        }
+
+        else -> error("unknown frame type")
+      }
+    }
   }
 }
