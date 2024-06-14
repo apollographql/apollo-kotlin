@@ -43,7 +43,7 @@ You can get the current object's typename from the `context` object and include 
 ```kotlin
 val cacheKeyGenerator = object : CacheKeyGenerator {
   override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
-    val typename = context.field.type.leafType().name
+    val typename = context.field.type.rawType().name
     val id = obj["id"] as String
 
     return CacheKey(typename, id)
@@ -54,7 +54,7 @@ val cacheKeyGenerator = object : CacheKeyGenerator {
 You can also use the current object's typename to use _different_ cache ID generation logic for different object types.
 
 Note that for cache ID generation to work, your GraphQL operations must return whatever fields your custom code relies on (such as `id` above). If a query does not return a required field, the cache ID will be inconsistent, resulting in data duplication.
-Also, using `context.field.type.leafType().name` yields the typename of an Union as opposed to the expected runtime value of the type received in the response. Instead querying for the `__typename` is safer.
+Also, for interfaces and unions, `context.field.type.rawType().name` yields the typename as it is declared in the schema, as opposed to the runtime value of the type received in the response. Instead querying for the `__typename` is safer.
 To make sure `__typename` is included in all operations set the [addTypename](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo3.gradle.api/-service/add-typename.html) gradle config:
 
 ```
@@ -73,8 +73,8 @@ The `CacheKeyResolver` class enables you to generate custom cache IDs from a fie
 val cacheKeyResolver = object: CacheKeyResolver() {
   override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
     // [field] contains compile-time information about what type of object is being resolved.
-    // Even though we call leafType() here, we're guaranteed that the type is a composite type and not a list
-    val typename = field.type.leafType().name
+    // Even though we call rawType() here, we're guaranteed that the type is a composite type and not a list
+    val typename = field.type.rawType().name
 
     // argumentValue returns the runtime value of the "id" argument
     // from either the variables or as a literal value
@@ -127,7 +127,7 @@ To have the cache look up _all_ books in the `ids` list, we need to override `li
 ```kotlin
 override fun listOfCacheKeysForField(field: CompiledField, variables: Executable.Variables): List<CacheKey?>? {
   // Note that the field *can* be a list type here
-  val typename = field.type.leafType().name
+  val typename = field.type.rawType().name
 
   // argumentValue returns the runtime value of the "id" argument
   // from either the variables or as a literal value
