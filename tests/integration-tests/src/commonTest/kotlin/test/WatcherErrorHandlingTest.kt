@@ -1,6 +1,7 @@
 package test
 
 import IdCacheKeyGenerator
+import app.cash.turbine.test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -42,6 +43,59 @@ class WatcherErrorHandlingTest {
 
   private fun tearDown() {
     mockServer.close()
+  }
+
+  /**
+   * watch() should behave just like toFlow() in the absence of cache writes
+   */
+  @Test
+  fun fetchEmitsAllErrors() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueueError(statusCode = 500)
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.CacheFirst)
+        .watch()
+        .test {
+          assertIs<CacheMissException>(awaitItem().exception)
+          assertIs<ApolloHttpException>(awaitItem().exception)
+          cancelAndIgnoreRemainingEvents()
+        }
+
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.CacheOnly)
+        .watch()
+        .test {
+          assertIs<CacheMissException>(awaitItem().exception)
+          cancelAndIgnoreRemainingEvents()
+        }
+
+    mockServer.enqueueError(statusCode = 500)
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.NetworkFirst)
+        .watch()
+        .test {
+          assertIs<ApolloHttpException>(awaitItem().exception)
+          assertIs<CacheMissException>(awaitItem().exception)
+          cancelAndIgnoreRemainingEvents()
+        }
+
+    mockServer.enqueueError(statusCode = 500)
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.NetworkOnly)
+        .watch()
+        .test {
+          assertIs<ApolloHttpException>(awaitItem().exception)
+          cancelAndIgnoreRemainingEvents()
+        }
+
+    mockServer.enqueueError(statusCode = 500)
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.CacheAndNetwork)
+        .watch()
+        .test {
+          assertIs<CacheMissException>(awaitItem().exception)
+          assertIs<ApolloHttpException>(awaitItem().exception)
+          cancelAndIgnoreRemainingEvents()
+        }
   }
 
   @Test
