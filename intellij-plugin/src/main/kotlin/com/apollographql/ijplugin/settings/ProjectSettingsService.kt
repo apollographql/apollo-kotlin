@@ -71,7 +71,14 @@ class ProjectSettingsService(private val project: Project) : PersistentStateComp
       _state.telemetryInstanceId = value
     }
 
+  override var apolloKotlinServices: List<ApolloKotlinService>
+    get() = _state.apolloKotlinServices
+    set(value) {
+      _state.apolloKotlinServices = value
+    }
+
   private var lastNotifiedState: ProjectSettingsState? = null
+
   private fun notifySettingsChanged() {
     if (lastNotifiedState != _state) {
       lastNotifiedState = _state.copy()
@@ -98,8 +105,17 @@ interface ProjectSettingsState {
   var contributeConfigurationToGraphqlPlugin: Boolean
   var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration>
   var telemetryInstanceId: String
+
+  /**
+   * Cache of the ApolloKotlinServices constructed from the Gradle tooling models.
+   * @see com.apollographql.ijplugin.gradle.GradleToolingModelService
+   */
+  var apolloKotlinServices: List<ApolloKotlinService>
 }
 
+/**
+ * User configuration associated with an [ApolloKotlinService].
+ */
 data class ApolloKotlinServiceConfiguration(
     @Attribute
     val id: String = "",
@@ -133,6 +149,7 @@ data class ProjectSettingsStateImpl(
     override var contributeConfigurationToGraphqlPlugin: Boolean = true,
     override var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration> = emptyList(),
     override var telemetryInstanceId: String = "",
+    override var apolloKotlinServices: List<ApolloKotlinService> = emptyList(),
 ) : ProjectSettingsState
 
 
