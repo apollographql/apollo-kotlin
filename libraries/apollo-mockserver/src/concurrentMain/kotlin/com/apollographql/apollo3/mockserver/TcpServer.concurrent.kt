@@ -6,6 +6,7 @@ import io.ktor.network.sockets.InetSocketAddress
 import io.ktor.network.sockets.aSocket
 import io.ktor.network.sockets.openReadChannel
 import io.ktor.network.sockets.openWriteChannel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +42,14 @@ class KtorTcpServer(port: Int = 0, private val acceptDelayMillis: Int = 0, dispa
         if (acceptDelayMillis > 0) {
           delay(acceptDelayMillis.toLong())
         }
-        val socket: WrappedSocket = serverSocket.accept()
+        val socket: WrappedSocket = try {
+          serverSocket.accept()
+        } catch (t: Throwable) {
+          if (t is CancellationException) { throw t }
+          delay(1000)
+          continue
+        }
+
         val ktorSocket = KtorTcpSocket(socket)
         block(ktorSocket)
 
