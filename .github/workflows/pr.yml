@@ -28,7 +28,7 @@ jobs:
           gradle-home-cache-cleanup: true
       - name: Build with Gradle
         run: |
-          ./gradlew ciTestsGradle
+          ./gradlew ciTestsGradle -Ddevelocity.deprecation.captureOrigin=true
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
