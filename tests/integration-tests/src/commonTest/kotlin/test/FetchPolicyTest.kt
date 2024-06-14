@@ -28,16 +28,18 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.exception.JsonEncodingException
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
+import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.testing.assertNoElement
+import com.apollographql.apollo3.testing.awaitElement
+import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueError
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.assertNoElement
-import com.apollographql.apollo3.testing.awaitElement
-import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -66,7 +68,7 @@ class FetchPolicyTest {
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store = store).build()
   }
 
-  private suspend fun tearDown() {
+  private fun tearDown() {
     mockServer.close()
     apolloClient.close()
   }
@@ -687,5 +689,55 @@ class FetchPolicyTest {
         .toList()
     assertTrue(responses[0].isFromCache)
     assertFalse(responses[1].isFromCache)
+  }
+
+  @Test
+  fun fetchEmitsAllErrors() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueueError(statusCode = 500)
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.CacheFirst)
+        .toFlow()
+        .test {
+          assertIs<CacheMissException>(awaitItem().exception)
+          assertIs<ApolloHttpException>(awaitItem().exception)
+          awaitComplete()
+        }
+
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.CacheOnly)
+        .toFlow()
+        .test {
+          assertIs<CacheMissException>(awaitItem().exception)
+          awaitComplete()
+        }
+
+    mockServer.enqueueError(statusCode = 500)
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.NetworkFirst)
+        .toFlow()
+        .test {
+          assertIs<ApolloHttpException>(awaitItem().exception)
+          assertIs<CacheMissException>(awaitItem().exception)
+          awaitComplete()
+        }
+
+    mockServer.enqueueError(statusCode = 500)
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.NetworkOnly)
+        .toFlow()
+        .test {
+          assertIs<ApolloHttpException>(awaitItem().exception)
+          awaitComplete()
+        }
+
+    mockServer.enqueueError(statusCode = 500)
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.CacheAndNetwork)
+        .toFlow()
+        .test {
+          assertIs<CacheMissException>(awaitItem().exception)
+          assertIs<ApolloHttpException>(awaitItem().exception)
+          awaitComplete()
+        }
   }
 }
