@@ -28,6 +28,7 @@ import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -75,7 +76,7 @@ class WatcherTest {
       )))
 
   @OptIn(ExperimentalCoroutinesApi::class)
-  private fun myRunTest(block: suspend () -> Unit) {
+  private fun myRunTest(block: suspend CoroutineScope.() -> Unit) {
     kotlinx.coroutines.test.runTest(timeout = 10.minutes) {
       withContext(Dispatchers.Default.limitedParallelism(1)) {
         block()
