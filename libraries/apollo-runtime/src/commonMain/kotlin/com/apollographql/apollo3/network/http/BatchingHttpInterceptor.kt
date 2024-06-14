@@ -13,10 +13,12 @@ import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
+import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.buildJsonByteString
 import com.apollographql.apollo3.api.json.writeArray
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.JsonDataException
 import com.apollographql.apollo3.internal.CloseableSingleThreadDispatcher
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlinx.coroutines.CompletableDeferred
@@ -29,6 +31,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okio.Buffer
 import okio.BufferedSink
+import okio.use
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -179,8 +182,14 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
       }
       val responseBody = response.body ?: throw ApolloException("null body when executing batched query")
 
-      // TODO: this is most likely going to transform BigNumbers into strings, not sure how much of an issue that is
-      val list = AnyAdapter.fromJson(BufferedSourceJsonReader(responseBody), CustomScalarAdapters.Empty)
+      val list = BufferedSourceJsonReader(responseBody).use { jsonReader ->
+        // TODO: this is most likely going to transform BigNumbers into strings, not sure how much of an issue that is
+        AnyAdapter.fromJson(jsonReader, CustomScalarAdapters.Empty).also {
+          if (jsonReader.peek() != JsonReader.Token.END_DOCUMENT) {
+            throw JsonDataException("Expected END_DOCUMENT but was ${jsonReader.peek()}")
+          }
+        }
+      }
       if (list !is List<*>) throw ApolloException("batched query response is not a list when executing batched query")
 
       if (list.size != pending.size) {
