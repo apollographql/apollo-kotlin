@@ -99,6 +99,7 @@ class WebSocketEngineTest {
     val responseBody = webSocketServer.enqueueWebSocket()
     val connection = webSocketEngine.open(webSocketServer.url())
 
+    // See https://youtrack.jetbrains.com/issue/KTOR-7099/Race-condition-in-darwin-websockets-client-runIncomingProcessor
     delay(1000)
 
     responseBody.enqueueMessage(CloseFrame(4200, "Bye now"))
