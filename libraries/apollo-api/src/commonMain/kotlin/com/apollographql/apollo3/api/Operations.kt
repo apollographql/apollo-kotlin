@@ -95,6 +95,8 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
  * ```
  *
  * By default, this method does not close the [jsonReader]
+ *
+ * @see [toApolloResponse]
  */
 @JvmOverloads
 fun <D : Operation.Data> Operation<D>.parseResponse(
@@ -112,18 +114,21 @@ fun <D : Operation.Data> Operation<D>.parseResponse(
         deferredFragmentIdentifiers,
     )
   } catch (throwable: Throwable) {
-    val apolloException = if (throwable is ApolloException) {
-      throwable
-    } else {
-      ApolloNetworkException(
-          message = "Error while reading JSON response",
-          platformCause = throwable
-      )
-    }
-    return ApolloResponse.Builder(requestUuid = requestUuid ?: uuid4(), operation = this)
-        .exception(exception = apolloException)
+    ApolloResponse.Builder(requestUuid = requestUuid ?: uuid4(), operation = this)
+        .exception(exception = throwable.wrapIfNeeded())
         .isLast(true)
         .build()
+  }
+}
+
+private fun Throwable.wrapIfNeeded(): ApolloException {
+  return if (this is ApolloException) {
+    this
+  } else {
+    ApolloNetworkException(
+        message = "Error while reading JSON response",
+        platformCause = this
+    )
   }
 }
 
@@ -160,9 +165,12 @@ fun <D : Operation.Data> Operation<D>.composeJsonResponse(
 }
 
 /**
- * Parses the [JsonReader] into an [ApolloResponse]
+ * Reads a single [ApolloResponse] from [this]. Returns an error response if [this] contains
+ * more than one JSON response or trailing tokens.
+ * [toApolloResponse] takes ownership and closes [this].
  *
- * Warning: this closes the [JsonReader]. If you need to reuse it, use [parseResponse]
+ * @return the parsed [ApolloResponse]
+ * @see parseResponse
  */
 @ApolloExperimental
 fun <D : Operation.Data> JsonReader.toApolloResponse(
@@ -172,10 +180,34 @@ fun <D : Operation.Data> JsonReader.toApolloResponse(
     deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null,
 ): ApolloResponse<D> {
   return use {
-    operation.parseResponse(it, requestUuid, customScalarAdapters, deferredFragmentIdentifiers)
+    try {
+      ResponseParser.parse(
+          this,
+          operation,
+          requestUuid,
+          customScalarAdapters,
+          deferredFragmentIdentifiers,
+      ).also {
+        if (peek() != JsonReader.Token.END_DOCUMENT) {
+          throw JsonDataException("Expected END_DOCUMENT but was ${peek()}")
+        }
+      }
+    } catch (throwable: Throwable) {
+      ApolloResponse.Builder(requestUuid = requestUuid ?: uuid4(), operation = operation)
+          .exception(exception = throwable.wrapIfNeeded())
+          .isLast(true)
+          .build()
+    }
   }
 }
 
+/**
+ * Reads a [ApolloResponse] from [this].
+ * The caller is responsible for closing [this].
+ *
+ * @return the parsed [ApolloResponse]
+ * @see [toApolloResponse]
+ */
 @ApolloExperimental
 fun <D : Operation.Data> JsonReader.parseResponse(
     operation: Operation<D>,
@@ -183,6 +215,19 @@ fun <D : Operation.Data> JsonReader.parseResponse(
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null,
 ): ApolloResponse<D> {
-  return operation.parseResponse(this, requestUuid, customScalarAdapters, deferredFragmentIdentifiers)
+  return try {
+    ResponseParser.parse(
+        this,
+        operation,
+        requestUuid,
+        customScalarAdapters,
+        deferredFragmentIdentifiers,
+    )
+  } catch (throwable: Throwable) {
+    ApolloResponse.Builder(requestUuid = requestUuid ?: uuid4(), operation = operation)
+        .exception(exception = throwable.wrapIfNeeded())
+        .isLast(true)
+        .build()
+  }
 }
 
