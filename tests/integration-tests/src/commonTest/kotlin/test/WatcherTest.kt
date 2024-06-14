@@ -29,12 +29,15 @@ import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -71,6 +74,14 @@ class WatcherTest {
           HeroAndFriendsNamesWithIDsQuery.Friend("1003", "Leia Organa"),
       )))
 
+  @OptIn(ExperimentalCoroutinesApi::class)
+  private fun myRunTest(block: suspend () -> Unit) {
+    kotlinx.coroutines.test.runTest(timeout = 10.minutes) {
+      withContext(Dispatchers.Default.limitedParallelism(1)) {
+        block()
+      }
+    }
+  }
   /**
    * Executing the same query out of band should update the watcher
    *
@@ -78,7 +89,7 @@ class WatcherTest {
    * cache changes
    */
   @Test
-  fun sameQueryTriggersWatcher() = kotlinx.coroutines.test.runTest(timeout = 10.minutes) {
+  fun sameQueryTriggersWatcher() = myRunTest {
     setUp()
 
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
