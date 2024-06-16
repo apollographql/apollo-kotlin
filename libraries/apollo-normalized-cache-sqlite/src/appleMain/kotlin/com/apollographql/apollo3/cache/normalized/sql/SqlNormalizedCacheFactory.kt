@@ -7,7 +7,7 @@ import com.apollographql.apollo3.cache.normalized.sql.internal.getSchema
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.drivers.native.NativeSqliteDriver
 
-actual class SqlNormalizedCacheFactory internal constructor(
+actual class SqlNormalizedCacheFactory actual constructor(
     private val driver: SqlDriver,
 ) : NormalizedCacheFactory() {
 
