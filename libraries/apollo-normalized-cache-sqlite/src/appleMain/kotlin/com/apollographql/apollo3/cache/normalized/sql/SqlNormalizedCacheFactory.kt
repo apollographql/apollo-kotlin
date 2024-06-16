@@ -7,7 +7,7 @@ import com.apollographql.apollo3.cache.normalized.sql.internal.createDriver
 import com.apollographql.apollo3.cache.normalized.sql.internal.createRecordDatabase
 import com.apollographql.apollo3.cache.normalized.sql.internal.getSchema
 
-actual class SqlNormalizedCacheFactory internal constructor(
+actual class SqlNormalizedCacheFactory actual constructor(
     private val driver: SqlDriver,
 ) : NormalizedCacheFactory() {
 
