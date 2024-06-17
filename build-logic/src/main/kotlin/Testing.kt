@@ -1,4 +1,4 @@
-import com.gradle.enterprise.gradleplugin.testretry.retry
+import com.gradle.develocity.agent.gradle.test.DevelocityTestConfiguration
 import org.gradle.api.Project
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.testing.AbstractTestTask
@@ -14,10 +14,10 @@ fun Project.configureTesting() {
     forwardEnv("testFilter")
     forwardEnv("codegenModels")
   }
-  
+
   pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
     tasks.withType(Test::class.java) {
-      retry {
+      extensions.getByType(DevelocityTestConfiguration::class.java).testRetry {
         if (isCIBuild()) {
           maxRetries.set(3)
           failOnPassedAfterRetry.set(true)
@@ -54,6 +54,7 @@ private fun Project.addTestDependencies() {
           }
         }
       }
+
       is KotlinJvmProjectExtension -> {
         dependencies.add("testImplementation", getCatalogLib("kotlin.test"))
       }
