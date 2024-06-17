@@ -199,7 +199,7 @@ Then, in the `try` block, check for `response.hasErrors()` and wrap the result i
     }
 ```
 
-You should also update the conditional expression to handle ApplicationError case:
+You should also update the conditional expression to handle the `ApplicationError` case:
 
 ```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
     when (val s = state) {
