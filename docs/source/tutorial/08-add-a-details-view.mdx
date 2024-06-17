@@ -199,6 +199,17 @@ Then, in the `try` block, check for `response.hasErrors()` and wrap the result i
     }
 ```
 
+You should also update the conditional expression to handle the `ApplicationError` case:
+
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+    when (val s = state) {
+        Loading -> Loading()
+        is ApplicationError -> ErrorMessage(text = s.errors.first().message) // highlight-line
+        is ProtocolError -> ErrorMessage("Oh no... A protocol error happened: ${s.exception.message}")
+        is Success -> LaunchDetails(s.data)
+    }
+```
+
 `response.errors` contains details about any errors that occurred. Note that this code also null-checks `response.data!!`. In theory, a server should not set `response.data == null` and `response.hasErrors == false` at the same time, but the type system cannot guarantee this.
 
 To trigger an error, replace `LaunchDetailsQuery(launchId)` with `LaunchDetailsQuery("invalidId")`. Disable airplane mode and select a launch. The server will send this response:
