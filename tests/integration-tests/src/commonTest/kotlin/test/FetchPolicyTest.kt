@@ -31,13 +31,13 @@ import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.testing.assertNoElement
+import com.apollographql.apollo3.testing.awaitElement
+import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueError
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.assertNoElement
-import com.apollographql.apollo3.testing.awaitElement
-import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -66,7 +66,7 @@ class FetchPolicyTest {
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store = store).build()
   }
 
-  private suspend fun tearDown() {
+  private fun tearDown() {
     mockServer.close()
     apolloClient.close()
   }

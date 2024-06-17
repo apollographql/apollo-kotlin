@@ -21,27 +21,30 @@ import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameWithIdQue
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.mockserver.MockResponse
-import com.apollographql.mockserver.MockServer
-import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
-import com.apollographql.apollo3.testing.assertNoElement
-import com.apollographql.apollo3.testing.awaitElement
-import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.enqueueTestNetworkError
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.mockserver.MockResponse
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueString
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNull
+import kotlin.time.Duration.Companion.minutes
 
 class WatcherTest {
   private lateinit var apolloClient: ApolloClient
@@ -72,6 +75,14 @@ class WatcherTest {
           HeroAndFriendsNamesWithIDsQuery.Friend("1003", "Leia Organa"),
       )))
 
+  @OptIn(ExperimentalCoroutinesApi::class)
+  private fun myRunTest(block: suspend CoroutineScope.() -> Unit) {
+    kotlinx.coroutines.test.runTest(timeout = 10.minutes) {
+      withContext(Dispatchers.Default.limitedParallelism(1)) {
+        block()
+      }
+    }
+  }
   /**
    * Executing the same query out of band should update the watcher
    *
@@ -79,7 +90,9 @@ class WatcherTest {
    * cache changes
    */
   @Test
-  fun sameQueryTriggersWatcher() = runTest(before = { setUp() }) {
+  fun sameQueryTriggersWatcher() = myRunTest {
+    setUp()
+
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
@@ -191,7 +204,7 @@ class WatcherTest {
     apolloClient.enqueueTestResponse(query, episodeHeroNameData)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
-    channel.assertNoElement()
+    channel.assertEmpty()
 
     job.cancel()
   }
@@ -256,7 +269,7 @@ class WatcherTest {
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
 
-    channel.assertNoElement()
+    channel.assertEmpty()
 
     job.cancel()
   }
@@ -322,7 +335,7 @@ class WatcherTest {
     }
     job.cancelAndJoin()
 
-    channel.assertNoElement()
+    channel.assertEmpty()
   }
 
   /**
@@ -373,7 +386,7 @@ class WatcherTest {
 
     // Should see 1 cache miss values
     assertIs<CacheMissException>(channel.awaitElement().exception)
-    channel.assertNoElement()
+    channel.assertEmpty()
 
     job.cancel()
   }
@@ -578,7 +591,7 @@ class WatcherTest {
 
     // 2. Exception from the network (null data)
     assertNull(channel.awaitElement())
-    channel.assertNoElement()
+    channel.assertEmpty()
 
     // Another newer call updates the cache with "ArTwo"
     apolloClient.enqueueTestResponse(query, episodeHeroNameChangedTwoData)
@@ -624,9 +637,24 @@ class WatcherTest {
 
 }
 
-suspend fun <D> Channel<D>.assertCount(count: Int) {
+internal suspend fun <D> Channel<D>.assertCount(count: Int) {
   repeat(count) {
     awaitElement()
   }
-  assertNoElement()
+  assertEmpty()
+}
+
+internal suspend fun <T> Channel<T>.awaitElement(timeoutMillis: Long = 30000) = withTimeout(timeoutMillis) {
+  receive()
+}
+
+internal suspend fun <T> Channel<T>.assertEmpty(timeoutMillis: Long = 300): Unit {
+  try {
+    withTimeout(timeoutMillis) {
+      receive()
+    }
+    error("An item was unexpectedly received")
+  } catch (_: TimeoutCancellationException) {
+    // nothing
+  }
 }
