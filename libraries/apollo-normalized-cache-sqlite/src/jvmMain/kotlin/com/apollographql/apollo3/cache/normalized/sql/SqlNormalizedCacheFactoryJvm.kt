@@ -8,7 +8,7 @@ import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 import java.util.Properties
 
-actual class SqlNormalizedCacheFactory internal constructor(
+actual class SqlNormalizedCacheFactory actual constructor(
     private val driver: SqlDriver,
 ) : NormalizedCacheFactory() {
   /**

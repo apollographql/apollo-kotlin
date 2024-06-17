@@ -10,6 +10,7 @@ public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedC
 }
 
 public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCacheFactory : com/apollographql/apollo3/cache/normalized/api/NormalizedCacheFactory {
+	public fun <init> (Lcom/squareup/sqldelight/db/SqlDriver;)V
 	public fun <init> (Ljava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V

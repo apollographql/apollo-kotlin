@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
+import com.squareup.sqldelight.db.SqlDriver
 
 /**
  * Creates a new [NormalizedCacheFactory] that uses a persistent cache based on Sqlite
@@ -13,5 +14,7 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
  * Default: "apollo.db"
  *
  */
-expect class SqlNormalizedCacheFactory(name: String? = "apollo.db") : NormalizedCacheFactory
+expect class SqlNormalizedCacheFactory(name: String? = "apollo.db") : NormalizedCacheFactory{
+  constructor(driver: SqlDriver)
+}
 
