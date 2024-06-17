@@ -18,6 +18,7 @@ final class com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCache : 
 }
 final class com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCacheFactory : com.apollographql.apollo3.cache.normalized.api/NormalizedCacheFactory { // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCacheFactory|null[0]
     constructor <init>() // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCacheFactory.<init>|<init>(){}[0]
+    constructor <init>(app.cash.sqldelight.db/SqlDriver) // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCacheFactory.<init>|<init>(app.cash.sqldelight.db.SqlDriver){}[0]
     constructor <init>(kotlin/String? = ...) // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCacheFactory.<init>|<init>(kotlin.String?){}[0]
     constructor <init>(kotlin/String?, kotlin/String?) // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCacheFactory.<init>|<init>(kotlin.String?;kotlin.String?){}[0]
     final fun create(): com.apollographql.apollo3.cache.normalized.api/NormalizedCache // com.apollographql.apollo3.cache.normalized.sql/SqlNormalizedCacheFactory.create|create(){}[0]

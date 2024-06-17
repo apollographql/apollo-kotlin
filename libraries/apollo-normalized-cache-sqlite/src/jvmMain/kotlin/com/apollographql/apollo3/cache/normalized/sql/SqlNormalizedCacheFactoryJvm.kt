@@ -9,7 +9,7 @@ import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import java.util.Properties
 
-actual class SqlNormalizedCacheFactory internal constructor(
+actual class SqlNormalizedCacheFactory actual constructor(
     private val driver: SqlDriver,
 ) : NormalizedCacheFactory() {
   /**

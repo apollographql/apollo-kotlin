@@ -28,6 +28,7 @@ public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedC
 	public fun <init> (Landroid/content/Context;Ljava/lang/String;Landroidx/sqlite/db/SupportSQLiteOpenHelper$Factory;Lkotlin/jvm/functions/Function1;Z)V
 	public fun <init> (Landroid/content/Context;Ljava/lang/String;Landroidx/sqlite/db/SupportSQLiteOpenHelper$Factory;Lkotlin/jvm/functions/Function1;ZLjava/lang/Long;)V
 	public synthetic fun <init> (Landroid/content/Context;Ljava/lang/String;Landroidx/sqlite/db/SupportSQLiteOpenHelper$Factory;Lkotlin/jvm/functions/Function1;ZLjava/lang/Long;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lapp/cash/sqldelight/db/SqlDriver;)V
 	public fun <init> (Ljava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create ()Lcom/apollographql/apollo3/cache/normalized/api/NormalizedCache;

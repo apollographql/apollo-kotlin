@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
+import app.cash.sqldelight.db.SqlDriver
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 
@@ -15,6 +16,7 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
  *
  */
 expect class SqlNormalizedCacheFactory(name: String? = "apollo.db") : NormalizedCacheFactory {
+  constructor(driver: SqlDriver)
   override fun create(): NormalizedCache
 }
 
