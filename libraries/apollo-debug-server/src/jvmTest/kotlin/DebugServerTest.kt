@@ -87,7 +87,7 @@ class DebugServerTest {
           "apolloClientId" to "client",
           "normalizedCacheId" to "client:com.apollographql.apollo3.cache.normalized.api.NormalizedCache"
       )).apply {
-        assertTrue(contains("\"field2\":\"value2\""))
+        assertTrue(contains("\"field1\":\"value1\""))
         assertTrue(contains("\"field2\":\"ApolloCacheReference{value2}\""))
       }
     }
