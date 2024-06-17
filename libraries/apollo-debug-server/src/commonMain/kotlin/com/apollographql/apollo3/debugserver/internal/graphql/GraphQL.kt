@@ -1,52 +1,48 @@
 package com.apollographql.apollo3.debugserver.internal.graphql
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.GraphQLAdapter
-import com.apollographql.apollo3.annotations.GraphQLName
-import com.apollographql.apollo3.annotations.GraphQLObject
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.writeObject
-import com.apollographql.apollo3.ast.toGQLDocument
-import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.apolloStore
-import com.apollographql.apollo3.debugserver.internal.graphql.execution.ApolloDebugServerExecutableSchemaBuilder
-import com.apollographql.apollo3.execution.ExecutableSchema
-import com.apollographql.apollo3.execution.GraphQLRequest
-import com.apollographql.apollo3.execution.GraphQLRequestError
-import com.apollographql.apollo3.execution.parsePostGraphQLRequest
+import com.apollographql.execution.Coercing
+import com.apollographql.execution.ExecutableSchema
+import com.apollographql.execution.StringCoercing
+import com.apollographql.execution.annotation.GraphQLCoercing
+import com.apollographql.execution.annotation.GraphQLName
+import com.apollographql.execution.annotation.GraphQLQueryRoot
+import com.apollographql.execution.annotation.GraphQLScalar
+import com.apollographql.execution.internal.ExternalValue
+import com.apollographql.execution.internal.InternalValue
+import com.apollographql.execution.parsePostGraphQLRequest
 import okio.Buffer
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 
-internal expect fun getExecutableSchema(): String
+@GraphQLScalar
+internal typealias ID = String
+
+@GraphQLCoercing
+internal object IDCoercing: Coercing<ID> by StringCoercing
 
 internal class GraphQL(
     private val apolloClients: AtomicReference<Map<ApolloClient, String>>,
 ) {
   private val executableSchema: ExecutableSchema by lazy {
-    val schema = getExecutableSchema()
-        .toGQLDocument()
-        .toSchema()
-
-    ApolloDebugServerExecutableSchemaBuilder(schema) {
-      Query(apolloClients)
-    }.build()
+    ApolloDebugServerExecutableSchemaBuilder()
+        .queryRoot {
+          Query(apolloClients)
+        }.build()
   }
 
   fun executeGraphQL(jsonBody: String): String {
     val graphQLRequestResult = Buffer().writeUtf8(jsonBody).parsePostGraphQLRequest()
-    if (graphQLRequestResult is GraphQLRequestError) {
-      return graphQLRequestResult.message
+    if (!graphQLRequestResult.isSuccess) {
+      return graphQLRequestResult.exceptionOrNull()!!.message!!
     }
-    graphQLRequestResult as GraphQLRequest
 
-    val graphQlResponse = executableSchema.execute(graphQLRequestResult, ExecutionContext.Empty)
+    val graphQlResponse = executableSchema.execute(graphQLRequestResult.getOrThrow(), ExecutionContext.Empty)
 
     val buffer = Buffer()
     graphQlResponse.serialize(buffer)
@@ -54,55 +50,59 @@ internal class GraphQL(
   }
 }
 
-@GraphQLObject
+/**
+ * The root query
+ */
+@GraphQLQueryRoot
 internal class Query(private val apolloClients: AtomicReference<Map<ApolloClient, String>>) {
   private fun graphQLApolloClients() =
-      apolloClients.get().map { (apolloClient, apolloClientId) ->
-        GraphQLApolloClient(
-            id = apolloClientId,
-            apolloClient = apolloClient
-        )
-      }
+    apolloClients.get().map { (apolloClient, apolloClientId) ->
+      GraphQLApolloClient(
+          id = apolloClientId,
+          apolloClient = apolloClient
+      )
+    }
 
   fun apolloClients(): List<GraphQLApolloClient> {
     return graphQLApolloClients()
   }
 
-  fun apolloClient(id: String): GraphQLApolloClient? {
+  /**
+   * Returns null if an ApolloClient with the given id is not found.
+   */
+  fun apolloClient(id: ID): GraphQLApolloClient? {
     return graphQLApolloClients().firstOrNull { it.id() == id }
   }
 }
 
-@GraphQLObject
 @GraphQLName("ApolloClient")
 internal class GraphQLApolloClient(
     private val id: String,
     private val apolloClient: ApolloClient,
 ) {
-  fun id() = id
+  fun id(): ID = id
 
   fun displayName() = id
 
   fun normalizedCaches(): List<NormalizedCache> {
-    val apolloStore = runCatching {  apolloClient.apolloStore }.getOrNull() ?: return emptyList()
+    val apolloStore = runCatching { apolloClient.apolloStore }.getOrNull() ?: return emptyList()
     return apolloStore.dump().map {
       NormalizedCache(id, it.key, it.value)
     }
   }
 
-  fun normalizedCache(id: String): NormalizedCache? {
+  fun normalizedCache(id: ID): NormalizedCache? {
     return normalizedCaches().firstOrNull { it.id() == id }
   }
 }
 
-@GraphQLObject
 internal class NormalizedCache(
-    apolloClientId: String,
+    apolloClientId: ID,
     private val clazz: KClass<*>,
     private val records: Map<String, Record>,
 ) {
   private val id: String = "$apolloClientId:${clazz.normalizedCacheName()}"
-  fun id() = id
+  fun id(): ID = id
 
   fun displayName() = clazz.normalizedCacheName()
 
@@ -111,59 +111,55 @@ internal class NormalizedCache(
   fun records(): List<GraphQLRecord> = records.map { GraphQLRecord(it.value) }
 }
 
-@GraphQLObject
+@GraphQLScalar
+typealias Fields = Map<String, Any?>
+
 @GraphQLName("Record")
 internal class GraphQLRecord(
     private val record: Record,
 ) {
   fun key(): String = record.key
 
-  fun fields(): Map<String, Any?> = record.fields
+  fun fields(): Fields = record.fields
 
   fun sizeInBytes(): Int = record.sizeInBytes
 }
 
-@GraphQLAdapter(forScalar = "Fields")
-internal class FieldsAdapter : Adapter<Map<String, Any?>> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Map<String, Any?> {
-    throw UnsupportedOperationException()
-  }
-
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Map<String, Any?>) {
-    writer.writeObject {
-      for ((k, v) in value) {
-        writer.name(k).writeJsonValue(v)
-      }
-    }
-  }
-
+@GraphQLCoercing
+internal class FieldsCoercing : Coercing<Fields> {
   // Taken from JsonRecordSerializer
   @Suppress("UNCHECKED_CAST")
-  private fun JsonWriter.writeJsonValue(value: Any?) {
-    when (value) {
-      null -> this.nullValue()
-      is String -> this.value(value)
-      is Boolean -> this.value(value)
-      is Int -> this.value(value)
-      is Long -> this.value(value)
-      is Double -> this.value(value)
-      is CacheKey -> this.value(value.serialize())
+  private fun InternalValue.toExternal(): ExternalValue {
+    return when (this) {
+      null -> this
+      is String -> this
+      is Boolean -> this
+      is Int -> this
+      is Long -> this
+      is Double -> this
+      is CacheKey -> this.serialize()
       is List<*> -> {
-        this.beginArray()
-        value.forEach { writeJsonValue(it) }
-        this.endArray()
+        map { it.toExternal() }
       }
 
       is Map<*, *> -> {
-        this.beginObject()
-        for (entry in value as Map<String, Any?>) {
-          this.name(entry.key).writeJsonValue(entry.value)
-        }
-        this.endObject()
+        mapValues { it.value.toExternal() }
       }
 
-      else -> error("Unsupported record value type: '$value'")
+      else -> error("Unsupported record value type: '$this'")
     }
+  }
+
+  override fun serialize(internalValue: Map<String, Any?>): ExternalValue {
+    return internalValue.toExternal()
+  }
+
+  override fun deserialize(value: ExternalValue): Map<String, Any?> {
+    TODO("Not yet implemented")
+  }
+
+  override fun parseLiteral(gqlValue: GQLValue): Map<String, Any?> {
+    TODO("Not yet implemented")
   }
 }
 

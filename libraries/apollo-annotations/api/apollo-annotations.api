@@ -36,15 +36,3 @@ public abstract interface annotation class com/apollographql/apollo3/annotations
 public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloRequiresOptIn : java/lang/annotation/Annotation {
 }
 
-public abstract interface annotation class com/apollographql/apollo3/annotations/GraphQLAdapter : java/lang/annotation/Annotation {
-	public abstract fun forScalar ()Ljava/lang/String;
-}
-
-public abstract interface annotation class com/apollographql/apollo3/annotations/GraphQLName : java/lang/annotation/Annotation {
-	public abstract fun name ()Ljava/lang/String;
-}
-
-public abstract interface annotation class com/apollographql/apollo3/annotations/GraphQLObject : java/lang/annotation/Annotation {
-	public abstract fun name ()Ljava/lang/String;
-}
-

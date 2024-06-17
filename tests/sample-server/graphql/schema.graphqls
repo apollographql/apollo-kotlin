@@ -1,0 +1,43 @@
+schema {
+  query: QueryRoot
+  mutation: MutationRoot
+  subscription: SubscriptionRoot
+}
+
+type QueryRoot {
+  random: Int!
+
+  zero: Int!
+
+  valueSharedWithSubscriptions: Int!
+
+  secondsSinceEpoch: Float!
+}
+
+type MutationRoot {
+  closeAllWebSockets: ID!
+}
+
+type SubscriptionRoot {
+  count(to: Int!, intervalMillis: Int!): Int!
+
+  countString(to: Int!, intervalMillis: Int!): ID!
+
+  secondsSinceEpoch(intervalMillis: Int!): Float!
+
+  operationError: ID!
+
+  graphqlAccessError(after: Int!): Int
+
+  closeWebSocket: ID!
+
+  state(intervalMillis: Int!): State!
+
+  valueSharedWithSubscriptions: Int!
+}
+
+type State {
+  tag: ID!
+
+  subscriptionId: ID!
+}

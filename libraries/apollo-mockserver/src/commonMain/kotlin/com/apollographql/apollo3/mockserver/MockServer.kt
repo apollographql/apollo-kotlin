@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION")
 package com.apollographql.apollo3.mockserver
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince

@@ -2,20 +2,16 @@ package com.apollographql.apollo.sample.server
 
 import com.apollographql.apollo.sample.server.graphql.SubscriptionRoot
 import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.ast.toGQLDocument
-import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.execution.ExecutableSchema
-import com.apollographql.apollo3.execution.GraphQLRequest
-import com.apollographql.apollo3.execution.GraphQLRequestError
-import com.apollographql.apollo3.execution.WebSocketBinaryMessage
-import com.apollographql.apollo3.execution.WebSocketMessage
-import com.apollographql.apollo3.execution.WebSocketTextMessage
-import com.apollographql.apollo3.execution.parseGetGraphQLRequest
-import com.apollographql.apollo3.execution.parsePostGraphQLRequest
-import com.apollographql.apollo3.execution.websocket.ApolloWebSocketHandler
-import com.apollographql.apollo3.execution.websocket.ConnectionInitAck
-import com.apollographql.apollo3.execution.websocket.ConnectionInitError
-import com.apollographql.apollo3.execution.websocket.ConnectionInitHandler
+import com.apollographql.execution.ExecutableSchema
+import com.apollographql.execution.parseGetGraphQLRequest
+import com.apollographql.execution.parsePostGraphQLRequest
+import com.apollographql.execution.websocket.ConnectionInitAck
+import com.apollographql.execution.websocket.ConnectionInitError
+import com.apollographql.execution.websocket.ConnectionInitHandler
+import com.apollographql.execution.websocket.SubscriptionWebSocketHandler
+import com.apollographql.execution.websocket.WebSocketBinaryMessage
+import com.apollographql.execution.websocket.WebSocketMessage
+import com.apollographql.execution.websocket.WebSocketTextMessage
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,27 +42,20 @@ import org.http4k.websocket.WsHandler
 import org.http4k.websocket.WsMessage
 import org.http4k.websocket.WsResponse
 import org.http4k.websocket.WsStatus
-import sample.server.execution.SampleserverAdapterRegistry
-import sample.server.execution.SampleserverExecutableSchemaBuilder
-import sample.server.execution.SampleserverResolver
+import sample.server.SampleserverExecutableSchemaBuilder
 import java.io.Closeable
 import java.time.Duration
 import org.http4k.routing.ws.bind as wsBind
 
 fun ExecutableSchema(tag: String): ExecutableSchema {
-  val schema = GraphQLHttpHandler::class.java.classLoader
-      .getResourceAsStream("schema.graphqls")!!
-      .source()
-      .buffer()
-      .readUtf8()
-      .toGQLDocument()
-      .toSchema()
-
-  return SampleserverExecutableSchemaBuilder(schema, rootSubscriptionObject = { SubscriptionRoot(tag) })
+  return SampleserverExecutableSchemaBuilder()
+      .subscriptionRoot {
+        SubscriptionRoot(tag)
+      }
       .build()
 }
 
-class GraphQLHttpHandler(val executableSchema: ExecutableSchema, val executionContext: ExecutionContext) : HttpHandler {
+class GraphQLHttpHandler(private val executableSchema: ExecutableSchema, private val executionContext: ExecutionContext) : HttpHandler {
   override fun invoke(request: Request): Response {
 
     val graphQLRequestResult = when (request.method) {
@@ -75,12 +64,11 @@ class GraphQLHttpHandler(val executableSchema: ExecutableSchema, val executionCo
       else -> error("")
     }
 
-    if (graphQLRequestResult is GraphQLRequestError) {
-      return Response(BAD_REQUEST).body(graphQLRequestResult.message)
+    if (graphQLRequestResult.isFailure) {
+      return Response(BAD_REQUEST).body(graphQLRequestResult.exceptionOrNull()!!.message!!)
     }
-    graphQLRequestResult as GraphQLRequest
 
-    val response = executableSchema.execute(graphQLRequestResult, executionContext)
+    val response = executableSchema.execute(graphQLRequestResult.getOrThrow(), executionContext)
 
     val buffer = Buffer()
     response.serialize(buffer)
@@ -174,7 +162,7 @@ fun ApolloWebsocketHandler(executableSchema: ExecutableSchema, webSocketRegistry
         ws.send(webSocketMessage.toWsMessage())
       }
 
-      val handler = ApolloWebSocketHandler(
+      val handler = SubscriptionWebSocketHandler(
           executableSchema = executableSchema,
           scope = scope,
           executionContext = webSocketRegistry + CurrentWebSocket(ws),

@@ -36,7 +36,7 @@ dependencies {
   testImplementation(libs.okhttp.mockwebserver)
   testImplementation(libs.okhttp.tls)
 
-  testImplementation(project(":apollo-execution-incubating"))
+  testImplementation(libs.apollo.execution)
 
   testImplementation(platform(libs.http4k.bom.get()))
   testImplementation(libs.http4k.core)

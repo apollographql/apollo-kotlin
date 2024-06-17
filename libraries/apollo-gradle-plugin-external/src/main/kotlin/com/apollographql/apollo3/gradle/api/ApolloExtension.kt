@@ -2,7 +2,6 @@ package com.apollographql.apollo3.gradle.api
 
 import org.gradle.api.Action
 import org.gradle.api.provider.Property
-import java.io.File
 
 /**
  * The entry point for configuring the apollo plugin.
@@ -89,13 +88,6 @@ interface ApolloExtension {
    * Default: true.
    */
   val generateSourcesDuringGradleSync: Property<Boolean>
-
-  /**
-   * Returns a dependency that contains:
-   * - a generated .jar file containing a KSP processor specialized for the given schema, service and packageName
-   * - the apollo-ksp dependency
-   */
-  fun apolloKspProcessor(schema: File, service: String, packageName: String): Any
 
   /**
    * Common apollo dependencies using the same version as the Apollo Gradle Plugin currently in the classpath
