@@ -2,8 +2,7 @@ package com.apollographql.apollo3.network.websocket
 
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.DefaultApolloException
-import com.apollographql.apollo3.mpp.isNode
-import com.apollographql.apollo3.network.websocket.WebSocket
+import com.apollographql.apollo3.internal.isNode
 import node.buffer.Buffer
 import org.khronos.webgl.Uint8Array
 import org.w3c.dom.WebSocket as PlatformWebSocket

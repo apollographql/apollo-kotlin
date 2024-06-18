@@ -42,3 +42,17 @@ suspend fun WebsocketMockRequest.awaitComplete(timeout: Duration = 1.seconds) {
     "Expected complete, got '${map.get("type")}"
   }
 }
+
+enum class Platform {
+  Jvm,
+  Native,
+  Js,
+  WasmJs
+}
+
+/**
+ * The current platform. This is used from tests because Double.toString() doesn't behave the same on JS and other platforms.
+ * Prefer more specific functions like `assertMainThreadOnNative` when possible instead of checking the platform.
+ */
+expect fun platform(): Platform
+
