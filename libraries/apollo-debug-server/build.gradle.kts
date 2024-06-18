@@ -40,7 +40,7 @@ kotlin {
       dependencies {
         implementation(libs.apollo.execution.ktor)
         implementation(libs.ktor.server.cio)
-        implementation(libs.slf4j)
+        implementation(libs.slf4j.nop)
       }
     }
     getByName("jvmTest") {

@@ -29,7 +29,7 @@ kotlin {
 
     findByName("jvmTest")?.apply {
       dependencies {
-        implementation(libs.slf4j)
+        implementation(libs.slf4j.nop)
       }
     }
   }

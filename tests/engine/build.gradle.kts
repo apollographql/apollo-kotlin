@@ -29,7 +29,7 @@ kotlin {
       dependsOn(commonTest)
       dependencies {
         implementation(libs.apollo.engine.ktor)
-        implementation(libs.slf4j)
+        implementation(libs.slf4j.nop)
       }
     }
     val defaultTest = create("defaultTest") {
