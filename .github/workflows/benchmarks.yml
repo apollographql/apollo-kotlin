@@ -20,7 +20,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
-      - uses: gradle/actions/setup-gradle@db35f2304698ac6ff98958322dfd3db0a5da9fdf #v3.4.0
+      - uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda #v3.4.2
         with:
           gradle-home-cache-cleanup: true
       - run: |
