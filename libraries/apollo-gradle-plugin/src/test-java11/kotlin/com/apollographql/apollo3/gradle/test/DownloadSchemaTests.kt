@@ -2,10 +2,8 @@ package com.apollographql.apollo3.gradle.test
 
 
 import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.execution.ExecutableSchema
-import com.apollographql.apollo3.execution.GraphQLRequest
-import com.apollographql.apollo3.execution.GraphQLRequestError
-import com.apollographql.apollo3.execution.parsePostGraphQLRequest
+import com.apollographql.execution.ExecutableSchema
+import com.apollographql.execution.parsePostGraphQLRequest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.tls.HandshakeCertificates
@@ -288,7 +286,7 @@ class DownloadSchemaTests {
     server.stop()
   }
 
-  class GraphQLHttpHandler(val executableSchema: ExecutableSchema, val executionContext: ExecutionContext) : HttpHandler {
+  class GraphQLHttpHandler(private val executableSchema: ExecutableSchema, private val executionContext: ExecutionContext) : HttpHandler {
     override fun invoke(request: Request): Response {
 
       val graphQLRequestResult = when (request.method) {
@@ -296,12 +294,11 @@ class DownloadSchemaTests {
         else -> error("")
       }
 
-      if (graphQLRequestResult is GraphQLRequestError) {
-        return Response(Status.BAD_REQUEST).body(graphQLRequestResult.message)
+      if (graphQLRequestResult.isFailure) {
+        return Response(Status.BAD_REQUEST).body(graphQLRequestResult.exceptionOrNull()?.message ?: "")
       }
-      graphQLRequestResult as GraphQLRequest
 
-      val response = executableSchema.execute(graphQLRequestResult, executionContext)
+      val response = executableSchema.execute(graphQLRequestResult.getOrThrow(), executionContext)
 
       val buffer = Buffer()
       response.serialize(buffer)

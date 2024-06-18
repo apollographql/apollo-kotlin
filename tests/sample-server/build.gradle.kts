@@ -1,9 +1,10 @@
+import com.apollographql.execution.gradle.internal.CopySchema
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("com.google.devtools.ksp")
-  id("com.apollographql.apollo3")
+  id("com.apollographql.execution")
   id("org.jetbrains.kotlin.plugin.spring")
   id("application")
 }
@@ -17,10 +18,10 @@ apolloTest(
 )
 
 dependencies {
-  implementation(libs.apollo.execution)
   implementation(libs.apollo.api)
   implementation(libs.kotlinx.coroutines)
   implementation(libs.atomicfu.library)
+  implementation(libs.apollo.execution)
 
   implementation(platform(libs.http4k.bom.get()))
   implementation(libs.http4k.core)
@@ -28,10 +29,21 @@ dependencies {
   implementation(libs.slf4j.get().toString()) {
     because("jetty uses SL4F")
   }
+}
 
-  ksp(apollo.apolloKspProcessor(file("src/main/resources/schema.graphqls"), "sampleserver", "sample.server"))
+apolloExecution {
+  service("sampleserver") {
+    packageName = "sample.server"
+  }
+}
+tasks.withType(CopySchema::class.java).configureEach {
+  doFirst {
+    // https://github.com/apollographql/apollo-kotlin-execution/pull/6
+    (this as CopySchema).to.get().asFile.delete()
+  }
 }
 
 application {
   mainClass.set("com.apollographql.apollo.sample.server.MainKt")
 }
+

@@ -1056,28 +1056,5 @@ abstract class DefaultApolloExtension(
     internal fun Project.hasKotlinPlugin() = project.extensions.findByName("kotlin") != null
   }
 
-  override fun apolloKspProcessor(schema: File, service: String, packageName: String): Any {
-    check(project.pluginManager.hasPlugin("com.google.devtools.ksp")) {
-      "Calling apolloKspProcessor only makes sense if the 'com.google.devtools.ksp' plugin is applied"
-    }
-
-    val producer = project.configurations.create("apollo${service.capitalizeFirstLetter()}KspProcessorProducer") {
-      it.isCanBeResolved = false
-      it.isCanBeConsumed = true
-    }
-
-    producer.dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-ksp-incubating"))
-    val taskProvider = project.tasks.register("generate${service.capitalizeFirstLetter()}ApolloKspProcessor", ApolloGenerateKspProcessorTask::class.java) {
-      it.schema.set(schema)
-      it.serviceName.set(service)
-      it.packageName.set(packageName)
-      it.outputJar.set(BuildDirLayout.kspProcessorJar(project, service))
-    }
-
-    project.artifacts.add(producer.name, taskProvider.flatMap { it.outputJar })
-
-    return project.dependencies.project(mapOf("path" to project.path, "configuration" to producer.name))
-  }
-
   override val deps: ApolloDependencies = ApolloDependencies(project.dependencies)
 }

@@ -46,18 +46,3 @@ open annotation class com.apollographql.apollo3.annotations/ApolloInternal : kot
 open annotation class com.apollographql.apollo3.annotations/ApolloRequiresOptIn : kotlin/Annotation { // com.apollographql.apollo3.annotations/ApolloRequiresOptIn|null[0]
     constructor <init>() // com.apollographql.apollo3.annotations/ApolloRequiresOptIn.<init>|<init>(){}[0]
 }
-open annotation class com.apollographql.apollo3.annotations/GraphQLAdapter : kotlin/Annotation { // com.apollographql.apollo3.annotations/GraphQLAdapter|null[0]
-    constructor <init>(kotlin/String) // com.apollographql.apollo3.annotations/GraphQLAdapter.<init>|<init>(kotlin.String){}[0]
-    final val forScalar // com.apollographql.apollo3.annotations/GraphQLAdapter.forScalar|{}forScalar[0]
-        final fun <get-forScalar>(): kotlin/String // com.apollographql.apollo3.annotations/GraphQLAdapter.forScalar.<get-forScalar>|<get-forScalar>(){}[0]
-}
-open annotation class com.apollographql.apollo3.annotations/GraphQLName : kotlin/Annotation { // com.apollographql.apollo3.annotations/GraphQLName|null[0]
-    constructor <init>(kotlin/String) // com.apollographql.apollo3.annotations/GraphQLName.<init>|<init>(kotlin.String){}[0]
-    final val name // com.apollographql.apollo3.annotations/GraphQLName.name|{}name[0]
-        final fun <get-name>(): kotlin/String // com.apollographql.apollo3.annotations/GraphQLName.name.<get-name>|<get-name>(){}[0]
-}
-open annotation class com.apollographql.apollo3.annotations/GraphQLObject : kotlin/Annotation { // com.apollographql.apollo3.annotations/GraphQLObject|null[0]
-    constructor <init>(kotlin/String = ...) // com.apollographql.apollo3.annotations/GraphQLObject.<init>|<init>(kotlin.String){}[0]
-    final val name // com.apollographql.apollo3.annotations/GraphQLObject.name|{}name[0]
-        final fun <get-name>(): kotlin/String // com.apollographql.apollo3.annotations/GraphQLObject.name.<get-name>|<get-name>(){}[0]
-}
