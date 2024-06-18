@@ -12,6 +12,8 @@ import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.toApolloResponse
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.platform
+import com.apollographql.apollo3.testing.Platform
+import com.apollographql.apollo3.testing.platform
 import okio.Buffer
 import testFixtureToJsonReader
 import testFixtureToUtf8

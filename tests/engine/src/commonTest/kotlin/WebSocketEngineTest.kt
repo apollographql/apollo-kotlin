@@ -3,9 +3,9 @@ import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
-import com.apollographql.apollo3.mpp.Platform
-import com.apollographql.apollo3.mpp.platform
+import com.apollographql.apollo3.testing.Platform
 import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo3.testing.platform
 import com.apollographql.mockserver.CloseFrame
 import com.apollographql.mockserver.DataMessage
 import com.apollographql.mockserver.MockServer

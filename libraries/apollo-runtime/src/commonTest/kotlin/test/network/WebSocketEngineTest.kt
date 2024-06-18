@@ -4,7 +4,9 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.network.websocket.WebSocket
 import com.apollographql.apollo3.network.websocket.WebSocketEngine
 import com.apollographql.apollo3.network.websocket.WebSocketListener
+import com.apollographql.apollo3.testing.Platform
 import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo3.testing.platform
 import com.apollographql.mockserver.CloseFrame
 import com.apollographql.mockserver.DataMessage
 import com.apollographql.mockserver.MockRequestBase
