@@ -9,7 +9,7 @@ import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.currentThreadId
 import com.apollographql.apollo3.testing.enqueueTestResponse
-import com.apollographql.apollo3.testing.internal.runTest
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
