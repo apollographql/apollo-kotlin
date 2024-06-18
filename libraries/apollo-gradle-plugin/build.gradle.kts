@@ -41,7 +41,7 @@ dependencies {
   testImplementation(platform(libs.http4k.bom.get()))
   testImplementation(libs.http4k.core)
   testImplementation(libs.http4k.server.jetty)
-  testImplementation(libs.slf4j.get().toString()) {
+  testImplementation(libs.slf4j.nop.get().toString()) {
     because("jetty uses SL4F")
   }
 
