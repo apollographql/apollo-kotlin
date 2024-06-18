@@ -24,14 +24,15 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         includeModule("com.github.ben-manes", "gradle-versions-plugin")
         includeModule("com.gradle", "develocity-gradle-plugin")
 
-        // For org.jetbrains.intellij
-        includeModule("org.jetbrains.intellij", "org.jetbrains.intellij.gradle.plugin")
-        includeModule("org.jetbrains.intellij.plugins", "gradle-intellij-plugin")
+        // For org.jetbrains.intellij.platform
         includeModule("gradle.plugin.org.jetbrains.gradle.plugin.idea-ext", "gradle-idea-ext")
 
         // For org.jetbrains.changelog
         includeModule("org.jetbrains.changelog", "org.jetbrains.changelog.gradle.plugin")
         includeModule("org.jetbrains.intellij.plugins", "gradle-changelog-plugin")
+
+        // For org.jetbrains.intellij.platform
+        includeModule("org.jetbrains.intellij.platform", "intellij-platform-gradle-plugin")
       }
     }
   }
