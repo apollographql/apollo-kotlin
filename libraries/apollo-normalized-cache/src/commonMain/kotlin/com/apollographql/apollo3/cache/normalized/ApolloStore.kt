@@ -94,7 +94,7 @@ interface ApolloStore {
    *
    * @see publish
    */
-  fun <D : Operation.Data> writeOperation(
+  fun <D : Operation.Data> writeOperationSync(
       operation: Operation<D>,
       operationData: D,
       customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
@@ -132,7 +132,7 @@ interface ApolloStore {
    *
    * @see publish
    */
-  fun <D : Fragment.Data> writeFragment(
+  fun <D : Fragment.Data> writeFragmentSync(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
@@ -169,7 +169,7 @@ interface ApolloStore {
    *
    *  @see publish
    */
-  fun <D : Operation.Data> writeOptimisticUpdates(
+  fun <D : Operation.Data> writeOptimisticUpdatesSync(
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
@@ -195,7 +195,7 @@ interface ApolloStore {
    * @param mutationId mutation unique identifier
    * @return the changed keys
    */
-  fun rollbackOptimisticUpdates(
+  fun rollbackOptimisticUpdatesSync(
       mutationId: Uuid,
   ): Set<String>
 

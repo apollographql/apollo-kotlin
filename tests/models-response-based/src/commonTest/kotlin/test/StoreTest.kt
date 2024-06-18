@@ -99,7 +99,7 @@ class StoreTest {
     assertEquals(response.data?.hero?.heroWithFriendsFragment()?.friends?.get(2)?.humanWithIdFragment()?.id, "1003")
     assertEquals(response.data?.hero?.heroWithFriendsFragment()?.friends?.get(2)?.humanWithIdFragment()?.name, "Leia Organa")
 
-    store.writeFragment(
+    store.writeFragmentSync(
         HeroWithFriendsFragmentImpl(),
         CacheKey("2001"),
         HeroWithFriendsFragmentImpl.Data(
@@ -120,7 +120,7 @@ class StoreTest {
         ),
     )
 
-    store.writeFragment(
+    store.writeFragmentSync(
         HumanWithIdFragmentImpl(),
         CacheKey("1002"),
         HumanWithIdFragmentImpl.Data(

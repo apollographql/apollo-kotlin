@@ -157,7 +157,7 @@ internal class DefaultApolloStore(
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys =  writeOperation(
+    val changedKeys =  writeOperationSync(
         operation = operation,
         operationData = operationData,
         cacheHeaders = cacheHeaders,
@@ -171,7 +171,7 @@ internal class DefaultApolloStore(
     return changedKeys
   }
 
-  override fun <D : Operation.Data> writeOperation(operation: Operation<D>, operationData: D, customScalarAdapters: CustomScalarAdapters, cacheHeaders: CacheHeaders): Set<String> {
+  override fun <D : Operation.Data> writeOperationSync(operation: Operation<D>, operationData: D, customScalarAdapters: CustomScalarAdapters, cacheHeaders: CacheHeaders): Set<String> {
     val records = operation.normalize(
         data = operationData,
         customScalarAdapters = customScalarAdapters,
@@ -193,7 +193,7 @@ internal class DefaultApolloStore(
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys = writeFragment(fragment, cacheKey, fragmentData, customScalarAdapters, cacheHeaders)
+    val changedKeys = writeFragmentSync(fragment, cacheKey, fragmentData, customScalarAdapters, cacheHeaders)
 
     if (publish) {
       publish(changedKeys)
@@ -202,7 +202,7 @@ internal class DefaultApolloStore(
     return changedKeys
   }
 
-  override fun <D : Fragment.Data> writeFragment(
+  override fun <D : Fragment.Data> writeFragmentSync(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
@@ -230,7 +230,7 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys = writeOptimisticUpdates(operation, operationData, mutationId, customScalarAdapters)
+    val changedKeys = writeOptimisticUpdatesSync(operation, operationData, mutationId, customScalarAdapters)
 
     if (publish) {
       publish(changedKeys)
@@ -239,7 +239,7 @@ internal class DefaultApolloStore(
     return changedKeys
   }
 
-  override fun <D : Operation.Data> writeOptimisticUpdates(
+  override fun <D : Operation.Data> writeOptimisticUpdatesSync(
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
@@ -270,7 +270,7 @@ internal class DefaultApolloStore(
       mutationId: Uuid,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys = rollbackOptimisticUpdates(mutationId)
+    val changedKeys = rollbackOptimisticUpdatesSync(mutationId)
 
     if (publish) {
       publish(changedKeys)
@@ -279,7 +279,7 @@ internal class DefaultApolloStore(
     return changedKeys
   }
 
-  override fun rollbackOptimisticUpdates(
+  override fun rollbackOptimisticUpdatesSync(
       mutationId: Uuid,
   ): Set<String> {
     val changedKeys = lock.write {
