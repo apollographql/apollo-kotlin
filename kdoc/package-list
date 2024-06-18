@@ -44,6 +44,7 @@ com.apollographql.apollo3.compiler.operationoutput
 com.apollographql.apollo3.compiler.pqm
 module:apollo-debug-server
 com.apollographql.apollo3.debugserver
+com.apollographql.apollo3.debugserver.internal.graphql
 module:apollo-engine-ktor
 com.apollographql.apollo3.network
 com.apollographql.apollo3.network.adapter
