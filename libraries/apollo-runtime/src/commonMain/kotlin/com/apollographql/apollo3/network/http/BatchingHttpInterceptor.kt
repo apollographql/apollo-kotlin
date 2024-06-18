@@ -21,7 +21,6 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.exception.JsonDataException
 import com.apollographql.apollo3.internal.CloseableSingleThreadDispatcher
-import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -35,6 +34,7 @@ import okio.BufferedSink
 import okio.use
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
+import kotlin.time.TimeSource.Monotonic.markNow
 
 /**
  * An [HttpInterceptor] that batches HTTP queries to execute multiple at once.
@@ -68,7 +68,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     private val maxBatchSize: Int = 10,
     private val exposeErrorBody: Boolean = false,
 ) : HttpInterceptor {
-  private val creationTime = currentTimeMillis()
+  private val startMark = markNow()
   private val dispatcher = CloseableSingleThreadDispatcher()
   private val scope = CoroutineScope(dispatcher.coroutineDispatcher)
   private val mutex = Mutex()
@@ -107,7 +107,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
       executePendingRequests()
     } else {
       scope.launch {
-        delay(batchIntervalMillis - ((currentTimeMillis() - creationTime) % batchIntervalMillis) - 1)
+        delay(batchIntervalMillis - (startMark.elapsedNow().inWholeMilliseconds % batchIntervalMillis) - 1)
         executePendingRequests()
       }
     }

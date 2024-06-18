@@ -8,7 +8,6 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.exception.SubscriptionConnectionException
-import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.network.websocket.CLOSE_GOING_AWAY
 import com.apollographql.apollo3.network.websocket.CLOSE_NORMAL
 import com.apollographql.apollo3.network.websocket.ClientMessage
@@ -35,6 +34,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource.Monotonic.markNow
 
 /**
  * A [SubscribableWebSocket] is the link between the lower level [WebSocket] and GraphQL.
@@ -63,7 +64,7 @@ internal class SubscribableWebSocket(
   private var shutdownCause: ApolloException? = null
   private var activeListeners = mutableMapOf<String, OperationListener>()
   private var pending = mutableListOf<ApolloRequest<*>>()
-  private var _lastActiveMillis: Long = 0
+  private var _lastActiveMark: TimeMark? = null
 
   private var webSocket: WebSocket
   init {
@@ -75,9 +76,9 @@ internal class SubscribableWebSocket(
     webSocket = webSocketEngine.newWebSocket(serverUrl, headers, this)
   }
 
-  val lastActiveMillis: Long
+  val lastActiveMark: TimeMark?
     get() = lock.withLock {
-      _lastActiveMillis
+      _lastActiveMark
     }
   val shutdown: Boolean
     get() = lock.withLock {
@@ -248,7 +249,7 @@ internal class SubscribableWebSocket(
       }
 
       if (activeListeners.isEmpty()) {
-        _lastActiveMillis = currentTimeMillis()
+        _lastActiveMark = markNow()
       }
       ret
     }
@@ -261,7 +262,7 @@ internal class SubscribableWebSocket(
   }
 
   fun markActive() = lock.withLock {
-    _lastActiveMillis = 0
+    _lastActiveMark = null
   }
 }
 
