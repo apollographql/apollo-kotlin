@@ -1,12 +1,12 @@
 package test;
 
 import com.apollographql.apollo3.api.ApolloResponse;
-import com.apollographql.apollo3.runtime.java.ApolloCallback;
-import com.apollographql.apollo3.runtime.java.ApolloClient;
-import com.apollographql.apollo3.runtime.java.ApolloDisposable;
-import com.apollographql.apollo3.runtime.java.network.ws.WebSocketNetworkTransport;
-import com.apollographql.apollo3.runtime.java.network.ws.protocol.GraphQLWsProtocol;
-import com.apollographql.apollo3.runtime.java.network.ws.protocol.WsProtocol;
+import com.apollographql.java.client.ApolloCallback;
+import com.apollographql.java.client.ApolloClient;
+import com.apollographql.java.client.ApolloDisposable;
+import com.apollographql.java.client.network.ws.WebSocketNetworkTransport;
+import com.apollographql.java.client.network.ws.protocol.GraphQLWsProtocol;
+import com.apollographql.java.client.network.ws.protocol.WsProtocol;
 import com.google.common.truth.Truth;
 import graphqlws.GreetingsSubscription;
 import graphqlws.HelloQuery;

@@ -1,8 +1,8 @@
 package com.example.app;
 
-import com.apollographql.apollo3.runtime.java.ApolloClient;
+import com.apollographql.java.client.ApolloClient;
 import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.rx2.java.Rx2Apollo;
+import com.apollographql.java.rx2.Rx2Apollo;
 import com.example.GetHelloQuery;
 
 public class Main {

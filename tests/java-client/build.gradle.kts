@@ -8,9 +8,9 @@ plugins {
 apolloTest()
 
 dependencies {
-  implementation(libs.apollo.runtime.java)
+  implementation(libs.apollo.java.support.client)
   implementation(libs.apollo.mockserver)
-  implementation(libs.apollo.rx3.java)
+  implementation(libs.apollo.java.support.rx3)
   testImplementation(libs.junit)
   testImplementation(libs.truth)
   testImplementation(project(":sample-server"))

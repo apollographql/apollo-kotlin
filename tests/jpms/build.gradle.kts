@@ -7,8 +7,8 @@ plugins {
 apolloTest()
 
 dependencies {
-  implementation(libs.apollo.runtime.java)
-  implementation(libs.apollo.rx2.support.java)
+  implementation(libs.apollo.java.support.client)
+  implementation(libs.apollo.java.support.rx2)
   testImplementation(libs.junit)
 }
 

@@ -16,6 +16,7 @@ androidx-sqlite = "2.3.1"
 # This is used by the gradle integration tests to get the artifacts locally
 apollo = "4.0.0-beta.8-SNAPSHOT"
 apollo-execution = "0.0.1"
+apollo-java-support = "0.0.1"
 apollo-normalizedcache-incubating = "0.0.1"
 apollo-normalizedcache-incubating-snapshot = "0.0.2-SNAPSHOT"
 # Used by the apollo-tooling project which uses a published version of Apollo
@@ -69,6 +70,9 @@ apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version
 apollo-api-java = { group = "com.apollographql.apollo3", name = "apollo-api-java", version.ref = "apollo" }
 apollo-httpCache = { group = "com.apollographql.apollo3", name = "apollo-http-cache", version.ref = "apollo" }
 apollo-idlingresource = { group = "com.apollographql.apollo3", name = "apollo-idling-resource", version.ref = "apollo" }
+apollo-java-support-client = { group = "com.apollographql.java", name = "client", version.ref = "apollo-java-support" }
+apollo-java-support-rx2 = { group = "com.apollographql.java", name = "rx2", version.ref = "apollo-java-support" }
+apollo-java-support-rx3 = { group = "com.apollographql.java", name = "rx3", version.ref = "apollo-java-support" }
 apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-mockserver", version = "0.0.3" }
 apollo-mpputils = { group = "com.apollographql.apollo3", name = "apollo-mpp-utils", version.ref = "apollo" }
 apollo-normalizedcache = { group = "com.apollographql.apollo3", name = "apollo-normalized-cache", version.ref = "apollo" }
@@ -77,7 +81,6 @@ apollo-normalizedcache-incubating-snapshot = { group = "com.apollographql.cache"
 apollo-normalizedcache-sqlite = { group = "com.apollographql.apollo3", name = "apollo-normalized-cache-sqlite", version.ref = "apollo" }
 apollo-normalizedcache-sqlite-incubating = { group = "com.apollographql.cache", name = "normalized-cache-sqlite-incubating", version.ref = "apollo-normalizedcache-incubating" }
 apollo-normalizedcache-sqlite-incubating-snapshot = { group = "com.apollographql.cache", name = "normalized-cache-sqlite-incubating", version.ref = "apollo-normalizedcache-incubating-snapshot" }
-apollo-rx2-support-java = { group = "com.apollographql.apollo3", name = "apollo-rx2-support-java", version.ref = "apollo" }
 apollo-plugin = { group = "com.apollographql.apollo3", name = "apollo-gradle-plugin", version.ref = "apollo" }
 apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
 apollo-compiler = { group = "com.apollographql.apollo3", name = "apollo-compiler", version.ref = "apollo" }
@@ -89,9 +92,7 @@ apollo-execution-gradle-plugin = { group = "com.apollographql.execution", name =
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-runtime-published = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo-published" }
 apollo-annotations = { group = "com.apollographql.apollo3", name = "apollo-annotations", version.ref = "apollo" }
-apollo-runtime-java = { group = "com.apollographql.apollo3", name = "apollo-runtime-java", version.ref = "apollo" }
 apollo-engine-ktor = { group = "com.apollographql.apollo3", name = "apollo-engine-ktor", version.ref = "apollo" }
-apollo-rx3-java = { group = "com.apollographql.apollo3", name = "apollo-rx3-support-java", version.ref = "apollo" }
 apollo-testingsupport = { group = "com.apollographql.apollo3", name = "apollo-testing-support", version.ref = "apollo" }
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-testingsupport-published = { group = "com.apollographql.apollo3", name = "apollo-testing-support", version.ref = "apollo-published" }

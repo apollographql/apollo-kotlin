@@ -3,9 +3,9 @@ package test;
 
 import appsync.CommentsSubscription;
 import com.apollographql.apollo3.api.ApolloResponse;
-import com.apollographql.apollo3.runtime.java.ApolloCallback;
-import com.apollographql.apollo3.runtime.java.ApolloClient;
-import com.apollographql.apollo3.runtime.java.network.ws.protocol.AppSyncWsProtocol;
+import com.apollographql.java.client.ApolloCallback;
+import com.apollographql.java.client.ApolloClient;
+import com.apollographql.java.client.network.ws.protocol.AppSyncWsProtocol;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Ignore;
 import org.junit.Test;

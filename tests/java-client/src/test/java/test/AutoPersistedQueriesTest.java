@@ -1,12 +1,12 @@
 package test;
 
 import com.apollographql.mockserver.MockServerKt;
-import com.apollographql.apollo3.runtime.java.ApolloClient;
+import com.apollographql.java.client.ApolloClient;
 import com.apollographql.apollo3.api.http.HttpMethod;
 import com.apollographql.mockserver.MockRequest;
 import com.apollographql.mockserver.MockResponse;
 import com.apollographql.mockserver.MockServer;
-import com.apollographql.apollo3.rx3.java.Rx3Apollo;
+import com.apollographql.java.rx3.Rx3Apollo;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import javatest.GetRandomQuery;
 import scalars.PingMutation;

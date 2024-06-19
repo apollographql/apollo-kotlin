@@ -3,8 +3,8 @@ package test;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.runtime.java.ApolloClient;
-import com.apollographql.apollo3.rx3.java.Rx3Apollo;
+import com.apollographql.java.client.ApolloClient;
+import com.apollographql.java.rx3.Rx3Apollo;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import org.jetbrains.annotations.NotNull;
 
