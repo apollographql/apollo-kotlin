@@ -275,7 +275,8 @@ abstract class DefaultApolloExtension(
         project.configurations.configureEach {
           it.dependencies.configureEach {
             // Try to detect if a native version of apollo-normalized-cache-sqlite is in the classpath
-            if (it.name.contains("apollo-normalized-cache-sqlite")
+            if (it.group?.contains("apollo") == true
+                && it.name.contains("normalized-cache-sqlite")
                 && !it.name.contains("jvm")
                 && !it.name.contains("android")) {
               linkSqlite(project)

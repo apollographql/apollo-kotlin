@@ -20,7 +20,7 @@ apollo-normalizedcache-incubating = "0.0.1"
 apollo-normalizedcache-incubating-snapshot = "0.0.2-SNAPSHOT"
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-published = "4.0.0-beta.6"
-atomicfu = "0.23.1"
+atomicfu = "0.24.0"
 cache = "2.0.2"
 compose = "1.5.1"
 guava = "31.1-jre"
