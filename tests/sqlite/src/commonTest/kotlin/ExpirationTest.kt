@@ -3,27 +3,27 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.cache.normalized.FetchPolicy
-import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
-import com.apollographql.apollo3.cache.normalized.api.EmptyMetadataGenerator
-import com.apollographql.apollo3.cache.normalized.api.ExpireDateCacheResolver
-import com.apollographql.apollo3.cache.normalized.api.ReceiveDateApolloResolver
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.normalize
-import com.apollographql.apollo3.cache.normalized.apolloStore
-import com.apollographql.apollo3.cache.normalized.cacheHeaders
-import com.apollographql.apollo3.cache.normalized.fetchPolicy
-import com.apollographql.apollo3.cache.normalized.normalizedCache
-import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.storeExpirationDate
-import com.apollographql.apollo3.cache.normalized.storeReceiveDate
 import com.apollographql.apollo3.exception.CacheMissException
-import com.apollographql.mockserver.MockResponse
-import com.apollographql.mockserver.MockServer
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.cache.normalized.FetchPolicy
+import com.apollographql.cache.normalized.api.ApolloCacheHeaders
+import com.apollographql.cache.normalized.api.CacheHeaders
+import com.apollographql.cache.normalized.api.DefaultRecordMerger
+import com.apollographql.cache.normalized.api.EmptyMetadataGenerator
+import com.apollographql.cache.normalized.api.ExpireDateCacheResolver
+import com.apollographql.cache.normalized.api.ReceiveDateApolloResolver
+import com.apollographql.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.cache.normalized.api.normalize
+import com.apollographql.cache.normalized.apolloStore
+import com.apollographql.cache.normalized.cacheHeaders
+import com.apollographql.cache.normalized.fetchPolicy
+import com.apollographql.cache.normalized.normalizedCache
+import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
+import com.apollographql.cache.normalized.storeExpirationDate
+import com.apollographql.cache.normalized.storeReceiveDate
+import com.apollographql.mockserver.MockResponse
+import com.apollographql.mockserver.MockServer
 import sqlite.GetUserQuery
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -55,7 +55,7 @@ class ExpirationTest {
     }
 
     val e = client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute().exception as CacheMissException
-      assertTrue(e.stale)
+    assertTrue(e.stale)
 
     // with max stale, should succeed
     val response1 = client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly)
@@ -120,7 +120,7 @@ class ExpirationTest {
     client.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
     // read from cache -> it should fail
     val e = client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute().exception as CacheMissException
-      assertTrue(e.stale)
+    assertTrue(e.stale)
   }
 
 

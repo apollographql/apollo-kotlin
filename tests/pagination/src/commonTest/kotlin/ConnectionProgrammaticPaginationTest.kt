@@ -1,17 +1,17 @@
 package pagination
 
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.api.ConnectionEmbeddedFieldsProvider
-import com.apollographql.apollo3.cache.normalized.api.ConnectionFieldKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.ConnectionMetadataGenerator
-import com.apollographql.apollo3.cache.normalized.api.ConnectionRecordMerger
-import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.cache.normalized.ApolloStore
+import com.apollographql.cache.normalized.api.ConnectionEmbeddedFieldsProvider
+import com.apollographql.cache.normalized.api.ConnectionFieldKeyGenerator
+import com.apollographql.cache.normalized.api.ConnectionMetadataGenerator
+import com.apollographql.cache.normalized.api.ConnectionRecordMerger
+import com.apollographql.cache.normalized.api.FieldPolicyApolloResolver
+import com.apollographql.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.cache.normalized.api.NormalizedCacheFactory
+import com.apollographql.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
 import pagination.connectionProgrammatic.UsersQuery
 import pagination.connectionProgrammatic.type.Query
 import pagination.connectionProgrammatic.type.UserConnection
