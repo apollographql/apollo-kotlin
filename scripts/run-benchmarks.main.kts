@@ -7,6 +7,7 @@
 @file:DependsOn("com.squareup.okhttp3:okhttp:4.10.0")
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
+import Run_benchmarks_main.TestResult
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.storage.Storage
 import com.google.cloud.storage.StorageOptions
@@ -16,14 +17,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import net.mbonnin.bare.graphql.asList
-import net.mbonnin.bare.graphql.asMap
-import net.mbonnin.bare.graphql.asNumber
-import net.mbonnin.bare.graphql.asString
-import net.mbonnin.bare.graphql.cast
-import net.mbonnin.bare.graphql.graphQL
-import net.mbonnin.bare.graphql.toAny
-import net.mbonnin.bare.graphql.toJsonElement
+import net.mbonnin.bare.graphql.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -32,7 +26,7 @@ import okio.Buffer
 import okio.buffer
 import okio.source
 import java.io.File
-import java.util.Date
+import java.util.*
 import kotlin.math.roundToLong
 
 /**
@@ -46,8 +40,7 @@ import kotlin.math.roundToLong
  */
 
 val appApk = "benchmark/app/build/outputs/apk/release/app-release.apk"
-val stableTestApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/stable/release/microbenchmark-stable-release-androidTest.apk"
-val incubatingTestApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/incubating/release/microbenchmark-incubating-release-androidTest.apk"
+val testApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/release/microbenchmark-release-androidTest.apk"
 val deviceModel = "redfin,locale=en,orientation=portrait"
 val directoriesToPull = "/sdcard/Download"
 val environmentVariables = "clearPackageData=true,additionalTestOutputDir=/sdcard/Download,no-isolated-storage=true"
@@ -470,7 +463,7 @@ fun formattedTestResult(title: String, testResult: TestResult): String {
 }
 
 val issueTitle = "Benchmarks dashboard"
-fun updateOrCreateGithubIssue(stableTestResult: TestResult, incubatingTestResult: TestResult, githubToken: String) {
+fun updateOrCreateGithubIssue(testResult: TestResult, githubToken: String) {
   val ghRepo = getRequiredEnvVariable("GITHUB_REPOSITORY")
   val ghRepositoryOwner = ghRepo.split("/")[0]
   val ghRepositoryName = ghRepo.split("/")[1]
@@ -497,7 +490,7 @@ fun updateOrCreateGithubIssue(stableTestResult: TestResult, incubatingTestResult
   val response = ghGraphQL(query, githubToken)
   val existingIssues = response.get("search").asMap.get("edges").asList
 
-  val body = formattedTestResult("Stable", stableTestResult) + "\n\n" + formattedTestResult("Incubating", incubatingTestResult)
+  val body = formattedTestResult("Micro benchmarks", testResult)
   val mutation: String
   val variables: Map<String, String>
   if (existingIssues.isEmpty()) {
@@ -603,23 +596,19 @@ fun runTest(gcloud: GCloud, testApk: String): TestResult {
 fun main() = runBlocking {
   val gcloud = authenticate()
 
-  val stableTestResultDeferred = async(Dispatchers.Default) {
-    runTest(gcloud, stableTestApk)
-  }
-  val incubatingTestResultDeferred = async(Dispatchers.Default) {
-    runTest(gcloud, incubatingTestApk)
+  val testResultDeferred = async(Dispatchers.Default) {
+    runTest(gcloud, testApk)
   }
 
-  val stableTestResult = stableTestResultDeferred.await()
-  val incubatingTestResult = incubatingTestResultDeferred.await()
+  val testResult = testResultDeferred.await()
 
   val githubToken = getOptionalEnvVariable("GITHUB_TOKEN")
   if (githubToken != null) {
-    updateOrCreateGithubIssue(stableTestResult, incubatingTestResult, githubToken)
+    updateOrCreateGithubIssue(testResult, githubToken)
   }
   val datadogApiKey = getOptionalEnvVariable("DD_API_KEY")
   if (datadogApiKey != null) {
-    uploadToDatadog(datadogApiKey, stableTestResult.cases + incubatingTestResult.cases, stableTestResult.extraMetrics + incubatingTestResult.extraMetrics)
+    uploadToDatadog(datadogApiKey, testResult.cases, testResult.extraMetrics)
   }
 }
 

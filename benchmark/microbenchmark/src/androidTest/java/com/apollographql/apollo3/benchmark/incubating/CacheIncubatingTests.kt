@@ -1,14 +1,12 @@
-package com.apollographql.apollo3.benchmark
+package com.apollographql.apollo3.benchmark.incubating
 
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
-import androidx.test.platform.app.InstrumentationRegistry
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.benchmark.Utils
 import com.apollographql.apollo3.benchmark.Utils.checkOperationBased
 import com.apollographql.apollo3.benchmark.Utils.checkResponseBased
 import com.apollographql.apollo3.benchmark.Utils.operationBasedQuery
@@ -16,26 +14,20 @@ import com.apollographql.apollo3.benchmark.Utils.registerCacheSize
 import com.apollographql.apollo3.benchmark.Utils.resource
 import com.apollographql.apollo3.benchmark.Utils.responseBasedQuery
 import com.apollographql.apollo3.benchmark.test.R
-import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.CacheResolver
-import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
-import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
-import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.normalize
-import com.apollographql.apollo3.cache.normalized.api.readDataFromCache
-import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
+import com.apollographql.cache.normalized.api.CacheHeaders
+import com.apollographql.cache.normalized.api.DefaultRecordMerger
+import com.apollographql.cache.normalized.api.FieldPolicyCacheResolver
+import com.apollographql.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.cache.normalized.api.normalize
+import com.apollographql.cache.normalized.api.readDataFromCache
+import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
-import java.lang.reflect.Method
 import java.util.concurrent.Executors
 
-@Suppress("UNCHECKED_CAST")
 class CacheIncubatingTests {
   @get:Rule
   val benchmarkRule = BenchmarkRule()

@@ -1,17 +1,18 @@
-package com.apollographql.apollo3.benchmark
+package com.apollographql.apollo3.benchmark.incubating
 
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.benchmark.Utils
 import com.apollographql.apollo3.benchmark.Utils.dbName
 import com.apollographql.apollo3.benchmark.Utils.operationBasedQuery
 import com.apollographql.apollo3.benchmark.Utils.resource
 import com.apollographql.apollo3.benchmark.test.R
-import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
+import com.apollographql.cache.normalized.ApolloStore
+import com.apollographql.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.cache.normalized.api.NormalizedCacheFactory
+import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test

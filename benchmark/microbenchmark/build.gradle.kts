@@ -21,32 +21,11 @@ configure<com.android.build.gradle.LibraryExtension> {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
   }
-
-  flavorDimensions += "stability"
-  productFlavors {
-    create("incubating") {
-      dimension = "stability"
-      testApplicationId = "com.apollographql.apollo3.benchmark.incubating"
-    }
-    create("stable") {
-      dimension = "stability"
-      testApplicationId = "com.apollographql.apollo3.benchmark.stable"
-    }
-  }
 }
 
 dependencies {
 
   implementation("com.apollographql.apollo3:apollo-runtime")
-
-  listOf(
-      "com.apollographql.apollo3:apollo-normalized-cache-api",
-      "com.apollographql.apollo3:apollo-normalized-cache-sqlite",
-      "com.apollographql.apollo3:apollo-normalized-cache"
-  ).forEach {
-    add("androidTestStableImplementation", it)
-    add("androidTestIncubatingImplementation", "$it-incubating")
-  }
 
   implementation(libs.moshi)
   ksp(libs.moshix.ksp)
@@ -55,6 +34,12 @@ dependencies {
   androidTestImplementation(libs.androidx.test.core)
   androidTestImplementation(libs.apollo.mockserver)
   androidTestImplementation("com.apollographql.apollo3:apollo-testing-support")
+
+  // Stable cache
+  androidTestImplementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
+
+  // Incubating cache
+  androidTestImplementation(libs.apollo.normalizedcache.sqlite.incubating.snapshot)
 }
 
 java {
