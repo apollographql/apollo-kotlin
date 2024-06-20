@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cli
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintCompletionMessage
 import com.github.ajalt.clikt.core.subcommands
@@ -50,6 +51,8 @@ private class PlaceHolderCommand : CliktCommand(name = "placeholder") {
   }
 }
 
+@Deprecated("The Apollo CLI has new maven coordinates at 'com.apollographql.cli:apollo-cli. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun main(args: Array<String>) {
   MainCommand("apollo-cli")
       .subcommands(MyCompletionCommand())

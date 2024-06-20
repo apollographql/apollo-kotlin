@@ -621,9 +621,12 @@ apolloClient.query().toFlow().asFlowable().firstOrError()
 
 Over the years, a lot of support functionality was added alongside `apollo-runtime`. While useful, most of this functionality doesn't share the same level of stability and bundling the release does not make much sense.
 
-Moving forward, `apollo-mockserver` is released separately.
+Moving forward, the following artifacts are released separately:
 
-Replace maven coordinates: 
+| Old coordinates                                 | New coordinates                                | New Repository                                            |
+|-------------------------------------------------|------------------------------------------------|:----------------------------------------------------------|
+| com.apollographql.apollo3:apollo-mockserver     | com.apollographql.mockserver:apollo-mockserver | https://github.com/apollographql/apollo-kotlin-mockserver |
+| com.apollographql.apollo3:apollo-cli-incubating | com.apollographql.mockserver:apollo-cli        | https://github.com/apollographql/apollo-kotlin-cli        |
 
 ```kotlin
 dependencies {
