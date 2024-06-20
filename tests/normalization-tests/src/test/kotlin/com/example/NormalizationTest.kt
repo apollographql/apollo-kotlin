@@ -15,9 +15,7 @@ import com.apollographql.apollo3.cache.normalized.api.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.cache.normalized.store
@@ -63,7 +61,7 @@ class NormalizationTest {
     val query = Issue3672Query()
 
     val data1 = Buffer().writeUtf8(nestedResponse).jsonReader().toApolloResponse(operation = query, customScalarAdapters = CustomScalarAdapters.Empty).dataOrThrow()
-    store.writeOperation(query, data1)
+    store.writeOperationSync(query, data1)
 
     val data2 = store.readOperation(query)
     check(data1 == data2)
@@ -80,7 +78,7 @@ class NormalizationTest {
     val query = NestedFragmentQuery()
 
     val data1 = Buffer().writeUtf8(nestedResponse_list).jsonReader().toApolloResponse(operation = query, customScalarAdapters = CustomScalarAdapters.Empty).dataOrThrow()
-    store.writeOperation(query, data1)
+    store.writeOperationSync(query, data1)
 
     val data2 = store.readOperation(query)
     check(data1 == data2)
@@ -94,7 +92,7 @@ class NormalizationTest {
         cacheResolver = IdBasedCacheKeyResolver
     )
 
-    apolloStore.writeOperation(
+    apolloStore.writeOperationSync(
         Issue2818Query(),
         Issue2818Query.Data(
             Issue2818Query.Home(

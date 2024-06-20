@@ -25,7 +25,7 @@ class IncludeTest {
         user = GetUserQuery.User(__typename = "User", id = "42", userDetails = null)
     )
 
-    client.apolloStore.writeOperation(operation, data)
+    client.apolloStore.writeOperationSync(operation, data)
 
     val response = client.query(operation).fetchPolicy(FetchPolicy.CacheOnly).execute()
 

@@ -29,7 +29,7 @@ class CircularCacheReadTest {
         )
     )
 
-    store.writeOperation(operation, data)
+    store.writeOperationSync(operation, data)
     val result = store.readOperation(operation, customScalarAdapters = CustomScalarAdapters.Empty)
     assertEquals("42", result.user.friend.id)
   }

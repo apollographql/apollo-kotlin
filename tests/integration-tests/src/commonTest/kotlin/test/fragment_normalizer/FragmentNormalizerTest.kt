@@ -60,14 +60,14 @@ class FragmentNormalizerTest{
         ),
         true
     )
-    apolloClient.apolloStore.writeFragment(
+    apolloClient.apolloStore.writeFragmentSync(
         ConversationFragmentImpl(),
         CacheKey(fragment1.id),
         fragment1Read,
         CustomScalarAdapters.Empty
     )
 
-    apolloClient.apolloStore.writeFragment(
+    apolloClient.apolloStore.writeFragmentSync(
         ConversationFragmentImpl(),
         CacheKey(fragment2.id),
         fragment2Read,
