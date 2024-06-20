@@ -11,11 +11,11 @@ import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.mpp.Platform
-import com.apollographql.apollo3.mpp.currentThreadId
-import com.apollographql.apollo3.mpp.platform
+import com.apollographql.apollo3.testing.Platform
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
+import com.apollographql.apollo3.testing.currentThreadId
 import com.apollographql.apollo3.testing.enqueueTestResponse
+import com.apollographql.apollo3.testing.platform
 import kotlinx.coroutines.test.runTest
 import kotlin.reflect.KClass
 import kotlin.test.Test

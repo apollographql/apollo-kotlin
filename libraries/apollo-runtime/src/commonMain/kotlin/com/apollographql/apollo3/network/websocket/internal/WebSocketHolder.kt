@@ -2,7 +2,6 @@ package com.apollographql.apollo3.network.websocket.internal
 
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.network.websocket.CLOSE_GOING_AWAY
 import com.apollographql.apollo3.network.websocket.WebSocketEngine
 import com.apollographql.apollo3.network.websocket.WsProtocol
@@ -75,9 +74,9 @@ internal class WebSocketHolder(
         return idleTimeoutMillis
       }
 
-      val lastActiveMillis = subscribableWebSocket!!.lastActiveMillis
-      if (lastActiveMillis != 0L) {
-        val elapsed = currentTimeMillis() - lastActiveMillis
+      val lastActiveMark = subscribableWebSocket!!.lastActiveMark
+      if (lastActiveMark != null) {
+        val elapsed = lastActiveMark.elapsedNow().inWholeMilliseconds
         if (elapsed > idleTimeoutMillis) {
           subscribableWebSocket!!.shutdown(null, CLOSE_GOING_AWAY, "Idle")
           subscribableWebSocket = null
@@ -85,8 +84,8 @@ internal class WebSocketHolder(
           return idleTimeoutMillis - elapsed
         }
       }
-
     }
+
     return idleTimeoutMillis
   }
 

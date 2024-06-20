@@ -6,10 +6,10 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
-import com.apollographql.apollo3.mpp.currentThreadName
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
+import com.apollographql.apollo3.testing.currentThreadId
 import com.apollographql.apollo3.testing.enqueueTestResponse
-import com.apollographql.apollo3.testing.internal.runTest
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
@@ -17,7 +17,7 @@ import kotlin.test.assertNull
 class NormalizedCacheThreadingTest {
   @Test
   fun cacheCreationHappensInBackgroundThread() = runTest {
-    val testThreadName = currentThreadName()
+    val testThreadName = currentThreadId()
     // No threading on js
     if (testThreadName == "js") return@runTest
     var cacheCreateThreadName: String? = null
@@ -25,7 +25,7 @@ class NormalizedCacheThreadingTest {
         .networkTransport(QueueTestNetworkTransport())
         .normalizedCache(object : NormalizedCacheFactory() {
           override fun create(): NormalizedCache {
-            cacheCreateThreadName = currentThreadName()
+            cacheCreateThreadName = currentThreadId()
             return MemoryCacheFactory().create()
           }
         }).build()

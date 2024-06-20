@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.mpp.isNode
+import com.apollographql.apollo3.internal.isNode
 import kotlinx.coroutines.await
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.Buffer

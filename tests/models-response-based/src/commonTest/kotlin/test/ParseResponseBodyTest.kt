@@ -8,10 +8,9 @@ import codegen.models.fragment.PlanetFragment
 import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.toApolloResponse
-import com.apollographql.apollo3.mpp.Platform
-import com.apollographql.apollo3.mpp.platform
+import com.apollographql.apollo3.testing.Platform
+import com.apollographql.apollo3.testing.platform
 import okio.Buffer
 import testFixtureToJsonReader
 import testFixtureToUtf8
