@@ -1,4 +1,3 @@
 # Module apollo-rx2-support-java
 
-apollo-rx2-support-java contains code to use apollo-runtime-java with RxJava2.
-
+This module has been moved to the [Java Support](https://github.com/apollographql/apollo-kotlin-java-support) repository and published under `com.apollographql.apollo:rx2`. Please update your dependencies.
