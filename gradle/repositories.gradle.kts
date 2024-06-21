@@ -5,9 +5,6 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
 
     mavenCentral()
 
-    // TODO REMOVE TESTING
-    mavenLocal()
-
     exclusiveContent {
       forRepository(::google)
       filter {
