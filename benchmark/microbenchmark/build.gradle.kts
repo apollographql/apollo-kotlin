@@ -25,7 +25,7 @@ configure<com.android.build.gradle.LibraryExtension> {
 
 dependencies {
 
-  implementation("com.apollographql.apollo3:apollo-runtime")
+  implementation(libs.apollo.runtime)
 
   implementation(libs.moshi)
   ksp(libs.moshix.ksp)
@@ -33,10 +33,10 @@ dependencies {
   androidTestImplementation(libs.benchmark.junit4)
   androidTestImplementation(libs.androidx.test.core)
   androidTestImplementation(libs.apollo.mockserver)
-  androidTestImplementation("com.apollographql.apollo3:apollo-testing-support")
+  androidTestImplementation(libs.apollo.testingsupport)
 
   // Stable cache
-  androidTestImplementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
+  androidTestImplementation(libs.apollo.normalizedcache.sqlite)
 
   // Incubating cache
   androidTestImplementation(libs.apollo.normalizedcache.sqlite.incubating.snapshot)
