@@ -2,14 +2,14 @@ package pagination
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.normalize
-import com.apollographql.apollo3.cache.normalized.apolloStore
-import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.cache.normalized.api.CacheKey
+import com.apollographql.cache.normalized.api.CacheKeyGenerator
+import com.apollographql.cache.normalized.api.CacheKeyGeneratorContext
+import com.apollographql.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.cache.normalized.api.normalize
+import com.apollographql.cache.normalized.apolloStore
+import com.apollographql.cache.normalized.normalizedCache
 import embed.GetHeroQuery
 import kotlin.test.Test
 import kotlin.test.assertEquals
