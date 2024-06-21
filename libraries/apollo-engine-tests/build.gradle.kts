@@ -18,8 +18,12 @@ kotlin {
     }
     findByName("commonTest")?.apply {
       dependencies {
-        implementation(libs.kotlin.test)
         implementation(project(":apollo-testing-support"))
+      }
+    }
+    findByName("jvmTest")?.apply {
+      dependencies {
+        implementation(libs.kotlin.test.junit)
       }
     }
   }
