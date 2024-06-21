@@ -50,7 +50,7 @@ class ApolloStoreTests {
         threadPool.submit {
           // Let each thread execute a few writes/reads
           repeat(WORK_LOAD) {
-            apolloStore.writeOperation(query, data)
+            apolloStore.writeOperationSync(query, data)
             val data2 = apolloStore.readOperation(query)
             Assert.assertEquals(data, data2)
           }
