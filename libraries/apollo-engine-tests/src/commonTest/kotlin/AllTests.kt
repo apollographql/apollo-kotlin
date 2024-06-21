@@ -7,8 +7,8 @@ import com.apollographql.apollo3.testing.internal.runTest
 import kotlin.test.Test
 
 class AllTests {
-  @Test
 
+  @Test
   fun runAllTest() = runTest {
     runAllTests(
         engine = { DefaultHttpEngine(it) },
