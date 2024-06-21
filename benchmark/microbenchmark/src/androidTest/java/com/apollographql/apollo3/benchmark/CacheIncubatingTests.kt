@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.benchmark.incubating
+package com.apollographql.apollo3.benchmark
 
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
@@ -6,7 +6,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.benchmark.Utils
 import com.apollographql.apollo3.benchmark.Utils.checkOperationBased
 import com.apollographql.apollo3.benchmark.Utils.checkResponseBased
 import com.apollographql.apollo3.benchmark.Utils.operationBasedQuery

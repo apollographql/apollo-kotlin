@@ -1,11 +1,10 @@
-package com.apollographql.apollo3.benchmark.incubating
+package com.apollographql.apollo3.benchmark
 
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.benchmark.Utils
 import com.apollographql.apollo3.benchmark.Utils.dbName
 import com.apollographql.apollo3.benchmark.Utils.operationBasedQuery
 import com.apollographql.apollo3.benchmark.Utils.resource
