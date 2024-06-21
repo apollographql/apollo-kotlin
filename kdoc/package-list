@@ -29,8 +29,6 @@ module:apollo-ast
 com.apollographql.apollo3.ast
 com.apollographql.apollo3.ast.internal
 com.apollographql.apollo3.ast.introspection
-module:apollo-cli-incubating
-com.apollographql.apollo3.cli
 module:apollo-compiler
 com.apollographql.apollo3.compiler
 com.apollographql.apollo3.compiler.codegen
