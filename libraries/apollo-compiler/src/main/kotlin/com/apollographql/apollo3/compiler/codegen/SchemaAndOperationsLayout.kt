@@ -20,4 +20,3 @@ interface OperationsLayout: CommonLayout {
 }
 
 interface SchemaAndOperationsLayout : SchemaLayout, OperationsLayout
-interface ExecutableSchemaLayout : SchemaLayout

@@ -33,7 +33,7 @@ internal class LayoutImpl(
     useSemanticNaming: Boolean?,
     decapitalizeFields: Boolean?,
     generatedSchemaName: String?
-) : SchemaAndOperationsLayout, ExecutableSchemaLayout {
+) : SchemaAndOperationsLayout {
   private val schemaPackageName = executableDocumentPackageName(codegenSchema.normalizedPath)
   private val useSemanticNaming: Boolean = useSemanticNaming ?: defaultUseSemanticNaming
   private val decapitalizeFields: Boolean = decapitalizeFields ?: defaultDecapitalizeFields
@@ -157,7 +157,6 @@ internal fun SchemaLayout.typeUtilPackageName() = "${schemaPackageName()}.type.u
 
 internal fun SchemaLayout.paginationPackageName() = "${schemaPackageName()}.pagination"
 internal fun SchemaLayout.schemaSubPackageName() = "${schemaPackageName()}.schema"
-internal fun ExecutableSchemaLayout.executionPackageName() = "${schemaPackageName()}.execution"
 
 internal fun OperationsLayout.operationAdapterPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.adapter"
 internal fun OperationsLayout.operationResponseFieldsPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.selections"

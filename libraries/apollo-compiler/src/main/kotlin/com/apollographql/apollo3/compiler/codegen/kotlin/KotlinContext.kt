@@ -3,7 +3,6 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 import com.apollographql.apollo3.compiler.GeneratedMethod
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.codegen.CommonLayout
-import com.apollographql.apollo3.compiler.codegen.ExecutableSchemaLayout
 import com.apollographql.apollo3.compiler.codegen.OperationsLayout
 import com.apollographql.apollo3.compiler.codegen.SchemaLayout
 
@@ -29,14 +28,6 @@ internal class KotlinSchemaContext(
 
 internal class KotlinOperationsContext(
     override val layout: OperationsLayout,
-    override val generateMethods: List<GeneratedMethod>,
-    override val jsExport: Boolean,
-    override val resolver: KotlinResolver,
-    override val targetLanguage: TargetLanguage,
-): KotlinContext
-
-internal class KotlinExecutableSchemaContext(
-    override val layout: ExecutableSchemaLayout,
     override val generateMethods: List<GeneratedMethod>,
     override val jsExport: Boolean,
     override val resolver: KotlinResolver,
