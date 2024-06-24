@@ -13,6 +13,8 @@ import com.apollographql.apollo3.compiler.codegen.OperationsLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.SchemaLayout
+import com.apollographql.apollo3.compiler.codegen.java.adapters.JavaOptionalAdapterBuilder
+import com.apollographql.apollo3.compiler.codegen.java.adapters.JavaOptionalAdaptersBuilder
 import com.apollographql.apollo3.compiler.codegen.java.operations.FragmentBuilder
 import com.apollographql.apollo3.compiler.codegen.java.operations.FragmentDataAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.operations.FragmentModelsBuilder
@@ -167,6 +169,10 @@ internal object JavaCodegen {
       if (context.nullableFieldStyle == JavaNullable.GUAVA_OPTIONAL && irSchema.irInputObjects.any { it.isOneOf }) {
         // When using the Guava optionals, generate assertOneOf in the project, as apollo-api doesn't depend on Guava
         builders.add(UtilAssertionsBuilder(context))
+      }
+      if (context.nullableFieldStyle == JavaNullable.JAVA_OPTIONAL || context.nullableFieldStyle == JavaNullable.GUAVA_OPTIONAL) {
+        builders.add(JavaOptionalAdapterBuilder(context, context.nullableFieldStyle))
+        builders.add(JavaOptionalAdaptersBuilder(context))
       }
       irSchema.irUnions.forEach { irUnion ->
         builders.add(UnionBuilder(context, irUnion))

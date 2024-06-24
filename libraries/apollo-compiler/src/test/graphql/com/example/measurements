@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  204708
+aggregate-all                                                                                  204838
 aggregate-kotlin-responseBased                                                                  65938
 aggregate-kotlin-operationBased                                                                 42453
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   96317
+aggregate-java-operationBased                                                                   96447
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5600
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3488
@@ -42,6 +42,8 @@ kotlin-operationBased-nested_named_fragments                                    
 kotlin-responseBased-inline_fragment_intersection                                                1250
 java-operationBased-two_heroes_with_friends                                                      1241
 java-operationBased-inline_fragment_merge_fields                                                 1229
+java-operationBased-java_guava_optionals                                                         1200
+java-operationBased-java_java_optionals                                                          1200
 kotlin-responseBased-simple_fragment                                                             1195
 java-operationBased-fragments_with_type_condition                                                1183
 java-operationBased-named_fragment_inside_inline_fragment                                        1172
@@ -53,8 +55,6 @@ kotlin-operationBased-union_inline_fragments                                    
 kotlin-responseBased-union_inline_fragments                                                      1152
 java-operationBased-java_android_annotations                                                     1151
 java-operationBased-java_jsr305_annotations                                                      1151
-java-operationBased-java_guava_optionals                                                         1135
-java-operationBased-java_java_optionals                                                          1135
 java-operationBased-java_apollo_optionals                                                        1134
 kotlin-operationBased-fragment_spread_with_include_directive                                     1121
 kotlin-operationBased-unique_type_name                                                           1114

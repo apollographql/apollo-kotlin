@@ -51,16 +51,14 @@ internal class JavaResolver(
     else -> JavaClassNames.Optional
   }
 
-  private val optionalAdapterClassName: ClassName = when (nullableFieldStyle) {
-    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
-    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
+  private fun getOptionalAdapterClassName(): ClassName = when (nullableFieldStyle) {
+    JavaNullable.JAVA_OPTIONAL, JavaNullable.GUAVA_OPTIONAL -> resolveJavaOptionalAdapter()
     else -> JavaClassNames.ApolloOptionalAdapter
   }
 
-  private val optionalOrNullableAdapterClassName: ClassName = when (nullableFieldStyle) {
+  private fun getOptionalOrNullableAdapterClassName(): ClassName = when (nullableFieldStyle) {
     JavaNullable.APOLLO_OPTIONAL -> JavaClassNames.ApolloOptionalAdapter
-    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
-    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
+    JavaNullable.JAVA_OPTIONAL, JavaNullable.GUAVA_OPTIONAL -> resolveJavaOptionalAdapter()
     else -> JavaClassNames.NullableAdapter
   }
 
@@ -185,8 +183,7 @@ internal class JavaResolver(
 
   fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
     return if (type.optional) {
-      val adapterClassName = if (!type.rawType().isComposite()) optionalAdapterClassName else optionalAdapterClassName
-      return CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(type.optional(false), requiresBuffering))
+      return CodeBlock.of("new $T<>($L)", getOptionalAdapterClassName(), adapterInitializer(type.optional(false), requiresBuffering))
     } else if (type.catchTo != IrCatchTo.NoCatch) {
       error("Java codegen does not support @catch")
     } else if (type.nullable) {
@@ -203,8 +200,7 @@ internal class JavaResolver(
         }
 
         else -> {
-          val adapterClassName = if (!type.rawType().isComposite()) optionalOrNullableAdapterClassName else optionalOrNullableAdapterClassName
-          CodeBlock.of("new $T<>($L)", adapterClassName, adapterInitializer(type.nullable(false), requiresBuffering))
+          CodeBlock.of("new $T<>($L)", getOptionalOrNullableAdapterClassName(), adapterInitializer(type.nullable(false), requiresBuffering))
         }
       }
     } else {
@@ -214,7 +210,7 @@ internal class JavaResolver(
         }
 
         is IrScalarType -> {
-          scalarAdapterInitializer(type.name, customScalarAdapters)
+          scalarAdapterInitializer(type.name)
         }
 
         is IrEnumType -> {
@@ -243,7 +239,7 @@ internal class JavaResolver(
   }
 
   private fun resolveScalarTarget(name: String): ClassName? {
-    return scalarMapping.get(name)?.targetName?.let {
+    return scalarMapping[name]?.targetName?.let {
       ClassName.bestGuess(it)
     }
   }
@@ -252,7 +248,7 @@ internal class JavaResolver(
     return CodeBlock.of("$T.$type", resolveAndAssert(ResolverKeyKind.SchemaType, name))
   }
 
-  private fun scalarAdapterInitializer(name: String, customScalarAdapters: String): CodeBlock {
+  private fun scalarAdapterInitializer(name: String): CodeBlock {
     return when (val adapterInitializer = scalarMapping[name]?.adapterInitializer) {
       is ExpressionAdapterInitializer -> {
         CodeBlock.of(adapterInitializer.expression)
@@ -305,16 +301,10 @@ internal class JavaResolver(
         adapterNamePrefix = "ApolloOptional"
       }
 
-      JavaNullable.JAVA_OPTIONAL -> {
-        // Ex: JavaOptionalAdapters.JavaOptionalStringAdapter
-        className = JavaClassNames.JavaOptionalAdapters
-        adapterNamePrefix = "JavaOptional"
-      }
-
-      JavaNullable.GUAVA_OPTIONAL -> {
-        // Ex: GuavaOptionalAdapters.GuavaOptionalStringAdapter
-        className = JavaClassNames.GuavaOptionalAdapters
-        adapterNamePrefix = "GuavaOptional"
+      JavaNullable.JAVA_OPTIONAL, JavaNullable.GUAVA_OPTIONAL -> {
+        // Ex: OptionalAdapters.OptionalStringAdapter
+        className = resolveJavaOptionalAdapters()
+        adapterNamePrefix = "Optional"
       }
 
       else -> {
@@ -396,7 +386,7 @@ internal class JavaResolver(
       is IrListType2 -> adapterInitializer2(type.ofType)?.listAdapter(isComposite = type.ofType.isCompositeOrWrappedComposite())
       is IrScalarType2 -> {
         if (scalarMapping.containsKey(type.name)) {
-          scalarAdapterInitializer(type.name, customScalarAdapters)
+          scalarAdapterInitializer(type.name)
         } else {
           null
         }
@@ -427,6 +417,12 @@ internal class JavaResolver(
 
   fun registerArgumentDefinition(id: String, className: ClassName) = register(ResolverKeyKind.ArgumentDefinition, id, className)
   fun resolveArgumentDefinition(id: String): ClassName = resolveAndAssert(ResolverKeyKind.ArgumentDefinition, id)
+
+  fun registerJavaOptionalAdapter(className: ClassName) = register(ResolverKeyKind.JavaOptionalAdapter, "", className)
+  fun resolveJavaOptionalAdapter() = resolveAndAssert(ResolverKeyKind.JavaOptionalAdapter, "")
+
+  fun registerJavaOptionalAdapters(className: ClassName) = register(ResolverKeyKind.JavaOptionalAdapters, "", className)
+  fun resolveJavaOptionalAdapters() = resolveAndAssert(ResolverKeyKind.JavaOptionalAdapters, "")
 }
 
 

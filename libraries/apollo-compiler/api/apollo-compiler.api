@@ -558,6 +558,8 @@ public final class com/apollographql/apollo3/compiler/codegen/ResolverKeyKind : 
 	public static final field Fragment Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field FragmentSelections Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field FragmentVariablesAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field JavaOptionalAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field JavaOptionalAdapters Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field MapType Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field Model Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field ModelAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
