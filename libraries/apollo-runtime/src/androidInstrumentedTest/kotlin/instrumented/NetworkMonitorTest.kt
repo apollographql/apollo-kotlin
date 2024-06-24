@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.mockserver.assertNoRequest
 import com.apollographql.mockserver.enqueueString
+import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
 import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
@@ -37,7 +38,9 @@ class NetworkMonitorTest {
   @Test
   fun test() = mockServerTest(
       clientBuilder = {
-        networkMonitor(NetworkMonitor(InstrumentationRegistry.getInstrumentation().context))
+        retryOnErrorInterceptor(
+            RetryOnErrorInterceptor(NetworkMonitor(InstrumentationRegistry.getInstrumentation().context))
+        )
         retryOnError { true }
         httpEngine(FaultyHttpEngine())
       }

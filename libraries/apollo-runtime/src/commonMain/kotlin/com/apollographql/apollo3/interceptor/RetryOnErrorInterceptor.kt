@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.interceptor
 
-import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -22,15 +21,34 @@ import kotlin.time.Duration.Companion.seconds
 
 
 /**
- * An [ApolloInterceptor] that monitors network errors and possibly retries the [Flow] when an [ApolloNetworkException] happens.
+ * Returns an [ApolloInterceptor] that monitors network errors and possibly retries the [Flow] when an [ApolloNetworkException] happens.
  *
- * Some other types of error might be recoverable as well (rate limit, ...) but are out of scope for this interceptor.
+ * The returned [RetryOnErrorInterceptor]:
+ * - allocates a new [ApolloRequest.requestUuid] for each retry.
+ * - if [ApolloRequest.retryOnError] is `true`, waits until network is available and retries the request.
+ * - if [ApolloRequest.failFastIfOffline] is `true` and [NetworkMonitor.isOnline] is `false`, returns early with [ApolloNetworkException].
  *
- * If no network monitor is available, the retry algorithm uses exponential backoff
+ * Use with [com.apollographql.apollo3.ApolloClient.Builder.retryOnErrorInterceptor]:
  *
- * @param networkMonitor a network monitor or `null` if none available.
+ * ```
+ * apolloClient = ApolloClient.Builder()
+ *                 .serverUrl("https://...")
+ *                 .retryOnErrorInterceptor(RetryOnErrorInterceptor(NetworkMonitor(context)))
+ *                 .build()
+ * ```
+ *
+ * Some other types of error than [ApolloNetworkException] might be recoverable as well (rate limit, ...) but are out of scope for this interceptor.
+ *
+ * @see [com.apollographql.apollo3.ApolloClient.Builder.retryOnErrorInterceptor]
+ * @see [ApolloRequest.retryOnError]
+ * @see [ApolloRequest.failFastIfOffline]
  */
-internal class RetryOnNetworkErrorInterceptor(private val networkMonitor: NetworkMonitor?) : ApolloInterceptor {
+@ApolloExperimental
+fun RetryOnErrorInterceptor(networkMonitor: NetworkMonitor): ApolloInterceptor = DefaultRetryOnErrorInterceptorImpl(networkMonitor)
+
+internal fun RetryOnErrorInterceptor(): ApolloInterceptor = DefaultRetryOnErrorInterceptorImpl(null)
+
+private class DefaultRetryOnErrorInterceptorImpl(private val networkMonitor: NetworkMonitor?) : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     val failFastIfOffline = request.failFastIfOffline ?: false
     val retryOnError = request.retryOnError ?: false
@@ -106,25 +124,3 @@ internal fun <T> Flow<Flow<T>>.flattenConcatPolyfill(): Flow<T> = flow {
   collect { value -> emitAll(value) }
 }
 
-private fun <D : Operation.Data> Flow<ApolloResponse<D>>.retryOnError(block: suspend (ApolloException, Int) -> Boolean): Flow<ApolloResponse<D>> {
-  var attempt = 0
-  return onEach {
-    if (it.exception != null && block(it.exception!!, attempt)) {
-      attempt++
-      throw RetryException
-    }
-  }.retryWhen { cause, _ ->
-    cause is RetryException
-  }
-}
-
-internal class RetryOnErrorInterceptor(private val retryWhen: suspend (ApolloException, Int) -> Boolean) : ApolloInterceptor {
-  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    return chain.proceed(request).retryOnError(retryWhen)
-  }
-}
-
-@ApolloExperimental
-fun ApolloClient.Builder.addRetryOnErrorInterceptor(retryWhen: suspend (ApolloException, Int) -> Boolean) = apply {
-  addInterceptor(RetryOnErrorInterceptor(retryWhen))
-}

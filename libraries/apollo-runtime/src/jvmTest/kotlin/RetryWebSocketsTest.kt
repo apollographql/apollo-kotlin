@@ -1,10 +1,16 @@
 
 import app.cash.turbine.test
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.interceptor.addRetryOnErrorInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitWebSocketRequest
@@ -31,6 +37,7 @@ import kotlin.test.assertIs
 import kotlin.test.assertNotEquals
 import kotlin.time.Duration.Companion.seconds
 import test.network.awaitSubscribe
+import test.network.retryWhen
 
 class RetryWebSocketsTest {
   @Test
@@ -101,7 +108,7 @@ class RetryWebSocketsTest {
                 .serverUrl(mockServer.url())
                 .build()
         )
-        .addRetryOnErrorInterceptor { _, _ ->
+        .retryWhen { _, _ ->
           true
         }
         .build()
@@ -258,7 +265,7 @@ class RetryWebSocketsTest {
                 .build()
         )
         .serverUrl("https://unused.com/")
-        .addRetryOnErrorInterceptor { _, _ ->
+        .retryWhen { _, _ ->
           reopenCount++
           delay(500)
           true

@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.assertNoRequest
 import com.apollographql.mockserver.enqueueString
@@ -37,7 +38,7 @@ class NetworkMonitorTest {
     val fakeNetworkMonitor = FakeNetworkMonitor()
 
     return mockServerTest(clientBuilder = {
-      networkMonitor(fakeNetworkMonitor)
+      retryOnErrorInterceptor(RetryOnErrorInterceptor(fakeNetworkMonitor))
       failFastIfOffline(true)
     }) {
 
