@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpHeader
@@ -19,6 +20,8 @@ import okio.Buffer
 import kotlin.coroutines.cancellation.CancellationException
 
 @ApolloExperimental
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+@Deprecated("apollo-engine-ktor has moved to 'com.apollographql.ktor:apollo-engine-ktor'")
 class KtorHttpEngine(
     private val client: HttpClient,
 ): HttpEngine {

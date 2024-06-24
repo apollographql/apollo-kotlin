@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network.ws
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloNetworkException
@@ -27,6 +28,8 @@ import kotlinx.coroutines.launch
 import okio.ByteString
 
 @ApolloExperimental
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+@Deprecated("apollo-engine-ktor has moved to 'com.apollographql.ktor:apollo-engine-ktor'")
 class KtorWebSocketEngine(
     private val client: HttpClient,
 ) : WebSocketEngine {
