@@ -48,6 +48,8 @@ com.apollographql.apollo3.network
 com.apollographql.apollo3.network.adapter
 com.apollographql.apollo3.network.http
 com.apollographql.apollo3.network.ws
+module:apollo-engine-tests
+com.apollographql.apollo3.engine.tests
 module:apollo-gradle-plugin-external
 com.apollographql.apollo3.gradle.api
 com.apollographql.apollo3.gradle.internal
