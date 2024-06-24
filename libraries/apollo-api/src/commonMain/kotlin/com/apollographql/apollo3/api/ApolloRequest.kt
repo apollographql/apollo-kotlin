@@ -17,6 +17,10 @@ import com.benasher44.uuid.uuid4
  * val newRequest = apolloRequest.newBuilder().addHttpHeader("Authorization", "Bearer $token").build()
  * ```
  *
+ * @property operation the GraphQL operation for this request
+ * @property requestUuid a unique id for this request. For queries and mutations, this is only used for debug.
+ * For subscriptions, it is used as subscription id when multiplexing several subscription over a WebSocket.
+ *
  * @see [com.apollographql.apollo3.ApolloCall]
  */
 class ApolloRequest<D : Operation.Data>

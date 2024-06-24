@@ -22,10 +22,9 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
-import com.apollographql.apollo3.interceptor.RetryOnNetworkErrorInterceptor
+import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
 import com.apollographql.apollo3.internal.ApolloClientListener
 import com.apollographql.apollo3.internal.defaultDispatcher
-import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
 import com.apollographql.apollo3.network.http.HttpEngine
@@ -83,8 +82,8 @@ private constructor(
   val subscriptionNetworkTransport: NetworkTransport
   val interceptors: List<ApolloInterceptor> = builder.interceptors
   val customScalarAdapters: CustomScalarAdapters = builder.customScalarAdapters
-  private val networkMonitor: NetworkMonitor?
   private val retryOnError: ((ApolloRequest<*>) -> Boolean)? = builder.retryOnError
+  private val retryOnErrorInterceptor: ApolloInterceptor? = builder.retryOnErrorInterceptor
   private val failFastIfOffline = builder.failFastIfOffline
   private val listeners = builder.listeners
 
@@ -97,8 +96,6 @@ private constructor(
   override val canBeBatched: Boolean? = builder.canBeBatched
 
   init {
-    networkMonitor = builder.networkMonitor
-
     networkTransport = if (builder.networkTransport != null) {
       check(builder.httpServerUrl == null) {
         "Apollo: 'httpServerUrl' has no effect if 'networkTransport' is set"
@@ -318,7 +315,7 @@ private constructor(
 
     val allInterceptors = buildList {
       addAll(interceptors)
-      add(RetryOnNetworkErrorInterceptor(networkMonitor))
+      add(retryOnErrorInterceptor ?: RetryOnErrorInterceptor())
       add(networkInterceptor)
     }
     return DefaultInterceptorChain(allInterceptors, 0)
@@ -399,11 +396,11 @@ private constructor(
       private set
 
     @ApolloExperimental
-    var networkMonitor: NetworkMonitor? = null
+    var retryOnError: ((ApolloRequest<*>) -> Boolean)? = null
       private set
 
     @ApolloExperimental
-    var retryOnError: ((ApolloRequest<*>) -> Boolean)? = null
+    var retryOnErrorInterceptor: ApolloInterceptor? = null
       private set
 
     @ApolloExperimental
@@ -412,24 +409,14 @@ private constructor(
 
     /**
      * Whether to fail fast if the device is offline.
+     * Requires setting an interceptor that is aware of the network state with [retryOnErrorInterceptor].
      *
-     * In that case, the returned [ApolloResponse.exception] is an instance of [com.apollographql.apollo3.exception.ApolloNetworkException]
-     *
-     * @see NetworkMonitor
+     * @see [retryOnErrorInterceptor]
+     * @see [com.apollographql.apollo3.network.NetworkMonitor]
      */
     @ApolloExperimental
     fun failFastIfOffline(failFastIfOffline: Boolean?): Builder = apply {
       this.failFastIfOffline = failFastIfOffline
-    }
-
-    /**
-     * Configures the [NetworkMonitor] for this [ApolloClient]
-     *
-     * @param networkMonitor or `null` to use the default [NetworkMonitor]
-     */
-    @ApolloExperimental
-    fun networkMonitor(networkMonitor: NetworkMonitor?): Builder = apply {
-      this.networkMonitor = networkMonitor
     }
 
     /**
@@ -449,6 +436,34 @@ private constructor(
     @ApolloExperimental
     fun retryOnError(retryOnError: ((ApolloRequest<*>) -> Boolean)?): Builder = apply {
       this.retryOnError = retryOnError
+    }
+
+    /**
+     * Sets the [ApolloInterceptor] used to retry or fail fast a request. The interceptor may use [ApolloRequest.retryOnError]
+     * and [ApolloRequest.failFastIfOffline].
+     * The interceptor is also responsible for allocating a new [ApolloRequest.requestUuid] on retries if needed.
+     *
+     * By default [ApolloClient] uses a best effort interceptor that is not aware about network state, uses exponential backoff
+     * and ignores [ApolloRequest.failFastIfOffline].
+     *
+     * Use [RetryOnErrorInterceptor] to add network state awareness:
+     *
+     * ```
+     * apolloClient = ApolloClient.Builder()
+     *                 .serverUrl("https://...")
+     *                 .retryOnErrorInterceptor(RetryOnErrorInterceptor(NetworkMonitor(context)))
+     *                 .build()
+     * ```
+     *
+     * @param retryOnErrorInterceptor the [ApolloInterceptor] to use for retrying or `null` to use the default interceptor.
+     *
+     * @see [RetryOnErrorInterceptor]
+     * @see [ApolloRequest.retryOnError]
+     * @see [ApolloRequest.failFastIfOffline]
+     */
+    @ApolloExperimental
+    fun retryOnErrorInterceptor(retryOnErrorInterceptor: ApolloInterceptor?) = apply {
+      this.retryOnErrorInterceptor = retryOnErrorInterceptor
     }
 
     /**
@@ -930,7 +945,7 @@ private constructor(
           .webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis)
           .wsProtocol(wsProtocolFactory)
           .retryOnError(retryOnError)
-          .networkMonitor(networkMonitor)
+          .retryOnErrorInterceptor(retryOnErrorInterceptor)
           .failFastIfOffline(failFastIfOffline)
           .listeners(listeners)
     }
