@@ -48,7 +48,7 @@ import static com.apollographql.apollo3.api.java.Assertions.checkNotNull;
 import static java.util.concurrent.Executors.newCachedThreadPool;
 
 /**
- * @deprecated The Java support has new maven coordinates at 'com.apollographql.apollo:java-client'. See <a href="https://go.apollo.dev/ak-4-migration-guide">the migration guide</a> for more details.
+ * @deprecated The Java support has new maven coordinates at 'com.apollographql.java:client'. See <a href="https://go.apollo.dev/ak-4-migration-guide">the migration guide</a> for more details.
  */
 @Deprecated
 @ApolloDeprecatedSince(version = ApolloDeprecatedSince.Version.v4_0_0)
