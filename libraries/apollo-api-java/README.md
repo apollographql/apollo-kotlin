@@ -1,3 +1,3 @@
 # Module apollo-api-java
  
-This module has been moved to the [Java Support](https://github.com/apollographql/apollo-kotlin-java-support) repository and published under `com.apollographql.apollo:java-client`. Please update your dependencies.
+This module has been moved to the [Java Support](https://github.com/apollographql/apollo-kotlin-java-support) repository and published under `com.apollographql.java:client`. Please update your dependencies.
