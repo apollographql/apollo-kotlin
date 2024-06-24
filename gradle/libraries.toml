@@ -69,7 +69,7 @@ apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version
 apollo-api-java = { group = "com.apollographql.apollo3", name = "apollo-api-java", version.ref = "apollo" }
 apollo-httpCache = { group = "com.apollographql.apollo3", name = "apollo-http-cache", version.ref = "apollo" }
 apollo-idlingresource = { group = "com.apollographql.apollo3", name = "apollo-idling-resource", version.ref = "apollo" }
-apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-mockserver", version = "0.0.1" }
+apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-mockserver", version = "0.0.3" }
 apollo-mpputils = { group = "com.apollographql.apollo3", name = "apollo-mpp-utils", version.ref = "apollo" }
 apollo-normalizedcache = { group = "com.apollographql.apollo3", name = "apollo-normalized-cache", version.ref = "apollo" }
 apollo-normalizedcache-incubating = { group = "com.apollographql.cache", name = "normalized-cache-incubating", version.ref = "apollo-normalizedcache-incubating" }
