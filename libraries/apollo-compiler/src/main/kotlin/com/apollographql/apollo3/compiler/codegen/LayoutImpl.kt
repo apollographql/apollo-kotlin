@@ -158,6 +158,9 @@ internal fun SchemaLayout.typeUtilPackageName() = "${schemaPackageName()}.type.u
 internal fun SchemaLayout.paginationPackageName() = "${schemaPackageName()}.pagination"
 internal fun SchemaLayout.schemaSubPackageName() = "${schemaPackageName()}.schema"
 
+internal fun SchemaLayout.javaOptionalAdapterClassName() = "OptionalAdapter"
+internal fun SchemaLayout.javaOptionalAdaptersClassName() = "OptionalAdapters"
+
 internal fun OperationsLayout.operationAdapterPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.adapter"
 internal fun OperationsLayout.operationResponseFieldsPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.selections"
 

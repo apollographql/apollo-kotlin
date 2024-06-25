@@ -77,7 +77,6 @@ apollo-normalizedcache-incubating-snapshot = { group = "com.apollographql.cache"
 apollo-normalizedcache-sqlite = { group = "com.apollographql.apollo3", name = "apollo-normalized-cache-sqlite", version.ref = "apollo" }
 apollo-normalizedcache-sqlite-incubating = { group = "com.apollographql.cache", name = "normalized-cache-sqlite-incubating", version.ref = "apollo-normalizedcache-incubating" }
 apollo-normalizedcache-sqlite-incubating-snapshot = { group = "com.apollographql.cache", name = "normalized-cache-sqlite-incubating", version.ref = "apollo-normalizedcache-incubating-snapshot" }
-apollo-rx2-support-java = { group = "com.apollographql.apollo3", name = "apollo-rx2-support-java", version.ref = "apollo" }
 apollo-plugin = { group = "com.apollographql.apollo3", name = "apollo-gradle-plugin", version.ref = "apollo" }
 apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
 apollo-compiler = { group = "com.apollographql.apollo3", name = "apollo-compiler", version.ref = "apollo" }
@@ -89,9 +88,7 @@ apollo-execution-gradle-plugin = { group = "com.apollographql.execution", name =
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-runtime-published = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo-published" }
 apollo-annotations = { group = "com.apollographql.apollo3", name = "apollo-annotations", version.ref = "apollo" }
-apollo-runtime-java = { group = "com.apollographql.apollo3", name = "apollo-runtime-java", version.ref = "apollo" }
 apollo-engine-ktor = { group = "com.apollographql.apollo3", name = "apollo-engine-ktor", version.ref = "apollo" }
-apollo-rx3-java = { group = "com.apollographql.apollo3", name = "apollo-rx3-support-java", version.ref = "apollo" }
 apollo-testingsupport = { group = "com.apollographql.apollo3", name = "apollo-testing-support", version.ref = "apollo" }
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-testingsupport-published = { group = "com.apollographql.apollo3", name = "apollo-testing-support", version.ref = "apollo-published" }
