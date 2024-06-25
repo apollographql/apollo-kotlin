@@ -50,7 +50,7 @@ private fun List<IrVariable>.writeToResponseCodeBlock(context: KotlinContext): C
 }
 
 private fun IrVariable.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
-  val adapterInitializer = context.resolver.adapterInitializer(type, false, context.jsExport, customScalarAdapters)
+  val adapterInitializer = context.resolver.adapterInitializer(type, false, context.jsExport)
   val builder = CodeBlock.builder()
   val propertyName = context.layout.propertyName(name)
 

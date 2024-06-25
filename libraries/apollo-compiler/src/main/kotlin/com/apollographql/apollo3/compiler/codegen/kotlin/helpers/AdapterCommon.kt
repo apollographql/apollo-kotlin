@@ -71,7 +71,7 @@ internal fun readFromResponseCodeBlock(
         .add(
             regularProperties.mapIndexed { index, property ->
               val variableName = property.info.responseName.variableName()
-              val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport, customScalarAdapters)
+              val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport)
               CodeBlock.of(
                   "%L·->·%N·=·%L.$fromJson($reader,·${customScalarAdapters})",
                   index,
@@ -215,7 +215,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
   val propertyName = context.layout.propertyName(info.responseName)
 
   if (!isSynthetic) {
-    val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering, context.jsExport, customScalarAdapters)
+    val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering, context.jsExport)
     builder.addStatement("${writer}.name(%S)", info.responseName)
     builder.addStatement(
         "%L.$toJson($writer, $customScalarAdapters, $value.%N)",

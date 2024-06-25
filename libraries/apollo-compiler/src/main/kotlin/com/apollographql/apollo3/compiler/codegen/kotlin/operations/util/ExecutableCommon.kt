@@ -64,7 +64,7 @@ internal fun adapterFunSpec(
       .addCode(
           CodeBlock.of(
               "return·%L",
-              context.resolver.adapterInitializer(type, property.requiresBuffering, context.jsExport, "")
+              context.resolver.adapterInitializer(type, property.requiresBuffering, context.jsExport)
           )
       )
     .build()
