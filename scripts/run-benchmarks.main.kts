@@ -7,7 +7,6 @@
 @file:DependsOn("com.squareup.okhttp3:okhttp:4.10.0")
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
-import Run_benchmarks_main.TestResult
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.storage.Storage
 import com.google.cloud.storage.StorageOptions
@@ -17,7 +16,14 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import net.mbonnin.bare.graphql.*
+import net.mbonnin.bare.graphql.asList
+import net.mbonnin.bare.graphql.asMap
+import net.mbonnin.bare.graphql.asNumber
+import net.mbonnin.bare.graphql.asString
+import net.mbonnin.bare.graphql.cast
+import net.mbonnin.bare.graphql.graphQL
+import net.mbonnin.bare.graphql.toAny
+import net.mbonnin.bare.graphql.toJsonElement
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -26,7 +32,7 @@ import okio.Buffer
 import okio.buffer
 import okio.source
 import java.io.File
-import java.util.*
+import java.util.Date
 import kotlin.math.roundToLong
 
 /**
