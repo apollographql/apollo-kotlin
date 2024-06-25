@@ -514,31 +514,6 @@ object ApolloCompiler {
 
     return sourceOutput
   }
-
-  fun buildExecutableSchemaSources(
-      codegenSchema: CodegenSchema,
-      codegenMetadata: CodegenMetadata,
-      irTargetObjects: List<IrTargetObject>,
-      packageName: String,
-      serviceName: String,
-  ): SourceOutput {
-    @Suppress("DEPRECATION")
-    val layout = LayoutImpl(
-        codegenSchema = codegenSchema,
-        packageNameGenerator = PackageNameGenerator.Flat(packageName),
-        useSemanticNaming = null,
-        decapitalizeFields = null,
-        generatedSchemaName = null,
-    )
-
-    return KotlinCodegen.buildExecutableSchema(
-        codegenSchema = codegenSchema,
-        codegenMetadata = codegenMetadata,
-        irTargetObjects = irTargetObjects,
-        layout = layout,
-        serviceName = serviceName
-    ).toSourceOutput()
-  }
 }
 
 private enum class Severity {

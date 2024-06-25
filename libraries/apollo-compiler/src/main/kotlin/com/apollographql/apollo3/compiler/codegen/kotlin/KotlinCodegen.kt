@@ -7,14 +7,10 @@ import com.apollographql.apollo3.compiler.KotlinOperationsCodegenOptions
 import com.apollographql.apollo3.compiler.KotlinSchemaCodegenOptions
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.Transform
-import com.apollographql.apollo3.compiler.codegen.ExecutableSchemaLayout
 import com.apollographql.apollo3.compiler.codegen.OperationsLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.SchemaLayout
-import com.apollographql.apollo3.compiler.codegen.kotlin.executableschema.AdapterRegistryBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.executableschema.ExecutableSchemaBuilderBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.executableschema.MainResolverBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.addInternal
 import com.apollographql.apollo3.compiler.codegen.kotlin.operations.FragmentBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.operations.FragmentModelsBuilder
@@ -312,56 +308,6 @@ internal object KotlinCodegen {
                 )
             )
           }
-    }
-  }
-
-  fun buildExecutableSchema(
-      codegenSchema: CodegenSchema,
-      codegenMetadata: CodegenMetadata,
-      irTargetObjects: List<IrTargetObject>,
-      layout: ExecutableSchemaLayout,
-      serviceName: String,
-  ): KotlinOutput {
-    val targetLanguage = TargetLanguage.KOTLIN_1_9
-    return buildOutput(
-        codegenSchema,
-        listOf(codegenMetadata),
-        null,
-        targetLanguage,
-        null,
-        true,
-    ) { resolver ->
-      val context = KotlinExecutableSchemaContext(
-          generateMethods = emptyList(),
-          jsExport = false,
-          layout = layout,
-          resolver = resolver,
-          targetLanguage = targetLanguage,
-      )
-
-      val mainResolverBuilder = MainResolverBuilder(
-          context = context,
-          serviceName = serviceName,
-          irTargetObjects = irTargetObjects
-      )
-      builders.add(mainResolverBuilder)
-
-      val adapterRegistryBuilder = AdapterRegistryBuilder(
-          context = context,
-          serviceName = serviceName,
-          codegenSchema = codegenSchema
-      )
-      builders.add(adapterRegistryBuilder)
-
-      builders.add(
-          ExecutableSchemaBuilderBuilder(
-              context = context,
-              serviceName = serviceName,
-              mainResolver = mainResolverBuilder.className,
-              adapterRegistry = adapterRegistryBuilder.memberName,
-              irTargetObjects = irTargetObjects
-          )
-      )
     }
   }
 }
