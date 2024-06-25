@@ -16,7 +16,6 @@ androidx-sqlite = "2.3.1"
 # This is used by the gradle integration tests to get the artifacts locally
 apollo = "4.0.0-beta.8-SNAPSHOT"
 apollo-execution = "0.0.1"
-apollo-normalizedcache-incubating = "0.0.1"
 apollo-normalizedcache-incubating-snapshot = "0.0.2-SNAPSHOT"
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-published = "4.0.0-beta.6"
@@ -72,10 +71,8 @@ apollo-idlingresource = { group = "com.apollographql.apollo3", name = "apollo-id
 apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-mockserver", version = "0.0.3" }
 apollo-mpputils = { group = "com.apollographql.apollo3", name = "apollo-mpp-utils", version.ref = "apollo" }
 apollo-normalizedcache = { group = "com.apollographql.apollo3", name = "apollo-normalized-cache", version.ref = "apollo" }
-apollo-normalizedcache-incubating = { group = "com.apollographql.cache", name = "normalized-cache-incubating", version.ref = "apollo-normalizedcache-incubating" }
 apollo-normalizedcache-incubating-snapshot = { group = "com.apollographql.cache", name = "normalized-cache-incubating", version.ref = "apollo-normalizedcache-incubating-snapshot" }
 apollo-normalizedcache-sqlite = { group = "com.apollographql.apollo3", name = "apollo-normalized-cache-sqlite", version.ref = "apollo" }
-apollo-normalizedcache-sqlite-incubating = { group = "com.apollographql.cache", name = "normalized-cache-sqlite-incubating", version.ref = "apollo-normalizedcache-incubating" }
 apollo-normalizedcache-sqlite-incubating-snapshot = { group = "com.apollographql.cache", name = "normalized-cache-sqlite-incubating", version.ref = "apollo-normalizedcache-incubating-snapshot" }
 apollo-plugin = { group = "com.apollographql.apollo3", name = "apollo-gradle-plugin", version.ref = "apollo" }
 apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
