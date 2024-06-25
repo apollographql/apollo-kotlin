@@ -34,6 +34,8 @@ enum class ResolverKeyKind {
   CustomScalarAdapters,
   Pagination,
   ArgumentDefinition,
+  JavaOptionalAdapter,
+  JavaOptionalAdapters,
 }
 
 @Serializable
