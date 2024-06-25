@@ -1,9 +1,0 @@
-extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3", import: ["@typePolicy", "@fieldPolicy"])
-
-extend type Query
-@typePolicy(embeddedFields: "users")
-@fieldPolicy(forField: "users", paginationArgs: "first, after, last, before")
-
-extend type UserConnection @typePolicy(embeddedFields: "pageInfo, edges")
-
-extend type User @typePolicy(keyFields: "id")

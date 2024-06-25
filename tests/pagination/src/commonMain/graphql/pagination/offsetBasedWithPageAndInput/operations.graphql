@@ -1,9 +1,0 @@
-query Users($offset: Int, $limit: Int) {
-  users(usersInput: {sessionId: "42", offset: $offset, limit: $limit}) {
-    users {
-      id
-      name
-      email
-    }
-  }
-}

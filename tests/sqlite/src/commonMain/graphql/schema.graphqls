@@ -1,9 +1,0 @@
-type Query {
-  user: User
-}
-
-type User {
-  name: String!
-  email: String!
-  admin: Boolean
-}

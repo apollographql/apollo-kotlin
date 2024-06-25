@@ -1,7 +1,0 @@
-query Users($offset: Int, $limit: Int) {
-  users(offset: $offset, limit: $limit) {
-    id
-    name
-    email
-  }
-}
