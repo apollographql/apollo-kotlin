@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.compiler.ir
 
+import com.apollographql.apollo3.ast.Catch
+import com.apollographql.apollo3.ast.CatchTo
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
@@ -20,7 +22,7 @@ internal class OperationBasedModelGroupBuilder(
     private val fieldMerger: FieldMerger,
 ) : ModelGroupBuilder {
 
-  override fun buildOperationData(selections: List<GQLSelection>, rawTypeName: String, operationName: String): Pair<IrProperty, IrModelGroup> {
+  override fun buildOperationData(selections: List<GQLSelection>, rawTypeName: String, operationName: String, defaultCatchTo: CatchTo?): Pair<IrProperty, IrModelGroup> {
     val info = IrFieldInfo(
         responseName = "data",
         description = null,
@@ -37,6 +39,7 @@ internal class OperationBasedModelGroupBuilder(
         parentType = rawTypeName,
         condition = BooleanExpression.True,
         parentTypeConditions = listOf(rawTypeName),
+        defaultCatchTo = defaultCatchTo,
     )
 
     return field.toProperty() to field.toModelGroup()!!
@@ -46,7 +49,7 @@ internal class OperationBasedModelGroupBuilder(
     return null
   }
 
-  override fun buildFragmentData(fragmentName: String): Pair<IrProperty, IrModelGroup> {
+  override fun buildFragmentData(fragmentName: String, defaultCatchTo: CatchTo?): Pair<IrProperty, IrModelGroup> {
     val fragmentDefinition = allFragmentDefinitions[fragmentName]!!
 
     /**
@@ -73,6 +76,7 @@ internal class OperationBasedModelGroupBuilder(
         parentType = fragmentDefinition.typeCondition.name,
         condition = BooleanExpression.True,
         parentTypeConditions = listOf(fragmentDefinition.typeCondition.name),
+        defaultCatchTo = defaultCatchTo,
     )
 
     return field.toProperty() to field.toModelGroup()!!
@@ -125,6 +129,7 @@ internal class OperationBasedModelGroupBuilder(
       parentType: String,
       condition: BooleanExpression<BTerm>,
       parentTypeConditions: List<String>,
+      defaultCatchTo: CatchTo?,
   ): OperationField {
     if (selections.isEmpty()) {
       return OperationField(
@@ -243,6 +248,7 @@ internal class OperationBasedModelGroupBuilder(
                     parentType = typeCondition,
                     condition = childCondition,
                     parentTypeConditions = parentTypeConditions + typeCondition,
+                    defaultCatchTo = defaultCatchTo,
                 )
               }
         }
@@ -301,7 +307,8 @@ internal class OperationBasedModelGroupBuilder(
               selections = emptyList(), // Don't create a model for fragments spreads
               parentType = typeCondition, // unused
               condition = childCondition,
-              parentTypeConditions = emptyList() // this is not used because this field has no sub selections
+              parentTypeConditions = emptyList(),
+              defaultCatchTo = defaultCatchTo // this is not used because this field has no sub selections
           )
         }
 
@@ -317,7 +324,7 @@ internal class OperationBasedModelGroupBuilder(
         null
       }
     }
-    val fields = fieldMerger.merge(fieldsWithParent).map { mergedField ->
+    val fields = fieldMerger.merge(fieldsWithParent, defaultCatchTo =  defaultCatchTo).map { mergedField ->
       val childInfo = mergedField.info.maybeNullable(mergedField.condition != BooleanExpression.True)
 
       /**
@@ -334,7 +341,8 @@ internal class OperationBasedModelGroupBuilder(
           selections = mergedField.selections,
           parentType = mergedField.rawTypeName,
           condition = fieldCondition,
-          parentTypeConditions = listOf(mergedField.rawTypeName)
+          parentTypeConditions = listOf(mergedField.rawTypeName),
+          defaultCatchTo = defaultCatchTo
       )
     }
 

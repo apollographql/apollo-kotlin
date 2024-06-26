@@ -18,3 +18,21 @@ query Query3 {
 query Query4 {
     foo @catch(levels: [3], to: THROW)
 }
+
+fragment QueryDetails on Query {
+    foo @catch(to: THROW)
+}
+
+# this is ok because the fragment can have different catch directives
+query Query5 {
+    ...QueryDetails
+    foo @catch(to: NULL)
+}
+
+# `foo` cannot be merged with `foo` (at catch.graphql: (36, 9)): they have different `@catch` directives.
+query Query6 {
+    foo @catch(to: NULL)
+    ... on Query {
+        foo @catch(to: THROW)
+    }
+}

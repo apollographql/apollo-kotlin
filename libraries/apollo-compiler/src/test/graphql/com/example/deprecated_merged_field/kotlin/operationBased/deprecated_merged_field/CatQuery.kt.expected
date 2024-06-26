@@ -22,8 +22,6 @@ import kotlin.String
 import com.example.deprecated_merged_field.type.Query as CompiledQuery
 
 public class CatQuery() : Query<CatQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()

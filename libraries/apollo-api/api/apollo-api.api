@@ -521,7 +521,6 @@ public final class com/apollographql/apollo3/api/Error$Location {
 
 public abstract interface class com/apollographql/apollo3/api/Executable {
 	public abstract fun adapter ()Lcom/apollographql/apollo3/api/Adapter;
-	public abstract fun getIgnoreErrors ()Z
 	public abstract fun rootField ()Lcom/apollographql/apollo3/api/CompiledField;
 	public abstract fun serializeVariables (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Z)V
 }

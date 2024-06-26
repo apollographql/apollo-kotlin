@@ -23,8 +23,6 @@ import com.example.subscriptions.type.Subscription as CompiledSubscription
 public data class TestSubscription(
   public val repo: String,
 ) : Subscription<TestSubscription.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

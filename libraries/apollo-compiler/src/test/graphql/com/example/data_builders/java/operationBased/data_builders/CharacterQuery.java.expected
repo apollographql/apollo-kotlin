@@ -149,11 +149,6 @@ public class CharacterQuery implements Query<CharacterQuery.Data> {
     return buildData(map, new DefaultFakeResolver(__Schema.types));
   }
 
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
-
   public static final class Builder {
     Builder() {
     }

@@ -1,13 +1,7 @@
 package test
 
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.graphQLErrorOrNull
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.parseResponse
 import com.apollographql.apollo3.api.getOrThrow
+import com.apollographql.apollo3.api.graphQLErrorOrNull
 import com.apollographql.apollo3.exception.ApolloGraphQLException
 import `throw`.PriceNullQuery
 import `throw`.ProductIgnoreErrorsQuery
@@ -17,8 +11,6 @@ import `throw`.ProductResultQuery
 import `throw`.UserNullQuery
 import `throw`.UserQuery
 import `throw`.UserResultQuery
-import okio.Buffer
-import org.intellij.lang.annotations.Language
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs

@@ -22,8 +22,6 @@ import kotlin.Suppress
 import com.example.nested_field_with_multiple_fieldsets.type.Query as CompiledQuery
 
 public class TestQuery() : Query<TestQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()

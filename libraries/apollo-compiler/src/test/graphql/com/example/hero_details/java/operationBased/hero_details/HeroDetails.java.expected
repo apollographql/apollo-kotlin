@@ -127,11 +127,6 @@ public class HeroDetails implements Query<HeroDetails.Data> {
     .build();
   }
 
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
-
   public static final class Builder {
     Builder() {
     }

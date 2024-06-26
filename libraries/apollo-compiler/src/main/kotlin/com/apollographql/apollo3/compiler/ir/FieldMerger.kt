@@ -1,13 +1,15 @@
 package com.apollographql.apollo3.compiler.ir
 
+import com.apollographql.apollo3.ast.CatchTo
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
+import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 
 internal interface FieldMerger {
-  fun merge(fields: List<FieldWithParent>): List<MergedField>
+  fun merge(fields: List<FieldWithParent>, defaultCatchTo: CatchTo?): List<MergedField>
 }
 
 internal data class FieldWithParent(val gqlField: GQLField, val parentType: String)

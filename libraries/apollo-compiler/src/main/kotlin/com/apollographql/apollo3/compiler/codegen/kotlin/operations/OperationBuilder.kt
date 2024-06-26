@@ -16,7 +16,6 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddJsExpor
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.adapterFunSpec
-import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.ignoreErrorsPropertySpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.maybeAddFilterNotNull
 import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.rootFieldFunSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.serializeVariablesFunSpec
@@ -117,7 +116,6 @@ internal class OperationBuilder(
         .addFunction(rootFieldFunSpec())
         .addTypes(dataTypeSpecs())
         .addType(companionTypeSpec())
-        .addProperty(ignoreErrorsPropertySpec(operation.ignoreErrors))
         .build()
         .maybeAddFilterNotNull(generateFilterNotNull)
   }

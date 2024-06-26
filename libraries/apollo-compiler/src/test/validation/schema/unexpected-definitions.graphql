@@ -1,4 +1,3 @@
-directive @ignoreErrors repeatable on QUERY | MUTATION | SUBSCRIPTION
 directive @catch on FIELD_DEFINITION
 enum CatchTo {
   NULL

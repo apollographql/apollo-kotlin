@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.ir
 
+import com.apollographql.apollo3.ast.CatchTo
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
@@ -22,7 +23,12 @@ internal class ResponseBasedModelGroupBuilder(
       selections: List<GQLSelection>,
       rawTypeName: String,
       operationName: String,
+      defaultCatchTo: CatchTo?,
   ): Pair<IrProperty, IrModelGroup> {
+    check(defaultCatchTo == null) {
+      "Apollo: responseBased codegen does not support @catch"
+    }
+
     val field = fieldNodeBuilder.buildOperationData(
         selections,
         rawTypeName,
@@ -41,7 +47,12 @@ internal class ResponseBasedModelGroupBuilder(
 
   override fun buildFragmentData(
       fragmentName: String,
+      defaultCatchTo: CatchTo?,
   ): Pair<IrProperty, IrModelGroup> {
+    check(defaultCatchTo == null) {
+      "Apollo: responseBased codegen does not support @catch"
+    }
+
     val field = fieldNodeBuilder.buildFragmentData(
         fragmentName
     )
@@ -364,7 +375,8 @@ private class FieldNodeBuilder(
             selections = state.selections,
             parentTypeDefinition = state.rawTypename,
             typeSet = typeSet,
-        )
+        ),
+        null
     )
 
     val path = subpath(state.path, state.info, typeSet, isOther)

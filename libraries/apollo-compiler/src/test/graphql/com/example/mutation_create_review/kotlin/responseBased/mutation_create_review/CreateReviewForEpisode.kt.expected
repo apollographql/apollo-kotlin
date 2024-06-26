@@ -35,8 +35,6 @@ internal data class CreateReviewForEpisode(
   public val ep: Episode,
   public val review: ReviewInput,
 ) : Mutation<CreateReviewForEpisode.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

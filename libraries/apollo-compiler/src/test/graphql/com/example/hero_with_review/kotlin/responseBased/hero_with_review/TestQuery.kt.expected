@@ -24,8 +24,6 @@ import com.example.hero_with_review.type.Mutation as CompiledMutation
 public data class TestQuery(
   public val ep: Episode,
 ) : Mutation<TestQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

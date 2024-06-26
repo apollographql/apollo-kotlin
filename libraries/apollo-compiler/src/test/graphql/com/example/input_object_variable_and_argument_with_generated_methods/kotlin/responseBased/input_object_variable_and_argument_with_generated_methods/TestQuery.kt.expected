@@ -31,8 +31,6 @@ public class TestQuery(
 ) : Query<TestQuery.Data> {
   private var __hashCode: Int? = null
 
-  override val ignoreErrors: Boolean = false
-
   override fun hashCode(): Int {
     if (__hashCode == null) {
       var __h = episode.hashCode()

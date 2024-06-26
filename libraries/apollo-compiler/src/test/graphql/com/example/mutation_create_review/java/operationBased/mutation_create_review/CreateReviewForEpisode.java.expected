@@ -161,11 +161,6 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
     return buildData(map, new DefaultFakeResolver(__Schema.types));
   }
 
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
-
   public static final class Builder {
     private Episode ep;
 

@@ -79,9 +79,4 @@ public class HorseFragmentImpl implements Fragment<HorseFragment> {
     .selections(HorseFragmentSelections.__root)
     .build();
   }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
 }

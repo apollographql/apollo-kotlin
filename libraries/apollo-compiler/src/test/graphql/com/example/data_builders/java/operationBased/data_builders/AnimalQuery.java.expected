@@ -147,11 +147,6 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
     return buildData(map, new DefaultFakeResolver(__Schema.types));
   }
 
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
-
   public static final class Builder {
     Builder() {
     }

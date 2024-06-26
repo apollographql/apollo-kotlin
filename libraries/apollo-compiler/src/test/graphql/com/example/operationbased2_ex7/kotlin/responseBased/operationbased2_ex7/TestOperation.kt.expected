@@ -22,8 +22,6 @@ import kotlin.Suppress
 import com.example.operationbased2_ex7.type.Query as CompiledQuery
 
 public class TestOperation() : Query<TestOperation.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()

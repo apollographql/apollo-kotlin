@@ -79,9 +79,4 @@ public class ADetailsImpl implements Fragment<ADetails> {
     .selections(ADetailsSelections.__root)
     .build();
   }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
 }

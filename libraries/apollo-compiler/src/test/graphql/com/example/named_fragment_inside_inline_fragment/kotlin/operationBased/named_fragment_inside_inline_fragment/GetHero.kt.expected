@@ -23,8 +23,6 @@ import kotlin.String
 import com.example.named_fragment_inside_inline_fragment.type.Query as CompiledQuery
 
 public class GetHero() : Query<GetHero.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()

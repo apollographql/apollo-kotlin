@@ -122,11 +122,6 @@ public class SpreadMultipleWithDefer implements Query<SpreadMultipleWithDefer.Da
     .build();
   }
 
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
-
   public static final class Builder {
     Builder() {
     }

@@ -86,7 +86,7 @@ class CatchResultTest {
     val response = ProductIgnoreErrorsQuery().parseResponse(productPriceError)
 
     assertNotNull(response.data?.product)
-    assertNull(response.data?.product?.getOrNull()?.price?.getOrNull())
+    assertNull(response.data?.product?.price)
     assertEquals("cannot resolve price", response.errors?.single()?.message)
   }
 

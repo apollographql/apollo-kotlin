@@ -18,8 +18,6 @@ import kotlin.Boolean
 import kotlin.Int
 
 public class DroidDetailsImpl() : Fragment<DroidDetails> {
-  override val ignoreErrors: Boolean = false
-
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()

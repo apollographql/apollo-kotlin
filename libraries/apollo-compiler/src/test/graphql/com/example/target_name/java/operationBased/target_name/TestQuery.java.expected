@@ -150,11 +150,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     .build();
   }
 
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
-
   public static final class Builder {
     private Optional<RenamedInput> input = Optional.absent();
 

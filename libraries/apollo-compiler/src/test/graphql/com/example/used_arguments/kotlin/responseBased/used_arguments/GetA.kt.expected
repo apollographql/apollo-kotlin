@@ -22,8 +22,6 @@ import kotlin.Suppress
 import com.example.used_arguments.type.Query as CompiledQuery
 
 public class GetA() : Query<GetA.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()

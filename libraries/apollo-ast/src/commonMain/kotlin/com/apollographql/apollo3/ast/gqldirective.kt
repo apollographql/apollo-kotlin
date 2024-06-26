@@ -148,7 +148,7 @@ private fun GQLValue?.toCatchTo(): CatchTo {
 }
 
 @ApolloInternal
-private fun List<GQLDirective>.findCatch(schema: Schema): Catch? {
+fun List<GQLDirective>.findCatch(schema: Schema): Catch? {
   return filter {
     schema.originalDirectiveName(it.name) == Schema.CATCH
   }.map {
@@ -159,19 +159,32 @@ private fun List<GQLDirective>.findCatch(schema: Schema): Catch? {
   }.singleOrNull()
 }
 
+private fun List<GQLDirective>.findCatchByDefault(schema: Schema): CatchTo? {
+  return filter {
+    schema.originalDirectiveName(it.name) == Schema.CATCH_BY_DEFAULT
+  }.map {
+    it.getArgumentValueOrDefault("to", schema).toCatchTo()
+  }.singleOrNull()
+}
+
 @ApolloInternal
-fun GQLField.findCatch(fieldDefinition: GQLFieldDefinition, schema: Schema): Catch? {
+fun GQLOperationDefinition.findCatchByDefault(schema: Schema): CatchTo? {
+  return directives.findCatchByDefault(schema) ?: schema.schemaDefinition?.directives?.findCatchByDefault(schema)
+}
+
+@ApolloInternal
+fun GQLFragmentDefinition.findCatchByDefault(schema: Schema): CatchTo? {
+  return directives.findCatchByDefault(schema) ?: schema.schemaDefinition?.directives?.findCatchByDefault(schema)
+}
+
+@ApolloInternal
+fun GQLField.findCatch(schema: Schema): Catch? {
   var catch = directives.findCatch(schema)
   if (catch != null) {
     return catch
   }
 
-  catch = fieldDefinition.directives.findCatch(schema)
-  if (catch != null) {
-    return catch
-  }
-
-  return schema.schemaDefinition?.directives?.findCatch(schema)?.copy(levels = null)
+  return null
 }
 
 @ApolloInternal

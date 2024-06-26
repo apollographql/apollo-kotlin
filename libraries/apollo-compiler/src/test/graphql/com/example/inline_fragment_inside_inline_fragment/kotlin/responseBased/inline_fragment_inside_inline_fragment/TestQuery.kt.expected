@@ -23,8 +23,6 @@ import kotlin.collections.List
 import com.example.inline_fragment_inside_inline_fragment.type.Query as CompiledQuery
 
 public class TestQuery() : Query<TestQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()

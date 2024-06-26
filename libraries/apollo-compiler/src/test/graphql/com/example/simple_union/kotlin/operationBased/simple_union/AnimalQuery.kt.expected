@@ -23,8 +23,6 @@ import kotlin.String
 import com.example.simple_union.type.Query as CompiledQuery
 
 public class AnimalQuery() : Query<AnimalQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()

@@ -34,7 +34,7 @@ query ProductNull {
   }
 }
 
-query ProductIgnoreErrors @ignoreErrors {
+query ProductIgnoreErrors @catchByDefault(to: NULL) {
   product {
     price
   }
@@ -45,4 +45,6 @@ query PriceNull {
     price @catch(to: NULL)
   }
 }
+
+
 

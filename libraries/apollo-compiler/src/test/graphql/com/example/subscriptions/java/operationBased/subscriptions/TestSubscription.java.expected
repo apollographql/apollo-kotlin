@@ -124,11 +124,6 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
     .build();
   }
 
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
-
   public static final class Builder {
     private String repo;
 

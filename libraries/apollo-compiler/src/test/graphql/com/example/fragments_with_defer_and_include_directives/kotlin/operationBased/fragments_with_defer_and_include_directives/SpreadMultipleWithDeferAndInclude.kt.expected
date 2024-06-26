@@ -26,8 +26,6 @@ public data class SpreadMultipleWithDeferAndInclude(
   public val cond3: Boolean,
   public val cond4: Boolean,
 ) : Query<SpreadMultipleWithDeferAndInclude.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

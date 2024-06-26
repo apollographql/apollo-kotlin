@@ -45,13 +45,6 @@ internal fun serializeVariablesFunSpec(
       .build()
 }
 
-internal fun ignoreErrorsPropertySpec(value: Boolean): PropertySpec {
-  return PropertySpec.builder(Identifier.ignoreErrors, KotlinSymbols.Boolean)
-      .addModifiers(KModifier.OVERRIDE)
-      .initializer(value.toString())
-      .build()
-}
-
 internal fun adapterFunSpec(
     context: KotlinOperationsContext,
     property: IrProperty,

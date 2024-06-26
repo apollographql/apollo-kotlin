@@ -31,12 +31,6 @@ interface Executable<D: Executable.Data> {
   fun rootField(): CompiledField
 
   /**
-   * A flag to disable error checking for the whole operation.
-   * Used for backward compatibility.
-   */
-  val ignoreErrors: Boolean
-
-  /**
    * Marker interface for generated models
    */
   interface Data

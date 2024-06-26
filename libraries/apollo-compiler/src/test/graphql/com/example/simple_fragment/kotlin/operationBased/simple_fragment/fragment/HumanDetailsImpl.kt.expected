@@ -28,8 +28,6 @@ import kotlin.Unit
  * Fragment with Java / Kotlin docs generation
  */
 internal class HumanDetailsImpl() : Fragment<HumanDetails> {
-  override val ignoreErrors: Boolean = false
-
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()

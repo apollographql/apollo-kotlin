@@ -106,7 +106,6 @@ internal class OperationBuilder(
           addMethod(buildDataOverloadMethod())
         }
         .addTypes(dataTypeSpecs())
-        .addMethod(ignoreErrorsFunSpec(false))
         .addField(
             FieldSpec.builder(JavaClassNames.String, OPERATION_ID)
                 .addModifiers(Modifier.FINAL)

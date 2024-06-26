@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.ir
 
+import com.apollographql.apollo3.ast.CatchTo
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
@@ -9,10 +10,10 @@ import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.lowerCamelCaseIgnoringNonLetters
 import com.apollographql.apollo3.compiler.codegen.modelName
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.internal.escapeKotlinReservedWord
+import com.apollographql.apollo3.compiler.lowerCamelCaseIgnoringNonLetters
 
 /**
  * Very similar to [OperationBasedModelGroupBuilder] except:
@@ -33,7 +34,11 @@ internal class OperationBasedWithInterfacesModelGroupBuilder(
       selections: List<GQLSelection>,
       rawTypeName: String,
       operationName: String,
+      defaultCatchTo: CatchTo?,
   ): Pair<IrProperty, IrModelGroup> {
+    check(defaultCatchTo == null) {
+      "Apollo: operationBasedWithInterfaces codegen does not support @catch"
+    }
     val info = IrFieldInfo(
         responseName = "data",
         description = null,
@@ -58,7 +63,11 @@ internal class OperationBasedWithInterfacesModelGroupBuilder(
     return null
   }
 
-  override fun buildFragmentData(fragmentName: String): Pair<IrProperty, IrModelGroup> {
+  override fun buildFragmentData(fragmentName: String, defaultCatchTo: CatchTo?): Pair<IrProperty, IrModelGroup> {
+    check(defaultCatchTo == null) {
+      "Apollo: operationBasedWithInterfaces codegen does not support @catch"
+    }
+
     val fragmentDefinition = allFragmentDefinitions[fragmentName]!!
 
     /**
@@ -247,7 +256,7 @@ internal class OperationBasedWithInterfacesModelGroupBuilder(
       }
     }
 
-    val fields = fieldMerger.merge(fieldsWithParent).map { mergedField ->
+    val fields = fieldMerger.merge(fieldsWithParent, null).map { mergedField ->
       val childInfo = mergedField.info.maybeNullable(mergedField.condition != BooleanExpression.True)
 
       buildNode(

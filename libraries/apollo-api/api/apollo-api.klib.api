@@ -42,8 +42,6 @@ abstract interface <#A: com.apollographql.apollo3.api/Executable.Data> com.apoll
     abstract fun rootField(): com.apollographql.apollo3.api/CompiledField // com.apollographql.apollo3.api/Executable.rootField|rootField(){}[0]
     abstract fun serializeVariables(com.apollographql.apollo3.api.json/JsonWriter, com.apollographql.apollo3.api/CustomScalarAdapters, kotlin/Boolean) // com.apollographql.apollo3.api/Executable.serializeVariables|serializeVariables(com.apollographql.apollo3.api.json.JsonWriter;com.apollographql.apollo3.api.CustomScalarAdapters;kotlin.Boolean){}[0]
     abstract interface Data // com.apollographql.apollo3.api/Executable.Data|null[0]
-    abstract val ignoreErrors // com.apollographql.apollo3.api/Executable.ignoreErrors|{}ignoreErrors[0]
-        abstract fun <get-ignoreErrors>(): kotlin/Boolean // com.apollographql.apollo3.api/Executable.ignoreErrors.<get-ignoreErrors>|<get-ignoreErrors>(){}[0]
     final class Variables { // com.apollographql.apollo3.api/Executable.Variables|null[0]
         constructor <init>(kotlin.collections/Map<kotlin/String, kotlin/Any?>) // com.apollographql.apollo3.api/Executable.Variables.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.Any?>){}[0]
         final val valueMap // com.apollographql.apollo3.api/Executable.Variables.valueMap|{}valueMap[0]
