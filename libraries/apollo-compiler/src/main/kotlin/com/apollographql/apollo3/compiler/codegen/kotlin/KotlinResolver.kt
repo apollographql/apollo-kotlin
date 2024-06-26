@@ -182,28 +182,28 @@ internal class KotlinResolver(
       is IrListType2 -> adapterInitializer2(type.ofType, jsExport)?.list(jsExport)
       is IrScalarType2 -> {
         if (scalarMapping.containsKey(type.name)) {
-          scalarAdapterInitializer(type.name, customScalarAdapters)
+          scalarAdapterInitializer(type.name)
         } else {
           null
         }
       }
 
       is IrEnumType2 -> {
-        adapterInitializer(IrEnumType(type.name), false, jsExport, "")
+        adapterInitializer(IrEnumType(type.name), false, jsExport)
       }
 
       is IrCompositeType2 -> null
     }
   }
 
-  internal fun adapterInitializer(type: IrType, requiresBuffering: Boolean, jsExport: Boolean, runtimeAdapterPrefix: String): CodeBlock {
+  internal fun adapterInitializer(type: IrType, requiresBuffering: Boolean, jsExport: Boolean): CodeBlock {
     return when {
       type.optional -> {
         val presentFun = MemberName("com.apollographql.apollo3.api", "present")
-        CodeBlock.of("%L.%M()", adapterInitializer(type.optional(false), requiresBuffering, jsExport, runtimeAdapterPrefix), presentFun)
+        CodeBlock.of("%L.%M()", adapterInitializer(type.optional(false), requiresBuffering, jsExport), presentFun)
       }
       type.catchTo != IrCatchTo.NoCatch -> {
-        adapterInitializer(type.catchTo(IrCatchTo.NoCatch), requiresBuffering, jsExport, runtimeAdapterPrefix).let {
+        adapterInitializer(type.catchTo(IrCatchTo.NoCatch), requiresBuffering, jsExport).let {
           val member = when (type.catchTo) {
             IrCatchTo.Null -> KotlinSymbols.catchToNull
             IrCatchTo.Result -> KotlinSymbols.catchToResult
@@ -213,7 +213,7 @@ internal class KotlinResolver(
         }
       }
       type.maybeError -> {
-        adapterInitializer(type.maybeError(false), requiresBuffering, jsExport, runtimeAdapterPrefix).let {
+        adapterInitializer(type.maybeError(false), requiresBuffering, jsExport).let {
           CodeBlock.of("%L.%M()", it, KotlinSymbols.errorAware)
         }
       }
@@ -232,23 +232,23 @@ internal class KotlinResolver(
 
           else -> {
             val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
-            CodeBlock.of("%L.%M()", adapterInitializer(type.nullable(false), requiresBuffering, jsExport, runtimeAdapterPrefix), nullableFun)
+            CodeBlock.of("%L.%M()", adapterInitializer(type.nullable(false), requiresBuffering, jsExport), nullableFun)
           }
         }
       }
       else -> {
         when (type) {
           is IrListType -> {
-            adapterInitializer(type.ofType, requiresBuffering, jsExport, runtimeAdapterPrefix).list(jsExport)
+            adapterInitializer(type.ofType, requiresBuffering, jsExport).list(jsExport)
           }
 
           is IrScalarType -> {
-            scalarAdapterInitializer(type.name, runtimeAdapterPrefix)
+            scalarAdapterInitializer(type.name)
           }
 
           is IrEnumType -> {
             if (jsExport) {
-              scalarAdapterInitializer("String", runtimeAdapterPrefix)
+              scalarAdapterInitializer("String")
             } else {
               CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name))
             }
@@ -272,7 +272,7 @@ internal class KotlinResolver(
     return CodeBlock.of("%T.$type", resolveAndAssert(ResolverKeyKind.SchemaType, name))
   }
 
-  private fun scalarAdapterInitializer(name: String, runtimeAdaptersPrefix: String): CodeBlock {
+  private fun scalarAdapterInitializer(name: String): CodeBlock {
     return when (val adapterInitializer = scalarMapping[name]?.adapterInitializer) {
       is ExpressionAdapterInitializer -> {
         CodeBlock.of(adapterInitializer.expression)
@@ -281,7 +281,7 @@ internal class KotlinResolver(
       is RuntimeAdapterInitializer -> {
         val target = resolveScalarTarget(name)
         CodeBlock.of(
-            "$runtimeAdaptersPrefix.responseAdapterFor<%T>(%L)",
+            "$customScalarAdapters.responseAdapterFor<%T>(%L)",
             target,
             resolveCompiledType(name)
         )
@@ -300,7 +300,7 @@ internal class KotlinResolver(
               CodeBlock.of("%M", KotlinSymbols.AnyAdapter)
             } else {
               CodeBlock.of(
-                  "$runtimeAdaptersPrefix.responseAdapterFor<%T>(%L)",
+                  "$customScalarAdapters.responseAdapterFor<%T>(%L)",
                   target,
                   resolveCompiledType(name)
               )
