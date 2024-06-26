@@ -1,4 +1,4 @@
-name: Kotlin next shadow
+name: Bump kotlin shadow
 
 on:
   schedule:
