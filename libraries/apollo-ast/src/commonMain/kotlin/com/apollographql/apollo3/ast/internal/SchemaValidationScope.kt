@@ -514,7 +514,7 @@ private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition?
 
   if (schemaDefinition == null) {
     issues.add(OtherValidationIssue(
-        message = "Schemas that include the `@catch` definition must opt-in a default CatchTo. Use `extend schema @catchByDefault(to: \$to)`",
+        message = "Schemas that include nullability directives must opt-in a default CatchTo. Use `extend schema @catchByDefault(to: \$to)`",
         sourceLocation = null
     ))
     return
@@ -526,7 +526,7 @@ private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition?
 
   if (catches.isEmpty()) {
     issues.add(OtherValidationIssue(
-        message = "Schemas that include the `@catch` definition must opt-in a default CatchTo. Use `extend schema @catchByDefault(to: \$to)`",
+        message = "Schemas that include nullability directives must opt-in a default CatchTo. Use `extend schema @catchByDefault(to: \$to)`",
         sourceLocation = schemaDefinition.sourceLocation
     ))
     return
