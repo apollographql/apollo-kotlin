@@ -2,6 +2,7 @@ package test
 
 import com.apollographql.apollo3.api.getOrNull
 import com.apollographql.apollo3.api.getOrThrow
+import `null`.NullAndNonNullQuery
 import `null`.PriceNullQuery
 import `null`.ProductIgnoreErrorsQuery
 import `null`.ProductNullQuery
@@ -113,5 +114,17 @@ class CatchNullTest {
     assertNotNull(response.data?.product)
     assertNull(response.data?.product?.price)
     assertNull(response.errors)
+  }
+
+  @Test
+  fun nullAndNonNull() {
+    val response = NullAndNonNullQuery().parseResponse("""
+      {
+        "data": { "nonNull": 42, "nullable": null }
+      }
+    """.trimIndent())
+
+    // plus(0) is only used to check that `nonNull` is non nullable
+    assertEquals(42, response.data!!.nonNull?.plus(0))
   }
 }
