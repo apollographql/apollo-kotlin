@@ -18,3 +18,10 @@ jobs:
           git add .
           git commit -m "Bump Kotlin version"
           git push --force origin kotlin-nightlies
+      # Trigger a workflow manually because actions cannot trigger workflows to avoid endless loops
+      # https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#triggering-further-workflow-runs
+      - name: Trigger pr workflow
+        run: |
+          gh workflow run pr --ref kotlin-nightlies
+    env:
+      GH_TOKEN: ${{ github.token }}
