@@ -281,7 +281,7 @@ The error is thrown during parsing but still caught before it reaches your UI co
 
 ## `@catchByDefault`
 
-In order to use the nullability directives, you need to opt in a default catch behaviour for nullable GraphQL fields using `@catchByDefault`: 
+In order to use the nullability directives, you need to opt in a default catch behaviour for nullable GraphQL fields using `@catchByDefault`.
 
 You can choose to map nullable fields to `FieldResult`:
 
@@ -304,7 +304,7 @@ Or coerce errors to `null`, like the current GraphQL default:
 extend schema @catchByDefault(to: NULL)
 ```
 
-Adding `@catchByDefault(to: NULL)` is a no-op.
+(Adding `@catchByDefault(to: NULL)` is a no-op for codegen that unlocks using `@catch` in your operations.)
 
 ## Migrate to semantic nullability
 
