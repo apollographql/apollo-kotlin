@@ -25,7 +25,7 @@ val networkMonitor = NetworkMonitor()
 // commonMain
 val apolloClient = ApolloClient.Builder()
     .serverUrl("https://example.com/graphql")
-    .networkMonitor(networkMonitor)
+    .retryOnErrorInterceptor(RetryOnErrorInterceptor(networkMonitor))
     .build()
 ```
 
@@ -54,10 +54,7 @@ When a `NetworkMonitor` is configured, `retryOnError` uses `NetworkMonitor.waitF
 
 ### Customizing the retry algorithm
 
-You can customize the retry algorithm further by defining you won interceptor. Make sure to:
-
-- add your interceptor last, so that it wraps the network call and doesn't get cache misses or any other errors that may be emitted by upstream interceptors.
-- call `retryOnError(false)` when forwarding the request downstream so that the retry is not made twice.
+You can customize the retry algorithm further by defining you own interceptor:
 
 ```kotlin
 internal class MyRetryInterceptor(private val networkMonitor: NetworkMonitor?): ApolloInterceptor {
