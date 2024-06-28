@@ -23,8 +23,6 @@ import com.example.antlr_tokens.type.Query as CompiledQuery
 public data class TestQuery(
   public val operation: Optional<String?> = Optional.Absent,
 ) : Query<TestQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

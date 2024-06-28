@@ -79,9 +79,4 @@ public class CatFragmentImpl implements Fragment<CatFragment> {
     .selections(CatFragmentSelections.__root)
     .build();
   }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
 }

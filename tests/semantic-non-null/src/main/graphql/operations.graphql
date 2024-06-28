@@ -1,0 +1,4 @@
+query Get1 {
+  semanticNonNull
+}
+

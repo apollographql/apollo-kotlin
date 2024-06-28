@@ -16,7 +16,6 @@ import com.apollographql.apollo3.ast.GQLListValue
 import com.apollographql.apollo3.ast.GQLNamed
 import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNonNullType
-import com.apollographql.apollo3.ast.GQLNullValue
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
 import com.apollographql.apollo3.ast.GQLOperationTypeDefinition
@@ -204,7 +203,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   val mergedSchemaDefinition = mergedDefinitions.singleOrNull { it is GQLSchemaDefinition } as GQLSchemaDefinition?
   if (mergedSchemaDefinition != null) {
-    mergedScope.validateRootOperationTypes(mergedSchemaDefinition)
+    mergedScope.validateSchemaDefinition(mergedSchemaDefinition)
   }
 
   mergedScope.validateInterfaces()
@@ -421,7 +420,11 @@ private fun List<GQLDefinition>.rename(mappings: Map<String, String>, prefix: St
   return definitions to renames
 }
 
-internal fun ValidationScope.validateRootOperationTypes(schemaDefinition: GQLSchemaDefinition) {
+internal fun ValidationScope.validateSchemaDefinition(schemaDefinition: GQLSchemaDefinition) {
+  validateDirectives(schemaDefinition.directives.withoutLink(), schemaDefinition) {
+    issues.add(it.constContextError())
+  }
+
   schemaDefinition.rootOperationTypeDefinitions.forEach {
     val typeDefinition = typeDefinitions[it.namedType]
     if (typeDefinition == null) {
@@ -430,6 +433,15 @@ internal fun ValidationScope.validateRootOperationTypes(schemaDefinition: GQLSch
           sourceLocation = it.sourceLocation
       )
     }
+  }
+}
+
+/**
+ * Because @link is used to import directives, there's a chicken and egg problem and we can't validate it
+ */
+private fun List<GQLDirective>.withoutLink(): List<GQLDirective> {
+  return this.filter {
+    it.name != Schema.LINK
   }
 }
 
@@ -502,20 +514,19 @@ private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition?
 
   if (schemaDefinition == null) {
     issues.add(OtherValidationIssue(
-        message = "Schemas that include the `@catch` definition must opt-in a default CatchTo. Use `extend schema @catch(to: \$to)`",
+        message = "Schemas that include nullability directives must opt-in a default CatchTo. Use `extend schema @catchByDefault(to: \$to)`",
         sourceLocation = null
     ))
     return
   }
 
-
   val catches = schemaDefinition.directives.filter {
-    originalDirectiveName(it.name) == Schema.CATCH
+    originalDirectiveName(it.name) == Schema.CATCH_BY_DEFAULT
   }
 
   if (catches.isEmpty()) {
     issues.add(OtherValidationIssue(
-        message = "Schemas that include the `@catch` definition must opt-in a default CatchTo. Use `extend schema @catch(to: \$to)`",
+        message = "Schemas that include nullability directives must opt-in a default CatchTo. Use `extend schema @catchByDefault(to: \$to)`",
         sourceLocation = schemaDefinition.sourceLocation
     ))
     return
@@ -526,18 +537,6 @@ private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition?
     ))
     return
   }
-
-  val catch = catches.single()
-
-  catch.arguments.forEach {
-    if (it.name == "level" && it.value !is GQLNullValue) {
-      issues.add(OtherValidationIssue(
-          message = "The 'level' argument must be null when `@catch` is applied to the schema",
-          sourceLocation = it.sourceLocation
-      ))
-    }
-  }
-
 }
 
 private fun ValidationScope.validateInputObjects() {

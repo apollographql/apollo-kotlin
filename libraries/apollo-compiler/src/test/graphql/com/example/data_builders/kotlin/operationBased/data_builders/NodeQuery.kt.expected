@@ -30,8 +30,6 @@ import kotlin.Unit
 import com.example.data_builders.type.Query as CompiledQuery
 
 public class NodeQuery() : Query<NodeQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()

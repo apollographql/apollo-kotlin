@@ -127,11 +127,6 @@ public class GetPage implements Query<GetPage.Data> {
     .build();
   }
 
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
-
   public static final class Builder {
     Builder() {
     }

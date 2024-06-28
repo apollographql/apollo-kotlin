@@ -20,8 +20,6 @@ import kotlin.Int
 public data class UserFragmentImpl(
   public val size: Int,
 ) : Fragment<UserFragment> {
-  override val ignoreErrors: Boolean = false
-
   override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,

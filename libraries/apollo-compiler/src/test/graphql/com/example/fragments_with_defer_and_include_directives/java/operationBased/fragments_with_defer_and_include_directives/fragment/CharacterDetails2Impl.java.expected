@@ -79,9 +79,4 @@ public class CharacterDetails2Impl implements Fragment<CharacterDetails2> {
     .selections(CharacterDetails2Selections.__root)
     .build();
   }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
 }

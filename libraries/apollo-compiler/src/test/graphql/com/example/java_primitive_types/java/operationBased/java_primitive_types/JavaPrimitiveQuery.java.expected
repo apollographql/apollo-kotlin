@@ -172,11 +172,6 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
     .build();
   }
 
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
-
   public static final class Builder {
     private Optional<Integer> nullableInt = Optional.absent();
 

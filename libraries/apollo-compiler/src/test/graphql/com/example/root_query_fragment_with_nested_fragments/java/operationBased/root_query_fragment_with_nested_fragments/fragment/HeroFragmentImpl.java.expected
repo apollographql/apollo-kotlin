@@ -79,9 +79,4 @@ public class HeroFragmentImpl implements Fragment<HeroFragment> {
     .selections(HeroFragmentSelections.__root)
     .build();
   }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
 }

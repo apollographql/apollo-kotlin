@@ -35,6 +35,7 @@ import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.fieldDefinitions
 import com.apollographql.apollo3.ast.findCatch
+import com.apollographql.apollo3.ast.findCatchByDefault
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findNonnull
 import com.apollographql.apollo3.ast.findOptInFeature
@@ -278,7 +279,7 @@ internal class IrOperationsBuilder(
 
     val usedFragments = usedFragments(
         schema = schema,
-        allFragmentDefinitions,
+        allFragmentDefinitions = allFragmentDefinitions,
         selections = selections,
         rawTypename = typeDefinition.name,
     )
@@ -292,7 +293,8 @@ internal class IrOperationsBuilder(
     val (dataProperty, dataModelGroup) = builder.buildOperationData(
         selections = selections,
         rawTypeName = typeDefinition.name,
-        operationName = name!!
+        operationName = name!!,
+        defaultCatchTo = findCatchByDefault(schema)
     )
 
     // Add the root type to use from the selections
@@ -309,9 +311,6 @@ internal class IrOperationsBuilder(
         normalizedFilePath = operationNameToNormalizedPath.get(name!!) ?: "",
         dataProperty = dataProperty,
         dataModelGroup = dataModelGroup,
-        ignoreErrors = directives.any {
-          schema.originalDirectiveName(it.name) == Schema.IGNORE_ERRORS
-        }
     )
   }
 
@@ -332,7 +331,8 @@ internal class IrOperationsBuilder(
     )
 
     val (dataProperty, dataModelGroup) = builder.buildFragmentData(
-        fragmentName = name
+        fragmentName = name,
+        defaultCatchTo = findCatchByDefault(schema)
     )
 
     // Add the root type to use from the fragment selections
@@ -496,7 +496,7 @@ internal class IrOperationsBuilder(
     val responseName = alias ?: name
   }
 
-  override fun merge(fields: List<FieldWithParent>): List<MergedField> {
+  override fun merge(fields: List<FieldWithParent>, defaultCatchTo: CatchTo?): List<MergedField> {
     return fields.map { fieldWithParent ->
       val gqlField = fieldWithParent.gqlField
       val parentTypeDefinition = schema.typeDefinition(fieldWithParent.parentType)
@@ -534,7 +534,7 @@ internal class IrOperationsBuilder(
           semanticNonNulls = semanticNonNulls,
           forceOptional = gqlField.directives.optionalValue(schema) == true,
           parentType = fieldWithParent.parentType,
-          catch = gqlField.findCatch(fieldDefinition, schema),
+          catch = gqlField.findCatch(schema),
           usedArguments = gqlField.arguments.map { it.name },
       )
     }.groupBy {
@@ -623,7 +623,7 @@ internal class IrOperationsBuilder(
             }
           }
           // Finally, transform into Result or Nullable depending on catch
-          .catch(first.catch, 0)
+          .catch(first.catch, 0, defaultCatchTo)
 
       /**
        * Depending on the parent object/interface in which the field is queried, the field definition might have different descriptions/deprecationReasons
@@ -688,16 +688,21 @@ internal class IrOperationsBuilder(
       }
     }
 
-    private fun IrType.catch(catch: Catch?, level: Int): IrType {
+    private fun IrType.catch(catch: Catch?, level: Int, defaultCatchTo: CatchTo?): IrType {
       var type = when (this) {
         is IrNamedType -> this
-        is IrListType -> copy(ofType = ofType.catch(catch, level + 1))
+        is IrListType -> copy(ofType = ofType.catch(catch, level + 1, defaultCatchTo))
       }
 
       val catchTo = if (catch != null) {
         catch.to.takeIf { catch.levels == null || catch.levels!!.contains(level) }
       } else {
-        null
+        if (maybeError) {
+          defaultCatchTo
+        } else {
+          // Can never be null: leave untouched
+          null
+        }
       }
 
       if (catchTo != null) {

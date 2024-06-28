@@ -79,9 +79,4 @@ public class DogFragmentImpl implements Fragment<DogFragment> {
     .selections(DogFragmentSelections.__root)
     .build();
   }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
 }

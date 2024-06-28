@@ -226,13 +226,7 @@ private fun ExtensionsMerger.mergeObjectOrInterfaceDirectives(
   val fieldDirectives = mutableListOf<Pair<String, GQLDirective>>()
 
   val directives = mergeDirectives(list, other) {
-    if (it.name == Schema.CATCH_FIELD) {
-      fieldDirectives.add((it.arguments.first { it.name == "name" }.value as GQLStringValue).value to GQLDirective(
-          name = Schema.CATCH,
-          arguments = it.arguments.filter { it.name != "name" }
-      ))
-      false
-    } else if (it.name == Schema.SEMANTIC_NON_NULL_FIELD) {
+    if (it.name == Schema.SEMANTIC_NON_NULL_FIELD) {
       fieldDirectives.add((it.arguments.first { it.name == "name" }.value as GQLStringValue).value to GQLDirective(
           name = Schema.SEMANTIC_NON_NULL,
           arguments = it.arguments.filter { it.name != "name" }

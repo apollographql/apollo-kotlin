@@ -1,9 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java.operations
 
-import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
-import com.apollographql.apollo3.compiler.codegen.Identifier.ignoreErrors
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.Identifier.rootField
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
@@ -41,15 +39,6 @@ internal fun serializeVariablesMethodSpec(
       .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
       .addParameter(TypeName.BOOLEAN, withDefaultValues)
       .addCode(body)
-      .build()
-}
-
-internal fun ignoreErrorsFunSpec(value: Boolean): MethodSpec {
-  return MethodSpec.methodBuilder("get${ignoreErrors.capitalizeFirstLetter()}")
-      .addModifiers(Modifier.PUBLIC)
-      .addAnnotation(JavaClassNames.Override)
-      .returns(TypeName.BOOLEAN)
-      .addCode("return $L;", value.toString())
       .build()
 }
 

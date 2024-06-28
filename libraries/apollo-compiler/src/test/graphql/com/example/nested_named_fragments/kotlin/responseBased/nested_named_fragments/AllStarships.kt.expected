@@ -26,8 +26,6 @@ import kotlin.collections.List
 import com.example.nested_named_fragments.type.Root as CompiledRoot
 
 public class AllStarships() : Query<AllStarships.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()

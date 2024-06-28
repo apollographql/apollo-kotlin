@@ -26,8 +26,6 @@ public data class QueryFragmentImpl(
   public val query: UserQuery,
   public val size: Int,
 ) : Fragment<QueryFragmentImpl.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun serializeVariables(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,

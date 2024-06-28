@@ -23,8 +23,6 @@ import com.example.java8annotation.type.Mutation as CompiledMutation
 public data class LoginBarber(
   public val input: Login,
 ) : Mutation<LoginBarber.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

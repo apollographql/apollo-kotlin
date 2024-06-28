@@ -71,7 +71,7 @@ internal class ExecutableValidationScope(
   private val fragmentVariableUsages = mutableMapOf<String, List<VariableUsage>>()
   private val cyclicFragments = mutableSetOf<String>()
   private val usedFragments = mutableSetOf<String>()
-  private val hasCatch = schema.directiveDefinitions.any { schema.originalTypeName(it.key) == Schema.CATCH }
+  private val hasCatchByDefault = schema.directiveDefinitions.any { schema.originalTypeName(it.key) == Schema.CATCH_BY_DEFAULT }
 
   /**
    * These are scoped to the current operation/fragment being validated
@@ -230,7 +230,7 @@ internal class ExecutableValidationScope(
     validateDirectives(directives, this) {
       variableUsages.add(it)
     }
-    if (hasCatch) {
+    if (hasCatchByDefault) {
       validateCatches(fieldDefinition)
     }
   }
@@ -376,6 +376,9 @@ internal class ExecutableValidationScope(
     }
 
     validateCommon(this, selections, directives, rootTypeDefinition)
+    if (schema.errorAware) {
+      validateCatch(selections.collectFieldsNoFragments())
+    }
 
     fragmentVariableUsages[name] = variableUsages.toList()
   }
@@ -410,6 +413,10 @@ internal class ExecutableValidationScope(
       return
     }
     validateCommon(this, selections, directives, rootTypeDefinition)
+
+    if (schema.errorAware) {
+      validateCatch(selections.collectFieldsNoFragments())
+    }
 
     fieldsInSetCanMerge(selections.collectFields(rootTypeDefinition.name))
 
@@ -514,10 +521,6 @@ internal class ExecutableValidationScope(
       addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different types")
       return
     }
-    if (hasCatch && !areCatchesEqual(fieldA.findCatch(fieldDefinitionA, schema), fieldB.findCatch(fieldDefinitionB, schema))) {
-      addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different `@catch` directives")
-      return
-    }
 
     if (!areArgumentsEqual(fieldA.arguments, fieldB.arguments)) {
       addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different arguments")
@@ -566,9 +569,20 @@ internal class ExecutableValidationScope(
     }
   }
 
-  private fun areCatchesEqual(catchA: Catch?, catchesB: Catch?): Boolean {
-    return catchA == catchesB
+
+  private fun validateCatch(fields: List<GQLField>) {
+    fields.groupBy { it.responseName() }
+        .forEach {
+          it.value.pairs().forEach {
+            if (it.first.directives.findCatch(schema) != it.second.directives.findCatch(schema)) {
+              addFieldMergingIssue(it.first, it.second, "they have different `@catch` directives")
+            }
+          }
+
+          it.value.flatMap { it.selections }.collectFieldsNoFragments()
+        }
   }
+
 
   private fun areArgumentsEqual(argumentsA: List<GQLArgument>, argumentsB: List<GQLArgument>): Boolean {
     if (argumentsA.size != argumentsB.size) {
@@ -770,6 +784,18 @@ internal class ExecutableValidationScope(
 
         is GQLInlineFragment -> selection.collectFields(parentType)
         is GQLFragmentSpread -> selection.collectFields()
+      }
+    }
+  }
+
+  private fun List<GQLSelection>.collectFieldsNoFragments(): List<GQLField> {
+    return flatMap { selection ->
+      when (selection) {
+        is GQLField -> listOf(selection)
+        // XXX: we could relax the validation here as different inline fragments on different type
+        // conditions might have different models
+        is GQLInlineFragment -> selection.selections.collectFieldsNoFragments()
+        is GQLFragmentSpread -> emptyList()
       }
     }
   }

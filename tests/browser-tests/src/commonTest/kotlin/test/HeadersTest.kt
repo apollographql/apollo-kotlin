@@ -57,7 +57,4 @@ class NothingSubscription : Subscription<Nothing> {
   override fun rootField(): CompiledField {
     TODO("Not yet implemented")
   }
-
-  override val ignoreErrors: Boolean
-    get() = false
 }

@@ -150,8 +150,5 @@ abstract class FooOperation(private val operationType: String): Operation<FooOpe
   override fun rootField(): CompiledField {
     TODO("Not yet implemented")
   }
-
-  override val ignoreErrors: Boolean
-    get() = false
 }
 

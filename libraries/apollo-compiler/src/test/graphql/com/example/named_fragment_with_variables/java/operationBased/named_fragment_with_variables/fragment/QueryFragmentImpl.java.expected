@@ -102,9 +102,4 @@ public class QueryFragmentImpl implements Fragment<QueryFragment> {
     .selections(QueryFragmentSelections.__root)
     .build();
   }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
 }

@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen
 
 internal object Identifier {
-  const val ignoreErrors = "ignoreErrors"
   const val __h: String = "__h"
   const val adapter = "adapter"
   const val evaluate = "evaluate"

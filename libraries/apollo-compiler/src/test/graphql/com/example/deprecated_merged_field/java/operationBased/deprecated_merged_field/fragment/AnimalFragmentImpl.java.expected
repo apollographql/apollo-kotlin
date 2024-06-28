@@ -79,9 +79,4 @@ public class AnimalFragmentImpl implements Fragment<AnimalFragment> {
     .selections(AnimalFragmentSelections.__root)
     .build();
   }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
 }

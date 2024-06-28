@@ -79,9 +79,4 @@ public class DroidDetails2Impl implements Fragment<DroidDetails2> {
     .selections(DroidDetails2Selections.__root)
     .build();
   }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
 }

@@ -156,11 +156,6 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
     .build();
   }
 
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
-
   public static final class Builder {
     private Boolean cond1;
 

@@ -23,8 +23,6 @@ import com.example.input_object_oneof.type.Query as CompiledQuery
 public data class FindUserQuery(
   public val findUserInput: FindUserInput,
 ) : Query<FindUserQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

@@ -30,8 +30,6 @@ public data class JavaPrimitiveQuery(
   public val nonNullableInput: MyInput,
   public val nonNullableInputWithDefault: Optional<MyInput> = Optional.Absent,
 ) : Query<JavaPrimitiveQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

@@ -26,8 +26,6 @@ import com.example.suppressed_warnings.type.Query as CompiledQuery
 public data class CatQuery(
   public val filter: Optional<Filter?> = Optional.Absent,
 ) : Query<CatQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

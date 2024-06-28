@@ -23,8 +23,6 @@ public data class TestQuery(
   public val withDetails: Boolean,
   public val skipHumanDetails: Boolean,
 ) : Query<TestQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

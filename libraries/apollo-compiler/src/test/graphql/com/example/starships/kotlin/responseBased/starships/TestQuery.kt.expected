@@ -24,8 +24,6 @@ import com.example.starships.type.Query as CompiledQuery
 public data class TestQuery(
   public val id: String,
 ) : Query<TestQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

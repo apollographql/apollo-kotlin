@@ -328,8 +328,6 @@ directive @semanticNonNullField(name: String!, levels: [Int] = [0]) repeatable o
 ""${'"'}
 Indicates how clients should handle errors on a given position.
 
-When used on the schema definition, `@catch` applies to every position that can return an error.
-
 The `levels` argument indicates where to catch errors in case of lists:
 
 ```graphql
@@ -352,22 +350,20 @@ Passing a negative level or a level greater than the list dimension is an error.
 
 See `CatchTo` for more details.
 ""${'"'}
-directive @catch(to: CatchTo! = RESULT, levels: [Int] = [0]) on FIELD | FIELD_DEFINITION | SCHEMA
+directive @catch(to: CatchTo! = RESULT, levels: [Int!]! = [0]) on FIELD
 
 ""${'"'}
-Indicates how clients should handle errors on a given position.
+Indicates how clients should handle errors on a given position by default.
 
-`@catchField` is the same as `@catch` but can be used on type system extensions for services
-that do not own the schema like client services:
+The semantics are the same as `@catch` but `@catchByDefault` only applies to positions that
+can contain JSON `null`. Non-null positions are unchanged.
 
-```graphql
-# extend the schema to catch User.email to `RESULT`.
-extend type User @catchField(name: "email", to: RESULT)
-```
-
-See `@catch`.
+When multiple values of `catchTo` are set for a given position:
+* the `@catch` value is used if set.
+* else the `@catchByDefault` value is used if set on the operation/fragment.
+* else the schema `catchByDefault` value is used.
 ""${'"'}
-directive @catchField(to: CatchTo! = RESULT, levels: [Int] = [0]) repeatable on INTERFACE | OBJECT
+directive @catchByDefault(to: CatchTo!) on SCHEMA | QUERY | MUTATION | SUBSCRIPTION | FRAGMENT_DEFINITION
 
 enum CatchTo {
     ""${'"'}
@@ -389,11 +385,4 @@ enum CatchTo {
     ""${'"'}
     THROW
 }
-
-""${'"'}
-Never throw on field errors.
-
-This is used for backward compatibility for clients where this was the default behaviour.
-""${'"'}
-directive @ignoreErrors on QUERY | MUTATION | SUBSCRIPTION
 """.trimIndent()

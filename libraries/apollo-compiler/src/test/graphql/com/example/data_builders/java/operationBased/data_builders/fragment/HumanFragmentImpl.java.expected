@@ -79,9 +79,4 @@ public class HumanFragmentImpl implements Fragment<HumanFragment> {
     .selections(HumanFragmentSelections.__root)
     .build();
   }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
 }

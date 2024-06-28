@@ -28,8 +28,6 @@ public data class TestQuery(
   public val stars: Int,
   public val greenValue: Double,
 ) : Query<TestQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

@@ -87,9 +87,4 @@ public class UserFragmentImpl implements Fragment<UserFragment> {
     .selections(UserFragmentSelections.__root)
     .build();
   }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
 }

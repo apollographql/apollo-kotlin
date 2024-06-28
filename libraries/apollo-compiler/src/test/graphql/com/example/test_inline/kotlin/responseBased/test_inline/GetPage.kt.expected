@@ -23,8 +23,6 @@ import kotlin.collections.List
 import com.example.test_inline.type.Query as CompiledQuery
 
 public class GetPage() : Query<GetPage.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   override fun hashCode(): Int = this::class.hashCode()

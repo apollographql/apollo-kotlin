@@ -928,13 +928,13 @@ public final class com/apollographql/apollo3/ast/ReservedEnumValueName : com/apo
 
 public final class com/apollographql/apollo3/ast/Schema {
 	public static final field CATCH Ljava/lang/String;
-	public static final field CATCH_FIELD Ljava/lang/String;
+	public static final field CATCH_BY_DEFAULT Ljava/lang/String;
 	public static final field Companion Lcom/apollographql/apollo3/ast/Schema$Companion;
 	public static final field FIELD_POLICY Ljava/lang/String;
 	public static final field FIELD_POLICY_FOR_FIELD Ljava/lang/String;
 	public static final field FIELD_POLICY_KEY_ARGS Ljava/lang/String;
 	public static final field FIELD_POLICY_PAGINATION_ARGS Ljava/lang/String;
-	public static final field IGNORE_ERRORS Ljava/lang/String;
+	public static final field LINK Ljava/lang/String;
 	public static final field NONNULL Ljava/lang/String;
 	public static final field ONE_OF Ljava/lang/String;
 	public static final field OPTIONAL Ljava/lang/String;

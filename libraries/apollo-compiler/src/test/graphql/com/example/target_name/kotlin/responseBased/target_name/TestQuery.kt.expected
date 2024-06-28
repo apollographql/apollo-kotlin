@@ -29,8 +29,6 @@ public data class TestQuery(
   public val scalar: Optional<Any?> = Optional.Absent,
   public val `enum`: Optional<RenamedEnum?> = Optional.Absent,
 ) : Query<TestQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

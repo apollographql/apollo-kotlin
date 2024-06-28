@@ -132,11 +132,6 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     .build();
   }
 
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
-
   public static final class Builder {
     private Boolean cond;
 

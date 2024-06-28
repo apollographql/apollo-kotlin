@@ -211,13 +211,13 @@ class Schema internal constructor(
     @ApolloExperimental
     const val CATCH = "catch"
     @ApolloExperimental
-    const val CATCH_FIELD = "catchField"
+    const val CATCH_BY_DEFAULT = "catchByDefault"
     @ApolloExperimental
     const val SEMANTIC_NON_NULL = "semanticNonNull"
     @ApolloExperimental
     const val SEMANTIC_NON_NULL_FIELD = "semanticNonNullField"
     @ApolloExperimental
-    const val IGNORE_ERRORS = "ignoreErrors"
+    const val LINK = "link"
 
     const val FIELD_POLICY_FOR_FIELD = "forField"
     const val FIELD_POLICY_KEY_ARGS = "keyArgs"

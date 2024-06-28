@@ -163,11 +163,6 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     .build();
   }
 
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
-  }
-
   public static final class Builder {
     private Boolean cond1;
 

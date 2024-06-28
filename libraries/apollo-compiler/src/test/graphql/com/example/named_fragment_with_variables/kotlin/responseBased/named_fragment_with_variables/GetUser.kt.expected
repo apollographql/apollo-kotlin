@@ -30,8 +30,6 @@ public data class GetUser(
   public val query: UserQuery,
   public val size: Int,
 ) : Query<GetUser.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

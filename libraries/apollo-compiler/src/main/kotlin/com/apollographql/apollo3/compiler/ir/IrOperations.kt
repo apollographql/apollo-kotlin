@@ -59,7 +59,6 @@ data class IrOperation(
     val normalizedFilePath: String,
     val dataProperty: IrProperty,
     val dataModelGroup: IrModelGroup,
-    val ignoreErrors: Boolean,
 )
 
 @Serializable
