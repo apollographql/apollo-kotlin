@@ -12,7 +12,9 @@ jobs:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #v4.1.7
       - name: Bump Kotlin version
         run: ./scripts/bump-kotlin-nightlies.main.kts
-      - name: Push changes to kotlin-nightlies branch
+      - name: Update API dump
+        run: ./gradlew apiDump
+      - name: Commit and push changes to kotlin-nightlies branch
         run: |
           git checkout -b kotlin-nightlies
           git add .
