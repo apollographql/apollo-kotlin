@@ -9,13 +9,13 @@ description: From 3.x
 
 </Note>
 
-Apollo Kotlin 3.0 was a major rewrite of Apollo in Kotlin multiplatform.
+Apollo Kotlin 3 was a major rewrite of Apollo in Kotlin multiplatform.
 
-Apollo Kotlin 4.0 focuses on tooling, stability and fixing some API regrets that came with 3.x.
+Apollo Kotlin 4 focuses on tooling, stability and consolidating the API for the many years to come.
 
-Because most of the common APIs stayed the same, we [kept the package name unchanged](https://github.com/apollographql/apollo-kotlin/issues/4710). Apollo Kotlin 4.0 removes some deprecated symbols. We strongly recommend removing deprecated usages before migrating to 4.0.  
+While most of the core APIs stayed the same, Apollo Kotlin 4 contains a few binary breaking changes. To account for that, and in order to be more future proof, we [changed the package name](https://github.com/apollographql/apollo-kotlin/issues/4710) to `com.apollographql.apollo`.
 
-If you are using a library that depends on Apollo Kotlin transitively, you need it to update to 4.x before you can update your own application to 4.0.
+Apollo Kotlin 4 removes some deprecated symbols. We strongly recommend updating to the latest 3.x release and removing deprecated usages before migrating to version 4.
 
 ## Automatic migration using the Android Studio plugin
 
