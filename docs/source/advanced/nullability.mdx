@@ -11,7 +11,7 @@ description: Make your queries even more typesafe
 
 ## Introduction
 
-This section is a high level description of nullability and errors in GraphQL and the problem it causes for app developers. For the proposed solution, skip directly to the [@semanticNonNull](#semanticnonnull) section.  
+_This section is a high level description of nullability and errors in GraphQL and the problem it causes for app developers. For the proposed solution, skip directly to the [@semanticNonNull](#semanticnonnull) section._  
 
 GraphQL does not have a `Result` type. If a field errors, it is set to `null` in the JSON response and an error is added to the `errors` array. 
 
@@ -112,7 +112,7 @@ extend schema @link(
 
 <Note>
 
-You also need to opt-in a default catch but more on that [later](#catchbydefault)...
+You will also need to opt-in a default catch but more on that [later](#catchbydefault).
 </Note>
 
 ## `@semanticNonNull`
