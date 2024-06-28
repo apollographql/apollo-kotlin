@@ -22,7 +22,6 @@ import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
-import kotlinx.datetime.Instant
 import testFixtureToUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -158,7 +157,7 @@ class OtherCacheTest {
   fun withCompileTimeScalarAdapter() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = InstantQuery()
     // Store in the cache
-    val instant = Instant.fromEpochMilliseconds(0L)
+    val instant = "now"
     val data = InstantQuery.Data(instant)
     mockServer.enqueueString(query.composeJsonResponse(data))
     apolloClient.query(query).execute()
