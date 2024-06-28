@@ -10,6 +10,8 @@ dependencyResolutionManagement {
 }
 pluginManagement {
   listOf(repositories, dependencyResolutionManagement.repositories).forEach {
+    // Uncomment this one to use the Kotlin "dev" repository
+    it.maven("https://redirector.kotlinlang.org/maven/dev/")
     it.mavenCentral()
     it.google()
     it.maven("../../../../build/localMaven")
