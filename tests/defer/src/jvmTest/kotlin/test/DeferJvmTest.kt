@@ -43,7 +43,7 @@ class DeferJvmTest {
         .build()
   }
 
-  private suspend fun tearDown() {
+  private fun tearDown() {
     mockServer.close()
   }
 
@@ -112,8 +112,10 @@ class DeferJvmTest {
         channel.close()
       }
 
+      @Suppress("DEPRECATION")
       assertNull(channel.awaitElement()?.product?.productInfoInventory)
       delay(4500)
+      @Suppress("DEPRECATION")
       assertNotNull(channel.awaitElement()?.product?.productInfoInventory)
       client.close()
     }

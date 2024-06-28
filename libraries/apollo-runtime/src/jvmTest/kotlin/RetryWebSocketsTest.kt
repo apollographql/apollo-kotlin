@@ -16,10 +16,10 @@ import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitWebSocketRequest
 import com.apollographql.mockserver.enqueueWebSocket
 import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
-import com.apollographql.apollo3.testing.FooQuery
-import com.apollographql.apollo3.testing.FooSubscription
-import com.apollographql.apollo3.testing.FooSubscription.Companion.completeMessage
-import com.apollographql.apollo3.testing.FooSubscription.Companion.nextMessage
+import test.FooQuery
+import test.FooSubscription
+import test.FooSubscription.Companion.completeMessage
+import test.FooSubscription.Companion.nextMessage
 import com.apollographql.apollo3.testing.connectionAckMessage
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.CoroutineScope

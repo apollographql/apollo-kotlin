@@ -7,11 +7,8 @@ import com.apollographql.apollo3.exception.RouterError
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.testing.Platform
-import com.apollographql.apollo3.testing.assertNoElement
-import com.apollographql.apollo3.testing.awaitElement
+import com.apollographql.apollo3.testing.*
 import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.platform
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -135,7 +132,9 @@ class MultipartSubscriptionsMockServerTest {
       }
     }
 
+    @Suppress("DEPRECATION")
     assertEquals("world", channel.awaitElement().dataOrThrow().hello)
+    @Suppress("DEPRECATION")
     channel.assertNoElement()
   }
 
@@ -291,6 +290,7 @@ private class Context(
 }
 
 private fun multipartSubsTest(block: suspend Context.() -> Unit) = runTest {
+  @Suppress("DEPRECATION")
   if (platform() != Platform.Js) {
     MockServer().use { mockServer ->
       ApolloClient.Builder()

@@ -271,6 +271,7 @@ class OptimisticCacheTest {
     assertEquals(watcherData?.reviews?.get(2)?.commentary, "Amazing")
 
     // after mutation with rolled back optimistic updates
+    @Suppress("DEPRECATION")
     watcherData = channel.awaitElement()
     assertEquals(watcherData?.reviews?.size, 3)
     assertEquals(watcherData?.reviews?.get(0)?.id, "empireReview1")

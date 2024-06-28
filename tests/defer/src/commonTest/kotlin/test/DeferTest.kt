@@ -5,9 +5,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.autoPersistedQueryInfo
 import com.apollographql.apollo3.mpp.currentTimeMillis
-import com.apollographql.apollo3.testing.Platform
 import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.platform
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueMultipart
 import com.apollographql.mockserver.enqueueString
@@ -255,7 +253,8 @@ class DeferTest {
 
   @Test
   fun payloadsAreReceivedIncrementally() = runTest(before = { setUp() }, after = { tearDown() }) {
-    if (platform() == Platform.Js) {
+    @Suppress("DEPRECATION")
+    if (com.apollographql.apollo3.testing.platform() == com.apollographql.apollo3.testing.Platform.Js) {
       // TODO For now chunked is not supported on JS - remove this check when it is
       return@runTest
     }

@@ -17,6 +17,7 @@ import kotlin.test.assertNull
 class NormalizedCacheThreadingTest {
   @Test
   fun cacheCreationHappensInBackgroundThread() = runTest {
+    @Suppress("DEPRECATION")
     val testThreadName = currentThreadId()
     // No threading on js
     if (testThreadName == "js") return@runTest
@@ -25,6 +26,7 @@ class NormalizedCacheThreadingTest {
         .networkTransport(QueueTestNetworkTransport())
         .normalizedCache(object : NormalizedCacheFactory() {
           override fun create(): NormalizedCache {
+            @Suppress("DEPRECATION")
             cacheCreateThreadName = currentThreadId()
             return MemoryCacheFactory().create()
           }

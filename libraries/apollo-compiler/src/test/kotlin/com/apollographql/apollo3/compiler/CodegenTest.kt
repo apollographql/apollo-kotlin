@@ -155,7 +155,6 @@ class CodegenTest {
             when {
               file.name == "companion" -> listOf(Parameters(file, MODELS_OPERATION_BASED, true))
               hasFragments -> {
-                @Suppress("DEPRECATION")
                 val list = listOf(
                     Parameters(file, MODELS_OPERATION_BASED, true),
                 )
@@ -254,7 +253,7 @@ class CodegenTest {
         "mutation_create_review", "simple_fragment", "data_builders" -> true
         else -> false
       }
-      val operationIdGenerator = when (folder.name) {
+      @Suppress("DEPRECATION") val operationIdGenerator = when (folder.name) {
         "operation_id_generator" -> object : OperationIdGenerator {
           override fun apply(operationDocument: String, operationName: String): String {
             return "hash"
@@ -279,6 +278,7 @@ class CodegenTest {
             ?: File("src/test/graphql/schema.sdl")
 
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
+      @Suppress("DEPRECATION")
       val operationOutputGenerator = OperationOutputGenerator.Default(operationIdGenerator)
 
       val targetLanguage = if (generateKotlinModels) {

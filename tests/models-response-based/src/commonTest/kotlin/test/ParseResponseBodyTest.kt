@@ -9,8 +9,7 @@ import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.toApolloResponse
-import com.apollographql.apollo3.testing.Platform
-import com.apollographql.apollo3.testing.platform
+import com.apollographql.apollo3.testing.*
 import okio.Buffer
 import testFixtureToJsonReader
 import testFixtureToUtf8
@@ -57,6 +56,7 @@ class ParseResponseBodyTest {
       query.composeJsonResponse(this, data!!)
     }
 
+    @Suppress("DEPRECATION")
     if (platform() != Platform.Js) {
       // Do not check strings on JS because of https://youtrack.jetbrains.com/issue/KT-33358#focus=Comments-27-3656643.0-0
       checkTestFixture(actual, "OperationJsonWriter.json")

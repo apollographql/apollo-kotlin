@@ -22,7 +22,7 @@ import kotlin.test.assertEquals
 class OperationOutputTest {
   @Test
   fun operationOutputMatchesTheModels() {
-    val operationOutput = pathToUtf8("integration-tests/build/generated/manifest/apollo/httpcache-kotlin/operationOutput.json")
+    @Suppress("DEPRECATION") val operationOutput = pathToUtf8("integration-tests/build/generated/manifest/apollo/httpcache-kotlin/operationOutput.json")
     val source = Json.parseToJsonElement(operationOutput).jsonObject.entries.mapNotNull {
       val descriptor = it.value.jsonObject
       if (descriptor.getValue("name").jsonPrimitive.content == "AllFilms") {
