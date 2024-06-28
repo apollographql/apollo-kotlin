@@ -10,20 +10,10 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #v4.1.7
-      - name: Bump Kotlin version
+        with:
+          ref: kotlin-nightlies
+          fetch-depth: 0
+      - name: Rebase on top of main, bump versions, commit and push, and trigger 'pr' workflow
         run: ./scripts/bump-kotlin-nightlies.main.kts
-      - name: Update API dump
-        run: ./gradlew apiDump
-      - name: Commit and push changes to kotlin-nightlies branch
-        run: |
-          git checkout -b kotlin-nightlies
-          git add .
-          git commit -m "Bump Kotlin version"
-          git push --force origin kotlin-nightlies
-      # Trigger a workflow manually because actions cannot trigger workflows to avoid endless loops
-      # https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#triggering-further-workflow-runs
-      - name: Trigger pr workflow
-        run: |
-          gh workflow run pr --ref kotlin-nightlies
     env:
       GH_TOKEN: ${{ github.token }}
