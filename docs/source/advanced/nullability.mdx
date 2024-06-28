@@ -9,14 +9,11 @@ description: Make your queries even more typesafe
 
 </ExperimentalFeature>
 
-## Nullability and errors in GraphQL
-
-<Note>
+## Introduction
 
 This section is a high level description of nullability and errors in GraphQL and the problem it causes for app developers. For the proposed solution, skip directly to the [@semanticNonNull](#semanticnonnull) section.  
-</Note>
 
-GraphQL does not have a `Result<>` type. If a field errors, it is set to `null` in the JSON response and an error is added to the `errors` array. 
+GraphQL does not have a `Result` type. If a field errors, it is set to `null` in the JSON response and an error is added to the `errors` array. 
 
 From the schema alone, it is impossible to tell if `null` is a valid business value or only happens for errors:
 
@@ -187,7 +184,7 @@ query GetUser {
 }
 ```
 
-### Colocated errors
+### Colocate errors
 
 To get colocated errors, use `@catch(to: RESULT)`:
 
@@ -253,7 +250,7 @@ class User(
 The error is thrown during parsing but still caught before it reaches your UI code. If no parent field catches it, the Apollo Kotlin runtime will and set it as `ApolloResponse.exception`. 
 </Note>  
 
-### Coerce to null
+### Coerce errors to null
 
 To coerce errors to `null` (current GraphQL default), use `@catch(to: NULL)`:
 
