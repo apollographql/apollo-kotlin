@@ -23,6 +23,56 @@ It automates most of the API changes but cannot deal with behavior changes like 
 
 We recommend using the plugin to automate the repetitive tasks but still go through this document for the details.
 
+## Group id / plugin id / package name
+
+Apollo Kotlin 4 uses a new identifier for its maven group id, Gradle plugin id and package name : **`com.apollographql.apollo`**.
+
+This also allows to run versions 4 and 3 side by side if needed.
+
+In most cases, you can update the identifier in your project by performing a find-and-replace and replacing `com.apollographql.apollo3` with `com.apollographql.apollo`.
+
+### Group id
+
+The maven group id used to identify Apollo Kotlin 4 [artifacts](https://repo1.maven.org/maven2/com/apollographql/apollo/) is `com.apollographql.apollo`:
+
+```kotlin
+// Replace:
+implementation("com.apollographql.apollo3:apollo-runtime:3.8.4")
+
+// With:
+implementation("com.apollographql.apollo:apollo-runtime:4.0.0")
+```
+
+### Gradle plugin id
+
+The Apollo Kotlin 4.0 Gradle plugin id is `com.apollographql.apollo`:
+
+```kotlin
+// Replace:
+plugins {
+  id("com.apollographql.apollo3") version "3.8.4"
+}
+
+// With:
+plugins {
+  id("com.apollographql.apollo") version "4.0.0"
+}
+```
+
+### Package name
+
+Apollo Kotlin 4 classes use the `com.apollographql.apollo` package:
+
+```kotlin
+// Replace:
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.*
+
+// With:
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.*
+```
+
 ## Moved artifacts 
 
 Over the years, a lot of support functionality was added alongside the `apollo-api` and `apollo-runtime` artifacts. While useful, most of this functionality doesn't share the same level of stability and maturity as the core artifacts and bundling them did not make much sense.
