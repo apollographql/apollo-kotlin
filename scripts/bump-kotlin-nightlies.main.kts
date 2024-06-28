@@ -82,10 +82,10 @@ fun commitAndPush() {
   val status = runCommand("git status")
   if (status.contains("nothing to commit")) {
     println("No changes to commit")
-    return
+  } else {
+    runCommand("git add .")
+    runCommand("git", "commit", "-m", "Bump Kotlin and KSP")
   }
-  runCommand("git add .")
-  runCommand("git", "commit", "-m", "Bump Kotlin version")
   runCommand("git push --force origin $BRANCH_NAME")
 }
 
