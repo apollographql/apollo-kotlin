@@ -28,9 +28,9 @@ commonSetup()
 // XXX: this should use the settings repositories instead
 repositories {
   // Uncomment this one to use the Kotlin "dev" repository
-  // maven("https://redirector.kotlinlang.org/maven/dev/")
+  maven("https://redirector.kotlinlang.org/maven/dev/")
   // Uncomment this one to use the Sonatype OSSRH snapshots repository
-  // maven("https://oss.sonatype.org/content/repositories/snapshots/")
+  maven("https://oss.sonatype.org/content/repositories/snapshots/")
   mavenCentral()
 
   intellijPlatform {
