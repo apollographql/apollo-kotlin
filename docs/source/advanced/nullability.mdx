@@ -9,20 +9,38 @@ description: Make your queries even more typesafe
 
 </ExperimentalFeature>
 
-## Nullability in GraphQL
+## Introduction
+
+_This section is a high level description of nullability and errors in GraphQL and the problem it causes for app developers. For the proposed solution, skip directly to the [@semanticNonNull](#semanticnonnull) section._  
 
 GraphQL does not have a `Result` type. If a field errors, it is set to `null` in the JSON response and an error is added to the `errors` array. 
 
-With the following schema and query:
+From the schema alone, it is impossible to tell if `null` is a valid business value or only happens for errors:
 
 ```graphql
 type User {
   id: ID!
-  # name is nullable, but in practice this happens only in error cases
+  # Should the UI deal with user without a name here? It's impossible to tell.
   name: String
   avatarUrl: String
 }
+```
 
+The GraphQL best practices recommend making fields nullable by default to account for errors. 
+
+From [graphql.org](https://graphql.org/learn/best-practices/#nullability):
+
+<blockquote style="background-color: rgba(255, 255, 0, 0.05)">
+
+_In a GraphQL type system, every field is nullable by default.
+This is because there are many things that can go awry in a networked
+service backed by databases and other services._
+
+</blockquote>
+
+For an example, the following query:
+
+```graphql
 query GetUser {
   user {
     id
@@ -32,7 +50,7 @@ query GetUser {
 }
 ```
 
-The server returns the following response in case of error:
+receives a response like so in the case of an error:
 
 ```json
 {
@@ -52,19 +70,7 @@ The server returns the following response in case of error:
 }
 ```
 
-GraphQL best practices recommend using nullable types by default. From [graphql.org](https://graphql.org/learn/best-practices/#nullability):
-
-<blockquote style="background-color: rgba(255, 255, 0, 0.05)">
-
-_In a GraphQL type system, every field is nullable by default. 
-This is because there are many things that can go awry in a networked
-service backed by databases and other services._
-
-</blockquote>
-
-This default makes sense in distributed environments where microservices might fail and some data fail to resolve. This behaviour is robust by default: if part of your query fails, you still get the rest of the data.
-
-This default has one major drawback for frontend developers though. It requires to carefully check every field in your UI code. 
+This nullable default has one major drawback for frontend developers. It requires to carefully check every field in your UI code.
 
 Sometimes it's not clear how to handle the different cases:
 
@@ -82,270 +88,233 @@ fun User(user: GetUserQuery.User) {
 }
 ```
 
-To help deal with those issues and make sure your UI code only sees what make sense for your app, Apollo Kotlin offers three tools:
-* [Error aware parsing](#error-aware-parsing)
+When there are a lot of fields, handling the `null` case on every one of them becomes really tedious. 
+
+Wouldn't it be nice if instead the UI could decide to handle errors more globally and display a general error if any field in an `User` fails? 
+
+Apollo Kotlin offers nullability directives to deal with this situation:
+* [`@semanticNonNull`](#semanticnonnull)
 * [`@catch`](#handle-errors-and-receive-partial-data-with-catch)
-* [`@semanticNonNullField`](#handle-semantic-non-null-with-semanticnonnullfield)
 
-These tools change effectively the GraphQL default from "handle every field error" to "opt-in the errors you want to handle".
+These tools change the GraphQL default from "handle every field error" to "opt-in the errors you want to handle".
 
-## Nullability in Apollo Kotlin
+## Import the nullability directives
 
-### Error aware parsing
-
-With error aware parsing, the errors are detected at parsing time, so you don't have to look them up in the `errors` array. Any GraphQL error stops the parsing and you are guaranteed that `response.data` is actual semantic data and does not contain any error. 
-
-In order to opt-in error aware parsing, create an `extra.graphqls` file next to your schema and import the `@catch` directive:
+Nullability directives are experimental. You need to import them using the [`@link` directive](https://specs.apollo.dev/link/v1.0/):
 
 ```graphql
-# Import the `@catch` directive definition. 
-# When it is imported, parsers generate extra code to deal with errors.
 extend schema @link(
-  url: "https://specs.apollo.dev/nullability/v0.3", 
-  import: ["@catch", "CatchTo"]
+  url: "https://specs.apollo.dev/nullability/v0.4", 
+  # Note: other directives are needed later on and added here for convenience
+  import: ["@semanticNonNull", "@semanticNonNullField", "@catch", "@catchTo", "@catchByDefault"]
 )
 ```
 
-And choose your default error handling. You can choose to coerce errors to `null`, like the current GraphQL default:
+<Note>
+
+You will also need to opt-in a default catch but more on that [later](#catchbydefault).
+</Note>
+
+## `@semanticNonNull`
+
+`@semanticNonNull` introduces a new type in the GraphQL type system. 
+
+A `@semanticNonNull` type can never be null **except** if there is an error in the errors array.
+
+Use it in your schema:
 
 ```graphql
-# Coerce errors to null by default. Partial data is returned. This partial data may contain errors that need to be checked
-# against the `errors` array
-extend schema @catch(to: NULL)
-```
-
-Or re-throw errors:
-
-```graphql
-# Errors stop the parsing. The data never contains error. Use `@catch` in operations to let partial data through
-extend schema @catch(to: THROW)
-```
-
-In the `@catch(to: THROW)` mode, the parsing stops at the first GraphQL error and the whole query is failed. In the example above:
-
-```json
-{
-  "data": {
-    "user": {
-      "id": "1001",
-      "name": null,
-      "avatarUrl": "https://example.com/pic.png"
-    }
-  },
-  "errors": [
-    {
-      "message": "Cannot resolve user.name",
-      "path": ["user", "name"]
-    }
-  ]
+type User {
+  id: ID!
+  # name is never null unless there is an error
+  name: String @semanticNonNull
+  # avatarUrl may be null even if there is no error. In that case the UI should be prepared to display a placeholder. 
+  avatarUrl: String
 }
 ```
 
-`response.data` is null and `response.exception` is an instance of `ApolloGraphQLException`:
+<Note>
 
-```kotlin
-println(response.data) // null
-println(response.exception) // ApolloGraphQLException 
+`@semanticNonNull` is a directive so that it can be introduced without breaking the current GraphQL tooling but the ultimate goal is to introduce new syntax. See the [nullability working group discussion](https://github.com/graphql/nullability-wg/discussions/58) for more details.
+
+</Note>
+
+For fields of `List` type, `@semanticNonNull` applies only to the first level. If you need to apply it to a given level, use the `levels` argument:
+
+```graphql
+type User {
+  # adminRoles may be null if the user is not an admin  
+  # if the user is an admin, adminRoles[i] is never null unless there is also an error
+  adminRoles: [AdminRole] @semanticNonNull(levels: [1])
+}
 ```
 
-This default makes it easy to handle errors as they are all handled at parsing time. 
-Any `null` in the response is guaranteed to be a semantic null and not an error, and you should probably handle it.
+With `@semanticNonNull`, a frontend developer knows that a given field will never be null in regular operation and can therefore act accordingly. No need to guess anymore!
 
-> Note: if you have existing code that uses partial data, you can use [`@ignoreErrors`](#migrate-progressively-with-ignoreerrors) to disable throwing on a query
-> per query basis.
+Ideally, your backend team annotates their schema with `@semanticNonNull` directives so that different frontend teams can benefit from the new type information. 
 
-Sometimes failing the whole query feels a bit overkill though. For those cases, you can handle errors with `@catch`.
+Sometimes this process takes time. 
 
-### Handle errors and receive partial data with `@catch`
+For these situations, you can extend your schema by using `@semanticNonNullField` in your extra.graphqls file:
 
-In some cases, you might want to display the data returned from the server, even if it is partial. 
+```graphql
+# Same effect as above but works as a schema extensions
+extend type User @semanticNonNullField(name: "name")
+```
 
-To do so, catch GraphQL errors using the `@catch` directive:
+You can later share that file with your backend team and double check that your interpretation of the types is the correct one.
+
+## `@catch`
+
+While `@semanticNonNull` is a server directive that describes your data, `@catch` is a client directive that defines how to handle errors.
+
+`@catch` allows to:
+* handle errors as `FieldResult<T>`, getting access to the colocated error.
+* throw the error and let another parent field handle it or bubble up to `data == null`. 
+* coerce the error to `null` (current GraphQL default).
+
+For fields of `List` type, `@catch` applies only to the first level. If you need to apply it to a given level, use the `levels` argument:
+
+```graphql
+query GetUser {
+  user {
+    # map friends[i] to FieldResult
+    friends @catch(to: RESULT, level: 1)
+  }
+}
+```
+
+### Colocate errors
+
+To get colocated errors, use `@catch(to: RESULT)`:
 
 ```graphql
 query GetUser {
   user {
     id
-    # map name to FieldResult<String?> instead of stopping parsing
-    name @catch
-    avatarUrl
+    # map name to FieldResult<String> instead of stopping parsing
+    name @catch(to: RESULT)
   }
 }
 ```
 
-Instead of failing the whole query, the `name` field is now generated as a `FieldResult<String?>` class that can contain either a nullable value or an error:
-
-```kotlin
-// name does not have a value
-println(response.data?.user?.name?.valueOrNull) // null
-// but name has an error
-println(response.data?.user?.name?.graphQLErrorOrNull?.message) // "Cannot resolve user.name"
-// partial data is available
-println(response.data?.user?.id) // "42"
-// exception is null
-println(response.exception) // null
-```
-
-For fields of List type, `@catch` applies only to the first level. If you need to apply it to a given level, use the `levels` argument:
-
-```graphql
-query GetUser {
-  user {
-    # socialLinks fails the operation on error 
-    # socialLinks[0], socialLinks[1], socialLinks[2], etc... are mapped to FieldResult classes
-    socialLinks @catch(levels: [1])
-  }
-}
-```
-
-For fields of composite type, `@catch` catches any nested error:
-
-```graphql
-query GetUser {
-  # catch errors on user and any nested field 
-  user @catch(to: RESULT) {
-    name 
-    avatarUrl
-  }
-}
-```
-
-Response:
-
-```json
-{
-  "data": {
-    "user": {
-      "id": "1001",
-      "name": null,
-      "avatarUrl": "https://example.com/pic.png"
-    }
-  },
-  "errors": [
-    {
-      "message": "Cannot resolve user.name",
-      "path": ["user", "name"]
-    }
-  ]
-}
-```
-
-`data.user` is a `FieldResult<User>`:
-
-```kotlin
-// user is a FieldResult<User> that contains the name error
-println(response.data?.user?.graphQLErrorOrNull?.message) // "Cannot resolve user.name"
-```
-
-### Handle semantic non-null with `@semanticNonNullField`
-
-Even with automatic detection of errors and handling of partial data like described above, you still have to check for `null` in your UI code. This is because of the same reason that [GraphQL by default recommends nullable fields](https://graphql.org/learn/best-practices/#nullability). Your backend team has no other choice than make a field nullable if it can fail. 
-
-But a field like 'User.name' is _semantically non-null_: it should never be `null`, except when something goes really wrong.
-
-In those cases, you can mark a field as "semantic non-null" and the Apollo Kotlin compiler will generate it as non-nullable even though it is nullable in the server schema. To do so, add `@semanticNonNullField` to your `extra.graphqls` file:
-
-```graphql
-# extra.graphqls
-
-# Import the `@semanticNonNull` directive definition in addition to `@catch` and `CatchTo`. 
-extend schema @link(
-  url: "https://specs.apollo.dev/nullability/v0.3", 
-  import: ["@catch", "CatchTo", "@semanticNonNullField"]
-)
-
-# mark User.name as semantic non-null
-extend type User @semanticNonNullField(name: "name")
-```
-
-`name` is now a non-null Kotlin types:
+The above query generates the following Kotlin code:
 
 ```kotlin
 class User(
     val id: String,
-    // name is non-null here
-    val name: String,
-    val avatarUrl: String?,
+    // note how String is not nullable. This is because name 
+    // was marked `@semanticNonNull` in the previous section.
+    val name: FieldResult<String>,
 )
 ```
 
-If, by any chance, an error happens that you still want to handle on that field, you can use `@catch` to map `name` to a `FieldResult<String>` property containing a non-null value or an error.
+Use `getOrNull()` to get the value:
 
 ```kotlin
-user.name.valueOrNull // "Luke Skywalker"
-user.name.graphQLErrorOrNull // null
+println(user.name.getOrNull()) // "Luke Skywalker"
+// or you can also decide to throw on error
+println(user.name.getOrThrow())
 ```
 
-Similarly to `@catch`, `@semanticNonNullField` supports a `levels` argument for lists:
+And `graphQLErrorOrNull()` to get the colocated error:
 
-```graphql
-# User.friends is generated a nullable
-# User.friends[0], User.friends[1], User.friends[2], etc.. is generated a non-null
-extend type User @semanticNonNullField(name: "friends", levels: [1])
+```kotlin
+println(user.name.graphQLErrorOrNull()) // "Cannot resolve user.name"
 ```
 
-## Migrate progressively with `@ignoreErrors`
+### Throw errors
 
-`@ignoreErrors` is an operation directive that disables error aware parsing for a specific operation:
+To throw errors, use `@catch(to: THROW)`:
 
 ```graphql
-"""
-Never throw on errors.
-
-This is used for backward compatibility for clients where this was the default behaviour.
-"""
-directive @ignoreErrors on QUERY | MUTATION | SUBSCRIPTION
+query GetUser {
+  user {
+    id
+    # throw any error 
+    name @catch(to: THROW)
+  }
+}
 ```
 
-To enable it, import it like `@catch`, `CatchTo` and `@semanticNonNullField`:
+The above query generates the following Kotlin code:
 
-```graphql
-extend schema @link(
-  url: "https://specs.apollo.dev/nullability/v0.3",
-  import: ["@catch", "CatchTo", "@semanticNonNullField", "@ignoreErrors"]
+```kotlin
+class User(
+    val id: String,
+    val name: String,
 )
 ```
 
-Enabling error aware parsing and adding `@ignoreErrors` to all your operations is a no-op. You can then remove `@ignoreErrors` from your operations progressively. 
+<Note>
+The error is thrown during parsing but still caught before it reaches your UI code. If no parent field catches it, the Apollo Kotlin runtime will and set it as `ApolloResponse.exception`. 
+</Note>  
 
-## Decision flowchart 
+### Coerce errors to null
 
-Different teams have different needs:
+To coerce errors to `null` (current GraphQL default), use `@catch(to: NULL)`:
 
-* Some teams have a schema where a lot of fields are non-null already and might know from their backend team that all the nullable ones are semantic nulls. For those teams, there is little value in using `@catch` or `@semanticNonNullField`.
-* Other teams have a schema where fields are all nullable by default, according to the GraphQL best practices.
-  * Some of them want to display as much data as possible always. The frontend team needs to check for errors on every field and this makes the experience very robust at the price of more complex client code.
-  * Some of them want to opt-in the errors they want to handle and save the code to check every field.
-
-Finally, some teams want to opt-in error aware parsing without breaking their existing codebase. For those cases, `@ignoreErrors` allows a more progressive solution.
-
-```mermaid
-flowchart TD
-    A("Are you happy with the current nullability\nand error handling?") --> |YES| B["Do nothing"]
-    B --> V
-    A --> |NO| D["Import the `@catch` directive"]
-    D --> E("Do you want partial data by default?")
-    E --> |partial data by default| F["Coerce to null by default\nextend schema @catch(to: NULL)"]
-    F --> X["Things are mostly unchanged\nbut you can now use `@catch`"]
-    X --> J["Use `@catch(to: RESULT)`\nin your operations\nto get the inline errors\nin your Kotlin code"]
-    J --> H("Do you have fields in your schema\nthat are nullable only for error reasons?")
-    H --> |no|V
-    H --> |yes|I["import the `@semanticNonNullField` directive"]
-    I --> K["Add `@semanticNonNullField`\nto appropriate fields in your schema"]
-    K --> L["Those field are now generated\nas non-null in Kotlin"]
-    L --> V["The end 🎉"]
-    E --> |no-errors by default| P["Rethrow by default\nextend schema @catch(to: THROW)"]
-    P --> W["Errors stop the parsing.\nresponse.data is now error-free"]
-    W --> G("Do you have existing code that\nhandles partial data?")
-    M --> R["Consider a single\n`@ignoreErrors` operation"]
-    R --> O["Catch errors with\n`@catch(to: RESULT)`\nin your operations\nand let partial data through"]
-    O --> |test|Q("Is it working as expected?")
-    Q --> |yes|S["Remove `@ignoreErrors`"]
-    S --> T("Are there any `@ignoreErrors`\noperations left?")
-    T --> |yes|R
-    T --> |no|H
-    Q --> |no|O
-    G --> |yes| M["Add `@ignoreErrors` to every\noperation"]
-    G --> |no|N["Use `@catch(to: RESULT)`\nin your operations\nto get the inline errors\nin your Kotlin code"]
-    N --> H
+```graphql
+query GetUser {
+  user {
+    id
+    # coerce errors to null 
+    name @catch(to: NULL)
+  }
+}
 ```
+
+The above query generates the following Kotlin code:
+
+```kotlin
+class User(
+    val id: String,
+    // Note how name is nullable again despite being marked
+    // @semanticNonNull in the schema
+    val name: String?,
+)
+```
+
+<Note>
+The error is thrown during parsing but still caught before it reaches your UI code. If no parent field catches it, the Apollo Kotlin runtime does and exposes the exception in `ApolloResponse.exception`. 
+</Note>  
+
+## `@catchByDefault`
+
+In order to use the nullability directives, you need to opt in a default catch behaviour for nullable GraphQL fields using `@catchByDefault`.
+
+You can choose to map nullable fields to `FieldResult`:
+
+```graphql
+# Errors stop the parsing. 
+extend schema @catchByDefault(to: RESULT)
+```
+
+Or throw errors:
+
+```graphql
+# Errors stop the parsing. 
+extend schema @catchByDefault(to: THROW)
+```
+
+Or coerce errors to `null`, like the current GraphQL default:
+
+```graphql
+# Coerce errors to null by default.
+extend schema @catchByDefault(to: NULL)
+```
+
+(Adding `@catchByDefault(to: NULL)` is a no-op for codegen that unlocks using `@catch` in your operations.)
+
+## Migrate to semantic nullability
+
+Semantic nullability is the most useful for schemas that are nullable by default. These are the schemas that require "handling every field error". 
+
+In order to change that default to "opt-in the errors you want to handle", you can use the following approach:
+
+1. import the nullability directives.
+1. Default to coercing to null: `extend schema @catchByDefault(to: NULL)`. This is a no-op to start exploring the directives.
+1. Add `@catch` to individual fields, get more comfortable with how it works.
+1. When ready to do the big switch, change to `extend schema catch(to: THROW)` and (at the same time) add  `query GetFoo @catch(to: NULL) {}` on all operations/fragments (this is a no-op).
+1. From this moment on, new queries written are `catch(to: THROW)` by default.
+1. Remove `query GetFoo @catch(to: NULL) {}` progressively.
