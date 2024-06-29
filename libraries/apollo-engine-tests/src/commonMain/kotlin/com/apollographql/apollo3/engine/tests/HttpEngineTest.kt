@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.engine.tests
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.ByteStringHttpBody
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
@@ -16,6 +17,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 
+@ApolloInternal
 suspend fun errorWithBody(engine: (Long) -> HttpEngine) = MockServer().use { mockServer ->
   mockServer.enqueueString(
       statusCode = 500,
@@ -26,6 +28,7 @@ suspend fun errorWithBody(engine: (Long) -> HttpEngine) = MockServer().use { moc
   assertEquals("Ooops", httpResponse.body?.readUtf8())
 }
 
+@ApolloInternal
 suspend fun headers(engine: (Long) -> HttpEngine) = MockServer().use { mockServer ->
   mockServer.enqueue(
       MockResponse.Builder()
@@ -48,6 +51,7 @@ suspend fun headers(engine: (Long) -> HttpEngine) = MockServer().use { mockServe
   assertEquals("responseValue2", httpResponse.headers.valueOf("responseHeader2"))
 }
 
+@ApolloInternal
 suspend fun post(engine: (Long) -> HttpEngine) = MockServer().use { mockServer ->
   mockServer.enqueue(
       MockResponse.Builder()
@@ -67,6 +71,7 @@ suspend fun post(engine: (Long) -> HttpEngine) = MockServer().use { mockServer -
   assertEquals("body".length.toString(), request.headers["Content-Length"])
 }
 
+@ApolloInternal
 suspend fun connectTimeout(engine: (Long) -> HttpEngine) = MockServer().use { mockServer ->
   assertFailsWith<ApolloException> {
 
@@ -75,6 +80,7 @@ suspend fun connectTimeout(engine: (Long) -> HttpEngine) = MockServer().use { mo
   }
 }
 
+@ApolloInternal
 suspend fun readTimeout(engine: (Long) -> HttpEngine) = MockServer().use { mockServer ->
   mockServer.enqueue(
       MockResponse.Builder()

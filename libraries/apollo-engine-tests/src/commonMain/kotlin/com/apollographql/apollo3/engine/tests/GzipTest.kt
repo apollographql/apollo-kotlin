@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.engine.tests
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.network.http.get
 import com.apollographql.mockserver.MockResponse
@@ -23,6 +24,7 @@ private fun String.toByteString(): ByteString {
   return buffer.readByteString()
 }
 
+@ApolloInternal
 suspend fun gzipTest(engine: HttpEngine) {
   val mockServer = MockServer()
 
