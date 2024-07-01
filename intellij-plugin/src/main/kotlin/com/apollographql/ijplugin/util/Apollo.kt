@@ -14,19 +14,25 @@ fun Project.getApolloVersion(): ApolloVersion {
     val mavenCoordinates = library.toMavenCoordinates() ?: return@forEachLibrary true
     when (mavenCoordinates.group) {
       "com.apollographql.apollo" -> {
-        foundVersion = ApolloVersion.V2
-        false
+        when {
+          mavenCoordinates.version.startsWith("2.") -> {
+            foundVersion = ApolloVersion.V2
+            false
+          }
+
+          mavenCoordinates.version.startsWith("4.") -> {
+            foundVersion = ApolloVersion.V4
+            false
+          }
+
+          else -> true
+        }
       }
 
       "com.apollographql.apollo3" -> {
         when {
           mavenCoordinates.version.startsWith("3.") -> {
             foundVersion = ApolloVersion.V3
-            false
-          }
-
-          mavenCoordinates.version.startsWith("4.") -> {
-            foundVersion = ApolloVersion.V4
             false
           }
 
