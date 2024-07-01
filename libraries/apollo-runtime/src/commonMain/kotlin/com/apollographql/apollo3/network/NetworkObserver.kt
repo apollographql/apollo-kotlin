@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.network
+package com.apollographql.apollo.network
 
 import okio.Closeable
 

@@ -1,26 +1,26 @@
-package com.apollographql.apollo3.network.http
+package com.apollographql.apollo.network.http
 
-import com.apollographql.apollo3.ApolloCall
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.ExecutionOptions
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.HttpBody
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.api.http.valueOf
-import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.buildJsonByteString
-import com.apollographql.apollo3.api.json.writeArray
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.exception.DefaultApolloException
-import com.apollographql.apollo3.exception.JsonDataException
-import com.apollographql.apollo3.internal.CloseableSingleThreadDispatcher
+import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.AnyAdapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutionOptions
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.http.HttpBody
+import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.api.http.HttpRequest
+import com.apollographql.apollo.api.http.HttpResponse
+import com.apollographql.apollo.api.http.valueOf
+import com.apollographql.apollo.api.json.BufferedSinkJsonWriter
+import com.apollographql.apollo.api.json.BufferedSourceJsonReader
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.buildJsonByteString
+import com.apollographql.apollo.api.json.writeArray
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo.exception.DefaultApolloException
+import com.apollographql.apollo.exception.JsonDataException
+import com.apollographql.apollo.internal.CloseableSingleThreadDispatcher
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -43,7 +43,7 @@ import kotlin.time.TimeSource.Monotonic.markNow
  * Some servers might have a per-HTTP-call cache making it faster to resolve 1 big array
  * of n queries compared to resolving the n queries separately.
  *
- * Because [com.apollographql.apollo3.ApolloCall.execute] suspends, it only makes sense to use query batching when queries are
+ * Because [com.apollographql.apollo.ApolloCall.execute] suspends, it only makes sense to use query batching when queries are
  * executed from different coroutines. Use [async] to create a new coroutine if needed
  *
  * [BatchingHttpInterceptor] buffers the whole response, so it might additionally introduce some

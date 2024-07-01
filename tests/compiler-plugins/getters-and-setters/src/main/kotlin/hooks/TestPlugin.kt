@@ -1,9 +1,9 @@
 package hooks
 
-import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
-import com.apollographql.apollo3.compiler.Transform
-import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.codegen.java.JavaOutput
+import com.apollographql.apollo.compiler.ApolloCompilerPlugin
+import com.apollographql.apollo.compiler.Transform
+import com.apollographql.apollo.compiler.capitalizeFirstLetter
+import com.apollographql.apollo.compiler.codegen.java.JavaOutput
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
 import javax.lang.model.element.Modifier

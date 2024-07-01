@@ -1,8 +1,8 @@
-package  com.apollographql.apollo3.api
+package  com.apollographql.apollo.api
 
-import com.apollographql.apollo3.api.Executable.Variables
-import com.apollographql.apollo3.api.json.ApolloJsonElement
-import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo.api.Executable.Variables
+import com.apollographql.apollo.api.json.ApolloJsonElement
+import com.apollographql.apollo.api.json.JsonWriter
 import okio.IOException
 
 /**
@@ -26,7 +26,7 @@ interface Executable<D: Executable.Data> {
 
   /**
    * A list of [CompiledSelection]. Used when reading from the cache and/or normalizing a model.
-   * Use [com.apollographql.apollo3.cache.normalized.ApolloStore.readOperation] for a higher level API
+   * Use [com.apollographql.apollo.cache.normalized.ApolloStore.readOperation] for a higher level API
    */
   fun rootField(): CompiledField
 

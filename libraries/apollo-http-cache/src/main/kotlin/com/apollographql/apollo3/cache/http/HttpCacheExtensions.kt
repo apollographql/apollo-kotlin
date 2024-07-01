@@ -1,16 +1,16 @@
 @file:JvmName("HttpCache")
 
-package com.apollographql.apollo3.cache.http
+package com.apollographql.apollo.cache.http
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.MutableExecutionOptions
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.cache.http.internal.CacheHeadersHttpInterceptor
-import com.apollographql.apollo3.cache.http.internal.HttpCacheApolloInterceptor
-import com.apollographql.apollo3.network.http.HttpInfo
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.api.MutableExecutionOptions
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.cache.http.internal.CacheHeadersHttpInterceptor
+import com.apollographql.apollo.cache.http.internal.HttpCacheApolloInterceptor
+import com.apollographql.apollo.network.http.HttpInfo
+import com.apollographql.apollo.network.http.HttpNetworkTransport
 import okio.FileSystem
 import java.io.File
 

@@ -5,14 +5,14 @@
 //
 package com.example.introspection_query.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.json.JsonReader;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.Adapter;
+import com.apollographql.apollo.api.Adapters;
+import com.apollographql.apollo.api.Assertions;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ListAdapter;
+import com.apollographql.apollo.api.ObjectAdapter;
+import com.apollographql.apollo.api.json.JsonReader;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.introspection_query.TestQuery;
 import com.example.introspection_query.type.__TypeKind;
 import com.example.introspection_query.type.adapter.__TypeKind_ResponseAdapter;

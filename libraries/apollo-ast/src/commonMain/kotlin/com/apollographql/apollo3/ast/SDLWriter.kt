@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo.ast
 
-import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo.annotations.ApolloInternal
 import okio.BufferedSink
 import okio.Closeable
 

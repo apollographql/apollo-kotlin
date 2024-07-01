@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.network.websocket
+package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.exception.ApolloException
 import okio.Closeable
 
 /**

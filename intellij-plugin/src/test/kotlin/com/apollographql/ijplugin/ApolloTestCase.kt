@@ -26,10 +26,10 @@ import java.io.File
 @TestDataPath("\$CONTENT_ROOT/../../../tests/intellij-plugin-test-project")
 abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
   open val mavenLibraries: List<String> = listOf(
-      "com.apollographql.apollo3:apollo-annotations-jvm:4.0.0-alpha.1",
-      "com.apollographql.apollo3:apollo-api-jvm:4.0.0-alpha.1",
-      "com.apollographql.apollo3:apollo-mpp-utils-jvm:4.0.0-alpha.1",
-      "com.apollographql.apollo3:apollo-runtime-jvm:4.0.0-alpha.1",
+      "com.apollographql.apollo:apollo-annotations-jvm:4.0.0-alpha.1",
+      "com.apollographql.apollo:apollo-api-jvm:4.0.0-alpha.1",
+      "com.apollographql.apollo:apollo-mpp-utils-jvm:4.0.0-alpha.1",
+      "com.apollographql.apollo:apollo-runtime-jvm:4.0.0-alpha.1",
   )
 
   private val projectDescriptor = object : DefaultLightProjectDescriptor() {

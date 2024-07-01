@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.api.http
+package com.apollographql.apollo.api.http
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.Operation
 
 /**
  * [WebSocketPayloadComposer] transforms a GraphQL request in a payload to be sent in a WebSocket message

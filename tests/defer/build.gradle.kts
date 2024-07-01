@@ -1,6 +1,6 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
-  id("com.apollographql.apollo3")
+  id("com.apollographql.apollo")
 }
 
 apolloTest()
@@ -68,7 +68,7 @@ if (System.getProperty("idea.sync.active") == null) {
   configureApollo(false)
 }
 
-fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKotlinModels: Boolean) {
+fun com.apollographql.apollo.gradle.api.Service.configureConnection(generateKotlinModels: Boolean) {
   outputDirConnection {
     if (generateKotlinModels) {
       connectToKotlinSourceSet("commonTest")

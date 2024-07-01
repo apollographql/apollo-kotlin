@@ -1,19 +1,19 @@
 @file:JvmName("FetchPolicyInterceptors")
 @file:Suppress("DEPRECATION") // for ApolloCompositeException, see https://youtrack.jetbrains.com/issue/KT-30155
 
-package com.apollographql.apollo3.cache.normalized
+package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.conflateFetchPolicyInterceptorResponses
-import com.apollographql.apollo3.exception.ApolloCompositeException
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.CacheMissException
-import com.apollographql.apollo3.exception.DefaultApolloException
-import com.apollographql.apollo3.interceptor.ApolloInterceptor
-import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.conflateFetchPolicyInterceptorResponses
+import com.apollographql.apollo.exception.ApolloCompositeException
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.CacheMissException
+import com.apollographql.apollo.exception.DefaultApolloException
+import com.apollographql.apollo.interceptor.ApolloInterceptor
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow

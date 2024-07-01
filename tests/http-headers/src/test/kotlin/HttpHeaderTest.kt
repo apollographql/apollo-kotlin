@@ -1,11 +1,11 @@
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.DefaultUpload
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.DefaultUpload
+import com.apollographql.apollo.api.Optional
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
 import com.apollographql.mockserver.headerValueOf
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import httpheaders.GetRandomQuery
 import httpheaders.UploadMutation
 import kotlinx.coroutines.CoroutineScope

@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.cache.normalized.api.internal
+package com.apollographql.apollo.cache.normalized.api.internal
 
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.Record
+import com.apollographql.apollo.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.api.Record
 import okio.internal.commonAsUtf8ToByteArray
 import kotlin.jvm.JvmStatic
 

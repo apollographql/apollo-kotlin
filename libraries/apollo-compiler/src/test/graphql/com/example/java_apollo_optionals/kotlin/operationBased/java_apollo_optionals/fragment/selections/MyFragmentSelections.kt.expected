@@ -5,10 +5,10 @@
 //
 package com.example.java_apollo_optionals.fragment.selections
 
-import com.apollographql.apollo3.api.CompiledArgument
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledVariable
+import com.apollographql.apollo.api.CompiledArgument
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.CompiledVariable
 import com.example.java_apollo_optionals.type.GraphQLInt
 import kotlin.collections.List
 

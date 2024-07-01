@@ -5,10 +5,10 @@
 //
 package com.example.big_query.selections
 
-import com.apollographql.apollo3.api.CompiledArgument
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.notNull
+import com.apollographql.apollo.api.CompiledArgument
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.notNull
 import com.example.big_query.type.Character
 import com.example.big_query.type.GraphQLString
 import com.example.big_query.type.Query

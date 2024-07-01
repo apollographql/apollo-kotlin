@@ -1,6 +1,6 @@
 @file:JvmMultifileClass
 @file:JvmName("Introspection")
-package com.apollographql.apollo3.ast.introspection
+package com.apollographql.apollo.ast.introspection
 
 import okio.buffer
 import okio.sink

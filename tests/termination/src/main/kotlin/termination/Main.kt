@@ -1,8 +1,8 @@
 package termination
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.network.okHttpClient
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo.network.okHttpClient
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 

@@ -8,7 +8,7 @@
  */
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
@@ -17,7 +17,7 @@ import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.TestVariant
 import com.android.build.gradle.api.UnitTestVariant
-import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo.compiler.capitalizeFirstLetter
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.Task

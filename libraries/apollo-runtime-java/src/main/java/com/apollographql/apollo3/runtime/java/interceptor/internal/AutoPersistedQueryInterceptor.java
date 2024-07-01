@@ -1,15 +1,15 @@
-package com.apollographql.apollo3.runtime.java.interceptor.internal;
+package com.apollographql.apollo.runtime.java.interceptor.internal;
 
-import com.apollographql.apollo3.api.ApolloRequest;
-import com.apollographql.apollo3.api.ApolloResponse;
-import com.apollographql.apollo3.api.Error;
-import com.apollographql.apollo3.api.Mutation;
-import com.apollographql.apollo3.api.Operation;
-import com.apollographql.apollo3.api.http.HttpMethod;
-import com.apollographql.apollo3.exception.AutoPersistedQueriesNotSupported;
-import com.apollographql.apollo3.runtime.java.ApolloCallback;
-import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
-import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo.api.ApolloRequest;
+import com.apollographql.apollo.api.ApolloResponse;
+import com.apollographql.apollo.api.Error;
+import com.apollographql.apollo.api.Mutation;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.http.HttpMethod;
+import com.apollographql.apollo.exception.AutoPersistedQueriesNotSupported;
+import com.apollographql.apollo.runtime.java.ApolloCallback;
+import com.apollographql.apollo.runtime.java.interceptor.ApolloInterceptor;
+import com.apollographql.apollo.runtime.java.interceptor.ApolloInterceptorChain;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

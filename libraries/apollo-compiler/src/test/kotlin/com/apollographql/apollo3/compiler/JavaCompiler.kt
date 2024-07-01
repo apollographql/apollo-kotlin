@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
 import com.google.common.truth.Truth
 import com.google.testing.compile.JavaFileObjects

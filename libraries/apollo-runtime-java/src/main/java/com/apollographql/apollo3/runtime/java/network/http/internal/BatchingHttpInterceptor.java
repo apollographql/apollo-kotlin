@@ -1,20 +1,20 @@
-package com.apollographql.apollo3.runtime.java.network.http.internal;
+package com.apollographql.apollo.runtime.java.network.http.internal;
 
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ExecutionOptions;
-import com.apollographql.apollo3.api.http.HttpBody;
-import com.apollographql.apollo3.api.http.HttpHeader;
-import com.apollographql.apollo3.api.http.HttpKt;
-import com.apollographql.apollo3.api.http.HttpMethod;
-import com.apollographql.apollo3.api.http.HttpRequest;
-import com.apollographql.apollo3.api.http.HttpResponse;
-import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter;
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
-import com.apollographql.apollo3.exception.ApolloHttpException;
-import com.apollographql.apollo3.exception.ApolloNetworkException;
-import com.apollographql.apollo3.runtime.java.network.http.HttpCallback;
-import com.apollographql.apollo3.runtime.java.network.http.HttpInterceptor;
-import com.apollographql.apollo3.runtime.java.network.http.HttpInterceptorChain;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutionOptions;
+import com.apollographql.apollo.api.http.HttpBody;
+import com.apollographql.apollo.api.http.HttpHeader;
+import com.apollographql.apollo.api.http.HttpKt;
+import com.apollographql.apollo.api.http.HttpMethod;
+import com.apollographql.apollo.api.http.HttpRequest;
+import com.apollographql.apollo.api.http.HttpResponse;
+import com.apollographql.apollo.api.json.BufferedSinkJsonWriter;
+import com.apollographql.apollo.api.json.BufferedSourceJsonReader;
+import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.exception.ApolloNetworkException;
+import com.apollographql.apollo.runtime.java.network.http.HttpCallback;
+import com.apollographql.apollo.runtime.java.network.http.HttpInterceptor;
+import com.apollographql.apollo.runtime.java.network.http.HttpInterceptorChain;
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.BufferedSource;
@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import static com.apollographql.apollo3.api.Adapters.AnyAdapter;
+import static com.apollographql.apollo.api.Adapters.AnyAdapter;
 
 public class BatchingHttpInterceptor implements HttpInterceptor {
   private final long batchIntervalMillis;

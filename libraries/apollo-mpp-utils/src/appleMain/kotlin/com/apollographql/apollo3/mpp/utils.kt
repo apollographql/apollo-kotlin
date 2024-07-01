@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.mpp
+package com.apollographql.apollo.mpp
 
 import platform.Foundation.NSDate
 import platform.Foundation.timeIntervalSince1970

@@ -1,10 +1,10 @@
 package test.network
 
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.network.websocket.WebSocket
-import com.apollographql.apollo3.network.websocket.WebSocketEngine
-import com.apollographql.apollo3.network.websocket.WebSocketListener
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.network.websocket.WebSocket
+import com.apollographql.apollo.network.websocket.WebSocketEngine
+import com.apollographql.apollo.network.websocket.WebSocketListener
+import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.CloseFrame
 import com.apollographql.mockserver.DataMessage
 import com.apollographql.mockserver.MockRequestBase
@@ -147,7 +147,7 @@ class WebSocketEngineTest {
 
     clientWriter.close(1003, "Client Bye")
     @Suppress("DEPRECATION")
-    if (com.apollographql.apollo3.testing.platform() != com.apollographql.apollo3.testing.Platform.Native) {
+    if (com.apollographql.apollo.testing.platform() != com.apollographql.apollo.testing.Platform.Native) {
       // Apple sometimes does not send the Close frame. See https://developer.apple.com/forums/thread/679446
       serverReader.awaitMessage().apply {
         assertIs<CloseFrame>(this)

@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.gradle.test
+package com.apollographql.apollo.gradle.test
 
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.UnexpectedBuildFailure
@@ -93,7 +93,7 @@ class LanguageVersionTests {
       apollo {
         service("service") {
           packageNamesFromFilePaths()
-          codegenModels.set(com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED)
+          codegenModels.set(com.apollographql.apollo.compiler.MODELS_RESPONSE_BASED)
           ${if (apolloLanguageVersion == null) "" else "languageVersion.set(\"$apolloLanguageVersion\")"}
         }
       }

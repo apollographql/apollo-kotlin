@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.cache.normalized.internal
+package com.apollographql.apollo.cache.normalized.internal
 
 /**
  * A lock with read/write semantics where possible.

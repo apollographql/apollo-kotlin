@@ -1,16 +1,16 @@
-package com.apollographql.apollo3.cache.normalized.api.internal
+package com.apollographql.apollo.cache.normalized.api.internal
 
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.cache.normalized.api.CacheData
-import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.CacheResolver
-import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
-import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledFragment
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.Executable
+import com.apollographql.apollo.cache.normalized.api.CacheData
+import com.apollographql.apollo.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.api.CacheResolver
+import com.apollographql.apollo.cache.normalized.api.ReadOnlyNormalizedCache
+import com.apollographql.apollo.cache.normalized.api.Record
+import com.apollographql.apollo.exception.CacheMissException
 import kotlin.jvm.JvmSuppressWildcards
 
 /**

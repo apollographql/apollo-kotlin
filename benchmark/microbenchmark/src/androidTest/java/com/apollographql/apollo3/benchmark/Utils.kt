@@ -1,14 +1,14 @@
-package com.apollographql.apollo3.benchmark
+package com.apollographql.apollo.benchmark
 
 import androidx.benchmark.Outputs
 import androidx.test.platform.app.InstrumentationRegistry
-import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.calendar.operation.ItemsQuery
-import com.apollographql.apollo3.calendar.response.ItemsQuery.Data.Items.Edge.Node.Companion.itemFragment
-import com.apollographql.apollo3.calendar.response.fragment.CalendarFragment.Provider.Node.Companion.calendarProviderFragment
-import com.apollographql.apollo3.calendar.response.fragment.ItemFragment.Calendar.Node.Companion.calendarFragment
+import com.apollographql.apollo.api.AnyAdapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.json.buildJsonString
+import com.apollographql.apollo.calendar.operation.ItemsQuery
+import com.apollographql.apollo.calendar.response.ItemsQuery.Data.Items.Edge.Node.Companion.itemFragment
+import com.apollographql.apollo.calendar.response.fragment.CalendarFragment.Provider.Node.Companion.calendarProviderFragment
+import com.apollographql.apollo.calendar.response.fragment.ItemFragment.Calendar.Node.Companion.calendarFragment
 import okio.Buffer
 import okio.BufferedSource
 import okio.source
@@ -19,7 +19,7 @@ object Utils {
 
   const val dbName = "testDb"
   val dbFile: File = InstrumentationRegistry.getInstrumentation().context.getDatabasePath(dbName)
-  val responseBasedQuery = com.apollographql.apollo3.calendar.response.ItemsQuery(endingAfter = "", startingBefore = "")
+  val responseBasedQuery = com.apollographql.apollo.calendar.response.ItemsQuery(endingAfter = "", startingBefore = "")
   val operationBasedQuery = ItemsQuery(endingAfter = "", startingBefore = "")
 
   /**
@@ -65,7 +65,7 @@ object Utils {
     check(data.items!!.edges[248].node.itemFragment.calendar!!.node.calendarFragment.provider.node.calendarProviderFragment.id == "cc8e4c28-f178-11ec-8ea0-0242ac120002")
   }
 
-  internal fun checkResponseBased(data: com.apollographql.apollo3.calendar.response.ItemsQuery.Data) {
+  internal fun checkResponseBased(data: com.apollographql.apollo.calendar.response.ItemsQuery.Data) {
     check(data.items!!.edges[248].node.itemFragment()!!.calendar!!.node.calendarFragment()!!.provider.node.calendarProviderFragment()!!.id == "cc8e4c28-f178-11ec-8ea0-0242ac120002")
   }
 

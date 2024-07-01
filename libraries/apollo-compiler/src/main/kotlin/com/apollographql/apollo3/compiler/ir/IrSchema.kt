@@ -1,30 +1,30 @@
-package com.apollographql.apollo3.compiler.ir
+package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
-import com.apollographql.apollo3.ast.GQLEnumValueDefinition
-import com.apollographql.apollo3.ast.GQLFieldDefinition
-import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
-import com.apollographql.apollo3.ast.GQLInputValueDefinition
-import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
-import com.apollographql.apollo3.ast.GQLListType
-import com.apollographql.apollo3.ast.GQLNamedType
-import com.apollographql.apollo3.ast.GQLNonNullType
-import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
-import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
-import com.apollographql.apollo3.ast.GQLType
-import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
-import com.apollographql.apollo3.ast.fieldDefinitions
-import com.apollographql.apollo3.ast.findDeprecationReason
-import com.apollographql.apollo3.ast.findOneOf
-import com.apollographql.apollo3.ast.findOptInFeature
-import com.apollographql.apollo3.ast.findTargetName
-import com.apollographql.apollo3.ast.internal.toConnectionFields
-import com.apollographql.apollo3.ast.internal.toEmbeddedFields
-import com.apollographql.apollo3.compiler.UsedCoordinates
-import com.apollographql.apollo3.compiler.codegen.keyArgs
-import com.apollographql.apollo3.compiler.codegen.paginationArgs
+import com.apollographql.apollo.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo.ast.GQLEnumValueDefinition
+import com.apollographql.apollo.ast.GQLFieldDefinition
+import com.apollographql.apollo.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo.ast.GQLInputValueDefinition
+import com.apollographql.apollo.ast.GQLInterfaceTypeDefinition
+import com.apollographql.apollo.ast.GQLListType
+import com.apollographql.apollo.ast.GQLNamedType
+import com.apollographql.apollo.ast.GQLNonNullType
+import com.apollographql.apollo.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo.ast.GQLType
+import com.apollographql.apollo.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.Schema.Companion.TYPE_POLICY
+import com.apollographql.apollo.ast.fieldDefinitions
+import com.apollographql.apollo.ast.findDeprecationReason
+import com.apollographql.apollo.ast.findOneOf
+import com.apollographql.apollo.ast.findOptInFeature
+import com.apollographql.apollo.ast.findTargetName
+import com.apollographql.apollo.ast.internal.toConnectionFields
+import com.apollographql.apollo.ast.internal.toEmbeddedFields
+import com.apollographql.apollo.compiler.UsedCoordinates
+import com.apollographql.apollo.compiler.codegen.keyArgs
+import com.apollographql.apollo.compiler.codegen.paginationArgs
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -170,7 +170,7 @@ internal data class IrEnum(
  * An input field
  *
  * Note: [IrInputField], and [IrVariable] are all very similar since they all share
- * the [com.apollographql.apollo3.ast.GQLInputValueDefinition] type, but [IrVariable]
+ * the [com.apollographql.apollo.ast.GQLInputValueDefinition] type, but [IrVariable]
  * misses description, deprecation and optIn so they are modeled differently in
  * [IrOperations]
  */

@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.ast.GQLDocument
-import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.toExecutableDocument
-import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.ast.toUtf8
-import com.apollographql.apollo3.compiler.internal.addRequiredFields
+import com.apollographql.apollo.ast.GQLDocument
+import com.apollographql.apollo.ast.GQLFragmentDefinition
+import com.apollographql.apollo.ast.GQLOperationDefinition
+import com.apollographql.apollo.ast.toExecutableDocument
+import com.apollographql.apollo.ast.toSchema
+import com.apollographql.apollo.ast.toUtf8
+import com.apollographql.apollo.compiler.internal.addRequiredFields
 import com.google.common.truth.Truth.assertThat
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector

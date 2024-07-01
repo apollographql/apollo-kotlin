@@ -5,12 +5,12 @@
 //
 package com.example.root_query_inline_fragment.selections
 
-import com.apollographql.apollo3.api.CompiledArgument
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.list
-import com.apollographql.apollo3.api.notNull
+import com.apollographql.apollo.api.CompiledArgument
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledFragment
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.list
+import com.apollographql.apollo.api.notNull
 import com.example.root_query_inline_fragment.type.Character
 import com.example.root_query_inline_fragment.type.Droid
 import com.example.root_query_inline_fragment.type.Episode

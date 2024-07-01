@@ -5,10 +5,10 @@
 //
 package com.example.simple_union.selections
 
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.notNull
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledFragment
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.notNull
 import com.example.simple_union.fragment.selections.CatFragmentSelections
 import com.example.simple_union.fragment.selections.DogFragmentSelections
 import com.example.simple_union.type.Animal

@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
   // Version comes from the plugin
-  add("implementation", "com.apollographql.apollo3:apollo-runtime")
+  add("implementation", "com.apollographql.apollo:apollo-runtime")
 }
 
 apollo {

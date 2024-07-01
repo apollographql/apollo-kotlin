@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.tooling
+package com.apollographql.apollo.tooling
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.compiler.APOLLO_VERSION
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.compiler.APOLLO_VERSION
 
 internal const val graphosEndpoint = "https://api.apollographql.com/graphql"
 

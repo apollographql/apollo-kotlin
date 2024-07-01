@@ -1,20 +1,20 @@
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.compiler.APOLLO_VERSION
-import com.apollographql.apollo3.compiler.GeneratedMethod
-import com.apollographql.apollo3.compiler.JavaNullable
-import com.apollographql.apollo3.compiler.OperationOutputGenerator
-import com.apollographql.apollo3.compiler.UsedCoordinates
-import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.toIrOperations
-import com.apollographql.apollo3.gradle.api.ApolloAttributes
-import com.apollographql.apollo3.gradle.api.ApolloDependencies
-import com.apollographql.apollo3.gradle.api.ApolloExtension
-import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
-import com.apollographql.apollo3.gradle.api.SchemaConnection
-import com.apollographql.apollo3.gradle.api.Service
+import com.apollographql.apollo.compiler.APOLLO_VERSION
+import com.apollographql.apollo.compiler.GeneratedMethod
+import com.apollographql.apollo.compiler.JavaNullable
+import com.apollographql.apollo.compiler.OperationOutputGenerator
+import com.apollographql.apollo.compiler.UsedCoordinates
+import com.apollographql.apollo.compiler.capitalizeFirstLetter
+import com.apollographql.apollo.compiler.toIrOperations
+import com.apollographql.apollo.gradle.api.ApolloAttributes
+import com.apollographql.apollo.gradle.api.ApolloDependencies
+import com.apollographql.apollo.gradle.api.ApolloExtension
+import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
+import com.apollographql.apollo.gradle.api.SchemaConnection
+import com.apollographql.apollo.gradle.api.Service
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -339,8 +339,8 @@ abstract class DefaultApolloExtension(
    *
    * More involved but more correct, check at runtime that the versions match. Requires adding the codegen version in generated sources:
    *
-   * - a new field in [com.apollographql.apollo3.api.Operation].
-   * - or binding an [com.apollographql.apollo3.ApolloClient] to a given schema (could be useful for other purposes as well such as schema testing).
+   * - a new field in [com.apollographql.apollo.api.Operation].
+   * - or binding an [com.apollographql.apollo.ApolloClient] to a given schema (could be useful for other purposes as well such as schema testing).
    *
    * ## automatically add the `apollo-api` dependency
    *
@@ -445,7 +445,7 @@ abstract class DefaultApolloExtension(
       it.isCanBeResolved = true
     }
 
-    compilerConfiguration.dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-compiler:$APOLLO_VERSION"))
+    compilerConfiguration.dependencies.add(project.dependencies.create("com.apollographql.apollo:apollo-compiler:$APOLLO_VERSION"))
     service.pluginDependency?.let {
       compilerConfiguration.dependencies.add(it)
     }
@@ -1041,7 +1041,7 @@ abstract class DefaultApolloExtension(
                * the "_" check is for refreshVersions,
                * see https://github.com/jmfayard/refreshVersions/issues/507
                */
-              it.group in listOf("com.apollographql.apollo3", "com.apollographql.apollo3.external")
+              it.group in listOf("com.apollographql.apollo", "com.apollographql.apollo.external")
                   && it.version != "_"
             }.mapNotNull { dependency ->
               dependency.version

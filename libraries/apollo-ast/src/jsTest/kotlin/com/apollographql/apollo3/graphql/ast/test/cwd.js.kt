@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.graphql.ast.test
+package com.apollographql.apollo.graphql.ast.test
 
 // https://youtrack.jetbrains.com/issue/KT-49125
 internal actual val CWD: String

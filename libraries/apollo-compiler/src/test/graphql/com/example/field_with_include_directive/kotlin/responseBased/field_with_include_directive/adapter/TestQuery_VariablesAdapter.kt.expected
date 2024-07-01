@@ -5,9 +5,9 @@
 //
 package com.example.field_with_include_directive.adapter
 
-import com.apollographql.apollo3.api.BooleanAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo.api.BooleanAdapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.json.JsonWriter
 import com.example.field_with_include_directive.TestQuery
 import kotlin.Boolean
 import kotlin.Suppress

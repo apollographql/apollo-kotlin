@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
+package com.apollographql.apollo.compiler.codegen.kotlin.helpers
 
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec

@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
+package com.apollographql.apollo.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy

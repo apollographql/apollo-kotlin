@@ -1,11 +1,11 @@
 package hooks
 
-import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
-import com.apollographql.apollo3.compiler.ApolloCompilerPluginEnvironment
-import com.apollographql.apollo3.compiler.ApolloCompilerPluginLogger
-import com.apollographql.apollo3.compiler.ApolloCompilerPluginProvider
-import com.apollographql.apollo3.compiler.CodegenSchema
-import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
+import com.apollographql.apollo.compiler.ApolloCompilerPlugin
+import com.apollographql.apollo.compiler.ApolloCompilerPluginEnvironment
+import com.apollographql.apollo.compiler.ApolloCompilerPluginLogger
+import com.apollographql.apollo.compiler.ApolloCompilerPluginProvider
+import com.apollographql.apollo.compiler.CodegenSchema
+import com.apollographql.apollo.compiler.codegen.SchemaAndOperationsLayout
 
 class TestPlugin(
     val prefix: String,

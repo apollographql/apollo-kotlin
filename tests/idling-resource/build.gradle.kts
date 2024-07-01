@@ -1,7 +1,7 @@
 plugins {
   id("com.android.library")
   id("org.jetbrains.kotlin.android")
-  id("com.apollographql.apollo3")
+  id("com.apollographql.apollo")
 }
 
 apolloTest()
@@ -16,7 +16,7 @@ dependencies {
 
 android {
   compileSdk = libs.versions.android.sdkversion.compile.get().toInt()
-  namespace = "com.apollographql.apollo3.idling.resource.test"
+  namespace = "com.apollographql.apollo.idling.resource.test"
 
   defaultConfig {
     minSdk = libs.versions.android.sdkversion.min.get().toInt()

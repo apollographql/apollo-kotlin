@@ -3,7 +3,7 @@
  * without breaking binary compatibility
  */
 @file:JvmName("JsonReaders")
-package com.apollographql.apollo3.api.json
+package com.apollographql.apollo.api.json
 
 import kotlin.jvm.JvmName
 

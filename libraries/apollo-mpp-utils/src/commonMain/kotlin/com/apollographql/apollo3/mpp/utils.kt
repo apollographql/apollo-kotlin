@@ -1,6 +1,6 @@
 @file:JvmName("-utils")
 
-package com.apollographql.apollo3.mpp
+package com.apollographql.apollo.mpp
 
 import kotlin.jvm.JvmName
 

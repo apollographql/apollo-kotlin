@@ -1,15 +1,15 @@
 @file:JvmMultifileClass
 @file:JvmName("ApolloParser")
 
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo.ast
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.ast.internal.ExecutableValidationScope
-import com.apollographql.apollo3.ast.internal.LexerException
-import com.apollographql.apollo3.ast.internal.Parser
-import com.apollographql.apollo3.ast.internal.ParserException
-import com.apollographql.apollo3.ast.internal.validateSchema
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.ast.internal.ExecutableValidationScope
+import com.apollographql.apollo.ast.internal.LexerException
+import com.apollographql.apollo.ast.internal.Parser
+import com.apollographql.apollo.ast.internal.ParserException
+import com.apollographql.apollo.ast.internal.validateSchema
 import okio.BufferedSource
 import okio.use
 import kotlin.jvm.JvmMultifileClass

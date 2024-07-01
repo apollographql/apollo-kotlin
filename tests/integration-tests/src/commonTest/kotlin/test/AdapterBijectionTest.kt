@@ -1,15 +1,15 @@
 package test
 
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.toJsonString
-import com.apollographql.apollo3.integration.normalizer.EpisodeHeroWithDatesQuery
-import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
-import com.apollographql.apollo3.integration.normalizer.HeroNameWithEnumsQuery
-import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
-import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Optional
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.toJsonString
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroWithDatesQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
+import com.apollographql.apollo.integration.normalizer.HeroNameWithEnumsQuery
+import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery
+import com.apollographql.apollo.integration.normalizer.type.Episode
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals

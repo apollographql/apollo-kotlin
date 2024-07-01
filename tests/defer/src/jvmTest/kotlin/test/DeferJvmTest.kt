@@ -1,14 +1,14 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.cache.http.HttpFetchPolicy
-import com.apollographql.apollo3.cache.http.httpCache
-import com.apollographql.apollo3.cache.http.httpFetchPolicy
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.cache.http.HttpFetchPolicy
+import com.apollographql.apollo.cache.http.httpCache
+import com.apollographql.apollo.cache.http.httpFetchPolicy
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueMultipart
-import com.apollographql.apollo3.mpp.currentTimeMillis
-import com.apollographql.apollo3.testing.awaitElement
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.mpp.currentTimeMillis
+import com.apollographql.apollo.testing.awaitElement
+import com.apollographql.apollo.testing.internal.runTest
 import defer.WithFragmentSpreadsQuery
 import defer.fragment.ComputerFields
 import defer.fragment.ScreenFields

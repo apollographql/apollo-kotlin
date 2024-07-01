@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.testing
+package com.apollographql.apollo.testing
 
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.allocArray

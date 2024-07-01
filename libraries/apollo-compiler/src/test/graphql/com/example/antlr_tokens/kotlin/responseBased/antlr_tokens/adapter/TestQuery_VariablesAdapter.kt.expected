@@ -5,11 +5,11 @@
 //
 package com.example.antlr_tokens.adapter
 
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringAdapter
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.present
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.NullableStringAdapter
+import com.apollographql.apollo.api.Optional
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.present
 import com.example.antlr_tokens.TestQuery
 import kotlin.Boolean
 import kotlin.Suppress

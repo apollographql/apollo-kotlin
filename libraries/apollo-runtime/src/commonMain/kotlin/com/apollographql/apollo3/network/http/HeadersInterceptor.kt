@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.network.http
+package com.apollographql.apollo.network.http
 
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.api.http.HttpRequest
+import com.apollographql.apollo.api.http.HttpResponse
 
 class HeadersInterceptor(private val headers: List<HttpHeader>) : HttpInterceptor {
   override suspend fun intercept(

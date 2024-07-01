@@ -1,10 +1,10 @@
 @file:JvmMultifileClass
 @file:JvmName("Introspection")
 
-package com.apollographql.apollo3.ast.introspection
+package com.apollographql.apollo.ast.introspection
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.ast.HOST_FILESYSTEM
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.ast.HOST_FILESYSTEM
 import okio.Path
 import okio.buffer
 import kotlin.jvm.JvmMultifileClass

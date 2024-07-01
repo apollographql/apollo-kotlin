@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.network
+package com.apollographql.apollo.network
 
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Operation
 import kotlinx.coroutines.flow.Flow
 
 interface NetworkTransport {

@@ -1,6 +1,6 @@
 @file:JvmMultifileClass
 @file:JvmName("DefaultUploadKt")
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
 import okio.FileSystem
 import okio.Path

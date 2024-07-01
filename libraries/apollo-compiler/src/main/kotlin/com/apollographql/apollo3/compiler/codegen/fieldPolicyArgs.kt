@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.compiler.codegen
+package com.apollographql.apollo.compiler.codegen
 
-import com.apollographql.apollo3.ast.GQLField
-import com.apollographql.apollo3.ast.GQLStringValue
-import com.apollographql.apollo3.ast.GQLTypeDefinition
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.SourceAwareException
-import com.apollographql.apollo3.ast.internal.toConnectionFields
-import com.apollographql.apollo3.ast.parseAsGQLSelections
+import com.apollographql.apollo.ast.GQLField
+import com.apollographql.apollo.ast.GQLStringValue
+import com.apollographql.apollo.ast.GQLTypeDefinition
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.SourceAwareException
+import com.apollographql.apollo.ast.internal.toConnectionFields
+import com.apollographql.apollo.ast.parseAsGQLSelections
 import okio.Buffer
 
 internal fun GQLTypeDefinition.keyArgs(

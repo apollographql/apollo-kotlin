@@ -5,19 +5,19 @@
 //
 package com.example.inline_fragment_intersection.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableBooleanAdapter
-import com.apollographql.apollo3.api.NullableDoubleAdapter
-import com.apollographql.apollo3.api.NullableStringAdapter
-import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.list
-import com.apollographql.apollo3.api.missingField
-import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.possibleTypes
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.NullableBooleanAdapter
+import com.apollographql.apollo.api.NullableDoubleAdapter
+import com.apollographql.apollo.api.NullableStringAdapter
+import com.apollographql.apollo.api.StringAdapter
+import com.apollographql.apollo.api.evaluate
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.list
+import com.apollographql.apollo.api.missingField
+import com.apollographql.apollo.api.obj
+import com.apollographql.apollo.api.possibleTypes
 import com.example.inline_fragment_intersection.TestOperation
 import com.example.inline_fragment_intersection.type.Race
 import com.example.inline_fragment_intersection.type.adapter.Race_ResponseAdapter

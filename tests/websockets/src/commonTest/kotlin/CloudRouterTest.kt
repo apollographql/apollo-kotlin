@@ -1,7 +1,7 @@
 import cloud.router.GetReviewSubscription
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.network.http.HttpNetworkTransport
+import com.apollographql.apollo.testing.internal.runTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 

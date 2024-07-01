@@ -5,10 +5,10 @@
 //
 package com.example.antlr_tokens.selections;
 
-import com.apollographql.apollo3.api.CompiledArgument;
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledSelection;
-import com.apollographql.apollo3.api.CompiledVariable;
+import com.apollographql.apollo.api.CompiledArgument;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CompiledSelection;
+import com.apollographql.apollo.api.CompiledVariable;
 import com.example.antlr_tokens.type.GraphQLString;
 import com.example.antlr_tokens.type.TypeWithGraphQLKeywords;
 import java.util.Arrays;

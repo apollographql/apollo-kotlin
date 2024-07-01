@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.graphql.ast.test
+package com.apollographql.apollo.graphql.ast.test
 
 import kotlinx.cinterop.toKString
 import platform.posix.getenv

@@ -5,7 +5,7 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo3.runtime",
+    namespace = "com.apollographql.apollo.runtime",
     withLinux = false,
     androidOptions = AndroidOptions(withCompose = false)
 )
@@ -29,10 +29,10 @@ kotlin {
       implementation(project(":apollo-testing-support")) {
         because("runTest")
         // We have a circular dependency here that creates a warning in JS
-        // w: duplicate library name: com.apollographql.apollo3:apollo-mockserver
+        // w: duplicate library name: com.apollographql.apollo:apollo-mockserver
         // See https://youtrack.jetbrains.com/issue/KT-51110
         // We should probably remove this circular dependency but for the time being, just use excludes
-        exclude(group = "com.apollographql.apollo3", module = "apollo-runtime")
+        exclude(group = "com.apollographql.apollo", module = "apollo-runtime")
       }
     }
     findByName("commonTest")?.apply {

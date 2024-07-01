@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloExperimental
 import kotlin.jvm.JvmField
 
 /**
@@ -47,7 +47,7 @@ class CustomScalarAdapters private constructor(
       /**
        * Below are shortcuts to save the users a call to `registerCustomScalarAdapter`
        */
-      customScalar.className == "com.apollographql.apollo3.api.Upload" -> {
+      customScalar.className == "com.apollographql.apollo.api.Upload" -> {
         UploadAdapter
       }
 

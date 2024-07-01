@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.tooling
+package com.apollographql.apollo.tooling
 
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import com.google.common.truth.Truth
 import org.junit.Test
 

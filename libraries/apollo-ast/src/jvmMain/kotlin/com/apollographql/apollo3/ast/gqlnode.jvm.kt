@@ -1,6 +1,6 @@
 @file:JvmMultifileClass
 @file:JvmName("GqlnodeKt")
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo.ast
 
 import okio.buffer
 import okio.sink

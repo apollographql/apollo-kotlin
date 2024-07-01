@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.api.json
+package com.apollographql.apollo.api.json
 
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader.Companion.INITIAL_STACK_SIZE
-import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
-import com.apollographql.apollo3.api.json.internal.toDoubleExact
-import com.apollographql.apollo3.api.json.internal.toIntExact
-import com.apollographql.apollo3.api.json.internal.toLongExact
-import com.apollographql.apollo3.exception.JsonDataException
+import com.apollographql.apollo.api.json.BufferedSourceJsonReader.Companion.INITIAL_STACK_SIZE
+import com.apollographql.apollo.api.json.MapJsonReader.Companion.buffer
+import com.apollographql.apollo.api.json.internal.toDoubleExact
+import com.apollographql.apollo.api.json.internal.toIntExact
+import com.apollographql.apollo.api.json.internal.toLongExact
+import com.apollographql.apollo.exception.JsonDataException
 
 @Suppress("NOTHING_TO_INLINE")
 private inline fun objectEntries(json: dynamic) = js("Object").entries(json).unsafeCast<Array<Array<Any>>>()

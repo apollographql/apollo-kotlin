@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.compiler.codegen
+package com.apollographql.apollo.compiler.codegen
 
-import com.apollographql.apollo3.compiler.ir.IrModelGroup
+import com.apollographql.apollo.compiler.ir.IrModelGroup
 
 private fun resolveNameClashes(usedNames: MutableSet<String>, modelName: String): String {
   var i = 0

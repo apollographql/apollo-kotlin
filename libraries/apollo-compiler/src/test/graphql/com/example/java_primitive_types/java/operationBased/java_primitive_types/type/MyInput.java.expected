@@ -5,7 +5,7 @@
 //
 package com.example.java_primitive_types.type;
 
-import com.apollographql.apollo3.api.Optional;
+import com.apollographql.apollo.api.Optional;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;

@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloGraphQLException
-import com.apollographql.apollo3.exception.DefaultApolloException
-import com.apollographql.apollo3.exception.NoDataException
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloGraphQLException
+import com.apollographql.apollo.exception.DefaultApolloException
+import com.apollographql.apollo.exception.NoDataException
 import com.benasher44.uuid.Uuid
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName

@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.network.websocket
+package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.exception.DefaultApolloException
-import com.apollographql.apollo3.network.toNSData
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.exception.DefaultApolloException
+import com.apollographql.apollo.network.toNSData
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock

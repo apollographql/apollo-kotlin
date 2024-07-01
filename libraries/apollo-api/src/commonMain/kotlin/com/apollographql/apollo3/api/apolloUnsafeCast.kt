@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloExperimental
 
 /**
  * Uses [unsafeCast] on JS or a regular `as` unsafe cast on other platforms.

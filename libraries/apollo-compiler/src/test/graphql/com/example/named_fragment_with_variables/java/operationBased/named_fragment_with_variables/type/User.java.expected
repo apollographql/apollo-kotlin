@@ -5,8 +5,8 @@
 //
 package com.example.named_fragment_with_variables.type;
 
-import com.apollographql.apollo3.api.CompiledArgumentDefinition;
-import com.apollographql.apollo3.api.ObjectType;
+import com.apollographql.apollo.api.CompiledArgumentDefinition;
+import com.apollographql.apollo.api.ObjectType;
 
 public class User {
   public static final CompiledArgumentDefinition __avatar_size = new CompiledArgumentDefinition.Builder("size").build();

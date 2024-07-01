@@ -5,8 +5,8 @@
 //
 package com.example.hero_with_review.adapter;
 
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.hero_with_review.TestQuery;
 import com.example.hero_with_review.type.adapter.Episode_ResponseAdapter;
 import java.io.IOException;

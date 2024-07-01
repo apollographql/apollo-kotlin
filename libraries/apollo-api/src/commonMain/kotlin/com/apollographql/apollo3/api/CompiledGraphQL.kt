@@ -1,13 +1,13 @@
 @file:JvmName("CompiledGraphQL")
 
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_0
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.json.ApolloJsonElement
-import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.json.writeAny
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince.Version.v4_0_0
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.json.ApolloJsonElement
+import com.apollographql.apollo.api.json.BufferedSinkJsonWriter
+import com.apollographql.apollo.api.json.writeAny
 import okio.Buffer
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
@@ -408,7 +408,7 @@ class CompiledVariable(val name: String)
  * [CompiledValue] can be any of [ApolloJsonElement] or [CompiledVariable]
  *
  * Enum values are mapped to strings
- * Int and Float values are mapped to [com.apollographql.apollo3.api.json.JsonNumber]
+ * Int and Float values are mapped to [com.apollographql.apollo.api.json.JsonNumber]
  */
 typealias CompiledValue = Any?
 

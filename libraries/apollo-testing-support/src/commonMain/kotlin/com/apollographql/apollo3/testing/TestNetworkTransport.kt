@@ -1,13 +1,13 @@
-package com.apollographql.apollo3.testing
+package com.apollographql.apollo.testing
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Error
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.network.NetworkTransport
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Error
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.network.NetworkTransport
 import com.benasher44.uuid.uuid4
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock

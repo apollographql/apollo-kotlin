@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.runtime.java.network.http.internal;
+package com.apollographql.apollo.runtime.java.network.http.internal;
 
-import com.apollographql.apollo3.api.http.HttpMethod;
-import com.apollographql.apollo3.api.http.HttpRequest;
-import com.apollographql.apollo3.api.http.HttpResponse;
-import com.apollographql.apollo3.exception.ApolloNetworkException;
-import com.apollographql.apollo3.runtime.java.ApolloDisposable;
-import com.apollographql.apollo3.runtime.java.network.http.HttpCallback;
-import com.apollographql.apollo3.runtime.java.network.http.HttpEngine;
+import com.apollographql.apollo.api.http.HttpMethod;
+import com.apollographql.apollo.api.http.HttpRequest;
+import com.apollographql.apollo.api.http.HttpResponse;
+import com.apollographql.apollo.exception.ApolloNetworkException;
+import com.apollographql.apollo.runtime.java.ApolloDisposable;
+import com.apollographql.apollo.runtime.java.network.http.HttpCallback;
+import com.apollographql.apollo.runtime.java.network.http.HttpEngine;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;

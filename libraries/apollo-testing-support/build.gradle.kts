@@ -3,7 +3,7 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo3.testing",
+    namespace = "com.apollographql.apollo.testing",
     withLinux = false,
 )
 

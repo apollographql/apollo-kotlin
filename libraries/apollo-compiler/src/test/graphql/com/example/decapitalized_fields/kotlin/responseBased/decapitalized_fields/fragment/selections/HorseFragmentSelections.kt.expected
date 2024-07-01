@@ -5,8 +5,8 @@
 //
 package com.example.decapitalized_fields.fragment.selections
 
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledSelection
 import com.example.decapitalized_fields.type.Cow
 import com.example.decapitalized_fields.type.GraphQLString
 import kotlin.collections.List

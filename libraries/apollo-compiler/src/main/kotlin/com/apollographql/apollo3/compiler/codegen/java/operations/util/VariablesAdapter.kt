@@ -1,24 +1,24 @@
 /*
  * Generates ResponseAdapters for variables
  */
-package com.apollographql.apollo3.compiler.codegen.java.operations.util
+package com.apollographql.apollo.compiler.codegen.java.operations.util
 
-import com.apollographql.apollo3.compiler.codegen.Identifier.Empty
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
-import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
-import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
-import com.apollographql.apollo3.compiler.codegen.Identifier.value
-import com.apollographql.apollo3.compiler.codegen.Identifier.withDefaultValues
-import com.apollographql.apollo3.compiler.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
-import com.apollographql.apollo3.compiler.codegen.java.L
-import com.apollographql.apollo3.compiler.codegen.java.S
-import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.codegen.java.helpers.beginOptionalControlFlow
-import com.apollographql.apollo3.compiler.codegen.java.helpers.codeBlock
-import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
-import com.apollographql.apollo3.compiler.ir.IrVariable
+import com.apollographql.apollo.compiler.codegen.Identifier.Empty
+import com.apollographql.apollo.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo.compiler.codegen.Identifier.serializeVariables
+import com.apollographql.apollo.compiler.codegen.Identifier.toJson
+import com.apollographql.apollo.compiler.codegen.Identifier.value
+import com.apollographql.apollo.compiler.codegen.Identifier.withDefaultValues
+import com.apollographql.apollo.compiler.codegen.Identifier.writer
+import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
+import com.apollographql.apollo.compiler.codegen.java.JavaContext
+import com.apollographql.apollo.compiler.codegen.java.L
+import com.apollographql.apollo.compiler.codegen.java.S
+import com.apollographql.apollo.compiler.codegen.java.T
+import com.apollographql.apollo.compiler.codegen.java.helpers.beginOptionalControlFlow
+import com.apollographql.apollo.compiler.codegen.java.helpers.codeBlock
+import com.apollographql.apollo.compiler.codegen.java.javaPropertyName
+import com.apollographql.apollo.compiler.ir.IrVariable
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName

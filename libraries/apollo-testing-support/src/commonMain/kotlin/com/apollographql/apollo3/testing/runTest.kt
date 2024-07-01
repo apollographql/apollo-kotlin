@@ -1,12 +1,12 @@
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.apollo3.testing
+package com.apollographql.apollo.testing
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.mockserver.MockServer
+import com.apollographql.apollo.testing.internal.runTest
 import kotlinx.coroutines.CoroutineScope
 import okio.use
 

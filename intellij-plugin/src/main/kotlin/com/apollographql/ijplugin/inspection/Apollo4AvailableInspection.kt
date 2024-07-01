@@ -31,7 +31,7 @@ import org.toml.lang.psi.TomlTable
 import org.toml.lang.psi.ext.TomlLiteralKind
 import org.toml.lang.psi.ext.kind
 
-private const val apollo3 = "com.apollographql.apollo3"
+private const val apollo3 = "com.apollographql.apollo"
 
 class Apollo4AvailableInspection : LocalInspectionTool() {
   // XXX kts files are not highlighted in tests

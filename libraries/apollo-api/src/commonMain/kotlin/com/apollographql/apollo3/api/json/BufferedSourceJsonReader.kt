@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo3.api.json
+package com.apollographql.apollo.api.json
 
-import com.apollographql.apollo3.api.json.internal.JsonScope
-import com.apollographql.apollo3.exception.JsonDataException
-import com.apollographql.apollo3.exception.JsonEncodingException
+import com.apollographql.apollo.api.json.internal.JsonScope
+import com.apollographql.apollo.exception.JsonDataException
+import com.apollographql.apollo.exception.JsonEncodingException
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString

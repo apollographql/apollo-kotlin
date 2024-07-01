@@ -1,8 +1,8 @@
-import com.apollographql.apollo3.compiler.OperationIdGenerator
+import com.apollographql.apollo.compiler.OperationIdGenerator
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("com.apollographql.apollo3")
+  id("com.apollographql.apollo")
 }
 
 apolloTest()

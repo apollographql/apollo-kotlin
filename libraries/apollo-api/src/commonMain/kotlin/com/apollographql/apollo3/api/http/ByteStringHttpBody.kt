@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.api.http
+package com.apollographql.apollo.api.http
 
 import okio.BufferedSink
 import okio.ByteString

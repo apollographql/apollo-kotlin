@@ -1,22 +1,22 @@
-package com.apollographql.apollo3.network.websocket
+package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.api.json.ApolloJsonElement
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.toApolloResponse
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.DefaultApolloException
-import com.apollographql.apollo3.exception.SubscriptionOperationException
-import com.apollographql.apollo3.internal.DeferredJsonMerger
-import com.apollographql.apollo3.network.NetworkTransport
-import com.apollographql.apollo3.network.websocket.internal.OperationListener
-import com.apollographql.apollo3.network.websocket.internal.WebSocketHolder
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.api.json.ApolloJsonElement
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.toApolloResponse
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.DefaultApolloException
+import com.apollographql.apollo.exception.SubscriptionOperationException
+import com.apollographql.apollo.internal.DeferredJsonMerger
+import com.apollographql.apollo.network.NetworkTransport
+import com.apollographql.apollo.network.websocket.internal.OperationListener
+import com.apollographql.apollo.network.websocket.internal.WebSocketHolder
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ProducerScope
@@ -318,7 +318,7 @@ private fun Map<String, Any?>.isDeferred(): Boolean {
  */
 @ApolloExperimental
 fun NetworkTransport.closeConnection(exception: ApolloException) {
-  val webSocketNetworkTransport = (this as? WebSocketNetworkTransport) ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo3.websocket.WebSocketNetworkTransport")
+  val webSocketNetworkTransport = (this as? WebSocketNetworkTransport) ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo.websocket.WebSocketNetworkTransport")
 
   webSocketNetworkTransport.closeConnection(exception)
 }

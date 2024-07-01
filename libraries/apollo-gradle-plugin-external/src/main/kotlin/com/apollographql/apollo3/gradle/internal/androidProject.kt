@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension

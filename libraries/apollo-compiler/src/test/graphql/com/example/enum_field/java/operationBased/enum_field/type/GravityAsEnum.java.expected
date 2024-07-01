@@ -5,7 +5,7 @@
 //
 package com.example.enum_field.type;
 
-import com.apollographql.apollo3.api.EnumType;
+import com.apollographql.apollo.api.EnumType;
 import java.lang.Deprecated;
 import java.lang.String;
 import java.lang.SuppressWarnings;

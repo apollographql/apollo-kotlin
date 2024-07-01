@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.gradle.test
+package com.apollographql.apollo.gradle.test
 
 import util.TestUtils
 import util.TestUtils.fixturesDirectory
@@ -172,7 +172,7 @@ class ServiceTests {
   @Test
   fun `versions are enforced`() {
     withSimpleProject { dir ->
-      File(dir, "build.gradle").replaceInText("libs.apollo.api", "\"com.apollographql.apollo3:apollo-api:1.2.0\"")
+      File(dir, "build.gradle").replaceInText("libs.apollo.api", "\"com.apollographql.apollo:apollo-api:1.2.0\"")
 
       var exception: Exception? = null
       try {
@@ -194,7 +194,7 @@ class ServiceTests {
       val result = TestUtils.executeTask("checkApolloVersions", dir)
       assert(result.task(":checkApolloVersions")?.outcome == TaskOutcome.UP_TO_DATE)
 
-      File(dir, "build.gradle").replaceInText("libs.apollo.api", "\"com.apollographql.apollo3:apollo-api:1.2.0\"")
+      File(dir, "build.gradle").replaceInText("libs.apollo.api", "\"com.apollographql.apollo:apollo-api:1.2.0\"")
 
       try {
         TestUtils.executeTask("checkApolloVersions", dir)

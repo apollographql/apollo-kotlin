@@ -5,7 +5,7 @@
 //
 package com.example.inline_fragment_for_non_optional_field.type
 
-import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo.api.InterfaceType
 
 /**
  * A character from the Star Wars universe

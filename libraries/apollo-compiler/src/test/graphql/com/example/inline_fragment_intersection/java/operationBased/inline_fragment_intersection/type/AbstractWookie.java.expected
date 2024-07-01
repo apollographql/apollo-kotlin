@@ -5,7 +5,7 @@
 //
 package com.example.inline_fragment_intersection.type;
 
-import com.apollographql.apollo3.api.InterfaceType;
+import com.apollographql.apollo.api.InterfaceType;
 
 public class AbstractWookie {
   public static InterfaceType type = (new InterfaceType.Builder("AbstractWookie")).build();

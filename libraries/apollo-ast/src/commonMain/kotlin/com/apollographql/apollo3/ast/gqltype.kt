@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo.ast
 
 @Deprecated("Use rawType instead", ReplaceWith("rawType()"))
 fun GQLType.leafType(): GQLNamedType = rawType()

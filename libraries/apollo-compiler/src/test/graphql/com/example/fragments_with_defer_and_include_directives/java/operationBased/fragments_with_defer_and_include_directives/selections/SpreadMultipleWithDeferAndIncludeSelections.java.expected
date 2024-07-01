@@ -5,11 +5,11 @@
 //
 package com.example.fragments_with_defer_and_include_directives.selections;
 
-import com.apollographql.apollo3.api.CompiledCondition;
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledFragment;
-import com.apollographql.apollo3.api.CompiledNotNullType;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo.api.CompiledCondition;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CompiledFragment;
+import com.apollographql.apollo.api.CompiledNotNullType;
+import com.apollographql.apollo.api.CompiledSelection;
 import com.example.fragments_with_defer_and_include_directives.fragment.selections.DroidDetailsSelections;
 import com.example.fragments_with_defer_and_include_directives.type.Character;
 import com.example.fragments_with_defer_and_include_directives.type.GraphQLString;

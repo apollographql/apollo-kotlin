@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.rx2
+package com.apollographql.apollo.rx2
 
-import com.apollographql.apollo3.ApolloCall
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Operation
 import io.reactivex.Flowable
 import io.reactivex.Scheduler
 import io.reactivex.Single

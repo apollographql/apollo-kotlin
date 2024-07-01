@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.compiler.ir
+package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.GQLType
-import com.apollographql.apollo3.compiler.UsedCoordinates
-import com.apollographql.apollo3.compiler.internal.BooleanExpressionSerializer
-import com.apollographql.apollo3.compiler.internal.GQLFragmentDefinitionSerializer
-import com.apollographql.apollo3.compiler.internal.GQLTypeSerializer
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.ast.GQLFragmentDefinition
+import com.apollographql.apollo.ast.GQLType
+import com.apollographql.apollo.compiler.UsedCoordinates
+import com.apollographql.apollo.compiler.internal.BooleanExpressionSerializer
+import com.apollographql.apollo.compiler.internal.GQLFragmentDefinitionSerializer
+import com.apollographql.apollo.compiler.internal.GQLTypeSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -16,7 +16,7 @@ import kotlinx.serialization.json.Json
  * Intermediate representation (IR)
  *
  * Compared to the GraphQL AST, the IR:
- * - Transforms [com.apollographql.apollo3.ast.GQLField] into [IrProperty] and [IrModel]
+ * - Transforms [com.apollographql.apollo.ast.GQLField] into [IrProperty] and [IrModel]
  * - moves @include/@skip directives on inline fragments and object fields to their children selections
  * - interprets @deprecated directives
  * - coerces argument values and resolves defaultValue

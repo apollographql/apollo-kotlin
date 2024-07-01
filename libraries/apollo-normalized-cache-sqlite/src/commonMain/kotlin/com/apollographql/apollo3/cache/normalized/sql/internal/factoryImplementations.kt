@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.cache.normalized.sql.internal
+package com.apollographql.apollo.cache.normalized.sql.internal
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema

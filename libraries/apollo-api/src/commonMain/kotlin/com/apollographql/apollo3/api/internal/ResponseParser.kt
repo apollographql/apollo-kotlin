@@ -1,16 +1,16 @@
-package com.apollographql.apollo3.api.internal
+package com.apollographql.apollo.api.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DeferredFragmentIdentifier
-import com.apollographql.apollo3.api.Error
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.falseVariables
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.MapJsonReader
-import com.apollographql.apollo3.api.json.readAny
-import com.apollographql.apollo3.api.parseData
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.DeferredFragmentIdentifier
+import com.apollographql.apollo.api.Error
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.falseVariables
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.MapJsonReader
+import com.apollographql.apollo.api.json.readAny
+import com.apollographql.apollo.api.parseData
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 

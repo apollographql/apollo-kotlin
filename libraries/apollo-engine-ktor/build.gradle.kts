@@ -3,7 +3,7 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo3.engine.ktor",
+    namespace = "com.apollographql.apollo.engine.ktor",
     withLinux = false,
     withWasm = false
 )

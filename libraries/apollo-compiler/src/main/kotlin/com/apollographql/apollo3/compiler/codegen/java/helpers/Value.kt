@@ -1,19 +1,19 @@
-package com.apollographql.apollo3.compiler.codegen.java.helpers
+package com.apollographql.apollo.compiler.codegen.java.helpers
 
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.L
-import com.apollographql.apollo3.compiler.codegen.java.S
-import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.ir.IrBooleanValue
-import com.apollographql.apollo3.compiler.ir.IrEnumValue
-import com.apollographql.apollo3.compiler.ir.IrFloatValue
-import com.apollographql.apollo3.compiler.ir.IrIntValue
-import com.apollographql.apollo3.compiler.ir.IrListValue
-import com.apollographql.apollo3.compiler.ir.IrNullValue
-import com.apollographql.apollo3.compiler.ir.IrObjectValue
-import com.apollographql.apollo3.compiler.ir.IrStringValue
-import com.apollographql.apollo3.compiler.ir.IrValue
-import com.apollographql.apollo3.compiler.ir.IrVariableValue
+import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
+import com.apollographql.apollo.compiler.codegen.java.L
+import com.apollographql.apollo.compiler.codegen.java.S
+import com.apollographql.apollo.compiler.codegen.java.T
+import com.apollographql.apollo.compiler.ir.IrBooleanValue
+import com.apollographql.apollo.compiler.ir.IrEnumValue
+import com.apollographql.apollo.compiler.ir.IrFloatValue
+import com.apollographql.apollo.compiler.ir.IrIntValue
+import com.apollographql.apollo.compiler.ir.IrListValue
+import com.apollographql.apollo.compiler.ir.IrNullValue
+import com.apollographql.apollo.compiler.ir.IrObjectValue
+import com.apollographql.apollo.compiler.ir.IrStringValue
+import com.apollographql.apollo.compiler.ir.IrValue
+import com.apollographql.apollo.compiler.ir.IrVariableValue
 import com.squareup.javapoet.CodeBlock
 
 

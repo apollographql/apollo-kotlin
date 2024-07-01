@@ -1,28 +1,28 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
+package com.apollographql.apollo.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
-import com.apollographql.apollo3.compiler.codegen.Identifier.__path
-import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
-import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
-import com.apollographql.apollo3.compiler.codegen.Identifier.getPath
-import com.apollographql.apollo3.compiler.codegen.Identifier.reader
-import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
-import com.apollographql.apollo3.compiler.codegen.Identifier.typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.value
-import com.apollographql.apollo3.compiler.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.variableName
-import com.apollographql.apollo3.compiler.internal.applyIf
-import com.apollographql.apollo3.compiler.ir.BLabel
-import com.apollographql.apollo3.compiler.ir.BooleanExpression
-import com.apollographql.apollo3.compiler.ir.IrCatchTo
-import com.apollographql.apollo3.compiler.ir.IrModel
-import com.apollographql.apollo3.compiler.ir.IrModelType
-import com.apollographql.apollo3.compiler.ir.IrProperty
-import com.apollographql.apollo3.compiler.ir.IrType
-import com.apollographql.apollo3.compiler.ir.firstElementOfType
+import com.apollographql.apollo.compiler.codegen.Identifier.RESPONSE_NAMES
+import com.apollographql.apollo.compiler.codegen.Identifier.__path
+import com.apollographql.apollo.compiler.codegen.Identifier.__typename
+import com.apollographql.apollo.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo.compiler.codegen.Identifier.fromJson
+import com.apollographql.apollo.compiler.codegen.Identifier.getPath
+import com.apollographql.apollo.compiler.codegen.Identifier.reader
+import com.apollographql.apollo.compiler.codegen.Identifier.toJson
+import com.apollographql.apollo.compiler.codegen.Identifier.typename
+import com.apollographql.apollo.compiler.codegen.Identifier.value
+import com.apollographql.apollo.compiler.codegen.Identifier.writer
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo.compiler.codegen.variableName
+import com.apollographql.apollo.compiler.internal.applyIf
+import com.apollographql.apollo.compiler.ir.BLabel
+import com.apollographql.apollo.compiler.ir.BooleanExpression
+import com.apollographql.apollo.compiler.ir.IrCatchTo
+import com.apollographql.apollo.compiler.ir.IrModel
+import com.apollographql.apollo.compiler.ir.IrModelType
+import com.apollographql.apollo.compiler.ir.IrProperty
+import com.apollographql.apollo.compiler.ir.IrType
+import com.apollographql.apollo.compiler.ir.firstElementOfType
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
@@ -114,7 +114,7 @@ internal fun readFromResponseCodeBlock(
   }
 
   val syntheticLoop = syntheticProperties.map { property ->
-    val evaluate = MemberName("com.apollographql.apollo3.api", "evaluate")
+    val evaluate = MemberName("com.apollographql.apollo.api", "evaluate")
     CodeBlock.builder()
         .apply {
           if (property.condition != BooleanExpression.True) {

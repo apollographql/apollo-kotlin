@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.mockserver
+package com.apollographql.apollo.mockserver
 
 import js.typedarrays.toUint8Array
 import kotlinx.coroutines.channels.Channel

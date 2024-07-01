@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.gradle.test
+package com.apollographql.apollo.gradle.test
 
 import util.TestUtils
 import util.TestUtils.withSimpleProject

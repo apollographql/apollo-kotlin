@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo.ast
 
 import kotlin.jvm.JvmStatic
 

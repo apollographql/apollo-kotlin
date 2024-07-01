@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.compiler.InputFile
+import com.apollographql.apollo.compiler.InputFile
 import org.gradle.api.file.FileCollection
 import java.io.File
 

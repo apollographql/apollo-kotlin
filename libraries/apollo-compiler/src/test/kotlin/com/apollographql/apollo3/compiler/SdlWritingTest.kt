@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.ast.introspection.toGQLDocument
-import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
-import com.apollographql.apollo3.ast.introspection.toJson
-import com.apollographql.apollo3.ast.toFullSchemaGQLDocument
-import com.apollographql.apollo3.ast.toGQLDocument
-import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo.ast.introspection.toGQLDocument
+import com.apollographql.apollo.ast.introspection.toIntrospectionSchema
+import com.apollographql.apollo.ast.introspection.toJson
+import com.apollographql.apollo.ast.toFullSchemaGQLDocument
+import com.apollographql.apollo.ast.toGQLDocument
+import com.apollographql.apollo.ast.toSchema
+import com.apollographql.apollo.ast.toUtf8
 import org.junit.Assert
 import org.junit.Test
 import java.io.File
@@ -50,7 +50,7 @@ class SdlWritingTest {
     when {
       clazz.isPrimitive -> return if (a != b) path else null
       a is String || a is Int || a is Boolean || a is Double ->return if (a != b) path else null
-      !clazz.`package`.name.startsWith("com.apollographql.apollo3.compiler.frontend.gql") -> {
+      !clazz.`package`.name.startsWith("com.apollographql.apollo.compiler.frontend.gql") -> {
         // don't compare classes outside of our control
         // espectially since Int has circular references
         return null

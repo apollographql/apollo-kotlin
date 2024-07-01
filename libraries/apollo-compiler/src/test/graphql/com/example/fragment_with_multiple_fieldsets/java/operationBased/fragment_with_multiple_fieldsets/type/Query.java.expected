@@ -5,7 +5,7 @@
 //
 package com.example.fragment_with_multiple_fieldsets.type;
 
-import com.apollographql.apollo3.api.ObjectType;
+import com.apollographql.apollo.api.ObjectType;
 
 public class Query {
   public static ObjectType type = (new ObjectType.Builder("Query")).build();

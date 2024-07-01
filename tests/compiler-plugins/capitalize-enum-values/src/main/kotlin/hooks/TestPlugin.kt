@@ -1,8 +1,8 @@
 package hooks
 
-import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
-import com.apollographql.apollo3.compiler.Transform
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
+import com.apollographql.apollo.compiler.ApolloCompilerPlugin
+import com.apollographql.apollo.compiler.Transform
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeSpec
 

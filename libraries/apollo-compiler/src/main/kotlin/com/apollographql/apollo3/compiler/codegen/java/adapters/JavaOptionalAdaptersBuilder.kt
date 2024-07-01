@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.compiler.codegen.java.adapters
+package com.apollographql.apollo.compiler.codegen.java.adapters
 
-import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaSchemaContext
-import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.codegen.javaOptionalAdaptersClassName
-import com.apollographql.apollo3.compiler.codegen.typeAdapterPackageName
+import com.apollographql.apollo.compiler.codegen.java.CodegenJavaFile
+import com.apollographql.apollo.compiler.codegen.java.JavaClassBuilder
+import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
+import com.apollographql.apollo.compiler.codegen.java.JavaSchemaContext
+import com.apollographql.apollo.compiler.codegen.java.T
+import com.apollographql.apollo.compiler.codegen.javaOptionalAdaptersClassName
+import com.apollographql.apollo.compiler.codegen.typeAdapterPackageName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.ParameterizedTypeName

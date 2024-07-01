@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.network.websocket
+package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.api.json.writeAny
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.json.buildJsonString
+import com.apollographql.apollo.api.json.writeAny
 
 /**
  * A WebSocket [message](https://datatracker.ietf.org/doc/html/rfc6455#section-1.2) sent by the client

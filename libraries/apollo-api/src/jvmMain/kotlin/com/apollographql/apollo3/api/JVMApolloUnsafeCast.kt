@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
 actual inline fun <reified T> Any.apolloUnsafeCast(): T {
   return defaultApolloUnsafeCast()

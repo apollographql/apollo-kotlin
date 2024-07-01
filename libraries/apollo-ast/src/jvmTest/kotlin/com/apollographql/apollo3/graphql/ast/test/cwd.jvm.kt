@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.graphql.ast.test
+package com.apollographql.apollo.graphql.ast.test
 
 import java.lang.System.getenv
 

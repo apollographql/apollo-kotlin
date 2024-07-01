@@ -5,9 +5,9 @@
 //
 package com.example.mutation_create_review.type.builder;
 
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.ObjectBuilderKt;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ListAdapter;
+import com.apollographql.apollo.api.ObjectBuilderKt;
 import com.example.mutation_create_review.type.Episode;
 import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter;
 import java.lang.Integer;

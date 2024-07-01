@@ -1,15 +1,15 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.api.http.HttpMethod
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.api.http.HttpMethod
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 
 /**
  * An [ApolloRequest] represents a GraphQL request to execute.
  *
- * [ApolloRequest] is immutable and is usually constructed from [com.apollographql.apollo3.ApolloCall].
+ * [ApolloRequest] is immutable and is usually constructed from [com.apollographql.apollo.ApolloCall].
  *
  * You can mutate an [ApolloRequest] by calling [newBuilder]:
  *
@@ -21,7 +21,7 @@ import com.benasher44.uuid.uuid4
  * @property requestUuid a unique id for this request. For queries and mutations, this is only used for debug.
  * For subscriptions, it is used as subscription id when multiplexing several subscription over a WebSocket.
  *
- * @see [com.apollographql.apollo3.ApolloCall]
+ * @see [com.apollographql.apollo.ApolloCall]
  */
 class ApolloRequest<D : Operation.Data>
 private constructor(

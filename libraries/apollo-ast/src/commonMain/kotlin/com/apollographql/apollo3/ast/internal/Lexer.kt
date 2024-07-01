@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.ast.internal
+package com.apollographql.apollo.ast.internal
 
 /**
  * A GraphQL lexer that emits [Token]s from a [String]

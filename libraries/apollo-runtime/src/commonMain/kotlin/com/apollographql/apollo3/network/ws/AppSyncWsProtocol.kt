@@ -1,14 +1,14 @@
-package com.apollographql.apollo3.network.ws
+package com.apollographql.apollo.network.ws
 
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.NullableAnyAdapter
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer.Companion.appendQueryParameters
-import com.apollographql.apollo3.api.json.buildJsonByteString
-import com.apollographql.apollo3.api.json.writeAny
-import com.apollographql.apollo3.api.toJsonString
-import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.NullableAnyAdapter
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo.api.http.DefaultHttpRequestComposer.Companion.appendQueryParameters
+import com.apollographql.apollo.api.json.buildJsonByteString
+import com.apollographql.apollo.api.json.writeAny
+import com.apollographql.apollo.api.toJsonString
+import com.apollographql.apollo.exception.ApolloNetworkException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withTimeout
 

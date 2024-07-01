@@ -1,17 +1,17 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.json.writeObject
-import com.apollographql.apollo3.api.toJsonString
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.AnyAdapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.json.writeObject
+import com.apollographql.apollo.api.toJsonString
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import custom.scalars.Address
 import custom.scalars.AddressQuery
 import custom.scalars.BuiltInAdaptersQuery

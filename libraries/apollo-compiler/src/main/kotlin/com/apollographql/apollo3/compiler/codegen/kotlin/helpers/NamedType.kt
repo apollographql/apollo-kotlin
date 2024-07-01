@@ -1,14 +1,14 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
+package com.apollographql.apollo.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.internal.applyIf
-import com.apollographql.apollo3.compiler.ir.IrInputField
-import com.apollographql.apollo3.compiler.ir.IrType
-import com.apollographql.apollo3.compiler.ir.IrVariable
-import com.apollographql.apollo3.compiler.ir.nullable
-import com.apollographql.apollo3.compiler.ir.optional
+import com.apollographql.apollo.compiler.codegen.Identifier
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo.compiler.internal.applyIf
+import com.apollographql.apollo.compiler.ir.IrInputField
+import com.apollographql.apollo.compiler.ir.IrType
+import com.apollographql.apollo.compiler.ir.IrVariable
+import com.apollographql.apollo.compiler.ir.nullable
+import com.apollographql.apollo.compiler.ir.optional
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec

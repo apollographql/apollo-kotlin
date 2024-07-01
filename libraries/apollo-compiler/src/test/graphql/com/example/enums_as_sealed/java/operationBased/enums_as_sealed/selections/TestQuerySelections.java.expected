@@ -5,8 +5,8 @@
 //
 package com.example.enums_as_sealed.selections;
 
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CompiledSelection;
 import com.example.enums_as_sealed.type.Enum;
 import java.util.Arrays;
 import java.util.List;

@@ -1,13 +1,13 @@
-package com.apollographql.apollo3.compiler.codegen
+package com.apollographql.apollo.compiler.codegen
 
 /**
  * A list of constant [ResolverClassName] that don't use `class.name` and therefore survive proguard/R8
  */
 internal object ClassNames {
-  const val apolloExecutionPackageName: String = "com.apollographql.apollo3.execution"
-  const val apolloAstPackageName: String = "com.apollographql.apollo3.ast"
-  const val apolloApiPackageName = "com.apollographql.apollo3.api"
-  const val apolloAnnotationsPackageName = "com.apollographql.apollo3.annotations"
+  const val apolloExecutionPackageName: String = "com.apollographql.apollo.execution"
+  const val apolloAstPackageName: String = "com.apollographql.apollo.ast"
+  const val apolloApiPackageName = "com.apollographql.apollo.api"
+  const val apolloAnnotationsPackageName = "com.apollographql.apollo.annotations"
   const val apolloApiJsonPackageName = "$apolloApiPackageName.json"
   private const val jetbrainsAnnotationsPackageName = "org.jetbrains.annotations"
 

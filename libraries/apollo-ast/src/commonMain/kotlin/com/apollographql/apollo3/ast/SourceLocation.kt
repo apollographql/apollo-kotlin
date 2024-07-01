@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo.ast
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 
 /**
  * @param start the offset where the symbol starts, inclusive, starting at 0

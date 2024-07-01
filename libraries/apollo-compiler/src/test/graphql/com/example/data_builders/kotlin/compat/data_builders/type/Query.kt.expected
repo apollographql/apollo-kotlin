@@ -5,10 +5,10 @@
 //
 package com.example.data_builders.type
 
-import com.apollographql.apollo3.api.BuilderScope
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.ObjectBuilder
-import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo.api.BuilderScope
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ObjectBuilder
+import com.apollographql.apollo.api.ObjectType
 import kotlin.Any
 import kotlin.String
 import kotlin.Unit

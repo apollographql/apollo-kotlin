@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.debugserver.internal.initializer
+package com.apollographql.apollo.debugserver.internal.initializer
 
 import android.content.Context
 import androidx.startup.Initializer

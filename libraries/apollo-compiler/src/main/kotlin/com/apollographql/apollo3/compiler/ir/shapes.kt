@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.compiler.ir
+package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo3.ast.GQLSelection
-import com.apollographql.apollo3.ast.GQLField
-import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.GQLFragmentSpread
-import com.apollographql.apollo3.ast.GQLInlineFragment
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.possibleTypes
+import com.apollographql.apollo.ast.GQLSelection
+import com.apollographql.apollo.ast.GQLField
+import com.apollographql.apollo.ast.GQLFragmentDefinition
+import com.apollographql.apollo.ast.GQLFragmentSpread
+import com.apollographql.apollo.ast.GQLInlineFragment
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.possibleTypes
 
 internal data class Shape(val typeSet: TypeSet, val possibleTypes: PossibleTypes)
 

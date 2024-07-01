@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.tooling
+package com.apollographql.apollo.tooling
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.tooling.GraphQLFeature.DeprecatedInputValues
-import com.apollographql.apollo3.tooling.GraphQLFeature.OneOf
-import com.apollographql.apollo3.tooling.GraphQLFeature.RepeatableDirectives
-import com.apollographql.apollo3.tooling.GraphQLFeature.SchemaDescription
-import com.apollographql.apollo3.tooling.GraphQLFeature.SpecifiedBy
-import com.apollographql.apollo3.tooling.graphql.PreIntrospectionQuery
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.tooling.GraphQLFeature.DeprecatedInputValues
+import com.apollographql.apollo.tooling.GraphQLFeature.OneOf
+import com.apollographql.apollo.tooling.GraphQLFeature.RepeatableDirectives
+import com.apollographql.apollo.tooling.GraphQLFeature.SchemaDescription
+import com.apollographql.apollo.tooling.GraphQLFeature.SpecifiedBy
+import com.apollographql.apollo.tooling.graphql.PreIntrospectionQuery
 
 @ApolloExperimental
 enum class GraphQLFeature {

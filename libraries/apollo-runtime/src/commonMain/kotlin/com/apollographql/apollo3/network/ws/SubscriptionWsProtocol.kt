@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.network.ws
+package com.apollographql.apollo.network.ws
 
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
-import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo.exception.ApolloNetworkException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withTimeout
 import kotlin.jvm.JvmOverloads

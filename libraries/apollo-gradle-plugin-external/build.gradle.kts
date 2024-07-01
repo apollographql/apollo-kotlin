@@ -7,7 +7,7 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo3.gradle",
+    namespace = "com.apollographql.apollo.gradle",
     jvmTarget = 11 // AGP requires 11
 )
 
@@ -32,10 +32,10 @@ gradlePlugin {
 
   plugins {
     create("apolloGradlePlugin") {
-      id = "com.apollographql.apollo3.external"
+      id = "com.apollographql.apollo.external"
       displayName = "Apollo Kotlin GraphQL client plugin."
       description = "Automatically generates typesafe java and kotlin models from your GraphQL files."
-      implementationClass = "com.apollographql.apollo3.gradle.internal.ApolloPlugin"
+      implementationClass = "com.apollographql.apollo.gradle.internal.ApolloPlugin"
       tags.set(listOf("graphql", "apollo", "plugin"))
     }
   }

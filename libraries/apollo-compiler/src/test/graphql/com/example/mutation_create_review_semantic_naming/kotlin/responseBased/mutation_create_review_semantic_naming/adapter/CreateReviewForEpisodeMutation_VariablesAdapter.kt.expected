@@ -5,9 +5,9 @@
 //
 package com.example.mutation_create_review_semantic_naming.adapter
 
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.obj
 import com.example.mutation_create_review_semantic_naming.CreateReviewForEpisodeMutation
 import com.example.mutation_create_review_semantic_naming.type.adapter.Episode_ResponseAdapter
 import com.example.mutation_create_review_semantic_naming.type.adapter.ReviewInput_InputAdapter

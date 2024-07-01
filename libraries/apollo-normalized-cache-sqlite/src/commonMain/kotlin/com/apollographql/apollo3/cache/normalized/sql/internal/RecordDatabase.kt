@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.cache.normalized.sql.internal
+package com.apollographql.apollo.cache.normalized.sql.internal
 
-import com.apollographql.apollo3.cache.normalized.api.Record
+import com.apollographql.apollo.cache.normalized.api.Record
 
 /**
  * A database that can store [Record]

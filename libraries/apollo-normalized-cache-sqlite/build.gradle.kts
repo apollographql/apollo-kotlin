@@ -5,7 +5,7 @@ plugins {
 apply(plugin = "app.cash.sqldelight")
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo3.cache.normalized.sql",
+    namespace = "com.apollographql.apollo.cache.normalized.sql",
     withLinux = false,
     withJs = false, // https://github.com/cashapp/sqldelight/pull/1486
     withWasm = false,
@@ -14,7 +14,7 @@ apolloLibrary(
 
 configure<app.cash.sqldelight.gradle.SqlDelightExtension> {
   databases.create("JsonDatabase") {
-    packageName = "com.apollographql.apollo3.cache.normalized.sql.internal.json"
+    packageName = "com.apollographql.apollo.cache.normalized.sql.internal.json"
     schemaOutputDirectory = file("sqldelight/json/schema")
     srcDirs("src/commonMain/sqldelight/json/")
   }

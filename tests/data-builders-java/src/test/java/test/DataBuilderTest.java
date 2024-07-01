@@ -1,8 +1,8 @@
 package test;
 
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.FakeResolver;
-import com.apollographql.apollo3.api.FakeResolverContext;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.FakeResolver;
+import com.apollographql.apollo.api.FakeResolverContext;
 import data.builders.GetAliasesQuery;
 import data.builders.GetAnimalQuery;
 import data.builders.GetCustomScalarQuery;

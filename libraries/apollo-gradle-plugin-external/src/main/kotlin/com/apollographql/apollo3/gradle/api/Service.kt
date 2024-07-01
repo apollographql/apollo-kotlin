@@ -1,13 +1,13 @@
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.apollo3.gradle.api
+package com.apollographql.apollo.gradle.api
 
 import com.android.build.gradle.api.BaseVariant
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.compiler.OperationIdGenerator
-import com.apollographql.apollo3.compiler.OperationOutputGenerator
-import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.compiler.OperationIdGenerator
+import com.apollographql.apollo.compiler.OperationOutputGenerator
+import com.apollographql.apollo.compiler.PackageNameGenerator
 import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.api.file.ConfigurableFileCollection
@@ -110,7 +110,7 @@ interface Service {
 
   /**
    * Map a GraphQL scalar type to the Java/Kotlin type.
-   * The adapter must be configured at runtime via [com.apollographql.apollo3.ApolloClient.Builder.addCustomScalarAdapter].
+   * The adapter must be configured at runtime via [com.apollographql.apollo.ApolloClient.Builder.addCustomScalarAdapter].
    *
    * @param graphQLName: the name of the scalar to map as found in the GraphQL schema
    * @param targetName: the fully qualified Java or Kotlin name of the type the scalar is mapped to
@@ -121,7 +121,7 @@ interface Service {
 
   /**
    * Map a GraphQL scalar type to the Java/Kotlin type and provided adapter expression.
-   * The adapter will be configured at compile time and you must not call [com.apollographql.apollo3.ApolloClient.Builder.addCustomScalarAdapter].
+   * The adapter will be configured at compile time and you must not call [com.apollographql.apollo.ApolloClient.Builder.addCustomScalarAdapter].
    *
    * @param graphQLName: the name of the scalar to map as found in the GraphQL schema
    * @param targetName: the fully qualified Java or Kotlin name of the type the scalar is mapped to
@@ -208,7 +208,7 @@ interface Service {
   fun mapScalarToJavaObject(graphQLName: String)
 
   /**
-   * Map the given GraphQL scalar to [com.apollographql.apollo3.api.Upload] and use the builtin adapter
+   * Map the given GraphQL scalar to [com.apollographql.apollo.api.Upload] and use the builtin adapter
    */
   fun mapScalarToUpload(graphQLName: String)
 
@@ -219,7 +219,7 @@ interface Service {
    *
    * Example Md5 hash generator:
    * ```groovy
-   * import com.apollographql.apollo3.compiler.OperationIdGenerator
+   * import com.apollographql.apollo.compiler.OperationIdGenerator
    *
    * apollo {
    *   service("service") {
@@ -252,7 +252,7 @@ interface Service {
    *
    * Example Md5 hash generator:
    * ```groovy
-   * import com.apollographql.apollo3.compiler.OperationIdGenerator
+   * import com.apollographql.apollo.compiler.OperationIdGenerator
    *
    * apollo {
    *   service("service") {
@@ -389,7 +389,7 @@ interface Service {
   val alwaysGenerateTypesMatching: SetProperty<String>
 
   /**
-   * Whether to generate the [com.apollographql.apollo3.api.Fragment] as well as response and variables adapters.
+   * Whether to generate the [com.apollographql.apollo.api.Fragment] as well as response and variables adapters.
    *
    * When using `responseBased` codegen, [generateFragmentImplementations] also generates classes for every fragment
    * interface.
@@ -421,7 +421,7 @@ interface Service {
   val languageVersion: Property<String>
 
   /**
-   * Whether to embed the query document in the [com.apollographql.apollo3.api.Operation]s. By default, this is true as it is needed
+   * Whether to embed the query document in the [com.apollographql.apollo.api.Operation]s. By default, this is true as it is needed
    * to send the operations to the server.
    * If performance/binary size is critical, and you are using persisted queries or a similar mechanism, disable this.
    *
@@ -449,9 +449,9 @@ interface Service {
   val generatedSchemaName: Property<String>
 
   /**
-   * Whether to generate operation variables as [com.apollographql.apollo3.api.Optional]
+   * Whether to generate operation variables as [com.apollographql.apollo.api.Optional]
    *
-   * Using [com.apollographql.apollo3.api.Optional] allows to omit the variables if needed but makes the
+   * Using [com.apollographql.apollo.api.Optional] allows to omit the variables if needed but makes the
    * callsite more verbose in most cases.
    *
    * Default: true
@@ -704,7 +704,7 @@ interface Service {
    *
    * Acceptable values:
    * - `none`: Fields will be generated with the same type whether they are nullable or not
-   * - `apolloOptional`: Fields will be generated as Apollo's `com.apollographql.apollo3.api.Optional<Type>` if nullable, or `Type` if not.
+   * - `apolloOptional`: Fields will be generated as Apollo's `com.apollographql.apollo.api.Optional<Type>` if nullable, or `Type` if not.
    * - `javaOptional`: Fields will be generated as Java's `java.util.Optional<Type>` if nullable, or `Type` if not.
    * - `guavaOptional`: Fields will be generated as Guava's `com.google.common.base.Optional<Type>` if nullable, or `Type` if not.
    * - `jetbrainsAnnotations`: Fields will be generated with Jetbrain's `org.jetbrains.annotations.Nullable` annotation if nullable, or
@@ -806,7 +806,7 @@ interface Service {
       val task: TaskProvider<out Task>,
 
       /**
-       * A json file containing a [Map]<[String], [com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor]>
+       * A json file containing a [Map]<[String], [com.apollographql.apollo.compiler.operationoutput.OperationDescriptor]>
        *
        * This file can be used to upload the queries exact content and their matching operation ID to a server for whitelisting
        * or persisted queries.

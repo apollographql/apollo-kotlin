@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.internal
+package com.apollographql.apollo.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.api.ApolloRequest
 
 @ApolloInternal
 interface ApolloClientListener {

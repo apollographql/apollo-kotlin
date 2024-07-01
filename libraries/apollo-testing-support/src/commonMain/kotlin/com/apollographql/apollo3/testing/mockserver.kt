@@ -1,22 +1,22 @@
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.apollo3.testing
+package com.apollographql.apollo.testing
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.composeJsonResponse
-import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.json.readAny
-import com.apollographql.apollo3.api.toJson
-import com.apollographql.apollo3.mockserver.MockResponse
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.TextMessage
-import com.apollographql.apollo3.mockserver.WebsocketMockRequest
-import com.apollographql.apollo3.mockserver.enqueueString
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.AnyAdapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.composeJsonResponse
+import com.apollographql.apollo.api.json.buildJsonString
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.json.readAny
+import com.apollographql.apollo.api.toJson
+import com.apollographql.apollo.mockserver.MockResponse
+import com.apollographql.apollo.mockserver.MockServer
+import com.apollographql.apollo.mockserver.TextMessage
+import com.apollographql.apollo.mockserver.WebsocketMockRequest
+import com.apollographql.apollo.mockserver.enqueueString
 import okio.Buffer
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -26,8 +26,8 @@ import kotlin.time.Duration.Companion.seconds
     "This is only used for internal Apollo tests and will be removed in a future version.",
     ReplaceWith(
         "enqueueString(operation.composeJsonResponse(data, customScalarAdapters), delayMs)",
-        "com.apollographql.apollo3.mockserver.enqueueString",
-        "com.apollographql.apollo3.api.composeJsonResponse",
+        "com.apollographql.apollo.mockserver.enqueueString",
+        "com.apollographql.apollo.api.composeJsonResponse",
     )
 )
 fun <D : Operation.Data> MockServer.enqueue(
@@ -69,8 +69,8 @@ fun MockServer.enqueueData(
     "This is only used for internal Apollo tests and will be removed in a future version.",
     ReplaceWith(
         "enqueueString(data.toResponseJson(customScalarAdapters), delayMillis, statusCode)",
-        "com.apollographql.apollo3.mockserver.enqueueString",
-        "com.apollographql.apollo3.api.toResponseJson",
+        "com.apollographql.apollo.mockserver.enqueueString",
+        "com.apollographql.apollo.api.toResponseJson",
     )
 )
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)

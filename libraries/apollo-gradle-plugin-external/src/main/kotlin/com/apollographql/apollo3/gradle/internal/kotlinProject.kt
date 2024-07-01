@@ -4,7 +4,7 @@
  * They are in a separate file so that the corresponding class is not loaded
  * if the Kotlin plugin is not present
  */
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension

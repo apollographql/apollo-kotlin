@@ -1,15 +1,15 @@
 @file:JvmName("DefaultHttpEngine")
 
-package com.apollographql.apollo3.network.http
+package com.apollographql.apollo.network.http
 
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.api.http.UploadsHttpBody
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.network.defaultOkHttpClientBuilder
-import com.apollographql.apollo3.network.toOkHttpHeaders
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.api.http.HttpRequest
+import com.apollographql.apollo.api.http.HttpResponse
+import com.apollographql.apollo.api.http.UploadsHttpBody
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.network.defaultOkHttpClientBuilder
+import com.apollographql.apollo.network.toOkHttpHeaders
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaType

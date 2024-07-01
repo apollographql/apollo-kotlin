@@ -1,13 +1,13 @@
 plugins {
   id("com.android.library")
   id("org.jetbrains.kotlin.android")
-  id("com.apollographql.apollo3")
+  id("com.apollographql.apollo")
   id("androidx.benchmark")
   id("com.google.devtools.ksp")
 }
 
 configure<com.android.build.gradle.LibraryExtension> {
-  namespace = "com.apollographql.apollo3.benchmark"
+  namespace = "com.apollographql.apollo.benchmark"
   compileSdk = libs.versions.android.sdkversion.compilebenchmark.get().toInt()
 
   defaultConfig {
@@ -48,19 +48,19 @@ java {
   }
 }
 
-configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
+configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
   service("benchmark") {
     srcDir("src/main/graphql/benchmark")
-    packageName.set("com.apollographql.apollo3.benchmark")
+    packageName.set("com.apollographql.apollo.benchmark")
   }
   service("calendar-response") {
     srcDir("src/main/graphql/calendar")
     codegenModels.set("responseBased")
-    packageName.set("com.apollographql.apollo3.calendar.response")
+    packageName.set("com.apollographql.apollo.calendar.response")
   }
   service("calendar-operation") {
     srcDir("src/main/graphql/calendar")
     codegenModels.set("operationBased")
-    packageName.set("com.apollographql.apollo3.calendar.operation")
+    packageName.set("com.apollographql.apollo.calendar.operation")
   }
 }

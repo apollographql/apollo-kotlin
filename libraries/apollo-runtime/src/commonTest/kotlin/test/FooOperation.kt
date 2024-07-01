@@ -1,20 +1,20 @@
 package test
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.checkFieldNotMissing
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.api.json.writeArray
-import com.apollographql.apollo3.api.json.writeObject
-import com.apollographql.apollo3.api.missingField
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo.api.checkFieldNotMissing
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.json.buildJsonString
+import com.apollographql.apollo.api.json.writeArray
+import com.apollographql.apollo.api.json.writeObject
+import com.apollographql.apollo.api.missingField
 
 /**
  * [FooQuery] is a query for tests that doesn't require codegen.

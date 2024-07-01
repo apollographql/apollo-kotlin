@@ -1,20 +1,20 @@
 
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.json.ApolloJsonElement
-import com.apollographql.apollo3.network.websocket.ClientMessage
-import com.apollographql.apollo3.network.websocket.CompleteServerMessage
-import com.apollographql.apollo3.network.websocket.ConnectionAckServerMessage
-import com.apollographql.apollo3.network.websocket.GraphQLWsProtocol
-import com.apollographql.apollo3.network.websocket.ParseErrorServerMessage
-import com.apollographql.apollo3.network.websocket.PingServerMessage
-import com.apollographql.apollo3.network.websocket.PongServerMessage
-import com.apollographql.apollo3.network.websocket.ResponseServerMessage
-import com.apollographql.apollo3.network.websocket.ServerMessage
-import com.apollographql.apollo3.network.websocket.SubscriptionParser
-import com.apollographql.apollo3.network.websocket.SubscriptionParserFactory
-import com.apollographql.apollo3.network.websocket.WsProtocol
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.json.ApolloJsonElement
+import com.apollographql.apollo.network.websocket.ClientMessage
+import com.apollographql.apollo.network.websocket.CompleteServerMessage
+import com.apollographql.apollo.network.websocket.ConnectionAckServerMessage
+import com.apollographql.apollo.network.websocket.GraphQLWsProtocol
+import com.apollographql.apollo.network.websocket.ParseErrorServerMessage
+import com.apollographql.apollo.network.websocket.PingServerMessage
+import com.apollographql.apollo.network.websocket.PongServerMessage
+import com.apollographql.apollo.network.websocket.ResponseServerMessage
+import com.apollographql.apollo.network.websocket.ServerMessage
+import com.apollographql.apollo.network.websocket.SubscriptionParser
+import com.apollographql.apollo.network.websocket.SubscriptionParserFactory
+import com.apollographql.apollo.network.websocket.WsProtocol
 
 actual val parserFactory: SubscriptionParserFactory?
   get() = JsSubscriptionParserFactory

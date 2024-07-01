@@ -1,8 +1,8 @@
 @file:JvmName("-JsonReaders")
 
-package com.apollographql.apollo3.api.json
+package com.apollographql.apollo.api.json
 
-import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo.annotations.ApolloInternal
 import okio.BufferedSource
 import kotlin.jvm.JvmName
 

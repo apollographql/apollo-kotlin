@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.schema
+package com.apollographql.apollo.compiler.codegen.kotlin.schema
 
-import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSchemaContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.paginationPackageName
+import com.apollographql.apollo.compiler.codegen.ResolverKeyKind
+import com.apollographql.apollo.compiler.codegen.kotlin.CgFile
+import com.apollographql.apollo.compiler.codegen.kotlin.CgFileBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSchemaContext
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo.compiler.codegen.paginationPackageName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy

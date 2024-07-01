@@ -5,7 +5,7 @@
 //
 package com.example.nested_conditional_inline.type
 
-import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo.api.CustomScalarType
 
 /**
  * The `Boolean` scalar type represents `true` or `false`.

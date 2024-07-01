@@ -1,16 +1,16 @@
-package com.apollographql.apollo3.network.websocket
+package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.NullableAnyAdapter
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer.Companion.appendQueryParameters
-import com.apollographql.apollo3.api.json.buildJsonByteString
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.json.readAny
-import com.apollographql.apollo3.api.json.writeAny
-import com.apollographql.apollo3.api.toJsonString
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.NullableAnyAdapter
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo.api.http.DefaultHttpRequestComposer.Companion.appendQueryParameters
+import com.apollographql.apollo.api.json.buildJsonByteString
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.json.readAny
+import com.apollographql.apollo.api.json.writeAny
+import com.apollographql.apollo.api.toJsonString
 import okio.Buffer
 
 /**

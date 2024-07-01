@@ -1,11 +1,11 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.SubscriptionOperationException
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.network.http.LoggingInterceptor
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.SubscriptionOperationException
+import com.apollographql.apollo.network.http.HttpNetworkTransport
+import com.apollographql.apollo.network.http.LoggingInterceptor
+import com.apollographql.apollo.testing.internal.runTest
 import okio.use
 import router.DieSubscription
 import router.ReviewSubscription

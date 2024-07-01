@@ -1,7 +1,7 @@
 package test
 
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.MapJsonReader
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.MapJsonReader
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

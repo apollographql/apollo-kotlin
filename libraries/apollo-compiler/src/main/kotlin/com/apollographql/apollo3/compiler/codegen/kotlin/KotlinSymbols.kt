@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin
+package com.apollographql.apollo.compiler.codegen.kotlin
 
-import com.apollographql.apollo3.compiler.codegen.ClassNames
-import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiJsonPackageName
-import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiPackageName
-import com.apollographql.apollo3.compiler.codegen.ResolverClassName
+import com.apollographql.apollo.compiler.codegen.ClassNames
+import com.apollographql.apollo.compiler.codegen.ClassNames.apolloApiJsonPackageName
+import com.apollographql.apollo.compiler.codegen.ClassNames.apolloApiPackageName
+import com.apollographql.apollo.compiler.codegen.ResolverClassName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy

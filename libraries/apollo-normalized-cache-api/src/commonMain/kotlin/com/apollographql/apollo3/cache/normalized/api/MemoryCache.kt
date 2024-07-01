@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.cache.normalized.api
+package com.apollographql.apollo.cache.normalized.api
 
-import com.apollographql.apollo3.cache.normalized.api.internal.CacheLock
-import com.apollographql.apollo3.cache.normalized.api.internal.LruCache
-import com.apollographql.apollo3.mpp.currentTimeMillis
+import com.apollographql.apollo.cache.normalized.api.internal.CacheLock
+import com.apollographql.apollo.cache.normalized.api.internal.LruCache
+import com.apollographql.apollo.mpp.currentTimeMillis
 import okio.internal.commonAsUtf8ToByteArray
 import kotlin.jvm.JvmOverloads
 import kotlin.reflect.KClass

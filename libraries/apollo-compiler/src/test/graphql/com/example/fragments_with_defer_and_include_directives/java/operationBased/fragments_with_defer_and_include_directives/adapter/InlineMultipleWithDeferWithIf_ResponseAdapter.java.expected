@@ -5,19 +5,19 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.BLabel;
-import com.apollographql.apollo3.api.BTerm;
-import com.apollographql.apollo3.api.BVariable;
-import com.apollographql.apollo3.api.BooleanExpression;
-import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.json.JsonReader;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.Adapter;
+import com.apollographql.apollo.api.Adapters;
+import com.apollographql.apollo.api.Assertions;
+import com.apollographql.apollo.api.BLabel;
+import com.apollographql.apollo.api.BTerm;
+import com.apollographql.apollo.api.BVariable;
+import com.apollographql.apollo.api.BooleanExpression;
+import com.apollographql.apollo.api.BooleanExpressions;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.NullableAdapter;
+import com.apollographql.apollo.api.ObjectAdapter;
+import com.apollographql.apollo.api.json.JsonReader;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.InlineMultipleWithDeferWithIf;
 import java.io.IOException;
 import java.lang.Override;

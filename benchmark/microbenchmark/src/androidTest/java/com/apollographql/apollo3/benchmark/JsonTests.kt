@@ -1,15 +1,15 @@
-package com.apollographql.apollo3.benchmark
+package com.apollographql.apollo.benchmark
 
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.benchmark.Utils.resource
-import com.apollographql.apollo3.benchmark.moshi.Query
-import com.apollographql.apollo3.benchmark.test.R
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.normalize
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.parseJsonResponse
+import com.apollographql.apollo.benchmark.Utils.resource
+import com.apollographql.apollo.benchmark.moshi.Query
+import com.apollographql.apollo.benchmark.test.R
+import com.apollographql.apollo.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo.cache.normalized.api.normalize
 import com.squareup.moshi.Moshi
 import org.junit.Rule
 import org.junit.Test

@@ -1,14 +1,14 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo.ast
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.ast.internal.ExtensionsMerger
-import com.apollographql.apollo3.ast.internal.builtinsDefinitionsStr
-import com.apollographql.apollo3.ast.internal.ensureSchemaDefinition
-import com.apollographql.apollo3.ast.internal.kotlinLabsDefinitions
-import com.apollographql.apollo3.ast.internal.linkDefinitionsStr
-import com.apollographql.apollo3.ast.internal.nullabilityDefinitionsStr
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.ast.internal.ExtensionsMerger
+import com.apollographql.apollo.ast.internal.builtinsDefinitionsStr
+import com.apollographql.apollo.ast.internal.ensureSchemaDefinition
+import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions
+import com.apollographql.apollo.ast.internal.linkDefinitionsStr
+import com.apollographql.apollo.ast.internal.nullabilityDefinitionsStr
 import okio.Buffer
 
 /**

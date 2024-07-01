@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.network.http
+package com.apollographql.apollo.network.http
 
-import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo.annotations.ApolloInternal
 import io.ktor.client.plugins.HttpTimeout
 
 @ApolloInternal

@@ -1,16 +1,16 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.api.toJson
-import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.json.buildJsonString
+import com.apollographql.apollo.api.toJson
+import com.apollographql.apollo.integration.normalizer.HeroNameQuery
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.network.okHttpClient
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.network.okHttpClient
+import com.apollographql.apollo.testing.internal.runTest
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl

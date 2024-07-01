@@ -1,37 +1,37 @@
 @file:JvmName("NormalizedCache")
 
-package com.apollographql.apollo3.cache.normalized
+package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo3.ApolloCall
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_0
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.MutableExecutionOptions
-import com.apollographql.apollo3.api.Mutation
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.http.get
-import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.CacheResolver
-import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
-import com.apollographql.apollo3.cache.normalized.internal.WatcherInterceptor
-import com.apollographql.apollo3.cache.normalized.internal.WatcherSentinel
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.CacheMissException
-import com.apollographql.apollo3.interceptor.ApolloInterceptor
-import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
-import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
-import com.apollographql.apollo3.mpp.currentTimeMillis
-import com.apollographql.apollo3.network.http.HttpInfo
+import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince.Version.v4_0_0
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.api.MutableExecutionOptions
+import com.apollographql.apollo.api.Mutation
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.http.get
+import com.apollographql.apollo.cache.normalized.api.ApolloCacheHeaders
+import com.apollographql.apollo.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo.cache.normalized.api.CacheKeyGenerator
+import com.apollographql.apollo.cache.normalized.api.CacheResolver
+import com.apollographql.apollo.cache.normalized.api.FieldPolicyCacheResolver
+import com.apollographql.apollo.cache.normalized.api.NormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo.cache.normalized.internal.ApolloCacheInterceptor
+import com.apollographql.apollo.cache.normalized.internal.WatcherInterceptor
+import com.apollographql.apollo.cache.normalized.internal.WatcherSentinel
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.CacheMissException
+import com.apollographql.apollo.interceptor.ApolloInterceptor
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo.interceptor.AutoPersistedQueryInterceptor
+import com.apollographql.apollo.mpp.currentTimeMillis
+import com.apollographql.apollo.network.http.HttpInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
@@ -87,7 +87,7 @@ enum class FetchPolicy {
 /**
  * Configures an [ApolloClient] with a normalized cache.
  *
- * @param normalizedCacheFactory a factory that creates a [com.apollographql.apollo3.cache.normalized.api.NormalizedCache].
+ * @param normalizedCacheFactory a factory that creates a [com.apollographql.apollo.cache.normalized.api.NormalizedCache].
  * It will only be called once.
  * The reason this is a factory is to enforce creating the cache from a non-main thread. For native the thread
  * where the cache is created will also be isolated so that the cache can be mutated.
@@ -365,7 +365,7 @@ private class StoreExpirationInterceptor: ApolloInterceptor {
 }
 
 /**
- * @param cacheHeaders additional cache headers to be passed to your [com.apollographql.apollo3.cache.normalized.api.NormalizedCache]
+ * @param cacheHeaders additional cache headers to be passed to your [com.apollographql.apollo.cache.normalized.api.NormalizedCache]
  */
 fun <T> MutableExecutionOptions<T>.cacheHeaders(cacheHeaders: CacheHeaders) = addExecutionContext(
     CacheHeadersContext(cacheHeaders)

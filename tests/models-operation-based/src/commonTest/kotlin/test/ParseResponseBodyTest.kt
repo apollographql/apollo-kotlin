@@ -1,11 +1,11 @@
 package test
 
 import codegen.models.AllPlanetsQuery
-import com.apollographql.apollo3.api.composeJsonResponse
-import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.json.readAny
-import com.apollographql.apollo3.api.toApolloResponse
+import com.apollographql.apollo.api.composeJsonResponse
+import com.apollographql.apollo.api.json.buildJsonString
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.json.readAny
+import com.apollographql.apollo.api.toApolloResponse
 import okio.Buffer
 import testFixtureToJsonReader
 import testFixtureToUtf8

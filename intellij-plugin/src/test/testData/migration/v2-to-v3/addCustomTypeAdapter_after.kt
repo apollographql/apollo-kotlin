@@ -1,9 +1,9 @@
 package com.example
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.CustomTypeAdapter
-import com.apollographql.apollo3.api.CustomTypeValue
-import com.apollographql.apollo3.api.ScalarType
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.CustomTypeAdapter
+import com.apollographql.apollo.api.CustomTypeValue
+import com.apollographql.apollo.api.ScalarType
 import java.net.URL
 import java.util.*
 

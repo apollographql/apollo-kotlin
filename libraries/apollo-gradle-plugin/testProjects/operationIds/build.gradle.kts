@@ -1,6 +1,6 @@
-import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
-import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo.compiler.operationoutput.OperationOutput
+import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo.compiler.OperationOutputGenerator
 
 plugins {
   alias(libs.plugins.kotlin.jvm)

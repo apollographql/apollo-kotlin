@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.runtime.java.network.http;
+package com.apollographql.apollo.runtime.java.network.http;
 
-import com.apollographql.apollo3.api.http.HttpRequest;
-import com.apollographql.apollo3.runtime.java.ApolloDisposable;
+import com.apollographql.apollo.api.http.HttpRequest;
+import com.apollographql.apollo.runtime.java.ApolloDisposable;
 import org.jetbrains.annotations.NotNull;
 
 public interface HttpEngine {

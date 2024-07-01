@@ -1,10 +1,10 @@
 @file:JvmMultifileClass
 @file:JvmName("NetworkMonitorKt")
 
-package com.apollographql.apollo3.network
+package com.apollographql.apollo.network
 
 import android.content.Context
-import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloExperimental
 
 /**
  * Returns a new [NetworkMonitor] for the given [Context]

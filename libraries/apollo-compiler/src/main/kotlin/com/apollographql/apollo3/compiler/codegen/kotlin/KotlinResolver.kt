@@ -1,34 +1,34 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin
+package com.apollographql.apollo.compiler.codegen.kotlin
 
-import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
-import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
-import com.apollographql.apollo3.compiler.ScalarInfo
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
-import com.apollographql.apollo3.compiler.codegen.Identifier.type
-import com.apollographql.apollo3.compiler.codegen.ResolverClassName
-import com.apollographql.apollo3.compiler.codegen.ResolverEntry
-import com.apollographql.apollo3.compiler.codegen.ResolverKey
-import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.obj
-import com.apollographql.apollo3.compiler.ir.IrCatchTo
-import com.apollographql.apollo3.compiler.ir.IrCompositeType2
-import com.apollographql.apollo3.compiler.ir.IrEnumType
-import com.apollographql.apollo3.compiler.ir.IrEnumType2
-import com.apollographql.apollo3.compiler.ir.IrInputObjectType
-import com.apollographql.apollo3.compiler.ir.IrListType
-import com.apollographql.apollo3.compiler.ir.IrListType2
-import com.apollographql.apollo3.compiler.ir.IrModelType
-import com.apollographql.apollo3.compiler.ir.IrNamedType
-import com.apollographql.apollo3.compiler.ir.IrNonNullType2
-import com.apollographql.apollo3.compiler.ir.IrObjectType
-import com.apollographql.apollo3.compiler.ir.IrScalarType
-import com.apollographql.apollo3.compiler.ir.IrScalarType2
-import com.apollographql.apollo3.compiler.ir.IrType
-import com.apollographql.apollo3.compiler.ir.IrType2
-import com.apollographql.apollo3.compiler.ir.catchTo
-import com.apollographql.apollo3.compiler.ir.maybeError
-import com.apollographql.apollo3.compiler.ir.nullable
-import com.apollographql.apollo3.compiler.ir.optional
+import com.apollographql.apollo.compiler.ExpressionAdapterInitializer
+import com.apollographql.apollo.compiler.RuntimeAdapterInitializer
+import com.apollographql.apollo.compiler.ScalarInfo
+import com.apollographql.apollo.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo.compiler.codegen.Identifier.type
+import com.apollographql.apollo.compiler.codegen.ResolverClassName
+import com.apollographql.apollo.compiler.codegen.ResolverEntry
+import com.apollographql.apollo.compiler.codegen.ResolverKey
+import com.apollographql.apollo.compiler.codegen.ResolverKeyKind
+import com.apollographql.apollo.compiler.codegen.kotlin.helpers.obj
+import com.apollographql.apollo.compiler.ir.IrCatchTo
+import com.apollographql.apollo.compiler.ir.IrCompositeType2
+import com.apollographql.apollo.compiler.ir.IrEnumType
+import com.apollographql.apollo.compiler.ir.IrEnumType2
+import com.apollographql.apollo.compiler.ir.IrInputObjectType
+import com.apollographql.apollo.compiler.ir.IrListType
+import com.apollographql.apollo.compiler.ir.IrListType2
+import com.apollographql.apollo.compiler.ir.IrModelType
+import com.apollographql.apollo.compiler.ir.IrNamedType
+import com.apollographql.apollo.compiler.ir.IrNonNullType2
+import com.apollographql.apollo.compiler.ir.IrObjectType
+import com.apollographql.apollo.compiler.ir.IrScalarType
+import com.apollographql.apollo.compiler.ir.IrScalarType2
+import com.apollographql.apollo.compiler.ir.IrType
+import com.apollographql.apollo.compiler.ir.IrType2
+import com.apollographql.apollo.compiler.ir.catchTo
+import com.apollographql.apollo.compiler.ir.maybeError
+import com.apollographql.apollo.compiler.ir.nullable
+import com.apollographql.apollo.compiler.ir.optional
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
@@ -155,16 +155,16 @@ internal class KotlinResolver(
   }
 
   private fun CodeBlock.nullable(): CodeBlock {
-    val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
+    val nullableFun = MemberName("com.apollographql.apollo.api", "nullable")
     return CodeBlock.of("%L.%M()", this, nullableFun)
   }
 
 
   private fun CodeBlock.list(jsExport: Boolean): CodeBlock {
     val listFun = if (jsExport) {
-      MemberName("com.apollographql.apollo3.api", "array")
+      MemberName("com.apollographql.apollo.api", "array")
     } else {
-      MemberName("com.apollographql.apollo3.api", "list")
+      MemberName("com.apollographql.apollo.api", "list")
     }
     return CodeBlock.of("%L.%M()", this, listFun)
   }
@@ -199,7 +199,7 @@ internal class KotlinResolver(
   internal fun adapterInitializer(type: IrType, requiresBuffering: Boolean, jsExport: Boolean): CodeBlock {
     return when {
       type.optional -> {
-        val presentFun = MemberName("com.apollographql.apollo3.api", "present")
+        val presentFun = MemberName("com.apollographql.apollo.api", "present")
         CodeBlock.of("%L.%M()", adapterInitializer(type.optional(false), requiresBuffering, jsExport), presentFun)
       }
       type.catchTo != IrCatchTo.NoCatch -> {
@@ -231,7 +231,7 @@ internal class KotlinResolver(
           }
 
           else -> {
-            val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
+            val nullableFun = MemberName("com.apollographql.apollo.api", "nullable")
             CodeBlock.of("%L.%M()", adapterInitializer(type.nullable(false), requiresBuffering, jsExport), nullableFun)
           }
         }

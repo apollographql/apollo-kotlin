@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.graphql.ast.test
+package com.apollographql.apollo.graphql.ast.test
 
-import com.apollographql.apollo3.ast.GQLField
-import com.apollographql.apollo3.ast.GQLIntValue
-import com.apollographql.apollo3.ast.TransformResult
-import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.toUtf8
-import com.apollographql.apollo3.ast.transform
+import com.apollographql.apollo.ast.GQLField
+import com.apollographql.apollo.ast.GQLIntValue
+import com.apollographql.apollo.ast.TransformResult
+import com.apollographql.apollo.ast.parseAsGQLDocument
+import com.apollographql.apollo.ast.toUtf8
+import com.apollographql.apollo.ast.transform
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

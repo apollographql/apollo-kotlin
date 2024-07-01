@@ -1,5 +1,5 @@
-import com.apollographql.apollo3.api.json.DynamicJsJsonReader
-import com.apollographql.apollo3.api.toApolloResponse
+import com.apollographql.apollo.api.json.DynamicJsJsonReader
+import com.apollographql.apollo.api.toApolloResponse
 import js.test.CreateCustomerMutation
 import js.test.GetSalesPeopleQuery
 import kotlin.test.Test
