@@ -28,10 +28,9 @@ class Apollo4AvailableInspectionTest : ApolloTestCase() {
   fun testInspectionBuildGradleKts() {
     myFixture.openFileInEditor(myFixture.createFile("build.gradle.kt", loadKtsAsKt("Apollo4Available.gradle.kts")))
     val highlightInfos = doHighlighting().filter { it.description == "Apollo Kotlin 4 is available" }
-    assertSize(4, highlightInfos)
-    assertTrue(highlightInfos[0].line == 6)
-    assertTrue(highlightInfos[1].line == 11)
-    assertTrue(highlightInfos[2].line == 24)
-    assertTrue(highlightInfos[3].line == 31)
+    assertSize(15, highlightInfos)
+    listOf(6, 7, 8, 11, 12, 13, 15, 24, 25, 26, 27, 32, 33, 34, 35).forEachIndexed { index, line ->
+      assertTrue(highlightInfos[index].line == line)
+    }
   }
 }

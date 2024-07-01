@@ -57,6 +57,12 @@ intellij {
   // }
 }
 
+val apolloDependencies = configurations.create("apolloDependencies").apply {
+  listOf(":apollo-annotations", ":apollo-api", ":apollo-runtime").forEach {
+    dependencies.add(project.dependencies.project(it, "jvmApiElements"))
+  }
+}
+
 tasks {
   withType<KotlinCompile> {
     kotlinOptions {
@@ -144,6 +150,7 @@ tasks {
       events.add(TestLogEvent.FAILED)
       showStandardStreams = true
     }
+    inputs.files(apolloDependencies)
   }
 }
 
@@ -185,7 +192,7 @@ fun isSnapshotBuild() = System.getenv("IJ_PLUGIN_SNAPSHOT").toBoolean()
 
 apollo {
   service("apolloDebug") {
-    packageName.set("com.apollographql.apollo.debug")
+    packageName.set("com.apollographql.apollo3.debug")
     schemaFiles.from(file("../libraries/apollo-debug-server/graphql/schema.graphqls"))
     introspection {
       endpointUrl.set("http://localhost:12200/")

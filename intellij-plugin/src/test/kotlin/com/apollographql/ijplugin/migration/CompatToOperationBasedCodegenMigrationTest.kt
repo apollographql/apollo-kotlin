@@ -12,10 +12,10 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class CompatToOperationBasedCodegenMigrationTest : ApolloTestCase() {
   override val mavenLibraries = listOf(
-      "com.apollographql.apollo:apollo-annotations-jvm:3.8.0",
-      "com.apollographql.apollo:apollo-api-jvm:3.8.0",
-      "com.apollographql.apollo:apollo-mpp-utils-jvm:3.8.0",
-      "com.apollographql.apollo:apollo-runtime-jvm:3.8.0",
+      "com.apollographql.apollo3:apollo-annotations-jvm:3.8.0",
+      "com.apollographql.apollo3:apollo-api-jvm:3.8.0",
+      "com.apollographql.apollo3:apollo-mpp-utils-jvm:3.8.0",
+      "com.apollographql.apollo3:apollo-runtime-jvm:3.8.0",
   )
 
   override fun getTestDataPath() = "src/test/testData/migration/compat-to-operationbased"

@@ -1,17 +1,17 @@
 #@formatter:off
 [versions]
-apollo = <warning descr="Apollo Kotlin 4 is available">"3.8.2"</warning>
+apollo = "3.8.2"
 apollo4 = "4.0.0"
 
 [libraries]
 android-test-runner = { group = "androidx.test", name = "runner", version = "1.5.2" }
 <warning descr="Apollo Kotlin 4 is available">apollo-adapters = { group = "com.apollographql.apollo3", name = "apollo-adapters", version = "3.8.2" }</warning>
-apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version.ref = "apollo" }
-apollo-api-java = { group = "com.apollographql.apollo3", name = "apollo-api-java", version = "4.0.0" }
-apollo-httpCache = { group = "com.apollographql.apollo3", name = "apollo-http-cache", version.ref = "apollo4" }
+<warning descr="Apollo Kotlin 4 is available">apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version.ref = "apollo" }</warning>
+apollo-api-java = { group = "com.apollographql.apollo", name = "apollo-api-java", version = "4.0.0" }
+apollo-httpCache = { group = "com.apollographql.apollo", name = "apollo-http-cache", version.ref = "apollo4" }
 
 [plugins]
 <warning descr="Apollo Kotlin 4 is available">apollo = { id = "com.apollographql.apollo3", version = "3.8.2" }</warning>
-apolloRef = { id = "com.apollographql.apollo3", version.ref = "apollo" }
-apollo4 = { id = "com.apollographql.apollo3", version = "4.0.0" }
-apollo4Ref = { id = "com.apollographql.apollo3", version.ref = "apollo4" }
+<warning descr="Apollo Kotlin 4 is available">apolloRef = { id = "com.apollographql.apollo3", version.ref = "apollo" }</warning>
+apollo4 = { id = "com.apollographql.apollo", version = "4.0.0" }
+apollo4Ref = { id = "com.apollographql.apollo", version.ref = "apollo4" }

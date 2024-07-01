@@ -1,8 +1,8 @@
 package com.example
 
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.Subscription
 
 suspend fun main() {
   val apolloClient = ApolloClient.Builder()

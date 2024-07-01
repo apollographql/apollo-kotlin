@@ -99,7 +99,6 @@ jobs:
       - name: Maximize Build Space
         run: |
           sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android
           sudo rm -rf /opt/ghc
 
       # Check out current repository
