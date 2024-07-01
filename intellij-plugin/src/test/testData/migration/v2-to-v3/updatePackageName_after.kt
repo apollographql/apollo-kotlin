@@ -1,7 +1,7 @@
 package com.example
 
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.ApolloCall
 
 suspend fun main() {
   val apolloClient: ApolloClient? = null

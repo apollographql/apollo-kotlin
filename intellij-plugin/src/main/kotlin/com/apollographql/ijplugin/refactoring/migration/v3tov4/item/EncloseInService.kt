@@ -1,6 +1,6 @@
 package com.apollographql.ijplugin.refactoring.migration.v3tov4.item
 
-import com.apollographql.apollo.gradle.api.Service
+import com.apollographql.apollo3.gradle.api.Service
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
 import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsageInfo

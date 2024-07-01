@@ -17,7 +17,7 @@ import org.jetbrains.kotlin.resolve.ImportPath
 
 object UpdateOkHttpExecutionContext : MigrationItem() {
   override fun prepare(project: Project, migration: PsiMigration) {
-    findOrCreateClass(project, migration, "com.apollographql.apollo.network.http.HttpInfo")
+    findOrCreateClass(project, migration, "com.apollographql.apollo3.network.http.HttpInfo")
   }
 
   override fun findUsages(project: Project, migration: PsiMigration, searchScope: GlobalSearchScope): List<MigrationItemUsageInfo> {
@@ -47,7 +47,7 @@ object UpdateOkHttpExecutionContext : MigrationItem() {
     val psiFactory = KtPsiFactory(project)
     when (usage) {
       is ReplaceImportUsageInfo -> {
-        element.replace(psiFactory.createImportDirective(ImportPath.fromString("com.apollographql.apollo.network.http.HttpInfo")))
+        element.replace(psiFactory.createImportDirective(ImportPath.fromString("com.apollographql.apollo3.network.http.HttpInfo")))
       }
 
       else -> {

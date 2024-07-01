@@ -32,7 +32,7 @@ import org.jetbrains.kotlin.resolve.ImportPath
 import org.jetbrains.plugins.gradle.util.GradleConstants
 
 const val apollo2 = "com.apollographql.apollo"
-const val apollo3 = "com.apollographql.apollo"
+const val apollo3 = "com.apollographql.apollo3"
 
 /**
  * Generic processor for migrations.

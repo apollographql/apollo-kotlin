@@ -2,15 +2,15 @@
 
 package com.apollographql.ijplugin.util
 
-import com.apollographql.apollo.annotations.ApolloInternal
-import com.apollographql.apollo.ast.GQLDefinition
-import com.apollographql.apollo.ast.GQLDirectiveDefinition
-import com.apollographql.apollo.ast.GQLNamed
-import com.apollographql.apollo.ast.KOTLIN_LABS_VERSION
-import com.apollographql.apollo.ast.NULLABILITY_VERSION
-import com.apollographql.apollo.ast.kotlinLabsDefinitions
-import com.apollographql.apollo.ast.nullabilityDefinitions
-import com.apollographql.apollo.ast.rawType
+import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.ast.GQLDefinition
+import com.apollographql.apollo3.ast.GQLDirectiveDefinition
+import com.apollographql.apollo3.ast.GQLNamed
+import com.apollographql.apollo3.ast.KOTLIN_LABS_VERSION
+import com.apollographql.apollo3.ast.NULLABILITY_VERSION
+import com.apollographql.apollo3.ast.kotlinLabsDefinitions
+import com.apollographql.apollo3.ast.nullabilityDefinitions
+import com.apollographql.apollo3.ast.rawType
 import com.intellij.lang.jsgraphql.psi.GraphQLArrayValue
 import com.intellij.lang.jsgraphql.psi.GraphQLDirective
 import com.intellij.lang.jsgraphql.psi.GraphQLElement

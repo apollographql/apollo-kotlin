@@ -105,8 +105,8 @@ object ChangeToBuilderQuickFix : LocalQuickFix {
     val argumentExpression = getArgumentExpression() ?: return "?"
     val dotQualifiedExpression = argumentExpression.cast<KtDotQualifiedExpression>()
     val receiverClassName = dotQualifiedExpression?.receiverExpression?.mainReference?.resolve()?.kotlinFqName?.asString()
-    val isOptional = receiverClassName == "com.apollographql.apollo.api.Optional"
-    val isOptionalCompanion = receiverClassName == "com.apollographql.apollo.api.Optional.Companion"
+    val isOptional = receiverClassName == "com.apollographql.apollo3.api.Optional"
+    val isOptionalCompanion = receiverClassName == "com.apollographql.apollo3.api.Optional.Companion"
     val selectorCallExpression = dotQualifiedExpression?.selectorExpression.cast<KtCallExpression>()
     val selectorCallExpressionText = selectorCallExpression?.calleeExpression?.text
     val nameReferenceExpressionText = dotQualifiedExpression?.selectorExpression.cast<KtNameReferenceExpression>()?.text

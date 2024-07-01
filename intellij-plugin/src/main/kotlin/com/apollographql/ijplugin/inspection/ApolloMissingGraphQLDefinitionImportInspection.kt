@@ -1,12 +1,12 @@
 package com.apollographql.ijplugin.inspection
 
-import com.apollographql.apollo.ast.GQLDefinition
-import com.apollographql.apollo.ast.GQLDirectiveDefinition
-import com.apollographql.apollo.ast.GQLEnumTypeDefinition
-import com.apollographql.apollo.ast.GQLInputObjectTypeDefinition
-import com.apollographql.apollo.ast.GQLNamed
-import com.apollographql.apollo.ast.GQLScalarTypeDefinition
-import com.apollographql.apollo.ast.rawType
+import com.apollographql.apollo3.ast.GQLDefinition
+import com.apollographql.apollo3.ast.GQLDirectiveDefinition
+import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLNamed
+import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.ast.rawType
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.gradle.gradleToolingModelService
 import com.apollographql.ijplugin.project.apolloProjectService

@@ -1,7 +1,7 @@
 package com.apollographql.ijplugin.inspection
 
-import com.apollographql.apollo.ast.GQLDirectiveDefinition
-import com.apollographql.apollo.ast.linkDefinitions
+import com.apollographql.apollo3.ast.GQLDirectiveDefinition
+import com.apollographql.apollo3.ast.linkDefinitions
 import com.apollographql.ijplugin.util.KOTLIN_LABS_DEFINITIONS
 import com.apollographql.ijplugin.util.NULLABILITY_DEFINITIONS
 import com.apollographql.ijplugin.util.NULLABILITY_URL

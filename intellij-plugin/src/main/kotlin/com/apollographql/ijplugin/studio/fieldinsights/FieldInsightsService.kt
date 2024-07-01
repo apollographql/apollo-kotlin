@@ -1,7 +1,7 @@
 package com.apollographql.ijplugin.studio.fieldinsights
 
-import com.apollographql.apollo.annotations.ApolloExperimental
-import com.apollographql.apollo.tooling.FieldInsights
+import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.tooling.FieldInsights
 import com.apollographql.ijplugin.gradle.ApolloKotlinService
 import com.apollographql.ijplugin.gradle.ApolloKotlinServiceListener
 import com.apollographql.ijplugin.gradle.GradleToolingModelService

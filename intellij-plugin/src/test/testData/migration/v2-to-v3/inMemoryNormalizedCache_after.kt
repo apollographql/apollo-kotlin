@@ -1,15 +1,15 @@
 package com.example
 
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import java.util.concurrent.TimeUnit
-import com.apollographql.apollo.cache.normalized.fetchPolicy
-import com.apollographql.apollo.cache.normalized.apolloStore
-import com.apollographql.apollo.cache.normalized.normalizedCache
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
+import com.apollographql.apollo3.cache.normalized.apolloStore
+import com.apollographql.apollo3.cache.normalized.normalizedCache
 
 suspend fun main() {
   class MyData : Operation.Data {

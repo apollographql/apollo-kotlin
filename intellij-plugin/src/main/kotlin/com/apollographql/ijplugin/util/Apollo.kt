@@ -18,7 +18,7 @@ fun Project.getApolloVersion(): ApolloVersion {
         false
       }
 
-      "com.apollographql.apollo" -> {
+      "com.apollographql.apollo3" -> {
         when {
           mavenCoordinates.version.startsWith("3.") -> {
             foundVersion = ApolloVersion.V3

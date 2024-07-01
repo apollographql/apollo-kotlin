@@ -31,7 +31,7 @@ object UpdateFileUpload : MigrationItem() {
   override fun importsToAdd(): Set<String> {
     return setOf(
         "java.io.File",
-        "com.apollographql.apollo.api.toUpload",
+        "com.apollographql.apollo3.api.toUpload",
     )
   }
 }

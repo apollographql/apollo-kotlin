@@ -1,21 +1,21 @@
 package com.example.myapplication
 
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.ApolloResponse
-import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.cache.http.DiskLruHttpCache
-import com.apollographql.apollo.cache.normalized.api.CacheHeaders
-import com.apollographql.apollo.cache.normalized.api.CacheKey
-import com.apollographql.apollo.cache.normalized.apolloStore
-import com.apollographql.apollo.cache.normalized.emitCacheMisses
-import com.apollographql.apollo.cache.normalized.executeCacheAndNetwork
-import com.apollographql.apollo.cache.normalized.watch
-import com.apollographql.apollo.exception.ApolloCanceledException
-import com.apollographql.apollo.exception.ApolloCompositeException
-import com.apollographql.apollo.exception.ApolloGenericException
-import com.apollographql.apollo.network.ws.WebSocketNetworkTransport
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.cache.http.DiskLruHttpCache
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.apolloStore
+import com.apollographql.apollo3.cache.normalized.emitCacheMisses
+import com.apollographql.apollo3.cache.normalized.executeCacheAndNetwork
+import com.apollographql.apollo3.cache.normalized.watch
+import com.apollographql.apollo3.exception.ApolloCanceledException
+import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.exception.ApolloGenericException
+import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 
 suspend fun test() {
   val response: ApolloResponse<*>? = null

@@ -1,6 +1,6 @@
 package com.apollographql.ijplugin.telemetry
 
-import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
+import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.icons.ApolloIcons
 import com.apollographql.ijplugin.project.ApolloProjectListener

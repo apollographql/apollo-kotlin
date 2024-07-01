@@ -1,20 +1,20 @@
 package com.example.myapplication
 
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.ApolloResponse
-import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.cache.http.DiskLruHttpCache
-import com.apollographql.apollo.cache.normalized.api.CacheHeaders
-import com.apollographql.apollo.cache.normalized.api.CacheKey
-import com.apollographql.apollo.cache.normalized.apolloStore
-import com.apollographql.apollo.cache.normalized.watch
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.network.ws.WebSocketNetworkTransport
-import com.apollographql.apollo.exception.DefaultApolloException
-import com.apollographql.apollo.cache.normalized.fetchPolicy
-import com.apollographql.apollo.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.cache.http.DiskLruHttpCache
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.apolloStore
+import com.apollographql.apollo3.cache.normalized.watch
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
+import com.apollographql.apollo3.exception.DefaultApolloException
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
 
 suspend fun test() {
   val response: ApolloResponse<*>? = null

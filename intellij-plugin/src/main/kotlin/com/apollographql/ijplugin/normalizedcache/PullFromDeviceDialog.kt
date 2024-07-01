@@ -3,7 +3,7 @@ package com.apollographql.ijplugin.normalizedcache
 import android.annotation.SuppressLint
 import com.android.ddmlib.Client
 import com.android.ddmlib.IDevice
-import com.apollographql.apollo.debug.GetApolloClientsQuery
+import com.apollographql.apollo3.debug.GetApolloClientsQuery
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.apollodebugserver.ApolloDebugClient
 import com.apollographql.ijplugin.apollodebugserver.ApolloDebugClient.Companion.getApolloDebugClients

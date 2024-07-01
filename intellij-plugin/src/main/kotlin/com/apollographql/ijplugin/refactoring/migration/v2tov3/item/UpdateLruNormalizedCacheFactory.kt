@@ -85,7 +85,7 @@ object UpdateLruNormalizedCacheFactory : MigrationItem() {
     val psiFactory = KtPsiFactory(project)
     when (usage) {
       is ReplaceImportUsageInfo -> {
-        element.replace(psiFactory.createImportDirective(ImportPath.fromString("com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory")))
+        element.replace(psiFactory.createImportDirective(ImportPath.fromString("com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory")))
       }
 
       is ReplaceExpressionUsageInfo -> {
@@ -94,5 +94,5 @@ object UpdateLruNormalizedCacheFactory : MigrationItem() {
     }
   }
 
-  override fun importsToAdd() = setOf("com.apollographql.apollo.cache.normalized.normalizedCache")
+  override fun importsToAdd() = setOf("com.apollographql.apollo3.cache.normalized.normalizedCache")
 }
