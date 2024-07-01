@@ -16,6 +16,7 @@ dependencies {
   }
 
   implementation(project(":apollo-ast"))
+
   implementation(libs.apollo.runtime.published)
   implementation(libs.okhttp)
   implementation(libs.kotlinx.serialization.json)
@@ -23,7 +24,7 @@ dependencies {
   testImplementation(libs.junit)
   testImplementation(libs.truth)
   testImplementation(libs.apollo.mockserver)
-  testImplementation(libs.apollo.testingsupport.published)
+  testImplementation(project(":apollo-testing-support"))
 }
 
 apollo {

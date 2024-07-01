@@ -18,7 +18,7 @@ apolloTest(
 )
 
 dependencies {
-  implementation(libs.apollo.api)
+  implementation(libs.apollo.annotations)
   implementation(libs.kotlinx.coroutines)
   implementation(libs.atomicfu.library)
   implementation(libs.apollo.execution)
