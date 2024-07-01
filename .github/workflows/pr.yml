@@ -131,6 +131,10 @@ jobs:
       - name: Test project codegen
         run: ./gradlew -p tests :intellij-plugin-test-project:generateApolloSources
 
+      # Publish to the maven local repository, as the plugin's tests depend on it
+      - name: Publish to mavenLocal
+        run: ./gradlew publishToMavenLocal
+
       # Run tests
       - name: Run Tests
         run: ./gradlew :intellij-plugin:check

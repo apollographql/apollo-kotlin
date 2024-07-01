@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin
 
+import com.apollographql.ijplugin.util.apollo4
 import com.apollographql.ijplugin.util.logw
 import com.intellij.application.options.CodeStyle
 import com.intellij.codeInsight.daemon.impl.HighlightInfo
@@ -25,12 +26,15 @@ import java.io.File
 
 @TestDataPath("\$CONTENT_ROOT/../../../tests/intellij-plugin-test-project")
 abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
-  // TODO Replace with com.apollographql.apollo when it is published
+  companion object {
+    const val snapshotVersion = "4.0.0-beta.8-SNAPSHOT"
+  }
+
   open val mavenLibraries: List<String> = listOf(
-      "com.apollographql.apollo3:apollo-annotations-jvm:4.0.0-alpha.1",
-      "com.apollographql.apollo3:apollo-api-jvm:4.0.0-alpha.1",
-      "com.apollographql.apollo3:apollo-mpp-utils-jvm:4.0.0-alpha.1",
-      "com.apollographql.apollo3:apollo-runtime-jvm:4.0.0-alpha.1",
+      "$apollo4:apollo-annotations-jvm:$snapshotVersion",
+      "$apollo4:apollo-api-jvm:$snapshotVersion",
+      "$apollo4:apollo-mpp-utils-jvm:$snapshotVersion",
+      "$apollo4:apollo-runtime-jvm:$snapshotVersion",
   )
 
   private val projectDescriptor = object : DefaultLightProjectDescriptor() {
