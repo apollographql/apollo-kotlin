@@ -10,7 +10,7 @@ import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
 import com.apollographql.apollo3.network.NetworkMonitor
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
-import com.apollographql.apollo3.testing.FooQuery
+import test.FooQuery
 import com.apollographql.apollo3.testing.mockServerTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

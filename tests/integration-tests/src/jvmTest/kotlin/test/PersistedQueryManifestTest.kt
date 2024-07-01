@@ -25,7 +25,7 @@ import kotlin.test.assertEquals
 class PersistedQueryManifestTest {
   @Test
   fun persistedQueryManifestTheModels() {
-    val manifest = pathToUtf8("integration-tests/build/generated/manifest/apollo/upload-kotlin/persistedQueryManifest.json")
+    @Suppress("DEPRECATION") val manifest = pathToUtf8("integration-tests/build/generated/manifest/apollo/upload-kotlin/persistedQueryManifest.json")
 
     val source = Json.parseToJsonElement(manifest).jsonObject.get("operations")!!.jsonArray.mapNotNull {
       val descriptor = it.jsonObject

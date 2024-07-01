@@ -25,7 +25,6 @@ import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
-import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.tooling.platformapi.internal.RegisterOperationsMutation
 import com.apollographql.apollo3.tooling.platformapi.internal.type.RegisteredClientIdentityInput
@@ -221,7 +220,7 @@ object RegisterOperations {
   }
 
   fun String.safelistingHash(): String {
-    return OperationIdGenerator.Sha256.apply(normalize(), "")
+    return Buffer().writeUtf8(normalize()).readByteString().sha256().hex()
   }
 
   @Deprecated("Use persisted queries and publishOperations instead. See https://www.apollographql.com/docs/graphos/operations/persisted-queries/")

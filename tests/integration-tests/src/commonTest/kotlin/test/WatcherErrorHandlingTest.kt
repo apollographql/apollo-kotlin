@@ -115,6 +115,7 @@ class WatcherErrorHandlingTest {
             channel.send(it)
           }
     }
+    @Suppress("DEPRECATION")
     assertEquals(channel.awaitElement().data?.hero?.name, "R2-D2")
 
     // Another newer call gets updated information with "Artoo"
@@ -124,6 +125,7 @@ class WatcherErrorHandlingTest {
     mockServer.enqueueError(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
+    @Suppress("DEPRECATION")
     assertIs<ApolloHttpException>(channel.awaitElement().exception)
     job.cancel()
   }
@@ -195,6 +197,7 @@ class WatcherErrorHandlingTest {
             channel.send(it)
           }
     }
+    @Suppress("DEPRECATION")
     assertEquals(channel.awaitElement().data?.hero?.name, "R2-D2")
 
     // Another newer call gets updated information with "Artoo"
@@ -204,6 +207,7 @@ class WatcherErrorHandlingTest {
     mockServer.enqueueError(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
+    @Suppress("DEPRECATION")
     assertIs<ApolloHttpException>(channel.awaitElement().exception)
 
     assertNull(throwable)

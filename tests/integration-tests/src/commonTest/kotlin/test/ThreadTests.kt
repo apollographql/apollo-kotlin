@@ -11,7 +11,7 @@ import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.testing.Platform
+import com.apollographql.apollo3.testing.*
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.currentThreadId
 import com.apollographql.apollo3.testing.enqueueTestResponse
@@ -21,6 +21,7 @@ import kotlin.reflect.KClass
 import kotlin.test.Test
 
 class ThreadTests {
+  @Suppress("DEPRECATION")
   class MyNormalizedCache(val mainThreadId: String) : NormalizedCache() {
     val delegate = MemoryCache()
 
@@ -90,10 +91,12 @@ class ThreadTests {
 
   @Test
   fun cacheIsNotReadFromTheMainThread() = runTest {
+    @Suppress("DEPRECATION")
     if (platform() == Platform.Js) {
       return@runTest
     }
 
+    @Suppress("DEPRECATION")
     val apolloClient = ApolloClient.Builder()
         .normalizedCache(MyMemoryCacheFactory(currentThreadId()))
         .networkTransport(QueueTestNetworkTransport())

@@ -15,14 +15,12 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.websocket.closeConnection
-import com.apollographql.apollo3.testing.FooSubscription
-import com.apollographql.apollo3.testing.FooSubscription.Companion.completeMessage
-import com.apollographql.apollo3.testing.FooSubscription.Companion.errorMessage
-import com.apollographql.apollo3.testing.FooSubscription.Companion.nextMessage
-import com.apollographql.apollo3.testing.Platform
+import test.FooSubscription
+import test.FooSubscription.Companion.completeMessage
+import test.FooSubscription.Companion.errorMessage
+import test.FooSubscription.Companion.nextMessage
 import com.apollographql.apollo3.testing.connectionAckMessage
 import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.platform
 import com.apollographql.mockserver.CloseFrame
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.TextMessage
@@ -224,8 +222,9 @@ class WebSocketNetworkTransportTest {
                 webSocketBody.enqueueMessage(CloseFrame(3666, "closed"))
 
                 awaitItem().exception.apply {
-                  when (platform()){
-                    Platform.Native -> {
+                  @Suppress("DEPRECATION")
+                  when (com.apollographql.apollo3.testing.platform()){
+                    com.apollographql.apollo3.testing.Platform.Native -> {
                       assertIs<DefaultApolloException>(this)
                       assertTrue(message?.contains("Error reading websocket") == true)
                     }
@@ -284,8 +283,9 @@ class WebSocketNetworkTransportTest {
           awaitItem()
           serverWriter.enqueueMessage(CloseFrame(1001, "flowThrowsIfNoReconnect"))
           awaitItem().exception.apply {
-            when (platform()){
-              Platform.Native -> {
+            @Suppress("DEPRECATION")
+            when (com.apollographql.apollo3.testing.platform()){
+              com.apollographql.apollo3.testing.Platform.Native -> {
                 assertIs<DefaultApolloException>(this)
                 assertTrue(message?.contains("Error reading websocket") == true)
               }

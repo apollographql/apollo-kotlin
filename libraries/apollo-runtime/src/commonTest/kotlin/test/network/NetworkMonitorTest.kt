@@ -13,7 +13,7 @@ import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.assertNoRequest
 import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.network.NetworkMonitor
-import com.apollographql.apollo3.testing.FooQuery
+import test.FooQuery
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

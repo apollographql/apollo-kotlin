@@ -5,7 +5,9 @@ import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerato
 import com.apollographql.apollo3.testing.pathToJsonReader
 import com.apollographql.apollo3.testing.pathToUtf8
 
+@Suppress("DEPRECATION")
 fun testFixtureToUtf8(name: String) = pathToUtf8("models-fixtures/json/$name")
+@Suppress("DEPRECATION")
 fun testFixtureToJsonReader(name: String) = pathToJsonReader("models-fixtures/json/$name")
 
 /**

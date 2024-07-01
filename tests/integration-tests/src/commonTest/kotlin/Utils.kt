@@ -12,8 +12,11 @@ import com.apollographql.apollo3.testing.pathToJsonReader
 import com.apollographql.apollo3.testing.pathToUtf8
 import kotlin.test.assertEquals
 
+@Suppress("DEPRECATION")
 fun checkTestFixture(actualText: String, name: String) = checkFile(actualText, "integration-tests/testFixtures/$name")
+@Suppress("DEPRECATION")
 fun testFixtureToUtf8(name: String) = pathToUtf8("integration-tests/testFixtures/$name")
+@Suppress("DEPRECATION")
 fun testFixtureToJsonReader(name: String) = pathToJsonReader("integration-tests/testFixtures/$name")
 
 /**

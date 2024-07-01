@@ -2,6 +2,7 @@ package hooks
 
 import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo3.compiler.Transform
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.java.JavaOutput
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
@@ -36,12 +37,12 @@ class TestPlugin : ApolloCompilerPlugin {
                                       .filterNot { fieldSpec -> fieldSpec.hasModifier(Modifier.TRANSIENT) }
                                       .flatMap { fieldSpec ->
                                         listOf(
-                                            MethodSpec.methodBuilder("get${fieldSpec.name.removePrefix("__").capitalize()}")
+                                            MethodSpec.methodBuilder("get${fieldSpec.name.removePrefix("__").capitalizeFirstLetter()}")
                                                 .addModifiers(Modifier.PUBLIC)
                                                 .returns(fieldSpec.type)
                                                 .addStatement("return this.\$L", fieldSpec.name)
                                                 .build(),
-                                            MethodSpec.methodBuilder("set${fieldSpec.name.removePrefix("__").capitalize()}")
+                                            MethodSpec.methodBuilder("set${fieldSpec.name.removePrefix("__").capitalizeFirstLetter()}")
                                                 .addModifiers(Modifier.PUBLIC)
                                                 .addParameter(fieldSpec.type, fieldSpec.name)
                                                 .addStatement("this.\$L = \$L", fieldSpec.name, fieldSpec.name)

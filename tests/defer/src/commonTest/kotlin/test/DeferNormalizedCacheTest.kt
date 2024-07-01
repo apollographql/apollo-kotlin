@@ -18,9 +18,7 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.network.NetworkTransport
-import com.apollographql.apollo3.testing.Platform
 import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.platform
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.assertNoRequest
 import com.apollographql.mockserver.awaitRequest
@@ -464,7 +462,8 @@ class DeferNormalizedCacheTest {
 
   @Test
   fun intermediatePayloadsAreCached() = runTest(before = { setUp() }, after = { tearDown() }) {
-    if (platform() == Platform.Js) {
+    @Suppress("DEPRECATION")
+    if (com.apollographql.apollo3.testing.platform() == com.apollographql.apollo3.testing.Platform.Js) {
       // TODO For now chunked is not supported on JS - remove this check when it is
       return@runTest
     }

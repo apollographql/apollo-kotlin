@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo3.android
 
 import androidx.test.espresso.IdlingResource

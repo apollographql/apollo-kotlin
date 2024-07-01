@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo3.mockserver.test
 
 import com.apollographql.apollo3.api.http.HttpMethod

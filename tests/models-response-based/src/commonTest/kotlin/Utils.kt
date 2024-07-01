@@ -6,8 +6,11 @@ import com.apollographql.apollo3.testing.checkFile
 import com.apollographql.apollo3.testing.pathToJsonReader
 import com.apollographql.apollo3.testing.pathToUtf8
 
+@Suppress("DEPRECATION")
 fun checkTestFixture(actualText: String, name: String) = checkFile(actualText, "models-fixtures/json/$name")
+@Suppress("DEPRECATION")
 fun testFixtureToUtf8(name: String) = pathToUtf8("models-fixtures/json/$name")
+@Suppress("DEPRECATION")
 fun testFixtureToJsonReader(name: String) = pathToJsonReader("models-fixtures/json/$name")
 
 /**
