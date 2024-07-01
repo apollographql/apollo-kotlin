@@ -47,7 +47,7 @@ val releaseBranchName = "release-$versionToRelease"
 runCommand("git", "checkout", "-b", releaseBranchName)
 setCurrentVersion(versionToRelease)
 setVersionInDocs(versionToRelease, nextSnapshot)
-setVersionInIntelliJPlugin(versionToRelease)
+setVersionInIntelliJPlugin(versionToRelease, nextSnapshot)
 runCommand("git", "commit", "-a", "-m", "release $versionToRelease")
 runCommand("git", "push", "origin", releaseBranchName)
 runCommand("gh", "pr", "create", "--base", startBranch, "--fill")
@@ -208,27 +208,11 @@ fun setVersionInDocs(version: String, nextSnapshot: String) {
   }
 }
 
-fun setVersionInIntelliJPlugin(version: String) {
+fun setVersionInIntelliJPlugin(version: String, nextSnapshot: String) {
   File("intellij-plugin/src/main/kotlin/com/apollographql/ijplugin/refactoring/migration/v3tov4/ApolloV3ToV4MigrationProcessor.kt").let { file ->
     file.writeText(file.readText().replace(Regex("""apollo4LatestVersion = "(.+)"""")) {
       """apollo4LatestVersion = "$version""""
     })
-  }
-  File("intellij-plugin/src/test/testData/inspection/Apollo4Available.gradle.kts").let { file ->
-    file.writeText(file.readText()
-        .replace(Regex("""id\("com\.apollographql\.apollo3"\) version "4(.+)""")) {
-          """id("com.apollographql.apollo") version "$version""""
-        }
-        .replace(Regex("""id\("com\.apollographql\.apollo3"\)\.version\("4(.+)""")) {
-          """id("com.apollographql.apollo").version("$version")"""
-        }
-        .replace(Regex("""implementation\("com\.apollographql\.apollo3", "apollo-runtime", "4(.+)""")) {
-          """implementation("com.apollographql.apollo", "apollo-runtime", "$version")"""
-        }
-        .replace(Regex("""implementation\("com\.apollographql\.apollo3:apollo-runtime:4(.+)""")) {
-          """implementation("com.apollographql.apollo:apollo-runtime:$version")"""
-        }
-    )
   }
   File("intellij-plugin/src/test/testData/migration/v3-to-v4/updateGradleDependenciesInLibsVersionsToml_after.versions.toml").let { file ->
     file.writeText(file.readText()
@@ -252,6 +236,11 @@ fun setVersionInIntelliJPlugin(version: String) {
           """// TODO: Update version to $version"""
         }
     )
+  }
+  File("intellij-plugin/src/test/kotlin/com/apollographql/ijplugin/ApolloTestCase.kt").let { file ->
+    file.writeText(file.readText().replace(Regex("""snapshotVersion = "(.+)"""")) {
+      """snapshotVersion = "$nextSnapshot""""
+    })
   }
 }
 

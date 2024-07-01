@@ -2,7 +2,7 @@ package com.apollographql.ijplugin.refactoring.migration.v3tov4.item
 
 import com.apollographql.ijplugin.refactoring.findClassReferences
 import com.apollographql.ijplugin.refactoring.findOrCreateClass
-import com.apollographql.ijplugin.refactoring.migration.apollo3
+import com.apollographql.ijplugin.util.apollo3
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
 import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsageInfo

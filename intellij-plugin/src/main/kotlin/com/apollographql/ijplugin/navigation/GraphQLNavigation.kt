@@ -1,5 +1,7 @@
 package com.apollographql.ijplugin.navigation
 
+import com.apollographql.ijplugin.util.apollo3
+import com.apollographql.ijplugin.util.apollo4
 import com.apollographql.ijplugin.util.asKtClass
 import com.apollographql.ijplugin.util.capitalizeFirstLetter
 import com.apollographql.ijplugin.util.containingKtFile
@@ -41,14 +43,24 @@ import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
 
 private val APOLLO_OPERATION_TYPES = setOf(
-    FqName("com.apollographql.apollo.api.Query"),
-    FqName("com.apollographql.apollo.api.Mutation"),
-    FqName("com.apollographql.apollo.api.Subscription"),
+    FqName("$apollo3.api.Query"),
+    FqName("$apollo3.api.Mutation"),
+    FqName("$apollo3.api.Subscription"),
+
+    FqName("$apollo4.api.Query"),
+    FqName("$apollo4.api.Mutation"),
+    FqName("$apollo4.api.Subscription"),
 )
 
-private val APOLLO_FRAGMENT_TYPE = FqName("com.apollographql.apollo.api.Fragment.Data")
+private val APOLLO_FRAGMENT_TYPE = setOf(
+    FqName("$apollo3.api.Fragment.Data"),
+    FqName("$apollo4.api.Fragment.Data"),
+)
 
-private val APOLLO_ENUM_TYPE = FqName("com.apollographql.apollo.api.EnumType")
+private val APOLLO_ENUM_TYPE = setOf(
+    FqName("$apollo3.api.EnumType"),
+    FqName("$apollo4.api.EnumType"),
+)
 
 fun KtNameReferenceExpression.isApolloOperationOrFragmentReference(): Boolean {
   return resolveKtName()?.asKtClass()?.isApolloOperationOrFragment() == true
@@ -75,7 +87,7 @@ fun KtClass.isApolloOperation(): Boolean {
 fun KtClass.isApolloFragment(): Boolean {
   return superTypeListEntries.any {
     val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.kotlinFqName
-    superType == APOLLO_FRAGMENT_TYPE
+    superType in APOLLO_FRAGMENT_TYPE
   } ||
       // Fallback for fragments in responseBased codegen: they are interfaces generated in a .fragment package.
       // This can lead to false positives, but consequences are not dire.
@@ -85,7 +97,7 @@ fun KtClass.isApolloFragment(): Boolean {
 fun KtClass.isApolloOperationOrFragment(): Boolean {
   return superTypeListEntries.any {
     val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.kotlinFqName
-    superType in APOLLO_OPERATION_TYPES || superType == APOLLO_FRAGMENT_TYPE
+    superType in APOLLO_OPERATION_TYPES || superType in APOLLO_FRAGMENT_TYPE
   } ||
       // Fallback for fragments in responseBased codegen: they are interfaces generated in a .fragment package.
       // This can lead to false positives, but consequences are not dire.
@@ -102,7 +114,7 @@ fun KtClass.isApolloEnumClass() = isEnum() &&
     isEnum() && companionObjects.any { companion ->
   companion.declarations.filterIsInstance<KtProperty>().any { property ->
     property.name == "type" &&
-        property.type()?.fqName == APOLLO_ENUM_TYPE
+        property.type()?.fqName in APOLLO_ENUM_TYPE
   }
 }
 

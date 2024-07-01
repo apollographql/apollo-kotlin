@@ -2,7 +2,6 @@ package com.apollographql.ijplugin.refactoring.migration.v3tov4
 
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.refactoring.migration.ApolloMigrationRefactoringProcessor
-import com.apollographql.ijplugin.refactoring.migration.apollo3
 import com.apollographql.ijplugin.refactoring.migration.item.ConstructorInsteadOfBuilder
 import com.apollographql.ijplugin.refactoring.migration.item.RemoveMethodCall
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateClassName
@@ -24,6 +23,7 @@ import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateFieldN
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateMultiModuleConfiguration
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateThrowApolloCompositeException
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateWebSocketReconnectWhen
+import com.apollographql.ijplugin.util.apollo3
 import com.intellij.openapi.project.Project
 
 /**

@@ -4,6 +4,7 @@ import com.apollographql.ijplugin.refactoring.findClassReferences
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
 import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsageInfo
+import com.apollographql.ijplugin.util.apollo3
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMigration
 import com.intellij.psi.search.GlobalSearchScope
@@ -51,5 +52,5 @@ object UpdateSqlNormalizedCacheFactory : MigrationItem() {
     (usage.element as KtCallExpression).valueArgumentList?.removeArgument(0)
   }
 
-  override fun importsToAdd() = setOf("com.apollographql.apollo.cache.normalized.normalizedCache")
+  override fun importsToAdd() = setOf("$apollo3.cache.normalized.normalizedCache")
 }

@@ -5,6 +5,8 @@ import com.apollographql.ijplugin.navigation.isApolloInputClassReference
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
+import com.apollographql.ijplugin.util.apollo3
+import com.apollographql.ijplugin.util.apollo4
 import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.originalClassName
 import com.apollographql.ijplugin.util.registerProblem
@@ -105,8 +107,8 @@ object ChangeToBuilderQuickFix : LocalQuickFix {
     val argumentExpression = getArgumentExpression() ?: return "?"
     val dotQualifiedExpression = argumentExpression.cast<KtDotQualifiedExpression>()
     val receiverClassName = dotQualifiedExpression?.receiverExpression?.mainReference?.resolve()?.kotlinFqName?.asString()
-    val isOptional = receiverClassName == "com.apollographql.apollo.api.Optional"
-    val isOptionalCompanion = receiverClassName == "com.apollographql.apollo.api.Optional.Companion"
+    val isOptional = receiverClassName == "$apollo3.api.Optional" || receiverClassName == "$apollo4.api.Optional"
+    val isOptionalCompanion = receiverClassName == "$apollo3.api.Optional.Companion" || receiverClassName == "$apollo4.api.Optional.Companion"
     val selectorCallExpression = dotQualifiedExpression?.selectorExpression.cast<KtCallExpression>()
     val selectorCallExpressionText = selectorCallExpression?.calleeExpression?.text
     val nameReferenceExpressionText = dotQualifiedExpression?.selectorExpression.cast<KtNameReferenceExpression>()?.text

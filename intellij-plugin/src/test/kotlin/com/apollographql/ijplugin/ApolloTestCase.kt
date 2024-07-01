@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin
 
+import com.apollographql.ijplugin.util.apollo4
 import com.apollographql.ijplugin.util.logw
 import com.intellij.application.options.CodeStyle
 import com.intellij.codeInsight.daemon.impl.HighlightInfo
@@ -14,6 +15,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiElement
 import com.intellij.testFramework.LightProjectDescriptor
+import com.intellij.testFramework.PsiTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.DefaultLightProjectDescriptor
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
@@ -25,17 +27,27 @@ import java.io.File
 
 @TestDataPath("\$CONTENT_ROOT/../../../tests/intellij-plugin-test-project")
 abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
-  open val mavenLibraries: List<String> = listOf(
-      "com.apollographql.apollo:apollo-annotations-jvm:4.0.0-alpha.1",
-      "com.apollographql.apollo:apollo-api-jvm:4.0.0-alpha.1",
-      "com.apollographql.apollo:apollo-mpp-utils-jvm:4.0.0-alpha.1",
-      "com.apollographql.apollo:apollo-runtime-jvm:4.0.0-alpha.1",
-  )
+  companion object {
+    const val snapshotVersion = "4.0.0-beta.8-SNAPSHOT"
+  }
+
+  open val mavenLibraries: List<String> = listOf("apollo-annotations", "apollo-api", "apollo-runtime", "org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
 
   private val projectDescriptor = object : DefaultLightProjectDescriptor() {
     override fun configureModule(module: Module, model: ModifiableRootModel, contentEntry: ContentEntry) {
       for (library in mavenLibraries) {
-        addFromMaven(model, library, true, DependencyScope.COMPILE)
+        if (library.contains(":")) {
+          addFromMaven(model, library, true, DependencyScope.COMPILE)
+        } else {
+          // XXX: tunnel that in an environment variable if possible
+          val jarPath = "../libraries/$library/build/libs/$library-jvm-$snapshotVersion.jar"
+
+          PsiTestUtil.addProjectLibrary(
+              model,
+              "com.apollographql.apollo3:$library:$snapshotVersion",
+              listOf(File(".").resolve(jarPath).absolutePath)
+          )
+        }
       }
     }
   }

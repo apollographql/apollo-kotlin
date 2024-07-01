@@ -1,6 +1,6 @@
 package com.example
 
-import com.apollographql.apollo.api.EnumType
+import com.apollographql.apollo3.api.EnumType
 
 public enum class myEnum(
     public val rawValue: String,
