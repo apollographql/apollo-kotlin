@@ -23,12 +23,6 @@ class GradleVersionTests {
 
   @Test
   fun `minGradleVersion is working and does not show warnings`() {
-
-    if (System.getenv("APOLLO_RELOCATE_JAR") == "false") {
-      // Fails with java.lang.NoClassDefFoundError: kotlin/enums/EnumEntriesKt without relocation
-      return
-    }
-
     withTestProject("gradle-min-version") { dir ->
       dir.setApolloPluginVersion()
       val result = TestUtils.executeGradleWithVersion(dir, MIN_GRADLE_VERSION, "generateApolloSources")
