@@ -18,7 +18,7 @@ interface ApolloKotlinServiceListener {
 /**
  * Represents an Apollo Kotlin service as configured in the Apollo Gradle plugin configuration.
  *
- * These are built from the [com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel] and are used to configure the GraphQL plugin,
+ * These are built from the [com.apollographql.apollo.gradle.api.ApolloGradleToolingModel] and are used to configure the GraphQL plugin,
  * and are cached into the project settings.
  *
  * @see com.apollographql.ijplugin.gradle.GradleToolingModelService
