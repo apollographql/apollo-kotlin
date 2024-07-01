@@ -1,0 +1,70 @@
+---
+title: Evolution policy
+---
+
+
+To paraphrase the Kotlin design team ([source](https://kotlinlang.org/docs/kotlin-evolution.html)):
+
+“_API design is cast in stone, but this stone is reasonably soft, and with some effort we can reshape it later.”_
+
+Historically, Apollo Kotlin released major versions every 2 to 3 years. These versions usually contained substantial changes requiring a dedicated migration.
+
+Starting with Apollo Kotlin 4, we aim at smaller, more iterative changes, allowing to reshape that softly when required.
+
+This document highlights the evolution policy for Apollo Kotlin 4 and other projects in the [Apollo Kotlin galaxy](../advanced/galaxy).
+
+## Semantic versioning (Semver)
+
+The Apollo Kotlin projects follow [semantic versioning](https://semver.org/):
+
+* `0.x.y` versions are pre-release
+    * No stability guarantees are made
+* `4.0.0-alpha.x` versions are alphas
+    * Alphas are functional versions but have no API guarantees.
+    * We encourage using alphas for early adopters that want the latest features and are ok tracking the API changes.
+* `4.0.0-beta.x` versions are betas
+    * Betas have documentation and a full test suite.
+    * We encourage using betas in production. The API might still change but we will do our best to minimize the impact of the change.
+* `4.0.0-rc.x` versions are release candidates
+    * The API is frozen and if no issue is found, a stable version is made from it.
+* `4.x.y` versions are stable releases
+    * Stable releases are supported for 2 years for bug fixes and security patches.
+
+We interpret minor version bumps liberally. They are used to hint at new functionality or substantial changes but we are not strict about it. A small new API may be introduced in a patch release. Conversely, a big internal rework might be signaled with a minor release.
+
+Reporting issues is welcome on any version.
+
+## Breaking changes
+
+### Binary breaking changes
+
+Binary breaking changes only happen for major versions.
+
+### Source breaking changes
+
+Source breaking changes may happen for any version. This is because [true 100% source compatibility is often unreachable](https://wiki.eclipse.org/Evolving_Java-based_APIs_3#A_Word_about_Source_Code_Incompatibilities). Also, source breaking changes are easier to mitigate because they can be fixed by the consumer directly. Already compiled transitive libraries are not impacted by source breaking changes.
+
+That being said, we'll do our best to avoid them as much as possible. In particular, parameter name changes and deprecations with `Error` level only happen for major versions.
+
+We’re trying to update to newer Kotlin versions after a few weeks. This is typically a compatible change for JVM-consumers on Kotlin version n-1 because Kotlin JVM [has best effort n+1 forward compatibility](https://kotlinlang.org/docs/kotlin-evolution.html#evolving-the-binary-format). This can be a source breaking for non-JVM consumers. In those cases, you'll need to update your build in those few weeks or keep using older versions of Apollo Kotlin.
+
+### Behavior changes
+
+Bugfixes happen in any version (patch, minor, major).
+
+Other changes are dealt with on a case by case basis. When possible, we’ll have them trigger a source breaking change to signal the change.
+
+Whether something is a bugfix or another kind of change [is left to interpretation,](https://xkcd.com/1172/) and we’ll try our best to make reasonable choices there.
+
+## `@ApolloExperimental`
+
+Symbols marked with `@ApolloExperimental` are not part of the public API and are therefore subject to change at any time.
+
+## `@Deprecated`
+
+Deprecated symbols are removed when:
+
+* A major version is released
+* AND the symbol has been deprecated for at least 6 months.
+
+Ideally (but we can’t guarantee it), we’ll try to provide a one year update window (6 months as warning, 6 months as error).
