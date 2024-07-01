@@ -4,6 +4,7 @@ import com.apollographql.ijplugin.refactoring.findMethodReferences
 import com.apollographql.ijplugin.refactoring.migration.item.DeletesElements
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
+import com.apollographql.ijplugin.util.apollo3
 import com.apollographql.ijplugin.util.resolve
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -144,5 +145,5 @@ object UpdateHttpCache : MigrationItem(), DeletesElements {
     }
   }
 
-  override fun importsToAdd() = setOf("com.apollographql.apollo3.cache.http.httpCache")
+  override fun importsToAdd() = setOf("$apollo3.cache.http.httpCache")
 }

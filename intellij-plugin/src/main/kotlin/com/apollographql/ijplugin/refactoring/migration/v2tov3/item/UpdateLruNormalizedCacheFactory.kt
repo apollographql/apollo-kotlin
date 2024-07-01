@@ -3,6 +3,7 @@ package com.apollographql.ijplugin.refactoring.migration.v2tov3.item
 import com.apollographql.ijplugin.refactoring.findClassReferences
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
+import com.apollographql.ijplugin.util.apollo3
 import com.apollographql.ijplugin.util.cast
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -85,7 +86,7 @@ object UpdateLruNormalizedCacheFactory : MigrationItem() {
     val psiFactory = KtPsiFactory(project)
     when (usage) {
       is ReplaceImportUsageInfo -> {
-        element.replace(psiFactory.createImportDirective(ImportPath.fromString("com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory")))
+        element.replace(psiFactory.createImportDirective(ImportPath.fromString("$apollo3.cache.normalized.api.MemoryCacheFactory")))
       }
 
       is ReplaceExpressionUsageInfo -> {
@@ -94,5 +95,5 @@ object UpdateLruNormalizedCacheFactory : MigrationItem() {
     }
   }
 
-  override fun importsToAdd() = setOf("com.apollographql.apollo3.cache.normalized.normalizedCache")
+  override fun importsToAdd() = setOf("$apollo3.cache.normalized.normalizedCache")
 }
