@@ -57,6 +57,12 @@ intellij {
   // }
 }
 
+val apolloDependencies = configurations.create("apolloDependencies").apply {
+  listOf(":apollo-annotations", ":apollo-api", ":apollo-runtime").forEach {
+    dependencies.add(project.dependencies.project(it, "jvmApiElements"))
+  }
+}
+
 tasks {
   withType<KotlinCompile> {
     kotlinOptions {
@@ -144,6 +150,7 @@ tasks {
       events.add(TestLogEvent.FAILED)
       showStandardStreams = true
     }
+    inputs.files(apolloDependencies)
   }
 }
 
