@@ -44,6 +44,11 @@ abstract class GeneratePluginVersion : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
+    outputDir.asFile.get().apply {
+      deleteRecursively()
+      mkdirs()
+    }
+
     val versionFile = File(outputDir.asFile.get(), "com/apollographql/apollo/compiler/Version.kt")
     versionFile.parentFile.mkdirs()
     versionFile.writeText("""// Generated file. Do not edit!

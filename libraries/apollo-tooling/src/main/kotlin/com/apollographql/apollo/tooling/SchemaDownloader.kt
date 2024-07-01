@@ -1,8 +1,8 @@
 package com.apollographql.apollo.tooling
 
-import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo.annotations.ApolloExperimental
-import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.introspection.IntrospectionSchema
 import com.apollographql.apollo.ast.introspection.toGQLDocument
@@ -13,7 +13,7 @@ import com.apollographql.apollo.ast.toFullSchemaGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.ast.toSDL
 import com.apollographql.apollo.ast.toUtf8
-import com.apollographql.apollo.network.okHttpClient
+import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo.tooling.SchemaHelper.reworkFullTypeFragment
 import com.apollographql.apollo.tooling.SchemaHelper.reworkInputValueFragment
 import com.apollographql.apollo.tooling.SchemaHelper.reworkIntrospectionQuery
