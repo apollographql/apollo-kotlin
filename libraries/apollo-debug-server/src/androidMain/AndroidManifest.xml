@@ -7,7 +7,7 @@
         tools:node="merge">
       <!-- This entry makes ApolloDebugServerInitializer discoverable. -->
       <meta-data
-          android:name="com.apollographql.apollo3.debugserver.internal.initializer.ApolloDebugServerInitializer"
+          android:name="com.apollographql.apollo.debugserver.internal.initializer.ApolloDebugServerInitializer"
           android:value="androidx.startup" />
     </provider>
   </application>

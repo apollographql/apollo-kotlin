@@ -7,7 +7,7 @@
         android:exported="false"
         tools:node="merge">
       <!-- This entry makes ApolloInitializer discoverable. -->
-      <meta-data android:name="com.apollographql.apollo3.cache.normalized.sql.ApolloInitializer"
+      <meta-data android:name="com.apollographql.apollo.cache.normalized.sql.ApolloInitializer"
                  android:value="androidx.startup" />
     </provider>
   </application>
