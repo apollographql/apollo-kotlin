@@ -1,7 +1,9 @@
 package com.apollographql.apollo3.adapter
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import platform.Foundation.NSDecimalNumber
 
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) : Number() {
 
   actual constructor(strVal: String) : this(NSDecimalNumber(strVal))

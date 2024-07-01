@@ -11,7 +11,6 @@ kotlin {
       dependencies {
         implementation(libs.apollo.runtime)
         implementation(libs.apollo.normalizedcache)
-        implementation(libs.apollo.adapters)
       }
     }
 

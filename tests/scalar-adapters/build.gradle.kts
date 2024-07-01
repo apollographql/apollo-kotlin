@@ -7,7 +7,6 @@ apolloTest()
 
 dependencies {
   implementation(libs.apollo.runtime)
-  implementation(libs.apollo.adapters)
   testImplementation(libs.apollo.testingsupport)
   testImplementation(libs.apollo.mockserver)
   testImplementation(libs.kotlin.test)
@@ -27,11 +26,6 @@ apollo {
     // compile time
     mapScalar("Int", "custom.scalars.MyInt", "custom.scalars.MyIntAdapter()")
     mapScalar("String", "custom.scalars.MyString", "custom.scalars.MyStringAdapter")
-    // decimal
-    mapScalar(
-        "Decimal",
-        "com.apollographql.apollo3.adapter.BigDecimal",
-        "com.apollographql.apollo3.adapter.BigDecimalAdapter"
-    )
+    mapScalarToKotlinString("Decimal")
   }
 }

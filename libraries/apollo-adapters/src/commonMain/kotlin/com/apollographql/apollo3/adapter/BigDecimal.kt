@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo3.adapter
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
@@ -9,6 +12,8 @@ import com.apollographql.apollo3.api.json.JsonWriter
 /**
  * An [Adapter] that converts to/from [BigDecimal]
  */
+@Deprecated("BigDecimalAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object BigDecimalAdapter : Adapter<BigDecimal> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): BigDecimal {
     return BigDecimal(reader.nextString()!!)
@@ -27,6 +32,8 @@ object BigDecimalAdapter : Adapter<BigDecimal> {
  * BigDecimal cannot subclass `Number` in JS, as it will cause runtime trap in any compiled Kotlin/JS product in the module initialization
  * script.
  */
+@Deprecated("BigDecimal has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 expect class BigDecimal {
   constructor(strVal: String)
   constructor(doubleVal: Double)

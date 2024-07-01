@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 import com.apollographql.apollo3.adapter.DateAdapter
 import com.apollographql.apollo3.adapter.JavaInstantAdapter
 import com.apollographql.apollo3.adapter.JavaLocalDateAdapter

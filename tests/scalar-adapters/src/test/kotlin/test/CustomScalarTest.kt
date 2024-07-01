@@ -6,7 +6,9 @@ import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.writeObject
+import com.apollographql.apollo3.api.toJsonString
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo3.testing.internal.runTest
@@ -15,9 +17,11 @@ import custom.scalars.AddressQuery
 import custom.scalars.BuiltInAdaptersQuery
 import custom.scalars.CompileTimeAdaptersQuery
 import custom.scalars.DecimalQuery
+import okio.Buffer
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class CustomScalarTest {
   /**
@@ -112,6 +116,9 @@ class CustomScalarTest {
         .execute()
         .dataOrThrow()
 
+    /*
+     * Decimal is mapped to a String to get the same `toString` representation, else Double
+     */
     assertEquals("1000000000000000000000000000000000000000000", data.decimal?.toString())
   }
 
@@ -158,5 +165,26 @@ class CustomScalarTest {
         .dataOrThrow()
 
     assertEquals(Address("Downing Street", 10), data.address)
+  }
+
+  @Test
+  fun forgettingToAddARuntimeAdapterForAScalarRegisteredInThePluginFails() {
+    val dataString = """
+      {
+        "address": {
+          "street": "Downing Street",
+          "number": 10
+        }
+      }
+    """.trimIndent()
+
+
+    try {
+      val query = AddressQuery()
+      query.adapter().fromJson(Buffer().writeUtf8(dataString).jsonReader(), CustomScalarAdapters.Empty)
+      error("expected IllegalStateException")
+    } catch (e: IllegalStateException) {
+      assertTrue(e.message!!.contains("Can't map GraphQL type: `Address`"))
+    }
   }
 }

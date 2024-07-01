@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.adapter
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
@@ -22,6 +23,8 @@ import java.time.format.DateTimeFormatter
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
+@Deprecated("JavaInstantAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object JavaInstantAdapter : Adapter<Instant> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Instant {
     // Instant.parse chokes on offset (kotlinx.datetime.Instant doesn't)
@@ -41,6 +44,8 @@ object JavaInstantAdapter : Adapter<Instant> {
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
+@Deprecated("JavaLocalDateAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object JavaLocalDateAdapter : Adapter<LocalDate> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalDate {
     return LocalDate.parse(reader.nextString()!!)
@@ -59,6 +64,8 @@ object JavaLocalDateAdapter : Adapter<LocalDate> {
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
+@Deprecated("JavaLocalDateTimeAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object JavaLocalDateTimeAdapter : Adapter<LocalDateTime> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalDateTime {
     return LocalDateTime.parse(reader.nextString()!!)
@@ -77,6 +84,8 @@ object JavaLocalDateTimeAdapter : Adapter<LocalDateTime> {
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
+@Deprecated("JavaOffsetDateTimeAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object JavaOffsetDateTimeAdapter : Adapter<OffsetDateTime> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): OffsetDateTime {
     return OffsetDateTime.parse(reader.nextString()!!)
@@ -95,6 +104,8 @@ object JavaOffsetDateTimeAdapter : Adapter<OffsetDateTime> {
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
+@Deprecated("JavaLocalTimeAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object JavaLocalTimeAdapter : Adapter<LocalTime> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalTime {
     return LocalTime.parse(reader.nextString())

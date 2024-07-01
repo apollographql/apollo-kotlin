@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.adapter
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+
 @JsModule("big.js")
 @JsNonModule
 internal external fun jsBig(raw: dynamic): Big
@@ -17,6 +19,7 @@ internal external class Big {
   fun round(dp: Int, rm: Int): Big
 }
 
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 actual class BigDecimal {
   internal val raw: Big
 

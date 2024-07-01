@@ -13,14 +13,12 @@ kotlin {
       dependencies {
         implementation(libs.apollo.api)
         implementation(libs.apollo.normalizedcache)
-        implementation(libs.apollo.adapters)
         implementation(libs.apollo.runtime)
       }
     }
 
     findByName("commonTest")?.apply {
       dependencies {
-        implementation(libs.apollo.adapters)
         implementation(libs.apollo.testingsupport)
         implementation(libs.apollo.mockserver)
         implementation(libs.kotlinx.coroutines)
@@ -49,7 +47,11 @@ fun configureApollo(generateKotlinModels: Boolean) {
             when (it.name) {
               "httpcache" -> {
                 operationManifestFormat.set(MANIFEST_OPERATION_OUTPUT)
-                mapScalar("Date", "kotlinx.datetime.LocalDate")
+                if (generateKotlinModels) {
+                  mapScalarToKotlinString("Date")
+                } else {
+                  mapScalarToJavaString("Date")
+                }
               }
 
               "upload" -> {
@@ -59,12 +61,13 @@ fun configureApollo(generateKotlinModels: Boolean) {
 
               "normalizer" -> {
                 generateFragmentImplementations.set(true)
-                mapScalar("Date", "kotlinx.datetime.LocalDate")
                 if (generateKotlinModels) {
+                  mapScalarToKotlinString("Date")
+                  mapScalarToKotlinString("Instant")
                   sealedClassesForEnumsMatching.set(listOf("Episode"))
-                  mapScalar("Instant", "kotlinx.datetime.Instant", "com.apollographql.apollo3.adapter.KotlinxInstantAdapter")
                 } else {
-                  mapScalar("Instant", "kotlinx.datetime.Instant", "com.apollographql.apollo3.adapter.KotlinxInstantAdapter.INSTANCE")
+                  mapScalarToJavaString("Date")
+                  mapScalarToJavaString("Instant")
                 }
               }
 
