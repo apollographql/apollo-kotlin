@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.engine.tests
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
@@ -34,6 +35,7 @@ private fun maySkipCloseFrame(): Boolean {
   return platform() == Platform.Native
 }
 
+@ApolloInternal
 suspend fun textFrames(webSocketEngine: () -> WebSocketEngine) {
   val webSocketServer = MockServer()
 
@@ -61,6 +63,7 @@ suspend fun textFrames(webSocketEngine: () -> WebSocketEngine) {
   webSocketServer.close()
 }
 
+@ApolloInternal
 suspend fun binaryFrames(webSocketEngine: () -> WebSocketEngine) {
   if (platform() == Platform.Js) return
 
@@ -90,6 +93,7 @@ suspend fun binaryFrames(webSocketEngine: () -> WebSocketEngine) {
   webSocketServer.close()
 }
 
+@ApolloInternal
 suspend fun serverCloseNicely(webSocketEngine: () -> WebSocketEngine, checkCloseCode: Boolean) {
   if (platform() == Platform.Js) return // It's not clear how termination works on JS
 
@@ -117,6 +121,7 @@ suspend fun serverCloseNicely(webSocketEngine: () -> WebSocketEngine, checkClose
   webSocketServer.close()
 }
 
+@ApolloInternal
 suspend fun serverCloseAbruptly(webSocketEngine: () -> WebSocketEngine) {
   if (platform() == Platform.Js) return // It's not clear how termination works on JS
   if (platform() == Platform.Native) return // https://youtrack.jetbrains.com/issue/KTOR-6406
@@ -135,6 +140,7 @@ suspend fun serverCloseAbruptly(webSocketEngine: () -> WebSocketEngine) {
   connection.close()
 }
 
+@ApolloInternal
 suspend fun headers(webSocketEngine: () -> WebSocketEngine) {
   val webSocketServer = MockServer()
 
