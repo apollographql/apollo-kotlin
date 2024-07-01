@@ -36,6 +36,12 @@ fun Project.getApolloVersion(): ApolloVersion {
             false
           }
 
+          // TODO Needed in tests until 4.0 with groupId com.apollographql.apollo is published
+          mavenCoordinates.version.startsWith("4.") -> {
+            foundVersion = ApolloVersion.V4
+            false
+          }
+
           else -> true
         }
       }

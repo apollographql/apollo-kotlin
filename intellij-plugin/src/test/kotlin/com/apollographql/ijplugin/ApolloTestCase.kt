@@ -25,6 +25,7 @@ import java.io.File
 
 @TestDataPath("\$CONTENT_ROOT/../../../tests/intellij-plugin-test-project")
 abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
+  // TODO Replace with com.apollographql.apollo when it is published
   open val mavenLibraries: List<String> = listOf(
       "com.apollographql.apollo3:apollo-annotations-jvm:4.0.0-alpha.1",
       "com.apollographql.apollo3:apollo-api-jvm:4.0.0-alpha.1",
