@@ -1,6 +1,6 @@
 package com.apollographql.ijplugin.normalizedcache.provider
 
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.debug.GetNormalizedCacheQuery
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.Field
