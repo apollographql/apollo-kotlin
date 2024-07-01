@@ -2,31 +2,6 @@ public abstract interface annotation class com/apollographql/apollo3/annotations
 	public abstract fun adapter ()Ljava/lang/Class;
 }
 
-public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloDeprecatedSince : java/lang/annotation/Annotation {
-	public abstract fun version ()Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-}
-
-public final class com/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version : java/lang/Enum {
-	public static final field v3_0_0 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static final field v3_0_1 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static final field v3_1_1 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static final field v3_2_1 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static final field v3_2_2 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static final field v3_2_3 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static final field v3_3_1 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static final field v3_3_2 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static final field v3_3_3 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static final field v3_4_1 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static final field v3_5_1 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static final field v3_6_3 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static final field v3_7_2 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static final field v3_7_5 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static final field v4_0_0 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-	public static fun values ()[Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
-}
-
 public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloExperimental : java/lang/annotation/Annotation {
 }
 

@@ -10,8 +10,10 @@ package com.apollographql.apollo3.annotations
     AnnotationTarget.PROPERTY_GETTER,
     AnnotationTarget.TYPEALIAS)
 @Retention(AnnotationRetention.SOURCE)
+@ApolloInternal
 @MustBeDocumented
 annotation class ApolloDeprecatedSince(val version: Version) {
+  @ApolloInternal
   @Suppress("EnumEntryName")
   enum class Version {
     v3_0_0,
