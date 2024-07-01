@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.network.websocket.internal
+package com.apollographql.apollo.network.websocket.internal
 
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.network.websocket.CLOSE_GOING_AWAY
-import com.apollographql.apollo3.network.websocket.WebSocketEngine
-import com.apollographql.apollo3.network.websocket.WsProtocol
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.network.websocket.CLOSE_GOING_AWAY
+import com.apollographql.apollo.network.websocket.WebSocketEngine
+import com.apollographql.apollo.network.websocket.WsProtocol
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 import kotlinx.coroutines.CoroutineScope

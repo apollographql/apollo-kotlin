@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.ast.GQLResult
-import com.apollographql.apollo3.ast.Issue
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.SourceAwareException
-import com.apollographql.apollo3.ast.toGQLDocument
-import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
+import com.apollographql.apollo.ast.GQLResult
+import com.apollographql.apollo.ast.Issue
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.SourceAwareException
+import com.apollographql.apollo.ast.toGQLDocument
+import com.apollographql.apollo.ast.validateAsSchemaAndAddApolloDefinition
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
 import java.io.File

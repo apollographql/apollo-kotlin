@@ -144,5 +144,5 @@ object UpdateHttpCache : MigrationItem(), DeletesElements {
     }
   }
 
-  override fun importsToAdd() = setOf("com.apollographql.apollo3.cache.http.httpCache")
+  override fun importsToAdd() = setOf("com.apollographql.apollo.cache.http.httpCache")
 }

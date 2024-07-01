@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.network.websocket.internal
+package com.apollographql.apollo.network.websocket.internal
 
-import com.apollographql.apollo3.api.json.ApolloJsonElement
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo.api.json.ApolloJsonElement
+import com.apollographql.apollo.exception.ApolloException
 
 internal interface OperationListener {
   /**

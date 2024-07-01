@@ -1,10 +1,10 @@
 @file:JvmMultifileClass
 @file:JvmName("ApolloParser")
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo.ast
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.ast.introspection.toGQLDocument
-import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.ast.introspection.toGQLDocument
+import com.apollographql.apollo.ast.introspection.toIntrospectionSchema
 import okio.buffer
 import okio.source
 import java.io.File

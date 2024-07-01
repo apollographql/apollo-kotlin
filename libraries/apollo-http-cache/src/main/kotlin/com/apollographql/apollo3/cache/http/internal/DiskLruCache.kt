@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo3.cache.http.internal
+package com.apollographql.apollo.cache.http.internal
 
-import com.apollographql.apollo3.cache.http.internal.DiskLruCache.Editor
+import com.apollographql.apollo.cache.http.internal.DiskLruCache.Editor
 import okio.BufferedSink
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath

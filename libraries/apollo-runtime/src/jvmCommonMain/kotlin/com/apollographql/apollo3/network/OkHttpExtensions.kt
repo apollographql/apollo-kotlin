@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.network
+package com.apollographql.apollo.network
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.network.http.DefaultHttpEngine
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.network.ws.DefaultWebSocketEngine
-import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.network.http.DefaultHttpEngine
+import com.apollographql.apollo.network.http.HttpNetworkTransport
+import com.apollographql.apollo.network.ws.DefaultWebSocketEngine
+import com.apollographql.apollo.network.ws.WebSocketNetworkTransport
 import okhttp3.Call
 import okhttp3.Headers
 import okhttp3.OkHttpClient

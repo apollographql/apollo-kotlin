@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.gradle.test
+package com.apollographql.apollo.gradle.test
 
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
@@ -34,7 +34,7 @@ class OperationIdGeneratorTests {
     withSimpleProject(apolloConfiguration = apolloConfiguration) {dir ->
       val gradleFile = File(dir, "build.gradle").readText()
 
-      File(dir, "build.gradle").writeText("import com.apollographql.apollo3.compiler.OperationIdGenerator\n$gradleFile")
+      File(dir, "build.gradle").writeText("import com.apollographql.apollo.compiler.OperationIdGenerator\n$gradleFile")
 
       var result = TestUtils.executeTask("generateApolloSources", dir)
 
@@ -67,7 +67,7 @@ class OperationIdGeneratorTests {
     withSimpleProject(apolloConfiguration = apolloConfiguration) {dir ->
       val gradleFile = File(dir, "build.gradle").readText()
 
-      File(dir, "build.gradle").writeText("import com.apollographql.apollo3.compiler.OperationIdGenerator\n$gradleFile")
+      File(dir, "build.gradle").writeText("import com.apollographql.apollo.compiler.OperationIdGenerator\n$gradleFile")
 
       val result = TestUtils.executeTask("generateApolloSources", dir)
 
@@ -83,7 +83,7 @@ class OperationIdGeneratorTests {
     withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
       val gradleFile = File(dir, "build.gradle").readText()
 
-      File(dir, "build.gradle").writeText("import com.apollographql.apollo3.compiler.OperationIdGenerator\n$gradleFile")
+      File(dir, "build.gradle").writeText("import com.apollographql.apollo.compiler.OperationIdGenerator\n$gradleFile")
 
       var result = TestUtils.executeTask("generateApolloSources", dir)
 
@@ -113,7 +113,7 @@ class OperationIdGeneratorTests {
 
       val gradleFile = File(dir, "build.gradle").readText()
 
-      File(dir, "build.gradle").writeText("import com.apollographql.apollo3.compiler.OperationIdGenerator\n$gradleFile")
+      File(dir, "build.gradle").writeText("import com.apollographql.apollo.compiler.OperationIdGenerator\n$gradleFile")
 
       var result = TestUtils.executeTask("generateServiceApolloSources", dir, "--build-cache", "-i")
 

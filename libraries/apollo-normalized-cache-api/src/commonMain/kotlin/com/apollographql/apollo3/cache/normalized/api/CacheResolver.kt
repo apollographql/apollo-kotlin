@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.cache.normalized.api
+package com.apollographql.apollo.cache.normalized.api
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.exception.CacheMissException
-import com.apollographql.apollo3.mpp.currentTimeMillis
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.Executable
+import com.apollographql.apollo.exception.CacheMissException
+import com.apollographql.apollo.mpp.currentTimeMillis
 import kotlin.jvm.JvmSuppressWildcards
 
 /**

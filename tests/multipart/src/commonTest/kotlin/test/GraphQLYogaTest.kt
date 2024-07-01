@@ -1,9 +1,9 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo.ApolloClient
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import kotlinx.coroutines.CoroutineScope
 import multipart.MyQuery
 import okio.use

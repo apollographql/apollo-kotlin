@@ -1,27 +1,27 @@
 package test
 
 import IdCacheKeyGenerator
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.api.toApolloResponse
-import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.cache.normalized.api.normalize
-import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
-import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
-import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
-import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDForParentOnlyQuery
-import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
-import com.apollographql.apollo3.integration.normalizer.HeroAppearsInQuery
-import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.integration.normalizer.HeroParentTypeDependentFieldQuery
-import com.apollographql.apollo3.integration.normalizer.HeroTypeDependentAliasedFieldQuery
-import com.apollographql.apollo3.integration.normalizer.SameHeroTwiceQuery
-import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.parseJsonResponse
+import com.apollographql.apollo.api.toApolloResponse
+import com.apollographql.apollo.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.cache.normalized.api.NormalizedCache
+import com.apollographql.apollo.cache.normalized.api.Record
+import com.apollographql.apollo.cache.normalized.api.normalize
+import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDForParentOnlyQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
+import com.apollographql.apollo.integration.normalizer.HeroAppearsInQuery
+import com.apollographql.apollo.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo.integration.normalizer.HeroParentTypeDependentFieldQuery
+import com.apollographql.apollo.integration.normalizer.HeroTypeDependentAliasedFieldQuery
+import com.apollographql.apollo.integration.normalizer.SameHeroTwiceQuery
+import com.apollographql.apollo.integration.normalizer.type.Episode
 import testFixtureToJsonReader
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -30,7 +30,7 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 /**
- * Tests for the normalization without an instance of [com.apollographql.apollo3.ApolloClient]
+ * Tests for the normalization without an instance of [com.apollographql.apollo.ApolloClient]
  */
 class NormalizerTest {
   private lateinit var normalizedCache: NormalizedCache

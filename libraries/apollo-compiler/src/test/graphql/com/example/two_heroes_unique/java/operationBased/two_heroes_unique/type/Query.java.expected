@@ -5,8 +5,8 @@
 //
 package com.example.two_heroes_unique.type;
 
-import com.apollographql.apollo3.api.CompiledArgumentDefinition;
-import com.apollographql.apollo3.api.ObjectType;
+import com.apollographql.apollo.api.CompiledArgumentDefinition;
+import com.apollographql.apollo.api.ObjectType;
 
 /**
  * The query type, represents all of the entry points into our object graph

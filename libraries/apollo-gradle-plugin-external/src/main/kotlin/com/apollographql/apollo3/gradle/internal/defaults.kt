@@ -1,17 +1,17 @@
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.compiler.MANIFEST_NONE
-import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
-import com.apollographql.apollo3.compiler.MANIFEST_PERSISTED_QUERY
-import com.apollographql.apollo3.compiler.OperationIdGenerator
-import com.apollographql.apollo3.compiler.OperationOutputGenerator
-import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
-import com.apollographql.apollo3.compiler.TargetLanguage
-import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo3.compiler.operationoutput.OperationId
-import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
+import com.apollographql.apollo.compiler.MANIFEST_NONE
+import com.apollographql.apollo.compiler.MANIFEST_OPERATION_OUTPUT
+import com.apollographql.apollo.compiler.MANIFEST_PERSISTED_QUERY
+import com.apollographql.apollo.compiler.OperationIdGenerator
+import com.apollographql.apollo.compiler.OperationOutputGenerator
+import com.apollographql.apollo.compiler.ApolloCompilerPlugin
+import com.apollographql.apollo.compiler.TargetLanguage
+import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo.compiler.operationoutput.OperationId
+import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Provider
 import java.io.File

@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.runtime.java;
+package com.apollographql.apollo.runtime.java;
 
 public interface ApolloDisposable {
   void dispose();

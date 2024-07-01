@@ -1,10 +1,10 @@
 package test
 
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.normalize
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo.cache.normalized.api.normalize
+import com.apollographql.apollo.testing.internal.runTest
 import okio.Buffer
 import org.junit.Test
 import schema.changes.GetFieldQuery

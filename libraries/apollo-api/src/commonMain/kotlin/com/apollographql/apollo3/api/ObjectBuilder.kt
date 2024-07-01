@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.api.json.MapJsonReader
-import com.apollographql.apollo3.api.json.MapJsonWriter
+import com.apollographql.apollo.api.json.MapJsonReader
+import com.apollographql.apollo.api.json.MapJsonWriter
 
 @Suppress("PropertyName")
 abstract class ObjectBuilder<out T : Map<String, Any?>>(override val customScalarAdapters: CustomScalarAdapters) : BuilderScope {

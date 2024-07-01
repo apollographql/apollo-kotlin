@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.compiler.ir
+package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.possibleTypes
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.possibleTypes
 
 internal data class Bucket(val typeSet: TypeSet, val possibleTypes: PossibleTypes)
 

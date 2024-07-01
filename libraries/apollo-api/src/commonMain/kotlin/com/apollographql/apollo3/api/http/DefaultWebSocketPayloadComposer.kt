@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.api.http
+package com.apollographql.apollo.api.http
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.Operation
 
 @ApolloExperimental
 class DefaultWebSocketPayloadComposer: WebSocketPayloadComposer {

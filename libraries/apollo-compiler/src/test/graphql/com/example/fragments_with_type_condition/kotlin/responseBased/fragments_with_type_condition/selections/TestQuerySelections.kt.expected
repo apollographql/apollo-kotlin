@@ -5,10 +5,10 @@
 //
 package com.example.fragments_with_type_condition.selections
 
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.notNull
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledFragment
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.notNull
 import com.example.fragments_with_type_condition.fragment.selections.DroidDetailsSelections
 import com.example.fragments_with_type_condition.fragment.selections.HumanDetailsSelections
 import com.example.fragments_with_type_condition.type.Character

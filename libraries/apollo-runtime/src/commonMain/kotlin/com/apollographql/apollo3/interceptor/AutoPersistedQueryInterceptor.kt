@@ -1,13 +1,13 @@
-package com.apollographql.apollo3.interceptor
+package com.apollographql.apollo.interceptor
 
-import com.apollographql.apollo3.AutoPersistedQueryInfo
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Error
-import com.apollographql.apollo3.api.Mutation
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.exception.AutoPersistedQueriesNotSupported
+import com.apollographql.apollo.AutoPersistedQueryInfo
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Error
+import com.apollographql.apollo.api.Mutation
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.exception.AutoPersistedQueriesNotSupported
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow

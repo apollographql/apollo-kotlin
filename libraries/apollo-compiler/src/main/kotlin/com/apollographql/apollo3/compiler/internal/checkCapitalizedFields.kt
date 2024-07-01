@@ -1,16 +1,16 @@
 @file:JvmName("-checkCapitalizedFields")
 
-package com.apollographql.apollo3.compiler.internal
+package com.apollographql.apollo.compiler.internal
 
-import com.apollographql.apollo3.ast.GQLDefinition
-import com.apollographql.apollo3.ast.GQLField
-import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.GQLFragmentSpread
-import com.apollographql.apollo3.ast.GQLInlineFragment
-import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.GQLSelection
-import com.apollographql.apollo3.ast.Issue
-import com.apollographql.apollo3.ast.UpperCaseField
+import com.apollographql.apollo.ast.GQLDefinition
+import com.apollographql.apollo.ast.GQLField
+import com.apollographql.apollo.ast.GQLFragmentDefinition
+import com.apollographql.apollo.ast.GQLFragmentSpread
+import com.apollographql.apollo.ast.GQLInlineFragment
+import com.apollographql.apollo.ast.GQLOperationDefinition
+import com.apollographql.apollo.ast.GQLSelection
+import com.apollographql.apollo.ast.Issue
+import com.apollographql.apollo.ast.UpperCaseField
 
 internal fun checkCapitalizedFields(definitions: List<GQLDefinition>, checkFragmentsOnly: Boolean): List<Issue> {
   val scope = object : ValidationScope {

@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.network.http
+package com.apollographql.apollo.network.http
 
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.khronos.webgl.Int8Array

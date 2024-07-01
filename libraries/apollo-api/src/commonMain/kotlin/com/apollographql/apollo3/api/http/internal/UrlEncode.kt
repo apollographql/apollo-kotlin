@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.api.http.internal
+package com.apollographql.apollo.api.http.internal
 
 import okio.Buffer
 

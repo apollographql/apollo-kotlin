@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.network.http
+package com.apollographql.apollo.network.http
 
-import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.api.http.HttpHeader
 
 class HttpInfo @Deprecated("HttpInfo is only to be constructed internally. Declare your own class if needed") constructor(
     val startMillis: Long,

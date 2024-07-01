@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.gradle.api.Service
+import com.apollographql.apollo.gradle.api.Service
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.Directory

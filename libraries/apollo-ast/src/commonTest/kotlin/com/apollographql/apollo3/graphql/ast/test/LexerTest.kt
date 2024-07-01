@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.graphql.ast.test
+package com.apollographql.apollo.graphql.ast.test
 
-import com.apollographql.apollo3.ast.internal.Lexer
-import com.apollographql.apollo3.ast.internal.LexerException
-import com.apollographql.apollo3.ast.internal.Token
+import com.apollographql.apollo.ast.internal.Lexer
+import com.apollographql.apollo.ast.internal.LexerException
+import com.apollographql.apollo.ast.internal.Token
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs

@@ -5,7 +5,7 @@
 //
 package com.example.fragment_spread_with_nested_fields.fragment
 
-import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo.api.Fragment
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List

@@ -3,7 +3,7 @@ plugins {
   `java-gradle-plugin`
 }
 
-group = "com.apollographql.apollo3.benchmark"
+group = "com.apollographql.apollo.benchmark"
 
 dependencies {
   compileOnly(gradleApi())

@@ -5,7 +5,7 @@
 //
 package com.example.mutation_create_review_semantic_naming.type
 
-import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo.api.CustomScalarType
 
 /**
  * The `Boolean` scalar type represents `true` or `false`.

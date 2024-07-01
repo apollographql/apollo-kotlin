@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.annotations
+package com.apollographql.apollo.annotations
 
 import kotlin.reflect.AssociatedObjectKey
 import kotlin.reflect.ExperimentalAssociatedObjects

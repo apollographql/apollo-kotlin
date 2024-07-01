@@ -1,12 +1,12 @@
 /*
  * This file is auto generated from apollo-rx2-support by rxjava3.main.kts, do not edit manually.
  */
-package com.apollographql.apollo3.rx3
+package com.apollographql.apollo.rx3
 
-import com.apollographql.apollo3.ApolloCall
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Operation
 import io.reactivex.rxjava3.annotations.CheckReturnValue
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Scheduler

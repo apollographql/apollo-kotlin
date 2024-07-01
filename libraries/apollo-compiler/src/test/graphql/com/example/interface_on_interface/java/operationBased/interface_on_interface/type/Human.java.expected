@@ -5,7 +5,7 @@
 //
 package com.example.interface_on_interface.type;
 
-import com.apollographql.apollo3.api.ObjectType;
+import com.apollographql.apollo.api.ObjectType;
 import java.util.Arrays;
 
 public class Human {

@@ -1,7 +1,7 @@
 package test
 
-import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo.testing.internal.runTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 

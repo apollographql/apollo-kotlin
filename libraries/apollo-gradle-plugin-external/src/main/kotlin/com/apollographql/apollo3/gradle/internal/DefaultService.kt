@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.gradle.api.ApolloExtension
-import com.apollographql.apollo3.gradle.api.CompilerPlugin
-import com.apollographql.apollo3.gradle.api.Introspection
-import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
-import com.apollographql.apollo3.gradle.api.Registry
-import com.apollographql.apollo3.gradle.api.Service
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.gradle.api.ApolloExtension
+import com.apollographql.apollo.gradle.api.CompilerPlugin
+import com.apollographql.apollo.gradle.api.Introspection
+import com.apollographql.apollo.gradle.api.RegisterOperationsConfig
+import com.apollographql.apollo.gradle.api.Registry
+import com.apollographql.apollo.gradle.api.Service
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
@@ -172,23 +172,23 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     scalarAdapterMapping[graphQLName] = expression
   }
 
-  override fun mapScalarToKotlinString(graphQLName: String) = mapScalar(graphQLName, "kotlin.String", "com.apollographql.apollo3.api.StringAdapter")
-  override fun mapScalarToKotlinInt(graphQLName: String) = mapScalar(graphQLName, "kotlin.Int", "com.apollographql.apollo3.api.IntAdapter")
-  override fun mapScalarToKotlinDouble(graphQLName: String) = mapScalar(graphQLName, "kotlin.Double", "com.apollographql.apollo3.api.DoubleAdapter")
-  override fun mapScalarToKotlinFloat(graphQLName: String) = mapScalar(graphQLName, "kotlin.Float", "com.apollographql.apollo3.api.FloatAdapter")
-  override fun mapScalarToKotlinLong(graphQLName: String) = mapScalar(graphQLName, "kotlin.Long", "com.apollographql.apollo3.api.LongAdapter")
-  override fun mapScalarToKotlinBoolean(graphQLName: String) = mapScalar(graphQLName, "kotlin.Boolean", "com.apollographql.apollo3.api.BooleanAdapter")
-  override fun mapScalarToKotlinAny(graphQLName: String) = mapScalar(graphQLName, "kotlin.Any", "com.apollographql.apollo3.api.AnyAdapter")
+  override fun mapScalarToKotlinString(graphQLName: String) = mapScalar(graphQLName, "kotlin.String", "com.apollographql.apollo.api.StringAdapter")
+  override fun mapScalarToKotlinInt(graphQLName: String) = mapScalar(graphQLName, "kotlin.Int", "com.apollographql.apollo.api.IntAdapter")
+  override fun mapScalarToKotlinDouble(graphQLName: String) = mapScalar(graphQLName, "kotlin.Double", "com.apollographql.apollo.api.DoubleAdapter")
+  override fun mapScalarToKotlinFloat(graphQLName: String) = mapScalar(graphQLName, "kotlin.Float", "com.apollographql.apollo.api.FloatAdapter")
+  override fun mapScalarToKotlinLong(graphQLName: String) = mapScalar(graphQLName, "kotlin.Long", "com.apollographql.apollo.api.LongAdapter")
+  override fun mapScalarToKotlinBoolean(graphQLName: String) = mapScalar(graphQLName, "kotlin.Boolean", "com.apollographql.apollo.api.BooleanAdapter")
+  override fun mapScalarToKotlinAny(graphQLName: String) = mapScalar(graphQLName, "kotlin.Any", "com.apollographql.apollo.api.AnyAdapter")
 
-  override fun mapScalarToJavaString(graphQLName: String) = mapScalar(graphQLName, "java.lang.String", "com.apollographql.apollo3.api.Adapters.StringAdapter")
-  override fun mapScalarToJavaInteger(graphQLName: String) = mapScalar(graphQLName, "java.lang.Integer", "com.apollographql.apollo3.api.Adapters.IntAdapter")
-  override fun mapScalarToJavaDouble(graphQLName: String) = mapScalar(graphQLName, "java.lang.Double", "com.apollographql.apollo3.api.Adapters.DoubleAdapter")
-  override fun mapScalarToJavaFloat(graphQLName: String) = mapScalar(graphQLName, "java.lang.Float", "com.apollographql.apollo3.api.Adapters.FloatAdapter")
-  override fun mapScalarToJavaLong(graphQLName: String) = mapScalar(graphQLName, "java.lang.Long", "com.apollographql.apollo3.api.Adapters.LongAdapter")
-  override fun mapScalarToJavaBoolean(graphQLName: String) = mapScalar(graphQLName, "java.lang.Boolean", "com.apollographql.apollo3.api.Adapters.BooleanAdapter")
-  override fun mapScalarToJavaObject(graphQLName: String) = mapScalar(graphQLName, "java.lang.Object", "com.apollographql.apollo3.api.Adapters.AnyAdapter")
+  override fun mapScalarToJavaString(graphQLName: String) = mapScalar(graphQLName, "java.lang.String", "com.apollographql.apollo.api.Adapters.StringAdapter")
+  override fun mapScalarToJavaInteger(graphQLName: String) = mapScalar(graphQLName, "java.lang.Integer", "com.apollographql.apollo.api.Adapters.IntAdapter")
+  override fun mapScalarToJavaDouble(graphQLName: String) = mapScalar(graphQLName, "java.lang.Double", "com.apollographql.apollo.api.Adapters.DoubleAdapter")
+  override fun mapScalarToJavaFloat(graphQLName: String) = mapScalar(graphQLName, "java.lang.Float", "com.apollographql.apollo.api.Adapters.FloatAdapter")
+  override fun mapScalarToJavaLong(graphQLName: String) = mapScalar(graphQLName, "java.lang.Long", "com.apollographql.apollo.api.Adapters.LongAdapter")
+  override fun mapScalarToJavaBoolean(graphQLName: String) = mapScalar(graphQLName, "java.lang.Boolean", "com.apollographql.apollo.api.Adapters.BooleanAdapter")
+  override fun mapScalarToJavaObject(graphQLName: String) = mapScalar(graphQLName, "java.lang.Object", "com.apollographql.apollo.api.Adapters.AnyAdapter")
 
-  override fun mapScalarToUpload(graphQLName: String) = mapScalar(graphQLName, "com.apollographql.apollo3.api.Upload", "com.apollographql.apollo3.api.UploadAdapter")
+  override fun mapScalarToUpload(graphQLName: String) = mapScalar(graphQLName, "com.apollographql.apollo.api.Upload", "com.apollographql.apollo.api.UploadAdapter")
 
   override fun dependsOn(dependencyNotation: Any) {
     dependsOn(dependencyNotation, false)
@@ -203,7 +203,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
         else -> error("dependsOn(dependencyNotation, true) requires a Project or ProjectDependency")
       }
 
-      upstreamProject.plugins.withId("com.apollographql.apollo3") {
+      upstreamProject.plugins.withId("com.apollographql.apollo") {
         val apolloExtension = (upstreamProject.extensions.findByType(ApolloExtension::class.java) as? DefaultApolloExtension)
         check(apolloExtension != null) {
           "Cannot find 'apollo' extension in upstream project ${upstreamProject.name} (registered: ${upstreamProject.extensions})"

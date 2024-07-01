@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.debugserver
+package com.apollographql.apollo.debugserver
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.debugserver.internal.server.Server
-import com.apollographql.apollo3.debugserver.internal.server.createServer
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.debugserver.internal.server.Server
+import com.apollographql.apollo.debugserver.internal.server.createServer
 import java.util.concurrent.atomic.AtomicReference
 
 object ApolloDebugServer {

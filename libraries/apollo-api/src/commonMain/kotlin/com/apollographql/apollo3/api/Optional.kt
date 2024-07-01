@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.Optional.Absent
-import com.apollographql.apollo3.api.Optional.Present
-import com.apollographql.apollo3.exception.MissingValueException
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.Optional.Absent
+import com.apollographql.apollo.api.Optional.Present
+import com.apollographql.apollo.exception.MissingValueException
 import kotlin.jvm.JvmStatic
 
 /**

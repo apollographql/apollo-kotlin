@@ -1,12 +1,12 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo.integration.normalizer.HeroNameQuery
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

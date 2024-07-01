@@ -5,7 +5,7 @@
 //
 package com.example.path_vs_flat_accessors.type;
 
-import com.apollographql.apollo3.api.InterfaceType;
+import com.apollographql.apollo.api.InterfaceType;
 
 public class C {
   public static InterfaceType type = (new InterfaceType.Builder("C")).build();

@@ -1,7 +1,7 @@
 package com.example
 
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.network.http.HttpInfo
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.network.http.HttpInfo
 
 suspend fun main() {
   val response: ApolloResponse<out Any?>? = null

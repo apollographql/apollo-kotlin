@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.interceptor
+package com.apollographql.apollo.interceptor
 
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Mutation
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.network.NetworkTransport
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Mutation
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 
 internal class NetworkInterceptor(

@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.debugserver.internal.server
+package com.apollographql.apollo.debugserver.internal.server
 
-import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo.ApolloClient
 import java.util.concurrent.atomic.AtomicReference
 
 internal interface Server {

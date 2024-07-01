@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.buildJsonString
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.json.buildJsonString
 
 /**
  *

@@ -1,7 +1,7 @@
 package test
 
-import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.json.JsonNumber
+import com.apollographql.apollo.api.json.BufferedSinkJsonWriter
+import com.apollographql.apollo.api.json.JsonNumber
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals

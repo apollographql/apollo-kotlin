@@ -3,7 +3,7 @@ plugins {
 }
 
 apolloLibrary(
-  namespace = "com.apollographql.apollo3.runtime.java",
+  namespace = "com.apollographql.apollo.runtime.java",
 )
 
 dependencies {

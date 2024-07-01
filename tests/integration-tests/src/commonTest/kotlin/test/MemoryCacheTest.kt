@@ -1,9 +1,9 @@
 package test
 
-import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.MemoryCache
-import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo.cache.normalized.api.MemoryCache
+import com.apollographql.apollo.cache.normalized.api.Record
+import com.apollographql.apollo.testing.internal.runTest
 import kotlinx.coroutines.delay
 import kotlin.test.Test
 import kotlin.test.assertEquals

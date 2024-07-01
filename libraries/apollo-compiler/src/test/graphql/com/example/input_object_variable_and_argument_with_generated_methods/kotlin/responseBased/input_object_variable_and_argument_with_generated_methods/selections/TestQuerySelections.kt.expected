@@ -5,11 +5,11 @@
 //
 package com.example.input_object_variable_and_argument_with_generated_methods.selections
 
-import com.apollographql.apollo3.api.CompiledArgument
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledVariable
-import com.apollographql.apollo3.api.notNull
+import com.apollographql.apollo.api.CompiledArgument
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.CompiledVariable
+import com.apollographql.apollo.api.notNull
 import com.example.input_object_variable_and_argument_with_generated_methods.type.GraphQLFloat
 import com.example.input_object_variable_and_argument_with_generated_methods.type.GraphQLString
 import com.example.input_object_variable_and_argument_with_generated_methods.type.Human

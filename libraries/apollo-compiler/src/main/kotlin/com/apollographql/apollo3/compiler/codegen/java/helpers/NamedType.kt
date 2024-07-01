@@ -1,14 +1,14 @@
-package com.apollographql.apollo3.compiler.codegen.java.helpers
+package com.apollographql.apollo.compiler.codegen.java.helpers
 
-import com.apollographql.apollo3.compiler.JavaNullable
-import com.apollographql.apollo3.compiler.codegen.Identifier.value
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
-import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
-import com.apollographql.apollo3.compiler.ir.IrInputField
-import com.apollographql.apollo3.compiler.ir.IrType
-import com.apollographql.apollo3.compiler.ir.IrVariable
+import com.apollographql.apollo.compiler.JavaNullable
+import com.apollographql.apollo.compiler.codegen.Identifier.value
+import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
+import com.apollographql.apollo.compiler.codegen.java.JavaContext
+import com.apollographql.apollo.compiler.codegen.java.T
+import com.apollographql.apollo.compiler.codegen.java.javaPropertyName
+import com.apollographql.apollo.compiler.ir.IrInputField
+import com.apollographql.apollo.compiler.ir.IrType
+import com.apollographql.apollo.compiler.ir.IrVariable
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.ParameterSpec
 

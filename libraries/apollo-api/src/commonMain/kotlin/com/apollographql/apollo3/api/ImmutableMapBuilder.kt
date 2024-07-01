@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
 /**
  * A helper class to make it easier to build Maps from the java codegen

@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.cache.normalized.sql
+package com.apollographql.apollo.cache.normalized.sql
 
 import app.cash.sqldelight.db.SqlDriver
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.api.NormalizedCache
+import com.apollographql.apollo.cache.normalized.api.NormalizedCacheFactory
 
 /**
  * Creates a new [NormalizedCacheFactory] that uses a persistent cache based on Sqlite

@@ -5,7 +5,7 @@
 //
 package com.example.interface_on_interface.type;
 
-import com.apollographql.apollo3.api.InterfaceType;
+import com.apollographql.apollo.api.InterfaceType;
 import java.util.Arrays;
 
 public class Character {

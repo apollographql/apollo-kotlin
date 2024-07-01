@@ -6,7 +6,7 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo3.compiler"
+    namespace = "com.apollographql.apollo.compiler"
 )
 
 dependencies {
@@ -44,10 +44,10 @@ abstract class GeneratePluginVersion : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    val versionFile = File(outputDir.asFile.get(), "com/apollographql/apollo3/compiler/Version.kt")
+    val versionFile = File(outputDir.asFile.get(), "com/apollographql/apollo/compiler/Version.kt")
     versionFile.parentFile.mkdirs()
     versionFile.writeText("""// Generated file. Do not edit!
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 const val APOLLO_VERSION = "${version.get()}"
 """)
   }

@@ -5,7 +5,7 @@
 //
 package com.example.mutation_create_review.type;
 
-import com.apollographql.apollo3.api.UnionType;
+import com.apollographql.apollo.api.UnionType;
 
 public class SearchResult {
   public static UnionType type = new UnionType("SearchResult", Human.type, Droid.type, Starship.type);

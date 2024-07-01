@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.testing.internal
+package com.apollographql.apollo.testing.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo.annotations.ApolloInternal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

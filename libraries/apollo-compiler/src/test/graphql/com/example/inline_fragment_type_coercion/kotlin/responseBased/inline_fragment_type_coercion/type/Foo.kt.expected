@@ -5,7 +5,7 @@
 //
 package com.example.inline_fragment_type_coercion.type
 
-import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo.api.InterfaceType
 
 /**
  * For testing fragment type coercion

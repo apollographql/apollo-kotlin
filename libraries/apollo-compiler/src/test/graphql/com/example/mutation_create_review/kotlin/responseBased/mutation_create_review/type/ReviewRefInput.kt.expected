@@ -5,7 +5,7 @@
 //
 package com.example.mutation_create_review.type
 
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.api.Optional
 
 /**
  * Circle ref to review input

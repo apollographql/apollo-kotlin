@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.graphql.ast.test
+package com.apollographql.apollo.graphql.ast.test
 
-import com.apollographql.apollo3.ast.internal.dedentBlockStringLines
+import com.apollographql.apollo.ast.internal.dedentBlockStringLines
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

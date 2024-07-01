@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.internal
+package com.apollographql.apollo.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.DeferredFragmentIdentifier
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.json.readAny
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.api.DeferredFragmentIdentifier
+import com.apollographql.apollo.api.json.BufferedSourceJsonReader
+import com.apollographql.apollo.api.json.readAny
 import okio.BufferedSource
 
 private typealias JsonMap = Map<String, Any?>

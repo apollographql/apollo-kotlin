@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.benchmark.moshi
+package com.apollographql.apollo.benchmark.moshi
 
 import com.squareup.moshi.JsonClass
 

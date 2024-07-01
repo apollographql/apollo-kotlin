@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.buildJsonString
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.json.buildJsonString
 
 private fun Operation.Data.adapter(): Adapter<Operation.Data> {
   val name = this::class.java.name

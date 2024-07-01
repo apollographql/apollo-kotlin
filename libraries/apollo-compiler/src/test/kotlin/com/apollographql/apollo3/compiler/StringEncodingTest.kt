@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
-import com.apollographql.apollo3.ast.GQLStringValue
-import com.apollographql.apollo3.ast.encodeToGraphQLSingleQuoted
-import com.apollographql.apollo3.ast.toGQLDocument
-import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo.ast.GQLStringValue
+import com.apollographql.apollo.ast.encodeToGraphQLSingleQuoted
+import com.apollographql.apollo.ast.toGQLDocument
+import com.apollographql.apollo.ast.toSchema
 import com.google.common.truth.Truth
 import org.junit.Test
 import kotlin.test.assertEquals

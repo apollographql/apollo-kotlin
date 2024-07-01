@@ -1,7 +1,7 @@
-package com.apollographql.apollo3
+package com.apollographql.apollo
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ExecutionContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 

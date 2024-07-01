@@ -1,8 +1,8 @@
 package test
 
-import com.apollographql.apollo3.api.graphQLErrorOrNull
-import com.apollographql.apollo3.api.getOrNull
-import com.apollographql.apollo3.api.getOrThrow
+import com.apollographql.apollo.api.graphQLErrorOrNull
+import com.apollographql.apollo.api.getOrNull
+import com.apollographql.apollo.api.getOrThrow
 import result.PriceNullQuery
 import result.ProductIgnoreErrorsQuery
 import result.ProductNullQuery

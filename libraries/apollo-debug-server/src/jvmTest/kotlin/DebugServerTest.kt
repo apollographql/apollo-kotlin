@@ -1,17 +1,17 @@
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.http.HttpBody
-import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.api.json.writeObject
-import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.cache.normalized.normalizedCache
-import com.apollographql.apollo3.debugserver.ApolloDebugServer
-import com.apollographql.apollo3.network.http.DefaultHttpEngine
-import com.apollographql.apollo3.network.http.HttpEngine
-import com.apollographql.apollo3.network.http.post
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.http.HttpBody
+import com.apollographql.apollo.api.json.buildJsonString
+import com.apollographql.apollo.api.json.writeObject
+import com.apollographql.apollo.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.api.NormalizedCache
+import com.apollographql.apollo.cache.normalized.api.NormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.api.Record
+import com.apollographql.apollo.cache.normalized.normalizedCache
+import com.apollographql.apollo.debugserver.ApolloDebugServer
+import com.apollographql.apollo.network.http.DefaultHttpEngine
+import com.apollographql.apollo.network.http.HttpEngine
+import com.apollographql.apollo.network.http.post
 import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import okio.BufferedSink
@@ -85,7 +85,7 @@ class DebugServerTest {
       }
       execute(engine, GetNormalizedCache, mapOf(
           "apolloClientId" to "client",
-          "normalizedCacheId" to "client:com.apollographql.apollo3.cache.normalized.api.NormalizedCache"
+          "normalizedCacheId" to "client:com.apollographql.apollo.cache.normalized.api.NormalizedCache"
       )).apply {
         assertTrue(contains("\"field1\":\"value1\""))
         assertTrue(contains("\"field2\":\"ApolloCacheReference{value2}\""))

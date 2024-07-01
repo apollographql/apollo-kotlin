@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.engine.tests
+package com.apollographql.apollo.engine.tests
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
-import com.apollographql.apollo3.network.ws.WebSocketEngine
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.exception.ApolloWebSocketClosedException
+import com.apollographql.apollo.network.ws.WebSocketEngine
 import com.apollographql.mockserver.CloseFrame
 import com.apollographql.mockserver.DataMessage
 import com.apollographql.mockserver.MockServer

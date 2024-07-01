@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.tooling
+package com.apollographql.apollo.tooling
 
-import com.apollographql.apollo3.tooling.RegisterOperations.safelistingHash
+import com.apollographql.apollo.tooling.RegisterOperations.safelistingHash
 import com.google.common.truth.Truth
 import org.junit.Test
 

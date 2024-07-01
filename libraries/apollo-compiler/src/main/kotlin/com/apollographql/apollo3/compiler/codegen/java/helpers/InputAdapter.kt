@@ -1,21 +1,21 @@
 /*
  * Generates ResponseAdapters for input
  */
-package com.apollographql.apollo3.compiler.codegen.java.helpers
+package com.apollographql.apollo.compiler.codegen.java.helpers
 
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
-import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
-import com.apollographql.apollo3.compiler.codegen.Identifier.reader
-import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
-import com.apollographql.apollo3.compiler.codegen.Identifier.value
-import com.apollographql.apollo3.compiler.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
-import com.apollographql.apollo3.compiler.codegen.java.JavaSchemaContext
-import com.apollographql.apollo3.compiler.codegen.java.L
-import com.apollographql.apollo3.compiler.codegen.java.S
-import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.codegen.java.javaPropertyName
+import com.apollographql.apollo.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo.compiler.codegen.Identifier.fromJson
+import com.apollographql.apollo.compiler.codegen.Identifier.reader
+import com.apollographql.apollo.compiler.codegen.Identifier.toJson
+import com.apollographql.apollo.compiler.codegen.Identifier.value
+import com.apollographql.apollo.compiler.codegen.Identifier.writer
+import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
+import com.apollographql.apollo.compiler.codegen.java.JavaContext
+import com.apollographql.apollo.compiler.codegen.java.JavaSchemaContext
+import com.apollographql.apollo.compiler.codegen.java.L
+import com.apollographql.apollo.compiler.codegen.java.S
+import com.apollographql.apollo.compiler.codegen.java.T
+import com.apollographql.apollo.compiler.codegen.java.javaPropertyName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterizedTypeName

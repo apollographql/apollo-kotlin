@@ -1,8 +1,8 @@
 package test.network
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.json.readAny
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.json.readAny
 import com.apollographql.mockserver.TextMessage
 import com.apollographql.mockserver.WebsocketMockRequest
 import okio.Buffer

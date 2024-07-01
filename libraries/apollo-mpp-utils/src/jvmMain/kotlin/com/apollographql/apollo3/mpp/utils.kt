@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.mpp
+package com.apollographql.apollo.mpp
 
 actual fun currentTimeMillis(): Long {
   return System.currentTimeMillis()

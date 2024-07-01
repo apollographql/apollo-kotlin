@@ -5,13 +5,13 @@
 //
 package com.example.fragment_spread_with_include_directive.adapter
 
-import com.apollographql.apollo3.api.BooleanAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableAnyAdapter
-import com.apollographql.apollo3.api.NullableBooleanAdapter
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.present
+import com.apollographql.apollo.api.BooleanAdapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.NullableAnyAdapter
+import com.apollographql.apollo.api.NullableBooleanAdapter
+import com.apollographql.apollo.api.Optional
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.present
 import com.example.fragment_spread_with_include_directive.TestQuery
 import kotlin.Boolean
 import kotlin.Suppress

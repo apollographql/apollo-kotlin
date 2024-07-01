@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
-import com.apollographql.apollo3.compiler.ApolloCompilerPluginEnvironment
-import com.apollographql.apollo3.compiler.ApolloCompilerPluginProvider
-import com.apollographql.apollo3.compiler.internal.GradleCompilerPluginLogger
+import com.apollographql.apollo.compiler.ApolloCompilerPlugin
+import com.apollographql.apollo.compiler.ApolloCompilerPluginEnvironment
+import com.apollographql.apollo.compiler.ApolloCompilerPluginProvider
+import com.apollographql.apollo.compiler.internal.GradleCompilerPluginLogger
 import java.util.ServiceLoader
 
 internal fun apolloCompilerPlugin(
@@ -29,7 +29,7 @@ internal fun apolloCompilerPlugin(
   }
 
   if (pluginProviders.isEmpty() && warnIfNotFound) {
-    println("Apollo: a compiler plugin was added with `Service.plugin()` but could not be loaded by the ServiceLoader. Check your META-INF/services/com.apollographql.apollo3.compiler.ApolloCompilerPluginProvider file.")
+    println("Apollo: a compiler plugin was added with `Service.plugin()` but could not be loaded by the ServiceLoader. Check your META-INF/services/com.apollographql.apollo.compiler.ApolloCompilerPluginProvider file.")
   }
 
   val provider = pluginProviders.singleOrNull()

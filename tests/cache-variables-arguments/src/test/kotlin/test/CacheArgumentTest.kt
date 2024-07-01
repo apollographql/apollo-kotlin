@@ -6,10 +6,10 @@ import cache.include.VariableAbsentQuery
 import cache.include.VariableDefaultValueEmptyQuery
 import cache.include.VariableDefaultValueNullQuery
 import cache.include.VariableDefaultValueWithCQuery
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.normalize
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo.cache.normalized.api.normalize
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

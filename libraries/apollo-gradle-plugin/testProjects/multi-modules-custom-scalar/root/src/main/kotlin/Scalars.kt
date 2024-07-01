@@ -1,7 +1,7 @@
 package com.library
 
-import com.apollographql.apollo3.api.*
-import com.apollographql.apollo3.api.json.*
+import com.apollographql.apollo.api.*
+import com.apollographql.apollo.api.json.*
 
 class MyID(val id: String)
 

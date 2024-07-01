@@ -1,33 +1,33 @@
-package com.apollographql.apollo3.network.ws
+package com.apollographql.apollo.network.ws
 
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.toApolloResponse
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.exception.SubscriptionOperationException
-import com.apollographql.apollo3.internal.CloseableSingleThreadDispatcher
-import com.apollographql.apollo3.internal.DeferredJsonMerger
-import com.apollographql.apollo3.internal.isDeferred
-import com.apollographql.apollo3.internal.transformWhile
-import com.apollographql.apollo3.network.NetworkTransport
-import com.apollographql.apollo3.network.ws.internal.Command
-import com.apollographql.apollo3.network.ws.internal.ConnectionReEstablished
-import com.apollographql.apollo3.network.ws.internal.Dispose
-import com.apollographql.apollo3.network.ws.internal.Event
-import com.apollographql.apollo3.network.ws.internal.GeneralError
-import com.apollographql.apollo3.network.ws.internal.Message
-import com.apollographql.apollo3.network.ws.internal.NetworkError
-import com.apollographql.apollo3.network.ws.internal.OperationComplete
-import com.apollographql.apollo3.network.ws.internal.OperationError
-import com.apollographql.apollo3.network.ws.internal.OperationResponse
-import com.apollographql.apollo3.network.ws.internal.RestartConnection
-import com.apollographql.apollo3.network.ws.internal.StartOperation
-import com.apollographql.apollo3.network.ws.internal.StopOperation
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.toApolloResponse
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.exception.SubscriptionOperationException
+import com.apollographql.apollo.internal.CloseableSingleThreadDispatcher
+import com.apollographql.apollo.internal.DeferredJsonMerger
+import com.apollographql.apollo.internal.isDeferred
+import com.apollographql.apollo.internal.transformWhile
+import com.apollographql.apollo.network.NetworkTransport
+import com.apollographql.apollo.network.ws.internal.Command
+import com.apollographql.apollo.network.ws.internal.ConnectionReEstablished
+import com.apollographql.apollo.network.ws.internal.Dispose
+import com.apollographql.apollo.network.ws.internal.Event
+import com.apollographql.apollo.network.ws.internal.GeneralError
+import com.apollographql.apollo.network.ws.internal.Message
+import com.apollographql.apollo.network.ws.internal.NetworkError
+import com.apollographql.apollo.network.ws.internal.OperationComplete
+import com.apollographql.apollo.network.ws.internal.OperationError
+import com.apollographql.apollo.network.ws.internal.OperationResponse
+import com.apollographql.apollo.network.ws.internal.RestartConnection
+import com.apollographql.apollo.network.ws.internal.StartOperation
+import com.apollographql.apollo.network.ws.internal.StopOperation
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -454,5 +454,5 @@ private constructor(
  */
 fun NetworkTransport.closeConnection(reason: Throwable) {
   (this as? WebSocketNetworkTransport
-      ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo3.ws.WebSocketNetworkTransport")).closeConnection(reason)
+      ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo.ws.WebSocketNetworkTransport")).closeConnection(reason)
 }

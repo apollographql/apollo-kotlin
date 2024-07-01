@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.compiler.ir
+package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo.annotations.ApolloInternal
 import com.squareup.kotlinpoet.ClassName
 
 @ApolloInternal

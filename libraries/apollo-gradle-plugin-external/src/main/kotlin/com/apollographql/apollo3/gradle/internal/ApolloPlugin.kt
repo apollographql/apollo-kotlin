@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.compiler.APOLLO_VERSION
-import com.apollographql.apollo3.gradle.api.ApolloExtension
-import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
+import com.apollographql.apollo.compiler.APOLLO_VERSION
+import com.apollographql.apollo.gradle.api.ApolloExtension
+import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ExternalDependency
@@ -44,7 +44,7 @@ constructor(private val toolingModelRegistry: ToolingModelBuilderRegistry) : Plu
       configuration.withDependencies { dependencySet ->
         val pluginVersion = APOLLO_VERSION
         dependencySet.filterIsInstance<ExternalDependency>()
-            .filter { it.group == "com.apollographql.apollo3" && it.version.isNullOrEmpty() }
+            .filter { it.group == "com.apollographql.apollo" && it.version.isNullOrEmpty() }
             .forEach { it.version { constraint -> constraint.require(pluginVersion) } }
       }
     }

@@ -1,14 +1,14 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Upload
-import com.apollographql.apollo3.api.toUpload
-import com.apollographql.apollo3.integration.upload.SingleUploadTwiceMutation
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Upload
+import com.apollographql.apollo.api.toUpload
+import com.apollographql.apollo.integration.upload.SingleUploadTwiceMutation
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.network.okHttpClient
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.network.okHttpClient
+import com.apollographql.apollo.testing.internal.runTest
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File

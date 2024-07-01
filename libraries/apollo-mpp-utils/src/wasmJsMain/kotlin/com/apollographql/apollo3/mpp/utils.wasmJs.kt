@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.mpp
+package com.apollographql.apollo.mpp
 
 private fun currentTimeMillis2(): Double  = js("(new Date()).getTime()")
 actual fun currentTimeMillis(): Long {

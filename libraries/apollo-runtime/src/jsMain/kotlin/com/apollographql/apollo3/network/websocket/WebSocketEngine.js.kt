@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.network.websocket
+package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.exception.DefaultApolloException
-import com.apollographql.apollo3.internal.isNode
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.exception.DefaultApolloException
+import com.apollographql.apollo.internal.isNode
 import node.buffer.Buffer
 import org.khronos.webgl.Uint8Array
 import org.w3c.dom.WebSocket as PlatformWebSocket

@@ -5,10 +5,10 @@
 //
 package com.example.named_fragment_delegate.fragment.selections
 
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.list
-import com.apollographql.apollo3.api.notNull
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.list
+import com.apollographql.apollo.api.notNull
 import com.example.named_fragment_delegate.type.Character
 import com.example.named_fragment_delegate.type.GraphQLString
 import kotlin.collections.List

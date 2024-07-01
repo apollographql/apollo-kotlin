@@ -1,16 +1,16 @@
-package com.apollographql.apollo3
+package com.apollographql.apollo
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.MutableExecutionOptions
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.DefaultApolloException
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.api.MutableExecutionOptions
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.DefaultApolloException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 

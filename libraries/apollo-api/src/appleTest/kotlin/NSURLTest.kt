@@ -1,4 +1,4 @@
-import com.apollographql.apollo3.api.http.internal.urlEncode
+import com.apollographql.apollo.api.http.internal.urlEncode
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.UnsafeNumber
 import kotlinx.cinterop.useContents

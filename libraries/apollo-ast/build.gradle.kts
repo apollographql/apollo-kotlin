@@ -8,7 +8,7 @@ plugins {
 }
 
 apolloLibrary(
-  namespace = "com.apollographql.apollo3.ast"
+  namespace = "com.apollographql.apollo.ast"
 )
 
 kotlin {

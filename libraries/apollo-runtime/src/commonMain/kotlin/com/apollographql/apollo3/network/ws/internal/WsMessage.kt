@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.network.ws.internal
+package com.apollographql.apollo.network.ws.internal
 
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.Operation
 
 internal sealed interface Message
 internal sealed interface Command : Message

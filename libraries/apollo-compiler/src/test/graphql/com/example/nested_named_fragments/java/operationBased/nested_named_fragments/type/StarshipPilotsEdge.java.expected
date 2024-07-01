@@ -5,7 +5,7 @@
 //
 package com.example.nested_named_fragments.type;
 
-import com.apollographql.apollo3.api.ObjectType;
+import com.apollographql.apollo.api.ObjectType;
 
 /**
  * An edge in a connection.

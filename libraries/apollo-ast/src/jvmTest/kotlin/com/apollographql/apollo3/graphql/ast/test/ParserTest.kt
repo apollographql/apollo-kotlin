@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.graphql.ast.test
+package com.apollographql.apollo.graphql.ast.test
 
-import com.apollographql.apollo3.ast.Issue
-import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo.ast.Issue
+import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Test

@@ -1,4 +1,4 @@
-import com.apollographql.apollo3.api.http.internal.urlEncode
+import com.apollographql.apollo.api.http.internal.urlEncode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

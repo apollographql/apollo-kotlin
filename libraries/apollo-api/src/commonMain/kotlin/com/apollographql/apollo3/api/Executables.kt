@@ -1,12 +1,12 @@
 @file:JvmName("Executables")
 
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.MapJsonWriter
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.api.json.BufferedSinkJsonWriter
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.json.MapJsonWriter
 import okio.Buffer
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads

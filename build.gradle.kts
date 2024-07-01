@@ -131,11 +131,11 @@ configure<kotlinx.validation.ApiValidationExtension> {
            * Gradle plugin: tasks and other classes must be public in order for Gradle to instantiate and decorate them.
            * SQLDelight generated sources are not generated as 'internal'.
            */
-          "com.apollographql.apollo3.gradle.internal",
-          "com.apollographql.apollo3.cache.normalized.sql.internal",
-          "com.apollographql.apollo3.runtime.java.internal",
-          "com.apollographql.apollo3.runtime.java.interceptor.internal",
-          "com.apollographql.apollo3.runtime.java.network.http.internal",
+          "com.apollographql.apollo.gradle.internal",
+          "com.apollographql.apollo.cache.normalized.sql.internal",
+          "com.apollographql.apollo.runtime.java.internal",
+          "com.apollographql.apollo.runtime.java.interceptor.internal",
+          "com.apollographql.apollo.runtime.java.network.http.internal",
       )
   )
   ignoredProjects.addAll(
@@ -148,8 +148,8 @@ configure<kotlinx.validation.ApiValidationExtension> {
   )
   nonPublicMarkers.addAll(
       listOf(
-          "com.apollographql.apollo3.annotations.ApolloInternal",
-          "com.apollographql.apollo3.annotations.ApolloExperimental",
+          "com.apollographql.apollo.annotations.ApolloInternal",
+          "com.apollographql.apollo.annotations.ApolloExperimental",
       )
   )
 }

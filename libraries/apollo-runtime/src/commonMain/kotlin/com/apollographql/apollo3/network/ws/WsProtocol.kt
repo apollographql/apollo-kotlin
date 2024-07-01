@@ -1,13 +1,13 @@
-package com.apollographql.apollo3.network.ws
+package com.apollographql.apollo.network.ws
 
-import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.json.buildJsonByteString
-import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.api.json.writeAny
+import com.apollographql.apollo.api.AnyAdapter
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.json.BufferedSourceJsonReader
+import com.apollographql.apollo.api.json.buildJsonByteString
+import com.apollographql.apollo.api.json.buildJsonString
+import com.apollographql.apollo.api.json.writeAny
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import okio.Buffer

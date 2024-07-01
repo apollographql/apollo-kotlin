@@ -1,6 +1,6 @@
 package com.example
 
-import com.apollographql.apollo3.api.EnumValue
+import com.apollographql.apollo.api.EnumValue
 
 enum class UserInterfaceStyle(
   override val rawValue: String,

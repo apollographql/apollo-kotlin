@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.codegen
+package com.apollographql.apollo.compiler.codegen
 
 internal object Identifier {
   const val __h: String = "__h"

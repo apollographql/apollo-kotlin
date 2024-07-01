@@ -5,13 +5,13 @@
 //
 package com.example.nested_conditional_inline.selections;
 
-import com.apollographql.apollo3.api.CompiledArgument;
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledFragment;
-import com.apollographql.apollo3.api.CompiledListType;
-import com.apollographql.apollo3.api.CompiledNotNullType;
-import com.apollographql.apollo3.api.CompiledSelection;
-import com.apollographql.apollo3.api.CompiledVariable;
+import com.apollographql.apollo.api.CompiledArgument;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CompiledFragment;
+import com.apollographql.apollo.api.CompiledListType;
+import com.apollographql.apollo.api.CompiledNotNullType;
+import com.apollographql.apollo.api.CompiledSelection;
+import com.apollographql.apollo.api.CompiledVariable;
 import com.example.nested_conditional_inline.type.Character;
 import com.example.nested_conditional_inline.type.GraphQLFloat;
 import com.example.nested_conditional_inline.type.GraphQLString;

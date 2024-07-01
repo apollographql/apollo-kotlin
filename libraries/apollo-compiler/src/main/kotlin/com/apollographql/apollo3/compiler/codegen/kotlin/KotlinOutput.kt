@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin
+package com.apollographql.apollo.compiler.codegen.kotlin
 
-import com.apollographql.apollo3.compiler.CodegenMetadata
-import com.apollographql.apollo3.compiler.codegen.SourceFile
-import com.apollographql.apollo3.compiler.codegen.SourceOutput
+import com.apollographql.apollo.compiler.CodegenMetadata
+import com.apollographql.apollo.compiler.codegen.SourceFile
+import com.apollographql.apollo.compiler.codegen.SourceOutput
 import com.squareup.kotlinpoet.FileSpec
 import java.io.OutputStream
 

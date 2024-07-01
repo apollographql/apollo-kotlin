@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.cache.normalized.api.internal
+package com.apollographql.apollo.cache.normalized.api.internal
 
-import com.apollographql.apollo3.api.CompiledCondition
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledFragment
+import com.apollographql.apollo.api.CompiledCondition
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledFragment
 
 internal fun CompiledField.shouldSkip(variableValues: Map<String, Any?>): Boolean {
   return condition.shouldSkip(variableValues)

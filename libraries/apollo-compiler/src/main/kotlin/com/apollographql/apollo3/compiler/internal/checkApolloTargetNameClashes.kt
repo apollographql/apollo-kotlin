@@ -1,14 +1,14 @@
 @file:JvmName("-checkApolloDuplicateTargetNames")
 
-package com.apollographql.apollo3.compiler.internal
+package com.apollographql.apollo.compiler.internal
 
-import com.apollographql.apollo3.ast.GQLTypeDefinition
-import com.apollographql.apollo3.ast.Issue
-import com.apollographql.apollo3.ast.ReservedEnumValueName
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.findTargetName
-import com.apollographql.apollo3.ast.pretty
-import com.apollographql.apollo3.compiler.uniqueName
+import com.apollographql.apollo.ast.GQLTypeDefinition
+import com.apollographql.apollo.ast.Issue
+import com.apollographql.apollo.ast.ReservedEnumValueName
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.findTargetName
+import com.apollographql.apollo.ast.pretty
+import com.apollographql.apollo.compiler.uniqueName
 
 /**
  * Checks that targetNames don't clash with other class name.

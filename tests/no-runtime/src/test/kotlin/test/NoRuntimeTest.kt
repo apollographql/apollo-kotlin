@@ -1,11 +1,11 @@
 package test
 
 import com.apollographql.apollo.sample.server.SampleServer
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.composeJsonRequest
-import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.toApolloResponse
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.api.composeJsonRequest
+import com.apollographql.apollo.api.json.BufferedSinkJsonWriter
+import com.apollographql.apollo.api.json.BufferedSourceJsonReader
+import com.apollographql.apollo.api.toApolloResponse
 import com.example.GetRandomQuery
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient

@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.runtime.java.interceptor.internal;
+package com.apollographql.apollo.runtime.java.interceptor.internal;
 
-import com.apollographql.apollo3.api.ExecutionContext;
+import com.apollographql.apollo.api.ExecutionContext;
 import org.jetbrains.annotations.NotNull;
 
 class AutoPersistedQueryInfo implements ExecutionContext.Element {

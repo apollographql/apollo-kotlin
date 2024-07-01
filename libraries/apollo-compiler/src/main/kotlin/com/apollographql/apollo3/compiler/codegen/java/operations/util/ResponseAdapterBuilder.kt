@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.compiler.codegen.java.operations.util
+package com.apollographql.apollo.compiler.codegen.java.operations.util
 
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
-import com.apollographql.apollo3.compiler.ir.IrModelGroup
+import com.apollographql.apollo.compiler.codegen.java.JavaContext
+import com.apollographql.apollo.compiler.ir.IrModelGroup
 import com.squareup.javapoet.TypeSpec
 
 

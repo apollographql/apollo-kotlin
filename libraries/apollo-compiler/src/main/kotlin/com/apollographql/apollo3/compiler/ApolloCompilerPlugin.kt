@@ -1,18 +1,18 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
-import com.apollographql.apollo3.compiler.codegen.java.JavaOutput
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
-import com.apollographql.apollo3.compiler.ir.IrOperations
-import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo3.compiler.operationoutput.OperationId
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.ast.GQLFragmentDefinition
+import com.apollographql.apollo.ast.GQLOperationDefinition
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.compiler.codegen.SchemaAndOperationsLayout
+import com.apollographql.apollo.compiler.codegen.java.JavaOutput
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
+import com.apollographql.apollo.compiler.ir.IrOperations
+import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo.compiler.operationoutput.OperationId
 
 @Deprecated(
-    "Use ApolloCompilerPlugin instead (don't forget to replace the META-INF.service file to `com.apollographql.apollo3.compiler.ApolloCompilerPlugin`",
+    "Use ApolloCompilerPlugin instead (don't forget to replace the META-INF.service file to `com.apollographql.apollo.compiler.ApolloCompilerPlugin`",
     ReplaceWith("ApolloCompilerPlugin"),
     DeprecationLevel.ERROR
 )

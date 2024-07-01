@@ -17,7 +17,7 @@ object TestUtils {
   val androidLibraryPlugin = Plugin(id = "com.android.library", artifact = "libs.plugins.android.library")
   val kotlinJvmPlugin = Plugin(id = "org.jetbrains.kotlin.jvm", artifact = "libs.plugins.kotlin.jvm")
   val kotlinAndroidPlugin = Plugin(id = "org.jetbrains.kotlin.android", artifact = "libs.plugins.kotlin.android")
-  val apolloPlugin = Plugin(id = "com.apollographql.apollo3", artifact = "libs.plugins.apollo")
+  val apolloPlugin = Plugin(id = "com.apollographql.apollo", artifact = "libs.plugins.apollo")
 
   fun <T> withDirectory(testDir: String? = null, block: (File) -> T): T {
     val dest = if (testDir == null) {

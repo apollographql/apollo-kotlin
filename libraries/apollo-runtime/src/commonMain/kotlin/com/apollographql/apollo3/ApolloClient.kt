@@ -1,38 +1,38 @@
-package com.apollographql.apollo3
+package com.apollographql.apollo
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.CustomScalarType
-import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.ExecutionOptions
-import com.apollographql.apollo3.api.MutableExecutionOptions
-import com.apollographql.apollo3.api.Mutation
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.interceptor.ApolloInterceptor
-import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
-import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
-import com.apollographql.apollo3.interceptor.NetworkInterceptor
-import com.apollographql.apollo3.interceptor.RetryOnErrorInterceptor
-import com.apollographql.apollo3.internal.ApolloClientListener
-import com.apollographql.apollo3.internal.defaultDispatcher
-import com.apollographql.apollo3.network.NetworkTransport
-import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
-import com.apollographql.apollo3.network.http.HttpEngine
-import com.apollographql.apollo3.network.http.HttpInterceptor
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.network.ws.WebSocketEngine
-import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
-import com.apollographql.apollo3.network.ws.WsProtocol
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.CustomScalarType
+import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.api.ExecutionOptions
+import com.apollographql.apollo.api.MutableExecutionOptions
+import com.apollographql.apollo.api.Mutation
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo.interceptor.ApolloInterceptor
+import com.apollographql.apollo.interceptor.AutoPersistedQueryInterceptor
+import com.apollographql.apollo.interceptor.DefaultInterceptorChain
+import com.apollographql.apollo.interceptor.NetworkInterceptor
+import com.apollographql.apollo.interceptor.RetryOnErrorInterceptor
+import com.apollographql.apollo.internal.ApolloClientListener
+import com.apollographql.apollo.internal.defaultDispatcher
+import com.apollographql.apollo.network.NetworkTransport
+import com.apollographql.apollo.network.http.BatchingHttpInterceptor
+import com.apollographql.apollo.network.http.HttpEngine
+import com.apollographql.apollo.network.http.HttpInterceptor
+import com.apollographql.apollo.network.http.HttpNetworkTransport
+import com.apollographql.apollo.network.ws.WebSocketEngine
+import com.apollographql.apollo.network.ws.WebSocketNetworkTransport
+import com.apollographql.apollo.network.ws.WsProtocol
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -412,7 +412,7 @@ private constructor(
      * Requires setting an interceptor that is aware of the network state with [retryOnErrorInterceptor].
      *
      * @see [retryOnErrorInterceptor]
-     * @see [com.apollographql.apollo3.network.NetworkMonitor]
+     * @see [com.apollographql.apollo.network.NetworkMonitor]
      */
     @ApolloExperimental
     fun failFastIfOffline(failFastIfOffline: Boolean?): Builder = apply {
@@ -471,7 +471,7 @@ private constructor(
      *
      * @param httpMethod the [HttpMethod] to use or `null` to use the default [HttpMethod.Post].
      *
-     * @see [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
+     * @see [com.apollographql.apollo.api.http.DefaultHttpRequestComposer]
      */
     override fun httpMethod(httpMethod: HttpMethod?): Builder = apply {
       this.httpMethod = httpMethod
@@ -481,7 +481,7 @@ private constructor(
      * Configures the [HttpHeader]s to use. These headers are added with the [ApolloCall] headers.
      *
      * @see [ApolloCall.httpHeaders]
-     * @see [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
+     * @see [com.apollographql.apollo.api.http.DefaultHttpRequestComposer]
      */
     override fun httpHeaders(httpHeaders: List<HttpHeader>?): Builder = apply {
       this.httpHeaders = httpHeaders
@@ -491,7 +491,7 @@ private constructor(
      * Adds a [HttpHeader] to the [ApolloClient] headers. The [ApolloClient] headers are added to the [ApolloCall] headers.
      *
      * @see [ApolloCall.httpHeaders]
-     * @see [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
+     * @see [com.apollographql.apollo.api.http.DefaultHttpRequestComposer]
      */
     override fun addHttpHeader(name: String, value: String): Builder = apply {
       this.httpHeaders = this.httpHeaders.orEmpty() + HttpHeader(name, value)
@@ -500,7 +500,7 @@ private constructor(
     /**
      * Whether to send the Auto Persisted Queries ([APQs](https://www.apollographql.com/docs/apollo-server/performance/apq/) extensions.
      *
-     * This is the low level API used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer] to determine whether to send the APQ extensions:
+     * This is the low level API used by [com.apollographql.apollo.api.http.DefaultHttpRequestComposer] to determine whether to send the APQ extensions:
      *
      * ```json
      * {
@@ -513,7 +513,7 @@ private constructor(
      *
      * @see autoPersistedQueries
      * @see enableAutoPersistedQueries
-     * @see com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+     * @see com.apollographql.apollo.api.http.DefaultHttpRequestComposer
      */
     override fun sendApqExtensions(sendApqExtensions: Boolean?): Builder = apply {
       this.sendApqExtensions = sendApqExtensions
@@ -522,7 +522,7 @@ private constructor(
     /**
      * Whether to send the [GraphQL Document](https://spec.graphql.org/October2021/#Document).
      *
-     * This is the low level API used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer] to determine whether to send the "query" GraphQL document.
+     * This is the low level API used by [com.apollographql.apollo.api.http.DefaultHttpRequestComposer] to determine whether to send the "query" GraphQL document.
      *
      * Set [sendDocument] to `false` if your server supports [persisted queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries/) and
      * can execute an operation base on an id instead.
@@ -531,7 +531,7 @@ private constructor(
      *
      * @see autoPersistedQueries
      * @see enableAutoPersistedQueries
-     * @see com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+     * @see com.apollographql.apollo.api.http.DefaultHttpRequestComposer
      */
     override fun sendDocument(sendDocument: Boolean?): Builder = apply {
       this.sendDocument = sendDocument

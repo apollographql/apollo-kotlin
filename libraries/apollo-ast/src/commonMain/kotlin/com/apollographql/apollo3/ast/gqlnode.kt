@@ -1,8 +1,8 @@
 @file:JvmMultifileClass
 @file:JvmName("GqlnodeKt")
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo.ast
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloExperimental
 import okio.Buffer
 import okio.BufferedSink
 import kotlin.jvm.JvmMultifileClass

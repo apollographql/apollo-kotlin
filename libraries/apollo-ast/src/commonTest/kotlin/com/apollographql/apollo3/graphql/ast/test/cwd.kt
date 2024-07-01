@@ -1,3 +1,3 @@
-package com.apollographql.apollo3.graphql.ast.test
+package com.apollographql.apollo.graphql.ast.test
 
 internal expect val CWD: String

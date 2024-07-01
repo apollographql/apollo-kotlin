@@ -1,10 +1,10 @@
 @file:Suppress("DEPRECATION")
 
-import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo.compiler.PackageNameGenerator
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("com.apollographql.apollo3")
+  id("com.apollographql.apollo")
 }
 
 apolloTest()

@@ -5,14 +5,14 @@
 //
 package com.example.mutation_create_review.type
 
-import com.apollographql.apollo3.api.BuilderFactory
-import com.apollographql.apollo3.api.BuilderProperty
-import com.apollographql.apollo3.api.BuilderScope
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.ObjectBuilder
-import com.apollographql.apollo3.api.ObjectType
-import com.apollographql.apollo3.api.list
-import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo.api.BuilderFactory
+import com.apollographql.apollo.api.BuilderProperty
+import com.apollographql.apollo.api.BuilderScope
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ObjectBuilder
+import com.apollographql.apollo.api.ObjectType
+import com.apollographql.apollo.api.list
+import com.apollographql.apollo.api.nullable
 import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter
 import kotlin.Any
 import kotlin.Int

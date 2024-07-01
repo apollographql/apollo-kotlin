@@ -1,6 +1,6 @@
 package com.example
 
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.api.Optional
 
 suspend fun main() {
   val present = Optional.Present("a")

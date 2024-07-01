@@ -5,7 +5,7 @@
 //
 package com.example.simple_union.type
 
-import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo.api.CustomScalarType
 
 /**
  * The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent

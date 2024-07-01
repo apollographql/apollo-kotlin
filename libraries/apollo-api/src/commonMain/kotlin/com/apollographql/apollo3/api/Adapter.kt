@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.JsonWriter
 import okio.IOException
 
 /**
@@ -19,7 +19,7 @@ interface Adapter<T> {
   /**
    * Deserializes the given Json to the expected Kotlin type.
    *
-   * implementations may throw [com.apollographql.apollo3.exception.JsonEncodingException] or [com.apollographql.apollo3.exception.JsonDataException]
+   * implementations may throw [com.apollographql.apollo.exception.JsonEncodingException] or [com.apollographql.apollo.exception.JsonDataException]
    * on unexpected incoming data
    *
    * Example:

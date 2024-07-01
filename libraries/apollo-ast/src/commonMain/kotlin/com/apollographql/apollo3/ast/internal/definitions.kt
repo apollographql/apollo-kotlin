@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.ast.internal
+package com.apollographql.apollo.ast.internal
 
 /**
  * This file contains several groups of GraphQL definitions we use during codegen:

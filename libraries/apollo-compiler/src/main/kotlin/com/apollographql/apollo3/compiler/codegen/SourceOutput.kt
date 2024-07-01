@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.compiler.codegen
+package com.apollographql.apollo.compiler.codegen
 
-import com.apollographql.apollo3.compiler.CodegenMetadata
-import com.apollographql.apollo3.compiler.writeTo
+import com.apollographql.apollo.compiler.CodegenMetadata
+import com.apollographql.apollo.compiler.writeTo
 import java.io.File
 import java.io.OutputStream
 

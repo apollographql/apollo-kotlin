@@ -1,15 +1,15 @@
-package com.apollographql.apollo3.compiler.keyfields
+package com.apollographql.apollo.compiler.keyfields
 
-import com.apollographql.apollo3.ast.GQLDocument
-import com.apollographql.apollo3.ast.GQLExecutableDefinition
-import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.toGQLDocument
-import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.ast.validateAsSchema
-import com.apollographql.apollo3.compiler.internal.addRequiredFields
-import com.apollographql.apollo3.compiler.internal.checkKeyFields
+import com.apollographql.apollo.ast.GQLDocument
+import com.apollographql.apollo.ast.GQLExecutableDefinition
+import com.apollographql.apollo.ast.GQLFragmentDefinition
+import com.apollographql.apollo.ast.GQLOperationDefinition
+import com.apollographql.apollo.ast.parseAsGQLDocument
+import com.apollographql.apollo.ast.toGQLDocument
+import com.apollographql.apollo.ast.toSchema
+import com.apollographql.apollo.ast.validateAsSchema
+import com.apollographql.apollo.compiler.internal.addRequiredFields
+import com.apollographql.apollo.compiler.internal.checkKeyFields
 import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertContains
@@ -20,12 +20,12 @@ import kotlin.test.fail
 class KeyFieldsTest {
   @Test
   fun testAddRequiredFields() {
-    val schema = "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/schema.graphqls"
+    val schema = "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/schema.graphqls"
         .toPath()
         .toGQLDocument()
         .toSchema()
 
-    val definitions = "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/operations.graphql".toPath()
+    val definitions = "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/operations.graphql".toPath()
         .toGQLDocument()
         .definitions
 
@@ -48,7 +48,7 @@ class KeyFieldsTest {
 
   @Test
   fun testExtendInterfaceTypePolicyDirective() {
-    val schema = "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/extendsSchema.graphqls"
+    val schema = "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/extendsSchema.graphqls"
         .toPath()
         .toGQLDocument()
         .toSchema()
@@ -57,7 +57,7 @@ class KeyFieldsTest {
 
   @Test
   fun testObjectWithTypePolicyAndInterfaceTypePolicyErrors() {
-    "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/objectAndInterfaceTypePolicySchema.graphqls"
+    "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/objectAndInterfaceTypePolicySchema.graphqls"
         .toPath()
         .toGQLDocument()
         .validateAsSchema()
@@ -72,7 +72,7 @@ class KeyFieldsTest {
 
   @Test
   fun testObjectInheritingTwoInterfacesWithDifferentKeyFields() {
-    "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/objectInheritingTwoInterfaces.graphqls"
+    "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/objectInheritingTwoInterfaces.graphqls"
         .toPath()
         .parseAsGQLDocument()
         .getOrThrow()
@@ -94,7 +94,7 @@ class KeyFieldsTest {
 
   @Test
   fun testInterfacesWithoutKeyFields() {
-    "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/interfacesWithoutKeyFields.graphqls"
+    "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/interfacesWithoutKeyFields.graphqls"
         .toPath()
         .parseAsGQLDocument()
         .getOrThrow()
@@ -107,7 +107,7 @@ class KeyFieldsTest {
 
   @Test
   fun nonexistentKeyField() {
-    val definitions = "src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/nonexistentKeyField.graphqls"
+    val definitions = "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/nonexistentKeyField.graphqls"
         .toPath()
         .parseAsGQLDocument()
         .getOrThrow()

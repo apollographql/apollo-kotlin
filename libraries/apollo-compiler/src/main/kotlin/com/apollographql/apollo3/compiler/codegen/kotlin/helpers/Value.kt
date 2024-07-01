@@ -1,16 +1,16 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
+package com.apollographql.apollo.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.ir.IrBooleanValue
-import com.apollographql.apollo3.compiler.ir.IrEnumValue
-import com.apollographql.apollo3.compiler.ir.IrFloatValue
-import com.apollographql.apollo3.compiler.ir.IrIntValue
-import com.apollographql.apollo3.compiler.ir.IrListValue
-import com.apollographql.apollo3.compiler.ir.IrNullValue
-import com.apollographql.apollo3.compiler.ir.IrObjectValue
-import com.apollographql.apollo3.compiler.ir.IrStringValue
-import com.apollographql.apollo3.compiler.ir.IrValue
-import com.apollographql.apollo3.compiler.ir.IrVariableValue
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo.compiler.ir.IrBooleanValue
+import com.apollographql.apollo.compiler.ir.IrEnumValue
+import com.apollographql.apollo.compiler.ir.IrFloatValue
+import com.apollographql.apollo.compiler.ir.IrIntValue
+import com.apollographql.apollo.compiler.ir.IrListValue
+import com.apollographql.apollo.compiler.ir.IrNullValue
+import com.apollographql.apollo.compiler.ir.IrObjectValue
+import com.apollographql.apollo.compiler.ir.IrStringValue
+import com.apollographql.apollo.compiler.ir.IrValue
+import com.apollographql.apollo.compiler.ir.IrVariableValue
 import com.squareup.kotlinpoet.CodeBlock
 
 private fun IrListValue.codeBlock(): CodeBlock {

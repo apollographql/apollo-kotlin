@@ -1,16 +1,16 @@
 @file:JvmName("JavaOptionalAdapters")
 
-package com.apollographql.apollo3.api.java.adapter
+package com.apollographql.apollo.api.java.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.BooleanAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.DoubleAdapter
-import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.AnyAdapter
+import com.apollographql.apollo.api.BooleanAdapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.DoubleAdapter
+import com.apollographql.apollo.api.IntAdapter
+import com.apollographql.apollo.api.StringAdapter
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.JsonWriter
 import java.util.Optional
 
 /**

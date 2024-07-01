@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.compiler.ir
+package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo3.ast.CatchTo
-import com.apollographql.apollo3.ast.GQLSelection
+import com.apollographql.apollo.ast.CatchTo
+import com.apollographql.apollo.ast.GQLSelection
 
 internal interface ModelGroupBuilder {
   fun buildOperationData(

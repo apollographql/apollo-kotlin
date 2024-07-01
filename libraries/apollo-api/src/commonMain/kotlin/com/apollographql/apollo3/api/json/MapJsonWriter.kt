@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.api.json
+package com.apollographql.apollo.api.json
 
-import com.apollographql.apollo3.api.Upload
+import com.apollographql.apollo.api.Upload
 
 /**
  * A [JsonWriter] that writes data to a [Map<String, Any?>]

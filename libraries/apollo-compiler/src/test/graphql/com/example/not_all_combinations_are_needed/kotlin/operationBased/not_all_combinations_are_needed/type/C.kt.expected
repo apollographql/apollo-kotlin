@@ -5,7 +5,7 @@
 //
 package com.example.not_all_combinations_are_needed.type
 
-import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo.api.InterfaceType
 
 public class C {
   public companion object {

@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.mpp
+package com.apollographql.apollo.mpp
 
-import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo.annotations.ApolloInternal
 import kotlin.js.Date
 
 actual fun currentTimeMillis(): Long {

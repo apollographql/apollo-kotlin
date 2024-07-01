@@ -3,7 +3,7 @@ plugins {
 }
 
 apolloLibrary(
-  namespace = "com.apollographql.apollo3.cache.http"
+  namespace = "com.apollographql.apollo.cache.http"
 )
 
 dependencies {

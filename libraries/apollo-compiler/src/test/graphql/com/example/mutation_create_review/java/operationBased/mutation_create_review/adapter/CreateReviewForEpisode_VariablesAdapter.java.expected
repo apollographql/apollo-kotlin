@@ -5,9 +5,9 @@
 //
 package com.example.mutation_create_review.adapter;
 
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ObjectAdapter;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.mutation_create_review.CreateReviewForEpisode;
 import com.example.mutation_create_review.type.ReviewInput;
 import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter;

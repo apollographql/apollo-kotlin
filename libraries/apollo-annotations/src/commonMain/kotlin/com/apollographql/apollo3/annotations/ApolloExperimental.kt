@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.annotations
+package com.apollographql.apollo.annotations
 
 @RequiresOptIn(
     level = RequiresOptIn.Level.WARNING,

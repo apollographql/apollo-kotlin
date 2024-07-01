@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.mockserver
+package com.apollographql.apollo.mockserver
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloExperimental
 
 @ApolloExperimental
 actual fun TcpServer(port: Int): TcpServer {

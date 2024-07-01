@@ -5,7 +5,7 @@
 //
 package com.example.subscriptions.type
 
-import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo.api.ObjectType
 
 /**
  * A comment about an entry, submitted by a user

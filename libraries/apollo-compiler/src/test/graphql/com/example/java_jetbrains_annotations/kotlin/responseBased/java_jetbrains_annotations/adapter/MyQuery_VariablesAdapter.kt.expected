@@ -5,15 +5,15 @@
 //
 package com.example.java_jetbrains_annotations.adapter
 
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.NullableAnyAdapter
-import com.apollographql.apollo3.api.NullableIntAdapter
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.nullable
-import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.present
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.IntAdapter
+import com.apollographql.apollo.api.NullableAnyAdapter
+import com.apollographql.apollo.api.NullableIntAdapter
+import com.apollographql.apollo.api.Optional
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.nullable
+import com.apollographql.apollo.api.obj
+import com.apollographql.apollo.api.present
 import com.example.java_jetbrains_annotations.MyQuery
 import com.example.java_jetbrains_annotations.type.adapter.MyInput_InputAdapter
 import kotlin.Boolean

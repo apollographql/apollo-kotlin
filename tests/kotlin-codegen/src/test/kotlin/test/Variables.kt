@@ -1,6 +1,6 @@
 package test
 
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.api.Optional
 import variables.NonNullVariableWithDefaultValueQuery
 import variables.NullableVariableQuery
 import variables.NullableVariableWithDefaultValueQuery

@@ -1,12 +1,12 @@
 package benchmarks
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.toResponseJson
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.normalizedCache
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.toResponseJson
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.cache.normalized.normalizedCache
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import kotlin.test.AfterClass

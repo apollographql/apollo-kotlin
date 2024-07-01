@@ -1,14 +1,14 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.validateAsExecutable
-import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
-import com.apollographql.apollo3.compiler.TestUtils.checkExpected
-import com.apollographql.apollo3.compiler.TestUtils.serialize
-import com.apollographql.apollo3.compiler.TestUtils.testParametersForGraphQLFilesIn
-import com.apollographql.apollo3.compiler.internal.checkApolloReservedEnumValueNames
-import com.apollographql.apollo3.compiler.internal.checkApolloTargetNameClashes
-import com.apollographql.apollo3.compiler.internal.checkCapitalizedFields
+import com.apollographql.apollo.ast.parseAsGQLDocument
+import com.apollographql.apollo.ast.validateAsExecutable
+import com.apollographql.apollo.ast.validateAsSchemaAndAddApolloDefinition
+import com.apollographql.apollo.compiler.TestUtils.checkExpected
+import com.apollographql.apollo.compiler.TestUtils.serialize
+import com.apollographql.apollo.compiler.TestUtils.testParametersForGraphQLFilesIn
+import com.apollographql.apollo.compiler.internal.checkApolloReservedEnumValueNames
+import com.apollographql.apollo.compiler.internal.checkApolloTargetNameClashes
+import com.apollographql.apollo.compiler.internal.checkCapitalizedFields
 import okio.buffer
 import okio.source
 import org.junit.Test

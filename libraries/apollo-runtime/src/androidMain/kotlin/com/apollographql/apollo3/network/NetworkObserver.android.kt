@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.network
+package com.apollographql.apollo.network
 
 import android.Manifest
 import android.annotation.SuppressLint

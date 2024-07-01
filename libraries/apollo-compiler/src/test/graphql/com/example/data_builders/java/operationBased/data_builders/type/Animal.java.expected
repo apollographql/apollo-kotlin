@@ -5,7 +5,7 @@
 //
 package com.example.data_builders.type;
 
-import com.apollographql.apollo3.api.UnionType;
+import com.apollographql.apollo.api.UnionType;
 
 public class Animal {
   public static UnionType type = new UnionType("Animal", Cat.type, Dog.type);

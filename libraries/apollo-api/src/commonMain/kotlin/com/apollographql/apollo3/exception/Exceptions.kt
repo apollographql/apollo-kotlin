@@ -1,10 +1,10 @@
 // This is in the `exception` package and not `api.exception` to keep some compatibility with 2.x
-package com.apollographql.apollo3.exception
+package com.apollographql.apollo.exception
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.Error
-import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.api.Error
+import com.apollographql.apollo.api.http.HttpHeader
 import okio.BufferedSource
 
 /**

@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.tooling
+package com.apollographql.apollo.tooling
 
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.pathToUtf8
+import com.apollographql.apollo.testing.internal.runTest
+import com.apollographql.apollo.testing.pathToUtf8
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File

@@ -1,14 +1,14 @@
 @file:OptIn(ApolloInternal::class, ApolloInternal::class)
 
-package com.apollographql.apollo3.mockserver.test
+package com.apollographql.apollo.mockserver.test
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.mockserver.MockResponse
-import com.apollographql.apollo3.mockserver.MultipartBodyImpl
-import com.apollographql.apollo3.mockserver.asChunked
-import com.apollographql.apollo3.mockserver.enqueueStrings
-import com.apollographql.apollo3.mockserver.writeResponse
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.mockserver.MockResponse
+import com.apollographql.apollo.mockserver.MultipartBodyImpl
+import com.apollographql.apollo.mockserver.asChunked
+import com.apollographql.apollo.mockserver.enqueueStrings
+import com.apollographql.apollo.mockserver.writeResponse
+import com.apollographql.apollo.testing.internal.runTest
 import kotlinx.coroutines.flow.flowOf
 import okio.Buffer
 import okio.ByteString.Companion.encodeUtf8

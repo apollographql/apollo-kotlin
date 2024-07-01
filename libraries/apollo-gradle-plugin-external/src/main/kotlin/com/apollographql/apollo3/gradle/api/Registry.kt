@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.gradle.api
+package com.apollographql.apollo.gradle.api
 
 import org.gradle.api.Action
 import org.gradle.api.file.RegularFileProperty

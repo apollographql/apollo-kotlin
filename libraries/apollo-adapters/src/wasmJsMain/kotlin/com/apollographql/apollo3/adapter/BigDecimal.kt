@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.adapter
+package com.apollographql.apollo.adapter
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 
 @JsModule("big.js")
 internal external fun Big(raw: JsAny): Big

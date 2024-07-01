@@ -1,11 +1,11 @@
 package test.introspection
 
-import com.apollographql.apollo3.ast.SourceAwareException
-import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
-import com.apollographql.apollo3.ast.toFullSchemaGQLDocument
-import com.apollographql.apollo3.ast.toGQLDocument
-import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.graphql.ast.test.CWD
+import com.apollographql.apollo.ast.SourceAwareException
+import com.apollographql.apollo.ast.introspection.toIntrospectionSchema
+import com.apollographql.apollo.ast.toFullSchemaGQLDocument
+import com.apollographql.apollo.ast.toGQLDocument
+import com.apollographql.apollo.ast.toSchema
+import com.apollographql.apollo.graphql.ast.test.CWD
 import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertEquals

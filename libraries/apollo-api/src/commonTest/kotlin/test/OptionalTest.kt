@@ -1,7 +1,7 @@
 package test
 
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.exception.MissingValueException
+import com.apollographql.apollo.api.Optional
+import com.apollographql.apollo.exception.MissingValueException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs

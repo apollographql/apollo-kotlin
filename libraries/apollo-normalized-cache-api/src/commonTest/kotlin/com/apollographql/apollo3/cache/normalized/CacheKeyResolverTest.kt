@@ -1,14 +1,14 @@
-package com.apollographql.apollo3.cache.normalized
+package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledListType
-import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.ObjectType
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolverTest.Fixtures.TEST_LIST_FIELD
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolverTest.Fixtures.TEST_SIMPLE_FIELD
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyResolver
-import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledListType
+import com.apollographql.apollo.api.Executable
+import com.apollographql.apollo.api.ObjectType
+import com.apollographql.apollo.cache.normalized.CacheKeyResolverTest.Fixtures.TEST_LIST_FIELD
+import com.apollographql.apollo.cache.normalized.CacheKeyResolverTest.Fixtures.TEST_SIMPLE_FIELD
+import com.apollographql.apollo.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.api.CacheKeyResolver
+import com.apollographql.apollo.exception.CacheMissException
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

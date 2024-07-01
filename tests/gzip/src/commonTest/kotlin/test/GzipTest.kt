@@ -1,11 +1,11 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo.ApolloClient
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
-import com.apollographql.apollo3.testing.HostFileSystem
-import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.testsPath
+import com.apollographql.apollo.testing.HostFileSystem
+import com.apollographql.apollo.testing.internal.runTest
+import com.apollographql.apollo.testing.testsPath
 import gzip.GetStringQuery
 import kotlinx.coroutines.CoroutineScope
 import okio.Path.Companion.toPath

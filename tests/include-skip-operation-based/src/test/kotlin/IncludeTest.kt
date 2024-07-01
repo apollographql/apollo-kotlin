@@ -1,13 +1,13 @@
 
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.GlobalBuilder
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.json.MapJsonReader
-import com.apollographql.apollo3.api.toApolloResponse
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.normalize
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.GlobalBuilder
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Optional
+import com.apollographql.apollo.api.json.MapJsonReader
+import com.apollographql.apollo.api.toApolloResponse
+import com.apollographql.apollo.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo.cache.normalized.api.normalize
 import com.example.GetCatIncludeFalseQuery
 import com.example.GetCatIncludeTrueQuery
 import com.example.GetCatIncludeVariableQuery

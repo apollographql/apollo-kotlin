@@ -1,19 +1,19 @@
 @file:JvmName("Adapters")
 
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.MapJsonReader
-import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
-import com.apollographql.apollo3.api.json.MapJsonWriter
-import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.api.json.readAny
-import com.apollographql.apollo3.api.json.writeAny
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloGraphQLException
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.json.MapJsonReader
+import com.apollographql.apollo.api.json.MapJsonReader.Companion.buffer
+import com.apollographql.apollo.api.json.MapJsonWriter
+import com.apollographql.apollo.api.json.buildJsonString
+import com.apollographql.apollo.api.json.readAny
+import com.apollographql.apollo.api.json.writeAny
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloGraphQLException
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -459,7 +459,7 @@ fun <T> Adapter<T>.catchToNull(): Adapter<T?> = CatchToNullAdapter(this)
  * A replica of Apollo Android v2's CustomTypeAdapter, to ease migration from v2 to v3.
  *
  * Make your CustomTypeAdapters implement this interface by updating the imports
- * from `com.apollographql.apollo.api` to `com.apollographql.apollo3.api`.
+ * from `com.apollographql.apollo.api` to `com.apollographql.apollo.api`.
  *
  * **Note**: [Adapter]s are called from multiple threads and implementations must be thread safe.
  */

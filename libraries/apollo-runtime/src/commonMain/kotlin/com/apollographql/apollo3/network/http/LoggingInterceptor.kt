@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.network.http
+package com.apollographql.apollo.network.http
 
-import com.apollographql.apollo3.api.http.ByteStringHttpBody
-import com.apollographql.apollo3.api.http.HttpBody
-import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.api.http.valueOf
-import com.apollographql.apollo3.network.http.LoggingInterceptor.Level
+import com.apollographql.apollo.api.http.ByteStringHttpBody
+import com.apollographql.apollo.api.http.HttpBody
+import com.apollographql.apollo.api.http.HttpRequest
+import com.apollographql.apollo.api.http.HttpResponse
+import com.apollographql.apollo.api.http.valueOf
+import com.apollographql.apollo.network.http.LoggingInterceptor.Level
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource

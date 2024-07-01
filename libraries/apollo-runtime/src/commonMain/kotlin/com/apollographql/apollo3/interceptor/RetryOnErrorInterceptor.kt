@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.interceptor
+package com.apollographql.apollo.interceptor
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.network.NetworkMonitor
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.network.NetworkMonitor
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -28,7 +28,7 @@ import kotlin.time.Duration.Companion.seconds
  * - if [ApolloRequest.retryOnError] is `true`, waits until network is available and retries the request.
  * - if [ApolloRequest.failFastIfOffline] is `true` and [NetworkMonitor.isOnline] is `false`, returns early with [ApolloNetworkException].
  *
- * Use with [com.apollographql.apollo3.ApolloClient.Builder.retryOnErrorInterceptor]:
+ * Use with [com.apollographql.apollo.ApolloClient.Builder.retryOnErrorInterceptor]:
  *
  * ```
  * apolloClient = ApolloClient.Builder()
@@ -39,7 +39,7 @@ import kotlin.time.Duration.Companion.seconds
  *
  * Some other types of error than [ApolloNetworkException] might be recoverable as well (rate limit, ...) but are out of scope for this interceptor.
  *
- * @see [com.apollographql.apollo3.ApolloClient.Builder.retryOnErrorInterceptor]
+ * @see [com.apollographql.apollo.ApolloClient.Builder.retryOnErrorInterceptor]
  * @see [ApolloRequest.retryOnError]
  * @see [ApolloRequest.failFastIfOffline]
  */

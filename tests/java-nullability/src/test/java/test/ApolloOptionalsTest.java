@@ -1,10 +1,10 @@
 package test;
 
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
-import com.apollographql.apollo3.api.json.JsonReader;
-import com.apollographql.apollo3.api.json.MapJsonWriter;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.Optional;
+import com.apollographql.apollo.api.json.BufferedSourceJsonReader;
+import com.apollographql.apollo.api.json.JsonReader;
+import com.apollographql.apollo.api.json.MapJsonWriter;
 import okio.Buffer;
 import optionals.apollo.MyQuery;
 import optionals.apollo.type.FindUserInput;

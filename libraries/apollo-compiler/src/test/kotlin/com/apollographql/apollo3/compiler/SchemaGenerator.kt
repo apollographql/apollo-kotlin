@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
 object SchemaGenerator {
   fun generateSDLSchemaWithInputTypes(inputTypeCount: Int): String {

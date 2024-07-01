@@ -1,10 +1,10 @@
 @file:JvmMultifileClass
 @file:JvmName("Assertions")
 
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.exception.NullOrMissingField
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.exception.NullOrMissingField
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 

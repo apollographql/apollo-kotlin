@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.codegen.java
+package com.apollographql.apollo.compiler.codegen.java
 
 import com.squareup.javapoet.TypeSpec
 

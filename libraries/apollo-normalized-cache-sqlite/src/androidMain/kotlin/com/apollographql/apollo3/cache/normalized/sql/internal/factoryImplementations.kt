@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.cache.normalized.sql.internal
+package com.apollographql.apollo.cache.normalized.sql.internal
 
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import app.cash.sqldelight.db.QueryResult
-import com.apollographql.apollo3.cache.normalized.sql.ApolloInitializer
+import com.apollographql.apollo.cache.normalized.sql.ApolloInitializer
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema

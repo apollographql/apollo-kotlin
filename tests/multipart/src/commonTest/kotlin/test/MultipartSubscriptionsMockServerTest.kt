@@ -1,14 +1,14 @@
 package test
 
 import app.cash.turbine.test
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.exception.RouterError
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.exception.RouterError
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.testing.*
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.network.http.HttpNetworkTransport
+import com.apollographql.apollo.testing.*
+import com.apollographql.apollo.testing.internal.runTest
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel

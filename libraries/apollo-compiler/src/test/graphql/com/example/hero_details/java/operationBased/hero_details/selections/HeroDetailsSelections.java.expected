@@ -5,10 +5,10 @@
 //
 package com.example.hero_details.selections;
 
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledListType;
-import com.apollographql.apollo3.api.CompiledNotNullType;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CompiledListType;
+import com.apollographql.apollo.api.CompiledNotNullType;
+import com.apollographql.apollo.api.CompiledSelection;
 import com.example.hero_details.type.Character;
 import com.example.hero_details.type.FriendsConnection;
 import com.example.hero_details.type.FriendsEdge;

@@ -5,7 +5,7 @@
 //
 package com.example.java_java_optionals.type.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo.api.Adapters;
 import java.lang.Boolean;
 import java.lang.Double;
 import java.lang.Integer;

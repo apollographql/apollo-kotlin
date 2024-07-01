@@ -1,9 +1,9 @@
 @file:JvmName("BooleanExpressions")
 
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_0
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince.Version.v4_0_0
 import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
 

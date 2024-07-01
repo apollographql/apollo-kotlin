@@ -5,10 +5,10 @@
 //
 package com.example.recursive_selection.selections;
 
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledListType;
-import com.apollographql.apollo3.api.CompiledNotNullType;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CompiledListType;
+import com.apollographql.apollo.api.CompiledNotNullType;
+import com.apollographql.apollo.api.CompiledSelection;
 import com.example.recursive_selection.type.GraphQLString;
 import com.example.recursive_selection.type.Tree;
 import java.util.Arrays;

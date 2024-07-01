@@ -1,7 +1,7 @@
 package com.apollographql.apollo.sample.server
 
 import com.apollographql.apollo.sample.server.graphql.SubscriptionRoot
-import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.execution.ExecutableSchema
 import com.apollographql.execution.parseGetGraphQLRequest
 import com.apollographql.execution.parsePostGraphQLRequest

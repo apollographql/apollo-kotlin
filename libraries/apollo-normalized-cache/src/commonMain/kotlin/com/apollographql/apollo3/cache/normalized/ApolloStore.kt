@@ -1,25 +1,25 @@
-package com.apollographql.apollo3.cache.normalized
+package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.CacheResolver
-import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
-import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.api.CacheKeyGenerator
+import com.apollographql.apollo.cache.normalized.api.CacheResolver
+import com.apollographql.apollo.cache.normalized.api.FieldPolicyCacheResolver
+import com.apollographql.apollo.cache.normalized.api.NormalizedCache
+import com.apollographql.apollo.cache.normalized.api.NormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.api.Record
+import com.apollographql.apollo.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo.cache.normalized.internal.DefaultApolloStore
+import com.apollographql.apollo.interceptor.ApolloInterceptor
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
 import kotlin.reflect.KClass
 
 /**
- * ApolloStore exposes a thread-safe api to access a [com.apollographql.apollo3.cache.normalized.api.NormalizedCache].
+ * ApolloStore exposes a thread-safe api to access a [com.apollographql.apollo.cache.normalized.api.NormalizedCache].
  *
  * Note that most operations are synchronous and might block if the underlying cache is doing IO - calling them from the main thread
  * should be avoided.
@@ -36,8 +36,8 @@ interface ApolloStore {
    *
    * @param operation to be read
    *
-   * @throws [com.apollographql.apollo3.exception.CacheMissException] on cache miss
-   * @throws [com.apollographql.apollo3.exception.ApolloException] on other cache read errors
+   * @throws [com.apollographql.apollo.exception.CacheMissException] on cache miss
+   * @throws [com.apollographql.apollo.exception.ApolloException] on other cache read errors
    *
    * @return the operation data
    */
@@ -54,8 +54,8 @@ interface ApolloStore {
    * @param fragment to be read
    * @param cacheKey    [CacheKey] to be used to find cache record for the fragment
    *
-   * @throws [com.apollographql.apollo3.exception.CacheMissException] on cache miss
-   * @throws [com.apollographql.apollo3.exception.ApolloException] on other cache read errors
+   * @throws [com.apollographql.apollo.exception.CacheMissException] on cache miss
+   * @throws [com.apollographql.apollo.exception.ApolloException] on other cache read errors
    *
    * @return the fragment data
    */

@@ -1,9 +1,9 @@
-import com.apollographql.apollo3.engine.tests.Platform
-import com.apollographql.apollo3.engine.tests.platform
-import com.apollographql.apollo3.engine.tests.runAllTests
-import com.apollographql.apollo3.network.http.DefaultHttpEngine
-import com.apollographql.apollo3.network.ws.DefaultWebSocketEngine
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.engine.tests.Platform
+import com.apollographql.apollo.engine.tests.platform
+import com.apollographql.apollo.engine.tests.runAllTests
+import com.apollographql.apollo.network.http.DefaultHttpEngine
+import com.apollographql.apollo.network.ws.DefaultWebSocketEngine
+import com.apollographql.apollo.testing.internal.runTest
 import kotlin.test.Test
 
 class AllTests {

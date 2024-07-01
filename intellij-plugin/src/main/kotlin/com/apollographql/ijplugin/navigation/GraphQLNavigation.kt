@@ -41,14 +41,14 @@ import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
 
 private val APOLLO_OPERATION_TYPES = setOf(
-    FqName("com.apollographql.apollo3.api.Query"),
-    FqName("com.apollographql.apollo3.api.Mutation"),
-    FqName("com.apollographql.apollo3.api.Subscription"),
+    FqName("com.apollographql.apollo.api.Query"),
+    FqName("com.apollographql.apollo.api.Mutation"),
+    FqName("com.apollographql.apollo.api.Subscription"),
 )
 
-private val APOLLO_FRAGMENT_TYPE = FqName("com.apollographql.apollo3.api.Fragment.Data")
+private val APOLLO_FRAGMENT_TYPE = FqName("com.apollographql.apollo.api.Fragment.Data")
 
-private val APOLLO_ENUM_TYPE = FqName("com.apollographql.apollo3.api.EnumType")
+private val APOLLO_ENUM_TYPE = FqName("com.apollographql.apollo.api.EnumType")
 
 fun KtNameReferenceExpression.isApolloOperationOrFragmentReference(): Boolean {
   return resolveKtName()?.asKtClass()?.isApolloOperationOrFragment() == true

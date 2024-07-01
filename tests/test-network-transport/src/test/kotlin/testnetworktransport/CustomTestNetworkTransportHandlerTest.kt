@@ -1,14 +1,14 @@
 package testnetworktransport
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.exception.DefaultApolloException
-import com.apollographql.apollo3.network.NetworkTransport
-import com.apollographql.apollo3.testing.enqueueTestResponse
-import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.registerTestResponse
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.exception.DefaultApolloException
+import com.apollographql.apollo.network.NetworkTransport
+import com.apollographql.apollo.testing.enqueueTestResponse
+import com.apollographql.apollo.testing.internal.runTest
+import com.apollographql.apollo.testing.registerTestResponse
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf

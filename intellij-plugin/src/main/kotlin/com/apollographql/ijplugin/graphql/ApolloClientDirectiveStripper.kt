@@ -2,14 +2,14 @@
 
 package com.apollographql.ijplugin.graphql
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.ast.GQLDirective
-import com.apollographql.apollo3.ast.TransformResult
-import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.toUtf8
-import com.apollographql.apollo3.ast.transform
-import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.ast.GQLDirective
+import com.apollographql.apollo.ast.TransformResult
+import com.apollographql.apollo.ast.parseAsGQLDocument
+import com.apollographql.apollo.ast.toUtf8
+import com.apollographql.apollo.ast.transform
+import com.apollographql.apollo.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.ijplugin.util.logw
 import com.apollographql.ijplugin.util.schemaFiles
 import com.intellij.lang.jsgraphql.psi.GraphQLFile

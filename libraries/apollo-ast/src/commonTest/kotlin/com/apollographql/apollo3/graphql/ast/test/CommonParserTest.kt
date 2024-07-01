@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.graphql.ast.test
+package com.apollographql.apollo.graphql.ast.test
 
-import com.apollographql.apollo3.ast.GQLField
-import com.apollographql.apollo3.ast.GQLFieldDefinition
-import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
-import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.GQLStringValue
-import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.parseAsGQLValue
+import com.apollographql.apollo.ast.GQLField
+import com.apollographql.apollo.ast.GQLFieldDefinition
+import com.apollographql.apollo.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo.ast.GQLOperationDefinition
+import com.apollographql.apollo.ast.GQLStringValue
+import com.apollographql.apollo.ast.parseAsGQLDocument
+import com.apollographql.apollo.ast.parseAsGQLValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail

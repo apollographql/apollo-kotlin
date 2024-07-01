@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.network
+package com.apollographql.apollo.network
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloExperimental
 
 @ApolloExperimental
 fun NetworkMonitor(): NetworkMonitor = DefaultNetworkMonitor { AppleNetworkObserver() }

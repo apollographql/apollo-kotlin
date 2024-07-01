@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.runtime.java;
+package com.apollographql.apollo.runtime.java;
 
-import com.apollographql.apollo3.api.ApolloResponse;
-import com.apollographql.apollo3.api.Operation;
+import com.apollographql.apollo.api.ApolloResponse;
+import com.apollographql.apollo.api.Operation;
 import org.jetbrains.annotations.NotNull;
 
 public interface ApolloCallback<D extends Operation.Data> {

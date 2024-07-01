@@ -1,7 +1,7 @@
 package test
 
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.parseResponse
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.parseResponse
 import com.example.Get1Query
 import okio.Buffer
 import kotlin.test.Test
