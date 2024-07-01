@@ -5,8 +5,8 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <com.apollographql.apollo3:apollo-engine-ktor>
-final object com.apollographql.apollo3.network.adapter/KtorHttpUrlAdapter : com.apollographql.apollo3.api/Adapter<io.ktor.http/Url> { // com.apollographql.apollo3.network.adapter/KtorHttpUrlAdapter|null[0]
-    final fun fromJson(com.apollographql.apollo3.api.json/JsonReader, com.apollographql.apollo3.api/CustomScalarAdapters): io.ktor.http/Url // com.apollographql.apollo3.network.adapter/KtorHttpUrlAdapter.fromJson|fromJson(com.apollographql.apollo3.api.json.JsonReader;com.apollographql.apollo3.api.CustomScalarAdapters){}[0]
-    final fun toJson(com.apollographql.apollo3.api.json/JsonWriter, com.apollographql.apollo3.api/CustomScalarAdapters, io.ktor.http/Url) // com.apollographql.apollo3.network.adapter/KtorHttpUrlAdapter.toJson|toJson(com.apollographql.apollo3.api.json.JsonWriter;com.apollographql.apollo3.api.CustomScalarAdapters;io.ktor.http.Url){}[0]
+// Library unique name: <com.apollographql.apollo:apollo-engine-ktor>
+final object com.apollographql.apollo.network.adapter/KtorHttpUrlAdapter : com.apollographql.apollo.api/Adapter<io.ktor.http/Url> { // com.apollographql.apollo.network.adapter/KtorHttpUrlAdapter|null[0]
+    final fun fromJson(com.apollographql.apollo.api.json/JsonReader, com.apollographql.apollo.api/CustomScalarAdapters): io.ktor.http/Url // com.apollographql.apollo.network.adapter/KtorHttpUrlAdapter.fromJson|fromJson(com.apollographql.apollo.api.json.JsonReader;com.apollographql.apollo.api.CustomScalarAdapters){}[0]
+    final fun toJson(com.apollographql.apollo.api.json/JsonWriter, com.apollographql.apollo.api/CustomScalarAdapters, io.ktor.http/Url) // com.apollographql.apollo.network.adapter/KtorHttpUrlAdapter.toJson|toJson(com.apollographql.apollo.api.json.JsonWriter;com.apollographql.apollo.api.CustomScalarAdapters;io.ktor.http.Url){}[0]
 }

@@ -1,4 +1,4 @@
-public final class com/apollographql/apollo3/android/ApolloIdlingResource : androidx/test/espresso/IdlingResource {
+public final class com/apollographql/apollo/android/ApolloIdlingResource : androidx/test/espresso/IdlingResource {
 	public fun <init> (Ljava/lang/String;)V
 	public fun getName ()Ljava/lang/String;
 	public fun isIdleNow ()Z
@@ -7,7 +7,7 @@ public final class com/apollographql/apollo3/android/ApolloIdlingResource : andr
 	public fun registerIdleTransitionCallback (Landroidx/test/espresso/IdlingResource$ResourceCallback;)V
 }
 
-public final class com/apollographql/apollo3/android/ApolloIdlingResourceKt {
-	public static final fun idlingResource (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/android/ApolloIdlingResource;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+public final class com/apollographql/apollo/android/ApolloIdlingResourceKt {
+	public static final fun idlingResource (Lcom/apollographql/apollo/ApolloClient$Builder;Lcom/apollographql/apollo/android/ApolloIdlingResource;)Lcom/apollographql/apollo/ApolloClient$Builder;
 }
 
