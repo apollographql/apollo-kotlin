@@ -1,4 +1,4 @@
-public final class com/apollographql/apollo3/mpp/UtilsKt {
+public final class com/apollographql/apollo/mpp/UtilsKt {
 	public static final fun currentTimeMillis ()J
 }
 

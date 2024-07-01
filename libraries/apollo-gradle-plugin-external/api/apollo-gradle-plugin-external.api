@@ -1,12 +1,12 @@
-public final class com/apollographql/apollo3/gradle/api/ApolloAttributes {
-	public static final field INSTANCE Lcom/apollographql/apollo3/gradle/api/ApolloAttributes;
+public final class com/apollographql/apollo/gradle/api/ApolloAttributes {
+	public static final field INSTANCE Lcom/apollographql/apollo/gradle/api/ApolloAttributes;
 	public final fun getAPOLLO_SERVICE_ATTRIBUTE ()Lorg/gradle/api/attributes/Attribute;
 }
 
-public abstract interface class com/apollographql/apollo3/gradle/api/ApolloAttributes$Service : org/gradle/api/Named {
+public abstract interface class com/apollographql/apollo/gradle/api/ApolloAttributes$Service : org/gradle/api/Named {
 }
 
-public final class com/apollographql/apollo3/gradle/api/ApolloDependencies {
+public final class com/apollographql/apollo/gradle/api/ApolloDependencies {
 	public fun <init> (Lorg/gradle/api/artifacts/dsl/DependencyHandler;)V
 	public final fun getApi ()Lorg/gradle/api/artifacts/Dependency;
 	public final fun getAst ()Lorg/gradle/api/artifacts/Dependency;
@@ -16,31 +16,31 @@ public final class com/apollographql/apollo3/gradle/api/ApolloDependencies {
 	public final fun getRuntime ()Lorg/gradle/api/artifacts/Dependency;
 }
 
-public abstract interface class com/apollographql/apollo3/gradle/api/ApolloExtension {
+public abstract interface class com/apollographql/apollo/gradle/api/ApolloExtension {
 	public abstract fun createAllAndroidVariantServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
 	public abstract fun createAllKotlinSourceSetServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
-	public abstract fun getDeps ()Lcom/apollographql/apollo3/gradle/api/ApolloDependencies;
+	public abstract fun getDeps ()Lcom/apollographql/apollo/gradle/api/ApolloDependencies;
 	public abstract fun getGenerateSourcesDuringGradleSync ()Lorg/gradle/api/provider/Property;
 	public abstract fun getLinkSqlite ()Lorg/gradle/api/provider/Property;
 	public abstract fun service (Ljava/lang/String;Lorg/gradle/api/Action;)V
 }
 
-public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel {
-	public static final field Companion Lcom/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$Companion;
+public abstract interface class com/apollographql/apollo/gradle/api/ApolloGradleToolingModel {
+	public static final field Companion Lcom/apollographql/apollo/gradle/api/ApolloGradleToolingModel$Companion;
 	public static final field VERSION_MAJOR I
 	public abstract fun getProjectName ()Ljava/lang/String;
 	public abstract fun getProjectPath ()Ljava/lang/String;
 	public abstract fun getServiceInfos ()Ljava/util/List;
-	public abstract fun getTelemetryData ()Lcom/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$TelemetryData;
+	public abstract fun getTelemetryData ()Lcom/apollographql/apollo/gradle/api/ApolloGradleToolingModel$TelemetryData;
 	public abstract fun getVersionMajor ()I
 	public abstract fun getVersionMinor ()I
 }
 
-public final class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$Companion {
+public final class com/apollographql/apollo/gradle/api/ApolloGradleToolingModel$Companion {
 	public static final field VERSION_MAJOR I
 }
 
-public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$ServiceInfo {
+public abstract interface class com/apollographql/apollo/gradle/api/ApolloGradleToolingModel$ServiceInfo {
 	public abstract fun getEndpointHeaders ()Ljava/util/Map;
 	public abstract fun getEndpointUrl ()Ljava/lang/String;
 	public abstract fun getGraphqlSrcDirs ()Ljava/util/Set;
@@ -50,7 +50,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradl
 	public abstract fun getUpstreamProjects ()Ljava/util/Set;
 }
 
-public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$TelemetryData {
+public abstract interface class com/apollographql/apollo/gradle/api/ApolloGradleToolingModel$TelemetryData {
 	public abstract fun getAndroidAgpVersion ()Ljava/lang/String;
 	public abstract fun getAndroidCompileSdk ()Ljava/lang/String;
 	public abstract fun getAndroidMinSdk ()Ljava/lang/Integer;
@@ -62,7 +62,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradl
 	public abstract fun getGradleVersion ()Ljava/lang/String;
 }
 
-public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$TelemetryData$ServiceTelemetryData {
+public abstract interface class com/apollographql/apollo/gradle/api/ApolloGradleToolingModel$TelemetryData$ServiceTelemetryData {
 	public abstract fun getAddJvmOverloads ()Ljava/lang/Boolean;
 	public abstract fun getAddTypename ()Ljava/lang/String;
 	public abstract fun getCodegenModels ()Ljava/lang/String;
@@ -91,21 +91,21 @@ public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradl
 	public abstract fun getWarnOnDeprecatedUsages ()Ljava/lang/Boolean;
 }
 
-public abstract interface class com/apollographql/apollo3/gradle/api/Introspection {
+public abstract interface class com/apollographql/apollo/gradle/api/Introspection {
 	public abstract fun getEndpointUrl ()Lorg/gradle/api/provider/Property;
 	public abstract fun getHeaders ()Lorg/gradle/api/provider/MapProperty;
 	public abstract fun getSchemaFile ()Lorg/gradle/api/file/RegularFileProperty;
 	public abstract fun schemaConnection (Lorg/gradle/api/Action;)V
 }
 
-public abstract interface class com/apollographql/apollo3/gradle/api/RegisterOperationsConfig {
+public abstract interface class com/apollographql/apollo/gradle/api/RegisterOperationsConfig {
 	public abstract fun getGraph ()Lorg/gradle/api/provider/Property;
 	public abstract fun getGraphVariant ()Lorg/gradle/api/provider/Property;
 	public abstract fun getKey ()Lorg/gradle/api/provider/Property;
 	public abstract fun getListId ()Lorg/gradle/api/provider/Property;
 }
 
-public abstract interface class com/apollographql/apollo3/gradle/api/Registry {
+public abstract interface class com/apollographql/apollo/gradle/api/Registry {
 	public abstract fun getGraph ()Lorg/gradle/api/provider/Property;
 	public abstract fun getGraphVariant ()Lorg/gradle/api/provider/Property;
 	public abstract fun getKey ()Lorg/gradle/api/provider/Property;
@@ -113,13 +113,13 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Registry {
 	public abstract fun schemaConnection (Lorg/gradle/api/Action;)V
 }
 
-public final class com/apollographql/apollo3/gradle/api/SchemaConnection {
+public final class com/apollographql/apollo/gradle/api/SchemaConnection {
 	public fun <init> (Lorg/gradle/api/tasks/TaskProvider;Lorg/gradle/api/provider/Provider;)V
 	public final fun getDownloadedSchema ()Lorg/gradle/api/provider/Provider;
 	public final fun getTask ()Lorg/gradle/api/tasks/TaskProvider;
 }
 
-public abstract interface class com/apollographql/apollo3/gradle/api/Service {
+public abstract interface class com/apollographql/apollo/gradle/api/Service {
 	public abstract fun dependsOn (Ljava/lang/Object;)V
 	public abstract fun getAddJvmOverloads ()Lorg/gradle/api/provider/Property;
 	public abstract fun getAddTypename ()Lorg/gradle/api/provider/Property;
@@ -185,7 +185,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun operationOutputConnection (Lorg/gradle/api/Action;)V
 	public abstract fun outputDirConnection (Lorg/gradle/api/Action;)V
 	public abstract fun packageNamesFromFilePaths (Ljava/lang/String;)V
-	public static synthetic fun packageNamesFromFilePaths$default (Lcom/apollographql/apollo3/gradle/api/Service;Ljava/lang/String;ILjava/lang/Object;)V
+	public static synthetic fun packageNamesFromFilePaths$default (Lcom/apollographql/apollo/gradle/api/Service;Ljava/lang/String;ILjava/lang/Object;)V
 	public abstract fun plugin (Ljava/lang/Object;)V
 	public abstract fun registerOperations (Lorg/gradle/api/Action;)V
 	public abstract fun registry (Lorg/gradle/api/Action;)V
@@ -194,7 +194,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun usedCoordinates (Ljava/lang/String;)V
 }
 
-public abstract interface class com/apollographql/apollo3/gradle/api/Service$DirectoryConnection {
+public abstract interface class com/apollographql/apollo/gradle/api/Service$DirectoryConnection {
 	public abstract fun connectToAllAndroidVariants ()V
 	public abstract fun connectToAndroidSourceSet (Ljava/lang/String;)V
 	public abstract fun connectToAndroidVariant (Ljava/lang/Object;)V
@@ -204,13 +204,13 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service$Dir
 	public abstract fun getTask ()Lorg/gradle/api/tasks/TaskProvider;
 }
 
-public final class com/apollographql/apollo3/gradle/api/Service$OperationManifestConnection {
+public final class com/apollographql/apollo/gradle/api/Service$OperationManifestConnection {
 	public fun <init> (Lorg/gradle/api/tasks/TaskProvider;Lorg/gradle/api/provider/Provider;)V
 	public final fun getManifest ()Lorg/gradle/api/provider/Provider;
 	public final fun getTask ()Lorg/gradle/api/tasks/TaskProvider;
 }
 
-public final class com/apollographql/apollo3/gradle/api/Service$OperationOutputConnection {
+public final class com/apollographql/apollo/gradle/api/Service$OperationOutputConnection {
 	public fun <init> (Lorg/gradle/api/tasks/TaskProvider;Lorg/gradle/api/provider/Provider;)V
 	public final fun getOperationOutputFile ()Lorg/gradle/api/provider/Provider;
 	public final fun getTask ()Lorg/gradle/api/tasks/TaskProvider;

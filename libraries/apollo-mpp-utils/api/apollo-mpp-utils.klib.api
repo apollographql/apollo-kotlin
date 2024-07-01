@@ -5,5 +5,5 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <com.apollographql.apollo3:apollo-mpp-utils>
-final fun com.apollographql.apollo3.mpp/currentTimeMillis(): kotlin/Long // com.apollographql.apollo3.mpp/currentTimeMillis|currentTimeMillis(){}[0]
+// Library unique name: <com.apollographql.apollo:apollo-mpp-utils>
+final fun com.apollographql.apollo.mpp/currentTimeMillis(): kotlin/Long // com.apollographql.apollo.mpp/currentTimeMillis|currentTimeMillis(){}[0]

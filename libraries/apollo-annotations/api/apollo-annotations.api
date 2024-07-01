@@ -1,13 +1,13 @@
-public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloAdaptableWith : java/lang/annotation/Annotation {
+public abstract interface annotation class com/apollographql/apollo/annotations/ApolloAdaptableWith : java/lang/annotation/Annotation {
 	public abstract fun adapter ()Ljava/lang/Class;
 }
 
-public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloExperimental : java/lang/annotation/Annotation {
+public abstract interface annotation class com/apollographql/apollo/annotations/ApolloExperimental : java/lang/annotation/Annotation {
 }
 
-public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloInternal : java/lang/annotation/Annotation {
+public abstract interface annotation class com/apollographql/apollo/annotations/ApolloInternal : java/lang/annotation/Annotation {
 }
 
-public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloRequiresOptIn : java/lang/annotation/Annotation {
+public abstract interface annotation class com/apollographql/apollo/annotations/ApolloRequiresOptIn : java/lang/annotation/Annotation {
 }
 
