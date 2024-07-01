@@ -1,7 +1,7 @@
-public final class com/apollographql/apollo3/debugserver/ApolloDebugServer {
-	public static final field INSTANCE Lcom/apollographql/apollo3/debugserver/ApolloDebugServer;
-	public final fun registerApolloClient (Lcom/apollographql/apollo3/ApolloClient;Ljava/lang/String;)V
-	public static synthetic fun registerApolloClient$default (Lcom/apollographql/apollo3/debugserver/ApolloDebugServer;Lcom/apollographql/apollo3/ApolloClient;Ljava/lang/String;ILjava/lang/Object;)V
-	public final fun unregisterApolloClient (Lcom/apollographql/apollo3/ApolloClient;)V
+public final class com/apollographql/apollo/debugserver/ApolloDebugServer {
+	public static final field INSTANCE Lcom/apollographql/apollo/debugserver/ApolloDebugServer;
+	public final fun registerApolloClient (Lcom/apollographql/apollo/ApolloClient;Ljava/lang/String;)V
+	public static synthetic fun registerApolloClient$default (Lcom/apollographql/apollo/debugserver/ApolloDebugServer;Lcom/apollographql/apollo/ApolloClient;Ljava/lang/String;ILjava/lang/Object;)V
+	public final fun unregisterApolloClient (Lcom/apollographql/apollo/ApolloClient;)V
 }
 
