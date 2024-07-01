@@ -39,13 +39,13 @@ This tutorial uses `4.0.0-beta.7` because it is the latest version at the time o
 
 ## Apply the plugin
 
-Apply the Apollo plugin in `app/build.gradle.kts`. There are two `build.gradle.kts` in the project. Make sure to use the one in the `app` directory this time. The Apollo plugin ID is `com.apollographql.apollo3`.
+Apply the Apollo plugin in `app/build.gradle.kts`. There are two `build.gradle.kts` in the project. Make sure to use the one in the `app` directory this time. The Apollo plugin ID is `com.apollographql.apollo`.
 
 ```kotlin title="app/build.gradle.kts"
 plugins {
     id("com.android.application")
     // ...
-    id("com.apollographql.apollo3") version "4.0.0-beta.7"
+    id("com.apollographql.apollo") version "4.0.0-beta.7"
 }
 ```
 
@@ -72,7 +72,7 @@ Now add `apollo-runtime` to the list of dependencies. This is the code that exec
 ```kotlin title="app/build.gradle.kts"
 dependencies {
     // ...
-    implementation("com.apollographql.apollo3:apollo-runtime:4.0.0-beta.7")
+    implementation("com.apollographql.apollo:apollo-runtime:4.0.0-beta.7")
 }
 ```
 

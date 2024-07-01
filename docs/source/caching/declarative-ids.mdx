@@ -73,7 +73,7 @@ In this case, the cache ID for an `Author` object includes the values of both it
 
 ## Adding `__typename` to your operations
 
-In addition to the key fields, the declarative cache requires the `__typename` of each object by default. These typenames are not included by default as they make query larger for non-cache users. To avoid cache misses, add `__typename` to every selection using [addTypename](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo3.gradle.api/-service/add-typename.html):
+In addition to the key fields, the declarative cache requires the `__typename` of each object by default. These typenames are not included by default as they make query larger for non-cache users. To avoid cache misses, add `__typename` to every selection using [addTypename](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo.gradle.api/-service/add-typename.html):
 
 ```kotlin
 apollo {

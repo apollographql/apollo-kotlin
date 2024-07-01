@@ -33,7 +33,7 @@ plugins {
 
 dependencies {
   // Add apollo-compiler as a dependency
-  implementation("com.apollographql.apollo3:apollo-compiler:4.0.0-beta.7")  
+  implementation("com.apollographql.apollo:apollo-compiler:4.0.0-beta.7")  
 }
 ```
 
@@ -42,10 +42,10 @@ Next create your plugin in a `src/main/kotlin/mypackage/MyPlugin` file:
 ```kotlin
 package mypackage
 
-import com.apollographql.apollo3.compiler.OperationOutputGenerator
-import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
-import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo3.compiler.operationoutput.OperationId
+import com.apollographql.apollo.compiler.OperationOutputGenerator
+import com.apollographql.apollo.compiler.ApolloCompilerPlugin
+import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo.compiler.operationoutput.OperationId
 
 class MyPlugin: ApolloCompilerPlugin {
   override fun operationIds(descriptors: List<OperationDescriptor>): List<OperationId> {
@@ -72,7 +72,7 @@ class MyPluginProvider: ApolloCompilerPluginProvider {
 }
 ```
 
-Make your plugin discoverable by [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) by adding a resource in `src/main/resources/META-INF/services/com.apollographql.apollo3.compiler.ApolloCompilerPluginProvider`. This file contains the fully qualified name of your plugin: 
+Make your plugin discoverable by [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) by adding a resource in `src/main/resources/META-INF/services/com.apollographql.apollo.compiler.ApolloCompilerPluginProvider`. This file contains the fully qualified name of your plugin: 
 
 ```
 mypackage.MyPluginProvider
@@ -80,7 +80,7 @@ mypackage.MyPluginProvider
 
 <Note>
 
-The name of the resource file is important. It must be `com.apollographql.apollo3.compiler.ApolloCompilerPluginProvider` and be in the `META-INF/services` folder. This is how `ServiceLoader` looks up plugins at runtime.
+The name of the resource file is important. It must be `com.apollographql.apollo.compiler.ApolloCompilerPluginProvider` and be in the `META-INF/services` folder. This is how `ServiceLoader` looks up plugins at runtime.
 </Note>
 
 ## Adding a plugin to the Apollo compiler classpath
@@ -91,7 +91,7 @@ Use the `Service.plugin()` Gradle method to add the plugin to the Apollo compile
 // app/build.gradle.kts
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("com.apollographql.apollo3")
+  id("com.apollographql.apollo")
 }
 
 apollo {
@@ -146,6 +146,6 @@ Because codegen is run in a separate classloader when using compiler plugins, it
 
 ## Other references
 
-For other plugin APIs like layout, IR, JavaPoet and KotlinPoet transforms, check out the [ApolloCompilerPlugin API docs](https://www.apollographql.com/docs/kotlin/kdoc/apollo-compiler/com.apollographql.apollo3.compiler/-apollo-compiler-plugin/index.html)
+For other plugin APIs like layout, IR, JavaPoet and KotlinPoet transforms, check out the [ApolloCompilerPlugin API docs](https://www.apollographql.com/docs/kotlin/kdoc/apollo-compiler/com.apollographql.apollo.compiler/-apollo-compiler-plugin/index.html)
 
 For more examples, check out the [integration-tests](https://github.com/apollographql/apollo-kotlin/tree/main/tests/compiler-plugins).
