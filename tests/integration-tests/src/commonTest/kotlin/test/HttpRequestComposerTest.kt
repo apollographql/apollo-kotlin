@@ -1,14 +1,14 @@
 package test
 
 import checkTestFixture
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
-import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassWriter
@@ -112,7 +112,7 @@ class ApolloProcessorProviderDump(val serviceName: String, val packageName: Stri
       val label1 = Label()
       methodVisitor.visitLabel(label1)
       methodVisitor.visitLineNumber(12, label1)
-      methodVisitor.visitTypeInsn(Opcodes.NEW, "com/apollographql/apollo3/ksp/ApolloProcessor")
+      methodVisitor.visitTypeInsn(Opcodes.NEW, "com/apollographql/apollo/ksp/ApolloProcessor")
       methodVisitor.visitInsn(Opcodes.DUP)
       val label2 = Label()
       methodVisitor.visitLabel(label2)
@@ -135,7 +135,7 @@ class ApolloProcessorProviderDump(val serviceName: String, val packageName: Stri
       val label6 = Label()
       methodVisitor.visitLabel(label6)
       methodVisitor.visitLineNumber(12, label6)
-      methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, "com/apollographql/apollo3/ksp/ApolloProcessor", "<init>", "(Lcom/google/devtools/ksp/processing/CodeGenerator;Lcom/google/devtools/ksp/processing/KSPLogger;Ljava/lang/String;Ljava/lang/String;)V", false)
+      methodVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, "com/apollographql/apollo/ksp/ApolloProcessor", "<init>", "(Lcom/google/devtools/ksp/processing/CodeGenerator;Lcom/google/devtools/ksp/processing/KSPLogger;Ljava/lang/String;Ljava/lang/String;)V", false)
       methodVisitor.visitTypeInsn(Opcodes.CHECKCAST, "com/google/devtools/ksp/processing/SymbolProcessor")
       methodVisitor.visitInsn(Opcodes.ARETURN)
       val label7 = Label()

@@ -1,13 +1,13 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.schema
+package com.apollographql.apollo.compiler.codegen.kotlin.schema
 
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSchemaContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
-import com.apollographql.apollo3.compiler.codegen.kotlin.schema.util.typePropertySpec
-import com.apollographql.apollo3.compiler.codegen.typePackageName
-import com.apollographql.apollo3.compiler.ir.IrScalar
+import com.apollographql.apollo.compiler.codegen.kotlin.CgFile
+import com.apollographql.apollo.compiler.codegen.kotlin.CgFileBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSchemaContext
+import com.apollographql.apollo.compiler.codegen.kotlin.helpers.maybeAddDeprecation
+import com.apollographql.apollo.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo.compiler.codegen.kotlin.schema.util.typePropertySpec
+import com.apollographql.apollo.compiler.codegen.typePackageName
+import com.apollographql.apollo.compiler.ir.IrScalar
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 

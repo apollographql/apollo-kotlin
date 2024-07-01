@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo.ast
 
 /**
  * A variable used in a [GQLValue]

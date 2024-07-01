@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo.annotations.ApolloAdaptableWith
+import com.apollographql.apollo.api.json.JsonWriter
 import kotlin.reflect.ExperimentalAssociatedObjects
 import kotlin.reflect.findAssociatedObject
 

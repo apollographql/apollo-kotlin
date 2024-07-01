@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.network.ws
+package com.apollographql.apollo.network.ws
 
-import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo.api.http.HttpHeader
 import okio.ByteString
 
 /**

@@ -1,13 +1,13 @@
 /*
  * This file is auto generated from apollo-rx2-support-java by rxjava3.main.kts, do not edit manually.
  */
-package com.apollographql.apollo3.rx3.java;
+package com.apollographql.apollo.rx3.java;
 
-import com.apollographql.apollo3.api.ApolloResponse;
-import com.apollographql.apollo3.api.Operation;
-import com.apollographql.apollo3.runtime.java.ApolloCall;
-import com.apollographql.apollo3.runtime.java.ApolloCallback;
-import com.apollographql.apollo3.runtime.java.ApolloDisposable;
+import com.apollographql.apollo.api.ApolloResponse;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.runtime.java.ApolloCall;
+import com.apollographql.apollo.runtime.java.ApolloCallback;
+import com.apollographql.apollo.runtime.java.ApolloDisposable;
 import io.reactivex.rxjava3.annotations.CheckReturnValue;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Flowable;
@@ -15,7 +15,7 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
 
-import static com.apollographql.apollo3.api.java.Assertions.checkNotNull;
+import static com.apollographql.apollo.api.java.Assertions.checkNotNull;
 
 public class Rx3Apollo {
   @NotNull

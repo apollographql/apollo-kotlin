@@ -1,26 +1,26 @@
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.apollo3.compiler.codegen
+package com.apollographql.apollo.compiler.codegen
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.compiler.CodegenSchema
-import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.allTypes
-import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
-import com.apollographql.apollo3.compiler.defaultDecapitalizeFields
-import com.apollographql.apollo3.compiler.defaultGeneratedSchemaName
-import com.apollographql.apollo3.compiler.defaultUseSemanticNaming
-import com.apollographql.apollo3.compiler.internal.singularize
-import com.apollographql.apollo3.compiler.ir.IrFieldInfo
-import com.apollographql.apollo3.compiler.ir.IrListType
-import com.apollographql.apollo3.compiler.ir.IrOperation
-import com.apollographql.apollo3.compiler.ir.IrType
-import com.apollographql.apollo3.compiler.ir.TypeSet
-import com.apollographql.apollo3.compiler.maybeAddSuffix
-import com.apollographql.apollo3.compiler.uniqueName
-import com.apollographql.apollo3.compiler.upperCamelCaseIgnoringNonLetters
-import com.apollographql.apollo3.compiler.withUnderscorePrefix
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.compiler.CodegenSchema
+import com.apollographql.apollo.compiler.PackageNameGenerator
+import com.apollographql.apollo.compiler.allTypes
+import com.apollographql.apollo.compiler.capitalizeFirstLetter
+import com.apollographql.apollo.compiler.decapitalizeFirstLetter
+import com.apollographql.apollo.compiler.defaultDecapitalizeFields
+import com.apollographql.apollo.compiler.defaultGeneratedSchemaName
+import com.apollographql.apollo.compiler.defaultUseSemanticNaming
+import com.apollographql.apollo.compiler.internal.singularize
+import com.apollographql.apollo.compiler.ir.IrFieldInfo
+import com.apollographql.apollo.compiler.ir.IrListType
+import com.apollographql.apollo.compiler.ir.IrOperation
+import com.apollographql.apollo.compiler.ir.IrType
+import com.apollographql.apollo.compiler.ir.TypeSet
+import com.apollographql.apollo.compiler.maybeAddSuffix
+import com.apollographql.apollo.compiler.uniqueName
+import com.apollographql.apollo.compiler.upperCamelCaseIgnoringNonLetters
+import com.apollographql.apollo.compiler.withUnderscorePrefix
 
 /**
  * The central place where the names/packages of the different classes are decided and escape rules done.

@@ -1,22 +1,22 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.ast.GQLFragmentSpread
-import com.apollographql.apollo3.ast.GQLInlineFragment
-import com.apollographql.apollo3.ast.GQLNode
-import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.compiler.ApolloCompiler.Logger
-import com.apollographql.apollo3.compiler.TargetLanguage.JAVA
-import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_5
-import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_9
-import com.apollographql.apollo3.compiler.TestUtils.checkTestFixture
-import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateMeasurements
-import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateTestFixtures
-import com.apollographql.apollo3.compiler.codegen.SourceOutput
-import com.apollographql.apollo3.compiler.codegen.java.JavaOutput
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOutput
-import com.apollographql.apollo3.compiler.codegen.writeTo
-import com.apollographql.apollo3.compiler.ir.IrOperations
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.ast.GQLFragmentSpread
+import com.apollographql.apollo.ast.GQLInlineFragment
+import com.apollographql.apollo.ast.GQLNode
+import com.apollographql.apollo.ast.parseAsGQLDocument
+import com.apollographql.apollo.compiler.ApolloCompiler.Logger
+import com.apollographql.apollo.compiler.TargetLanguage.JAVA
+import com.apollographql.apollo.compiler.TargetLanguage.KOTLIN_1_5
+import com.apollographql.apollo.compiler.TargetLanguage.KOTLIN_1_9
+import com.apollographql.apollo.compiler.TestUtils.checkTestFixture
+import com.apollographql.apollo.compiler.TestUtils.shouldUpdateMeasurements
+import com.apollographql.apollo.compiler.TestUtils.shouldUpdateTestFixtures
+import com.apollographql.apollo.compiler.codegen.SourceOutput
+import com.apollographql.apollo.compiler.codegen.java.JavaOutput
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
+import com.apollographql.apollo.compiler.codegen.writeTo
+import com.apollographql.apollo.compiler.ir.IrOperations
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.AfterClass
@@ -381,7 +381,7 @@ class CodegenTest {
       }
 
       val requiresOptInAnnotation = when (folder.name) {
-        "suppressed_warnings" -> "com.apollographql.apollo3.annotations.ApolloRequiresOptIn"
+        "suppressed_warnings" -> "com.apollographql.apollo.annotations.ApolloRequiresOptIn"
         else -> "none"
       }
 

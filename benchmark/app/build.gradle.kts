@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 plugins {
   id("com.android.application")
   id("org.jetbrains.kotlin.android")
-  id("com.apollographql.apollo3")
+  id("com.apollographql.apollo")
   alias(libs.plugins.kotlin.compose)
 }
 
@@ -47,8 +47,8 @@ android {
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime")
-  implementation("com.apollographql.apollo3:apollo-normalized-cache")
+  implementation("com.apollographql.apollo:apollo-runtime")
+  implementation("com.apollographql.apollo:apollo-normalized-cache")
   implementation(libs.compose.runtime)
   implementation(libs.compose.ui)
   implementation(libs.androidx.profileinstaller)

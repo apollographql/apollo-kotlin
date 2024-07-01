@@ -1,17 +1,17 @@
 @file:JvmName("Operations")
 
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.internal.ResponseParser
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.api.json.writeObject
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.exception.JsonDataException
-import com.apollographql.apollo3.exception.JsonEncodingException
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.internal.ResponseParser
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.json.buildJsonString
+import com.apollographql.apollo.api.json.writeObject
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.exception.JsonDataException
+import com.apollographql.apollo.exception.JsonEncodingException
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 import okio.IOException

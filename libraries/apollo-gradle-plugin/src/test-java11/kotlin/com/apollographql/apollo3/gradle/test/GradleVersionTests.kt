@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.gradle.test
+package com.apollographql.apollo.gradle.test
 
-import com.apollographql.apollo3.compiler.APOLLO_VERSION
-import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.MIN_GRADLE_VERSION
+import com.apollographql.apollo.compiler.APOLLO_VERSION
+import com.apollographql.apollo.gradle.internal.DefaultApolloExtension.Companion.MIN_GRADLE_VERSION
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure

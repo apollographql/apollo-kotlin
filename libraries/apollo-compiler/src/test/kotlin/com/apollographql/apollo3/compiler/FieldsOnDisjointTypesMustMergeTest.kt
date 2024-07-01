@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.validateAsExecutable
-import com.apollographql.apollo3.compiler.TestUtils.checkExpected
-import com.apollographql.apollo3.compiler.TestUtils.findSchema
-import com.apollographql.apollo3.compiler.TestUtils.serialize
+import com.apollographql.apollo.ast.parseAsGQLDocument
+import com.apollographql.apollo.ast.validateAsExecutable
+import com.apollographql.apollo.compiler.TestUtils.checkExpected
+import com.apollographql.apollo.compiler.TestUtils.findSchema
+import com.apollographql.apollo.compiler.TestUtils.serialize
 import okio.buffer
 import okio.source
 import org.junit.Assert.assertTrue

@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.engine.tests
+package com.apollographql.apollo.engine.tests
 
-import com.apollographql.apollo3.network.http.HttpEngine
-import com.apollographql.apollo3.network.ws.WebSocketEngine
+import com.apollographql.apollo.network.http.HttpEngine
+import com.apollographql.apollo.network.ws.WebSocketEngine
 
 suspend fun runAllTests(engine: (Long) -> HttpEngine, webSocketEngine: () -> WebSocketEngine, checkCloseFrame: Boolean) {
   gzipTest(engine(60_000))

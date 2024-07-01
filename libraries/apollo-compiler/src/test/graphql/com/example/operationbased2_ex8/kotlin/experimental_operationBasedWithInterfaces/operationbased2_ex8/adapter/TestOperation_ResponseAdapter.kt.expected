@@ -5,13 +5,13 @@
 //
 package com.example.operationbased2_ex8.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.nullable
-import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.StringAdapter
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.nullable
+import com.apollographql.apollo.api.obj
 import com.example.operationbased2_ex8.TestOperation
 import kotlin.String
 import kotlin.Unit

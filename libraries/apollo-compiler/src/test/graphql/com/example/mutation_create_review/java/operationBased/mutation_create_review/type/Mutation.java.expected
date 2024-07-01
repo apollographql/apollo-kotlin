@@ -5,8 +5,8 @@
 //
 package com.example.mutation_create_review.type;
 
-import com.apollographql.apollo3.api.CompiledArgumentDefinition;
-import com.apollographql.apollo3.api.ObjectType;
+import com.apollographql.apollo.api.CompiledArgumentDefinition;
+import com.apollographql.apollo.api.ObjectType;
 
 /**
  * The mutation type, represents all updates we can make to our data

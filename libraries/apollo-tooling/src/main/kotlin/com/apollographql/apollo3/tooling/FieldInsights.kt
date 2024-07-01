@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.tooling
+package com.apollographql.apollo.tooling
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.tooling.platformapi.internal.FieldLatenciesQuery
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.tooling.platformapi.internal.FieldLatenciesQuery
 import java.time.Instant
 
 @ApolloExperimental

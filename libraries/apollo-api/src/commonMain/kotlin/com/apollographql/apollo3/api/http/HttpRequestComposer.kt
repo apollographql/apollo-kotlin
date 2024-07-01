@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.api.http
+package com.apollographql.apollo.api.http
 
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.Operation
 
 /**
  * [HttpRequestComposer] transforms a GraphQL request in a [HttpRequest]. Typically, this involves building a

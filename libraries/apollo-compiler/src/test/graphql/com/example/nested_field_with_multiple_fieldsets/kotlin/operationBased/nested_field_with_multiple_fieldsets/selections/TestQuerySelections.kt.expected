@@ -5,10 +5,10 @@
 //
 package com.example.nested_field_with_multiple_fieldsets.selections
 
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.notNull
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledFragment
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.notNull
 import com.example.nested_field_with_multiple_fieldsets.type.GraphQLString
 import com.example.nested_field_with_multiple_fieldsets.type.Iface1
 import com.example.nested_field_with_multiple_fieldsets.type.Iface2

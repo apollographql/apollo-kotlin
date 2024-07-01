@@ -1,8 +1,8 @@
 package test
 
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.api.toApolloResponse
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.parseJsonResponse
+import com.apollographql.apollo.api.toApolloResponse
 import okio.buffer
 import okio.source
 import org.junit.Test

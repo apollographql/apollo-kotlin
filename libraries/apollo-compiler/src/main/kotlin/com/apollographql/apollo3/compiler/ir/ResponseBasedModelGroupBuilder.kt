@@ -1,16 +1,16 @@
-package com.apollographql.apollo3.compiler.ir
+package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo3.ast.CatchTo
-import com.apollographql.apollo3.ast.GQLField
-import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.GQLFragmentSpread
-import com.apollographql.apollo3.ast.GQLInlineFragment
-import com.apollographql.apollo3.ast.GQLNamedType
-import com.apollographql.apollo3.ast.GQLNonNullType
-import com.apollographql.apollo3.ast.GQLSelection
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.compiler.codegen.modelName
-import com.apollographql.apollo3.compiler.upperCamelCaseIgnoringNonLetters
+import com.apollographql.apollo.ast.CatchTo
+import com.apollographql.apollo.ast.GQLField
+import com.apollographql.apollo.ast.GQLFragmentDefinition
+import com.apollographql.apollo.ast.GQLFragmentSpread
+import com.apollographql.apollo.ast.GQLInlineFragment
+import com.apollographql.apollo.ast.GQLNamedType
+import com.apollographql.apollo.ast.GQLNonNullType
+import com.apollographql.apollo.ast.GQLSelection
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.compiler.codegen.modelName
+import com.apollographql.apollo.compiler.upperCamelCaseIgnoringNonLetters
 
 internal class ResponseBasedModelGroupBuilder(
     schema: Schema,

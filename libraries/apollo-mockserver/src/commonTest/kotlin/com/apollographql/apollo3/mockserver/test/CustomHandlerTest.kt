@@ -1,15 +1,15 @@
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.apollo3.mockserver.test
+package com.apollographql.apollo.mockserver.test
 
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.mockserver.MockRequestBase
-import com.apollographql.apollo3.mockserver.MockResponse
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.MockServerHandler
-import com.apollographql.apollo3.network.http.DefaultHttpEngine
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.api.http.HttpRequest
+import com.apollographql.apollo.mockserver.MockRequestBase
+import com.apollographql.apollo.mockserver.MockResponse
+import com.apollographql.apollo.mockserver.MockServer
+import com.apollographql.apollo.mockserver.MockServerHandler
+import com.apollographql.apollo.network.http.DefaultHttpEngine
+import com.apollographql.apollo.testing.internal.runTest
 import kotlin.test.Test
 
 class CustomHandlerTest {

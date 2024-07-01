@@ -1,14 +1,14 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.composeJsonResponse
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.normalizedCache
-import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.composeJsonResponse
+import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.cache.normalized.normalizedCache
+import com.apollographql.apollo.integration.normalizer.HeroNameQuery
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import org.junit.Test
 import kotlin.test.fail
 

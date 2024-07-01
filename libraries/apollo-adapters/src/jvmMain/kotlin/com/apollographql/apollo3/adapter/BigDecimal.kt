@@ -1,8 +1,8 @@
 @file:Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT")
 
-package com.apollographql.apollo3.adapter
+package com.apollographql.apollo.adapter
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import java.math.BigDecimal as JBigDecimal
 
 @Deprecated("BigDecimal has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-4-migration-guide for more details.")

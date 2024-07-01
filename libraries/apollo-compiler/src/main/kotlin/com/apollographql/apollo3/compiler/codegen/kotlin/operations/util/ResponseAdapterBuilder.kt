@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.operations.util
+package com.apollographql.apollo.compiler.codegen.kotlin.operations.util
 
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.ir.IrModelGroup
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo.compiler.ir.IrModelGroup
 import com.squareup.kotlinpoet.TypeSpec
 
 internal interface ResponseAdapterBuilder {

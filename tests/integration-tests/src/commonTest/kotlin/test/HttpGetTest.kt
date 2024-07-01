@@ -1,14 +1,14 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
-import com.apollographql.apollo3.integration.normalizer.SearchHeroQuery
-import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery
+import com.apollographql.apollo.integration.normalizer.SearchHeroQuery
+import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import kotlinx.coroutines.CoroutineScope
 import okio.use
 import kotlin.test.Test

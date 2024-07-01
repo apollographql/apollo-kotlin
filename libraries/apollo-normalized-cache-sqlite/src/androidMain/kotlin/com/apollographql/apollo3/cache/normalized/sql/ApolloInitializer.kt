@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.cache.normalized.sql
+package com.apollographql.apollo.cache.normalized.sql
 
 import android.content.Context
 import androidx.startup.Initializer

@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin
+package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec

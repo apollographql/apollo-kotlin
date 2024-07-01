@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.adapter
+package com.apollographql.apollo.adapter
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import platform.Foundation.NSDecimalNumber
 
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)

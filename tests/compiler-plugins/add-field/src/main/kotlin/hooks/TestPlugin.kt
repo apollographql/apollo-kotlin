@@ -1,18 +1,18 @@
 package hooks
 
-import com.apollographql.apollo3.ast.GQLField
-import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.GQLFragmentSpread
-import com.apollographql.apollo3.ast.GQLInlineFragment
-import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.GQLSelection
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.definitionFromScope
-import com.apollographql.apollo3.ast.rawType
-import com.apollographql.apollo3.ast.responseName
-import com.apollographql.apollo3.ast.rootTypeDefinition
-import com.apollographql.apollo3.compiler.DocumentTransform
-import com.apollographql.apollo3.compiler.ApolloCompilerPlugin
+import com.apollographql.apollo.ast.GQLField
+import com.apollographql.apollo.ast.GQLFragmentDefinition
+import com.apollographql.apollo.ast.GQLFragmentSpread
+import com.apollographql.apollo.ast.GQLInlineFragment
+import com.apollographql.apollo.ast.GQLOperationDefinition
+import com.apollographql.apollo.ast.GQLSelection
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.definitionFromScope
+import com.apollographql.apollo.ast.rawType
+import com.apollographql.apollo.ast.responseName
+import com.apollographql.apollo.ast.rootTypeDefinition
+import com.apollographql.apollo.compiler.DocumentTransform
+import com.apollographql.apollo.compiler.ApolloCompilerPlugin
 
 class TestPlugin : ApolloCompilerPlugin {
   override fun documentTransform(): DocumentTransform {

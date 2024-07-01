@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.compiler.internal
+package com.apollographql.apollo.compiler.internal
 
-import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo.compiler.capitalizeFirstLetter
 import java.util.regex.Pattern
 
 /**

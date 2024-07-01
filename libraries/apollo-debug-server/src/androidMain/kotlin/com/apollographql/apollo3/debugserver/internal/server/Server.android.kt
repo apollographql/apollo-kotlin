@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.debugserver.internal.server
+package com.apollographql.apollo.debugserver.internal.server
 
 import android.net.LocalServerSocket
 import android.net.LocalSocket
 import android.util.Log
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.debugserver.internal.graphql.GraphQL
-import com.apollographql.apollo3.debugserver.internal.initializer.ApolloDebugServerInitializer
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.debugserver.internal.graphql.GraphQL
+import com.apollographql.apollo.debugserver.internal.initializer.ApolloDebugServerInitializer
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob

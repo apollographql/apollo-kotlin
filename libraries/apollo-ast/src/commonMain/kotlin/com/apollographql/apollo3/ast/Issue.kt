@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo.ast
 
-import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo.annotations.ApolloInternal
 
 /**
  * All the issues that can be collected while analyzing a graphql document

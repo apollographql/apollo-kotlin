@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.network.ws
+package com.apollographql.apollo.network.ws
 
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.Operation
 
 open class SubscriptionWsProtocolAdapter(webSocketConnection: WebSocketConnection, listener: Listener): WsProtocol(webSocketConnection, listener) {
   private val delegate = SubscriptionWsProtocol(webSocketConnection, listener)

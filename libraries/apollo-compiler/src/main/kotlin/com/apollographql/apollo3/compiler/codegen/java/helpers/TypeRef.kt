@@ -1,13 +1,13 @@
-package com.apollographql.apollo3.compiler.codegen.java.helpers
+package com.apollographql.apollo.compiler.codegen.java.helpers
 
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaContext
-import com.apollographql.apollo3.compiler.codegen.java.L
-import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.ir.IrListTypeRef
-import com.apollographql.apollo3.compiler.ir.IrNamedTypeRef
-import com.apollographql.apollo3.compiler.ir.IrNonNullTypeRef
-import com.apollographql.apollo3.compiler.ir.IrTypeRef
+import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
+import com.apollographql.apollo.compiler.codegen.java.JavaContext
+import com.apollographql.apollo.compiler.codegen.java.L
+import com.apollographql.apollo.compiler.codegen.java.T
+import com.apollographql.apollo.compiler.ir.IrListTypeRef
+import com.apollographql.apollo.compiler.ir.IrNamedTypeRef
+import com.apollographql.apollo.compiler.ir.IrNonNullTypeRef
+import com.apollographql.apollo.compiler.ir.IrTypeRef
 import com.squareup.javapoet.CodeBlock
 
 internal fun IrTypeRef.codeBlock(context: JavaContext): CodeBlock {

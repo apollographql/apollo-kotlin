@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.compiler.codegen.java.schema
+package com.apollographql.apollo.compiler.codegen.java.schema
 
-import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
-import com.apollographql.apollo3.compiler.codegen.java.JavaSchemaContext
-import com.apollographql.apollo3.compiler.codegen.typeUtilPackageName
+import com.apollographql.apollo.compiler.codegen.java.CodegenJavaFile
+import com.apollographql.apollo.compiler.codegen.java.JavaClassBuilder
+import com.apollographql.apollo.compiler.codegen.java.JavaSchemaContext
+import com.apollographql.apollo.compiler.codegen.typeUtilPackageName
 import com.squareup.javapoet.ArrayTypeName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec

@@ -5,7 +5,7 @@
 //
 package com.example.deprecation.type;
 
-import com.apollographql.apollo3.api.EnumType;
+import com.apollographql.apollo.api.EnumType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;

@@ -1,28 +1,28 @@
-package com.apollographql.apollo3.compiler.codegen.java.schema
+package com.apollographql.apollo.compiler.codegen.java.schema
 
-import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.type
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaResolver
-import com.apollographql.apollo3.compiler.codegen.java.L
-import com.apollographql.apollo3.compiler.codegen.java.S
-import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
-import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
-import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializerCodeblock
-import com.apollographql.apollo3.compiler.codegen.java.joinToCode
-import com.apollographql.apollo3.compiler.ir.IrScalar
-import com.apollographql.apollo3.compiler.ir.IrEnum
-import com.apollographql.apollo3.compiler.ir.IrInterface
-import com.apollographql.apollo3.compiler.ir.IrObject
-import com.apollographql.apollo3.compiler.ir.IrUnion
+import com.apollographql.apollo.compiler.codegen.Identifier
+import com.apollographql.apollo.compiler.codegen.Identifier.type
+import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
+import com.apollographql.apollo.compiler.codegen.java.JavaResolver
+import com.apollographql.apollo.compiler.codegen.java.L
+import com.apollographql.apollo.compiler.codegen.java.S
+import com.apollographql.apollo.compiler.codegen.java.T
+import com.apollographql.apollo.compiler.codegen.java.helpers.maybeAddDeprecation
+import com.apollographql.apollo.compiler.codegen.java.helpers.maybeAddDescription
+import com.apollographql.apollo.compiler.codegen.java.helpers.toListInitializerCodeblock
+import com.apollographql.apollo.compiler.codegen.java.joinToCode
+import com.apollographql.apollo.compiler.ir.IrScalar
+import com.apollographql.apollo.compiler.ir.IrEnum
+import com.apollographql.apollo.compiler.ir.IrInterface
+import com.apollographql.apollo.compiler.ir.IrObject
+import com.apollographql.apollo.compiler.ir.IrUnion
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
 import javax.lang.model.element.Modifier
 
 internal fun IrScalar.typeFieldSpec(targetTypeName: String?): FieldSpec {
   /**
-   * Custom Scalars without a mapping will generate code using [com.apollographql.apollo3.api.AnyAdapter] directly
+   * Custom Scalars without a mapping will generate code using [com.apollographql.apollo.api.AnyAdapter] directly
    * so the fallback isn't really required here. We still write it as a way to hint the user
    * to what's happening behind the scenes
    */

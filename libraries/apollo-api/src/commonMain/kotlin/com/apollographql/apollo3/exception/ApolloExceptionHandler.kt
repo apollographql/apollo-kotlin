@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.exception
+package com.apollographql.apollo.exception
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloExperimental
 
 private val DEFAULT_EXCEPTION_HANDLER: (Throwable) -> Unit = {
   println("Apollo: unhandled exception")

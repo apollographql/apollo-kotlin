@@ -1,10 +1,10 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Error
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Error
+import com.apollographql.apollo.api.Optional
+import com.apollographql.apollo.testing.internal.runTest
 import com.benasher44.uuid.uuid4
 import defer.CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery
 import defer.CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery

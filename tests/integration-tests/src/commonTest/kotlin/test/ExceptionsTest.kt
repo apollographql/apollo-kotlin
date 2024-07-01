@@ -1,17 +1,17 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.normalizedCache
-import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
-import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.cache.normalized.normalizedCache
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery
+import com.apollographql.apollo.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueError
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import kotlinx.coroutines.flow.toList
 import kotlin.test.Test
 import kotlin.test.assertEquals

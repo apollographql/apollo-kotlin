@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.graphql.ast.test
+package com.apollographql.apollo.graphql.ast.test
 
-import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
-import com.apollographql.apollo3.ast.MergeOptions
-import com.apollographql.apollo3.ast.mergeExtensions
-import com.apollographql.apollo3.ast.toMergedGQLDocument
-import com.apollographql.apollo3.ast.toGQLDocument
-import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo.ast.MergeOptions
+import com.apollographql.apollo.ast.mergeExtensions
+import com.apollographql.apollo.ast.toMergedGQLDocument
+import com.apollographql.apollo.ast.toGQLDocument
+import com.apollographql.apollo.ast.toUtf8
 import org.intellij.lang.annotations.Language
 import kotlin.test.Test
 import kotlin.test.assertEquals

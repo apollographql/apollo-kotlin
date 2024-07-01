@@ -5,8 +5,8 @@
 //
 package com.example.suppressed_warnings.type
 
-import com.apollographql.apollo3.annotations.ApolloRequiresOptIn
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.annotations.ApolloRequiresOptIn
+import com.apollographql.apollo.api.Optional
 import kotlin.Deprecated
 import kotlin.String
 

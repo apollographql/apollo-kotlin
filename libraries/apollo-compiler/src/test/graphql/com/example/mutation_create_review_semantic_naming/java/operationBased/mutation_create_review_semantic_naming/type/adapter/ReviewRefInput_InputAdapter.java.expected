@@ -5,14 +5,14 @@
 //
 package com.example.mutation_create_review_semantic_naming.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.json.JsonReader;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.Adapter;
+import com.apollographql.apollo.api.ApolloOptionalAdapter;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.NullableAdapter;
+import com.apollographql.apollo.api.ObjectAdapter;
+import com.apollographql.apollo.api.Optional;
+import com.apollographql.apollo.api.json.JsonReader;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput;
 import com.example.mutation_create_review_semantic_naming.type.ReviewRefInput;
 import java.io.IOException;

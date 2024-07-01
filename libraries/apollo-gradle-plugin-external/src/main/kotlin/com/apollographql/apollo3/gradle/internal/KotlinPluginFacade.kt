@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.compiler.TargetLanguage
-import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.gradle.api.Service
-import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.hasKotlinPlugin
+import com.apollographql.apollo.compiler.TargetLanguage
+import com.apollographql.apollo.compiler.capitalizeFirstLetter
+import com.apollographql.apollo.gradle.api.Service
+import com.apollographql.apollo.gradle.internal.DefaultApolloExtension.Companion.hasKotlinPlugin
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion

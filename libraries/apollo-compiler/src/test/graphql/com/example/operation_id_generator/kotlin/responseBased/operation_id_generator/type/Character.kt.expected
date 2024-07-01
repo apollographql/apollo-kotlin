@@ -5,7 +5,7 @@
 //
 package com.example.operation_id_generator.type
 
-import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo.api.InterfaceType
 
 /**
  * A character from the Star Wars universe

@@ -1,10 +1,10 @@
 
 import com.apollographql.apollo.sample.server.SampleServer
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.store
-import com.apollographql.apollo3.cache.normalized.watch
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.cache.normalized.ApolloStore
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.cache.normalized.store
+import com.apollographql.apollo.cache.normalized.watch
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.filter

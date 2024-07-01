@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.compiler.internal
+package com.apollographql.apollo.compiler.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.compiler.ApolloCompilerPluginLogger
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.compiler.ApolloCompilerPluginLogger
 
 @ApolloInternal
 class GradleCompilerPluginLogger(val loglevel: Int) : ApolloCompilerPluginLogger {

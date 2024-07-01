@@ -5,11 +5,11 @@
 //
 package com.example.subscriptions.selections;
 
-import com.apollographql.apollo3.api.CompiledArgument;
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledNotNullType;
-import com.apollographql.apollo3.api.CompiledSelection;
-import com.apollographql.apollo3.api.CompiledVariable;
+import com.apollographql.apollo.api.CompiledArgument;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CompiledNotNullType;
+import com.apollographql.apollo.api.CompiledSelection;
+import com.apollographql.apollo.api.CompiledVariable;
 import com.example.subscriptions.type.Comment;
 import com.example.subscriptions.type.GraphQLInt;
 import com.example.subscriptions.type.GraphQLString;

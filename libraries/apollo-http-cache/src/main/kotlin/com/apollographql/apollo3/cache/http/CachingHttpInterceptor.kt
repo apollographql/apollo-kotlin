@@ -1,15 +1,15 @@
-package com.apollographql.apollo3.cache.http
+package com.apollographql.apollo.cache.http
 
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.api.http.valueOf
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.exception.HttpCacheMissException
-import com.apollographql.apollo3.network.http.HttpInterceptor
-import com.apollographql.apollo3.network.http.HttpInterceptorChain
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.api.http.HttpRequest
+import com.apollographql.apollo.api.http.HttpResponse
+import com.apollographql.apollo.api.http.valueOf
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo.exception.HttpCacheMissException
+import com.apollographql.apollo.network.http.HttpInterceptor
+import com.apollographql.apollo.network.http.HttpInterceptorChain
 import okio.Buffer
 import okio.ByteString.Companion.toByteString
 import okio.FileSystem

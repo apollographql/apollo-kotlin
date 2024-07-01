@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.cache.normalized.api.internal
+package com.apollographql.apollo.cache.normalized.api.internal
 
 internal expect class CacheLock() {
   fun <T> lock(block: () -> T): T

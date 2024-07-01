@@ -11,7 +11,7 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo3.debugserver",
+    namespace = "com.apollographql.apollo.debugserver",
     withLinux = false,
     withApple = false,
     withJs = false,
@@ -68,7 +68,7 @@ tasks.configureEach {
 
 apolloExecution {
   service("apolloDebugServer") {
-    packageName = "com.apollographql.apollo3.debugserver.internal.graphql"
+    packageName = "com.apollographql.apollo.debugserver.internal.graphql"
     schemaPath.set("graphql/schema.graphqls")
   }
 }

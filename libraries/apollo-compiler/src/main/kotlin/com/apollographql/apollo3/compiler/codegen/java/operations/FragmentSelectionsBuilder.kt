@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.compiler.codegen.java.operations
+package com.apollographql.apollo.compiler.codegen.java.operations
 
-import com.apollographql.apollo3.compiler.codegen.fragmentResponseFieldsPackageName
-import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
-import com.apollographql.apollo3.compiler.codegen.java.JavaOperationsContext
-import com.apollographql.apollo3.compiler.codegen.selections
-import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
+import com.apollographql.apollo.compiler.codegen.fragmentResponseFieldsPackageName
+import com.apollographql.apollo.compiler.codegen.java.CodegenJavaFile
+import com.apollographql.apollo.compiler.codegen.java.JavaClassBuilder
+import com.apollographql.apollo.compiler.codegen.java.JavaOperationsContext
+import com.apollographql.apollo.compiler.codegen.selections
+import com.apollographql.apollo.compiler.ir.IrFragmentDefinition
 import com.squareup.javapoet.ClassName
 
 internal class FragmentSelectionsBuilder(

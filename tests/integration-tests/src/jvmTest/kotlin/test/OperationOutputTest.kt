@@ -1,8 +1,8 @@
 package test
 
-import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
-import com.apollographql.apollo3.testing.HostFileSystem
-import com.apollographql.apollo3.testing.pathToUtf8
+import com.apollographql.apollo.integration.httpcache.AllFilmsQuery
+import com.apollographql.apollo.testing.HostFileSystem
+import com.apollographql.apollo.testing.pathToUtf8
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive

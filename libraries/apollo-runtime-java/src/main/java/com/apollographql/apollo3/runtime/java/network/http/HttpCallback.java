@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.runtime.java.network.http;
+package com.apollographql.apollo.runtime.java.network.http;
 
-import com.apollographql.apollo3.api.http.HttpResponse;
-import com.apollographql.apollo3.exception.ApolloNetworkException;
+import com.apollographql.apollo.api.http.HttpResponse;
+import com.apollographql.apollo.exception.ApolloNetworkException;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin
+package com.apollographql.apollo.compiler.codegen.kotlin
 
-import com.apollographql.apollo3.compiler.GeneratedMethod
-import com.apollographql.apollo3.compiler.TargetLanguage
-import com.apollographql.apollo3.compiler.codegen.CommonLayout
-import com.apollographql.apollo3.compiler.codegen.OperationsLayout
-import com.apollographql.apollo3.compiler.codegen.SchemaLayout
+import com.apollographql.apollo.compiler.GeneratedMethod
+import com.apollographql.apollo.compiler.TargetLanguage
+import com.apollographql.apollo.compiler.codegen.CommonLayout
+import com.apollographql.apollo.compiler.codegen.OperationsLayout
+import com.apollographql.apollo.compiler.codegen.SchemaLayout
 
 internal interface KotlinContext {
   val layout: CommonLayout

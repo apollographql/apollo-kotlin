@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.graphql.ast.test
+package com.apollographql.apollo.graphql.ast.test
 
-import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.toGQLDocument
-import com.apollographql.apollo3.ast.toSDL
-import com.apollographql.apollo3.ast.withBuiltinDefinitions
-import com.apollographql.apollo3.graphql.ast.test.ParserTest.Companion.checkExpected
+import com.apollographql.apollo.ast.parseAsGQLDocument
+import com.apollographql.apollo.ast.toGQLDocument
+import com.apollographql.apollo.ast.toSDL
+import com.apollographql.apollo.ast.withBuiltinDefinitions
+import com.apollographql.apollo.graphql.ast.test.ParserTest.Companion.checkExpected
 import java.io.File
 import kotlin.test.Test
 

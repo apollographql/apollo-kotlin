@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.gradle.api.Introspection
-import com.apollographql.apollo3.gradle.api.SchemaConnection
+import com.apollographql.apollo.gradle.api.Introspection
+import com.apollographql.apollo.gradle.api.SchemaConnection
 import org.gradle.api.Action
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.MapProperty

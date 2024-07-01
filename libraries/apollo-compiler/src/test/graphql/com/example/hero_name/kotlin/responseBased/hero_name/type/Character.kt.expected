@@ -5,7 +5,7 @@
 //
 package com.example.hero_name.type
 
-import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo.api.InterfaceType
 
 /**
  * A character from the Star Wars universe

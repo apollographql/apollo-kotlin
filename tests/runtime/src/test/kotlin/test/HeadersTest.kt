@@ -1,12 +1,12 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.composeJsonResponse
-import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.composeJsonResponse
+import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import com.example.GetRandomQuery
 import org.junit.Test
 import kotlin.test.assertEquals

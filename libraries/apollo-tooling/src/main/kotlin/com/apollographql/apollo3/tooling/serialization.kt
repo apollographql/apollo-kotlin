@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.tooling
+package com.apollographql.apollo.tooling
 
-import com.apollographql.apollo3.tooling.SchemaDownloader.cast
+import com.apollographql.apollo.tooling.SchemaDownloader.cast
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull

@@ -5,9 +5,9 @@
 //
 package com.example.list_field_clash.selections;
 
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledListType;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CompiledListType;
+import com.apollographql.apollo.api.CompiledSelection;
 import com.example.list_field_clash.type.AmenityCategory;
 import com.example.list_field_clash.type.GraphQLString;
 import com.example.list_field_clash.type.PropertyAmenityCategory;

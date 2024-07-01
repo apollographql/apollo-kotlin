@@ -5,7 +5,7 @@
 //
 package com.example.java_hashcode.type
 
-import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo.api.CustomScalarType
 
 /**
  * The `ID` scalar type represents a unique identifier, often used to refetch an object or as key

@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.gradle.test
+package com.apollographql.apollo.gradle.test
 
 
-import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.execution.ExecutableSchema
 import com.apollographql.execution.parsePostGraphQLRequest
 import okhttp3.mockwebserver.MockResponse

@@ -5,10 +5,10 @@
 //
 package com.example.custom_scalar_type.selections;
 
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledListType;
-import com.apollographql.apollo3.api.CompiledNotNullType;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CompiledListType;
+import com.apollographql.apollo.api.CompiledNotNullType;
+import com.apollographql.apollo.api.CompiledSelection;
 import com.example.custom_scalar_type.type.Character;
 import com.example.custom_scalar_type.type.Date;
 import com.example.custom_scalar_type.type.GraphQLID;

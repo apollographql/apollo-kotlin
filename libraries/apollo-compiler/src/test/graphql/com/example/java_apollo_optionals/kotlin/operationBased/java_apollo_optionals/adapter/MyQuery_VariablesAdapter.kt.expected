@@ -5,16 +5,16 @@
 //
 package com.example.java_apollo_optionals.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.NullableIntAdapter
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.nullable
-import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.optional
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.IntAdapter
+import com.apollographql.apollo.api.NullableIntAdapter
+import com.apollographql.apollo.api.Optional
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.nullable
+import com.apollographql.apollo.api.obj
+import com.apollographql.apollo.api.optional
 import com.example.java_apollo_optionals.MyQuery
 import com.example.java_apollo_optionals.type.adapter.MyInput_InputAdapter
 import kotlin.IllegalStateException

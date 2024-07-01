@@ -1,13 +1,13 @@
-package com.apollographql.apollo3.compiler.codegen.java.helpers
+package com.apollographql.apollo.compiler.codegen.java.helpers
 
-import com.apollographql.apollo3.compiler.GeneratedMethod
-import com.apollographql.apollo3.compiler.GeneratedMethod.EQUALS_HASH_CODE
-import com.apollographql.apollo3.compiler.GeneratedMethod.TO_STRING
-import com.apollographql.apollo3.compiler.codegen.Identifier.__h
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.L
-import com.apollographql.apollo3.compiler.codegen.java.joinToCode
-import com.apollographql.apollo3.compiler.internal.applyIf
+import com.apollographql.apollo.compiler.GeneratedMethod
+import com.apollographql.apollo.compiler.GeneratedMethod.EQUALS_HASH_CODE
+import com.apollographql.apollo.compiler.GeneratedMethod.TO_STRING
+import com.apollographql.apollo.compiler.codegen.Identifier.__h
+import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
+import com.apollographql.apollo.compiler.codegen.java.L
+import com.apollographql.apollo.compiler.codegen.java.joinToCode
+import com.apollographql.apollo.compiler.internal.applyIf
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec

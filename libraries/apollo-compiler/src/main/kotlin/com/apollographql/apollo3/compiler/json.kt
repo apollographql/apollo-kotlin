@@ -1,13 +1,13 @@
 @file:JvmName("FileUtils")
 
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
-import com.apollographql.apollo3.compiler.ir.IrOperations
-import com.apollographql.apollo3.compiler.ir.IrSchema
-import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
-import com.apollographql.apollo3.compiler.pqm.PersistedQueryManifest
+import com.apollographql.apollo.compiler.ir.DefaultIrSchema
+import com.apollographql.apollo.compiler.ir.IrOperations
+import com.apollographql.apollo.compiler.ir.IrSchema
+import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo.compiler.operationoutput.OperationOutput
+import com.apollographql.apollo.compiler.pqm.PersistedQueryManifest
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File

@@ -1,14 +1,14 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.normalizedCache
-import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
-import com.apollographql.apollo3.testing.QueueTestNetworkTransport
-import com.apollographql.apollo3.testing.currentThreadId
-import com.apollographql.apollo3.testing.enqueueTestResponse
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.cache.normalized.api.NormalizedCache
+import com.apollographql.apollo.cache.normalized.api.NormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.normalizedCache
+import com.apollographql.apollo.integration.normalizer.CharacterNameByIdQuery
+import com.apollographql.apollo.testing.QueueTestNetworkTransport
+import com.apollographql.apollo.testing.currentThreadId
+import com.apollographql.apollo.testing.enqueueTestResponse
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertNotEquals

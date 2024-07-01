@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.api.json.internal
+package com.apollographql.apollo.api.json.internal
 
 import kotlin.jvm.JvmName
 

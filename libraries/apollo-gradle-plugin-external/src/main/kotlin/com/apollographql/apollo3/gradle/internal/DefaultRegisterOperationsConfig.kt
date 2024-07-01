@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
+import com.apollographql.apollo.gradle.api.RegisterOperationsConfig
 import org.gradle.api.provider.Property
 
 abstract class DefaultRegisterOperationsConfig: RegisterOperationsConfig {

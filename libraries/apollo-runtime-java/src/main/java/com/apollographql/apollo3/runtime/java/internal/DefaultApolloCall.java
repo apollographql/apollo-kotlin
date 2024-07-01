@@ -1,14 +1,14 @@
-package com.apollographql.apollo3.runtime.java.internal;
+package com.apollographql.apollo.runtime.java.internal;
 
-import com.apollographql.apollo3.api.ApolloRequest;
-import com.apollographql.apollo3.api.ExecutionContext;
-import com.apollographql.apollo3.api.Operation;
-import com.apollographql.apollo3.api.http.HttpHeader;
-import com.apollographql.apollo3.api.http.HttpMethod;
-import com.apollographql.apollo3.runtime.java.ApolloCall;
-import com.apollographql.apollo3.runtime.java.ApolloCallback;
-import com.apollographql.apollo3.runtime.java.ApolloClient;
-import com.apollographql.apollo3.runtime.java.ApolloDisposable;
+import com.apollographql.apollo.api.ApolloRequest;
+import com.apollographql.apollo.api.ExecutionContext;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.http.HttpHeader;
+import com.apollographql.apollo.api.http.HttpMethod;
+import com.apollographql.apollo.runtime.java.ApolloCall;
+import com.apollographql.apollo.runtime.java.ApolloCallback;
+import com.apollographql.apollo.runtime.java.ApolloClient;
+import com.apollographql.apollo.runtime.java.ApolloDisposable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

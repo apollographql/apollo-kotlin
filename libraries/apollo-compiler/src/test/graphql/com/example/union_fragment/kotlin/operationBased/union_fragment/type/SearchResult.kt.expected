@@ -5,7 +5,7 @@
 //
 package com.example.union_fragment.type
 
-import com.apollographql.apollo3.api.UnionType
+import com.apollographql.apollo.api.UnionType
 
 public class SearchResult {
   public companion object {

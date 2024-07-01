@@ -1,17 +1,17 @@
-package com.apollographql.apollo3.tooling
+package com.apollographql.apollo.tooling
 
-import com.apollographql.apollo3.ast.GQLField
-import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.GQLSelection
-import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo.ast.GQLField
+import com.apollographql.apollo.ast.GQLFragmentDefinition
+import com.apollographql.apollo.ast.GQLOperationDefinition
+import com.apollographql.apollo.ast.GQLSelection
+import com.apollographql.apollo.ast.parseAsGQLDocument
+import com.apollographql.apollo.ast.toUtf8
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class IntrospectionQueryTest {
 
-  // From https://github.com/apollographql/apollo-kotlin/blob/v3.7.4/libraries/apollo-tooling/src/main/kotlin/com/apollographql/apollo3/tooling/SchemaDownloader.kt#L166
+  // From https://github.com/apollographql/apollo-kotlin/blob/v3.7.4/libraries/apollo-tooling/src/main/kotlin/com/apollographql/apollo/tooling/SchemaDownloader.kt#L166
   private val v3IntrospectionQuery = """
     query IntrospectionQuery {
       __schema {

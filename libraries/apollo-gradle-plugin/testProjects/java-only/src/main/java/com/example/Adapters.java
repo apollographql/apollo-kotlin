@@ -1,7 +1,7 @@
 packate com.example;
 
-import com.apollographql.apollo3.api.*
-import com.apollographql.apollo3.api.json.*
+import com.apollographql.apollo.api.*
+import com.apollographql.apollo.api.json.*
 
 public class Adapters {
   public static final Adapter<Long> = new Adapter<Long>() {

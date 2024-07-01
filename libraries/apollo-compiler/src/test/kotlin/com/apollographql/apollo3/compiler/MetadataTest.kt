@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.ast.SourceAwareException
-import com.apollographql.apollo3.compiler.codegen.writeTo
+import com.apollographql.apollo.ast.SourceAwareException
+import com.apollographql.apollo.compiler.codegen.writeTo
 import com.google.common.truth.Truth
 import org.junit.Assert.assertTrue
 import org.junit.Test

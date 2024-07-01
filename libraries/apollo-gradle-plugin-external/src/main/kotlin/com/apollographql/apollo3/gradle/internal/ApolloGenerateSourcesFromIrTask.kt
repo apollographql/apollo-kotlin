@@ -1,13 +1,13 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.compiler.ApolloCompiler
-import com.apollographql.apollo3.compiler.codegen.writeTo
-import com.apollographql.apollo3.compiler.toCodegenMetadata
-import com.apollographql.apollo3.compiler.toCodegenOptions
-import com.apollographql.apollo3.compiler.toCodegenSchema
-import com.apollographql.apollo3.compiler.toIrOperations
-import com.apollographql.apollo3.compiler.toUsedCoordinates
-import com.apollographql.apollo3.gradle.internal.ApolloGenerateSourcesFromIrTask.Companion.findCodegenSchemaFile
+import com.apollographql.apollo.compiler.ApolloCompiler
+import com.apollographql.apollo.compiler.codegen.writeTo
+import com.apollographql.apollo.compiler.toCodegenMetadata
+import com.apollographql.apollo.compiler.toCodegenOptions
+import com.apollographql.apollo.compiler.toCodegenSchema
+import com.apollographql.apollo.compiler.toIrOperations
+import com.apollographql.apollo.compiler.toUsedCoordinates
+import com.apollographql.apollo.gradle.internal.ApolloGenerateSourcesFromIrTask.Companion.findCodegenSchemaFile
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty

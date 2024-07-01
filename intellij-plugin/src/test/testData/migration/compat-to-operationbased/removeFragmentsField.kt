@@ -1,12 +1,12 @@
 package com.example
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.json.JsonWriter
 
 public class MyQuery() : Query<MyQuery.Data> {
   public override fun id(): String = TODO()

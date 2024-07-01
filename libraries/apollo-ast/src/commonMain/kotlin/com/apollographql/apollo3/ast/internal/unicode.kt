@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.ast.internal
+package com.apollographql.apollo.ast.internal
 
 /**
  * From https://github.com/cketti/kotlin-codepoints/blob/39abf06857e4542261bf501514668e506d0460e5/kotlin-codepoints/src/commonImplementation/kotlin/CodePoints.kt#L3

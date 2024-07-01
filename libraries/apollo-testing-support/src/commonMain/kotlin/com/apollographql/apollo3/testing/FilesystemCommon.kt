@@ -1,10 +1,10 @@
 @file:JvmName("-FileSystemCommon")
 
-package com.apollographql.apollo3.testing
+package com.apollographql.apollo.testing
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.jsonReader
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.jsonReader
 import okio.IOException
 import okio.Path
 import okio.Path.Companion.toPath

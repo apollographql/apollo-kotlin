@@ -117,7 +117,7 @@ fun Project.configureDokkaAggregate() {
       isCanBeConsumed = false
       isTransitive = false
 
-      dependencies.add(project.dependencies.create("com.apollographql.apollo3:apollo-kdoc:$version:javadoc"))
+      dependencies.add(project.dependencies.create("com.apollographql.apollo:apollo-kdoc:$version:javadoc"))
     }
 
     tasks.register("extractApolloKdocVersion_$versionString", Copy::class.java) {

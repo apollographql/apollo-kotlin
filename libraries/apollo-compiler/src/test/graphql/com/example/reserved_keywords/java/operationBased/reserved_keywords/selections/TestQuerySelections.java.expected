@@ -5,12 +5,12 @@
 //
 package com.example.reserved_keywords.selections;
 
-import com.apollographql.apollo3.api.CompiledArgument;
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledFragment;
-import com.apollographql.apollo3.api.CompiledListType;
-import com.apollographql.apollo3.api.CompiledNotNullType;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo.api.CompiledArgument;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CompiledFragment;
+import com.apollographql.apollo.api.CompiledListType;
+import com.apollographql.apollo.api.CompiledNotNullType;
+import com.apollographql.apollo.api.CompiledSelection;
 import com.example.reserved_keywords.type.Character;
 import com.example.reserved_keywords.type.GraphQLID;
 import com.example.reserved_keywords.type.GraphQLString;

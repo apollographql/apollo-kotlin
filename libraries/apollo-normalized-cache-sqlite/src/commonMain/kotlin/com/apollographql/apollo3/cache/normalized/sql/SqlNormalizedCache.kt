@@ -1,13 +1,13 @@
-package com.apollographql.apollo3.cache.normalized.sql
+package com.apollographql.apollo.cache.normalized.sql
 
-import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders.EVICT_AFTER_READ
-import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.cache.normalized.sql.internal.RecordDatabase
-import com.apollographql.apollo3.exception.apolloExceptionHandler
+import com.apollographql.apollo.cache.normalized.api.ApolloCacheHeaders
+import com.apollographql.apollo.cache.normalized.api.ApolloCacheHeaders.EVICT_AFTER_READ
+import com.apollographql.apollo.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.api.NormalizedCache
+import com.apollographql.apollo.cache.normalized.api.Record
+import com.apollographql.apollo.cache.normalized.sql.internal.RecordDatabase
+import com.apollographql.apollo.exception.apolloExceptionHandler
 import kotlin.reflect.KClass
 
 class SqlNormalizedCache internal constructor(

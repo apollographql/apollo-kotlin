@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
 import okio.BufferedSink
 
@@ -14,7 +14,7 @@ import okio.BufferedSink
  * mapScalarToUpload(Upload)
  * ```
  *
- * If you have a JVM File at hand, see also [com.apollographql.apollo3.api.DefaultUpload.Builder.content]
+ * If you have a JVM File at hand, see also [com.apollographql.apollo.api.DefaultUpload.Builder.content]
  */
 interface Upload {
   val contentType: String

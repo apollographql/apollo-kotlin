@@ -1,9 +1,9 @@
 package test
 
-import com.apollographql.apollo3.api.Builder
-import com.apollographql.apollo3.api.DefaultFakeResolver
-import com.apollographql.apollo3.api.FakeResolverContext
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.api.Builder
+import com.apollographql.apollo.api.DefaultFakeResolver
+import com.apollographql.apollo.api.FakeResolverContext
+import com.apollographql.apollo.api.Optional
 import com.example.MyLong
 import data.builders.GetAliasesQuery
 import data.builders.GetAnimalQuery

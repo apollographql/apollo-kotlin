@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
+package com.apollographql.apollo.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.compiler.GeneratedMethod
-import com.apollographql.apollo3.compiler.GeneratedMethod.COPY
-import com.apollographql.apollo3.compiler.GeneratedMethod.DATA_CLASS
-import com.apollographql.apollo3.compiler.GeneratedMethod.EQUALS_HASH_CODE
-import com.apollographql.apollo3.compiler.GeneratedMethod.TO_STRING
-import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo.compiler.GeneratedMethod
+import com.apollographql.apollo.compiler.GeneratedMethod.COPY
+import com.apollographql.apollo.compiler.GeneratedMethod.DATA_CLASS
+import com.apollographql.apollo.compiler.GeneratedMethod.EQUALS_HASH_CODE
+import com.apollographql.apollo.compiler.GeneratedMethod.TO_STRING
+import com.apollographql.apollo.compiler.codegen.Identifier
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec

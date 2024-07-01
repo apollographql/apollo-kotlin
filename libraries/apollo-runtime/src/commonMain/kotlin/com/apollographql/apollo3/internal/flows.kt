@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.internal
+package com.apollographql.apollo.internal
 
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -1,19 +1,19 @@
-package com.apollographql.apollo3.compiler.ir
+package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo3.ast.GQLField
-import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.GQLFragmentSpread
-import com.apollographql.apollo3.ast.GQLInlineFragment
-import com.apollographql.apollo3.ast.GQLListType
-import com.apollographql.apollo3.ast.GQLNamedType
-import com.apollographql.apollo3.ast.GQLNonNullType
-import com.apollographql.apollo3.ast.GQLSelection
-import com.apollographql.apollo3.ast.GQLType
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
-import com.apollographql.apollo3.ast.definitionFromScope
-import com.apollographql.apollo3.ast.rawType
-import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo.ast.GQLField
+import com.apollographql.apollo.ast.GQLFragmentDefinition
+import com.apollographql.apollo.ast.GQLFragmentSpread
+import com.apollographql.apollo.ast.GQLInlineFragment
+import com.apollographql.apollo.ast.GQLListType
+import com.apollographql.apollo.ast.GQLNamedType
+import com.apollographql.apollo.ast.GQLNonNullType
+import com.apollographql.apollo.ast.GQLSelection
+import com.apollographql.apollo.ast.GQLType
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.coerceInExecutableContextOrThrow
+import com.apollographql.apollo.ast.definitionFromScope
+import com.apollographql.apollo.ast.rawType
+import com.apollographql.apollo.compiler.capitalizeFirstLetter
 
 internal class SelectionSetsBuilder(
     val schema: Schema,

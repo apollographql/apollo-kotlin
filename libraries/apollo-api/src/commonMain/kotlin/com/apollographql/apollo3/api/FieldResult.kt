@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloGraphQLException
-import com.apollographql.apollo3.exception.DefaultApolloException
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloGraphQLException
+import com.apollographql.apollo.exception.DefaultApolloException
 
 sealed interface FieldResult<out V> {
   class Success<V>(val value: V) : FieldResult<V>

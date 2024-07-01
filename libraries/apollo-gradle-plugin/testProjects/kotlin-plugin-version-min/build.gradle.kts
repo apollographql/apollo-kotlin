@@ -1,4 +1,4 @@
-import com.apollographql.apollo3.gradle.api.ApolloExtension
+import com.apollographql.apollo.gradle.api.ApolloExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {

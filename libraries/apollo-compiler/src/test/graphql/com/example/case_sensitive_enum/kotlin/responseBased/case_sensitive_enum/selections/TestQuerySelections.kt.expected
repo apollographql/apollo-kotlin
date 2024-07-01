@@ -5,8 +5,8 @@
 //
 package com.example.case_sensitive_enum.selections
 
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledSelection
 import com.example.case_sensitive_enum.type.Enum
 import kotlin.collections.List
 

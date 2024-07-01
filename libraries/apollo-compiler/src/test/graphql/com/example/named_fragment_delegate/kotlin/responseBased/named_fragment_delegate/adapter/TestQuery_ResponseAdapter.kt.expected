@@ -5,18 +5,18 @@
 //
 package com.example.named_fragment_delegate.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringAdapter
-import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.readTypename
-import com.apollographql.apollo3.api.list
-import com.apollographql.apollo3.api.missingField
-import com.apollographql.apollo3.api.nullable
-import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.AnyAdapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.NullableStringAdapter
+import com.apollographql.apollo.api.StringAdapter
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.json.readTypename
+import com.apollographql.apollo.api.list
+import com.apollographql.apollo.api.missingField
+import com.apollographql.apollo.api.nullable
+import com.apollographql.apollo.api.obj
 import com.example.named_fragment_delegate.TestQuery
 import kotlin.Any
 import kotlin.String

@@ -1,13 +1,13 @@
-package com.apollographql.apollo3.compiler.ir
+package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
-import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
-import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
-import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
-import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
-import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.compiler.UsedCoordinates
+import com.apollographql.apollo.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo.ast.GQLInterfaceTypeDefinition
+import com.apollographql.apollo.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.compiler.UsedCoordinates
 
 internal object IrSchemaBuilder {
   fun build(

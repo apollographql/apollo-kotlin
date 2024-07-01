@@ -1,6 +1,6 @@
 package com.apollographql.ijplugin.gradle
 
-import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
+import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
 import com.apollographql.ijplugin.project.ApolloProjectListener
 import com.apollographql.ijplugin.project.ApolloProjectService
 import com.apollographql.ijplugin.project.apolloProjectService

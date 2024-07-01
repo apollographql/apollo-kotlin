@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.findTargetName
-import com.apollographql.apollo3.compiler.internal.SchemaSerializer
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.findTargetName
+import com.apollographql.apollo.compiler.internal.SchemaSerializer
 import kotlinx.serialization.Serializable
 
 /**

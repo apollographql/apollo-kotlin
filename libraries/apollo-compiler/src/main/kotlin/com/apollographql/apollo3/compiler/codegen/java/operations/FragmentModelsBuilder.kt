@@ -1,13 +1,13 @@
-package com.apollographql.apollo3.compiler.codegen.java.operations
+package com.apollographql.apollo.compiler.codegen.java.operations
 
-import com.apollographql.apollo3.compiler.codegen.fragmentPackageName
-import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaOperationsContext
-import com.apollographql.apollo3.compiler.codegen.maybeFlatten
-import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
-import com.apollographql.apollo3.compiler.ir.IrModelGroup
+import com.apollographql.apollo.compiler.codegen.fragmentPackageName
+import com.apollographql.apollo.compiler.codegen.java.CodegenJavaFile
+import com.apollographql.apollo.compiler.codegen.java.JavaClassBuilder
+import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
+import com.apollographql.apollo.compiler.codegen.java.JavaOperationsContext
+import com.apollographql.apollo.compiler.codegen.maybeFlatten
+import com.apollographql.apollo.compiler.ir.IrFragmentDefinition
+import com.apollographql.apollo.compiler.ir.IrModelGroup
 
 internal class FragmentModelsBuilder(
     val context: JavaOperationsContext,

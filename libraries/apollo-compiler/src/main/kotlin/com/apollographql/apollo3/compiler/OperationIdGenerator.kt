@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 

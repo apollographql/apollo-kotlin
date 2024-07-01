@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.ast.internal
+package com.apollographql.apollo.ast.internal
 
 /**
  * @param start: the 0-indexed offset in the string where the token starts (inclusive)

@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
+package com.apollographql.apollo.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.compiler.internal.applyIf
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.ir.IrEnum
+import com.apollographql.apollo.compiler.internal.applyIf
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinResolver
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.Annotatable
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName

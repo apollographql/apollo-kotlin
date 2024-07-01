@@ -1,16 +1,16 @@
 /*
  * Generates ResponseAdapters for input
  */
-package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
+package com.apollographql.apollo.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
-import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
-import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
-import com.apollographql.apollo3.compiler.codegen.Identifier.value
-import com.apollographql.apollo3.compiler.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo.compiler.codegen.Identifier
+import com.apollographql.apollo.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo.compiler.codegen.Identifier.fromJson
+import com.apollographql.apollo.compiler.codegen.Identifier.toJson
+import com.apollographql.apollo.compiler.codegen.Identifier.value
+import com.apollographql.apollo.compiler.codegen.Identifier.writer
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec

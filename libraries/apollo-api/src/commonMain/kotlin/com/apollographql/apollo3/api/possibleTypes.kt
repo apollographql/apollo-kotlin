@@ -1,6 +1,6 @@
 @file:JvmName("PossibleTypes")
 
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
 import kotlin.jvm.JvmName
 

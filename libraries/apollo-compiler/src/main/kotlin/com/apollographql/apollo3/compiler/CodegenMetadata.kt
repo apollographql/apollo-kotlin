@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.compiler.codegen.ResolverClassName
-import com.apollographql.apollo3.compiler.codegen.ResolverEntry
-import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.compiler.codegen.ResolverClassName
+import com.apollographql.apollo.compiler.codegen.ResolverEntry
+import com.apollographql.apollo.compiler.codegen.ResolverKeyKind
 import kotlinx.serialization.Serializable
 
 /**

@@ -5,10 +5,10 @@
 //
 package com.example.__schema.schema;
 
-import com.apollographql.apollo3.api.CompiledNamedType;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectType;
-import com.apollographql.apollo3.api.PossibleTypes;
+import com.apollographql.apollo.api.CompiledNamedType;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ObjectType;
+import com.apollographql.apollo.api.PossibleTypes;
 import java.util.Collections;
 import java.util.List;
 

@@ -12,7 +12,7 @@ extensions.configure(SamWithReceiverExtension::class.java) {
   annotations(HasImplicitReceiver::class.qualifiedName!!)
 }
 
-group = "com.apollographql.apollo3.build"
+group = "com.apollographql.apollo.build"
 
 dependencies {
   compileOnly(gradleApi())

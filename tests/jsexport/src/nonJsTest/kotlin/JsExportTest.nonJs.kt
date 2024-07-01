@@ -1,5 +1,5 @@
-import com.apollographql.apollo3.network.websocket.SubscriptionParserFactory
-import com.apollographql.apollo3.network.websocket.WsProtocol
+import com.apollographql.apollo.network.websocket.SubscriptionParserFactory
+import com.apollographql.apollo.network.websocket.WsProtocol
 
 actual val parserFactory: SubscriptionParserFactory?
   get() = null

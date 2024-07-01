@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.mockserver
+package com.apollographql.apollo.mockserver
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloExperimental
 import io.ktor.network.selector.SelectorManager
 import io.ktor.network.sockets.InetSocketAddress
 import io.ktor.network.sockets.aSocket

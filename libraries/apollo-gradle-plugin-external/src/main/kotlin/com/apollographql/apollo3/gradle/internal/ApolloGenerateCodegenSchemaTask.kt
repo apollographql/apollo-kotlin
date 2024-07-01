@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.compiler.ApolloCompiler
-import com.apollographql.apollo3.compiler.toCodegenSchemaOptions
-import com.apollographql.apollo3.compiler.writeTo
+import com.apollographql.apollo.compiler.ApolloCompiler
+import com.apollographql.apollo.compiler.toCodegenSchemaOptions
+import com.apollographql.apollo.compiler.writeTo
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty

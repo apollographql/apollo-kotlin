@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.network.websocket
+package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.network.defaultOkHttpClientBuilder
-import com.apollographql.apollo3.network.websocket.WebSocket
-import com.apollographql.apollo3.network.websocket.WebSocketListener
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.network.defaultOkHttpClientBuilder
+import com.apollographql.apollo.network.websocket.WebSocket
+import com.apollographql.apollo.network.websocket.WebSocketListener
 import okhttp3.Headers
 import okhttp3.OkHttpClient
 import okhttp3.Request

@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.ast.introspection.toGQLDocument
-import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
-import com.apollographql.apollo3.ast.introspection.writeTo
-import com.apollographql.apollo3.ast.toFullSchemaGQLDocument
-import com.apollographql.apollo3.ast.toGQLDocument
-import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo.ast.introspection.toGQLDocument
+import com.apollographql.apollo.ast.introspection.toIntrospectionSchema
+import com.apollographql.apollo.ast.introspection.writeTo
+import com.apollographql.apollo.ast.toFullSchemaGQLDocument
+import com.apollographql.apollo.ast.toGQLDocument
+import com.apollographql.apollo.ast.toUtf8
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input

@@ -1,9 +1,9 @@
 package test.defer
 
-import com.apollographql.apollo3.api.DeferredFragmentIdentifier
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.json.readAny
-import com.apollographql.apollo3.internal.DeferredJsonMerger
+import com.apollographql.apollo.api.DeferredFragmentIdentifier
+import com.apollographql.apollo.api.json.BufferedSourceJsonReader
+import com.apollographql.apollo.api.json.readAny
+import com.apollographql.apollo.internal.DeferredJsonMerger
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals

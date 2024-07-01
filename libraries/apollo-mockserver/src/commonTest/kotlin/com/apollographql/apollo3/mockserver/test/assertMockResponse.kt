@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.mockserver.test
+package com.apollographql.apollo.mockserver.test
 
-import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.mockserver.MockResponse
-import com.apollographql.apollo3.mockserver.readChunked
+import com.apollographql.apollo.api.http.HttpResponse
+import com.apollographql.apollo.mockserver.MockResponse
+import com.apollographql.apollo.mockserver.readChunked
 import kotlinx.coroutines.flow.toList
 import okio.Buffer
 import kotlin.test.assertEquals

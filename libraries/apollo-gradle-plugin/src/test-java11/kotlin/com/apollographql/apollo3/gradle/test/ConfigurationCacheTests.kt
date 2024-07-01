@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.gradle.test
+package com.apollographql.apollo.gradle.test
 
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer

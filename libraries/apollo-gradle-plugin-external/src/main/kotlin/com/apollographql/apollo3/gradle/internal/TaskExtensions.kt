@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.compiler.ApolloCompiler
+import com.apollographql.apollo.compiler.ApolloCompiler
 import org.gradle.api.logging.Logging
 
 fun logger() = object : ApolloCompiler.Logger {

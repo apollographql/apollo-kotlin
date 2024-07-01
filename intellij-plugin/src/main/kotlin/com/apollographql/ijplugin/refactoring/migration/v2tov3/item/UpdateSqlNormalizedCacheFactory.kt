@@ -51,5 +51,5 @@ object UpdateSqlNormalizedCacheFactory : MigrationItem() {
     (usage.element as KtCallExpression).valueArgumentList?.removeArgument(0)
   }
 
-  override fun importsToAdd() = setOf("com.apollographql.apollo3.cache.normalized.normalizedCache")
+  override fun importsToAdd() = setOf("com.apollographql.apollo.cache.normalized.normalizedCache")
 }

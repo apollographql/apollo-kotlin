@@ -1,14 +1,14 @@
 // because of PackageNameGenerator and OperationOutputGenerator
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.compiler.CodegenSchema
-import com.apollographql.apollo3.compiler.LayoutFactory
-import com.apollographql.apollo3.compiler.OperationOutputGenerator
-import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.codegen.SchemaAndOperationsLayout
-import com.apollographql.apollo3.compiler.toCodegenOptions
+import com.apollographql.apollo.compiler.CodegenSchema
+import com.apollographql.apollo.compiler.LayoutFactory
+import com.apollographql.apollo.compiler.OperationOutputGenerator
+import com.apollographql.apollo.compiler.PackageNameGenerator
+import com.apollographql.apollo.compiler.codegen.SchemaAndOperationsLayout
+import com.apollographql.apollo.compiler.toCodegenOptions
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.Input

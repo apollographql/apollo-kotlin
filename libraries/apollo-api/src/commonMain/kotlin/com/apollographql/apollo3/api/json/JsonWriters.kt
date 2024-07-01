@@ -1,6 +1,6 @@
 @file:JvmName("-JsonWriters")
 
-package com.apollographql.apollo3.api.json
+package com.apollographql.apollo.api.json
 
 import okio.Buffer
 import okio.ByteString

@@ -3,11 +3,11 @@ import org.gradle.api.artifacts.type.ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIB
 plugins {
   id("com.android.test")
   id("org.jetbrains.kotlin.android")
-  id("com.apollographql.apollo3")
+  id("com.apollographql.apollo")
 }
 
 android {
-  namespace = "com.apollographql.apollo3.benchmark.macro"
+  namespace = "com.apollographql.apollo.benchmark.macro"
   compileSdk = libs.versions.android.sdkversion.compilebenchmark.get().toInt()
 
   defaultConfig {

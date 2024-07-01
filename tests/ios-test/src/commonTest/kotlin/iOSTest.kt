@@ -1,9 +1,9 @@
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.GlobalBuilder
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.GlobalBuilder
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import ios.test.type.buildQuery
 import kotlin.test.Test
 

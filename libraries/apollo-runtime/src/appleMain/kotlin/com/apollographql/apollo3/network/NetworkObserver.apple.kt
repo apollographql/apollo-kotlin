@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.network
+package com.apollographql.apollo.network
 
 import platform.Network.nw_path_get_status
 import platform.Network.nw_path_monitor_cancel

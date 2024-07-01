@@ -1,13 +1,13 @@
-package com.apollographql.apollo3.compiler.codegen.java.schema
+package com.apollographql.apollo.compiler.codegen.java.schema
 
-import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.codegen.Identifier.__fields
-import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaSchemaContext
-import com.apollographql.apollo3.compiler.codegen.typeBuilderPackageName
-import com.apollographql.apollo3.compiler.ir.IrUnion
+import com.apollographql.apollo.compiler.capitalizeFirstLetter
+import com.apollographql.apollo.compiler.codegen.Identifier.__fields
+import com.apollographql.apollo.compiler.codegen.java.CodegenJavaFile
+import com.apollographql.apollo.compiler.codegen.java.JavaClassBuilder
+import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
+import com.apollographql.apollo.compiler.codegen.java.JavaSchemaContext
+import com.apollographql.apollo.compiler.codegen.typeBuilderPackageName
+import com.apollographql.apollo.compiler.ir.IrUnion
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec

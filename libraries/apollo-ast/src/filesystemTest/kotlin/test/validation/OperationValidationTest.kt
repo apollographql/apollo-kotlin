@@ -1,9 +1,9 @@
 package test.validation
 
-import com.apollographql.apollo3.ast.toGQLDocument
-import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.ast.validateAsExecutable
-import com.apollographql.apollo3.graphql.ast.test.CWD
+import com.apollographql.apollo.ast.toGQLDocument
+import com.apollographql.apollo.ast.toSchema
+import com.apollographql.apollo.ast.validateAsExecutable
+import com.apollographql.apollo.graphql.ast.test.CWD
 import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertEquals

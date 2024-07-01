@@ -1,13 +1,13 @@
 @file:OptIn(ApolloExperimental::class)
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.compiler.MODELS_RESPONSE_BASED
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
 
   // Note: using the external plugin here to be able to reference KotlinPoet classes
-  id("com.apollographql.apollo3.external")
+  id("com.apollographql.apollo.external")
 }
 
 apolloTest()

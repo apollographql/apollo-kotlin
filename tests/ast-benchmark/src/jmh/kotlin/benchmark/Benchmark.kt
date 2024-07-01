@@ -1,7 +1,7 @@
 package benchmark
 
-import com.apollographql.apollo3.ast.ParserOptions
-import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo.ast.ParserOptions
+import com.apollographql.apollo.ast.parseAsGQLDocument
 import okio.buffer
 import okio.source
 import org.openjdk.jmh.annotations.Benchmark

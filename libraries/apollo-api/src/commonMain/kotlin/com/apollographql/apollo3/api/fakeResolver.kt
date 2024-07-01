@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.api.json.MapJsonReader
+import com.apollographql.apollo.api.json.MapJsonReader
 import kotlin.math.absoluteValue
 
 /**

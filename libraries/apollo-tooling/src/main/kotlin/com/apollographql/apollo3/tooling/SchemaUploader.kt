@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.tooling
+package com.apollographql.apollo.tooling
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.tooling.platformapi.public.PublishMonolithSchemaMutation
-import com.apollographql.apollo3.tooling.platformapi.public.PublishSubgraphSchemaMutation
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.tooling.platformapi.public.PublishMonolithSchemaMutation
+import com.apollographql.apollo.tooling.platformapi.public.PublishSubgraphSchemaMutation
 import kotlinx.coroutines.runBlocking
 
 @ApolloExperimental

@@ -1,12 +1,12 @@
 @file:JvmName("-checkApolloReservedEnumValueNames")
 
-package com.apollographql.apollo3.compiler.internal
+package com.apollographql.apollo.compiler.internal
 
-import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
-import com.apollographql.apollo3.ast.Issue
-import com.apollographql.apollo3.ast.ReservedEnumValueName
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.findTargetName
+import com.apollographql.apollo.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo.ast.Issue
+import com.apollographql.apollo.ast.ReservedEnumValueName
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.findTargetName
 
 internal fun checkApolloReservedEnumValueNames(schema: Schema): List<Issue> {
   val issues = mutableListOf<Issue>()

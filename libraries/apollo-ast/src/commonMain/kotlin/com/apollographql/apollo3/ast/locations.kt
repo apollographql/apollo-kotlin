@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo.ast
 
 internal fun GQLDocument.removeLocation(): GQLDocument = copy(
     definitions = definitions.map { it.removeLocation() },

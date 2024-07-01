@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.compiler.codegen.java
+package com.apollographql.apollo.compiler.codegen.java
 
-import com.apollographql.apollo3.compiler.GeneratedMethod
-import com.apollographql.apollo3.compiler.JavaNullable
-import com.apollographql.apollo3.compiler.codegen.CommonLayout
-import com.apollographql.apollo3.compiler.codegen.OperationsLayout
-import com.apollographql.apollo3.compiler.codegen.SchemaLayout
-import com.apollographql.apollo3.compiler.internal.escapeJavaReservedWord
+import com.apollographql.apollo.compiler.GeneratedMethod
+import com.apollographql.apollo.compiler.JavaNullable
+import com.apollographql.apollo.compiler.codegen.CommonLayout
+import com.apollographql.apollo.compiler.codegen.OperationsLayout
+import com.apollographql.apollo.compiler.codegen.SchemaLayout
+import com.apollographql.apollo.compiler.internal.escapeJavaReservedWord
 
 internal interface JavaContext {
   val layout: CommonLayout

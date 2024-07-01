@@ -1,6 +1,6 @@
 @file:JvmName("FileUpload")
 
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
 import okio.buffer
 import okio.source

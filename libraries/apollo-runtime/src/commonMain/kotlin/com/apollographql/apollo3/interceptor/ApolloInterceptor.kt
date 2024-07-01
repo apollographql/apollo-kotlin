@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.interceptor
+package com.apollographql.apollo.interceptor
 
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ApolloResponse
 import kotlinx.coroutines.flow.Flow
 
 interface ApolloInterceptorChain {

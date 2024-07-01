@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
 /**
  * Type safe representation of a [GraphQL subscription](https://spec.graphql.org/October2021/#sec-Subscription).

@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.ir
+package com.apollographql.apollo.compiler.ir
 
 import java.math.BigInteger
 

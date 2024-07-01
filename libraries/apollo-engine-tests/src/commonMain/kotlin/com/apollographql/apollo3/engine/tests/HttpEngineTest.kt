@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.engine.tests
+package com.apollographql.apollo.engine.tests
 
-import com.apollographql.apollo3.api.http.ByteStringHttpBody
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.api.http.valueOf
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.network.http.HttpEngine
+import com.apollographql.apollo.api.http.ByteStringHttpBody
+import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.api.http.HttpRequest
+import com.apollographql.apollo.api.http.valueOf
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.network.http.HttpEngine
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest

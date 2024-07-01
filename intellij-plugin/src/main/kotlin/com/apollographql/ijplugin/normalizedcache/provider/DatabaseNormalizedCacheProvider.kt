@@ -1,7 +1,7 @@
 package com.apollographql.ijplugin.normalizedcache.provider
 
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.Field
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue
@@ -14,8 +14,8 @@ import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.Ref
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.StringValue
 import java.io.File
 import java.sql.DriverManager
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCache as ApolloNormalizedCache
-import com.apollographql.apollo3.cache.normalized.api.Record as ApolloRecord
+import com.apollographql.apollo.cache.normalized.api.NormalizedCache as ApolloNormalizedCache
+import com.apollographql.apollo.cache.normalized.api.Record as ApolloRecord
 
 class DatabaseNormalizedCacheProvider : NormalizedCacheProvider<File> {
   private fun checkDatabase(url: String) {

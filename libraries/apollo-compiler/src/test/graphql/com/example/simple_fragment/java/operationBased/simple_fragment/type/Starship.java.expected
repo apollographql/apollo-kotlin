@@ -5,7 +5,7 @@
 //
 package com.example.simple_fragment.type;
 
-import com.apollographql.apollo3.api.ObjectType;
+import com.apollographql.apollo.api.ObjectType;
 
 public class Starship {
   public static ObjectType type = (new ObjectType.Builder("Starship")).build();

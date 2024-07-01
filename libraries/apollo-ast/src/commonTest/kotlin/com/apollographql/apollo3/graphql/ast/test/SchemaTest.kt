@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.graphql.ast.test
+package com.apollographql.apollo.graphql.ast.test
 
-import com.apollographql.apollo3.ast.toGQLDocument
-import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo.ast.toGQLDocument
+import com.apollographql.apollo.ast.toSchema
 import kotlin.test.Test
 
 class SchemaTest {

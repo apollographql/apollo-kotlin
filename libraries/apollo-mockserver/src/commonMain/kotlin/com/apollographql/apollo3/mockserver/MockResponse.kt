@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.mockserver
+package com.apollographql.apollo.mockserver
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf

@@ -1,14 +1,14 @@
-package com.apollographql.apollo3.benchmark
+package com.apollographql.apollo.benchmark
 
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.benchmark.Utils.dbName
-import com.apollographql.apollo3.benchmark.Utils.operationBasedQuery
-import com.apollographql.apollo3.benchmark.Utils.resource
-import com.apollographql.apollo3.benchmark.test.R
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.parseJsonResponse
+import com.apollographql.apollo.benchmark.Utils.dbName
+import com.apollographql.apollo.benchmark.Utils.operationBasedQuery
+import com.apollographql.apollo.benchmark.Utils.resource
+import com.apollographql.apollo.benchmark.test.R
 import com.apollographql.cache.normalized.ApolloStore
 import com.apollographql.cache.normalized.FetchPolicy
 import com.apollographql.cache.normalized.api.MemoryCacheFactory
@@ -20,8 +20,8 @@ import com.apollographql.mockserver.MockRequestBase
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.MockServerHandler
-import com.apollographql.apollo3.testing.MapTestNetworkTransport
-import com.apollographql.apollo3.testing.registerTestResponse
+import com.apollographql.apollo.testing.MapTestNetworkTransport
+import com.apollographql.apollo.testing.registerTestResponse
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

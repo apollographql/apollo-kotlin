@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.network.ws
+package com.apollographql.apollo.network.ws
 
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
-import com.apollographql.apollo3.network.toNSData
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.exception.ApolloWebSocketClosedException
+import com.apollographql.apollo.network.toNSData
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.convert
 import kotlinx.coroutines.CompletableDeferred

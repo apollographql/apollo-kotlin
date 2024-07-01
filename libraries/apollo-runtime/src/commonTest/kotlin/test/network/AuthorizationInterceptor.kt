@@ -1,9 +1,9 @@
 package test.network
 
-import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.network.http.HttpInterceptor
-import com.apollographql.apollo3.network.http.HttpInterceptorChain
+import com.apollographql.apollo.api.http.HttpRequest
+import com.apollographql.apollo.api.http.HttpResponse
+import com.apollographql.apollo.network.http.HttpInterceptor
+import com.apollographql.apollo.network.http.HttpInterceptorChain
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import test.network.AuthorizationInterceptor.TokenProvider

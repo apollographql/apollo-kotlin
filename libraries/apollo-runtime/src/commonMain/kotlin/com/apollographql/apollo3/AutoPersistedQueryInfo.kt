@@ -1,8 +1,8 @@
-package com.apollographql.apollo3
+package com.apollographql.apollo
 
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.api.Operation
 
 /**
  * Information about auto persisted queries

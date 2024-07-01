@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.gradle.internal.ApolloPlugin.Companion.extraHeaders
-import com.apollographql.apollo3.tooling.SchemaUploader
+import com.apollographql.apollo.gradle.internal.ApolloPlugin.Companion.extraHeaders
+import com.apollographql.apollo.tooling.SchemaUploader
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input

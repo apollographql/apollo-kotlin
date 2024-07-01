@@ -1,26 +1,26 @@
 package test.network
 
 import app.cash.turbine.test
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
-import com.apollographql.apollo3.exception.DefaultApolloException
-import com.apollographql.apollo3.exception.SubscriptionOperationException
-import com.apollographql.apollo3.interceptor.ApolloInterceptor
-import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
-import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
-import com.apollographql.apollo3.network.websocket.closeConnection
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.exception.ApolloWebSocketClosedException
+import com.apollographql.apollo.exception.DefaultApolloException
+import com.apollographql.apollo.exception.SubscriptionOperationException
+import com.apollographql.apollo.interceptor.ApolloInterceptor
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
+import com.apollographql.apollo.network.websocket.closeConnection
 import test.FooSubscription
 import test.FooSubscription.Companion.completeMessage
 import test.FooSubscription.Companion.errorMessage
 import test.FooSubscription.Companion.nextMessage
-import com.apollographql.apollo3.testing.connectionAckMessage
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.connectionAckMessage
+import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.CloseFrame
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.TextMessage
@@ -223,8 +223,8 @@ class WebSocketNetworkTransportTest {
 
                 awaitItem().exception.apply {
                   @Suppress("DEPRECATION")
-                  when (com.apollographql.apollo3.testing.platform()){
-                    com.apollographql.apollo3.testing.Platform.Native -> {
+                  when (com.apollographql.apollo.testing.platform()){
+                    com.apollographql.apollo.testing.Platform.Native -> {
                       assertIs<DefaultApolloException>(this)
                       assertTrue(message?.contains("Error reading websocket") == true)
                     }
@@ -284,8 +284,8 @@ class WebSocketNetworkTransportTest {
           serverWriter.enqueueMessage(CloseFrame(1001, "flowThrowsIfNoReconnect"))
           awaitItem().exception.apply {
             @Suppress("DEPRECATION")
-            when (com.apollographql.apollo3.testing.platform()){
-              com.apollographql.apollo3.testing.Platform.Native -> {
+            when (com.apollographql.apollo.testing.platform()){
+              com.apollographql.apollo.testing.Platform.Native -> {
                 assertIs<DefaultApolloException>(this)
                 assertTrue(message?.contains("Error reading websocket") == true)
               }

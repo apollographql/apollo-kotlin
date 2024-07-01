@@ -1,14 +1,14 @@
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.apollo3.mockserver.test
+package com.apollographql.apollo.mockserver.test
 
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueueMultipart
-import com.apollographql.apollo3.mockserver.enqueueStrings
-import com.apollographql.apollo3.network.http.DefaultHttpEngine
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.api.http.HttpRequest
+import com.apollographql.apollo.mockserver.MockServer
+import com.apollographql.apollo.mockserver.enqueueMultipart
+import com.apollographql.apollo.mockserver.enqueueStrings
+import com.apollographql.apollo.network.http.DefaultHttpEngine
+import com.apollographql.apollo.testing.internal.runTest
 import okhttp3.MultipartReader
 import kotlin.test.Test
 import kotlin.test.assertEquals

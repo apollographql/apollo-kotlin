@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.gradle.api.Service
+import com.apollographql.apollo.compiler.capitalizeFirstLetter
+import com.apollographql.apollo.gradle.api.Service
 
 object ModelNames {
   private fun camelCase(vararg elements: String): String {

@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo3.internal
+package com.apollographql.apollo.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.exception.DefaultApolloException
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.exception.DefaultApolloException
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString.Companion.encodeUtf8

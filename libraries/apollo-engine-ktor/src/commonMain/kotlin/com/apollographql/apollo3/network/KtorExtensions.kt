@@ -1,12 +1,12 @@
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.apollo3.network
+package com.apollographql.apollo.network
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.network.http.KtorHttpEngine
-import com.apollographql.apollo3.network.ws.KtorWebSocketEngine
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.network.http.KtorHttpEngine
+import com.apollographql.apollo.network.ws.KtorWebSocketEngine
 import io.ktor.client.HttpClient
 
 /**

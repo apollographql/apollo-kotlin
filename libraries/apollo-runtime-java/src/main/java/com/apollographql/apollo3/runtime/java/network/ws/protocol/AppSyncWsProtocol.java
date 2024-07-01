@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.runtime.java.network.ws.protocol;
+package com.apollographql.apollo.runtime.java.network.ws.protocol;
 
-import com.apollographql.apollo3.api.ApolloRequest;
-import com.apollographql.apollo3.api.ImmutableMapBuilder;
-import com.apollographql.apollo3.api.Operation;
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer;
-import com.apollographql.apollo3.runtime.java.network.ws.WebSocketConnection;
+import com.apollographql.apollo.api.ApolloRequest;
+import com.apollographql.apollo.api.ImmutableMapBuilder;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.http.DefaultHttpRequestComposer;
+import com.apollographql.apollo.runtime.java.network.ws.WebSocketConnection;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

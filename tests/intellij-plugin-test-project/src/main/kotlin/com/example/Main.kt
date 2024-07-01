@@ -2,8 +2,8 @@
 
 package com.example
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Optional
 import com.example.generated.AnimalsQuery
 import com.example.generated.CreatePersonMutation
 import com.example.generated.MyEnumQuery

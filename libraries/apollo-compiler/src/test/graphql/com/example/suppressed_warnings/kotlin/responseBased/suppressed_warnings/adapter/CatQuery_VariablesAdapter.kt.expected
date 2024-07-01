@@ -5,12 +5,12 @@
 //
 package com.example.suppressed_warnings.adapter
 
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.nullable
-import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.present
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Optional
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.nullable
+import com.apollographql.apollo.api.obj
+import com.apollographql.apollo.api.present
 import com.example.suppressed_warnings.CatQuery
 import com.example.suppressed_warnings.type.adapter.Filter_InputAdapter
 import kotlin.Boolean

@@ -5,7 +5,7 @@
 //
 package com.example.test_inline.type
 
-import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo.api.InterfaceType
 
 public class Item {
   public companion object {

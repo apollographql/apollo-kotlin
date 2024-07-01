@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.internal
+package com.apollographql.apollo.internal
 
-import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.api.http.valueOf
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.DefaultApolloException
+import com.apollographql.apollo.api.http.HttpResponse
+import com.apollographql.apollo.api.http.valueOf
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.DefaultApolloException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion

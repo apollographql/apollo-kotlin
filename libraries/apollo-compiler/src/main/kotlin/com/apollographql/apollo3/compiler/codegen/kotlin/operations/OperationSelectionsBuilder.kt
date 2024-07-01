@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.operations
+package com.apollographql.apollo.compiler.codegen.kotlin.operations
 
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
-import com.apollographql.apollo3.compiler.codegen.operationName
-import com.apollographql.apollo3.compiler.codegen.operationResponseFieldsPackageName
-import com.apollographql.apollo3.compiler.codegen.selections
-import com.apollographql.apollo3.compiler.ir.IrOperation
+import com.apollographql.apollo.compiler.codegen.kotlin.CgFile
+import com.apollographql.apollo.compiler.codegen.kotlin.CgFileBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOperationsContext
+import com.apollographql.apollo.compiler.codegen.operationName
+import com.apollographql.apollo.compiler.codegen.operationResponseFieldsPackageName
+import com.apollographql.apollo.compiler.codegen.selections
+import com.apollographql.apollo.compiler.ir.IrOperation
 import com.squareup.kotlinpoet.ClassName
 
 internal class OperationSelectionsBuilder(

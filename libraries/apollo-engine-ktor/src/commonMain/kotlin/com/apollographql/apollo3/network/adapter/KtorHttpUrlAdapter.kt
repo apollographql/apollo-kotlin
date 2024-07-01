@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.network.adapter
+package com.apollographql.apollo.network.adapter
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.JsonWriter
 import io.ktor.http.Url
 
 /**

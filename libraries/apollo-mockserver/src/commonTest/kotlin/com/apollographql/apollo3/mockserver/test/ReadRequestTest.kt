@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.mockserver.test
+package com.apollographql.apollo.mockserver.test
 
-import com.apollographql.apollo3.mockserver.MockRequest
-import com.apollographql.apollo3.mockserver.Reader
-import com.apollographql.apollo3.mockserver.readRequest
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.mockserver.MockRequest
+import com.apollographql.apollo.mockserver.Reader
+import com.apollographql.apollo.mockserver.readRequest
+import com.apollographql.apollo.testing.internal.runTest
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals

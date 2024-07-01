@@ -5,7 +5,7 @@
 //
 package com.example.list_field_clash.type;
 
-import com.apollographql.apollo3.api.ObjectType;
+import com.apollographql.apollo.api.ObjectType;
 
 public class PropertyAmenityCategory {
   public static ObjectType type = (new ObjectType.Builder("PropertyAmenityCategory")).build();

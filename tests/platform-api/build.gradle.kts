@@ -1,9 +1,9 @@
 import com.android.build.gradle.internal.tasks.factory.dependsOn
-import com.apollographql.apollo3.gradle.internal.ApolloPushSchemaTask
+import com.apollographql.apollo.gradle.internal.ApolloPushSchemaTask
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("com.apollographql.apollo3")
+  id("com.apollographql.apollo")
 }
 
 apolloTest()

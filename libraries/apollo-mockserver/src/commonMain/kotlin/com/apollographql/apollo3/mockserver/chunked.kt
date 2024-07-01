@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.mockserver
+package com.apollographql.apollo.mockserver
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

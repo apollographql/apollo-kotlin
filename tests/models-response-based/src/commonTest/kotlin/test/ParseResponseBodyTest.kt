@@ -5,11 +5,11 @@ import codegen.models.AllPlanetsQuery
 import codegen.models.AllPlanetsQuery.Data.AllPlanets.Planet.Companion.planetFragment
 import codegen.models.AllPlanetsQuery.Data.AllPlanets.Planet.FilmConnection.Film.Companion.filmFragment
 import codegen.models.fragment.PlanetFragment
-import com.apollographql.apollo3.api.composeJsonResponse
-import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.toApolloResponse
-import com.apollographql.apollo3.testing.*
+import com.apollographql.apollo.api.composeJsonResponse
+import com.apollographql.apollo.api.json.buildJsonString
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.toApolloResponse
+import com.apollographql.apollo.testing.*
 import okio.Buffer
 import testFixtureToJsonReader
 import testFixtureToUtf8

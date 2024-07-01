@@ -1,7 +1,7 @@
 package test
 
-import com.apollographql.apollo3.annotations.ApolloRequiresOptIn
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.annotations.ApolloRequiresOptIn
+import com.apollographql.apollo.api.Optional
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

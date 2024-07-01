@@ -1,5 +1,5 @@
 @file:JvmName("HttpHeaders")
-package com.apollographql.apollo3.api.http
+package com.apollographql.apollo.api.http
 
 import kotlin.jvm.JvmName
 

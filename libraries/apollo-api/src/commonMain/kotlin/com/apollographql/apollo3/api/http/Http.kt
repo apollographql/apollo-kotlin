@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.api.http
+package com.apollographql.apollo.api.http
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_4_1
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince.Version.v3_4_1
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ExecutionContext
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource

@@ -1,8 +1,8 @@
 package platformapi
 
-import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.tooling.FieldInsights
-import com.apollographql.apollo3.tooling.Telemetry
+import com.apollographql.apollo.testing.internal.runTest
+import com.apollographql.apollo.tooling.FieldInsights
+import com.apollographql.apollo.tooling.Telemetry
 import java.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertIs

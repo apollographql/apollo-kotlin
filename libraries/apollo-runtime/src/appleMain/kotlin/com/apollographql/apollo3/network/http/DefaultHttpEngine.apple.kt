@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.network.http
+package com.apollographql.apollo.network.http
 
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.network.toNSData
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.api.http.HttpRequest
+import com.apollographql.apollo.api.http.HttpResponse
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.network.toNSData
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr

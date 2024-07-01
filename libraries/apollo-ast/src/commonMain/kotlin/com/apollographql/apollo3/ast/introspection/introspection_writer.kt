@@ -2,31 +2,31 @@
 @file:JvmName("Introspection")
 @file:Suppress("PropertyName")
 
-package com.apollographql.apollo3.ast.introspection
+package com.apollographql.apollo.ast.introspection
 
-import com.apollographql.apollo3.ast.ConversionException
-import com.apollographql.apollo3.ast.GQLDirectiveDefinition
-import com.apollographql.apollo3.ast.GQLDocument
-import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
-import com.apollographql.apollo3.ast.GQLEnumValueDefinition
-import com.apollographql.apollo3.ast.GQLFieldDefinition
-import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
-import com.apollographql.apollo3.ast.GQLInputValueDefinition
-import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
-import com.apollographql.apollo3.ast.GQLListType
-import com.apollographql.apollo3.ast.GQLNamedType
-import com.apollographql.apollo3.ast.GQLNonNullType
-import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
-import com.apollographql.apollo3.ast.GQLOperationTypeDefinition
-import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
-import com.apollographql.apollo3.ast.GQLSchemaDefinition
-import com.apollographql.apollo3.ast.GQLType
-import com.apollographql.apollo3.ast.GQLTypeDefinition
-import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
-import com.apollographql.apollo3.ast.findDeprecationReason
-import com.apollographql.apollo3.ast.findOneOf
-import com.apollographql.apollo3.ast.findSpecifiedBy
-import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo.ast.ConversionException
+import com.apollographql.apollo.ast.GQLDirectiveDefinition
+import com.apollographql.apollo.ast.GQLDocument
+import com.apollographql.apollo.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo.ast.GQLEnumValueDefinition
+import com.apollographql.apollo.ast.GQLFieldDefinition
+import com.apollographql.apollo.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo.ast.GQLInputValueDefinition
+import com.apollographql.apollo.ast.GQLInterfaceTypeDefinition
+import com.apollographql.apollo.ast.GQLListType
+import com.apollographql.apollo.ast.GQLNamedType
+import com.apollographql.apollo.ast.GQLNonNullType
+import com.apollographql.apollo.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo.ast.GQLOperationTypeDefinition
+import com.apollographql.apollo.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo.ast.GQLSchemaDefinition
+import com.apollographql.apollo.ast.GQLType
+import com.apollographql.apollo.ast.GQLTypeDefinition
+import com.apollographql.apollo.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo.ast.findDeprecationReason
+import com.apollographql.apollo.ast.findOneOf
+import com.apollographql.apollo.ast.findSpecifiedBy
+import com.apollographql.apollo.ast.toUtf8
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

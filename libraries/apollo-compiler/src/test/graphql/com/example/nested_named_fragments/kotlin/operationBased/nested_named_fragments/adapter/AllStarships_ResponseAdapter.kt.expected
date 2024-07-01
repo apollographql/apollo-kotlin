@@ -5,15 +5,15 @@
 //
 package com.example.nested_named_fragments.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.list
-import com.apollographql.apollo3.api.missingField
-import com.apollographql.apollo3.api.nullable
-import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.StringAdapter
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.list
+import com.apollographql.apollo.api.missingField
+import com.apollographql.apollo.api.nullable
+import com.apollographql.apollo.api.obj
 import com.example.nested_named_fragments.AllStarships
 import kotlin.String
 import kotlin.collections.List

@@ -5,13 +5,13 @@
 //
 package com.example.hero_with_review
 
-import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Mutation
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo.annotations.ApolloAdaptableWith
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Mutation
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.obj
 import com.example.hero_with_review.adapter.TestQuery_ResponseAdapter
 import com.example.hero_with_review.adapter.TestQuery_VariablesAdapter
 import com.example.hero_with_review.selections.TestQuerySelections

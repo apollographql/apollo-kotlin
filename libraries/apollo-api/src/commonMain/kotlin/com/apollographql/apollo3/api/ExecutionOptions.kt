@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo.api
 
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.api.http.HttpMethod
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.api.http.HttpMethod
 
 interface ExecutionOptions {
   /**
@@ -13,44 +13,44 @@ interface ExecutionOptions {
    *
    * The HTTP method to use for the request.
    *
-   * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
+   * Used by [com.apollographql.apollo.api.http.DefaultHttpRequestComposer]
    */
   val httpMethod: HttpMethod?
 
   /**
    *
    * HTTP headers to use for the request.
-   * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
+   * Used by [com.apollographql.apollo.api.http.DefaultHttpRequestComposer]
    */
   val httpHeaders: List<HttpHeader>?
 
   /**
    * Whether to send the Auto Persisted Queries extensions.
-   * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
+   * Used by [com.apollographql.apollo.api.http.DefaultHttpRequestComposer]
    */
   val sendApqExtensions: Boolean?
 
   /**
    * Whether to send the document.
-   * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
+   * Used by [com.apollographql.apollo.api.http.DefaultHttpRequestComposer]
    */
   val sendDocument: Boolean?
 
   /**
    * Whether to enable Auto Persisted Queries and try to send a hashed query first.
-   * Used by [com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor]
+   * Used by [com.apollographql.apollo.interceptor.AutoPersistedQueryInterceptor]
    */
   val enableAutoPersistedQueries: Boolean?
 
   /**
    * Whether the request can be batched.
-   * Used by [com.apollographql.apollo3.network.http.BatchingHttpInterceptor]
+   * Used by [com.apollographql.apollo.network.http.BatchingHttpInterceptor]
    */
   val canBeBatched: Boolean?
 
   companion object {
     /**
-     * Used by [com.apollographql.apollo3.network.http.BatchingHttpInterceptor]
+     * Used by [com.apollographql.apollo.network.http.BatchingHttpInterceptor]
      */
     const val CAN_BE_BATCHED = "X-APOLLO-CAN-BE-BATCHED"
   }

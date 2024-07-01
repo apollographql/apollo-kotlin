@@ -1,7 +1,7 @@
-package com.apollographql.apollo3.engine.tests
+package com.apollographql.apollo.engine.tests
 
-import com.apollographql.apollo3.network.http.HttpEngine
-import com.apollographql.apollo3.network.http.get
+import com.apollographql.apollo.network.http.HttpEngine
+import com.apollographql.apollo.network.http.get
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
 import okio.Buffer

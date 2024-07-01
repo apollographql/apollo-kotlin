@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.network.websocket
+package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.json.ApolloJsonElement
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.json.ApolloJsonElement
 
 /**
  * A [SubscriptionParser] transforms JSON responses contained in WebSocket messages into parsed [ApolloResponse]

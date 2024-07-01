@@ -160,11 +160,11 @@ data class GCloud(val storage: Storage, val projectId: String)
  *
  * ./gradlew -p benchmark assembleRelease assembleStableReleaseAndroidTest
  * adb install benchmark/microbenchmark/build/outputs/apk/androidTest/stable/release/microbenchmark-stable-release-androidTest.apk
- * adb shell am instrument -w com.apollographql.apollo3.benchmark.stable/androidx.benchmark.junit4.AndroidBenchmarkRunner
+ * adb shell am instrument -w com.apollographql.apollo.benchmark.stable/androidx.benchmark.junit4.AndroidBenchmarkRunner
  *
  * Or just
  *
- * ./gradlew -p benchmark :microbenchmark:connectedIncubatingReleaseAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.apollographql.apollo3.benchmark.CacheIncubatingIntegrationTests#concurrentQueriesTestNetworkTransportMemoryThenSql
+ * ./gradlew -p benchmark :microbenchmark:connectedIncubatingReleaseAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.apollographql.apollo.benchmark.CacheIncubatingIntegrationTests#concurrentQueriesTestNetworkTransportMemoryThenSql
  * cat 'benchmark/microbenchmark/build/outputs/androidTest-results/connected/release/flavors/incubating/Pixel 6a - 14/testlog/test-results.log'
  */
 fun runTest(projectId: String, testApk: String): String {
@@ -298,7 +298,7 @@ fun locateExtraMetrics(storage: Storage, bucket: String, prefix: String): List<M
  *         {
  *             "name": "concurrentReadWritesSql",
  *             "params": {},
- *             "className": "com.apollographql.apollo3.benchmark.ApolloStoreTests",
+ *             "className": "com.apollographql.apollo.benchmark.ApolloStoreTests",
  *             "totalRunTimeNs": 35949947123,
  *             "metrics": {
  *                 "timeNs": {
@@ -350,7 +350,7 @@ fun Any.parseCasesFromBenchmarkData(): List<Case> {
  *     "name": "bytes",
  *     "value": 2994176,
  *     "tags": [
- *       "class:com.apollographql.apollo3.benchmark.CacheTests",
+ *       "class:com.apollographql.apollo.benchmark.CacheTests",
  *       "test:cacheOperationSql"
  *     ]
  *   },
@@ -358,7 +358,7 @@ fun Any.parseCasesFromBenchmarkData(): List<Case> {
  *     "name": "bytes",
  *     "value": 2994176,
  *     "tags": [
- *       "class:com.apollographql.apollo3.benchmark.CacheTests",
+ *       "class:com.apollographql.apollo.benchmark.CacheTests",
  *       "test:cacheResponseSql"
  *     ]
  *   }

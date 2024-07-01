@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.debugserver.internal.server
+package com.apollographql.apollo.debugserver.internal.server
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.debugserver.internal.graphql.ApolloDebugServerExecutableSchemaBuilder
-import com.apollographql.apollo3.debugserver.internal.graphql.Query
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.debugserver.internal.graphql.ApolloDebugServerExecutableSchemaBuilder
+import com.apollographql.apollo.debugserver.internal.graphql.Query
 import com.apollographql.execution.ktor.apolloModule
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer

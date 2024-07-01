@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
 /**
  * A variation of [String.capitalize] that:

@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.gradle.test
+package com.apollographql.apollo.gradle.test
 
-import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
+import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
 import org.gradle.tooling.GradleConnector
 import org.junit.Assert
 import org.junit.Test

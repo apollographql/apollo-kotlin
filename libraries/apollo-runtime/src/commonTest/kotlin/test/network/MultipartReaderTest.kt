@@ -1,6 +1,6 @@
 package test.network
 
-import com.apollographql.apollo3.internal.MultipartReader
+import com.apollographql.apollo.internal.MultipartReader
 import okio.Buffer
 import okio.use
 import kotlin.test.Test

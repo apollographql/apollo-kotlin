@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 
 /**
  * A class that generates [OperationOutput] to compute the operationIds. [OperationOutputGenerator] works with a collection of

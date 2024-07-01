@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.runtime.java.internal;
+package com.apollographql.apollo.runtime.java.internal;
 
-import com.apollographql.apollo3.runtime.java.ApolloDisposable;
+import com.apollographql.apollo.runtime.java.ApolloDisposable;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;

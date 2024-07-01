@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.operationoutput
+package com.apollographql.apollo.compiler.operationoutput
 
 import kotlinx.serialization.Serializable
 

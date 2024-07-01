@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.cache.normalized.api
+package com.apollographql.apollo.cache.normalized.api
 
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.keyFields
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.Executable
+import com.apollographql.apollo.api.keyFields
 
 /**
  * An [CacheKeyGenerator] is responsible for finding an id for a given object
@@ -29,8 +29,8 @@ interface CacheKeyGenerator {
  * The context in which an object is normalized.
  *
  * @param field the field representing the object or for lists, the field representing the list. `field.type` is not
- * always the type of the object. Especially, it can be any combination of [com.apollographql.apollo3.api.CompiledNotNullType]
- * and [com.apollographql.apollo3.api.CompiledListType].
+ * always the type of the object. Especially, it can be any combination of [com.apollographql.apollo.api.CompiledNotNullType]
+ * and [com.apollographql.apollo.api.CompiledListType].
  * Use `field.type.rawType()` to access the type of the object. For interface fields, it will be the interface type,
  * not concrete types.
  * @param variables the variables used in the operation where the object is normalized.

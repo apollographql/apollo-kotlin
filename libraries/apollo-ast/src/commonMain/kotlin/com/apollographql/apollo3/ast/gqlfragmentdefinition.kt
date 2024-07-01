@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo.ast
 
-import com.apollographql.apollo3.ast.internal.ExecutableValidationScope
+import com.apollographql.apollo.ast.internal.ExecutableValidationScope
 
 
 

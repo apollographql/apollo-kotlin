@@ -1,16 +1,16 @@
-package com.apollographql.apollo3.cache.normalized.api
+package com.apollographql.apollo.cache.normalized.api
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.json.MapJsonReader
-import com.apollographql.apollo3.api.json.MapJsonWriter
-import com.apollographql.apollo3.api.variables
-import com.apollographql.apollo3.cache.normalized.api.internal.CacheBatchReader
-import com.apollographql.apollo3.cache.normalized.api.internal.Normalizer
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Executable
+import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.json.MapJsonReader
+import com.apollographql.apollo.api.json.MapJsonWriter
+import com.apollographql.apollo.api.variables
+import com.apollographql.apollo.cache.normalized.api.internal.CacheBatchReader
+import com.apollographql.apollo.cache.normalized.api.internal.Normalizer
 
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,

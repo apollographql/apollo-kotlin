@@ -1,8 +1,8 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo.ast
 
-import com.apollographql.apollo3.ast.internal.DefaultValidationScope
-import com.apollographql.apollo3.ast.internal.constContextError
-import com.apollographql.apollo3.ast.internal.validateAndCoerceValue
+import com.apollographql.apollo.ast.internal.DefaultValidationScope
+import com.apollographql.apollo.ast.internal.constContextError
+import com.apollographql.apollo.ast.internal.validateAndCoerceValue
 
 /**
  * For a [GQLValue] used in input position, validate that it can be coerced to [expectedType]

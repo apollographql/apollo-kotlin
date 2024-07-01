@@ -1,9 +1,9 @@
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.apollo3.testing
+package com.apollographql.apollo.testing
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloInternal
 
 /**
  * The current platform. This is used from tests because Double.toString() doesn't behave the same on JS and other platforms.

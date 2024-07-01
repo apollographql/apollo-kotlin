@@ -1,16 +1,16 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.schema
+package com.apollographql.apollo.compiler.codegen.kotlin.schema
 
 
-import com.apollographql.apollo3.compiler.codegen.Identifier.type
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSchemaContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.schemaSubPackageName
-import com.apollographql.apollo3.compiler.ir.IrEnum
-import com.apollographql.apollo3.compiler.ir.IrInterface
-import com.apollographql.apollo3.compiler.ir.IrObject
-import com.apollographql.apollo3.compiler.ir.IrUnion
+import com.apollographql.apollo.compiler.codegen.Identifier.type
+import com.apollographql.apollo.compiler.codegen.kotlin.CgFile
+import com.apollographql.apollo.compiler.codegen.kotlin.CgFileBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSchemaContext
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo.compiler.codegen.schemaSubPackageName
+import com.apollographql.apollo.compiler.ir.IrEnum
+import com.apollographql.apollo.compiler.ir.IrInterface
+import com.apollographql.apollo.compiler.ir.IrObject
+import com.apollographql.apollo.compiler.ir.IrUnion
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -73,7 +73,7 @@ internal class SchemaBuilder(
 
     builder.addParameter("type", KotlinSymbols.CompiledNamedType)
     builder.returns(KotlinSymbols.List.parameterizedBy(KotlinSymbols.ObjectType))
-    builder.addCode("return·%M(all, type)\n", MemberName("com.apollographql.apollo3.api", "possibleTypes"))
+    builder.addCode("return·%M(all, type)\n", MemberName("com.apollographql.apollo.api", "possibleTypes"))
     return builder.build()
   }
 }

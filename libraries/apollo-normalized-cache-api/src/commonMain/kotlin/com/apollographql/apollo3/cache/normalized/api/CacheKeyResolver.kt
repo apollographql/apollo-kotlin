@@ -1,11 +1,11 @@
-package com.apollographql.apollo3.cache.normalized.api
+package com.apollographql.apollo.cache.normalized.api
 
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledListType
-import com.apollographql.apollo3.api.CompiledNamedType
-import com.apollographql.apollo3.api.CompiledNotNullType
-import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.isComposite
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledListType
+import com.apollographql.apollo.api.CompiledNamedType
+import com.apollographql.apollo.api.CompiledNotNullType
+import com.apollographql.apollo.api.Executable
+import com.apollographql.apollo.api.isComposite
 import kotlin.jvm.JvmSuppressWildcards
 
 /**

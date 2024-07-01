@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloExperimental
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -36,7 +36,7 @@ enum class JavaNullable {
   NONE,
 
   /**
-   * Fields will be generated as Apollo's `com.apollographql.apollo3.api.Optional<Type>` if nullable, or `Type` if not.
+   * Fields will be generated as Apollo's `com.apollographql.apollo.api.Optional<Type>` if nullable, or `Type` if not.
    */
   APOLLO_OPTIONAL,
 
@@ -166,9 +166,9 @@ class IrOptions(
     val addTypename: String?,
 
     /**
-     * Whether to generate operation variables as [com.apollographql.apollo3.api.Optional]
+     * Whether to generate operation variables as [com.apollographql.apollo.api.Optional]
      *
-     * Using [com.apollographql.apollo3.api.Optional] allows to omit the variables if needed but makes the
+     * Using [com.apollographql.apollo.api.Optional] allows to omit the variables if needed but makes the
      * callsite more verbose in most cases.
      *
      * Default: true
@@ -333,7 +333,7 @@ interface SchemaCodegenOpt {
 
 interface OperationsCodegenOpt {
   /**
-   * Whether to generate the [com.apollographql.apollo3.api.Fragment] as well as response and variables adapters.
+   * Whether to generate the [com.apollographql.apollo.api.Fragment] as well as response and variables adapters.
    *
    * When using `responseBased` codegen, [generateFragmentImplementations] also generates classes for every fragment
    * interface.
@@ -348,7 +348,7 @@ interface OperationsCodegenOpt {
   val generateFragmentImplementations: Boolean?
 
   /**
-   * Whether to embed the query document in the [com.apollographql.apollo3.api.Operation]s. By default, this is true as it is needed
+   * Whether to embed the query document in the [com.apollographql.apollo.api.Operation]s. By default, this is true as it is needed
    * to send the operations to the server.
    * If performance/binary size is critical, and you are using persisted queries or a similar mechanism, disable this.
    *
@@ -388,7 +388,7 @@ interface JavaCodegenOpt {
    *
    * Acceptable values:
    * - `none`: Fields will be generated with the same type whether they are nullable or not
-   * - `apolloOptional`: Fields will be generated as Apollo's `com.apollographql.apollo3.api.Optional<Type>` if nullable, or `Type` if not.
+   * - `apolloOptional`: Fields will be generated as Apollo's `com.apollographql.apollo.api.Optional<Type>` if nullable, or `Type` if not.
    * - `javaOptional`: Fields will be generated as Java's `java.util.Optional<Type>` if nullable, or `Type` if not.
    * - `guavaOptional`: Fields will be generated as Guava's `com.google.common.base.Optional<Type>` if nullable, or `Type` if not.
    * - `jetbrainsAnnotations`: Fields will be generated with Jetbrain's `org.jetbrains.annotations.Nullable` annotation if nullable, or
@@ -621,7 +621,7 @@ sealed interface AdapterInitializer
 class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
 
 /**
- * The adapter instance will be looked up in the [com.apollographql.apollo3.api.CustomScalarAdapters] provided at runtime.
+ * The adapter instance will be looked up in the [com.apollographql.apollo.api.CustomScalarAdapters] provided at runtime.
  */
 @Serializable
 @SerialName("runtime")

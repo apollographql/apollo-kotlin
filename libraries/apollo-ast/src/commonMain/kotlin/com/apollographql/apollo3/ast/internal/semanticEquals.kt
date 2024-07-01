@@ -1,28 +1,28 @@
-package com.apollographql.apollo3.ast.internal
+package com.apollographql.apollo.ast.internal
 
-import com.apollographql.apollo3.ast.GQLArgument
-import com.apollographql.apollo3.ast.GQLBooleanValue
-import com.apollographql.apollo3.ast.GQLDirective
-import com.apollographql.apollo3.ast.GQLDirectiveDefinition
-import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
-import com.apollographql.apollo3.ast.GQLEnumValue
-import com.apollographql.apollo3.ast.GQLEnumValueDefinition
-import com.apollographql.apollo3.ast.GQLFloatValue
-import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
-import com.apollographql.apollo3.ast.GQLInputValueDefinition
-import com.apollographql.apollo3.ast.GQLIntValue
-import com.apollographql.apollo3.ast.GQLListType
-import com.apollographql.apollo3.ast.GQLListValue
-import com.apollographql.apollo3.ast.GQLNamed
-import com.apollographql.apollo3.ast.GQLNamedType
-import com.apollographql.apollo3.ast.GQLNode
-import com.apollographql.apollo3.ast.GQLNonNullType
-import com.apollographql.apollo3.ast.GQLNullValue
-import com.apollographql.apollo3.ast.GQLObjectValue
-import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
-import com.apollographql.apollo3.ast.GQLStringValue
-import com.apollographql.apollo3.ast.GQLVariableValue
-import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo.ast.GQLArgument
+import com.apollographql.apollo.ast.GQLBooleanValue
+import com.apollographql.apollo.ast.GQLDirective
+import com.apollographql.apollo.ast.GQLDirectiveDefinition
+import com.apollographql.apollo.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo.ast.GQLEnumValue
+import com.apollographql.apollo.ast.GQLEnumValueDefinition
+import com.apollographql.apollo.ast.GQLFloatValue
+import com.apollographql.apollo.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo.ast.GQLInputValueDefinition
+import com.apollographql.apollo.ast.GQLIntValue
+import com.apollographql.apollo.ast.GQLListType
+import com.apollographql.apollo.ast.GQLListValue
+import com.apollographql.apollo.ast.GQLNamed
+import com.apollographql.apollo.ast.GQLNamedType
+import com.apollographql.apollo.ast.GQLNode
+import com.apollographql.apollo.ast.GQLNonNullType
+import com.apollographql.apollo.ast.GQLNullValue
+import com.apollographql.apollo.ast.GQLObjectValue
+import com.apollographql.apollo.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo.ast.GQLStringValue
+import com.apollographql.apollo.ast.GQLVariableValue
+import com.apollographql.apollo.ast.toUtf8
 
 /**
  * Returns true if the two nodes are semantically equal, which ignores the source location and the description.

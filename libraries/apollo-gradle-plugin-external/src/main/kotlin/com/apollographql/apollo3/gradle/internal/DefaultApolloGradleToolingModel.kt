@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
+import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
 import java.io.File
 import java.io.Serializable
 

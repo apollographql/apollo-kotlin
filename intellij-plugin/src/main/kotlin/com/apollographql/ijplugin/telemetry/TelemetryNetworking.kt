@@ -1,7 +1,7 @@
 package com.apollographql.ijplugin.telemetry
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.tooling.Telemetry
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.tooling.Telemetry
 import org.jetbrains.kotlin.idea.util.application.isApplicationInternalMode
 
 private const val STAGING_INTERNAL_PLATFORM_API_URL = "https://graphql-staging.api.apollographql.com/api/graphql"

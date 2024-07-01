@@ -39,8 +39,8 @@ fun KotlinCommonCompilerOptions.configure(target: Int, kotlinCompilerOptions: Ko
    * We might want to do something more precise where we only opt-in for libraries but still require integration tests to opt-in with more granularity
    */
   freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
-  freeCompilerArgs.add("-opt-in=com.apollographql.apollo3.annotations.ApolloExperimental")
-  freeCompilerArgs.add("-opt-in=com.apollographql.apollo3.annotations.ApolloInternal")
+  freeCompilerArgs.add("-opt-in=com.apollographql.apollo.annotations.ApolloExperimental")
+  freeCompilerArgs.add("-opt-in=com.apollographql.apollo.annotations.ApolloInternal")
 
   apiVersion.set(kotlinCompilerOptions.version)
   languageVersion.set(kotlinCompilerOptions.version)
@@ -125,8 +125,8 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptio
   }
 
   (kotlinExtensionOrNull as? KotlinMultiplatformExtension)?.sourceSets?.configureEach {
-    languageSettings.optIn("com.apollographql.apollo3.annotations.ApolloExperimental")
-    languageSettings.optIn("com.apollographql.apollo3.annotations.ApolloInternal")
+    languageSettings.optIn("com.apollographql.apollo.annotations.ApolloExperimental")
+    languageSettings.optIn("com.apollographql.apollo.annotations.ApolloInternal")
   }
 
   /**

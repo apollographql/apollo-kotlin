@@ -5,9 +5,9 @@
 //
 package com.example.java8annotation.adapter
 
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.obj
 import com.example.java8annotation.LoginBarber
 import com.example.java8annotation.type.adapter.Login_InputAdapter
 import kotlin.Boolean

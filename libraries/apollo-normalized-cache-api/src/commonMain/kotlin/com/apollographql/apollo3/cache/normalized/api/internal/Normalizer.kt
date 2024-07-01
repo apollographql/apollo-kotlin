@@ -1,18 +1,18 @@
-package com.apollographql.apollo3.cache.normalized.api.internal
+package com.apollographql.apollo.cache.normalized.api.internal
 
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledListType
-import com.apollographql.apollo3.api.CompiledNamedType
-import com.apollographql.apollo3.api.CompiledNotNullType
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledType
-import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.isComposite
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
-import com.apollographql.apollo3.cache.normalized.api.Record
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledFragment
+import com.apollographql.apollo.api.CompiledListType
+import com.apollographql.apollo.api.CompiledNamedType
+import com.apollographql.apollo.api.CompiledNotNullType
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.CompiledType
+import com.apollographql.apollo.api.Executable
+import com.apollographql.apollo.api.isComposite
+import com.apollographql.apollo.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.api.CacheKeyGenerator
+import com.apollographql.apollo.cache.normalized.api.CacheKeyGeneratorContext
+import com.apollographql.apollo.cache.normalized.api.Record
 
 /**
  * A [Normalizer] takes a [Map]<String, Any?> and turns them into a flat list of [Record]

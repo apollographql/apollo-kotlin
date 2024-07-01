@@ -5,20 +5,20 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.and
-import com.apollographql.apollo3.api.evaluate
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.label
-import com.apollographql.apollo3.api.missingField
-import com.apollographql.apollo3.api.not
-import com.apollographql.apollo3.api.nullable
-import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.possibleTypes
-import com.apollographql.apollo3.api.variable
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.StringAdapter
+import com.apollographql.apollo.api.and
+import com.apollographql.apollo.api.evaluate
+import com.apollographql.apollo.api.json.JsonReader
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.label
+import com.apollographql.apollo.api.missingField
+import com.apollographql.apollo.api.not
+import com.apollographql.apollo.api.nullable
+import com.apollographql.apollo.api.obj
+import com.apollographql.apollo.api.possibleTypes
+import com.apollographql.apollo.api.variable
 import com.example.fragments_with_defer_and_include_directives.InlineMultipleWithDeferAndInclude
 import kotlin.String
 import kotlin.collections.List

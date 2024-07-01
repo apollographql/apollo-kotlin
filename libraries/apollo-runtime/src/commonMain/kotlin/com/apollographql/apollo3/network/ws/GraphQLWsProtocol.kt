@@ -1,12 +1,12 @@
-package com.apollographql.apollo3.network.ws
+package com.apollographql.apollo.network.ws
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_7_2
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.DefaultWebSocketPayloadComposer
-import com.apollographql.apollo3.api.http.WebSocketPayloadComposer
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince.Version.v3_7_2
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.http.DefaultWebSocketPayloadComposer
+import com.apollographql.apollo.api.http.WebSocketPayloadComposer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

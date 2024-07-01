@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.internal
+package com.apollographql.apollo.compiler.internal
 
 // Reference:
 // https://docs.oracle.com/javase/tutorial/java/nutsandbolts/_keywords.html

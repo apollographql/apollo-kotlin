@@ -1,13 +1,13 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.operations
+package com.apollographql.apollo.compiler.codegen.kotlin.operations
 
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinOperationsContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.operations.util.variablesAdapterTypeSpec
-import com.apollographql.apollo3.compiler.codegen.operationAdapterPackageName
-import com.apollographql.apollo3.compiler.codegen.operationName
-import com.apollographql.apollo3.compiler.codegen.variablesAdapter
-import com.apollographql.apollo3.compiler.ir.IrOperation
+import com.apollographql.apollo.compiler.codegen.kotlin.CgFile
+import com.apollographql.apollo.compiler.codegen.kotlin.CgFileBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOperationsContext
+import com.apollographql.apollo.compiler.codegen.kotlin.operations.util.variablesAdapterTypeSpec
+import com.apollographql.apollo.compiler.codegen.operationAdapterPackageName
+import com.apollographql.apollo.compiler.codegen.operationName
+import com.apollographql.apollo.compiler.codegen.variablesAdapter
+import com.apollographql.apollo.compiler.ir.IrOperation
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
