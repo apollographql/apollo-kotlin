@@ -63,32 +63,30 @@ androidx-profileinstaller = "androidx.profileinstaller:profileinstaller:1.3.1"
 androidx-sqlite = { group = "androidx.sqlite", name = "sqlite", version.ref = "androidx-sqlite" }
 androidx-sqlite-framework = { group = "androidx.sqlite", name = "sqlite-framework", version.ref = "androidx-sqlite" }
 androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime", version = "1.1.1" }
-apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version.ref = "apollo" }
-apollo-api-java = { group = "com.apollographql.apollo3", name = "apollo-api-java", version.ref = "apollo" }
-apollo-httpCache = { group = "com.apollographql.apollo3", name = "apollo-http-cache", version.ref = "apollo" }
-apollo-idlingresource = { group = "com.apollographql.apollo3", name = "apollo-idling-resource", version.ref = "apollo" }
+apollo-api = { group = "com.apollographql.apollo", name = "apollo-api", version.ref = "apollo" }
+apollo-api-java = { group = "com.apollographql.apollo", name = "apollo-api-java", version.ref = "apollo" }
+apollo-httpCache = { group = "com.apollographql.apollo", name = "apollo-http-cache", version.ref = "apollo" }
+apollo-idlingresource = { group = "com.apollographql.apollo", name = "apollo-idling-resource", version.ref = "apollo" }
 apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-mockserver", version = "0.0.3" }
-apollo-mpputils = { group = "com.apollographql.apollo3", name = "apollo-mpp-utils", version.ref = "apollo" }
-apollo-normalizedcache = { group = "com.apollographql.apollo3", name = "apollo-normalized-cache", version.ref = "apollo" }
+apollo-mpputils = { group = "com.apollographql.apollo", name = "apollo-mpp-utils", version.ref = "apollo" }
+apollo-normalizedcache = { group = "com.apollographql.apollo", name = "apollo-normalized-cache", version.ref = "apollo" }
 apollo-normalizedcache-incubating-snapshot = { group = "com.apollographql.cache", name = "normalized-cache-incubating", version.ref = "apollo-normalizedcache-incubating-snapshot" }
-apollo-normalizedcache-sqlite = { group = "com.apollographql.apollo3", name = "apollo-normalized-cache-sqlite", version.ref = "apollo" }
+apollo-normalizedcache-sqlite = { group = "com.apollographql.apollo", name = "apollo-normalized-cache-sqlite", version.ref = "apollo" }
 apollo-normalizedcache-sqlite-incubating-snapshot = { group = "com.apollographql.cache", name = "normalized-cache-sqlite-incubating", version.ref = "apollo-normalizedcache-incubating-snapshot" }
-apollo-plugin = { group = "com.apollographql.apollo3", name = "apollo-gradle-plugin", version.ref = "apollo" }
-apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
-apollo-compiler = { group = "com.apollographql.apollo3", name = "apollo-compiler", version.ref = "apollo" }
-apollo-ast = { group = "com.apollographql.apollo3", name = "apollo-ast", version.ref = "apollo" }
+apollo-plugin = { group = "com.apollographql.apollo", name = "apollo-gradle-plugin", version.ref = "apollo" }
+apollo-runtime = { group = "com.apollographql.apollo", name = "apollo-runtime", version.ref = "apollo" }
+apollo-compiler = { group = "com.apollographql.apollo", name = "apollo-compiler", version.ref = "apollo" }
+apollo-ast = { group = "com.apollographql.apollo", name = "apollo-ast", version.ref = "apollo" }
 apollo-execution = { group = "com.apollographql.execution", name = "runtime", version.ref = "apollo-execution" }
 apollo-execution-ktor = { group = "com.apollographql.execution", name = "runtime-ktor", version.ref = "apollo-execution" }
 apollo-execution-processor = { group = "com.apollographql.execution", name = "processor", version.ref = "apollo-execution" }
 apollo-execution-gradle-plugin = { group = "com.apollographql.execution", name = "gradle-plugin", version.ref = "apollo-execution" }
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-runtime-published = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo-published" }
-apollo-annotations = { group = "com.apollographql.apollo3", name = "apollo-annotations", version.ref = "apollo" }
-apollo-engine-ktor = { group = "com.apollographql.apollo3", name = "apollo-engine-ktor", version.ref = "apollo" }
-apollo-testingsupport = { group = "com.apollographql.apollo3", name = "apollo-testing-support", version.ref = "apollo" }
-# Used by the apollo-tooling project which uses a published version of Apollo
-apollo-testingsupport-published = { group = "com.apollographql.apollo3", name = "apollo-testing-support", version.ref = "apollo-published" }
-apollo-tooling = { group = "com.apollographql.apollo3", name = "apollo-tooling", version.ref = "apollo" }
+apollo-annotations = { group = "com.apollographql.apollo", name = "apollo-annotations", version.ref = "apollo" }
+apollo-engine-ktor = { group = "com.apollographql.apollo", name = "apollo-engine-ktor", version.ref = "apollo" }
+apollo-testingsupport = { group = "com.apollographql.apollo", name = "apollo-testing-support", version.ref = "apollo" }
+apollo-tooling = { group = "com.apollographql.apollo", name = "apollo-tooling", version.ref = "apollo" }
 assertj = { group = "org.assertj", name = "assertj-core", version = "3.24.2" }
 atomicfu-library = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "atomicfu" }
 atomicfu-plugin = { group = "org.jetbrains.kotlinx", name = "atomicfu-gradle-plugin", version.ref = "atomicfu" }
@@ -200,7 +198,7 @@ slf4j-simple = "org.slf4j:slf4j-simple:2.0.13"
 slf4j-nop = "org.slf4j:slf4j-nop:2.0.13"
 
 [plugins]
-apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
+apollo = { id = "com.apollographql.apollo", version.ref = "apollo" }
 apollo-published = { id = "com.apollographql.apollo3", version.ref = "apollo-published" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin" }

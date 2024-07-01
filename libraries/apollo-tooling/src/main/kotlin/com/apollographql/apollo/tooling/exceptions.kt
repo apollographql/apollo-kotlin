@@ -1,8 +1,8 @@
 package com.apollographql.apollo.tooling
 
-import com.apollographql.apollo.api.ApolloResponse
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.exception.ApolloHttpException
 
 /**
  * returns an [Exception] that represents [ApolloResponse]

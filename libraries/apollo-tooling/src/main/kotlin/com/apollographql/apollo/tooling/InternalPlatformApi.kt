@@ -1,6 +1,6 @@
 package com.apollographql.apollo.tooling
 
-import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo3.ApolloClient
 
 internal const val INTERNAL_PLATFORM_API_URL = "https://graphql.api.apollographql.com/api/graphql"
 

@@ -1,8 +1,8 @@
 package com.apollographql.apollo.debugserver.internal.graphql
 
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.ExecutionContext
-import com.apollographql.apollo.ast.GQLValue
+import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo.cache.normalized.api.CacheKey
 import com.apollographql.apollo.cache.normalized.api.Record
 import com.apollographql.apollo.cache.normalized.apolloStore
