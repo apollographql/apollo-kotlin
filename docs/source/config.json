@@ -78,7 +78,8 @@
       "Apollo AST": "/advanced/apollo-ast",
       "Compiler plugins": "/advanced/compiler-plugins",
       "JS Interoperability": "/advanced/js-interop",
-      "Response based codegen": "/advanced/response-based"
+      "Response based codegen": "/advanced/response-based",
+      "Apollo Kotlin galaxy": "/advanced/galaxy"
     }
   }
 }

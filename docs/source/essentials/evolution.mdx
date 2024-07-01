@@ -11,7 +11,7 @@ and with some effort we can reshape it later.”_
 
 Historically, Apollo Kotlin released major versions every 2 to 3 years. These versions usually contained substantial changes requiring a dedicated migration. Starting with Apollo Kotlin 4, we aim at smaller, more iterative changes.
 
-This document highlights the evolution policy for Apollo Kotlin 4 and other projects in the Apollo Kotlin galaxy (GitHub repositories starting with `apollo-kotlin-`).
+This document highlights the evolution policy for Apollo Kotlin 4 and other projects in the [Apollo Kotlin galaxy](../advanced/galaxy).
 
 
 ## Semantic versioning (Semver)
@@ -33,7 +33,7 @@ The Apollo Kotlin projects follow [semantic versioning](https://semver.org/):
 
 We interpret minor version bumps liberally. They are used to hint at new functionality or substantial changes but we are not strict about it. A small new API may be introduced in a patch release. Conversely, a big internal rework might be signaled with a minor release.
 
-Reporting issues is very welcome on any version.
+Reporting issues is welcome on any version.
 
 
 ## Breaking changes
@@ -55,11 +55,11 @@ We’re trying to update to newer Kotlin versions after a few weeks. This is typ
 
 ### Behavior changes
 
-Bugfixes happen in any version (patch, minor, major)
+Bugfixes happen in any version (patch, minor, major).
 
-Other changes are dealt with on a case by case basis. When possible, we’ll have them trigger a source breaking change to signal the change (and therefore only happen for major versions).
+Other changes are dealt with on a case by case basis. When possible, we’ll have them trigger a source breaking change to signal the change.
 
-Whether something is a bugfix or another kind of change [is left to interpretation](https://xkcd.com/1172/) and we’ll try our best to make reasonable choices there.
+Whether something is a bugfix or another kind of change [is left to interpretation,](https://xkcd.com/1172/) and we’ll try our best to make reasonable choices there.
 
 
 ## @ApolloExperimental
