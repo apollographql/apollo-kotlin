@@ -244,7 +244,7 @@ Because of the number of different options in version 3 and the complexity of er
 
 ### Non standard HTTP headers are not sent by default
 
-`X-APOLLO-OPERATION-NAME` and `X-APOLLO-OPERATION-ID` are non-standard headers and are not sent by default anymore. If you used them for logging purposes or if you are using Apollo Server [CSRF prevention](https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf), you can add them back using an [ApolloInterceptor](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo3.interceptor/-apollo-interceptor/index.html?query=interface%20ApolloInterceptor):
+`X-APOLLO-OPERATION-NAME` and `X-APOLLO-OPERATION-ID` are non-standard headers and are not sent by default anymore. If you used them for logging purposes or if you are using Apollo Server [CSRF prevention](https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf), you can add them back using an [ApolloInterceptor](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo.interceptor/-apollo-interceptor/index.html?query=interface%20ApolloInterceptor):
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
