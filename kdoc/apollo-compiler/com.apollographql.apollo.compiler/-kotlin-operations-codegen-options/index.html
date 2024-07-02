@@ -1,0 +1,363 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>KotlinOperationsCodegenOptions</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../images/apollo.svg">
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            apollo-kdoc
+                    </a>            </div>
+            <div class="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.compiler/-kotlin-operations-codegen-options/index.html&quot;}"><div class="versions-dropdown">
+  <div class="versions-dropdown-button">4.0.0-beta.8-SNAPSHOT</div>
+  <div class="versions-dropdown-data"><a href="index.html">4.0.0-beta.8-SNAPSHOT</a><a href="../../../not-found-version.html?v=3.8.2">3.8.2</a></div>
+</div>
+</dokka-template-command>            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-compiler/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-compiler::com.apollographql.apollo.compiler/KotlinOperationsCodegenOptions///PointingToDeclaration//431625483">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-compiler</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.compiler</a><span class="delimiter">/</span><span class="current">KotlinOperationsCodegenOptions</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Kotlin</span><wbr><span>Operations</span><wbr><span>Codegen</span><wbr><span><span>Options</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">KotlinOperationsCodegenOptions</a> : <a href="../-common-codegen-opt/index.html">CommonCodegenOpt</a>, <a href="../-operations-codegen-opt/index.html">OperationsCodegenOpt</a>, <a href="../-kotlin-codegen-opt/index.html">KotlinCodegenOpt</a></div><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-operations-codegen-options/index.html">OperationsCodegenOptions</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-584371213%2FProperties%2F431625483" anchor-label="addDefaultArgumentForInputObjects" id="-584371213%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-kotlin-codegen-opt/add-default-argument-for-input-objects.html"><span>add</span><wbr><span>Default</span><wbr><span>Argument</span><wbr><span>For</span><wbr><span>Input</span><wbr><span><span>Objects</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-584371213%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-kotlin-codegen-opt/add-default-argument-for-input-objects.html">addDefaultArgumentForInputObjects</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Whether to add default arguments for input objects.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1639748368%2FProperties%2F431625483" anchor-label="addJvmOverloads" id="1639748368%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-kotlin-codegen-opt/add-jvm-overloads.html"><span>add</span><wbr><span>Jvm</span><wbr><span><span>Overloads</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1639748368%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-kotlin-codegen-opt/add-jvm-overloads.html">addJvmOverloads</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Whether to generate kotlin constructors with <code class="lang-kotlin">@JvmOverloads</code> for more graceful Java interop experience when default values are present. Note: when enabled in a multi-platform setup, the generated code can only be used in the common or JVM sourcesets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1607790559%2FProperties%2F431625483" anchor-label="addUnknownForEnums" id="1607790559%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-kotlin-codegen-opt/add-unknown-for-enums.html"><span>add</span><wbr><span>Unknown</span><wbr><span>For</span><wbr><span><span>Enums</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1607790559%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-kotlin-codegen-opt/add-unknown-for-enums.html">addUnknownForEnums</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Whether to add the unknown value for enums. Unknown is used for clients when a new enum is added on the server but is not always useful on servers</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-568289195%2FProperties%2F431625483" anchor-label="decapitalizeFields" id="-568289195%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-common-codegen-opt/decapitalize-fields.html"><span>decapitalize</span><wbr><span><span>Fields</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-568289195%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-common-codegen-opt/decapitalize-fields.html">decapitalizeFields</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Whether to decapitalize fields  (for instance <code class="lang-kotlin">FooBar</code> -&gt;<code class="lang-kotlin">fooBar</code>). This is useful if your schema has fields starting with an uppercase as it may create name clashes with models that use PascalCase</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-57498739%2FProperties%2F431625483" anchor-label="generateAsInternal" id="-57498739%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-kotlin-codegen-opt/generate-as-internal.html"><span>generate</span><wbr><span>As</span><wbr><span><span>Internal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-57498739%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-kotlin-codegen-opt/generate-as-internal.html">generateAsInternal</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Whether to generate Kotlin models with <code class="lang-kotlin">internal</code> visibility modifier.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-251321540%2FProperties%2F431625483" anchor-label="generateFilterNotNull" id="-251321540%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-kotlin-codegen-opt/generate-filter-not-null.html"><span>generate</span><wbr><span>Filter</span><wbr><span>Not</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-251321540%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-kotlin-codegen-opt/generate-filter-not-null.html">generateFilterNotNull</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Kotlin native generates Any? for optional types Setting generateFilterNotNull generates extra <code class="lang-kotlin">filterNotNull</code> functions that help keep the type information.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1283582178%2FProperties%2F431625483" anchor-label="generateFragmentImplementations" id="1283582178%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-operations-codegen-opt/generate-fragment-implementations.html"><span>generate</span><wbr><span>Fragment</span><wbr><span><span>Implementations</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1283582178%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-operations-codegen-opt/generate-fragment-implementations.html">generateFragmentImplementations</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Whether to generate the com.apollographql.apollo.api.Fragment as well as response and variables adapters.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-861438596%2FProperties%2F431625483" anchor-label="generateInputBuilders" id="-861438596%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-kotlin-codegen-opt/generate-input-builders.html"><span>generate</span><wbr><span>Input</span><wbr><span><span>Builders</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-861438596%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-kotlin-codegen-opt/generate-input-builders.html">generateInputBuilders</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Whether to generate builders in addition to constructors for operations and input types. Constructors are more concise but require passing an instance of <code class="lang-kotlin">Optional</code> always, making them more verbose for the cases where there are a lot of optional input parameters.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1129709954%2FProperties%2F431625483" anchor-label="generateMethods" id="1129709954%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-common-codegen-opt/generate-methods.html"><span>generate</span><wbr><span><span>Methods</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1129709954%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-common-codegen-opt/generate-methods.html">generateMethods</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-generated-method/index.html">GeneratedMethod</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Specifies which methods will be auto generated on operations, models, fragments and input objects.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1818009904%2FProperties%2F431625483" anchor-label="generateQueryDocument" id="1818009904%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-operations-codegen-opt/generate-query-document.html"><span>generate</span><wbr><span>Query</span><wbr><span><span>Document</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1818009904%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-operations-codegen-opt/generate-query-document.html">generateQueryDocument</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Whether to embed the query document in the com.apollographql.apollo.api.Operations. By default, this is true as it is needed to send the operations to the server. If performance/binary size is critical, and you are using persisted queries or a similar mechanism, disable this.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1827996852%2FProperties%2F431625483" anchor-label="jsExport" id="1827996852%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-kotlin-codegen-opt/js-export.html"><span>js</span><wbr><span><span>Export</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1827996852%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-kotlin-codegen-opt/js-export.html">jsExport</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Whether to add the JsExport annotation to generated models. This is useful to be able to cast JSON parsed responses into Kotlin classes using unsafeCast.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1644807602%2FProperties%2F431625483" anchor-label="operationManifestFormat" id="1644807602%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-common-codegen-opt/operation-manifest-format.html"><span>operation</span><wbr><span>Manifest</span><wbr><span><span>Format</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1644807602%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-common-codegen-opt/operation-manifest-format.html">operationManifestFormat</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The format to output for the operation manifest. Valid values are:</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1454099854%2FProperties%2F431625483" anchor-label="packageName" id="1454099854%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-common-codegen-opt/package-name.html"><span>package</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1454099854%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-common-codegen-opt/package-name.html">packageName</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The package name for generated classes. Operations use the package name directly. Other classes like fragments and schema types use sub-packages to avoid name clashes:</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="699444144%2FProperties%2F431625483" anchor-label="requiresOptInAnnotation" id="699444144%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-kotlin-codegen-opt/requires-opt-in-annotation.html"><span>requires</span><wbr><span>Opt</span><wbr><span>In</span><wbr><span><span>Annotation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="699444144%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-kotlin-codegen-opt/requires-opt-in-annotation.html">requiresOptInAnnotation</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The annotation to use for <code class="lang-kotlin">@requiresOptIn</code> fields/inputFields/enumValues</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="658626704%2FProperties%2F431625483" anchor-label="rootPackageName" id="658626704%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-common-codegen-opt/root-package-name.html"><span>root</span><wbr><span>Package</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="658626704%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-common-codegen-opt/root-package-name.html">rootPackageName</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">If non-null, get the package names from the normalized file paths and prepend <a href="../-common-codegen-opt/root-package-name.html">rootPackageName</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1417800487%2FProperties%2F431625483" anchor-label="sealedClassesForEnumsMatching" id="-1417800487%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-kotlin-codegen-opt/sealed-classes-for-enums-matching.html"><span>sealed</span><wbr><span>Classes</span><wbr><span>For</span><wbr><span>Enums</span><wbr><span><span>Matching</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1417800487%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-kotlin-codegen-opt/sealed-classes-for-enums-matching.html">sealedClassesForEnumsMatching</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">A list of <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-regex/index.html">Regex</a> patterns for GraphQL enums that should be generated as Kotlin sealed classes instead of the default Kotlin enums.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="188306418%2FProperties%2F431625483" anchor-label="targetLanguage" id="188306418%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-common-codegen-opt/target-language.html"><span>target</span><wbr><span><span>Language</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="188306418%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-common-codegen-opt/target-language.html">targetLanguage</a><span class="token operator">: </span><a href="../-target-language/index.html">TargetLanguage</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The target language to use to generate the sources</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="953273642%2FProperties%2F431625483" anchor-label="useSemanticNaming" id="953273642%2FProperties%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-common-codegen-opt/use-semantic-naming.html"><span>use</span><wbr><span>Semantic</span><wbr><span><span>Naming</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="953273642%2FProperties%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-common-codegen-opt/use-semantic-naming.html">useSemanticNaming</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">When true, the operation class names are suffixed with their operation type like ('Query', 'Mutation' ot 'Subscription'). For an example, <code class="lang-kotlin">query getDroid { ... }</code> GraphQL query generates the 'GetDroidQuery' class.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

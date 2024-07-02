@@ -1,0 +1,1361 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>DefaultService</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../images/apollo.svg">
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            apollo-kdoc
+                    </a>            </div>
+            <div class="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.gradle.internal/-default-service/index.html&quot;}"><div class="versions-dropdown">
+  <div class="versions-dropdown-button">4.0.0-beta.8-SNAPSHOT</div>
+  <div class="versions-dropdown-data"><a href="index.html">4.0.0-beta.8-SNAPSHOT</a><a href="../../../not-found-version.html?v=3.8.2">3.8.2</a></div>
+</div>
+</dokka-template-command>            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-gradle-plugin-external/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-gradle-plugin-external::com.apollographql.apollo.gradle.internal/DefaultService///PointingToDeclaration//1812556619">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-gradle-plugin-external</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.gradle.internal</a><span class="delimiter">/</span><span class="current">DefaultService</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Default</span><wbr><span><span>Service</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">DefaultService</a>&nbsp;<span><span class="token annotation builtin">@</span><span data-unresolved-link="javax.inject/Inject///PointingToDeclaration/"><span class="token annotation builtin">Inject</span></span>&nbsp;</span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>project<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Project///PointingToDeclaration/">Project</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="../../com.apollographql.apollo.gradle.api/-service/index.html">Service</a></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="2103466836%2FConstructors%2F1812556619" anchor-label="DefaultService" id="2103466836%2FConstructors%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-default-service.html"><span>Default</span><wbr><span><span>Service</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2103466836%2FConstructors%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="javax.inject/Inject///PointingToDeclaration/"><span class="token annotation builtin">Inject</span></span></div></div><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">project<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Project///PointingToDeclaration/">Project</span><span class="token punctuation">, </span></span><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-450870916%2FProperties%2F1812556619" anchor-label="addJvmOverloads" id="-450870916%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/add-jvm-overloads.html"><span>add</span><wbr><span>Jvm</span><wbr><span><span>Overloads</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-450870916%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/add-jvm-overloads.html">addJvmOverloads</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to generate kotlin constructors with <code class="lang-kotlin">@JvmOverloads</code> for more graceful Java interop experience when default values are present. Note: when enabled in a multi-platform setup, the generated code can only be used in the common or JVM sourcesets.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="228922671%2FProperties%2F1812556619" anchor-label="addTypename" id="228922671%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/add-typename.html"><span>add</span><wbr><span><span>Typename</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="228922671%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/add-typename.html">addTypename</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">When to add __typename. One of "always", "ifAbstract", "ifPolymorphic" or "ifFragments"</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1551482339%2FProperties%2F1812556619" anchor-label="alwaysGenerateTypesMatching" id="1551482339%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/always-generate-types-matching.html"><span>always</span><wbr><span>Generate</span><wbr><span>Types</span><wbr><span><span>Matching</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1551482339%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/always-generate-types-matching.html">alwaysGenerateTypesMatching</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/SetProperty///PointingToDeclaration/">SetProperty</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A list of <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-regex/index.html">Regex</a> patterns matching <a href="https://github.com/magicmark/graphql-spec/blob/add_field_coordinates/rfcs/SchemaCoordinates.md">schema coordinates</a> for types and fields that should be generated whether they are used by queries/fragments in this module or not.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-188484407%2FProperties%2F1812556619" anchor-label="classesForEnumsMatching" id="-188484407%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/classes-for-enums-matching.html"><span>classes</span><wbr><span>For</span><wbr><span>Enums</span><wbr><span><span>Matching</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-188484407%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/classes-for-enums-matching.html">classesForEnumsMatching</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/ListProperty///PointingToDeclaration/">ListProperty</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A list of <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-regex/index.html">Regex</a> patterns for GraphQL enums that should be generated as Java classes.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1158422776%2FProperties%2F1812556619" anchor-label="codegenModels" id="-1158422776%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/codegen-models.html"><span>codegen</span><wbr><span><span>Models</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1158422776%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/codegen-models.html">codegenModels</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">What codegen to use. One of "operationBased", "responseBased" or "experimental_operationBasedWithInterfaces"</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1493124213%2FProperties%2F1812556619" anchor-label="debugDir" id="-1493124213%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/debug-dir.html"><span>debug</span><wbr><span><span>Dir</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1493124213%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/debug-dir.html">debugDir</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.file/DirectoryProperty///PointingToDeclaration/">DirectoryProperty</span></div><div class="brief "><p class="paragraph">A debug directory where the compiler will output intermediary results</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1461238529%2FProperties%2F1812556619" anchor-label="decapitalizeFields" id="-1461238529%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/decapitalize-fields.html"><span>decapitalize</span><wbr><span><span>Fields</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1461238529%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/decapitalize-fields.html">decapitalizeFields</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to decapitalize fields  (for instance <code class="lang-kotlin">FooBar</code> -&gt;<code class="lang-kotlin">fooBar</code>). This is useful if your schema has fields starting with an uppercase as it may create name clashes with models that use PascalCase</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-933728308%2FProperties%2F1812556619" anchor-label="excludes" id="-933728308%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/excludes.html"><span><span>excludes</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-933728308%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/excludes.html">excludes</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/ListProperty///PointingToDeclaration/">ListProperty</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Operation files to exclude. The values are interpreted as in <span data-unresolved-link="org.gradle.api.tasks.util/PatternFilterable///PointingToDeclaration/">org.gradle.api.tasks.util.PatternFilterable</span></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1927277839%2FProperties%2F1812556619" anchor-label="failOnWarnings" id="-1927277839%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/fail-on-warnings.html"><span>fail</span><wbr><span>On</span><wbr><span><span>Warnings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1927277839%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/fail-on-warnings.html">failOnWarnings</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Fail the build if there are warnings. This is not named <code class="lang-kotlin">allWarningAsErrors</code> to avoid nameclashes with the Kotlin options</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1784625893%2FProperties%2F1812556619" anchor-label="fieldsOnDisjointTypesMustMerge" id="-1784625893%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/fields-on-disjoint-types-must-merge.html"><span>fields</span><wbr><span>On</span><wbr><span>Disjoint</span><wbr><span>Types</span><wbr><span>Must</span><wbr><span><span>Merge</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1784625893%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/fields-on-disjoint-types-must-merge.html">fieldsOnDisjointTypesMustMerge</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether fields with different shape are disallowed to be merged in disjoint types.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1753662247%2FProperties%2F1812556619" anchor-label="flattenModels" id="1753662247%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/flatten-models.html"><span>flatten</span><wbr><span><span>Models</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1753662247%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/flatten-models.html">flattenModels</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to flatten the models. File paths are limited on MacOSX to 256 chars and flattening can help keeping the path length manageable The drawback is that some classes may nameclash in which case they will be suffixed with a number</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="546093810%2FProperties%2F1812556619" anchor-label="generateApolloMetadata" id="546093810%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/generate-apollo-metadata.html"><span>generate</span><wbr><span>Apollo</span><wbr><span><span>Metadata</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="546093810%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/generate-apollo-metadata.html">generateApolloMetadata</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to generate Apollo metadata. Apollo metadata is used for multimodule support. Set this to true if you want other modules to be able to re-use fragments and types from this module.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-375829087%2FProperties%2F1812556619" anchor-label="generateAsInternal" id="-375829087%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/generate-as-internal.html"><span>generate</span><wbr><span>As</span><wbr><span><span>Internal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-375829087%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/generate-as-internal.html">generateAsInternal</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to generate Kotlin models with <code class="lang-kotlin">internal</code> visibility modifier.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1401793714%2FProperties%2F1812556619" anchor-label="generateDataBuilders" id="-1401793714%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/generate-data-builders.html"><span>generate</span><wbr><span>Data</span><wbr><span><span>Builders</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1401793714%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/generate-data-builders.html">generateDataBuilders</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use cases too.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1995382630%2FProperties%2F1812556619" anchor-label="generatedSchemaName" id="-1995382630%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/generated-schema-name.html"><span>generated</span><wbr><span>Schema</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1995382630%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/generated-schema-name.html">generatedSchemaName</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Class name to use when generating the Schema class.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1809995495%2FProperties%2F1812556619" anchor-label="generateFragmentImplementations" id="-1809995495%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/generate-fragment-implementations.html"><span>generate</span><wbr><span>Fragment</span><wbr><span><span>Implementations</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1809995495%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/generate-fragment-implementations.html">generateFragmentImplementations</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to generate the com.apollographql.apollo.api.Fragment as well as response and variables adapters.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-953046296%2FProperties%2F1812556619" anchor-label="generateInputBuilders" id="-953046296%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/generate-input-builders.html"><span>generate</span><wbr><span>Input</span><wbr><span><span>Builders</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-953046296%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/generate-input-builders.html">generateInputBuilders</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to generate builders in addition to constructors for operations and input types. Constructors are more concise but require passing an instance of <code class="lang-kotlin">Optional</code> always, making them more verbose for the cases where there are a lot of optional input parameters.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="85015205%2FProperties%2F1812556619" anchor-label="generateKotlinModels" id="85015205%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/generate-kotlin-models.html"><span>generate</span><wbr><span>Kotlin</span><wbr><span><span>Models</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="85015205%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/generate-kotlin-models.html">generateKotlinModels</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to generate Kotlin or Java models Default to true if the Kotlin plugin is found</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1423137512%2FProperties%2F1812556619" anchor-label="generateMethods" id="-1423137512%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/generate-methods.html"><span>generate</span><wbr><span><span>Methods</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1423137512%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/generate-methods.html">generateMethods</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/ListProperty///PointingToDeclaration/">ListProperty</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Specifies which methods will be auto generated on operations, models, fragments and input objects.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1767690391%2FProperties%2F1812556619" anchor-label="generateModelBuilders" id="-1767690391%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/generate-model-builders.html"><span>generate</span><wbr><span>Model</span><wbr><span><span>Builders</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1767690391%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/generate-model-builders.html">generateModelBuilders</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to generate builders for java models</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2080819390%2FProperties%2F1812556619" anchor-label="generateOperationOutput" id="-2080819390%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/generate-operation-output.html"><span>generate</span><wbr><span>Operation</span><wbr><span><span>Output</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2080819390%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/generate-operation-output.html"><strike>generateOperationOutput</strike></a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to generate the operationOutput.json</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="375434368%2FProperties%2F1812556619" anchor-label="generateOptionalOperationVariables" id="375434368%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/generate-optional-operation-variables.html"><span>generate</span><wbr><span>Optional</span><wbr><span>Operation</span><wbr><span><span>Variables</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="375434368%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/generate-optional-operation-variables.html">generateOptionalOperationVariables</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to generate operation variables as com.apollographql.apollo.api.Optional</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2002693822%2FProperties%2F1812556619" anchor-label="generatePrimitiveTypes" id="2002693822%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/generate-primitive-types.html"><span>generate</span><wbr><span>Primitive</span><wbr><span><span>Types</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2002693822%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/generate-primitive-types.html">generatePrimitiveTypes</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to generate fields as primitive types (<code class="lang-kotlin">int</code>, <code class="lang-kotlin">double</code>, <code class="lang-kotlin">boolean</code>) instead of their boxed types (<code class="lang-kotlin">Integer</code>, <code class="lang-kotlin">Double</code>, <code class="lang-kotlin">Boolean</code>) when possible.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1028254247%2FProperties%2F1812556619" anchor-label="generateQueryDocument" id="1028254247%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/generate-query-document.html"><span>generate</span><wbr><span>Query</span><wbr><span><span>Document</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1028254247%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/generate-query-document.html">generateQueryDocument</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to embed the query document in the com.apollographql.apollo.api.Operations. By default, this is true as it is needed to send the operations to the server. If performance/binary size is critical, and you are using persisted queries or a similar mechanism, disable this.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1837655759%2FProperties%2F1812556619" anchor-label="generateSchema" id="1837655759%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/generate-schema.html"><span>generate</span><wbr><span><span>Schema</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1837655759%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/generate-schema.html">generateSchema</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to generate the Schema class.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1129157034%2FProperties%2F1812556619" anchor-label="graphqlSourceDirectorySet" id="-1129157034%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="graphql-source-directory-set.html"><span>graphql</span><wbr><span>Source</span><wbr><span>Directory</span><wbr><span><span>Set</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1129157034%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="graphql-source-directory-set.html">graphqlSourceDirectorySet</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.file/SourceDirectorySet///PointingToDeclaration/">SourceDirectorySet</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1842667802%2FProperties%2F1812556619" anchor-label="includes" id="1842667802%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/includes.html"><span><span>includes</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1842667802%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/includes.html">includes</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/ListProperty///PointingToDeclaration/">ListProperty</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Operation files to include. The values are interpreted as in <span data-unresolved-link="org.gradle.api.tasks.util/PatternFilterable///PointingToDeclaration/">org.gradle.api.tasks.util.PatternFilterable</span></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-52521452%2FProperties%2F1812556619" anchor-label="introspection" id="-52521452%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="introspection.html"><span><span>introspection</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-52521452%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="introspection.html">introspection</a><span class="token operator">: </span><a href="../-default-introspection/index.html">DefaultIntrospection</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1630439480%2FProperties%2F1812556619" anchor-label="jsExport" id="-1630439480%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/js-export.html"><span>js</span><wbr><span><span>Export</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1630439480%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/js-export.html">jsExport</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Whether to add the JsExport annotation to generated models. This is useful to be able to cast JSON parsed responses into Kotlin classes using unsafeCast.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-78807915%2FProperties%2F1812556619" anchor-label="languageVersion" id="-78807915%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/language-version.html"><span>language</span><wbr><span><span>Version</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-78807915%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/language-version.html">languageVersion</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Target language version for the generated code.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-956567136%2FProperties%2F1812556619" anchor-label="name" id="-956567136%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="name.html"><span><span>name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-956567136%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="name.html">name</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1693882733%2FProperties%2F1812556619" anchor-label="nullableFieldStyle" id="1693882733%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/nullable-field-style.html"><span>nullable</span><wbr><span>Field</span><wbr><span><span>Style</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1693882733%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/nullable-field-style.html">nullableFieldStyle</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">The style to use for fields that are nullable in the Java generated code.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1277941908%2FProperties%2F1812556619" anchor-label="operationIdGenerator" id="1277941908%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/operation-id-generator.html"><span>operation</span><wbr><span>Id</span><wbr><span><span>Generator</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1277941908%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/operation-id-generator.html"><strike>operationIdGenerator</strike></a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../apollo-compiler/com.apollographql.apollo.compiler/-operation-id-generator/index.html">OperationIdGenerator</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">By default, Apollo uses <code class="lang-kotlin">Sha256</code> hashing algorithm to generate an ID for the query. To provide a custom ID generation logic, pass an <code class="lang-kotlin">instance</code> that implements the <a href="../../../apollo-compiler/com.apollographql.apollo.compiler/-operation-id-generator/index.html">OperationIdGenerator</a>. How the ID is generated is indifferent to the compiler. It can be a hashing algorithm or generated by a backend.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1232918783%2FProperties%2F1812556619" anchor-label="operationManifest" id="1232918783%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/operation-manifest.html"><span>operation</span><wbr><span><span>Manifest</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1232918783%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/operation-manifest.html">operationManifest</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.file/RegularFileProperty///PointingToDeclaration/">RegularFileProperty</span></div><div class="brief "><p class="paragraph">The file where to write the operation manifest. If you want a <span data-unresolved-link="org.gradle.api.file/RegularFileProperty///PointingToDeclaration/">RegularFileProperty</span> that carries the task dependency, use <a href="../../com.apollographql.apollo.gradle.api/-service/operation-manifest-connection.html">operationManifestConnection</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-314355229%2FProperties%2F1812556619" anchor-label="operationManifestAction" id="-314355229%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="operation-manifest-action.html"><span>operation</span><wbr><span>Manifest</span><wbr><span><span>Action</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-314355229%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="operation-manifest-action.html">operationManifestAction</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo.gradle.api/-service/-operation-manifest-connection/index.html">Service.OperationManifestConnection</a><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="111571784%2FProperties%2F1812556619" anchor-label="operationManifestFormat" id="111571784%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/operation-manifest-format.html"><span>operation</span><wbr><span>Manifest</span><wbr><span><span>Format</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="111571784%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/operation-manifest-format.html">operationManifestFormat</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">The format to output for the operation manifest. Valid values are:</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1608645743%2FProperties%2F1812556619" anchor-label="operationOutputAction" id="-1608645743%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="operation-output-action.html"><span>operation</span><wbr><span>Output</span><wbr><span><span>Action</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1608645743%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="operation-output-action.html">operationOutputAction</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo.gradle.api/-service/-operation-output-connection/index.html">Service.OperationOutputConnection</a><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-969034607%2FProperties%2F1812556619" anchor-label="operationOutputFile" id="-969034607%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/operation-output-file.html"><span>operation</span><wbr><span>Output</span><wbr><span><span>File</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-969034607%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/operation-output-file.html"><strike>operationOutputFile</strike></a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.file/RegularFileProperty///PointingToDeclaration/">RegularFileProperty</span></div><div class="brief "><p class="paragraph">The file where the operation output will be written. It's called <a href="../../com.apollographql.apollo.gradle.api/-service/operation-output-file.html">operationOutputFile</a> but this an "input" parameter for the compiler If you want a <span data-unresolved-link="org.gradle.api.file/RegularFileProperty///PointingToDeclaration/">RegularFileProperty</span> that carries the task dependency, use <a href="../../com.apollographql.apollo.gradle.api/-service/operation-manifest-connection.html">operationManifestConnection</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1704006790%2FProperties%2F1812556619" anchor-label="operationOutputGenerator" id="-1704006790%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/operation-output-generator.html"><span>operation</span><wbr><span>Output</span><wbr><span><span>Generator</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1704006790%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/operation-output-generator.html"><strike>operationOutputGenerator</strike></a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../apollo-compiler/com.apollographql.apollo.compiler/-operation-output-generator/index.html">OperationOutputGenerator</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A generator to generate the operation output from a list of operations. OperationOutputGenerator is similar to <a href="../../../apollo-compiler/com.apollographql.apollo.compiler/-operation-id-generator/index.html">OperationIdGenerator</a> but can work on lists. This is useful if you need to register/whitelist your operations on your server all at once.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="866573993%2FProperties%2F1812556619" anchor-label="outputDir" id="866573993%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/output-dir.html"><span>output</span><wbr><span><span>Dir</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="866573993%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/output-dir.html">outputDir</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.file/DirectoryProperty///PointingToDeclaration/">DirectoryProperty</span></div><div class="brief "><p class="paragraph">The directory where the generated models will be written. It's called <a href="../../com.apollographql.apollo.gradle.api/-service/output-dir.html">outputDir</a> but this an "input" parameter for the compiler If you want a <span data-unresolved-link="org.gradle.api.file/DirectoryProperty///PointingToDeclaration/">DirectoryProperty</span> that carries the task dependency, use <a href="../../com.apollographql.apollo.gradle.api/-service/output-dir-connection.html">outputDirConnection</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-604141043%2FProperties%2F1812556619" anchor-label="outputDirAction" id="-604141043%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="output-dir-action.html"><span>output</span><wbr><span>Dir</span><wbr><span><span>Action</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-604141043%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="output-dir-action.html">outputDirAction</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo.gradle.api/-service/-directory-connection/index.html">Service.DirectoryConnection</a><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="257928228%2FProperties%2F1812556619" anchor-label="packageName" id="257928228%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/package-name.html"><span>package</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="257928228%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/package-name.html">packageName</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">The package name for generated classes. Operations use the package name directly. Other classes like fragments and schema types use sub-packages to avoid name clashes:</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="548586467%2FProperties%2F1812556619" anchor-label="packageNameGenerator" id="548586467%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/package-name-generator.html"><span>package</span><wbr><span>Name</span><wbr><span><span>Generator</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="548586467%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/package-name-generator.html"><strike>packageNameGenerator</strike></a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../apollo-compiler/com.apollographql.apollo.compiler/-package-name-generator/index.html">PackageNameGenerator</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Use <a href="../../com.apollographql.apollo.gradle.api/-service/package-name-generator.html">packageNameGenerator</a> to customize how to generate package names from file paths.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1532686858%2FProperties%2F1812556619" anchor-label="project" id="-1532686858%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="project.html"><span><span>project</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1532686858%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="project.html">project</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Project///PointingToDeclaration/">Project</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2048125146%2FProperties%2F1812556619" anchor-label="registerOperationsConfig" id="2048125146%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="register-operations-config.html"><span>register</span><wbr><span>Operations</span><wbr><span><span>Config</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2048125146%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="register-operations-config.html">registerOperationsConfig</a><span class="token operator">: </span><a href="../-default-register-operations-config/index.html">DefaultRegisterOperationsConfig</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1890127570%2FProperties%2F1812556619" anchor-label="registry" id="-1890127570%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="registry.html"><span><span>registry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1890127570%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="registry.html">registry</a><span class="token operator">: </span><a href="../-default-registry/index.html">DefaultRegistry</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1436209636%2FProperties%2F1812556619" anchor-label="requiresOptInAnnotation" id="-1436209636%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/requires-opt-in-annotation.html"><span>requires</span><wbr><span>Opt</span><wbr><span>In</span><wbr><span><span>Annotation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1436209636%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/requires-opt-in-annotation.html">requiresOptInAnnotation</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">The annotation to use for <code class="lang-kotlin">@requiresOptIn</code> fields/inputFields/enumValues</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="887343776%2FProperties%2F1812556619" anchor-label="scalarAdapterMapping" id="887343776%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="scalar-adapter-mapping.html"><span>scalar</span><wbr><span>Adapter</span><wbr><span><span>Mapping</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="887343776%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="scalar-adapter-mapping.html">scalarAdapterMapping</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html">MutableMap</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1221691591%2FProperties%2F1812556619" anchor-label="scalarTypeMapping" id="1221691591%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="scalar-type-mapping.html"><span>scalar</span><wbr><span>Type</span><wbr><span><span>Mapping</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1221691591%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="scalar-type-mapping.html">scalarTypeMapping</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html">MutableMap</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1514642792%2FProperties%2F1812556619" anchor-label="schemaFile" id="1514642792%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/schema-file.html"><span>schema</span><wbr><span><span>File</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1514642792%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/schema-file.html"><strike>schemaFile</strike></a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.file/RegularFileProperty///PointingToDeclaration/">RegularFileProperty</span></div><div class="brief "><p class="paragraph">The location of the schema file.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1275541087%2FProperties%2F1812556619" anchor-label="schemaFiles" id="1275541087%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/schema-files.html"><span>schema</span><wbr><span><span>Files</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1275541087%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/schema-files.html">schemaFiles</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.file/ConfigurableFileCollection///PointingToDeclaration/">ConfigurableFileCollection</span></div><div class="brief "><p class="paragraph">The schema files in either ".json" introspection schemas or ".sdl|.graphqls" SDL schemas.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="275387973%2FProperties%2F1812556619" anchor-label="sealedClassesForEnumsMatching" id="275387973%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/sealed-classes-for-enums-matching.html"><span>sealed</span><wbr><span>Classes</span><wbr><span>For</span><wbr><span>Enums</span><wbr><span><span>Matching</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="275387973%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/sealed-classes-for-enums-matching.html">sealedClassesForEnumsMatching</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/ListProperty///PointingToDeclaration/">ListProperty</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A list of <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-regex/index.html">Regex</a> patterns for GraphQL enums that should be generated as Kotlin sealed classes instead of the default Kotlin enums.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2115402556%2FProperties%2F1812556619" anchor-label="sourceFolder" id="2115402556%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/source-folder.html"><span>source</span><wbr><span><span>Folder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2115402556%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/source-folder.html"><strike>sourceFolder</strike></a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Where to look for GraphQL sources. The plugin searches "src/main/graphql/$sourceFolder" for Android/JVM projects and "src/commonMain/graphql/$sourceFolder" for multiplatform projects.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="93184832%2FProperties%2F1812556619" anchor-label="useSemanticNaming" id="93184832%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/use-semantic-naming.html"><span>use</span><wbr><span>Semantic</span><wbr><span><span>Naming</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="93184832%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/use-semantic-naming.html">useSemanticNaming</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">When true, the operation class names are suffixed with their operation type like ('Query', 'Mutation' ot 'Subscription'). For an example, <code class="lang-kotlin">query getDroid { ... }</code> GraphQL query generates the 'GetDroidQuery' class.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-853366501%2FProperties%2F1812556619" anchor-label="warnOnDeprecatedUsages" id="-853366501%2FProperties%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.gradle.api/-service/warn-on-deprecated-usages.html"><span>warn</span><wbr><span>On</span><wbr><span>Deprecated</span><wbr><span><span>Usages</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-853366501%2FProperties%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.apollographql.apollo.gradle.api/-service/warn-on-deprecated-usages.html">warnOnDeprecatedUsages</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Property///PointingToDeclaration/">Property</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Warn if using a deprecated field</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1616192056%2FFunctions%2F1812556619" anchor-label="dependsOn" id="1616192056%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="depends-on.html"><span>depends</span><wbr><span><span>On</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1616192056%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="depends-on.html"><span class="token function">dependsOn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dependencyNotation<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Adds a dependency for the codegen. Use this when some types/fragments are generated in upstream modules.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="depends-on.html"><span class="token function">dependsOn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dependencyNotation<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span></span><span class="parameter ">bidirectional<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Same as <a href="depends-on.html">dependsOn</a> but tries to do automatic cross-project configuration. This is highly experimental and probably not compatible with most Gradle best practices.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-407276735%2FFunctions%2F1812556619" anchor-label="introspection" id="-407276735%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="introspection.html"><span><span>introspection</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-407276735%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="introspection.html"><span class="token function">introspection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configure<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo.gradle.api/-introspection/index.html">Introspection</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Configures <a href="../../com.apollographql.apollo.gradle.api/-introspection/index.html">Introspection</a> to download an introspection Json schema</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="903864855%2FFunctions%2F1812556619" anchor-label="isADependencyOf" id="903864855%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-a-dependency-of.html"><span>is</span><wbr><span>ADependency</span><wbr><span><span>Of</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="903864855%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="is-a-dependency-of.html"><span class="token function">isADependencyOf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dependencyNotation<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Counterpoint of <a href="depends-on.html">dependsOn</a>. <a href="is-a-dependency-of.html">isADependencyOf</a> allows a schema module to discover used types in downstream modules automatically without having to specify <a href="../../../apollo-gradle-plugin-external/com.apollographql.apollo.gradle.internal/index.html">alwaysGenerateTypesMatching</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2068642361%2FFunctions%2F1812556619" anchor-label="mapScalar" id="-2068642361%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar.html"><span>map</span><wbr><span><span>Scalar</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2068642361%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar.html"><span class="token function">mapScalar</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">targetName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map a GraphQL scalar type to the Java/Kotlin type. The adapter must be configured at runtime via com.apollographql.apollo.ApolloClient.Builder.addCustomScalarAdapter.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar.html"><span class="token function">mapScalar</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">targetName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">expression<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map a GraphQL scalar type to the Java/Kotlin type and provided adapter expression. The adapter will be configured at compile time and you must not call com.apollographql.apollo.ApolloClient.Builder.addCustomScalarAdapter.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1410345212%2FFunctions%2F1812556619" anchor-label="mapScalarToJavaBoolean" id="1410345212%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-java-boolean.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Boolean</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1410345212%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-java-boolean.html"><span class="token function">mapScalarToJavaBoolean</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html">java.lang.Boolean</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2004497557%2FFunctions%2F1812556619" anchor-label="mapScalarToJavaDouble" id="-2004497557%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-java-double.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Double</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2004497557%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-java-double.html"><span class="token function">mapScalarToJavaDouble</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html">java.lang.Double</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1682067312%2FFunctions%2F1812556619" anchor-label="mapScalarToJavaFloat" id="1682067312%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-java-float.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Float</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1682067312%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-java-float.html"><span class="token function">mapScalarToJavaFloat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Float.html">java.lang.Float</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1412973166%2FFunctions%2F1812556619" anchor-label="mapScalarToJavaInteger" id="-1412973166%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-java-integer.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Integer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1412973166%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-java-integer.html"><span class="token function">mapScalarToJavaInteger</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Integer.html">java.lang.Integer</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1986469526%2FFunctions%2F1812556619" anchor-label="mapScalarToJavaLong" id="1986469526%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-java-long.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Long</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1986469526%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-java-long.html"><span class="token function">mapScalarToJavaLong</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html">java.lang.Long</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1340338265%2FFunctions%2F1812556619" anchor-label="mapScalarToJavaObject" id="1340338265%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-java-object.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>Object</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1340338265%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-java-object.html"><span class="token function">mapScalarToJavaObject</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html">java.lang.Object</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1897299883%2FFunctions%2F1812556619" anchor-label="mapScalarToJavaString" id="1897299883%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-java-string.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Java</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1897299883%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-java-string.html"><span class="token function">mapScalarToJavaString</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html">java.lang.String</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1532224895%2FFunctions%2F1812556619" anchor-label="mapScalarToKotlinAny" id="-1532224895%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-kotlin-any.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Any</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1532224895%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-kotlin-any.html"><span class="token function">mapScalarToKotlinAny</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">kotlin.Any</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="670447805%2FFunctions%2F1812556619" anchor-label="mapScalarToKotlinBoolean" id="670447805%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-kotlin-boolean.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Boolean</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="670447805%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-kotlin-boolean.html"><span class="token function">mapScalarToKotlinBoolean</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">kotlin.Boolean</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-642891894%2FFunctions%2F1812556619" anchor-label="mapScalarToKotlinDouble" id="-642891894%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-kotlin-double.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Double</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-642891894%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-kotlin-double.html"><span class="token function">mapScalarToKotlinDouble</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">kotlin.Double</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-767861903%2FFunctions%2F1812556619" anchor-label="mapScalarToKotlinFloat" id="-767861903%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-kotlin-float.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Float</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-767861903%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-kotlin-float.html"><span class="token function">mapScalarToKotlinFloat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">kotlin.Float</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="480812612%2FFunctions%2F1812556619" anchor-label="mapScalarToKotlinInt" id="480812612%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-kotlin-int.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Int</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="480812612%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-kotlin-int.html"><span class="token function">mapScalarToKotlinInt</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">kotlin.Int</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-586412427%2FFunctions%2F1812556619" anchor-label="mapScalarToKotlinLong" id="-586412427%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-kotlin-long.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>Long</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-586412427%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-kotlin-long.html"><span class="token function">mapScalarToKotlinLong</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">kotlin.Long</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1036061750%2FFunctions%2F1812556619" anchor-label="mapScalarToKotlinString" id="-1036061750%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-kotlin-string.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span>Kotlin</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1036061750%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-kotlin-string.html"><span class="token function">mapScalarToKotlinString</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">kotlin.String</a> and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1546512089%2FFunctions%2F1812556619" anchor-label="mapScalarToUpload" id="1546512089%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="map-scalar-to-upload.html"><span>map</span><wbr><span>Scalar</span><wbr><span>To</span><wbr><span><span>Upload</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1546512089%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="map-scalar-to-upload.html"><span class="token function">mapScalarToUpload</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">graphQLName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Map the given GraphQL scalar to com.apollographql.apollo.api.Upload and use the builtin adapter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1276684728%2FFunctions%2F1812556619" anchor-label="operationManifestConnection" id="-1276684728%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="operation-manifest-connection.html"><span>operation</span><wbr><span>Manifest</span><wbr><span><span>Connection</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1276684728%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="operation-manifest-connection.html"><span class="token function">operationManifestConnection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo.gradle.api/-service/-operation-manifest-connection/index.html">Service.OperationManifestConnection</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">overrides the way the operation manifest is connected. Use this if you want to connect the generated operation manifest. For an example you can use this to send the modified queries to your backend for whitelisting</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-319398904%2FFunctions%2F1812556619" anchor-label="operationOutputConnection" id="-319398904%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="operation-output-connection.html"><span>operation</span><wbr><span>Output</span><wbr><span><span>Connection</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-319398904%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="operation-output-connection.html"><span class="token function"><strike>operationOutputConnection</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo.gradle.api/-service/-operation-output-connection/index.html">Service.OperationOutputConnection</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">overrides the way operationOutput is connected. Use this if you want to connect the generated operationOutput. For an example you can use this to send the modified queries to your backend for whitelisting</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="456449513%2FFunctions%2F1812556619" anchor-label="outputDirConnection" id="456449513%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="output-dir-connection.html"><span>output</span><wbr><span>Dir</span><wbr><span><span>Connection</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="456449513%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="output-dir-connection.html"><span class="token function">outputDirConnection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo.gradle.api/-service/-directory-connection/index.html">Service.DirectoryConnection</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Overrides the way the generated models are connected. Use this if you want to connect the generated models to another task than the default destination.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="860540680%2FFunctions%2F1812556619" anchor-label="packageNamesFromFilePaths" id="860540680%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="package-names-from-file-paths.html"><span>package</span><wbr><span>Names</span><wbr><span>From</span><wbr><span>File</span><wbr><span><span>Paths</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="860540680%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="package-names-from-file-paths.html"><span class="token function">packageNamesFromFilePaths</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">rootPackageName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A helper method to configure a PackageNameGenerator that will use the file path relative to the source roots to generate the packageNames</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-89889149%2FFunctions%2F1812556619" anchor-label="plugin" id="-89889149%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="plugin.html"><span><span>plugin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-89889149%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="plugin.html"><span class="token function">plugin</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dependencyNotation<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="plugin.html"><span class="token function">plugin</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dependencyNotation<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span></span><span class="parameter ">block<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.apollographql.apollo.gradle.api/-compiler-plugin/index.html">CompilerPlugin</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1682719307%2FFunctions%2F1812556619" anchor-label="registerOperations" id="1682719307%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="register-operations.html"><span>register</span><wbr><span><span>Operations</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1682719307%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="register-operations.html"><span class="token function">registerOperations</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configure<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo.gradle.api/-register-operations-config/index.html">RegisterOperationsConfig</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Configures operation safelisting (requires an <a href="https://www.apollographql.com/docs/studio/">Apollo Studio</a> account)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1604285883%2FFunctions%2F1812556619" anchor-label="registry" id="-1604285883%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="registry.html"><span><span>registry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1604285883%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="registry.html"><span class="token function">registry</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configure<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="../../com.apollographql.apollo.gradle.api/-registry/index.html">Registry</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Configures <a href="../../com.apollographql.apollo.gradle.api/-registry/index.html">Registry</a> to download a SDL schema from a studio registry</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="349531875%2FFunctions%2F1812556619" anchor-label="srcDir" id="349531875%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="src-dir.html"><span>src</span><wbr><span><span>Dir</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="349531875%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="src-dir.html"><span class="token function">srcDir</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">directory<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Adds the given directory as a GraphQL source root</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2013961670%2FFunctions%2F1812556619" anchor-label="usedCoordinates" id="2013961670%2FFunctions%2F1812556619" data-filterable-set=":apollo-gradle-plugin-external/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external/main" data-filterable-set=":apollo-gradle-plugin-external/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="used-coordinates.html"><span>used</span><wbr><span><span>Coordinates</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2013961670%2FFunctions%2F1812556619"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="used-coordinates.html"><span class="token function"><strike>usedCoordinates</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">file<span class="token operator">: </span><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/File.html">File</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="used-coordinates.html"><span class="token function"><strike>usedCoordinates</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">file<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

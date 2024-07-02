@@ -1,0 +1,88 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>IrValue</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../images/apollo.svg">
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            apollo-kdoc
+                    </a>            </div>
+            <div class="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.compiler.ir/-ir-value/index.html&quot;}"><div class="versions-dropdown">
+  <div class="versions-dropdown-button">4.0.0-beta.8-SNAPSHOT</div>
+  <div class="versions-dropdown-data"><a href="index.html">4.0.0-beta.8-SNAPSHOT</a><a href="../../../not-found-version.html?v=3.8.2">3.8.2</a></div>
+</div>
+</dokka-template-command>            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-compiler/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-compiler::com.apollographql.apollo.compiler.ir/IrValue///PointingToDeclaration//431625483">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-compiler</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.compiler.ir</a><span class="delimiter">/</span><span class="current">IrValue</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Ir</span><wbr><span><span>Value</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="index.html">IrValue</a></div><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-ir-int-value/index.html">IrIntValue</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-ir-float-value/index.html">IrFloatValue</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-ir-string-value/index.html">IrStringValue</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-ir-boolean-value/index.html">IrBooleanValue</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-ir-enum-value/index.html">IrEnumValue</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-ir-null-value/index.html">IrNullValue</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-ir-object-value/index.html">IrObjectValue</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"></div>
+    <div class="tabs-section-body"></div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
