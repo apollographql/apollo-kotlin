@@ -124,7 +124,7 @@ fun Project.configureDokkaAggregate() {
 
     tasks.register("extractApolloKdocVersion_$versionString", Copy::class.java) {
       from(configuration.elements.map { it.map { zipTree(it) } })
-      into(layout.buildDirectory.dir("kdoc-versions/$coordinate"))
+      into(layout.buildDirectory.dir("kdoc-versions/${coordinate.version}"))
     }
   }
 
