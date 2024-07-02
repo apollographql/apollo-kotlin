@@ -133,6 +133,7 @@ abstract class ApolloMigrationRefactoringProcessor(project: Project) : BaseRefac
           if (!usage.isValid) continue
           maybeAddImports(usage, migrationItem)
           migrationItem.performRefactoring(myProject, migration!!, usage)
+          removeDuplicateImports(usage)
         } catch (t: Throwable) {
           logw(t, "Error while performing refactoring for $migrationItem")
         }
@@ -157,6 +158,22 @@ abstract class ApolloMigrationRefactoringProcessor(project: Project) : BaseRefac
             importList.add(psiFactory.createImportDirective(ImportPath.fromString(importToAdd)))
           }
         }
+      }
+    }
+  }
+
+  /**
+   * Imports are automatically optimized in most cases, but some duplications are sometimes missed.
+   */
+  private fun removeDuplicateImports(usage: MigrationItemUsageInfo) {
+    val importList = usage.element.containingKtFileImportList() ?: return
+    val seenImports = mutableSetOf<String>()
+    for (importDirective in importList.imports) {
+      val importPath = importDirective.importPath?.pathStr ?: continue
+      if (seenImports.contains(importPath)) {
+        importDirective.delete()
+      } else {
+        seenImports.add(importPath)
       }
     }
   }

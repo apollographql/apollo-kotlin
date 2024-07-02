@@ -39,12 +39,19 @@ class UpdateGradleDependenciesBuildKts(
   }
 
   override fun performRefactoring(project: Project, migration: PsiMigration, usage: MigrationItemUsageInfo) {
-    val argument = (usage.element as KtCallExpression).valueArguments.first()
-    val entries = ((argument as KtValueArgument).getArgumentExpression() as? KtStringTemplateExpression)?.entries ?: return
-    val firstEntry = entries.firstOrNull() ?: return
-    val artifactId = firstEntry.text.unquoted().split(":")[1]
-    firstEntry.replace(KtPsiFactory(project).createLiteralStringTemplateEntry("$newGroupId:$artifactId"))
-    // Remove other entries (with recent versions of the Apollo Gradle plugin, there is no need to specify the version)
-    entries.drop(1).forEach { it.delete() }
+    val callExpression = usage.element as KtCallExpression
+    val arguments = callExpression.valueArguments
+    val psiFactory = KtPsiFactory(project)
+    if (arguments.size == 1) {
+      // implementation("oldGroupId:artifactId:version"), implementation("oldGroupId:artifactId") -> implementation("newGroupId:artifactId")
+      val argument = arguments.first()
+      val entries = ((argument as KtValueArgument).getArgumentExpression() as? KtStringTemplateExpression)?.entries ?: return
+      val entry = entries.firstOrNull() ?: return
+      val artifactId = entry.text.unquoted().split(":")[1]
+      argument.replace(psiFactory.createStringTemplate("$newGroupId:$artifactId"))
+    } else if (arguments.size > 1) {
+      // implementation("oldGroupId", "artifactId", "version"), implementation("oldGroupId", "artifactId") -> implementation("newGroupId", "artifactId")
+      callExpression.replace(psiFactory.createExpression("""${callExpression.calleeExpression!!.text}("$newGroupId", ${arguments[1].text})"""))
+    }
   }
 }
