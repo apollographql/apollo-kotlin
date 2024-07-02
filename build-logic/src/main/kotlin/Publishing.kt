@@ -94,6 +94,8 @@ fun Project.configureDokka() {
   }
 }
 
+private class MavenCoordinates(val module: String, val version: String)
+
 fun Project.configureDokkaAggregate() {
   val dokkatoo = configureDokkaCommon()
   dependencies.add(
@@ -109,20 +111,20 @@ fun Project.configureDokkaAggregate() {
       }
   )
 
-  val olderVersions = listOf("3.8.2")
-  val kdocVersionTasks = olderVersions.map { version ->
-    val versionString = version.replace(".", "_").replace("-", "_")
+  val olderVersionsCoordinates = listOf(MavenCoordinates("com.apollographql.apollo3:apollo-kdoc", "3.8.2"))
+  val kdocVersionTasks = olderVersionsCoordinates.map { coordinate ->
+    val versionString = coordinate.version.replace(".", "_").replace("-", "_")
     val configuration = configurations.create("apolloKdocVersion_$versionString") {
       isCanBeResolved = true
       isCanBeConsumed = false
       isTransitive = false
 
-      dependencies.add(project.dependencies.create("com.apollographql.apollo:apollo-kdoc:$version:javadoc"))
+      dependencies.add(project.dependencies.create("${coordinate.module}:${coordinate.version}:javadoc"))
     }
 
     tasks.register("extractApolloKdocVersion_$versionString", Copy::class.java) {
       from(configuration.elements.map { it.map { zipTree(it) } })
-      into(layout.buildDirectory.dir("kdoc-versions/$version"))
+      into(layout.buildDirectory.dir("kdoc-versions/$coordinate"))
     }
   }
 
