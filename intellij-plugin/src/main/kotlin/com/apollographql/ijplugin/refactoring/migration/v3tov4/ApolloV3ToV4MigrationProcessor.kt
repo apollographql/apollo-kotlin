@@ -22,6 +22,7 @@ import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveWatchM
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateEnumClassUpperCase
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateFieldNameInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateMultiModuleConfiguration
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateScalarAdaptersInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateThrowApolloCompositeException
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateWebSocketReconnectWhen
 import com.apollographql.ijplugin.util.apollo3
@@ -101,6 +102,7 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateCustomTypeMappingInBuildKts,
       UpdateMultiModuleConfiguration,
       EncloseInService,
+      UpdateScalarAdaptersInBuildKts,
 
       // Add @link to extra.graphqls
       AddLinkDirective,

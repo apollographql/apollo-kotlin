@@ -4,6 +4,7 @@ import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.refactoring.migration.item.DeletesElements
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
+import com.apollographql.ijplugin.util.containingKtFile
 import com.apollographql.ijplugin.util.containingKtFileImportList
 import com.apollographql.ijplugin.util.isGenerated
 import com.apollographql.ijplugin.util.logd
@@ -27,6 +28,7 @@ import com.intellij.refactoring.BaseRefactoringProcessor
 import com.intellij.refactoring.ui.UsageViewDescriptorAdapter
 import com.intellij.usageView.UsageInfo
 import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
+import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtPsiFactory
 import org.jetbrains.kotlin.resolve.ImportPath
 import org.jetbrains.plugins.gradle.util.GradleConstants
@@ -131,9 +133,10 @@ abstract class ApolloMigrationRefactoringProcessor(project: Project) : BaseRefac
         val migrationItem = (usage as MigrationItemUsageInfo).migrationItem
         try {
           if (!usage.isValid) continue
+          val containingKtFile = usage.element.containingKtFile()
           maybeAddImports(usage, migrationItem)
           migrationItem.performRefactoring(myProject, migration!!, usage)
-          removeDuplicateImports(usage)
+          if (containingKtFile != null) removeDuplicateImports(containingKtFile)
         } catch (t: Throwable) {
           logw(t, "Error while performing refactoring for $migrationItem")
         }
@@ -165,8 +168,8 @@ abstract class ApolloMigrationRefactoringProcessor(project: Project) : BaseRefac
   /**
    * Imports are automatically optimized in most cases, but some duplications are sometimes missed.
    */
-  private fun removeDuplicateImports(usage: MigrationItemUsageInfo) {
-    val importList = usage.element.containingKtFileImportList() ?: return
+  private fun removeDuplicateImports(ktFile: KtFile) {
+    val importList = ktFile.importList ?: return
     val seenImports = mutableSetOf<String>()
     for (importDirective in importList.imports) {
       val importPath = importDirective.importPath?.pathStr ?: continue
