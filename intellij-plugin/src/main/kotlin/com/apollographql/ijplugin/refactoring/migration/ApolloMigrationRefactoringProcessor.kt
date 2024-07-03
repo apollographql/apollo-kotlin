@@ -85,7 +85,7 @@ abstract class ApolloMigrationRefactoringProcessor(project: Project) : BaseRefac
             migrationItem.findUsages(myProject, migration!!, searchScope)
                 .filter { usageInfo ->
                   // Filter out all generated code usages. We don't want generated code to come up in findUsages.
-                  usageInfo.virtualFile?.isGenerated(myProject) != true //&&
+                  usageInfo.virtualFile?.isGenerated(myProject) != true &&
 
                   // Also filter out usages outside of projects (see https://youtrack.jetbrains.com/issue/KTIJ-26411)
                   usageInfo.virtualFile?.let { searchScope.contains(it) } == true
