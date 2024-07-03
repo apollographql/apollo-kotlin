@@ -7,6 +7,7 @@ import com.apollographql.ijplugin.util.capitalizeFirstLetter
 import com.apollographql.ijplugin.util.containingKtFile
 import com.apollographql.ijplugin.util.findChildrenOfType
 import com.apollographql.ijplugin.util.resolveKtName
+import com.apollographql.ijplugin.util.shortName
 import com.apollographql.ijplugin.util.type
 import com.intellij.lang.jsgraphql.GraphQLFileType
 import com.intellij.lang.jsgraphql.psi.GraphQLDefinition
@@ -91,7 +92,7 @@ fun KtClass.isApolloFragment(): Boolean {
   } ||
       // Fallback for fragments in responseBased codegen: they are interfaces generated in a .fragment package.
       // This can lead to false positives, but consequences are not dire.
-      isInterface() && kotlinFqName?.parent()?.shortName()?.asString() == "fragment" && hasGeneratedByApolloComment()
+      isInterface() && kotlinFqName?.parent()?.shortName == "fragment" && hasGeneratedByApolloComment()
 }
 
 fun KtClass.isApolloOperationOrFragment(): Boolean {
@@ -101,7 +102,7 @@ fun KtClass.isApolloOperationOrFragment(): Boolean {
   } ||
       // Fallback for fragments in responseBased codegen: they are interfaces generated in a .fragment package.
       // This can lead to false positives, but consequences are not dire.
-      isInterface() && kotlinFqName?.parent()?.shortName()?.asString() == "fragment" && hasGeneratedByApolloComment()
+      isInterface() && kotlinFqName?.parent()?.shortName == "fragment" && hasGeneratedByApolloComment()
 }
 
 fun KtNameReferenceExpression.isApolloEnumClassReference(): Boolean {
@@ -131,7 +132,7 @@ fun KtClass.isApolloInputClass(): Boolean {
   // Apollo input classes are data classes, generated in a package named "type", and we also look at the header comment.
   // This can lead to false positives, but consequences are not dire.
   return isData() &&
-      kotlinFqName?.parent()?.shortName()?.asString() == "type" &&
+      kotlinFqName?.parent()?.shortName == "type" &&
       hasGeneratedByApolloComment()
 }
 

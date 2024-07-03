@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.idea.caches.resolve.resolveToDescriptorIfAny
 import org.jetbrains.kotlin.idea.caches.resolve.safeAnalyze
 import org.jetbrains.kotlin.idea.references.KtSimpleNameReference
 import org.jetbrains.kotlin.idea.references.mainReference
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClass
@@ -77,7 +78,8 @@ fun PsiElement.originalClassName(): String? = resolveKtName()?.asKtClass()?.name
 
 fun KtCallExpression.getMethodName(): String? = calleeExpression.cast<KtNameReferenceExpression>()?.getReferencedName()
 
-fun KtCallExpression.lambdaBlockExpression(): KtBlockExpression? = valueArguments.firstIsInstanceOrNull<KtLambdaArgument>()?.getLambdaExpression()?.bodyExpression
+fun KtCallExpression.lambdaBlockExpression(): KtBlockExpression? =
+  valueArguments.firstIsInstanceOrNull<KtLambdaArgument>()?.getLambdaExpression()?.bodyExpression
 
 fun KtDeclaration.type(): KotlinType? = (resolveToDescriptorIfAny() as? CallableDescriptor)?.returnType
 
@@ -90,3 +92,5 @@ fun KotlinType.canBeNull() = isMarkedNullable || isNullabilityFlexible()
 fun KtClassOrObject.findFunctionsByName(name: String): List<KtNamedFunction> {
   return declarations.filterIsInstance<KtNamedFunction>().filter { it.name == name }
 }
+
+val FqName.shortName: String? get() = kotlin.runCatching { shortName() }.getOrNull()?.asString()
