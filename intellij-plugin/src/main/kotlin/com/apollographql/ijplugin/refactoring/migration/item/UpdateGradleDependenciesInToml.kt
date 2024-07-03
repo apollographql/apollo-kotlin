@@ -35,7 +35,7 @@ class UpdateGradleDependenciesInToml(
               usages.add(MigrationItemUsageInfo(this@UpdateGradleDependenciesInToml, element.firstChild, Kind.SHORT_MODULE_OR_GROUP))
               // Find the associated version
               val versionEntry = (element.parent.parent as? TomlInlineTable)?.entries
-                  ?.first { it.key.text == "version" || it.key.text == "version.ref" }
+                  ?.firstOrNull { it.key.text == "version" || it.key.text == "version.ref" }
               if (versionEntry != null) {
                 if (versionEntry.key.text == "version") {
                   versionEntry.value?.let {
