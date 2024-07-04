@@ -15,7 +15,7 @@ class UpdateMethodCall(
     private val replacementExpression: String,
     private val extensionTargetClassName: String? = null,
     private vararg val importsToAdd: String,
-) : MigrationItem() {
+) : MigrationItem(), DeletesElements {
   override fun findUsages(project: Project, migration: PsiMigration, searchScope: GlobalSearchScope): List<MigrationItemUsageInfo> {
     return findMethodReferences(
         project = project,
@@ -30,9 +30,10 @@ class UpdateMethodCall(
     val importDirective = element.parentOfType<KtImportDirective>()
     if (importDirective != null) {
       // Reference is an import
-      return
+      importDirective.delete()
+    } else {
+      element.parentOfType<KtDotQualifiedExpression>()?.selectorExpression?.replace(KtPsiFactory(project).createExpression(replacementExpression))
     }
-    element.parentOfType<KtDotQualifiedExpression>()?.selectorExpression?.replace(KtPsiFactory(project).createExpression(replacementExpression))
   }
 
   override fun importsToAdd() = importsToAdd.toSet()
