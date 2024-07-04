@@ -106,7 +106,7 @@ class MultiModulesTests {
         TestUtils.executeTaskAndAssertSuccess(":leaf:assemble", dir)
         Assert.fail("the build did not detect scalar mapping registered in leaf module")
       } catch (e: UnexpectedBuildFailure) {
-        Truth.assertThat(e.message).contains("custom scalars are not used in non-schema module")
+        Truth.assertThat(e.message).contains("the custom scalar configuration is not used in non-schema modules")
       }
     }
   }

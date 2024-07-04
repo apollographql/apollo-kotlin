@@ -786,15 +786,13 @@ interface Service {
   fun isADependencyOf(dependencyNotation: Any)
 
   /**
-   * Same as [dependsOn] but tries to do automatic cross-project configuration.
-   * This is highly experimental and probably not compatible with most Gradle best practices.
+   * Same as [dependsOn] but allows for automatic detection of used types.
+   * This works by adding the current project to the upstream project dependencies using cross-project configuration.
    *
-   * Use at your own risks!
+   * This function is experimental and not compatible with [Gradle project isolation](https://docs.gradle.org/current/userguide/isolated_projects.html).
    *
    * @param bidirectional if true and if [dependencyNotation] is a project dependency,
-   * this version of [dependsOn] also calls [isADependencyOf] automatically by using
-   * cross-project configuration. This is experimental and probably not project isolation compatible.
-   *
+   * automatically configure the symmetrical dependency for automatic detection of used types.
    */
   @ApolloExperimental
   fun dependsOn(dependencyNotation: Any, bidirectional: Boolean)

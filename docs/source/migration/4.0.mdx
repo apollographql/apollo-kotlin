@@ -234,7 +234,7 @@ val call = client.query(MyQuery())
 
 In Apollo Kotlin 3, you could depend on an upstream GraphQL module by using the `apolloMetadata` configuration.
 
-In Apollo Kotlin 4, this is now done with the `Service.dependsOn()`. This allows better management of dependencies when multiple services are used as better symmetry with `isADependencyOf` below. 
+In Apollo Kotlin 4, this is now done with the `Service.dependsOn()`. `Service.dependsOn()` works for multi-services repositories and, by hiding the configuration names, allows us to change the implementation in the future if needed. For an example to accommodate [Gradle project isolation](https://docs.gradle.org/current/userguide/isolated_projects.html).   
 
 ```kotlin
 // feature1/build.gradle.kts
@@ -272,7 +272,7 @@ apollo {
 
 In multi-module projects, by default, all the types of an upstream module are generated because there is no way to know in advance what types are going to be used by downstream modules. For large projects this can lead to a lot of unused code and an increased build time.
 
-To avoid this, in Apollo Kotlin 3 you could manually specify which types to generate by using `alwaysGenerateTypesMatching`. In Apollo Kotlin 4 this can now be computed automatically by detecting which types are used by the downstream modules.
+To avoid this, in Apollo Kotlin 3 you could manually specify which types to generate by using `alwaysGenerateTypesMatching`. In Apollo Kotlin 4 you can opt in auto-detection of used types. 
 
 To enable this, add the "opposite" link of dependencies with `isADependencyOf()`.
 
@@ -319,9 +319,27 @@ dependencies {
   apolloUsedCoordinates(project(":feature1"))
 }
 ```
-### Publishing is no longer configured automatically
+### All schema types are generated in the schema module
 
-Apollo artifacts are not automatically published anymore. To publish them, create a `MavenPublication`:
+Apollo Kotlin 3 allows to generate schema types for enums or input types in any module. While very flexible, this creates a lot of complexity:
+
+- Duplicate types could be generated in sibling modules.
+- It's unclear what package name to use. 
+  - Using the downstream module package name means the qualified name of the class changes if the type is moved to another module.
+  - Using the schema module package name can be surprising as it's not the one specified in the Gradle configuration.
+- Gradle has APIs to aggregate all projects in a project isolation compatible way (see [gradle#22514](https://github.com/gradle/gradle/issues/22514)). But it's not clear yet how to do this for a subset of the projects (see [gradle#29037](https://github.com/gradle/gradle/issues/29037)).
+
+In Apollo Kotlin 4, we decided to enforce generating all schema types in a single module, the schema module. This restriction simplifies the Gradle plugin and makes it easier to debug and evolve that code. 
+
+It also means that you can't publish your schema module with a subset of the types and let other modules generate their own in another repository. If you are publishing your schema module, it needs to contain all the schema types used by your consumers, either using `alwaysGenerateTypesMatching.set(listOf(".*"))` or manually adding them. 
+
+If that is too much of a limitation, please open an issue and we will revisit.
+
+### Apollo metadata publications are no longer created automatically
+
+Apollo Kotlin 3 automatically creates an "apollo" publication using artifactId `${project.name}-apollo`. This created dependency resolution issues in some projects (see [apollo-kotlin#4350](https://github.com/apollographql/apollo-kotlin/issues/4350)).
+
+Apollo Kotlin 4 exposes a software component instead of a publication to give more control over how publications are created. In order to publish the Apollo metadata, create a `MavenPublication` manually:
 
 ```kotlin
 publishing {

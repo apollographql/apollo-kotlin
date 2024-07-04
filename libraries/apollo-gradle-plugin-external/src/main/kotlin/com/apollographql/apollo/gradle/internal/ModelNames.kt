@@ -1,9 +1,10 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.compiler.capitalizeFirstLetter
 import com.apollographql.apollo.gradle.api.Service
 
-object ModelNames {
+internal object ModelNames {
   private fun camelCase(vararg elements: String): String {
     return elements.mapIndexed { index, s ->
       if (index != 0) {
@@ -23,22 +24,38 @@ object ModelNames {
   fun downloadApolloSchema() = camelCase("downloadApolloSchema")
   fun downloadApolloSchemaIntrospection(service: Service) = camelCase("download", service.name, "ApolloSchemaFromIntrospection")
   fun downloadApolloSchemaRegistry(service: Service) = camelCase("download", service.name, "ApolloSchemaFromRegistry")
-  fun registerApolloOperations(service: DefaultService) = camelCase("register", service.name, "ApolloOperations")
+  fun registerApolloOperations(service: Service) = camelCase("register", service.name, "ApolloOperations")
   fun pushApolloSchema() = camelCase("pushApolloSchema")
   fun checkApolloVersions() = "checkApolloVersions"
   fun convertApolloSchema() = "convertApolloSchema"
 
   // Configuration names
+  @Deprecated("Unused. Use dependsOn() instead.")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   fun metadataConfiguration() = "apolloMetadata"
-  fun codegenMetadataProducerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenMetadataProducer")
-  fun codegenMetadataConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenMetadataConsumer")
-  fun upstreamIrProducerConfiguration(service: Service) = camelCase("apollo", service.name, "UpstreamIrProducer")
-  fun upstreamIrConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "UpstreamIrConsumer")
-  fun downstreamIrProducerConfiguration(service: Service) = camelCase("apollo", service.name, "DownStreamIrProducer")
-  fun downstreamIrConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "DownStreamIrConsumer")
-  fun codegenSchemaProducerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenSchemaProducer")
-  fun codegenSchemaConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenSchemaConsumer")
-  fun otherOptionsProducerConfiguration(service: Service) = camelCase("apollo", service.name, "OtherOptionsProducer")
-  fun otherOptionsConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "OtherOptionsConsumer")
-  fun compilerConfiguration(service: DefaultService) = camelCase("apollo", service.name, "Compiler")
+  fun configuration(serviceName: String, apolloDirection: ApolloDirection, apolloUsage: ApolloUsage, configurationKind: ConfigurationKind): String {
+    return camelCase(
+        "apollo",
+        serviceName,
+        apolloDirection.pretty(),
+        apolloUsage.name,
+        configurationKind.pretty()
+    )
+  }
+  fun compilerConfiguration(service: Service) = camelCase("apollo", service.name, "Compiler")
  }
+
+private fun ConfigurationKind.pretty(): String {
+  return when(this) {
+    ConfigurationKind.DependencyScope -> ""
+    else -> name
+  }
+}
+
+
+private fun ApolloDirection.pretty(): String {
+  return when(this) {
+    ApolloDirection.Upstream -> ""
+    ApolloDirection.Downstream -> name
+  }
+}
