@@ -16,7 +16,7 @@ import kotlinx.datetime.LocalTime
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-@Deprecated("KotlinxInstantAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-datetime. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@Deprecated("KotlinxInstantAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-datetime. See https://go.apollo.dev/ak-moved-artifacts for more details.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object KotlinxInstantAdapter : Adapter<Instant> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Instant {
@@ -34,7 +34,7 @@ object KotlinxInstantAdapter : Adapter<Instant> {
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-@Deprecated("KotlinxLocalDateTimeAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-datetime. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@Deprecated("KotlinxLocalDateTimeAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-datetime. See https://go.apollo.dev/ak-moved-artifacts for more details.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object KotlinxLocalDateTimeAdapter : Adapter<LocalDateTime> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalDateTime {
@@ -52,7 +52,7 @@ object KotlinxLocalDateTimeAdapter : Adapter<LocalDateTime> {
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-@Deprecated("KotlinxLocalDateAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-datetime. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@Deprecated("KotlinxLocalDateAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-datetime. See https://go.apollo.dev/ak-moved-artifacts for more details.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object KotlinxLocalDateAdapter : Adapter<LocalDate> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalDate {
@@ -70,7 +70,7 @@ object KotlinxLocalDateAdapter : Adapter<LocalDate> {
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-@Deprecated("KotlinxLocalTimeAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-datetime. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@Deprecated("KotlinxLocalTimeAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-datetime. See https://go.apollo.dev/ak-moved-artifacts for more details.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object KotlinxLocalTimeAdapter : Adapter<LocalTime> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalTime {

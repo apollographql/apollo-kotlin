@@ -19,7 +19,7 @@ import java.util.Date
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-@Deprecated("DateAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@Deprecated("DateAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-moved-artifacts for more details.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object DateAdapter : Adapter<Date> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Date {
