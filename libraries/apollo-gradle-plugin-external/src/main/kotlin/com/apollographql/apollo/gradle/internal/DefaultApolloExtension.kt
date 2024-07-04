@@ -503,10 +503,10 @@ abstract class DefaultApolloExtension(
         )
       } else {
         check(service.scalarTypeMapping.isEmpty()) {
-          "Apollo: custom scalars are not used in non-schema module. Add custom scalars to your schema module."
+          "Apollo: the custom scalar configuration is not used in non-schema modules. Add custom scalars to your schema module."
         }
         check(!service.generateDataBuilders.isPresent) {
-          "Apollo: generateDataBuilders is not used in non-schema module. Add generateDataBuilders to your schema module."
+          "Apollo: generateDataBuilders is not used in non-schema modules. Add generateDataBuilders to your schema module."
         }
 
         null
