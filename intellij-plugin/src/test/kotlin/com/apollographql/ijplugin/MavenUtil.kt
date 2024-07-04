@@ -24,7 +24,6 @@ fun addFromMaven(
     dependencyScope: DependencyScope,
 ) {
   val remoteRepositoryDescriptions = listOf(
-      RemoteRepositoryDescription("mavenLocal", "mavenLocal", "file://${System.getProperty("user.home")}/.m2/repository", true),
       RemoteRepositoryDescription.MAVEN_CENTRAL,
   )
   val libraryProperties = RepositoryLibraryProperties(mavenCoordinates, includeTransitiveDependencies)

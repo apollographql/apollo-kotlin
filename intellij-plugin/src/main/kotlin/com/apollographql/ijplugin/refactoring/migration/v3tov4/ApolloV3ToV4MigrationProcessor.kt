@@ -12,6 +12,7 @@ import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDepende
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradlePluginInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodCall
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodName
+import com.apollographql.ijplugin.refactoring.migration.item.UpdatePackageName
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.AddLinkDirective
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.EncloseInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveFieldInService
@@ -21,9 +22,11 @@ import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.RemoveWatchM
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateEnumClassUpperCase
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateFieldNameInService
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateMultiModuleConfiguration
+import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateScalarAdaptersInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateThrowApolloCompositeException
 import com.apollographql.ijplugin.refactoring.migration.v3tov4.item.UpdateWebSocketReconnectWhen
 import com.apollographql.ijplugin.util.apollo3
+import com.apollographql.ijplugin.util.apollo4
 import com.intellij.openapi.project.Project
 
 /**
@@ -43,9 +46,9 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateFieldName("$apollo3.exception.ApolloCompositeException", "first", "suppressedExceptions.first()"),
       UpdateFieldName("$apollo3.exception.ApolloCompositeException", "second", "suppressedExceptions.getOrNull(1)"),
       UpdateThrowApolloCompositeException,
-      UpdateClassName("$apollo3.exception.ApolloCompositeException", "$apollo3.exception.ApolloException"),
-      UpdateClassName("$apollo3.exception.ApolloCanceledException", "$apollo3.exception.ApolloException"),
-      UpdateClassName("$apollo3.exception.ApolloGenericException", "$apollo3.exception.ApolloException"),
+      UpdateClassName("$apollo3.exception.ApolloCompositeException", "$apollo4.exception.ApolloException"),
+      UpdateClassName("$apollo3.exception.ApolloCanceledException", "$apollo4.exception.ApolloException"),
+      UpdateClassName("$apollo3.exception.ApolloGenericException", "$apollo4.exception.ApolloException"),
       UpdateMethodName("$apollo3.ast.GQLResult", "valueAssertNoErrors", "getOrThrow"),
       UpdateMethodName("$apollo3.cache.normalized.api.CacheHeaders", "toBuilder", "newBuilder"),
       UpdateMethodName("$apollo3.ApolloClient", "dispose", "close"),
@@ -62,22 +65,22 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
           "executeCacheAndNetwork",
           "fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow()",
           extensionTargetClassName = "$apollo3.ApolloCall",
-          "$apollo3.cache.normalized.fetchPolicy",
-          "$apollo3.cache.normalized.FetchPolicy",
+          "$apollo4.cache.normalized.fetchPolicy",
+          "$apollo4.cache.normalized.FetchPolicy",
       ),
       UpdateMethodCall(
           "$apollo3.cache.normalized.NormalizedCache",
           "clearNormalizedCache",
           replacementExpression = "apolloStore.clearAll()",
           extensionTargetClassName = "$apollo3.ApolloClient",
-          "$apollo3.cache.normalized.apolloStore",
+          "$apollo4.cache.normalized.apolloStore",
       ),
       UpdateMethodCall(
           "$apollo3.cache.normalized.NormalizedCache",
           "apolloStore",
           replacementExpression = "apolloStore",
           extensionTargetClassName = "$apollo3.ApolloClient",
-          "$apollo3.cache.normalized.apolloStore",
+          "$apollo4.cache.normalized.apolloStore",
       ),
       RemoveWatchMethodArguments,
       ConstructorInsteadOfBuilder("$apollo3.cache.normalized.api.CacheKey.Companion", "from"),
@@ -85,10 +88,12 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
 
       UpdateEnumClassUpperCase,
 
+      UpdatePackageName(apollo3, apollo4),
+
       // Gradle
-      UpdateGradlePluginInBuildKts(apollo3, apollo3, apollo4LatestVersion),
-      UpdateGradleDependenciesInToml(apollo3, apollo3, apollo4LatestVersion),
-      UpdateGradleDependenciesBuildKts(apollo3, apollo3),
+      UpdateGradlePluginInBuildKts(apollo3, apollo4, apollo4LatestVersion),
+      UpdateGradleDependenciesInToml(apollo3, apollo4, apollo4LatestVersion),
+      UpdateGradleDependenciesBuildKts(apollo3, apollo4),
 
       UpdateFieldNameInService("generateModelBuilder", "generateModelBuilders"),
       UpdateFieldNameInService("generateTestBuilders", "generateDataBuilders"),
@@ -97,6 +102,7 @@ class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactor
       UpdateCustomTypeMappingInBuildKts,
       UpdateMultiModuleConfiguration,
       EncloseInService,
+      UpdateScalarAdaptersInBuildKts,
 
       // Add @link to extra.graphqls
       AddLinkDirective,

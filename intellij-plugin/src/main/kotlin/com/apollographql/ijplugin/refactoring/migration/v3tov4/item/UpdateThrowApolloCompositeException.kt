@@ -2,10 +2,11 @@ package com.apollographql.ijplugin.refactoring.migration.v3tov4.item
 
 import com.apollographql.ijplugin.refactoring.findClassReferences
 import com.apollographql.ijplugin.refactoring.findOrCreateClass
-import com.apollographql.ijplugin.util.apollo3
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
 import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsageInfo
+import com.apollographql.ijplugin.util.apollo3
+import com.apollographql.ijplugin.util.apollo4
 import com.apollographql.ijplugin.util.cast
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMigration
@@ -32,5 +33,5 @@ object UpdateThrowApolloCompositeException : MigrationItem() {
     element.replace(psiFactory.createExpression("DefaultApolloException(cause = $arg1).apply { addSuppressed($arg2) }"))
   }
 
-  override fun importsToAdd()=setOf("$apollo3.exception.DefaultApolloException")
+  override fun importsToAdd() = setOf("$apollo4.exception.DefaultApolloException")
 }
