@@ -1,11 +1,3 @@
-public final class com/apollographql/apollo/gradle/api/ApolloAttributes {
-	public static final field INSTANCE Lcom/apollographql/apollo/gradle/api/ApolloAttributes;
-	public final fun getAPOLLO_SERVICE_ATTRIBUTE ()Lorg/gradle/api/attributes/Attribute;
-}
-
-public abstract interface class com/apollographql/apollo/gradle/api/ApolloAttributes$Service : org/gradle/api/Named {
-}
-
 public final class com/apollographql/apollo/gradle/api/ApolloDependencies {
 	public fun <init> (Lorg/gradle/api/artifacts/dsl/DependencyHandler;)V
 	public final fun getApi ()Lorg/gradle/api/artifacts/Dependency;

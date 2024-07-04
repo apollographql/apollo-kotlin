@@ -9,7 +9,6 @@ import com.apollographql.apollo.compiler.OperationOutputGenerator
 import com.apollographql.apollo.compiler.UsedCoordinates
 import com.apollographql.apollo.compiler.capitalizeFirstLetter
 import com.apollographql.apollo.compiler.toIrOperations
-import com.apollographql.apollo.gradle.api.ApolloAttributes
 import com.apollographql.apollo.gradle.api.ApolloDependencies
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
@@ -22,6 +21,7 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.ProjectDependency
+import org.gradle.api.attributes.HasConfigurableAttributes
 import org.gradle.api.attributes.Usage
 import org.gradle.api.component.AdhocComponentWithVariants
 import org.gradle.api.component.SoftwareComponentFactory
@@ -64,7 +64,7 @@ abstract class DefaultApolloExtension(
 
   internal fun registerDownstreamProject(serviceName: String, projectPath: String) {
     project.configurations.configureEach {
-      if (it.name == ModelNames.downstreamIrConsumerConfiguration(serviceName)) {
+      if (it.name == ModelNames.configuration(serviceName, ApolloDirection.Downstream, ApolloUsage.Ir, ConfigurationKind.DependencyScope)) {
         it.dependencies.add(project.dependencies.project(mapOf("path" to projectPath)))
       }
     }
@@ -375,25 +375,47 @@ abstract class DefaultApolloExtension(
     }
   }
 
-  private fun createConfiguration(
-      name: String,
-      isCanBeConsumed: Boolean,
-      extendsFrom: Configuration?,
-      usage: String,
+  class Configurations(
+      val scope: Configuration,
+      val consumable: Configuration,
+      val resolvable: Configuration
+  )
+  private fun createConfigurations(
       serviceName: String,
-  ): Configuration {
-    return project.configurations.create(name) {
-      it.isCanBeConsumed = isCanBeConsumed
-      it.isCanBeResolved = !isCanBeConsumed
+      apolloUsage: ApolloUsage,
+      direction: ApolloDirection,
+  ): Configurations {
+    val dependencyScope = project.configurations.create(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.DependencyScope )) {
+      it.isCanBeConsumed = false
+      it.isCanBeResolved = false
+    }
+    val consumable = project.configurations.create(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.Consumable )) {
+      it.isCanBeConsumed = true
+      it.isCanBeResolved = false
 
-      if (extendsFrom != null) {
-        it.extendsFrom(extendsFrom)
-      }
+      it.extendsFrom(dependencyScope)
+      it.attributes(serviceName, apolloUsage, direction)
+    }
+    val resolvable = project.configurations.create(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.Resolvable )) {
+      it.isCanBeConsumed = false
+      it.isCanBeResolved = true
 
-      it.attributes {
-        it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, usage))
-        it.attribute(ApolloAttributes.APOLLO_SERVICE_ATTRIBUTE, project.objects.named(ApolloAttributes.Service::class.java, serviceName))
-      }
+      it.extendsFrom(dependencyScope)
+      it.attributes(serviceName, apolloUsage, direction)
+    }
+
+    return Configurations(
+        scope = dependencyScope,
+        consumable = consumable,
+        resolvable = resolvable
+    )
+  }
+
+  private fun <T> HasConfigurableAttributes<T>.attributes(serviceName: String, usage: ApolloUsage, direction: ApolloDirection) {
+    attributes {
+      it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, usage.name))
+      it.attribute(APOLLO_SERVICE_ATTRIBUTE, serviceName)
+      it.attribute(APOLLO_DIRECTION_ATTRIBUTE, direction.name)
     }
   }
 
@@ -418,20 +440,10 @@ abstract class DefaultApolloExtension(
 
     val sourcesBaseTaskProvider: TaskProvider<*>
 
-    val otherOptionsConsumerConfiguration = createConfiguration(
-        name = ModelNames.otherOptionsConsumerConfiguration(service),
-        isCanBeConsumed = false,
-        extendsFrom = null,
-        usage = USAGE_APOLLO_OTHER_OPTIONS,
+    val otherOptions = createConfigurations(
         serviceName = service.name,
-    )
-
-    val otherOptionsProducerConfiguration = createConfiguration(
-        name = ModelNames.otherOptionsProducerConfiguration(service),
-        isCanBeConsumed = true,
-        extendsFrom = otherOptionsConsumerConfiguration,
-        usage = USAGE_APOLLO_OTHER_OPTIONS,
-        serviceName = service.name,
+        apolloUsage = ApolloUsage.OtherOptions,
+        direction = ApolloDirection.Upstream,
     )
 
     val compilerConfiguration = project.configurations.create(ModelNames.compilerConfiguration(service)) {
@@ -451,72 +463,32 @@ abstract class DefaultApolloExtension(
         LogLevel.entries.first { project.logger.isEnabled(it) },
     )
 
-    val optionsTaskProvider = registerOptionsTask(project, service, otherOptionsConsumerConfiguration)
+    val optionsTaskProvider = registerOptionsTask(project, service, otherOptions.resolvable)
     if (!service.isMultiModule()) {
       sourcesBaseTaskProvider = registerSourcesTask(project, optionsTaskProvider, service, classpathOptions)
     } else {
-      val codegenSchemaConsumerConfiguration = createConfiguration(
-          name = ModelNames.codegenSchemaConsumerConfiguration(service),
-          isCanBeConsumed = false,
-          extendsFrom = null,
-          usage = USAGE_APOLLO_CODEGEN_SCHEMA,
+      val codegenSchema = createConfigurations(
           serviceName = service.name,
+          apolloUsage = ApolloUsage.CodegenSchema,
+          direction = ApolloDirection.Upstream,
       )
 
-      val codegenSchemaProducerConfiguration = createConfiguration(
-          name = ModelNames.codegenSchemaProducerConfiguration(service),
-          isCanBeConsumed = true,
-          extendsFrom = codegenSchemaConsumerConfiguration,
-          usage = USAGE_APOLLO_CODEGEN_SCHEMA,
+      val upstreamIr = createConfigurations(
           serviceName = service.name,
+          apolloUsage = ApolloUsage.Ir,
+          direction = ApolloDirection.Upstream,
       )
 
-      val upstreamIrConsumerConfiguration = createConfiguration(
-          name = ModelNames.upstreamIrConsumerConfiguration(service),
-          isCanBeConsumed = false,
-          extendsFrom = null,
-          usage = USAGE_APOLLO_UPSTREAM_IR,
+      val downstreamIr = createConfigurations(
           serviceName = service.name,
+          apolloUsage = ApolloUsage.Ir,
+          direction = ApolloDirection.Downstream,
       )
 
-      val upstreamIrProducerConfiguration = createConfiguration(
-          name = ModelNames.upstreamIrProducerConfiguration(service),
-          isCanBeConsumed = true,
-          extendsFrom = upstreamIrConsumerConfiguration,
-          usage = USAGE_APOLLO_UPSTREAM_IR,
+      val codegenMetadata = createConfigurations(
           serviceName = service.name,
-      )
-
-      val downstreamIrConsumerConfiguration = createConfiguration(
-          name = ModelNames.downstreamIrConsumerConfiguration(service.name),
-          isCanBeConsumed = false,
-          extendsFrom = null,
-          usage = USAGE_APOLLO_DOWNSTREAM_IR,
-          serviceName = service.name,
-      )
-
-      val downstreamIrProducerConfiguration = createConfiguration(
-          name = ModelNames.downstreamIrProducerConfiguration(service),
-          isCanBeConsumed = true,
-          extendsFrom = downstreamIrConsumerConfiguration,
-          usage = USAGE_APOLLO_DOWNSTREAM_IR,
-          serviceName = service.name,
-      )
-
-      val codegenMetadataConsumerConfiguration = createConfiguration(
-          name = ModelNames.codegenMetadataConsumerConfiguration(service),
-          isCanBeConsumed = false,
-          extendsFrom = null,
-          usage = USAGE_APOLLO_CODEGEN_METADATA,
-          serviceName = service.name,
-      )
-
-      val codegenMetadataProducerConfiguration = createConfiguration(
-          name = ModelNames.codegenMetadataProducerConfiguration(service),
-          isCanBeConsumed = true,
-          extendsFrom = codegenMetadataConsumerConfiguration,
-          usage = USAGE_APOLLO_CODEGEN_METADATA,
-          serviceName = service.name,
+          apolloUsage = ApolloUsage.CodegenMetadata,
+          direction = ApolloDirection.Upstream,
       )
 
       /**
@@ -527,7 +499,7 @@ abstract class DefaultApolloExtension(
             project = project,
             service = service,
             optionsTaskProvider = optionsTaskProvider,
-            schemaConsumerConfiguration = codegenSchemaConsumerConfiguration
+            schemaConsumerConfiguration = codegenSchema.resolvable
         )
       } else {
         check(service.scalarTypeMapping.isEmpty()) {
@@ -543,22 +515,22 @@ abstract class DefaultApolloExtension(
       val irOperationsTaskProvider = registerIrOperationsTask(
           project = project,
           service = service,
-          schemaConsumerConfiguration = codegenSchemaConsumerConfiguration,
+          schemaConsumerConfiguration = codegenSchema.resolvable,
           schemaTaskProvider = codegenSchemaTaskProvider,
           irOptionsTaskProvider = optionsTaskProvider,
-          upstreamIrFiles = upstreamIrConsumerConfiguration,
+          upstreamIrFiles = upstreamIr.resolvable,
           classpathOptions = classpathOptions
       )
 
       val sourcesFromIrTaskProvider = registerSourcesFromIrTask(
           project = project,
           service = service,
-          schemaConsumerConfiguration = codegenSchemaConsumerConfiguration,
+          schemaConsumerConfiguration = codegenSchema.resolvable,
           generateOptionsTaskProvider = optionsTaskProvider,
           codegenSchemaTaskProvider = codegenSchemaTaskProvider,
-          downstreamIrOperations = downstreamIrConsumerConfiguration,
+          downstreamIrOperations = downstreamIr.resolvable,
           irOperationsTaskProvider = irOperationsTaskProvider,
-          upstreamCodegenMetadata = codegenMetadataConsumerConfiguration,
+          upstreamCodegenMetadata = codegenMetadata.resolvable,
           classpathOptions = classpathOptions,
       )
 
@@ -566,38 +538,46 @@ abstract class DefaultApolloExtension(
 
       project.artifacts {
         if (codegenSchemaTaskProvider != null) {
-          it.add(codegenSchemaProducerConfiguration.name, codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile }) {
+          it.add(codegenSchema.consumable.name, codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile }) {
             it.classifier = "codegen-schema-${service.name}"
           }
-          it.add(otherOptionsProducerConfiguration.name, optionsTaskProvider.flatMap { it.otherOptions }) {
+          it.add(otherOptions.consumable.name, optionsTaskProvider.flatMap { it.otherOptions }) {
             it.classifier = "other-options-${service.name}"
           }
         }
-        it.add(upstreamIrProducerConfiguration.name, irOperationsTaskProvider.flatMap { it.irOperationsFile }) {
+        it.add(upstreamIr.consumable.name, irOperationsTaskProvider.flatMap { it.irOperationsFile }) {
           it.classifier = "ir-${service.name}"
         }
-        it.add(downstreamIrProducerConfiguration.name, irOperationsTaskProvider.flatMap { it.irOperationsFile }) {
+        it.add(downstreamIr.consumable.name, irOperationsTaskProvider.flatMap { it.irOperationsFile }) {
           it.classifier = "ir-${service.name}"
         }
-        it.add(codegenMetadataProducerConfiguration.name, sourcesFromIrTaskProvider.flatMap { it.metadataOutputFile }) {
+        it.add(codegenMetadata.consumable.name, sourcesFromIrTaskProvider.flatMap { it.metadataOutputFile }) {
           it.classifier = "codegen-metadata-${service.name}"
         }
       }
 
-      adhocComponentWithVariants.addVariantsFromConfiguration(codegenMetadataProducerConfiguration) {}
-      adhocComponentWithVariants.addVariantsFromConfiguration(upstreamIrProducerConfiguration) {}
-      adhocComponentWithVariants.addVariantsFromConfiguration(codegenSchemaProducerConfiguration) {}
-      adhocComponentWithVariants.addVariantsFromConfiguration(otherOptionsProducerConfiguration) {}
+      /*
+       * Note: no component is created to publish the downstreamIr. This is because that would
+       * require publishing in 2 phases:
+       * - publish the downstream Ir
+       * - schema module uses that for used coordinates and publishes the codegen metadata
+       * - downstream module publishes jar
+       * In such scenarios, the user must set `alwaysGenerateTypesMatching.set(listOf(".*"))` on the schema module.
+       */
+      adhocComponentWithVariants.addVariantsFromConfiguration(codegenMetadata.consumable) {}
+      adhocComponentWithVariants.addVariantsFromConfiguration(upstreamIr.consumable) {}
+      adhocComponentWithVariants.addVariantsFromConfiguration(codegenSchema.consumable) {}
+      adhocComponentWithVariants.addVariantsFromConfiguration(otherOptions.consumable) {}
 
       service.upstreamDependencies.forEach {
-        otherOptionsConsumerConfiguration.dependencies.add(it)
-        codegenSchemaConsumerConfiguration.dependencies.add(it)
-        upstreamIrConsumerConfiguration.dependencies.add(it)
-        codegenMetadataConsumerConfiguration.dependencies.add(it)
+        otherOptions.scope.dependencies.add(it)
+        codegenSchema.scope.dependencies.add(it)
+        upstreamIr.scope.dependencies.add(it)
+        codegenMetadata.scope.dependencies.add(it)
       }
 
       service.downstreamDependencies.forEach {
-        downstreamIrConsumerConfiguration.dependencies.add(it)
+        downstreamIr.scope.dependencies.add(it)
       }
     }
 
@@ -1009,12 +989,6 @@ abstract class DefaultApolloExtension(
     private const val TASK_GROUP = "apollo"
     // Keep in sync gradle-api-min
     const val MIN_GRADLE_VERSION = "8.0"
-
-    private const val USAGE_APOLLO_CODEGEN_METADATA = "apollo-codegen-metadata"
-    private const val USAGE_APOLLO_UPSTREAM_IR = "apollo-upstream-ir"
-    private const val USAGE_APOLLO_DOWNSTREAM_IR = "apollo-downstream-ir"
-    private const val USAGE_APOLLO_CODEGEN_SCHEMA = "apollo-codegen-schema"
-    private const val USAGE_APOLLO_OTHER_OPTIONS = "apollo-other-options"
 
     private fun getDeps(configurations: ConfigurationContainer): List<String> {
       // See https://github.com/apollographql/apollo-kotlin/pull/5657
