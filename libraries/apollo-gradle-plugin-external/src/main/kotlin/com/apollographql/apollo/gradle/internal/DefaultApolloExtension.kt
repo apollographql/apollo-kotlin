@@ -49,7 +49,6 @@ abstract class DefaultApolloExtension(
   private var hasExplicitService = false
   private val adhocComponentWithVariants: AdhocComponentWithVariants
   private val apolloMetadataConfiguration: Configuration
-  private val pendingDownstreamDependencies: MutableMap<String, List<String>> = mutableMapOf()
 
   internal fun getServiceInfos(project: Project): List<ApolloGradleToolingModel.ServiceInfo> = services.map { service ->
     DefaultServiceInfo(
@@ -64,14 +63,9 @@ abstract class DefaultApolloExtension(
   }
 
   internal fun registerDownstreamProject(serviceName: String, projectPath: String) {
-    val existingService = services.firstOrNull {
-      it.name == serviceName
-    }
-    if (existingService != null) {
-      existingService.isADependencyOf(project.rootProject.project(projectPath))
-    } else {
-      pendingDownstreamDependencies.compute(serviceName) { _, oldValue ->
-        oldValue.orEmpty() + projectPath
+    project.configurations.configureEach {
+      if (it.name == ModelNames.downstreamIrConsumerConfiguration(serviceName)) {
+        it.dependencies.add(project.dependencies.project(mapOf("path" to projectPath)))
       }
     }
   }
@@ -494,7 +488,7 @@ abstract class DefaultApolloExtension(
       )
 
       val downstreamIrConsumerConfiguration = createConfiguration(
-          name = ModelNames.downstreamIrConsumerConfiguration(service),
+          name = ModelNames.downstreamIrConsumerConfiguration(service.name),
           isCanBeConsumed = false,
           extendsFrom = null,
           usage = USAGE_APOLLO_DOWNSTREAM_IR,
@@ -602,12 +596,6 @@ abstract class DefaultApolloExtension(
         codegenMetadataConsumerConfiguration.dependencies.add(it)
       }
 
-      val pending = pendingDownstreamDependencies.get(service.name)
-      if (pending != null) {
-        pending.forEach {
-          service.isADependencyOf(project.project(it))
-        }
-      }
       service.downstreamDependencies.forEach {
         downstreamIrConsumerConfiguration.dependencies.add(it)
       }

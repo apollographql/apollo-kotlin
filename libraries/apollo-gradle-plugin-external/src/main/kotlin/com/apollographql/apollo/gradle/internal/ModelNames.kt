@@ -35,7 +35,7 @@ object ModelNames {
   fun upstreamIrProducerConfiguration(service: Service) = camelCase("apollo", service.name, "UpstreamIrProducer")
   fun upstreamIrConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "UpstreamIrConsumer")
   fun downstreamIrProducerConfiguration(service: Service) = camelCase("apollo", service.name, "DownStreamIrProducer")
-  fun downstreamIrConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "DownStreamIrConsumer")
+  fun downstreamIrConsumerConfiguration(serviceName: String) = camelCase("apollo", serviceName, "DownStreamIrConsumer")
   fun codegenSchemaProducerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenSchemaProducer")
   fun codegenSchemaConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "CodegenSchemaConsumer")
   fun otherOptionsProducerConfiguration(service: Service) = camelCase("apollo", service.name, "OtherOptionsProducer")
