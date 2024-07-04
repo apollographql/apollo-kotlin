@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-@Deprecated("JavaInstantAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@Deprecated("JavaInstantAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-moved-artifacts for more details.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object JavaInstantAdapter : Adapter<Instant> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Instant {
@@ -44,7 +44,7 @@ object JavaInstantAdapter : Adapter<Instant> {
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-@Deprecated("JavaLocalDateAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@Deprecated("JavaLocalDateAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-moved-artifacts for more details.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object JavaLocalDateAdapter : Adapter<LocalDate> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalDate {
@@ -64,7 +64,7 @@ object JavaLocalDateAdapter : Adapter<LocalDate> {
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-@Deprecated("JavaLocalDateTimeAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@Deprecated("JavaLocalDateTimeAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-moved-artifacts for more details.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object JavaLocalDateTimeAdapter : Adapter<LocalDateTime> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalDateTime {
@@ -84,7 +84,7 @@ object JavaLocalDateTimeAdapter : Adapter<LocalDateTime> {
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-@Deprecated("JavaOffsetDateTimeAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@Deprecated("JavaOffsetDateTimeAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-moved-artifacts for more details.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object JavaOffsetDateTimeAdapter : Adapter<OffsetDateTime> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): OffsetDateTime {
@@ -104,7 +104,7 @@ object JavaOffsetDateTimeAdapter : Adapter<OffsetDateTime> {
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-@Deprecated("JavaLocalTimeAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-4-migration-guide for more details.")
+@Deprecated("JavaLocalTimeAdapter has new maven coordinates at 'com.apollographql.adapters:apollo-adapters-core. See https://go.apollo.dev/ak-moved-artifacts for more details.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 object JavaLocalTimeAdapter : Adapter<LocalTime> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalTime {
