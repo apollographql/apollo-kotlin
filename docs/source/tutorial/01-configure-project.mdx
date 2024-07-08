@@ -39,7 +39,7 @@ This tutorial uses `4.0.0` because it is the latest version at the time of writi
 
 ## Apply the plugin
 
-Add the Apollo plugin to the version catalog in `gradle/libs.versions.toml`. The Apollo plugin ID is `com.apollographql.apollo3`:
+Add the Apollo plugin to the version catalog in `gradle/libs.versions.toml`. The Apollo plugin ID is `com.apollographql.apollo`:
 
 ```toml title="gradle/libs.versions.toml"
 [versions]
@@ -86,7 +86,7 @@ First add the dependency to the version catalog:
 ```toml title="gradle/libs.versions.toml"
 [libraries]
 # ...
-apollo-runtime = { module = "com.apollographql.apollo3:apollo-runtime", version.ref = "apollo"}
+apollo-runtime = { module = "com.apollographql.apollo:apollo-runtime", version.ref = "apollo"}
 ```
 
 Then add the dependency to the `app/build.gradle.kts` file:
