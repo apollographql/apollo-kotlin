@@ -187,14 +187,14 @@ fun setVersionInDocs(version: String, nextSnapshot: String) {
 
     val content = file.readText()
         // Plugin
-        .replace(Regex("""id\("com\.apollographql\.apollo3"\) version "(.+)""")) {
+        .replace(Regex("""id\("(com\.apollographql\.apollo.?)"\) version "(.+)""")) {
           """
-            id("com.apollographql.apollo") version "$version"
+            id("${it.groupValues[1]}") version "$version"
           """.trimIndent()
         }
         // Dependencies
-        .replace(Regex(""""com\.apollographql\.apollo3:(.+):.+"""")) {
-          """"com.apollographql.apollo:${it.groupValues[1]}:$version""""
+        .replace(Regex(""""(com\.apollographql\.apollo.?):(.+):.+"""")) {
+          """"${it.groupValues[1]}:${it.groupValues[2]}:$version""""
         }
         // Tutorial
         .replace(Regex("This tutorial uses `(.+)`")) {
