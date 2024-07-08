@@ -15,7 +15,7 @@ android-sdkversion-target = "30"
 androidx-sqlite = "2.3.1"
 # This is used by the gradle integration tests to get the artifacts locally
 apollo = "4.0.0-rc.2-SNAPSHOT"
-apollo-execution = "0.0.1"
+apollo-execution = "0.0.2"
 apollo-normalizedcache-incubating-snapshot = "0.0.2-SNAPSHOT"
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-published = "4.0.0-beta.6"
@@ -77,10 +77,10 @@ apollo-plugin = { group = "com.apollographql.apollo", name = "apollo-gradle-plug
 apollo-runtime = { group = "com.apollographql.apollo", name = "apollo-runtime", version.ref = "apollo" }
 apollo-compiler = { group = "com.apollographql.apollo", name = "apollo-compiler", version.ref = "apollo" }
 apollo-ast = { group = "com.apollographql.apollo", name = "apollo-ast", version.ref = "apollo" }
-apollo-execution = { group = "com.apollographql.execution", name = "runtime", version.ref = "apollo-execution" }
-apollo-execution-ktor = { group = "com.apollographql.execution", name = "runtime-ktor", version.ref = "apollo-execution" }
-apollo-execution-processor = { group = "com.apollographql.execution", name = "processor", version.ref = "apollo-execution" }
-apollo-execution-gradle-plugin = { group = "com.apollographql.execution", name = "gradle-plugin", version.ref = "apollo-execution" }
+apollo-execution = { group = "com.apollographql.execution", name = "apollo-execution-runtime", version.ref = "apollo-execution" }
+apollo-execution-ktor = { group = "com.apollographql.execution", name = "apollo-execution-ktor", version.ref = "apollo-execution" }
+apollo-execution-processor = { group = "com.apollographql.execution", name = "apollo-execution-processor", version.ref = "apollo-execution" }
+apollo-execution-gradle-plugin = { group = "com.apollographql.execution", name = "apollo-execution-gradle-plugin", version.ref = "apollo-execution" }
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-runtime-published = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo-published" }
 apollo-annotations = { group = "com.apollographql.apollo", name = "apollo-annotations", version.ref = "apollo" }

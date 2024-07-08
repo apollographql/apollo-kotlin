@@ -4,7 +4,6 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
     // maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/") }
 
     mavenCentral()
-
     exclusiveContent {
       forRepository(::google)
       filter {
