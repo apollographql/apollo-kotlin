@@ -1,7 +1,7 @@
 package com.apollographql.apollo.tooling
 
 import com.apollographql.apollo.annotations.ApolloInternal
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.api.Optional
 import com.apollographql.apollo.tooling.platformapi.internal.TrackApolloKotlinUsageMutation
 import com.apollographql.apollo.tooling.platformapi.internal.type.ApolloKotlinUsageEventInput
 import com.apollographql.apollo.tooling.platformapi.internal.type.ApolloKotlinUsagePropertyInput

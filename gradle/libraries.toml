@@ -18,7 +18,7 @@ apollo = "4.0.0-rc.2-SNAPSHOT"
 apollo-execution = "0.0.1"
 apollo-normalizedcache-incubating-snapshot = "0.0.2-SNAPSHOT"
 # Used by the apollo-tooling project which uses a published version of Apollo
-apollo-published = "4.0.0-beta.6"
+apollo-published = "4.0.0-rc.1"
 atomicfu = "0.24.0"
 cache = "2.0.2"
 compose = "1.5.1"
@@ -82,7 +82,7 @@ apollo-execution-ktor = { group = "com.apollographql.execution", name = "runtime
 apollo-execution-processor = { group = "com.apollographql.execution", name = "processor", version.ref = "apollo-execution" }
 apollo-execution-gradle-plugin = { group = "com.apollographql.execution", name = "gradle-plugin", version.ref = "apollo-execution" }
 # Used by the apollo-tooling project which uses a published version of Apollo
-apollo-runtime-published = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo-published" }
+apollo-runtime-published = { group = "com.apollographql.apollo", name = "apollo-runtime", version.ref = "apollo-published" }
 apollo-annotations = { group = "com.apollographql.apollo", name = "apollo-annotations", version.ref = "apollo" }
 apollo-engine-ktor = { group = "com.apollographql.apollo", name = "apollo-engine-ktor", version.ref = "apollo" }
 apollo-testingsupport = { group = "com.apollographql.apollo", name = "apollo-testing-support", version.ref = "apollo" }
@@ -199,7 +199,7 @@ slf4j-nop = "org.slf4j:slf4j-nop:2.0.13"
 
 [plugins]
 apollo = { id = "com.apollographql.apollo", version.ref = "apollo" }
-apollo-published = { id = "com.apollographql.apollo3", version.ref = "apollo-published" }
+apollo-published = { id = "com.apollographql.apollo", version.ref = "apollo-published" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin" }
 kotlin-android-min = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin-min" }

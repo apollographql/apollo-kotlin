@@ -2,7 +2,7 @@ package com.apollographql.apollo.tooling
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.api.Optional
 import com.apollographql.apollo.ast.GQLArgument
 import com.apollographql.apollo.ast.GQLDefinition
 import com.apollographql.apollo.ast.GQLDirective

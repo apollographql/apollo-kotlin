@@ -2,10 +2,8 @@ package com.apollographql.ijplugin.apollodebugserver
 
 import com.android.ddmlib.IDevice
 import com.android.tools.idea.adb.AdbShellCommandsUtil
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.debug.GetApolloClientsQuery
-import com.apollographql.apollo3.debug.GetNormalizedCacheQuery
-import com.apollographql.apollo3.network.http.LoggingInterceptor
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.network.http.LoggingInterceptor
 import com.apollographql.ijplugin.util.apollo3
 import com.apollographql.ijplugin.util.apollo4
 import com.apollographql.ijplugin.util.executeCatching
