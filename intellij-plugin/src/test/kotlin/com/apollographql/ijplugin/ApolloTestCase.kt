@@ -40,7 +40,7 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
 
           PsiTestUtil.addProjectLibrary(
               model,
-              "com.apollographql.apollo3:$library:$APOLLO_VERSION",
+              "com.apollographql.apollo:$library:$APOLLO_VERSION",
               listOf(File(".").resolve(jarPath).absolutePath)
           )
         }
