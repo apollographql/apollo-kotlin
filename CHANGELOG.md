@@ -21,22 +21,22 @@ You can read more in the [migration guide](https://go.apollo.dev/ak-moved-artifa
 
 ## All changes
 
+* [BREAKING][all] Change package name to `com.apollographql.apollo`
+* [BREAKING][all] Remove incubating compose support (#5987)
+* [BREAKING][all] Remove apollo-cli (#5986)
+* [BREAKING][all] Remove incubating normalized cache (#5985)
+* [BREAKING][all] Nullability: Move nullability directives to v0.4 (#6002)
+* [BREAKING][all] Suffix ApolloStore write/publish overloads with `Sync` to avoid them taking precedence over their suspend counterparts (#5976)
+* [NEW][cache] SqlNormalizedCacheFactory make sqldriver public to support Sqlcipher data encryption. (#5973)
+* [NEW][runtime] Add ApolloClient.Builder.retryOnErrorInterceptor (#5989)
+* [adapters] Deprecate apollo-adapters (#6012)
 * [🐘gradle-plugin] Rename the multi-module configurations (#6027)
 * [IJ Plugin] Tweak cache name display for Apollo 3, 4, and incubating (#6026)
-* [BREAKING][all] Change package name to `com.apollographql.apollo`
-* [adapters] Deprecate apollo-adapters (#6012)
-* [BREAKING] Nullability: Move nullability directives to v0.4 (#6002)
 * [compiler] remove unused argument to scalarAdapterInitializer() (#5996)
 * [java] Use published version of the Java support libs (#5991)
-* [NEW][runtime] add ApolloClient.Builder.retryOnErrorInterceptor (#5989)
 * [runtime] Deprecate apollo engine ktor and publish engine tests (#5988)
-* [BREAKING] Remove incubating compose support (#5987)
-* [BREAKING] Remove apollo-cli (#5986)
-* [BREAKING] Remove incubating normalized cache (#5985)
-* [BREAKING][cache] Suffix ApolloStore write/publish overloads with `Sync` to avoid them taking precedence over their suspend counterparts (#5976)
 * [mpp-utils] Cleanup mpp utils (#5980)
 * [CI] use `gradle/actions/setup-gradle` instead of `gradle-build-action` (#5981)
-* [NEW][cache] SqlNormalizedCacheFactory make sqldriver public to support Sqlcipher data encryption. (#5973)
 * [infra] Update to develocity API (#5967)
 * [incubating cache] Add a CacheKeyApolloResolver based on ApolloResolver (incubating) (#5970)
 * [mockserver] Robustify TCP server (#5968)
