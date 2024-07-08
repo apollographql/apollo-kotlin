@@ -47,7 +47,7 @@ val releaseBranchName = "release-$versionToRelease"
 runCommand("git", "checkout", "-b", releaseBranchName)
 setCurrentVersion(versionToRelease)
 setVersionInDocs(versionToRelease, nextSnapshot)
-setVersionInIntelliJPlugin(versionToRelease, nextSnapshot)
+setVersionInIntelliJPlugin(versionToRelease)
 runCommand("git", "commit", "-a", "-m", "release $versionToRelease")
 runCommand("git", "push", "origin", releaseBranchName)
 runCommand("gh", "pr", "create", "--base", startBranch, "--fill")
@@ -208,7 +208,7 @@ fun setVersionInDocs(version: String, nextSnapshot: String) {
   }
 }
 
-fun setVersionInIntelliJPlugin(version: String, nextSnapshot: String) {
+fun setVersionInIntelliJPlugin(version: String) {
   File("intellij-plugin/src/main/kotlin/com/apollographql/ijplugin/refactoring/migration/v3tov4/ApolloV3ToV4MigrationProcessor.kt").let { file ->
     file.writeText(file.readText().replace(Regex("""apollo4LatestVersion = "(.+)"""")) {
       """apollo4LatestVersion = "$version""""
@@ -216,10 +216,10 @@ fun setVersionInIntelliJPlugin(version: String, nextSnapshot: String) {
   }
   File("intellij-plugin/src/test/testData/migration/v3-to-v4/updateGradleDependenciesInLibsVersionsToml_after.versions.toml").let { file ->
     file.writeText(file.readText()
-        .replace(Regex(""""com\.apollographql\.apollo3:apollo-runtime:4(.+)"""")) {
+        .replace(Regex(""""com\.apollographql\.apollo:apollo-runtime:4(.+)"""")) {
           """"com.apollographql.apollo:apollo-runtime:$version""""
         }
-        .replace(Regex(""""com\.apollographql\.apollo3:4(.+)"""")) {
+        .replace(Regex(""""com\.apollographql\.apollo:4(.+)"""")) {
           """"com.apollographql.apollo:$version""""
         }
         .replace(Regex(""""4(.+)"""")) {
@@ -236,11 +236,6 @@ fun setVersionInIntelliJPlugin(version: String, nextSnapshot: String) {
           """// TODO: Update version to $version"""
         }
     )
-  }
-  File("intellij-plugin/src/test/kotlin/com/apollographql/ijplugin/ApolloTestCase.kt").let { file ->
-    file.writeText(file.readText().replace(Regex("""snapshotVersion = "(.+)"""")) {
-      """snapshotVersion = "$nextSnapshot""""
-    })
   }
 }
 
