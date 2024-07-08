@@ -250,7 +250,7 @@ internal fun DefaultService.schemaFiles(project: Project): FileCollection {
 
   @Suppress("DEPRECATION")
   if (schemaFile.isPresent) {
-    project.logger.lifecycle("Apollo: using 'schemaFile.set()' is deprecated as additional schema files like 'extra.graphqls' might be required. Please use 'schemaFiles.from()' instead.")
+    project.logger.lifecycle("Apollo: using 'schemaFile.set()' is deprecated as additional schema files like 'extra.graphqls' might be required. Please use 'schemaFiles.from(fileTree(\"directory\").include(\"**/*.graphqls\"))' instead.")
     fileCollection.from(schemaFile)
   } else {
     fileCollection.from(schemaFiles)
