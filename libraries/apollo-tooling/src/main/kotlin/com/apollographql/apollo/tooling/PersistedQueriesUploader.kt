@@ -1,7 +1,7 @@
 package com.apollographql.apollo.tooling
 
 import com.apollographql.apollo.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.api.Optional
 import com.apollographql.apollo.tooling.platformapi.public.PublishOperationsMutation
 import com.apollographql.apollo.tooling.platformapi.public.type.OperationType
 import com.apollographql.apollo.tooling.platformapi.public.type.PersistedQueryInput
