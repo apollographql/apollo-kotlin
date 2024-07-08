@@ -1,6 +1,51 @@
 Change Log
 ==========
 
+# Version 4.0.0-rc.1
+
+_2024-07-08_
+
+## New package name & evolution policy
+
+We changed the package name from `com.apollographql.apollo3` to `com.apollographql.apollo` for version 4. This is a safe default for the many years to come and works well with our new [evolution policy](https://www.apollographql.com/docs/kotlin/v4/essentials/evolution).
+
+If you are updating from version 3 or an alpha/beta version 4, you need to replace all `com.apollographql.apollo3` with `com.apollographql.apollo`
+
+## Apollo galaxy
+
+As part of this release, some of the non-core artifacts have been moved to separate coordinates and GitHub repositories. Moving forward, this will allow us to iterate faster on those artifacts while keeping the core ones more maintainable.
+
+Some of the existing symbols are kept as deprecated to ease the transition (like `MockServer` for an example). Others (the `-incubating` ones) have been removed, and you need to update them now.
+
+You can read more in the [migration guide](https://go.apollo.dev/ak-moved-artifacts).
+
+## All changes
+
+* [🐘gradle-plugin] Rename the multi-module configurations (#6027)
+* [IJ Plugin] Tweak cache name display for Apollo 3, 4, and incubating (#6026)
+* [BREAKING][all] Change package name to `com.apollographql.apollo`
+* [adapters] Deprecate apollo-adapters (#6012)
+* [BREAKING] Nullability: Move nullability directives to v0.4 (#6002)
+* [compiler] remove unused argument to scalarAdapterInitializer() (#5996)
+* [java] Use published version of the Java support libs (#5991)
+* [NEW][runtime] add ApolloClient.Builder.retryOnErrorInterceptor (#5989)
+* [runtime] Deprecate apollo engine ktor and publish engine tests (#5988)
+* [BREAKING] Remove incubating compose support (#5987)
+* [BREAKING] Remove apollo-cli (#5986)
+* [BREAKING] Remove incubating normalized cache (#5985)
+* [BREAKING][cache] Suffix ApolloStore write/publish overloads with `Sync` to avoid them taking precedence over their suspend counterparts (#5976)
+* [mpp-utils] Cleanup mpp utils (#5980)
+* [CI] use `gradle/actions/setup-gradle` instead of `gradle-build-action` (#5981)
+* [NEW][cache] SqlNormalizedCacheFactory make sqldriver public to support Sqlcipher data encryption. (#5973)
+* [infra] Update to develocity API (#5967)
+* [incubating cache] Add a CacheKeyApolloResolver based on ApolloResolver (incubating) (#5970)
+* [mockserver] Robustify TCP server (#5968)
+* [runtime] adding checks for json end_document in http batching interceptors (#5893)
+* [IJ plugin] Cache ApolloKotlinService into project settings (#5962)
+* [IJ plugin] Avoid a ConcurrentModificationException occurring in conjunction to the IJ Platform Gradle plugin. (#5959)
+* [websockets] Send Sec-WebSocket-Protocol (#5948)
+* [mockserver] Deprecate com.apollographql.apollo3.mockserver.MockServer (#5943)
+
 # Version 4.0.0-beta.7
 
 _2024-06-05_
