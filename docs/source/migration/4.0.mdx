@@ -13,7 +13,9 @@ Apollo Kotlin 3 was a major rewrite of Apollo in Kotlin multiplatform.
 
 Apollo Kotlin 4 focuses on tooling, stability and making the library more maintainable, so it can evolve smoothly for the many years to come.
 
-Apollo Kotlin 4 removes some deprecated symbols. We strongly recommend removing deprecated usages before migrating to version 4.  
+While most of the core APIs stayed the same, Apollo Kotlin 4 contains a few binary breaking changes. To account for that, and in order to be more future proof, we [changed the package name](https://github.com/apollographql/apollo-kotlin/issues/4710) to `com.apollographql.apollo`.
+
+Apollo Kotlin 4 removes some deprecated symbols. We strongly recommend updating to the latest 3.x release and removing deprecated usages before migrating to version 4.
 
 ## Automatic migration using the Android Studio/IntelliJ plugin
 
@@ -22,6 +24,56 @@ Apollo Kotlin 4 ships with a companion [Android Studio/IntelliJ plugin](../testi
 It automates most of the API changes but cannot deal with behavior changes like error handling. 
 
 We recommend using the plugin to automate the repetitive tasks but still go through this document for the details.
+
+## Group id / plugin id / package name
+
+Apollo Kotlin 4 uses a new identifier for its maven group id, Gradle plugin id and package name : **`com.apollographql.apollo`**.
+
+This also allows to run versions 4 and 3 side by side if needed.
+
+In most cases, you can update the identifier in your project by performing a find-and-replace and replacing `com.apollographql.apollo3` with `com.apollographql.apollo`.
+
+### Group id
+
+The maven group id used to identify Apollo Kotlin 4 [artifacts](https://repo1.maven.org/maven2/com/apollographql/apollo/) is `com.apollographql.apollo`:
+
+```kotlin
+// Replace:
+implementation("com.apollographql.apollo3:apollo-runtime:3.8.4")
+
+// With:
+implementation("com.apollographql.apollo:apollo-runtime:4.0.0")
+```
+
+### Gradle plugin id
+
+The Apollo Kotlin 4.0 Gradle plugin id is `com.apollographql.apollo`:
+
+```kotlin
+// Replace:
+plugins {
+  id("com.apollographql.apollo3") version "3.8.4"
+}
+
+// With:
+plugins {
+  id("com.apollographql.apollo") version "4.0.0"
+}
+```
+
+### Package name
+
+Apollo Kotlin 4 classes use the `com.apollographql.apollo` package:
+
+```kotlin
+// Replace:
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.*
+
+// With:
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.*
+```
 
 ## Moved artifacts 
 
@@ -192,7 +244,7 @@ Because of the number of different options in version 3 and the complexity of er
 
 ### Non standard HTTP headers are not sent by default
 
-`X-APOLLO-OPERATION-NAME` and `X-APOLLO-OPERATION-ID` are non-standard headers and are not sent by default anymore. If you used them for logging purposes or if you are using Apollo Server [CSRF prevention](https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf), you can add them back using an [ApolloInterceptor](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo3.interceptor/-apollo-interceptor/index.html?query=interface%20ApolloInterceptor):
+`X-APOLLO-OPERATION-NAME` and `X-APOLLO-OPERATION-ID` are non-standard headers and are not sent by default anymore. If you used them for logging purposes or if you are using Apollo Server [CSRF prevention](https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf), you can add them back using an [ApolloInterceptor](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo.interceptor/-apollo-interceptor/index.html?query=interface%20ApolloInterceptor):
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()

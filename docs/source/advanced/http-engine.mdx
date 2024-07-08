@@ -10,35 +10,11 @@ By default, Apollo Kotlin uses the following HTTP clients for different platform
 | JavaScript/Wasm | [fetch()](https://developer.mozilla.org/en-US/docs/Web/API/fetch) / [Node Fetch](https://www.npmjs.com/package/node-fetch) for HTTP, [Ktor](https://ktor.io/) for WebSockets |
 | iOS/MacOS       | [NSURLSesssion](https://developer.apple.com/documentation/foundation/nsurlsession)                                                                                           |
 
-
-## Ktor engine
-
-Additionally, an optional implementation based on [Ktor](https://ktor.io/) for all targets is available in the `apollo-engine-ktor` module. To use it, add the following dependency to your project:
-
-```kotlin title="build.gradle[.kts]"
-dependencies {
-  // ...
-  implementation("com.apollographql.apollo3:apollo-engine-ktor:4.0.0-rc.1")
-}
-```
-
-And configure your `ApolloClient` to use the Ktor engine:
-
-```kotlin
-val client = ApolloClient.Builder()
-  .serverUrl("https://example.com/graphql")
-  // Create a new Ktor engine
-  .httpEngine(KtorHttpEngine())
-  // Or, if you want to reuse an existing Ktor client
-  .ktorClient(myKtorClient)
-  .build()
-```
-
 ## Implement your own HTTP engine
 
 You can use a different HTTP client with Apollo Kotlin by creating a custom class that implements the `HttpEngine` interface.
 
-The [HttpEngine interface](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-engine/index.html)
+The [HttpEngine interface](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo.network.http/-http-engine/index.html)
 defines two functions: `execute` and `close`. Here's an example implementation that also includes a couple of helper
 methods:
 
@@ -89,7 +65,7 @@ This example uses an asynchronous `wrappedClient` that runs the network request 
 
 ### Using your `HttpEngine`
 
-After you create your `HttpEngine` implementation, you can register it with your [`ApolloClient`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/index.html) instance using [`ApolloClient.Builder.httpEngine`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/-builder/http-engine.html):
+After you create your `HttpEngine` implementation, you can register it with your [`ApolloClient`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo/-apollo-client/index.html) instance using [`ApolloClient.Builder.httpEngine`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo/-apollo-client/-builder/http-engine.html):
 
 ```kotlin
 // Use your HttpEngine
@@ -100,6 +76,11 @@ val client = ApolloClient.Builder()
 ```
 
 With this configuration, Apollo Kotlin sends all of its GraphQL operation requests with `MyHttpEngine`.
+
+
+## Ktor engine
+
+An implementation of `HttpEngine` based on [Ktor](https://ktor.io/) is available in [apollographql/apollo-kotlin-ktor-support](https://github.com/apollographql/apollo-kotlin-ktor-support)
 
 ## Other HTTP customizations
 
