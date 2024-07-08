@@ -1,4 +1,3 @@
-import com.apollographql.execution.gradle.internal.CopySchema
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
@@ -34,12 +33,6 @@ dependencies {
 apolloExecution {
   service("sampleserver") {
     packageName = "sample.server"
-  }
-}
-tasks.withType(CopySchema::class.java).configureEach {
-  doFirst {
-    // https://github.com/apollographql/apollo-kotlin-execution/pull/6
-    (this as CopySchema).to.get().asFile.delete()
   }
 }
 

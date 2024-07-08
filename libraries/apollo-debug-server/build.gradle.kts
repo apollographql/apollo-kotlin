@@ -1,5 +1,4 @@
 
-import com.apollographql.execution.gradle.internal.CopySchema
 import dev.adamko.dokkatoo.tasks.DokkatooGenerateTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
@@ -70,11 +69,5 @@ apolloExecution {
   service("apolloDebugServer") {
     packageName = "com.apollographql.apollo.debugserver.internal.graphql"
     schemaPath.set("graphql/schema.graphqls")
-  }
-}
-tasks.withType(CopySchema::class.java).configureEach {
-  doFirst {
-    // https://github.com/apollographql/apollo-kotlin-execution/pull/6
-    (this as CopySchema).to.get().asFile.delete()
   }
 }
