@@ -1,6 +1,6 @@
 package com.apollographql.ijplugin
 
-import com.apollographql.ijplugin.util.apollo4
+import com.apollographql.apollo.compiler.APOLLO_VERSION
 import com.apollographql.ijplugin.util.logw
 import com.intellij.application.options.CodeStyle
 import com.intellij.codeInsight.daemon.impl.HighlightInfo
@@ -27,10 +27,6 @@ import java.io.File
 
 @TestDataPath("\$CONTENT_ROOT/../../../tests/intellij-plugin-test-project")
 abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
-  companion object {
-    const val snapshotVersion = "4.0.0-beta.8-SNAPSHOT"
-  }
-
   open val mavenLibraries: List<String> = listOf("apollo-annotations", "apollo-api", "apollo-runtime", "org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
 
   private val projectDescriptor = object : DefaultLightProjectDescriptor() {
@@ -40,11 +36,11 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
           addFromMaven(model, library, true, DependencyScope.COMPILE)
         } else {
           // XXX: tunnel that in an environment variable if possible
-          val jarPath = "../libraries/$library/build/libs/$library-jvm-$snapshotVersion.jar"
+          val jarPath = "../libraries/$library/build/libs/$library-jvm-$APOLLO_VERSION.jar"
 
           PsiTestUtil.addProjectLibrary(
               model,
-              "com.apollographql.apollo3:$library:$snapshotVersion",
+              "com.apollographql.apollo3:$library:$APOLLO_VERSION",
               listOf(File(".").resolve(jarPath).absolutePath)
           )
         }

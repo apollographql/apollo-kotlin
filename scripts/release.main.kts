@@ -47,7 +47,7 @@ val releaseBranchName = "release-$versionToRelease"
 runCommand("git", "checkout", "-b", releaseBranchName)
 setCurrentVersion(versionToRelease)
 setVersionInDocs(versionToRelease, nextSnapshot)
-setVersionInIntelliJPlugin(versionToRelease, nextSnapshot)
+setVersionInIntelliJPlugin(versionToRelease)
 runCommand("git", "commit", "-a", "-m", "release $versionToRelease")
 runCommand("git", "push", "origin", releaseBranchName)
 runCommand("gh", "pr", "create", "--base", startBranch, "--fill")
@@ -208,7 +208,7 @@ fun setVersionInDocs(version: String, nextSnapshot: String) {
   }
 }
 
-fun setVersionInIntelliJPlugin(version: String, nextSnapshot: String) {
+fun setVersionInIntelliJPlugin(version: String) {
   File("intellij-plugin/src/main/kotlin/com/apollographql/ijplugin/refactoring/migration/v3tov4/ApolloV3ToV4MigrationProcessor.kt").let { file ->
     file.writeText(file.readText().replace(Regex("""apollo4LatestVersion = "(.+)"""")) {
       """apollo4LatestVersion = "$version""""
@@ -236,11 +236,6 @@ fun setVersionInIntelliJPlugin(version: String, nextSnapshot: String) {
           """// TODO: Update version to $version"""
         }
     )
-  }
-  File("intellij-plugin/src/test/kotlin/com/apollographql/ijplugin/ApolloTestCase.kt").let { file ->
-    file.writeText(file.readText().replace(Regex("""snapshotVersion = "(.+)"""")) {
-      """snapshotVersion = "$nextSnapshot""""
-    })
   }
 }
 
