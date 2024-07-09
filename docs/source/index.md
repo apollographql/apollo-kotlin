@@ -3,24 +3,24 @@ title: Introduction to Apollo Kotlin
 description: A strongly-typed, caching GraphQL client for the JVM, Android, and Kotlin multiplatform.
 ---
 
-> 📣 **Apollo Kotlin 3 is generally available.** If you're using Apollo Android 2.x, see the [migration guide](./migration/3.0/). You can also [view the 2.x docs](https://www.apollographql.com/docs/kotlin/v2).
+> 📣 **Migration guide:** if you're using Apollo Kotlin 3, see the [migration guide](./migration/4.0/). You can also [view the 3.x docs](https://www.apollographql.com/docs/kotlin/v3).
 
-[Apollo Kotlin](https://github.com/apollographql/apollo-kotlin) (formerly Apollo Android) is a GraphQL client that generates Kotlin and Java models from GraphQL operations.
+[Apollo Kotlin](https://github.com/apollographql/apollo-kotlin) is a strongly typed GraphQL client that generates Kotlin models for your GraphQL operations.
 
 Apollo Kotlin executes operations against a GraphQL server and returns results as operation-specific Kotlin types. This means you don't have to deal with parsing JSON, or passing around `Map`s and making clients cast values to the right type manually. You also don't have to write model types yourself, because these are generated from the GraphQL definitions your app uses.
 
 Because generated types are operation-specific, you can only access data that you actually specify as part of an operation. If you don't ask for a particular field in an operation, you can't access the corresponding property on the returned data structure.
 
-This library is designed primarily with Android in mind, but you can use it in any Kotlin (including multiplatform) and Java app.
+This library is designed with Android in mind, but you can use it in any Kotlin application, including multiplatform.
 
 ## Features
 
-* Kotlin Multiplatform and Java code generation
+* Kotlin Multiplatform code generation
 * Queries, Mutations and Subscriptions
 * Reflection-free parsing
 * Normalized cache
-* Custom scalar types
 * HTTP cache
+* Custom scalar types
 * Auto Persisted Queries
 * Query batching
 * File uploads
@@ -159,7 +159,7 @@ Installation instructions and more information can be found [here](testing/andro
 
 ## Releases
 
-The latest version is [![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo/)
+The latest version is `4.0.0-rc.1`.
 
 Check the [changelog](https://github.com/apollographql/apollo-kotlin/releases) for the release history.
 
