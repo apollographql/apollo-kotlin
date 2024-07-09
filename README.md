@@ -19,7 +19,7 @@
 |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | What do you like best about Apollo Kotlin? What needs to be improved? Please tell us by taking a [one-minute survey](https://docs.google.com/forms/d/e/1FAIpQLSczNDXfJne3ZUOXjk9Ursm9JYvhTh1_nFTDfdq3XBAFWCzplQ/viewform?usp=pp_url&entry.1170701325=Apollo+Kotlin&entry.204965213=Readme). Your responses will help us understand Apollo Kotlin usage and allow us to serve you better. |
 
-## Apollo Kotlin
+## 🚀 Apollo Kotlin
 
 Apollo Kotlin is a strongly typed GraphQL client that generates Kotlin models for your GraphQL operations.
 
@@ -29,7 +29,7 @@ Because generated types are operation-specific, you can only access data that yo
 
 This library is designed with Android in mind, but you can use it in any Kotlin multiplatform application.
 
-## Documentation
+## 📚 Documentation
 
 All Apollo Kotlin documentation, including caching and helpful recipes, can be found at: <br/>
 [https://www.apollographql.com/docs/kotlin/](https://www.apollographql.com/docs/kotlin/)
@@ -37,7 +37,7 @@ All Apollo Kotlin documentation, including caching and helpful recipes, can be f
 The Apollo Kotlin API reference can be found at: <br/>
 [https://apollographql.github.io/apollo-kotlin/kdoc/](https://apollographql.github.io/apollo-kotlin/kdoc/)
 
-## Who is Apollo?
+## 👨‍💻 Who is Apollo?
 
 [Apollo](https://apollographql.com/) builds open-source software and a graph platform to unify GraphQL across your apps and services. We help you ship faster with:
 
@@ -46,6 +46,6 @@ The Apollo Kotlin API reference can be found at: <br/>
 * [Apollo Client](https://www.apollographql.com/apollo-client/) – The most popular GraphQL client for the web. Apollo also builds and maintains [Apollo iOS](https://github.com/apollographql/apollo-ios) and [Apollo Kotlin](https://github.com/apollographql/apollo-kotlin).
 * [Apollo Server](https://www.apollographql.com/docs/apollo-server/) – A production-ready JavaScript GraphQL server that connects to any microservice, API, or database. Compatible with all popular JavaScript frameworks and deployable in serverless environments.
 
-## Learn how to build with Apollo
+## 🎓 Learn how to build with Apollo
 
 Check out the [Odyssey](https://odyssey.apollographql.com/) learning platform, the perfect place to start your GraphQL journey with videos and interactive code challenges. Join the [Apollo Community](https://community.apollographql.com/) to interact with and get technical help from the GraphQL community.
