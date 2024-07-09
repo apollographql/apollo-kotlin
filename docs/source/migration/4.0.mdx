@@ -194,6 +194,8 @@ apolloClient.query(query).watch()
 apolloClient.query(query).watch().filter { it.exception == null }
 ```
 
+The lower level `ApolloStore` APIs are not changed and throw on cache misses or I/O errors.
+
 ### ApolloCompositeException is not thrown
 
 When using the cache, Apollo Kotlin 3 threw `ApolloCompositeException` if no response could be found. For an example, a `CacheFirst` fetch policy would throw `ApolloCompositeException(cacheMissException, apolloNetworkException)` if both cache and network failed.
