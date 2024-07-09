@@ -29,35 +29,6 @@ This library is designed with Android in mind, but you can use it in any Kotlin 
 * GraphQL AST parser
 * Plugin for Android Studio and IntelliJ
 
-## Multiplatform
-
-Apollo Kotlin is a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) project.
-
-Here's the current matrix of supported features per platform:
-
-|                                                      | `jvm` | `Apple¹` | `js` | `wasmJs` | `linuxX64` |
-|------------------------------------------------------|:-----:|:--------:|:----:|:--------:|:----------:|
-| `apollo-api` (models)                                |   ✅   |    ✅     |  ✅   |    ✅     |     ✅      |
-| `apollo-runtime` (network, query batching, apq, ...) |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
-| `apollo-normalized-cache`                            |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
-| `apollo-adapters`                                    |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
-| `apollo-normalized-cache-sqlite`                     |   ✅   |    ✅     |  🚫   |    🚫     |     🚫      |
-| `apollo-http-cache`                                  |   ✅   |    🚫     |  🚫   |    🚫     |     🚫      |
-
-¹: Apple currently includes:
-
-- `macosX64`
-- `macosArm64`
-- `iosArm64`
-- `iosX64`
-- `iosSimulatorArm64`
-- `watchosArm32`
-- `watchosArm64`
-- `watchosSimulatorArm64`
-- `tvosArm64`
-- `tvosX64`
-- `tvosSimulatorArm64`
-
 ## Getting started
 
 If you are new to GraphQL, check out [the tutorial](./tutorial/00-introduction/) that will guide you through building an Android app using Apollo.
@@ -132,6 +103,35 @@ Build your project. This will generate a `HeroQuery` class that you can use with
 * Execute your first [mutation](./essentials/mutations/)
 * Handle [custom scalar types](./essentials/custom-scalars/)
 * Factor common patterns using [fragments](./essentials/fragments/)
+
+## Multiplatform
+
+Apollo Kotlin is a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) project.
+
+Here's the current matrix of supported features per platform:
+
+|                                                      | `jvm` | `Apple¹` | `js` | `wasmJs` | `linuxX64` |
+|------------------------------------------------------|:-----:|:--------:|:----:|:--------:|:----------:|
+| `apollo-api` (models)                                |   ✅   |    ✅     |  ✅   |    ✅     |     ✅      |
+| `apollo-runtime` (network, query batching, apq, ...) |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
+| `apollo-normalized-cache`                            |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
+| `apollo-adapters`                                    |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
+| `apollo-normalized-cache-sqlite`                     |   ✅   |    ✅     |  🚫   |    🚫     |     🚫      |
+| `apollo-http-cache`                                  |   ✅   |    🚫     |  🚫   |    🚫     |     🚫      |
+
+¹: Apple currently includes:
+
+- `macosX64`
+- `macosArm64`
+- `iosArm64`
+- `iosX64`
+- `iosSimulatorArm64`
+- `watchosArm32`
+- `watchosArm64`
+- `watchosSimulatorArm64`
+- `tvosArm64`
+- `tvosX64`
+- `tvosSimulatorArm64`
 
 ## Requirements
 
