@@ -11,7 +11,7 @@ Apollo Kotlin executes operations against a GraphQL server and returns results a
 
 Because generated types are operation-specific, you can only access data that you actually specify as part of an operation. If you don't ask for a particular field in an operation, you can't access the corresponding property on the returned data structure.
 
-This library is designed with Android in mind, but you can use it in any Kotlin application, including multiplatform.
+This library is designed with Android in mind, but you can use it in any Kotlin application, including KMP ([Kotlin Multi Platform](https://kotlinlang.org/docs/multiplatform.html)).
 
 ## Features
 
@@ -33,7 +33,7 @@ This library is designed with Android in mind, but you can use it in any Kotlin 
 
 If you are new to GraphQL, check out [the tutorial](./tutorial/00-introduction/) that will guide you through building an Android app using Apollo.
 
-If you'd like to add Apollo Kotlin to an existing project, follow these steps:
+If you'd like to add Apollo Kotlin to an existing project, follow the steps below.
 
 Add the plugin to your `build.gradle.kts`:
 
@@ -66,7 +66,7 @@ Apollo Kotlin supports three types of files:
 - `.json` schema files: describes the types in your backend using the Json syntax.
 - `.graphql` executable files: describes your queries and operations in the GraphQL syntax.
 
-By default, Apollo Kotlin requires a schema in your module's `src/main/graphql` directory. You can download a schema using introspection with the `./gradlew downloadApolloSchema` task. Sometimes introspection is disabled and you will have to ask your backend team to provide a schema. Copy this schema to your module:
+By default, Apollo Kotlin requires a schema in your module's `src/main/graphql` (or `src/commonMain/graphql` for KMP) directory. You can download a schema using introspection with the `./gradlew downloadApolloSchema` task. Sometimes introspection is disabled, and you will have to ask your backend team to provide a schema. Copy this schema to your module:
 
 ```
 cp ${schema} ${module}/src/main/graphql/
@@ -84,7 +84,7 @@ query HeroQuery($id: String!) {
 }
 ```
 
-Build your project. This will generate a `HeroQuery` class that you can use with an instance of `ApolloClient`:
+Build your project. This generates a `HeroQuery` class that you can use with an instance of `ApolloClient`:
 
 ```kotlin
   // Create a client
@@ -100,9 +100,9 @@ Build your project. This will generate a `HeroQuery` class that you can use with
 
 **To learn more about other Apollo Kotlin APIs:**
 
-* Execute your first [mutation](./essentials/mutations/)
-* Handle [custom scalar types](./essentials/custom-scalars/)
-* Factor common patterns using [fragments](./essentials/fragments/)
+* Execute your first [mutation](./essentials/mutations/).
+* Handle [custom scalar types](./essentials/custom-scalars/).
+* Factor common patterns using [fragments](./essentials/fragments/).
 
 ## Multiplatform
 
@@ -218,14 +218,9 @@ These snapshots are updated on each push to `main`.
 
 Weekly snapshots for the Android Studio / IntelliJ plugin [are also available](testing/android-studio-plugin#weekly-snapshots). 
 
-## Stability of different artifacts
+## Evolution policy
 
-Apollo Kotlin is very modular and publishes several artifacts.
-
-* Artifacts ending with `-incubating` are not finalized yet and subject to change any time.
-* Other artifacts observe [Semantic Versioning](https://semver.org/).
-  * No breaking change should be introduced in minor or patch releases except for symbols annotated with `@ApolloExperimental` that are subject to change at any time.
-  * Deprecated symbols may be removed in the next major release. We strongly recommend removing deprecated usages before migrating to the next major version.
+You can read about our evolution policy in the [dedicated page](essentials/evolution)
 
 ## Contributing
 
