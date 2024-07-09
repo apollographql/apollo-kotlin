@@ -138,7 +138,7 @@ Here's the current matrix of supported features per platform:
 Some platforms have specific runtime requirements:
 
 * JVM 8+
-* Android API level 21+ (`apollo-http-cache` and `apollo-adapters` require enabling [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26)
+* Android API level 21+ (`apollo-http-cache` requires enabling [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26)
 * iOS 13+
 
 At build time, it requires:
