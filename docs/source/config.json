@@ -8,7 +8,7 @@
     "Get Started": "/",
     "Migrating to v4": "/migration/4.0",
     "Evolution policy": "/essentials/evolution",
-    "Kdoc": "https://www.apollographql.com/docs/kotlin/kdoc/",
+    "Kdoc": "https://apollographql.github.io/apollo-kotlin/kdoc/",
     "Changelog": "https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md",
     "Tutorial": {
       "0. Introduction": "/tutorial/00-introduction",
