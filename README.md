@@ -1,14 +1,14 @@
 
 # Apollo Kotlin
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-api)](https://central.sonatype.com/namespace/com.apollographql.apollo)
+[![Gradle Plugin](https://img.shields.io/gradle-plugin-portal/v/com.apollographql.apollo)](https://plugins.gradle.org/plugin/com.apollographql.apollo)
+[![OSS Snapshots](https://img.shields.io/nexus/s/com.apollographql.apollo/apollo-api?server=https%3A%2F%2Fs01.oss.sonatype.org&label=oss-snapshots)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo/)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/apollographql/apollo-kotlin/main/LICENSE)
-[![Join the community](https://img.shields.io/discourse/status?label=Join%20the%20community&server=https%3A%2F%2Fcommunity.apollographql.com)](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client)
+[![Discourse](https://img.shields.io/discourse/status?label=Discourse&server=https%3A%2F%2Fcommunity.apollographql.com&logo=discourse)](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client)
 [![Slack](https://img.shields.io/static/v1?label=kotlinlang&message=apollo-kotlin&color=15a2f5&logo=slack)](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)
 [![Discord](https://img.shields.io/discord/1022972389463687228.svg?color=7389D8&labelColor=6A7EC2&logo=discord&logoColor=ffffff&style=flat-square)](https://discord.com/invite/graphos)
 [![CI](https://img.shields.io/github/actions/workflow/status/apollographql/apollo-kotlin/push.yml?branch=main)](https://github.com/apollographql/apollo-kotlin/actions/workflows/push.yml?query=branch%3Amain)
-[![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo/)
-[![Gradle Plugin](https://img.shields.io/gradle-plugin-portal/v/com.apollographql.apollo)](https://plugins.gradle.org/plugin/com.apollographql.apollo)
-[![OSS Snapshots](https://img.shields.io/nexus/s/com.apollographql.apollo/apollo-api?server=https%3A%2F%2Fs01.oss.sonatype.org&label=oss-snapshots)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo/)
 [![Revved up by Develocity](https://img.shields.io/badge/Revved%20up%20by-Develocity-06A0CE?logo=Gradle&labelColor=02303A)](https://ge.apollographql.com/scans)
 
 | ☑️  Apollo Clients User Survey |
