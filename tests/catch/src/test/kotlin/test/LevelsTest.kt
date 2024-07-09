@@ -1,7 +1,7 @@
 package test
 
-import com.apollographql.apollo3.api.getOrThrow
-import com.apollographql.apollo3.api.graphQLErrorOrNull
+import com.apollographql.apollo.api.getOrThrow
+import com.apollographql.apollo.api.graphQLErrorOrNull
 import junit.framework.TestCase.assertTrue
 import org.intellij.lang.annotations.Language
 import kotlin.test.Test

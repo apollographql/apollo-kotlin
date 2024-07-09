@@ -4,10 +4,10 @@ title: Using the models without apollo-runtime
 
 `apollo-runtime` and `ApolloClient` provide support for doing the network requests and interacting with the cache but you can use the generated models and parsers without the runtime and use your network layer of choice for the HTTP calls.
 
-For this, remove the `com.apollographql.apollo3:apollo-runtime` dependency and replace it with:
+For this, remove the `com.apollographql.apollo:apollo-runtime` dependency and replace it with:
 
 ```kotlin title="build.gradle"
-implementation("com.apollographql.apollo3:apollo-api:4.0.0-beta.7")
+implementation("com.apollographql.apollo:apollo-api:4.0.0-rc.1")
 ```
 
 ## Composing an HTTP request body

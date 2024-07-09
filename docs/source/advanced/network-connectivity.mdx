@@ -4,7 +4,7 @@ title: Monitor the network state to reduce latency
 
 <ExperimentalFeature>
 
-**Network Monitor APIs are currently [experimental](https://www.apollographql.com/docs/resources/release-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md) or in the [Kotlin Slack community](https://slack.kotl.in/).
+**Network Monitor APIs are currently [experimental](https://www.apollographql.com/docs/resources/product-launch-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md) or in the [Kotlin Slack community](https://slack.kotl.in/).
 
 </ExperimentalFeature> 
 
@@ -13,7 +13,7 @@ Android and Apple targets provide APIs to monitor the network state of your devi
 - [ConnectivityManager](https://developer.android.com/training/monitoring-device-state/) on Android targets.
 - [NWPathMonitor](https://developer.apple.com/documentation/network/nwpathmonitor) on Apple targets.
 
-You can configure your [ApolloClient](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/index.html) to use these APIs to improve latency of your requests using the `NetworkMonitor` API:
+You can configure your [ApolloClient](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo/-apollo-client/index.html) to use these APIs to improve latency of your requests using the `NetworkMonitor` API:
 
 ```kotlin
 // androidMain
@@ -25,7 +25,7 @@ val networkMonitor = NetworkMonitor()
 // commonMain
 val apolloClient = ApolloClient.Builder()
     .serverUrl("https://example.com/graphql")
-    .networkMonitor(networkMonitor)
+    .retryOnErrorInterceptor(RetryOnErrorInterceptor(networkMonitor))
     .build()
 ```
 
@@ -54,10 +54,7 @@ When a `NetworkMonitor` is configured, `retryOnError` uses `NetworkMonitor.waitF
 
 ### Customizing the retry algorithm
 
-You can customize the retry algorithm further by defining you won interceptor. Make sure to:
-
-- add your interceptor last, so that it wraps the network call and doesn't get cache misses or any other errors that may be emitted by upstream interceptors.
-- call `retryOnError(false)` when forwarding the request downstream so that the retry is not made twice.
+You can customize the retry algorithm further by defining you own interceptor:
 
 ```kotlin
 internal class MyRetryInterceptor(private val networkMonitor: NetworkMonitor?): ApolloInterceptor {

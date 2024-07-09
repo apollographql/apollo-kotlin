@@ -38,8 +38,8 @@ fun Project.apolloLibrary(
   configureJavaAndKotlinCompilers(jvmTarget, kotlinCompilerOptions)
 
   addOptIn(
-      "com.apollographql.apollo3.annotations.ApolloExperimental",
-      "com.apollographql.apollo3.annotations.ApolloInternal"
+      "com.apollographql.apollo.annotations.ApolloExperimental",
+      "com.apollographql.apollo.annotations.ApolloInternal"
   )
 
   if (publish) {
@@ -84,8 +84,8 @@ fun Project.apolloTest(
   commonSetup()
   configureJavaAndKotlinCompilers(null, kotlinCompilerOptions)
   addOptIn(
-      "com.apollographql.apollo3.annotations.ApolloExperimental",
-      "com.apollographql.apollo3.annotations.ApolloInternal",
+      "com.apollographql.apollo.annotations.ApolloExperimental",
+      "com.apollographql.apollo.annotations.ApolloInternal",
   )
 
   if (extensions.findByName("kotlin") is KotlinMultiplatformExtension) {

@@ -1,9 +1,9 @@
 package com.apollographql.apollo.sample.server.graphql
 
-import com.apollographql.apollo3.annotations.GraphQLObject
+import com.apollographql.execution.annotation.GraphQLQueryRoot
 
 
-@GraphQLObject(name = "Query")
+@GraphQLQueryRoot
 class QueryRoot {
   fun random(): Int = 42
   fun zero(): Int = 0

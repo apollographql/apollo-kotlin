@@ -1,1 +1,1 @@
-extend schema @catch(to: RESULT)
+extend schema @catchByDefault(to: RESULT)

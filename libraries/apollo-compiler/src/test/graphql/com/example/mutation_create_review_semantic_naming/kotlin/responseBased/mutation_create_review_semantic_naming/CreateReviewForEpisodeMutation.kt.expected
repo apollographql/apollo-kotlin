@@ -5,13 +5,13 @@
 //
 package com.example.mutation_create_review_semantic_naming
 
-import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Mutation
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo.annotations.ApolloAdaptableWith
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Mutation
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.obj
 import com.example.mutation_create_review_semantic_naming.adapter.CreateReviewForEpisodeMutation_ResponseAdapter
 import com.example.mutation_create_review_semantic_naming.adapter.CreateReviewForEpisodeMutation_VariablesAdapter
 import com.example.mutation_create_review_semantic_naming.selections.CreateReviewForEpisodeMutationSelections
@@ -26,8 +26,6 @@ public data class CreateReviewForEpisodeMutation(
   public val ep: Episode,
   public val review: ReviewInput,
 ) : Mutation<CreateReviewForEpisodeMutation.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

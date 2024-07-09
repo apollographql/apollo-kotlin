@@ -5,8 +5,8 @@
 //
 package com.example.input_object_oneof.type;
 
-import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.Optional;
+import com.apollographql.apollo.api.Assertions;
+import com.apollographql.apollo.api.Optional;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;

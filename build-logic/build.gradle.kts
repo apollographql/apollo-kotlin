@@ -12,7 +12,7 @@ extensions.configure(SamWithReceiverExtension::class.java) {
   annotations(HasImplicitReceiver::class.qualifiedName!!)
 }
 
-group = "com.apollographql.apollo3.build"
+group = "com.apollographql.apollo.build"
 
 dependencies {
   compileOnly(gradleApi())
@@ -22,6 +22,7 @@ dependencies {
 
   implementation(libs.kotlinx.benchmark)
   implementation(libs.dokkatoo)
+  implementation(libs.apollo.execution.gradle.plugin)
 
   // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution
   // See https://github.com/gradle/gradle/issues/4741

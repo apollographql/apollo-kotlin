@@ -1,12 +1,12 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.runTest
 import okio.use
@@ -57,7 +57,4 @@ class NothingSubscription : Subscription<Nothing> {
   override fun rootField(): CompiledField {
     TODO("Not yet implemented")
   }
-
-  override val ignoreErrors: Boolean
-    get() = false
 }

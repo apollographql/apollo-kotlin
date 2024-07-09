@@ -2,10 +2,10 @@ package com.apollographql.ijplugin.apollodebugserver
 
 import com.android.ddmlib.IDevice
 import com.android.tools.idea.adb.AdbShellCommandsUtil
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.debug.GetApolloClientsQuery
-import com.apollographql.apollo3.debug.GetNormalizedCacheQuery
-import com.apollographql.apollo3.network.http.LoggingInterceptor
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.network.http.LoggingInterceptor
+import com.apollographql.ijplugin.util.apollo3
+import com.apollographql.ijplugin.util.apollo4
 import com.apollographql.ijplugin.util.executeCatching
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
@@ -118,7 +118,15 @@ class ApolloDebugClient(
 
 val String.normalizedCacheSimpleName: String
   get() = when (this) {
-    "com.apollographql.apollo3.cache.normalized.api.MemoryCache" -> "MemoryCache"
-    "com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCache" -> "SqlNormalizedCache"
+    "$apollo3.cache.normalized.api.MemoryCache",
+    "$apollo4.cache.normalized.api.MemoryCache",
+    "com.apollographql.cache.normalized.sql.MemoryCache",
+    -> "MemoryCache"
+
+    "$apollo3.cache.normalized.sql.SqlNormalizedCache",
+    "$apollo4.cache.normalized.sql.SqlNormalizedCache",
+    "com.apollographql.cache.normalized.sql.SqlNormalizedCache",
+    -> "SqlNormalizedCache"
+
     else -> this
   }

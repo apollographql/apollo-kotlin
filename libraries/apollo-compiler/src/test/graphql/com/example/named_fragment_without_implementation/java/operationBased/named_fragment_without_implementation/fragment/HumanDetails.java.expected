@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_without_implementation.fragment;
 
-import com.apollographql.apollo3.api.Fragment;
+import com.apollographql.apollo.api.Fragment;
 import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;

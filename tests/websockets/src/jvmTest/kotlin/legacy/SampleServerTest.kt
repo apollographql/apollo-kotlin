@@ -1,12 +1,12 @@
 package legacy
 
 import com.apollographql.apollo.sample.server.SampleServer
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.exception.SubscriptionOperationException
-import com.apollographql.apollo3.network.ws.SubscriptionWsProtocolAdapter
-import com.apollographql.apollo3.network.ws.WebSocketConnection
-import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
-import com.apollographql.apollo3.network.ws.WsProtocol
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.exception.SubscriptionOperationException
+import com.apollographql.apollo.network.ws.SubscriptionWsProtocolAdapter
+import com.apollographql.apollo.network.ws.WebSocketConnection
+import com.apollographql.apollo.network.ws.WebSocketNetworkTransport
+import com.apollographql.apollo.network.ws.WsProtocol
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.drop

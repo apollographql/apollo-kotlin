@@ -5,7 +5,7 @@
 //
 package com.example.arguments_hardcoded.type
 
-import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo.api.ObjectType
 
 /**
  * Represents a review for a movie

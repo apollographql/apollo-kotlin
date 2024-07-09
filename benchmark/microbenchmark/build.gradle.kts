@@ -1,13 +1,13 @@
 plugins {
   id("com.android.library")
   id("org.jetbrains.kotlin.android")
-  id("com.apollographql.apollo3")
+  id("com.apollographql.apollo")
   id("androidx.benchmark")
   id("com.google.devtools.ksp")
 }
 
 configure<com.android.build.gradle.LibraryExtension> {
-  namespace = "com.apollographql.apollo3.benchmark"
+  namespace = "com.apollographql.apollo.benchmark"
   compileSdk = libs.versions.android.sdkversion.compilebenchmark.get().toInt()
 
   defaultConfig {
@@ -21,32 +21,11 @@ configure<com.android.build.gradle.LibraryExtension> {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
   }
-
-  flavorDimensions += "stability"
-  productFlavors {
-    create("incubating") {
-      dimension = "stability"
-      testApplicationId = "com.apollographql.apollo3.benchmark.incubating"
-    }
-    create("stable") {
-      dimension = "stability"
-      testApplicationId = "com.apollographql.apollo3.benchmark.stable"
-    }
-  }
 }
 
 dependencies {
 
-  implementation("com.apollographql.apollo3:apollo-runtime")
-
-  listOf(
-      "com.apollographql.apollo3:apollo-normalized-cache-api",
-      "com.apollographql.apollo3:apollo-normalized-cache-sqlite",
-      "com.apollographql.apollo3:apollo-normalized-cache"
-  ).forEach {
-    add("androidTestStableImplementation", it)
-    add("androidTestIncubatingImplementation", "$it-incubating")
-  }
+  implementation(libs.apollo.runtime)
 
   implementation(libs.moshi)
   ksp(libs.moshix.ksp)
@@ -54,7 +33,13 @@ dependencies {
   androidTestImplementation(libs.benchmark.junit4)
   androidTestImplementation(libs.androidx.test.core)
   androidTestImplementation(libs.apollo.mockserver)
-  androidTestImplementation("com.apollographql.apollo3:apollo-testing-support")
+  androidTestImplementation(libs.apollo.testingsupport)
+
+  // Stable cache
+  androidTestImplementation(libs.apollo.normalizedcache.sqlite)
+
+  // Incubating cache
+  androidTestImplementation(libs.apollo.normalizedcache.sqlite.incubating.snapshot)
 }
 
 java {
@@ -63,19 +48,19 @@ java {
   }
 }
 
-configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
+configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
   service("benchmark") {
     srcDir("src/main/graphql/benchmark")
-    packageName.set("com.apollographql.apollo3.benchmark")
+    packageName.set("com.apollographql.apollo.benchmark")
   }
   service("calendar-response") {
     srcDir("src/main/graphql/calendar")
     codegenModels.set("responseBased")
-    packageName.set("com.apollographql.apollo3.calendar.response")
+    packageName.set("com.apollographql.apollo.calendar.response")
   }
   service("calendar-operation") {
     srcDir("src/main/graphql/calendar")
     codegenModels.set("operationBased")
-    packageName.set("com.apollographql.apollo3.calendar.operation")
+    packageName.set("com.apollographql.apollo.calendar.operation")
   }
 }

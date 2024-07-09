@@ -5,7 +5,7 @@
 //
 package com.example.mutation_create_review.type.builder;
 
-import com.apollographql.apollo3.api.ObjectMap;
+import com.apollographql.apollo.api.ObjectMap;
 import java.lang.Object;
 import java.lang.String;
 import java.util.Map;

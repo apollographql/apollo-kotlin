@@ -1,21 +1,27 @@
 
 import app.cash.turbine.test
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.interceptor.addRetryOnErrorInterceptor
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.interceptor.ApolloInterceptor
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitWebSocketRequest
 import com.apollographql.mockserver.enqueueWebSocket
-import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
-import com.apollographql.apollo3.testing.FooQuery
-import com.apollographql.apollo3.testing.FooSubscription
-import com.apollographql.apollo3.testing.FooSubscription.Companion.completeMessage
-import com.apollographql.apollo3.testing.FooSubscription.Companion.nextMessage
-import com.apollographql.apollo3.testing.connectionAckMessage
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
+import test.FooQuery
+import test.FooSubscription
+import test.FooSubscription.Companion.completeMessage
+import test.FooSubscription.Companion.nextMessage
+import com.apollographql.apollo.testing.connectionAckMessage
+import com.apollographql.apollo.testing.internal.runTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -31,6 +37,7 @@ import kotlin.test.assertIs
 import kotlin.test.assertNotEquals
 import kotlin.time.Duration.Companion.seconds
 import test.network.awaitSubscribe
+import test.network.retryWhen
 
 class RetryWebSocketsTest {
   @Test
@@ -101,7 +108,7 @@ class RetryWebSocketsTest {
                 .serverUrl(mockServer.url())
                 .build()
         )
-        .addRetryOnErrorInterceptor { _, _ ->
+        .retryWhen { _, _ ->
           true
         }
         .build()
@@ -258,7 +265,7 @@ class RetryWebSocketsTest {
                 .build()
         )
         .serverUrl("https://unused.com/")
-        .addRetryOnErrorInterceptor { _, _ ->
+        .retryWhen { _, _ ->
           reopenCount++
           delay(500)
           true

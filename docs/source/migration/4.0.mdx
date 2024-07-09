@@ -1,6 +1,6 @@
 ---
-title: Migrating to Apollo Kotlin 4.0
-description: From 3.x
+title: Migrating to Apollo Kotlin 4
+description: From version 3
 ---
 
 <Note>
@@ -9,27 +9,115 @@ description: From 3.x
 
 </Note>
 
-Apollo Kotlin 3.0 was a major rewrite of Apollo in Kotlin multiplatform.
+Apollo Kotlin 3 was a major rewrite of Apollo in Kotlin multiplatform.
 
-Apollo Kotlin 4.0 focuses on tooling, stability and fixing some API regrets that came with 3.x.
+Apollo Kotlin 4 focuses on tooling, stability and making the library more maintainable, so it can evolve smoothly for the many years to come.
 
-Because most of the common APIs stayed the same, we [kept the package name unchanged](https://github.com/apollographql/apollo-kotlin/issues/4710). Apollo Kotlin 4.0 removes some deprecated symbols. We strongly recommend removing deprecated usages before migrating to 4.0.  
+While most of the core APIs stayed the same, Apollo Kotlin 4 contains a few binary breaking changes. To account for that, and in order to be more future proof, we [changed the package name](https://github.com/apollographql/apollo-kotlin/issues/4710) to `com.apollographql.apollo`.
 
-If you are using a library that depends on Apollo Kotlin transitively, you need it to update to 4.x before you can update your own application to 4.0.
+Apollo Kotlin 4 removes some deprecated symbols. We strongly recommend updating to the latest 3.x release and removing deprecated usages before migrating to version 4.
 
-## Automatic migration using the Android Studio plugin
+## Automatic migration using the Android Studio/IntelliJ plugin
 
-Apollo Kotlin 4 ships with a companion [Android Studio plugin](../testing/android-studio-plugin#migration-helpers) that automates most of the migration. 
+Apollo Kotlin 4 ships with a companion [Android Studio/IntelliJ plugin](../testing/android-studio-plugin#migration-helpers) that automates most of the migration. 
 
-It automates most of the API changes but cannot deal with behaviour changes like error handling. 
+It automates most of the API changes but cannot deal with behavior changes like error handling. 
 
-We recommend using the plugin to automate the repetitive tasks but still go through this document for the details. 
+We recommend using the plugin to automate the repetitive tasks but still go through this document for the details.
 
-## Error handling
+## Group id / plugin id / package name
+
+Apollo Kotlin 4 uses a new identifier for its maven group id, Gradle plugin id and package name : **`com.apollographql.apollo`**.
+
+This also allows to run versions 4 and 3 side by side if needed.
+
+In most cases, you can update the identifier in your project by performing a find-and-replace and replacing `com.apollographql.apollo3` with `com.apollographql.apollo`.
+
+### Group id
+
+The maven group id used to identify Apollo Kotlin 4 [artifacts](https://repo1.maven.org/maven2/com/apollographql/apollo/) is `com.apollographql.apollo`:
+
+```kotlin
+// Replace:
+implementation("com.apollographql.apollo3:apollo-runtime:3.8.4")
+
+// With:
+implementation("com.apollographql.apollo:apollo-runtime:4.0.0")
+```
+
+### Gradle plugin id
+
+The Apollo Kotlin 4.0 Gradle plugin id is `com.apollographql.apollo`:
+
+```kotlin
+// Replace:
+plugins {
+  id("com.apollographql.apollo3") version "3.8.4"
+}
+
+// With:
+plugins {
+  id("com.apollographql.apollo") version "4.0.0"
+}
+```
+
+### Package name
+
+Apollo Kotlin 4 classes use the `com.apollographql.apollo` package:
+
+```kotlin
+// Replace:
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.*
+
+// With:
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.*
+```
+
+## Moved artifacts 
+
+Over the years, a lot of support functionality was added alongside the `apollo-api` and `apollo-runtime` artifacts. While useful, most of this functionality doesn't share the same level of stability and maturity as the core artifacts and bundling them did not make much sense.
+
+Moving forward, only the core artifacts remain in the `apollo-kotlin` repository and are released together. Other artifacts are moved to new maven coordinates and GitHub repositories. 
+
+This will allow us to iterate faster on new functionality while keeping the core smaller and more maintainable.
+
+The artifacts with new coordinates are:
+
+| Old coordinates                                                     | New coordinates                                            | New Repository                                                                                                                        |
+|---------------------------------------------------------------------|------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|
+| com.apollographql.apollo3:apollo-adapters                           | com.apollographql.adapters:apollo-adapters-core            | [apollographql/apollo-kotlin-adapters](https://github.com/apollographql/apollo-kotlin-adapters)                                       |
+|                                                                     | com.apollographql.adapters:apollo-adapters-datetime        | [apollographql/apollo-kotlin-adapters](https://github.com/apollographql/apollo-kotlin-adapters)                                       |
+| com.apollographql.apollo3:apollo-compose-support-incubating         | com.apollographql.compose:compose-support                  | [apollographql/apollo-kotlin-compose-support](https://github.com/apollographql/apollo-kotlin-compose-support)                         |
+| com.apollographql.apollo3:apollo-compose-paging-support-incubating  | com.apollographql.compose:compose-paging-support           | [apollographql/apollo-kotlin-compose-support](https://github.com/apollographql/apollo-kotlin-compose-support)                         |
+| com.apollographql.apollo3:apollo-cli-incubating                     | com.apollographql.cli:apollo-cli                           | [apollographql/apollo-kotlin-cli](https://github.com/apollographql/apollo-kotlin-cli)                                                 |
+| com.apollographql.apollo3:apollo-engine-ktor                        | com.apollographql.ktor:apollo-engine-ktor                  | [apollographql/apollo-kotlin-ktor-support](https://github.com/apollographql/apollo-kotlin-ktor-support)                               |
+| com.apollographql.apollo3:apollo-mockserver                         | com.apollographql.mockserver:apollo-mockserver             | [apollographql/apollo-kotlin-mockserver](https://github.com/apollographql/apollo-kotlin-mockserver)                                   |
+| com.apollographql.apollo3:apollo-normalized-cache-incubating        | com.apollographql.cache:normalized-cache-incubating        | [apollographql/apollo-kotlin-normalized-cache-incubating](https://github.com/apollographql/apollo-kotlin-normalized-cache-incubating) |
+| com.apollographql.apollo3:apollo-normalized-cache-api-incubating    | com.apollographql.cache:normalized-cache-incubating        | [apollographql/apollo-kotlin-normalized-cache-incubating](https://github.com/apollographql/apollo-kotlin-normalized-cache-incubating) |
+| com.apollographql.apollo3:apollo-normalized-cache-sqlite-incubating | com.apollographql.cache:normalized-cache-sqlite-incubating | [apollographql/apollo-kotlin-normalized-cache-incubating](https://github.com/apollographql/apollo-kotlin-normalized-cache-incubating) |
+| com.apollographql.apollo3:apollo-runtime-java                       | com.apollographql.java:client                              | [apollographql/apollo-kotlin-java-support](https://github.com/apollographql/apollo-kotlin-java-support)                               |
+| com.apollographql.apollo3:apollo-rx2-support-java                   | com.apollographql.java:rx2                                 | [apollographql/apollo-kotlin-java-support](https://github.com/apollographql/apollo-kotlin-java-support)                               |
+| com.apollographql.apollo3:apollo-rx3-support-java                   | com.apollographql.java:rx3                                 | [apollographql/apollo-kotlin-java-support](https://github.com/apollographql/apollo-kotlin-java-support)                               |
+
+Those new artifacts also have a new package name. You can usually guess it by removing `.apollo3`:
+
+```kotlin
+// Replace 
+import com.apollographql.apollo3.mockserver.MockServer
+
+// With
+import com.apollographql.mockserver.MockServer
+```
+
+## apollo-runtime
+
+### Fetch errors do not throw
 
 <Caution>
 
-Error handling changes are a behaviour change that is not detected at compile time. Usages of `execute`, `toFlow` and `watch` must be updated to the new error handling or changed to their v3 compat equivalent.
+Error handling changes are a behavior change that is not detected at compile time. Usages of `execute`, `toFlow` and `watch` must be updated to the new error handling or changed to their version 3 compat equivalent.
 
 See [`executeV3` and `toFlowV3`](#migration-helpers) for temporary methods to help with the migration.
 
@@ -37,11 +125,9 @@ See [nullability](../advanced/nullability) for a quick peek at the future of Gra
 
 </Caution>
 
-### Fetch errors do not throw
+In Apollo Kotlin 3, non-GraphQL errors like network errors, cache misses, and parsing errors were surfaced by throwing exceptions in `ApolloCall.execute()` and in Flows (`ApolloCall.toFlow()`, `ApolloCall.watch()`). This was problematic because it was a difference in how to handle GraphQL errors vs other errors and it was easy to forget catching the exceptions. Uncaught network errors is by far the number one error reported by the [Google Play SDK Index](https://play.google.com/sdks). Moreover, throwing terminates a Flow and consumers would have to handle re-collection.
 
-In Apollo Kotlin 3.x, non-GraphQL errors like network errors, cache misses, and parsing errors were surfaced by throwing exceptions in `ApolloCall.execute()` and in Flows (`ApolloCall.toFlow()`, `ApolloCall.watch()`). This was problematic because it was a difference in how to handle GraphQL errors vs other errors. Moreover, throwing terminates a Flow and consumers would have to handle re-collection.
-
-In Apollo Kotlin 4.0, a new field `ApolloResponse.exception` has been added and these errors are now surfaced by returning (for `execute()`) or emitting (for Flows) an `ApolloResponse` with a non-null `exception` instead of throwing it. 
+In Apollo Kotlin 4, a new field `ApolloResponse.exception` has been added and these errors are now surfaced by returning (for `execute()`) or emitting (for Flows) an `ApolloResponse` with a non-null `exception` instead of throwing it. 
 
 This allows consumers to handle different kinds of errors at the same place, and it prevents Flows from being terminated. 
 
@@ -114,11 +200,13 @@ apolloClient.query(query).watch()
 apolloClient.query(query).watch().filter { it.exception == null }
 ```
 
-### ApolloCompositeException is not thrown anymore
+The lower level `ApolloStore` APIs are not changed and throw on cache misses or I/O errors.
 
-When using the cache, Apollo Kotlin 3.x threw `ApolloCompositeException` if no response could be found. For an example, a `CacheFirst` fetch policy would throw `ApolloCompositeException(cacheMissException, apolloNetworkException)` if both cache and network failed.
+### ApolloCompositeException is not thrown
 
-In those cases, Apollo Kotlin 4.0 throws the first exception and adds the second as a suppressed exception:
+When using the cache, Apollo Kotlin 3 threw `ApolloCompositeException` if no response could be found. For an example, a `CacheFirst` fetch policy would throw `ApolloCompositeException(cacheMissException, apolloNetworkException)` if both cache and network failed.
+
+In those cases, Apollo Kotlin 4 throws the first exception and adds the second as a suppressed exception:
 
 ```kotlin
 // Replace
@@ -132,17 +220,19 @@ val cacheMissException = exception
 val networkException = exception.suppressedExceptions.firstOrNull()
 ```
 
+For more control over the exception, use `toFlow()` and collect the different `ApolloResponse`. 
+
 ### emitCacheMisses(Boolean) is removed
 
-In Apollo Kotlin 3.x, when using the normalized cache, you could set `emitCacheMisses` to `true` to emit cache misses instead of throwing.
+In Apollo Kotlin 3, when using the normalized cache, you could set `emitCacheMisses` to `true` to emit cache misses instead of throwing.
 
-In Apollo Kotlin 4.0, this is now the default behavior and `emitCacheMisses` has been removed.
+In Apollo Kotlin 4, this is now the default behavior and `emitCacheMisses` has been removed.
 
 With the `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies, cache misses and network errors are now emitted in `ApolloResponse.exception`.
 
 ### Migration helpers
 
-To ease the migration from 3.x, drop-in helpers functions are provided that restore the V3 behaviour:
+To ease the migration from Apollo Kotlin 3, drop-in helpers functions are provided that restore the version 3 behavior:
 
 * `ApolloCall.executeV3()`
 * `ApolloCall.toFlowV3()`
@@ -152,13 +242,11 @@ Those helper functions:
 * make `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies ignore fetch errors.
 * throw ApolloComposite exception if needed.
 
-Because of the number of different options in 3.x and the complexity of error handling, these functions do not pretend to match 1:1 the V3 behaviour, especially in the advanced cases involving watchers. If you are in one of those cases, we strongly recommend using the 4.0 functions that are easier to reason about.
-
-## Other Apollo Runtime changes
+Because of the number of different options in version 3 and the complexity of error handling, these functions may not 100% match the version 3 behavior, especially in the advanced cases involving watchers. If you are in one of those cases, we strongly recommend using the version 4 functions that are easier to reason about.
 
 ### Non standard HTTP headers are not sent by default
 
-`X-APOLLO-OPERATION-NAME` and `X-APOLLO-OPERATION-ID` are non-standard headers and are not sent by default anymore. If you used them for logging purposes or if you are using Apollo Server [CSRF prevention](https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf), you can add them back using an [ApolloInterceptor](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo3.interceptor/-apollo-interceptor/index.html?query=interface%20ApolloInterceptor):
+`X-APOLLO-OPERATION-NAME` and `X-APOLLO-OPERATION-ID` are non-standard headers and are not sent by default anymore. If you used them for logging purposes or if you are using Apollo Server [CSRF prevention](https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf), you can add them back using an [ApolloInterceptor](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo.interceptor/-apollo-interceptor/index.html?query=interface%20ApolloInterceptor):
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
@@ -177,7 +265,7 @@ val apolloClient = ApolloClient.Builder()
 
 ### `ApolloCall.Builder.httpHeaders` is additive
 
-In v3, if HTTP headers were set on an `ApolloCall`, they would replace the ones set on `ApolloClient`. In v4 they are added instead by default. To replace them, call `ApolloCall.Builder.ignoreApolloClientHttpHeaders(true)`.
+In Apollo Kotlin 3, if HTTP headers were set on an `ApolloCall`, they would replace the ones set on `ApolloClient`. In Apollo Kotlin 4 they are added instead by default. To replace them, call `ApolloCall.Builder.ignoreApolloClientHttpHeaders(true)`.
 
 ```kotlin
 // Replace
@@ -192,17 +280,17 @@ val call = client.query(MyQuery())
   .execute()
 ```
 
-### `HttpEngine` now implements `Closeable`
+### `HttpEngine` implements `Closeable`
 
 `HttpEngine` now implements `Closeable` and has its `dispose` method renamed to `close`. If you have a custom `HttpEngine`, you need to implement `close` instead of `dispose`.
 
-## Apollo Gradle Plugin
+## apollo-gradle-plugin
 
 ### Multi-module `dependsOn`
 
 In Apollo Kotlin 3, you could depend on an upstream GraphQL module by using the `apolloMetadata` configuration.
 
-In Apollo Kotlin 4, this is now done with the `Service.dependsOn()`. This allows better management of dependencies when multiple services are used as better symmetry with `isADependencyOf` below. 
+In Apollo Kotlin 4, this is now done with the `Service.dependsOn()`. `Service.dependsOn()` works for multi-services repositories and, by hiding the configuration names, allows us to change the implementation in the future if needed. For an example to accommodate [Gradle project isolation](https://docs.gradle.org/current/userguide/isolated_projects.html).   
 
 ```kotlin
 // feature1/build.gradle.kts
@@ -240,7 +328,7 @@ apollo {
 
 In multi-module projects, by default, all the types of an upstream module are generated because there is no way to know in advance what types are going to be used by downstream modules. For large projects this can lead to a lot of unused code and an increased build time.
 
-To avoid this, in v3 you could manually specify which types to generate by using `alwaysGenerateTypesMatching`. In v4 this can now be computed automatically by detecting which types are used by the downstream modules.
+To avoid this, in Apollo Kotlin 3 you could manually specify which types to generate by using `alwaysGenerateTypesMatching`. In Apollo Kotlin 4 you can opt in auto-detection of used types. 
 
 To enable this, add the "opposite" link of dependencies with `isADependencyOf()`.
 
@@ -285,6 +373,38 @@ If you were using `apolloUsedCoordinates`, you can also remove it:
 dependencies {
   // Remove this 
   apolloUsedCoordinates(project(":feature1"))
+}
+```
+### All schema types are generated in the schema module
+
+Apollo Kotlin 3 allows to generate schema types for enums or input types in any module. While very flexible, this creates a lot of complexity:
+
+- Duplicate types could be generated in sibling modules.
+- It's unclear what package name to use. 
+  - Using the downstream module package name means the qualified name of the class changes if the type is moved to another module.
+  - Using the schema module package name can be surprising as it's not the one specified in the Gradle configuration.
+- Gradle has APIs to aggregate all projects in a project isolation compatible way (see [gradle#22514](https://github.com/gradle/gradle/issues/22514)). But it's not clear yet how to do this for a subset of the projects (see [gradle#29037](https://github.com/gradle/gradle/issues/29037)).
+
+In Apollo Kotlin 4, we decided to enforce generating all schema types in a single module, the schema module. This restriction simplifies the Gradle plugin and makes it easier to debug and evolve that code. 
+
+It also means that you can't publish your schema module with a subset of the types and let other modules generate their own in another repository. If you are publishing your schema module, it needs to contain all the schema types used by your consumers, either using `alwaysGenerateTypesMatching.set(listOf(".*"))` or manually adding them. 
+
+If that is too much of a limitation, please open an issue and we will revisit.
+
+### Apollo metadata publications are no longer created automatically
+
+Apollo Kotlin 3 automatically creates an "apollo" publication using artifactId `${project.name}-apollo`. This created dependency resolution issues in some projects (see [apollo-kotlin#4350](https://github.com/apollographql/apollo-kotlin/issues/4350)).
+
+Apollo Kotlin 4 exposes a software component instead of a publication to give more control over how publications are created. In order to publish the Apollo metadata, create a `MavenPublication` manually:
+
+```kotlin
+publishing {
+  publications {
+    create("apollo", MavenPublication::class.java) {
+      from(components["apollo"])
+      artifactId = "${project.name}-apollo"
+    }
+  }
 }
 ```
 
@@ -343,7 +463,7 @@ Apollo Kotlin 3 was using the operation root directories to compute the schema n
 
 ### Migrating to ApolloCompilerPlugin
 
-4.0 introduces `ApolloCompilerPlugin` as a way to customize code generation. `ApolloCompilerPlugin` are loaded using the [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) API and run in a separate classloader from your Gradle build. As a result, using  `Service.operationIdGenerator`/`Service.operationOutputGenerator` together with `ApolloCompilerPlugin` is not possible.
+Apollo Kotlin 4 introduces `ApolloCompilerPlugin` as a way to customize code generation. `ApolloCompilerPlugin` are loaded using the [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) API and run in a separate classloader from your Gradle build. As a result, using  `Service.operationIdGenerator`/`Service.operationOutputGenerator` together with `ApolloCompilerPlugin` is not possible.
 
 `Service.operationIdGenerator`/`Service.operationOutputGenerator` are deprecated and will be removed in a future release. You can migrate to `ApolloCompilerPlugin` using the instructions [from the dedicated page](https://www.apollographql.com/docs/kotlin/v4/advanced/compiler-plugins) and the `ApolloCompilerPlugin.operationIds()` method:
 
@@ -377,10 +497,6 @@ class MyPlugin: ApolloCompilerPlugin {
 }
 ```
 
-### Publishing is no longer configured automatically
-
-In Apollo Kotlin 3, maven publishing was automatically configured. In Apollo Kotlin 4, this is no longer the case, and you need to configure the publishing tasks yourself.
-
 ### Operation manifest file location
 
 Since Apollo Kotlin now supports [different operation manifest formats](../advanced/persisted-queries), the `operationOutput.json` file will be generated in `"build/generated/manifest/apollo/$service/operationOutput.json"` instead of `"build/generated/operationOutput/apollo/$service/operationOutput.json"`.
@@ -389,7 +505,7 @@ Since Apollo Kotlin now supports [different operation manifest formats](../advan
 
 This was provided for compatibility with 2.x and is now removed. If you need specific package names for fragments, you can use a [compiler plugin](../advanced/compiler-plugins) and `ApolloCompilerPlugin.layout()` instead. 
 
-## Apollo Compiler
+## apollo-compiler
 
 ### "compat" `codegenModels` is removed
 
@@ -406,7 +522,7 @@ apollo {
 // With
 apollo {
   service("service") {
-    codegenModels.set("codegenModels")
+    codegenModels.set("operationBased")
   }
 }
 ```
@@ -465,11 +581,11 @@ The [Android Studio plugin](../testing/android-studio-plugin#migration-helpers) 
 
 Test builders were an experimental feature that have been superseded by [data builders](../testing/data-builders), a simpler version that also plays nicer with custom scalars.
 
-In Apollo Kotlin 4.0, dest builders are no longer available - please refer to the data builders documentation for more information.
+In Apollo Kotlin 4, test builders are no longer available - please refer to the data builders documentation for more information.
 
 ### Enum class names now have their first letter capitalized
 
-For consistency with other types, GraphQL enums are now capitalized in Kotlin. You can restore the previous behaviour using `@targetName`:
+For consistency with other types, GraphQL enums are now capitalized in Kotlin. You can restore the previous behavior using `@targetName`:
 
 ```graphql
 # Make sure `someEnum` isn't renamed to `SomeEnum`
@@ -509,7 +625,7 @@ This is a backward compatible change.
 
 ### Directive usages are validated and require a matching directive definition
 
-In Apollo 4, all directive usages are validated against their definition. If you have queries using client side directives:
+In Apollo Kotlin 4, all directive usages are validated against their definition. If you have queries using client side directives:
 
 ```graphql
 query HeroName {
@@ -542,14 +658,7 @@ val myEnum = MyEnum.UNKNOWN__("foo")
 val myEnum = MyEnum.safeValueOf("foo")
 ```
 
-## Cache
-
-### ApolloStore
-
-In Apollo Kotlin 3.x, most `ApolloStore` functions were marked as `suspend` even though they were not actually suspending and perform the work in the thread they are called from.
-In particular, they can be blocking when the underlying cache is doing IO, so calling them from the main thread can lead to ANRs.
-
-In Apollo Kotlin 4.0 this is still the case but the functions are no longer marked as `suspend` to avoid any confusion.
+## apollo-normalized-cache
 
 ### Configuration order
 
@@ -583,12 +692,13 @@ The AST classes (`GQLNode` and subclasses) as well as `Introspection` classes ar
 
 It is not possible to create a `Schema` from a File or String directly anymore. Instead, create a `GQLDocument` first and convert it to a schema with `toSchema()`.
 
+## apollo-rx{2-3}-support
 
-## Using RxJava artifacts is now an error
+The `apollo-rx2-support` and `apollo-rx3-support` artifacts are deprecated.
 
-The `apollo-rx2-support` and `apollo-rx3-support` artifacts are very thin wrappers around [`kotlinx-coroutines-rx2`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx2) or [`kotlinx-coroutines-rx3`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx3) and will be removed in a future version. 
+They were very thin wrappers around [`kotlinx-coroutines-rx2`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx2) or [`kotlinx-coroutines-rx3`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx3) and will be removed in a future version. 
 
-In Apollo Kotlin 4, use `kotlinx-coroutines-rx${version}` instead. Replace the artifact in your build script:
+Use `kotlinx-coroutines-rx${version}` directlyl instead. Replace the artifact in your build script:
 
 ```kotlin
 dependencies {
@@ -601,7 +711,7 @@ dependencies {
 
 ```
 
-In your code, use `asFLowable()`:
+In your code, use `asFlowable()`:
 
 ```kotlin
 // Replace
@@ -617,38 +727,10 @@ apolloClient.query().rxSingle()
 apolloClient.query().toFlow().asFlowable().firstOrError()
 ```
 
-## New Maven coordinates for some artifacts
+## apollo-idling-resource 
 
-Over the years, a lot of support functionality was added alongside `apollo-runtime`. While useful, most of this functionality doesn't share the same level of stability and bundling the release does not make much sense.
-
-Moving forward, `apollo-mockserver` is released separately.
-
-Replace maven coordinates: 
-
-```kotlin
-dependencies {
-  // Replace
-  testImplementation("com.apollographql.apollo3:apollo-mockserver:$apolloVersion")
-  
-  // With
-  testImplementation("com.apollographql.mockserver:apollo-mockserver:$mockServerVersion")
-}
-```
-
-And the package names:
-
-```kotlin
-// Replace
-import com.apollographql.apollo3.mockserver
-
-// With
-import com.apollographql.mockserver
-```
-
-## ApolloIdlingResource is deprecated
-
-We recommend using reactive patterns to test your UI instead. See [this article about ways to do so](https://medium.com/androiddevelopers/alternatives-to-idling-resources-in-compose-tests-8ae71f9fc473).
+ApolloIdlingResource is deprecated. We recommend using reactive patterns to test your UI instead. See [this article about ways to do so](https://medium.com/androiddevelopers/alternatives-to-idling-resources-in-compose-tests-8ae71f9fc473) for more details.
 
 ## Example of a migration
 
-If you are looking for inspiration, we updated the [3.x integration tests to use 4.0](https://github.com/apollographql/apollo-kotlin/pull/5418/). If you have an open source project that migrated, feel free to share it and we'll include it here.
+If you are looking for inspiration, we updated the [version 3 integration tests to use version 4](https://github.com/apollographql/apollo-kotlin/pull/5418/). If you have an open source project that migrated, feel free to share it and we'll include it here.

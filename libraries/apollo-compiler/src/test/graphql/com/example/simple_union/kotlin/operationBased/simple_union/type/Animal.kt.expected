@@ -5,7 +5,7 @@
 //
 package com.example.simple_union.type
 
-import com.apollographql.apollo3.api.UnionType
+import com.apollographql.apollo.api.UnionType
 
 public class Animal {
   public companion object {

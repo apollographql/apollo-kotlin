@@ -5,7 +5,7 @@
 //
 package com.example.fragment_with_multiple_fieldsets.fragment
 
-import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo.api.Fragment
 import kotlin.String
 
 public data class IFragment(

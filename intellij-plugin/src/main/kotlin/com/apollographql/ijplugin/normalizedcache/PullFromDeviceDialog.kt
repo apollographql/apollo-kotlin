@@ -3,10 +3,10 @@ package com.apollographql.ijplugin.normalizedcache
 import android.annotation.SuppressLint
 import com.android.ddmlib.Client
 import com.android.ddmlib.IDevice
-import com.apollographql.apollo3.debug.GetApolloClientsQuery
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.apollodebugserver.ApolloDebugClient
 import com.apollographql.ijplugin.apollodebugserver.ApolloDebugClient.Companion.getApolloDebugClients
+import com.apollographql.ijplugin.apollodebugserver.GetApolloClientsQuery
 import com.apollographql.ijplugin.apollodebugserver.normalizedCacheSimpleName
 import com.apollographql.ijplugin.icons.ApolloIcons
 import com.apollographql.ijplugin.ui.tree.DynamicNode

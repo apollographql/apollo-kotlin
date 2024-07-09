@@ -5,5 +5,5 @@ plugins {
 }
 
 dependencies {
-    implementation("com.apollographql.apollo3:apollo-compiler")
+    implementation("com.apollographql.apollo:apollo-compiler")
 }

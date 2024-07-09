@@ -1,13 +1,16 @@
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.testing.checkFile
-import com.apollographql.apollo3.testing.pathToJsonReader
-import com.apollographql.apollo3.testing.pathToUtf8
+import com.apollographql.apollo.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.api.CacheKeyGenerator
+import com.apollographql.apollo.cache.normalized.api.CacheKeyGeneratorContext
+import com.apollographql.apollo.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo.testing.checkFile
+import com.apollographql.apollo.testing.pathToJsonReader
+import com.apollographql.apollo.testing.pathToUtf8
 
+@Suppress("DEPRECATION")
 fun checkTestFixture(actualText: String, name: String) = checkFile(actualText, "models-fixtures/json/$name")
+@Suppress("DEPRECATION")
 fun testFixtureToUtf8(name: String) = pathToUtf8("models-fixtures/json/$name")
+@Suppress("DEPRECATION")
 fun testFixtureToJsonReader(name: String) = pathToJsonReader("models-fixtures/json/$name")
 
 /**

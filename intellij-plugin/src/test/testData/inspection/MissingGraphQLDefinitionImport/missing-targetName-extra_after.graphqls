@@ -6,8 +6,8 @@ extend schema
 
 extend schema
 @link(
-  url: "https://specs.apollo.dev/nullability/v0.3",
-  import: ["@catch", "CatchTo"]
+  url: "https://specs.apollo.dev/nullability/v0.4",
+  import: ["@catch", "@catchByDefault", "CatchTo"]
 )
 
-extend schema @catch(to: THROW)
+extend schema @catchByDefault(to: THROW)

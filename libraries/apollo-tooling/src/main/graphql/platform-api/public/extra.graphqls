@@ -1,5 +1,5 @@
-extend schema @link(url: "https://specs.apollo.dev/nullability/v0.3", import: ["@semanticNonNull", "@semanticNonField", "@catch", "CatchTo"])
-extend schema @catch(to: THROW)
+extend schema @link(url: "https://specs.apollo.dev/nullability/v0.4", import: ["@semanticNonNull", "@semanticNonField", "@catchByDefault", "CatchTo"])
+extend schema @catchByDefault(to: THROW)
 
 extend type GraphMutation @semanticNonNullField(name: "uploadSchema")
 extend type GraphMutation @semanticNonNullField(name: "publishSubgraph")

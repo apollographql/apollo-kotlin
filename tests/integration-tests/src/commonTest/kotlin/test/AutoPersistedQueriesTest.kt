@@ -1,16 +1,16 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.integration.normalizer.UpdateReviewMutation
-import com.apollographql.apollo3.integration.normalizer.type.ColorInput
-import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Optional
+import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo.integration.normalizer.UpdateReviewMutation
+import com.apollographql.apollo.integration.normalizer.type.ColorInput
+import com.apollographql.apollo.integration.normalizer.type.ReviewInput
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import testFixtureToUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals

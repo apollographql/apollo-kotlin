@@ -22,7 +22,16 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 /**
  * @param target the JVM version we want to be compatible with (bytecode + bootstrap classpath)
  */
-fun KotlinCommonCompilerOptions.configure(target: Int, kotlinCompilerOptions: KotlinCompilerOptions) {
+fun KotlinCommonCompilerOptions.configure(target: Int, kotlinCompilerOptions: KotlinCompilerOptions, isAndroid: Boolean) {
+  val actualTarget = when {
+    isAndroid -> {
+      // https://blog.blundellapps.co.uk/setting-jdk-level-in-android-gradle-builds/
+      // D8 can dex Java17 bytecode
+      17
+    }
+    else -> target
+  }
+
   freeCompilerArgs.add("-Xexpect-actual-classes")
 
   /**
@@ -30,8 +39,8 @@ fun KotlinCommonCompilerOptions.configure(target: Int, kotlinCompilerOptions: Ko
    * We might want to do something more precise where we only opt-in for libraries but still require integration tests to opt-in with more granularity
    */
   freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
-  freeCompilerArgs.add("-opt-in=com.apollographql.apollo3.annotations.ApolloExperimental")
-  freeCompilerArgs.add("-opt-in=com.apollographql.apollo3.annotations.ApolloInternal")
+  freeCompilerArgs.add("-opt-in=com.apollographql.apollo.annotations.ApolloExperimental")
+  freeCompilerArgs.add("-opt-in=com.apollographql.apollo.annotations.ApolloInternal")
 
   apiVersion.set(kotlinCompilerOptions.version)
   languageVersion.set(kotlinCompilerOptions.version)
@@ -39,8 +48,11 @@ fun KotlinCommonCompilerOptions.configure(target: Int, kotlinCompilerOptions: Ko
   when (this) {
     is KotlinJvmCompilerOptions -> {
       freeCompilerArgs.add("-Xjvm-default=all")
-      freeCompilerArgs.add("-Xjdk-release=${target.toJvmTarget().target}")
-      jvmTarget.set(target.toJvmTarget())
+      if (!isAndroid) {
+        // See https://cs.android.com/android-studio/platform/tools/base/+/mirror-goog-studio-main:build-system/gradle-core/src/main/java/com/android/build/gradle/tasks/JavaCompileUtils.kt;l=410?q=Using%20%27--release%27%20option%20for%20JavaCompile%20is%20not%20supported%20because%20it%20prevents%20the%20Android%20Gradle%20plugin
+        freeCompilerArgs.add("-Xjdk-release=${actualTarget.toJvmTarget().target}")
+      }
+      jvmTarget.set(actualTarget.toJvmTarget())
     }
 
     is KotlinNativeCompilerOptions -> {
@@ -98,16 +110,7 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptio
   val jvmTarget = jvmTarget?: 8
 
   kotlinExtensionOrNull?.forEachCompilerOptions { isAndroid ->
-    val target = when {
-      isAndroid -> {
-        // https://blog.blundellapps.co.uk/setting-jdk-level-in-android-gradle-builds/
-        // D8 can dex Java17 bytecode
-        17
-      }
-      else -> jvmTarget
-    }
-
-    configure(target, kotlinCompilerOptions)
+    configure(jvmTarget, kotlinCompilerOptions, isAndroid)
   }
   project.tasks.withType(JavaCompile::class.java).configureEach {
     // For JVM only modules, this dictates the "org.gradle.jvm.version" Gradle attribute
@@ -122,8 +125,8 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptio
   }
 
   (kotlinExtensionOrNull as? KotlinMultiplatformExtension)?.sourceSets?.configureEach {
-    languageSettings.optIn("com.apollographql.apollo3.annotations.ApolloExperimental")
-    languageSettings.optIn("com.apollographql.apollo3.annotations.ApolloInternal")
+    languageSettings.optIn("com.apollographql.apollo.annotations.ApolloExperimental")
+    languageSettings.optIn("com.apollographql.apollo.annotations.ApolloInternal")
   }
 
   /**

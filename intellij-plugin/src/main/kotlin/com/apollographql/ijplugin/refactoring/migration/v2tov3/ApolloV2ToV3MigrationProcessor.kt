@@ -2,24 +2,23 @@ package com.apollographql.ijplugin.refactoring.migration.v2tov3
 
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.refactoring.migration.ApolloMigrationRefactoringProcessor
-import com.apollographql.ijplugin.refactoring.migration.apollo2
-import com.apollographql.ijplugin.refactoring.migration.apollo3
 import com.apollographql.ijplugin.refactoring.migration.item.CommentDependenciesInToml
+import com.apollographql.ijplugin.refactoring.migration.item.RemoveImport
 import com.apollographql.ijplugin.refactoring.migration.item.RemoveMethodCall
 import com.apollographql.ijplugin.refactoring.migration.item.RemoveMethodImport
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateClassName
+import com.apollographql.ijplugin.refactoring.migration.item.UpdateCustomTypeMappingInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateFieldName
+import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesBuildKts
+import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesInToml
+import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradlePluginInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.item.UpdateMethodName
 import com.apollographql.ijplugin.refactoring.migration.item.UpdatePackageName
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.AddUseVersion2Compat
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.RemoveDependenciesInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateAddCustomTypeAdapter
-import com.apollographql.ijplugin.refactoring.migration.item.UpdateCustomTypeMappingInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateEnumValueUpperCase
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateFileUpload
-import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesBuildKts
-import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradleDependenciesInToml
-import com.apollographql.ijplugin.refactoring.migration.item.UpdateGradlePluginInBuildKts
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateGraphqlSourceDirectorySet
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateHttpCache
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateIdlingResource
@@ -27,6 +26,8 @@ import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateInputA
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateLruNormalizedCacheFactory
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateOkHttpExecutionContext
 import com.apollographql.ijplugin.refactoring.migration.v2tov3.item.UpdateSqlNormalizedCacheFactory
+import com.apollographql.ijplugin.util.apollo2
+import com.apollographql.ijplugin.util.apollo3
 import com.intellij.openapi.project.Project
 
 private const val apollo3LatestVersion = "3.8.2"
@@ -114,9 +115,14 @@ class ApolloV2ToV3MigrationProcessor(project: Project) : ApolloMigrationRefactor
       ),
 
       RemoveMethodCall("$apollo2.ApolloQueryCall", "toBuilder"),
-      RemoveMethodCall("$apollo2.ApolloQueryCall.Builder", "build"),
 
+      RemoveMethodCall("$apollo2.ApolloQueryCall.Builder", "build"),
       UpdatePackageName(apollo2, apollo3),
+
+      RemoveImport("$apollo2.cache.normalized.lru.EvictionPolicy"),
+      RemoveImport("$apollo2.cache.http.DiskLruHttpCacheStore"),
+      RemoveImport("$apollo2.cache.http.internal.FileSystem"),
+      RemoveImport("$apollo2.coroutines.await"),
 
       // Gradle
       UpdateGradlePluginInBuildKts(apollo2, apollo3, apollo3LatestVersion),

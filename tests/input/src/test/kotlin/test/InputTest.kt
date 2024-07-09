@@ -1,6 +1,6 @@
 package test
 
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.api.Optional
 import com.example.CreateUser2Query
 import com.example.CreateUserQuery
 import com.example.type.FindUserInput

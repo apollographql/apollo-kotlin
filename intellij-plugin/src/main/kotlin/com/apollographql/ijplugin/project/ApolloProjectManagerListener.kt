@@ -22,9 +22,9 @@ internal class ApolloProjectManagerListener : ProjectManagerListener {
     DumbService.getInstance(project).runWhenSmart {
       logd("apolloVersion=" + project.apolloProjectService.apolloVersion)
       project.service<ApolloCodegenService>()
+      project.service<GraphQLConfigService>()
       project.service<GradleToolingModelService>()
       project.service<ProjectSettingsService>()
-      project.service<GraphQLConfigService>()
       project.service<SandboxService>()
       project.service<FieldInsightsService>()
       project.service<TelemetryService>()

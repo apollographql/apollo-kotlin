@@ -1,1 +1,1 @@
-extend schema @catch(to: THROW)
+extend schema @catchByDefault(to: THROW)

@@ -15,3 +15,5 @@ apollo-runtime-long-ref = { group = "com.apollographql.apollo3", name = "apollo-
 apollo-shortNotation = "com.apollographql.apollo3:2.5.14"
 apollo-longNotation = { id = "com.apollographql.apollo3", version.ref = "apollo" }
 apollo-referenceNotation = { id = "com.apollographql.apollo3", version = "3.8.2" }
+apollo-shortNotationNoVersion = "com.apollographql.apollo3"
+apollo-longNotationNoVersion = { id = "com.apollographql.apollo3" }

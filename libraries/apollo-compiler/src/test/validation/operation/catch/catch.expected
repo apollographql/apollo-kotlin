@@ -15,3 +15,9 @@ OtherValidationIssue (14:25)
 ------------
 OtherValidationIssue (19:25)
 Invalid 'levels' value '3' for `@catch` usage: this field has a max list level of 2
+------------
+OtherValidationIssue (34:5)
+`foo` cannot be merged with `foo` (at catch.graphql: (36, 9)): they have different `@catch` directives. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (36:9)
+`foo` cannot be merged with `foo` (at catch.graphql: (34, 5)): they have different `@catch` directives. Use different aliases on the fields to fetch both if this was intentional.

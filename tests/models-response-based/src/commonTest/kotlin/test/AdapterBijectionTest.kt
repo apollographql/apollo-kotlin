@@ -1,10 +1,10 @@
 package test
 
 import codegen.models.HeroAndFriendsWithFragmentsQuery
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.toJsonString
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.toJsonString
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -5,10 +5,10 @@
 //
 package com.example.field_with_include_directive.selections
 
-import com.apollographql.apollo3.api.CompiledCondition
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.notNull
+import com.apollographql.apollo.api.CompiledCondition
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.notNull
 import com.example.field_with_include_directive.type.Character
 import com.example.field_with_include_directive.type.FriendsConnection
 import com.example.field_with_include_directive.type.GraphQLInt

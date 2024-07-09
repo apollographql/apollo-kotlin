@@ -5,7 +5,7 @@
 //
 package com.example.hero_details.type
 
-import com.apollographql.apollo3.api.EnumType
+import com.apollographql.apollo.api.EnumType
 import kotlin.Array
 import kotlin.Deprecated
 import kotlin.String

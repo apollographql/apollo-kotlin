@@ -1,4 +1,3 @@
 # Module apollo-rx3-support-java
 
-apollo-rx3-support-java contains code to use apollo-runtime-java with RxJava3.
-
+This module has been moved to the [Java Support](https://github.com/apollographql/apollo-kotlin-java-support) repository and published under `com.apollographql.java:rx3`. Please update your dependencies.

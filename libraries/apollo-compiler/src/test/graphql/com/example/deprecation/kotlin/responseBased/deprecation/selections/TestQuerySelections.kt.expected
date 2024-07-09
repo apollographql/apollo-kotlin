@@ -5,11 +5,11 @@
 //
 package com.example.deprecation.selections
 
-import com.apollographql.apollo3.api.CompiledArgument
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledVariable
-import com.apollographql.apollo3.api.notNull
+import com.apollographql.apollo.api.CompiledArgument
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.CompiledVariable
+import com.apollographql.apollo.api.notNull
 import com.example.deprecation.type.Character
 import com.example.deprecation.type.GraphQLBoolean
 import com.example.deprecation.type.GraphQLString

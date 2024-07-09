@@ -5,13 +5,13 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.json.JsonReader;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.Adapter;
+import com.apollographql.apollo.api.Assertions;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ListAdapter;
+import com.apollographql.apollo.api.NullableAdapter;
+import com.apollographql.apollo.api.json.JsonReader;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.named_fragment_inside_inline_fragment.type.Episode;
 import com.example.named_fragment_inside_inline_fragment.type.adapter.Episode_ResponseAdapter;
 import java.io.IOException;

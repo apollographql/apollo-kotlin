@@ -5,7 +5,7 @@
 //
 package com.example.suppressed_warnings.type;
 
-import com.apollographql.apollo3.api.Optional;
+import com.apollographql.apollo.api.Optional;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;

@@ -1,29 +1,27 @@
 package com.example
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.toApolloResponse
-import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.FetchPolicy
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyResolver
-import com.apollographql.apollo3.cache.normalized.api.CacheResolver
-import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.apolloStore
-import com.apollographql.apollo3.cache.normalized.fetchPolicy
-import com.apollographql.apollo3.cache.normalized.normalizedCache
-import com.apollographql.apollo3.cache.normalized.store
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Executable
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.toApolloResponse
+import com.apollographql.apollo.cache.normalized.ApolloStore
+import com.apollographql.apollo.cache.normalized.FetchPolicy
+import com.apollographql.apollo.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.api.CacheKeyGenerator
+import com.apollographql.apollo.cache.normalized.api.CacheKeyGeneratorContext
+import com.apollographql.apollo.cache.normalized.api.CacheKeyResolver
+import com.apollographql.apollo.cache.normalized.api.CacheResolver
+import com.apollographql.apollo.cache.normalized.api.FieldPolicyCacheResolver
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo.cache.normalized.fetchPolicy
+import com.apollographql.apollo.cache.normalized.normalizedCache
+import com.apollographql.apollo.cache.normalized.store
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import com.example.one.Issue2818Query
 import com.example.one.Issue3672Query
 import com.example.one.fragment.SectionFragment
@@ -63,7 +61,7 @@ class NormalizationTest {
     val query = Issue3672Query()
 
     val data1 = Buffer().writeUtf8(nestedResponse).jsonReader().toApolloResponse(operation = query, customScalarAdapters = CustomScalarAdapters.Empty).dataOrThrow()
-    store.writeOperation(query, data1)
+    store.writeOperationSync(query, data1)
 
     val data2 = store.readOperation(query)
     check(data1 == data2)
@@ -80,7 +78,7 @@ class NormalizationTest {
     val query = NestedFragmentQuery()
 
     val data1 = Buffer().writeUtf8(nestedResponse_list).jsonReader().toApolloResponse(operation = query, customScalarAdapters = CustomScalarAdapters.Empty).dataOrThrow()
-    store.writeOperation(query, data1)
+    store.writeOperationSync(query, data1)
 
     val data2 = store.readOperation(query)
     check(data1 == data2)
@@ -94,7 +92,7 @@ class NormalizationTest {
         cacheResolver = IdBasedCacheKeyResolver
     )
 
-    apolloStore.writeOperation(
+    apolloStore.writeOperationSync(
         Issue2818Query(),
         Issue2818Query.Data(
             Issue2818Query.Home(

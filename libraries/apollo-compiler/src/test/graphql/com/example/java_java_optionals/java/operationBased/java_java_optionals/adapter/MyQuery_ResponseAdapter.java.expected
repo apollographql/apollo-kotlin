@@ -5,17 +5,17 @@
 //
 package com.example.java_java_optionals.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.java.adapter.JavaOptionalAdapter;
-import com.apollographql.apollo3.api.java.adapter.JavaOptionalAdapters;
-import com.apollographql.apollo3.api.json.JsonReader;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.Adapter;
+import com.apollographql.apollo.api.Adapters;
+import com.apollographql.apollo.api.Assertions;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ListAdapter;
+import com.apollographql.apollo.api.ObjectAdapter;
+import com.apollographql.apollo.api.json.JsonReader;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.java_java_optionals.MyQuery;
+import com.example.java_java_optionals.type.adapter.OptionalAdapter;
+import com.example.java_java_optionals.type.adapter.OptionalAdapters;
 import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Override;
@@ -43,12 +43,12 @@ public class MyQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = JavaOptionalAdapters.JavaOptionalIntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _nullableInt = OptionalAdapters.OptionalIntAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: _nullableMyType = new JavaOptionalAdapter<>(new ObjectAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 2: _nullableMyType = new OptionalAdapter<>(new ObjectAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           case 3: _nonNullableMyType = new ObjectAdapter<MyQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
-          case 4: _nullableListOfNullableString = new JavaOptionalAdapter<>(new ListAdapter<>(JavaOptionalAdapters.JavaOptionalStringAdapter)).fromJson(reader, customScalarAdapters); break;
-          case 5: _nullableListOfNonNullableString = new JavaOptionalAdapter<>(new ListAdapter<>(Adapters.StringAdapter)).fromJson(reader, customScalarAdapters); break;
+          case 4: _nullableListOfNullableString = new OptionalAdapter<>(new ListAdapter<>(OptionalAdapters.OptionalStringAdapter)).fromJson(reader, customScalarAdapters); break;
+          case 5: _nullableListOfNonNullableString = new OptionalAdapter<>(new ListAdapter<>(Adapters.StringAdapter)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -70,22 +70,22 @@ public class MyQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         MyQuery.Data value) throws IOException {
       writer.name("nullableInt");
-      JavaOptionalAdapters.JavaOptionalIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt);
+      OptionalAdapters.OptionalIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt);
 
       writer.name("nonNullableInt");
       Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
 
       writer.name("nullableMyType");
-      new JavaOptionalAdapter<>(new ObjectAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).toJson(writer, customScalarAdapters, value.nullableMyType);
+      new OptionalAdapter<>(new ObjectAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).toJson(writer, customScalarAdapters, value.nullableMyType);
 
       writer.name("nonNullableMyType");
       new ObjectAdapter<MyQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).toJson(writer, customScalarAdapters, value.nonNullableMyType);
 
       writer.name("nullableListOfNullableString");
-      new JavaOptionalAdapter<>(new ListAdapter<>(JavaOptionalAdapters.JavaOptionalStringAdapter)).toJson(writer, customScalarAdapters, value.nullableListOfNullableString);
+      new OptionalAdapter<>(new ListAdapter<>(OptionalAdapters.OptionalStringAdapter)).toJson(writer, customScalarAdapters, value.nullableListOfNullableString);
 
       writer.name("nullableListOfNonNullableString");
-      new JavaOptionalAdapter<>(new ListAdapter<>(Adapters.StringAdapter)).toJson(writer, customScalarAdapters, value.nullableListOfNonNullableString);
+      new OptionalAdapter<>(new ListAdapter<>(Adapters.StringAdapter)).toJson(writer, customScalarAdapters, value.nullableListOfNonNullableString);
     }
   }
 
@@ -103,7 +103,7 @@ public class MyQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = JavaOptionalAdapters.JavaOptionalIntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _nullableInt = OptionalAdapters.OptionalIntAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
@@ -121,7 +121,7 @@ public class MyQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         MyQuery.NullableMyType value) throws IOException {
       writer.name("nullableInt");
-      JavaOptionalAdapters.JavaOptionalIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt);
+      OptionalAdapters.OptionalIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt);
 
       writer.name("nonNullableInt");
       Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
@@ -142,7 +142,7 @@ public class MyQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = JavaOptionalAdapters.JavaOptionalIntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _nullableInt = OptionalAdapters.OptionalIntAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
@@ -160,7 +160,7 @@ public class MyQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         MyQuery.NonNullableMyType value) throws IOException {
       writer.name("nullableInt");
-      JavaOptionalAdapters.JavaOptionalIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt);
+      OptionalAdapters.OptionalIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt);
 
       writer.name("nonNullableInt");
       Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);

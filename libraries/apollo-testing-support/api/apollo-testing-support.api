@@ -1,35 +1,19 @@
-public final class com/apollographql/apollo3/testing/-FileSystemCommon {
+public final class com/apollographql/apollo/testing/-FileSystemCommon {
 	public static final fun checkFile (Ljava/lang/String;Ljava/lang/String;)V
-	public static final fun pathToJsonReader (Ljava/lang/String;)Lcom/apollographql/apollo3/api/json/JsonReader;
+	public static final fun pathToJsonReader (Ljava/lang/String;)Lcom/apollographql/apollo/api/json/JsonReader;
 	public static final fun pathToUtf8 (Ljava/lang/String;)Ljava/lang/String;
 }
 
-public final class com/apollographql/apollo3/testing/FooOperation$Data : com/apollographql/apollo3/api/Query$Data, com/apollographql/apollo3/api/Subscription$Data {
-	public fun <init> (I)V
-	public final fun getFoo ()I
-	public fun toString ()Ljava/lang/String;
+public final class com/apollographql/apollo/testing/MockserverKt {
+	public static final fun enqueue (Lcom/apollographql/apollo/mockserver/MockServer;Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/Operation$Data;Lcom/apollographql/apollo/api/CustomScalarAdapters;J)V
+	public static synthetic fun enqueue$default (Lcom/apollographql/apollo/mockserver/MockServer;Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/Operation$Data;Lcom/apollographql/apollo/api/CustomScalarAdapters;JILjava/lang/Object;)V
+	public static final fun enqueueData (Lcom/apollographql/apollo/mockserver/MockServer;Lcom/apollographql/apollo/api/Operation$Data;Lcom/apollographql/apollo/api/CustomScalarAdapters;JI)V
+	public static final fun enqueueData (Lcom/apollographql/apollo/mockserver/MockServer;Ljava/util/Map;Lcom/apollographql/apollo/api/CustomScalarAdapters;JI)V
+	public static synthetic fun enqueueData$default (Lcom/apollographql/apollo/mockserver/MockServer;Lcom/apollographql/apollo/api/Operation$Data;Lcom/apollographql/apollo/api/CustomScalarAdapters;JIILjava/lang/Object;)V
+	public static synthetic fun enqueueData$default (Lcom/apollographql/apollo/mockserver/MockServer;Ljava/util/Map;Lcom/apollographql/apollo/api/CustomScalarAdapters;JIILjava/lang/Object;)V
 }
 
-public final class com/apollographql/apollo3/testing/FooQuery$Companion {
-	public final fun getSuccessResponse ()Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/testing/FooSubscription$Companion {
-	public final fun completeMessage (Ljava/lang/String;)Ljava/lang/String;
-	public final fun errorMessage (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-	public final fun nextMessage (Ljava/lang/String;I)Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/testing/MockserverKt {
-	public static final fun enqueue (Lcom/apollographql/apollo3/mockserver/MockServer;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;J)V
-	public static synthetic fun enqueue$default (Lcom/apollographql/apollo3/mockserver/MockServer;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;JILjava/lang/Object;)V
-	public static final fun enqueueData (Lcom/apollographql/apollo3/mockserver/MockServer;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;JI)V
-	public static final fun enqueueData (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/util/Map;Lcom/apollographql/apollo3/api/CustomScalarAdapters;JI)V
-	public static synthetic fun enqueueData$default (Lcom/apollographql/apollo3/mockserver/MockServer;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;JIILjava/lang/Object;)V
-	public static synthetic fun enqueueData$default (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/util/Map;Lcom/apollographql/apollo3/api/CustomScalarAdapters;JIILjava/lang/Object;)V
-}
-
-public final class com/apollographql/apollo3/testing/ReadFile_jvmKt {
+public final class com/apollographql/apollo/testing/ReadFile_jvmKt {
 	public static final fun getTestsPath ()Ljava/lang/String;
 	public static final fun shouldUpdateTestFixtures ()Z
 }

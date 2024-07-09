@@ -5,12 +5,12 @@
 //
 package com.example.operationbased2_ex8;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.Adapter;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ObjectAdapter;
+import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.operationbased2_ex8.adapter.TestOperation_ResponseAdapter;
 import com.example.operationbased2_ex8.fragment.AnimalFragment;
 import com.example.operationbased2_ex8.selections.TestOperationSelections;
@@ -129,11 +129,6 @@ public class TestOperation implements Query<TestOperation.Data> {
     )
     .selections(TestOperationSelections.__root)
     .build();
-  }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
   }
 
   public static final class Builder {

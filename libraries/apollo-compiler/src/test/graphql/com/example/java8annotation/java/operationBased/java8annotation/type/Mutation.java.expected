@@ -5,8 +5,8 @@
 //
 package com.example.java8annotation.type;
 
-import com.apollographql.apollo3.api.CompiledArgumentDefinition;
-import com.apollographql.apollo3.api.ObjectType;
+import com.apollographql.apollo.api.CompiledArgumentDefinition;
+import com.apollographql.apollo.api.ObjectType;
 
 public class Mutation {
   public static final CompiledArgumentDefinition __login_input = new CompiledArgumentDefinition.Builder("input").build();

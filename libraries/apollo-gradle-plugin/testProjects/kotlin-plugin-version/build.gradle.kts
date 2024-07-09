@@ -1,4 +1,4 @@
-import com.apollographql.apollo3.gradle.api.ApolloExtension
+import com.apollographql.apollo.gradle.api.ApolloExtension
 
 plugins {
   alias(libs.plugins.kotlin.jvm.min)

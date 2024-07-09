@@ -5,8 +5,8 @@
 //
 package com.example.simple_fragment.schema
 
-import com.apollographql.apollo3.api.CompiledNamedType
-import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo.api.CompiledNamedType
+import com.apollographql.apollo.api.ObjectType
 import kotlin.collections.List
 
 /**
@@ -23,5 +23,5 @@ internal object __Schema {
 
 
   public fun possibleTypes(type: CompiledNamedType): List<ObjectType> =
-      com.apollographql.apollo3.api.possibleTypes(all, type)
+      com.apollographql.apollo.api.possibleTypes(all, type)
 }

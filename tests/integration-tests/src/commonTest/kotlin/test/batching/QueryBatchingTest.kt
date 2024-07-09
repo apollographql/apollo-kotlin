@@ -2,16 +2,16 @@ package test.batching
 
 import batching.GetLaunch2Query
 import batching.GetLaunchQuery
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.ExecutionOptions.Companion.CAN_BE_BATCHED
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.api.json.jsonReader
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.AnyAdapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutionOptions.Companion.CAN_BE_BATCHED
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import okio.Buffer

@@ -6,7 +6,7 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo3.gradle.relocated",
+    namespace = "com.apollographql.apollo.gradle.relocated",
     jvmTarget = 11 // AGP requires 11
 )
 
@@ -36,12 +36,12 @@ dependencies {
   testImplementation(libs.okhttp.mockwebserver)
   testImplementation(libs.okhttp.tls)
 
-  testImplementation(project(":apollo-execution-incubating"))
+  testImplementation(libs.apollo.execution)
 
   testImplementation(platform(libs.http4k.bom.get()))
   testImplementation(libs.http4k.core)
   testImplementation(libs.http4k.server.jetty)
-  testImplementation(libs.slf4j.get().toString()) {
+  testImplementation(libs.slf4j.nop.get().toString()) {
     because("jetty uses SL4F")
   }
 
@@ -59,7 +59,7 @@ if (relocateJar) {
       exclude("META-INF/kotlin-stdlib.*\\.kotlin_module")
 
       // Remove the following error:
-      // /Users/mbonnin/.m2/repository/com/apollographql/apollo3/apollo-gradle-plugin/3.3.3-SNAPSHOT/apollo-gradle-plugin-3.3.3-SNAPSHOT.jar!/META-INF/kotlinpoet.kotlin_module:
+      // /Users/mbonnin/.m2/repository/com/apollographql/apollo/apollo-gradle-plugin/3.3.3-SNAPSHOT/apollo-gradle-plugin-3.3.3-SNAPSHOT.jar!/META-INF/kotlinpoet.kotlin_module:
       // Module was compiled with an incompatible version of Kotlin. The binary version of its metadata is 1.7.1,
       // expected version is 1.5.1.
       exclude("META-INF/kotlinpoet.kotlin_module")
@@ -124,10 +124,10 @@ gradlePlugin {
 
   plugins {
     create("apolloGradlePlugin") {
-      id = "com.apollographql.apollo3"
+      id = "com.apollographql.apollo"
       displayName = "Apollo Kotlin GraphQL client plugin."
       description = "Automatically generates typesafe java and kotlin models from your GraphQL files."
-      implementationClass = "com.apollographql.apollo3.gradle.internal.ApolloPlugin"
+      implementationClass = "com.apollographql.apollo.gradle.internal.ApolloPlugin"
       tags.set(listOf("graphql", "apollo"))
     }
   }

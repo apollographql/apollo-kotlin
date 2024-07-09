@@ -5,11 +5,11 @@
 //
 package com.example.suppressed_warnings.selections
 
-import com.apollographql.apollo3.api.CompiledArgument
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledVariable
-import com.apollographql.apollo3.api.notNull
+import com.apollographql.apollo.api.CompiledArgument
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.CompiledVariable
+import com.apollographql.apollo.api.notNull
 import com.example.suppressed_warnings.type.Cat
 import com.example.suppressed_warnings.type.Direction
 import com.example.suppressed_warnings.type.GraphQLInt

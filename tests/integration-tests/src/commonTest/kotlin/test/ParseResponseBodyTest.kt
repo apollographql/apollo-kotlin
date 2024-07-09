@@ -1,22 +1,21 @@
 package test
 
 import assertEquals2
-import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.MapJsonReader
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.toApolloResponse
-import com.apollographql.apollo3.api.toJsonString
-import com.apollographql.apollo3.exception.DefaultApolloException
-import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
-import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
-import com.apollographql.apollo3.integration.httpcache.type.Date
-import com.apollographql.apollo3.integration.normalizer.CharacterWithBirthDateQuery
-import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
-import com.apollographql.apollo3.integration.normalizer.GetJsonScalarQuery
-import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.integration.normalizer.type.Episode
-import kotlinx.datetime.LocalDate
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.StringAdapter
+import com.apollographql.apollo.api.json.MapJsonReader
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.toApolloResponse
+import com.apollographql.apollo.api.toJsonString
+import com.apollographql.apollo.exception.DefaultApolloException
+import com.apollographql.apollo.integration.httpcache.AllFilmsQuery
+import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
+import com.apollographql.apollo.integration.httpcache.type.Date
+import com.apollographql.apollo.integration.normalizer.CharacterWithBirthDateQuery
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
+import com.apollographql.apollo.integration.normalizer.GetJsonScalarQuery
+import com.apollographql.apollo.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo.integration.normalizer.type.Episode
 import okio.Buffer
 import testFixtureToJsonReader
 import kotlin.test.Test
@@ -141,11 +140,11 @@ class ParseResponseBodyTest {
   @Throws(Exception::class)
   fun allFilmsWithDate() {
 
-    val response = testFixtureToJsonReader("HttpCacheTestAllFilms.json").toApolloResponse(operation = AllFilmsQuery(), customScalarAdapters = CustomScalarAdapters.Builder().add(Date.type, KotlinxLocalDateAdapter).build())
+    val response = testFixtureToJsonReader("HttpCacheTestAllFilms.json").toApolloResponse(operation = AllFilmsQuery(), customScalarAdapters = CustomScalarAdapters.Builder().add(Date.type, StringAdapter).build())
     assertFalse(response.hasErrors())
     assertEquals(response.data!!.allFilms?.films?.size, 6)
     assertEquals(
-        response.data!!.allFilms?.films?.map { KotlinxLocalDateAdapter.toJsonString(it!!.releaseDate) },
+        response.data!!.allFilms?.films?.map { StringAdapter.toJsonString(it!!.releaseDate) },
         listOf("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19", "2002-05-16", "2005-05-19").map { "\"$it\"" }
     )
   }
@@ -245,22 +244,5 @@ class ParseResponseBodyTest {
         data,
         query.adapter().fromJson(MapJsonReader(mapOf("json" to dataMap)), CustomScalarAdapters.Empty)
     )
-  }
-
-  @Test
-  fun forgettingToAddARuntimeAdapterForAScalarRegisteredInThePluginFails() {
-    val data = CharacterWithBirthDateQuery.Data(
-        CharacterWithBirthDateQuery.Character(
-            LocalDate(1970, 1, 1),
-        )
-    )
-    val query = CharacterWithBirthDateQuery("1")
-    try {
-      val dataString = query.adapter().toJsonString(data)
-      query.adapter().fromJson(Buffer().writeUtf8(dataString).jsonReader(), CustomScalarAdapters.Empty)
-      error("expected IllegalStateException")
-    } catch (e: IllegalStateException) {
-      assertTrue(e.message!!.contains("Can't map GraphQL type: `Date`"))
-    }
   }
 }

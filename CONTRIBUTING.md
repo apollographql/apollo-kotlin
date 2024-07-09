@@ -227,9 +227,9 @@ Here are the steps to do a new release:
 * wait for the CI to finish compiling
 * go to https://s01.oss.sonatype.org/, and release the artifacts manually. This step is called "close, release and drop"
   in the Sonatype ecosystem.
-* wait for it to be visible on [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo3/) (this usually
+* wait for it to be visible on [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo/) (this usually
   takes a few minutes). If you're on MacOS, you can
-  use [dependency-watch](https://github.com/JakeWharton/dependency-watch): `dependency-watch await 'com.apollographql.apollo3:apollo-runtime:$version' && osascript -e 'display notification "Release is ready 🚀"'`
+  use [dependency-watch](https://github.com/JakeWharton/dependency-watch): `dependency-watch await 'com.apollographql.apollo:apollo-runtime:$version' && osascript -e 'display notification "Release is ready 🚀"'`
 * merge pending documentation/tutorial updates. Make sure the tutorial compiles and runs well.
 * paste the changelog in a new release on [GitHub](https://github.com/apollographql/apollo-kotlin/releases)
 * if it's a significant release, tweet about it 🐦

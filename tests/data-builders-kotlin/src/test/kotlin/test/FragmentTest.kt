@@ -1,6 +1,6 @@
 package test
 
-import com.apollographql.apollo3.exception.NullOrMissingField
+import com.apollographql.apollo.exception.NullOrMissingField
 import data.builders.fragment.AnimalDetailsImpl
 import data.builders.fragment.CatDetailsImpl
 import data.builders.fragment.TrivialFragmentImpl

@@ -1,12 +1,14 @@
 package test.network
 
-import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.mpp.currentTimeMillis
-import com.apollographql.apollo3.network.http.HttpInterceptor
-import com.apollographql.apollo3.network.http.HttpInterceptorChain
+import com.apollographql.apollo.api.http.HttpRequest
+import com.apollographql.apollo.api.http.HttpResponse
+import com.apollographql.apollo.network.http.HttpInterceptor
+import com.apollographql.apollo.network.http.HttpInterceptorChain
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import test.network.AuthorizationInterceptor.TokenProvider
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeMark
 
 /**
  * An [HttpInterceptor] that handles authentication
@@ -29,7 +31,10 @@ import kotlinx.coroutines.sync.withLock
 class AuthorizationInterceptor(private val tokenProvider: TokenProvider, private val maxSize: Int = 1) : HttpInterceptor {
   private val mutex = Mutex()
 
-  class Token(val value: String, val expiresEpochSecond: Long)
+  /**
+   * @param expirationMark the mark at which the token expires or [null] if it never expires
+   */
+  class Token(val value: String, val expirationMark: TimeMark?)
 
   interface TokenProvider {
     /**
@@ -61,7 +66,7 @@ class AuthorizationInterceptor(private val tokenProvider: TokenProvider, private
   class TokenLink(
       val oldValue: String?,
       val newValue: String,
-      val expiresEpochSecond: Long,
+      val expirationMark: TimeMark?,
       var next: TokenLink?,
   )
 
@@ -79,7 +84,7 @@ class AuthorizationInterceptor(private val tokenProvider: TokenProvider, private
         tail = TokenLink(
             oldValue = null,
             newValue = token.value,
-            expiresEpochSecond = token.expiresEpochSecond,
+            expirationMark = token.expirationMark,
             next = null
         )
         head = tail
@@ -90,8 +95,7 @@ class AuthorizationInterceptor(private val tokenProvider: TokenProvider, private
 
       // Start refreshing tokens 2 seconds before they actually expire to account for
       // network time
-      val margin = 2
-      if (currentTimeMillis() / 1000 + margin - link.expiresEpochSecond >= 0) {
+      if (link.expirationMark?.minus(2.seconds)?.hasPassedNow() == true) {
         // This token will soon expire, get a new one
         val token = tokenProvider.refreshToken(link.newValue)
 
@@ -99,7 +103,7 @@ class AuthorizationInterceptor(private val tokenProvider: TokenProvider, private
             TokenLink(
                 oldValue = link.newValue,
                 newValue = token.value,
-                expiresEpochSecond = token.expiresEpochSecond,
+                expirationMark = token.expirationMark,
                 next = null
             )
         )
@@ -131,7 +135,7 @@ class AuthorizationInterceptor(private val tokenProvider: TokenProvider, private
             TokenLink(
                 oldValue = tokenValue,
                 newValue = token.value,
-                expiresEpochSecond = token.expiresEpochSecond,
+                expirationMark = token.expirationMark,
                 next = null
             )
         )

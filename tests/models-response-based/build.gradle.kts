@@ -1,6 +1,6 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
-  id("com.apollographql.apollo3")
+  id("com.apollographql.apollo")
 }
 
 apolloTest()
@@ -11,7 +11,6 @@ kotlin {
       dependencies {
         implementation(libs.apollo.runtime)
         implementation(libs.apollo.normalizedcache)
-        implementation(libs.apollo.adapters)
       }
     }
 

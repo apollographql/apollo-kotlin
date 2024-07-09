@@ -4,6 +4,7 @@ import com.apollographql.ijplugin.refactoring.findClassReferences
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
 import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsageInfo
+import com.apollographql.ijplugin.util.apollo3
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMigration
 import com.intellij.psi.search.GlobalSearchScope
@@ -31,7 +32,7 @@ object UpdateFileUpload : MigrationItem() {
   override fun importsToAdd(): Set<String> {
     return setOf(
         "java.io.File",
-        "com.apollographql.apollo3.api.toUpload",
+        "$apollo3.api.toUpload",
     )
   }
 }

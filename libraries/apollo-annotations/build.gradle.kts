@@ -3,7 +3,7 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo3.annotations"
+    namespace = "com.apollographql.apollo.annotations"
 )
 
 kotlin {

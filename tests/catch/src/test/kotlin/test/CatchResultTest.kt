@@ -1,8 +1,8 @@
 package test
 
-import com.apollographql.apollo3.api.graphQLErrorOrNull
-import com.apollographql.apollo3.api.getOrNull
-import com.apollographql.apollo3.api.getOrThrow
+import com.apollographql.apollo.api.graphQLErrorOrNull
+import com.apollographql.apollo.api.getOrNull
+import com.apollographql.apollo.api.getOrThrow
 import result.PriceNullQuery
 import result.ProductIgnoreErrorsQuery
 import result.ProductNullQuery
@@ -86,7 +86,7 @@ class CatchResultTest {
     val response = ProductIgnoreErrorsQuery().parseResponse(productPriceError)
 
     assertNotNull(response.data?.product)
-    assertNull(response.data?.product?.getOrNull()?.price?.getOrNull())
+    assertNull(response.data?.product?.price)
     assertEquals("cannot resolve price", response.errors?.single()?.message)
   }
 

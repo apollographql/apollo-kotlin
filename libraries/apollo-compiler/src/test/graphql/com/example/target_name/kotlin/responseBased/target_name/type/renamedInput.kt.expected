@@ -5,7 +5,7 @@
 //
 package com.example.target_name.type
 
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.api.Optional
 import kotlin.String
 
 public data class RenamedInput(

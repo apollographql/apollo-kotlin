@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.apollo)
 }
 dependencies {
-    add("implementation","com.apollographql.apollo3:apollo-runtime:1.4.5")
+    add("implementation","com.apollographql.apollo:apollo-runtime:1.4.5")
 }
 
 apollo {

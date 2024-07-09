@@ -1,0 +1,19 @@
+name: Bump kotlin nightlies
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  push-kotlin-nightlies-branch:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #v4.1.7
+        with:
+          ref: kotlin-nightlies
+          fetch-depth: 0
+      - name: Rebase on top of main, bump versions, commit and push, and trigger 'pr' workflow
+        run: ./scripts/bump-kotlin-nightlies.main.kts
+    env:
+      GH_TOKEN: ${{ github.token }}

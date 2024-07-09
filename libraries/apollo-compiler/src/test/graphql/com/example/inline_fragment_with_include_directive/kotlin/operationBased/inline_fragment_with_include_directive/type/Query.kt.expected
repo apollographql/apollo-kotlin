@@ -5,7 +5,7 @@
 //
 package com.example.inline_fragment_with_include_directive.type
 
-import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo.api.ObjectType
 
 /**
  * The query type, represents all of the entry points into our object graph

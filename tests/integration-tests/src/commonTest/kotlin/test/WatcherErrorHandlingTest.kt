@@ -1,25 +1,25 @@
 package test
 
 import IdCacheKeyGenerator
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.FetchPolicy
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.fetchPolicy
-import com.apollographql.apollo3.cache.normalized.refetchPolicy
-import com.apollographql.apollo3.cache.normalized.store
-import com.apollographql.apollo3.cache.normalized.watch
-import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.exception.CacheMissException
-import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
-import com.apollographql.apollo3.integration.normalizer.type.Episode
+import app.cash.turbine.test
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.cache.normalized.ApolloStore
+import com.apollographql.apollo.cache.normalized.FetchPolicy
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.cache.normalized.fetchPolicy
+import com.apollographql.apollo.cache.normalized.refetchPolicy
+import com.apollographql.apollo.cache.normalized.store
+import com.apollographql.apollo.cache.normalized.watch
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo.exception.CacheMissException
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
+import com.apollographql.apollo.integration.normalizer.type.Episode
+import com.apollographql.apollo.testing.awaitElement
+import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueError
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.awaitElement
-import com.apollographql.apollo3.testing.internal.runTest
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -41,66 +41,61 @@ class WatcherErrorHandlingTest {
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }
 
-  private suspend fun tearDown() {
+  private fun tearDown() {
     mockServer.close()
   }
 
+  /**
+   * watch() should behave just like toFlow() in the absence of cache writes
+   */
   @Test
   fun fetchEmitsAllErrors() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val channel = Channel<EpisodeHeroNameQuery.Data?>()
-    val jobs = mutableListOf<Job>()
+    mockServer.enqueueError(statusCode = 500)
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.CacheFirst)
+        .watch()
+        .test {
+          assertIs<CacheMissException>(awaitItem().exception)
+          assertIs<ApolloHttpException>(awaitItem().exception)
+          cancelAndIgnoreRemainingEvents()
+        }
 
-    jobs += launch {
-      mockServer.enqueueError(statusCode = 500)
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .fetchPolicy(FetchPolicy.CacheFirst)
-          .watch()
-          .collect {
-            channel.send(it.data)
-          }
-    }
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.CacheOnly)
+        .watch()
+        .test {
+          assertIs<CacheMissException>(awaitItem().exception)
+          cancelAndIgnoreRemainingEvents()
+        }
 
-    jobs += launch {
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .fetchPolicy(FetchPolicy.CacheOnly)
-          .watch()
-          .collect {
-            channel.send(it.data)
-          }
-    }
+    mockServer.enqueueError(statusCode = 500)
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.NetworkFirst)
+        .watch()
+        .test {
+          assertIs<ApolloHttpException>(awaitItem().exception)
+          assertIs<CacheMissException>(awaitItem().exception)
+          cancelAndIgnoreRemainingEvents()
+        }
 
-    jobs += launch {
-      mockServer.enqueueError(statusCode = 500)
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .fetchPolicy(FetchPolicy.NetworkFirst)
-          .watch()
-          .collect {
-            channel.send(it.data)
-          }
-    }
+    mockServer.enqueueError(statusCode = 500)
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.NetworkOnly)
+        .watch()
+        .test {
+          assertIs<ApolloHttpException>(awaitItem().exception)
+          cancelAndIgnoreRemainingEvents()
+        }
 
-    jobs += launch {
-      mockServer.enqueueError(statusCode = 500)
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .fetchPolicy(FetchPolicy.NetworkOnly)
-          .watch()
-          .collect {
-            channel.send(it.data)
-          }
-    }
-
-    jobs += launch {
-      mockServer.enqueueError(statusCode = 500)
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .fetchPolicy(FetchPolicy.CacheAndNetwork)
-          .watch()
-          .collect {
-            channel.send(it.data)
-          }
-    }
-
-    channel.assertCount(8)
-    jobs.forEach { it.cancel() }
+    mockServer.enqueueError(statusCode = 500)
+    apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+        .fetchPolicy(FetchPolicy.CacheAndNetwork)
+        .watch()
+        .test {
+          assertIs<CacheMissException>(awaitItem().exception)
+          assertIs<ApolloHttpException>(awaitItem().exception)
+          cancelAndIgnoreRemainingEvents()
+        }
   }
 
   @Test
@@ -120,6 +115,7 @@ class WatcherErrorHandlingTest {
             channel.send(it)
           }
     }
+    @Suppress("DEPRECATION")
     assertEquals(channel.awaitElement().data?.hero?.name, "R2-D2")
 
     // Another newer call gets updated information with "Artoo"
@@ -129,6 +125,7 @@ class WatcherErrorHandlingTest {
     mockServer.enqueueError(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
+    @Suppress("DEPRECATION")
     assertIs<ApolloHttpException>(channel.awaitElement().exception)
     job.cancel()
   }
@@ -200,6 +197,7 @@ class WatcherErrorHandlingTest {
             channel.send(it)
           }
     }
+    @Suppress("DEPRECATION")
     assertEquals(channel.awaitElement().data?.hero?.name, "R2-D2")
 
     // Another newer call gets updated information with "Artoo"
@@ -209,6 +207,7 @@ class WatcherErrorHandlingTest {
     mockServer.enqueueError(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
+    @Suppress("DEPRECATION")
     assertIs<ApolloHttpException>(channel.awaitElement().exception)
 
     assertNull(throwable)

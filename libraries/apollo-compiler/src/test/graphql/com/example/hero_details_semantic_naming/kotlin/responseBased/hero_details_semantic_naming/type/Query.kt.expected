@@ -5,7 +5,7 @@
 //
 package com.example.hero_details_semantic_naming.type
 
-import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo.api.ObjectType
 
 /**
  * The query type, represents all of the entry points into our object graph

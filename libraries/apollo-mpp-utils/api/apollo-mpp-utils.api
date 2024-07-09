@@ -1,18 +1,4 @@
-public final class com/apollographql/apollo3/mpp/Platform : java/lang/Enum {
-	public static final field Js Lcom/apollographql/apollo3/mpp/Platform;
-	public static final field Jvm Lcom/apollographql/apollo3/mpp/Platform;
-	public static final field Native Lcom/apollographql/apollo3/mpp/Platform;
-	public static final field WasmJs Lcom/apollographql/apollo3/mpp/Platform;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/mpp/Platform;
-	public static fun values ()[Lcom/apollographql/apollo3/mpp/Platform;
-}
-
-public final class com/apollographql/apollo3/mpp/UtilsKt {
-	public static final fun currentThreadId ()Ljava/lang/String;
-	public static final fun currentThreadName ()Ljava/lang/String;
-	public static final fun currentTimeFormatted ()Ljava/lang/String;
+public final class com/apollographql/apollo/mpp/UtilsKt {
 	public static final fun currentTimeMillis ()J
-	public static final fun platform ()Lcom/apollographql/apollo3/mpp/Platform;
 }
 

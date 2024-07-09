@@ -5,6 +5,7 @@ import com.apollographql.ijplugin.navigation.findInputTypeGraphQLDefinitions
 import com.apollographql.ijplugin.navigation.isApolloInputClass
 import com.apollographql.ijplugin.navigation.isApolloInputClassReference
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.util.apollo4
 import com.apollographql.ijplugin.util.canBeNull
 import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.type
@@ -49,7 +50,7 @@ class ApolloOneOfInputCreationInspection : LocalInspectionTool() {
           return
         }
         val arg = expression.valueArguments.first()
-        if (arg.getArgumentExpression()?.type()?.fqName?.asString() == "com.apollographql.apollo3.api.Optional.Absent") {
+        if (arg.getArgumentExpression()?.type()?.fqName?.asString() == "$apollo4.api.Optional.Absent") {
           holder.registerProblem(expression.calleeExpression!!, ApolloBundle.message("inspection.oneOfInputCreation.reportText.constructor.argIsAbsent"))
         }
       }

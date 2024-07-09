@@ -119,47 +119,20 @@ This method takes a type-safe generated class from `Types`, along with its corre
 
 > If you can't find `Types`, build your project to trigger codegen.
 
-## Apollo-provided adapters
+## Built-in adapters
 
-The following built-in adapters can be used with common custom scalar types:
+`apollo-api` provides the following built-in adapters:
 
-| Adapter                                      | Description                                       |
-|----------------------------------------------|---------------------------------------------------|
-| `com.apollographql.apollo3.api.FloatAdapter` | Converts from/to `kotlin.Float`/`java.lang.Float` |
-| `com.apollographql.apollo3.api.LongAdapter`  | Converts from/to `kotlin.Long`/`java.lang.Long`   |
+| Adapter                                       | Description                                           |
+|-----------------------------------------------|-------------------------------------------------------|
+| `com.apollographql.apollo.api.StringAdapter`  | Converts from/to `kotlin.String`/`java.lang.String`   |
+| `com.apollographql.apollo.api.IntAdapter`     | Converts from/to `kotlin.Int`/`java.lang.Int`         |
+| `com.apollographql.apollo.api.BooleanAdapter` | Converts from/to `kotlin.Boolean`/`java.lang.Boolean` |
+| `com.apollographql.apollo.api.DoubleAdapter`  | Converts from/to `kotlin.Double`/`java.lang.Double`   |
+| `com.apollographql.apollo.api.FloatAdapter`   | Converts from/to `kotlin.Float`/`java.lang.Float`     |
+| `com.apollographql.apollo.api.LongAdapter`    | Converts from/to `kotlin.Long`/`java.lang.Long`       |
+| `com.apollographql.apollo.api.AnyAdapter`     | Converts from/to `kotlin.Any`/`java.lang.Object`      |
 
-In addition, the `com.apollographql.apollo3:apollo-adapters` artifact provides these adapters:
+## Extra adapters
 
-| Adapter                                                         | Description                                                                                         |
-|-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| `com.apollographql.apollo3.adapter.KotlinxInstantAdapter`       | For `kotlinx.datetime.Instant` ISO8601 dates                                                        |
-| `com.apollographql.apollo3.adapter.JavaInstantAdapter`          | For `java.time.Instant` ISO8601 dates                                                               |
-| `com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter`     | For `kotlinx.datetime.LocalDate` ISO8601 dates                                                      |
-| `com.apollographql.apollo3.adapter.JavaLocalDateAdapter`        | For `java.time.LocalDate` ISO8601 dates                                                             |
-| `com.apollographql.apollo3.adapter.KotlinxLocalDateTimeAdapter` | For `kotlinx.datetime.LocalDateTime` ISO8601 dates                                                  |
-| `com.apollographql.apollo3.adapter.JavaLocalDateTimeAdapter`    | For `java.time.LocalDateTime` ISO8601 dates                                                         |
-| `com.apollographql.apollo3.adapter.KotlinxLocalTimeAdapter`     | For `kotlinx.datetime.LocalTime` ISO8601 dates                                                      |
-| `com.apollographql.apollo3.adapter.JavaLocalTimeAdapter`        | For `java.time.LocalTime` ISO8601 dates                                                         |
-| `com.apollographql.apollo3.adapter.JavaOffsetDateTimeAdapter`   | For `java.time.OffsetDateTime` ISO8601 dates                                                        |
-| `com.apollographql.apollo3.adapter.DateAdapter`                 | For `java.util.Date` ISO8601 dates                                                                  |
-| `com.apollographql.apollo3.adapter.BigDecimalAdapter`           | For a Multiplatform `com.apollographql.apollo3.adapter.BigDecimal` class holding big decimal values |
-
-<Note>
-
-Because some adapters use `kotlinx.datetime` (which itself uses `java.time`), you need to enable [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26
-
-</Note>
-
-For example, to use `DateAdapter`, configure your Gradle scripts like so:
-
-```kotlin title="build.gradle[.kts]"
-dependencies {
-  implementation("com.apollographql.apollo3:apollo-adapters:4.0.0-beta.7")
-}
-
-apollo {
-  service("service") {
-    mapScalar("Date", "java.util.Date", "com.apollographql.apollo3.adapter.DateAdapter")
-  }
-}
-```
+Extra adapters for dates and big decimals are available at https://github.com/apollographql/apollo-kotlin-adapters

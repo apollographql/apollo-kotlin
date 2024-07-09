@@ -1,17 +1,15 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Error
-import com.apollographql.apollo3.autoPersistedQueryInfo
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Error
+import com.apollographql.apollo.autoPersistedQueryInfo
+import com.apollographql.apollo.mpp.currentTimeMillis
+import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueMultipart
 import com.apollographql.mockserver.enqueueString
 import com.apollographql.mockserver.enqueueStrings
-import com.apollographql.apollo3.mpp.Platform
-import com.apollographql.apollo3.mpp.currentTimeMillis
-import com.apollographql.apollo3.mpp.platform
-import com.apollographql.apollo3.testing.internal.runTest
 import com.benasher44.uuid.uuid4
 import defer.SimpleDeferQuery
 import defer.WithFragmentSpreadsQuery
@@ -255,7 +253,8 @@ class DeferTest {
 
   @Test
   fun payloadsAreReceivedIncrementally() = runTest(before = { setUp() }, after = { tearDown() }) {
-    if (platform() == Platform.Js) {
+    @Suppress("DEPRECATION")
+    if (com.apollographql.apollo.testing.platform() == com.apollographql.apollo.testing.Platform.Js) {
       // TODO For now chunked is not supported on JS - remove this check when it is
       return@runTest
     }

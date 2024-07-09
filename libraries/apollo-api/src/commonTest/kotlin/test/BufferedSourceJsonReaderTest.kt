@@ -1,6 +1,6 @@
 package test
 
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
+import com.apollographql.apollo.api.json.BufferedSourceJsonReader
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals

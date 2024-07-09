@@ -1,18 +1,16 @@
 
-import com.android.build.gradle.tasks.BundleAar
 import dev.adamko.dokkatoo.tasks.DokkatooGenerateTask
-import org.gradle.api.internal.artifacts.transform.UnzipTransform
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
   alias(libs.plugins.apollo.published)
   id("com.google.devtools.ksp")
+  id("com.apollographql.execution")
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo3.debugserver",
+    namespace = "com.apollographql.apollo.debugserver",
     withLinux = false,
     withApple = false,
     withJs = false,
@@ -27,17 +25,29 @@ apolloLibrary(
 
 kotlin {
   sourceSets {
-    findByName("commonMain")?.apply {
-      kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
-
+    findByName("commonMain")!!.apply {
       dependencies {
         implementation(project(":apollo-normalized-cache"))
         implementation(project(":apollo-normalized-cache-api"))
         implementation(project(":apollo-ast"))
         api(project(":apollo-runtime"))
+        implementation(libs.apollo.execution)
       }
     }
 
+    getByName("jvmMain") {
+      dependencies {
+        implementation(libs.apollo.execution.ktor)
+        implementation(libs.ktor.server.cio)
+        implementation(libs.slf4j.nop)
+      }
+    }
+    getByName("jvmTest") {
+      dependencies {
+        implementation(libs.kotlin.test)
+        implementation(project(":apollo-runtime"))
+      }
+    }
     findByName("androidMain")?.apply {
       dependencies {
         implementation(libs.androidx.startup.runtime)
@@ -46,87 +56,18 @@ kotlin {
   }
 }
 
-val shadow = configurations.create("shadow") {
-  isCanBeConsumed = false
-  isCanBeResolved = true
+tasks.withType<DokkatooGenerateTask>().configureEach {
+  dependsOn("kspCommonMainKotlinMetadata")
 }
-
-val artifactType = Attribute.of("artifactType", String::class.java)
-
-val shadowUnzipped = configurations.create("shadowUnzipped") {
-  isCanBeConsumed = false
-  isCanBeResolved = true
-  attributes {
-    attribute(artifactType, ArtifactTypeDefinition.DIRECTORY_TYPE)
-  }
-  extendsFrom(shadow)
-}
-
-dependencies {
-  // apollo-execution is not published: we bundle it into the aar artifact
-  add(shadow.name, project(":apollo-execution-incubating")) {
-    isTransitive = false
-  }
-}
-
-configurations.all {
-  resolutionStrategy.eachDependency {
-    /**
-     * apollo-ksp is not published yet so we need to get it from the current build
-     */
-    if (requested.module.name == "apollo-ksp") {
-      useTarget("com.apollographql.apollo3:apollo-ksp-incubating:${requested.version}")
-    }
-  }
-}
-configurations.getByName(kotlin.sourceSets.getByName("commonMain").compileOnlyConfigurationName).extendsFrom(shadow)
-
-/**
- * KSP configuration
- * KMP support isn't great so we wire most of the things manually
- * See https://github.com/google/ksp/pull/1021
- */
-fun configureKsp() {
-  dependencies {
-    add("kspCommonMainMetadata", project(":apollo-ksp-incubating"))
-    add(
-        "kspCommonMainMetadata",
-        apollo.apolloKspProcessor(
-            schema = file(path = "src/androidMain/resources/schema.graphqls"),
-            service = "apolloDebugServer",
-            packageName = "com.apollographql.apollo3.debugserver.internal.graphql"
-        )
-    )
-  }
-  tasks.withType<KotlinCompile>().configureEach {
+tasks.configureEach {
+  if (name.endsWith("sourcesJar", ignoreCase = true)) {
     dependsOn("kspCommonMainKotlinMetadata")
   }
-  tasks.withType<DokkatooGenerateTask>().configureEach {
-    dependsOn("kspCommonMainKotlinMetadata")
-  }
-  tasks.configureEach {
-    if (name.endsWith("sourcesJar", ignoreCase = true)) {
-      dependsOn("kspCommonMainKotlinMetadata")
-    }
-  }
-}
-configureKsp()
-
-// apollo-execution is not published: we bundle it into the aar artifact
-val jarApolloExecution = tasks.register<Jar>("jarApolloExecution") {
-  archiveBaseName.set("apollo-execution")
-  from(shadowUnzipped)
 }
 
-tasks.withType<BundleAar>().configureEach {
-  from(jarApolloExecution) {
-    into("libs")
-  }
-}
-
-dependencies {
-  registerTransform(UnzipTransform::class.java) {
-    from.attribute(artifactType, ArtifactTypeDefinition.JAR_TYPE)
-    to.attribute(artifactType, ArtifactTypeDefinition.DIRECTORY_TYPE)
+apolloExecution {
+  service("apolloDebugServer") {
+    packageName = "com.apollographql.apollo.debugserver.internal.graphql"
+    schemaPath.set("graphql/schema.graphqls")
   }
 }

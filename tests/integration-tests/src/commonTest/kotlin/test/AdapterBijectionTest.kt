@@ -1,18 +1,15 @@
 package test
 
-import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.toJsonString
-import com.apollographql.apollo3.integration.httpcache.type.Date
-import com.apollographql.apollo3.integration.normalizer.EpisodeHeroWithDatesQuery
-import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
-import com.apollographql.apollo3.integration.normalizer.HeroNameWithEnumsQuery
-import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
-import com.apollographql.apollo3.integration.normalizer.type.Episode
-import kotlinx.datetime.LocalDate
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Optional
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.toJsonString
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroWithDatesQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
+import com.apollographql.apollo.integration.normalizer.HeroNameWithEnumsQuery
+import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery
+import com.apollographql.apollo.integration.normalizer.type.Episode
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,7 +28,7 @@ class AdapterBijectionTest {
       EpisodeHeroWithDatesQuery.Data(
           EpisodeHeroWithDatesQuery.Hero(
               "R222-D222",
-              LocalDate(1985, 4, 16),
+              "1985-04-16",
               emptyList()
           )
       )
@@ -43,10 +40,10 @@ class AdapterBijectionTest {
       EpisodeHeroWithDatesQuery.Data(
           EpisodeHeroWithDatesQuery.Hero(
               "R22-D22",
-              LocalDate(1986, 4, 16),
+              "1986-04-16",
               listOf(
-                  LocalDate(2017, 4, 16),
-                  LocalDate(2017, 5, 16),
+                  "2017-04-16",
+                  "2017-05-16",
               )
           )
       )
@@ -146,7 +143,7 @@ class AdapterBijectionTest {
 //  )
 
   private fun <D : Operation.Data> bijection(operation: Operation<D>, data: D) {
-    val customScalarAdapters = CustomScalarAdapters.Builder().add(Date.type, KotlinxLocalDateAdapter).build()
+    val customScalarAdapters = CustomScalarAdapters.Empty
     val json = operation.adapter().toJsonString(value = data, customScalarAdapters)
     val data2 = operation.adapter().fromJson(Buffer().apply { writeUtf8(json) }.jsonReader(), customScalarAdapters)
 

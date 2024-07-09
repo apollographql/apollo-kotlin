@@ -5,16 +5,16 @@
 //
 package com.example.java_guava_optionals.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ImmutableMapBuilder;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.java.adapter.GuavaOptionalAdapter;
-import com.apollographql.apollo3.api.java.adapter.GuavaOptionalAdapters;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.Adapters;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ImmutableMapBuilder;
+import com.apollographql.apollo.api.ObjectAdapter;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.java_guava_optionals.MyQuery;
 import com.example.java_guava_optionals.type.MyInput;
 import com.example.java_guava_optionals.type.adapter.MyInput_InputAdapter;
+import com.example.java_guava_optionals.type.adapter.OptionalAdapter;
+import com.example.java_guava_optionals.type.adapter.OptionalAdapters;
 import java.io.IOException;
 
 public enum MyQuery_VariablesAdapter {
@@ -24,13 +24,13 @@ public enum MyQuery_VariablesAdapter {
       CustomScalarAdapters customScalarAdapters, boolean withDefaultValues) throws IOException {
     if (value.nullableInt.isPresent()) {
       writer.name("nullableInt");
-      new GuavaOptionalAdapter<>(GuavaOptionalAdapters.GuavaOptionalIntAdapter).toJson(writer, customScalarAdapters, value.nullableInt);
+      new OptionalAdapter<>(OptionalAdapters.OptionalIntAdapter).toJson(writer, customScalarAdapters, value.nullableInt);
     }
     writer.name("nonNullableInt");
     Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
     if (value.nonNullableIntWithDefault.isPresent()) {
       writer.name("nonNullableIntWithDefault");
-      new GuavaOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault);
+      new OptionalAdapter<>(Adapters.IntAdapter).toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault);
     }
     else if (withDefaultValues) {
       writer.name("nonNullableIntWithDefault");
@@ -38,13 +38,13 @@ public enum MyQuery_VariablesAdapter {
     }
     if (value.nullableInput.isPresent()) {
       writer.name("nullableInput");
-      new GuavaOptionalAdapter<>(new GuavaOptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.nullableInput);
+      new OptionalAdapter<>(new OptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.nullableInput);
     }
     writer.name("nonNullableInput");
     new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false).toJson(writer, customScalarAdapters, value.nonNullableInput);
     if (value.nonNullableInputWithDefault.isPresent()) {
       writer.name("nonNullableInputWithDefault");
-      new GuavaOptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false)).toJson(writer, customScalarAdapters, value.nonNullableInputWithDefault);
+      new OptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false)).toJson(writer, customScalarAdapters, value.nonNullableInputWithDefault);
     }
     else if (withDefaultValues) {
       writer.name("nonNullableInputWithDefault");

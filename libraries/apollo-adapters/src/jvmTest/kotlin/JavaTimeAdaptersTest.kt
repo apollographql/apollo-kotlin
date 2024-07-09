@@ -1,17 +1,19 @@
-import com.apollographql.apollo3.adapter.DateAdapter
-import com.apollographql.apollo3.adapter.JavaInstantAdapter
-import com.apollographql.apollo3.adapter.JavaLocalDateAdapter
-import com.apollographql.apollo3.adapter.JavaLocalDateTimeAdapter
-import com.apollographql.apollo3.adapter.JavaLocalTimeAdapter
-import com.apollographql.apollo3.adapter.JavaOffsetDateTimeAdapter
-import com.apollographql.apollo3.adapter.KotlinxInstantAdapter
-import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
-import com.apollographql.apollo3.adapter.KotlinxLocalDateTimeAdapter
-import com.apollographql.apollo3.adapter.KotlinxLocalTimeAdapter
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.json.buildJsonString
+@file:Suppress("DEPRECATION")
+
+import com.apollographql.apollo.adapter.DateAdapter
+import com.apollographql.apollo.adapter.JavaInstantAdapter
+import com.apollographql.apollo.adapter.JavaLocalDateAdapter
+import com.apollographql.apollo.adapter.JavaLocalDateTimeAdapter
+import com.apollographql.apollo.adapter.JavaLocalTimeAdapter
+import com.apollographql.apollo.adapter.JavaOffsetDateTimeAdapter
+import com.apollographql.apollo.adapter.KotlinxInstantAdapter
+import com.apollographql.apollo.adapter.KotlinxLocalDateAdapter
+import com.apollographql.apollo.adapter.KotlinxLocalDateTimeAdapter
+import com.apollographql.apollo.adapter.KotlinxLocalTimeAdapter
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.json.BufferedSourceJsonReader
+import com.apollographql.apollo.api.json.buildJsonString
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atTime
 import kotlinx.datetime.toInstant

@@ -5,14 +5,14 @@
 //
 package com.example.java_android_annotations
 
-import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo.annotations.ApolloAdaptableWith
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Optional
+import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.obj
 import com.example.java_android_annotations.adapter.MyQuery_ResponseAdapter
 import com.example.java_android_annotations.adapter.MyQuery_VariablesAdapter
 import com.example.java_android_annotations.selections.MyQuerySelections
@@ -31,8 +31,6 @@ public data class MyQuery(
   public val nonNullableInput: MyInput,
   public val nonNullableInputWithDefault: Optional<MyInput> = Optional.Absent,
 ) : Query<MyQuery.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

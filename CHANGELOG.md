@@ -1,6 +1,51 @@
 Change Log
 ==========
 
+# Version 4.0.0-rc.1
+
+_2024-07-08_
+
+## New package name & evolution policy
+
+We changed the package name from `com.apollographql.apollo3` to `com.apollographql.apollo` for version 4. This is a safe default for the many years to come and works well with our new [evolution policy](https://www.apollographql.com/docs/kotlin/v4/essentials/evolution).
+
+If you are updating from version 3 or an alpha/beta version 4, you need to replace all `com.apollographql.apollo3` with `com.apollographql.apollo`
+
+## Apollo galaxy
+
+As part of this release, some of the non-core artifacts have been moved to separate coordinates and GitHub repositories. Moving forward, this will allow us to iterate faster on those artifacts while keeping the core ones more maintainable.
+
+Some of the existing symbols are kept as deprecated to ease the transition (like `MockServer` for an example). Others (the `-incubating` ones) have been removed, and you need to update them now.
+
+You can read more in the [migration guide](https://go.apollo.dev/ak-moved-artifacts).
+
+## All changes
+
+* [BREAKING][all] Change package name to `com.apollographql.apollo`
+* [BREAKING][all] Remove incubating compose support (#5987)
+* [BREAKING][all] Remove apollo-cli (#5986)
+* [BREAKING][all] Remove incubating normalized cache (#5985)
+* [BREAKING][all] Nullability: Move nullability directives to v0.4 (#6002)
+* [BREAKING][all] Suffix ApolloStore write/publish overloads with `Sync` to avoid them taking precedence over their suspend counterparts (#5976)
+* [NEW][cache] SqlNormalizedCacheFactory make sqldriver public to support Sqlcipher data encryption. (#5973)
+* [NEW][runtime] Add ApolloClient.Builder.retryOnErrorInterceptor (#5989)
+* [adapters] Deprecate apollo-adapters (#6012)
+* [🐘gradle-plugin] Rename the multi-module configurations (#6027)
+* [IJ Plugin] Tweak cache name display for Apollo 3, 4, and incubating (#6026)
+* [compiler] remove unused argument to scalarAdapterInitializer() (#5996)
+* [java] Use published version of the Java support libs (#5991)
+* [runtime] Deprecate apollo engine ktor and publish engine tests (#5988)
+* [mpp-utils] Cleanup mpp utils (#5980)
+* [CI] use `gradle/actions/setup-gradle` instead of `gradle-build-action` (#5981)
+* [infra] Update to develocity API (#5967)
+* [incubating cache] Add a CacheKeyApolloResolver based on ApolloResolver (incubating) (#5970)
+* [mockserver] Robustify TCP server (#5968)
+* [runtime] adding checks for json end_document in http batching interceptors (#5893)
+* [IJ plugin] Cache ApolloKotlinService into project settings (#5962)
+* [IJ plugin] Avoid a ConcurrentModificationException occurring in conjunction to the IJ Platform Gradle plugin. (#5959)
+* [websockets] Send Sec-WebSocket-Protocol (#5948)
+* [mockserver] Deprecate com.apollographql.apollo3.mockserver.MockServer (#5943)
+
 # Version 4.0.0-beta.7
 
 _2024-06-05_
@@ -14,30 +59,30 @@ _2024-06-05_
 #5865: `ApolloCompilerPluginProvider` is introduced to allow passing arguments to compiler plugins. See the [compiler plugins documentation](https://go.apollo.dev/ak-compiler-plugins) for more details. 
 
 ## 👷‍ All changes
-[testing] Use com.apollographql.mockserver.MockServer (#5939)
-[testing] Simplify our implementation of runTest (#5935)
-[testing] Prepare apollo-testing-support to new MockServer (#5934)
-[runtime] Remove multidex library (#5930)
-[all] Bump languageVersion/apiVersion to Kotlin 2.0 (#5931)
-[codegen] fix mapping of the builtin Float type (#5928)
-[IJ Plugin] Add inspection to warn about the presence of a GraphQL config file (#5908)
-[codegen] Add a null-check to java enum safeValueOf (#5904)
-[gradle-plugin] Remove eager configuration (#5923)
-[gradle-plugin] sort input files (#5919)
-[IJ Plugin] Suppress GraphQLDuplicateDirective for certain directives (#5910)
-[adapters] Add KtorHttpUrlAdapter (#5915)
-[IJ Plugin] Add a "new UI" compatible icon (#5906)
-[IJ Plugin] Operation and fragment definition rename (#5912)
-[IJ Plugin] Add @link directives to extra.graphqls during v3->v4 migration (#5909)
-[IJ Plugin] Remove GraphQL IJ plugin issue workaround (#5907)
-[cache] Pagination: use "field key" instead of "field name" (#5898)
-[IJ Plugin] Improve the presentation of GraphQL elements when navigating to them (#5900)
-[IJ Plugin] Include subfolders when contributing GraphQL config (#5871)
-[runtime] Remove existing interceptors from ApolloClient.Builder before adding new ones (#5858)
-[codegen] Add ApolloCompilerPluginProvider  (#5865)
-[runtime] Clear current ApolloStore related interceptors when calling `.store()` on builder (#5857)
-[cache] Call through to loadRecords from the MemoryCache to the SQL one (#5848)
-[runtime] deprecate operationIdGenerator (#5850)
+* [testing] Use com.apollographql.mockserver.MockServer (#5939)
+* [testing] Simplify our implementation of runTest (#5935)
+* [testing] Prepare apollo-testing-support to new MockServer (#5934)
+* [runtime] Remove multidex library (#5930)
+* [all] Bump languageVersion/apiVersion to Kotlin 2.0 (#5931)
+* [codegen] fix mapping of the builtin Float type (#5928)
+* [IJ Plugin] Add inspection to warn about the presence of a GraphQL config file (#5908)
+* [codegen] Add a null-check to java enum safeValueOf (#5904)
+* [gradle-plugin] Remove eager configuration (#5923)
+* [gradle-plugin] sort input files (#5919)
+* [IJ Plugin] Suppress GraphQLDuplicateDirective for certain directives (#5910)
+* [adapters] Add KtorHttpUrlAdapter (#5915)
+* [IJ Plugin] Add a "new UI" compatible icon (#5906)
+* [IJ Plugin] Operation and fragment definition rename (#5912)
+* [IJ Plugin] Add @link directives to extra.graphqls during v3->v4 migration (#5909)
+* [IJ Plugin] Remove GraphQL IJ plugin issue workaround (#5907)
+* [cache] Pagination: use "field key" instead of "field name" (#5898)
+* [IJ Plugin] Improve the presentation of GraphQL elements when navigating to them (#5900)
+* [IJ Plugin] Include subfolders when contributing GraphQL config (#5871)
+* [runtime] Remove existing interceptors from ApolloClient.Builder before adding new ones (#5858)
+* [codegen] Add ApolloCompilerPluginProvider  (#5865)
+* [runtime] Clear current ApolloStore related interceptors when calling `.store()` on builder (#5857)
+* [cache] Call through to loadRecords from the MemoryCache to the SQL one (#5848)
+* [runtime] deprecate operationIdGenerator (#5850)
 
 # Version 3.8.4
 

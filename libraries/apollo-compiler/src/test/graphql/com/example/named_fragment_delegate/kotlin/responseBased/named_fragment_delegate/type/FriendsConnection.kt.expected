@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_delegate.type
 
-import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo.api.ObjectType
 
 /**
  * A connection object for a character's friends

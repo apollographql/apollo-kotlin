@@ -1,20 +1,21 @@
 package test.network
 
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.mpp.currentTimeMillis
-import com.apollographql.apollo3.network.http.DefaultHttpInterceptorChain
-import com.apollographql.apollo3.network.http.HttpInterceptor
-import com.apollographql.apollo3.network.http.HttpInterceptorChain
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.api.http.HttpRequest
+import com.apollographql.apollo.api.http.HttpResponse
+import com.apollographql.apollo.network.http.DefaultHttpInterceptorChain
+import com.apollographql.apollo.network.http.HttpInterceptor
+import com.apollographql.apollo.network.http.HttpInterceptorChain
+import com.apollographql.apollo.testing.internal.runTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource.Monotonic.markNow
 
 class AuthorizationInterceptorTest {
   class EngineHelper(tokenProvider: AuthorizationInterceptor.TokenProvider, queueSize: Int = 1) {
@@ -65,7 +66,7 @@ class AuthorizationInterceptorTest {
         assertEquals(oldToken, null)
         assertEquals(0, count)
         count++
-        return AuthorizationInterceptor.Token("0", Long.MAX_VALUE)
+        return AuthorizationInterceptor.Token("0", null)
       }
     }
 
@@ -77,15 +78,15 @@ class AuthorizationInterceptorTest {
   fun expiredInitialToken() = runTest {
     val tokenProvider = object : AuthorizationInterceptor.TokenProvider {
       private var count = 0
-      override suspend fun loadToken(): AuthorizationInterceptor.Token? {
-        return AuthorizationInterceptor.Token("0", currentTimeSeconds())
+      override suspend fun loadToken(): AuthorizationInterceptor.Token {
+        return AuthorizationInterceptor.Token("0", markNow())
       }
 
       override suspend fun refreshToken(oldToken: String?): AuthorizationInterceptor.Token {
         assertEquals(oldToken, "0")
         assertEquals(0, count)
         count++
-        return AuthorizationInterceptor.Token("1", Long.MAX_VALUE)
+        return AuthorizationInterceptor.Token("1", null)
       }
     }
 
@@ -96,8 +97,8 @@ class AuthorizationInterceptorTest {
   @Test
   fun validInitialToken() = runTest {
     val tokenProvider = object : AuthorizationInterceptor.TokenProvider {
-      override suspend fun loadToken(): AuthorizationInterceptor.Token? {
-        return AuthorizationInterceptor.Token("0", currentTimeSeconds() + 10)
+      override suspend fun loadToken(): AuthorizationInterceptor.Token {
+        return AuthorizationInterceptor.Token("0", markNow() + 10.seconds)
       }
 
       override suspend fun refreshToken(oldToken: String?): AuthorizationInterceptor.Token {
@@ -113,15 +114,15 @@ class AuthorizationInterceptorTest {
   fun concurrentRequestsWithExpiredToken() = runTest {
     val tokenProvider = object : AuthorizationInterceptor.TokenProvider {
       private var count = 0
-      override suspend fun loadToken(): AuthorizationInterceptor.Token? {
-        return AuthorizationInterceptor.Token("0", currentTimeSeconds())
+      override suspend fun loadToken(): AuthorizationInterceptor.Token {
+        return AuthorizationInterceptor.Token("0", markNow())
       }
 
       override suspend fun refreshToken(oldToken: String?): AuthorizationInterceptor.Token {
         assertEquals(oldToken, "0")
         assertEquals(0, count)
         count++
-        return AuthorizationInterceptor.Token("1", Long.MAX_VALUE)
+        return AuthorizationInterceptor.Token("1", null)
       }
     }
 
@@ -138,15 +139,15 @@ class AuthorizationInterceptorTest {
   fun concurrentRequestsWithInvalidToken() = runTest {
     val tokenProvider = object : AuthorizationInterceptor.TokenProvider {
       private var count = 0
-      override suspend fun loadToken(): AuthorizationInterceptor.Token? {
-        return AuthorizationInterceptor.Token("0", currentTimeSeconds() + 10)
+      override suspend fun loadToken(): AuthorizationInterceptor.Token {
+        return AuthorizationInterceptor.Token("0", markNow() + 10.seconds)
       }
 
       override suspend fun refreshToken(oldToken: String?): AuthorizationInterceptor.Token {
         assertEquals(oldToken, "0")
         assertEquals(0, count)
         count++
-        return AuthorizationInterceptor.Token("1", Long.MAX_VALUE)
+        return AuthorizationInterceptor.Token("1", null)
       }
     }
 
@@ -163,13 +164,13 @@ class AuthorizationInterceptorTest {
   fun veryLongRequest() = runTest {
     var count = 0
     val tokenProvider = object : AuthorizationInterceptor.TokenProvider {
-      override suspend fun loadToken(): AuthorizationInterceptor.Token? {
-        return AuthorizationInterceptor.Token("0", currentTimeSeconds() + 10)
+      override suspend fun loadToken(): AuthorizationInterceptor.Token {
+        return AuthorizationInterceptor.Token("0", markNow() + 10.seconds)
       }
 
       override suspend fun refreshToken(oldToken: String?): AuthorizationInterceptor.Token {
         count++
-        return AuthorizationInterceptor.Token((oldToken!!.toInt() + 1).toString(), Long.MAX_VALUE)
+        return AuthorizationInterceptor.Token((oldToken!!.toInt() + 1).toString(), null)
       }
     }
 
@@ -206,6 +207,4 @@ class AuthorizationInterceptorTest {
       assertEquals("invalid token", e.message)
     }
   }
-
-  private fun currentTimeSeconds() = currentTimeMillis() / 1000
 }

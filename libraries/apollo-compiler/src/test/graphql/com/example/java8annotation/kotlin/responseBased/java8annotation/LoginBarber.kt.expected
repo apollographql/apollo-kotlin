@@ -5,13 +5,13 @@
 //
 package com.example.java8annotation
 
-import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Mutation
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo.annotations.ApolloAdaptableWith
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Mutation
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.obj
 import com.example.java8annotation.adapter.LoginBarber_ResponseAdapter
 import com.example.java8annotation.adapter.LoginBarber_VariablesAdapter
 import com.example.java8annotation.selections.LoginBarberSelections
@@ -23,8 +23,6 @@ import com.example.java8annotation.type.Mutation as CompiledMutation
 public data class LoginBarber(
   public val input: Login,
 ) : Mutation<LoginBarber.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

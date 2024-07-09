@@ -1,9 +1,9 @@
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.store
-import com.apollographql.apollo3.exception.CacheMissException
-import com.apollographql.apollo3.exception.JsonEncodingException
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.cache.normalized.ApolloStore
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.cache.normalized.store
+import com.apollographql.apollo.exception.CacheMissException
+import com.apollographql.apollo.exception.JsonEncodingException
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
 import kotlinx.coroutines.runBlocking

@@ -57,6 +57,12 @@ intellij {
   // }
 }
 
+val apolloDependencies = configurations.create("apolloDependencies").apply {
+  listOf(":apollo-annotations", ":apollo-api", ":apollo-runtime").forEach {
+    dependencies.add(project.dependencies.project(it, "jvmApiElements"))
+  }
+}
+
 tasks {
   withType<KotlinCompile> {
     kotlinOptions {
@@ -144,6 +150,7 @@ tasks {
       events.add(TestLogEvent.FAILED)
       showStandardStreams = true
     }
+    inputs.files(apolloDependencies)
   }
 }
 
@@ -177,19 +184,19 @@ dependencies {
   implementation(project(":apollo-normalized-cache-sqlite"))
   implementation(libs.sqlite.jdbc)
   implementation(libs.apollo.runtime.published)
-  runtimeOnly(libs.slf4j)
+  runtimeOnly(libs.slf4j.simple)
   testImplementation(libs.google.testparameterinjector)
 }
 
 fun isSnapshotBuild() = System.getenv("IJ_PLUGIN_SNAPSHOT").toBoolean()
 
 apollo {
-  service("apolloDebug") {
-    packageName.set("com.apollographql.apollo3.debug")
-    schemaFiles.from(file("../libraries/apollo-debug-server/src/androidMain/resources/schema.graphqls"))
+  service("apolloDebugServer") {
+    packageName.set("com.apollographql.ijplugin.apollodebugserver")
+    schemaFiles.from(file("../libraries/apollo-debug-server/graphql/schema.graphqls"))
     introspection {
       endpointUrl.set("http://localhost:12200/")
-      schemaFile.set(file("../libraries/apollo-debug-server/src/androidMain/resources/schema.graphqls"))
+      schemaFile.set(file("../libraries/apollo-debug-server/graphql/schema.graphqls"))
     }
   }
 }

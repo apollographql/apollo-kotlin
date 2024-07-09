@@ -6,7 +6,7 @@
 package com.example.java_android_annotations.type;
 
 import androidx.annotation.NonNull;
-import com.apollographql.apollo3.api.Optional;
+import com.apollographql.apollo.api.Optional;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;

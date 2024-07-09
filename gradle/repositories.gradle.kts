@@ -2,8 +2,8 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
   it.apply {
     // Uncomment this one to use the Kotlin "dev" repository
     // maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/") }
-    mavenCentral()
 
+    mavenCentral()
     exclusiveContent {
       forRepository(::google)
       filter {

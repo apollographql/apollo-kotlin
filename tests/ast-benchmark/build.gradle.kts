@@ -14,7 +14,7 @@ benchmark {
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-ast")
+  implementation("com.apollographql.apollo:apollo-ast")
   implementation(libs.graphql.java)
   implementation("org.jetbrains.kotlin:kotlin-test")
 

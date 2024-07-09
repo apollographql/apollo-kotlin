@@ -1,25 +1,56 @@
 package com.apollographql.ijplugin.gradle
 
 import com.intellij.util.messages.Topic
+import com.intellij.util.xmlb.annotations.Attribute
+import com.intellij.util.xmlb.annotations.Transient
+import com.intellij.util.xmlb.annotations.XCollection
 
 interface ApolloKotlinServiceListener {
   companion object {
     @Topic.ProjectLevel
-    val TOPIC: Topic<ApolloKotlinServiceListener> = Topic.create("ApolloKotlinServices are available", ApolloKotlinServiceListener::class.java)
+    val TOPIC: Topic<ApolloKotlinServiceListener> =
+      Topic.create("ApolloKotlinServices are available", ApolloKotlinServiceListener::class.java)
   }
 
   fun apolloKotlinServicesAvailable()
 }
 
+/**
+ * Represents an Apollo Kotlin service as configured in the Apollo Gradle plugin configuration.
+ *
+ * These are built from the [com.apollographql.apollo.gradle.api.ApolloGradleToolingModel] and are used to configure the GraphQL plugin,
+ * and are cached into the project settings.
+ *
+ * @see com.apollographql.ijplugin.gradle.GradleToolingModelService
+ * @see com.apollographql.ijplugin.graphql.ApolloGraphQLConfigContributor
+ * @see com.apollographql.ijplugin.settings.ProjectSettingsService
+ */
 data class ApolloKotlinService(
-    val gradleProjectPath: String,
-    val serviceName: String,
-    val schemaPaths: List<String>,
-    val operationPaths: List<String>,
-    val endpointUrl: String?,
-    val endpointHeaders: Map<String, String>?,
+    @Attribute
+    val gradleProjectPath: String = "",
+
+    @Attribute
+    val serviceName: String = "",
+
+    @XCollection
+    val schemaPaths: List<String> = emptyList(),
+
+    @XCollection
+    val operationPaths: List<String> = emptyList(),
+
+    @Attribute
+    val endpointUrl: String? = null,
+
+    @XCollection
+    val endpointHeaders: Map<String, String>? = null,
 ) {
-  data class Id(val gradleProjectPath: String, val serviceName: String) {
+  data class Id(
+      @Attribute
+      val gradleProjectPath: String = "",
+
+      @Attribute
+      val serviceName: String = "",
+  ) {
     override fun toString(): String {
       val formattedPath = gradleProjectPath.split(":").filterNot { it.isEmpty() }.joinToString("-")
       return "$formattedPath/$serviceName"
@@ -34,5 +65,8 @@ data class ApolloKotlinService(
     }
   }
 
-  val id = Id(gradleProjectPath, serviceName)
+  val id
+    @Transient
+    get() = Id(gradleProjectPath, serviceName)
+
 }

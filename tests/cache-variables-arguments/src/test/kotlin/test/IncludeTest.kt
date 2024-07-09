@@ -1,11 +1,11 @@
 package test
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.cache.normalized.FetchPolicy
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.apolloStore
-import com.apollographql.apollo3.cache.normalized.fetchPolicy
-import com.apollographql.apollo3.cache.normalized.normalizedCache
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.cache.normalized.FetchPolicy
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.cache.normalized.apolloStore
+import com.apollographql.apollo.cache.normalized.fetchPolicy
+import com.apollographql.apollo.cache.normalized.normalizedCache
 import cache.include.GetUserQuery
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -25,7 +25,7 @@ class IncludeTest {
         user = GetUserQuery.User(__typename = "User", id = "42", userDetails = null)
     )
 
-    client.apolloStore.writeOperation(operation, data)
+    client.apolloStore.writeOperationSync(operation, data)
 
     val response = client.query(operation).fetchPolicy(FetchPolicy.CacheOnly).execute()
 

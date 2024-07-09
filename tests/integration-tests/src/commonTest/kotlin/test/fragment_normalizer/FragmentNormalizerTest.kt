@@ -1,14 +1,14 @@
 package test.fragment_normalizer
 
 import IdCacheKeyGenerator
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.normalize
-import com.apollographql.apollo3.cache.normalized.apolloStore
-import com.apollographql.apollo3.cache.normalized.normalizedCache
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.cache.normalized.api.normalize
+import com.apollographql.apollo.cache.normalized.apolloStore
+import com.apollographql.apollo.cache.normalized.normalizedCache
+import com.apollographql.apollo.testing.internal.runTest
 import fragment_normalizer.fragment.ConversationFragment
 import fragment_normalizer.fragment.ConversationFragmentImpl
 import kotlin.test.Test
@@ -60,14 +60,14 @@ class FragmentNormalizerTest{
         ),
         true
     )
-    apolloClient.apolloStore.writeFragment(
+    apolloClient.apolloStore.writeFragmentSync(
         ConversationFragmentImpl(),
         CacheKey(fragment1.id),
         fragment1Read,
         CustomScalarAdapters.Empty
     )
 
-    apolloClient.apolloStore.writeFragment(
+    apolloClient.apolloStore.writeFragmentSync(
         ConversationFragmentImpl(),
         CacheKey(fragment2.id),
         fragment2Read,

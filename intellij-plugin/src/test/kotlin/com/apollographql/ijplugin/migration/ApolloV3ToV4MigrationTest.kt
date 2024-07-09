@@ -45,6 +45,9 @@ class ApolloV3ToV4MigrationTest : ApolloTestCase() {
   fun testUpdateCustomScalarsMapping() = runMigration(extension = "gradle.kts", fileNameInProject = "build.gradle.kts")
 
   @Test
+  fun testUpdateScalarAdaptersInBuildKts() = runMigration(extension = "gradle.kts", fileNameInProject = "build.gradle.kts")
+
+  @Test
   fun testMultiModule() = runMigration(extension = "gradle.kts", fileNameInProject = "build.gradle.kts")
 
   @Test

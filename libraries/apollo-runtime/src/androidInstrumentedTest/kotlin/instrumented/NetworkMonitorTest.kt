@@ -1,16 +1,17 @@
 package instrumented
 
 import androidx.test.platform.app.InstrumentationRegistry
-import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo.api.http.HttpRequest
+import com.apollographql.apollo.api.http.HttpResponse
+import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.mockserver.assertNoRequest
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.network.NetworkMonitor
-import com.apollographql.apollo3.network.http.DefaultHttpEngine
-import com.apollographql.apollo3.network.http.HttpEngine
-import com.apollographql.apollo3.testing.FooQuery
-import com.apollographql.apollo3.testing.mockServerTest
+import com.apollographql.apollo.interceptor.RetryOnErrorInterceptor
+import com.apollographql.apollo.network.NetworkMonitor
+import com.apollographql.apollo.network.http.DefaultHttpEngine
+import com.apollographql.apollo.network.http.HttpEngine
+import test.FooQuery
+import com.apollographql.apollo.testing.mockServerTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -37,7 +38,9 @@ class NetworkMonitorTest {
   @Test
   fun test() = mockServerTest(
       clientBuilder = {
-        networkMonitor(NetworkMonitor(InstrumentationRegistry.getInstrumentation().context))
+        retryOnErrorInterceptor(
+            RetryOnErrorInterceptor(NetworkMonitor(InstrumentationRegistry.getInstrumentation().context))
+        )
         retryOnError { true }
         httpEngine(FaultyHttpEngine())
       }

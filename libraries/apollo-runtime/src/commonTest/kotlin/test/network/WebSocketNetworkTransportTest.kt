@@ -1,23 +1,26 @@
 package test.network
 
 import app.cash.turbine.test
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
-import com.apollographql.apollo3.exception.DefaultApolloException
-import com.apollographql.apollo3.exception.SubscriptionOperationException
-import com.apollographql.apollo3.interceptor.addRetryOnErrorInterceptor
-import com.apollographql.apollo3.mpp.Platform
-import com.apollographql.apollo3.mpp.platform
-import com.apollographql.apollo3.network.websocket.WebSocketNetworkTransport
-import com.apollographql.apollo3.network.websocket.closeConnection
-import com.apollographql.apollo3.testing.FooSubscription
-import com.apollographql.apollo3.testing.FooSubscription.Companion.completeMessage
-import com.apollographql.apollo3.testing.FooSubscription.Companion.errorMessage
-import com.apollographql.apollo3.testing.FooSubscription.Companion.nextMessage
-import com.apollographql.apollo3.testing.connectionAckMessage
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.exception.ApolloWebSocketClosedException
+import com.apollographql.apollo.exception.DefaultApolloException
+import com.apollographql.apollo.exception.SubscriptionOperationException
+import com.apollographql.apollo.interceptor.ApolloInterceptor
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
+import com.apollographql.apollo.network.websocket.closeConnection
+import test.FooSubscription
+import test.FooSubscription.Companion.completeMessage
+import test.FooSubscription.Companion.errorMessage
+import test.FooSubscription.Companion.nextMessage
+import com.apollographql.apollo.testing.connectionAckMessage
+import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.CloseFrame
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.TextMessage
@@ -28,7 +31,10 @@ import com.apollographql.mockserver.enqueueWebSocket
 import com.apollographql.mockserver.headerValueOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.retryWhen
 import okio.use
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -216,8 +222,9 @@ class WebSocketNetworkTransportTest {
                 webSocketBody.enqueueMessage(CloseFrame(3666, "closed"))
 
                 awaitItem().exception.apply {
-                  when (platform()){
-                    Platform.Native -> {
+                  @Suppress("DEPRECATION")
+                  when (com.apollographql.apollo.testing.platform()){
+                    com.apollographql.apollo.testing.Platform.Native -> {
                       assertIs<DefaultApolloException>(this)
                       assertTrue(message?.contains("Error reading websocket") == true)
                     }
@@ -276,8 +283,9 @@ class WebSocketNetworkTransportTest {
           awaitItem()
           serverWriter.enqueueMessage(CloseFrame(1001, "flowThrowsIfNoReconnect"))
           awaitItem().exception.apply {
-            when (platform()){
-              Platform.Native -> {
+            @Suppress("DEPRECATION")
+            when (com.apollographql.apollo.testing.platform()){
+              com.apollographql.apollo.testing.Platform.Native -> {
                 assertIs<DefaultApolloException>(this)
                 assertTrue(message?.contains("Error reading websocket") == true)
               }
@@ -304,7 +312,7 @@ class WebSocketNetworkTransportTest {
                 .serverUrl(mockServer.url())
                 .build()
         )
-        .addRetryOnErrorInterceptor { e, _ ->
+        .retryWhen { e, _ ->
           check(exception == null)
           exception = e
           true
@@ -409,4 +417,29 @@ fun mockServerWebSocketTest(customizeTransport: WebSocketNetworkTransport.Builde
           MockServerWebSocketTest(apolloClient, mockServer, this@runTest).block()
         }
   }
+}
+
+private object RetryException : Exception()
+
+private fun <D : Operation.Data> Flow<ApolloResponse<D>>.retryOnError(block: suspend (ApolloException, Int) -> Boolean): Flow<ApolloResponse<D>> {
+  var attempt = 0
+  return onEach {
+    if (it.exception != null && block(it.exception!!, attempt)) {
+      attempt++
+      throw RetryException
+    }
+  }.retryWhen { cause, _ ->
+    cause is RetryException
+  }
+}
+
+internal class RetryOnErrorInterceptor(private val retryWhen: suspend (ApolloException, Int) -> Boolean) : ApolloInterceptor {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    return chain.proceed(request).retryOnError(retryWhen)
+  }
+}
+
+@ApolloExperimental
+internal fun ApolloClient.Builder.retryWhen(retryWhen: suspend (ApolloException, Int) -> Boolean) = apply {
+  retryOnErrorInterceptor(RetryOnErrorInterceptor(retryWhen))
 }

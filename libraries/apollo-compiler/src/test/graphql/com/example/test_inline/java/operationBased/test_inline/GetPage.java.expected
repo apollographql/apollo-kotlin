@@ -5,12 +5,12 @@
 //
 package com.example.test_inline;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.Adapter;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ObjectAdapter;
+import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.test_inline.adapter.GetPage_ResponseAdapter;
 import com.example.test_inline.selections.GetPageSelections;
 import java.io.IOException;
@@ -125,11 +125,6 @@ public class GetPage implements Query<GetPage.Data> {
     )
     .selections(GetPageSelections.__root)
     .build();
-  }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
   }
 
   public static final class Builder {

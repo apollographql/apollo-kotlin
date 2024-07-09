@@ -5,13 +5,13 @@
 //
 package com.example.fragments_with_defer_and_include_directives
 
-import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo.annotations.ApolloAdaptableWith
+import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.json.JsonWriter
+import com.apollographql.apollo.api.obj
 import com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter
 import com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_VariablesAdapter
 import com.example.fragments_with_defer_and_include_directives.selections.InlineMultipleWithDeferWithIfSelections
@@ -22,8 +22,6 @@ import com.example.fragments_with_defer_and_include_directives.type.Query as Com
 public data class InlineMultipleWithDeferWithIf(
   public val cond: Boolean,
 ) : Query<InlineMultipleWithDeferWithIf.Data> {
-  override val ignoreErrors: Boolean = false
-
   override fun id(): String = OPERATION_ID
 
   override fun document(): String = OPERATION_DOCUMENT

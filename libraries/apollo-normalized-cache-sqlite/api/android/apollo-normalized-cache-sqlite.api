@@ -1,26 +1,26 @@
-public final class com/apollographql/apollo3/cache/normalized/sql/ApolloInitializer : androidx/startup/Initializer {
-	public static final field Companion Lcom/apollographql/apollo3/cache/normalized/sql/ApolloInitializer$Companion;
+public final class com/apollographql/apollo/cache/normalized/sql/ApolloInitializer : androidx/startup/Initializer {
+	public static final field Companion Lcom/apollographql/apollo/cache/normalized/sql/ApolloInitializer$Companion;
 	public fun <init> ()V
 	public synthetic fun create (Landroid/content/Context;)Ljava/lang/Object;
 	public fun create (Landroid/content/Context;)V
 	public fun dependencies ()Ljava/util/List;
 }
 
-public final class com/apollographql/apollo3/cache/normalized/sql/ApolloInitializer$Companion {
+public final class com/apollographql/apollo/cache/normalized/sql/ApolloInitializer$Companion {
 }
 
-public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCache : com/apollographql/apollo3/cache/normalized/api/NormalizedCache {
+public final class com/apollographql/apollo/cache/normalized/sql/SqlNormalizedCache : com/apollographql/apollo/cache/normalized/api/NormalizedCache {
 	public fun clearAll ()V
 	public fun dump ()Ljava/util/Map;
-	public fun loadRecord (Ljava/lang/String;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Lcom/apollographql/apollo3/cache/normalized/api/Record;
-	public fun loadRecords (Ljava/util/Collection;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Ljava/util/Collection;
-	public fun merge (Lcom/apollographql/apollo3/cache/normalized/api/Record;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Ljava/util/Set;
-	public fun merge (Ljava/util/Collection;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Ljava/util/Set;
-	public fun remove (Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;Z)Z
+	public fun loadRecord (Ljava/lang/String;Lcom/apollographql/apollo/cache/normalized/api/CacheHeaders;)Lcom/apollographql/apollo/cache/normalized/api/Record;
+	public fun loadRecords (Ljava/util/Collection;Lcom/apollographql/apollo/cache/normalized/api/CacheHeaders;)Ljava/util/Collection;
+	public fun merge (Lcom/apollographql/apollo/cache/normalized/api/Record;Lcom/apollographql/apollo/cache/normalized/api/CacheHeaders;)Ljava/util/Set;
+	public fun merge (Ljava/util/Collection;Lcom/apollographql/apollo/cache/normalized/api/CacheHeaders;)Ljava/util/Set;
+	public fun remove (Lcom/apollographql/apollo/cache/normalized/api/CacheKey;Z)Z
 	public fun remove (Ljava/lang/String;)I
 }
 
-public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCacheFactory : com/apollographql/apollo3/cache/normalized/api/NormalizedCacheFactory {
+public final class com/apollographql/apollo/cache/normalized/sql/SqlNormalizedCacheFactory : com/apollographql/apollo/cache/normalized/api/NormalizedCacheFactory {
 	public fun <init> (Landroid/content/Context;)V
 	public fun <init> (Landroid/content/Context;Ljava/lang/String;)V
 	public fun <init> (Landroid/content/Context;Ljava/lang/String;Landroidx/sqlite/db/SupportSQLiteOpenHelper$Factory;)V
@@ -28,8 +28,9 @@ public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedC
 	public fun <init> (Landroid/content/Context;Ljava/lang/String;Landroidx/sqlite/db/SupportSQLiteOpenHelper$Factory;Lkotlin/jvm/functions/Function1;Z)V
 	public fun <init> (Landroid/content/Context;Ljava/lang/String;Landroidx/sqlite/db/SupportSQLiteOpenHelper$Factory;Lkotlin/jvm/functions/Function1;ZLjava/lang/Long;)V
 	public synthetic fun <init> (Landroid/content/Context;Ljava/lang/String;Landroidx/sqlite/db/SupportSQLiteOpenHelper$Factory;Lkotlin/jvm/functions/Function1;ZLjava/lang/Long;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lapp/cash/sqldelight/db/SqlDriver;)V
 	public fun <init> (Ljava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun create ()Lcom/apollographql/apollo3/cache/normalized/api/NormalizedCache;
+	public fun create ()Lcom/apollographql/apollo/cache/normalized/api/NormalizedCache;
 }
 

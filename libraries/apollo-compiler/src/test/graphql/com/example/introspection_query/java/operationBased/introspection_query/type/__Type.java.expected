@@ -5,7 +5,7 @@
 //
 package com.example.introspection_query.type;
 
-import com.apollographql.apollo3.api.ObjectType;
+import com.apollographql.apollo.api.ObjectType;
 
 public class __Type {
   public static ObjectType type = (new ObjectType.Builder("__Type")).build();

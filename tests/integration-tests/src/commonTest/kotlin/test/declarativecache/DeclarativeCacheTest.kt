@@ -1,14 +1,14 @@
 package test.declarativecache
 
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.CacheResolver
-import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Executable
+import com.apollographql.apollo.cache.normalized.ApolloStore
+import com.apollographql.apollo.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.api.CacheResolver
+import com.apollographql.apollo.cache.normalized.api.FieldPolicyCacheResolver
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.testing.internal.runTest
 import declarativecache.GetAuthorQuery
 import declarativecache.GetBookQuery
 import declarativecache.GetBooksQuery
@@ -29,12 +29,12 @@ class DeclarativeCacheTest {
     // Write a book at the "promo" path
     val promoOperation = GetPromoBookQuery()
     val promoData = GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Promo", "42", "Book"))
-    store.writeOperation(promoOperation, promoData)
+    store.writeOperationSync(promoOperation, promoData)
 
     // Overwrite the book title through the "other" path
     val otherOperation = GetOtherBookQuery()
     val otherData = GetOtherBookQuery.Data(GetOtherBookQuery.OtherBook("42", "Other", "Book"))
-    store.writeOperation(otherOperation, otherData)
+    store.writeOperationSync(otherOperation, otherData)
 
     // Get the "promo" book again, the title must be updated
     val data = store.readOperation(promoOperation, CustomScalarAdapters.Empty)
@@ -49,12 +49,12 @@ class DeclarativeCacheTest {
     // Write a library at the "promo" path
     val promoOperation = GetPromoLibraryQuery()
     val promoData = GetPromoLibraryQuery.Data(GetPromoLibraryQuery.PromoLibrary("PromoAddress", "3", "Library"))
-    store.writeOperation(promoOperation, promoData)
+    store.writeOperationSync(promoOperation, promoData)
 
     // Overwrite the library address through the "other" path
     val otherOperation = GetOtherLibraryQuery()
     val otherData = GetOtherLibraryQuery.Data(GetOtherLibraryQuery.OtherLibrary("3", "OtherAddress", "Library"))
-    store.writeOperation(otherOperation, otherData)
+    store.writeOperationSync(otherOperation, otherData)
 
     // Get the "promo" library again, the address must be updated
     val data = store.readOperation(promoOperation, CustomScalarAdapters.Empty)
@@ -68,7 +68,7 @@ class DeclarativeCacheTest {
 
     val bookQuery1 = GetPromoBookQuery()
     val bookData1 = GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Promo", "42", "Book"))
-    store.writeOperation(bookQuery1, bookData1)
+    store.writeOperationSync(bookQuery1, bookData1)
 
     val bookQuery2 = GetBookQuery("42")
     val bookData2 = store.readOperation(bookQuery2, CustomScalarAdapters.Empty)
@@ -84,7 +84,7 @@ class DeclarativeCacheTest {
         )
     )
 
-    store.writeOperation(authorQuery1, authorData1)
+    store.writeOperationSync(authorQuery1, authorData1)
 
     val authorQuery2 = GetAuthorQuery("Pierre", "Bordage")
     val authorData2 = store.readOperation(authorQuery2, CustomScalarAdapters.Empty)
@@ -111,10 +111,10 @@ class DeclarativeCacheTest {
     val store = ApolloStore(MemoryCacheFactory(), cacheResolver = cacheResolver)
 
     val promoOperation = GetPromoBookQuery()
-    store.writeOperation(promoOperation, GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Title1", "1", "Book")))
-    store.writeOperation(promoOperation, GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Title2", "2", "Book")))
-    store.writeOperation(promoOperation, GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Title3", "3", "Book")))
-    store.writeOperation(promoOperation, GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Title4", "4", "Book")))
+    store.writeOperationSync(promoOperation, GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Title1", "1", "Book")))
+    store.writeOperationSync(promoOperation, GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Title2", "2", "Book")))
+    store.writeOperationSync(promoOperation, GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Title3", "3", "Book")))
+    store.writeOperationSync(promoOperation, GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Title4", "4", "Book")))
 
     var operation = GetBooksQuery(listOf("4", "1"))
     var data = store.readOperation(operation, CustomScalarAdapters.Empty)

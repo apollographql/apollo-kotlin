@@ -1,10 +1,10 @@
 package test.circular_cache_read
 
 import circular_cache_read.GetUserQuery
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.cache.normalized.ApolloStore
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.testing.internal.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -29,7 +29,7 @@ class CircularCacheReadTest {
         )
     )
 
-    store.writeOperation(operation, data)
+    store.writeOperationSync(operation, data)
     val result = store.readOperation(operation, customScalarAdapters = CustomScalarAdapters.Empty)
     assertEquals("42", result.user.friend.id)
   }

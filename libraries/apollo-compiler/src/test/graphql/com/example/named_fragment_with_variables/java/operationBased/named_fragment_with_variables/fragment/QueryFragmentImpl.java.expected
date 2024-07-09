@@ -5,12 +5,12 @@
 //
 package com.example.named_fragment_with_variables.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.Adapter;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.Fragment;
+import com.apollographql.apollo.api.ObjectAdapter;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.named_fragment_with_variables.fragment.adapter.QueryFragmentImpl_VariablesAdapter;
 import com.example.named_fragment_with_variables.fragment.selections.QueryFragmentSelections;
 import com.example.named_fragment_with_variables.type.Query;
@@ -101,10 +101,5 @@ public class QueryFragmentImpl implements Fragment<QueryFragment> {
     )
     .selections(QueryFragmentSelections.__root)
     .build();
-  }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
   }
 }

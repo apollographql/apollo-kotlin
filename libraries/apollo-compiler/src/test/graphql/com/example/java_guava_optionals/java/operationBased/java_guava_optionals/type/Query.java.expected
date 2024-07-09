@@ -5,8 +5,8 @@
 //
 package com.example.java_guava_optionals.type;
 
-import com.apollographql.apollo3.api.CompiledArgumentDefinition;
-import com.apollographql.apollo3.api.ObjectType;
+import com.apollographql.apollo.api.CompiledArgumentDefinition;
+import com.apollographql.apollo.api.ObjectType;
 
 public class Query {
   public static final CompiledArgumentDefinition __nullableInt_nullableInt = new CompiledArgumentDefinition.Builder("nullableInt").build();

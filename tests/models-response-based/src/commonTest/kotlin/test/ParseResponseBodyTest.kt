@@ -5,13 +5,11 @@ import codegen.models.AllPlanetsQuery
 import codegen.models.AllPlanetsQuery.Data.AllPlanets.Planet.Companion.planetFragment
 import codegen.models.AllPlanetsQuery.Data.AllPlanets.Planet.FilmConnection.Film.Companion.filmFragment
 import codegen.models.fragment.PlanetFragment
-import com.apollographql.apollo3.api.composeJsonResponse
-import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.api.toApolloResponse
-import com.apollographql.apollo3.mpp.Platform
-import com.apollographql.apollo3.mpp.platform
+import com.apollographql.apollo.api.composeJsonResponse
+import com.apollographql.apollo.api.json.buildJsonString
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.toApolloResponse
+import com.apollographql.apollo.testing.*
 import okio.Buffer
 import testFixtureToJsonReader
 import testFixtureToUtf8
@@ -58,6 +56,7 @@ class ParseResponseBodyTest {
       query.composeJsonResponse(this, data!!)
     }
 
+    @Suppress("DEPRECATION")
     if (platform() != Platform.Js) {
       // Do not check strings on JS because of https://youtrack.jetbrains.com/issue/KT-33358#focus=Comments-27-3656643.0-0
       checkTestFixture(actual, "OperationJsonWriter.json")

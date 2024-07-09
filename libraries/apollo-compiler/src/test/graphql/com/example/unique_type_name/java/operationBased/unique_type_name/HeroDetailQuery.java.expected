@@ -5,12 +5,12 @@
 //
 package com.example.unique_type_name;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.Adapter;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ObjectAdapter;
+import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter;
 import com.example.unique_type_name.fragment.HeroDetails;
 import com.example.unique_type_name.selections.HeroDetailQuerySelections;
@@ -143,11 +143,6 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
     )
     .selections(HeroDetailQuerySelections.__root)
     .build();
-  }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
   }
 
   public static final class Builder {

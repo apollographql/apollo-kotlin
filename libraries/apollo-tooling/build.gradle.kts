@@ -5,7 +5,7 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo3.tooling"
+    namespace = "com.apollographql.apollo.tooling"
 )
 
 dependencies {
@@ -16,6 +16,7 @@ dependencies {
   }
 
   implementation(project(":apollo-ast"))
+
   implementation(libs.apollo.runtime.published)
   implementation(libs.okhttp)
   implementation(libs.kotlinx.serialization.json)
@@ -23,20 +24,20 @@ dependencies {
   testImplementation(libs.junit)
   testImplementation(libs.truth)
   testImplementation(libs.apollo.mockserver)
-  testImplementation(libs.apollo.testingsupport.published)
+  testImplementation(project(":apollo-testing-support"))
 }
 
 apollo {
   // https://spec.graphql.org/draft/#sec-Schema-Introspection.Schema-Introspection-Schema
   service("graphql") {
-    packageName.set("com.apollographql.apollo3.tooling.graphql")
+    packageName.set("com.apollographql.apollo.tooling.graphql")
     srcDir("src/main/graphql/graphql")
     generateAsInternal.set(true)
   }
 
   // https://studio.apollographql.com/public/apollo-platform/variant/main/home
   service("platform-api-public") {
-    packageName.set("com.apollographql.apollo3.tooling.platformapi.public")
+    packageName.set("com.apollographql.apollo.tooling.platformapi.public")
     srcDir("src/main/graphql/platform-api/public")
     generateAsInternal.set(true)
     mapScalarToKotlinString("GraphQLDocument")
@@ -50,15 +51,15 @@ apollo {
 
   // https://studio-staging.apollographql.com/graph/engine/variant/prod/home
   service("platform-api-internal") {
-    packageName.set("com.apollographql.apollo3.tooling.platformapi.internal")
+    packageName.set("com.apollographql.apollo.tooling.platformapi.internal")
     srcDir("src/main/graphql/platform-api/internal")
     generateAsInternal.set(true)
     introspection {
       endpointUrl.set("https://graphql.api.apollographql.com/api/graphql")
       schemaFile.set(file("src/main/graphql/platform-api/internal/schema.graphqls"))
     }
-    mapScalar("Void", "kotlin.Unit", "com.apollographql.apollo3.tooling.VoidAdapter")
-    mapScalar("Timestamp", "java.time.Instant", "com.apollographql.apollo3.tooling.TimestampAdapter")
+    mapScalar("Void", "kotlin.Unit", "com.apollographql.apollo.tooling.VoidAdapter")
+    mapScalar("Timestamp", "java.time.Instant", "com.apollographql.apollo.tooling.TimestampAdapter")
   }
 }
 

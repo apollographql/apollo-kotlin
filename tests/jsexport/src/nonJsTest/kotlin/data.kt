@@ -1,6 +1,6 @@
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.jsonReader
-import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.api.obj
 import jsexport.GetAnimalQuery
 import jsexport.adapter.GetAnimalQuery_ResponseAdapter
 import okio.Buffer

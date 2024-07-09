@@ -7,6 +7,7 @@
   "sidebar": {
     "Get Started": "/",
     "Migrating to v4": "/migration/4.0",
+    "Evolution policy": "/essentials/evolution",
     "Kdoc": "https://www.apollographql.com/docs/kotlin/kdoc/",
     "Changelog": "https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md",
     "Tutorial": {
@@ -77,7 +78,8 @@
       "Apollo AST": "/advanced/apollo-ast",
       "Compiler plugins": "/advanced/compiler-plugins",
       "JS Interoperability": "/advanced/js-interop",
-      "Response based codegen": "/advanced/response-based"
+      "Response based codegen": "/advanced/response-based",
+      "Apollo Kotlin galaxy": "/advanced/galaxy"
     }
   }
 }

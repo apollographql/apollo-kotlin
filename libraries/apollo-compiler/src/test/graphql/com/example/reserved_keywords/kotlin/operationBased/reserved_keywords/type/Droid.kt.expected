@@ -5,7 +5,7 @@
 //
 package com.example.reserved_keywords.type
 
-import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo.api.ObjectType
 
 /**
  * An autonomous mechanical character in the Star Wars universe

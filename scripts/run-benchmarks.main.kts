@@ -46,8 +46,7 @@ import kotlin.math.roundToLong
  */
 
 val appApk = "benchmark/app/build/outputs/apk/release/app-release.apk"
-val stableTestApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/stable/release/microbenchmark-stable-release-androidTest.apk"
-val incubatingTestApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/incubating/release/microbenchmark-incubating-release-androidTest.apk"
+val testApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/release/microbenchmark-release-androidTest.apk"
 val deviceModel = "redfin,locale=en,orientation=portrait"
 val directoriesToPull = "/sdcard/Download"
 val environmentVariables = "clearPackageData=true,additionalTestOutputDir=/sdcard/Download,no-isolated-storage=true"
@@ -161,11 +160,11 @@ data class GCloud(val storage: Storage, val projectId: String)
  *
  * ./gradlew -p benchmark assembleRelease assembleStableReleaseAndroidTest
  * adb install benchmark/microbenchmark/build/outputs/apk/androidTest/stable/release/microbenchmark-stable-release-androidTest.apk
- * adb shell am instrument -w com.apollographql.apollo3.benchmark.stable/androidx.benchmark.junit4.AndroidBenchmarkRunner
+ * adb shell am instrument -w com.apollographql.apollo.benchmark.stable/androidx.benchmark.junit4.AndroidBenchmarkRunner
  *
  * Or just
  *
- * ./gradlew -p benchmark :microbenchmark:connectedIncubatingReleaseAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.apollographql.apollo3.benchmark.CacheIncubatingIntegrationTests#concurrentQueriesTestNetworkTransportMemoryThenSql
+ * ./gradlew -p benchmark :microbenchmark:connectedIncubatingReleaseAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.apollographql.apollo.benchmark.CacheIncubatingIntegrationTests#concurrentQueriesTestNetworkTransportMemoryThenSql
  * cat 'benchmark/microbenchmark/build/outputs/androidTest-results/connected/release/flavors/incubating/Pixel 6a - 14/testlog/test-results.log'
  */
 fun runTest(projectId: String, testApk: String): String {
@@ -299,7 +298,7 @@ fun locateExtraMetrics(storage: Storage, bucket: String, prefix: String): List<M
  *         {
  *             "name": "concurrentReadWritesSql",
  *             "params": {},
- *             "className": "com.apollographql.apollo3.benchmark.ApolloStoreTests",
+ *             "className": "com.apollographql.apollo.benchmark.ApolloStoreTests",
  *             "totalRunTimeNs": 35949947123,
  *             "metrics": {
  *                 "timeNs": {
@@ -351,7 +350,7 @@ fun Any.parseCasesFromBenchmarkData(): List<Case> {
  *     "name": "bytes",
  *     "value": 2994176,
  *     "tags": [
- *       "class:com.apollographql.apollo3.benchmark.CacheTests",
+ *       "class:com.apollographql.apollo.benchmark.CacheTests",
  *       "test:cacheOperationSql"
  *     ]
  *   },
@@ -359,7 +358,7 @@ fun Any.parseCasesFromBenchmarkData(): List<Case> {
  *     "name": "bytes",
  *     "value": 2994176,
  *     "tags": [
- *       "class:com.apollographql.apollo3.benchmark.CacheTests",
+ *       "class:com.apollographql.apollo.benchmark.CacheTests",
  *       "test:cacheResponseSql"
  *     ]
  *   }
@@ -470,7 +469,7 @@ fun formattedTestResult(title: String, testResult: TestResult): String {
 }
 
 val issueTitle = "Benchmarks dashboard"
-fun updateOrCreateGithubIssue(stableTestResult: TestResult, incubatingTestResult: TestResult, githubToken: String) {
+fun updateOrCreateGithubIssue(testResult: TestResult, githubToken: String) {
   val ghRepo = getRequiredEnvVariable("GITHUB_REPOSITORY")
   val ghRepositoryOwner = ghRepo.split("/")[0]
   val ghRepositoryName = ghRepo.split("/")[1]
@@ -497,7 +496,7 @@ fun updateOrCreateGithubIssue(stableTestResult: TestResult, incubatingTestResult
   val response = ghGraphQL(query, githubToken)
   val existingIssues = response.get("search").asMap.get("edges").asList
 
-  val body = formattedTestResult("Stable", stableTestResult) + "\n\n" + formattedTestResult("Incubating", incubatingTestResult)
+  val body = formattedTestResult("Micro benchmarks", testResult)
   val mutation: String
   val variables: Map<String, String>
   if (existingIssues.isEmpty()) {
@@ -603,23 +602,19 @@ fun runTest(gcloud: GCloud, testApk: String): TestResult {
 fun main() = runBlocking {
   val gcloud = authenticate()
 
-  val stableTestResultDeferred = async(Dispatchers.Default) {
-    runTest(gcloud, stableTestApk)
-  }
-  val incubatingTestResultDeferred = async(Dispatchers.Default) {
-    runTest(gcloud, incubatingTestApk)
+  val testResultDeferred = async(Dispatchers.Default) {
+    runTest(gcloud, testApk)
   }
 
-  val stableTestResult = stableTestResultDeferred.await()
-  val incubatingTestResult = incubatingTestResultDeferred.await()
+  val testResult = testResultDeferred.await()
 
   val githubToken = getOptionalEnvVariable("GITHUB_TOKEN")
   if (githubToken != null) {
-    updateOrCreateGithubIssue(stableTestResult, incubatingTestResult, githubToken)
+    updateOrCreateGithubIssue(testResult, githubToken)
   }
   val datadogApiKey = getOptionalEnvVariable("DD_API_KEY")
   if (datadogApiKey != null) {
-    uploadToDatadog(datadogApiKey, stableTestResult.cases + incubatingTestResult.cases, stableTestResult.extraMetrics + incubatingTestResult.extraMetrics)
+    uploadToDatadog(datadogApiKey, testResult.cases, testResult.extraMetrics)
   }
 }
 

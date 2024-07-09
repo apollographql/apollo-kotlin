@@ -5,12 +5,12 @@
 //
 package com.example.simple_union.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.Adapter;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.Fragment;
+import com.apollographql.apollo.api.ObjectAdapter;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.simple_union.fragment.selections.DogFragmentSelections;
 import com.example.simple_union.type.Dog;
 import java.io.IOException;
@@ -78,10 +78,5 @@ public class DogFragmentImpl implements Fragment<DogFragment> {
     )
     .selections(DogFragmentSelections.__root)
     .build();
-  }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
   }
 }

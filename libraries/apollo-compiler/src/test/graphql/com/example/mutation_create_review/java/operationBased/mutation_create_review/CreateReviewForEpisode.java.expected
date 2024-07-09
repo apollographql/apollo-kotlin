@@ -5,15 +5,15 @@
 //
 package com.example.mutation_create_review;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DefaultFakeResolver;
-import com.apollographql.apollo3.api.FakeResolver;
-import com.apollographql.apollo3.api.FakeResolverKt;
-import com.apollographql.apollo3.api.Mutation;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.Adapter;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.DefaultFakeResolver;
+import com.apollographql.apollo.api.FakeResolver;
+import com.apollographql.apollo.api.FakeResolverKt;
+import com.apollographql.apollo.api.Mutation;
+import com.apollographql.apollo.api.ObjectAdapter;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.mutation_create_review.adapter.CreateReviewForEpisode_ResponseAdapter;
 import com.example.mutation_create_review.adapter.CreateReviewForEpisode_VariablesAdapter;
 import com.example.mutation_create_review.schema.__Schema;
@@ -159,11 +159,6 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
 
   public static Data buildData(MutationMap map) {
     return buildData(map, new DefaultFakeResolver(__Schema.types));
-  }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
   }
 
   public static final class Builder {

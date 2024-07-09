@@ -5,7 +5,7 @@
 //
 package com.example.two_heroes_with_friends.type
 
-import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo.api.CustomScalarType
 
 /**
  * The `String` scalar type represents textual data, represented as UTF-8 character sequences. The

@@ -5,13 +5,13 @@
 //
 package com.example.nested_conditional_inline;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.api.json.JsonWriter;
+import com.apollographql.apollo.api.Adapter;
+import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ObjectAdapter;
+import com.apollographql.apollo.api.Optional;
+import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter;
 import com.example.nested_conditional_inline.adapter.TestQuery_VariablesAdapter;
 import com.example.nested_conditional_inline.selections.TestQuerySelections;
@@ -143,11 +143,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     )
     .selections(TestQuerySelections.__root)
     .build();
-  }
-
-  @Override
-  public boolean getIgnoreErrors() {
-    return false;
   }
 
   public static final class Builder {

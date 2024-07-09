@@ -1,6 +1,10 @@
 package test.network
 
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.network.websocket.WebSocket
+import com.apollographql.apollo.network.websocket.WebSocketEngine
+import com.apollographql.apollo.network.websocket.WebSocketListener
+import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.CloseFrame
 import com.apollographql.mockserver.DataMessage
 import com.apollographql.mockserver.MockRequestBase
@@ -13,12 +17,6 @@ import com.apollographql.mockserver.WebSocketMessage
 import com.apollographql.mockserver.WebsocketMockRequest
 import com.apollographql.mockserver.awaitWebSocketRequest
 import com.apollographql.mockserver.enqueueWebSocket
-import com.apollographql.apollo3.mpp.Platform
-import com.apollographql.apollo3.mpp.platform
-import com.apollographql.apollo3.network.websocket.WebSocket
-import com.apollographql.apollo3.network.websocket.WebSocketEngine
-import com.apollographql.apollo3.network.websocket.WebSocketListener
-import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.withTimeout
@@ -58,6 +56,7 @@ private class Listener(private val channel: Channel<Item>) : WebSocketListener {
 }
 
 private fun debug(line: String) {
+  @Suppress("ConstantConditionIf")
   if (false) {
     println(line)
   }
@@ -147,7 +146,8 @@ class WebSocketEngineTest {
     }
 
     clientWriter.close(1003, "Client Bye")
-    if (platform() != Platform.Native) {
+    @Suppress("DEPRECATION")
+    if (com.apollographql.apollo.testing.platform() != com.apollographql.apollo.testing.Platform.Native) {
       // Apple sometimes does not send the Close frame. See https://developer.apple.com/forums/thread/679446
       serverReader.awaitMessage().apply {
         assertIs<CloseFrame>(this)

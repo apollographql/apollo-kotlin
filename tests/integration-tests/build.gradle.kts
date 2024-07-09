@@ -1,8 +1,8 @@
-import com.apollographql.apollo3.compiler.MANIFEST_OPERATION_OUTPUT
+import com.apollographql.apollo.compiler.MANIFEST_OPERATION_OUTPUT
 
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
-  id("com.apollographql.apollo3")
+  id("com.apollographql.apollo")
 }
 
 apolloTest()
@@ -13,14 +13,12 @@ kotlin {
       dependencies {
         implementation(libs.apollo.api)
         implementation(libs.apollo.normalizedcache)
-        implementation(libs.apollo.adapters)
         implementation(libs.apollo.runtime)
       }
     }
 
     findByName("commonTest")?.apply {
       dependencies {
-        implementation(libs.apollo.adapters)
         implementation(libs.apollo.testingsupport)
         implementation(libs.apollo.mockserver)
         implementation(libs.kotlinx.coroutines)
@@ -41,30 +39,35 @@ kotlin {
 fun configureApollo(generateKotlinModels: Boolean) {
   val extra = if (generateKotlinModels) "kotlin" else "java"
 
-  configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
-    file("src/main/graphql/com/apollographql/apollo3/integration").listFiles()!!
+  configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
+    file("src/main/graphql/com/apollographql/apollo/integration").listFiles()!!
         .filter { it.isDirectory }
         .forEach {
           service("${it.name}-$extra") {
             when (it.name) {
               "httpcache" -> {
                 operationManifestFormat.set(MANIFEST_OPERATION_OUTPUT)
-                mapScalar("Date", "kotlinx.datetime.LocalDate")
+                if (generateKotlinModels) {
+                  mapScalarToKotlinString("Date")
+                } else {
+                  mapScalarToJavaString("Date")
+                }
               }
 
               "upload" -> {
                 operationManifestFormat.set("persistedQueryManifest")
-                mapScalar("Upload", "com.apollographql.apollo3.api.Upload")
+                mapScalar("Upload", "com.apollographql.apollo.api.Upload")
               }
 
               "normalizer" -> {
                 generateFragmentImplementations.set(true)
-                mapScalar("Date", "kotlinx.datetime.LocalDate")
                 if (generateKotlinModels) {
+                  mapScalarToKotlinString("Date")
+                  mapScalarToKotlinString("Instant")
                   sealedClassesForEnumsMatching.set(listOf("Episode"))
-                  mapScalar("Instant", "kotlinx.datetime.Instant", "com.apollographql.apollo3.adapter.KotlinxInstantAdapter")
                 } else {
-                  mapScalar("Instant", "kotlinx.datetime.Instant", "com.apollographql.apollo3.adapter.KotlinxInstantAdapter.INSTANCE")
+                  mapScalarToJavaString("Date")
+                  mapScalarToJavaString("Instant")
                 }
               }
 
@@ -73,8 +76,8 @@ fun configureApollo(generateKotlinModels: Boolean) {
               }
             }
 
-            srcDir(file("src/main/graphql/com/apollographql/apollo3/integration/${it.name}/"))
-            packageName.set("com.apollographql.apollo3.integration.${it.name}")
+            srcDir(file("src/main/graphql/com/apollographql/apollo/integration/${it.name}/"))
+            packageName.set("com.apollographql.apollo.integration.${it.name}")
             codegenModels.set("operationBased")
             this.generateKotlinModels.set(generateKotlinModels)
             generateOptionalOperationVariables.set(false)
@@ -108,7 +111,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
   }
 }
 
-fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKotlinModels: Boolean) {
+fun com.apollographql.apollo.gradle.api.Service.configureConnection(generateKotlinModels: Boolean) {
   outputDirConnection {
     if (generateKotlinModels) {
       connectToKotlinSourceSet("commonTest")

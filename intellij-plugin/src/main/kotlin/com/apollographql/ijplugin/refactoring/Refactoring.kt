@@ -45,7 +45,14 @@ fun PsiElement.bindReferencesToElement(element: PsiElement): PsiElement? {
 }
 
 fun findReferences(psiElement: PsiElement, project: Project): Collection<PsiReference> {
-  return ReferencesSearch.search(psiElement, GlobalSearchScope.projectScope(project), false).findAll()
+  return runCatching {
+    // We sometimes get KotlinExceptionWithAttachments: Unsupported reference
+    ReferencesSearch.search(psiElement, GlobalSearchScope.projectScope(project), false).findAll()
+  }
+      .onFailure { e ->
+        logw(e, "findReferences failed")
+      }
+      .getOrDefault(emptyList())
 }
 
 fun findMethodReferences(
@@ -57,18 +64,18 @@ fun findMethodReferences(
 ): Collection<PsiReference> {
   val psiLookupClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project)) ?: return emptyList()
   val methods =
-      // Try Kotlin first
-      (psiLookupClass as? KtLightClass)?.kotlinOrigin?.findFunctionsByName(methodName)?.takeIf { it.isNotEmpty() }
-      // Fallback to Java
-          ?: psiLookupClass.findMethodsByName(methodName, false)
-              .filter { method ->
-                if (extensionTargetClassName == null) return@filter methodPredicate(method)
-                // In Kotlin extensions, the target is passed to the first parameter
-                if (method.parameterList.parametersCount < 1) return@filter false
-                val firstParameter = method.parameterList.parameters.first()
-                val firstParameterType = (firstParameter.type as? PsiClassType)?.rawType()?.canonicalText
-                firstParameterType == extensionTargetClassName && methodPredicate(method)
-              }
+    // Try Kotlin first
+    (psiLookupClass as? KtLightClass)?.kotlinOrigin?.findFunctionsByName(methodName)?.takeIf { it.isNotEmpty() }
+    // Fallback to Java
+        ?: psiLookupClass.findMethodsByName(methodName, false)
+            .filter { method ->
+              if (extensionTargetClassName == null) return@filter methodPredicate(method)
+              // In Kotlin extensions, the target is passed to the first parameter
+              if (method.parameterList.parametersCount < 1) return@filter false
+              val firstParameter = method.parameterList.parameters.first()
+              val firstParameterType = (firstParameter.type as? PsiClassType)?.rawType()?.canonicalText
+              firstParameterType == extensionTargetClassName && methodPredicate(method)
+            }
   return methods.flatMap { method ->
     findReferences(method, project)
   }

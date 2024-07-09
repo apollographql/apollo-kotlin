@@ -5,7 +5,7 @@
 //
 package com.example.java_jetbrains_annotations.type
 
-import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo.api.ObjectType
 
 public class MyType {
   public companion object {

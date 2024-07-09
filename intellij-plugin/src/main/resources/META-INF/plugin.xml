@@ -190,25 +190,25 @@
 
     <annotator
         language="yaml"
-        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator"/>
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator" />
 
     <annotator
         language="JSON"
-        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator"/>
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator" />
 
     <annotator
         language="TEXT"
-        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator"/>
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator" />
 
     <annotator
         language="TypeScript"
-        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator"/>
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator" />
 
     <annotator
         language="ECMAScript 6"
-        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator"/>
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator" />
 
-    <problemFileHighlightFilter implementation="com.apollographql.ijplugin.inspection.GraphQLConfigFileFilter"/>
+    <problemFileHighlightFilter implementation="com.apollographql.ijplugin.inspection.GraphQLConfigFileFilter" />
 
     <!-- "Change input class constructor to builder" intention -->
     <intentionAction>
@@ -268,6 +268,11 @@
         coordinate="com.apollographql.apollo3:apollo-api-jvm"
         displayName="Apollo Kotlin"
     />
+    <dependencySupport
+        kind="java"
+        coordinate="com.apollographql.apollo:apollo-api-jvm"
+        displayName="Apollo Kotlin"
+    />
 
     <!-- Advanced settings -->
     <advancedSetting
@@ -281,6 +286,11 @@
         id="apollo.GraphQLDefinitionRenameProcessor"
         implementation="com.apollographql.ijplugin.refactoring.GraphQLDefinitionRenameProcessor"
         order="first"
+    />
+
+    <!-- Mark Apollo generated sources as generated -->
+    <generatedSourcesFilter
+        implementation="com.apollographql.ijplugin.generatedsources.ApolloGeneratedSourcesFilter"
     />
   </extensions>
 

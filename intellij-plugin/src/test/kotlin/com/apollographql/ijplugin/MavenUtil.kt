@@ -23,7 +23,9 @@ fun addFromMaven(
     includeTransitiveDependencies: Boolean,
     dependencyScope: DependencyScope,
 ) {
-  val remoteRepositoryDescriptions = listOf(RemoteRepositoryDescription.MAVEN_CENTRAL)
+  val remoteRepositoryDescriptions = listOf(
+      RemoteRepositoryDescription.MAVEN_CENTRAL,
+  )
   val libraryProperties = RepositoryLibraryProperties(mavenCoordinates, includeTransitiveDependencies)
   val roots = JarRepositoryManager.loadDependenciesModal(
       model.project,

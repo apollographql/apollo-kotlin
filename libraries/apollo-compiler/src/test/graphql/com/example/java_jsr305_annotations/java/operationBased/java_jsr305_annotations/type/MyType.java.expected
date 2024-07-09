@@ -5,7 +5,7 @@
 //
 package com.example.java_jsr305_annotations.type;
 
-import com.apollographql.apollo3.api.ObjectType;
+import com.apollographql.apollo.api.ObjectType;
 
 public class MyType {
   public static ObjectType type = (new ObjectType.Builder("MyType")).build();

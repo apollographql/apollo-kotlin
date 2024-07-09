@@ -1,7 +1,10 @@
 package test
 
-import com.apollographql.apollo3.api.getOrNull
-import com.apollographql.apollo3.api.getOrThrow
+import com.apollographql.apollo.api.getOrNull
+import com.apollographql.apollo.api.getOrThrow
+import com.apollographql.apollo.api.graphQLErrorOrNull
+import `null`.FragmentsQuery
+import `null`.NullAndNonNullQuery
 import `null`.PriceNullQuery
 import `null`.ProductIgnoreErrorsQuery
 import `null`.ProductNullQuery
@@ -113,5 +116,45 @@ class CatchNullTest {
     assertNotNull(response.data?.product)
     assertNull(response.data?.product?.price)
     assertNull(response.errors)
+  }
+
+  @Test
+  fun nullAndNonNull() {
+    val response = NullAndNonNullQuery().parseResponse("""
+      {
+        "data": { "nonNull": 42, "nullable": null }
+      }
+    """.trimIndent())
+
+    // plus(0) is only used to check that `nonNull` is non nullable
+    assertEquals(42, response.data!!.nonNull.plus(0))
+  }
+
+  @Test
+  fun fragments() {
+    val response = FragmentsQuery().parseResponse("""
+      {
+        "data":  {"__typename": "Query", "nonNull": 42, "nullable": null }
+      }
+    """.trimIndent())
+
+    // nonNull has explicit @catch(to: NULL)
+    assertEquals(42, response.data!!.nonNull?.plus(0))
+    // nonNull is the same field but from a different fragment
+    assertEquals(42, response.data!!.queryDetails.nonNull.getOrThrow().plus(0))
+  }
+
+  @Test
+  fun fragmentErrors() {
+    val response = FragmentsQuery().parseResponse("""
+      {
+        "errors": [{"message": "Oops", "path": ["nullable"] }],
+        "data": {"__typename": "Query", "nonNull": 42, "nullable": null }
+      }
+    """.trimIndent())
+
+    assertEquals(null, response.data!!.nullable?.plus(0))
+    // nonNull is the same field but from a different fragment and can have different @catch
+    assertEquals("Oops", response.data!!.queryDetails.nullable.graphQLErrorOrNull()?.message)
   }
 }

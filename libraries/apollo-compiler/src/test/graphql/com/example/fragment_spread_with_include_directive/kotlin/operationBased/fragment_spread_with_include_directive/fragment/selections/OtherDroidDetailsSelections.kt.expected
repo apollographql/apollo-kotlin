@@ -5,9 +5,9 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment.selections
 
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.notNull
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.notNull
 import com.example.fragment_spread_with_include_directive.type.GraphQLID
 import kotlin.collections.List
 

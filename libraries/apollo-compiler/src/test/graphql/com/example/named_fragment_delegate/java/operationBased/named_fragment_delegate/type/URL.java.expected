@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_delegate.type;
 
-import com.apollographql.apollo3.api.CustomScalarType;
+import com.apollographql.apollo.api.CustomScalarType;
 
 /**
  * URL for testing

@@ -1,6 +1,6 @@
 package test;
 
-import com.apollographql.apollo3.api.Optional;
+import com.apollographql.apollo.api.Optional;
 import jvmoverloads.GetPersonQuery;
 import org.junit.Test;
 

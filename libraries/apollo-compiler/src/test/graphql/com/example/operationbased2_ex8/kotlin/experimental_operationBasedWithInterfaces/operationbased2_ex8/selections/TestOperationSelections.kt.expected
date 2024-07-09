@@ -5,10 +5,10 @@
 //
 package com.example.operationbased2_ex8.selections
 
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.notNull
+import com.apollographql.apollo.api.CompiledField
+import com.apollographql.apollo.api.CompiledFragment
+import com.apollographql.apollo.api.CompiledSelection
+import com.apollographql.apollo.api.notNull
 import com.example.operationbased2_ex8.fragment.selections.AnimalFragmentSelections
 import com.example.operationbased2_ex8.type.Animal
 import com.example.operationbased2_ex8.type.GraphQLString

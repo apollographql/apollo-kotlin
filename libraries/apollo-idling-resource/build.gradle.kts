@@ -4,7 +4,7 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo3.idling.resource",
+    namespace = "com.apollographql.apollo.idling.resource",
     androidOptions = AndroidOptions(withCompose = false)
 )
 

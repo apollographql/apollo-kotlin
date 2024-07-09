@@ -7,14 +7,14 @@ import codegen.models.fragment.HeroWithFriendsFragment
 import codegen.models.fragment.HeroWithFriendsFragmentImpl
 import codegen.models.fragment.HumanWithIdFragment
 import codegen.models.fragment.HumanWithIdFragmentImpl
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.store
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.cache.normalized.ApolloStore
+import com.apollographql.apollo.cache.normalized.api.CacheKey
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.cache.normalized.store
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo.testing.internal.runTest
 import testFixtureToUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -98,7 +98,7 @@ class StoreTest {
     assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(2)?.humanWithIdFragment?.id, "1003")
     assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(2)?.humanWithIdFragment?.name, "Leia Organa")
 
-    store.writeFragment(
+    store.writeFragmentSync(
         HeroWithFriendsFragmentImpl(),
         CacheKey("2001"),
         HeroWithFriendsFragment(
@@ -123,7 +123,7 @@ class StoreTest {
         ),
     )
 
-    store.writeFragment(
+    store.writeFragmentSync(
         HumanWithIdFragmentImpl(),
         CacheKey("1002"),
         HumanWithIdFragment(

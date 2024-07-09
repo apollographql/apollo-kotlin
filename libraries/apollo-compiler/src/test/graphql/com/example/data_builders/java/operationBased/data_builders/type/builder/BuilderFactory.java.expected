@@ -5,7 +5,7 @@
 //
 package com.example.data_builders.type.builder;
 
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.CustomScalarAdapters;
 import java.lang.String;
 
 public class BuilderFactory {

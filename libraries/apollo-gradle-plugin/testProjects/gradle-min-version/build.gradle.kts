@@ -1,4 +1,4 @@
-import com.apollographql.apollo3.gradle.api.ApolloExtension
+import com.apollographql.apollo.gradle.api.ApolloExtension
 
 buildscript {
   repositories {
@@ -8,14 +8,14 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath("com.apollographql.apollo3:apollo-gradle-plugin:APOLLO_VERSION")
+    classpath("com.apollographql.apollo:apollo-gradle-plugin:APOLLO_VERSION")
   }
 }
 
 
 
 apply(plugin = "java")
-apply(plugin = "com.apollographql.apollo3")
+apply(plugin = "com.apollographql.apollo")
 
 repositories {
   maven {

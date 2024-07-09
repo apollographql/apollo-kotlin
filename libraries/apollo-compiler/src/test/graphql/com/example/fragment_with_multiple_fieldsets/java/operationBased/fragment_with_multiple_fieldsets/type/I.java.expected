@@ -5,7 +5,7 @@
 //
 package com.example.fragment_with_multiple_fieldsets.type;
 
-import com.apollographql.apollo3.api.InterfaceType;
+import com.apollographql.apollo.api.InterfaceType;
 
 public class I {
   public static InterfaceType type = (new InterfaceType.Builder("I")).build();
