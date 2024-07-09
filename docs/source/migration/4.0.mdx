@@ -3,17 +3,11 @@ title: Migrating to Apollo Kotlin 4
 description: From version 3
 ---
 
-<Note>
-
-**Version 4 is currently under development and this page itself is a work in progress.**
-
-</Note>
-
 Apollo Kotlin 3 was a major rewrite of Apollo in Kotlin multiplatform.
 
 Apollo Kotlin 4 focuses on tooling, stability and making the library more maintainable, so it can evolve smoothly for the many years to come.
 
-While most of the core APIs stayed the same, Apollo Kotlin 4 contains a few binary breaking changes. To account for that, and in order to be more future proof, we [changed the package name](https://github.com/apollographql/apollo-kotlin/issues/4710) to `com.apollographql.apollo`.
+While most of the core APIs stayed the same, Apollo Kotlin 4 contains a few binary breaking changes. To account for that, and in order to be more future-proof, [we changed the package name](https://github.com/apollographql/apollo-kotlin/issues/4710) to `com.apollographql.apollo`.
 
 Apollo Kotlin 4 removes some deprecated symbols. We strongly recommend updating to the latest 3.x release and removing deprecated usages before migrating to version 4.
 
@@ -427,38 +421,6 @@ mapScalarToKotlinLong("MyLong")
 
 ```
 
-### schemaFile is deprecated
-
-Because there might be several schema files, `schemaFile` is deprecated. Instead use `schemaFiles`:
-
-```kotlin
-    // replace
-    schemaFile.set("src/main/graphql/com/example/schema.graphqls")
-
-    // with
-    schemaFiles.from("src/main/graphql/com/example/schema.graphqls")
-```
-
-If you are using `packageNamesFromFilePaths` and `schemaFile`, you'll need to use a [Gradle FileTree](https://docs.gradle.org/current/javadoc/org/gradle/api/file/FileTree.html) to carry the appropriate normalized path. 
-
-```kotlin
-    packageNameFromFilePaths()
-
-    // replace
-    schemaFile.set("src/main/graphql/com/example/schema.graphqls")
-
-    // with
-    schemaFiles.from(fileTree("src/main/graphql/").apply {
-      include("com/example/schema.graphqls")
-    })
-```
-
-<Note>
-
-Apollo Kotlin 3 was using the operation root directories to compute the schema normalized path which could be wrong in some edge cases. Using fileTree ensures the normalized path is consistent.
-
-</Note>
-
 ### Migrating to ApolloCompilerPlugin
 
 Apollo Kotlin 4 introduces `ApolloCompilerPlugin` as a way to customize code generation. `ApolloCompilerPlugin` are loaded using the [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) API and run in a separate classloader from your Gradle build. As a result, using  `Service.operationIdGenerator`/`Service.operationOutputGenerator` together with `ApolloCompilerPlugin` is not possible.
@@ -682,52 +644,13 @@ val apolloClient = ApolloClient.Builder()
 
 The AST classes (`GQLNode` and subclasses) as well as `Introspection` classes are not data classes anymore (see https://github.com/apollographql/apollo-kotlin/pull/4704/). The class hierarchy has been tweaked so that `GQLNamed`, `GQLDescribed` and `GQLHasDirectives` are more consistently inherited from.
 
-`GQLSelectionSet` and `GQLArguments` are deprecated and removed from `GQLField` and `GQLInlineFragment`. Use `.selections` directly
+`GQLSelectionSet` and `GQLArguments` are removed from `GQLField` and `GQLInlineFragment`. Use `.selections` directly
 
 `GQLInlineFragment.typeCondition` is now nullable to account for inline fragments who inherit their type condition.
 
 `SourceLocation.position` is renamed to `SourceLocation.column` and is now 1-indexed. `GQLNode.sourceLocation` is now nullable to account for the cases where the nodes are constructed programmatically.
 
 It is not possible to create a `Schema` from a File or String directly anymore. Instead, create a `GQLDocument` first and convert it to a schema with `toSchema()`.
-
-## apollo-rx{2-3}-support
-
-The `apollo-rx2-support` and `apollo-rx3-support` artifacts are deprecated.
-
-They were very thin wrappers around [`kotlinx-coroutines-rx2`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx2) or [`kotlinx-coroutines-rx3`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx3) and will be removed in a future version. 
-
-Use `kotlinx-coroutines-rx${version}` directlyl instead. Replace the artifact in your build script:
-
-```kotlin
-dependencies {
-  // Replace
-  implementation("com.apollographql.apollo3:apollo-rx2-support:$version")
-  
-  // With
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$version")
-}
-
-```
-
-In your code, use `asFlowable()`:
-
-```kotlin
-// Replace
-apolloClient.query().rxFlowable()
-
-// With
-apolloClient.query().toFlow().asFlowable()
-
-// Replace
-apolloClient.query().rxSingle()
-
-// With
-apolloClient.query().toFlow().asFlowable().firstOrError()
-```
-
-## apollo-idling-resource 
-
-ApolloIdlingResource is deprecated. We recommend using reactive patterns to test your UI instead. See [this article about ways to do so](https://medium.com/androiddevelopers/alternatives-to-idling-resources-in-compose-tests-8ae71f9fc473) for more details.
 
 ## Example of a migration
 
