@@ -121,7 +121,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
    *                    } else {
    *                      // Something wrong happened
    *                      if (it.exception != null) {
-   *                        // Handle non-GraphQL errors
+   *                        // Handle fetch errors
    *                      } else {
    *                        // Handle GraphQL errors in response.errors
    *                      }
@@ -184,7 +184,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
    * } else {
    *   // Something wrong happened
    *   if (it.exception != null) {
-   *     // Handle non-GraphQL errors
+   *     // Handle fetch errors
    *   } else {
    *     // Handle GraphQL errors in response.errors
    *   }

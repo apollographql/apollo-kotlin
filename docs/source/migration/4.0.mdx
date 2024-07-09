@@ -11,6 +11,13 @@ While most of the core APIs stayed the same, Apollo Kotlin 4 contains a few bina
 
 Apollo Kotlin 4 removes some deprecated symbols. We strongly recommend updating to the latest 3.x release and removing deprecated usages before migrating to version 4.
 
+Important changes are:
+* [new package name](#group-id--plugin-id--package-name) and [moved artifacts](#moved-artifacts-)
+* [fetch errors do not throw anymore](#fetch-errors-do-not-throw)
+* [the multi-module apolloMetadata Gradle configuration is not used anymore](#multi-module-dependson)
+
+Read below for more details.
+
 ## Automatic migration using the Android Studio/IntelliJ plugin
 
 Apollo Kotlin 4 ships with a companion [Android Studio/IntelliJ plugin](../testing/android-studio-plugin#migration-helpers) that automates most of the migration. 
@@ -119,11 +126,11 @@ See [nullability](../advanced/nullability) for a quick peek at the future of Gra
 
 </Caution>
 
-In Apollo Kotlin 3, non-GraphQL errors like network errors, cache misses, and parsing errors were surfaced by throwing exceptions in `ApolloCall.execute()` and in Flows (`ApolloCall.toFlow()`, `ApolloCall.watch()`). This was problematic because it was a difference in how to handle GraphQL errors vs other errors and it was easy to forget catching the exceptions. Uncaught network errors is by far the number one error reported by the [Google Play SDK Index](https://play.google.com/sdks). Moreover, throwing terminates a Flow and consumers would have to handle re-collection.
+In Apollo Kotlin 3, fetch errors like network errors, cache misses, and parsing errors were surfaced by throwing exceptions in `ApolloCall.execute()` and in Flows (`ApolloCall.toFlow()`, `ApolloCall.watch()`). 
+
+This was problematic because it was a difference in how to handle GraphQL errors vs other errors. It was alseeasy to forget catching the exceptions. Uncaught network errors is by far the number one error reported by the [Google Play SDK Index](https://play.google.com/sdks). Moreover, throwing terminates a Flow and consumers would have to handle re-collection.
 
 In Apollo Kotlin 4, a new field `ApolloResponse.exception` has been added and these errors are now surfaced by returning (for `execute()`) or emitting (for Flows) an `ApolloResponse` with a non-null `exception` instead of throwing it. 
-
-This allows consumers to handle different kinds of errors at the same place, and it prevents Flows from being terminated. 
 
 Queries and mutations: 
 
@@ -149,7 +156,7 @@ if (response.data != null) {
 } else {
   // Something wrong happened
   if (response.exception != null) {
-    // Handle non-GraphQL errors
+    // Handle fetch errors
   } else {
     // Handle GraphQL errors in response.errors
   }
@@ -176,7 +183,7 @@ client.subscription(MySubscription()).toFlow().collect { response ->
   } else {
     // Something wrong happened
     if (response.exception != null) {
-      // Handle non-GraphQL errors
+      // Handle fetch errors
     } else {
       // Handle GraphQL errors in response.errors
     }
@@ -184,7 +191,7 @@ client.subscription(MySubscription()).toFlow().collect { response ->
 }
 ```
 
-Note that this is true for all `Flows`, including watchers. If you don't want to receive error responses, filter them out:
+Note that this is true for all `Flows`, including watchers. If you don't want to receive error responses (like cache misses), filter them out:
 
 ```kotlin
 // Replace
@@ -198,7 +205,7 @@ The lower level `ApolloStore` APIs are not changed and throw on cache misses or 
 
 ### ApolloCompositeException is not thrown
 
-When using the cache, Apollo Kotlin 3 threw `ApolloCompositeException` if no response could be found. For an example, a `CacheFirst` fetch policy would throw `ApolloCompositeException(cacheMissException, apolloNetworkException)` if both cache and network failed.
+When using the cache, Apollo Kotlin 3 throws `ApolloCompositeException` if no response is found. For an example, a `CacheFirst` fetch policy throws `ApolloCompositeException(cacheMissException, apolloNetworkException)` if both cache and network failed.
 
 In those cases, Apollo Kotlin 4 throws the first exception and adds the second as a suppressed exception:
 
@@ -218,9 +225,9 @@ For more control over the exception, use `toFlow()` and collect the different `A
 
 ### emitCacheMisses(Boolean) is removed
 
-In Apollo Kotlin 3, when using the normalized cache, you could set `emitCacheMisses` to `true` to emit cache misses instead of throwing.
+In Apollo Kotlin 3, when using the normalized cache, you could set `emitCacheMisses(Boolean)` to `true` to emit cache misses instead of throwing.
 
-In Apollo Kotlin 4, this is now the default behavior and `emitCacheMisses` has been removed.
+In Apollo Kotlin 4, this is now the default behavior and `emitCacheMisses(Boolean)` has been removed.
 
 With the `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies, cache misses and network errors are now emitted in `ApolloResponse.exception`.
 
@@ -257,7 +264,7 @@ val apolloClient = ApolloClient.Builder()
     .build()
 ```
 
-### `ApolloCall.Builder.httpHeaders` is additive
+### ApolloCall.Builder.httpHeaders is additive
 
 In Apollo Kotlin 3, if HTTP headers were set on an `ApolloCall`, they would replace the ones set on `ApolloClient`. In Apollo Kotlin 4 they are added instead by default. To replace them, call `ApolloCall.Builder.ignoreApolloClientHttpHeaders(true)`.
 
@@ -274,17 +281,17 @@ val call = client.query(MyQuery())
   .execute()
 ```
 
-### `HttpEngine` implements `Closeable`
+### HttpEngine implements Closeable
 
 `HttpEngine` now implements `Closeable` and has its `dispose` method renamed to `close`. If you have a custom `HttpEngine`, you need to implement `close` instead of `dispose`.
 
 ## apollo-gradle-plugin
 
-### Multi-module `dependsOn`
+### Multi-module dependsOn
 
-In Apollo Kotlin 3, you could depend on an upstream GraphQL module by using the `apolloMetadata` configuration.
+In Apollo Kotlin 3, depending on an upstream GraphQL module is done using the `apolloMetadata` configuration.
 
-In Apollo Kotlin 4, this is now done with the `Service.dependsOn()`. `Service.dependsOn()` works for multi-services repositories and, by hiding the configuration names, allows us to change the implementation in the future if needed. For an example to accommodate [Gradle project isolation](https://docs.gradle.org/current/userguide/isolated_projects.html).   
+In Apollo Kotlin 4, this is now done using the `Service.dependsOn()` API. `Service.dependsOn()` works for multi-services repositories and, by hiding the configuration names, allows us to change the implementation in the future if needed. This is probably going to be required to accommodate [Gradle project isolation](https://docs.gradle.org/current/userguide/isolated_projects.html).   
 
 ```kotlin
 // feature1/build.gradle.kts
@@ -312,7 +319,7 @@ apollo {
   service("service") {
     // ...
 
-    // Get the generated schema types (and fragments) from the upstream schema module 
+    // Get the generated schema types and fragments from the upstream schema module 
     dependsOn(project(":schema"))
   }
 }
@@ -369,6 +376,7 @@ dependencies {
   apolloUsedCoordinates(project(":feature1"))
 }
 ```
+
 ### All schema types are generated in the schema module
 
 Apollo Kotlin 3 allows to generate schema types for enums or input types in any module. While very flexible, this creates a lot of complexity:
@@ -379,11 +387,11 @@ Apollo Kotlin 3 allows to generate schema types for enums or input types in any 
   - Using the schema module package name can be surprising as it's not the one specified in the Gradle configuration.
 - Gradle has APIs to aggregate all projects in a project isolation compatible way (see [gradle#22514](https://github.com/gradle/gradle/issues/22514)). But it's not clear yet how to do this for a subset of the projects (see [gradle#29037](https://github.com/gradle/gradle/issues/29037)).
 
-In Apollo Kotlin 4, we decided to enforce generating all schema types in a single module, the schema module. This restriction simplifies the Gradle plugin and makes it easier to debug and evolve that code. 
+Apollo Kotlin 4 enforces generating all schema types in a single module, the schema module. This restriction simplifies the Gradle plugin and makes it easier to debug and evolve that code. 
 
 It also means that you can't publish your schema module with a subset of the types and let other modules generate their own in another repository. If you are publishing your schema module, it needs to contain all the schema types used by your consumers, either using `alwaysGenerateTypesMatching.set(listOf(".*"))` or manually adding them. 
 
-If that is too much of a limitation, please open an issue and we will revisit.
+If that is too much of a limitation, please open an issue with your use case and we will revisit.
 
 ### Apollo metadata publications are no longer created automatically
 
@@ -425,7 +433,7 @@ mapScalarToKotlinLong("MyLong")
 
 ### Migrating to ApolloCompilerPlugin
 
-Apollo Kotlin 4 introduces `ApolloCompilerPlugin` as a way to customize code generation. `ApolloCompilerPlugin` are loaded using the [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) API and run in a separate classloader from your Gradle build. As a result, using  `Service.operationIdGenerator`/`Service.operationOutputGenerator` together with `ApolloCompilerPlugin` is not possible.
+Apollo Kotlin 4 introduces `ApolloCompilerPlugin` as a way to customize code generation. `ApolloCompilerPlugin` replace compiler hooks and are loaded using the [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) API and run in a separate classloader from your Gradle build. As a result, using  `Service.operationIdGenerator`/`Service.operationOutputGenerator` together with `ApolloCompilerPlugin` is not possible.
 
 `Service.operationIdGenerator`/`Service.operationOutputGenerator` are deprecated and will be removed in a future release. You can migrate to `ApolloCompilerPlugin` using the instructions [from the dedicated page](https://www.apollographql.com/docs/kotlin/v4/advanced/compiler-plugins) and the `ApolloCompilerPlugin.operationIds()` method:
 
@@ -585,7 +593,7 @@ extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3/", import: [
 
 This is a backward compatible change.
 
-### Directive usages are validated and require a matching directive definition
+### Directive usages are validated 
 
 In Apollo Kotlin 4, all directive usages are validated against their definition. If you have queries using client side directives:
 
