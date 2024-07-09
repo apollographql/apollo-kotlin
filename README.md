@@ -1,7 +1,7 @@
 <div align="center">
 
 <p>
-	<a href="https://www.apollographql.com/"><img src="https://raw.githubusercontent.com/apollographql/apollo-client/main/docs/source/logo/apollo-wordmark.svg" height="100" alt="Apollo Client"></a>
+	<a href="https://www.apollographql.com/"><img src="https://raw.githubusercontent.com/apollographql/apollo-client-devtools/a7147d7db5e29b28224821bf238ba8e3a2fdf904/assets/apollo-wordmark.svg" height="100" alt="Apollo Client"></a>
 </p>
 
 [![Discourse](https://img.shields.io/discourse/status?label=Discourse&server=https%3A%2F%2Fcommunity.apollographql.com&logo=discourse)](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client)
