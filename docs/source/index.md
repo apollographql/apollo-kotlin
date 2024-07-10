@@ -229,7 +229,7 @@ Apollo Kotlin is very modular and publishes several artifacts.
 
 ## Contributing
 
-If you'd like to contribute, please see [Contributing.md](https://github.com/apollographql/apollo-kotlin/blob/main/CONTRIBUTING.md).
+If you'd like to contribute, please see [CONTRIBUTING.md](https://github.com/apollographql/apollo-kotlin/blob/main/CONTRIBUTING.md).
 
 ## Community integrations
 
