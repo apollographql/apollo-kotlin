@@ -19,28 +19,28 @@ Both persisted queries and APQs require you to configure how your client makes r
 
 ### 0. Requirements
 
-You can use APQs with the following versions of Apollo Kotlin, Apollo Server, and Apollo Router:
+You can use APQs with the following versions of Apollo Kotlin, Apollo Server, and Apollo Router Core:
 - Apollo Kotlin (v1.0.0+)
 - [Apollo Server](/apollo-server/) (v1.0.0+)
-- [Apollo Router](/router) (v0.1.0+)
+- [Apollo Router Core](/router) (v0.1.0+)
 
 
 <Note>
 
-You can use _either_ Apollo Server _or_ Apollo Router for APQs. They don't need to be used together.
+You can use _either_ Apollo Server _or_ Apollo Router Core for APQs. They don't need to be used together.
 
 </Note>
 
 Using persisted queries for safelisting has the following requirements:
 - Apollo Kotlin (v3.8.2+)
-- [Apollo Router](/router) (v1.25.0+)
+- [GraphOS Router](/router) (v1.25.0+)
 - [GraphOS Enterprise plan](/graphos/enterprise/)
 
 ### 1. Generate operation manifest
 
 > This step is only required for implementing safelisting with persisted queries. It is _not_ required for APQs.
 
-The operation manifest acts as a safelist of trusted operations the [Apollo Router](/router/) can check incoming requests against. 
+The operation manifest acts as a safelist of trusted operations the [GraphOS Router](/router/) can check incoming requests against. 
 To generate the operation manifest, set `operationManifestFormat` to `"persistedQueryManifest"` in your Gradle script:
 
 ```kotlin
