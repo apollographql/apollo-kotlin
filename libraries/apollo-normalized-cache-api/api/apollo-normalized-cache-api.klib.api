@@ -142,6 +142,8 @@ final object com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders { 
         final fun <get-DO_NOT_STORE>(): kotlin/String // com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders.DO_NOT_STORE.<get-DO_NOT_STORE>|<get-DO_NOT_STORE>(){}[0]
     final const val EVICT_AFTER_READ // com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders.EVICT_AFTER_READ|{}EVICT_AFTER_READ[0]
         final fun <get-EVICT_AFTER_READ>(): kotlin/String // com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders.EVICT_AFTER_READ.<get-EVICT_AFTER_READ>|<get-EVICT_AFTER_READ>(){}[0]
+    final const val MEMORY_CACHE_ONLY // com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders.MEMORY_CACHE_ONLY|{}MEMORY_CACHE_ONLY[0]
+        final fun <get-MEMORY_CACHE_ONLY>(): kotlin/String // com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders.MEMORY_CACHE_ONLY.<get-MEMORY_CACHE_ONLY>|<get-MEMORY_CACHE_ONLY>(){}[0]
 }
 final object com.apollographql.apollo.cache.normalized.api/DefaultCacheResolver : com.apollographql.apollo.cache.normalized.api/CacheResolver { // com.apollographql.apollo.cache.normalized.api/DefaultCacheResolver|null[0]
     final fun resolveField(com.apollographql.apollo.api/CompiledField, com.apollographql.apollo.api/Executable.Variables, kotlin.collections/Map<kotlin/String, kotlin/Any?>, kotlin/String): kotlin/Any? // com.apollographql.apollo.cache.normalized.api/DefaultCacheResolver.resolveField|resolveField(com.apollographql.apollo.api.CompiledField;com.apollographql.apollo.api.Executable.Variables;kotlin.collections.Map<kotlin.String,kotlin.Any?>;kotlin.String){}[0]

@@ -2,6 +2,7 @@ public final class com/apollographql/apollo/cache/normalized/api/ApolloCacheHead
 	public static final field DO_NOT_STORE Ljava/lang/String;
 	public static final field EVICT_AFTER_READ Ljava/lang/String;
 	public static final field INSTANCE Lcom/apollographql/apollo/cache/normalized/api/ApolloCacheHeaders;
+	public static final field MEMORY_CACHE_ONLY Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo/cache/normalized/api/CacheHeaders {

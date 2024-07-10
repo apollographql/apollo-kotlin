@@ -13,6 +13,7 @@ kotlin {
       dependencies {
         implementation(libs.apollo.api)
         implementation(libs.apollo.normalizedcache)
+        implementation(libs.apollo.normalizedcache.sqlite)
         implementation(libs.apollo.runtime)
       }
     }

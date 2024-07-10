@@ -11,6 +11,12 @@ object ApolloCacheHeaders {
    */
   const val DO_NOT_STORE = "do-not-store"
 
+
+  /**
+   * Records should be stored and read from the [MemoryCache] only.
+   */
+  const val MEMORY_CACHE_ONLY = "memory-cache-only"
+
   /**
    * Records from this request should be evicted after being read.
    */
