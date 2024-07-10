@@ -13,7 +13,6 @@ kotlin {
       dependencies {
         implementation(libs.apollo.api)
         implementation(libs.apollo.normalizedcache)
-        implementation(libs.apollo.normalizedcache.sqlite)
         implementation(libs.apollo.runtime)
       }
     }
@@ -26,6 +25,12 @@ kotlin {
         implementation(libs.kotlinx.serialization.json)
         implementation(libs.kotlinx.coroutines.test)
         implementation(libs.turbine)
+      }
+    }
+
+    findByName("concurrentTest")?.apply {
+      dependencies {
+        implementation(libs.apollo.normalizedcache.sqlite)
       }
     }
 
