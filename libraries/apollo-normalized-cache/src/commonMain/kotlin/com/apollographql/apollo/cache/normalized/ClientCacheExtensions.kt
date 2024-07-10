@@ -278,6 +278,15 @@ fun <T> MutableExecutionOptions<T>.doNotStore(doNotStore: Boolean) = addExecutio
     DoNotStoreContext(doNotStore)
 )
 
+/**
+ * @param memoryOnly Whether to store and read from a memory cache only.
+ *
+ * Default: false
+ */
+fun <T> MutableExecutionOptions<T>.memoryCacheOnly(memoryOnly: Boolean) = addExecutionContext(
+    MemoryCacheOnlyContext(memoryOnly)
+)
+
 @Deprecated("Emitting cache misses is now the default behavior, this method is a no-op", replaceWith = ReplaceWith(""))
 @ApolloDeprecatedSince(v4_0_0)
 @Suppress("UNUSED_PARAMETER")
@@ -404,6 +413,9 @@ private val <T> MutableExecutionOptions<T>.refetchPolicyInterceptor
 
 internal val <D : Operation.Data> ApolloRequest<D>.doNotStore
   get() = executionContext[DoNotStoreContext]?.value ?: false
+
+internal val <D : Operation.Data> ApolloRequest<D>.memoryCacheOnly
+  get() = executionContext[MemoryCacheOnlyContext]?.value ?: false
 
 internal val <D : Operation.Data> ApolloRequest<D>.storePartialResponses
   get() = executionContext[StorePartialResponsesContext]?.value ?: false
@@ -576,6 +588,13 @@ internal class DoNotStoreContext(val value: Boolean) : ExecutionContext.Element 
     get() = Key
 
   companion object Key : ExecutionContext.Key<DoNotStoreContext>
+}
+
+internal class MemoryCacheOnlyContext(val value: Boolean) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<MemoryCacheOnlyContext>
 }
 
 internal class StorePartialResponsesContext(val value: Boolean) : ExecutionContext.Element {

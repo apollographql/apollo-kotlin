@@ -28,6 +28,12 @@ kotlin {
       }
     }
 
+    findByName("concurrentTest")?.apply {
+      dependencies {
+        implementation(libs.apollo.normalizedcache.sqlite)
+      }
+    }
+
     findByName("jvmTest")?.apply {
       dependencies {
         implementation(libs.okhttp.logging)

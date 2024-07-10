@@ -17,6 +17,7 @@ import com.apollographql.apollo.cache.normalized.cacheHeaders
 import com.apollographql.apollo.cache.normalized.cacheInfo
 import com.apollographql.apollo.cache.normalized.doNotStore
 import com.apollographql.apollo.cache.normalized.fetchFromCache
+import com.apollographql.apollo.cache.normalized.memoryCacheOnly
 import com.apollographql.apollo.cache.normalized.optimisticData
 import com.apollographql.apollo.cache.normalized.storePartialResponses
 import com.apollographql.apollo.cache.normalized.storeReceiveDate
@@ -77,6 +78,9 @@ internal class ApolloCacheInterceptor(
         var cacheHeaders = request.cacheHeaders + response.cacheHeaders
         if (request.storeReceiveDate) {
           cacheHeaders += nowDateCacheHeaders()
+        }
+        if (request.memoryCacheOnly) {
+          cacheHeaders += CacheHeaders.Builder().addHeader(ApolloCacheHeaders.MEMORY_CACHE_ONLY, "true").build()
         }
         store.writeOperation(request.operation, response.data!!, customScalarAdapters, cacheHeaders, publish = false)
       } else {
@@ -206,10 +210,14 @@ internal class ApolloCacheInterceptor(
     val startMillis = currentTimeMillis()
 
     val data = try {
+      var cacheHeaders = request.cacheHeaders
+      if (request.memoryCacheOnly) {
+        cacheHeaders += CacheHeaders.Builder().addHeader(ApolloCacheHeaders.MEMORY_CACHE_ONLY, "true").build()
+      }
       store.readOperation(
           operation = operation,
           customScalarAdapters = customScalarAdapters,
-          cacheHeaders = request.cacheHeaders
+          cacheHeaders = cacheHeaders
       )
     } catch (e: CacheMissException) {
       return ApolloResponse.Builder(

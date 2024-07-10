@@ -114,6 +114,7 @@ public final class com/apollographql/apollo/cache/normalized/NormalizedCache {
 	public static final fun getCacheHeaders (Lcom/apollographql/apollo/api/ApolloResponse;)Lcom/apollographql/apollo/cache/normalized/api/CacheHeaders;
 	public static final fun getCacheInfo (Lcom/apollographql/apollo/api/ApolloResponse;)Lcom/apollographql/apollo/cache/normalized/CacheInfo;
 	public static final fun isFromCache (Lcom/apollographql/apollo/api/ApolloResponse;)Z
+	public static final fun memoryCacheOnly (Lcom/apollographql/apollo/api/MutableExecutionOptions;Z)Ljava/lang/Object;
 	public static final fun optimisticUpdates (Lcom/apollographql/apollo/ApolloCall;Lcom/apollographql/apollo/api/Mutation$Data;)Lcom/apollographql/apollo/ApolloCall;
 	public static final fun optimisticUpdates (Lcom/apollographql/apollo/api/ApolloRequest$Builder;Lcom/apollographql/apollo/api/Mutation$Data;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public static final fun refetchPolicy (Lcom/apollographql/apollo/api/MutableExecutionOptions;Lcom/apollographql/apollo/cache/normalized/FetchPolicy;)Ljava/lang/Object;

@@ -15,6 +15,9 @@ class SqlNormalizedCache internal constructor(
 ) : NormalizedCache() {
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
+    if (cacheHeaders.hasHeader(ApolloCacheHeaders.MEMORY_CACHE_ONLY)) {
+      return null
+    }
     val record = try {
       recordDatabase.select(key)
     } catch (e: Exception) {
@@ -32,6 +35,9 @@ class SqlNormalizedCache internal constructor(
   }
 
   override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
+    if (cacheHeaders.hasHeader(ApolloCacheHeaders.MEMORY_CACHE_ONLY)) {
+      return emptyList()
+    }
     val records = try {
       internalGetRecords(keys)
     } catch (e: Exception) {
@@ -77,7 +83,7 @@ class SqlNormalizedCache internal constructor(
   }
 
   override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
-    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
+    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE) || cacheHeaders.hasHeader(ApolloCacheHeaders.MEMORY_CACHE_ONLY)) {
       return emptySet()
     }
     return try {
@@ -94,7 +100,7 @@ class SqlNormalizedCache internal constructor(
   }
 
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
-    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
+    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE) || cacheHeaders.hasHeader(ApolloCacheHeaders.MEMORY_CACHE_ONLY)) {
       return emptySet()
     }
     return try {
