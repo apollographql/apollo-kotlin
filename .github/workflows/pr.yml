@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   tests-gradle:
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28 #v3
       - uses: actions/setup-java@2c7a4878f5d120bd643426d54ae1209b29cc01a3 #v3
@@ -39,7 +39,7 @@ jobs:
           path: diagnostics.zip
 
   tests-no-gradle:
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28 #v3
       - uses: actions/setup-java@2c7a4878f5d120bd643426d54ae1209b29cc01a3 #v3
@@ -65,7 +65,7 @@ jobs:
           path: diagnostics.zip
 
   tests-integration:
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28 #v3
       - uses: actions/setup-java@2c7a4878f5d120bd643426d54ae1209b29cc01a3 #v3
