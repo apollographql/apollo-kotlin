@@ -128,7 +128,7 @@ See [nullability](../advanced/nullability) for a quick peek at the future of Gra
 
 In Apollo Kotlin 3, fetch errors like network errors, cache misses, and parsing errors were surfaced by throwing exceptions in `ApolloCall.execute()` and in Flows (`ApolloCall.toFlow()`, `ApolloCall.watch()`). 
 
-This was problematic because it was a difference in how to handle GraphQL errors vs other errors. It was alseeasy to forget catching the exceptions. Uncaught network errors is by far the number one error reported by the [Google Play SDK Index](https://play.google.com/sdks). Moreover, throwing terminates a Flow and consumers would have to handle re-collection.
+This was problematic because it was a difference in how to handle GraphQL errors vs other errors. It was also easy to forget catching the exceptions. Uncaught network errors is by far the number one error reported by the [Google Play SDK Index](https://play.google.com/sdks). Moreover, throwing terminates a Flow and consumers would have to handle re-collection.
 
 In Apollo Kotlin 4, a new field `ApolloResponse.exception` has been added and these errors are now surfaced by returning (for `execute()`) or emitting (for Flows) an `ApolloResponse` with a non-null `exception` instead of throwing it. 
 
