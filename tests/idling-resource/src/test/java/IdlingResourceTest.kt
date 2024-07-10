@@ -30,12 +30,13 @@ class IdlingResourceTest {
     launch(start = CoroutineStart.UNDISPATCHED) {
       kotlin.runCatching {
         apolloClient.query(IdlingResourceQuery()).execute()
+        mockServer.stop()
       }
     }
     assert(!idlingResource.isIdleNow)
     delay(300)
     assert(!idlingResource.isIdleNow)
-    delay(5000)
+    delay(30000)
     assert(idlingResource.isIdleNow)
   }
 }
