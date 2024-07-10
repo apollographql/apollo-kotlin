@@ -200,6 +200,10 @@ fun setVersionInDocs(version: String, nextSnapshot: String) {
         .replace(Regex("This tutorial uses `(.+)`")) {
           "This tutorial uses `$version`"
         }
+        // index.md
+        .replace(Regex("The latest version is `(.+)`")) {
+          "The latest version is `$version`"
+        }
         // Snapshots
         .replace(Regex("And then use the `(.+)` version for the plugin and libraries.")) {
           "And then use the `$nextSnapshot` version for the plugin and libraries."

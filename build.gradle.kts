@@ -138,14 +138,9 @@ configure<kotlinx.validation.ApiValidationExtension> {
           "com.apollographql.apollo.runtime.java.network.http.internal",
       )
   )
-  ignoredProjects.addAll(
-      rootDir.resolve("libraries")
-          .listFiles()!!
-          .filter { it.resolve("build.gradle.kts").exists() }
-          .map { it.name }
-          .filter { it.endsWith("-incubating") }
-          + "intellij-plugin"
-  )
+
+  ignoredProjects.add("intellij-plugin")
+
   nonPublicMarkers.addAll(
       listOf(
           "com.apollographql.apollo.annotations.ApolloInternal",

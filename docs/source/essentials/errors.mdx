@@ -12,7 +12,7 @@ if (response.data != null) {
 } else {
   // Something wrong happened
   if (response.exception != null) {
-    // Handle non-GraphQL errors
+    // Handle fetch errors
   } else {
     // Handle GraphQL errors in response.errors
   }
@@ -27,7 +27,7 @@ apolloClient.subscription(subscription).toFlow().collect { response ->
     // Handle (potentially partial) data
   } else {
     if (response.exception != null) {
-      // Handle non-GraphQL errors
+      // Handle fetch errors
     } else {
       // Handle GraphQL errors in response.errors
     }

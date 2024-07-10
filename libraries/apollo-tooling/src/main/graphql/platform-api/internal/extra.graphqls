@@ -1,4 +1,4 @@
-extend schema @link(url: "https://specs.apollo.dev/nullability/v0.4", import: ["@semanticNonNull", "@semanticNonField", "@catchByDefault", "CatchTo"])
+extend schema @link(url: "https://specs.apollo.dev/nullability/v0.4", import: ["@semanticNonNull", "@semanticNonNullField", "@catchByDefault", "CatchTo"])
 extend schema @catchByDefault(to: THROW)
 
 extend type Service @semanticNonNullField(name: "statsWindow")
