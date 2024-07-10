@@ -64,7 +64,7 @@ import kotlin.jvm.JvmStatic
  * } else {
  *   // Something wrong happened
  *   if (response.exception != null) {
- *     // Handle non-GraphQL errors
+ *     // Handle fetch errors
  *   } else {
  *     // Handle GraphQL errors in response.errors
  *   }

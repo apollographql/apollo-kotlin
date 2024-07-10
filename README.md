@@ -28,7 +28,7 @@ Apollo Kotlin executes operations against a GraphQL server and returns results a
 
 Because generated types are operation-specific, you can only access data that you actually specify as part of an operation. If you don't ask for a particular field in an operation, you can't access the corresponding property on the returned data structure.
 
-This library is designed with Android in mind, but you can use it in any Kotlin application, including multiplatform.
+This library is designed with Android in mind, but you can use it in any Kotlin application, including KMP ([Kotlin Multi Platform](https://kotlinlang.org/docs/multiplatform.html)).
 
 ## 📚 Documentation
 

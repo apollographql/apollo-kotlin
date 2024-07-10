@@ -3,24 +3,24 @@ title: Introduction to Apollo Kotlin
 description: A strongly-typed, caching GraphQL client for the JVM, Android, and Kotlin multiplatform.
 ---
 
-> 📣 **Apollo Kotlin 3 is generally available.** If you're using Apollo Android 2.x, see the [migration guide](./migration/3.0/). You can also [view the 2.x docs](https://www.apollographql.com/docs/kotlin/v2).
+> 📣 **Migration guide:** if you're using Apollo Kotlin 3, see the [migration guide](./migration/4.0/). You can also [view the 3.x docs](https://www.apollographql.com/docs/kotlin/v3).
 
-[Apollo Kotlin](https://github.com/apollographql/apollo-kotlin) (formerly Apollo Android) is a GraphQL client that generates Kotlin and Java models from GraphQL operations.
+[Apollo Kotlin](https://github.com/apollographql/apollo-kotlin) is a strongly typed GraphQL client that generates Kotlin models for your GraphQL operations.
 
 Apollo Kotlin executes operations against a GraphQL server and returns results as operation-specific Kotlin types. This means you don't have to deal with parsing JSON, or passing around `Map`s and making clients cast values to the right type manually. You also don't have to write model types yourself, because these are generated from the GraphQL definitions your app uses.
 
 Because generated types are operation-specific, you can only access data that you actually specify as part of an operation. If you don't ask for a particular field in an operation, you can't access the corresponding property on the returned data structure.
 
-This library is designed primarily with Android in mind, but you can use it in any Kotlin (including multiplatform) and Java app.
+This library is designed with Android in mind, but you can use it in any Kotlin application, including KMP ([Kotlin Multi Platform](https://kotlinlang.org/docs/multiplatform.html)).
 
 ## Features
 
-* Kotlin Multiplatform and Java code generation
+* Kotlin Multiplatform code generation
 * Queries, Mutations and Subscriptions
 * Reflection-free parsing
 * Normalized cache
-* Custom scalar types
 * HTTP cache
+* Custom scalar types
 * Auto Persisted Queries
 * Query batching
 * File uploads
@@ -29,40 +29,11 @@ This library is designed primarily with Android in mind, but you can use it in a
 * GraphQL AST parser
 * Plugin for Android Studio and IntelliJ
 
-## Multiplatform
-
-Apollo Kotlin is a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) project.
-
-Here's the current matrix of supported features per platform:
-
-|                                                      | `jvm` | `Apple¹` | `js` | `wasmJs` | `linuxX64` |
-|------------------------------------------------------|:-----:|:--------:|:----:|:--------:|:----------:|
-| `apollo-api` (models)                                |   ✅   |    ✅     |  ✅   |    ✅     |     ✅      |
-| `apollo-runtime` (network, query batching, apq, ...) |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
-| `apollo-normalized-cache`                            |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
-| `apollo-adapters`                                    |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
-| `apollo-normalized-cache-sqlite`                     |   ✅   |    ✅     |  🚫   |    🚫     |     🚫      |
-| `apollo-http-cache`                                  |   ✅   |    🚫     |  🚫   |    🚫     |     🚫      |
-
-¹: Apple currently includes:
-
-- `macosX64`
-- `macosArm64`
-- `iosArm64`
-- `iosX64`
-- `iosSimulatorArm64`
-- `watchosArm32`
-- `watchosArm64`
-- `watchosSimulatorArm64`
-- `tvosArm64`
-- `tvosX64`
-- `tvosSimulatorArm64`
-
 ## Getting started
 
 If you are new to GraphQL, check out [the tutorial](./tutorial/00-introduction/) that will guide you through building an Android app using Apollo.
 
-If you'd like to add Apollo Kotlin to an existing project, follow these steps:
+If you'd like to add Apollo Kotlin to an existing project, follow the steps below.
 
 Add the plugin to your `build.gradle.kts`:
 
@@ -95,7 +66,7 @@ Apollo Kotlin supports three types of files:
 - `.json` schema files: describes the types in your backend using the Json syntax.
 - `.graphql` executable files: describes your queries and operations in the GraphQL syntax.
 
-By default, Apollo Kotlin requires a schema in your module's `src/main/graphql` directory. You can download a schema using introspection with the `./gradlew downloadApolloSchema` task. Sometimes introspection is disabled and you will have to ask your backend team to provide a schema. Copy this schema to your module:
+By default, Apollo Kotlin requires a schema in your module's `src/main/graphql` (or `src/commonMain/graphql` for KMP) directory. You can download a schema using introspection with the `./gradlew downloadApolloSchema` task. Sometimes introspection is disabled, and you will have to ask your backend team to provide a schema. Copy this schema to your module:
 
 ```
 cp ${schema} ${module}/src/main/graphql/
@@ -113,7 +84,7 @@ query HeroQuery($id: String!) {
 }
 ```
 
-Build your project. This will generate a `HeroQuery` class that you can use with an instance of `ApolloClient`:
+Build your project. This generates a `HeroQuery` class that you can use with an instance of `ApolloClient`:
 
 ```kotlin
   // Create a client
@@ -129,16 +100,45 @@ Build your project. This will generate a `HeroQuery` class that you can use with
 
 **To learn more about other Apollo Kotlin APIs:**
 
-* Execute your first [mutation](./essentials/mutations/)
-* Handle [custom scalar types](./essentials/custom-scalars/)
-* Factor common patterns using [fragments](./essentials/fragments/)
+* Execute your first [mutation](./essentials/mutations/).
+* Handle [custom scalar types](./essentials/custom-scalars/).
+* Factor common patterns using [fragments](./essentials/fragments/).
+
+## Multiplatform
+
+Apollo Kotlin is a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) project.
+
+Here's the current matrix of supported features per platform:
+
+|                                                      | `jvm` | `Apple¹` | `js` | `wasmJs` | `linuxX64` |
+|------------------------------------------------------|:-----:|:--------:|:----:|:--------:|:----------:|
+| `apollo-api` (models)                                |   ✅   |    ✅     |  ✅   |    ✅     |     ✅      |
+| `apollo-runtime` (network, query batching, apq, ...) |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
+| `apollo-normalized-cache`                            |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
+| `apollo-adapters`                                    |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
+| `apollo-normalized-cache-sqlite`                     |   ✅   |    ✅     |  🚫   |    🚫     |     🚫      |
+| `apollo-http-cache`                                  |   ✅   |    🚫     |  🚫   |    🚫     |     🚫      |
+
+¹: Apple currently includes:
+
+- `macosX64`
+- `macosArm64`
+- `iosArm64`
+- `iosX64`
+- `iosSimulatorArm64`
+- `watchosArm32`
+- `watchosArm64`
+- `watchosSimulatorArm64`
+- `tvosArm64`
+- `tvosX64`
+- `tvosSimulatorArm64`
 
 ## Requirements
 
 Some platforms have specific runtime requirements:
 
 * JVM 8+
-* Android API level 21+ (`apollo-http-cache` and `apollo-adapters` require enabling [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26)
+* Android API level 21+ (`apollo-http-cache` requires enabling [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26)
 * iOS 13+
 
 At build time, it requires:
@@ -159,7 +159,7 @@ Installation instructions and more information can be found [here](testing/andro
 
 ## Releases
 
-The latest version is [![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo/)
+The latest version is `4.0.0-rc.1`.
 
 Check the [changelog](https://github.com/apollographql/apollo-kotlin/releases) for the release history.
 
@@ -218,14 +218,9 @@ These snapshots are updated on each push to `main`.
 
 Weekly snapshots for the Android Studio / IntelliJ plugin [are also available](testing/android-studio-plugin#weekly-snapshots). 
 
-## Stability of different artifacts
+## Evolution policy
 
-Apollo Kotlin is very modular and publishes several artifacts.
-
-* Artifacts ending with `-incubating` are not finalized yet and subject to change any time.
-* Other artifacts observe [Semantic Versioning](https://semver.org/).
-  * No breaking change should be introduced in minor or patch releases except for symbols annotated with `@ApolloExperimental` that are subject to change at any time.
-  * Deprecated symbols may be removed in the next major release. We strongly recommend removing deprecated usages before migrating to the next major version.
+You can read about our evolution policy in the [dedicated page](essentials/evolution)
 
 ## Contributing
 

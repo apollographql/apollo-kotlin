@@ -56,15 +56,17 @@ Other changes are dealt with on a case by case basis. When possible, we’ll hav
 
 Whether something is a bugfix or another kind of change [is left to interpretation,](https://xkcd.com/1172/) and we’ll try our best to make reasonable choices there.
 
-## `@ApolloExperimental`
+## Symbol lifecycle
+
+### @ApolloExperimental
 
 Symbols marked with `@ApolloExperimental` are not part of the public API and are therefore subject to change at any time.
 
-## `@Deprecated`
+### @Deprecated
 
-Deprecated symbols are removed when:
+Symbols marked with `@Deprecated` are removed when:
 
-* A major version is released
+* A major version is released...
 * AND the symbol has been deprecated for at least 6 months.
 
-Ideally (but we can’t guarantee it), we’ll try to provide a one year update window (6 months as warning, 6 months as error).
+Ideally (but we can't guarantee it), we’ll try to provide a one-year update window (6 months as warning, 6 months as error).
