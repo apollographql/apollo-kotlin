@@ -35,7 +35,7 @@ internal fun IrCustomScalar.typeFieldSpec(): FieldSpec {
 
 private fun builtinScalarJavaName(name: String): String? = when (name) {
   "Int" -> "java.lang.Integer"
-  "Float" -> "java.lang.Float"
+  "Float" -> "java.lang.Double"
   "String" -> "java.lang.String"
   "Boolean" -> "java.lang.Boolean"
   "ID" -> "java.lang.String"
