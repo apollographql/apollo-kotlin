@@ -10,6 +10,7 @@ Version 3.8.5 is a maintenance release. New developments happen in the 4.x versi
 * [all] Bump okio to 3.9.0 (#5868)
 * [runtime] Adding checks for json end_document in http transport (#5894)
 * [runtime] Adding checks for json end_document in http batching interceptors (#5892)
+* [doc] Update 08-add-a-details-view.mdx for additional state handling (#5975)
 * [codegen] Fix mapping of the builtin Float scalar type (#6047)
 
 # Version 4.0.0-rc.1
