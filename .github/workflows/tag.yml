@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish:
-    runs-on: macos-11
+    runs-on: macos-latest
     if: github.repository == 'apollographql/apollo-kotlin'
     steps:
       - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28 #v3
