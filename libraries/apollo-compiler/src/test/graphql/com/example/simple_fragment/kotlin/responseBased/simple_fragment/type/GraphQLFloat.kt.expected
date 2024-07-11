@@ -13,6 +13,6 @@ import com.apollographql.apollo3.api.CustomScalarType
  */
 internal class GraphQLFloat {
   public companion object {
-    public val type: CustomScalarType = CustomScalarType("Float", "kotlin.Float")
+    public val type: CustomScalarType = CustomScalarType("Float", "kotlin.Double")
   }
 }
