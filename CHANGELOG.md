@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+# Version 3.8.5
+
+_2024-07-10_
+
+Version 3.8.5 is a maintenance release. New developments happen in the 4.x versions.
+
+* [all] Bump okio to 3.9.0 (#5868)
+* [runtime] Adding checks for json end_document in http transport (#5894)
+* [runtime] Adding checks for json end_document in http batching interceptors (#5892)
+* [codegen] Fix mapping of the builtin Float scalar type (#6047)
+* [normalized-cache] SqlNormalizedCacheFactory make sqldriver public to support Sqlcipher data encryption. (#5972)
+
 # Version 4.0.0-rc.1
 
 _2024-07-08_
