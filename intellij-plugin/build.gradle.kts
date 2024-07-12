@@ -191,7 +191,13 @@ intellijPlatform {
 
 dependencies {
   intellijPlatform {
-    create(type = properties("platformType"), version = properties("platformVersion"))
+    val localIdeDir = providers.gradleProperty("apolloIntellijPlugin.ideDir").orNull
+    if (localIdeDir != null) {
+      local(localIdeDir)
+    } else {
+      create(type = properties("platformType"), version = properties("platformVersion"))
+    }
+
     bundledPlugins(properties("platformBundledPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
     plugins(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
     instrumentationTools()
