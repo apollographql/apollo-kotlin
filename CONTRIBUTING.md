@@ -161,9 +161,9 @@ Small pull requests for things like typos, bugfixes, etc are always welcome.
 
 Please note that we will not accept pull requests for style changes.
 
-## API compatibility
+## API evolution
 
-Apollo Kotlin observes [semantic versioning](https://semver.org/). No breaking change should be introduced in minor or patch releases.
+Apollo Kotlin observes [semantic versioning](https://semver.org/). No breaking change should be introduced in minor or patch releases. See our [evolution policy](https://www.apollographql.com/docs/kotlin/v4/essentials/evolution) for more details.
 
 The public API is tracked thanks to the [Binary compatibility validator](https://github.com/Kotlin/binary-compatibility-validator) plugin.
 
@@ -186,26 +186,11 @@ stateDiagram-v2
     Deprecated(WARNING) --> Removed: Major release
 ```
 
-However, there are cases where an API must be removed even if it hasn't been deprecated. For instance when a high level behavior is changed and the related API is made irrelevant. 
-In this case don't remove the API yet, instead, deprecate with the `ERROR` level. This will make the build fail if the API is used, but the message can guide the developer with an explanation or recommended steps. This should only happen in a major release (source breaking change).
-
-The API can then be removed in the next major release (breaking change).
-
-```mermaid
-stateDiagram-v2
-    direction LR
-    NotDeprecated: Not deprecated
-    NotDeprecated --> Deprecated(ERROR): Major release
-    Deprecated(ERROR) --> Removed: Major release
-```
-
 ## Experimental / internal APIs
 
 Using Kotlin's (or other dependencies') experimental or internal APIs, such as the ones marked
-with `@ExperimentalCoroutinesApi` should be avoided as much as possible (exceptions can be made for native/JS targets
-only when no other option is
-available). Indeed, applications using a certain version of Apollo Kotlin could use a more up-to-date version of these
-APIs than the one used when building the library, causing crashes or other issues.
+with `@ExperimentalCoroutinesApi` should be avoided as much as possible.
+We have historically made exceptions to that rule for JS/native (`UnsafeNumber`) but no new opt-in to experimental APIs must be made.
 
 We also have the `@ApolloExperimental` annotation which can be used to mark APIs as experimental, for instance when
 feedback is wanted from the community on new APIs. This can also be used as a warning that APIs are using experimental
