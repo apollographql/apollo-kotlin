@@ -4,11 +4,11 @@ title: Using a custom HTTP client
 
 By default, Apollo Kotlin uses the following HTTP clients for different platforms/languages:
 
-| Platform        | HTTP Client                                                                                                                                                                  |
-|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Android/JVM     | [OkHttp](https://square.github.io/okhttp/)                                                                                                                                   |
+| Platform        | HTTP Client                                                                                                                                                                 |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Android/JVM     | [OkHttp](https://square.github.io/okhttp/)                                                                                                                                  |
 | JavaScript/Wasm | [fetch()](https://developer.mozilla.org/en-US/docs/Web/API/fetch) / [Node Fetch](https://www.npmjs.com/package/node-fetch) for HTTP, [Ktor](https://ktor.io/) for WebSockets |
-| iOS/MacOS       | [NSURLSesssion](https://developer.apple.com/documentation/foundation/nsurlsession)                                                                                           |
+| iOS/MacOS       | [NSURLSession](https://developer.apple.com/documentation/foundation/nsurlsession)                                                                                           |
 
 ## Implement your own HTTP engine
 

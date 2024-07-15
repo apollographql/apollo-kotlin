@@ -7,7 +7,7 @@ Kotlin down to Javascript. `apollo-runtime` supports Kotlin/JS out of the box wi
 
 With that said, the default implementation has some performance limitations. Kotlin/JS adds a significant
 amount of overhead to basic Kotlin data structures (notably `List`, `Set`, and `Map`), and so performance sensitive
-workloads (like those found in the Kotlin JSON parsing codepaths) can be slow.
+workloads (like those found in the Kotlin JSON parsing code paths) can be slow.
 
 To work around this, Apollo Kotlin provides two alternative solutions to work with JS faster:
 
@@ -170,7 +170,7 @@ public interface Animal {
 ```
 
 Unfortunately, `@JsExport` does not support companion objects nor extension functions (see [limitations](#limitations)).
-What's more, `@JsExport` has no runtime type information from JS so it's impossible to tell at runtime if a given
+What's more, `@JsExport` has no runtime type information from JS, so it's impossible to tell at runtime if a given
 instance is a `Cat` or a `Lion`. To check this, use `__typename` and `apolloUnsafeCast`:
 
 ```kotlin
@@ -191,7 +191,7 @@ when (animal.__typename) {
 * `@JsExport` is an experimental feature in Kotlin and Apollo Kotlin and may change in future versions.
 * `@JsExport` only makes sense on response based codegen since it requires the Kotlin models to have the same shape as
   the JSON.
-* On JS, is is not possible to check if a `@JsExport` instance implements a given class. If you need polymorphism, you
+* On JS, it is not possible to check if a `@JsExport` instance implements a given class. If you need polymorphism, you
   must check `__typename` to determine what interface to use.
 * Extension functions on generated code break when you use this technique since we are casting a raw JS object and not
   actually instantiating a class.
@@ -199,15 +199,15 @@ when (animal.__typename) {
   precedence, and thus mangling the property names.
 * Custom adapters can only be used when their target types are supported by JS (see the full list
   of [supported types](https://kotlinlang.org/docs/js-to-kotlin-interop.html#kotlin-types-in-javascript)).
-* Enums do not support `@JsExport` and are generated as `String`. The Kotlin enum is still generated so you can
+* Enums do not support `@JsExport` and are generated as `String`. The Kotlin enum is still generated, so you can
   use `safeValueOf()` to get a Kotlin enum from a `String`
 
 ## `DynamicJsJsonReader`
 
-If you would prefer to use `operationBased` models, and performance is not _as_ critical, you can
+If you prefer to use `operationBased` models, and performance is not _as_ critical, you can
 use `DynamicJsJsonReader`. `DynamicJsJsonReader` works with a JavaScript object that is already parsed on the JS side.
 
-In JS reading response byte by byte from a byte array like Okio does incurs a lot of overhead because Kotlin
+In JS reading response byte by byte from a byte array like Okio incurs a lot of overhead because Kotlin
 uses `Long` indices in its Arrays, and Longs do not have a JS implementation. 
 
 By bypassing this reading, `DynamicJsJsonReader` allows faster reading of responses while still keeping the full Kotlin type information. 
@@ -235,7 +235,7 @@ actual suspend fun <D : Operation.Data> JsonHttpClient.executeApolloOperation(
 
 ## Benchmarks
 
-We have done some benchmarking using a large polymorphic query result from the Github API.
+We have done some benchmarking using a large polymorphic query result from the GitHub API.
 
 The idea was to compare:
 

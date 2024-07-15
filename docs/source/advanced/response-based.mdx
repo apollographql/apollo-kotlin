@@ -16,7 +16,7 @@ The Json response may have a different shape than your GraphQL operation though.
 
 **For this reason and other [limitations](#limitations-of-responsebased-codegen), we recommend using `operationBased` codegen by default**.
 
-This page first recaps how [`operationBased` codegen](#the-operationbased-codegen-default) works before explaining [`responseBased` codegen](#the-responsebased-codegen). Finally, it lists the different [limitations](#limitations-of-responsebased-codegen) coming with `responseBased` codegen so you can make an informed decision should you use this codegen. 
+This page first recaps how [`operationBased` codegen](#the-operationbased-codegen-default) works before explaining [`responseBased` codegen](#the-responsebased-codegen). Finally, it lists the different [limitations](#limitations-of-responsebased-codegen) coming with `responseBased` codegen, so you can make an informed decision should you use this codegen. 
 
 To use a particular codegen, configure `codegenModels` in your Gradle scripts:
 
@@ -240,6 +240,6 @@ val height = hero2.humanFields().height
 
 1. Because GraphQL is a very expressive language, [it's easy to create a GraphQL query that generate a very large JSON response](https://github.com/apollographql/apollo-kotlin/issues/3144). If you're using a lot of nested fragments, the generated code size can grow exponentially with the nesting level. We have seen relatively small GraphQL queries breaking the JVM limits like [maximum method size](https://docs.oracle.com/javase/specs/jvms/se16/html/jvms-4.html#jvms-4.7.3).
 2. When using fragments, data classes must be generated for each operation where the fragments are used. To avoid name clashes, the models are nested and this comes with two side effects:
-   * The resulting `.class` file name can be very long, breaking the [256 default maximum file name on MacOS](https://apple.stackexchange.com/questions/86611/does-os-x-enforce-a-maximum-filename-length-or-character-restriction).
+   * The resulting `.class` file name can be very long, breaking the [256 default maximum file name on macOS](https://apple.stackexchange.com/questions/86611/does-os-x-enforce-a-maximum-filename-length-or-character-restriction).
    * Similarly named interfaces might be nested (for fragments). While this is valid in Kotlin, [Java does not allow this](https://docs.oracle.com/javase/specs/jls/se8/html/jls-9.html#jls-9.1), and [it will break kapt if you're using it](https://youtrack.jetbrains.com/issue/KT-24272/kapt-generated-code-fails-to-compile-with-symbol-not-found-for-same-named-nested-class). 
 3. `@include`, `@skip` and `@defer` directives are not supported on fragments in `responseBased` codegen. Supporting them would require generating twice the models each time one of these directive would be used.

@@ -114,13 +114,13 @@ For example, in our todo list app, the user might check off a completed item. Th
 
 ```graphql
 mutation SetTodoCompleted($id: String!, $completed: Boolean!) {
-  setTodocompleted(id: $id, completed: $completed) { # Returns the modified Item
+  setTodoCompleted(id: $id, completed: $completed) { # Returns the modified Item
     id
   }
 }
 ```
 
-As written, this mutation updates the `completed` field on the server, but _not_ in the cache. This is because the mutation's response doesn't include the `Item`'s `completed` field.
+As written, this mutation updates the `completed` field on the server, but _not_ in the cache. This is because the mutation response doesn't include the `Item`'s `completed` field.
 
 To update the cache automatically with the new value, you need to request all modified fields in the response:
 
@@ -153,4 +153,4 @@ apolloClient.mutation(SetTodocompletedMutation(id = "1", completed = true))
   .execute()
 ```
 
-This optimistic data is written to the cache immediately, and any watchers of the corresponding data are notified. Then when the operation returns, the cache is updated _again_ with any changes, and watchers are notified again. If the optimistic data is correct, the second cache update is invisible to the user, because no data changes.
+This optimistic data is written to the cache immediately, and any watchers of the corresponding data are notified. Then, when the operation returns, the cache is updated _again_ with any changes, and watchers are notified again. If the optimistic data is correct, the second cache update is invisible to the user, because no data changes.

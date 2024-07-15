@@ -35,7 +35,7 @@ The driving principles behind the naming conventions are:
 * Keep a flat hierarchy of classes: we considered using nested classes but that can lead to very long names and a flat hierarchy is easier to read.
 * Singularize the field name when it is a list: if your query contains a List fields, such as `nodes` for an example, it makes more sense to generate a `List<Node>` than a `List<Nodes>`.
 
-These principles work great for the vast majority of cases but can't account for name clashes or peculiar singularization rules. To workaround these, you can use GraphQL [aliases](https://graphql.org/learn/queries/#aliases).
+These principles work great for the vast majority of cases but can't account for name clashes or peculiar singularization rules. To work around these, you can use GraphQL [aliases](https://graphql.org/learn/queries/#aliases).
 
 ## Using aliases to avoid name clashes
 
@@ -58,7 +58,7 @@ query GetContacts {
 }
 ```
 
-Suffixing avoids the name clash but feels a bit out of place and it's hard to remember what `HomeAddress1` is about. To workaround this issue, you can alias the field:
+Suffixing avoids the name clash but feels a bit out of place, and it's hard to remember what `HomeAddress1` is about. To work around this issue, you can alias the field:
 
 ```graphql title="GetContact.graphql"
 query GetContacts {
@@ -81,4 +81,4 @@ query GetContacts {
 
 The [singularization code](https://github.com/apollographql/apollo-kotlin/blob/d77b73f6f387ab474045f0db3c568d251ef55932/apollo-compiler/src/main/kotlin/com/apollographql/apollo3/compiler/Inflector.kt) works most of the time but does not contain all the exceptions in the English dictionary.
 
-If you encounter one, please let us know so we can put a valid example here (we usually fix those issues as we go but there certainly are a few left in the wild). Until we fix it in the singularization code, you can use an alias to control the name of the model in your code.
+If you encounter one, please let us know, so we can put a valid example here (we usually fix those issues as we go but there certainly are a few left in the wild). Until we fix it in the singularization code, you can use an alias to control the name of the model in your code.

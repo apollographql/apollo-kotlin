@@ -54,7 +54,7 @@ val cacheKeyGenerator = object : CacheKeyGenerator {
 You can also use the current object's typename to use _different_ cache ID generation logic for different object types.
 
 Note that for cache ID generation to work, your GraphQL operations must return whatever fields your custom code relies on (such as `id` above). If a query does not return a required field, the cache ID will be inconsistent, resulting in data duplication.
-Also, for interfaces and unions, `context.field.type.rawType().name` yields the typename as it is declared in the schema, as opposed to the runtime value of the type received in the response. Instead querying for the `__typename` is safer.
+Also, for interfaces and unions, `context.field.type.rawType().name` yields the typename as it is declared in the schema, as opposed to the runtime value of the type received in the response. Instead, querying for the `__typename` is safer.
 To make sure `__typename` is included in all operations set the [addTypename](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo.gradle.api/-service/add-typename.html) gradle config:
 
 ```
@@ -171,7 +171,7 @@ val cacheResolver = object: CacheResolver {
     // Now type points to the leaf type and lestDepth is the nesting of lists required
 
     // Return a kotlin value for this field
-    // No type checking is done here so it must match the expected GraphQL type
+    // No type checking is done here, so it must match the expected GraphQL type
 
     if (listDepth == 2) {
       return listOf(listOf("0", "1"))

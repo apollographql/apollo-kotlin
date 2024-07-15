@@ -162,7 +162,7 @@ class MyFakeResolver : FakeResolver {
   
   override fun resolveLeaf(context: FakeResolverContext): Any {
     return when (context.mergedField.type.leafType().name) {
-      "Int" -> -1 // Always use -1 for Ints
+      "Int" -> -1 // Always use -1 for Int
       else -> delegate.resolveLeaf(context) 
     }
   }

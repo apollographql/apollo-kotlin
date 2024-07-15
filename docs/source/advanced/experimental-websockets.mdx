@@ -20,7 +20,7 @@ Starting with 4.0.0, Apollo Kotlin provides a new `com.apollographql.apollo.netw
 The `com.apollographql.apollo.network.websocket` implementation provides the following:
 
 1. Defaults to the [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md) protocol, which has become the de facto standard. Using the other protocols is still possible but having a main, specified, protocol ensures we can write a good and solid test suite.
-2. Does not inherit from the old memory model design, making the code considerably simpler. In particular, `WebSocketEngine` is now event based and no attempt at flow control is done. If you buffers grow too much, your subscription fails.
+2. Does not inherit from the old memory model design, making the code considerably simpler. In particular, `WebSocketEngine` is now event based and no attempt at flow control is done. If your buffers grow too much, your subscription fails.
 3. Plays nicely with the ApolloClient `retryOnError` API.
 4. Handles different Subscription transports more consistently.
 

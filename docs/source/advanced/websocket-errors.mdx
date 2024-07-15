@@ -29,7 +29,7 @@ This has a number of shortcomings (not mentioning the naive exponential backoff 
 - This code has to be implemented in different places
 - The attempt is tied to the collector lifecycle, there is no way to reset it if the network is back up
 
-Instead you can manage this in a more central place when configuring your ApolloClient:
+Instead, you can manage this in a more central place when configuring your ApolloClient:
 
 ```kotlin
     val apolloClient = ApolloClient.Builder()
