@@ -47,7 +47,7 @@ apolloClient = ApolloClient.Builder()
 
 ## Usage
 
-The HTTP cache is a least recently used (LRU) cache with a configurable max size.
+The HTTP cache is a Least Recently Used (LRU) cache with a configurable max size.
 
 Once your cache setup is complete, the cache will be used by default by all your queries. By default, queries will try to find a result in the cache first and go the network if it's not there. This is the `HttpFetchPolicy.CacheFirst` policy. You can customize that behaviour with `httpFetchPolicy(HttpFetchPolicy)`:
 

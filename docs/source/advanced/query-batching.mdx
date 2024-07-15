@@ -2,7 +2,7 @@
 title: Batching operations
 ---
 
-Apollo Kotlin supports batching multiple operations in a single HTTP request to reduce the number of network round trips. Whenever you execute an operation with batching enabled, your client waits a short time interval to collect any _other_ batchable operations that are also executed. When the interval completes, your client sends all of the operations in a single HTTP request.
+Apollo Kotlin supports batching multiple operations in a single HTTP request to reduce the number of network round trips. Whenever you execute an operation with batching enabled, your client waits a short time interval to collect any _other_ batchable operations that are also executed. When the interval completes, your client sends all the operations in a single HTTP request.
 
 Note that due to the waiting interval, batching adds some latency to operations. Operations that require as little latency as possible can [opt out of batching](#opting-outin).
 
@@ -22,7 +22,7 @@ of 10 queries. You can configure these defaults by passing additional configurat
 method:
 
 ```kotlin
-  .httpBatching(
+apolloClientBuilder.httpBatching(
     batchIntervalMillis = 50, // Wait 50ms
     maxBatchSize = 20         // Max 20 queries
 )
@@ -30,7 +30,7 @@ method:
 
 ## Opting out/in
 
-By default if you [enable batching](#enabling-batching), it's enabled for _all_ operations. An individual operation can
+By default, if you [enable batching](#enabling-batching), it's enabled for _all_ operations. An individual operation can
 opt _out_ of batching by passing `false` to the `canBeBatched` method:
 
 ```kotlin

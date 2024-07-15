@@ -245,7 +245,7 @@ Those helper functions:
 
 Because of the number of different options in version 3 and the complexity of error handling, these functions may not 100% match the version 3 behavior, especially in the advanced cases involving watchers. If you are in one of those cases, we strongly recommend using the version 4 functions that are easier to reason about.
 
-### Non standard HTTP headers are not sent by default
+### Non-standard HTTP headers are not sent by default
 
 `X-APOLLO-OPERATION-NAME` and `X-APOLLO-OPERATION-ID` are non-standard headers and are not sent by default anymore. If you used them for logging purposes or if you are using Apollo Server [CSRF prevention](https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf), you can add them back using an [ApolloInterceptor](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo.interceptor/-apollo-interceptor/index.html?query=interface%20ApolloInterceptor):
 
@@ -517,7 +517,7 @@ data.hero.fragments.heroDetails
 data.hero.heroDetails
 ```
 
-Finally some fields that were merged from inline fragments in their parents must now be accessed through the inline fragment:
+Finally, some fields that were merged from inline fragments in their parents must now be accessed through the inline fragment:
 
 ```kotlin
 // Replace
@@ -536,7 +536,7 @@ data.hero.name
 
 // With 
 /**
- * name is not marged anymore
+ * name is not merged anymore
  */
 data.hero.onCharacter?.name
 ```
@@ -608,7 +608,7 @@ query HeroName {
 
 Those queries now required to have a matching directive definition in the schema. If the directive is a server directive, and you downloaded your schema using introspection, the directive definition should be present.
 
-In some cases, for client directives and/or if you did not use introspection, the directive definition might be missing. For those cases, you can add it explicitely in a `extra.graphqls` file:
+In some cases, for client directives and/or if you did not use introspection, the directive definition might be missing. For those cases, you can add it explicitly in a `extra.graphqls` file:
 
 ```graphql
 directive @required on FIELD
@@ -664,4 +664,4 @@ It is not possible to create a `Schema` from a File or String directly anymore. 
 
 ## Example of a migration
 
-If you are looking for inspiration, we updated the [version 3 integration tests to use version 4](https://github.com/apollographql/apollo-kotlin/pull/5418/). If you have an open source project that migrated, feel free to share it and we'll include it here.
+If you are looking for inspiration, we updated the [version 3 integration tests to use version 4](https://github.com/apollographql/apollo-kotlin/pull/5418/). If you have an open source project that migrated, feel free to share it, and we'll include it here.

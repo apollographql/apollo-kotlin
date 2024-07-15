@@ -4,7 +4,7 @@ The Apollo team welcomes contributions of all kinds, including bug reports, docu
 features.
 
 If you want to discuss the project or just say hi, stop
-by [the kotlinlang slack channel](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your
+by [the kotlinlang Slack channel](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your
 invite [here](https://slack.kotl.in/))
 
 ## Project Setup
@@ -154,7 +154,7 @@ Misc
 
 ## Workflow
 
-We love Github issues!  Before working on any new features, please open an issue so that we can agree on the direction,
+We love GitHub issues!  Before working on any new features, please open an issue so that we can agree on the direction,
 and hopefully avoid investing a lot of time on a feature that might need reworking.
 
 Small pull requests for things like typos, bugfixes, etc are always welcome.

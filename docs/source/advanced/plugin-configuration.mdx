@@ -201,7 +201,7 @@ by default).
 With the [Android Studio plugin](../testing/android-studio-plugin), you can also go to <kbd>Tools</kbd> | <kbd>Apollo</kbd> | <kbd>Download schema</kbd> which acts as a shortcut to these tasks.
 
 ## Generated methods
-By default all Kotlin models, operations, fragments, and input objects are generated as data classes. This means that the Kotlin compiler will
+By default, all Kotlin models, operations, fragments, and input objects are generated as data classes. This means that the Kotlin compiler will
 auto-generate `toString`, `equals` `hashCode`, `copy` and `componentN` for most generated classes. If you don't think you need all of those
 auto-generated methods, and/or you are worried about the size of the generated code, you can configure the Apollo compiler to generate none
 or a subset of the data class methods. To do this, set `generateMethods` to a list of the methods you need. The available methods are:
@@ -290,7 +290,7 @@ apollo {
     }
     // The format to output for the operation manifest.
     operationManifestFormat.set("persistedQueryManifest")
-    // The file where to write the operaiton manifest
+    // The file where to write the operation manifest
     operationManifest.set("build/generated/persistedQueryManifest.json")
 
     // Whether to generate Kotlin or Java models

@@ -6,7 +6,7 @@ title: Interceptors
 
 ### Apollo HTTP interceptors
 
-Apollo Kotlin supports multi platform `HttpInterceptor` very similar to `OkHttp` `Interceptors`. Use them to add authentication headers, log the network calls or anything else.
+Apollo Kotlin supports multi-platform `HttpInterceptor` very similar to `OkHttp` `Interceptors`. Use them to add authentication headers, log the network calls or anything else.
 
 The interface is a single method. For an example, implementing an authentication interceptors can be done with:
 
@@ -31,7 +31,7 @@ Apollo Kotlin comes bundled with [`ClientAwarenessInterceptor`](./client-awarene
 
 ### OkHttp interceptors
 
-If your project is an Android or JVM only project and you already have an [`OkHttp` `Interceptor`](https://square.github.io/okhttp/features/interceptors/), you can also reuse it:
+If your project is an Android or JVM only project, and you already have an [`OkHttp` `Interceptor`](https://square.github.io/okhttp/features/interceptors/), you can also reuse it:
 
 ```kotlin
 val okHttpClient = OkHttpClient.Builder()

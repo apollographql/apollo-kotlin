@@ -93,7 +93,7 @@ val apolloClient = ApolloClient.Builder()
 
 Because the normalized cache is optional, `normalizedCache()` is an extension function on `ApolloClient.Builder()` that's defined in the `apollo-normalized-cache` artifact. It takes a `NormalizedCacheFactory` as a parameter so that it can create the cache outside the main thread if needed.
 
-A `MemoryCache` is a least recently used (LRU) cache. It keeps entries in memory according to the following conditions:
+A `MemoryCache` is a Least Recently Used (LRU) cache. It keeps entries in memory according to the following conditions:
 
 | Name | Description |
 |------|-------------|
@@ -185,7 +185,7 @@ val response = apolloClient.query(query)
     // ...
   }
 ```
-Note that cache misses **will** emit a response with a non null `.exception`, meaning that some of these policies can emit multiple values:
+Note that cache misses **will** emit a response with a non-null `.exception`, meaning that some of these policies can emit multiple values:
 - `CacheFirst` can emit 1 or 2 values
 - `NetworkFirst` can emit 1 or 2 values
 - `CacheAndNetwork` will emit 2 values
@@ -253,14 +253,14 @@ We want to deduplicate entries like these by making sure they're assigned the _s
 "QUERY_ROOT": {"favoriteBook": "ApolloCacheReference(Book:bk123)", "author(\"id\": \"au456\")": "ApolloCacheReference{Author:au456}"}
 ```
 
-Fortunately, all of our objects have an `id` field that we can use for this purpose. If an `id` is unique across _all_ objects in your graph, you can use its value directly as a cache ID. Otherwise if it's unique _per object type_, you can prefix it with the type name (as shown above).
+Fortunately, all of our objects have an `id` field that we can use for this purpose. If an `id` is unique across _all_ objects in your graph, you can use its value directly as a cache ID. Otherwise, if it's unique _per object type_, you can prefix it with the type name (as shown above).
 
 ### Methods
 
 There are two methods for specifying an object's cache ID:
 
 * **[Declaratively](declarative-ids)** (recommended). You can specify schema extensions that tell the codegen in which field(s) to find the ID and make sure at compile time that all these fields are requested in operations so that all objects can be identified. Declarative IDs also prefix each ID with the typename to ensure global uniqueness.
-* **[Programmatically](programmatic-ids).** You can implement custom APIs that provide the cache ID for an object. Because you can execute arbitrary code, this solution is more flexible, but it's also more error prone and requires that your operations request the key fields.
+* **[Programmatically](programmatic-ids).** You can implement custom APIs that provide the cache ID for an object. Because you can execute arbitrary code, this solution is more flexible, but it's also more error-prone and requires that your operations request the key fields.
 
 ## Clearing the cache
 
