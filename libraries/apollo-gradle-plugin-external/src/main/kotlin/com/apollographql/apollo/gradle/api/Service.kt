@@ -67,13 +67,8 @@ interface Service {
   fun srcDir(directory: Any)
 
   /**
-   * The location of the schema file.
-   *
-   * Because clients may extend the schema with client extensions in separate files, this is deprecated
-   * in favor of [schemaFiles].
+   * The location of the main schema file.
    */
-  @Deprecated("Replace with schemaFiles.from()")
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val schemaFile: RegularFileProperty
 
   /**
