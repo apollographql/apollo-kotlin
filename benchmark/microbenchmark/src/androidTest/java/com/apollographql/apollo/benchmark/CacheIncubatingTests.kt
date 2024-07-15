@@ -75,7 +75,7 @@ class CacheIncubatingTests {
   private fun <D : Query.Data> readFromCache(testName: String, query: Query<D>, sql: Boolean, check: (D) -> Unit) {
     val cache = if (sql) {
       Utils.dbFile.delete()
-      SqlNormalizedCacheFactory(Utils.dbName, withDates = true).create()
+      SqlNormalizedCacheFactory(name = Utils.dbName).create()
     } else {
       MemoryCacheFactory().create()
     }
@@ -108,7 +108,7 @@ class CacheIncubatingTests {
   private fun <D : Query.Data> concurrentReadWriteFromCache(query: Query<D>, sql: Boolean) {
     val cache = if (sql) {
       Utils.dbFile.delete()
-      SqlNormalizedCacheFactory(Utils.dbName, withDates = true).create()
+      SqlNormalizedCacheFactory(name = Utils.dbName).create()
     } else {
       MemoryCacheFactory().create()
     }
