@@ -1,11 +1,19 @@
 package hooks
 
 import com.apollographql.apollo.compiler.ApolloCompilerPlugin
+import com.apollographql.apollo.compiler.ApolloCompilerPluginEnvironment
+import com.apollographql.apollo.compiler.ApolloCompilerPluginProvider
 import com.apollographql.apollo.compiler.Transform
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
+
+class TestPluginProvider: ApolloCompilerPluginProvider {
+  override fun create(environment: ApolloCompilerPluginEnvironment): ApolloCompilerPlugin {
+    return TestPlugin()
+  }
+}
 
 class TestPlugin: ApolloCompilerPlugin {
   override fun kotlinOutputTransform(): Transform<KotlinOutput> {
