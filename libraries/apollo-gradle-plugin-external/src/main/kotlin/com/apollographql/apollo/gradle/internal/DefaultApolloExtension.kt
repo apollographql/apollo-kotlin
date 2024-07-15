@@ -104,7 +104,6 @@ abstract class DefaultApolloExtension(
           if (service.excludes.isPresent) add("excludes")
           @Suppress("DEPRECATION")
           if (service.sourceFolder.isPresent) add("excludes")
-          @Suppress("DEPRECATION")
           if (service.schemaFile.isPresent) add("schemaFile")
           if (!service.schemaFiles.isEmpty) add("schemaFiles")
           if (service.scalarAdapterMapping.isNotEmpty()) {
