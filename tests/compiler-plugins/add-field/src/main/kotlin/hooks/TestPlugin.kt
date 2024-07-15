@@ -13,6 +13,14 @@ import com.apollographql.apollo.ast.responseName
 import com.apollographql.apollo.ast.rootTypeDefinition
 import com.apollographql.apollo.compiler.DocumentTransform
 import com.apollographql.apollo.compiler.ApolloCompilerPlugin
+import com.apollographql.apollo.compiler.ApolloCompilerPluginEnvironment
+import com.apollographql.apollo.compiler.ApolloCompilerPluginProvider
+
+class TestPluginProvider: ApolloCompilerPluginProvider {
+  override fun create(environment: ApolloCompilerPluginEnvironment): ApolloCompilerPlugin {
+    return TestPlugin()
+  }
+}
 
 class TestPlugin : ApolloCompilerPlugin {
   override fun documentTransform(): DocumentTransform {
