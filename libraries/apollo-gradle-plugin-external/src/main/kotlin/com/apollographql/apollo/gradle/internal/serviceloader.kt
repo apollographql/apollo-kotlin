@@ -19,7 +19,7 @@ internal fun apolloCompilerPlugin(
 
   val plugin = plugins.singleOrNull()
   if (plugin != null) {
-    return plugin
+    error("Apollo: use ApolloCompilerPluginProvider instead of ApolloCompilerPlugin directly. ApolloCompilerPluginProvider allows arguments and logging")
   }
 
   val pluginProviders = ServiceLoader.load(ApolloCompilerPluginProvider::class.java).toList()

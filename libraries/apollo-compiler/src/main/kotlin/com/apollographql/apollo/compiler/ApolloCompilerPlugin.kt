@@ -11,13 +11,6 @@ import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.OperationId
 
-@Deprecated(
-    "Use ApolloCompilerPlugin instead (don't forget to replace the META-INF.service file to `com.apollographql.apollo.compiler.ApolloCompilerPlugin`",
-    ReplaceWith("ApolloCompilerPlugin"),
-    DeprecationLevel.ERROR
-)
-typealias Plugin = ApolloCompilerPlugin
-
 /**
  * [ApolloCompilerPlugin] allows to customize the behaviour of the Apollo Compiler.
  *
