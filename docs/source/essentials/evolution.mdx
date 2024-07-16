@@ -28,7 +28,8 @@ The Apollo Kotlin projects follow [semantic versioning](https://semver.org/):
 * `4.0.0-rc.x` versions are release candidates
     * The API is frozen and if no issue is found, a stable version is made from it.
 * `4.x.y` versions are stable releases
-    * Stable releases are supported for 2 years for bug fixes and security patches.
+    * Stable versions get bug fixes and new features but no binary breaking change.
+    * After a new major version is released, a release branch is made to support the older major version with bug fixes and security patches. 
 
 We interpret minor version bumps liberally. They are used to hint at new functionality or substantial changes, but we are not strict about it. A small new API may be introduced in a patch release. Conversely, a big internal rework might be signaled with a minor release.
 
@@ -36,17 +37,24 @@ Reporting issues is welcome on any version.
 
 ## Breaking changes
 
+<Note>
+
+See [compatibility types](https://kotlinlang.org/docs/api-guidelines-backward-compatibility.html#compatibility-types) in the Kotlin documentation for more details about the different breaking changes.
+</Note>
+
 ### Binary breaking changes
 
 Binary breaking changes only happen for major versions.
 
 ### Source breaking changes
 
-Source breaking changes may happen for any version. This is because [true 100% source compatibility is often unreachable](https://wiki.eclipse.org/Evolving_Java-based_APIs_3#A_Word_about_Source_Code_Incompatibilities). Also, source breaking changes are easier to mitigate because they can be fixed by the consumer directly. Already compiled transitive libraries are not impacted by source breaking changes.
+We avoid source breaking changes as much as possible in non-major versions. In particular, parameter name changes and deprecations with `Error` level only happen for major versions.
 
-That being said, we'll do our best to avoid them as much as possible. In particular, parameter name changes and deprecations with `Error` level only happen for major versions.
+That being said, [true 100% source compatibility is often unreachable](https://wiki.eclipse.org/Evolving_Java-based_APIs_3#A_Word_about_Source_Code_Incompatibilities) and an occasional source breaking change might slip in a non-major version.
 
 We’re trying to update to newer Kotlin versions after a few weeks. This is typically a compatible change for JVM-consumers on Kotlin version n-1 because Kotlin JVM [has best effort n+1 forward compatibility](https://kotlinlang.org/docs/kotlin-evolution.html#evolving-the-binary-format). This can be a source breaking for non-JVM consumers. In those cases, you'll need to update your build in those few weeks or keep using older versions of Apollo Kotlin.
+
+Already compiled transitive libraries are not impacted by source breaking changes.
 
 ### Behavior changes
 
