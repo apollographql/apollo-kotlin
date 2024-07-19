@@ -9,6 +9,7 @@ import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.parseAsGQLValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.fail
 
 class CommonParserTest {
@@ -110,5 +111,20 @@ query Test {
           assertEquals(2, line)
           assertEquals(3, column)
         }
+  }
+
+  /**
+   * https://github.com/graphql/graphql-spec/issues/1106
+   */
+  @Test
+  fun extendTypeMustAddDirectiveFieldOrInterface() {
+    assertFails {
+      """
+        extend type Query
+      """.trimIndent()
+          .parseAsGQLDocument()
+          .getOrThrow()
+
+    }
   }
 }
