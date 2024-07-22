@@ -5,6 +5,10 @@ Change Log
 
 We're on the road to v4 with this second release candidate which includes a few minor tweaks as well as one new feature.
 
+Note: in v4.0.0-rc.1 `apollo-debug-server` and `apollo-tooling` depended on `com.apollographql.apollo3` artifacts. This is no longer the case with `v4.0.0-rc.2`,
+where all dependencies are under the `com.apollographql.apollo` group id.
+
+
 ## Add memoryCacheOnly (#6049)
 
 `.memoryCacheOnly(true)` can be set on calls to read and store records in the memory cache only even when a persistent cache is configured.
