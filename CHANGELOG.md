@@ -1,6 +1,27 @@
 Change Log
 ==========
 
+# Version v4.0.0-rc.2
+
+_2024-07-22_
+
+We're on the road to v4 with this second release candidate which includes a few minor tweaks as well as one new feature.
+
+Note: in v4.0.0-rc.1 `apollo-debug-server` and `apollo-tooling` depended on `com.apollographql.apollo3` artifacts. This is no longer the case with `v4.0.0-rc.2`,
+where all dependencies are under the `com.apollographql.apollo` group id.
+
+## Add memoryCacheOnly (#6049)
+
+`.memoryCacheOnly(true)` can be set on calls to read and store records in the memory cache only even when a persistent cache is configured.
+This can be useful in scenarios where long term storage isn't needed and performance is important.
+
+* [gradle-plugin] Use a better warning for Service.schemaFile users (#6036)
+* [all] Update apollo-kotlin-execution (#6040)
+* [IJ Plugin] Add com.apollographql.apollo:apollo-api-jvm to dependencySupport (#6039)
+* [all] Update to Gradle 8.9 (#6056)
+* [gradle-plugin] Undeprecate schemaFile (#6055)
+* [gradle-plugin] Disable service-loading `ApolloCompilerPlugin` (#6059)
+
 # Version 3.8.5
 
 _2024-07-10_
