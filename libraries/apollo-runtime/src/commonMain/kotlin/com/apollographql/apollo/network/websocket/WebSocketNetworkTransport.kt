@@ -156,10 +156,8 @@ class WebSocketNetworkTransport private constructor(
     }
 
     /**
-     * The interval in milliseconds between two client pings or -1 to disable client pings.
+     * @param pingInterval the interval between two client pings or null to disable client pings.
      * The [WsProtocol] used must also support client pings.
-     *
-     * Default: -1
      */
     fun pingInterval(pingInterval: Duration?) = apply {
       this.pingInterval = pingInterval
