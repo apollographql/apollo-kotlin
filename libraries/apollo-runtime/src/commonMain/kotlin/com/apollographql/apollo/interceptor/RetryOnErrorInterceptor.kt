@@ -89,7 +89,7 @@ private class DefaultRetryOnErrorInterceptorImpl(private val networkMonitor: Net
 }
 
 @ApolloExperimental
-internal fun <D : Operation.Data> ApolloRequest<D>.ensureUniqueUuid(): Flow<ApolloRequest<D>> {
+fun <D : Operation.Data> ApolloRequest<D>.ensureUniqueUuid(): Flow<ApolloRequest<D>> {
   var first = true
   return flow {
     if (first) {

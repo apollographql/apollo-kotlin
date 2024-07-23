@@ -1,10 +1,9 @@
 package com.apollographql.apollo.network.websocket
 
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.network.defaultOkHttpClientBuilder
-import com.apollographql.apollo.network.websocket.WebSocket
-import com.apollographql.apollo.network.websocket.WebSocketListener
 import okhttp3.Headers
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -16,9 +15,9 @@ import java.util.concurrent.atomic.AtomicReference
 import okhttp3.WebSocket as PlatformWebSocket
 import okhttp3.WebSocketListener as PlatformWebSocketListener
 
-internal class JvmWebSocketEngine(private val okHttpClient: OkHttpClient) : WebSocketEngine {
+internal class JvmWebSocketEngine(private val webSocketFactory: PlatformWebSocket.Factory) : WebSocketEngine {
   override fun newWebSocket(url: String, headers: List<HttpHeader>, listener: WebSocketListener): WebSocket {
-    return JvmWebSocket(okHttpClient, url, headers, listener)
+    return JvmWebSocket(webSocketFactory, url, headers, listener)
   }
 
   override fun close() {
@@ -108,3 +107,6 @@ internal class JvmWebSocket(
 
 
 actual fun WebSocketEngine(): WebSocketEngine = JvmWebSocketEngine(defaultOkHttpClientBuilder.build())
+
+@ApolloExperimental
+fun WebSocketEngine(webSocketFactory: PlatformWebSocket.Factory): WebSocketEngine = JvmWebSocketEngine(webSocketFactory)
