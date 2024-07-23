@@ -439,7 +439,6 @@ internal class RetryOnErrorInterceptor(private val retryWhen: suspend (ApolloExc
   }
 }
 
-@ApolloExperimental
 internal fun ApolloClient.Builder.retryWhen(retryWhen: suspend (ApolloException, Int) -> Boolean) = apply {
   retryOnErrorInterceptor(RetryOnErrorInterceptor(retryWhen))
 }
