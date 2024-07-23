@@ -7,6 +7,7 @@ import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsag
 import com.apollographql.ijplugin.util.decapitalizeFirstLetter
 import com.apollographql.ijplugin.util.findPsiFilesByName
 import com.apollographql.ijplugin.util.getMethodName
+import com.apollographql.ijplugin.util.isMethodCall
 import com.apollographql.ijplugin.util.lambdaBlockExpression
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMigration
@@ -32,7 +33,7 @@ object EncloseInService : MigrationItem() {
             val blockExpression = expression.lambdaBlockExpression() ?: return
             val statements = blockExpression.statements
             // If there's already a service call, we can't automatically refactor
-            if (statements.none { it is KtCallExpression && it.getMethodName() == "service" }) {
+            if (statements.none { it.isMethodCall("service") }) {
               usages.add(blockExpression.toMigrationItemUsageInfo())
             }
           }

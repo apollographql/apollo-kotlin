@@ -78,6 +78,8 @@ fun PsiElement.originalClassName(): String? = resolveKtName()?.asKtClass()?.name
 
 fun KtCallExpression.getMethodName(): String? = calleeExpression.cast<KtNameReferenceExpression>()?.getReferencedName()
 
+fun PsiElement.isMethodCall(methodName: String) = this is KtCallExpression && getMethodName() == methodName
+
 fun KtCallExpression.lambdaBlockExpression(): KtBlockExpression? =
   valueArguments.firstIsInstanceOrNull<KtLambdaArgument>()?.getLambdaExpression()?.bodyExpression
 

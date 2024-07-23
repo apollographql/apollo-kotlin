@@ -6,6 +6,7 @@ import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsag
 import com.apollographql.ijplugin.util.containingKtFile
 import com.apollographql.ijplugin.util.findPsiFilesByName
 import com.apollographql.ijplugin.util.getMethodName
+import com.apollographql.ijplugin.util.isMethodCall
 import com.apollographql.ijplugin.util.lambdaBlockExpression
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMigration
@@ -41,11 +42,11 @@ object UpdateMultiModuleConfiguration : MigrationItem() {
     file.accept(object : KtTreeVisitorVoid() {
       override fun visitCallExpression(expression: KtCallExpression) {
         super.visitCallExpression(expression)
-        var serviceFound= false
+        var serviceFound = false
         if (expression.getMethodName() == "apollo") {
           val apolloBlockExpression = expression.lambdaBlockExpression() ?: return
           val apolloStatements = apolloBlockExpression.statements
-          apolloStatements.filter { it is KtCallExpression && it.getMethodName() == "service" }.forEach { serviceCallExpression ->
+          apolloStatements.filter { it.isMethodCall("service") }.forEach { serviceCallExpression ->
             val serviceBlockExpression = (serviceCallExpression as KtCallExpression).lambdaBlockExpression() ?: return@forEach
             serviceBlockExpression.add(ktFactory.createNewLine())
             serviceBlockExpression.add(ktFactory.createExpression("dependsOn(${usage.attachedData<String>()})"))
