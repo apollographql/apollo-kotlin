@@ -16,12 +16,16 @@ import okhttp3.WebSocket as PlatformWebSocket
 import okhttp3.WebSocketListener as PlatformWebSocketListener
 
 internal class JvmWebSocketEngine(private val webSocketFactory: PlatformWebSocket.Factory) : WebSocketEngine {
+  var closed = false
   override fun newWebSocket(url: String, headers: List<HttpHeader>, listener: WebSocketListener): WebSocket {
+    require(!closed) {
+      "JvmWebSocketEngine is closed"
+    }
     return JvmWebSocket(webSocketFactory, url, headers, listener)
   }
 
   override fun close() {
-
+    closed = true
   }
 }
 

@@ -18,17 +18,17 @@ class HeadersTest {
   fun headersCannotBeUsedOnWebSockets() = runTest {
     val client = ApolloClient.Builder()
         .serverUrl("https://unused.com")
+        .addHttpHeader("foo", "bar")
         .subscriptionNetworkTransport(
             WebSocketNetworkTransport.Builder()
                 .serverUrl("https://unused.com")
-                .addHttpHeader("foo", "bar")
                 .build()
         )
         .build()
 
     client.use {
       val response = it.subscription(NothingSubscription()).toFlow().single()
-      assertTrue(response.exception?.cause?.message?.contains("Apollo: the WebSocket browser API doesn't allow passing headers") == true)
+      assertTrue(response.exception?.message?.contains("Apollo: the WebSocket browser API doesn't allow passing headers") == true)
     }
   }
 }

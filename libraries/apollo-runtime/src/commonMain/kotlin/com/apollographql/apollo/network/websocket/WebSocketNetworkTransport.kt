@@ -1,12 +1,10 @@
 package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.api.json.ApolloJsonElement
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.toApolloResponse
@@ -16,7 +14,7 @@ import com.apollographql.apollo.exception.SubscriptionOperationException
 import com.apollographql.apollo.internal.DeferredJsonMerger
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.network.websocket.internal.OperationListener
-import com.apollographql.apollo.network.websocket.internal.WebSocketHolder
+import com.apollographql.apollo.network.websocket.internal.WebSocketPool
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ProducerScope
@@ -24,6 +22,8 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * A [NetworkTransport] that uses WebSockets to execute GraphQL operations. Most of the time, it is used
@@ -36,22 +36,20 @@ import kotlinx.coroutines.flow.callbackFlow
 class WebSocketNetworkTransport private constructor(
     private val webSocketEngine: WebSocketEngine,
     private val serverUrl: String,
-    private val httpHeaders: List<HttpHeader>,
     private val wsProtocol: WsProtocol,
-    private val connectionAcknowledgeTimeoutMillis: Long,
-    private val pingIntervalMillis: Long,
-    private val idleTimeoutMillis: Long,
+    private val connectionAcknowledgeTimeout: Duration,
+    private val pingInterval: Duration?,
+    private val idleTimeout: Duration,
     private val parserFactory: SubscriptionParserFactory
 ) : NetworkTransport {
 
-  private val holder = WebSocketHolder(
+  private val pool = WebSocketPool(
       webSocketEngine = webSocketEngine,
       serverUrl = serverUrl,
-      httpHeaders = httpHeaders,
       wsProtocol = wsProtocol,
-      connectionAcknowledgeTimeoutMillis = connectionAcknowledgeTimeoutMillis,
-      pingIntervalMillis = pingIntervalMillis,
-      idleTimeoutMillis = idleTimeoutMillis
+      connectionAcknowledgeTimeout = connectionAcknowledgeTimeout,
+      pingInterval = pingInterval,
+      idleTimeout = idleTimeout
   )
 
   /**
@@ -78,7 +76,8 @@ class WebSocketNetworkTransport private constructor(
 
       val operationListener = DefaultOperationListener(newRequest, this, parserFactory.createParser(request))
 
-      val webSocket = holder.acquire()
+      val webSocket = pool.acquire(newRequest.httpHeaders.orEmpty())
+
       webSocket.startOperation(newRequest, operationListener)
 
       awaitClose {
@@ -91,7 +90,7 @@ class WebSocketNetworkTransport private constructor(
   }
 
   override fun dispose() {
-    holder.close()
+    pool.close()
   }
 
   /**
@@ -102,18 +101,17 @@ class WebSocketNetworkTransport private constructor(
    * The given [reason] will be propagated to active subscriptions.
    */
   fun closeConnection(reason: ApolloException) {
-    holder.closeCurrentConnection(reason)
+    pool.closeAllConnections(reason)
   }
 
   @ApolloExperimental
   class Builder {
     private var serverUrl: String? = null
-    private var httpHeaders: List<HttpHeader>? = null
     private var webSocketEngine: WebSocketEngine? = null
     private var wsProtocol: WsProtocol? = null
-    private var connectionAcknowledgeTimeoutMillis: Long? = null
-    private var pingIntervalMillis: Long? = null
-    private var idleTimeoutMillis: Long? = null
+    private var connectionAcknowledgeTimeout: Duration? = null
+    private var pingInterval: Duration? = null
+    private var idleTimeout: Duration? = null
     private var parserFactory: SubscriptionParserFactory? = null
 
     /**
@@ -130,29 +128,6 @@ class WebSocketNetworkTransport private constructor(
     }
 
     /**
-     * Headers to add to the HTTP handshake query.
-     */
-    fun httpHeaders(headers: List<HttpHeader>) = apply {
-      this.httpHeaders = headers
-    }
-
-    /**
-     * Add a [HttpHeader] to the handshake query.
-     */
-    fun addHttpHeader(name: String, value: String) = apply {
-      this.httpHeaders = this.httpHeaders.orEmpty() + HttpHeader(name, value)
-    }
-
-    /**
-     * Add a [HttpHeader] to the handshake query.
-     */
-    @Deprecated("use addHttpHeader instead", ReplaceWith("addHttpHeader(name, value)"))
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-    fun addHeader(name: String, value: String) = apply {
-      this.httpHeaders = this.httpHeaders.orEmpty() + HttpHeader(name, value)
-    }
-
-    /**
      * Set the [WebSocketEngine] to use.
      */
     fun webSocketEngine(webSocketEngine: WebSocketEngine?) = apply {
@@ -160,12 +135,11 @@ class WebSocketNetworkTransport private constructor(
     }
 
     /**
-     * The number of milliseconds before a WebSocket with no active operations disconnects.
-     *
-     * Default: `60_000`
+     * @param idleTimeout the duration before a WebSocket with no active operations disconnects or
+     * null to use the default of 1 minute.
      */
-    fun idleTimeoutMillis(idleTimeoutMillis: Long?) = apply {
-      this.idleTimeoutMillis = idleTimeoutMillis
+    fun idleTimeout(idleTimeout: Duration?) = apply {
+      this.idleTimeout = idleTimeout
     }
 
     /**
@@ -187,17 +161,16 @@ class WebSocketNetworkTransport private constructor(
      *
      * Default: -1
      */
-    fun pingIntervalMillis(pingIntervalMillis: Long?) = apply {
-      this.pingIntervalMillis = pingIntervalMillis
+    fun pingInterval(pingInterval: Duration?) = apply {
+      this.pingInterval = pingInterval
     }
 
     /**
-     * The maximum number of milliseconds between a "connection_init" message and its acknowledgement
-     *
-     * Default: 10_000
+     * @param connectionAcknowledgeTimeout the maximum duration between a "connection_init" message and its acknowledgement
+     * or null to use the default of 10 seconds
      */
-    fun connectionAcknowledgeTimeoutMillis(connectionAcknowledgeTimeoutMillis: Long?) = apply {
-      this.connectionAcknowledgeTimeoutMillis = connectionAcknowledgeTimeoutMillis
+    fun connectionAcknowledgeTimeout(connectionAcknowledgeTimeout: Duration?) = apply {
+      this.connectionAcknowledgeTimeout = connectionAcknowledgeTimeout
     }
 
     @ApolloExperimental
@@ -213,11 +186,10 @@ class WebSocketNetworkTransport private constructor(
       return WebSocketNetworkTransport(
           webSocketEngine = webSocketEngine ?: WebSocketEngine(),
           serverUrl = serverUrl ?: error("Apollo: 'serverUrl' is required"),
-          httpHeaders = httpHeaders.orEmpty(),
-          idleTimeoutMillis = idleTimeoutMillis ?: 60_000,
+          idleTimeout = idleTimeout ?: 60.seconds,
           wsProtocol = wsProtocol ?: GraphQLWsProtocol { null },
-          pingIntervalMillis = pingIntervalMillis ?: -1L,
-          connectionAcknowledgeTimeoutMillis = connectionAcknowledgeTimeoutMillis ?: 10_000L,
+          pingInterval = pingInterval,
+          connectionAcknowledgeTimeout = connectionAcknowledgeTimeout ?: 10.seconds,
           parserFactory = parserFactory ?: DefaultSubscriptionParserFactory
       )
     }
@@ -260,10 +232,10 @@ private class DefaultSubscriptionParser<D : Operation.Data>(private val request:
       deferredJsonMerger.reset()
     }
 
-    if (deferredJsonMerger.isEmptyPayload) {
-      return null
+    return if (deferredJsonMerger.isEmptyPayload) {
+      null
     } else {
-      return apolloResponse
+      apolloResponse
     }
   }
 }
