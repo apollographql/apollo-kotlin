@@ -53,6 +53,27 @@ internal class FooSubscription: FooOperation("subscription"), Subscription<FooOp
       }
     }
 
+    fun nextMessage(id: String, errorMessage: String): String {
+      return buildJsonString {
+        writeObject {
+          name("id")
+          value(id)
+          name("type")
+          value("next")
+          name("payload")
+          writeObject {
+            name("errors")
+            writeArray {
+              writeObject {
+                name("message")
+                value(errorMessage)
+              }
+            }
+          }
+        }
+      }
+    }
+
     fun completeMessage(id: String): String {
       return buildJsonString {
         writeObject {

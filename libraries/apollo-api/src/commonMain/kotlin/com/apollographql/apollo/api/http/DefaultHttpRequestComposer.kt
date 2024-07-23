@@ -196,7 +196,7 @@ class DefaultHttpRequestComposer(
       val variables = buildJsonString {
         val uploadAwareWriter = FileUploadAwareJsonWriter(this)
         uploadAwareWriter.writeObject {
-          operation.serializeVariables(this, customScalarAdapters, false)
+          operation.serializeVariables(writer = this, customScalarAdapters = customScalarAdapters, withDefaultValues = false)
         }
         check(uploadAwareWriter.collectedUploads().isEmpty()) {
           "FileUpload and Http GET are not supported at the same time"

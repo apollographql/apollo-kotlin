@@ -79,7 +79,9 @@ interface WebSocket {
   fun send(text: String)
 
   /**
-   * Closes the websocket gracefully and asynchronously.
+   * If the websocket is connected, attempts to close the websocket gracefully and asynchronously by sending
+   * a close frame with [code] and [reason].
+   * In all cases, release its resources.
    *
    * After this call, no more calls to the listener are made
    *

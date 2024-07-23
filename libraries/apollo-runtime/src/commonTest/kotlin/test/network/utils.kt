@@ -9,6 +9,11 @@ import okio.Buffer
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * Extracts the operationId from a graphql-ws message
+ *
+ * @param messagesToIgnore messages to ignore
+ */
 suspend fun WebsocketMockRequest.awaitSubscribe(timeout: Duration = 1.seconds, messagesToIgnore: Set<String> = emptySet()): String {
   while(true) {
     val message = awaitMessage(timeout)
@@ -27,9 +32,7 @@ suspend fun WebsocketMockRequest.awaitSubscribe(timeout: Duration = 1.seconds, m
   }
 }
 
-/**
- * Extracts the operationId from a graphql-ws message, ignores "complete messages"
- */
+
 @ApolloExperimental
 suspend fun WebsocketMockRequest.awaitComplete(timeout: Duration = 1.seconds) {
   val message = awaitMessage(timeout)
@@ -42,6 +45,3 @@ suspend fun WebsocketMockRequest.awaitComplete(timeout: Duration = 1.seconds) {
     "Expected complete, got '${map.get("type")}"
   }
 }
-
-
-

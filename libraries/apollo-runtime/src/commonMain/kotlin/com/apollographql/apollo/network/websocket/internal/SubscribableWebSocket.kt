@@ -9,7 +9,6 @@ import com.apollographql.apollo.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo.exception.DefaultApolloException
 import com.apollographql.apollo.exception.SubscriptionConnectionException
 import com.apollographql.apollo.network.websocket.CLOSE_GOING_AWAY
-import com.apollographql.apollo.network.websocket.CLOSE_NORMAL
 import com.apollographql.apollo.network.websocket.ClientMessage
 import com.apollographql.apollo.network.websocket.CompleteServerMessage
 import com.apollographql.apollo.network.websocket.ConnectionAckServerMessage
@@ -28,14 +27,13 @@ import com.apollographql.apollo.network.websocket.WebSocketListener
 import com.apollographql.apollo.network.websocket.WsProtocol
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.TimeMark
-import kotlin.time.TimeSource.Monotonic.markNow
+import kotlin.time.Duration
 
 /**
  * A [SubscribableWebSocket] is the link between the lower level [WebSocket] and GraphQL.
@@ -50,23 +48,24 @@ internal class SubscribableWebSocket(
     webSocketEngine: WebSocketEngine,
     serverUrl: String,
     httpHeaders: List<HttpHeader>,
-    private val dispatcher: CoroutineDispatcher,
     private val wsProtocol: WsProtocol,
-    private val pingIntervalMillis: Long,
-    private val connectionAcknowledgeTimeoutMillis: Long,
+    private val pingInterval: Duration?,
+    private val connectionAcknowledgeTimeout: Duration,
+    private val idleTimeout: Duration,
 ) : WebSocketListener {
 
   private var lock = reentrantLock()
-  private val scope = CoroutineScope(dispatcher)
+  private val scope = CoroutineScope(Dispatchers.Default)
 
+  private var idleTimeoutJob: Job? = null
   private var ackTimeoutJob: Job? = null
   private var state: SocketState = SocketState.AwaitOpen
   private var shutdownCause: ApolloException? = null
   private var activeListeners = mutableMapOf<String, OperationListener>()
   private var pending = mutableListOf<ApolloRequest<*>>()
-  private var _lastActiveMark: TimeMark? = null
 
   private var webSocket: WebSocket
+
   init {
     val headers = if (httpHeaders.any { it.name.lowercase() == "sec-websocket-protocol" }) {
       httpHeaders
@@ -76,40 +75,51 @@ internal class SubscribableWebSocket(
     webSocket = webSocketEngine.newWebSocket(serverUrl, headers, this)
   }
 
-  val lastActiveMark: TimeMark?
-    get() = lock.withLock {
-      _lastActiveMark
+  /**
+   * @param [markActive] pass true when collecting sockets so that a socket
+   * that is about to expire does not expire before the next startOperation()
+   */
+  fun isShutdown(markActive: Boolean): Boolean = lock.withLock {
+    (state == SocketState.ShutDown).also {
+      if (!it && markActive) {
+        idleTimeoutJob?.cancel()
+        idleTimeoutJob = null
+      }
     }
-  val shutdown: Boolean
-    get() = lock.withLock {
-      state == SocketState.ShutDown
-    }
+  }
 
-  fun shutdown(cause: ApolloException?, code: Int?, reason: String?) {
+  private fun restartIdleTimeout() {
+    idleTimeoutJob?.cancel()
+    idleTimeoutJob = scope.launch {
+      delay(idleTimeout)
+
+      /*
+       * Note: the exception here should never be surfaced upstream as by
+       * definition, a websocket is idle only if it has no listeners.
+       */
+      shutdown(ApolloNetworkException("WebSocket is idle"), CLOSE_GOING_AWAY, "Idle")
+    }
+  }
+  fun shutdown(cause: ApolloException, code: Int, reason: String) {
     val listeners = mutableListOf<OperationListener>()
 
     lock.withLock {
       if (state == SocketState.ShutDown) {
         return
       }
-      scope.cancel()
-
       state = SocketState.ShutDown
+
+      scope.cancel()
       shutdownCause = cause
+
       listeners.addAll(activeListeners.values)
       activeListeners.clear()
     }
 
-    if (code != null && reason != null) {
-      webSocket.close(code, reason)
-    }
+    webSocket.close(code, reason)
 
     listeners.forEach {
-      if (cause == null) {
-        it.onComplete()
-      } else {
-        it.onTransportError(cause)
-      }
+      it.onTransportError(cause)
     }
   }
 
@@ -117,11 +127,11 @@ internal class SubscribableWebSocket(
     lock.withLock {
       when (state) {
         SocketState.AwaitOpen -> {
-          scope.launch(dispatcher) {
+          scope.launch {
             webSocket.send(wsProtocol.connectionInit())
           }
-          ackTimeoutJob = scope.launch(dispatcher) {
-            delay(connectionAcknowledgeTimeoutMillis)
+          ackTimeoutJob = scope.launch {
+            delay(connectionAcknowledgeTimeout)
             shutdown(ApolloNetworkException("Timeout while waiting for connection_ack"), CLOSE_GOING_AWAY, "Timeout while waiting for connection_ack")
           }
           state = SocketState.AwaitAck
@@ -147,10 +157,10 @@ internal class SubscribableWebSocket(
           }
           state = SocketState.Connected
 
-          if (pingIntervalMillis > 0) {
+          if (pingInterval != null) {
             scope.launch {
               while (true) {
-                delay(pingIntervalMillis)
+                delay(pingInterval)
                 wsProtocol.ping()?.let { webSocket.send(it) }
               }
             }
@@ -207,16 +217,23 @@ internal class SubscribableWebSocket(
   }
 
   override fun onError(cause: ApolloException) {
-    shutdown(cause, null, null)
+    shutdown(cause, CLOSE_GOING_AWAY, "Error received")
   }
 
   override fun onClosed(code: Int?, reason: String?) {
-    shutdown(ApolloWebSocketClosedException(code ?: CLOSE_NORMAL, reason), null, null)
+    shutdown(
+        ApolloWebSocketClosedException(code ?: CLOSE_GOING_AWAY, reason),
+        code ?: CLOSE_GOING_AWAY,
+        reason ?: "Close frame received"
+    )
   }
 
   fun <D : Operation.Data> startOperation(request: ApolloRequest<D>, listener: OperationListener) {
     var cause: ApolloException? = null
     lock.withLock {
+      idleTimeoutJob?.cancel()
+      idleTimeoutJob = null
+
       when (state) {
         SocketState.AwaitOpen, SocketState.AwaitAck -> {
           activeListeners.put(request.requestUuid.toString(), listener)
@@ -229,6 +246,10 @@ internal class SubscribableWebSocket(
         }
 
         SocketState.ShutDown -> {
+          /**
+           * This is very unlikely albeit possible if the websocket errors between the time it
+           * is constructed and the time [startOperation] is called
+           */
           cause = DefaultApolloException("Apollo: the WebSocket is shut down", shutdownCause)
         }
       }
@@ -241,28 +262,17 @@ internal class SubscribableWebSocket(
 
   fun <D : Operation.Data> stopOperation(request: ApolloRequest<D>) {
     val id = request.requestUuid.toString()
-    val removed = lock.withLock {
-      var ret = false
+    lock.withLock {
       if (activeListeners.containsKey(id)) {
         activeListeners.remove(id)
-        ret = true
+
+        scope.launch { webSocket.send(wsProtocol.operationStop(request)) }
+
+        if (activeListeners.isEmpty()) {
+          restartIdleTimeout()
+        }
       }
-
-      if (activeListeners.isEmpty()) {
-        _lastActiveMark = markNow()
-      }
-      ret
     }
-
-    if (!removed) {
-      return
-    }
-
-    scope.launch { webSocket.send(wsProtocol.operationStop(request)) }
-  }
-
-  fun markActive() = lock.withLock {
-    _lastActiveMark = null
   }
 }
 
@@ -271,7 +281,6 @@ private enum class SocketState {
   AwaitAck,
   Connected,
   ShutDown
-
 }
 
 private fun WebSocket.send(clientMessage: ClientMessage) {

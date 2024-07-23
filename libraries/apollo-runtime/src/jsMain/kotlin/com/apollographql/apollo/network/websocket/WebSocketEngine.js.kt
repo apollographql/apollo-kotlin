@@ -3,6 +3,7 @@ package com.apollographql.apollo.network.websocket
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.exception.DefaultApolloException
 import com.apollographql.apollo.internal.isNode
+import com.apollographql.apollo.network.http.setTimeout
 import node.buffer.Buffer
 import org.khronos.webgl.Uint8Array
 import org.w3c.dom.WebSocket as PlatformWebSocket
@@ -140,7 +141,10 @@ private fun createWebSocket(urlString_capturingHack: String, headers: List<HttpH
     js("new ws_capturingHack(urlString_capturingHack, protocols, { headers: headers_capturingHack })")
   } else {
     if(otherHeaders.isNotEmpty()) {
-      listener.onError(DefaultApolloException("Apollo: the WebSocket browser API doesn't allow passing headers. Use connectionPayload or other mechanisms."))
+      // Escape the current stack frame
+      setTimeout({
+        listener.onError(DefaultApolloException("Apollo: the WebSocket browser API doesn't allow passing headers. Use connectionPayload or other mechanisms."))
+      }, 10)
       null
     } else {
       js("new WebSocket(urlString_capturingHack, protocols)")
