@@ -8,6 +8,7 @@ import kotlinx.coroutines.runBlocking
 import net.mbonnin.vespene.lib.NexusStagingClient
 import org.gradle.api.Project
 import org.gradle.api.attributes.Usage
+import org.gradle.api.internal.file.FileOperations
 import org.gradle.api.plugins.ExtraPropertiesExtension
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
@@ -18,6 +19,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
+import javax.inject.Inject
 
 fun Project.configurePublishing(isAggregateKdoc: Boolean = false) {
   apply {
@@ -122,8 +124,15 @@ fun Project.configureDokkaAggregate() {
       dependencies.add(project.dependencies.create("${coordinate.module}:${coordinate.version}:javadoc"))
     }
 
+    val fileOperations = objects.newInstance(FileOperationsHolder::class.java).fileOperations
+
     tasks.register("extractApolloKdocVersion_$versionString", Copy::class.java) {
-      from(configuration.elements.map { it.map { zipTree(it) } })
+
+      from(configuration.elements.map {
+        it.map {
+          fileOperations.zipTree(it)
+        }
+      })
       into(layout.buildDirectory.dir("kdoc-versions/${coordinate.version}"))
     }
   }
@@ -153,6 +162,8 @@ fun Project.configureDokkaAggregate() {
     outputDirectory.set(layout.buildDirectory.asFile.get().resolve("dokka/html/kdoc"))
   }
 }
+
+private abstract class FileOperationsHolder @Inject constructor(val fileOperations: FileOperations)
 
 private fun Project.getOssStagingUrl(): String {
   val url = try {
