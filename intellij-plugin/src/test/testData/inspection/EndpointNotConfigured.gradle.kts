@@ -32,4 +32,9 @@ apollo {
       schemaFile.set(file("src/main/graphql/schema.graphqls"))
     }
   }
+
+  service("e") { // Shouldn't highlight
+    packageName.set("com.example")
+    dependsOn(":schemaModule", bidirectional = true)
+  }
 }

@@ -5,6 +5,7 @@ import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.getMethodName
+import com.apollographql.ijplugin.util.isMethodCall
 import com.apollographql.ijplugin.util.lambdaBlockExpression
 import com.intellij.codeInsight.intention.preview.IntentionPreviewUtils
 import com.intellij.codeInspection.LocalInspectionTool
@@ -29,9 +30,12 @@ class ApolloEndpointNotConfiguredInspection : LocalInspectionTool() {
         super.visitCallExpression(expression)
         if (!expression.project.apolloProjectService.apolloVersion.isAtLeastV3) return
         if (expression.containingFile.name != buildGradleFileName) return
-        if (expression.getMethodName() == "service" && expression.findParentInFile { it is KtCallExpression && it.getMethodName() == "apollo" } != null) {
+        if (expression.getMethodName() == "service" && expression.findParentInFile { it.isMethodCall("apollo") } != null) {
           val serviceBlockExpression = expression.lambdaBlockExpression() ?: return
-          if (serviceBlockExpression.statements.none { it is KtCallExpression && it.getMethodName() == "introspection" }) {
+          // Don't suggest to add an introspection block if this is a submodule
+          val hasDependsOn = serviceBlockExpression.statements.any { it.isMethodCall("dependsOn") }
+          if (hasDependsOn) return
+          if (serviceBlockExpression.statements.none { it.isMethodCall("introspection") }) {
             holder.registerProblem(expression.calleeExpression!!, ApolloBundle.message("inspection.endpointNotConfigured.reportText"), AddIntrospectionBlockQuickFix)
           }
         }
