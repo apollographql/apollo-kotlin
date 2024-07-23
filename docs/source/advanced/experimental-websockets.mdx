@@ -111,19 +111,35 @@ The above uses the default retry algorithm:
 * Wait until the network is available if you configured a [NetworkMonitor](network-connectivity).
 * Or use exponential backoff else.
 
-To customize the retry logic more, use `addRetryOnErrorInterceptor`:
+To customize the retry logic more, use `retryOnErrorInterceptor`:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
-    .subscriptionNetworkTransport(
-        WebSocketNetworkTransport.Builder()
-            .serverUrl(url)
-            .build()
-    )
-    .addRetryOnErrorInterceptor { exception, attempt -> 
-      // retry logic here
-      
-      // return true to retry or false to terminate the Flow
-      true
-    }
+    .retryOnErrorInterceptor(MyRetryOnErrorInterceptor())
+    .build()
+
+class MyRetryOnErrorInterceptor : ApolloInterceptor {
+  object RetryException : Exception()
+
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    var attempt = 0
+    return request.ensureUniqueUuid()
+        .flatMapConcat { chain.proceed(it) }.onEach {
+          if (request.retryOnError == true && it.exception != null && it.exception is ApolloNetworkException) {
+            throw RetryException
+          } else {
+            attempt = 0
+          }
+        }.retryWhen { cause, _ ->
+          if (cause is RetryException) {
+            attempt++
+            delay(2.0.pow(attempt).seconds)
+            true
+          } else {
+            // Not a RetryException, probably a programming error, pass it through
+            false
+          }
+        }
+  }
+}
 ```
