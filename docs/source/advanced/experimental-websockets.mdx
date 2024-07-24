@@ -123,23 +123,22 @@ class MyRetryOnErrorInterceptor : ApolloInterceptor {
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     var attempt = 0
-    return request.ensureUniqueUuid()
-        .flatMapConcat { chain.proceed(it) }.onEach {
-          if (request.retryOnError == true && it.exception != null && it.exception is ApolloNetworkException) {
-            throw RetryException
-          } else {
-            attempt = 0
-          }
-        }.retryWhen { cause, _ ->
-          if (cause is RetryException) {
-            attempt++
-            delay(2.0.pow(attempt).seconds)
-            true
-          } else {
-            // Not a RetryException, probably a programming error, pass it through
-            false
-          }
-        }
+    return chain.proceed(request).onEach {
+      if (request.retryOnError == true && it.exception != null && it.exception is ApolloNetworkException) {
+        throw RetryException
+      } else {
+        attempt = 0
+      }
+    }.retryWhen { cause, _ ->
+      if (cause is RetryException) {
+        attempt++
+        delay(2.0.pow(attempt).seconds)
+        true
+      } else {
+        // Not a RetryException, probably a programming error, pass it through
+        false
+      }
+    }
   }
 }
 ```

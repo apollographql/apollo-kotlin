@@ -58,12 +58,13 @@ private class DefaultRetryOnErrorInterceptorImpl(private val networkMonitor: Net
     }
 
     var attempt = 0
-    return request.ensureUniqueUuid()
-        .flatMapConcatPolyfill {
+    val downStream = chain.proceed(request)
+
+    return flow {
           if (failFastIfOffline && networkMonitor?.isOnline() == false) {
-            flowOf(ApolloResponse.Builder(request.operation, request.requestUuid).exception(OfflineException).build())
+            emit((ApolloResponse.Builder(request.operation, request.requestUuid).exception(OfflineException).build()))
           } else {
-            chain.proceed(it)
+            emitAll(downStream)
           }
         }.onEach {
           if (retryOnError && it.exception != null && it.exception!!.isRecoverable()) {
@@ -85,19 +86,6 @@ private class DefaultRetryOnErrorInterceptorImpl(private val networkMonitor: Net
             false
           }
         }
-  }
-}
-
-@ApolloExperimental
-fun <D : Operation.Data> ApolloRequest<D>.ensureUniqueUuid(): Flow<ApolloRequest<D>> {
-  var first = true
-  return flow {
-    if (first) {
-      first = false
-      emit(this@ensureUniqueUuid)
-    } else {
-      emit(newBuilder().requestUuid(uuid4()).build())
-    }
   }
 }
 
