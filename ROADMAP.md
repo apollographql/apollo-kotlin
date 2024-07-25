@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2024-06-27**
+**Last updated: 2024-07-25**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -19,9 +19,9 @@ For up to date release notes, refer to the project [Changelog](https://github.co
 
 ## [4.0](https://github.com/apollographql/apollo-kotlin/milestone/29)
 
-_Approximate RC Date: Late June 2024_
+_Approximate GA Date: 2024-07-29_
 
-Our next major release is currently in the beta stage. This major version removes some deprecated APIs but will otherwise contain mostly incremental changes and most of the API will stay compatible.  Now that Kotlin 2 is released, we are putting the finishing touches on v4 and will make it generally available in the near future, beginning with an RC.
+Our next major release is currently in the release candidate (RC) stage. This major version removes some deprecated APIs but will otherwise contain mostly incremental changes and most of the API will stay compatible.  Now that Kotlin 2 is released, we are putting the finishing touches on v4 and will make it generally available soon.
 
 Here's a high-level overview of the feature set:
 
@@ -38,17 +38,19 @@ Here's a high-level overview of the feature set:
 - Network-awareness APIs for integration with Android and iOS connectivity managers
 - Retry functionality for HTTP Multipart and WebSockets protocols
 
+## Cache improvements
+
+The declarative cache makes working with the cache and defining unique object ids easier. We also want to include helpers to handle with common cases like pagination, garbage collection and eviction. Follow [#2331](https://github.com/apollographql/apollo-kotlin/issues/2331) for a high level overview. The current focus is on cache control and expiration. You can read more in [the cache control design document](https://github.com/apollographql/apollo-kotlin/pull/4009).
+
+## [Testing utilities](https://github.com/apollographql/apollo-kotlin/issues/6076)
+
+The community has given some consistent feedback around testing and data builders in particular.  We are in the process of organizing this feedback into actionable workstreams and will update this section of the Roadmap and the relevant Issues as details emerge.
+
 ## Jetpack Compose extensions
 
 _This is currently available as an experimental feature.  We will release a stable version after getting sufficient user feedback_
 
 [Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin.  We are experimenting with a few different approaches for supporting Compose in the Apollo Kotlin library.  Our 3.8.0 release introduced an experimental API for use with Compose, please do try it out and give us feedback!
-
-## Cache improvements
-
-_Approximate Date: TBD_
-
-The declarative cache makes working with the cache and defining unique object ids easier. We also want to include helpers to handle with common cases like pagination, garbage collection and eviction. Follow [#2331](https://github.com/apollographql/apollo-kotlin/issues/2331) for a high level overview. The current focus is on cache control and expiration. You can read more in [the cache control design document](https://github.com/apollographql/apollo-kotlin/pull/4009).
 
 ## Future feature releases
 
