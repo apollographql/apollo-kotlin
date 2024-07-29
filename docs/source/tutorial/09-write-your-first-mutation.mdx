@@ -12,19 +12,19 @@ A mutation is used to change data on your server. Here the login mutation will c
 
 ## Prototype your mutation in Sandbox Explorer
 
-Open [your Sandbox Explorer](https://studio.apollographql.com/sandbox/explorer?endpoint=https%3A%2F%2Fapollo-fullstack-tutorial.herokuapp.com%2Fgraphql) and click on the plus symbol to add a new tab. Next, click on the Schema icon to get back to looking at your schema, and select "Mutation" to look at your list of mutations:
+Open [your Sandbox Explorer](https://studio.apollographql.com/sandbox/explorer?endpoint=https%3A%2F%2Fapollo-fullstack-tutorial.herokuapp.com%2Fgraphql) and click on the plus symbol to add a new tab. Next, click on the Schema icon to get back to looking at your schema, and select "Mutation" to look at your list of mutation fields:
 
 <img alt="The list of available mutations" class="screenshot" src="images/sandbox_schema_mutations.png"/>
 
-Scroll down to take a look at the `login` mutation:
+Scroll down to take a look at the `login` field:
 
 <img alt="The definition of login in the schema" class="screenshot" src="images/schema_login_definition.png"/>
 
-Click the play button to the right to open that mutation in the Explorer tab. When it opens, click the plus sign to add the operation:
+Click the play button to the right to open that field in the Explorer tab. When it opens, click the plus sign to add field to your operation:
 
 <img alt="The login mutation after initially being added" class="screenshot" src="images/explorer_added_login_mutation.png"/>
 
-Notice the red error indication - this is because the type returned by the mutation is `User`, which is not a **leaf** type: you need to choose which of the user's fields the mutation will return. For our purposes, we only need the `token` field, so add it by clicking the plus sign next to it.
+Notice the red error indication - this is because the type returned by the field is `User`, which is not a **leaf** type: you need to choose which of the user's fields the mutation will return. For our purposes, we only need the `token` field, so add it by clicking the plus sign next to it.
 
 You'll also notice that `email` wasn't automatically added as an argument even though it doesn't seem to have a default value: that's because `email` is of type `String` - which remember, in GraphQL, means that it's **not** required (although obviously you won't get too far without it).
 
@@ -34,7 +34,7 @@ Click the plus sign next to the `email` argument to have that argument added:
 
 You'll also notice that Sandbox Explorer has added a variable to your "Variables" section to match the login email.
 
-Click the Submit Operation button your mutation. You'll see that since you sent `null` for the email address, you get back `null` for the login:
+Click the Submit Operation button to execute your mutation. You'll see that since you sent `null` for the email address, you get back `null` for the login:
 
 <img alt="Results of passing a null email" class="screenshot" src="images/login_mutation_null.png"/>
 

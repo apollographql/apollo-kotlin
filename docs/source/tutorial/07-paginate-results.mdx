@@ -52,7 +52,7 @@ fun LaunchList(onLaunchClick: (launchId: String) -> Unit) {
 
 Pass the `cursor` to the `LaunchListQuery`, and add a special item at the end of the list which updates the `cursor` if `hasNext` is true. This will trigger a new query with the new cursor whenever the user scrolls to the end of the list, and `launchList` will be concatenated with the new results.
 
-> **Note:** this is a basic implementation of paging in Compose. In a real project you may use something more advanced, like the [Jetpack Paging library](https://developer.android.com/jetpack/compose/lists#large-datasets).
+> **Note:** this is a basic implementation of pagination in Compose. In a real project you may use something more advanced, like the [Jetpack Paging library](https://developer.android.com/jetpack/compose/lists#large-datasets).
 
 The whole function should look like this:
 ```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchList.kt"
