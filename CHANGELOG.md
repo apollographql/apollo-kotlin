@@ -196,18 +196,6 @@ Thanks again to everyone who provided feedback during the alphas/betas.
 * [#1692](https://github.com/apollographql/apollo-kotlin/pull/1692) - On the fly code generation
 * [#650](https://github.com/apollographql/apollo-kotlin/pull/650) - Create Android Studio Plugin
 
-## Add memoryCacheOnly (#6049)
-
-`.memoryCacheOnly(true)` can be set on calls to read and store records in the memory cache only even when a persistent cache is configured.
-This can be useful in scenarios where long term storage isn't needed and performance is important.
-
-* [gradle-plugin] Use a better warning for Service.schemaFile users (#6036)
-* [all] Update apollo-kotlin-execution (#6040)
-* [IJ Plugin] Add com.apollographql.apollo:apollo-api-jvm to dependencySupport (#6039)
-* [all] Update to Gradle 8.9 (#6056)
-* [gradle-plugin] Undeprecate schemaFile (#6055)
-* [gradle-plugin] Disable service-loading `ApolloCompilerPlugin` (#6059)
-
 
 # Version v4.0.0-rc.2
 
