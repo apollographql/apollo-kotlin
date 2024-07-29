@@ -7,14 +7,14 @@ Apollo Kotlin 3 was a major rewrite of Apollo in Kotlin multiplatform.
 
 Apollo Kotlin 4 focuses on tooling, stability and making the library more maintainable, so it can evolve smoothly for the many years to come.
 
-While most of the core APIs stayed the same, Apollo Kotlin 4 contains a few binary breaking changes. To account for that, and in order to be more future-proof, [we changed the package name](https://github.com/apollographql/apollo-kotlin/issues/4710) to `com.apollographql.apollo`.
+While most of the core APIs stayed the same, Apollo Kotlin 4 contains a few binary breaking changes. To account for that, and in order to be more future-proof, [we changed the package name](https://github.com/apollographql/apollo-kotlin/issues/4710) to `com.apollographql.apollo`. See the Apollo Kotlin [evolution policy](../essentials/evolution) for more details.
 
 Apollo Kotlin 4 removes some deprecated symbols. We strongly recommend updating to the latest 3.x release and removing deprecated usages before migrating to version 4.
 
 Important changes are:
 * [new package name](#group-id--plugin-id--package-name) and [moved artifacts](#moved-artifacts-)
 * [fetch errors do not throw anymore](#fetch-errors-do-not-throw)
-* [the multi-module apolloMetadata Gradle configuration is not used anymore](#multi-module-dependson)
+* [the apolloMetadata Gradle configuration is not used anymore](#multi-module-dependson)
 
 Read below for more details.
 
@@ -102,7 +102,7 @@ The artifacts with new coordinates are:
 | com.apollographql.apollo3:apollo-rx2-support-java                   | com.apollographql.java:rx2                                  | [apollographql/apollo-kotlin-java-support](https://github.com/apollographql/apollo-kotlin-java-support)                               |
 | com.apollographql.apollo3:apollo-rx3-support-java                   | com.apollographql.java:rx3                                  | [apollographql/apollo-kotlin-java-support](https://github.com/apollographql/apollo-kotlin-java-support)                               |
 
-Those new artifacts also have a new package name. You can usually guess it by removing `.apollo3`:
+Those new artifacts also use a new package name. You can usually guess it by removing `.apollo3`:
 
 ```kotlin
 // Replace 
@@ -146,7 +146,7 @@ try {
     // ...
   }
 } catch (e: ApolloException) {
-  // Handle network error
+  // Handle fetch errors
 }
 
 // With
@@ -172,7 +172,7 @@ client.subscription(MySubscription()).toFlow().collect { response ->
     // Handle GraphQL errors
   }
 }.catch { e ->
-  // Handle network error
+  // Handle fetch errors
 }
 
 // With
@@ -229,7 +229,7 @@ In Apollo Kotlin 3, when using the normalized cache, you could set `emitCacheMis
 
 In Apollo Kotlin 4, this is now the default behavior and `emitCacheMisses(Boolean)` has been removed.
 
-With the `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies, cache misses and network errors are now emitted in `ApolloResponse.exception`.
+With the `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies, cache misses and network errors are now exposed in `ApolloResponse.exception`.
 
 ### Migration helpers
 
@@ -433,7 +433,7 @@ mapScalarToKotlinLong("MyLong")
 
 ### Migrating to ApolloCompilerPlugin
 
-Apollo Kotlin 4 introduces `ApolloCompilerPlugin` as a way to customize code generation. `ApolloCompilerPlugin` replace compiler hooks and are loaded using the [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) API and run in a separate classloader from your Gradle build. As a result, using  `Service.operationIdGenerator`/`Service.operationOutputGenerator` together with `ApolloCompilerPlugin` is not possible.
+Apollo Kotlin 4 introduces `ApolloCompilerPlugin` as a way to customize code generation. `ApolloCompilerPlugin` replaces compiler hooks and are loaded using the [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) API. They run in a separate classloader from your Gradle build. As a result, using  `Service.operationIdGenerator`/`Service.operationOutputGenerator` together with `ApolloCompilerPlugin` is not possible.
 
 `Service.operationIdGenerator`/`Service.operationOutputGenerator` are deprecated and will be removed in a future release. You can migrate to `ApolloCompilerPlugin` using the instructions [from the dedicated page](https://www.apollographql.com/docs/kotlin/v4/advanced/compiler-plugins) and the `ApolloCompilerPlugin.operationIds()` method:
 
@@ -457,7 +457,7 @@ val operationIdGenerator = object: OperationIdGenerator {
   override val version: String = "v1"
 }
 
-// With (in your build compiler plugin module) 
+// With (in your compiler plugin module) 
 class MyPlugin: ApolloCompilerPlugin {
   override fun operationIds(descriptors: List<OperationDescriptor>): List<OperationId>? {
     return descriptors.map {
@@ -469,7 +469,7 @@ class MyPlugin: ApolloCompilerPlugin {
 
 ### Operation manifest file location
 
-Since Apollo Kotlin now supports [different operation manifest formats](../advanced/persisted-queries), the `operationOutput.json` file will be generated in `"build/generated/manifest/apollo/$service/operationOutput.json"` instead of `"build/generated/operationOutput/apollo/$service/operationOutput.json"`.
+Since Apollo Kotlin now supports [different operation manifest formats](../advanced/persisted-queries), the `operationOutput.json` file is generated in `"build/generated/manifest/apollo/$service/operationOutput.json"` instead of `"build/generated/operationOutput/apollo/$service/operationOutput.json"`.
 
 ### `useSchemaPackageNameForFragments` is removed
 
@@ -606,7 +606,7 @@ query HeroName {
 }
 ```
 
-Those queries now required to have a matching directive definition in the schema. If the directive is a server directive, and you downloaded your schema using introspection, the directive definition should be present.
+Those queries are now required to have a matching directive definition in the schema. If you downloaded your schema using introspection, this shouldn't be an issue.
 
 In some cases, for client directives and/or if you did not use introspection, the directive definition might be missing. For those cases, you can add it explicitly in a `extra.graphqls` file:
 
@@ -652,15 +652,17 @@ val apolloClient = ApolloClient.Builder()
 
 ## apollo-ast
 
-The AST classes (`GQLNode` and subclasses) as well as `Introspection` classes are not data classes anymore (see https://github.com/apollographql/apollo-kotlin/pull/4704/). The class hierarchy has been tweaked so that `GQLNamed`, `GQLDescribed` and `GQLHasDirectives` are more consistently inherited from.
+In Apollo Kotlin 3, apollo-ast uses [Antlr](https://www.antlr.org/) to parse GraphQL documents.
 
-`GQLSelectionSet` and `GQLArguments` are removed from `GQLField` and `GQLInlineFragment`. Use `.selections` directly
+In Apollo Kotlin 4, apollo-ast uses its own recursive descent parser. Not only does it remove a dependency but it's also faster and supports KMP. We took this opportunity to clean the apollo-ast API:
 
-`GQLInlineFragment.typeCondition` is now nullable to account for inline fragments who inherit their type condition.
-
-`SourceLocation.position` is renamed to `SourceLocation.column` and is now 1-indexed. `GQLNode.sourceLocation` is now nullable to account for the cases where the nodes are constructed programmatically.
-
-It is not possible to create a `Schema` from a File or String directly anymore. Instead, create a `GQLDocument` first and convert it to a schema with `toSchema()`.
+* The AST classes (`GQLNode` and subclasses) as well as `Introspection` classes are not data classes anymore (see https://github.com/apollographql/apollo-kotlin/pull/4704/).
+* The class hierarchy has been tweaked so that `GQLNamed`, `GQLDescribed` and `GQLHasDirectives` are more consistently inherited from.
+* `GQLSelectionSet` and `GQLArguments` are removed from `GQLField` and `GQLInlineFragment`. Use `.selections` directly.
+* `GQLInlineFragment.typeCondition` is now nullable to account for inline fragments who inherit their type condition.
+* `SourceLocation.position` is renamed to `SourceLocation.column` and is now 1-indexed. 
+* `GQLNode.sourceLocation` is now nullable to account for the cases where the nodes are constructed programmatically.
+* `File.toSchema()` and `String.toSchema()` are removed. Instead use `toGQLDocument().toSchema()`.
 
 ## Example of a migration
 
