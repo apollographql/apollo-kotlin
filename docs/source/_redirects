@@ -1,6 +1,7 @@
-# The v3 docs were beta for a while, and non-default, but now that they are
-# default, the v3 docs don't exist anymore.  So redirect them to the default!
+# The v3-v4 docs were beta for a while, and non-default, but now that they are
+# default, the v3 docs don't exist anymore. So redirect them to the default!
 /v3/* /docs/kotlin/:splat
+/v4/* /docs/kotlin/:splat
 /introduction/ /docs/kotlin/
 /essentials/ /docs/kotlin/essentials/file-types/
 /essentials/get-started* /docs/kotlin/tutorial/00-introduction/
