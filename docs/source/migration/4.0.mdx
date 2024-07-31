@@ -547,6 +547,26 @@ The [Android Studio plugin](../testing/android-studio-plugin#migration-helpers) 
 
 </Note>
 
+### Data builders
+
+With Apollo Kotlin 4, the syntax for using data builders for fragments is the same as for operations and [doesn't need the top level `buildFoo {}` wrapper](https://github.com/apollographql/apollo-kotlin/pull/4782):
+
+```kotlin
+// Replace
+val data = AnimalDetailsImpl.Data {
+  buildCat {
+    name = "Noushka"
+    species = "Maine Coon"
+  }
+}
+
+// With
+val data = AnimalDetailsImpl.Data(Cat) {
+  name = "Noushka"
+  species = "Maine Coon"
+}
+```
+
 ### Test builders are removed
 
 Test builders were an experimental feature that have been superseded by [data builders](../testing/data-builders), a simpler version that also plays nicer with custom scalars.
