@@ -549,7 +549,9 @@ The [Android Studio plugin](../testing/android-studio-plugin#migration-helpers) 
 
 ### Data builders
 
-With Apollo Kotlin 4, the syntax for using data builders for fragments is the same as for operations and [doesn't need the top level `buildFoo {}` wrapper](https://github.com/apollographql/apollo-kotlin/pull/4782):
+In Apollo Kotlin 3, using data builders with fragments required nesting the fields in a `buildFoo {}` block to determine the specific type returned. 
+
+In Apollo Kotlin 4, this is specified by using the first paramter of the `Data()` constructor function. This allows the syntax for using data builders with fragments to be the same as for operations:
 
 ```kotlin
 // Replace
@@ -566,6 +568,8 @@ val data = AnimalDetailsImpl.Data(Cat) {
   species = "Maine Coon"
 }
 ```
+
+See [data builders documentation](../testing/data-builders) for more details.
 
 ### Test builders are removed
 
