@@ -57,7 +57,7 @@ val apolloDependencies = configurations.create("apolloDependencies").apply {
 tasks {
   withType<KotlinCompilationTask<*>> {
     compilerOptions {
-      freeCompilerArgs = listOf("-Xcontext-receivers")
+      freeCompilerArgs.set(listOf("-Xcontext-receivers"))
     }
   }
 
@@ -66,7 +66,7 @@ tasks {
     // (for AS, it should be something like '/Applications/Android Studio.app/Contents')
     // See https://plugins.jetbrains.com/docs/intellij/android-studio.html#configuring-the-plugin-gradle-build-script
     providers.gradleProperty("apolloIntellijPlugin.ideDir").orNull?.let {
-      localPath = file(it)
+      localPath.set(file(it))
     }
 
     task {
@@ -182,7 +182,7 @@ intellijPlatform {
     }
   }
 
-  verifyPlugin {
+  pluginVerification {
     ides {
       recommended()
     }
