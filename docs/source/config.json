@@ -5,12 +5,12 @@
     "docset:apollo-kotlin"
   ],
   "sidebar": {
-    "Kdoc": "https://apollographql.github.io/apollo-kotlin/kdoc/",
-    "Changelog": "https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md",
     "Get Started": "/",
     "Migrating to v4": "/migration/4.0",
     "Modules": "/essentials/modules",
     "Evolution policy": "/essentials/evolution",
+    "Kdoc": "https://apollographql.github.io/apollo-kotlin/kdoc/",
+    "Changelog": "https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md",
     "Tutorial": {
       "0. Introduction": "/tutorial/00-introduction",
       "1. Configure your project": "/tutorial/01-configure-project",
