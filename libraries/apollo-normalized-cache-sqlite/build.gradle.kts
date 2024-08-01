@@ -26,7 +26,6 @@ kotlin {
       dependencies {
         api(project(":apollo-api"))
         api(project(":apollo-normalized-cache-api"))
-        api(project(":apollo-normalized-cache"))
         api(libs.sqldelight.runtime)
       }
     }

@@ -9,6 +9,7 @@
     "Changelog": "https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md",
     "Get Started": "/",
     "Migrating to v4": "/migration/4.0",
+    "Artifacts": "/essentials/artifacts",
     "Evolution policy": "/essentials/evolution",
     "Tutorial": {
       "0. Introduction": "/tutorial/00-introduction",
