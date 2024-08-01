@@ -6,15 +6,15 @@ Apollo Kotlin is highly modular, making it easy to only include the features tha
 
 All the modules are documented in the [KDoc API reference](https://apollographql.github.io/apollo-kotlin/kdoc/)
 
-# Main modules
+## Main modules
 
-## apollo-annotations ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-annotations/index.html))
+### apollo-annotations ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-annotations/index.html))
 
 `apollo-annotations` is a very small module that contains `@ApolloExperimental` and other annotations mainly useful for handling API lifecycle.
 
 It is an API dependency of most of the other modules.
 
-## apollo-api ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-api/index.html))
+### apollo-api ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-api/index.html))
 
 `apollo-api` contains the bare minimum symbols to compile the generated code and parse responses.
 
@@ -22,13 +22,13 @@ It does not contain any networking or caching code. For a more complete artifact
 
 See ["Using the models without apollo-runtime"](https://www.apollographql.com/docs/kotlin/advanced/no-runtime) for how to use `apollo-api`.
 
-## apollo-ast ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-ast/index.html))
+### apollo-ast ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-ast/index.html))
 
 `apollo-ast` contains code to parse GraphQL documents and manipulate their Abstract Syntax Tree.
 
 See ["Apollo AST"](https://www.apollographql.com/docs/kotlin/advanced/apollo-ast) for how to use `apollo-ast`.
 
-## apollo-compiler ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-compiler/index.html))
+### apollo-compiler ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-compiler/index.html))
 
 `apollo-compiler` is the low level compiler API used by apollo-gradle-plugin.
 
@@ -38,11 +38,11 @@ See ["Apollo AST"](https://www.apollographql.com/docs/kotlin/advanced/apollo-ast
 
 See ["Apollo Compiler plugins"](https://www.apollographql.com/docs/kotlin/advanced/compiler-plugins) for how to develop compiler plugins.
 
-## apollo-debug-server ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-debug-server/index.html))
+### apollo-debug-server ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-debug-server/index.html))
 
 `apollo-debug-server` is a server that serves your normalized cache to the IntelliJ/Android Studio plugin.
 
-## apollo-gradle-plugin ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-gradle-plugin/index.html))
+### apollo-gradle-plugin ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-gradle-plugin/index.html))
 
 `apollo-gradle-plugin` contains the Apollo Gradle plugin.
 
@@ -52,7 +52,7 @@ See `apollo-gradle-plugin-external` for a version of `apollo-gradle-plugin` that
 
 See ["Gradle Plugin Configuration"](https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration/) for how to use the Gradle plugin.
 
-## apollo-gradle-plugin-external ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-gradle-plugin-external/index.html))
+### apollo-gradle-plugin-external ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-gradle-plugin-external/index.html))
 
 `apollo-gradle-plugin-external` contains the Apollo Gradle plugin.
 
@@ -62,19 +62,19 @@ See `apollo-gradle-plugin` for a version of `apollo-gradle-plugin-external` that
 
 See ["Gradle Plugin Configuration"](https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration/) for how to use the Gradle plugin.
 
-## apollo-http-cache ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-http-cache/index.html))
+### apollo-http-cache ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-http-cache/index.html))
 
 apollo-http-cache is a HTTP cache for your GraphQL operations. Compared to a regular HTTP cache, it also caches POST requests.
 
 See ["HTTP cache"](https://www.apollographql.com/docs/kotlin/caching/http-cache) for how to use the HTTP cache
 
-## apollo-normalized-cache ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-normalized-cache/index.html))
+### apollo-normalized-cache ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-normalized-cache/index.html))
 
 `apollo-normalized-cache contains` `ApolloStore` and `ApolloCacheInterceptor`. It bridges `ApolloClient` and `ApolloNormalizedCache`.
 
 See ["Normalized Caches"](https://www.apollographql.com/docs/kotlin/caching/normalized-cache#in-memory-cache) for how to use the normalized cache.
 
-## apollo-normalized-cache-api ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-normalized-cache-api/index.html))
+### apollo-normalized-cache-api ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-normalized-cache-api/index.html))
 
 `apollo-normalized-cache-api` is the low-level cache. It knows nothing about coroutines and/or `apollo-runtime` and contains a memory implementation of `NormalizedCache`.
 
@@ -82,19 +82,19 @@ Most of the time, use `apollo-normalized-cache` instead.
 
 See ["Normalized Caches"](https://www.apollographql.com/docs/kotlin/caching/normalized-cache#in-memory-cache) for how to use the normalized cache.
 
-## apollo-normalized-cache-sqlite ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-normalized-cache-sqlite/index.html))
+### apollo-normalized-cache-sqlite ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-normalized-cache-sqlite/index.html))
 
 `apollo-normalized-cache-sqlite` contains an implementation of `NormalizedCache` that uses SQLite to persist the data across app restarts.
 
 See ["Normalized Caches"](https://www.apollographql.com/docs/kotlin/caching/normalized-cache#in-memory-cache) for how to use the normalized cache.
 
-## apollo-runtime ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/index.html))
+### apollo-runtime ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/index.html))
 
 `apollo-runtime` contains `ApolloClient`, networking code to execute your queries and subscriptions. This is the main entry point.
 
 See ["Get Started"](https://www.apollographql.com/docs/kotlin/) for how to instantiate and use an `ApolloClient`.
 
-## apollo-testing-support ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-testing-support/index.html))
+### apollo-testing-support ([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-testing-support/index.html))
 
 `apollo-testing-support` contains:
 
@@ -103,35 +103,35 @@ See ["Get Started"](https://www.apollographql.com/docs/kotlin/) for how to insta
 
 See ["Mocking GraphQL responses"](https://www.apollographql.com/docs/kotlin/testing/mocking-graphql-responses) for how to use test network transports.
 
-# Deprecated modules
+## Deprecated modules
 
 These modules are deprecated and will be removed in a future version. 
 
-## apollo-adapters (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/index.html))
+### apollo-adapters (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/index.html))
 
 `apollo-adapters` contains adapters for common date and big decimal GraphQL scalars.
 
 This module is deprecated and moved to the Apollo Galaxy. See the [Apollo Galaxy page](https://www.apollographql.com/docs/kotlin/advanced/galaxy) for more details.  
 
-## apollo-api-java (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/index.html))
+### apollo-api-java (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/index.html))
 
 `apollo-api-java` contains the symbols needed to compile the Java models.
 
 This module is deprecated and moved to the Apollo Galaxy. See the [Apollo Galaxy page](https://www.apollographql.com/docs/kotlin/advanced/galaxy) for more details.
 
-## apollo-engine-ktor (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-engine-ktor/index.html))
+### apollo-engine-ktor (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-engine-ktor/index.html))
 
 `apollo-engine-ktor` is an implementation of `HttpEngine` and `WebSocketEngine` that uses Ktor.
 
 This module is deprecated and moved to the Apollo Galaxy. See the [Apollo Galaxy page](https://www.apollographql.com/docs/kotlin/advanced/galaxy) for more details.
 
-## apollo-idling-resource (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-idling-resource/index.html))
+### apollo-idling-resource (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-idling-resource/index.html))
 
 `apollo-idling-resource` contains an [Espresso `IdlingResource`](https://developer.android.com/training/testing/espresso/idling-resource) that monitors calls to your GraphQL API.
 
 This module is deprecated as we recommend you should wait for your UI to change instead. See [this article about ways to do so](https://medium.com/androiddevelopers/alternatives-to-idling-resources-in-compose-tests-8ae71f9fc473).
 
-## apollo-mockserver (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/index.html))
+### apollo-mockserver (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/index.html))
 
 `apollo-mockserver` is a HTTP server for your tests. It supports multiplatform and websockets.
 
@@ -139,41 +139,41 @@ The API is minimal and performance is a non-goal. Do not use for production APIs
 
 This module is deprecated and moved to the Apollo Galaxy. See the [Apollo Galaxy page](https://www.apollographql.com/docs/kotlin/advanced/galaxy) for more details.
 
-## apollo-runtime-java (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime-java/index.html))
+### apollo-runtime-java (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime-java/index.html))
 
 `apollo-runtime-java` is an implementation of `ApolloClient` that doesn't use coroutines and more generally is more friendly for Java callers.
 
 This module is deprecated and moved to the Apollo Galaxy. See the [Apollo Galaxy page](https://www.apollographql.com/docs/kotlin/advanced/galaxy) for more details.
 
-## apollo-rx2-support (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-rx2-support/index.html))
+### apollo-rx2-support (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-rx2-support/index.html))
 
 `apollo-rx2-support` provides thin wrappers around [`kotlinx-coroutines-rx2`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx2).
 
 This module is deprecated and will be removed in a future version.
 
-## apollo-rx3-support (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-rx3-support/index.html))
+### apollo-rx3-support (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-rx3-support/index.html))
 
 `apollo-rx3-support` provides thin wrappers around [`kotlinx-coroutines-rx3`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx3).
 
 This module is deprecated and will be removed in a future version.
 
-## apollo-rx2-support-java (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-rx2-support-java/index.html))
+### apollo-rx2-support-java (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-rx2-support-java/index.html))
 
 `apollo-rx2-support-java` provides adapter from `ApolloCall` to their RxJava3 equivalent.
 
 This module is deprecated and moved to the Apollo Galaxy. See the [Apollo Galaxy page](https://www.apollographql.com/docs/kotlin/advanced/galaxy) for more details.
 
-## apollo-rx3-support-java (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-rx3-support-java/index.html))
+### apollo-rx3-support-java (DEPRECATED)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-rx3-support-java/index.html))
 
 `apollo-rx3-support-java` provides adapter from `ApolloCall` to their RxJava3 equivalent.
 
 This module is deprecated and moved to the Apollo Galaxy. See the [Apollo Galaxy page](https://www.apollographql.com/docs/kotlin/advanced/galaxy) for more details.
 
-# Internal modules
+## Internal modules
 
 These modules are published for technical reasons only. Most of their symbols are `@ApolloInternal` and they might be removed at any time. Avoid using them.
 
-## apollo-mockserver (INTERNAL)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/index.html))
+### apollo-mockserver (INTERNAL)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/index.html))
 
 `apollo-mpp-utils` contains a few utilities for working with multiplatform projects.
 
@@ -181,7 +181,7 @@ As of June 2024, it only contains `currentTimeMillis`. In most cases, we should 
 
 This module is published for technical reasons only. Do not use directly.
 
-## apollo-tooling (INTERNAL)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-tooling/index.html))
+### apollo-tooling (INTERNAL)([kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-tooling/index.html))
 
 `apollo-tooling` contains APIs to work with GraphQL schemas and operations as well as the GraphOS API. It is used from the CLI and Gradle plugin
 
