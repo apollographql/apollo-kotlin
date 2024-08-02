@@ -126,6 +126,8 @@ As you execute your query, different types of errors can happen:
 * GraphQL [request errors](https://spec.graphql.org/draft/#request-error): in this case, `response.errors` contains the GraphQL errors. `response.data` is null.
 * GraphQL [field errors](https://spec.graphql.org/draft/#field-error): in this case, `response.errors` contains the GraphQL errors. `response.data` contains partial data.
 
+Let's handle the first two for now: fetch errors and GraphQL request errors. 
+
 First let's create a `LaunchDetailsState` sealed interface that will hold the possible states of the UI:
 
 ```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
@@ -160,6 +162,7 @@ fun LaunchDetails(launchId: String) {
 Now use the state to show the appropriate UI:
 
 ```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+    
     // Use the state
     when (val s = state) {
         Loading -> Loading()
@@ -175,7 +178,9 @@ Enable airplane mode before clicking the details of a launch. You should see thi
 
 This is good! 
 
-This method handles fetch and GraphQL request errors but ignores GraphQL field errors. If a GraphQL field error happens, the corresponding Kotlin property is `null` and an error is present in `response.errors`. Handling those errors in your UI code can be complicated, and you can handle them earlier by looking at `response.errors`. 
+This method handles fetch and GraphQL request errors but ignores GraphQL field errors. 
+
+If a GraphQL field error happens, the corresponding Kotlin property is `null` and an error is present in `response.errors`: your response contains partial data! Handling this data in your UI code can be complicated. You can handle them earlier by looking at `response.errors`. 
 
 ## Handling GraphQL field errors
 
