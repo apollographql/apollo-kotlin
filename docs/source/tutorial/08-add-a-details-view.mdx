@@ -182,7 +182,7 @@ This method handles fetch and GraphQL request errors but ignores GraphQL field e
 
 If a GraphQL field error happens, the corresponding Kotlin property is `null` and an error is present in `response.errors`: your response contains partial data. Handling this partial data in your UI code can be complicated. You can handle them earlier by looking at `response.errors`. 
 
-## Dealing with partial data
+## Handle partial data
 
 To handle GraphQL field errors globally and make sure the returned data is not partial, use `response.errors`:
 
