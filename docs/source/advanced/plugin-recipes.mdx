@@ -1,0 +1,229 @@
+---
+title: Gradle plugin recipes
+---
+
+The Apollo Kotlin Gradle Plugin 
+
+## Using multiple GraphQL APIs
+
+Apollo Kotlin supports communicating with multiple GraphQL endpoints with different schemas. To do so, create multiple
+services like so:
+
+```kotlin
+apollo {
+  service("starwars") {
+    srcDir("src/main/graphql/starwars")
+    packageName.set("com.starwars")
+  }
+  service("githunt") {
+    srcDir("src/main/graphql/githunt")
+    packageName.set("com.githunt")
+  }
+}
+```
+
+## Specifying the schema location
+
+Specify the location of your schema file using the `schemaFiles` property:
+
+```kotlin
+apollo {
+  service("service") {
+    schemaFiles.from(file("shared/graphql/schema.graphqls"))
+  }
+}
+```
+
+<Note> 
+
+> If `schemaFiles` is not set, Apollo Kotlin combines all `*.[graphqls|json|sdl]` files in `src/main/graphql/` (Android/JVM projects) or `src/commonMain/graphql/` (multiplatform projects).
+
+</Note>
+
+## Combining multiple schema files
+
+Apollo Kotlin supports a collection of client directives, including `@nonnull`, `@optional`, and `@typePolicy`. These
+directives enable you to extend your server's base schema with client-specific types and fields.
+
+If you expand your schema in a separate file (usually named `extra.graphqls`), you can instruct Apollo Kotlin to construct its schema from a combination
+of multiple files, like so:
+
+```kotlin
+apollo {
+  service("service") {
+    schemaFiles.from("shared/graphql/schema.graphqls", "shared/graphql/extra.graphqls")
+  }
+}
+```
+
+## Wiring generated sources
+
+By default, Apollo Kotlin adds the generated sources:
+
+- to the `main` sourceSet for JVM projects
+- to `commonMain` for multiplatform projects
+- to all non-test variants for Android projects
+
+You can customize this behavior with the `outputDirConnection` property. For example, to wire a service to the test source set of a Kotlin JVM project:
+
+```kotlin
+apollo {
+  service("service") {
+    outputDirConnection {
+      connectToKotlinSourceSet("test")
+    }
+  }
+}
+```
+
+## Android variants support
+
+It is sometimes useful to have different operations or schemas depending on the [variant](https://developer.android.com/build/build-variants) of your Android project.
+
+To do this, you can instruct the Gradle plugin to automatically configure a Service per variant:
+
+```kotlin
+apollo {
+  createAllAndroidVariantServices(sourceFolder = ".", nameSuffix = "") {
+    // Configure the service here
+    packageName.set("...")
+  }
+}
+```
+
+- `sourceFolder` is where to find the GraphQL relative to "src/$sourceSetName/graphql". Pass "." to look into "src/$sourceSetName/graphql".
+- `nameSuffix` is the suffix to use for the service name. Leave blank to use the variant name as is.
+
+Similarly to what the Android variant system does with source code, the GraphQL files are handled **additively**, and files in `src/main/graphql` are included in all services.
+
+For instance, if certain operations should only exist in debug builds, your project structure could look like this:
+
+```
+- main
+    - graphql
+        - schema.graphqls // Schema for all variants
+        - operations.graphql // Operations shared by all variants
+- debug
+    - graphql
+        - operations.graphql // Operations specific to the 'debug' build type
+```
+
+Or if you have a specific backend per flavor, it could look like this:
+
+```
+- main
+- demo
+    - graphql
+        - schema.graphqls // Schema for the 'demo' flavor
+        - operations.graphql // Operations specific to the 'demo' flavor
+- full
+    - graphql
+        - schema.graphqls // Schema for the 'full' flavor
+        - operations.graphql // Operations specific to the 'full' flavor
+```
+
+If you have a lot of variants and don't need to configure an Apollo Service for each, it may be simpler to declare the Services manually rather than using `createAllAndroidVariantServices`. For instance:
+
+```kotlin
+apollo {
+  service("debug") {
+    srcDir(file("src/debug/graphql/"))
+    packageName.set("com.example")
+    outputDirConnection {
+      connectToAndroidSourceSet("debug")
+    }
+  }
+  service("release") {
+    srcDir(file("src/release/graphql/"))
+    packageName.set("com.example")
+    outputDirConnection {
+      connectToAndroidSourceSet("release")
+    }
+  }
+}
+```
+
+## Downloading a schema
+
+By default, the Gradle plugin registers a `downloadApolloSchema` task that you can use from the command line:
+
+```bash
+# --schema is interpreted relative to the project's root directory (can also be an absolute path). This example
+# assumes the root project directory and an Android app in `app`
+./gradlew downloadApolloSchema \
+  --endpoint="https://your.domain/graphql/endpoint" \
+  --schema="app/src/main/graphql/com/example/schema.graphqls"
+```
+
+If you're doing this often or want to automate the process from CI, you can configure an `introspection {}` block:
+
+```kotlin
+apollo {
+  service("starwars") {
+    packageName.set("com.starwars")
+
+    // This will create a downloadStarwarsApolloSchemaFromIntrospection task
+    introspection {
+      endpointUrl.set("https://your.domain/graphql/endpoint")
+      // The path is interpreted relative to the current project here, no need to prepend 'app'
+      schemaFile.set(file("src/main/graphql/com/example/schema.graphqls"))
+    }
+  }
+}
+```
+
+This will create a task
+named `download<ServiceName>ApolloSchemaFromIntrospection` (`downloadServiceApolloSchemaFromIntrospection` by default).
+
+If you register your schema with [GraphOS Studio](https://studio.apollographql.com/), use the `registry` block
+instead:
+
+```kotlin
+apollo {
+  service("starwars") {
+    packageName.set("com.starwars")
+
+    // This will create a downloadStarwarsApolloSchemaFromRegistry task
+    registry {
+      key.set(System.getenv("APOLLO_KEY"))
+      graph.set(System.geten("APOLLO_GRAPH"))
+      // The path is interpreted relative to the current project here, no need to prepend 'app'
+      schemaFile.set(file("src/main/graphql/com/example/schema.graphqls"))
+    }
+  }
+}
+```
+
+This will create a task named `download<ServiceName>ApolloSchemaFromRegistry` (`downloadServiceApolloSchemaFromRegistry`
+by default).
+
+With the [Android Studio plugin](../testing/android-studio-plugin), you can also go to <kbd>Tools</kbd> | <kbd>Apollo</kbd> | <kbd>Download schema</kbd> which acts as a shortcut to these tasks.
+
+## Generated methods
+By default, all Kotlin models, operations, fragments, and input objects are generated as data classes. This means that the Kotlin compiler will
+auto-generate `toString`, `equals` `hashCode`, `copy` and `componentN` for most generated classes. If you don't think you need all of those
+auto-generated methods, and/or you are worried about the size of the generated code, you can configure the Apollo compiler to generate none
+or a subset of the data class methods. To do this, set `generateMethods` to a list of the methods you need. The available methods are:
+
+- "equalsHashCode" generates `equals` and `hashCode` methods that will compare generated class properties.
+- "toString" generates a method that will print a pretty string representing the data in the class.
+- "copy" (Kotlin only) generates a method that will copy the class with named parameters and default values.
+- "dataClass" (Kotlin only and redundant with all other methods) generates the class as a [data class](https://kotlinlang.org/docs/data-classes.html).
+  which will automatically generate `toString`, `copy`, `equals` and `hashCode`.
+
+Here are some possible configurations:
+
+```kotlin
+apollo {
+  service("service") {
+    // Generates equals and hashCode
+    generateMethods.set(listOf("equalsHashCode"))
+    // Generates toString, equals, and hashcode (the default for Java)
+    generateMethods.set(listOf("equalsHashCode", "toString"))
+    // Only generates copy
+    generateMethods.set(listOf("copy"))
+    // Generates data classes (the default for Kotlin)
+    generateMethods.set(listOf("dataClass"))
+  }
+}
+```
