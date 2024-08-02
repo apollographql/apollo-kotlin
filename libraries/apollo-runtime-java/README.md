@@ -1,3 +1,5 @@
 # Module apollo-runtime-java
 
-This module has been moved to the [Java Support](https://github.com/apollographql/apollo-kotlin-java-support) repository and published under `com.apollographql.java:client`. Please update your dependencies.
+`apollo-runtime-java` is an implementation of `ApolloClient` that doesn't use coroutines and more generally is more friendly for Java callers.
+
+This module is deprecated and moved to the Apollo Galaxy. See the [Apollo Galaxy page](https://www.apollographql.com/docs/kotlin/advanced/galaxy) for more details.

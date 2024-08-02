@@ -113,11 +113,10 @@ Here's the current matrix of supported features per platform:
 |                                                      | `jvm` | `Apple¹` | `js` | `wasmJs` | `linuxX64` |
 |------------------------------------------------------|:-----:|:--------:|:----:|:--------:|:----------:|
 | `apollo-api` (models)                                |   ✅   |    ✅     |  ✅   |    ✅     |     ✅      |
-| `apollo-runtime` (network, query batching, apq, ...) |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
-| `apollo-normalized-cache`                            |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
-| `apollo-adapters`                                    |   ✅   |    ✅     |  ✅   |    ✅     |     🚫      |
-| `apollo-normalized-cache-sqlite`                     |   ✅   |    ✅     |  🚫   |    🚫     |     🚫      |
-| `apollo-http-cache`                                  |   ✅   |    🚫     |  🚫   |    🚫     |     🚫      |
+| `apollo-runtime` (network, query batching, apq, ...) |   ✅   |    ✅     |  ✅   |    ✅     |     🚫     |
+| `apollo-normalized-cache`                            |   ✅   |    ✅     |  ✅   |    ✅     |     🚫     |
+| `apollo-normalized-cache-sqlite`                     |   ✅   |    ✅     |  🚫  |    🚫    |     🚫     |
+| `apollo-http-cache`                                  |   ✅   |    🚫    |  🚫  |    🚫    |     🚫     |
 
 ¹: Apple currently includes:
 
