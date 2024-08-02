@@ -111,15 +111,4 @@ class SchemaDownloaderTests {
     assertEquals(introspectionRequestOneOf, introspectionRequest)
     assertEquals(introspectionResponse, tempFile.readText())
   }
-
-  @Test
-  fun test() {
-    SchemaDownloader.downloadIntrospection(
-        endpoint = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
-        headers = emptyMap(),
-        insecure = false
-    ).also {
-      println(it)
-    }
-  }
 }
