@@ -31,9 +31,9 @@ public enum class Race(
      */
     public val knownEntries: List<Race>
       get() = listOf(
-        WOOKIE,
-        GUMGAN,
-        EWOK)
+        Race.WOOKIE,
+        Race.GUMGAN,
+        Race.EWOK)
 
     /**
      * Returns all [Race] known at compile time

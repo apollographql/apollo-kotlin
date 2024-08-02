@@ -35,6 +35,7 @@ public enum class GravityAsEnum(
    * an enum value that clashes with the rawValue type
    */
   String("String"),
+  `field`("field"),
   /**
    * Auto generated constant for unknown enum values
    */
@@ -43,7 +44,7 @@ public enum class GravityAsEnum(
 
   public companion object {
     public val type: EnumType = EnumType("GravityAsEnum", listOf("TOP", "CENTER", "BOTTOM",
-        "bottom", "is", "while", "type", "String"))
+        "bottom", "is", "while", "type", "String", "field"))
 
     /**
      * All [GravityAsEnum] known at compile time
@@ -51,14 +52,15 @@ public enum class GravityAsEnum(
     @Suppress("DEPRECATION")
     public val knownEntries: List<GravityAsEnum>
       get() = listOf(
-        TOP,
-        CENTER,
-        BOTTOM,
-        bottom,
-        `is`,
-        `while`,
-        type_,
-        String)
+        GravityAsEnum.TOP,
+        GravityAsEnum.CENTER,
+        GravityAsEnum.BOTTOM,
+        GravityAsEnum.bottom,
+        GravityAsEnum.`is`,
+        GravityAsEnum.`while`,
+        GravityAsEnum.type_,
+        GravityAsEnum.String,
+        GravityAsEnum.`field`)
 
     /**
      * Returns all [GravityAsEnum] known at compile time

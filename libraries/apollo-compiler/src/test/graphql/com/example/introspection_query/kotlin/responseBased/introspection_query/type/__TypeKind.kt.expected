@@ -37,14 +37,14 @@ public enum class __TypeKind(
      */
     public val knownEntries: List<__TypeKind>
       get() = listOf(
-        SCALAR,
-        OBJECT,
-        INTERFACE,
-        UNION,
-        ENUM,
-        INPUT_OBJECT,
-        LIST,
-        NON_NULL)
+        __TypeKind.SCALAR,
+        __TypeKind.OBJECT,
+        __TypeKind.INTERFACE,
+        __TypeKind.UNION,
+        __TypeKind.ENUM,
+        __TypeKind.INPUT_OBJECT,
+        __TypeKind.LIST,
+        __TypeKind.NON_NULL)
 
     /**
      * Returns all [__TypeKind] known at compile time

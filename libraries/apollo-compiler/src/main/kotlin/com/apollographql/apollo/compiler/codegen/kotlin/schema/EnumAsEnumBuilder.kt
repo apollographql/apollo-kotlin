@@ -107,7 +107,7 @@ internal class EnumAsEnumBuilder(
                     .indent()
                     .add(
                         values.map {
-                          CodeBlock.of("%N", it.targetName.escapeKotlinReservedWordInEnum())
+                          CodeBlock.of("%T.%N", ClassName(packageName, simpleName), it.targetName.escapeKotlinReservedWordInEnum())
                         }.joinToCode(",\n")
                     )
                     .unindent()
