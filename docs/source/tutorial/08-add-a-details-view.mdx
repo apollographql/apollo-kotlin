@@ -180,11 +180,11 @@ This is good!
 
 This method handles fetch and GraphQL request errors but ignores GraphQL field errors. 
 
-If a GraphQL field error happens, the corresponding Kotlin property is `null` and an error is present in `response.errors`: your response contains partial data! Handling this data in your UI code can be complicated. You can handle them earlier by looking at `response.errors`. 
+If a GraphQL field error happens, the corresponding Kotlin property is `null` and an error is present in `response.errors`: your response contains partial data. Handling this partial data in your UI code can be complicated. You can handle them earlier by looking at `response.errors`. 
 
-## Handling GraphQL field errors
+## Dealing with partial data
 
-To handle GraphQL field errors, use `response.errors`:
+To handle GraphQL field errors globally and make sure the returned data is not partial, use `response.errors`:
 
 ```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
 state = when {
@@ -197,7 +197,7 @@ state = when {
     LaunchDetailsState.Error("Please check your network connectivity.") // highlight-line
   }
   response.data != null -> {
-    // No error 🎉
+    // data (never partial)
     LaunchDetailsState.Success(response.data!!)
   }
   else -> {
