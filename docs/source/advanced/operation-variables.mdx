@@ -4,9 +4,7 @@ title: Using GraphQL variables in Apollo Kotlin
 
 GraphQL supports passing argument values to your operations with [variables](https://graphql.org/graphql-js/passing-arguments/). This enables you to write a single query that you can reuse with multiple variable values (this is a [recommended best practice](/react/data/operation-best-practices/#use-variables-to-provide-graphql-arguments)).
 
-In GraphQL, non-nullable variables are required, and nullable variables are optional. However, because variables are rarely omitted in practice, Apollo Kotlin provides a mechanism to make variables non-optional in generated code. This makes the structure of generated code more straightforward.
-
-Because you might still need to omit variables, the default is to generate them as optional, but you can configure this (for specific variables or globally).
+In GraphQL, non-nullable variables are required, and nullable variables are always optional. Apollo Kotlin uses its own [`Optional`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-api/com.apollographql.apollo.api/-optional/index.html) type to distinguish between present (but maybe nullable) and absent types.
 
 Consider the following GraphQL query with two nullable variables:
 
@@ -39,45 +37,36 @@ val query = GetTodosQuery(Optional.Present(null), Optional.Present(null))
 val query = GetTodosQuery(Optional.Present(100), Optional.Present(0))
 ```
 
-## Making nullable variables non-optional
+## Using input builders
 
-To disable optional variables globally, update your Gradle config like so:
+For both operations and input objects, having to wrap values in an [`Optional`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-api/com.apollographql.apollo.api/-optional/index.html) wrapper can be cumbersome.
+
+For those cases, use `generateInputBuilders`:
 
 ```kotlin
 apollo {
   service("service") {
     // ...
-    generateOptionalOperationVariables.set(false)
+    generateInputBuilders.set(true)
   }
 }
 ```
 
-If you do, in the case of the `GetTodos` query shown above, Apollo Kotlin now generates the following code:
+If you do, in the case of the `GetTodos` query shown above, Apollo Kotlin now generates a `Builder` for each operation:
 
 ```kotlin
-class GetTodosQuery(val first: Int?, val offset: Int?)
-```
-
-This makes the calling code less verbose to use:
-
-```kotlin
+// Omit values for both variables
+val query = GetTodosQuery.Builder()
+               .build()
 // Provide null for both variables
-val query = GetTodosQuery(null, null)
+val query = GetTodosQuery.Builder()
+               .first(null)
+               .offset(null)
+               .build()
 // Send explicit values for both variables
-val query = GetTodosQuery(100, 0)
+val query = GetTodosQuery.Builder()
+               .first(100)
+               .offset(0)
+               .build()
 ```
 
-If you pass `null` as the value for either of these variables, Apollo Kotlin sends `null` to the server _as the value of that variable_ instead of omitting it entirely.
-
-Although doing this can simplify your code in most cases, you might still need to omit variables for certain operations. To achieve this, you can allow optional variables on a case-by-case basis with the `@optional` directive:
-
-```graphql {1}
-query GetTodos($first: Int @optional, $offset: Int @optional) {
-  todos(first: $first, offset: $offset) {
-    id
-    text
-  }
-}
-```
-
-In this case, Apollo Kotlin generates code with `Optional` for only these specific variables.

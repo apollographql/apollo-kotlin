@@ -4,6 +4,14 @@ title: Handle WebSocket errors
 
 Because the WebSocket is a shared resource, error handling is different from regular queries. In HTTP queries, an error has a single consumer. With WebSockets, an error may have multiple consumers.
 
+<Note>
+
+Starting with 4.0.0, Apollo Kotlin provides a new experimental WebSockets implementation that provides better defaults, better retry and error handling APIs. It aims to replace the current implementation in the future.
+
+If you are interested in trying it out, please consult [the Experimental WebSockets page](../advanced/experimental-websockets).
+
+</Note>
+
 ## WebSocket errors with multiple consumers
 
 When your network goes down or your server closes the connection (because it wants a new token or something else), all the subscriptions are terminated. You could retry them individually. The example below uses a very naive [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff) algorithm:

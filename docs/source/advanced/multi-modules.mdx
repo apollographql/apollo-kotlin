@@ -60,7 +60,30 @@ apollo {
 
 By default, Apollo Kotlin generates all the types in your schema module. This is because there is no way to know in advance what types are going to be used by feature modules. 
 
-For large schemas, this can generate a lot of code and increase your build time significantly. In this case, you can opt in auto-detection of used types. This works by splitting the codegen task in different steps so that feature modules can let the schema module know what types are used before actually generating the models. To opt in, call `dependsOn()` with the `bidirectional` argument set to true:
+For large schemas, this can generate a lot of code and increase your build time significantly. In this case, you can opt in auto-detection of used types. 
+
+This works by splitting the codegen task in different steps so that feature modules can let the schema module know what types are used before actually generating the models. To opt in, call `isADependencyOf()` to establish the bidirectional dependency between your feature module and your schema module:
+
+
+```kotlin
+// schema/build.gradle.kts
+apollo {
+  service("service") {
+    packageName.set("schema")
+    generateApolloMetadata.set(true)
+    
+    isADependencyOf(project(":feature")) // highlight-line
+    // list all your feature modules here
+    isADependencyOf(project(":feature2"))
+    // ...
+  }
+}
+```
+Once you opt in auto-detection of used types, it's important that **all** modules are doubly linked like above. If not the feature modules will fail to compile due to some missing schema classes.
+
+## bidirectional parameter (Experimental)
+
+Using `isADependencyOf()` requires listing all your feature modules in your schema module which duplicates code. To keep things minimal and configure the dependency automatically, use `bidirectional = true`:
 
 ```kotlin
 // feature/build.gradle.kts
@@ -76,8 +99,7 @@ apollo {
 
 <ExperimentalFeature>
 
-The `bidirectional` parameter is experimental because it may break <a href="https://docs.gradle.org/current/userguide/build_environment.html">Gradle project isolation</a>. For a project-isolation compatible method, try <a href="https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo.gradle.api/-service/is-a-dependency-of.html">isADependencyOf</a> 
+The `bidirectional` parameter is experimental and not compatible with <a href="https://docs.gradle.org/current/userguide/build_environment.html">Gradle project isolation</a>. 
 
 </ExperimentalFeature>
 
-Once you opt in auto-detection of used types, it's important that **all** modules are doubly linked like above. If not the feature modules will fail to compile due to some missing schema classes.

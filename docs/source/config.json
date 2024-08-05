@@ -25,12 +25,12 @@
       "10. Authenticate your operations": "/tutorial/10-authenticate-your-queries",
       "11. Write your first subscription": "/tutorial/11-subscriptions"
     },
-
     "Configuration": {
-      "File types": "/essentials/file-types",
-      "Client Awareness": "/advanced/client-awareness",
+      "Gradle plugin configuration": "/advanced/plugin-configuration",
+      "Gradle plugin recipes": "/advanced/plugin-recipes",
       "Multi Modules": "/advanced/multi-modules",
-      "Gradle plugin configuration": "/advanced/plugin-configuration"
+      "File types": "/essentials/file-types",
+      "Client Awareness": "/advanced/client-awareness"
     },
     "Fetching": {
       "Queries": "/essentials/queries",
