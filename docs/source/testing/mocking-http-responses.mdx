@@ -10,7 +10,12 @@ title: Mocking HTTP responses (experimental)
 
 `MockServer` implements an HTTP server that you can use to mock responses. It's useful for testing specific server behaviors, such as error cases, HTTP headers, and timeouts. Using it requires minimal changes to your production code, because you only need to change your `serverUrl`.
 
-> See also [`TestNetworkTransport`](./mocking-graphql-responses), which handles mocking at the GraphQL level instead of the HTTP level.
+
+<Note>
+
+Apollo Kotlin MockServer is developed in a separate repository. Head to https://github.com/apollographql/apollo-kotlin-mockserver for API docs and comprehensive documentation.
+
+</Note>
 
 Add the dependency to your project's `build.gradle` file:
 

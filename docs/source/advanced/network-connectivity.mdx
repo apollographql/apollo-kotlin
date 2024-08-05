@@ -54,27 +54,34 @@ When a `NetworkMonitor` is configured, `retryOnError` uses `NetworkMonitor.waitF
 
 ### Customizing the retry algorithm
 
-You can customize the retry algorithm further by defining you own interceptor:
+You can customize the retry algorithm further by defining your own interceptor:
 
 ```kotlin
-internal class MyRetryInterceptor(private val networkMonitor: NetworkMonitor?): ApolloInterceptor {
+val apolloClient = ApolloClient.Builder()
+    .retryOnErrorInterceptor(MyRetryOnErrorInterceptor())
+    .build()
+
+class MyRetryOnErrorInterceptor : ApolloInterceptor {
+  object RetryException : Exception()
+
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    // Disable Apollo's built-in retry mechanism
-    val newRequest = request.newBuilder().retryOnError(false).build()
-    return chain.proceed(newRequest)
-        .onEach { 
-          if (it.exception != null && it.exception.shouldRetry()) {
-            throw RetryException
-          }
-        }.retryWhen { cause, _-> 
-          if (cause is RetryException) {
-            // Add your logic here
-            true
-          } else {
-            // Programming error, re-throw it
-            false
-          }
-        }
+    var attempt = 0
+    return chain.proceed(request).onEach {
+      if (request.retryOnError == true && it.exception != null && it.exception is ApolloNetworkException) {
+        throw RetryException
+      } else {
+        attempt = 0
+      }
+    }.retryWhen { cause, _ ->
+      if (cause is RetryException) {
+        attempt++
+        delay(2.0.pow(attempt).seconds)
+        true
+      } else {
+        // Not a RetryException, probably a programming error, pass it through
+        false
+      }
+    }
   }
 }
 ```

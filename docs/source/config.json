@@ -62,11 +62,11 @@
       "Batching operations": "/advanced/query-batching"
     },
     "Development & Testing": {
-      "Android Studio plugin": "/testing/android-studio-plugin",
       "Testing overview": "/testing/overview",
       "Mocking HTTP responses": "/testing/mocking-http-responses",
       "Mocking GraphQL responses": "/testing/mocking-graphql-responses",
       "Data builders": "/testing/data-builders",
+      "Android Studio plugin": "/testing/android-studio-plugin",
       "Apollo Debug Server": "/testing/apollo-debug-server"
     },
     "Advanced": {
