@@ -15,6 +15,9 @@ val apolloClient = ApolloClient.Builder()
 val apolloStore: ApolloStore = apolloClient.apolloStore
 ```
 
+Note that the read and write operations are synchronous and might block if the underlying cache is doing IO (such as the [SQLite cache](../caching/normalized-cache#sqlite-cache)).
+Therefore calling them from the main thread should be avoided.
+
 ## Reading operation data
 
 Just like a regular GraphQL query, the main way to use the store is to read and write queries:
