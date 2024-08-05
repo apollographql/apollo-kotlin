@@ -61,6 +61,12 @@ apollo {
 }
 ```
 
+<Tip>
+
+Using Java? Apollo Kotlin has a dedicated [Java Support](https://apollographql.github.io/apollo-kotlin-java-support/) repository.
+
+</Tip>
+
 Apollo Kotlin supports three types of files:
 - `.graphqls` schema files: describes the types in your backend using the GraphQL syntax.
 - `.json` schema files: describes the types in your backend using the Json syntax.
