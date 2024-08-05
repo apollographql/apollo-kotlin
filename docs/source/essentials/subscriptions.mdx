@@ -24,6 +24,14 @@ subscription NumberIncremented {
 
 Unlike with queries and mutations, a subscription operation can include only _one_ field of the `Subscription` type. To subscribe to multiple fields, you create multiple subscription operations.
 
+<Note>
+
+Starting with 4.0.0, Apollo Kotlin provides a new experimental WebSockets implementation that aim to replace the current implementation in the future.
+
+If you are interested in trying them out, please consult [the dedicated section](../advanced/experimental-websockets).
+
+<Note>
+
 ## Configuring WebSocket subscriptions
 
 > By default, Apollo Kotlin uses the [`subscriptions-transport-ws`](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md) protocol for subscriptions via the `SubscriptionWsProtocol` class. **This protocol is no longer actively maintained.** It remains the default for backward compatibility purposes.
@@ -166,8 +174,4 @@ Network errors terminate the `Flow`, and you need to retry to get new updates. D
 
 See also [this section](../advanced/websocket-errors) about WebSocket errors handling.
 
-## Experimental WebSockets
 
-Starting with 4.0.0, Apollo Kotlin provides a new experimental WebSockets implementation that aim to replace the current implementation in the future.
-
-If you are interested in trying them out, please consult [the dedicated section](../advanced/experimental-websockets).
