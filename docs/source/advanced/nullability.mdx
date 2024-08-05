@@ -247,7 +247,9 @@ class User(
 ```
 
 <Note>
+
 The error is thrown during parsing but still caught before it reaches your UI code. If no parent field catches it, the Apollo Kotlin runtime will and set it as `ApolloResponse.exception`. 
+
 </Note>  
 
 ### Coerce errors to null
@@ -276,7 +278,9 @@ class User(
 ```
 
 <Note>
+
 The error is thrown during parsing but still caught before it reaches your UI code. If no parent field catches it, the Apollo Kotlin runtime does and exposes the exception in `ApolloResponse.exception`. 
+
 </Note>  
 
 ## `@catchByDefault`
