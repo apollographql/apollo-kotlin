@@ -18,6 +18,8 @@ enum Gravity {
 
   # an enum value that clashes with the rawValue type
   String
+
+  field
 }
 
 enum GravityAsEnum {
@@ -39,4 +41,6 @@ enum GravityAsEnum {
 
   "an enum value that clashes with the rawValue type"
   String
+
+  field
 }

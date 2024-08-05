@@ -30,8 +30,8 @@ public enum class AmenityCategory(
      */
     public val knownEntries: List<AmenityCategory>
       get() = listOf(
-        Category0,
-        Category1)
+        AmenityCategory.Category0,
+        AmenityCategory.Category1)
 
     /**
      * Returns all [AmenityCategory] known at compile time

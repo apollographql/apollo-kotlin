@@ -38,9 +38,9 @@ public enum class Direction(
     @OptIn(ApolloRequiresOptIn::class)
     public val knownEntries: List<Direction>
       get() = listOf(
-        South,
-        North,
-        East)
+        Direction.South,
+        Direction.North,
+        Direction.East)
 
     /**
      * Returns all [Direction] known at compile time

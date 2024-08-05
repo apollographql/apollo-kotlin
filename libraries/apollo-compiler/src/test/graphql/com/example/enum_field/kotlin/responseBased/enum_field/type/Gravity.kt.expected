@@ -6,61 +6,104 @@
 package com.example.enum_field.type
 
 import com.apollographql.apollo.api.EnumType
+import kotlin.Any
 import kotlin.Array
+import kotlin.Boolean
 import kotlin.Deprecated
+import kotlin.Int
+import kotlin.String
 import kotlin.Suppress
-import kotlin.collections.List
 
-public enum class Gravity(
-  public val rawValue: kotlin.String,
-) {
-  TOP("TOP"),
-  CENTER("CENTER"),
-  BOTTOM("BOTTOM"),
-  @Deprecated(message = "use BOTTOM instead")
-  bottom("bottom"),
-  `is`("is"),
-  type_("type"),
-  String("String"),
-  /**
-   * Auto generated constant for unknown enum values
-   */
-  UNKNOWN__("UNKNOWN__"),
-  ;
+public sealed interface Gravity {
+  public val rawValue: kotlin.String
 
   public companion object {
     public val type: EnumType = EnumType("Gravity", listOf("TOP", "CENTER", "BOTTOM", "bottom",
-        "is", "type", "String"))
-
-    /**
-     * All [Gravity] known at compile time
-     */
-    @Suppress("DEPRECATION")
-    public val knownEntries: List<Gravity>
-      get() = listOf(
-        TOP,
-        CENTER,
-        BOTTOM,
-        bottom,
-        `is`,
-        type_,
-        String)
-
-    /**
-     * Returns all [Gravity] known at compile time
-     */
-    @Deprecated(
-      message = "Use knownEntries instead",
-      replaceWith = ReplaceWith("this.knownEntries"),
-    )
-    public fun knownValues(): Array<Gravity> = knownEntries.toTypedArray()
+        "is", "type", "String", "field"))
 
     /**
      * Returns the [Gravity] that represents the specified [rawValue].
      * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
      * schema instead of calling this function directly.
      */
-    public fun safeValueOf(rawValue: kotlin.String): Gravity =
-        entries.find { it.rawValue == rawValue } ?: UNKNOWN__
+    @Suppress("DEPRECATION")
+    public fun safeValueOf(rawValue: kotlin.String): Gravity = when(rawValue) {
+      "TOP" -> TOP
+      "CENTER" -> CENTER
+      "BOTTOM" -> BOTTOM
+      "bottom" -> bottom
+      "is" -> `is`
+      "type" -> type_
+      "String" -> String
+      "field" -> `field`
+      else -> UNKNOWN__Gravity(rawValue)
+    }
+
+    /**
+     * Returns all [Gravity] known at compile time
+     */
+    @Suppress("DEPRECATION")
+    public fun knownValues(): Array<Gravity> = arrayOf(
+      TOP,
+      CENTER,
+      BOTTOM,
+      bottom,
+      `is`,
+      type_,
+      String,
+      `field`)
   }
+
+  public object TOP : Gravity {
+    override val rawValue: kotlin.String = "TOP"
+  }
+
+  public object CENTER : Gravity {
+    override val rawValue: kotlin.String = "CENTER"
+  }
+
+  public object BOTTOM : Gravity {
+    override val rawValue: kotlin.String = "BOTTOM"
+  }
+
+  @Deprecated(message = "use BOTTOM instead")
+  public object bottom : Gravity {
+    override val rawValue: kotlin.String = "bottom"
+  }
+
+  public object `is` : Gravity {
+    override val rawValue: kotlin.String = "is"
+  }
+
+  public object type_ : Gravity {
+    override val rawValue: kotlin.String = "type"
+  }
+
+  public object String : Gravity {
+    override val rawValue: kotlin.String = "String"
+  }
+
+  public object `field` : Gravity {
+    override val rawValue: kotlin.String = "field"
+  }
+
+  /**
+   * An enum value that wasn't known at compile time.
+   */
+  public interface UNKNOWN__ : Gravity {
+    override val rawValue: kotlin.String
+  }
+}
+
+private class UNKNOWN__Gravity(
+  override val rawValue: String,
+) : Gravity.UNKNOWN__ {
+  override fun equals(other: Any?): Boolean {
+    if (other !is UNKNOWN__Gravity) return false
+    return this.rawValue == other.rawValue
+  }
+
+  override fun hashCode(): Int = this.rawValue.hashCode()
+
+  override fun toString(): String = "UNKNOWN__($rawValue)"
 }

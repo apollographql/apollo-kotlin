@@ -56,11 +56,11 @@ public enum class Episode(
     @Suppress("DEPRECATION")
     public val knownEntries: List<Episode>
       get() = listOf(
-        NEWHOPE,
-        EMPIRE,
-        JEDI,
-        DEPRECATED,
-        new)
+        Episode.NEWHOPE,
+        Episode.EMPIRE,
+        Episode.JEDI,
+        Episode.DEPRECATED,
+        Episode.new)
 
     /**
      * Returns all [Episode] known at compile time

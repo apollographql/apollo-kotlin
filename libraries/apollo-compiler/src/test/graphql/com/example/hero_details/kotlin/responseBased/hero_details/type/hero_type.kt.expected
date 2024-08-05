@@ -33,8 +33,8 @@ public enum class Hero_type(
      */
     public val knownEntries: List<Hero_type>
       get() = listOf(
-        human,
-        droid)
+        Hero_type.human,
+        Hero_type.droid)
 
     /**
      * Returns all [Hero_type] known at compile time
