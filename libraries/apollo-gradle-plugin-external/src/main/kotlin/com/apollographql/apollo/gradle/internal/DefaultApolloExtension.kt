@@ -160,6 +160,9 @@ abstract class DefaultApolloExtension(
     project.tasks.register(ModelNames.downloadApolloSchema(), ApolloDownloadSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
       task.projectRootDir = project.rootDir.absolutePath
+      task.doLast {
+        it.logger.lifecycle("Apollo: using './gradlew downloadApolloSchema' is deprecated. Please use the Apollo Kotlin cli for one-time downloads or the introspection {} block for Gradle downloads. See https://go.apollo.dev/ak-download-schema.")
+      }
     }
 
     /**
