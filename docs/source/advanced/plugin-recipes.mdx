@@ -143,37 +143,26 @@ apollo {
 
 ## Downloading a schema
 
-By default, the Gradle plugin registers a `downloadApolloSchema` task that you can use from the command line:
-
-```bash
-# --schema is interpreted relative to the project's root directory (can also be an absolute path). This example
-# assumes the root project directory and an Android app in `app`
-./gradlew downloadApolloSchema \
-  --endpoint="https://your.domain/graphql/endpoint" \
-  --schema="app/src/main/graphql/com/example/schema.graphqls"
-```
-
-If you're doing this often or want to automate the process from CI, you can configure an `introspection {}` block:
+The Apollo Gradle plugin has APIs to download a schema from introspection:
 
 ```kotlin
 apollo {
   service("starwars") {
     packageName.set("com.starwars")
 
-    // This will create a downloadStarwarsApolloSchemaFromIntrospection task
+    // This creates a downloadStarwarsApolloSchemaFromIntrospection task
     introspection {
       endpointUrl.set("https://your.domain/graphql/endpoint")
-      // The path is interpreted relative to the current project here, no need to prepend 'app'
+      // The path is interpreted relative to the current project
       schemaFile.set(file("src/main/graphql/com/example/schema.graphqls"))
     }
   }
 }
 ```
 
-This will create a task
-named `download<ServiceName>ApolloSchemaFromIntrospection` (`downloadServiceApolloSchemaFromIntrospection` by default).
+This creates a task named `download${ServiceName}ApolloSchemaFromIntrospection`.
 
-If you register your schema with [GraphOS Studio](https://studio.apollographql.com/), use the `registry` block
+If introspection is disabled and your team is using []GraphOS](https://studio.apollographql.com/), use the `registry {}` block
 instead:
 
 ```kotlin
@@ -181,7 +170,7 @@ apollo {
   service("starwars") {
     packageName.set("com.starwars")
 
-    // This will create a downloadStarwarsApolloSchemaFromRegistry task
+    // This creates a downloadStarwarsApolloSchemaFromRegistry task
     registry {
       key.set(System.getenv("APOLLO_KEY"))
       graph.set(System.geten("APOLLO_GRAPH"))
@@ -192,12 +181,14 @@ apollo {
 }
 ```
 
-This will create a task named `download<ServiceName>ApolloSchemaFromRegistry` (`downloadServiceApolloSchemaFromRegistry`
-by default).
+This creates a task named `download${ServiceName}ApolloSchemaFromRegistry`.
 
 With the [Android Studio plugin](../testing/android-studio-plugin), you can also go to <kbd>Tools</kbd> | <kbd>Apollo</kbd> | <kbd>Download schema</kbd> which acts as a shortcut to these tasks.
 
+Alternatively, for one time downloads, you can also use the [Apollo Kotlin cli](https://github.com/apollographql/apollo-kotlin-cli).
+
 ## Generated methods
+
 By default, all Kotlin models, operations, fragments, and input objects are generated as data classes. This means that the Kotlin compiler will
 auto-generate `toString`, `equals` `hashCode`, `copy` and `componentN` for most generated classes. If you don't think you need all of those
 auto-generated methods, and/or you are worried about the size of the generated code, you can configure the Apollo compiler to generate none
