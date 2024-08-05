@@ -43,12 +43,14 @@ public enum GravityAsEnum {
    */
   String("String"),
 
+  field("field"),
+
   /**
    * Auto generated constant for unknown enum values
    */
   UNKNOWN__("UNKNOWN__");
 
-  public static EnumType type = new EnumType("GravityAsEnum", Arrays.asList("TOP", "CENTER", "BOTTOM", "bottom", "is", "while", "type", "String"));
+  public static EnumType type = new EnumType("GravityAsEnum", Arrays.asList("TOP", "CENTER", "BOTTOM", "bottom", "is", "while", "type", "String", "field"));
 
   public String rawValue;
 
@@ -71,6 +73,7 @@ public enum GravityAsEnum {
       case "while": return GravityAsEnum.while_;
       case "type": return GravityAsEnum.type_;
       case "String": return GravityAsEnum.String;
+      case "field": return GravityAsEnum.field;
       default: return GravityAsEnum.UNKNOWN__;
     }
   }

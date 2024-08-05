@@ -369,6 +369,7 @@ class CodegenTest {
 
       val sealedClassesForEnumsMatching = when (folder.name) {
         "enums_as_sealed" -> listOf(".*")
+        "enum_field" -> listOf("Gravity")
         else -> emptyList()
       }
 

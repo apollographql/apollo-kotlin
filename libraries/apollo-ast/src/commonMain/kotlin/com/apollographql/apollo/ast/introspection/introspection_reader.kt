@@ -462,7 +462,8 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     }
 
     return GQLSchemaDefinition(
-        description = description.unwrapDescription("schema"),
+        // Older versions of GraphQL do not have a description, do not warn on this
+        description = description.getOrNull(),
         directives = emptyList(),
         rootOperationTypeDefinitions = rootOperationTypeDefinitions
     )

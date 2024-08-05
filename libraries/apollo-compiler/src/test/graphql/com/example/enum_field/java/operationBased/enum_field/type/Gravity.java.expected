@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Gravity {
-  public static EnumType type = new EnumType("Gravity", Arrays.asList("TOP", "CENTER", "BOTTOM", "bottom", "is", "type", "String"));
+  public static EnumType type = new EnumType("Gravity", Arrays.asList("TOP", "CENTER", "BOTTOM", "bottom", "is", "type", "String", "field"));
 
   public static Gravity TOP = new Gravity("TOP");
 
@@ -29,6 +29,8 @@ public class Gravity {
   public static Gravity type_ = new Gravity("type");
 
   public static Gravity String = new Gravity("String");
+
+  public static Gravity field = new Gravity("field");
 
   public String rawValue;
 
@@ -50,6 +52,7 @@ public class Gravity {
       case "is": return Gravity.is;
       case "type": return Gravity.type_;
       case "String": return Gravity.String;
+      case "field": return Gravity.field;
       default: return new Gravity.UNKNOWN__(rawValue);
     }
   }

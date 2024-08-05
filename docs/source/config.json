@@ -7,6 +7,7 @@
   "sidebar": {
     "Get Started": "/",
     "Migrating to v4": "/migration/4.0",
+    "Modules": "/essentials/modules",
     "Evolution policy": "/essentials/evolution",
     "Kdoc": "https://apollographql.github.io/apollo-kotlin/kdoc/",
     "Changelog": "https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md",

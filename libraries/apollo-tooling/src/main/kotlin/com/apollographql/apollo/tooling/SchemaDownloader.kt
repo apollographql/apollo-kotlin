@@ -189,5 +189,10 @@ object SchemaDownloader {
     return data.graph.variant.latestPublication.schema.document
   }
 
+  fun shutdown() {
+    SchemaHelper.client.dispatcher.executorService.shutdown()
+    SchemaHelper.client.connectionPool.evictAll()
+  }
+  
   inline fun <reified T> Any?.cast() = this as? T
 }

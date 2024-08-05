@@ -118,19 +118,22 @@ fun LaunchDetails(launchId: String) {
 }
 ```
 
-## Handle protocol errors
+## Handle errors
 
-As you execute your query, two types of errors can happen:
+As you execute your query, different types of errors can happen:
 
-* Protocol errors: connectivity issues, HTTP errors, or JSON parsing errors. In this case, `response.exception` will contain an `ApolloException`, and `response.data` will be null.
-* Application errors. In this case, `response.errors` will contain the application errors and `response.data` might be `null`.
+* Fetch errors: connectivity issues, HTTP errors, JSON parsing errors, etc... In this case, `response.exception` contains an `ApolloException`. Both `response.data` and `response.errors` is null.
+* GraphQL [request errors](https://spec.graphql.org/draft/#request-error): in this case, `response.errors` contains the GraphQL errors. `response.data` is null.
+* GraphQL [field errors](https://spec.graphql.org/draft/#field-error): in this case, `response.errors` contains the GraphQL errors. `response.data` contains partial data.
+
+Let's handle the first two for now: fetch errors and GraphQL request errors. 
 
 First let's create a `LaunchDetailsState` sealed interface that will hold the possible states of the UI:
 
 ```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
 private sealed interface LaunchDetailsState {
     object Loading : LaunchDetailsState
-    data class ProtocolError(val exception: ApolloException) : LaunchDetailsState
+    data class Error(val message: String) : LaunchDetailsState
     data class Success(val data: LaunchDetailsQuery.Data) : LaunchDetailsState
 }
 ```
@@ -144,11 +147,12 @@ fun LaunchDetails(launchId: String) {
     LaunchedEffect(Unit) {
         val response = apolloClient.query(LaunchDetailsQuery(launchId)).execute()
         state = when {
-            response.exception != null -> {
-              ProtocolError(response.exception!!)
+            response.data != null -> {
+              // Handle (potentially partial) data
+              LaunchDetailsState.Success(response.data!!)
             }
             else -> {
-              Success(response.data!!)
+              LaunchDetailsState.Error("Oh no... An error happened.")
             }
         }
     }
@@ -158,10 +162,11 @@ fun LaunchDetails(launchId: String) {
 Now use the state to show the appropriate UI:
 
 ```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+    
     // Use the state
     when (val s = state) {
         Loading -> Loading()
-        is ProtocolError -> ErrorMessage("Oh no... A protocol error happened: ${s.exception.message}")
+        is Error -> ErrorMessage(s.message)
         is Success -> LaunchDetails(s.data)
     }
 }
@@ -169,52 +174,45 @@ Now use the state to show the appropriate UI:
 
 Enable airplane mode before clicking the details of a launch. You should see this:
 
-<img src="images/error_protocol.png" alt="Oh no" class="screenshot" width="300"/>
+<img src="images/error_generic.png" alt="Oh no" class="screenshot" width="300"/>
 
-This is good! But it's not enough. Even if the request executes correctly at the protocol level, it might also contain application errors that are specific to your server.
+This is good! 
 
-## Handle application errors
+This method handles fetch and GraphQL request errors but ignores GraphQL field errors. 
 
-To handle application errors, you can check `response.hasErrors()`. First, add a new state to the sealed interface:
+If a GraphQL field error happens, the corresponding Kotlin property is `null` and an error is present in `response.errors`: your response contains partial data!
 
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
-private sealed interface LaunchDetailsState {
-    object Loading : LaunchDetailsState
-    data class ProtocolError(val exception: ApolloException) : LaunchDetailsState
-    data class ApplicationError(val errors: List<Error>) : LaunchDetailsState // highlight-line
-    data class Success(val data: LaunchDetailsQuery.Data) : LaunchDetailsState
-}
-```
+Handling this partial data in your UI code can be complicated. You can handle them earlier by looking at `response.errors`. 
 
-Then, in the `when` block, check for `response.hasErrors()` and wrap the result in the new state:
+## Handle partial data
+
+To handle GraphQL field errors globally and make sure the returned data is not partial, use `response.errors`:
 
 ```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
 state = when {
-    response.exception != null -> {
-        ProtocolError(response.exception!!)
-    }
-    response.hasErrors() -> { // highlight-line
-        ApplicationError(response.errors!!) // highlight-line
-    } // highlight-line
-    else -> {
-        Success(response.data!!)
-    }
+  response.errors.orEmpty().isNotEmpty() -> {
+    // GraphQL error
+    LaunchDetailsState.Error(response.errors!!.first().message) // highlight-line
+  }
+  response.exception is ApolloNetworkException -> {
+    // Network error
+    LaunchDetailsState.Error("Please check your network connectivity.")
+  }
+  response.data != null -> {
+    // data (never partial)
+    LaunchDetailsState.Success(response.data!!)
+  }
+  else -> {
+    // Another fetch error, maybe a cache miss?
+    // Or potentially a non-compliant server returning data: null without an error
+    LaunchDetailsState.Error("Oh no... An error happened.")
+  }
 }
-```
-
-You should also update the conditional expression to handle the `ApplicationError` case:
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
-    when (val s = state) {
-        Loading -> Loading()
-        is ApplicationError -> ErrorMessage(text = s.errors.first().message) // highlight-line
-        is ProtocolError -> ErrorMessage("Oh no... A protocol error happened: ${s.exception.message}")
-        is Success -> LaunchDetails(s.data)
-    }
 ```
 
 `response.errors` contains details about any errors that occurred. Note that this code also null-checks `response.data!!`. In theory, a server should not set `response.data == null` and `response.hasErrors == false` at the same time, but the type system cannot guarantee this.
 
-To trigger an error, replace `LaunchDetailsQuery(launchId)` with `LaunchDetailsQuery("invalidId")`. Disable airplane mode and select a launch. The server will send this response:
+To trigger a GraphQL field error, replace `LaunchDetailsQuery(launchId)` with `LaunchDetailsQuery("invalidId")`. Disable airplane mode and select a launch. The server will send this response:
 
 ```json title="(error)"
 {

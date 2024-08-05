@@ -36,10 +36,10 @@ public enum class Enum(
     @Suppress("DEPRECATION")
     public val knownEntries: List<Enum>
       get() = listOf(
-        north,
-        North,
-        NORTH,
-        SOUTH)
+        Enum.north,
+        Enum.North,
+        Enum.NORTH,
+        Enum.SOUTH)
 
     /**
      * Returns all [Enum] known at compile time
