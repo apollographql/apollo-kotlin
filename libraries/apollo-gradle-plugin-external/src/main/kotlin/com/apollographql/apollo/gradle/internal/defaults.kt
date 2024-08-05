@@ -30,14 +30,17 @@ private fun DefaultService.resolveOperationManifest(): Pair<String, File?> {
   var format = operationManifestFormat.orNull
   if (format == null) {
     if (generateOperationOutput.orElse(false).get()) {
+      println("Apollo: using 'generateOperationOutput' is deprecated, please use 'operationManifestFormat.set(\"$MANIFEST_PERSISTED_QUERY\")' instead")
       format = MANIFEST_OPERATION_OUTPUT
     }
   } else {
     when (format) {
       MANIFEST_NONE,
-      MANIFEST_OPERATION_OUTPUT,
       MANIFEST_PERSISTED_QUERY,
       -> Unit
+      MANIFEST_OPERATION_OUTPUT -> {
+        println("Apollo: using '$MANIFEST_OPERATION_OUTPUT' is deprecated, please use '$MANIFEST_PERSISTED_QUERY' instead")
+      }
 
       else -> {
         error("Apollo: unknown operation manifest format: $format")
