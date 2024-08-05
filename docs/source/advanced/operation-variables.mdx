@@ -39,7 +39,7 @@ val query = GetTodosQuery(Optional.Present(100), Optional.Present(0))
 
 ## Using input builders
 
-For both operations and input objects, having to wrap values in an [`Optional`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-api/com.apollographql.apollo.api/-optional/index.html) wrapper can be cumbersome.0
+For both operations and input objects, having to wrap values in an [`Optional`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-api/com.apollographql.apollo.api/-optional/index.html) wrapper can be cumbersome.
 
 For those cases, use `generateInputBuilders`:
 
@@ -52,7 +52,7 @@ apollo {
 }
 ```
 
-If you do, in the case of the `GetTodos` query shown above, Apollo Kotlin now generates `Builders`:
+If you do, in the case of the `GetTodos` query shown above, Apollo Kotlin now generates a `Builder` for each operation:
 
 ```kotlin
 // Omit values for both variables
