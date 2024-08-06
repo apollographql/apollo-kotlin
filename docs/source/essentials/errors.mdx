@@ -145,13 +145,13 @@ In that case, `starship` is a true null and not an error.
 
 ## Truth table
 
-| exception | data    | errors  | meaning                                                                     |
-|-----------|---------|---------|-----------------------------------------------------------------------------|
-| `null`    | `null`  | `null`  | Non-compliant server, if `data` is null, there should be at least one error |
-| `null`    | `null`  | `!null` | A GraphQL request error happened or a Graph field error bubbled up.         |
-| `null`    | `!null` | `null`  | Complete data was received.                                                 |
-| `null`    | `!null` | `!null` | Partial data was received alongside field error(s).                         |
-| `!null`   | `null`  | `null`  | A fetch error happened.                                                     |
-| `!null`   | `null`  | `!null` | 🙅‍♂️ impossible.                                                           |
-| `!null`   | `!null` | `null`  | 🙅‍♂️ impossible.                                                           |
-| `!null`   | `!null` | `!null` | 🙅‍♂️ impossible.                                                           |
+| exception  | data       | errors     | meaning                                                                     |
+|------------|------------|------------|-----------------------------------------------------------------------------|
+| `null`     | `null`     | `null`     | Non-compliant server, if `data` is null, there should be at least one error |
+| `null`     | `null`     | `not null` | A GraphQL request error happened or a Graph field error bubbled up.         |
+| `null`     | `not null` | `null`     | Complete data was received.                                                 |
+| `null`     | `not null` | `not null` | Partial data was received alongside field error(s).                         |
+| `not null` | `null`     | `null`     | A fetch error happened.                                                     |
+| `not null` | `null`     | `not null` | 🙅‍♂️ impossible.                                                           |
+| `not null` | `not null` | `null`     | 🙅‍♂️ impossible.                                                           |
+| `not null` | `not null` | `not null` | 🙅‍♂️ impossible.                                                           |
