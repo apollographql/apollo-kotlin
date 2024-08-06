@@ -227,9 +227,9 @@ For more control over the exception, use `toFlow()` and collect the different `A
 
 In Apollo Kotlin 3, when using the normalized cache, you could set `emitCacheMisses(Boolean)` to `true` to emit cache misses instead of throwing.
 
-In Apollo Kotlin 4, this is now the default behavior and `emitCacheMisses(Boolean)` has been removed.
+In Apollo Kotlin 4, cache misses always emit a response with `response.exception` containing a `CacheMissException`. `emitCacheMisses(Boolean)` has been removed.
 
-With the `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies, cache misses and network errors are now exposed in `ApolloResponse.exception`.
+With the `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies, cache misses and network errors are now exposed in `ApolloResponse.exception`. 
 
 ### Migration helpers
 
