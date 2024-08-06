@@ -145,13 +145,13 @@ In that case, `starship` is a true null and not an error.
 
 ## Truth table
 
-| exception  | data       | errors     | meaning                                                                     |
-|------------|------------|------------|-----------------------------------------------------------------------------|
-| `null`     | `null`     | `null`     | Non-compliant server, if `data` is null, there should be at least one error |
-| `null`     | `null`     | `not null` | A GraphQL request error happened or a Graph field error bubbled up.         |
-| `null`     | `not null` | `null`     | Complete data was received.                                                 |
-| `null`     | `not null` | `not null` | Partial data was received alongside field error(s).                         |
-| `not null` | `null`     | `null`     | A fetch error happened.                                                     |
-| `not null` | `null`     | `not null` | 🙅‍♂️ impossible.                                                           |
-| `not null` | `not null` | `null`     | 🙅‍♂️ impossible.                                                           |
-| `not null` | `not null` | `not null` | 🙅‍♂️ impossible.                                                           |
+| exception | data      | errors    | meaning                                                                     |
+|-----------|-----------|-----------|-----------------------------------------------------------------------------|
+| `null`    | `null`    | `null`    | Non-compliant server, if `data` is null, there should be at least one error |
+| `null`    | `null`    | `present` | A GraphQL request error happened or a Graph field error bubbled up.         |
+| `null`    | `present` | `null`    | Complete data was received.                                                 |
+| `null`    | `present` | `present` | Partial data was received alongside field error(s).                         |
+| `present` | `null`    | `null`    | A fetch error happened.                                                     |
+| `present` | `null`    | `present` | 🙅‍♂️ impossible.                                                           |
+| `present` | `present` | `null`    | 🙅‍♂️ impossible.                                                           |
+| `present` | `present` | `present` | 🙅‍♂️ impossible.                                                           |
