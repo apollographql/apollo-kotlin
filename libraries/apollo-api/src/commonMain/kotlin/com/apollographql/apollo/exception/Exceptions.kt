@@ -6,6 +6,7 @@ import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.http.HttpHeader
 import okio.BufferedSource
+import okio.IOException
 
 /**
  * The base class for all exceptions
@@ -31,15 +32,19 @@ class NoDataException(cause: Throwable?) : ApolloException("No data was found", 
  * [ApolloNetworkException] is thrown when an I/O error happens reading the operation.
  *
  * @param message a message indicating what the error was.
- * @param platformCause the underlying cause. Might be null. When not null, it can be cast to:
- * - a [Throwable] on JVM platforms.
- * - a [NSError] on Darwin platforms.
- * to get more details about what went wrong.
+ * @param platformCause the underlying cause to get more details about what went wrong. When not null, it is either:
+ * - a [Throwable]
+ * - or a [NSError] on Apple platforms.
  */
 class ApolloNetworkException(
     message: String? = null,
     val platformCause: Any? = null,
 ) : ApolloException(message = message, cause = platformCause as? Throwable)
+
+/**
+ * The device has been detected as offline
+ */
+data object OfflineException: IOException("The device is offline")
 
 /**
  * The server could not process a subscription and sent an error.

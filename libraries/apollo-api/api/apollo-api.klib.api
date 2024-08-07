@@ -1000,6 +1000,11 @@ final inline fun <#A: reified kotlin/Any?> (kotlin/Any).com.apollographql.apollo
 final inline fun com.apollographql.apollo.api.json/buildJsonByteString(kotlin/String? = ..., crossinline kotlin/Function1<com.apollographql.apollo.api.json/JsonWriter, kotlin/Unit>): okio/ByteString // com.apollographql.apollo.api.json/buildJsonByteString|buildJsonByteString(kotlin.String?;kotlin.Function1<com.apollographql.apollo.api.json.JsonWriter,kotlin.Unit>){}[0]
 final inline fun com.apollographql.apollo.api.json/buildJsonMap(crossinline kotlin/Function1<com.apollographql.apollo.api.json/JsonWriter, kotlin/Unit>): kotlin/Any? // com.apollographql.apollo.api.json/buildJsonMap|buildJsonMap(kotlin.Function1<com.apollographql.apollo.api.json.JsonWriter,kotlin.Unit>){}[0]
 final inline fun com.apollographql.apollo.api.json/buildJsonString(kotlin/String? = ..., crossinline kotlin/Function1<com.apollographql.apollo.api.json/JsonWriter, kotlin/Unit>): kotlin/String // com.apollographql.apollo.api.json/buildJsonString|buildJsonString(kotlin.String?;kotlin.Function1<com.apollographql.apollo.api.json.JsonWriter,kotlin.Unit>){}[0]
+final object com.apollographql.apollo.exception/OfflineException : okio/IOException { // com.apollographql.apollo.exception/OfflineException|null[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.apollographql.apollo.exception/OfflineException.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.apollographql.apollo.exception/OfflineException.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.apollographql.apollo.exception/OfflineException.toString|toString(){}[0]
+}
 final val com.apollographql.apollo.api/AnyAdapter // com.apollographql.apollo.api/AnyAdapter|{}AnyAdapter[0]
     final fun <get-AnyAdapter>(): com.apollographql.apollo.api/Adapter<kotlin/Any> // com.apollographql.apollo.api/AnyAdapter.<get-AnyAdapter>|<get-AnyAdapter>(){}[0]
 final val com.apollographql.apollo.api/ApolloOptionalAnyAdapter // com.apollographql.apollo.api/ApolloOptionalAnyAdapter|{}ApolloOptionalAnyAdapter[0]
