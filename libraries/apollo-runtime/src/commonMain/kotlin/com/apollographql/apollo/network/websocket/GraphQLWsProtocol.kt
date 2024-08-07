@@ -15,7 +15,7 @@ import okio.Buffer
  */
 @ApolloExperimental
 class GraphQLWsProtocol(
-    val connectionParams: suspend () -> Any? = { null },
+    val connectionPayload: suspend () -> Any? = { null },
 ) : WsProtocol {
   override val name: String
     get() = "graphql-transport-ws"
@@ -23,9 +23,9 @@ class GraphQLWsProtocol(
   override suspend fun connectionInit(): ClientMessage {
     val map = mutableMapOf<String, Any?>()
     map.put("type", "connection_init")
-    val params = connectionParams()
-    if (params != null) {
-      map.put("payload", params)
+    val payload = connectionPayload()
+    if (payload != null) {
+      map.put("payload", payload)
     }
 
     return map.toClientMessage()

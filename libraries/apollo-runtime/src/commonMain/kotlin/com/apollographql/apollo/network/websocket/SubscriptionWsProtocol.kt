@@ -19,7 +19,7 @@ import okio.Buffer
 @Deprecated("Migrate your server to GraphQLWsProtocol instead")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 class SubscriptionWsProtocol(
-    val connectionParams: suspend () -> Any? = { null },
+    val connectionPayload: suspend () -> Any? = { null },
 ) : WsProtocol {
   override val name: String
     get() = "graphql-ws"
@@ -27,9 +27,9 @@ class SubscriptionWsProtocol(
   override suspend fun connectionInit(): ClientMessage {
     val map = mutableMapOf<String, Any?>()
     map.put("type", "connection_init")
-    val params = connectionParams()
-    if (params != null) {
-      map.put("payload", params)
+    val payload = connectionPayload()
+    if (payload != null) {
+      map.put("payload", payload)
     }
 
     return map.toClientMessage()
