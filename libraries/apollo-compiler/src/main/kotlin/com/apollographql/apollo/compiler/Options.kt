@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -13,6 +14,8 @@ const val ADD_TYPENAME_IF_POLYMORPHIC = "ifPolymorphic"
 const val ADD_TYPENAME_IF_ABSTRACT = "ifAbstract"
 const val ADD_TYPENAME_ALWAYS = "always"
 
+@Deprecated("Use $MANIFEST_PERSISTED_QUERY instead")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_1)
 const val MANIFEST_OPERATION_OUTPUT = "operationOutput"
 const val MANIFEST_PERSISTED_QUERY = "persistedQueryManifest"
 const val MANIFEST_NONE = "none"

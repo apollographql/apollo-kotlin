@@ -6,6 +6,8 @@ import com.apollographql.apollo.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo.compiler.GeneratedMethod
 import com.apollographql.apollo.compiler.IrOptions
 import com.apollographql.apollo.compiler.JavaNullable
+import com.apollographql.apollo.compiler.MANIFEST_OPERATION_OUTPUT
+import com.apollographql.apollo.compiler.MANIFEST_PERSISTED_QUERY
 import com.apollographql.apollo.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo.compiler.MODELS_OPERATION_BASED_WITH_INTERFACES
 import com.apollographql.apollo.compiler.MODELS_RESPONSE_BASED

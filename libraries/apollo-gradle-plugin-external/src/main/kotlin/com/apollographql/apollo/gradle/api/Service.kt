@@ -5,6 +5,7 @@ package com.apollographql.apollo.gradle.api
 import com.android.build.gradle.api.BaseVariant
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.compiler.MANIFEST_PERSISTED_QUERY
 import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.OperationOutputGenerator
 import com.apollographql.apollo.compiler.PackageNameGenerator
@@ -542,7 +543,7 @@ interface Service {
    *
    * Defaults value: false
    */
-  @Deprecated("Use operationManifestFormat", ReplaceWith("operationManifestFormat.set(\"operationOutput\""))
+  @Deprecated("Use operationManifestFormat", ReplaceWith("operationManifestFormat.set(\"$MANIFEST_PERSISTED_QUERY\")"))
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val generateOperationOutput: Property<Boolean>
 
