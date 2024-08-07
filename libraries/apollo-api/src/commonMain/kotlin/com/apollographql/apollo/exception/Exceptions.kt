@@ -78,13 +78,19 @@ class RouterError(
 ) : ApolloException(message = "Router error(s) (first: '${errors.firstOrNull()?.message}')")
 
 /**
- * A WebSocket connection could not be established: e.g., expired token
+ * A WebSocket close frame was received from the server
  */
 class ApolloWebSocketClosedException(
     val code: Int,
     val reason: String? = null,
     cause: Throwable? = null,
 ) : ApolloException(message = "WebSocket Closed code='$code' reason='$reason'", cause = cause)
+
+/**
+ * `closeConnection()` was called to force closing the websocket
+ */
+@ApolloExperimental
+data object ApolloWebSocketForceCloseException : ApolloException(message = "closeConnection() was called")
 
 /**
  * The response was received but the response code was not 200

@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.json.ApolloJsonElement
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.toApolloResponse
 import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloWebSocketForceCloseException
 import com.apollographql.apollo.exception.DefaultApolloException
 import com.apollographql.apollo.exception.SubscriptionOperationException
 import com.apollographql.apollo.internal.DeferredJsonMerger
@@ -279,7 +280,7 @@ private fun Map<String, Any?>.isDeferred(): Boolean {
  *
  * [exception] is passed down to [ApolloResponse.exception] so you can decide how to handle the exception for active subscriptions.
  *
- * ```
+ * ```kotlin
  * apolloClient.subscriptionNetworkTransport.closeConnection(DefaultApolloException("oh no!"))
  * ```
  *
@@ -291,4 +292,16 @@ fun NetworkTransport.closeConnection(exception: ApolloException) {
   val webSocketNetworkTransport = (this as? WebSocketNetworkTransport) ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo.websocket.WebSocketNetworkTransport")
 
   webSocketNetworkTransport.closeConnection(exception)
+}
+
+/**
+ * Closes the websocket connection if the transport is a [WebSocketNetworkTransport].
+ *
+ * A response is emitted with [ApolloResponse.exception] set to [ApolloWebSocketForceCloseException].
+ */
+@ApolloExperimental
+fun NetworkTransport.closeConnection() {
+  val webSocketNetworkTransport = (this as? WebSocketNetworkTransport) ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo.websocket.WebSocketNetworkTransport")
+
+  webSocketNetworkTransport.closeConnection(ApolloWebSocketForceCloseException)
 }
