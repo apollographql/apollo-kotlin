@@ -6,13 +6,12 @@ import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.exception.OfflineException
 import com.apollographql.apollo.network.NetworkMonitor
-import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.retryWhen
@@ -62,7 +61,7 @@ private class DefaultRetryOnErrorInterceptorImpl(private val networkMonitor: Net
 
     return flow {
           if (failFastIfOffline && networkMonitor?.isOnline() == false) {
-            emit((ApolloResponse.Builder(request.operation, request.requestUuid).exception(OfflineException).build()))
+            emit((ApolloResponse.Builder(request.operation, request.requestUuid).exception(OfflineApolloException).build()))
           } else {
             emitAll(downStream)
           }
@@ -98,7 +97,7 @@ private fun ApolloException.isRecoverable(): Boolean {
 
 private object RetryException : Exception()
 
-private val OfflineException = ApolloNetworkException("The device is offline")
+private val OfflineApolloException = ApolloNetworkException("The device is offline", OfflineException)
 
 /**
  * A copy/paste of the kotlinx.coroutines version until it becomes stable
