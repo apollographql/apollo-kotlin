@@ -2,7 +2,7 @@
 <html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>ApolloWebSocketClosedException</title>
+    <title>ApolloWebSocketForceCloseException</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
     <script>document.documentElement.classList.replace("no-js","js");</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
@@ -46,7 +46,7 @@
                             apollo-kdoc
                     </a>            </div>
             <div class="library-version">
-<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.exception/-apollo-web-socket-closed-exception/index.html&quot;}"><div class="versions-dropdown">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.exception/-apollo-web-socket-force-close-exception/index.html&quot;}"><div class="versions-dropdown">
   <div class="versions-dropdown-button">4.0.1-SNAPSHOT</div>
   <div class="versions-dropdown-data"><a href="index.html">4.0.1-SNAPSHOT</a><a href="../../../not-found-version.html?v=3.8.2">3.8.2</a></div>
 </div>
@@ -66,34 +66,15 @@
                 <div class="sidebar--inner" id="sideMenu"></div>
             </div>
             <div id="main">
-<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-api::com.apollographql.apollo.exception/ApolloWebSocketClosedException///PointingToDeclaration//-745234393">
-  <div class="breadcrumbs"><a href="../../index.html">apollo-api</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.exception</a><span class="delimiter">/</span><span class="current">ApolloWebSocketClosedException</span></div>
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-api::com.apollographql.apollo.exception/ApolloWebSocketForceCloseException///PointingToDeclaration//-745234393">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-api</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.exception</a><span class="delimiter">/</span><span class="current">ApolloWebSocketForceCloseException</span></div>
   <div class="cover ">
-    <h1 class="cover"><span>Apollo</span><wbr><span>Web</span><wbr><span>Socket</span><wbr><span>Closed</span><wbr><span><span>Exception</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">ApolloWebSocketClosedException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>code<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="../-apollo-exception/index.html">ApolloException</a></div><p class="paragraph">A WebSocket close frame was received from the server</p></div></div>
+    <h1 class="cover"><span>Apollo</span><wbr><span>Web</span><wbr><span>Socket</span><wbr><span>Force</span><wbr><span>Close</span><wbr><span><span>Exception</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">data </span><span class="token keyword">object </span><a href="index.html">ApolloWebSocketForceCloseException</a> : <a href="../-apollo-exception/index.html">ApolloException</a></div><p class="paragraph"><code class="lang-kotlin">closeConnection()</code> was called to force closing the websocket</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
-      <div data-togglable="CONSTRUCTOR">
-        <h2 class="">Constructors</h2>
-        <div class="table"><a data-name="-1101513525%2FConstructors%2F-745234393" anchor-label="ApolloWebSocketClosedException" id="-1101513525%2FConstructors%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
-          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-apollo-web-socket-closed-exception.html"><span>Apollo</span><wbr><span>Web</span><wbr><span>Socket</span><wbr><span>Closed</span><wbr><span><span>Exception</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1101513525%2FConstructors%2F-745234393"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">code<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div data-togglable="PROPERTY">
         <h2 class="">Properties</h2>
         <div class="table"><a data-name="-654012527%2FProperties%2F-745234393" anchor-label="cause" id="-654012527%2FProperties%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
@@ -111,21 +92,6 @@
               </div>
             </div>
           </div>
-<a data-name="-1330034966%2FProperties%2F-745234393" anchor-label="code" id="-1330034966%2FProperties%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
-          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="code.html"><span><span>code</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1330034966%2FProperties%2F-745234393"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="code.html">code</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
 <a data-name="1824300659%2FProperties%2F-745234393" anchor-label="message" id="1824300659%2FProperties%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
           <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
             <div class="main-subrow keyValue ">
@@ -137,21 +103,6 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-missing-value-exception/index.html#1824300659%2FProperties%2F-745234393">message</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="113830899%2FProperties%2F-745234393" anchor-label="reason" id="113830899%2FProperties%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
-          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="reason.html"><span><span>reason</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="113830899%2FProperties%2F-745234393"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="reason.html">reason</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
                 </div>
               </div>
             </div>
