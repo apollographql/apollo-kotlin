@@ -34,6 +34,8 @@ After a feedback phase, the current `.ws` APIs will become deprecated and the `.
 
 ## Migration guide
 
+### Package name
+
 In simple cases where you did not configure the underlying `WsProtocol` or retry logic, the migration should be about replacing `com.apollographql.apollo.network.ws` with `com.apollographql.apollo.network.websocket` everywhere:
 
 ```kotlin
@@ -80,70 +82,60 @@ ApolloClient.Builder()
     .build()
 ```
 
-To account for non-websocket transports, like [multipart subscriptions](https://www.apollographql.com/docs/router/executing-operations/subscription-multipart-protocol/), the retry is now handled using [`ApolloClient.Builder.retryOnErrorInterceptor()`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo/-apollo-client/-builder/retry-on-error-interceptor.html) instead of `WebSocketNetworkTransport` previously.
+### Connection init payload
 
-Below is a more complete migration, customizing the connection payload and retry logic: 
+If you were using `connectionPayload` before, you can now pass it as an argument directly. There is no `WsProtocol.Factory` anymore:
+
+```kotlin
+// Replace
+GraphQLWsProtocol.Factory(
+    connectionPayload = {
+        mapOf("Authorization" to token)
+    },
+)
+
+// With
+GraphQLWsProtocol(
+    connectionPayload = {
+      mapOf("Authorization" to token)
+    },
+)
+```
+
+### Retrying on network errors
+
+Apollo Kotlin 4 also comes with a default `retryOnErrorInterceptor` that uses a network monitor or exponential backoff to retry the subscription. 
+
+If you want your subscription to be restarted automatically when a network error happens, use `retryOnError {}`:
 
 ```kotlin
 // Replace
 val apolloClient = ApolloClient.Builder()
+    .serverUrl(serverUrl)
     .subscriptionNetworkTransport(
         WebSocketNetworkTransport.Builder()
             .serverUrl(webSocketServerUrl)
-            .protocol(
-                GraphQLWsProtocol.Factory(
-                    connectionPayload = {
-                      mapOf("Authorization" to token)
-                    },
-                ),
-            )
-            .reopenWhen { throwable, attempt ->
-              if (throwable is WebSocketReconnectException) {
-                true
-              } else {
-                // Another WebSocket error happened, give up
-                false
-              }
+            .reopenWhen { _, attempt ->
+              // exponential backoff
+              delay(2.0.pow(attempt).seconds) // highlight-line
+              true
             }
             .build()
     )
     .build()
 
-// With
-class MyRetryOnErrorInterceptor : ApolloInterceptor {
-  data object RetryException : Exception()
-
-  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    return chain.proceed(request).onEach {
-      if (request.retryOnError == true && it.exception != null && it.exception is ApolloNetworkException) {
-        throw RetryException
-      }
-      // Another WebSocket error happened, give up
-    }.retryWhen { cause, attempt ->
-      cause is RetryException
+// With 
+val apolloClient = ApolloClient.Builder()
+    .serverUrl(serverUrl)
+    .subscriptionNetworkTransport(/*..*/)
+    .retryOnError {
+      /*
+       * This is called for every GraphQL operation.
+       * Only retry subscriptions.
+       */
+      it.operation is Subscription // highlight-line
     }
-  }
-}
-
-ApolloClient.Builder()
-    .serverUrl(mockServer.url())
-    .subscriptionNetworkTransport(
-        WebSocketNetworkTransport.Builder()
-            .wsProtocol(GraphQLWsProtocol(
-                connectionParams = {
-                  mapOf("Authorization" to token)
-                }
-            ))
-            .serverUrl(mockServer.url())
-            .build()
-    )
-    .retryOnError { it.operation is Subscription }
-    .retryOnErrorInterceptor(MyRetryOnErrorInterceptor())
     .build()
 ```
 
-<Note>
-
-Apollo Kotlin 4 also comes with a default `retryOnErrorInterceptor` that uses a network monitor or exponential backoff to retry the subscription. You can read more about it in the [network connectivity page](network-connectivity). 
-
-</Note>
+You can also customize the retry logic using `retryOnErrorInterceptor`. Read more about it in the [network connectivity page](network-connectivity). 
