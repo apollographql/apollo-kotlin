@@ -1067,7 +1067,6 @@ open class com.apollographql.apollo.api/DefaultFakeResolver : com.apollographql.
 }
 sealed class <#A: out kotlin/Any> com.apollographql.apollo.api/BooleanExpression { // com.apollographql.apollo.api/BooleanExpression|null[0]
     abstract fun simplify(): com.apollographql.apollo.api/BooleanExpression<#A> // com.apollographql.apollo.api/BooleanExpression.simplify|simplify(){}[0]
-    constructor <init>() // com.apollographql.apollo.api/BooleanExpression.<init>|<init>(){}[0]
     final class <#A1: kotlin/Any> And : com.apollographql.apollo.api/BooleanExpression<#A1> { // com.apollographql.apollo.api/BooleanExpression.And|null[0]
         constructor <init>(kotlin.collections/Set<com.apollographql.apollo.api/BooleanExpression<#A1>>) // com.apollographql.apollo.api/BooleanExpression.And.<init>|<init>(kotlin.collections.Set<com.apollographql.apollo.api.BooleanExpression<1:0>>){}[0]
         constructor <init>(kotlin/Array<out com.apollographql.apollo.api/BooleanExpression<#A1>>...) // com.apollographql.apollo.api/BooleanExpression.And.<init>|<init>(kotlin.Array<out|com.apollographql.apollo.api.BooleanExpression<1:0>>...){}[0]
@@ -1122,7 +1121,6 @@ sealed class <#A: out kotlin/Any> com.apollographql.apollo.api/BooleanExpression
     }
 }
 sealed class <#A: out kotlin/Any?> com.apollographql.apollo.api/Optional { // com.apollographql.apollo.api/Optional|null[0]
-    constructor <init>() // com.apollographql.apollo.api/Optional.<init>|<init>(){}[0]
     final class <#A1: kotlin/Any?> Present : com.apollographql.apollo.api/Optional<#A1> { // com.apollographql.apollo.api/Optional.Present|null[0]
         constructor <init>(#A1) // com.apollographql.apollo.api/Optional.Present.<init>|<init>(1:0){}[0]
         final fun component1(): #A1 // com.apollographql.apollo.api/Optional.Present.component1|component1(){}[0]
@@ -1142,27 +1140,19 @@ sealed class <#A: out kotlin/Any?> com.apollographql.apollo.api/Optional { // co
         final fun absent(): com.apollographql.apollo.api/Optional.Absent // com.apollographql.apollo.api/Optional.Companion.absent|absent(){}[0]
     }
 }
-sealed class com.apollographql.apollo.api/BTerm { // com.apollographql.apollo.api/BTerm|null[0]
-    constructor <init>() // com.apollographql.apollo.api/BTerm.<init>|<init>(){}[0]
-}
+sealed class com.apollographql.apollo.api/BTerm // com.apollographql.apollo.api/BTerm|null[0]
 sealed class com.apollographql.apollo.api/CompiledNamedType : com.apollographql.apollo.api/CompiledType { // com.apollographql.apollo.api/CompiledNamedType|null[0]
-    constructor <init>(kotlin/String) // com.apollographql.apollo.api/CompiledNamedType.<init>|<init>(kotlin.String){}[0]
     final val name // com.apollographql.apollo.api/CompiledNamedType.name|{}name[0]
         final fun <get-name>(): kotlin/String // com.apollographql.apollo.api/CompiledNamedType.name.<get-name>|<get-name>(){}[0]
     open fun leafType(): com.apollographql.apollo.api/CompiledNamedType // com.apollographql.apollo.api/CompiledNamedType.leafType|leafType(){}[0]
     open fun rawType(): com.apollographql.apollo.api/CompiledNamedType // com.apollographql.apollo.api/CompiledNamedType.rawType|rawType(){}[0]
 }
-sealed class com.apollographql.apollo.api/CompiledSelection { // com.apollographql.apollo.api/CompiledSelection|null[0]
-    constructor <init>() // com.apollographql.apollo.api/CompiledSelection.<init>|<init>(){}[0]
-}
+sealed class com.apollographql.apollo.api/CompiledSelection // com.apollographql.apollo.api/CompiledSelection|null[0]
 sealed class com.apollographql.apollo.api/CompiledType { // com.apollographql.apollo.api/CompiledType|null[0]
     abstract fun leafType(): com.apollographql.apollo.api/CompiledNamedType // com.apollographql.apollo.api/CompiledType.leafType|leafType(){}[0]
     abstract fun rawType(): com.apollographql.apollo.api/CompiledNamedType // com.apollographql.apollo.api/CompiledType.rawType|rawType(){}[0]
-    constructor <init>() // com.apollographql.apollo.api/CompiledType.<init>|<init>(){}[0]
 }
-sealed class com.apollographql.apollo.exception/ApolloException : kotlin/RuntimeException { // com.apollographql.apollo.exception/ApolloException|null[0]
-    constructor <init>(kotlin/String? = ..., kotlin/Throwable? = ...) // com.apollographql.apollo.exception/ApolloException.<init>|<init>(kotlin.String?;kotlin.Throwable?){}[0]
-}
+sealed class com.apollographql.apollo.exception/ApolloException : kotlin/RuntimeException // com.apollographql.apollo.exception/ApolloException|null[0]
 sealed interface <#A: out kotlin/Any?> com.apollographql.apollo.api/FieldResult { // com.apollographql.apollo.api/FieldResult|null[0]
     final class <#A1: kotlin/Any?> Success : com.apollographql.apollo.api/FieldResult<#A1> { // com.apollographql.apollo.api/FieldResult.Success|null[0]
         constructor <init>(#A1) // com.apollographql.apollo.api/FieldResult.Success.<init>|<init>(1:0){}[0]
