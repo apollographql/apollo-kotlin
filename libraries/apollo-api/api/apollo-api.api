@@ -1292,6 +1292,13 @@ public final class com/apollographql/apollo/exception/NullOrMissingField : com/a
 	public fun <init> (Ljava/lang/String;)V
 }
 
+public final class com/apollographql/apollo/exception/OfflineException : java/io/IOException {
+	public static final field INSTANCE Lcom/apollographql/apollo/exception/OfflineException;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/apollographql/apollo/exception/RouterError : com/apollographql/apollo/exception/ApolloException {
 	public fun <init> (Ljava/util/List;)V
 	public final fun getErrors ()Ljava/util/List;
