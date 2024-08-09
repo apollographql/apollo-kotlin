@@ -32,13 +32,13 @@ public class FruitListQuery() : Query<FruitListQuery.Data> {
   )
 
   public data class List(
-          public val __typename: String,
-          public val id: String,
-          /**
+    public val __typename: String,
+    public val id: String,
+    /**
        * Synthetic field for inline fragment on Cherry
        */
       public val asCherry: OnCherry?,
-          /**
+    /**
        * Synthetic field for inline fragment on Apple
        */
       public val asApple: OnApple?,
@@ -51,14 +51,14 @@ public class FruitListQuery() : Query<FruitListQuery.Data> {
   )
 
   public data class AsApple(
-          public val __typename: String,
-          public val id: String,
-          public val color: String,
-          /**
+    public val __typename: String,
+    public val id: String,
+    public val color: String,
+    /**
        * Synthetic field for inline fragment on Golden
        */
       public val asGolden: OnGolden?,
-          /**
+    /**
        * Synthetic field for inline fragment on Granny
        */
       public val asGranny: OnGranny?,

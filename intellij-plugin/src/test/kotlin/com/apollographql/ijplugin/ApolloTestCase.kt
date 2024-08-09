@@ -19,6 +19,7 @@ import com.intellij.testFramework.PsiTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.DefaultLightProjectDescriptor
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.impl.CodeInsightTestFixtureImpl
 import com.intellij.util.ui.UIUtil
 import junit.framework.AssertionFailedError
 import org.jetbrains.kotlin.idea.KotlinLanguage
@@ -60,6 +61,7 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
     val codeStyleSettings = CodeStyle.getSettings(project)
     val kotlinSettings = codeStyleSettings.getCommonSettings(KotlinLanguage.INSTANCE)
     kotlinSettings.indentOptions!!.INDENT_SIZE = 2
+    kotlinSettings.WRAP_LONG_LINES = false
     val graphQLSettings = codeStyleSettings.getCommonSettings(GraphQLLanguage.INSTANCE)
     graphQLSettings.indentOptions!!.INDENT_SIZE = 2
 
@@ -108,6 +110,7 @@ abstract class ApolloTestCase : LightJavaCodeInsightFixtureTestCase() {
 
   protected fun doHighlighting(): List<HighlightInfo> {
     // Hack: sometimes doHighlighting fails with "AssertionError: PSI/document/model changes are not allowed during highlighting"
+    (myFixture as? CodeInsightTestFixtureImpl)?.canChangeDocumentDuringHighlighting(true)
     // Wait a bit for project to settle and try again
     return attempt(3) { myFixture.doHighlighting() }
   }

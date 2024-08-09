@@ -29,8 +29,8 @@ This plugin for Android Studio and IntelliJ helps you work with the
 
 The plugin is supported on:
 
-- IntelliJ 2023.2 and above
-- Android Studio 2023.2 (Iguana) and above
+- IntelliJ 2024.1 and above
+- Android Studio 2024.1 (Koala) and above
 
 ## Installation instructions
 
