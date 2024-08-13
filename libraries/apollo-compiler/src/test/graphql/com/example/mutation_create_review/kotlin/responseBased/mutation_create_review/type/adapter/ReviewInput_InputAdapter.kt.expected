@@ -132,5 +132,10 @@ internal object ReviewInput_InputAdapter : Adapter<ReviewInput> {
       writer.name("CapitalizedInt")
       NullableIntAdapter.present().toJson(writer, customScalarAdapters, value.CapitalizedInt)
     }
+    if (value.`in` is Optional.Present) {
+      writer.name("in")
+      com.example.MyStringAdapter().nullable().present().toJson(writer, customScalarAdapters,
+          value.`in`)
+    }
   }
 }

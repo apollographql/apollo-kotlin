@@ -62,6 +62,8 @@ public class ReviewInput {
 
   public final Optional<Integer> CapitalizedInt;
 
+  public final Optional<String> in;
+
   private transient volatile int $hashCode;
 
   private transient volatile boolean $hashCodeMemoized;
@@ -78,7 +80,7 @@ public class ReviewInput {
       Optional<Boolean> booleanNonOptional, Optional<List<List<String>>> listOfListOfString,
       Optional<List<List<Episode>>> listOfListOfEnum, Optional<List<List<Date>>> listOfListOfCustom,
       Optional<List<List<ColorInput>>> listOfListOfObject, Optional<String> CapitalizedField,
-      Optional<Integer> CapitalizedInt) {
+      Optional<Integer> CapitalizedInt, Optional<String> in) {
     this.stars = stars;
     this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
     this.commentary = commentary;
@@ -101,6 +103,7 @@ public class ReviewInput {
     this.listOfListOfObject = listOfListOfObject;
     this.CapitalizedField = CapitalizedField;
     this.CapitalizedInt = CapitalizedInt;
+    this.in = in;
   }
 
   @Override
@@ -131,7 +134,8 @@ public class ReviewInput {
        &&((this.listOfListOfCustom == null) ? (that.listOfListOfCustom == null) : this.listOfListOfCustom.equals(that.listOfListOfCustom))
        &&((this.listOfListOfObject == null) ? (that.listOfListOfObject == null) : this.listOfListOfObject.equals(that.listOfListOfObject))
        &&((this.CapitalizedField == null) ? (that.CapitalizedField == null) : this.CapitalizedField.equals(that.CapitalizedField))
-       &&((this.CapitalizedInt == null) ? (that.CapitalizedInt == null) : this.CapitalizedInt.equals(that.CapitalizedInt));
+       &&((this.CapitalizedInt == null) ? (that.CapitalizedInt == null) : this.CapitalizedInt.equals(that.CapitalizedInt))
+       &&((this.in == null) ? (that.in == null) : this.in.equals(that.in));
     }
     return false;
   }
@@ -184,6 +188,8 @@ public class ReviewInput {
       __h ^= (CapitalizedField == null) ? 0 : CapitalizedField.hashCode();
       __h *= 1000003;
       __h ^= (CapitalizedInt == null) ? 0 : CapitalizedInt.hashCode();
+      __h *= 1000003;
+      __h ^= (in == null) ? 0 : in.hashCode();
       $hashCode = __h;
       $hashCodeMemoized = true;
     }
@@ -215,7 +221,8 @@ public class ReviewInput {
         + "listOfListOfCustom=" + listOfListOfCustom + ", "
         + "listOfListOfObject=" + listOfListOfObject + ", "
         + "CapitalizedField=" + CapitalizedField + ", "
-        + "CapitalizedInt=" + CapitalizedInt
+        + "CapitalizedInt=" + CapitalizedInt + ", "
+        + "in=" + in
         + "}";
     }
     return $toString;
@@ -269,6 +276,8 @@ public class ReviewInput {
     private Optional<String> CapitalizedField = Optional.absent();
 
     private Optional<Integer> CapitalizedInt = Optional.absent();
+
+    private Optional<String> in = Optional.absent();
 
     Builder() {
     }
@@ -449,8 +458,16 @@ public class ReviewInput {
       return this;
     }
 
+    /**
+     * for test purpose only
+     */
+    public Builder in(String in) {
+      this.in = Optional.present(in);
+      return this;
+    }
+
     public ReviewInput build() {
-      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nonNullableEnumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, listOfStringNonOptional, listOfInputTypes, booleanWithDefaultValue, booleanNonOptional, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject, CapitalizedField, CapitalizedInt);
+      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nonNullableEnumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, listOfStringNonOptional, listOfInputTypes, booleanWithDefaultValue, booleanNonOptional, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject, CapitalizedField, CapitalizedInt, in);
     }
   }
 }
