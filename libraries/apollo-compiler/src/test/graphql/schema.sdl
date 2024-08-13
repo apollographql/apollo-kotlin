@@ -404,6 +404,9 @@ input ReviewInput {
 
   """for test purpose only"""
   CapitalizedInt: Int
+
+  """for test purpose only"""
+  in: String
 }
 
 """Circle ref to review input"""
