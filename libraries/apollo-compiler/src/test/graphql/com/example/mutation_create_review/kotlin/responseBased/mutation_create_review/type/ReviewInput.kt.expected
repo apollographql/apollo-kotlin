@@ -104,4 +104,8 @@ internal data class ReviewInput(
    * for test purpose only
    */
   public val CapitalizedInt: Optional<Int?> = Optional.Absent,
+  /**
+   * for test purpose only
+   */
+  public val `in`: Optional<String?> = Optional.Absent,
 )
