@@ -16,7 +16,7 @@ apollo {
 
 
 apollo {
-  service("service") {
+service("service") {
 packageName.set("com.example.service1")
  dependsOn(project(":schema"))
 }

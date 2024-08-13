@@ -4,9 +4,9 @@ dependencies {
 
 apollo {
   service("service") {
-generateModelBuilders.set(true)
-  generateDataBuilders.set(true)
-}
+    generateModelBuilders.set(true)
+    generateDataBuilders.set(true)
+  }
 }
 
 apollo {

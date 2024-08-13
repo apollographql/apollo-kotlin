@@ -4,12 +4,12 @@ dependencies {
 
 apollo {
   linkSqlite.set(true)
- service("service") {
-packageName.set("com.example")
-  // Some comment
-  codegenModels.set("operationBased")
-  srcDir("src/main/graphql")
-}
+  service("service") {
+    packageName.set("com.example")
+    // Some comment
+    codegenModels.set("operationBased")
+    srcDir("src/main/graphql")
+  }
 }
 
 apollo {
