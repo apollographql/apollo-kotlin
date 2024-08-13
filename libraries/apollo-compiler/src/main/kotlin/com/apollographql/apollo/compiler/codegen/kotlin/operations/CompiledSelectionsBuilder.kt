@@ -125,7 +125,7 @@ internal class CompiledSelectionsBuilder(
   private fun IrArgument.codeBlock(): CodeBlock {
     val argumentBuilder = CodeBlock.builder()
     argumentBuilder.add(
-        "%T(%T.%L)",
+        "%T(%T.%N)",
         KotlinSymbols.CompiledArgument,
         context.resolver.resolveArgumentDefinition(definitionId),
         definitionPropertyName,
