@@ -5,11 +5,14 @@ package com.apollographql.apollo.network
 
 import com.apollographql.apollo.annotations.ApolloExperimental
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.takeWhile
 import okio.Closeable
+import kotlin.js.JsName
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
@@ -20,33 +23,33 @@ import kotlin.jvm.JvmName
 @ApolloExperimental
 interface NetworkMonitor : Closeable {
   /**
-   * The current state of the network
+   * Emits the current network state. May emit null during initialization
+   * when the current state is not known yet.
    */
-  suspend fun isOnline(): Boolean
-
-  /**
-   * Waits until [isOnline] is true
-   */
-  suspend fun waitForNetwork()
+  val isOnline: StateFlow<Boolean?>
 }
 
+internal suspend fun NetworkMonitor.waitForNetwork() {
+  isOnline.takeWhile { it != true }.collect()
+}
+
+/**
+ * @param networkObserverFactory a factory for a [NetworkObserver]. [networkObserverFactory] is called from a
+ * background thread.
+ */
 internal class DefaultNetworkMonitor(private val networkObserverFactory: () -> NetworkObserver) : NetworkMonitor, NetworkObserver.Listener {
   private val _isOnline: MutableStateFlow<Boolean?> = MutableStateFlow(null)
+
+  override val isOnline: StateFlow<Boolean?>
+    get() {
+      networkObserver
+      return _isOnline.asStateFlow()
+    }
 
   private val networkObserver by lazy {
     networkObserverFactory().also {
       it.setListener(this)
     }
-  }
-
-  override suspend fun isOnline(): Boolean {
-    networkObserver
-    return _isOnline.mapNotNull { it }.first()
-  }
-
-  override suspend fun waitForNetwork() {
-    networkObserver
-    _isOnline.takeWhile { it != true }.collect()
   }
 
   override fun close() {

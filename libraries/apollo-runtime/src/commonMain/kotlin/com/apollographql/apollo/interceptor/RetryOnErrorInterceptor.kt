@@ -8,6 +8,7 @@ import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.OfflineException
 import com.apollographql.apollo.network.NetworkMonitor
+import com.apollographql.apollo.network.waitForNetwork
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -60,7 +61,7 @@ private class DefaultRetryOnErrorInterceptorImpl(private val networkMonitor: Net
     val downStream = chain.proceed(request)
 
     return flow {
-          if (failFastIfOffline && networkMonitor?.isOnline() == false) {
+          if (failFastIfOffline && networkMonitor?.isOnline?.value == false) {
             emit((ApolloResponse.Builder(request.operation, request.requestUuid).exception(OfflineApolloException).build()))
           } else {
             emitAll(downStream)
