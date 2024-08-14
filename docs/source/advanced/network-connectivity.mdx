@@ -27,6 +27,9 @@ val apolloClient = ApolloClient.Builder()
     .serverUrl("https://example.com/graphql")
     .retryOnErrorInterceptor(RetryOnErrorInterceptor(networkMonitor))
     .build()
+
+// once you're done with your `ApolloClient`
+networkMonitor.close()
 ```
 
 ### `failFastIfOffline`
