@@ -20,8 +20,10 @@ suspend fun main() {
 
   val cacheFactory1 = MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024)
   val cacheFactory2 = MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024)
-  val cacheFactory3 = MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024, expireAfterMillis = TimeUnit.MILLISECONDS.toMillis(10))
-  val cacheFactory4 = MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024, expireAfterMillis = TimeUnit.MILLISECONDS.toMillis(10))
+  val cacheFactory3 =
+    MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024, expireAfterMillis = TimeUnit.MILLISECONDS.toMillis(10))
+  val cacheFactory4 =
+    MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024, expireAfterMillis = TimeUnit.MILLISECONDS.toMillis(10))
   val cacheFactory5 = MemoryCacheFactory(expireAfterMillis = TimeUnit.HOURS.toMillis(10))
 
   val apolloClient = ApolloClient.Builder()

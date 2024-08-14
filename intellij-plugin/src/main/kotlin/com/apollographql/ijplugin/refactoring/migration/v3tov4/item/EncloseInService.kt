@@ -12,7 +12,6 @@ import com.apollographql.ijplugin.util.lambdaBlockExpression
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMigration
 import com.intellij.psi.search.GlobalSearchScope
-import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtExpression
@@ -34,7 +33,7 @@ object EncloseInService : MigrationItem() {
             val statements = blockExpression.statements
             // If there's already a service call, we can't automatically refactor
             if (statements.none { it.isMethodCall("service") }) {
-              usages.add(blockExpression.toMigrationItemUsageInfo())
+              usages.add(expression.toMigrationItemUsageInfo())
             }
           }
         }
@@ -71,20 +70,24 @@ object EncloseInService : MigrationItem() {
   }
 
   override fun performRefactoring(project: Project, migration: PsiMigration, usage: MigrationItemUsageInfo) {
-    val blockExpression = usage.element as KtBlockExpression
+    val apolloCallExpression = usage.element as KtCallExpression
+    val blockExpression = apolloCallExpression.lambdaBlockExpression()!!
     val nonServiceStatements = blockExpression.statements.filter { !it.isApolloServiceExpression() }
     val nonServiceStatementsText = nonServiceStatements.map { it.text }
     nonServiceStatements.forEach { it.delete() }
-    val ktFactory = KtPsiFactory(project)
-    val newBlockExpression = ktFactory.createEmptyBody()
-    for (statement in nonServiceStatementsText) {
-      newBlockExpression.add(ktFactory.createNewLine())
-      newBlockExpression.add(ktFactory.createExpression(statement))
+    val replacementExpression = buildString {
+      append("apollo {\n")
+      for (it in nonServiceStatementsText) {
+        append("$it\n")
+      }
+      append("service(\"service\") {\n")
+      append(blockExpression.text)
+      append("\n}\n")
+      append("}")
     }
-    newBlockExpression.add(ktFactory.createNewLine())
-    newBlockExpression.add(ktFactory.createExpression("service(\"service\") {\n${blockExpression.text}\n}"))
-    newBlockExpression.lBrace?.delete()
-    newBlockExpression.rBrace?.delete()
-    blockExpression.replace(newBlockExpression)
+    val ktFactory = KtPsiFactory(project)
+    val newApolloCallExpression = ktFactory.createExpression(replacementExpression)
+    apolloCallExpression.parent.addAfter(newApolloCallExpression, apolloCallExpression)
+    apolloCallExpression.delete()
   }
 }
