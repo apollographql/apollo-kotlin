@@ -188,6 +188,18 @@
         level="WARNING"
     />
 
+    <!-- "@OneOf GraphQL violation" inspection -->
+    <!--suppress PluginXmlCapitalization -->
+    <localInspection
+        language="GraphQL"
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloOneOfGraphQLViolationInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.oneOfGraphQLViolation.displayName"
+        enabledByDefault="true"
+        level="ERROR"
+    />
+
     <annotator
         language="yaml"
         implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator" />

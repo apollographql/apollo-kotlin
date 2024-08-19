@@ -3,6 +3,7 @@ package com.apollographql.ijplugin.graphql
 import com.apollographql.ijplugin.gradle.ApolloKotlinService
 import com.apollographql.ijplugin.gradle.GradleToolingModelService
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.settings.projectSettingsState
 import com.apollographql.ijplugin.util.logd
 import com.intellij.lang.jsgraphql.ide.config.GraphQLConfigContributor
 import com.intellij.lang.jsgraphql.ide.config.loader.GraphQLConfigKeys
@@ -20,6 +21,9 @@ class ApolloGraphQLConfigContributor : GraphQLConfigContributor {
     val projectDir = project.guessProjectDir() ?: return emptyList()
     // This can be called early, don't initialize services right away. It's ok because it's called again later.
     if (!project.apolloProjectService.isInitialized) return emptyList()
+
+    if (!project.projectSettingsState.contributeConfigurationToGraphqlPlugin) return emptyList()
+
     return listOf(
         GraphQLConfig(
             project = project,
