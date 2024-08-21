@@ -38,6 +38,7 @@ import com.apollographql.apollo.ast.OtherValidationIssue
 import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo.ast.builtinDefinitions
+import com.apollographql.apollo.ast.cacheDefinitions
 import com.apollographql.apollo.ast.canHaveKeyFields
 import com.apollographql.apollo.ast.combineDefinitions
 import com.apollographql.apollo.ast.findOneOf
@@ -361,6 +362,7 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
         val foreignDefinitions = when (foreignName) {
           "kotlin_labs" -> kotlinLabsDefinitions(version)
           "nullability" -> nullabilityDefinitions(version)
+          "cache" -> cacheDefinitions(version)
           else -> null
         }
 

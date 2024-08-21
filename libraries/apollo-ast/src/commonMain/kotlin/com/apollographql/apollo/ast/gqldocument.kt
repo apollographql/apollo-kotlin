@@ -5,6 +5,7 @@ import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.internal.ExtensionsMerger
 import com.apollographql.apollo.ast.internal.builtinsDefinitionsStr
+import com.apollographql.apollo.ast.internal.cacheDefinitionsStr
 import com.apollographql.apollo.ast.internal.ensureSchemaDefinition
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions
 import com.apollographql.apollo.ast.internal.linkDefinitionsStr
@@ -104,6 +105,19 @@ fun nullabilityDefinitions(version: String): List<GQLDefinition> {
     NULLABILITY_VERSION -> nullabilityDefinitionsStr
     else -> error("nullability/$version definitions are not supported, please use $NULLABILITY_VERSION")
   })
+}
+
+private const val CACHE_VERSION = "v0.1"
+
+/**
+ * Extra cache definitions from https://specs.apollo.dev/cache/<[version]>
+ */
+fun cacheDefinitions(version: String): List<GQLDefinition> {
+  return definitionsFromString(when (version) {
+    CACHE_VERSION -> cacheDefinitionsStr
+    else -> error("cache/$version definitions are not supported, please use $CACHE_VERSION")
+  }
+  )
 }
 
 private fun definitionsFromString(string: String): List<GQLDefinition> {
