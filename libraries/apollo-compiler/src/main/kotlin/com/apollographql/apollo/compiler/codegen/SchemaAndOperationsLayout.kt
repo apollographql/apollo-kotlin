@@ -11,6 +11,7 @@ interface SchemaLayout : CommonLayout {
   fun schemaName(): String
   fun assertionsName(): String
   fun paginationName(): String
+  fun cacheName(): String
 }
 
 interface OperationsLayout: CommonLayout {

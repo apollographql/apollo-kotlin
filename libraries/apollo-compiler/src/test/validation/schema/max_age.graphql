@@ -1,0 +1,33 @@
+schema {
+  query: Query
+}
+
+extend schema @link(
+  url: "https://specs.apollo.dev/cache/v0.1",
+  import: ["@cacheControl", "@cacheControlField"]
+)
+
+type Query {
+  book: Book
+  cachedBook: Book @cacheControl(maxAge: 60, inheritMaxAge: true)
+  reader: Reader @cacheControl(maxAge: 40, inheritMaxAge: false)
+}
+
+type Book @cacheControl(maxAge: 50, inheritMaxAge: true) {
+  title: String
+}
+
+type Reader @cacheControl(maxAge: 50, inheritMaxAge: false){
+  book: Book
+}
+
+type Publisher {
+  id: ID!
+  name: String!
+}
+
+extend type Publisher
+@cacheControlField(name: "name", maxAge: 20, inheritMaxAge: true)
+@cacheControlField(name: "id", maxAge: 20, inheritMaxAge: false)
+@cacheControlField(name: "age", maxAge: 30)
+@cacheControlField(name: "id", maxAge: -4)

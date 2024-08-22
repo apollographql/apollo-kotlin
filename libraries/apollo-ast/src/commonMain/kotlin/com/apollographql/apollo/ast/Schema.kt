@@ -29,6 +29,8 @@ class Schema internal constructor(
     private val directivesToStrip: List<String>,
     @ApolloInternal
     val connectionTypes: Set<String>,
+    @ApolloInternal
+    val maxAges: Map<String, Int>,
 ) {
   @ApolloInternal
   val schemaDefinition: GQLSchemaDefinition? = definitions.filterIsInstance<GQLSchemaDefinition>().singleOrNull()
@@ -136,6 +138,7 @@ class Schema internal constructor(
         "foreignNames" to foreignNames,
         "directivesToStrip" to directivesToStrip,
         "connectionTypes" to connectionTypes.toList().sorted(),
+        "maxAges" to maxAges,
     )
   }
 
@@ -218,6 +221,10 @@ class Schema internal constructor(
     const val SEMANTIC_NON_NULL_FIELD = "semanticNonNullField"
     @ApolloExperimental
     const val LINK = "link"
+    @ApolloExperimental
+    const val CACHE_CONTROL = "cacheControl"
+    @ApolloExperimental
+    const val CACHE_CONTROL_FIELD = "cacheControlField"
 
     const val FIELD_POLICY_FOR_FIELD = "forField"
     const val FIELD_POLICY_KEY_ARGS = "keyArgs"
@@ -238,6 +245,7 @@ class Schema internal constructor(
           foreignNames = map["foreignNames"]!! as Map<String, String>,
           directivesToStrip = map["directivesToStrip"]!! as List<String>,
           connectionTypes = (map["connectionTypes"]!! as List<String>).toSet(),
+          maxAges = map["maxAges"]!! as Map<String, Int>,
       )
     }
 

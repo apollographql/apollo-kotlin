@@ -64,6 +64,7 @@ internal object IrSchemaBuilder {
         irInterfaces = irInterfaces,
         irObjects = irObjects,
         connectionTypes = schema.connectionTypes.toList(),
+        maxAges = schema.maxAges,
     )
   }
 }

@@ -1,0 +1,14 @@
+OtherValidationIssue (12:20)
+`@cacheControl` must either provide a `maxAge` or an `inheritMaxAge` set to true
+------------
+OtherValidationIssue (16:11)
+`@cacheControl` must either provide a `maxAge` or an `inheritMaxAge` set to true
+------------
+OtherValidationIssue (30:1)
+`@cacheControlField` must either provide a `maxAge` or an `inheritMaxAge` set to true
+------------
+OtherValidationIssue (32:1)
+Field `age` does not exist on type `Publisher`
+------------
+OtherValidationIssue (33:1)
+`maxAge` must not be negative

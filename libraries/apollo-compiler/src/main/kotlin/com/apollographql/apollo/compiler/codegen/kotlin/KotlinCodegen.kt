@@ -21,6 +21,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.operations.OperationBuil
 import com.apollographql.apollo.compiler.codegen.kotlin.operations.OperationResponseAdapterBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.operations.OperationSelectionsBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.operations.OperationVariablesAdapterBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.schema.CacheBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.CustomScalarAdaptersBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumAsEnumBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumAsSealedBuilder
@@ -49,7 +50,6 @@ import com.apollographql.apollo.compiler.generateMethodsKotlin
 import com.apollographql.apollo.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.IrSchema
-import com.apollographql.apollo.compiler.ir.IrTargetObject
 import com.apollographql.apollo.compiler.maybeTransform
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.operationoutput.findOperationId
@@ -205,6 +205,10 @@ internal object KotlinCodegen {
 
       if (irSchema.connectionTypes.isNotEmpty() && context.resolver.resolve(ResolverKey(ResolverKeyKind.Pagination, "")) == null) {
         builders.add(PaginationBuilder(context, irSchema.connectionTypes))
+      }
+
+      if (irSchema.maxAges.isNotEmpty() && context.resolver.resolve(ResolverKey(ResolverKeyKind.Cache, "")) == null) {
+        builders.add(CacheBuilder(context, irSchema.maxAges))
       }
     }
   }

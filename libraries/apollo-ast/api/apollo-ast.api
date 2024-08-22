@@ -766,6 +766,7 @@ public final class com/apollographql/apollo/ast/GqldirectiveKt {
 
 public final class com/apollographql/apollo/ast/GqldocumentKt {
 	public static final fun builtinDefinitions ()Ljava/util/List;
+	public static final fun cacheDefinitions (Ljava/lang/String;)Ljava/util/List;
 	public static final fun kotlinLabsDefinitions (Ljava/lang/String;)Ljava/util/List;
 	public static final fun linkDefinitions ()Ljava/util/List;
 	public static final fun nullabilityDefinitions (Ljava/lang/String;)Ljava/util/List;
@@ -927,6 +928,8 @@ public final class com/apollographql/apollo/ast/ReservedEnumValueName : com/apol
 }
 
 public final class com/apollographql/apollo/ast/Schema {
+	public static final field CACHE_CONTROL Ljava/lang/String;
+	public static final field CACHE_CONTROL_FIELD Ljava/lang/String;
 	public static final field CATCH Ljava/lang/String;
 	public static final field CATCH_BY_DEFAULT Ljava/lang/String;
 	public static final field Companion Lcom/apollographql/apollo/ast/Schema$Companion;

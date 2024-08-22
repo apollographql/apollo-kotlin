@@ -550,6 +550,7 @@ public final class com/apollographql/apollo/compiler/codegen/ResolverKeyKind : j
 	public static final field ArgumentDefinition Lcom/apollographql/apollo/compiler/codegen/ResolverKeyKind;
 	public static final field BuilderFun Lcom/apollographql/apollo/compiler/codegen/ResolverKeyKind;
 	public static final field BuilderType Lcom/apollographql/apollo/compiler/codegen/ResolverKeyKind;
+	public static final field Cache Lcom/apollographql/apollo/compiler/codegen/ResolverKeyKind;
 	public static final field CustomScalarAdapters Lcom/apollographql/apollo/compiler/codegen/ResolverKeyKind;
 	public static final field Fragment Lcom/apollographql/apollo/compiler/codegen/ResolverKeyKind;
 	public static final field FragmentSelections Lcom/apollographql/apollo/compiler/codegen/ResolverKeyKind;
@@ -576,6 +577,7 @@ public abstract interface class com/apollographql/apollo/compiler/codegen/Schema
 
 public abstract interface class com/apollographql/apollo/compiler/codegen/SchemaLayout : com/apollographql/apollo/compiler/codegen/CommonLayout {
 	public abstract fun assertionsName ()Ljava/lang/String;
+	public abstract fun cacheName ()Ljava/lang/String;
 	public abstract fun paginationName ()Ljava/lang/String;
 	public abstract fun schemaName ()Ljava/lang/String;
 	public abstract fun schemaPackageName ()Ljava/lang/String;

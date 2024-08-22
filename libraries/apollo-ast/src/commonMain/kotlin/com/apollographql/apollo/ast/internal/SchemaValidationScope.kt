@@ -3,6 +3,7 @@ package com.apollographql.apollo.ast.internal
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.ConflictResolution
 import com.apollographql.apollo.ast.DirectiveRedefinition
+import com.apollographql.apollo.ast.GQLBooleanValue
 import com.apollographql.apollo.ast.GQLDefinition
 import com.apollographql.apollo.ast.GQLDirective
 import com.apollographql.apollo.ast.GQLDirectiveDefinition
@@ -11,6 +12,7 @@ import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo.ast.GQLField
 import com.apollographql.apollo.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo.ast.GQLIntValue
 import com.apollographql.apollo.ast.GQLInterfaceTypeDefinition
 import com.apollographql.apollo.ast.GQLListValue
 import com.apollographql.apollo.ast.GQLNamed
@@ -36,6 +38,8 @@ import com.apollographql.apollo.ast.NULLABILITY_VERSION
 import com.apollographql.apollo.ast.NoQueryType
 import com.apollographql.apollo.ast.OtherValidationIssue
 import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.Schema.Companion.CACHE_CONTROL
+import com.apollographql.apollo.ast.Schema.Companion.CACHE_CONTROL_FIELD
 import com.apollographql.apollo.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo.ast.builtinDefinitions
 import com.apollographql.apollo.ast.cacheDefinitions
@@ -215,6 +219,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   val keyFields = mergedScope.validateAndComputeKeyFields()
   val connectionTypes = mergedScope.computeConnectionTypes()
+  val maxAges = mergedScope.computeMaxAges()
 
   return GQLResult(
       Schema(
@@ -223,6 +228,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
           foreignNames = foreignNames,
           directivesToStrip = directivesToStrip,
           connectionTypes = connectionTypes,
+          maxAges = maxAges,
       ),
       issues
   )
@@ -518,7 +524,8 @@ private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition?
     issues.add(OtherValidationIssue(
         message = "Schemas that include nullability directives must opt-in a default CatchTo. Use `extend schema @catchByDefault(to: \$to)`",
         sourceLocation = null
-    ))
+    )
+    )
     return
   }
 
@@ -530,13 +537,15 @@ private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition?
     issues.add(OtherValidationIssue(
         message = "Schemas that include nullability directives must opt-in a default CatchTo. Use `extend schema @catchByDefault(to: \$to)`",
         sourceLocation = schemaDefinition.sourceLocation
-    ))
+    )
+    )
     return
   } else if (catches.size > 1) {
     issues.add(OtherValidationIssue(
         message = "There can be only one `@catch` directive on the schema definition",
         sourceLocation = schemaDefinition.sourceLocation
-    ))
+    )
+    )
     return
   }
 }
@@ -674,6 +683,63 @@ internal fun ValidationScope.computeConnectionTypes(): Set<String> {
     }
   }
   return connectionTypes
+}
+
+internal fun ValidationScope.computeMaxAges(): Map<String, Int> {
+  fun GQLDirective.maxAgeAndInherit(): Pair<Int?, Boolean> {
+    val maxAge = (arguments.firstOrNull { it.name == "maxAge" }?.value as? GQLIntValue)?.value?.toIntOrNull()
+    if (maxAge != null && maxAge < 0) {
+      registerIssue("`maxAge` must not be negative", sourceLocation)
+      return null to false
+    }
+    val inheritMaxAge = (arguments.firstOrNull { it.name == "inheritMaxAge" }?.value as? GQLBooleanValue)?.value == true
+    if (maxAge == null && !inheritMaxAge || maxAge != null && inheritMaxAge) {
+      registerIssue("`@$name` must either provide a `maxAge` or an `inheritMaxAge` set to true", sourceLocation)
+      return null to false
+    }
+    return maxAge to inheritMaxAge
+  }
+
+  val maxAges = mutableMapOf<String, Int>()
+  for (typeDefinition in typeDefinitions.values) {
+    val typeCacheControlDirective = typeDefinition.directives.firstOrNull { originalDirectiveName(it.name) == CACHE_CONTROL }
+    if (typeCacheControlDirective != null) {
+      val (maxAge, inheritMaxAge) = typeCacheControlDirective.maxAgeAndInherit()
+      if (maxAge != null) {
+        maxAges[typeDefinition.name] = maxAge
+      } else if (inheritMaxAge) {
+        maxAges[typeDefinition.name] = -1
+      }
+    }
+
+    val typeCacheControlFieldDirectives = typeDefinition.directives.filter { originalDirectiveName(it.name) == CACHE_CONTROL_FIELD }
+    for (fieldDirective in typeCacheControlFieldDirectives) {
+      val fieldName = (fieldDirective.arguments.first { it.name == "name" }.value as GQLStringValue).value
+      if (typeDefinition.fields.none { it.name == fieldName }) {
+        registerIssue("Field `$fieldName` does not exist on type `${typeDefinition.name}`", fieldDirective.sourceLocation)
+        continue
+      }
+      val (maxAge, inheritMaxAge) = fieldDirective.maxAgeAndInherit()
+      if (maxAge != null) {
+        maxAges["${typeDefinition.name}.$fieldName"] = maxAge
+      } else if (inheritMaxAge) {
+        maxAges["${typeDefinition.name}.$fieldName"] = -1
+      }
+    }
+
+    for (field in typeDefinition.fields) {
+      val fieldCacheControlDirective = field.directives.firstOrNull { originalDirectiveName(it.name) == CACHE_CONTROL }
+      if (fieldCacheControlDirective != null) {
+        val (maxAge, inheritMaxAge) = fieldCacheControlDirective.maxAgeAndInherit()
+        if (maxAge != null) {
+          maxAges["${typeDefinition.name}.${field.name}"] = maxAge
+        } else if (inheritMaxAge) {
+          maxAges["${typeDefinition.name}.${field.name}"] = -1
+        }
+      }
+    }
+  }
+  return maxAges
 }
 
 private val GQLTypeDefinition.fields

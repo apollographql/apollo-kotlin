@@ -36,6 +36,7 @@ internal class DefaultIrSchema(
     val irInterfaces: List<IrInterface>,
     val irObjects: List<IrObject>,
     val connectionTypes: List<String>,
+    val maxAges: Map<String, Int>,
 ) : IrSchema
 
 interface IrSchema

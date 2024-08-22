@@ -1,0 +1,12 @@
+{
+    "typeToFieldsToArguments": {
+        "Book": {
+        },
+        "String": {
+        },
+        "Query": {
+        },
+        "Reader": {
+        }
+    }
+}

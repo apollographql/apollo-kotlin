@@ -89,6 +89,10 @@ internal class LayoutImpl(
     return "Pagination"
   }
 
+  override fun cacheName(): String {
+    return "Cache"
+  }
+
   override fun operationName(name: String, capitalizedOperationType: String): String {
     return className(name).let {
       if (useSemanticNaming) {
@@ -156,6 +160,7 @@ internal fun SchemaLayout.typeAdapterPackageName() = "${schemaPackageName()}.typ
 internal fun SchemaLayout.typeUtilPackageName() = "${schemaPackageName()}.type.util"
 
 internal fun SchemaLayout.paginationPackageName() = "${schemaPackageName()}.pagination"
+internal fun SchemaLayout.cachePackageName() = "${schemaPackageName()}.cache"
 internal fun SchemaLayout.schemaSubPackageName() = "${schemaPackageName()}.schema"
 
 internal fun SchemaLayout.javaOptionalAdapterClassName() = "OptionalAdapter"
