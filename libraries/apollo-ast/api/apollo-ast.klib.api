@@ -1049,23 +1049,16 @@ open class com.apollographql.apollo.ast/SourceAwareException : kotlin/RuntimeExc
     final val sourceLocation // com.apollographql.apollo.ast/SourceAwareException.sourceLocation|{}sourceLocation[0]
         final fun <get-sourceLocation>(): com.apollographql.apollo.ast/SourceLocation? // com.apollographql.apollo.ast/SourceAwareException.sourceLocation.<get-sourceLocation>|<get-sourceLocation>(){}[0]
 }
-sealed class com.apollographql.apollo.ast/GQLSelection : com.apollographql.apollo.ast/GQLNode { // com.apollographql.apollo.ast/GQLSelection|null[0]
-    constructor <init>() // com.apollographql.apollo.ast/GQLSelection.<init>|<init>(){}[0]
-}
-sealed class com.apollographql.apollo.ast/GQLType : com.apollographql.apollo.ast/GQLNode { // com.apollographql.apollo.ast/GQLType|null[0]
-    constructor <init>() // com.apollographql.apollo.ast/GQLType.<init>|<init>(){}[0]
-}
+sealed class com.apollographql.apollo.ast/GQLSelection : com.apollographql.apollo.ast/GQLNode // com.apollographql.apollo.ast/GQLSelection|null[0]
+sealed class com.apollographql.apollo.ast/GQLType : com.apollographql.apollo.ast/GQLNode // com.apollographql.apollo.ast/GQLType|null[0]
 sealed class com.apollographql.apollo.ast/GQLTypeDefinition : com.apollographql.apollo.ast/GQLDefinition, com.apollographql.apollo.ast/GQLDescribed, com.apollographql.apollo.ast/GQLHasDirectives, com.apollographql.apollo.ast/GQLNamed { // com.apollographql.apollo.ast/GQLTypeDefinition|null[0]
-    constructor <init>() // com.apollographql.apollo.ast/GQLTypeDefinition.<init>|<init>(){}[0]
     final fun isBuiltIn(): kotlin/Boolean // com.apollographql.apollo.ast/GQLTypeDefinition.isBuiltIn|isBuiltIn(){}[0]
     final object Companion { // com.apollographql.apollo.ast/GQLTypeDefinition.Companion|null[0]
         final val builtInTypes // com.apollographql.apollo.ast/GQLTypeDefinition.Companion.builtInTypes|{}builtInTypes[0]
             final fun <get-builtInTypes>(): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.ast/GQLTypeDefinition.Companion.builtInTypes.<get-builtInTypes>|<get-builtInTypes>(){}[0]
     }
 }
-sealed class com.apollographql.apollo.ast/GQLValue : com.apollographql.apollo.ast/GQLNode { // com.apollographql.apollo.ast/GQLValue|null[0]
-    constructor <init>() // com.apollographql.apollo.ast/GQLValue.<init>|<init>(){}[0]
-}
+sealed class com.apollographql.apollo.ast/GQLValue : com.apollographql.apollo.ast/GQLNode // com.apollographql.apollo.ast/GQLValue|null[0]
 sealed interface com.apollographql.apollo.ast/ApolloIssue : com.apollographql.apollo.ast/Issue // com.apollographql.apollo.ast/ApolloIssue|null[0]
 sealed interface com.apollographql.apollo.ast/GQLDefinition : com.apollographql.apollo.ast/GQLNode // com.apollographql.apollo.ast/GQLDefinition|null[0]
 sealed interface com.apollographql.apollo.ast/GQLExecutableDefinition : com.apollographql.apollo.ast/GQLDefinition // com.apollographql.apollo.ast/GQLExecutableDefinition|null[0]
