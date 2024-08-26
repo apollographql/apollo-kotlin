@@ -92,8 +92,7 @@ private constructor(
      * This is used as a hint by the watchers to make sure to subscribe before the last item is emitted.
      *
      * There can be false negatives where [isLast] is false if the producer does not know in advance if
-     * other items are emitted. For an example, the CacheAndNetwork fetch policy doesn't emit the network
-     * item if it fails.
+     * other items are emitted.
      *
      * There must not be false positives. If [isLast] is true, no other items must follow.
      */
