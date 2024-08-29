@@ -96,7 +96,8 @@ internal class JavaResolver(
     val result = resolve(ResolverKey(kind, id))
 
     check(result != null) {
-      "Cannot resolve $kind($id)"
+        "Cannot resolve $kind($id)" +
+          "Have you set up an 'opposite link' the downstream project to the schema module as a isADependencyOf(..)?"
     }
     return result
   }
