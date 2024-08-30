@@ -83,6 +83,11 @@ mypackage.MyPluginProvider
 The name of the resource file is important. It must be `com.apollographql.apollo.compiler.ApolloCompilerPluginProvider` and be in the `META-INF/services` folder. This is how `ServiceLoader` looks up plugins at runtime.
 </Note>
 
+<Note>
+
+Only a single plugin is supported at this time. If you need more, you can usually have a single wrapper plugin that calls your different implementations in the required order. 
+</Note>
+
 ## Adding a plugin to the Apollo compiler classpath
 
 Use the `Service.plugin()` Gradle method to add the plugin to the Apollo compiler classpath:
