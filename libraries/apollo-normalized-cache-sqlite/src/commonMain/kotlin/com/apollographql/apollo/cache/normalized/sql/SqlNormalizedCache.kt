@@ -121,14 +121,19 @@ class SqlNormalizedCache internal constructor(
   /**
    * Assume an enclosing transaction
    */
-  private fun internalDeleteRecord(key: String, cascade: Boolean): Boolean {
+  private fun internalDeleteRecord(key: String, cascade: Boolean, visited: MutableSet<String> = mutableSetOf()): Boolean {
     if (cascade) {
+      // If we've already visited this key, return to prevent infinite loop
+      if (key in visited) return false
+      visited.add(key)
+
       recordDatabase.select(key)
           ?.referencedFields()
           ?.forEach {
             internalDeleteRecord(
                 key = it.key,
                 cascade = true,
+                visited = visited
             )
           }
     }
