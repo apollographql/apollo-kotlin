@@ -37,6 +37,7 @@ dependencies {
   testImplementation(libs.okhttp.tls)
 
   testImplementation(libs.apollo.execution)
+  testImplementation(libs.apollo.execution.http4k)
 
   testImplementation(platform(libs.http4k.bom.get()))
   testImplementation(libs.http4k.core)

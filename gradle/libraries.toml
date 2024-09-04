@@ -79,6 +79,7 @@ apollo-compiler = { group = "com.apollographql.apollo", name = "apollo-compiler"
 apollo-ast = { group = "com.apollographql.apollo", name = "apollo-ast", version.ref = "apollo" }
 apollo-execution = { group = "com.apollographql.execution", name = "apollo-execution-runtime", version.ref = "apollo-execution" }
 apollo-execution-ktor = { group = "com.apollographql.execution", name = "apollo-execution-ktor", version.ref = "apollo-execution" }
+apollo-execution-http4k = { group = "com.apollographql.execution", name = "apollo-execution-http4k", version.ref = "apollo-execution" }
 apollo-execution-processor = { group = "com.apollographql.execution", name = "apollo-execution-processor", version.ref = "apollo-execution" }
 apollo-execution-gradle-plugin = { group = "com.apollographql.execution", name = "apollo-execution-gradle-plugin", version.ref = "apollo-execution" }
 # Used by the apollo-tooling project which uses a published version of Apollo
