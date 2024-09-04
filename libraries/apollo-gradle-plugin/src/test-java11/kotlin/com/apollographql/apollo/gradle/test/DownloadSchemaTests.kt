@@ -3,7 +3,7 @@ package com.apollographql.apollo.gradle.test
 
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.execution.ExecutableSchema
-import com.apollographql.execution.parsePostGraphQLRequest
+import com.apollographql.execution.parseGraphQLRequest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.tls.HandshakeCertificates
@@ -290,7 +290,7 @@ class DownloadSchemaTests {
     override fun invoke(request: Request): Response {
 
       val graphQLRequestResult = when (request.method) {
-        org.http4k.core.Method.POST -> request.body.stream.source().buffer().use { it.parsePostGraphQLRequest() }
+        org.http4k.core.Method.POST -> request.body.stream.source().buffer().use { it.parseGraphQLRequest() }
         else -> error("")
       }
 
