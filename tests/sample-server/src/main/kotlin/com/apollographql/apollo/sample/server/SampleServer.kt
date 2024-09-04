@@ -3,8 +3,8 @@ package com.apollographql.apollo.sample.server
 import com.apollographql.apollo.sample.server.graphql.SubscriptionRoot
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.execution.ExecutableSchema
-import com.apollographql.execution.parseGetGraphQLRequest
-import com.apollographql.execution.parsePostGraphQLRequest
+import com.apollographql.execution.parseGraphQLRequest
+import com.apollographql.execution.parseGraphQLRequest
 import com.apollographql.execution.websocket.ConnectionInitAck
 import com.apollographql.execution.websocket.ConnectionInitError
 import com.apollographql.execution.websocket.ConnectionInitHandler
@@ -59,8 +59,8 @@ class GraphQLHttpHandler(private val executableSchema: ExecutableSchema, private
   override fun invoke(request: Request): Response {
 
     val graphQLRequestResult = when (request.method) {
-      Method.GET -> request.uri.toString().parseGetGraphQLRequest()
-      Method.POST -> request.body.stream.source().buffer().use { it.parsePostGraphQLRequest() }
+      Method.GET -> request.uri.toString().parseGraphQLRequest()
+      Method.POST -> request.body.stream.source().buffer().use { it.parseGraphQLRequest() }
       else -> error("")
     }
 

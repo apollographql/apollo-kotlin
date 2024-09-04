@@ -2,8 +2,6 @@ schema {
   query: Query
 }
 
-scalar Fields
-
 """
  The root query
 """
@@ -43,3 +41,5 @@ type Record {
 
   sizeInBytes: Int!
 }
+
+scalar Fields

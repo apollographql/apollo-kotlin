@@ -1,31 +1,17 @@
-package com.apollographql.apollo.gradle.test
+package test
 
-
-import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.execution.ExecutableSchema
-import com.apollographql.execution.parsePostGraphQLRequest
+import com.apollographql.execution.http4k.apolloHandler
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.tls.HandshakeCertificates
 import okhttp3.tls.HeldCertificate
-import okio.Buffer
-import okio.buffer
-import okio.source
 import org.gradle.testkit.runner.TaskOutcome
-import org.http4k.core.HttpHandler
-import org.http4k.core.Method
-import org.http4k.core.Request
-import org.http4k.core.Response
-import org.http4k.core.Status
-import org.http4k.routing.bind
-import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
-import org.junit.Assert.assertEquals
+import org.junit.Assert
 import org.junit.Test
 import util.TestUtils
-import util.TestUtils.withSimpleProject
-import util.TestUtils.withTestProject
 import java.io.File
 
 class DownloadSchemaTests {
@@ -158,13 +144,13 @@ class DownloadSchemaTests {
 
   @Test
   fun `schema is downloaded correctly`() {
-    withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
+    TestUtils.withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
       mockServer.enqueue(MockResponse().setBody(preIntrospectionResponse))
       mockServer.enqueue(MockResponse().setBody(schemaString1))
 
       TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
 
-      assertEquals(schemaString1, File(dir, "src/main/graphql/com/example/schema.json").readText())
+      Assert.assertEquals(schemaString1, File(dir, "src/main/graphql/com/example/schema.json").readText())
     }
   }
 
@@ -172,30 +158,30 @@ class DownloadSchemaTests {
   @Test
   fun `download schema is never up-to-date`() {
 
-    withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
+    TestUtils.withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
       val preIntrospectionMockResponse = MockResponse().setBody(preIntrospectionResponse)
       val schemaMockResponse = MockResponse().setBody(schemaString1)
       mockServer.enqueue(preIntrospectionMockResponse)
       mockServer.enqueue(schemaMockResponse)
 
       var result = TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
-      assertEquals(TaskOutcome.SUCCESS, result.task(":downloadMockApolloSchemaFromIntrospection")?.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":downloadMockApolloSchemaFromIntrospection")?.outcome)
 
       mockServer.enqueue(preIntrospectionMockResponse)
       mockServer.enqueue(schemaMockResponse)
 
       // Since the task does not declare any output, it should never be up-to-date
       result = TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
-      assertEquals(TaskOutcome.SUCCESS, result.task(":downloadMockApolloSchemaFromIntrospection")?.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":downloadMockApolloSchemaFromIntrospection")?.outcome)
 
-      assertEquals(schemaString1, File(dir, "src/main/graphql/com/example/schema.json").readText())
+      Assert.assertEquals(schemaString1, File(dir, "src/main/graphql/com/example/schema.json").readText())
     }
   }
 
   @Test
   fun `download schema is never cached`() {
 
-    withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
+    TestUtils.withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
       val buildCacheDir = File(dir, "buildCache")
 
       File(dir, "settings.gradle").appendText(""" 
@@ -206,7 +192,8 @@ class DownloadSchemaTests {
                 directory '${buildCacheDir.absolutePath}'
             }
         }
-      """.trimIndent())
+      """.trimIndent()
+      )
 
       val schemaFile = File(dir, "src/main/graphql/com/example/schema.json")
 
@@ -215,20 +202,20 @@ class DownloadSchemaTests {
       mockServer.enqueue(MockResponse().setBody(schemaString1))
 
       TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir, "--build-cache")
-      assertEquals(schemaString1, schemaFile.readText())
+      Assert.assertEquals(schemaString1, schemaFile.readText())
 
       mockServer.enqueue(preIntrospectionMockResponse)
       mockServer.enqueue(MockResponse().setBody(schemaString2))
 
       TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir, "--build-cache")
-      assertEquals(schemaString2, schemaFile.readText())
+      Assert.assertEquals(schemaString2, schemaFile.readText())
     }
   }
 
   @Test
   fun `manually downloading a schema is working`() {
 
-    withSimpleProject(apolloConfiguration = "") { dir ->
+    TestUtils.withSimpleProject(apolloConfiguration = "") { dir ->
       mockServer.enqueue(MockResponse().setBody(preIntrospectionResponse))
       mockServer.enqueue(MockResponse().setBody(schemaString1))
 
@@ -240,15 +227,16 @@ class DownloadSchemaTests {
 
       TestUtils.executeGradle(dir, "downloadApolloSchema",
           "--schema=${schema.absolutePath}",
-          "--endpoint=${mockServer.url("/")}")
+          "--endpoint=${mockServer.url("/")}"
+      )
 
-      assertEquals(schemaString1, schema.readText())
+      Assert.assertEquals(schemaString1, schema.readText())
     }
   }
 
   @Test
   fun `manually downloading a schema from self signed endpoint is working`() {
-    withSimpleProject(apolloConfiguration = "") { dir ->
+    TestUtils.withSimpleProject(apolloConfiguration = "") { dir ->
       mockServer.enqueue(MockResponse().setBody(preIntrospectionResponse))
       mockServer.enqueue(MockResponse().setBody(schemaString1))
 
@@ -261,9 +249,10 @@ class DownloadSchemaTests {
       TestUtils.executeGradle(dir, "downloadApolloSchema",
           "--schema=${schema.absolutePath}",
           "--endpoint=${mockServer.url("/")}",
-          "--insecure")
+          "--insecure"
+      )
 
-      assertEquals(schemaString1, schema.readText())
+      Assert.assertEquals(schemaString1, schema.readText())
     }
   }
 
@@ -273,40 +262,16 @@ class DownloadSchemaTests {
         .schema("type Query {foo: Int}")
         .build()
 
-    val server = routes("/graphql" bind Method.POST to GraphQLHttpHandler(executableSchema, ExecutionContext.Empty))
+    val server = apolloHandler(executableSchema)
         .asServer(Jetty(8001))
         .start()
 
-    val buildResult = withTestProject("downloadIntrospection") {dir ->
+    val buildResult = TestUtils.withTestProject("downloadIntrospection") { dir ->
       TestUtils.executeGradle(dir, "downloadServiceApolloSchemaFromIntrospection")
     }
 
-    assertEquals(TaskOutcome.SUCCESS, buildResult.task(":downloadServiceApolloSchemaFromIntrospection")?.outcome)
+    Assert.assertEquals(TaskOutcome.SUCCESS, buildResult.task(":downloadServiceApolloSchemaFromIntrospection")?.outcome)
 
     server.stop()
-  }
-
-  class GraphQLHttpHandler(private val executableSchema: ExecutableSchema, private val executionContext: ExecutionContext) : HttpHandler {
-    override fun invoke(request: Request): Response {
-
-      val graphQLRequestResult = when (request.method) {
-        org.http4k.core.Method.POST -> request.body.stream.source().buffer().use { it.parsePostGraphQLRequest() }
-        else -> error("")
-      }
-
-      if (graphQLRequestResult.isFailure) {
-        return Response(Status.BAD_REQUEST).body(graphQLRequestResult.exceptionOrNull()?.message ?: "")
-      }
-
-      val response = executableSchema.execute(graphQLRequestResult.getOrThrow(), executionContext)
-
-      val buffer = Buffer()
-      response.serialize(buffer)
-      val responseText = buffer.readUtf8()
-
-      return Response(Status.OK)
-          .header("content-type", "application/json")
-          .body(responseText)
-    }
   }
 }

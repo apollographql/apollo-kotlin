@@ -9,22 +9,18 @@ import com.apollographql.apollo.cache.normalized.apolloStore
 import com.apollographql.execution.Coercing
 import com.apollographql.execution.ExecutableSchema
 import com.apollographql.execution.StringCoercing
-import com.apollographql.execution.annotation.GraphQLCoercing
 import com.apollographql.execution.annotation.GraphQLName
-import com.apollographql.execution.annotation.GraphQLQueryRoot
+import com.apollographql.execution.annotation.GraphQLQuery
 import com.apollographql.execution.annotation.GraphQLScalar
 import com.apollographql.execution.internal.ExternalValue
 import com.apollographql.execution.internal.InternalValue
-import com.apollographql.execution.parsePostGraphQLRequest
+import com.apollographql.execution.parseGraphQLRequest
 import okio.Buffer
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 
-@GraphQLScalar
+@GraphQLScalar(StringCoercing::class)
 internal typealias ID = String
-
-@GraphQLCoercing
-internal object IDCoercing: Coercing<ID> by StringCoercing
 
 internal class GraphQL(
     private val apolloClients: AtomicReference<Map<ApolloClient, String>>,
@@ -37,7 +33,7 @@ internal class GraphQL(
   }
 
   fun executeGraphQL(jsonBody: String): String {
-    val graphQLRequestResult = Buffer().writeUtf8(jsonBody).parsePostGraphQLRequest()
+    val graphQLRequestResult = Buffer().writeUtf8(jsonBody).parseGraphQLRequest()
     if (!graphQLRequestResult.isSuccess) {
       return graphQLRequestResult.exceptionOrNull()!!.message!!
     }
@@ -53,7 +49,7 @@ internal class GraphQL(
 /**
  * The root query
  */
-@GraphQLQueryRoot
+@GraphQLQuery
 internal class Query(private val apolloClients: AtomicReference<Map<ApolloClient, String>>) {
   private fun graphQLApolloClients() =
     apolloClients.get().map { (apolloClient, apolloClientId) ->
@@ -111,7 +107,7 @@ internal class NormalizedCache(
   fun records(): List<GraphQLRecord> = records.map { GraphQLRecord(it.value) }
 }
 
-@GraphQLScalar
+@GraphQLScalar(FieldsCoercing::class)
 typealias Fields = Map<String, Any?>
 
 @GraphQLName("Record")
@@ -125,8 +121,7 @@ internal class GraphQLRecord(
   fun sizeInBytes(): Int = record.sizeInBytes
 }
 
-@GraphQLCoercing
-internal class FieldsCoercing : Coercing<Fields> {
+internal object FieldsCoercing : Coercing<Fields> {
   // Taken from JsonRecordSerializer
   @Suppress("UNCHECKED_CAST")
   private fun InternalValue.toExternal(): ExternalValue {
