@@ -1,6 +1,7 @@
 package com.apollographql.apollo.cache.normalized
 
 import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.api.json.JsonNumber
 import com.apollographql.apollo.cache.normalized.api.CacheKey
 import com.apollographql.apollo.cache.normalized.api.Record
 import com.apollographql.apollo.cache.normalized.api.internal.JsonRecordSerializer
@@ -24,16 +25,18 @@ class JsonRecordSerializerTest {
     val expectedMapValue = "bar"
     val expectedMap = mapOf(expectedMapKey to expectedMapValue)
     val expectLongValue: Long = 1
+    val expectedNumberValue = JsonNumber(Long.MAX_VALUE.toString() + "0")
     val record = Record(
         key = "root",
         fields = mapOf(
-            "double" to expectedDouble,
+            "nullValue" to null,
             "string" to expectedStringValue,
             "boolean" to expectedBooleanValue,
+            "double" to expectedDouble,
+            "number" to expectedNumberValue,
             "cacheReference" to expectedCacheKey,
             "scalarList" to expectedScalarList,
             "referenceList" to expectedCacheKeyList,
-            "nullValue" to null,
             "listOfScalarList" to expectedListOfScalarList,
             "map" to expectedMap,
             "long" to expectLongValue
@@ -60,6 +63,7 @@ class JsonRecordSerializerTest {
     // This is OK as the generated parser know what to expect and will convert back to Long if needed.
     // This test compares Strings to avoid a failure.
     assertEquals(actual = deserializedMap["long"]?.toString(), expected = expectLongValue.toString())
+    assertEquals(actual = deserializedMap["number"], expected = expectedNumberValue)
 
   }
 }
