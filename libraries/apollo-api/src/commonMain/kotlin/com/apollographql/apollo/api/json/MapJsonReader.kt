@@ -418,12 +418,13 @@ constructor(
  * generally be avoided in application code.
  *
  * [ApolloJsonElement] can be any of:
- * - String
- * - Int
- * - Double
- * - Long
- * - JsonNumber
  * - null
+ * - String
+ * - Boolean
+ * - Int
+ * - Long
+ * - Double
+ * - JsonNumber
  * - Map<String, ApolloJsonElement> where values are any of these values recursively
  * - List<ApolloJsonElement> where values are any of these values recursively
  * - dynamic for advanced use cases using @JsExport
