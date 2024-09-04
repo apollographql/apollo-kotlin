@@ -67,7 +67,13 @@ tasks.configureEach {
 
 apolloExecution {
   service("apolloDebugServer") {
-    packageName = "com.apollographql.apollo.debugserver.internal.graphql"
-    schemaPath.set("graphql/schema.graphqls")
+    packageName.set("com.apollographql.apollo.debugserver.internal.graphql")
   }
+}
+
+/**
+ * apolloCheckSchema is registered as a dependent of build but the ci doesn't call the "build" task directly
+ */
+tasks.named("jvmTest") {
+  finalizedBy("apolloCheckSchema")
 }

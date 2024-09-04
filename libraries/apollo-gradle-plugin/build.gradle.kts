@@ -85,7 +85,6 @@ if (relocateJar) {
       apiDependencies.remove(it)
     }
 
-
     configurations.named("compileOnly").configure {
       extendsFrom(shadeConfiguration)
     }
