@@ -1,0 +1,38 @@
+# Exactly one field must be supplied to the OneOf input object
+query Query1 {
+  field(myInput: <error descr="Exactly one field must be supplied to the OneOf input object \"MyInput\"">{ a: "a", b: 2 }</error>)
+}
+
+query Query2 {
+  field(myInput: { c: <error descr="Exactly one field must be supplied to the OneOf input object \"MyInput2\"">{ d: "c", e: 4 }</error> })
+}
+
+# The field supplied to the OneOf input object must not be null
+query Query3 {
+  field(myInput: <error descr="The field \"a\" supplied to the OneOf input object \"MyInput\" must not be null">{ a: null }</error>)
+}
+
+query Query4 {
+  field(myInput: { c: <error descr="The field \"d\" supplied to the OneOf input object \"MyInput2\" must not be null">{ d: null }</error> })
+}
+
+query Query5 {
+  field2(myInput: [ { a: "" }, <error descr="The field \"a\" supplied to the OneOf input object \"MyInput\" must not be null">{ a: null }</error> ])
+}
+
+# Variable used in a OneOf input type must be a non-null type
+query Query6($var: String) {
+  field(myInput: <error descr="The variable \"var\" of type \"String\" used in a OneOf input type must be a non-null type">{ a: $var }</error>)
+}
+
+query Query7($var: String) {
+  field(myInput: { c: <error descr="The variable \"var\" of type \"String\" used in a OneOf input type must be a non-null type">{ d: $var }</error> })
+}
+
+query Query8($var: String) {
+  ...MyFragment
+}
+
+fragment MyFragment on Query {
+  field(myInput: <error descr="The variable \"var\" of type \"String\" used in a OneOf input type must be a non-null type">{ a: $var }</error>)
+}
