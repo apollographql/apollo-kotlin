@@ -1,7 +1,9 @@
 package com.apollographql.apollo.cache.normalized.api.internal
 
+import com.apollographql.apollo.api.json.JsonNumber
 import com.apollographql.apollo.cache.normalized.api.CacheKey
 import com.apollographql.apollo.cache.normalized.api.Record
+import com.apollographql.apollo.cache.normalized.api.RecordValue
 import okio.internal.commonAsUtf8ToByteArray
 import kotlin.jvm.JvmStatic
 
@@ -30,7 +32,7 @@ internal object RecordWeigher {
     return size
   }
 
-  private fun weighField(field: Any?): Int {
+  private fun weighField(field: RecordValue): Int {
     return when (field) {
       null -> SIZE_OF_NULL
       is String -> field.commonAsUtf8ToByteArray().size
@@ -38,6 +40,14 @@ internal object RecordWeigher {
       is Int -> SIZE_OF_INT
       is Long -> SIZE_OF_LONG // Might happen with LongDataAdapter
       is Double -> SIZE_OF_DOUBLE
+      is JsonNumber -> field.value.commonAsUtf8ToByteArray().size + SIZE_OF_LONG
+      /**
+       * Custom scalars with a json object representation are stored directly in the record
+       */
+      is Map<*, *> -> {
+        SIZE_OF_MAP_OVERHEAD + field.keys.sumOf { weighField(it) } + field.values.sumOf { weighField(it) }
+      }
+
       is List<*> -> {
         SIZE_OF_ARRAY_OVERHEAD + field.sumOf { weighField(it) }
       }
@@ -45,12 +55,7 @@ internal object RecordWeigher {
       is CacheKey -> {
         SIZE_OF_CACHE_KEY_OVERHEAD + field.key.commonAsUtf8ToByteArray().size
       }
-      /**
-       * Custom scalars with a json object representation are stored directly in the record
-       */
-      is Map<*, *> -> {
-        SIZE_OF_MAP_OVERHEAD + field.keys.sumOf { weighField(it) } + field.values.sumOf { weighField(it) }
-      }
+
       else -> error("Unknown field type in Record: '$field'")
     }
   }

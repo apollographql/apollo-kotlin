@@ -1,0 +1,5 @@
+scalar Number
+
+type Query {
+  number: Number
+}

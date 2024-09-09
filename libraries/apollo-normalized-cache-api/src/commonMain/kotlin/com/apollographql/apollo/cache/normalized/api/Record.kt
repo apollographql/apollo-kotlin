@@ -23,7 +23,7 @@ class Record(
      * - Map (for custom scalars)
      * - null
      */
-    val fields: Map<String, Any?>,
+    val fields: Map<String, RecordValue>,
     val mutationId: Uuid? = null,
 ) : Map<String, Any?> by fields {
 
@@ -124,3 +124,14 @@ class Record(
     }
   }
 }
+
+/**
+ * A typealias for a type-unsafe Kotlin representation of a Record value. This typealias is
+ * mainly for internal documentation purposes and low-level manipulations and should
+ * generally be avoided in application code.
+ *
+ * [RecordValue] can be any of:
+ * - [com.apollographql.apollo.api.json.ApolloJsonElement]
+ * - [CacheKey]
+ */
+typealias RecordValue = Any?
