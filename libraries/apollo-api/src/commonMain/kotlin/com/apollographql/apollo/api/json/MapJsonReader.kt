@@ -187,18 +187,15 @@ constructor(
   }
 
   override fun nextString(): String {
-    // If we have a number, we convert it to a string
-    when (peek()) {
-      JsonReader.Token.STRING,
-      JsonReader.Token.NUMBER,
-      JsonReader.Token.LONG,
-      -> Unit
-      else -> {
-        throw JsonDataException("Expected a String but was ${peek()} at path ${getPathAsString()}")
-      }
-    }
-
-    return (peekedData!!.toString()).also {
+    return when (val value = peekedData) {
+      is Int -> value.toString()
+      is Long -> value.toString()
+      is Double -> value.toString()
+      is String -> value
+      null -> "null"
+      is JsonNumber -> value.value
+      else -> error("Expected a String but got $value instead")
+    }.also {
       advanceIterator()
     }
   }
