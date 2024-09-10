@@ -257,6 +257,7 @@ class GradleToolingModelService(
                 .distinct(),
             endpointUrl = serviceInfo.endpointUrlCompat(toolingModel),
             endpointHeaders = serviceInfo.endpointHeadersCompat(toolingModel),
+            upstreamServiceIds = upstreamApolloKotlinServices.map { it.id }
         )
       }
     }

@@ -43,6 +43,9 @@ data class ApolloKotlinService(
 
     @XCollection
     val endpointHeaders: Map<String, String>? = null,
+
+    @XCollection
+    val upstreamServiceIds: List<Id> = emptyList(),
 ) {
   data class Id(
       @Attribute
@@ -67,5 +70,4 @@ data class ApolloKotlinService(
   val id: Id
     @Transient
     get() = Id(gradleProjectPath, serviceName)
-
 }
