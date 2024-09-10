@@ -52,20 +52,19 @@ data class ApolloKotlinService(
       val serviceName: String = "",
   ) {
     override fun toString(): String {
-      val formattedPath = gradleProjectPath.split(":").filterNot { it.isEmpty() }.joinToString("-")
-      return "$formattedPath/$serviceName"
+      return "$gradleProjectPath/$serviceName"
     }
 
     companion object {
       fun fromString(string: String): Id? {
-        val split = string.split("/")
+        val split = string.split("/", limit = 2)
         if (split.size != 2) return null
         return Id(split[0], split[1])
       }
     }
   }
 
-  val id
+  val id: Id
     @Transient
     get() = Id(gradleProjectPath, serviceName)
 
