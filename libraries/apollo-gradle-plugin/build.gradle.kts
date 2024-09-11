@@ -73,6 +73,10 @@ if (relocateJar) {
 
       // Remove proguard rules from dependencies, we'll manage them ourselves
       exclude("META-INF/proguard/.*")
+
+      systemClassesToolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+      }
     }
 
     // The java-gradle-plugin adds `gradleApi()` to the `api` implementation but it contains some JDK15 bytecode at
