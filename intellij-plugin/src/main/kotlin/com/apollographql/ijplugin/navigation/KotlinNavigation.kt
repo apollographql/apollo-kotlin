@@ -1,10 +1,10 @@
 package com.apollographql.ijplugin.navigation
 
 import com.apollographql.ijplugin.util.capitalizeFirstLetter
-import com.apollographql.ijplugin.util.cast
+import com.apollographql.ijplugin.util.className
 import com.apollographql.ijplugin.util.decapitalizeFirstLetter
 import com.apollographql.ijplugin.util.findChildrenOfType
-import com.apollographql.ijplugin.util.type
+import com.apollographql.ijplugin.util.typeArgumentClassName
 import com.intellij.lang.jsgraphql.psi.GraphQLElement
 import com.intellij.lang.jsgraphql.psi.GraphQLEnumTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLEnumValue
@@ -22,8 +22,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiShortNamesCache
 import com.intellij.psi.util.parentOfType
-import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
-import org.jetbrains.kotlin.idea.base.utils.fqname.fqName
+import org.jetbrains.kotlin.light.classes.symbol.classes.SymbolLightClassForClassLike
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtEnumEntry
 import org.jetbrains.kotlin.psi.KtNamedDeclaration
@@ -57,15 +56,14 @@ fun findKotlinFieldDefinitions(graphQLField: GraphQLField): List<PsiElement> {
       // Look for the element in the constructor parameters (for data classes) and in the properties (for interfaces)
       val properties = c.primaryConstructor?.valueParameters.orEmpty() + c.getProperties()
       ktFieldDefinition = properties.firstOrNull { (it as PsiNamedElement).name == pathElement } ?: continue
-      val parameterType = ktFieldDefinition.type()
       val parameterTypeFqName =
-          // Try Lists first
-          parameterType?.arguments?.firstOrNull()?.type?.fqName
-          // Fallback to regular type
-              ?: parameterType?.fqName
-              ?: break
+        // Try Lists first
+        ktFieldDefinition.typeArgumentClassName(0)
+        // Fallback to regular type
+            ?: ktFieldDefinition.className()
+            ?: break
       if (i != path.lastIndex) {
-        c = ktClass.findChildrenOfType<KtClass> { it.fqName == parameterTypeFqName }.firstOrNull() ?: return@mapNotNull null
+        c = ktClass.findChildrenOfType<KtClass> { it.fqName?.asString() == parameterTypeFqName }.firstOrNull() ?: return@mapNotNull null
       }
     }
     ktFieldDefinition
@@ -95,12 +93,12 @@ private fun GraphQLField.pathFromRoot(): List<String> {
   while (true) {
     element = when (element) {
       is GraphQLInlineFragment -> {
-        path.add(0,element.kotlinFieldName() ?: break)
+        path.add(0, element.kotlinFieldName() ?: break)
         element.parent?.parent?.parent?.parent as? GraphQLElement ?: break
       }
 
       is GraphQLField -> {
-        path.add(0,element.name!!)
+        path.add(0, element.name!!)
         element.parent?.parent?.parent as? GraphQLElement ?: break
       }
 
@@ -187,4 +185,4 @@ private fun findKotlinClass(project: Project, name: String, filter: ((KtClass) -
       .let { if (filter != null) it.filter(filter) else it }
 }
 
-private val PsiClass.ktClassOrigin get() = (this as? KtUltraLightClass)?.kotlinOrigin as? KtClass
+private val PsiClass.ktClassOrigin get() = (this as? SymbolLightClassForClassLike<*>)?.kotlinOrigin as? KtClass

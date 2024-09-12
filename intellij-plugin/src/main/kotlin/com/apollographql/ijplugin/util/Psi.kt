@@ -3,11 +3,6 @@ package com.apollographql.ijplugin.util
 import com.intellij.openapi.diagnostic.ControlFlowException
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.kotlin.analysis.api.analyze
-import org.jetbrains.kotlin.analysis.api.types.KaClassType
-import org.jetbrains.kotlin.analysis.api.types.KaType
-import org.jetbrains.kotlin.descriptors.CallableDescriptor
-import org.jetbrains.kotlin.idea.caches.resolve.resolveToDescriptorIfAny
 import org.jetbrains.kotlin.idea.references.KtSimpleNameReference
 import org.jetbrains.kotlin.idea.references.mainReference
 import org.jetbrains.kotlin.name.FqName
@@ -17,7 +12,6 @@ import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtConstructor
-import org.jetbrains.kotlin.psi.KtDeclaration
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
@@ -32,8 +26,6 @@ import org.jetbrains.kotlin.psi.KtReferenceExpression
 import org.jetbrains.kotlin.psi.KtSimpleNameExpression
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
-import org.jetbrains.kotlin.types.KotlinType
-import org.jetbrains.kotlin.types.isNullabilityFlexible
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 
 fun PsiElement.containingKtFile(): KtFile? = getStrictParentOfType()
@@ -89,8 +81,6 @@ fun PsiElement.isMethodCall(methodName: String) = this is KtCallExpression && ge
 
 fun KtCallExpression.lambdaBlockExpression(): KtBlockExpression? =
   valueArguments.firstIsInstanceOrNull<KtLambdaArgument>()?.getLambdaExpression()?.bodyExpression
-
-fun KtDeclaration.type(): KotlinType? = (resolveToDescriptorIfAny() as? CallableDescriptor)?.returnType
 
 fun KtReferenceExpression.resolve() = mainReference.resolve()
 
