@@ -3,26 +3,33 @@ package com.apollographql.ijplugin.util
 import com.intellij.openapi.diagnostic.ControlFlowException
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import org.jetbrains.kotlin.analysis.api.analyze
+import org.jetbrains.kotlin.analysis.api.types.KaClassType
+import org.jetbrains.kotlin.analysis.api.types.KaType
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
-import org.jetbrains.kotlin.idea.caches.resolve.getResolutionFacade
 import org.jetbrains.kotlin.idea.caches.resolve.resolveToDescriptorIfAny
-import org.jetbrains.kotlin.idea.caches.resolve.safeAnalyze
 import org.jetbrains.kotlin.idea.references.KtSimpleNameReference
 import org.jetbrains.kotlin.idea.references.mainReference
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBlockExpression
+import org.jetbrains.kotlin.psi.KtCallElement
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtConstructor
 import org.jetbrains.kotlin.psi.KtDeclaration
+import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.KtLambdaArgument
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtOperationExpression
+import org.jetbrains.kotlin.psi.KtPsiUtil
+import org.jetbrains.kotlin.psi.KtQualifiedExpression
 import org.jetbrains.kotlin.psi.KtReferenceExpression
+import org.jetbrains.kotlin.psi.KtSimpleNameExpression
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 import org.jetbrains.kotlin.types.KotlinType
@@ -85,14 +92,20 @@ fun KtCallExpression.lambdaBlockExpression(): KtBlockExpression? =
 
 fun KtDeclaration.type(): KotlinType? = (resolveToDescriptorIfAny() as? CallableDescriptor)?.returnType
 
-fun KtExpression.type(): KotlinType? = safeAnalyze(getResolutionFacade()).getType(this)
-
 fun KtReferenceExpression.resolve() = mainReference.resolve()
-
-fun KotlinType.canBeNull() = isMarkedNullable || isNullabilityFlexible()
 
 fun KtClassOrObject.findFunctionsByName(name: String): List<KtNamedFunction> {
   return declarations.filterIsInstance<KtNamedFunction>().filter { it.name == name }
 }
 
 val FqName.shortName: String? get() = kotlin.runCatching { shortName() }.getOrNull()?.asString()
+
+
+fun KtElement?.getCalleeExpressionIfAny(): KtExpression? =
+  when (val element = if (this is KtExpression) KtPsiUtil.deparenthesize(this) else this) {
+    is KtSimpleNameExpression -> element
+    is KtCallElement -> element.calleeExpression
+    is KtQualifiedExpression -> element.selectorExpression.getCalleeExpressionIfAny()
+    is KtOperationExpression -> element.operationReference
+    else -> null
+  }
