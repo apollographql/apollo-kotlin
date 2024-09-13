@@ -119,6 +119,9 @@ tasks.test.configure {
   // See https://jetbrains-platform.slack.com/archives/CPL5291JP/p1664105522154139 and https://youtrack.jetbrains.com/issue/IJSDK-321
   // Use a relative path to make build caching work
   systemProperty("idea.home.path", mockJdkRoot.relativeTo(project.projectDir).path)
+
+  // Enable K2 mode - see https://kotlin.github.io/analysis-api/testing-in-k2-locally.html
+  systemProperty("idea.kotlin.plugin.use.k2", "true")
 }
 
 apollo {
@@ -208,12 +211,21 @@ dependencies {
     testFramework(TestFrameworkType.Plugin.Java)
     zipSigner()
   }
-  implementation(project(":apollo-gradle-plugin-external"))
+
+  // Coroutines must be excluded to avoid a conflict with the version bundled with the IDE
+  // See https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#coroutinesLibraries
+  implementation(project(":apollo-gradle-plugin-external")) {
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+  }
   implementation(project(":apollo-ast"))
-  implementation(project(":apollo-tooling"))
+  implementation(project(":apollo-tooling")) {
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+  }
   implementation(project(":apollo-normalized-cache-sqlite"))
   implementation(libs.sqlite.jdbc)
-  implementation(libs.apollo.runtime.published)
+  implementation(libs.apollo.runtime.published) {
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+  }
   runtimeOnly(libs.slf4j.simple)
   testImplementation(libs.google.testparameterinjector)
 }
