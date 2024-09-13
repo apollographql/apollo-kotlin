@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.util
 
 import com.intellij.openapi.diagnostic.ControlFlowException
+import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.idea.references.KtSimpleNameReference
@@ -99,3 +100,9 @@ fun KtElement?.getCalleeExpressionIfAny(): KtExpression? =
     is KtOperationExpression -> element.operationReference
     else -> null
   }
+
+val PsiClass.ktClassOrObject: KtClassOrObject?
+  get() = navigationElement as? KtClassOrObject
+
+val PsiClass.ktClass: KtClass?
+  get() = navigationElement as? KtClass

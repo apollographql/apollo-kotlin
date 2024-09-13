@@ -4,6 +4,7 @@ import com.apollographql.ijplugin.util.capitalizeFirstLetter
 import com.apollographql.ijplugin.util.className
 import com.apollographql.ijplugin.util.decapitalizeFirstLetter
 import com.apollographql.ijplugin.util.findChildrenOfType
+import com.apollographql.ijplugin.util.ktClass
 import com.apollographql.ijplugin.util.typeArgumentClassName
 import com.intellij.lang.jsgraphql.psi.GraphQLElement
 import com.intellij.lang.jsgraphql.psi.GraphQLEnumTypeDefinition
@@ -16,13 +17,11 @@ import com.intellij.lang.jsgraphql.psi.GraphQLInputObjectTypeDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLInputValueDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiShortNamesCache
 import com.intellij.psi.util.parentOfType
-import org.jetbrains.kotlin.light.classes.symbol.classes.SymbolLightClassForClassLike
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtEnumEntry
 import org.jetbrains.kotlin.psi.KtNamedDeclaration
@@ -180,9 +179,7 @@ private fun findKotlinClass(project: Project, name: String, filter: ((KtClass) -
       GlobalSearchScope.allScope(project)
   )
       .mapNotNull {
-        it.ktClassOrigin
+        it.ktClass
       }
       .let { if (filter != null) it.filter(filter) else it }
 }
-
-private val PsiClass.ktClassOrigin get() = (this as? SymbolLightClassForClassLike<*>)?.kotlinOrigin as? KtClass

@@ -5,12 +5,12 @@ import com.apollographql.ijplugin.refactoring.findFieldReferences
 import com.apollographql.ijplugin.refactoring.findInheritorsOfClass
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
+import com.apollographql.ijplugin.util.ktClassOrObject
 import com.apollographql.ijplugin.util.unquoted
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMigration
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parentOfType
-import org.jetbrains.kotlin.asJava.classes.KtLightClassBase
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtObjectDeclaration
@@ -20,9 +20,9 @@ import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 object UpdateEnumValueUpperCase : MigrationItem() {
   override fun findUsages(project: Project, migration: PsiMigration, searchScope: GlobalSearchScope): List<MigrationItemUsageInfo> {
     val usageInfo = mutableListOf<MigrationItemUsageInfo>()
-    val enumValueInheritors = findInheritorsOfClass(project, "com.apollographql.apollo.api.EnumValue").filterIsInstance<KtLightClassBase>()
+    val enumValueInheritors = findInheritorsOfClass(project, "com.apollographql.apollo.api.EnumValue")
     for (enumValueInheritor in enumValueInheritors) {
-      val kotlinOrigin = enumValueInheritor.kotlinOrigin
+      val kotlinOrigin = enumValueInheritor.ktClassOrObject ?: continue
       when {
         kotlinOrigin is KtObjectDeclaration -> {
           // Sealed subclass
