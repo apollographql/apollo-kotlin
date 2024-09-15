@@ -46,9 +46,12 @@ dependencies {
 if (relocateJar) {
   val embeddedJarFile = file("build/r8/embedded.jar")
   val relocatedJarFile = file("build/r8/relocated.jar")
-  val r8File = file("build/r8/r8.jar")
+  val mappingFile = file("build/r8/mapping.txt")
+  val sha1 = "d052837ac460c9f5bc2cb7ff6cf7ee8319f6e5ac"
+  val r8File = file("build/r8/$sha1.jar")
+  val rulesFile = file("rules.pro")
 
-  val embeddedJarTaskProvider = tasks.register("embeddeJar", Zip::class) {
+  val embeddedJarTaskProvider = tasks.register("embedJar", Zip::class) {
     /**
      * TODO: configuration cache
      */
@@ -58,56 +61,57 @@ if (relocateJar) {
           from(zipTree(it.asFile))
         }
       }
-    })
-    // The jar is mostly empty but this is needed for the plugin descriptor
+    }) {
+      exclude("module-info.class")
+      exclude("META-INF/versions/*/module-info.class")
+    }
+
+    // The jar is mostly empty but this is needed for the plugin descriptor + module-info
     from(tasks.jar.map { zipTree(it.outputs.files.singleFile) })
 
-    exclude("META-INF/MANIFEST.MF")
+    /*
+     * Exclude libraries R8 rules, we'll add them ourselves
+     */
+    exclude(
+        "META-INF/MANIFEST.MF",
+        "META-INF/**/*.pro"
+    )
 
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    duplicatesStrategy = DuplicatesStrategy.WARN
 
     destinationDirectory.set(embeddedJarFile.parentFile)
     archiveFileName.set(embeddedJarFile.name)
   }
 
   val downloadR8TaskProvider = tasks.register("downloadR8", DownloadR8Task::class.java) {
-    sha1 = "c3d27dec4e48f97502a83d440c987c7a54f46c7b"
+    this.sha1 = sha1
     outputFile.set(r8File)
   }
 
   val relocatedJarTaskProvider = tasks.register("relocateJar", JavaExec::class) {
-    dependsOn(embeddedJarTaskProvider)
-    debug = true
-    classpath(downloadR8TaskProvider)
-    mainClass.set("com.android.tools.r8.SwissArmyKnife")
+    val javaHome = javaToolchainService().compilerFor {
+      languageVersion.set(JavaLanguageVersion.of(8))
+    }.get().metadata.installationPath.asFile.absolutePath
 
-    args(
-        "relocator",
-        "--input",
-        embeddedJarFile.absolutePath,
-        "--output",
-        relocatedJarFile.absolutePath,
-        "--map",
-        "kotlin.Metadata->kotlin.Metadata",
-        "--map",
-        "kotlin.**->com.apollographql.relocated.kotlin",
-        "--map",
-        "org.objectweb.**->com.apollographql.relocated.org.objectweb",
-        "--map",
-        "org.jetbrains.**->com.apollographql.relocated.org.jetbrains",
-        "--map",
-        "org.intellij.**->com.apollographql.relocated.org.intellij",
-        "--map",
-        "kotlinx.**->com.apollographql.relocated.kotlinx",
-        "--map",
-        "okhttp3.**->com.apollographql.relocated.okhttp3",
-        "--map",
-        "com.squareup.**->com.apollographql.relocated.com.squareup",
-        "--map",
-        "com.benasher44.**->com.apollographql.relocated.com.benasher44",
-        "--map",
-        "okio.**->com.apollographql.relocated.com.okio",
-    )
+    dependsOn(embeddedJarTaskProvider)
+    classpath(downloadR8TaskProvider)
+
+    inputs.file(rulesFile)
+    mainClass.set("com.android.tools.r8.R8")
+
+
+    args("--release")
+    args("--classfile")
+    args("--output")
+    args(relocatedJarFile.absolutePath)
+    args("--pg-map-output")
+    args(mappingFile.absolutePath)
+    args("--pg-conf")
+    args(rulesFile.absolutePath)
+    args("--lib")
+    args(javaHome)
+
+    args(embeddedJarFile.absolutePath)
   }
 
   configurations.named("compileOnly").configure {
@@ -122,6 +126,12 @@ if (relocateJar) {
   configurations.named("implementation").configure {
     extendsFrom(shadeConfiguration)
   }
+}
+
+abstract class Holder @Inject constructor(val service: JavaToolchainService)
+
+fun javaToolchainService(): JavaToolchainService {
+  return objects.newInstance(Holder::class.java).service
 }
 
 /**
