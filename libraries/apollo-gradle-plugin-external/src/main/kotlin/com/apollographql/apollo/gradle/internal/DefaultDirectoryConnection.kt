@@ -25,7 +25,7 @@ internal class DefaultDirectoryConnection(
   }
 
   override fun connectToAndroidVariant(variant: Any) {
-    connectToAndroidVariant(project, variant, outputDir, task)
+    connectToAndroidVariant(variant, outputDir, task)
   }
 
   override fun connectToAndroidSourceSet(name: String) {
