@@ -4,8 +4,10 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.runReadAction
 import org.jetbrains.kotlin.analysis.api.KaSession
 import org.jetbrains.kotlin.analysis.api.analyze
+import org.jetbrains.kotlin.analysis.api.resolution.successfulFunctionCallOrNull
 import org.jetbrains.kotlin.analysis.api.types.KaClassType
 import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
+import org.jetbrains.kotlin.psi.KtCallElement
 import org.jetbrains.kotlin.psi.KtDeclaration
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtExpression
@@ -25,6 +27,12 @@ fun KtDeclaration.className(): String? = runAnalyze(this) {
 
 fun KtDeclaration.typeArgumentClassName(index: Int): String? = runAnalyze(this) {
   returnType.cast<KaClassType>()?.typeArguments?.getOrNull(index)?.type?.cast<KaClassType>()?.classId?.asFqNameString()
+}
+
+fun KtCallElement.getParameterNames(): List<String>? {
+  return runAnalyze(this) {
+    resolveToCall()?.successfulFunctionCallOrNull()?.argumentMapping?.map { it.value.name.asString() }
+  }
 }
 
 /**

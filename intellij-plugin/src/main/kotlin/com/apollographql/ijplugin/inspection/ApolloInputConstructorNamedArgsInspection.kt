@@ -8,8 +8,10 @@ import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.apollo3
 import com.apollographql.ijplugin.util.apollo4
 import com.apollographql.ijplugin.util.cast
+import com.apollographql.ijplugin.util.getParameterNames
 import com.apollographql.ijplugin.util.originalClassName
 import com.apollographql.ijplugin.util.registerProblem
+import com.intellij.codeInsight.intention.FileModifier
 import com.intellij.codeInsight.intention.preview.IntentionPreviewUtils
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
@@ -18,7 +20,6 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
 import org.jetbrains.kotlin.idea.base.psi.kotlinFqName
-import org.jetbrains.kotlin.idea.caches.resolve.resolveToCall
 import org.jetbrains.kotlin.idea.references.mainReference
 import org.jetbrains.kotlin.psi.KtCallElement
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -27,7 +28,6 @@ import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtPsiFactory
 import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.KtVisitorVoid
-import org.jetbrains.kotlin.resolve.calls.model.ArgumentMatch
 
 class ApolloInputConstructorNamedArgsInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -41,8 +41,9 @@ class ApolloInputConstructorNamedArgsInspection : LocalInspectionTool() {
         if (expression.valueArguments.all { it.isNamed() }) return
         if (reference?.isApolloInputClassReference() != true) return
         val quickFixes = buildList {
-          add(AddArgumentNamesQuickFix)
-          if (projectApolloVersion.isAtLeastV4) add(ChangeToBuilderQuickFix)
+          val parameterNames = expression.getParameterNames() ?: return@buildList
+          add(AddArgumentNamesQuickFix(parameterNames))
+          if (projectApolloVersion.isAtLeastV4) add(ChangeToBuilderQuickFix(parameterNames))
         }.toTypedArray()
         holder.registerProblem(expression, ApolloBundle.message("inspection.inputConstructorNamedArgs.reportText"), withMoreLink = true, *quickFixes)
       }
@@ -50,7 +51,10 @@ class ApolloInputConstructorNamedArgsInspection : LocalInspectionTool() {
   }
 }
 
-object AddArgumentNamesQuickFix : LocalQuickFix {
+class AddArgumentNamesQuickFix(
+    @FileModifier.SafeFieldForPreview
+    private val parameterNames: List<String>,
+) : LocalQuickFix {
   override fun getName() = ApolloBundle.message("inspection.inputConstructorNamedArgs.quickFix.addArgumentNames")
   override fun getFamilyName() = name
 
@@ -58,16 +62,17 @@ object AddArgumentNamesQuickFix : LocalQuickFix {
     if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.logEvent(TelemetryEvent.ApolloIjInputConstructorNamedArgsAddArgumentNamesQuickFix())
     val callElement = descriptor.psiElement as KtCallElement
     val arguments = callElement.valueArguments
-    val resolvedCall = callElement.resolveToCall() ?: return
-    for (argument in arguments) {
+    for ((i, argument) in arguments.withIndex()) {
       val ktArgument = argument.cast<KtValueArgument>() ?: continue
-      val name = (resolvedCall.getArgumentMapping(argument) as? ArgumentMatch)?.valueParameter?.name ?: continue
-      ktArgument.replace(KtPsiFactory(project).createArgument("$name = ${ktArgument.getArgumentExpression()!!.text}"))
+      ktArgument.replace(KtPsiFactory(project).createArgument("${parameterNames[i]} = ${ktArgument.getArgumentExpression()!!.text}"))
     }
   }
 }
 
-object ChangeToBuilderQuickFix : LocalQuickFix {
+class ChangeToBuilderQuickFix(
+    @FileModifier.SafeFieldForPreview
+    private val parameterNames: List<String>,
+) : LocalQuickFix {
   override fun getName() = ApolloBundle.message("inspection.inputConstructorNamedArgs.quickFix.changeToBuilder")
   override fun getFamilyName() = name
 
@@ -79,13 +84,12 @@ object ChangeToBuilderQuickFix : LocalQuickFix {
 
   fun applyFix(project: Project, callElement: KtCallElement) {
     val arguments = callElement.valueArguments
-    val resolvedCall = callElement.resolveToCall() ?: return
     val inputClassName = callElement.calleeExpression.cast<KtNameReferenceExpression>()?.originalClassName() ?: return
     val replacementExpression = buildString {
       append("$inputClassName.Builder()")
-      for (argument in arguments) {
+      for ((i, argument) in arguments.withIndex()) {
         val ktArgument = argument.cast<KtValueArgument>() ?: continue
-        val name = (resolvedCall.getArgumentMapping(argument) as? ArgumentMatch)?.valueParameter?.name ?: continue
+        val name = parameterNames[i]
         val argumentText = ktArgument.unwrapOptional()
         if (argumentText != null) {
           append("\n.$name($argumentText)")
@@ -108,7 +112,8 @@ object ChangeToBuilderQuickFix : LocalQuickFix {
     val dotQualifiedExpression = argumentExpression.cast<KtDotQualifiedExpression>()
     val receiverClassName = dotQualifiedExpression?.receiverExpression?.mainReference?.resolve()?.kotlinFqName?.asString()
     val isOptional = receiverClassName == "$apollo3.api.Optional" || receiverClassName == "$apollo4.api.Optional"
-    val isOptionalCompanion = receiverClassName == "$apollo3.api.Optional.Companion" || receiverClassName == "$apollo4.api.Optional.Companion"
+    val isOptionalCompanion =
+      receiverClassName == "$apollo3.api.Optional.Companion" || receiverClassName == "$apollo4.api.Optional.Companion"
     val selectorCallExpression = dotQualifiedExpression?.selectorExpression.cast<KtCallExpression>()
     val selectorCallExpressionText = selectorCallExpression?.calleeExpression?.text
     val nameReferenceExpressionText = dotQualifiedExpression?.selectorExpression.cast<KtNameReferenceExpression>()?.text
