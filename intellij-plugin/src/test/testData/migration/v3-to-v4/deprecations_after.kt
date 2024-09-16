@@ -8,13 +8,13 @@ import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.cache.http.DiskLruHttpCache
 import com.apollographql.apollo.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo.cache.normalized.api.CacheKey
-import com.apollographql.apollo.cache.normalized.apolloStore
 import com.apollographql.apollo.cache.normalized.watch
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo.exception.DefaultApolloException
 import com.apollographql.apollo.cache.normalized.fetchPolicy
 import com.apollographql.apollo.cache.normalized.FetchPolicy
+import com.apollographql.apollo.cache.normalized.apolloStore
 
 suspend fun test() {
   val response: ApolloResponse<*>? = null
