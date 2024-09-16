@@ -3,7 +3,6 @@ package com.apollographql.ijplugin.refactoring.migration.v3tov4.item
 import com.apollographql.ijplugin.refactoring.migration.item.DeletesElements
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
-import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsageInfo
 import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.findPsiFilesByName
 import com.apollographql.ijplugin.util.getMethodName
@@ -17,7 +16,7 @@ import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
 
 class RemoveFieldInService(
-    val fieldName:String,
+    val fieldName: String,
 ) : MigrationItem(), DeletesElements {
   override fun findUsages(project: Project, migration: PsiMigration, searchScope: GlobalSearchScope): List<MigrationItemUsageInfo> {
     val usages = mutableListOf<MigrationItemUsageInfo>()

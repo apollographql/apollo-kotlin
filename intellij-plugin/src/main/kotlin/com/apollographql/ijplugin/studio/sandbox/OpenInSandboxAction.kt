@@ -36,7 +36,7 @@ class OpenInSandboxAction : AnAction(
     // Only care about GraphQL files
     val isGraphQLFile = e.getData(CommonDataKeys.VIRTUAL_FILE)?.let { file ->
       e.project?.let { project ->
-        GraphQLFileType.isGraphQLFile(project, file)
+        GraphQLFileType.isGraphQLFile(file)
       }
     } == true
     e.presentation.isEnabled = isGraphQLFile

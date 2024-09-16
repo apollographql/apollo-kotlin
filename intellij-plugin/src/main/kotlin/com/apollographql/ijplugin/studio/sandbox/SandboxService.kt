@@ -53,7 +53,7 @@ class SandboxService(
 
   private fun addOpenInSandboxAction(file: VirtualFile) {
     // Only care about GraphQL files
-    if (!GraphQLFileType.isGraphQLFile(project, file)) return
+    if (!GraphQLFileType.isGraphQLFile(file)) return
 
     val fileEditorManager = FileEditorManager.getInstance(project)
     val fileEditor = fileEditorManager.getSelectedEditor(file) ?: return

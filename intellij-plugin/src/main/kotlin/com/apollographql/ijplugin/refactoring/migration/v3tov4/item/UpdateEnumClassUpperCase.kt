@@ -5,7 +5,6 @@ import com.apollographql.ijplugin.refactoring.findAllClasses
 import com.apollographql.ijplugin.refactoring.findClassReferences
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
-import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsageInfo
 import com.apollographql.ijplugin.util.capitalizeFirstLetter
 import com.apollographql.ijplugin.util.isGenerated
 import com.apollographql.ijplugin.util.ktClass
