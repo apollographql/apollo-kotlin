@@ -16,7 +16,6 @@ package com.apollographql.apollo.gradle.internal
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
@@ -25,7 +24,7 @@ import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 
-private fun Project.getVariants(): NamedDomainObjectContainer<BaseVariant> {
+private fun Project.getMainVariants(): NamedDomainObjectContainer<BaseVariant> {
   val container = project.container(BaseVariant::class.java)
 
   val extension: BaseExtension = project.androidExtensionOrThrow
@@ -45,15 +44,6 @@ private fun Project.getVariants(): NamedDomainObjectContainer<BaseVariant> {
     else -> error("Unsupported extension: $extension")
   }
 
-  @Suppress("USELESS_IS_CHECK", "KotlinRedundantDiagnosticSuppress")
-  if (extension is TestedExtension) {
-    extension.testVariants.configureEach { variant ->
-      container.add(variant)
-    }
-    extension.unitTestVariants.configureEach { variant ->
-      container.add(variant)
-    }
-  }
   return container
 }
 
@@ -68,7 +58,7 @@ fun connectToAndroidSourceSet(
     kotlinSourceSet.srcDir(outputDir)
   }
 
-  project.getVariants().configureEach {
+  project.getMainVariants().configureEach {
     if (it.sourceSets.any { it.name == sourceSetName }) {
       if (kotlinSourceSet == null) {
         it.registerJavaGeneratingTask(taskProvider, outputDir.get().asFile)
@@ -92,7 +82,7 @@ fun connectToAndroidVariant(variant: Any, outputDir: Provider<Directory>, taskPr
 }
 
 fun connectToAllAndroidVariants(project: Project, outputDir: Provider<Directory>, taskProvider: TaskProvider<out Task>) {
-  project.getVariants().configureEach {
+  project.getMainVariants().configureEach {
     connectToAndroidVariant(it, outputDir, taskProvider)
   }
 }
