@@ -45,7 +45,7 @@ class ApolloInputConstructorNamedArgsInspection : LocalInspectionTool() {
           add(AddArgumentNamesQuickFix(parameterNames))
           if (projectApolloVersion.isAtLeastV4) add(ChangeToBuilderQuickFix(parameterNames))
         }.toTypedArray()
-        holder.registerProblem(expression, ApolloBundle.message("inspection.inputConstructorNamedArgs.reportText"), withMoreLink = true, *quickFixes)
+        holder.registerProblem(this@ApolloInputConstructorNamedArgsInspection, expression, ApolloBundle.message("inspection.inputConstructorNamedArgs.reportText"), withMoreLink = true, *quickFixes)
       }
     }
   }

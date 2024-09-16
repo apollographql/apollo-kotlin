@@ -1,8 +1,8 @@
+
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -55,12 +55,6 @@ val apolloDependencies = configurations.create("apolloDependencies").apply {
 }
 
 tasks {
-  withType<KotlinCompilationTask<*>> {
-    compilerOptions {
-      freeCompilerArgs.set(listOf("-Xcontext-receivers"))
-    }
-  }
-
   val runLocalIde by intellijPlatformTesting.runIde.registering {
     // Use a custom IJ/AS installation. Set this property in your local ~/.gradle/gradle.properties file.
     // (for AS, it should be something like '/Applications/Android Studio.app/Contents')
