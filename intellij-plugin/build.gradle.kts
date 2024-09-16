@@ -228,4 +228,8 @@ dependencies {
   }
   runtimeOnly(libs.slf4j.simple)
   testImplementation(libs.google.testparameterinjector)
+
+  // Temporary workaround for https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1663
+  // Should be fixed in platformVersion 2024.3.x
+  testRuntimeOnly("org.opentest4j:opentest4j:1.3.0")
 }
