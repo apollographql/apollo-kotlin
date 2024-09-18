@@ -9,7 +9,7 @@ interface Operation<D : Operation.Data> : Executable<D> {
   /**
    * The GraphQL operation String to be sent to the server. This might differ from the input `*.graphql` file with:
    * - whitespaces removed
-   * - Apollo client directives like `@nonnull` removed
+   * - Apollo client directives like `@catch` removed
    * - `typename` fields added for polymorphic/fragment cases
    */
   fun document(): String

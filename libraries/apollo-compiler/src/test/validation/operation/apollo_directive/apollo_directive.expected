@@ -1,5 +1,11 @@
+DeprecatedUsage (3:11)
+Using `@nonnull` is deprecated. Use `@semanticNonNull` and/or `@catch` instead. See https://go.apollo.dev/ak-nullability.
+------------
 OtherValidationIssue (5:27)
 Unknown argument `toto` on directive 'nonnull'
+------------
+DeprecatedUsage (5:18)
+Using `@nonnull` is deprecated. Use `@semanticNonNull` and/or `@catch` instead. See https://go.apollo.dev/ak-nullability.
 ------------
 OtherValidationIssue (5:18)
 'nonnull' cannot have arguments when applied on a field

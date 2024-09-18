@@ -1,7 +1,7 @@
 query MyQuery {
   <caret>person {
     identity {
-      firstName @nonnull
+      firstName @catch(to: THROW)
       lastName
     }
   }

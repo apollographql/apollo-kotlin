@@ -355,8 +355,8 @@ directive @catch(to: CatchTo! = RESULT, levels: [Int!]! = [0]) on FIELD
 ""${'"'}
 Indicates how clients should handle errors on a given position by default.
 
-The semantics are the same as `@catch` but `@catchByDefault` only applies to positions that
-can contain JSON `null`. Non-null positions are unchanged.
+Compared to `@catch`, `@catchByDefault` does not have a `level` argument and applies to all
+nullable positions.
 
 When multiple values of `catchTo` are set for a given position:
 * the `@catch` value is used if set.
