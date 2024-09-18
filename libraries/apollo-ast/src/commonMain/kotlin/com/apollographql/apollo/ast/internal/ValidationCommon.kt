@@ -206,6 +206,9 @@ internal fun ValidationScope.validateDirectives(
  * Extra Apollo-specific validation for @nonnull
  */
 internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirective, directiveContext: GQLNode) {
+  issues.add(
+      DeprecatedUsage(message = "Using `@nonnull` is deprecated. Use `@semanticNonNull` and/or `@catch` instead. See https://go.apollo.dev/ak-nullability.", directive.sourceLocation)
+  )
   if (directiveContext is GQLField && directive.arguments.isNotEmpty()) {
     registerIssue(
         message = "'${directive.name}' cannot have arguments when applied on a field",

@@ -275,7 +275,7 @@ private class ForeignSchema(
 /**
  * Parses the schema extensions
  *
- * Example: extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3", import: ["@nonnull"])
+ * Example: extend schema @link(url: "https://specs.apollo.dev/nullability/v0.4/", import: ["@catchByDefault", "CatchTo"])
  */
 private fun List<GQLSchemaExtension>.getForeignSchemas(
     issues: MutableList<Issue>,

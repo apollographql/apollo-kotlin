@@ -90,7 +90,7 @@ class AnonymousOperation(override val message: String, override val sourceLocati
 class OtherValidationIssue(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLValidationIssue
 
 /**
- * A deprecated field/enum is used
+ * A deprecated field/inputField/enumValue/directive is used
  */
 class DeprecatedUsage(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
 
