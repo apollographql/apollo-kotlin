@@ -27,13 +27,13 @@ javaPoet = "1.13.0"
 jetbrains-annotations = "24.0.1"
 junit = "4.13.2"
 kotlin-plugin-min = "1.9.0"
-kotlin-plugin = "2.0.20"
-kotlin-plugin-max = "2.0.20"
+kotlin-plugin = "2.1.0-Beta1"
+kotlin-plugin-max = "2.1.0-Beta1"
 kotlin-stdlib = "2.0.0"
 kotlinx-coroutines = "1.8.0"
 kotlinx-datetime = "0.5.0"
 kotlinx-serialization-runtime = "1.6.2"
-ksp = "2.0.20-1.0.24"
+ksp = "2.1.0-Beta1-1.0.25"
 ktor = "2.3.11"
 moshix = "0.14.1"
 node-fetch = "2.6.7"
@@ -144,7 +144,7 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 kotlin-node = "org.jetbrains.kotlin-wrappers:kotlin-node:18.16.12-pre.634"
 kotlinx-serialization-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-plugin" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-runtime" }
-kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.15.0-Beta.2" }
+kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.16.3" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
 ktor-client-core = { group = "io.ktor", name= "ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
