@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("com.google.devtools.ksp")
@@ -8,13 +6,7 @@ plugins {
   id("application")
 }
 
-apolloTest(
-    // Can't use apiVersion KOTLIN_2_0 when using languageVersion KOTLIN_1_9, which is the case here because we're using KSP 1
-    // TODO: move to KSP 2 and remove this when https://github.com/google/ksp/issues/1823 is resolved
-    kotlinCompilerOptions = KotlinCompilerOptions(
-        version = KotlinVersion.KOTLIN_1_9,
-    )
-)
+apolloTest()
 
 dependencies {
   implementation(libs.apollo.annotations)
@@ -39,4 +31,3 @@ apolloExecution {
 application {
   mainClass.set("com.apollographql.apollo.sample.server.MainKt")
 }
-
