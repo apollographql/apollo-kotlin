@@ -43,7 +43,7 @@ internal class KotlinResolver(
     private val scalarMapping: Map<String, ScalarInfo>,
     private val requiresOptInAnnotation: String?,
 ) {
-  fun resolve(key: ResolverKey): ClassName?  {
+  fun resolve(key: ResolverKey): ClassName? {
     return classNames[key] ?: next?.resolve(key)
   }
 
@@ -60,7 +60,7 @@ internal class KotlinResolver(
 
     check(result != null) {
       "Cannot resolve $kind($id). " +
-        "Have you set up an 'opposite link' on the downstream project to the schema module as a isADependencyOf(..)?"
+          "Have you set up an 'opposite link' on the downstream project to the schema module as a isADependencyOf(..)?"
     }
     return result
   }
@@ -85,6 +85,7 @@ internal class KotlinResolver(
       type.optional -> {
         KotlinSymbols.Optional.parameterizedBy(resolveIrType(type.optional(false), jsExport, isInterface))
       }
+
       type.catchTo != IrCatchTo.NoCatch -> {
         resolveIrType(type.catchTo(IrCatchTo.NoCatch), jsExport, isInterface).let {
           when (type.catchTo) {
@@ -94,9 +95,11 @@ internal class KotlinResolver(
           }
         }
       }
+
       type.nullable -> {
         resolveIrType(type.nullable(false), jsExport, isInterface).copy(nullable = true)
       }
+
       else -> {
         when (type) {
           is IrListType -> resolveIrType(type.ofType, jsExport, isInterface).wrapInList(jsExport, isInterface)
@@ -139,10 +142,28 @@ internal class KotlinResolver(
     return listType.parameterizedBy(param)
   }
 
-  private fun resolveScalarTarget(name: String): ClassName? {
+  private fun resolveScalarTarget(name: String): TypeName? {
     return scalarMapping[name]?.targetName?.let {
-      ClassName.bestGuess(it)
+      bestGuess(it)
     }
+  }
+
+  /**
+   * Best guess a type name. Handles simple generics like `Map<String, Int?>`, but no variance or wildcards.
+   */
+  private fun bestGuess(name: String): TypeName {
+    val isNullable = name.endsWith('?')
+    val className = ClassName.bestGuess(name.substringBeforeLast('?').substringBefore('<'))
+    val typeArgs = name.substringAfter('<', "").substringBefore('>', "")
+        .split(',')
+        .filterNot { it.isEmpty() }
+        .map { it.trim() }
+    return if (typeArgs.isEmpty()) {
+      className
+    } else {
+      className.parameterizedBy(typeArgs.map { bestGuess(it) })
+    }
+        .copy(nullable = isNullable)
   }
 
   internal fun resolveIrType2(type: IrType2): TypeName {
@@ -203,6 +224,7 @@ internal class KotlinResolver(
         val presentFun = MemberName("com.apollographql.apollo.api", "present")
         CodeBlock.of("%L.%M()", adapterInitializer(type.optional(false), requiresBuffering, jsExport), presentFun)
       }
+
       type.catchTo != IrCatchTo.NoCatch -> {
         adapterInitializer(type.catchTo(IrCatchTo.NoCatch), requiresBuffering, jsExport).let {
           val member = when (type.catchTo) {
@@ -213,11 +235,13 @@ internal class KotlinResolver(
           CodeBlock.of("%L.%M()", it, member)
         }
       }
+
       type.maybeError -> {
         adapterInitializer(type.maybeError(false), requiresBuffering, jsExport).let {
           CodeBlock.of("%L.%M()", it, KotlinSymbols.errorAware)
         }
       }
+
       type.nullable -> {
         // Don't hardcode the adapter when the scalar is mapped to a user-defined type
         val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
@@ -237,6 +261,7 @@ internal class KotlinResolver(
           }
         }
       }
+
       else -> {
         when (type) {
           is IrListType -> {

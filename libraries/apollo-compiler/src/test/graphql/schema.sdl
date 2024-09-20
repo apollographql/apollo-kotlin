@@ -314,6 +314,7 @@ type Query {
   tree: Tree
   typeWithGraphQLKeywords: TypeWithGraphQLKeywords
   getBoolean(booleanArg: Boolean): Boolean
+  listOfString: ListOfString
 }
 
 """Represents a review for a movie"""
@@ -446,3 +447,5 @@ type TypeWithGraphQLKeywords {
   on: String
   null(fragment: String): String
 }
+
+scalar ListOfString
