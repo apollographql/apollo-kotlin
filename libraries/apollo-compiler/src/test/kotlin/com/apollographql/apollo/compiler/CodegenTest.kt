@@ -305,7 +305,7 @@ class CodegenTest {
               "URL" to ScalarInfo("java.lang.String", ExpressionAdapterInitializer("com.example.UrlAdapter.INSTANCE")),
               "ID" to ScalarInfo("java.lang.Long"),
               "String" to ScalarInfo("java.lang.String", ExpressionAdapterInitializer("new com.example.MyStringAdapter()")),
-              "ListOfString" to ScalarInfo("java.util.List<java.lang.String>"),
+              "ListOfString" to ScalarInfo("List<String>"),
           )
         } else {
           mapOf(
@@ -313,7 +313,7 @@ class CodegenTest {
               "URL" to ScalarInfo("kotlin.String", ExpressionAdapterInitializer("com.example.UrlAdapter")),
               "ID" to ScalarInfo("kotlin.Long"),
               "String" to ScalarInfo("kotlin.String", ExpressionAdapterInitializer("com.example.MyStringAdapter()")),
-              "ListOfString" to ScalarInfo("kotlin.collections.List<kotlin.String?>"),
+              "ListOfString" to ScalarInfo("List<String?>"),
           )
         }
       } else {

@@ -9,6 +9,7 @@ import com.apollographql.apollo.compiler.codegen.ResolverClassName
 import com.apollographql.apollo.compiler.codegen.ResolverEntry
 import com.apollographql.apollo.compiler.codegen.ResolverKey
 import com.apollographql.apollo.compiler.codegen.ResolverKeyKind
+import com.apollographql.apollo.compiler.codegen.kotlin.helpers.bestGuess
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.obj
 import com.apollographql.apollo.compiler.ir.IrCatchTo
 import com.apollographql.apollo.compiler.ir.IrCompositeType2
@@ -146,24 +147,6 @@ internal class KotlinResolver(
     return scalarMapping[name]?.targetName?.let {
       bestGuess(it)
     }
-  }
-
-  /**
-   * Best guess a type name. Handles simple generics like `Map<String, Int?>`, but no variance or wildcards.
-   */
-  private fun bestGuess(name: String): TypeName {
-    val isNullable = name.endsWith('?')
-    val className = ClassName.bestGuess(name.substringBeforeLast('?').substringBefore('<'))
-    val typeArgs = name.substringAfter('<', "").substringBefore('>', "")
-        .split(',')
-        .filterNot { it.isEmpty() }
-        .map { it.trim() }
-    return if (typeArgs.isEmpty()) {
-      className
-    } else {
-      className.parameterizedBy(typeArgs.map { bestGuess(it) })
-    }
-        .copy(nullable = isNullable)
   }
 
   internal fun resolveIrType2(type: IrType2): TypeName {

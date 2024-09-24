@@ -10,6 +10,7 @@ import com.apollographql.apollo.compiler.codegen.ResolverClassName
 import com.apollographql.apollo.compiler.codegen.ResolverEntry
 import com.apollographql.apollo.compiler.codegen.ResolverKey
 import com.apollographql.apollo.compiler.codegen.ResolverKeyKind
+import com.apollographql.apollo.compiler.codegen.java.helpers.bestGuess
 import com.apollographql.apollo.compiler.codegen.java.helpers.singletonAdapterInitializer
 import com.apollographql.apollo.compiler.ir.IrCatchTo
 import com.apollographql.apollo.compiler.ir.IrCompositeType2
@@ -242,22 +243,6 @@ internal class JavaResolver(
   private fun resolveScalarTarget(name: String): TypeName? {
     return scalarMapping[name]?.targetName?.let {
       bestGuess(it)
-    }
-  }
-
-  /**
-   * Best guess a type name. Handles simple generics like `Map<String, Integer>`, but no variance or wildcards.
-   */
-  private fun bestGuess(name: String): TypeName? {
-    val className = ClassName.bestGuess(name.substringBefore('<'))
-    val typeArgs = name.substringAfter('<', "").substringBefore('>', "")
-        .split(',')
-        .filterNot { it.isEmpty() }
-        .map { it.trim() }
-    return if (typeArgs.isEmpty()) {
-      className
-    } else {
-      ParameterizedTypeName.get(className, *typeArgs.map { bestGuess(it) }.toTypedArray())
     }
   }
 
