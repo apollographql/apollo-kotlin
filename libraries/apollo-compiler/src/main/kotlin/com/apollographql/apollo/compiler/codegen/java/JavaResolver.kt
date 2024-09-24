@@ -10,6 +10,7 @@ import com.apollographql.apollo.compiler.codegen.ResolverClassName
 import com.apollographql.apollo.compiler.codegen.ResolverEntry
 import com.apollographql.apollo.compiler.codegen.ResolverKey
 import com.apollographql.apollo.compiler.codegen.ResolverKeyKind
+import com.apollographql.apollo.compiler.codegen.java.helpers.bestGuess
 import com.apollographql.apollo.compiler.codegen.java.helpers.singletonAdapterInitializer
 import com.apollographql.apollo.compiler.ir.IrCatchTo
 import com.apollographql.apollo.compiler.ir.IrCompositeType2
@@ -96,7 +97,7 @@ internal class JavaResolver(
     val result = resolve(ResolverKey(kind, id))
 
     check(result != null) {
-        "Cannot resolve $kind($id). " +
+      "Cannot resolve $kind($id). " +
           "Have you set up an 'opposite link' on the downstream project to the schema module as a isADependencyOf(..)?"
     }
     return result
@@ -239,9 +240,9 @@ internal class JavaResolver(
     }
   }
 
-  private fun resolveScalarTarget(name: String): ClassName? {
+  private fun resolveScalarTarget(name: String): TypeName? {
     return scalarMapping[name]?.targetName?.let {
-      ClassName.bestGuess(it)
+      bestGuess(it)
     }
   }
 
@@ -427,7 +428,8 @@ internal class JavaResolver(
 }
 
 
-internal fun ResolverClassName.toJavaPoetClassName(): ClassName = ClassName.get(packageName, simpleNames[0], *simpleNames.drop(1).toTypedArray())
+internal fun ResolverClassName.toJavaPoetClassName(): ClassName =
+  ClassName.get(packageName, simpleNames[0], *simpleNames.drop(1).toTypedArray())
 
 
 private val primitiveTypeNames = setOf(TypeName.DOUBLE, TypeName.INT, TypeName.BOOLEAN)
