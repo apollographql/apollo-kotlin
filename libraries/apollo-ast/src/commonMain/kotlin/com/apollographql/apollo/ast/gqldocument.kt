@@ -4,9 +4,11 @@ import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.internal.ExtensionsMerger
+import com.apollographql.apollo.ast.internal.ForeignSchema
 import com.apollographql.apollo.ast.internal.builtinsDefinitionsStr
 import com.apollographql.apollo.ast.internal.ensureSchemaDefinition
-import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions
+import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_3
+import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_4
 import com.apollographql.apollo.ast.internal.linkDefinitionsStr
 import com.apollographql.apollo.ast.internal.nullabilityDefinitionsStr
 import okio.Buffer
@@ -80,21 +82,38 @@ fun builtinDefinitions() = definitionsFromString(builtinsDefinitionsStr)
  */
 fun linkDefinitions() = definitionsFromString(linkDefinitionsStr)
 
-private const val KOTLIN_LABS_VERSION_0_2 = "v0.2"
-@ApolloInternal const val KOTLIN_LABS_VERSION = "v0.3"
+@ApolloInternal
+const val KOTLIN_LABS_VERSION = "v0.3"
 
 /**
  * Extra apollo Kotlin specific definitions from https://specs.apollo.dev/kotlin_labs/<[version]>
  */
 fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
   return definitionsFromString(when (version) {
-    // v0.3 has no behavior change over v0.2, so both versions are allowed as a convenience
-    KOTLIN_LABS_VERSION_0_2, KOTLIN_LABS_VERSION -> kotlinLabsDefinitions
+    // v0.3 has no behavior change over v0.2, so both versions map to the same definitions
+    "v0.2", "v0.3" -> kotlinLabsDefinitions_0_3
+    // v0.4 doesn't have `@nonnull`
+    "v0.4" -> kotlinLabsDefinitions_0_4
     else -> error("kotlin_labs/$version definitions are not supported, please use $KOTLIN_LABS_VERSION")
   })
 }
 
-@ApolloInternal const val NULLABILITY_VERSION = "v0.4"
+/**
+ * The foreign schemas supported by Apollo Kotlin.
+ * This is exported in case users want to validate documents meant for Apollo Kotlin.
+ */
+@ApolloExperimental
+fun supportedForeignSchemas(): List<ForeignSchema> {
+  return listOf(
+      ForeignSchema("kotlin_labs", "v0.2", kotlinLabsDefinitions("v0.2"), listOf("optional", "nonnull")),
+      ForeignSchema("kotlin_labs", "v0.3", kotlinLabsDefinitions("v0.3"), listOf("optional", "nonnull")),
+      ForeignSchema("kotlin_labs", "v0.4", kotlinLabsDefinitions("v0.4"), listOf("optional")),
+      ForeignSchema("nullability", "v0.4", nullabilityDefinitions("v0.4"), listOf("catch")),
+  )
+}
+
+@ApolloInternal
+const val NULLABILITY_VERSION = "v0.4"
 
 /**
  * Extra nullability definitions from https://specs.apollo.dev/nullability/<[version]>

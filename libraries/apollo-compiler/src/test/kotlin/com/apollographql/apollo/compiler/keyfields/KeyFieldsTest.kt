@@ -6,8 +6,7 @@ import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
-import com.apollographql.apollo.ast.toSchema
-import com.apollographql.apollo.ast.validateAsSchema
+import com.apollographql.apollo.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.apollo.compiler.internal.addRequiredFields
 import com.apollographql.apollo.compiler.internal.checkKeyFields
 import okio.Path.Companion.toPath
@@ -23,7 +22,8 @@ class KeyFieldsTest {
     val schema = "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/schema.graphqls"
         .toPath()
         .toGQLDocument()
-        .toSchema()
+        .validateAsSchemaAndAddApolloDefinition()
+        .getOrThrow()
 
     val definitions = "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/operations.graphql".toPath()
         .toGQLDocument()
@@ -51,7 +51,8 @@ class KeyFieldsTest {
     val schema = "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/extendsSchema.graphqls"
         .toPath()
         .toGQLDocument()
-        .toSchema()
+        .validateAsSchemaAndAddApolloDefinition()
+        .getOrThrow()
     assertEquals(setOf("id"), schema.keyFields("Node"))
   }
 
@@ -60,7 +61,7 @@ class KeyFieldsTest {
     "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/objectAndInterfaceTypePolicySchema.graphqls"
         .toPath()
         .toGQLDocument()
-        .validateAsSchema()
+        .validateAsSchemaAndAddApolloDefinition()
         .issues
         .first()
         .let { issue ->
@@ -76,7 +77,7 @@ class KeyFieldsTest {
         .toPath()
         .parseAsGQLDocument()
         .getOrThrow()
-        .validateAsSchema()
+        .validateAsSchemaAndAddApolloDefinition()
         .issues
         .first()
         .let { issue ->
@@ -98,7 +99,7 @@ class KeyFieldsTest {
         .toPath()
         .parseAsGQLDocument()
         .getOrThrow()
-        .validateAsSchema()
+        .validateAsSchemaAndAddApolloDefinition()
         .issues
         .let { issues ->
           assertTrue(issues.isEmpty())
@@ -115,7 +116,9 @@ class KeyFieldsTest {
 
     val (operationDefinitions, schemaDefinitions) = definitions.partition { it is GQLExecutableDefinition }
 
-    val issues = GQLDocument(schemaDefinitions, null).validateAsSchema().issues
+    val issues = GQLDocument(schemaDefinitions, null)
+        .validateAsSchemaAndAddApolloDefinition()
+        .issues
     check(issues.any { it.message.contains("No such field: 'Animal.id'") })
     check(issues.any { it.message.contains("No such field: 'Node.version'") })
     check(issues.any { it.message.contains("No such field: 'Foo.x'") })
