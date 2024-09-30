@@ -46,7 +46,7 @@
                             apollo-kdoc
                     </a>            </div>
             <div class="library-version">
-<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.ast.internal/-foreign-schema/index.html&quot;}"><div class="versions-dropdown">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.ast/-foreign-schema/index.html&quot;}"><div class="versions-dropdown">
   <div class="versions-dropdown-button">4.0.1-SNAPSHOT</div>
   <div class="versions-dropdown-data"><a href="index.html">4.0.1-SNAPSHOT</a><a href="../../../not-found-version.html?v=3.8.2">3.8.2</a></div>
 </div>
@@ -66,28 +66,28 @@
                 <div class="sidebar--inner" id="sideMenu"></div>
             </div>
             <div id="main">
-<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-ast::com.apollographql.apollo.ast.internal/ForeignSchema///PointingToDeclaration//-1528585073">
-  <div class="breadcrumbs"><a href="../../index.html">apollo-ast</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.ast.internal</a><span class="delimiter">/</span><span class="current">ForeignSchema</span></div>
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-ast::com.apollographql.apollo.ast/ForeignSchema///PointingToDeclaration//-1528585073">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-ast</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.ast</a><span class="delimiter">/</span><span class="current">ForeignSchema</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Foreign</span><wbr><span><span>Schema</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">class </span><a href="index.html">ForeignSchema</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>version<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>definitions<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.apollographql.apollo.ast/-g-q-l-definition/index.html">GQLDefinition</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>directivesToStrip<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>definitions.filterIsInstance&lt;GQLDirective&gt;().map { it.name }</span></span><span class="token punctuation">)</span></div><p class="paragraph">A known foreign schema</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>name</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the name of the foreign schema as in https://specs.apollo.dev/link/v1.0/#@link.url</p></div></div></div></div><div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>version</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the version of the foreign schema as in https://specs.apollo.dev/link/v1.0/#@link.url</p></div></div></div></div><div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>definitions</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the definitions in the foreign schema</p></div></div></div></div><div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>directives</span><wbr><span>To</span><wbr><span><span>Strip</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the name of directives that must be stripped before being sent to the server without the leading '@'. For an example: <code class="lang-kotlin">"catch"</code></p></div></div></div></div></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">class </span><a href="index.html">ForeignSchema</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>version<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>definitions<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-g-q-l-definition/index.html">GQLDefinition</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>directivesToStrip<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>definitions.filterIsInstance&lt;GQLDirective&gt;().map { it.name }</span></span><span class="token punctuation">)</span></div><p class="paragraph">A known foreign schema</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>name</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the name of the foreign schema as in https://specs.apollo.dev/link/v1.0/#@link.url</p></div></div></div></div><div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>version</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the version of the foreign schema as in https://specs.apollo.dev/link/v1.0/#@link.url</p></div></div></div></div><div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>definitions</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the definitions in the foreign schema</p></div></div></div></div><div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>directives</span><wbr><span>To</span><wbr><span><span>Strip</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the name of directives that must be stripped before being sent to the server without the leading '@'. For an example: <code class="lang-kotlin">"catch"</code></p></div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
         <h2 class="">Constructors</h2>
-        <div class="table"><a data-name="-996094%2FConstructors%2F-1528585073" anchor-label="ForeignSchema" id="-996094%2FConstructors%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+        <div class="table"><a data-name="822393477%2FConstructors%2F-1528585073" anchor-label="ForeignSchema" id="822393477%2FConstructors%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
           <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-foreign-schema.html"><span>Foreign</span><wbr><span><span>Schema</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-996094%2FConstructors%2F-1528585073"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="822393477%2FConstructors%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">version<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">definitions<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.apollographql.apollo.ast/-g-q-l-definition/index.html">GQLDefinition</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">directivesToStrip<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>definitions.filterIsInstance&lt;GQLDirective&gt;().map { it.name }</span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">version<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">definitions<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-g-q-l-definition/index.html">GQLDefinition</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">directivesToStrip<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>definitions.filterIsInstance&lt;GQLDirective&gt;().map { it.name }</span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -96,27 +96,27 @@
       </div>
       <div data-togglable="PROPERTY">
         <h2 class="">Properties</h2>
-        <div class="table"><a data-name="-875108065%2FProperties%2F-1528585073" anchor-label="definitions" id="-875108065%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+        <div class="table"><a data-name="-1722730078%2FProperties%2F-1528585073" anchor-label="definitions" id="-1722730078%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="definitions.html"><span><span>definitions</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-875108065%2FProperties%2F-1528585073"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1722730078%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="definitions.html">definitions</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.apollographql.apollo.ast/-g-q-l-definition/index.html">GQLDefinition</a><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="definitions.html">definitions</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-g-q-l-definition/index.html">GQLDefinition</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1976406906%2FProperties%2F-1528585073" anchor-label="directivesToStrip" id="-1976406906%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+<a data-name="-662630711%2FProperties%2F-1528585073" anchor-label="directivesToStrip" id="-662630711%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="directives-to-strip.html"><span>directives</span><wbr><span>To</span><wbr><span><span>Strip</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1976406906%2FProperties%2F-1528585073"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-662630711%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
@@ -126,12 +126,12 @@
               </div>
             </div>
           </div>
-<a data-name="-681862416%2FProperties%2F-1528585073" anchor-label="name" id="-681862416%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+<a data-name="-87849011%2FProperties%2F-1528585073" anchor-label="name" id="-87849011%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="name.html"><span><span>name</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-681862416%2FProperties%2F-1528585073"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-87849011%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
@@ -141,12 +141,12 @@
               </div>
             </div>
           </div>
-<a data-name="268072391%2FProperties%2F-1528585073" anchor-label="version" id="268072391%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+<a data-name="1256161226%2FProperties%2F-1528585073" anchor-label="version" id="1256161226%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="version.html"><span><span>version</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="268072391%2FProperties%2F-1528585073"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1256161226%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>

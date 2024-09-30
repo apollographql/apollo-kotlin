@@ -70,7 +70,7 @@
   <div class="breadcrumbs"><a href="../../index.html">apollo-compiler</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.compiler</a><span class="delimiter">/</span><span class="current">ApolloCompilerPlugin</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Apollo</span><wbr><span>Compiler</span><wbr><span><span>Plugin</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">ApolloCompilerPlugin</a></div><p class="paragraph"><a href="index.html">ApolloCompilerPlugin</a> allows to customize the behaviour of the Apollo Compiler.</p><p class="paragraph"><a href="index.html">ApolloCompilerPlugin</a> is run in an isolated classloader. You may throw from <a href="index.html">ApolloCompilerPlugin</a> methods to fail the build but custom exception classes are not accessible from the calling environment like Gradle for an example. Prefer throwing regular Java exception classes.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">ApolloCompilerPlugin</a></div><p class="paragraph"><a href="index.html">ApolloCompilerPlugin</a> allows to customize the behaviour of the Apollo Compiler.</p><p class="paragraph"><a href="index.html">ApolloCompilerPlugin</a> may be instantiated several times in a codegen run. Each instance is create in a separate classloader. The classloaders contains <code class="lang-kotlin">apollo-compiler</code> classes and the runtime classpath of the <a href="index.html">ApolloCompilerPlugin</a>. You may throw from <a href="index.html">ApolloCompilerPlugin</a> methods to fail the build.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
@@ -88,6 +88,21 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="document-transform.html"><span class="token function">documentTransform</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-document-transform/index.html">DocumentTransform</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="384764099%2FFunctions%2F431625483" anchor-label="foreignSchemas" id="384764099%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="foreign-schemas.html"><span>foreign</span><wbr><span><span>Schemas</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="384764099%2FFunctions%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="foreign-schemas.html"><span class="token function">foreignSchemas</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../apollo-ast/com.apollographql.apollo.ast/-foreign-schema/index.html">ForeignSchema</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -163,6 +178,21 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="operation-ids.html"><span class="token function">operationIds</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">descriptors<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.apollographql.apollo.compiler.operationoutput/-operation-descriptor/index.html">OperationDescriptor</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.apollographql.apollo.compiler.operationoutput/-operation-id/index.html">OperationId</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Computes operation ids for persisted queries.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="631445969%2FFunctions%2F431625483" anchor-label="schemaDocumentListener" id="631445969%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="schema-document-listener.html"><span>schema</span><wbr><span>Document</span><wbr><span><span>Listener</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="631445969%2FFunctions%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="schema-document-listener.html"><span class="token function">schemaDocumentListener</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-schema-document-listener/index.html">SchemaDocumentListener</a><span class="token operator">?</span></div></div></div>
                 </div>
               </div>
             </div>
