@@ -79,24 +79,24 @@ interface ApolloCompilerPlugin {
   }
 
   /**
-   * @return A [SchemaDocumentListener] called whenever the schema changed
+   * @return A [SchemaListener] called whenever the schema changed
    */
   @ApolloExperimental
-  fun schemaDocumentListener(): SchemaDocumentListener? {
+  fun schemaListener(): SchemaListener? {
     return null
   }
 }
 
 @ApolloExperimental
-interface SchemaDocumentListener {
+interface SchemaListener {
   /**
    * Called when the schema changed and codegen needs to be updated
    *
-   * @param schema the validated schema document.
+   * @param schema the validated schema.
    * @param outputDirectory the compiler output directory. This directory is shared with the compiler, make sure to use a specific
    * package name to avoid clobbering other files.
    */
-  fun onSchemaDocument(schema: GQLDocument, outputDirectory: File)
+  fun onSchema(schema: Schema, outputDirectory: File)
 }
 
 

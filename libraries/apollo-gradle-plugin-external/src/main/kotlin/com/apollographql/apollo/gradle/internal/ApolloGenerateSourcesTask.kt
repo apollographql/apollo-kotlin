@@ -1,6 +1,5 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.compiler.ApolloCompiler
 import com.apollographql.apollo.compiler.CodegenSchema
 import com.apollographql.apollo.compiler.LayoutFactory
@@ -128,8 +127,8 @@ private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
           operationManifestFile = operationManifestFile.orNull?.asFile,
       ).writeTo(outputDir.get().asFile, true, null)
 
-      plugin?.schemaDocumentListener()?.let { onSchemaDocument ->
-        onSchemaDocument.onSchemaDocument(codegenSchema.schema.toGQLDocument(), outputDir.get().asFile)
+      plugin?.schemaListener()?.let { onSchemaDocument ->
+        onSchemaDocument.onSchema(codegenSchema.schema, outputDir.get().asFile)
       }
     }
   }

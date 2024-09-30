@@ -120,8 +120,8 @@ private abstract class GenerateSourcesFromIr : WorkAction<GenerateSourcesFromIrP
           operationOutputGenerator = plugin?.toOperationOutputGenerator(),
       ).writeTo(outputDir.get().asFile, true, metadataOutputFile.orNull?.asFile)
 
-      plugin?.schemaDocumentListener()?.let { onSchemaDocument ->
-        onSchemaDocument.onSchemaDocument(codegenSchema.schema.toGQLDocument(), outputDir.get().asFile)
+      plugin?.schemaListener()?.let { onSchemaDocument ->
+        onSchemaDocument.onSchema(codegenSchema.schema, outputDir.get().asFile)
       }
     }
   }
