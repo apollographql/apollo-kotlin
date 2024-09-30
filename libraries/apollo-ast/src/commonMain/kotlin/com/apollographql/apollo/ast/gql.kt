@@ -668,6 +668,9 @@ class GQLUnionTypeDefinition(
   }
 }
 
+/**
+ * @param name the name of the directive without the '@'
+ */
 class GQLDirectiveDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,

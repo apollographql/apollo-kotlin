@@ -1,5 +1,6 @@
 package com.apollographql.apollo.ast.internal
 
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.ConflictResolution
 import com.apollographql.apollo.ast.DirectiveRedefinition
@@ -28,6 +29,7 @@ import com.apollographql.apollo.ast.GQLTypeDefinition
 import com.apollographql.apollo.ast.GQLTypeDefinition.Companion.builtInTypes
 import com.apollographql.apollo.ast.GQLTypeSystemExtension
 import com.apollographql.apollo.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo.ast.GQLValue
 import com.apollographql.apollo.ast.IncompatibleDefinition
 import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.KOTLIN_LABS_VERSION
@@ -50,23 +52,33 @@ import com.apollographql.apollo.ast.pretty
 import com.apollographql.apollo.ast.rawType
 import com.apollographql.apollo.ast.transform2
 
-internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefinitions: Boolean = false): GQLResult<Schema> {
+/**
+ * @param addKotlinLabsDefinitions automatically import all the kotlin_labs definitions, even if no `@link` is present
+ * @param foreignSchemas a list of known [ForeignSchema] that may or may not be imported depending on the `@link` directives
+ */
+@ApolloExperimental
+class SchemaValidationOptions(
+    val addKotlinLabsDefinitions: Boolean,
+    val foreignSchemas: List<ForeignSchema>,
+)
+
+internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaValidationOptions): GQLResult<Schema> {
   val issues = mutableListOf<Issue>()
   val builtinDefinitions = builtinDefinitions()
 
   // If the builtin definitions are already in the schema, keep them
   var allDefinitions = combineDefinitions(definitions, builtinDefinitions, ConflictResolution.TakeLeft)
 
-  val foreignSchemas = allDefinitions.filterIsInstance<GQLSchemaExtension>()
-      .getForeignSchemas(issues, builtinDefinitions)
+  val imports = allDefinitions.filterIsInstance<GQLSchemaExtension>()
+      .getImports(issues, builtinDefinitions, options.foreignSchemas)
 
-  var foreignDefinitions = foreignSchemas.flatMap { it.definitions }
+  var foreignDefinitions = imports.flatMap { it.renamedDefinitions }
 
-  var directivesToStrip = foreignSchemas.flatMap { it.directivesToStrip }
+  var directivesToStrip = imports.flatMap { it.foreignSchema.directivesToStrip }
 
   val kotlinLabsDefinitions = kotlinLabsDefinitions(KOTLIN_LABS_VERSION)
 
-  if (requiresApolloDefinitions && foreignSchemas.none { it.name == "kotlin_labs" }) {
+  if (options.addKotlinLabsDefinitions && imports.none { it.foreignSchema.name == "kotlin_labs" }) {
     /**
      * Strip all the apollo directives from outgoing operation documents.
      * This will also strip schema directives like @typePolicy that should never appear in executable documents
@@ -186,7 +198,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
   val dedupedDefinitions = listOfNotNull(schemaDefinition) + directiveDefinitions.values + typeDefinitions.values
   val mergedDefinitions = ExtensionsMerger(dedupedDefinitions + typeSystemExtensions, MergeOptions(true)).merge().getOrThrow()
 
-  val foreignNames = foreignSchemas.flatMap {
+  val foreignNames = imports.flatMap {
     it.newNames.entries
   }.associateBy(
       keySelector = { it.value },
@@ -262,32 +274,75 @@ internal fun syntheticSchemaDefinition(typeDefinitions: Map<String, GQLTypeDefin
 }
 
 /**
- * @param newNames a mapping from the foreigne name to the new name
- * @param directivesToStrip the directives to strip (using new names)
+ * @param foreignSchema the [ForeignSchema] being imported.
+ * @param renamedDefinitions [ForeignSchema.definitions] renamed according to the import.
+ * By default, the new names are `${foreignSchemaName}__${definitionName}`
+ * @param newNames a mapping from the initial foreign name to the new name.
  */
-private class ForeignSchema(
-    val name: String,
-    val definitions: List<GQLDefinition>,
+private class Import(
+    val foreignSchema: ForeignSchema,
+    val renamedDefinitions: List<GQLDefinition>,
     val newNames: Map<String, String>,
-    val directivesToStrip: List<String>,
 )
 
 /**
- * Parses the schema extensions
+ * A known foreign schema
+ *
+ * @param name the name of the foreign schema as in https://specs.apollo.dev/link/v1.0/#@link.url
+ * @param version the version of the foreign schema as in https://specs.apollo.dev/link/v1.0/#@link.url
+ * @param definitions the definitions in the foreign schema
+ * @param directivesToStrip the name of directives that must be stripped before being sent to the server
+ * without the leading '@'.
+ * For an example: `"catch"`
+ */
+@ApolloExperimental
+class ForeignSchema(
+    val name: String,
+    val version: String,
+    val definitions: List<GQLDefinition>,
+    val directivesToStrip: List<String> = definitions.filterIsInstance<GQLDirective>().map { it.name },
+)
+
+private class UrlParseResult(val name: String, val version: String)
+
+private fun String.parseLink(): UrlParseResult? {
+  var components = split("/")
+  if (components.last().isBlank()) {
+    // https://spec.example.com/a/b/c/mySchemanameidentity/v1.0/
+    components = components.dropLast(1)
+  } else if (components.last().startsWith("?")) {
+    // https://spec.example.com/a/b/c/mySchemanameidentity/v1.0/?key=val&k2=v2#frag
+    components = components.dropLast(1)
+  }
+
+  if (components.size < 2) {
+    return null
+  }
+
+  return UrlParseResult(components[components.size - 2], components[components.size - 1])
+}
+
+/**
+ * Parses the `@link` schema extensions.
  *
  * Example: extend schema @link(url: "https://specs.apollo.dev/nullability/v0.4/", import: ["@catchByDefault", "CatchTo"])
  */
-private fun List<GQLSchemaExtension>.getForeignSchemas(
+private fun List<GQLSchemaExtension>.getImports(
     issues: MutableList<Issue>,
     builtinDefinitions: List<GQLDefinition>,
-): List<ForeignSchema> {
+    foreignSchemas: List<ForeignSchema>,
+): List<Import> {
   val schemaExtensions = this
 
-  val foreignSchemas = mutableListOf<ForeignSchema>()
+  val imports = mutableListOf<Import>()
 
   schemaExtensions.forEach { schemaExtension ->
     schemaExtension.directives.forEach eachDirective@{ gqlDirective ->
       if (gqlDirective.name == "link") {
+        /**
+         * Validate `@link` using a very minimal schema.
+         * This ensure we can safely cast the arguments below
+         */
         val minimalSchema = builtinDefinitions + linkDefinitions()
         val scope = DefaultValidationScope(
             minimalSchema.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
@@ -303,83 +358,105 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
 
         val arguments = gqlDirective.arguments
         val url = (arguments.first { it.name == "url" }.value as GQLStringValue).value
-        var prefix = (arguments.firstOrNull { it.name == "as" }?.value as GQLStringValue?)?.value
-        val import = (arguments.firstOrNull { it.name == "import" }?.value as GQLListValue?)?.values
 
-        var components = url.split("/")
-        if (components.last().isBlank()) {
-          // https://spec.example.com/a/b/c/mySchemanameidentity/v1.0/
-          components = components.dropLast(1)
-        } else if (components.last().startsWith("?")) {
-          // https://spec.example.com/a/b/c/mySchemanameidentity/v1.0/?key=val&k2=v2#frag
-          components = components.dropLast(1)
-        }
-
-        if (components.size < 2) {
+        val urlParseResult = url.parseLink()
+        if (urlParseResult == null) {
           issues.add(OtherValidationIssue("Invalid @link url: 'url'", gqlDirective.sourceLocation))
           return@eachDirective
         }
+        val foreignName = urlParseResult.name
+        val foreignVersion = urlParseResult.version
 
-        val foreignName = components[components.size - 2]
-        val version = components[components.size - 1]
-
+        var prefix = (arguments.firstOrNull { it.name == "as" }?.value as GQLStringValue?)?.value
         if (prefix == null) {
-          prefix = foreignName
+          prefix = urlParseResult.name
         }
 
-        val mappings = import.orEmpty().mapNotNull {
-          when (it) {
-            is GQLStringValue -> it.value to it.value
-            is GQLObjectValue -> {
-              if (it.fields.size != 2) {
-                issues.add(OtherValidationIssue("Too many fields in 'import' argument", it.sourceLocation))
-                return@mapNotNull null
-              }
+        val import = (arguments.firstOrNull { it.name == "import" }?.value as GQLListValue?)?.values
+        val mappings = import.orEmpty().parseImport(issues)
 
-              val name = (it.fields.firstOrNull { it.name == "name" }?.value as? GQLStringValue)?.value
-              if (name == null) {
-                issues.add(OtherValidationIssue("import 'name' argument is either missing or not a string", it.sourceLocation))
-              }
-              val as2 = (it.fields.firstOrNull { it.name == "as" }?.value as? GQLStringValue)?.value
-              if (as2 == null) {
-                issues.add(OtherValidationIssue("import 'as' argument is either missing or not a string", it.sourceLocation))
-              }
-              if (name == null || as2 == null) {
-                return@mapNotNull null
-              }
-              name to as2
-            }
+        val foreignSchema = foreignSchemas.firstOrNull { it.name == foreignName && it.version == foreignVersion }
 
-            else -> {
-              issues.add(OtherValidationIssue("Bad 'import' argument", it.sourceLocation))
-              null
+        if (foreignSchema != null) {
+          mappings.keys.forEach { key ->
+            if (foreignSchema.definitions.none { it.displayName() == key }) {
+              issues.add(
+                  OtherValidationIssue("Apollo: unknown definition '$key'", gqlDirective.sourceLocation)
+              )
             }
           }
-        }.toMap()
 
-
-        val foreignDefinitions = when (foreignName) {
-          "kotlin_labs" -> kotlinLabsDefinitions(version)
-          "nullability" -> nullabilityDefinitions(version)
-          else -> null
-        }
-
-        if (foreignDefinitions != null) {
-          val (definitions, renames) = foreignDefinitions.rename(mappings, prefix)
-          foreignSchemas.add(
-              ForeignSchema(
-                  name = foreignName,
-                  definitions = definitions,
+          val (definitions, renames) = foreignSchema.definitions.rename(mappings, prefix)
+          imports.add(
+              Import(
+                  foreignSchema = foreignSchema,
+                  renamedDefinitions = definitions,
                   newNames = renames,
-                  directivesToStrip = definitions.filterIsInstance<GQLDirectiveDefinition>().map { it.name }
               )
           )
+        } else {
+          issues.add(OtherValidationIssue("Apollo: unknown foreign schema '$foreignName/$foreignVersion'", gqlDirective.sourceLocation))
         }
       }
     }
   }
 
-  return foreignSchemas
+  return imports
+}
+
+/**
+ * Parses the import argument of `@link`:
+ *
+ * ```
+ * extend schema
+ *   @link(url: "https://example.com/otherSchema",
+ *     # @link infers a name from the URL
+ *     #   (use as: to set it explicitly)
+ *     import: ["SomeType", "@someDirective", {
+ *       name: "@someRenamedDirective",
+ *       as: "@renamed"
+ *     }])
+ * ```
+ *
+ * @return a mapping from the original name in the definitions to the new name. For the example above:
+ * ```kotlin
+ * mapOf(
+ *    "SomeType" to "SomeType",
+ *    "@someDirective" to "@someDirective",
+ *    "@someRenamedDirective" to "@renamed",
+ * )
+ * ```
+ */
+private fun List<GQLValue>.parseImport(issues: MutableList<Issue>): Map<String, String> {
+  return mapNotNull {
+    when (it) {
+      is GQLStringValue -> it.value to it.value
+      is GQLObjectValue -> {
+        if (it.fields.size != 2) {
+          issues.add(OtherValidationIssue("Too many fields in 'import' argument", it.sourceLocation))
+          return@mapNotNull null
+        }
+
+        val name = (it.fields.firstOrNull { it.name == "name" }?.value as? GQLStringValue)?.value
+        if (name == null) {
+          issues.add(OtherValidationIssue("import 'name' argument is either missing or not a string", it.sourceLocation))
+        }
+        val as2 = (it.fields.firstOrNull { it.name == "as" }?.value as? GQLStringValue)?.value
+        if (as2 == null) {
+          issues.add(OtherValidationIssue("import 'as' argument is either missing or not a string", it.sourceLocation))
+        }
+        if (name == null || as2 == null) {
+          return@mapNotNull null
+        }
+        name to as2
+      }
+
+      else -> {
+        issues.add(OtherValidationIssue("Bad 'import' argument", it.sourceLocation))
+        null
+      }
+    }
+  }.toMap()
 }
 
 private fun List<GQLDefinition>.rename(mappings: Map<String, String>, prefix: String): Pair<List<GQLDefinition>, Map<String, String>> {
@@ -406,8 +483,8 @@ private fun List<GQLDefinition>.rename(mappings: Map<String, String>, prefix: St
 
         is GQLDirectiveDefinition -> {
           // Special case, directives use a leading '@'
-          val newName = mappings["@${gqlNode.name}"]?.substring(1) ?: "${prefix}__${gqlNode.name}"
-          renames["@${gqlNode.name}"] = "@$newName"
+          val newName = mappings[gqlNode.displayName()]?.substring(1) ?: "${prefix}__${gqlNode.name}"
+          renames[gqlNode.displayName()] = "@$newName"
           gqlNode.copy(name = newName)
         }
 
@@ -418,6 +495,29 @@ private fun List<GQLDefinition>.rename(mappings: Map<String, String>, prefix: St
   }
 
   return definitions to renames
+}
+
+/**
+ * Because types and directive may share the same name, they are disambiguated
+ */
+private fun GQLDefinition.displayName(): String {
+  return when (this) {
+    is GQLDirectiveDefinition -> {
+      "@${name}"
+    }
+
+    is GQLNamed -> {
+      name
+    }
+
+    else -> {
+      /**
+       * This case happens if a foreign schema adds a [GQLSchemaDefinition].
+       * This is very unlikely to happen but if it does, do not crash.
+       */
+      ""
+    }
+  }
 }
 
 internal fun ValidationScope.validateSchemaDefinition(schemaDefinition: GQLSchemaDefinition) {
@@ -516,7 +616,8 @@ private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition?
     issues.add(OtherValidationIssue(
         message = "Schemas that include nullability directives must opt-in a default CatchTo. Use `extend schema @catchByDefault(to: \$to)`",
         sourceLocation = null
-    ))
+    )
+    )
     return
   }
 
@@ -528,13 +629,15 @@ private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition?
     issues.add(OtherValidationIssue(
         message = "Schemas that include nullability directives must opt-in a default CatchTo. Use `extend schema @catchByDefault(to: \$to)`",
         sourceLocation = schemaDefinition.sourceLocation
-    ))
+    )
+    )
     return
   } else if (catches.size > 1) {
     issues.add(OtherValidationIssue(
         message = "There can be only one `@catch` directive on the schema definition",
         sourceLocation = schemaDefinition.sourceLocation
-    ))
+    )
+    )
     return
   }
 }

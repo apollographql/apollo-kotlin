@@ -535,7 +535,15 @@ internal fun List<Issue>.group(
   val ignored = mutableListOf<Issue>()
   val warnings = mutableListOf<Issue>()
   val errors = mutableListOf<Issue>()
-  val apolloDirectives = kotlinLabsDefinitions(KOTLIN_LABS_VERSION).mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()
+
+  /**
+   * The kotlin_labs directives as of v0.3: https://specs.apollo.dev/kotlin_labs/v0.3/
+   * v0.4 removed `@nonnull` but we may still have users on v0.3.
+   *
+   * Moving forward, do not add new names there. If the directive is already defined, it
+   * should be removed. This should even be an error.
+   */
+  val apolloDirectives = setOf("optional", "nonnull", "typePolicy", "fieldPolicy", "requiresOptIn", "targetName")
 
   forEach {
     val severity = when (it) {

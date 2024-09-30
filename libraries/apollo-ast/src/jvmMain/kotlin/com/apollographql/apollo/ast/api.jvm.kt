@@ -20,6 +20,6 @@ fun File.toGQLDocument(options: ParserOptions = ParserOptions.Default, allowJson
   return parseAsGQLDocument(options).getOrThrow()
 }
 
-
+@Deprecated("Use toGQLDocument().validateAsSchema().getOrThrow()", ReplaceWith("toGQLDocument(allowJson = allowJson).validateAsSchema().getOrThrow()"))
 @ApolloExperimental
 fun File.toSchema(allowJson: Boolean = false): Schema = toGQLDocument(allowJson = allowJson).validateAsSchema().getOrThrow()
