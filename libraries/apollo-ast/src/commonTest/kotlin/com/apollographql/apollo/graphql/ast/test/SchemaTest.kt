@@ -1,9 +1,6 @@
 package com.apollographql.apollo.graphql.ast.test
 
-import com.apollographql.apollo.ast.GQLDirectiveDefinition
-import com.apollographql.apollo.ast.GQLDirectiveLocation
-import com.apollographql.apollo.ast.GQLInputValueDefinition
-import com.apollographql.apollo.ast.internal.ForeignSchema
+import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.internal.SchemaValidationOptions
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
@@ -11,7 +8,6 @@ import com.apollographql.apollo.ast.toSchema
 import com.apollographql.apollo.ast.validateAsSchema
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class SchemaTest {
   @Test

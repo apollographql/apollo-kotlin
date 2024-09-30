@@ -501,7 +501,8 @@ abstract class DefaultApolloExtension(
             project = project,
             service = service,
             optionsTaskProvider = optionsTaskProvider,
-            schemaConsumerConfiguration = codegenSchema.resolvable
+            schemaConsumerConfiguration = codegenSchema.resolvable,
+            classpathOptions = classpathOptions
         )
       } else {
         check(service.scalarTypeMapping.isEmpty()) {
@@ -786,11 +787,13 @@ abstract class DefaultApolloExtension(
       service: DefaultService,
       optionsTaskProvider: TaskProvider<ApolloGenerateOptionsTask>,
       schemaConsumerConfiguration: Configuration,
+      classpathOptions: ApolloTaskWithClasspath.Options,
   ): TaskProvider<ApolloGenerateCodegenSchemaTask> {
     return project.tasks.register(ModelNames.generateApolloCodegenSchema(service), ApolloGenerateCodegenSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Generate Apollo schema for service '${service.name}'"
 
+      configureTaskWithClassPath(task, classpathOptions)
       task.schemaFiles.from(service.schemaFiles(project))
       task.fallbackSchemaFiles.from(service.fallbackSchemaFiles(project))
       task.upstreamSchemaFiles.from(schemaConsumerConfiguration)

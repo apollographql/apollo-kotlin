@@ -470,7 +470,8 @@ private fun ApolloCompiler.buildSchemaAndOperationsSourcesAndReturnIrOperations(
   val codegenSchema = buildCodegenSchema(
       schemaFiles = schemaFiles,
       logger = logger,
-      codegenSchemaOptions = codegenSchemaOptions
+      codegenSchemaOptions = codegenSchemaOptions,
+      foreignSchemas = emptyList()
   )
 
   val irOperations = buildIrOperations(

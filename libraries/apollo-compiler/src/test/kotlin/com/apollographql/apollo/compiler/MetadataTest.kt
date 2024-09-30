@@ -44,6 +44,7 @@ class MetadataTest {
         schemaFiles = setOf(File("src/test/metadata/schema.graphqls")).toInputFiles(),
         logger = null,
         codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions(),
+        foreignSchemas = emptyList(),
     ).writeTo(codegenSchemaFile)
 
     ApolloCompiler.buildIrOperations(

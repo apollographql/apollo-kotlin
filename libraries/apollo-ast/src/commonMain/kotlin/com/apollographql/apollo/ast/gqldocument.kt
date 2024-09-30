@@ -4,7 +4,6 @@ import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.internal.ExtensionsMerger
-import com.apollographql.apollo.ast.internal.ForeignSchema
 import com.apollographql.apollo.ast.internal.builtinsDefinitionsStr
 import com.apollographql.apollo.ast.internal.ensureSchemaDefinition
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_3
@@ -103,7 +102,7 @@ fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
  * This is exported in case users want to validate documents meant for Apollo Kotlin.
  */
 @ApolloExperimental
-fun supportedForeignSchemas(): List<ForeignSchema> {
+fun builtinForeignSchemas(): List<ForeignSchema> {
   return listOf(
       ForeignSchema("kotlin_labs", "v0.2", kotlinLabsDefinitions("v0.2"), listOf("optional", "nonnull")),
       ForeignSchema("kotlin_labs", "v0.3", kotlinLabsDefinitions("v0.3"), listOf("optional", "nonnull")),

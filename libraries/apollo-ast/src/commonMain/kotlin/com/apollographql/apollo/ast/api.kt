@@ -212,7 +212,7 @@ fun GQLDocument.validateAsSchemaAndAddApolloDefinition(): GQLResult<Schema> {
       definitions,
       SchemaValidationOptions(
           true,
-          supportedForeignSchemas()
+          builtinForeignSchemas()
       )
   )
 }

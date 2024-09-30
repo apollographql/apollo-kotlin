@@ -1,6 +1,8 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.ast.ForeignSchema
+import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.Schema
@@ -10,13 +12,15 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.OperationId
+import java.io.File
 
 /**
  * [ApolloCompilerPlugin] allows to customize the behaviour of the Apollo Compiler.
  *
- * [ApolloCompilerPlugin] is run in an isolated classloader. You may throw from [ApolloCompilerPlugin] methods to fail the build
- * but custom exception classes are not accessible from the calling environment like Gradle for an example.
- * Prefer throwing regular Java exception classes.
+ * [ApolloCompilerPlugin] may be instantiated several times in a codegen run. Each instance is create in a
+ * separate classloader.
+ * The classloaders contains `apollo-compiler` classes and the runtime classpath of the [ApolloCompilerPlugin].
+ * You may throw from [ApolloCompilerPlugin] methods to fail the build.
  */
 interface ApolloCompilerPlugin {
   /**
@@ -65,7 +69,36 @@ interface ApolloCompilerPlugin {
   fun irOperationsTransform(): Transform<IrOperations>? {
     return null
   }
+
+  /**
+   * @return A list of [ForeignSchema] supported by this plugin
+   */
+  @ApolloExperimental
+  fun foreignSchemas(): List<ForeignSchema> {
+    return emptyList()
+  }
+
+  /**
+   * @return A [SchemaDocumentListener] called whenever the schema changed
+   */
+  @ApolloExperimental
+  fun schemaDocumentListener(): SchemaDocumentListener? {
+    return null
+  }
 }
+
+@ApolloExperimental
+interface SchemaDocumentListener {
+  /**
+   * Called when the schema changed and codegen needs to be updated
+   *
+   * @param schema the validated schema document.
+   * @param outputDirectory the compiler output directory. This directory is shared with the compiler, make sure to use a specific
+   * package name to avoid clobbering other files.
+   */
+  fun onSchemaDocument(schema: GQLDocument, outputDirectory: File)
+}
+
 
 /**
  * A [DocumentTransform] transforms operations and fragments at build time. [DocumentTransform] can add or remove fields automatically for an example.

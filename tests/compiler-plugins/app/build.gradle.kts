@@ -36,6 +36,14 @@ apollo {
           }
           languageVersion.set("1.5")
 
+          when(name) {
+            "schema-codegen" -> {
+              srcDir("src/main/graphql/schema")
+            }
+            else -> {
+              srcDir("src/main/graphql/cache")
+            }
+          }
           when (name) {
             "gettersandsetters" -> {
               generateKotlinModels.set(false)
