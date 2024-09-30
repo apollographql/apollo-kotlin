@@ -1,0 +1,10 @@
+extend schema @link(url: "https://specs.apollo.dev/cache/v0.1/", import: ["@cacheControl"])
+
+type Query {
+  menu: Menu
+}
+
+
+type Menu @cacheControl(maxAge: 60) {
+  pizzas: int
+}

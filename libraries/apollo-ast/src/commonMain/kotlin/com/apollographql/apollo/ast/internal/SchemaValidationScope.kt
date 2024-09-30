@@ -4,6 +4,7 @@ import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.ConflictResolution
 import com.apollographql.apollo.ast.DirectiveRedefinition
+import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.GQLDefinition
 import com.apollographql.apollo.ast.GQLDirective
 import com.apollographql.apollo.ast.GQLDirectiveDefinition
@@ -283,24 +284,6 @@ private class Import(
     val foreignSchema: ForeignSchema,
     val renamedDefinitions: List<GQLDefinition>,
     val newNames: Map<String, String>,
-)
-
-/**
- * A known foreign schema
- *
- * @param name the name of the foreign schema as in https://specs.apollo.dev/link/v1.0/#@link.url
- * @param version the version of the foreign schema as in https://specs.apollo.dev/link/v1.0/#@link.url
- * @param definitions the definitions in the foreign schema
- * @param directivesToStrip the name of directives that must be stripped before being sent to the server
- * without the leading '@'.
- * For an example: `"catch"`
- */
-@ApolloExperimental
-class ForeignSchema(
-    val name: String,
-    val version: String,
-    val definitions: List<GQLDefinition>,
-    val directivesToStrip: List<String> = definitions.filterIsInstance<GQLDirective>().map { it.name },
 )
 
 private class UrlParseResult(val name: String, val version: String)
