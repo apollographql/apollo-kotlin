@@ -7,7 +7,7 @@ _2024-10-01_
 
 This release contains a handful of bug fixes and improvements. 
 
-## 🧩 Compiler Plugins additions (experimental)
+## ⚙️ Add `ApolloCompilerPlugin.schemaListener()`
 
 The [compiler plugins](https://www.apollographql.com/docs/kotlin/advanced/compiler-plugins) API has been extended to allow listening to schema changes.\
 This can be used to have plugins generate code based on the schema. To do this, implement the [`schemaListener`](https://www.apollographql.com/docs/kotlin/kdoc/apollo-compiler/com.apollographql.apollo.compiler/-apollo-compiler-plugin/schema-listener.html)
