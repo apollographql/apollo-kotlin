@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.CompiledSelection
 import com.apollographql.apollo.api.CompiledType
 import com.apollographql.apollo.api.Executable
 import com.apollographql.apollo.api.isComposite
+import com.apollographql.apollo.api.json.ApolloJsonElement
 import com.apollographql.apollo.cache.normalized.api.CacheKey
 import com.apollographql.apollo.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo.cache.normalized.api.CacheKeyGeneratorContext
@@ -25,7 +26,7 @@ internal class Normalizer(
 ) {
   private val records = mutableMapOf<String, Record>()
 
-  fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>, parentType: String): Map<String, Record> {
+  fun normalize(map: Map<String, ApolloJsonElement>, selections: List<CompiledSelection>, parentType: String): Map<String, Record> {
     buildRecord(map, rootKey, selections, parentType)
 
     return records
@@ -38,7 +39,7 @@ internal class Normalizer(
    * @return the CacheKey
    */
   private fun buildRecord(
-      obj: Map<String, Any?>,
+      obj: Map<String, ApolloJsonElement>,
       key: String,
       selections: List<CompiledSelection>,
       parentType: String,

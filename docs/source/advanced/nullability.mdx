@@ -319,6 +319,43 @@ In order to change that default to "opt-in the errors you want to handle", you c
 1. import the nullability directives.
 1. Default to coercing to null: `extend schema @catchByDefault(to: NULL)`. This is a no-op to start exploring the directives.
 1. Add `@catch` to individual fields, get more comfortable with how it works.
-1. When ready to do the big switch, change to `extend schema catch(to: THROW)` and (at the same time) add  `query GetFoo @catch(to: NULL) {}` on all operations/fragments (this is a no-op).
-1. From this moment on, new queries written are `catch(to: THROW)` by default.
-1. Remove `query GetFoo @catch(to: NULL) {}` progressively.
+1. When ready to do the big switch, change to `extend schema catchByDefault(to: THROW)` and (at the same time) add `query GetFoo @catchByDefault(to: NULL) {}` on all operations/fragments (this is a no-op).
+1. From this moment on, new queries written throw on errors by default.
+1. Remove `query GetFoo @catchByDefault(to: NULL) {}` progressively.
+
+## Migrate from `@nonnull`
+
+If you were using `@nonnull` before, you can now use `@semanticNonNull`. 
+
+`@semanticNonNull`, coupled with `@catch` is more flexible and also more in line with other frameworks. 
+
+**For usages in executable documents**:
+```graphql
+# Replace
+query GetFoo {
+  foo @nonnull
+}
+
+# With 
+query GetFoo {
+  foo @catch(to: THROW)
+}
+```
+
+**For usages in schema documents**:
+```graphql
+# Replace
+extend type Foo @nonnull(fields: "bar")
+
+# With
+extend type Foo @semanticNonNullField(name: "bar")
+```
+
+If your schema is configured with `@catchByDefault(to: NULL)`, you'll also need to update the usages in your executable documents:
+
+```graphql
+# Add `@catch(to: THROW)` 
+query GetFoo {
+  foo @catch(to: THROW)
+}
+```

@@ -871,8 +871,12 @@ interface Service {
     fun connectToAndroidSourceSet(name: String)
 
     /**
-     * Connects the generated sources to all the Android variants
-     * Throws if the Android plugin is not applied
+     * Connects the generated sources to the main Android variants.
+     * Note: despite the name, this method does not connect to the test variants as the main
+     * classpath is accessible from the tests and adding the sources twice causes issues.
+     * See https://issuetracker.google.com/u/1/issues/268218176
+     *
+     * @throws Exception if the Android plugin is not applied
      */
     fun connectToAllAndroidVariants()
 

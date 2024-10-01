@@ -1,3 +1,9 @@
+extend schema @link(
+  url: "https://specs.apollo.dev/nullability/v0.4",
+  import: ["@semanticNonNull", "@semanticNonNullField", "@catch", "CatchTo", "@catchByDefault"]
+)
+extend schema @catchByDefault(to: NULL)
+
 type Query {
   person: Person
 }

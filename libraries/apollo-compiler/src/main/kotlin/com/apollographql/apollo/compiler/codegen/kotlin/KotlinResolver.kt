@@ -9,6 +9,7 @@ import com.apollographql.apollo.compiler.codegen.ResolverClassName
 import com.apollographql.apollo.compiler.codegen.ResolverEntry
 import com.apollographql.apollo.compiler.codegen.ResolverKey
 import com.apollographql.apollo.compiler.codegen.ResolverKeyKind
+import com.apollographql.apollo.compiler.codegen.kotlin.helpers.bestGuess
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.obj
 import com.apollographql.apollo.compiler.ir.IrCatchTo
 import com.apollographql.apollo.compiler.ir.IrCompositeType2
@@ -43,7 +44,7 @@ internal class KotlinResolver(
     private val scalarMapping: Map<String, ScalarInfo>,
     private val requiresOptInAnnotation: String?,
 ) {
-  fun resolve(key: ResolverKey): ClassName?  {
+  fun resolve(key: ResolverKey): ClassName? {
     return classNames[key] ?: next?.resolve(key)
   }
 
@@ -59,7 +60,8 @@ internal class KotlinResolver(
     val result = resolve(ResolverKey(kind, id))
 
     check(result != null) {
-      "Cannot resolve $kind($id)"
+      "Cannot resolve $kind($id). " +
+          "Have you set up an 'opposite link' on the downstream project to the schema module as a isADependencyOf(..)?"
     }
     return result
   }
@@ -84,6 +86,7 @@ internal class KotlinResolver(
       type.optional -> {
         KotlinSymbols.Optional.parameterizedBy(resolveIrType(type.optional(false), jsExport, isInterface))
       }
+
       type.catchTo != IrCatchTo.NoCatch -> {
         resolveIrType(type.catchTo(IrCatchTo.NoCatch), jsExport, isInterface).let {
           when (type.catchTo) {
@@ -93,9 +96,11 @@ internal class KotlinResolver(
           }
         }
       }
+
       type.nullable -> {
         resolveIrType(type.nullable(false), jsExport, isInterface).copy(nullable = true)
       }
+
       else -> {
         when (type) {
           is IrListType -> resolveIrType(type.ofType, jsExport, isInterface).wrapInList(jsExport, isInterface)
@@ -138,9 +143,9 @@ internal class KotlinResolver(
     return listType.parameterizedBy(param)
   }
 
-  private fun resolveScalarTarget(name: String): ClassName? {
+  private fun resolveScalarTarget(name: String): TypeName? {
     return scalarMapping[name]?.targetName?.let {
-      ClassName.bestGuess(it)
+      bestGuess(it)
     }
   }
 
@@ -202,6 +207,7 @@ internal class KotlinResolver(
         val presentFun = MemberName("com.apollographql.apollo.api", "present")
         CodeBlock.of("%L.%M()", adapterInitializer(type.optional(false), requiresBuffering, jsExport), presentFun)
       }
+
       type.catchTo != IrCatchTo.NoCatch -> {
         adapterInitializer(type.catchTo(IrCatchTo.NoCatch), requiresBuffering, jsExport).let {
           val member = when (type.catchTo) {
@@ -212,11 +218,13 @@ internal class KotlinResolver(
           CodeBlock.of("%L.%M()", it, member)
         }
       }
+
       type.maybeError -> {
         adapterInitializer(type.maybeError(false), requiresBuffering, jsExport).let {
           CodeBlock.of("%L.%M()", it, KotlinSymbols.errorAware)
         }
       }
+
       type.nullable -> {
         // Don't hardcode the adapter when the scalar is mapped to a user-defined type
         val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
@@ -236,6 +244,7 @@ internal class KotlinResolver(
           }
         }
       }
+
       else -> {
         when (type) {
           is IrListType -> {

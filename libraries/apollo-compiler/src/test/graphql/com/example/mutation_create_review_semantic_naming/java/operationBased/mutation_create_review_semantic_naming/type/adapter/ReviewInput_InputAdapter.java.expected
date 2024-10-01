@@ -115,5 +115,9 @@ public enum ReviewInput_InputAdapter implements Adapter<ReviewInput> {
       writer.name("CapitalizedInt");
       new ApolloOptionalAdapter<>(Adapters.NullableIntAdapter).toJson(writer, customScalarAdapters, value.CapitalizedInt);
     }
+    if (value.in instanceof Optional.Present) {
+      writer.name("in");
+      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, value.in);
+    }
   }
 }

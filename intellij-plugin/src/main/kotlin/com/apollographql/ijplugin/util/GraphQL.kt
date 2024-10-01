@@ -7,10 +7,17 @@ import com.intellij.lang.jsgraphql.psi.GraphQLFieldDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLFile
 import com.intellij.lang.jsgraphql.psi.GraphQLIdentifier
 import com.intellij.lang.jsgraphql.psi.GraphQLInterfaceTypeDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLListType
+import com.intellij.lang.jsgraphql.psi.GraphQLNamedElement
 import com.intellij.lang.jsgraphql.psi.GraphQLNamedTypeDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLNonNullType
 import com.intellij.lang.jsgraphql.psi.GraphQLObjectTypeDefinition
+import com.intellij.lang.jsgraphql.psi.GraphQLType
+import com.intellij.lang.jsgraphql.psi.GraphQLTypeName
 import com.intellij.lang.jsgraphql.psi.GraphQLValue
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
+import com.intellij.psi.util.parentOfTypes
 
 /**
  * Given a field identifier, returns the set of field coordinates that match it.
@@ -67,7 +74,8 @@ private fun matchingFieldCoordinates(
   val fieldCoordinates = mutableSetOf(typeName + "." + fieldDefinition.name)
   val implementedInterfaces = (namedTypeDefinition as? GraphQLObjectTypeDefinition)?.implementsInterfaces
       ?: (namedTypeDefinition as? GraphQLInterfaceTypeDefinition)?.implementsInterfaces ?: return fieldCoordinates
-  val implementedInterfaceTypeDefinitions = implementedInterfaces.typeNameList.mapNotNull { it.nameIdentifier.reference?.resolve()?.parentOfType<GraphQLInterfaceTypeDefinition>() }
+  val implementedInterfaceTypeDefinitions =
+    implementedInterfaces.typeNameList.mapNotNull { it.nameIdentifier.reference?.resolve()?.parentOfType<GraphQLInterfaceTypeDefinition>() }
   if (implementedInterfaceTypeDefinitions.isEmpty()) return fieldCoordinates
   return fieldCoordinates + implementedInterfaceTypeDefinitions.flatMap { matchingFieldCoordinates(fieldDefinition, it) }
 }
@@ -84,4 +92,18 @@ fun GraphQLElement.schemaFiles(): List<GraphQLFile> {
 }
 
 fun GraphQLDirective.argumentValue(argumentName: String): GraphQLValue? =
-    arguments?.argumentList.orEmpty().firstOrNull { it.name == argumentName }?.value
+  arguments?.argumentList.orEmpty().firstOrNull { it.name == argumentName }?.value
+
+inline fun <reified T : PsiElement> GraphQLNamedElement.resolve(): T? =
+  nameIdentifier?.reference?.resolve()?.parentOfTypes(T::class)
+
+val GraphQLType.rawType: GraphQLTypeName?
+  get() {
+    @Suppress("RecursivePropertyAccessor")
+    return when (this) {
+      is GraphQLTypeName -> return this
+      is GraphQLNonNullType -> return this.type.rawType
+      is GraphQLListType -> return this.type.rawType
+      else -> null
+    }
+  }

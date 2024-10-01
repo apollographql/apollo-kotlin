@@ -40,8 +40,8 @@ apollo {
 
 ## Combining multiple schema files
 
-Apollo Kotlin supports a collection of client directives, including `@nonnull`, `@optional`, and `@typePolicy`. These
-directives enable you to extend your server's base schema with client-specific types and fields.
+Apollo Kotlin supports a collection of directives, such as `@semanticNonNull`, `@fieldPolicy`, `@typePolicy`. These
+directives enable you to extend your server's base schema to work better with your client.
 
 If you expand your schema in a separate file (usually named `extra.graphqls`), you can instruct Apollo Kotlin to construct its schema from a combination
 of multiple files, like so:

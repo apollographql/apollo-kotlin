@@ -104,6 +104,10 @@ public data class ReviewInput(
    * for test purpose only
    */
   public val CapitalizedInt: Optional<Int?> = Optional.Absent,
+  /**
+   * for test purpose only
+   */
+  public val `in`: Optional<String?> = Optional.Absent,
 ) {
   public class Builder {
     private var stars: Int? = null
@@ -149,6 +153,8 @@ public data class ReviewInput(
     private var CapitalizedField: Optional<String?> = Optional.Absent
 
     private var CapitalizedInt: Optional<Int?> = Optional.Absent
+
+    private var `in`: Optional<String?> = Optional.Absent
 
     /**
      * 0-5 stars
@@ -326,6 +332,14 @@ public data class ReviewInput(
       return this
     }
 
+    /**
+     * for test purpose only
+     */
+    public fun `in`(`in`: String?): Builder {
+      this.`in` = Optional.Present(`in`)
+      return this
+    }
+
     public fun build(): ReviewInput = ReviewInput(
       stars = stars ?: error("missing value for stars"),
       nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue,
@@ -349,6 +363,7 @@ public data class ReviewInput(
       listOfListOfObject = listOfListOfObject,
       CapitalizedField = CapitalizedField,
       CapitalizedInt = CapitalizedInt,
+      `in` = `in`,
     )
   }
 }

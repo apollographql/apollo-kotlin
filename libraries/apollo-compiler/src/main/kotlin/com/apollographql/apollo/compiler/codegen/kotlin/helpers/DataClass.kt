@@ -121,7 +121,7 @@ internal fun TypeSpec.Builder.withCopyImplementation(className: ClassName): Type
           .add("return %T(", className)
           .apply {
             constructorProperties.forEach {
-              add("%L,", it.name)
+              add("%N,", it.name)
             }
           }
           .add(")")

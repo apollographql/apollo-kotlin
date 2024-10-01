@@ -13,11 +13,14 @@ import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.assertNoRequest
 import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo.network.NetworkMonitor
+import com.apollographql.apollo.network.waitForNetwork
 import test.FooQuery
 import com.apollographql.apollo.testing.internal.runTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
@@ -91,15 +94,10 @@ class NetworkMonitorTest {
 class FakeNetworkMonitor: NetworkMonitor {
   val _isOnline = MutableStateFlow(false)
 
+  override val isOnline: StateFlow<Boolean?>
+    get() = _isOnline.asStateFlow()
+
   override fun close() {}
-
-  override suspend fun waitForNetwork() {
-    _isOnline.takeWhile { !it }.collect()
-  }
-
-  override suspend fun isOnline(): Boolean {
-    return _isOnline.mapNotNull { it }.first()
-  }
 }
 
 class NetworkMonitorInterceptor(private val networkMonitor: NetworkMonitor): ApolloInterceptor {

@@ -10,3 +10,7 @@ query TestQuery {
     links
   }
 }
+
+query ScalarWithGenericType {
+  listOfString
+}

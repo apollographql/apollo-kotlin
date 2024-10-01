@@ -48,10 +48,15 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
       val schemaInputFiles = (schemaFiles.takeIf { it.files.isNotEmpty() } ?: fallbackSchemaFiles).toInputFiles()
       val executableInputFiles = graphqlFiles.toInputFiles()
 
-      ApolloCompiler.buildSchemaAndOperationsSources(
+      val codegenSchema = ApolloCompiler.buildCodegenSchema(
           schemaFiles = schemaInputFiles,
-          executableFiles = executableInputFiles,
           codegenSchemaOptions = codegenSchemaOptionsFile.get().asFile.toCodegenSchemaOptions(),
+          foreignSchemas = emptyList(),
+          logger = logger()
+      )
+      ApolloCompiler.buildSchemaAndOperationsSources(
+          codegenSchema = codegenSchema,
+          executableFiles = executableInputFiles,
           codegenOptions = codegenOptionsFile.get().asFile.toCodegenOptions(),
           irOptions = irOptionsFile.get().asFile.toIrOptions(),
           logger = logger(),
@@ -96,10 +101,16 @@ private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
           hasPlugin
       )
 
-      ApolloCompiler.buildSchemaAndOperationsSources(
+      val codegenSchema = ApolloCompiler.buildCodegenSchema(
           schemaFiles = schemaInputFiles,
-          executableFiles = executableInputFiles,
           codegenSchemaOptions = codegenSchemaOptions.get().asFile.toCodegenSchemaOptions(),
+          foreignSchemas = plugin?.foreignSchemas().orEmpty(),
+          logger = logger()
+      )
+
+      ApolloCompiler.buildSchemaAndOperationsSources(
+          codegenSchema,
+          executableFiles = executableInputFiles,
           codegenOptions = codegenOptions.get().asFile.toCodegenOptions(),
           irOptions = irOptions.get().asFile.toIrOptions(),
           logger = logger(),
@@ -113,8 +124,12 @@ private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
           javaOutputTransform = plugin?.javaOutputTransform(),
           kotlinOutputTransform = plugin?.kotlinOutputTransform(),
           documentTransform = plugin?.documentTransform(),
-          operationManifestFile = operationManifestFile.orNull?.asFile
+          operationManifestFile = operationManifestFile.orNull?.asFile,
       ).writeTo(outputDir.get().asFile, true, null)
+
+      plugin?.schemaListener()?.let { onSchemaDocument ->
+        onSchemaDocument.onSchema(codegenSchema.schema, outputDir.get().asFile)
+      }
     }
   }
 }

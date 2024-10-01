@@ -2,17 +2,17 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  203612
-aggregate-kotlin-responseBased                                                                  65709
+aggregate-all                                                                                  203712
+aggregate-kotlin-responseBased                                                                  65746
 aggregate-kotlin-operationBased                                                                 42225
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   95678
+aggregate-java-operationBased                                                                   95741
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5540
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3464
 java-operationBased-data_builders                                                                2996
+java-operationBased-mutation_create_review                                                       2437
 kotlin-responseBased-fragment_with_inline_fragment                                               2419
-java-operationBased-mutation_create_review                                                       2416
 kotlin-responseBased-data_builders                                                               2341
 java-operationBased-fragment_with_inline_fragment                                                2227
 kotlin-operationBased-data_builders                                                              1990
@@ -20,21 +20,21 @@ java-operationBased-nested_named_fragments                                      
 java-operationBased-union_inline_fragments                                                       1647
 java-operationBased-fragment_spread_with_include_directive                                       1642
 kotlin-responseBased-nested_named_fragments                                                      1635
+java-operationBased-input_object_type                                                            1627
 java-operationBased-unique_type_name                                                             1619
 java-operationBased-inline_fragment_intersection                                                 1618
-java-operationBased-input_object_type                                                            1606
-java-operationBased-mutation_create_review_semantic_naming                                       1590
+java-operationBased-mutation_create_review_semantic_naming                                       1611
 java-operationBased-root_query_fragment_with_nested_fragments                                    1587
 java-operationBased-simple_fragment                                                              1490
 java-operationBased-named_fragment_delegate                                                      1478
-kotlin-responseBased-mutation_create_review                                                      1457
+kotlin-responseBased-mutation_create_review                                                      1466
 java-operationBased-named_fragment_with_variables                                                1390
 kotlin-responseBased-named_fragment_delegate                                                     1365
 kotlin-responseBased-unique_type_name                                                            1355
 java-operationBased-nested_conditional_inline                                                    1325
+kotlin-responseBased-input_object_type                                                           1301
 kotlin-operationBased-fragment_with_inline_fragment                                              1294
 java-operationBased-fragment_used_twice                                                          1285
-kotlin-responseBased-input_object_type                                                           1281
 kotlin-responseBased-root_query_fragment_with_nested_fragments                                   1279
 java-operationBased-multiple_fragments                                                           1274
 java-operationBased-nested_field_with_multiple_fieldsets                                         1266
@@ -80,9 +80,9 @@ kotlin-operationBased-nested_conditional_inline                                 
 java-operationBased-deprecated_merged_field                                                       940
 java-operationBased-input_object_oneof                                                            938
 java-operationBased-used_arguments                                                                931
+kotlin-responseBased-mutation_create_review_semantic_naming                                       929
 java-operationBased-not_all_combinations_are_needed                                               928
 java-operationBased-hero_details                                                                  922
-kotlin-responseBased-mutation_create_review_semantic_naming                                       921
 java-operationBased-simple_inline_fragment                                                        914
 kotlin-operationBased-named_fragment_with_variables                                               912
 java-operationBased-fieldset_with_multiple_super                                                  910

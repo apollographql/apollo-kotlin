@@ -3,8 +3,8 @@ package com.apollographql.apollo.compiler
 import com.apollographql.apollo.ast.DeprecatedUsage
 import com.apollographql.apollo.ast.DifferentShape
 import com.apollographql.apollo.ast.DirectiveRedefinition
+import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.GQLDefinition
-import com.apollographql.apollo.ast.GQLDirectiveDefinition
 import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLOperationDefinition
@@ -13,7 +13,6 @@ import com.apollographql.apollo.ast.GQLSchemaDefinition
 import com.apollographql.apollo.ast.GQLTypeDefinition
 import com.apollographql.apollo.ast.IncompatibleDefinition
 import com.apollographql.apollo.ast.Issue
-import com.apollographql.apollo.ast.KOTLIN_LABS_VERSION
 import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.QueryDocumentMinifier
 import com.apollographql.apollo.ast.Schema
@@ -21,13 +20,13 @@ import com.apollographql.apollo.ast.UnknownDirective
 import com.apollographql.apollo.ast.UnusedFragment
 import com.apollographql.apollo.ast.UnusedVariable
 import com.apollographql.apollo.ast.checkEmpty
-import com.apollographql.apollo.ast.kotlinLabsDefinitions
+import com.apollographql.apollo.ast.internal.SchemaValidationOptions
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.pretty
+import com.apollographql.apollo.ast.builtinForeignSchemas
 import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.ast.validateAsExecutable
-import com.apollographql.apollo.ast.validateAsSchemaAndAddApolloDefinition
-import com.apollographql.apollo.compiler.codegen.LayoutImpl
+import com.apollographql.apollo.ast.validateAsSchema
 import com.apollographql.apollo.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo.compiler.codegen.SchemaLayout
 import com.apollographql.apollo.compiler.codegen.SourceOutput
@@ -49,7 +48,6 @@ import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.IrOperationsBuilder
 import com.apollographql.apollo.compiler.ir.IrSchema
 import com.apollographql.apollo.compiler.ir.IrSchemaBuilder
-import com.apollographql.apollo.compiler.ir.IrTargetObject
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.pqm.toPersistedQueryManifest
 import java.io.File
@@ -63,6 +61,20 @@ object ApolloCompiler {
       schemaFiles: List<InputFile>,
       logger: Logger?,
       codegenSchemaOptions: CodegenSchemaOptions,
+  ): CodegenSchema {
+    return buildCodegenSchema(
+        schemaFiles,
+        logger,
+        codegenSchemaOptions,
+        emptyList()
+    )
+  }
+
+  fun buildCodegenSchema(
+      schemaFiles: List<InputFile>,
+      logger: Logger?,
+      codegenSchemaOptions: CodegenSchemaOptions,
+      foreignSchemas: List<ForeignSchema>,
   ): CodegenSchema {
     val schemaDocuments = schemaFiles.map {
       it.normalizedPath to it.file.toGQLDocument(allowJson = true)
@@ -106,10 +118,15 @@ object ApolloCompiler {
         sourceLocation = null
     )
 
-    /**
-     * TODO: use `validateAsSchema` to not automatically add the apollo definitions
-     */
-    val result = schemaDocument.validateAsSchemaAndAddApolloDefinition()
+    val result = schemaDocument.validateAsSchema(
+        validationOptions = SchemaValidationOptions(
+            /**
+             * TODO: switch to false
+             */
+            addKotlinLabsDefinitions = true,
+            builtinForeignSchemas() + foreignSchemas
+        )
+    )
 
     val issueGroup = result.issues.group(warnOnDeprecatedUsages = true, fieldsOnDisjointTypesMustMerge = true)
 
@@ -485,9 +502,44 @@ object ApolloCompiler {
     val codegenSchema = buildCodegenSchema(
         schemaFiles = schemaFiles,
         logger = logger,
-        codegenSchemaOptions = codegenSchemaOptions
+        codegenSchemaOptions = codegenSchemaOptions,
+        foreignSchemas = emptyList()
     )
 
+    return buildSchemaAndOperationsSources(
+        codegenSchema,
+        executableFiles,
+        irOptions,
+        codegenOptions,
+        layoutFactory,
+        operationOutputGenerator,
+        irOperationsTransform,
+        javaOutputTransform,
+        kotlinOutputTransform,
+        documentTransform,
+        logger,
+        operationManifestFile
+    )
+  }
+
+
+  /**
+   * Compiles a set of files without serializing the intermediate results
+   */
+  fun buildSchemaAndOperationsSources(
+      codegenSchema: CodegenSchema,
+      executableFiles: List<InputFile>,
+      irOptions: IrOptions,
+      codegenOptions: CodegenOptions,
+      layoutFactory: LayoutFactory?,
+      @Suppress("DEPRECATION") operationOutputGenerator: OperationOutputGenerator?,
+      irOperationsTransform: Transform<IrOperations>?,
+      javaOutputTransform: Transform<JavaOutput>?,
+      kotlinOutputTransform: Transform<KotlinOutput>?,
+      documentTransform: DocumentTransform?,
+      logger: Logger?,
+      operationManifestFile: File?,
+  ): SourceOutput {
     val irOperations = buildIrOperations(
         codegenSchema = codegenSchema,
         executableFiles = executableFiles,
@@ -535,7 +587,15 @@ internal fun List<Issue>.group(
   val ignored = mutableListOf<Issue>()
   val warnings = mutableListOf<Issue>()
   val errors = mutableListOf<Issue>()
-  val apolloDirectives = kotlinLabsDefinitions(KOTLIN_LABS_VERSION).mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()
+
+  /**
+   * The kotlin_labs directives as of v0.3: https://specs.apollo.dev/kotlin_labs/v0.3/
+   * v0.4 removed `@nonnull` but we may still have users on v0.3.
+   *
+   * Moving forward, do not add new names there. If the directive is already defined, it
+   * should be removed. This should even be an error.
+   */
+  val apolloDirectives = setOf("optional", "nonnull", "typePolicy", "fieldPolicy", "requiresOptIn", "targetName")
 
   forEach {
     val severity = when (it) {

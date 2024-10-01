@@ -14,33 +14,30 @@ android-sdkversion-benchmark-min = "24"
 android-sdkversion-target = "30"
 androidx-sqlite = "2.3.1"
 # This is used by the gradle integration tests to get the artifacts locally
-apollo = "4.0.1-SNAPSHOT"
-apollo-execution = "0.0.2"
+apollo = "4.0.2-SNAPSHOT"
+apollo-execution = "0.0.3"
 apollo-normalizedcache-incubating-snapshot = "0.0.3-SNAPSHOT"
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-published = "4.0.0-rc.1"
 atomicfu = "0.24.0"
-cache = "2.0.2"
 compose = "1.5.1"
 guava = "31.1-jre"
 javaPoet = "1.13.0"
 jetbrains-annotations = "24.0.1"
 junit = "4.13.2"
 kotlin-plugin-min = "1.9.0"
-kotlin-plugin = "2.0.0"
-kotlin-plugin-max = "2.0.0"
+kotlin-plugin = "2.0.20"
+kotlin-plugin-max = "2.0.20"
 kotlin-stdlib = "2.0.0"
 kotlinx-coroutines = "1.8.0"
 kotlinx-datetime = "0.5.0"
 kotlinx-serialization-runtime = "1.6.2"
-ksp = "2.0.0-1.0.21"
+ksp = "2.0.20-1.0.24"
 ktor = "2.3.11"
 moshix = "0.14.1"
 node-fetch = "2.6.7"
-node-ws = "8.14.2"
 okio = "3.9.0"
 okhttp = "4.11.0"
-rx-android = "2.0.1"
 rx-java2 = "2.2.21"
 rx-java3 = "3.1.6"
 sqldelight = "2.0.1"
@@ -53,12 +50,10 @@ android-test-runner = { group = "androidx.test", name = "runner", version = "1.5
 androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
 androidx-activity = "androidx.activity:activity-ktx:1.7.2"
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version = "1.7.1" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
 androidx-core = "androidx.core:core-ktx:1.12.0"
 androidx-espresso-idlingresource = { group = "androidx.test.espresso", name = "espresso-idling-resource", version = "3.5.1" }
 androidx-lint-rules = "androidx.lint:lint-gradle:1.0.0-alpha01"
 androidx-lint-gradle-plugin = { module = "com.android.lint:com.android.lint.gradle.plugin", version.ref = "android-plugin" }
-androidx-paging-compose = "androidx.paging:paging-compose:1.0.0-alpha18"
 androidx-profileinstaller = "androidx.profileinstaller:profileinstaller:1.3.1"
 androidx-sqlite = { group = "androidx.sqlite", name = "sqlite", version.ref = "androidx-sqlite" }
 androidx-sqlite-framework = { group = "androidx.sqlite", name = "sqlite-framework", version.ref = "androidx-sqlite" }
@@ -79,6 +74,7 @@ apollo-compiler = { group = "com.apollographql.apollo", name = "apollo-compiler"
 apollo-ast = { group = "com.apollographql.apollo", name = "apollo-ast", version.ref = "apollo" }
 apollo-execution = { group = "com.apollographql.execution", name = "apollo-execution-runtime", version.ref = "apollo-execution" }
 apollo-execution-ktor = { group = "com.apollographql.execution", name = "apollo-execution-ktor", version.ref = "apollo-execution" }
+apollo-execution-http4k = { group = "com.apollographql.execution", name = "apollo-execution-http4k", version.ref = "apollo-execution" }
 apollo-execution-processor = { group = "com.apollographql.execution", name = "apollo-execution-processor", version.ref = "apollo-execution" }
 apollo-execution-gradle-plugin = { group = "com.apollographql.execution", name = "apollo-execution-gradle-plugin", version.ref = "apollo-execution" }
 # Used by the apollo-tooling project which uses a published version of Apollo
@@ -92,11 +88,10 @@ atomicfu-library = { group = "org.jetbrains.kotlinx", name = "atomicfu", version
 atomicfu-plugin = { group = "org.jetbrains.kotlinx", name = "atomicfu-gradle-plugin", version.ref = "atomicfu" }
 
 benmanes-versions = { group = "com.github.ben-manes", name = "gradle-versions-plugin", version = "0.33.0" }
-clikt = { group = "com.github.ajalt.clikt", name = "clikt", version = "3.5.2" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 dokkatoo = "dev.adamko.dokkatoo:dokkatoo-plugin:2.1.0"
-dgp = "com.gradle:develocity-gradle-plugin:3.17.6" # // sync with settings.gradle.kts
+dgp = "com.gradle:develocity-gradle-plugin:3.18.1" # // sync with settings.gradle.kts
 # Not updating because it fails in apollo-compiler Java tests with
 # annotation @org.jetbrains.annotations.Nullable not applicable in this type context
 google-testing-compile = { group = "com.google.testing.compile", name = "compile-testing", version = "0.19" }
@@ -114,7 +109,6 @@ gradle-publish-plugin = { group = "com.gradle.publish", name = "plugin-publish-p
 guava-jre = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 http4k-bom = "org.http4k:http4k-bom:5.8.0.0"
 http4k-core = { module = "org.http4k:http4k-core" }
-http4k-server-undertow = { module = "org.http4k:http4k-server-undertow" }
 http4k-server-jetty = { module = "org.http4k:http4k-server-jetty" }
 intellij-platform-plugin = "org.jetbrains.intellij.platform:intellij-platform-gradle-plugin:2.0.0"
 intellij-changelog = "org.jetbrains.intellij.plugins:gradle-changelog-plugin:2.0.0"
@@ -135,26 +129,21 @@ kotlin-stdlib-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", ve
 kotlin-stdlib-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-js", version.ref = "kotlin-stdlib" }
 kotlin-stdlib-wasm-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-wasm-js", version.ref = "kotlin-stdlib" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" } # the Kotlin plugin resolves the version
-kotlin-test-annotations-common = { group = "org.jetbrains.kotlin", name = "kotlin-test-annotations-common" } # the Kotlin plugin resolves the version
-kotlin-test-common = { group = "org.jetbrains.kotlin", name = "kotlin-test-common" } # the Kotlin plugin resolves the version
 kotlin-test-js = { group = "org.jetbrains.kotlin", name = "kotlin-test-js" } # the Kotlin plugin resolves the version
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit" } # the Kotlin plugin resolves the version
 kotlinx-benchmark-runtime = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.8"
 kotlinx-benchmark = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin:0.4.8"
 androidx-benchmark-macro = "androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha16"
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx2", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-rx3 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx3", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlin-node = "org.jetbrains.kotlin-wrappers:kotlin-node:18.16.12-pre.634"
 kotlinx-serialization-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-plugin" }
-kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinx-serialization-runtime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-runtime" }
 kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.15.0-Beta.2" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
-ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 ktor-client-core = { group = "io.ktor", name= "ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
@@ -180,9 +169,7 @@ sqldelight-jvm = { group = "app.cash.sqldelight", name = "sqlite-driver", versio
 sqldelight-native = { group = "app.cash.sqldelight", name = "native-driver", version.ref = "sqldelight" }
 sqldelight-plugin = { group = "app.cash.sqldelight", name = "gradle-plugin", version.ref = "sqldelight" }
 sqldelight-runtime = { group = "app.cash.sqldelight", name = "runtime", version.ref = "sqldelight" }
-sqldelight-sqlite = { group = "app.cash.sqldelight", name = "sqlite-dialect", version.ref = "sqldelight" }
 sqlite-jdbc = "org.xerial:sqlite-jdbc:3.43.2.0"
-jar-relocator = "me.lucko:jar-relocator:1.5"
 benchmark-gradle-plugin = "androidx.benchmark:benchmark-gradle-plugin:1.1.1"
 asm = "org.ow2.asm:asm-commons:9.5"
 moshix-ksp = { group = "dev.zacsweers.moshix", name = "moshi-ksp", version.ref = "moshix" }

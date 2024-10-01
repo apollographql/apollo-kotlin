@@ -7,7 +7,7 @@ package com.apollographql.apollo.ast.internal
  * - link.graphqls: the [core schemas](https://specs.apollo.dev/link/v1.0/) definitions.
  * - apollo-${version}.graphqls: the client directives supported by Apollo Kotlin. Changes are versioned at https://github.com/apollographql/specs. Changing them requires a new version and a PR.
  */
-internal val kotlinLabsDefinitions = """
+internal val kotlinLabsDefinitions_0_3 = """
   ""${'"'}
   Marks a field or variable definition as optional or required
   By default Apollo Kotlin generates all variables of nullable types as optional, in compliance with the GraphQL specification,
@@ -95,6 +95,86 @@ internal val kotlinLabsDefinitions = """
       | UNION
       | SCALAR
       | INPUT_OBJECT
+""".trimIndent()
+
+internal val kotlinLabsDefinitions_0_4 = """
+""${'"'}
+Marks a field or variable definition as optional or required
+By default Apollo Kotlin generates all variables of nullable types as optional, in compliance with the GraphQL specification,
+but this can be configured with this directive, because if the variable was added in the first place, it's usually to pass a value
+Since: 3.0.0
+""${'"'}
+directive @optional(if: Boolean = true) on FIELD | VARIABLE_DEFINITION
+
+""${'"'}
+Attach extra information to a given type
+Since: 3.0.0
+""${'"'}
+directive @typePolicy(
+    ""${'"'}
+    a selection set containing fields used to compute the cache key of an object. Order is important.
+    ""${'"'}
+    keyFields: String! = "",
+    ""${'"'}
+    (experimental) a selection set containing fields that shouldn't create a new cache Record and should be
+    embedded in their parent instead. Order is unimportant.
+    ""${'"'}
+    embeddedFields: String! = "",
+    ""${'"'}
+    (experimental) a selection set containing fields that should be treated as [Relay Connection](https://relay.dev/graphql/connections.htm) fields.
+    Order is unimportant.
+    This works in conjunction with `ConnectionMetadataGenerator` and `ConnectionRecordMerger` which must be configured on the `ApolloStore`.
+    Since: 3.4.1
+    ""${'"'}
+    connectionFields: String! = ""
+) on OBJECT | INTERFACE
+
+""${'"'}
+Attach extra information to a given field
+Since: 3.3.0
+""${'"'}
+directive @fieldPolicy(
+    forField: String!,
+    ""${'"'}
+    a list of arguments used to compute the cache key of the object this field is pointing to.
+    The list is parsed as a selection set: both spaces and comas are valid separators.
+    ""${'"'}
+    keyArgs: String! = "",
+    ""${'"'}
+    (experimental) a list of arguments that vary when requesting different pages.
+    These arguments are omitted when computing the cache key of this field.
+    The list is parsed as a selection set: both spaces and comas are valid separators.
+    Since: 3.4.1
+    ""${'"'}
+    paginationArgs: String! = ""
+) repeatable on OBJECT
+
+""${'"'}
+Indicates that the given field, argument, input field or enum value requires
+giving explicit consent before being used.
+Since: 3.3.1
+""${'"'}
+directive @requiresOptIn(feature: String!) repeatable
+on FIELD_DEFINITION
+    | ARGUMENT_DEFINITION
+    | INPUT_FIELD_DEFINITION
+    | ENUM_VALUE
+
+""${'"'}
+Use the specified name in the generated code instead of the GraphQL name.
+Use this for instance when the name would clash with a reserved keyword or field in the generated code.
+This directive is experimental.
+Since: 3.3.1
+""${'"'}
+directive @targetName(name: String!)
+on OBJECT
+    | INTERFACE
+    | ENUM
+    | ENUM_VALUE
+    | UNION
+    | SCALAR
+    | INPUT_OBJECT
+
 """.trimIndent()
 
 // Built in scalar and introspection types from the Draft:
@@ -355,8 +435,8 @@ directive @catch(to: CatchTo! = RESULT, levels: [Int!]! = [0]) on FIELD
 ""${'"'}
 Indicates how clients should handle errors on a given position by default.
 
-The semantics are the same as `@catch` but `@catchByDefault` only applies to positions that
-can contain JSON `null`. Non-null positions are unchanged.
+Compared to `@catch`, `@catchByDefault` does not have a `level` argument and applies to all
+nullable positions.
 
 When multiple values of `catchTo` are set for a given position:
 * the `@catch` value is used if set.

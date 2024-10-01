@@ -278,6 +278,7 @@ class CodegenTest {
             ?: File("src/test/graphql/schema.sdl")
 
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
+
       @Suppress("DEPRECATION")
       val operationOutputGenerator = OperationOutputGenerator.Default(operationIdGenerator)
 
@@ -304,6 +305,7 @@ class CodegenTest {
               "URL" to ScalarInfo("java.lang.String", ExpressionAdapterInitializer("com.example.UrlAdapter.INSTANCE")),
               "ID" to ScalarInfo("java.lang.Long"),
               "String" to ScalarInfo("java.lang.String", ExpressionAdapterInitializer("new com.example.MyStringAdapter()")),
+              "ListOfString" to ScalarInfo("List<String>"),
           )
         } else {
           mapOf(
@@ -311,6 +313,7 @@ class CodegenTest {
               "URL" to ScalarInfo("kotlin.String", ExpressionAdapterInitializer("com.example.UrlAdapter")),
               "ID" to ScalarInfo("kotlin.Long"),
               "String" to ScalarInfo("kotlin.String", ExpressionAdapterInitializer("com.example.MyStringAdapter()")),
+              "ListOfString" to ScalarInfo("List<String?>"),
           )
         }
       } else {
@@ -354,7 +357,7 @@ class CodegenTest {
       val generateModelBuilders = when (folder.name) {
         "fragment_with_inline_fragment", "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals",
         "simple_target_name", "java_jetbrains_annotations", "java_android_annotations", "java_jsr305_annotations",
-        -> true
+          -> true
 
         else -> false
       }
@@ -362,7 +365,7 @@ class CodegenTest {
       val generatePrimitiveTypes = when (folder.name) {
         "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals", "java_jetbrains_annotations",
         "java_android_annotations", "java_jsr305_annotations",
-        -> true
+          -> true
 
         else -> false
       }
@@ -467,7 +470,8 @@ private fun ApolloCompiler.buildSchemaAndOperationsSourcesAndReturnIrOperations(
   val codegenSchema = buildCodegenSchema(
       schemaFiles = schemaFiles,
       logger = logger,
-      codegenSchemaOptions = codegenSchemaOptions
+      codegenSchemaOptions = codegenSchemaOptions,
+      foreignSchemas = emptyList()
   )
 
   val irOperations = buildIrOperations(

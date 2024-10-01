@@ -143,7 +143,7 @@ internal fun readFromResponseCodeBlock(
         }
         .add(
             CodeBlock.of(
-                "%L·=·%L.$fromJson($reader, $customScalarAdapters)\n",
+                "%N·=·%L.$fromJson($reader, $customScalarAdapters)\n",
                 property.info.responseName.variableName(),
                 context.resolver.resolveModelAdapter(property.info.type.modelPath()),
             )

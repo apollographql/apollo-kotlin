@@ -314,6 +314,7 @@ type Query {
   tree: Tree
   typeWithGraphQLKeywords: TypeWithGraphQLKeywords
   getBoolean(booleanArg: Boolean): Boolean
+  listOfString: ListOfString
 }
 
 """Represents a review for a movie"""
@@ -404,6 +405,9 @@ input ReviewInput {
 
   """for test purpose only"""
   CapitalizedInt: Int
+
+  """for test purpose only"""
+  in: String
 }
 
 """Circle ref to review input"""
@@ -443,3 +447,5 @@ type TypeWithGraphQLKeywords {
   on: String
   null(fragment: String): String
 }
+
+scalar ListOfString

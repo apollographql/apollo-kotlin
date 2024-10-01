@@ -19,6 +19,7 @@ import com.intellij.openapi.util.Condition
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
 
 private val graphQLConfigFileNames = setOf(
     "graphql.config.json",
@@ -38,10 +39,10 @@ private val graphQLConfigFileNames = setOf(
 class ApolloGraphQLConfigFilePresentInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     return object : PsiElementVisitor() {
-      override fun visitElement(element: PsiElement) {
-        if (!element.project.apolloProjectService.apolloVersion.isAtLeastV4 || !element.project.projectSettingsState.contributeConfigurationToGraphqlPlugin) return
-        if (element.containingFile.name in graphQLConfigFileNames && element.containingFile == element) {
-          holder.registerProblem(element, ApolloBundle.message("inspection.graphQLConfigFilePresent.reportText"), ApolloGraphQLConfigFilePresentQuickFix(element.containingFile.name))
+      override fun visitFile(file: PsiFile) {
+        if (!file.project.apolloProjectService.apolloVersion.isAtLeastV4 || !file.project.projectSettingsState.contributeConfigurationToGraphqlPlugin) return
+        if (file.name in graphQLConfigFileNames) {
+          holder.registerProblem(file, ApolloBundle.message("inspection.graphQLConfigFilePresent.reportText"), ApolloGraphQLConfigFilePresentQuickFix(file.name))
         }
       }
     }
@@ -68,8 +69,9 @@ private class ApolloGraphQLConfigFilePresentQuickFix(private val fileName: Strin
 
 class ApolloGraphQLConfigFilePresentAnnotator : Annotator {
   override fun annotate(element: PsiElement, holder: AnnotationHolder) {
+    if (element !is PsiFile) return
     if (!element.project.apolloProjectService.apolloVersion.isAtLeastV4 || !element.project.projectSettingsState.contributeConfigurationToGraphqlPlugin) return
-    if (element.containingFile.name in graphQLConfigFileNames && element.containingFile == element) {
+    if (element.containingFile.name in graphQLConfigFileNames) {
       holder.newAnnotation(HighlightSeverity.WARNING, ApolloBundle.message("inspection.graphQLConfigFilePresent.reportText"))
           .range(element)
           .create()
