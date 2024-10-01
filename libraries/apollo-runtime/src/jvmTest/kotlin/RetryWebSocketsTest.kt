@@ -1,19 +1,29 @@
-
 import app.cash.turbine.test
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.interceptor.ApolloInterceptor
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo.testing.connectionAckMessage
 import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.assertNoRequest
 import com.apollographql.mockserver.awaitWebSocketRequest
 import com.apollographql.mockserver.enqueueWebSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
@@ -28,6 +38,7 @@ import test.network.mockServerTest
 import test.network.retryWhen
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertIs
 import kotlin.test.assertNotEquals
 import kotlin.time.Duration.Companion.seconds
@@ -37,56 +48,56 @@ class RetryWebSocketsTest {
   fun retryIsWorking() = runTest {
     MockServer().use { mockServer ->
 
-    ApolloClient.Builder()
-        .serverUrl(mockServer.url())
-        .retryOnError { it.operation is Subscription }
-        .subscriptionNetworkTransport(
-            WebSocketNetworkTransport.Builder()
-                .serverUrl(mockServer.url())
-                .build()
-        )
-        .build().use { apolloClient ->
-          apolloClient.subscription(FooSubscription())
-              .toFlow()
-              .test {
-                val serverWriter = mockServer.enqueueWebSocket(keepAlive = false)
-                var serverReader = mockServer.awaitWebSocketRequest()
+      ApolloClient.Builder()
+          .serverUrl(mockServer.url())
+          .retryOnError { it.operation is Subscription }
+          .subscriptionNetworkTransport(
+              WebSocketNetworkTransport.Builder()
+                  .serverUrl(mockServer.url())
+                  .build()
+          )
+          .build().use { apolloClient ->
+            apolloClient.subscription(FooSubscription())
+                .toFlow()
+                .test {
+                  val serverWriter = mockServer.enqueueWebSocket(keepAlive = false)
+                  var serverReader = mockServer.awaitWebSocketRequest()
 
-                serverReader.awaitMessage() // connection_init
-                serverWriter.enqueueMessage(connectionAckMessage())
+                  serverReader.awaitMessage() // connection_init
+                  serverWriter.enqueueMessage(connectionAckMessage())
 
-                val operationId1 = serverReader.awaitSubscribe()
-                serverWriter.enqueueMessage(nextMessage(operationId1, 1))
+                  val operationId1 = serverReader.awaitSubscribe()
+                  serverWriter.enqueueMessage(nextMessage(operationId1, 1))
 
-                val item1 = awaitItem()
-                assertEquals(1, item1.data?.foo)
+                  val item1 = awaitItem()
+                  assertEquals(1, item1.data?.foo)
 
-                val serverWriter2 = mockServer.enqueueWebSocket()
+                  val serverWriter2 = mockServer.enqueueWebSocket()
 
-                /**
-                 * Close the response body and the TCP socket
-                 */
-                serverWriter.close()
+                  /**
+                   * Close the response body and the TCP socket
+                   */
+                  serverWriter.close()
 
-                serverReader = mockServer.awaitWebSocketRequest()
+                  serverReader = mockServer.awaitWebSocketRequest()
 
-                serverReader.awaitMessage() // connection_init
-                serverWriter2.enqueueMessage(connectionAckMessage())
+                  serverReader.awaitMessage() // connection_init
+                  serverWriter2.enqueueMessage(connectionAckMessage())
 
-                val operationId2 = serverReader.awaitSubscribe()
-                serverWriter2.enqueueMessage(nextMessage(operationId2, 2))
+                  val operationId2 = serverReader.awaitSubscribe()
+                  serverWriter2.enqueueMessage(nextMessage(operationId2, 2))
 
-                val item2 = awaitItem()
-                assertEquals(2, item2.data?.foo)
+                  val item2 = awaitItem()
+                  assertEquals(2, item2.data?.foo)
 
-                // The subscriptions MUST use different operationIds
-                assertNotEquals(operationId1, operationId2)
+                  // The subscriptions MUST use different operationIds
+                  assertNotEquals(operationId1, operationId2)
 
-                serverWriter2.enqueueMessage(completeMessage(operationId2))
+                  serverWriter2.enqueueMessage(completeMessage(operationId2))
 
-                awaitComplete()
-              }
-        }
+                  awaitComplete()
+                }
+          }
     }
   }
 
@@ -146,6 +157,71 @@ class RetryWebSocketsTest {
 
                 serverWriter.enqueueMessage(completeMessage(operationId))
 
+                awaitComplete()
+              }
+        }
+  }
+
+  class MyRetryOnErrorInterceptor : ApolloInterceptor {
+    data object RetryException : Exception()
+
+    override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+      return chain.proceed(request).onEach {
+        if (request.retryOnError == true && it.exception != null && it.exception is ApolloNetworkException) {
+          throw RetryException
+        }
+      }.retryWhen { cause, attempt ->
+        cause is RetryException && attempt < 2
+      }.catch {
+        if (it !is RetryException) throw it
+      }
+    }
+  }
+
+  @Test
+  fun customRetryOnErrorInterceptor() = runTest {
+    val mockServer = MockServer()
+    ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .subscriptionNetworkTransport(
+            WebSocketNetworkTransport.Builder()
+                .serverUrl(mockServer.url())
+                .build()
+        )
+        .retryOnError {
+          it.operation is Subscription
+        }
+        .retryOnErrorInterceptor(MyRetryOnErrorInterceptor())
+        .build().use { apolloClient ->
+          var serverWriter = mockServer.enqueueWebSocket(keepAlive = false)
+
+          apolloClient.subscription(FooSubscription())
+              .toFlow()
+              .test {
+                /*
+                 * We retry 2 times, meaning we expect 3 collections
+                 */
+                repeat(3) {
+                  val serverReader = mockServer.awaitWebSocketRequest()
+
+                  serverReader.awaitMessage() // connection_init
+                  serverWriter.enqueueMessage(connectionAckMessage())
+
+                  val operationId = serverReader.awaitSubscribe()
+                  serverWriter.enqueueMessage(nextMessage(operationId, it))
+
+                  val item1 = awaitItem()
+                  assertEquals(it, item1.data?.foo)
+
+                  val lastServerWriter = serverWriter
+                  serverWriter = mockServer.enqueueWebSocket(keepAlive = false)
+                  lastServerWriter.close()
+                }
+                assertFails {
+                  // Make sure that no retry is done
+                  mockServer.awaitAnyRequest(timeout = 1.seconds)
+                }
+                serverWriter.close()
                 awaitComplete()
               }
         }

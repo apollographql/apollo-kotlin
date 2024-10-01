@@ -34,6 +34,8 @@ After a feedback phase, the current `.ws` APIs will become deprecated and the `.
 
 ## Migration guide
 
+### Package name
+
 In simple cases where you did not configure the underlying `WsProtocol` or retry logic, the migration should be about replacing `com.apollographql.apollo.network.ws` with `com.apollographql.apollo.network.websocket` everywhere:
 
 ```kotlin
@@ -80,35 +82,60 @@ ApolloClient.Builder()
     .build()
 ```
 
-To account for non-websocket transports, like [multipart subscriptions](https://www.apollographql.com/docs/router/executing-operations/subscription-multipart-protocol/), the retry is now handled on the `ApolloClient` instead of the `NetworkTransport`.
+### Connection init payload
+
+If you were using `connectionPayload` before, you can now pass it as an argument directly. There is no `WsProtocol.Factory` anymore:
+
+```kotlin
+// Replace
+GraphQLWsProtocol.Factory(
+    connectionPayload = {
+        mapOf("Authorization" to token)
+    },
+)
+
+// With
+GraphQLWsProtocol(
+    connectionPayload = {
+      mapOf("Authorization" to token)
+    },
+)
+```
+
+### Retrying on network errors
+
+Apollo Kotlin 4 also comes with a default `retryOnErrorInterceptor` that uses a network monitor or exponential backoff to retry the subscription. 
+
+If you want your subscription to be restarted automatically when a network error happens, use `retryOnError {}`:
 
 ```kotlin
 // Replace
 val apolloClient = ApolloClient.Builder()
+    .serverUrl(serverUrl)
     .subscriptionNetworkTransport(
         WebSocketNetworkTransport.Builder()
-            .serverUrl(url)
-            .reopenWhen { _, _ ->
-              delay(1000)
+            .serverUrl(webSocketServerUrl)
+            .reopenWhen { _, attempt ->
+              // exponential backoff
+              delay(2.0.pow(attempt).seconds) // highlight-line
               true
             }
             .build()
     )
+    .build()
 
-// With
+// With 
 val apolloClient = ApolloClient.Builder()
-    .subscriptionNetworkTransport(
-        WebSocketNetworkTransport.Builder()
-            .serverUrl(url)
-            .build()
-    )
-    // Only retry subscriptions
-    .retryOnError { it.operation is Subscription }
+    .serverUrl(serverUrl)
+    .subscriptionNetworkTransport(/*..*/)
+    .retryOnError {
+      /*
+       * This is called for every GraphQL operation.
+       * Only retry subscriptions.
+       */
+      it.operation is Subscription // highlight-line
+    }
+    .build()
 ```
 
-The above uses the default retry algorithm:
-
-* Wait until the network is available if you configured a [NetworkMonitor](network-connectivity).
-* Or use exponential backoff else.
-
-To customize the retry logic more, see the [network monitoring page](../advanced/network-connectivity#customizing-the-retry-algorithm).
+You can also customize the retry logic using `retryOnErrorInterceptor`. Read more about it in the [network connectivity page](network-connectivity). 
