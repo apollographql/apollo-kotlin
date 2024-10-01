@@ -208,7 +208,7 @@ Here are the steps to do a new release:
 
 * `git checkout main && git pull`
 * `scripts/release.main.kts <version-name>`
-* while it compiles, prepare the changelog, open a PR to `CHANGELOG.md`
+* while it compiles, prepare the changelog, open a PR to `CHANGELOG.md` (see below)
 * wait for the CI to finish compiling
 * go to https://s01.oss.sonatype.org/, and release the artifacts manually. This step is called "close, release and drop"
   in the Sonatype ecosystem.
@@ -219,6 +219,13 @@ Here are the steps to do a new release:
 * paste the changelog in a new release on [GitHub](https://github.com/apollographql/apollo-kotlin/releases)
 * if it's a significant release, tweet about it 🐦
 * relax 🍹
+
+### Changelog file
+* Add a section with the version, date, and a quick summary of what the release contains.
+* Optionally add a few sections to zoom in on changes you want to highlight.
+* No need to highlight deprecations, as warnings in the code are enough.
+* Mention and thank external contributors if any.
+* Add an "All changes" section that should list all commits since last release (can use `git log --pretty=oneline <previous-tag>..main`). Commits on the documentation can be omitted.
 
 ## Debugging minimized Gradle Plugin stacktraces
 

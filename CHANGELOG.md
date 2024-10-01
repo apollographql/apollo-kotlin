@@ -26,10 +26,14 @@ class MyCompilerPlugin() : ApolloCompilerPlugin {
 }
 ```
 
-## ♻️ Deprecations
-- The `downloadApolloSchema` task is deprecated, please use an [`introspection` block](https://go.apollo.dev/ak-download-schema) to download a schema.
-- The `generateOperationOutput` property is deprecated, please use [`operationManifestFormat.set("persistedQueryManifest")`](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries/#1-generate-operation-manifest) instead".
-- The `@nonnull` directive is deprecated, please use [`@semanticNonNull` / `@catch`](https://go.apollo.dev/ak-nullability) instead.
+## 🚀 Allow mapping scalars to simple generic types
+
+Previously, to [map a scalar](https://www.apollographql.com/docs/kotlin/essentials/custom-scalars) to a generic type, you had to use a `typealias`. 
+Now, simple generic types are accepted, and common types like `List` and `String` don't need to be fully qualified:
+
+```kotlin
+mapScalar("MassList", "List<com.example.Measure<com.example.Mass>>", "com.example.MassListAdapter")
+```
 
 ## 💙 Contributors
 
@@ -52,8 +56,8 @@ Many thanks to @ebrattli, @agrosner and @cvb941 for their contributions to this 
 * [tooling] Remove warning (#6092)
 * [WebSockets] connectionParams -> connectionPayload (#6103)
 * [WebSockets] add NetworkTransport.closeConnection() (#6105)
+* [BREAKING][runtime] Change NetworkMonitor to expose a StateFlow directly (#6119)
 * [runtime] Add 'OfflineException' as a cause when using failFastIfOffline (#6104)
-* [runtime] Change NetworkMonitor to expose a StateFlow directly (#6119)
 * [apollo-api] Fix reading `JsonNumber` in `MapJsonReader` (#6141)
 * [cache] Allow to store `JsonNumber` in `Record` (#6139)
 * [cache] Fix cascade SQL cache remove loops forever on cyclic references (#6137)
