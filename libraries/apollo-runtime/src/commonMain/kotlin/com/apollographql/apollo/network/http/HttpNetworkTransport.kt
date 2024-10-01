@@ -22,6 +22,7 @@ import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.RouterError
 import com.apollographql.apollo.internal.DeferredJsonMerger
+import com.apollographql.apollo.internal.isGraphQLResponse
 import com.apollographql.apollo.internal.isMultipart
 import com.apollographql.apollo.internal.multipartBodyFlow
 import com.apollographql.apollo.mpp.currentTimeMillis
@@ -72,12 +73,19 @@ private constructor(
         null
       }
 
-      emitAll(when {
+      val responses = when {
         httpResponse == null -> {
           flowOf(errorResponse(request.operation, apolloException!!))
         }
 
-        httpResponse.statusCode !in 200..299 -> {
+        httpResponse.statusCode !in 200..299 && !httpResponse.isGraphQLResponse -> {
+          /*
+           * application/json may contain something else than a GraphQL response.
+           * Typically, this happens if a proxy/other non-GraphQL intermediary encounters an error.
+           *
+           * In those cases, don't try to parse the body
+           * See https://graphql.github.io/graphql-over-http/draft/#sec-Processing-the-response
+           */
           errorResponse(request.operation, httpResponse)
         }
 
@@ -91,10 +99,10 @@ private constructor(
           singleResponse(request.operation, customScalarAdapters, httpResponse)
         }
       }
-          .map {
-            it.withHttpInfo(request.requestUuid, httpResponse, millisStart)
-          }
-      )
+
+      emitAll(responses.map {
+        it.withHttpInfo(request.requestUuid, httpResponse, millisStart)
+      })
     }
   }
 
@@ -164,7 +172,7 @@ private constructor(
             var errors: List<Error>? = null
             reader.beginObject()
             while (reader.hasNext()) {
-              when(reader.nextName()) {
+              when (reader.nextName()) {
                 "payload" -> {
                   if (reader.peek() == JsonReader.Token.NULL) {
                     reader.skipValue()
@@ -176,6 +184,7 @@ private constructor(
                     )
                   }
                 }
+
                 "errors" -> {
                   if (reader.peek() == JsonReader.Token.NULL) {
                     reader.skipValue()
@@ -183,6 +192,7 @@ private constructor(
                     errors = reader.readErrors()
                   }
                 }
+
                 else -> {
                   // Ignore unknown keys
                   reader.skipValue()
@@ -194,6 +204,7 @@ private constructor(
               errors != null -> {
                 errorResponse(operation, RouterError(errors))
               }
+
               payloadResponse != null -> payloadResponse
               else -> null
             }
