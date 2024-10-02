@@ -116,7 +116,7 @@ Summary of different constraints:
 
 When using multiple modules, Apollo Kotlin will generate models for every operation and fragment defined in this module. In addition, it's going to generate classes for schema types used by these operation. For an example, for Input Objects, Enums, Custom Scalars, etc...
 
-If two sibling modules use the same schema type and this schema type wasn't generated upstream, each module will generate its own version of the schema type, which could clash. To prevent this, Apollo Kotlin registers a global "check${service}ApolloDuplicates" task that will fail if there are duplicates.
+If two sibling modules use the same schema type and this schema type wasn't generated upstream, each module will generate its own version of the schema type, which could clash. To prevent this, Apollo Kotlin registers a global `check${service}ApolloDuplicates` task that will fail if there are duplicates.
 
 If that happens, you will need to resolve the type clash manually by forcing generation of the conflicting type in an upstream module. This is done using the `alwaysGenerateTypesMatching` Gradle option:
 
