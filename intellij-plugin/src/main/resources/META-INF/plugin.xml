@@ -311,6 +311,11 @@
     <configContributor implementation="com.apollographql.ijplugin.graphql.ApolloGraphQLConfigContributor" />
   </extensions>
 
+  <!-- Support K2 -->
+  <extensions defaultExtensionNs="org.jetbrains.kotlin">
+    <supportsKotlinPluginMode supportsK2="true" />
+  </extensions>
+
   <applicationListeners>
     <!-- Listen to project open/close -->
     <listener

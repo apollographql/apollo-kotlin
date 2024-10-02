@@ -2,7 +2,6 @@ package com.apollographql.ijplugin.refactoring.migration.v3tov4.item
 
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
-import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsageInfo
 import com.apollographql.ijplugin.util.KOTLIN_LABS_DEFINITIONS
 import com.apollographql.ijplugin.util.KOTLIN_LABS_URL
 import com.apollographql.ijplugin.util.NULLABILITY_DEFINITIONS

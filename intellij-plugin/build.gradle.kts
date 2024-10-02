@@ -1,8 +1,8 @@
+
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -44,7 +44,7 @@ fun getSnapshotVersionSuffix(): String {
 // Set the JVM language level used to build project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
 kotlin {
   jvmToolchain {
-    languageVersion = JavaLanguageVersion.of(17)
+    languageVersion = JavaLanguageVersion.of(21)
   }
 }
 
@@ -55,12 +55,6 @@ val apolloDependencies = configurations.create("apolloDependencies").apply {
 }
 
 tasks {
-  withType<KotlinCompilationTask<*>> {
-    compilerOptions {
-      freeCompilerArgs.set(listOf("-Xcontext-receivers"))
-    }
-  }
-
   val runLocalIde by intellijPlatformTesting.runIde.registering {
     // Use a custom IJ/AS installation. Set this property in your local ~/.gradle/gradle.properties file.
     // (for AS, it should be something like '/Applications/Android Studio.app/Contents')
@@ -78,6 +72,9 @@ tasks {
 
       // Uncomment to disable internal mode - see https://plugins.jetbrains.com/docs/intellij/enabling-internal.html
       // systemProperty("idea.is.internal", "false")
+
+      // Enable K2 mode (can't be done in the UI in sandbox mode - see https://kotlin.github.io/analysis-api/testing-in-k2-locally.html)
+      systemProperty("idea.kotlin.plugin.use.k2", "true")
     }
   }
 
@@ -116,6 +113,9 @@ tasks.test.configure {
   // See https://jetbrains-platform.slack.com/archives/CPL5291JP/p1664105522154139 and https://youtrack.jetbrains.com/issue/IJSDK-321
   // Use a relative path to make build caching work
   systemProperty("idea.home.path", mockJdkRoot.relativeTo(project.projectDir).path)
+
+  // Enable K2 mode - see https://kotlin.github.io/analysis-api/testing-in-k2-locally.html
+  systemProperty("idea.kotlin.plugin.use.k2", "true")
 }
 
 apollo {
@@ -205,12 +205,25 @@ dependencies {
     testFramework(TestFrameworkType.Plugin.Java)
     zipSigner()
   }
-  implementation(project(":apollo-gradle-plugin-external"))
+
+  // Coroutines must be excluded to avoid a conflict with the version bundled with the IDE
+  // See https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#coroutinesLibraries
+  implementation(project(":apollo-gradle-plugin-external")) {
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+  }
   implementation(project(":apollo-ast"))
-  implementation(project(":apollo-tooling"))
+  implementation(project(":apollo-tooling")) {
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+  }
   implementation(project(":apollo-normalized-cache-sqlite"))
   implementation(libs.sqlite.jdbc)
-  implementation(libs.apollo.runtime.published)
+  implementation(libs.apollo.runtime.published) {
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+  }
   runtimeOnly(libs.slf4j.simple)
   testImplementation(libs.google.testparameterinjector)
+
+  // Temporary workaround for https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1663
+  // Should be fixed in platformVersion 2024.3.x
+  testRuntimeOnly("org.opentest4j:opentest4j:1.3.0")
 }

@@ -22,8 +22,8 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.TreeSpeedSearch
 import com.intellij.ui.TreeUIHelper
+import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.dsl.gridLayout.HorizontalAlign
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.tree.StructureTreeModel
 import com.intellij.ui.treeStructure.AutoExpandSimpleNodeListener
@@ -58,7 +58,7 @@ class PullFromDeviceDialog(
   override fun createCenterPanel(): DialogPanel = panel {
     row {
       scrollCell(createTree())
-          .horizontalAlign(HorizontalAlign.FILL)
+          .align(AlignX.FILL)
     }
 
   }.withPreferredWidth(450)

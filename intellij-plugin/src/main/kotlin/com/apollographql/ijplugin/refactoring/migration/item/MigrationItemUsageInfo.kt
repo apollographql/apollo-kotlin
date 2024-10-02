@@ -60,23 +60,3 @@ open class MigrationItemUsageInfo : UsageInfo {
     super.getFile()
   }
 }
-
-context(MigrationItem)
-fun UsageInfo.toMigrationItemUsageInfo() = MigrationItemUsageInfo(migrationItem = this@MigrationItem, source = this)
-
-context(MigrationItem)
-fun Array<UsageInfo>.toMigrationItemUsageInfo(): List<MigrationItemUsageInfo> {
-  return map { it.toMigrationItemUsageInfo() }
-}
-
-context(MigrationItem)
-fun PsiReference.toMigrationItemUsageInfo(attachedData: Any? = null) = MigrationItemUsageInfo(migrationItem = this@MigrationItem, reference = this, attachedData = attachedData)
-
-context(MigrationItem)
-fun Collection<PsiReference>.toMigrationItemUsageInfo(): List<MigrationItemUsageInfo> {
-  return map { it.toMigrationItemUsageInfo() }
-}
-
-context(MigrationItem)
-fun PsiElement.toMigrationItemUsageInfo(attachedData: Any? = null) =
-    MigrationItemUsageInfo(migrationItem = this@MigrationItem, element = this, attachedData = attachedData)

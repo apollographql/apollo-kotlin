@@ -3,7 +3,6 @@ package com.apollographql.ijplugin.project
 import com.apollographql.ijplugin.project.ApolloProjectService.ApolloVersion
 import com.apollographql.ijplugin.util.getApolloVersion
 import com.apollographql.ijplugin.util.logd
-import com.intellij.ProjectTopics
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootEvent
@@ -24,7 +23,7 @@ class ApolloProjectServiceImpl(
 
   private fun startObserveLibraries() {
     logd()
-    project.messageBus.connect(this).subscribe(ProjectTopics.PROJECT_ROOTS, object : ModuleRootListener {
+    project.messageBus.connect(this).subscribe(ModuleRootListener.TOPIC, object : ModuleRootListener {
       override fun rootsChanged(event: ModuleRootEvent) {
         logd("event=$event")
         onLibrariesChanged()
@@ -34,7 +33,7 @@ class ApolloProjectServiceImpl(
 
   private fun onLibrariesChanged() {
     logd()
-    val previousApolloVersion  = apolloVersion
+    val previousApolloVersion = apolloVersion
     synchronized(this) {
       apolloVersion = project.getApolloVersion()
     }

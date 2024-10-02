@@ -2,12 +2,12 @@ package com.apollographql.ijplugin.gradle
 
 import com.apollographql.ijplugin.util.logd
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListenerAdapter
+import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskType
 import com.intellij.util.messages.Topic
 import org.jetbrains.kotlin.idea.configuration.GRADLE_SYSTEM_ID
 
-class GradleListener : ExternalSystemTaskNotificationListenerAdapter() {
+class GradleListener : ExternalSystemTaskNotificationListener {
   override fun onSuccess(id: ExternalSystemTaskId) {
     logd()
     if (id.projectSystemId == GRADLE_SYSTEM_ID && id.type == ExternalSystemTaskType.RESOLVE_PROJECT) {
