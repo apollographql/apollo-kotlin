@@ -5,9 +5,7 @@ import com.apollographql.apollo.compiler.MODELS_RESPONSE_BASED
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
-
-  // Note: using the external plugin here to be able to reference KotlinPoet classes
-  id("com.apollographql.apollo.external")
+  id("com.apollographql.apollo")
 }
 
 apolloTest()
