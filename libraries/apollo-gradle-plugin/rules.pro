@@ -4,6 +4,9 @@
 -keep class kotlin.Metadata { *; }
 -keep class kotlin.Unit { *; }
 
+# Keep the @RequiresOptIn annotation so we get proper warnings in gradle build files
+-keep class kotlin.RequiresOptIn { *; }
+
 # We need to keep type arguments (Signature) for Gradle to be able to instantiate abstract models like `Property`
 # Else it fails with
 # 'Declaration of property alwaysGenerateTypesMatching does not include any type arguments in its property type interface org.gradle.api.provider.SetProperty'
