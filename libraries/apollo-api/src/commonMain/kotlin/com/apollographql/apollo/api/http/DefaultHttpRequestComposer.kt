@@ -106,8 +106,8 @@ class DefaultHttpRequestComposer(
     // TODO The deferSpec=20220824 part is a temporary measure so early backend implementations of the @defer directive
     // can recognize early client implementations and potentially reply in a compatible way.
     // This should be removed in later versions.
-    val HEADER_ACCEPT_VALUE_DEFER = "multipart/mixed;deferSpec=20220824, application/json"
-    val HEADER_ACCEPT_VALUE_MULTIPART = "multipart/mixed;subscriptionSpec=1.0, application/json"
+    val HEADER_ACCEPT_VALUE_DEFER = "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
+    val HEADER_ACCEPT_VALUE_MULTIPART = "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
 
     private fun <D : Operation.Data> buildGetUrl(
         serverUrl: String,

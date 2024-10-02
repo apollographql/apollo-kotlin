@@ -24,6 +24,7 @@ import com.apollographql.apollo.api.missingField
 internal class FooQuery: FooOperation("query"), Query<FooOperation.Data> {
   companion object {
     val successResponse = "{\"data\": {\"foo\": 42}}"
+    val errorResponse = "{\"errors\": [{\"message\": \"Oh no! Something went wrong :(\"}]}"
   }
 }
 
