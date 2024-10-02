@@ -21,16 +21,18 @@
 
 # Keep apollo-annotations for ApolloExperimental
 -keep class com.apollographql.apollo.annotations.** { *; }
-# Do we need to keep apollo-api
+# We don't need to keep apollo-api but it's been here for a while and some folks might depend on it so keep it
 -keep class com.apollographql.apollo.api.** { *; }
+# Keep compiler API as it's used in workers and for things like OperationOutputGenerator
+-keep class com.apollographql.apollo.compiler.** { *; }
+-keep interface com.apollographql.apollo.compiler.** { *; }
+-keep enum com.apollographql.apollo.compiler.** { *; }
+# Schema is used in a worker: https://github.com/apollographql/apollo-kotlin/blob/198480d8b0b24c01f4d11da0b1e9fa9c97062c5c/libraries/apollo-gradle-plugin-external/src/main/kotlin/com/apollographql/apollo/gradle/internal/ApolloGenerateSourcesTask.kt#L131
+-keep class com.apollographql.apollo.ast.Schema { *; }
 # Keep the plugin API as it's used from build scripts
 -keep class com.apollographql.apollo.gradle.api.** { *; }
 -keep interface com.apollographql.apollo.gradle.api.** { *; }
 -keep enum com.apollographql.apollo.gradle.api.** { *; }
-# And also the compiler API as it's used transitively for things like OperationOutputGenerator
--keep class com.apollographql.apollo.compiler.** { *; }
--keep interface com.apollographql.apollo.compiler.** { *; }
--keep enum com.apollographql.apollo.compiler.** { *; }
 # Keep the ApolloPlugin entry point and everything in internal too (not sure why this is needed, ApolloGenerateSourcesTask is shrunk else)
 -keep class com.apollographql.apollo.gradle.internal.** { *; }
 
