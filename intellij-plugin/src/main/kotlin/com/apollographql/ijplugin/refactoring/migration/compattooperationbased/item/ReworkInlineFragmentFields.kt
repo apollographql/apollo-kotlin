@@ -4,13 +4,11 @@ import com.apollographql.ijplugin.refactoring.findClassReferences
 import com.apollographql.ijplugin.refactoring.findReferences
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
-import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsageInfo
-import com.apollographql.ijplugin.util.type
+import com.apollographql.ijplugin.util.className
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMigration
 import com.intellij.psi.PsiReference
 import com.intellij.psi.search.GlobalSearchScope
-import org.jetbrains.kotlin.idea.base.utils.fqname.fqName
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtParameter
@@ -29,7 +27,7 @@ object ReworkInlineFragmentFields : MigrationItem() {
     usageInfo.addAll(propertyReferences.map { PropertyUsageInfo(this, it) })
 
     val inlineFragmentTypes = inlineFragmentProperties.mapNotNull {
-      it.type()?.fqName?.asString()
+      it.className()
     }
     val typeReferences = inlineFragmentTypes.flatMap { type ->
       findClassReferences(project, type)
@@ -41,10 +39,10 @@ object ReworkInlineFragmentFields : MigrationItem() {
   }
 
   private class PropertyUsageInfo(migrationItem: MigrationItem, reference: PsiReference) :
-      MigrationItemUsageInfo(migrationItem, reference)
+    MigrationItemUsageInfo(migrationItem, reference)
 
   private class TypeUsageInfo(migrationItem: MigrationItem, reference: PsiReference) :
-      MigrationItemUsageInfo(migrationItem, reference)
+    MigrationItemUsageInfo(migrationItem, reference)
 
 
   private fun KtClassOrObject.inlineFragmentProperties(): List<KtParameter> {

@@ -3,7 +3,6 @@ package com.apollographql.ijplugin.refactoring.migration.compattooperationbased.
 import com.apollographql.ijplugin.refactoring.migration.item.DeletesElements
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
-import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsageInfo
 import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.findPsiFilesByName
 import com.apollographql.ijplugin.util.getMethodName

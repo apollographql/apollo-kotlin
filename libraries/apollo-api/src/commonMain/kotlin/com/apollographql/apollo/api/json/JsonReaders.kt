@@ -15,14 +15,16 @@ fun Map<String, Any?>.jsonReader(): JsonReader {
 }
 
 /**
- * Reads the reader and maps numbers to the closest representation possible in that order:
+ * Returns the Kotlin representation of the given [JsonReader]
+ *
+ * JSON numbers are mapped to built-in types when possible in that order:
  * - Int
  * - Long
  * - Double
  * - JsonNumber
  */
 @ApolloInternal
-fun JsonReader.readAny(): Any? {
+fun JsonReader.readAny(): ApolloJsonElement {
   return when (val token = peek()) {
     JsonReader.Token.NULL -> nextNull()
     JsonReader.Token.BOOLEAN -> nextBoolean()
@@ -60,6 +62,13 @@ private fun JsonReader.guessNumber(): Any {
   } catch (_: Exception) {
   }
   try {
+    /**
+     * XXX: this can lose precision on large numbers (String.toDouble() may approximate)
+     * This hasn't been an issue so far, and it's used quite extensively, so I'm keeping it
+     * as is for the time being.
+     * If you're reading this, it probably means it became an issue. In that case, nextDouble()
+     * here should be skipped and the calling code be adapted.
+     */
     return nextDouble()
   } catch (_: Exception) {
   }

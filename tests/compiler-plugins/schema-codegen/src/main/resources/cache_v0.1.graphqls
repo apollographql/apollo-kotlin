@@ -1,0 +1,59 @@
+"""
+Possible values for the `@cacheControl` `scope` argument (unused on the client).
+"""
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
+}
+
+"""
+Configures cache settings for a field or type.
+
+- `maxAge`: The maximum amount of time the field's cached value is valid, in seconds.
+- `inheritMaxAge`: If true, the field inherits the `maxAge` of its parent field. If set to `true`, `maxAge` must not be provided.
+- `scope`: Unused on the client.
+
+When applied to a type, the settings apply to all schema fields that return this type.
+Field-level settings override type-level settings.
+
+For example:
+
+```graphql
+type Query {
+me: User
+user(id: ID!): User @cacheControl(maxAge: 5)
+}
+
+type User @cacheControl(maxAge: 10) {
+id: ID!
+email: String
+}
+```
+`Query.me` is valid for 10 seconds, and `Query.user` for 5 seconds.
+"""
+directive @cacheControl(
+  maxAge: Int
+  inheritMaxAge: Boolean
+  scope: CacheControlScope
+) on FIELD_DEFINITION | OBJECT | INTERFACE | UNION
+
+"""
+Configures cache settings for a field.
+
+`@cacheControlField` is the same as `@cacheControl` but can be used on type system extensions for services that do not own the schema like
+client services.
+
+For example:
+
+```graphql
+# extend the schema to set a max age on User.email.
+extend type User @cacheControlField(name: "email", maxAge: 20)
+```
+`User.email` is valid for 20 seconds.
+"""
+directive @cacheControlField(
+  name: String!
+  maxAge: Int
+  inheritMaxAge: Boolean
+  scope: CacheControlScope
+) repeatable on OBJECT | INTERFACE

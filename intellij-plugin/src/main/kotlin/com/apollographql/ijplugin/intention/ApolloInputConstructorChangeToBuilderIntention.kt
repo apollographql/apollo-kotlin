@@ -7,6 +7,7 @@ import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.cast
+import com.apollographql.ijplugin.util.getParameterNames
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.codeInsight.intention.preview.IntentionPreviewUtils
 import com.intellij.openapi.editor.Editor
@@ -22,13 +23,15 @@ class ApolloInputConstructorChangeToBuilderIntention : PsiElementBaseIntentionAc
 
   override fun isAvailable(project: Project, editor: Editor?, element: PsiElement): Boolean {
     if (!element.project.apolloProjectService.apolloVersion.isAtLeastV4) return false
-    val callExpression =  (element as? LeafPsiElement)?.parent?.parent as? KtCallExpression ?: return false
+    val callExpression = (element as? LeafPsiElement)?.parent?.parent as? KtCallExpression ?: return false
     val reference = callExpression.calleeExpression.cast<KtNameReferenceExpression>() ?: return false
     return reference.isApolloInputClassReference()
   }
 
   override fun invoke(project: Project, editor: Editor?, element: PsiElement) {
     if (!IntentionPreviewUtils.isIntentionPreviewActive()) project.telemetryService.logEvent(TelemetryEvent.ApolloIjInputConstructorChangeToBuilderIntentionApply())
-    ChangeToBuilderQuickFix.applyFix(project, element.parent.parent as KtCallExpression)
+    val callExpression = element.parent.parent as KtCallExpression
+    val parameterNames = callExpression.getParameterNames() ?: return
+    ChangeToBuilderQuickFix(parameterNames).applyFix(project, callExpression)
   }
 }

@@ -3,7 +3,6 @@ package com.apollographql.ijplugin.refactoring.migration.v2tov3.item
 import com.apollographql.ijplugin.refactoring.findClassReferences
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
-import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsageInfo
 import com.apollographql.ijplugin.util.apollo3
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMigration
@@ -25,7 +24,7 @@ object UpdateFileUpload : MigrationItem() {
     val element = usage.element as KtCallExpression
     val psiFactory = KtPsiFactory(project)
     val newElement =
-        psiFactory.createExpressionByPattern("File($0).toUpload($1)", element.valueArguments[1].text, element.valueArguments[0].text)
+      psiFactory.createExpressionByPattern("File($0).toUpload($1)", element.valueArguments[1].text, element.valueArguments[0].text)
     element.replace(newElement)
   }
 

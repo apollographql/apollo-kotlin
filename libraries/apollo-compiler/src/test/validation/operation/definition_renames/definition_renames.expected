@@ -1,2 +1,5 @@
+DeprecatedUsage (3:19)
+Using `@nonnull` is deprecated. Use `@semanticNonNull` and/or `@catch` instead. See https://go.apollo.dev/ak-nullability.
+------------
 OtherValidationIssue (5:19)
 Directive 'apollo__typePolicy' cannot be applied on 'FIELD'

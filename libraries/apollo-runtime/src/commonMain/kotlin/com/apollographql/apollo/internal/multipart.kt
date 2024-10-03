@@ -47,3 +47,6 @@ private fun getBoundaryParameter(contentType: String?): String? {
 
 internal val HttpResponse.isMultipart: Boolean
   get() = headers.valueOf("Content-Type")?.startsWith("multipart/", ignoreCase = true) == true
+
+internal val HttpResponse.isGraphQLResponse: Boolean
+  get() = headers.valueOf("Content-Type")?.startsWith("application/graphql-response+json", ignoreCase = true) == true

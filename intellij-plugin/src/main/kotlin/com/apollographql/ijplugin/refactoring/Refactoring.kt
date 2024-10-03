@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.refactoring
 
 import com.apollographql.ijplugin.util.findFunctionsByName
+import com.apollographql.ijplugin.util.ktClassOrObject
 import com.apollographql.ijplugin.util.logw
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.project.Project
@@ -16,7 +17,6 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.AllClassesSearch
 import com.intellij.psi.search.searches.ClassInheritorsSearch
 import com.intellij.psi.search.searches.ReferencesSearch
-import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.psi.psiUtil.findPropertyByName
 
 fun findOrCreatePackage(project: Project, migration: PsiMigration, qName: String): PsiPackage {
@@ -65,7 +65,7 @@ fun findMethodReferences(
   val psiLookupClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project)) ?: return emptyList()
   val methods =
     // Try Kotlin first
-    (psiLookupClass as? KtLightClass)?.kotlinOrigin?.findFunctionsByName(methodName)?.takeIf { it.isNotEmpty() }
+    psiLookupClass.ktClassOrObject?.findFunctionsByName(methodName)?.takeIf { it.isNotEmpty() }
     // Fallback to Java
         ?: psiLookupClass.findMethodsByName(methodName, false)
             .filter { method ->
@@ -85,7 +85,7 @@ fun findFieldReferences(project: Project, className: String, fieldName: String):
   val psiLookupClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project)) ?: return emptyList()
   val field = psiLookupClass.findFieldByName(fieldName, true)
   // Fallback to Kotlin property
-      ?: (psiLookupClass as? KtLightClass)?.kotlinOrigin?.findPropertyByName(fieldName)
+      ?: psiLookupClass.ktClassOrObject?.findPropertyByName(fieldName)
       ?: return emptyList()
   return findReferences(field, project)
 }

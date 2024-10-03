@@ -117,8 +117,12 @@ private abstract class GenerateSourcesFromIr : WorkAction<GenerateSourcesFromIrP
           javaOutputTransform = plugin?.javaOutputTransform(),
           kotlinOutputTransform = plugin?.kotlinOutputTransform(),
           operationManifestFile = operationManifestFile.orNull?.asFile,
-          operationOutputGenerator = plugin?.toOperationOutputGenerator()
+          operationOutputGenerator = plugin?.toOperationOutputGenerator(),
       ).writeTo(outputDir.get().asFile, true, metadataOutputFile.orNull?.asFile)
+
+      plugin?.schemaListener()?.let { onSchemaDocument ->
+        onSchemaDocument.onSchema(codegenSchema.schema, outputDir.get().asFile)
+      }
     }
   }
 }

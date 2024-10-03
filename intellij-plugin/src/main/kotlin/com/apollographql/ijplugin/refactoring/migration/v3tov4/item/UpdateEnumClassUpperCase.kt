@@ -5,14 +5,12 @@ import com.apollographql.ijplugin.refactoring.findAllClasses
 import com.apollographql.ijplugin.refactoring.findClassReferences
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
-import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsageInfo
 import com.apollographql.ijplugin.util.capitalizeFirstLetter
-import com.apollographql.ijplugin.util.cast
 import com.apollographql.ijplugin.util.isGenerated
+import com.apollographql.ijplugin.util.ktClass
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMigration
 import com.intellij.psi.search.GlobalSearchScope
-import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtPsiFactory
 
@@ -21,7 +19,7 @@ object UpdateEnumClassUpperCase : MigrationItem() {
     val allClasses = findAllClasses(project)
     val allApolloGeneratedEnums: List<KtClass> = allClasses
         .filter { it.isEnum }
-        .mapNotNull { it.cast<KtUltraLightClass>()?.kotlinOrigin?.cast<KtClass>() }
+        .mapNotNull { it.ktClass }
         .filter { it.isApolloEnumClass() && it.name!![0].isLowerCase() }
     return allApolloGeneratedEnums.flatMap {
       findClassReferences(project, it.fqName!!.asString())

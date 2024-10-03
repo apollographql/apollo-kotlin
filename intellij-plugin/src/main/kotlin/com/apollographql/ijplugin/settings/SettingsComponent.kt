@@ -6,9 +6,9 @@ import com.apollographql.ijplugin.settings.studio.ApiKeyDialog
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.project.Project
 import com.intellij.ui.AddEditRemovePanel
+import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.dsl.gridLayout.HorizontalAlign
 import javax.swing.JCheckBox
 import javax.swing.JComponent
 import javax.swing.JPanel
@@ -95,7 +95,7 @@ class SettingsComponent(private val project: Project) {
           }
 
           cell(addEditRemovePanel!!)
-              .horizontalAlign(HorizontalAlign.FILL)
+              .align(AlignX.FILL)
               .comment(ApolloBundle.message("settings.studio.apiKeys.comment"))
         }
       }

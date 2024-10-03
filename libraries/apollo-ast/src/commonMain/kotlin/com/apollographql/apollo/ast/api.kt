@@ -9,6 +9,7 @@ import com.apollographql.apollo.ast.internal.ExecutableValidationScope
 import com.apollographql.apollo.ast.internal.LexerException
 import com.apollographql.apollo.ast.internal.Parser
 import com.apollographql.apollo.ast.internal.ParserException
+import com.apollographql.apollo.ast.internal.SchemaValidationOptions
 import com.apollographql.apollo.ast.internal.validateSchema
 import okio.BufferedSource
 import okio.use
@@ -178,7 +179,6 @@ fun BufferedSource.parseAsGQLSelections(
     filePath: String? = null,
     options: ParserOptions = ParserOptions.Default,
 ): GQLResult<List<GQLSelection>> {
-  @Suppress("DEPRECATION")
   return parseInternal(filePath, options) { parseSelections() }
 }
 
@@ -198,12 +198,23 @@ fun BufferedSource.parseAsGQLSelections(
  */
 @ApolloExperimental
 fun GQLDocument.validateAsSchema(): GQLResult<Schema> {
-  return validateSchema(definitions)
+  return validateSchema(definitions, SchemaValidationOptions(false, emptyList()))
+}
+
+@ApolloExperimental
+fun GQLDocument.validateAsSchema(validationOptions: SchemaValidationOptions): GQLResult<Schema> {
+  return validateSchema(definitions, validationOptions)
 }
 
 @ApolloInternal
 fun GQLDocument.validateAsSchemaAndAddApolloDefinition(): GQLResult<Schema> {
-  return validateSchema(definitions, true)
+  return validateSchema(
+      definitions,
+      SchemaValidationOptions(
+          true,
+          builtinForeignSchemas()
+      )
+  )
 }
 
 /**

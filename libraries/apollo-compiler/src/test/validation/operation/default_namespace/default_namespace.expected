@@ -1,3 +1,6 @@
+DeprecatedUsage (3:11)
+Using `@nonnull` is deprecated. Use `@semanticNonNull` and/or `@catch` instead. See https://go.apollo.dev/ak-nullability.
+------------
 OtherValidationIssue (6:11)
 Directive 'kotlin_labs__typePolicy' cannot be applied on 'FIELD'
 ------------

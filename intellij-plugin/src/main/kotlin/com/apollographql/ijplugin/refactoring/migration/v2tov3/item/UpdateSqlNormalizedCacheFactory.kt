@@ -3,17 +3,14 @@ package com.apollographql.ijplugin.refactoring.migration.v2tov3.item
 import com.apollographql.ijplugin.refactoring.findClassReferences
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
 import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
-import com.apollographql.ijplugin.refactoring.migration.item.toMigrationItemUsageInfo
 import com.apollographql.ijplugin.util.apollo3
+import com.apollographql.ijplugin.util.className
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMigration
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.parentOfType
-import org.jetbrains.kotlin.idea.caches.resolve.analyze
-import org.jetbrains.kotlin.idea.refactoring.fqName.fqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtImportDirective
-import org.jetbrains.kotlin.resolve.lazy.BodyResolveMode
 
 object UpdateSqlNormalizedCacheFactory : MigrationItem() {
   private const val CACHE_FACTORY_FQN = "com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory"
@@ -35,7 +32,7 @@ object UpdateSqlNormalizedCacheFactory : MigrationItem() {
             // `SqlNormalizedCacheFactory(xxx, yyy)` and yyy is a String
             if (callExpression.valueArguments.size == 2) {
               val expression = callExpression.valueArguments[1]?.getArgumentExpression()
-              if (expression?.analyze(BodyResolveMode.PARTIAL)?.getType(expression)?.fqName?.asString() == "kotlin.String") {
+              if (expression?.className() == "kotlin.String") {
                 callExpression
               } else {
                 null

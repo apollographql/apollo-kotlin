@@ -5,9 +5,7 @@ import com.apollographql.apollo.compiler.MODELS_RESPONSE_BASED
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
-
-  // Note: using the external plugin here to be able to reference KotlinPoet classes
-  id("com.apollographql.apollo.external")
+  id("com.apollographql.apollo")
 }
 
 apolloTest()
@@ -37,15 +35,22 @@ apollo {
           languageVersion.set("1.5")
 
           when (name) {
+            "schemacodegen" -> {
+              srcDir("src/main/graphql/cache")
+            }
             "gettersandsetters" -> {
               generateKotlinModels.set(false)
               outputDirConnection {
                 this.connectToJavaSourceSet("main")
               }
+              srcDir("src/main/graphql/default")
             }
             "customflatten" -> {
               codegenModels.set(MODELS_RESPONSE_BASED)
               srcDir(dir.resolve("src/main/graphql"))
+            }
+            else -> {
+              srcDir("src/main/graphql/default")
             }
           }
         }

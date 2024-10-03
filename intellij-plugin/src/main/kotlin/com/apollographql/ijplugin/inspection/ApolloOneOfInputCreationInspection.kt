@@ -8,14 +8,15 @@ import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.util.apollo4
 import com.apollographql.ijplugin.util.canBeNull
 import com.apollographql.ijplugin.util.cast
-import com.apollographql.ijplugin.util.type
+import com.apollographql.ijplugin.util.className
+import com.apollographql.ijplugin.util.getCalleeExpressionIfAny
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.jsgraphql.psi.GraphQLInputObjectTypeDefinition
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.findTopmostParentOfType
 import com.intellij.psi.util.parentOfType
-import org.jetbrains.kotlin.idea.base.utils.fqname.fqName
 import org.jetbrains.kotlin.idea.intentions.branchedTransformations.isNullExpression
 import org.jetbrains.kotlin.idea.references.mainReference
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -25,13 +26,11 @@ import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtVisitorVoid
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
-import org.jetbrains.kotlin.resolve.calls.util.getCalleeExpressionIfAny
-import org.jetbrains.kotlin.types.typeUtil.isNullableNothing
 
 class ApolloOneOfInputCreationInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     return object : KtVisitorVoid() {
-      private val expressionsWithFieldSet = mutableSetOf<KtExpression>()
+      private val alreadyVisitedBuildExpressions = mutableSetOf<KtExpression>()
 
       // For constructor calls
       override fun visitCallExpression(expression: KtCallExpression) {
@@ -50,7 +49,7 @@ class ApolloOneOfInputCreationInspection : LocalInspectionTool() {
           return
         }
         val arg = expression.valueArguments.first()
-        if (arg.getArgumentExpression()?.type()?.fqName?.asString() == "$apollo4.api.Optional.Absent") {
+        if (arg.getArgumentExpression()?.className() == "$apollo4.api.Optional.Absent") {
           holder.registerProblem(expression.calleeExpression!!, ApolloBundle.message("inspection.oneOfInputCreation.reportText.constructor.argIsAbsent"))
         }
       }
@@ -59,8 +58,9 @@ class ApolloOneOfInputCreationInspection : LocalInspectionTool() {
       override fun visitDotQualifiedExpression(expression: KtDotQualifiedExpression) {
         super.visitDotQualifiedExpression(expression)
         if (!expression.project.apolloProjectService.apolloVersion.isAtLeastV4) return
-        val expressionClass = expression.selectorExpression.getCalleeExpressionIfAny()?.mainReference?.resolve()?.parentOfType<KtClass>(withSelf = true)
-            ?: return
+        val expressionClass =
+          expression.selectorExpression.getCalleeExpressionIfAny()?.mainReference?.resolve()?.parentOfType<KtClass>(withSelf = true)
+              ?: return
         if (expressionClass.name != "Builder") return
         val containingClass = expressionClass.containingClass() ?: return
         if (!containingClass.isApolloInputClass()) return
@@ -75,19 +75,20 @@ class ApolloOneOfInputCreationInspection : LocalInspectionTool() {
         if (arguments.size == 0) return
 
         val argumentExpression = arguments.first().getArgumentExpression()
-        val argumentExpressionType = argumentExpression?.type()
-        if (argumentExpression?.isNullExpression() == true || argumentExpressionType?.isNullableNothing() == true) {
+        if (argumentExpression?.isNullExpression() == true) {
           // `null`
           holder.registerProblem(expression.selectorExpression!!, ApolloBundle.message("inspection.oneOfInputCreation.reportText.builder.argIsNull"))
-        } else if (argumentExpressionType?.canBeNull() == true) {
+        } else if (argumentExpression?.canBeNull() == true) {
           // a nullable type: warning only
           holder.registerProblem(expression.selectorExpression!!, ApolloBundle.message("inspection.oneOfInputCreation.reportText.builder.argIsNull"), ProblemHighlightType.WARNING)
         }
 
-        if (expression.receiverExpression in expressionsWithFieldSet) {
+        val buildExpression = expression.findTopmostParentOfType<KtDotQualifiedExpression>() ?: return
+        // If we've already visited the build expression it means several fields are being set in the same builder
+        if (buildExpression in alreadyVisitedBuildExpressions) {
           holder.registerProblem(expression.selectorExpression!!, ApolloBundle.message("inspection.oneOfInputCreation.reportText.builder.wrongNumberOfArgs"))
         }
-        expressionsWithFieldSet.add(expression)
+        alreadyVisitedBuildExpressions.add(buildExpression)
       }
     }
   }

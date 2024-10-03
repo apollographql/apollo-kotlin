@@ -126,8 +126,20 @@ class FieldInsightsServiceImpl(private val project: Project) : FieldInsightsServ
     return fieldLatenciesByService.isNotEmpty()
   }
 
+  private fun getFieldLatenciesForService(serviceId: ApolloKotlinService.Id): FieldInsights.FieldLatencies? {
+    if (fieldLatenciesByService.containsKey(serviceId)) {
+      return fieldLatenciesByService[serviceId]
+    }
+    // Try upstream services
+    val apolloKotlinService = GradleToolingModelService.getApolloKotlinServices(project).firstOrNull { it.id == serviceId } ?: return null
+    for (upstreamServiceId in apolloKotlinService.upstreamServiceIds) {
+      return getFieldLatenciesForService(upstreamServiceId) ?: continue
+    }
+    return null
+  }
+
   override fun getLatency(serviceId: ApolloKotlinService.Id, typeName: String, fieldName: String): Double? {
-    return fieldLatenciesByService[serviceId]?.getLatency(parentType = typeName, fieldName = fieldName)
+    return getFieldLatenciesForService(serviceId)?.getLatency(parentType = typeName, fieldName = fieldName)
   }
 
   private fun refreshInspections() {

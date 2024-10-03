@@ -26,7 +26,7 @@ import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListenerAdapter
+import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskType
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.fileEditor.FileDocumentManager
@@ -191,7 +191,7 @@ class ApolloCodegenService(
         logd("Start Gradle")
         try {
           val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.EXECUTE_TASK, project)
-          gradleExecutionHelper.getBuildLauncher(connection, id, listOf(CODEGEN_GRADLE_TASK_NAME), executionSettings, ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
+          gradleExecutionHelper.getBuildLauncher(connection, id, listOf(CODEGEN_GRADLE_TASK_NAME), executionSettings, ExternalSystemTaskNotificationListener.NULL_OBJECT)
               .forTasks(CODEGEN_GRADLE_TASK_NAME)
               .withCancellationToken(gradleCodegenCancellation!!.token())
               .addArguments("--continuous")

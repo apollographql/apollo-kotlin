@@ -120,7 +120,7 @@ class LoggingInterceptorTest {
     client.query(HeroNameQuery()).execute()
     logger.assertLog("""
       Post http://0.0.0.0/
-      accept: multipart/mixed;deferspec=20220824, application/json
+      accept: multipart/mixed;deferspec=20220824, application/graphql-response+json, application/json
       [end of headers]
 
       HTTP: 200
@@ -140,7 +140,7 @@ class LoggingInterceptorTest {
     client.query(HeroNameQuery()).execute()
     logger.assertLog("""
       Post http://0.0.0.0/
-      accept: multipart/mixed;deferspec=20220824, application/json
+      accept: multipart/mixed;deferspec=20220824, application/graphql-response+json, application/json
       [end of headers]
       {"operationName":"HeroName","variables":{},"query":"query HeroName { hero { name } }"}
 
@@ -181,7 +181,7 @@ class LoggingInterceptorTest {
     client.query(HeroNameQuery()).execute()
     logger.assertLog("""
       Post http://0.0.0.0/
-      accept: multipart/mixed;deferspec=20220824, application/json
+      accept: multipart/mixed;deferspec=20220824, application/graphql-response+json, application/json
       [end of headers]
       {"operationName":"HeroName","variables":{},"query":"query HeroName { hero { name } }"}
 

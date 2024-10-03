@@ -14,7 +14,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListenerAdapter
+import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskType
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.progress.ProgressIndicator
@@ -57,7 +57,7 @@ private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
       logd("Fetch Gradle project model")
       return@execute try {
         val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.RESOLVE_PROJECT, project)
-        gradleExecutionHelper.getModelBuilder(GradleProject::class.java, connection, id, executionSettings, ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
+        gradleExecutionHelper.getModelBuilder(GradleProject::class.java, connection, id, executionSettings, ExternalSystemTaskNotificationListener.NULL_OBJECT)
             .get()
       } catch (t: Throwable) {
         logw(t, "Couldn't fetch Gradle project model")
@@ -86,7 +86,7 @@ private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
     gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
       try {
         val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.EXECUTE_TASK, project)
-        gradleExecutionHelper.getBuildLauncher(connection, id, allDownloadSchemaTasks, executionSettings, ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
+        gradleExecutionHelper.getBuildLauncher(connection, id, allDownloadSchemaTasks, executionSettings, ExternalSystemTaskNotificationListener.NULL_OBJECT)
             .forTasks(*allDownloadSchemaTasks.toTypedArray())
             .addProgressListener(object : SimpleProgressListener() {
               override fun onFailure(failures: List<Failure>) {

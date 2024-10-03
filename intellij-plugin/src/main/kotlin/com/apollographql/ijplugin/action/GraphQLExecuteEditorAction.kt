@@ -52,7 +52,7 @@ private fun isQueryableFile(project: Project, virtualFile: VirtualFile?): Boolea
   if (virtualFile.fileType == GraphQLFileType.INSTANCE) {
     return true
   }
-  if (GraphQLFileType.isGraphQLScratchFile(project, virtualFile)) {
+  if (GraphQLFileType.isGraphQLScratchFile(virtualFile)) {
     return true
   }
   return virtualFile.fileType == JsonFileType.INSTANCE && virtualFile.getUserData(IS_GRAPH_QL_VARIABLES_VIRTUAL_FILE) == true

@@ -1,7 +1,79 @@
 Change Log
 ==========
 
-# Version v4.0.0
+# Version 4.0.1
+
+_2024-10-01_
+
+This release contains a handful of bug fixes and improvements. 
+
+## ⚙️ Add `ApolloCompilerPlugin.schemaListener()`
+
+The [compiler plugins](https://www.apollographql.com/docs/kotlin/advanced/compiler-plugins) API has been extended to allow listening to schema changes.\
+This can be used to have plugins generate code based on the schema. To do this, implement the [`schemaListener`](https://www.apollographql.com/docs/kotlin/kdoc/apollo-compiler/com.apollographql.apollo.compiler/-apollo-compiler-plugin/schema-listener.html)
+function on your plugin:
+    
+```kotlin
+class MyCompilerPlugin() : ApolloCompilerPlugin {
+  @ApolloExperimental
+  override fun schemaListener(): SchemaListener {
+    return object : SchemaListener {
+      override fun onSchema(schema: Schema, outputDirectory: File) {
+        // Generate some code inside outputDirectory based on schema
+      }
+    }
+  }
+}
+```
+
+## 🚀 Allow mapping scalars to simple generic types
+
+Previously, to [map a scalar](https://www.apollographql.com/docs/kotlin/essentials/custom-scalars) to a generic type, you had to use a `typealias`. 
+Now, simple generic types are accepted, and common types like `List` and `String` don't need to be fully qualified:
+
+```kotlin
+mapScalar("MassList", "List<com.example.Measure<com.example.Mass>>", "com.example.MassListAdapter")
+```
+
+## 💙 Contributors
+
+Many thanks to @ebrattli, @agrosner and @cvb941 for their contributions to this release 💙!
+
+## 👷 All changes
+
+* [gradle-plugin] Deprecate `"operationOutput"` and `./gradlew downloadApolloSchema` (#6097)
+* [gradle-plugin] Use `registerJavaGeneratingTask` (#6149)
+* [apollo-ast] Add GQLDocument.validate(SchemaValidationOptions) to allow adding external schemas. (#6164)
+* [compiler] Add ApolloCompilerPlugin.schemaDocumentListener() (#6165)
+* [compiler] Pass schema to ApolloCompilerPlugin.schemaListener (#6166)
+* [compiler] Avoid enum value clashing with the getter `field` (#6093)
+* [compiler] Fix a few additional instances of %L used instead of %N (#6117)
+* [compiler] Escape properties in input builder function body (#6116)
+* [compiler] Provide a more descriptive error message when a resolution of a specific `ResolverKey` fails (#6136)
+* [compiler] Deprecate `@nonnull` (#6152)
+* [compiler] Allow mapping scalars to simple generic types (#6158)
+* [tooling] Allow to shutdown SchemaDownloader (#6091)
+* [tooling] Remove warning (#6092)
+* [WebSockets] connectionParams -> connectionPayload (#6103)
+* [WebSockets] add NetworkTransport.closeConnection() (#6105)
+* [BREAKING][runtime] Change NetworkMonitor to expose a StateFlow directly (#6119)
+* [runtime] Add 'OfflineException' as a cause when using failFastIfOffline (#6104)
+* [apollo-api] Fix reading `JsonNumber` in `MapJsonReader` (#6141)
+* [cache] Allow to store `JsonNumber` in `Record` (#6139)
+* [cache] Fix cascade SQL cache remove loops forever on cyclic references (#6137)
+* [IJ Plugin] Bump pluginUntilBuild to 242 and pluginSinceBuild to 241 (#6111)
+* [IJ Plugin] Add ApolloOneOfGraphQLViolationInspection (#6125)
+* [IJ Plugin] Improve performance of ApolloGraphQLConfigFilePresentInspection and ApolloGraphQLConfigFilePresentAnnotator (#6126)
+* [IJ Plugin] Fix high latency field inspection (#6142)
+* [IJ Plugin] Correctly name Open In items (#6151)
+* [infra] Bump Kotlin to 2.0.10 (#6107)
+* [infra] Bump Kotlin to 2.0.20 (#6131)
+* [infra] Bump develocity (#6128)
+* [infra] Update Apollo Execution (#6138)
+* [infra] Bump develocity (#6144)
+* [infra] Allow compiling the project with Java22 (#6145)
+
+# Version 4.0.0
 
 _2024-07-29_
 
@@ -197,7 +269,7 @@ Thanks again to everyone who provided feedback during the alphas/betas.
 * [#650](https://github.com/apollographql/apollo-kotlin/pull/650) - Create Android Studio Plugin
 
 
-# Version v4.0.0-rc.2
+# Version 4.0.0-rc.2
 
 _2024-07-22_
 

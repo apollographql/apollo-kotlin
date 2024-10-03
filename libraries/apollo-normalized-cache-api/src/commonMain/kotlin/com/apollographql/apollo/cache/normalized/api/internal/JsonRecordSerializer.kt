@@ -3,10 +3,12 @@ package com.apollographql.apollo.cache.normalized.api.internal
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo.api.json.BufferedSourceJsonReader
+import com.apollographql.apollo.api.json.JsonNumber
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.json.readAny
 import com.apollographql.apollo.cache.normalized.api.CacheKey
 import com.apollographql.apollo.cache.normalized.api.Record
+import com.apollographql.apollo.cache.normalized.api.RecordValue
 import okio.Buffer
 import okio.ByteString.Companion.encodeUtf8
 import okio.use
@@ -26,7 +28,7 @@ object JsonRecordSerializer {
     BufferedSinkJsonWriter(buffer).use { jsonWriter ->
       jsonWriter.beginObject()
       for ((key, value) in fields) {
-        jsonWriter.name(key).writeJsonValue(value)
+        jsonWriter.name(key).writeRecordValue(value)
       }
       jsonWriter.endObject()
     }
@@ -69,7 +71,7 @@ object JsonRecordSerializer {
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun JsonWriter.writeJsonValue(value: Any?) {
+  private fun JsonWriter.writeRecordValue(value: RecordValue) {
     when (value) {
       null -> this.nullValue()
       is String -> this.value(value)
@@ -77,16 +79,17 @@ object JsonRecordSerializer {
       is Int -> this.value(value)
       is Long -> this.value(value)
       is Double -> this.value(value)
+      is JsonNumber -> this.value(value)
       is CacheKey -> this.value(value.serialize())
       is List<*> -> {
         this.beginArray()
-        value.forEach { writeJsonValue(it) }
+        value.forEach { writeRecordValue(it) }
         this.endArray()
       }
       is Map<*, *> -> {
         this.beginObject()
         for (entry in value as Map<String, Any?>) {
-          this.name(entry.key).writeJsonValue(entry.value)
+          this.name(entry.key).writeRecordValue(entry.value)
         }
         this.endObject()
       }

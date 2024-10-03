@@ -15,21 +15,21 @@ type QueryRoot {
 }
 
 type MutationRoot {
-  closeAllWebSockets: ID!
+  closeAllWebSockets: String!
 }
 
 type SubscriptionRoot {
   count(to: Int!, intervalMillis: Int!): Int!
 
-  countString(to: Int!, intervalMillis: Int!): ID!
+  countString(to: Int!, intervalMillis: Int!): String!
 
   secondsSinceEpoch(intervalMillis: Int!): Float!
 
-  operationError: ID!
+  operationError: String!
 
   graphqlAccessError(after: Int!): Int
 
-  closeWebSocket: ID!
+  closeWebSocket: String!
 
   state(intervalMillis: Int!): State!
 
@@ -37,7 +37,7 @@ type SubscriptionRoot {
 }
 
 type State {
-  tag: ID!
+  tag: String!
 
-  subscriptionId: ID!
+  subscriptionId: String!
 }

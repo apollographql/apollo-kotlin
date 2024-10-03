@@ -9,18 +9,18 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 
-context(LocalInspectionTool)
 fun ProblemsHolder.registerProblem(
+    localInspectionTool: LocalInspectionTool,
     element: PsiElement,
     description: String,
     withMoreLink: Boolean,
     vararg fixes: LocalQuickFix,
 ) {
-  registerProblem(element, description, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, withMoreLink, *fixes)
+  registerProblem(localInspectionTool, element, description, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, withMoreLink, *fixes)
 }
 
-context(LocalInspectionTool)
 fun ProblemsHolder.registerProblem(
+    localInspectionTool: LocalInspectionTool,
     element: PsiElement,
     description: String,
     highlightType: ProblemHighlightType,
@@ -44,7 +44,7 @@ fun ProblemsHolder.registerProblem(
           isOnTheFly
       ) {
         override fun getTooltipTemplate(): String {
-          return "<html>$description <a href=\"#inspection/$shortName\">${ApolloBundle.message("inspection.more")}</a> ${DaemonTooltipsUtil.getShortcutText()}"
+          return "<html>$description <a href=\"#inspection/${localInspectionTool.shortName}\">${ApolloBundle.message("inspection.more")}</a> ${DaemonTooltipsUtil.getShortcutText()}"
         }
       }
   )
