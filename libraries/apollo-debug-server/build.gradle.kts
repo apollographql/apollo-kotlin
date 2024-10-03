@@ -1,5 +1,5 @@
 
-import dev.adamko.dokkatoo.tasks.DokkatooGenerateTask
+//import dev.adamko.dokkatoo.tasks.DokkatooGenerateTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
@@ -56,9 +56,9 @@ kotlin {
   }
 }
 
-tasks.withType<DokkatooGenerateTask>().configureEach {
-  dependsOn("kspCommonMainKotlinMetadata")
-}
+//tasks.withType<DokkatooGenerateTask>().configureEach {
+//  dependsOn("kspCommonMainKotlinMetadata")
+//}
 tasks.configureEach {
   if (name.endsWith("sourcesJar", ignoreCase = true)) {
     dependsOn("kspCommonMainKotlinMetadata")
