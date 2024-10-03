@@ -75,6 +75,14 @@ fun Project.configureDokkaCommon(): DokkaExtension {
     includes.from("README.md")
   }
 
+  // Workaround for https://github.com/adamko-dev/dokkatoo/issues/165
+  configurations.configureEach {
+    if (name.lowercase().contains("dokkaHtmlPublicationPluginApiOnlyConsumable~internal".lowercase())) {
+      attributes {
+        attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage::class.java, "poison"))
+      }
+    }
+  }
   return dokka
 }
 
@@ -94,6 +102,12 @@ private class MavenCoordinates(val module: String, val version: String)
 fun Project.configureDokkaAggregate() {
   val dokka = configureDokkaCommon()
 
+  dependencies.add(
+      "dokkaHtmlPlugin",
+      dokka.dokkaEngineVersion.map { dokkaVersion ->
+        "org.jetbrains.dokka:all-modules-page-plugin:$dokkaVersion"
+      }
+  )
   dependencies.add(
       "dokkaHtmlPlugin",
       dokka.dokkaEngineVersion.map { dokkaVersion ->
