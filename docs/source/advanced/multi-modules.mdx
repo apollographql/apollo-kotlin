@@ -97,6 +97,21 @@ apollo {
 }
 ```
 
+Also disable generating types in the schema module:
+
+```kotlin
+// schema/build.gradle.kts
+apollo {
+  service("service") {
+    packageName.set("schema")
+    generateApolloMetadata.set(true)
+    
+    // Disable generating all types 
+    alwaysGenerateTypesMatching.set(emptyList())
+  }
+}
+```
+
 <ExperimentalFeature>
 
 The `bidirectional` parameter is experimental and not compatible with <a href="https://docs.gradle.org/current/userguide/build_environment.html">Gradle project isolation</a>. 
