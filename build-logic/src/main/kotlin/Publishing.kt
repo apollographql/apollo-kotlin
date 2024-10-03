@@ -54,6 +54,8 @@ fun Project.configureDokkaCommon(): DokkaExtension {
   val dokka = extensions.getByType(DokkaExtension::class.java)
 
   dokka.apply {
+    // Workaround for https://github.com/Kotlin/dokka/issues/3798
+    dokkaEngineVersion.set("1.9.20")
     pluginsConfiguration.getByName("html") {
       this as DokkaHtmlPluginParameters
       customStyleSheets.from(
@@ -91,18 +93,14 @@ private class MavenCoordinates(val module: String, val version: String)
 
 fun Project.configureDokkaAggregate() {
   val dokka = configureDokkaCommon()
-//  dependencies.add(
-//      "dokkaPluginHtml",
-//      dokka.dokkaEngineVersion.map { dokkaVersion ->
-//        "org.jetbrains.dokka:all-modules-page-plugin:$dokkaVersion"
-//      }
-//  )
-//  dependencies.add(
-//      "dokkaPluginHtml",
-//      dokka.dokkaEngineVersion.map { dokkaVersion ->
-//        "org.jetbrains.dokka:versioning-plugin:$dokkaVersion"
-//      }
-//  )
+
+  dependencies.add(
+      "dokkaHtmlPlugin",
+      dokka.dokkaEngineVersion.map { dokkaVersion ->
+        "org.jetbrains.dokka:versioning-plugin:$dokkaVersion"
+      }
+  )
+
 
   val olderVersionsCoordinates = listOf(MavenCoordinates("com.apollographql.apollo3:apollo-kdoc", "3.8.2"))
   val kdocVersionTasks = olderVersionsCoordinates.map { coordinate ->
