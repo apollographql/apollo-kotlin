@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2024-09-19**
+**Last updated: 2024-10-03**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -13,7 +13,7 @@ For up to date release notes, refer to the project [Changelog](https://github.co
 
 ---
 
-## Cache improvements
+## [Cache improvements](https://github.com/apollographql/apollo-kotlin/issues/2331)
 
 The declarative cache makes working with the cache and defining unique object ids easier.  We also want to include helpers to handle with common cases like pagination, garbage collection and eviction. Follow [#2331](https://github.com/apollographql/apollo-kotlin/issues/2331) for a high level overview.  The current focus is on cache control and expiration. You can read more in [the cache control design document](https://github.com/apollographql/apollo-kotlin/pull/4009).
 
@@ -29,7 +29,6 @@ _This is currently available as an experimental feature.  We will release a stab
 
 ## Future feature releases
 
-- Annotation processing for custom scalars
 - Stable Jetpack Compose extensions - user feedback is critical here, please do try out the experimental extensions and let us know what's working and what could be improved!
 
 ## Version 3 releases
