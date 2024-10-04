@@ -136,6 +136,46 @@ tasks.configureEach {
   }
 }
 
+dependencies {
+  // IntelliJ Platform dependencies must be declared before the intellijPlatform block - see https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1784
+  intellijPlatform {
+    val localIdeDir = providers.gradleProperty("apolloIntellijPlugin.ideDir").orNull
+    if (localIdeDir != null) {
+      local(localIdeDir)
+    } else {
+      create(type = properties("platformType"), version = properties("platformVersion"))
+    }
+
+    bundledPlugins(properties("platformBundledPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
+    plugins(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
+    instrumentationTools()
+    pluginVerifier()
+    testFramework(TestFrameworkType.Plugin.Java)
+    zipSigner()
+  }
+
+  // Coroutines must be excluded to avoid a conflict with the version bundled with the IDE
+  // See https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#coroutinesLibraries
+  implementation(project(":apollo-gradle-plugin-external")) {
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+  }
+  implementation(project(":apollo-ast"))
+  implementation(project(":apollo-tooling")) {
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+  }
+  implementation(project(":apollo-normalized-cache-sqlite"))
+  implementation(libs.sqlite.jdbc)
+  implementation(libs.apollo.runtime.published) {
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+  }
+  runtimeOnly(libs.slf4j.simple)
+  testImplementation(libs.google.testparameterinjector)
+
+  // Temporary workaround for https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1663
+  // Should be fixed in platformVersion 2024.3.x
+  testRuntimeOnly("org.opentest4j:opentest4j:1.3.0")
+}
+
 // IntelliJ Platform Gradle Plugin configuration
 // See https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-extension.html#intellijPlatform-pluginConfiguration
 intellijPlatform {
@@ -187,43 +227,4 @@ intellijPlatform {
       recommended()
     }
   }
-}
-
-dependencies {
-  intellijPlatform {
-    val localIdeDir = providers.gradleProperty("apolloIntellijPlugin.ideDir").orNull
-    if (localIdeDir != null) {
-      local(localIdeDir)
-    } else {
-      create(type = properties("platformType"), version = properties("platformVersion"))
-    }
-
-    bundledPlugins(properties("platformBundledPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
-    plugins(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
-    instrumentationTools()
-    pluginVerifier()
-    testFramework(TestFrameworkType.Plugin.Java)
-    zipSigner()
-  }
-
-  // Coroutines must be excluded to avoid a conflict with the version bundled with the IDE
-  // See https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#coroutinesLibraries
-  implementation(project(":apollo-gradle-plugin-external")) {
-    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
-  }
-  implementation(project(":apollo-ast"))
-  implementation(project(":apollo-tooling")) {
-    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
-  }
-  implementation(project(":apollo-normalized-cache-sqlite"))
-  implementation(libs.sqlite.jdbc)
-  implementation(libs.apollo.runtime.published) {
-    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
-  }
-  runtimeOnly(libs.slf4j.simple)
-  testImplementation(libs.google.testparameterinjector)
-
-  // Temporary workaround for https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1663
-  // Should be fixed in platformVersion 2024.3.x
-  testRuntimeOnly("org.opentest4j:opentest4j:1.3.0")
 }
