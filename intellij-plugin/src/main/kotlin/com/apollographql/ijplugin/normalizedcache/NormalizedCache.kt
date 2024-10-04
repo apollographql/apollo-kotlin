@@ -16,7 +16,7 @@ data class NormalizedCache(
 
   sealed interface FieldValue {
     data class StringValue(val value: String) : FieldValue
-    data class NumberValue(val value: Number) : FieldValue
+    data class NumberValue(val value: String) : FieldValue
     data class BooleanValue(val value: Boolean) : FieldValue
     data class ListValue(val value: List<FieldValue>) : FieldValue
 

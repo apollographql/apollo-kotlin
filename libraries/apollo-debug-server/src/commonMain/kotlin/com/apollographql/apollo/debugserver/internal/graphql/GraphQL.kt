@@ -2,6 +2,7 @@ package com.apollographql.apollo.debugserver.internal.graphql
 
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.api.json.JsonNumber
 import com.apollographql.apollo.ast.GQLValue
 import com.apollographql.apollo.cache.normalized.api.CacheKey
 import com.apollographql.apollo.cache.normalized.api.Record
@@ -132,6 +133,7 @@ internal object FieldsCoercing : Coercing<Fields> {
       is Int -> this
       is Long -> this
       is Double -> this
+      is JsonNumber -> this
       is CacheKey -> this.serialize()
       is List<*> -> {
         map { it.toExternal() }

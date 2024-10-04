@@ -38,7 +38,7 @@ class FieldTreeTable(selectRecord: (String) -> Unit) : JBTreeTable(FieldTreeTabl
             value as NormalizedCache.Field
             when (val v = value.value) {
               is NormalizedCache.FieldValue.StringValue -> append("\"${v.value}\"")
-              is NormalizedCache.FieldValue.NumberValue -> append(v.value.toString())
+              is NormalizedCache.FieldValue.NumberValue -> append(v.value)
               is NormalizedCache.FieldValue.BooleanValue -> append(v.value.toString())
               is NormalizedCache.FieldValue.ListValue -> append(
                   when (val size = v.value.size) {
@@ -129,7 +129,7 @@ class FieldTreeTable(selectRecord: (String) -> Unit) : JBTreeTable(FieldTreeTabl
         val field = table.getValueAt(table.selectedRow, table.selectedColumn) as NormalizedCache.Field
         val valueStr = when (val value = field.value) {
           is NormalizedCache.FieldValue.StringValue -> value.value
-          is NormalizedCache.FieldValue.NumberValue -> value.value.toString()
+          is NormalizedCache.FieldValue.NumberValue -> value.value
           is NormalizedCache.FieldValue.BooleanValue -> value.value.toString()
           is NormalizedCache.FieldValue.Reference -> value.key
           NormalizedCache.FieldValue.Null -> "null"
