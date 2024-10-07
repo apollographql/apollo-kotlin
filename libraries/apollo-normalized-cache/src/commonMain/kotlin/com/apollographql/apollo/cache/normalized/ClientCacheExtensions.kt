@@ -133,6 +133,7 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
       .addInterceptor(FetchPolicyRouterInterceptor)
       .addInterceptor(ApolloCacheInterceptor(store))
       .writeToCacheAsynchronously(writeToCacheAsynchronously)
+      .putDebugInfo("cacheDumpProvider", store.cacheDumpProvider())
 }
 
 @Deprecated(level = DeprecationLevel.ERROR, message = "Exceptions no longer throw", replaceWith = ReplaceWith("watch()"))
