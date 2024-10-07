@@ -36,6 +36,7 @@ dependencies {
   androidTestImplementation(libs.apollo.testingsupport)
 
   // Stable cache
+  androidTestImplementation(libs.apollo.normalizedcache)
   androidTestImplementation(libs.apollo.normalizedcache.sqlite)
 
   // Incubating cache
