@@ -1,7 +1,7 @@
 [versions]
 # The version we use by default in tests and benchmarks
 # Can be as high as IJ supports
-android-plugin = "8.2.2"
+android-plugin = "8.7.0"
 # The version we compile against
 android-plugin-min = "8.0.0"
 # The version used by the 'android-plugin-max' test
