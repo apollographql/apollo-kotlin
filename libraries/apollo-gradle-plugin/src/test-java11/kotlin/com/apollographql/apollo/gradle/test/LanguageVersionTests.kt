@@ -62,17 +62,19 @@ class LanguageVersionTests {
       graphqlPath: String = "hero",
       block: (File) -> Unit,
   ) {
-    TestUtils.withProject(
-        usesKotlinDsl = true,
-        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin),
-        apolloConfiguration = getConfiguration(
-            kotlinLanguageVersion = kotlinLanguageVersion,
-            kotlinApiVersion = kotlinApiVersion,
-            apolloLanguageVersion = apolloLanguageVersion,
-        ),
-        graphqlPath = graphqlPath,
-        block = block
-    )
+    TestUtils.withTestProject("language-version") { dir ->
+      dir.resolve("build.gradle.kts").appendText(
+          getConfiguration(
+              kotlinLanguageVersion = kotlinLanguageVersion,
+              kotlinApiVersion = kotlinApiVersion,
+              apolloLanguageVersion = apolloLanguageVersion,
+          )
+      )
+
+      TestUtils.fixturesDirectory().resolve(graphqlPath).copyRecursively(dir.resolve("src/main/graphql/com/example"))
+
+      block(dir)
+    }
   }
 
   private fun getConfiguration(
@@ -90,7 +92,7 @@ class LanguageVersionTests {
       """.trimIndent()
 
     val apolloConfiguration = """
-      apollo {
+      configure<ApolloExtension> {
         service("service") {
           packageNamesFromFilePaths()
           codegenModels.set(com.apollographql.apollo.compiler.MODELS_RESPONSE_BASED)
