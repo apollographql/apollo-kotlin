@@ -24,7 +24,9 @@ dependencies {
   testImplementation(libs.kotlin.compiletesting)
   testImplementation(libs.google.testing.compile)
   testImplementation(libs.truth)
-  testImplementation(libs.kotlin.test.junit)
+  testImplementation(libs.kotlin.test.junit.stdlib) {
+    because("We compile the generated code with Kotlin 1.9, which doesn't understand classes compiled with 2.1")
+  }
   testImplementation(libs.google.testparameterinjector)
   testImplementation(project(":apollo-api-java")) {
     because("Generated Java code references Java and Guava Optionals")
@@ -81,4 +83,11 @@ tasks.withType<Test>().configureEach {
   addRelativeInput("typenameDir", "src/test/typename")
   addRelativeInput("usedtypesDir","src/test/usedtypes")
   addRelativeInput("validationDir", "src/test/validation")
+}
+
+configurations.all {
+  resolutionStrategy {
+    // We compile the generated code with Kotlin 1.9, which doesn't understand classes compiled with 2.1
+    force(libs.kotlin.test.stdlib.get())
+  }
 }
