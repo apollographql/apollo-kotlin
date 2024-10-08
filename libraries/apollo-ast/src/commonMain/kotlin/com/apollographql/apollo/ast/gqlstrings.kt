@@ -96,7 +96,13 @@ fun String.decodeAsGraphQLTripleQuoted(): String {
 }
 
 /**
- * https://spec.graphql.org/draft/#EscapedCharacter
+ * Escapes a single quoted string.
+ * The 2 mandatory characters to be escaped are `"` and `\`.
+ * For better readability, control codes are also escaped.
+ * Although `/` may be escaped, we leave it as is for better readability.
+ *
+ * See https://spec.graphql.org/draft/#sec-String-Value.Escape-Sequences.
+ * See https://en.wikipedia.org/wiki/List_of_Unicode_characters#Control_codes
  */
 fun String.encodeToGraphQLSingleQuoted(): String {
   return buildString {
@@ -104,13 +110,13 @@ fun String.encodeToGraphQLSingleQuoted(): String {
       when (c) {
         '\"' -> append("\\\"")
         '\\' -> append("\\\\")
-        '/' -> append("\\/")
         '\b' -> append("\\b")
-        '\u000C' -> append("\\t")
+        '\u000C' -> append("\\f")
         '\n' -> append("\\n")
         '\r' -> append("\\r")
         '\t' -> append("\\t")
-        // TODO: handle range outside U+0020–U+FFFF
+        in '\u0000'..'\u001f' -> append("\\u00${c.code.toByte().hexString()}")
+        in '\u007f'..'\u009f' -> append("\\u00${c.code.toByte().hexString()}")
         else -> append(c)
       }
     }
@@ -134,3 +140,8 @@ fun String.encodeToGraphQLTripleQuoted(): String {
       }
 }
 
+private fun Byte.hexString(): String {
+  val hexArray = "0123456789abcdef"
+  val value = toInt()
+  return "${hexArray[value.ushr(4)]}${hexArray[value and 0x0F]}"
+}
