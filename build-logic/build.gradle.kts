@@ -60,7 +60,9 @@ java {
 }
 
 tasks.withType<JavaCompile>().configureEach {
-  options.release.set(17)
+  // Do not use options.release - see https://issuetracker.google.com/issues/278800528
+  sourceCompatibility = "17"
+  targetCompatibility = "17"
 }
 tasks.withType(KotlinJvmCompile::class.java).configureEach {
   kotlinOptions.jvmTarget = "17"
