@@ -77,6 +77,12 @@ kotlin {
       }
     }
 
+    findByName("wasmJsMain")?.apply {
+      dependencies {
+        implementation(libs.kotlinx.browser)
+      }
+    }
+
     findByName("appleMain")?.apply {
       dependencies {
       }
