@@ -133,6 +133,8 @@ kotlin-stdlib-wasm-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" } # the Kotlin plugin resolves the version
 kotlin-test-js = { group = "org.jetbrains.kotlin", name = "kotlin-test-js" } # the Kotlin plugin resolves the version
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit" } # the Kotlin plugin resolves the version
+kotlin-test-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin-stdlib" } # use the same version as the stdlib
+kotlin-test-junit-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin-stdlib" } # use the same version as the stdlib
 kotlinx-benchmark-runtime = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.8"
 kotlinx-benchmark = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin:0.4.12"
 kotlinx-browser = "org.jetbrains.kotlinx:kotlinx-browser:0.2"
