@@ -4,6 +4,7 @@ package com.apollographql.apollo.cache.normalized
 
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.CacheDumpProviderContext
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince.Version.v4_0_0
 import com.apollographql.apollo.annotations.ApolloExperimental
@@ -133,7 +134,7 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
       .addInterceptor(FetchPolicyRouterInterceptor)
       .addInterceptor(ApolloCacheInterceptor(store))
       .writeToCacheAsynchronously(writeToCacheAsynchronously)
-      .putDebugInfo("cacheDumpProvider", store.cacheDumpProvider())
+      .addExecutionContext(CacheDumpProviderContext(store.cacheDumpProvider()))
 }
 
 @Deprecated(level = DeprecationLevel.ERROR, message = "Exceptions no longer throw", replaceWith = ReplaceWith("watch()"))

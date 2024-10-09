@@ -1,6 +1,7 @@
 package com.apollographql.apollo.debugserver.internal.graphql
 
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.CacheDumpProviderContext
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.ast.GQLValue
 import com.apollographql.execution.Coercing
@@ -76,7 +77,7 @@ internal class GraphQLApolloClient(
   fun displayName() = id
 
   fun normalizedCaches(): List<NormalizedCache> {
-    val cacheDumpProvider = apolloClient.debugInfo<CacheDumpProvider>("cacheDumpProvider") ?: return emptyList()
+    val cacheDumpProvider = apolloClient.executionContext[CacheDumpProviderContext]?.cacheDumpProvider ?: return emptyList()
     return cacheDumpProvider().map { (displayName, cacheDump) ->
       NormalizedCache(apolloClientId = id, displayName = displayName, cacheDump = cacheDump)
     }

@@ -86,7 +86,6 @@ private constructor(
   private val retryOnErrorInterceptor: ApolloInterceptor? = builder.retryOnErrorInterceptor
   private val failFastIfOffline = builder.failFastIfOffline
   private val listeners = builder.listeners
-  private val debugInfo = builder.debugInfo
 
   override val executionContext: ExecutionContext = builder.executionContext
   override val httpMethod: HttpMethod? = builder.httpMethod
@@ -334,12 +333,6 @@ private constructor(
         }
   }
 
-  @ApolloExperimental
-  fun <T> debugInfo(key: String): T? {
-    @Suppress("UNCHECKED_CAST")
-    return debugInfo[key] as? T
-  }
-
   /**
    * Creates a new [Builder] from this [ApolloClient].
    */
@@ -413,8 +406,6 @@ private constructor(
     @ApolloExperimental
     var failFastIfOffline: Boolean? = null
       private set
-
-    internal val debugInfo: MutableMap<String, Any> = mutableMapOf()
 
     /**
      * Whether to fail fast if the device is offline.
@@ -920,16 +911,6 @@ private constructor(
       canBeBatched(enableByDefault)
     }
 
-    @ApolloExperimental
-    fun putDebugInfo(key: String, value: Any) = apply {
-      debugInfo[key] = value
-    }
-
-    private fun debugInfo(debugInfo: Map<String, Any>) = apply {
-      this.debugInfo.clear()
-      this.debugInfo.putAll(debugInfo)
-    }
-
     /**
      * Creates an [ApolloClient] from this [Builder]
      */
@@ -967,7 +948,6 @@ private constructor(
           .retryOnErrorInterceptor(retryOnErrorInterceptor)
           .failFastIfOffline(failFastIfOffline)
           .listeners(listeners)
-          .debugInfo(debugInfo)
     }
   }
 
