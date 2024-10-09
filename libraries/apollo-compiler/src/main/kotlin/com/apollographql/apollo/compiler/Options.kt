@@ -23,6 +23,12 @@ const val MANIFEST_NONE = "none"
 enum class TargetLanguage {
   // The order is important. See [isTargetLanguageVersionAtLeast]
   JAVA,
+
+  /**
+   * Base language version.
+   */
+  @Deprecated("Use KOTLIN_1_9 instead" , ReplaceWith("KOTLIN_1_9"))
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_2)
   KOTLIN_1_5,
 
   /**

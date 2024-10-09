@@ -282,6 +282,7 @@ class CodegenTest {
       @Suppress("DEPRECATION")
       val operationOutputGenerator = OperationOutputGenerator.Default(operationIdGenerator)
 
+      @Suppress("DEPRECATION")
       val targetLanguage = if (generateKotlinModels) {
         if (folder.name == "enum_field") KOTLIN_1_9 else KOTLIN_1_5
       } else {
