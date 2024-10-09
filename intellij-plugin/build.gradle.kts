@@ -1,4 +1,3 @@
-
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
@@ -139,13 +138,7 @@ tasks.configureEach {
 dependencies {
   // IntelliJ Platform dependencies must be declared before the intellijPlatform block - see https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1784
   intellijPlatform {
-    val localIdeDir = providers.gradleProperty("apolloIntellijPlugin.ideDir").orNull
-    if (localIdeDir != null) {
-      local(localIdeDir)
-    } else {
-      create(type = properties("platformType"), version = properties("platformVersion"))
-    }
-
+    create(type = properties("platformType"), version = properties("platformVersion"))
     bundledPlugins(properties("platformBundledPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
     plugins(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
     instrumentationTools()
@@ -165,6 +158,9 @@ dependencies {
   }
   implementation(project(":apollo-normalized-cache-sqlite"))
   implementation(libs.sqlite.jdbc)
+  implementation(libs.apollo.normalizedcache.sqlite.incubating) {
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+  }
   implementation(libs.apollo.runtime.published) {
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
   }
