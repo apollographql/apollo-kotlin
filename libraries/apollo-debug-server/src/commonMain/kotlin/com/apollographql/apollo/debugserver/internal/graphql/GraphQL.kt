@@ -49,12 +49,12 @@ internal class GraphQL(
  * The root query
  */
 @GraphQLQuery
-internal class Query(private val apolloClients: AtomicReference<Map<ApolloClient, String>>) {
+internal class Query(private val _apolloClients: AtomicReference<Map<ApolloClient, String>>) {
   private fun graphQLApolloClients() =
-    apolloClients.get().map { (apolloClient, apolloClientId) ->
+    _apolloClients.get().map { (apolloClient, apolloClientId) ->
       GraphQLApolloClient(
-          id = apolloClientId,
-          apolloClient = apolloClient
+          _id = apolloClientId,
+          _apolloClient = apolloClient
       )
     }
 
@@ -72,17 +72,17 @@ internal class Query(private val apolloClients: AtomicReference<Map<ApolloClient
 
 @GraphQLName("ApolloClient")
 internal class GraphQLApolloClient(
-    private val id: String,
-    private val apolloClient: ApolloClient,
+    private val _id: String,
+    private val _apolloClient: ApolloClient,
 ) {
-  fun id(): ID = id
+  fun id(): ID = _id
 
-  fun displayName() = id
+  fun displayName() = _id
 
   fun normalizedCaches(): List<NormalizedCache> {
-    val cacheDumpProvider = apolloClient.executionContext[CacheDumpProviderContext]?.cacheDumpProvider ?: return emptyList()
+    val cacheDumpProvider = _apolloClient.executionContext[CacheDumpProviderContext]?.cacheDumpProvider ?: return emptyList()
     return cacheDumpProvider().map { (displayName, cacheDump) ->
-      NormalizedCache(apolloClientId = id, displayName = displayName, cacheDump = cacheDump)
+      NormalizedCache(apolloClientId = _id, _displayName = displayName, _cacheDump = cacheDump)
     }
   }
 
@@ -93,18 +93,18 @@ internal class GraphQLApolloClient(
 
 internal class NormalizedCache(
     apolloClientId: ID,
-    private val displayName: String,
-    private val cacheDump: CacheDump,
+    private val _displayName: String,
+    private val _cacheDump: CacheDump,
 ) {
-  private val id: String = "$apolloClientId:$displayName"
+  private val id: String = "$apolloClientId:$_displayName"
   fun id(): ID = id
 
-  fun displayName() = displayName
+  fun displayName() = _displayName
 
-  fun recordCount() = cacheDump.count()
+  fun recordCount() = _cacheDump.count()
 
   fun records(): List<GraphQLRecord> =
-    cacheDump.map { (key, record) -> GraphQLRecord(key = key, sizeInBytes = record.first, fields = record.second) }
+    _cacheDump.map { (key, record) -> GraphQLRecord(_key = key, _sizeInBytes = record.first, _fields = record.second) }
 }
 
 @GraphQLScalar(FieldsCoercing::class)
@@ -112,15 +112,15 @@ typealias Fields = Map<String, Any?>
 
 @GraphQLName("Record")
 internal class GraphQLRecord(
-    private val key: String,
-    private val sizeInBytes: Int,
-    private val fields: Fields,
+    private val _key: String,
+    private val _sizeInBytes: Int,
+    private val _fields: Fields,
 ) {
-  fun key(): String = key
+  fun key(): String = _key
 
-  fun fields(): Fields = fields
+  fun fields(): Fields = _fields
 
-  fun sizeInBytes(): Int = sizeInBytes
+  fun sizeInBytes(): Int = _sizeInBytes
 }
 
 internal object FieldsCoercing : Coercing<Fields> {
