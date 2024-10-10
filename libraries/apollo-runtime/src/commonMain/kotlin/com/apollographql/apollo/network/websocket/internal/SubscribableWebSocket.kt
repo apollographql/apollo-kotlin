@@ -100,7 +100,14 @@ internal class SubscribableWebSocket(
       shutdown(ApolloNetworkException("WebSocket is idle"), CLOSE_GOING_AWAY, "Idle")
     }
   }
-  fun shutdown(cause: ApolloException, code: Int, reason: String) {
+
+  /**
+   * Shuts this [SubscribableWebSocket] down. Calls [OperationListener.onTransportError] for every active operation.
+   * No more calls to listeners are made.
+   *
+   * This function does not use [webSocket] and is safe to use from callbacks.
+   */
+  private fun shutdownInternal(cause: ApolloException) {
     val listeners = mutableListOf<OperationListener>()
 
     lock.withLock {
@@ -116,11 +123,23 @@ internal class SubscribableWebSocket(
       activeListeners.clear()
     }
 
-    webSocket.close(code, reason)
-
     listeners.forEach {
       it.onTransportError(cause)
     }
+  }
+
+  /**
+   * Shuts this [SubscribableWebSocket] down. Calls [OperationListener.onTransportError] for every active operation.
+   * No more calls to listeners are made.
+   *
+   * Doesn't wait for the peer close. The resources are released asynchronously.
+   *
+   * Must not be called from [onError] as [onError] is called from a different thread and [webSocket] might not be
+   * initialized when this happens.
+   */
+  fun shutdown(cause: ApolloException, code: Int, reason: String) {
+    shutdownInternal(cause)
+    webSocket.close(code, reason)
   }
 
   override fun onOpen() {
@@ -217,15 +236,11 @@ internal class SubscribableWebSocket(
   }
 
   override fun onError(cause: ApolloException) {
-    shutdown(cause, CLOSE_GOING_AWAY, "Error received")
+    shutdownInternal(cause)
   }
 
   override fun onClosed(code: Int?, reason: String?) {
-    shutdown(
-        ApolloWebSocketClosedException(code ?: CLOSE_GOING_AWAY, reason),
-        code ?: CLOSE_GOING_AWAY,
-        reason ?: "Close frame received"
-    )
+    shutdownInternal(ApolloWebSocketClosedException(code ?: CLOSE_GOING_AWAY, reason))
   }
 
   fun <D : Operation.Data> startOperation(request: ApolloRequest<D>, listener: OperationListener) {
