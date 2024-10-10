@@ -3,6 +3,7 @@ package com.apollographql.apollo.cache.normalized
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.json.JsonNumber
 import com.apollographql.apollo.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo.cache.normalized.api.CacheKey
 import com.apollographql.apollo.cache.normalized.api.CacheKeyGenerator
@@ -271,3 +272,40 @@ fun ApolloStore(
  * Interface that marks all interceptors added when configuring a `store()` on ApolloClient.Builder.
  */
 internal interface ApolloStoreInterceptor : ApolloInterceptor
+
+internal fun ApolloStore.cacheDumpProvider(): () -> Map<String, Map<String, Pair<Int, Map<String, Any?>>>> {
+  return {
+    dump().map { (cacheClass, cacheRecords) ->
+      cacheClass.normalizedCacheName() to cacheRecords.mapValues { (_, record) ->
+        record.size to record.fields.mapValues { (_, value) ->
+          value.toExternal()
+        }
+      }
+    }.toMap()
+  }
+}
+
+// Taken from JsonRecordSerializer
+private fun Any?.toExternal(): Any? {
+  return when (this) {
+    null -> null
+    is String -> this
+    is Boolean -> this
+    is Int -> this
+    is Long -> this
+    is Double -> this
+    is JsonNumber -> this
+    is CacheKey -> this.serialize()
+    is List<*> -> {
+      map { it.toExternal() }
+    }
+
+    is Map<*, *> -> {
+      mapValues { it.value.toExternal() }
+    }
+
+    else -> error("Unsupported record value type: '$this'")
+  }
+}
+
+internal expect fun KClass<*>.normalizedCacheName(): String
