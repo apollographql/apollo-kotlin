@@ -19,7 +19,7 @@ internal class InterfaceUnknownMapBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typeBuilderPackageName()
-  private val simpleName = "Other${iface.name.capitalizeFirstLetter()}Map"
+  private val simpleName = "Other${layout.schemaTypeName(iface.name)}Map"
 
   override fun prepare() {
     context.resolver.registerMapType(iface.name, ClassName.get(packageName, simpleName))
@@ -39,10 +39,10 @@ internal class InterfaceUnknownMapBuilder(
         .superclass(JavaClassNames.ObjectMap)
         .addSuperinterfaces(
             implements.map {
-              ClassName.get(packageName, "${it.capitalizeFirstLetter()}Map")
+              ClassName.get(packageName, "${layout.schemaTypeName(it)}Map")
             }
         )
-        .addSuperinterface(ClassName.get(packageName, "${iface.name.capitalizeFirstLetter()}Map"))
+        .addSuperinterface(ClassName.get(packageName, "${layout.schemaTypeName(iface.name)}Map"))
         .addMethod(
             MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)

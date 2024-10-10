@@ -19,7 +19,7 @@ internal class ObjectMapBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typeBuilderPackageName()
-  private val simpleName = "${obj.name.capitalizeFirstLetter()}Map"
+  private val simpleName = "${layout.schemaTypeName(obj.name)}Map"
 
   override fun prepare() {
     context.resolver.registerMapType(obj.name, ClassName.get(packageName, simpleName))
@@ -39,7 +39,7 @@ internal class ObjectMapBuilder(
         .superclass(JavaClassNames.ObjectMap)
         .addSuperinterfaces(
             superTypes.map {
-              ClassName.get(packageName, "${it.capitalizeFirstLetter()}Map")
+              ClassName.get(packageName, "${layout.schemaTypeName(it)}Map")
             }
         )
         .addMethod(

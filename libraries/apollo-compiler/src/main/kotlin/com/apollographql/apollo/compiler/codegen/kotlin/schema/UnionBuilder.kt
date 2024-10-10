@@ -26,10 +26,10 @@ internal class UnionBuilder(
   private val layout = context.layout
   private val packageName = layout.typePackageName()
   private val simpleName = layout.schemaTypeName(union.name)
-  private val builderName = "${union.name.capitalizeFirstLetter()}Builder"
-  private val otherBuilderName = "Other${union.name.capitalizeFirstLetter()}Builder"
-  private val mapName = "${union.name.capitalizeFirstLetter()}Map"
-  private val otherMapName = "Other${union.name.capitalizeFirstLetter()}Map"
+  private val builderName = "${layout.schemaTypeName(union.name)}Builder"
+  private val otherBuilderName = "Other${layout.schemaTypeName(union.name)}Builder"
+  private val mapName = "${layout.schemaTypeName(union.name)}Map"
+  private val otherMapName = "Other${layout.schemaTypeName(union.name)}Map"
 
   override fun prepare() {
     context.resolver.registerSchemaType(union.name, ClassName(packageName, simpleName))
@@ -69,7 +69,7 @@ internal class UnionBuilder(
           if (generateDataBuilders) {
             add(
                 topLevelBuildFunSpec(
-                    "buildOther${union.name.capitalizeFirstLetter()}",
+                    "buildOther${layout.schemaTypeName(union.name)}",
                     ClassName(packageName, otherBuilderName),
                     ClassName(packageName, otherMapName),
                     requiresTypename = true
