@@ -28,8 +28,8 @@ internal class ObjectBuilderBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typeBuilderPackageName()
-  private val simpleName = "${obj.name.capitalizeFirstLetter()}Builder"
-  private val mapClassName = ClassName.get(packageName, "${obj.name.capitalizeFirstLetter()}Map")
+  private val simpleName = "${layout.schemaTypeName(obj.name)}Builder"
+  private val mapClassName = ClassName.get(packageName, "${layout.schemaTypeName(obj.name)}Map")
 
   override fun prepare() {
   }

@@ -19,7 +19,7 @@ internal class UnionUnknownMapBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typeBuilderPackageName()
-  private val simpleName = "Other${union.name.capitalizeFirstLetter()}Map"
+  private val simpleName = "Other${layout.schemaTypeName(union.name)}Map"
 
   override fun prepare() {
     context.resolver.registerMapType(union.name, ClassName.get(packageName, simpleName))
@@ -37,7 +37,7 @@ internal class UnionUnknownMapBuilder(
         .classBuilder(simpleName)
         .addModifiers(Modifier.PUBLIC)
         .superclass(JavaClassNames.ObjectMap)
-        .addSuperinterface(ClassName.get(packageName, "${union.name.capitalizeFirstLetter()}Map"))
+        .addSuperinterface(ClassName.get(packageName, "${layout.schemaTypeName(union.name)}Map"))
         .addMethod(
             MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)

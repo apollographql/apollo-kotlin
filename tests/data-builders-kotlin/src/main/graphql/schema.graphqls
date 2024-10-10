@@ -83,3 +83,12 @@ union Feline2 = Cat | Lion
 scalar Long1
 scalar Long2
 scalar Long3
+
+# See https://github.com/apollographql/apollo-kotlin/issues/5537#issuecomment-2403695852
+type Info {
+  foo: String
+}
+
+type info {
+  foo: String
+}
