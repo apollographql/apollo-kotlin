@@ -67,7 +67,7 @@ object SchemaDownloader {
         introspectionSchema = try {
           introspectionDataJson.toIntrospectionSchema()
         } catch (e: Exception) {
-          throw Exception("Response from $endpoint could not be parsed as a valid schema. Body:\n$introspectionDataJson", e)
+          throw Exception("Introspection response from $endpoint can not be parsed", e)
         }
       }
 
