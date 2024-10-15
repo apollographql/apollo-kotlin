@@ -350,12 +350,8 @@ private fun Project.configurePublishingInternal() {
       }
 
       maven {
-        name = "repsy"
-        setUrl("https://repo.repsy.io/mvn/mbonnin/default")
-        credentials {
-          username = System.getenv("REPSY_USERNAME")
-          password = System.getenv("REPSY_PASSWORD")
-        }
+        name = "apolloPreviews"
+        setUrl("gcs://apollo-previews/m2")
       }
     }
   }
