@@ -465,6 +465,9 @@ abstract class DefaultApolloExtension(
         LogLevel.entries.first { project.logger.isEnabled(it) },
     )
 
+    if (service.languageVersion.orNull == "1.5") {
+      project.logger.lifecycle("Apollo: languageVersion 1.5 is deprecated, please use 1.9 or leave empty")
+    }
     val optionsTaskProvider = registerOptionsTask(project, service, otherOptions.resolvable)
     if (!service.isMultiModule()) {
       sourcesBaseTaskProvider = registerSourcesTask(project, optionsTaskProvider, service, classpathOptions)

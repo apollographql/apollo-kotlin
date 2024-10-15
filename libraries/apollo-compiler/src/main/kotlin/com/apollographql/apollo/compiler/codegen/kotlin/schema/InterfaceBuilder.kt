@@ -26,10 +26,10 @@ internal class InterfaceBuilder(
   private val layout = context.layout
   private val packageName = layout.typePackageName()
   private val simpleName = layout.schemaTypeName(iface.name)
-  private val builderName = "${iface.name.capitalizeFirstLetter()}Builder"
-  private val otherBuilderName = "Other${iface.name.capitalizeFirstLetter()}Builder"
-  private val mapName = "${iface.name.capitalizeFirstLetter()}Map"
-  private val otherMapName = "Other${iface.name.capitalizeFirstLetter()}Map"
+  private val builderName = "${layout.schemaTypeName(iface.name)}Builder"
+  private val otherBuilderName = "Other${layout.schemaTypeName(iface.name)}Builder"
+  private val mapName = "${layout.schemaTypeName(iface.name)}Map"
+  private val otherMapName = "Other${layout.schemaTypeName(iface.name)}Map"
 
   override fun prepare() {
     context.resolver.registerSchemaType(iface.name, ClassName(packageName, simpleName))
@@ -74,7 +74,7 @@ internal class InterfaceBuilder(
           if (generateDataBuilders) {
             add(
                 topLevelBuildFunSpec(
-                    "buildOther${iface.name.capitalizeFirstLetter()}",
+                    "buildOther${layout.schemaTypeName(iface.name)}",
                     ClassName(packageName, otherBuilderName),
                     ClassName(packageName, otherMapName),
                     requiresTypename = true

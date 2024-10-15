@@ -1,5 +1,5 @@
 
-import dev.adamko.dokkatoo.tasks.DokkatooGenerateTask
+import org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
@@ -56,7 +56,7 @@ kotlin {
   }
 }
 
-tasks.withType<DokkatooGenerateTask>().configureEach {
+tasks.withType<DokkaGenerateTask>().configureEach {
   dependsOn("kspCommonMainKotlinMetadata")
 }
 tasks.configureEach {

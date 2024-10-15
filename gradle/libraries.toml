@@ -16,7 +16,8 @@ androidx-sqlite = "2.3.1"
 # This is used by the gradle integration tests to get the artifacts locally
 apollo = "4.0.2-SNAPSHOT"
 apollo-execution = "0.0.3"
-apollo-normalizedcache-incubating-snapshot = "0.0.3-SNAPSHOT"
+apollo-normalizedcache-incubating = "0.0.3"
+apollo-normalizedcache-incubating-snapshot = "0.0.4-SNAPSHOT"
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-published = "4.0.0-rc.1"
 atomicfu = "0.24.0"
@@ -67,6 +68,7 @@ apollo-mpputils = { group = "com.apollographql.apollo", name = "apollo-mpp-utils
 apollo-normalizedcache = { group = "com.apollographql.apollo", name = "apollo-normalized-cache", version.ref = "apollo" }
 apollo-normalizedcache-incubating-snapshot = { group = "com.apollographql.cache", name = "normalized-cache-incubating", version.ref = "apollo-normalizedcache-incubating-snapshot" }
 apollo-normalizedcache-sqlite = { group = "com.apollographql.apollo", name = "apollo-normalized-cache-sqlite", version.ref = "apollo" }
+apollo-normalizedcache-sqlite-incubating = { group = "com.apollographql.cache", name = "normalized-cache-sqlite-incubating", version.ref = "apollo-normalizedcache-incubating" }
 apollo-normalizedcache-sqlite-incubating-snapshot = { group = "com.apollographql.cache", name = "normalized-cache-sqlite-incubating", version.ref = "apollo-normalizedcache-incubating-snapshot" }
 apollo-plugin = { group = "com.apollographql.apollo", name = "apollo-gradle-plugin", version.ref = "apollo" }
 apollo-runtime = { group = "com.apollographql.apollo", name = "apollo-runtime", version.ref = "apollo" }
@@ -90,7 +92,7 @@ atomicfu-plugin = { group = "org.jetbrains.kotlinx", name = "atomicfu-gradle-plu
 benmanes-versions = { group = "com.github.ben-manes", name = "gradle-versions-plugin", version = "0.33.0" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
-dokkatoo = "dev.adamko.dokkatoo:dokkatoo-plugin:2.1.0"
+dokka = "org.jetbrains.dokka:dokka-gradle-plugin:2.0.0-Beta"
 dgp = "com.gradle:develocity-gradle-plugin:3.18.1" # // sync with settings.gradle.kts
 # Not updating because it fails in apollo-compiler Java tests with
 # annotation @org.jetbrains.annotations.Nullable not applicable in this type context
@@ -110,7 +112,7 @@ guava-jre = { group = "com.google.guava", name = "guava", version.ref = "guava" 
 http4k-bom = "org.http4k:http4k-bom:5.8.0.0"
 http4k-core = { module = "org.http4k:http4k-core" }
 http4k-server-jetty = { module = "org.http4k:http4k-server-jetty" }
-intellij-platform-plugin = "org.jetbrains.intellij.platform:intellij-platform-gradle-plugin:2.0.0"
+intellij-platform-plugin = "org.jetbrains.intellij.platform:intellij-platform-gradle-plugin:2.1.0"
 intellij-changelog = "org.jetbrains.intellij.plugins:gradle-changelog-plugin:2.0.0"
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

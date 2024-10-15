@@ -15,7 +15,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
  * exception is thrown
  */
 fun getKotlinTargetLanguage(kgpVersion: String, userSpecified: String?): TargetLanguage {
-  @Suppress("DEPRECATION_ERROR")
+  @Suppress("DEPRECATION")
   return when (userSpecified) {
     "1.5" -> TargetLanguage.KOTLIN_1_5
     "1.9" -> TargetLanguage.KOTLIN_1_9

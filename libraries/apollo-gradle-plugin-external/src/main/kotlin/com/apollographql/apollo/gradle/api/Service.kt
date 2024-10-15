@@ -410,9 +410,13 @@ interface Service {
    *
    * Only valid when [generateKotlinModels] is `true`.
    *
-   * For now only "1.5" is supported. Other versions might be added later as the Kotlin language evolves.
+   * Possible values:
+   * - "1.5" (deprecated): base language version
+   * - "1.9": same as "1.5" but uses `entries` instead of `values()` in enums
    *
-   * Default: "1.5"
+   * Other versions might be added later as the Kotlin language evolves.
+   *
+   * Default: use the Kotlin Gradle plugin version
    */
   val languageVersion: Property<String>
 

@@ -29,8 +29,8 @@ internal class InterfaceBuilderBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typeBuilderPackageName()
-  private val simpleName = "Other${iface.name.capitalizeFirstLetter()}Builder"
-  private val mapClassName = ClassName.get(packageName, "Other${iface.name.capitalizeFirstLetter()}Map")
+  private val simpleName = "Other${layout.schemaTypeName(iface.name)}Builder"
+  private val mapClassName = ClassName.get(packageName, "Other${layout.schemaTypeName(iface.name)}Map")
 
   override fun prepare() {
   }

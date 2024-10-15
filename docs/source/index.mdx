@@ -210,18 +210,43 @@ pluginManagement {
     maven {
       url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     }
-    gradlePluginPortal()
     mavenCentral()
     // other repositories...
   }
 }
 ```
 
-And then use the `4.0.2-SNAPSHOT` version for the plugin and libraries.
-
-These snapshots are updated on each push to `main`.
+The snapshots are updated on each push to `main` and have no retention guarantees. 
 
 Weekly snapshots for the Android Studio / IntelliJ plugin [are also available](/kotlin/testing/android-studio-plugin#weekly-snapshots). 
+
+## Previews
+
+Previews are available in Apollo previews repository:
+
+```kotlin
+// build.gradle.kts
+repositories {
+  maven {
+    url = uri("https://storage.googleapis.com/apollo-previews/m2/")
+  }
+  mavenCentral()
+  // other repositories...
+}
+
+// settings.gradle.kts
+pluginManagement {
+  repositories {
+    maven {
+      url = uri("https://storage.googleapis.com/apollo-previews/m2/")
+    }
+    mavenCentral()
+    // other repositories...
+  }
+}
+```
+
+Previews are published every night 3am UTC time. You can get them by replacing `-SNAPSHOT` with the desired date (e.g. `4.0.2-2024.10.05`). They have 1 year retention.
 
 ## Evolution policy
 

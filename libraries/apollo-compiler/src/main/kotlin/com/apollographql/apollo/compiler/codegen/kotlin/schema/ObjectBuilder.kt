@@ -32,14 +32,14 @@ internal class ObjectBuilder(
   private val layout = context.layout
   private val packageName = layout.typePackageName()
   private val simpleName = layout.schemaTypeName(obj.name)
-  private val builderName = "${obj.name.capitalizeFirstLetter()}Builder"
-  private val mapName = "${obj.name.capitalizeFirstLetter()}Map"
+  private val builderName = "${layout.schemaTypeName(obj.name)}Builder"
+  private val mapName = "${layout.schemaTypeName(obj.name)}Map"
 
   override fun prepare() {
     context.resolver.registerSchemaType(obj.name, ClassName(packageName, simpleName))
     context.resolver.registerMapType(obj.name, ClassName(packageName, mapName))
     context.resolver.registerBuilderType(obj.name, ClassName(packageName, builderName))
-    context.resolver.registerBuilderFun(obj.name, MemberName(packageName, "build${obj.name.capitalizeFirstLetter()}"))
+    context.resolver.registerBuilderFun(obj.name, MemberName(packageName, "build${layout.schemaTypeName(obj.name)}"))
     for (fieldDefinition in obj.fieldDefinitions) {
       fieldDefinition.argumentDefinitions.forEach { argumentDefinition ->
         context.resolver.registerArgumentDefinition(argumentDefinition.id, ClassName(packageName, simpleName))
@@ -73,7 +73,7 @@ internal class ObjectBuilder(
 
   private fun IrObject.builderFunSpec(): FunSpec {
     return topLevelBuildFunSpec(
-        "build${name.capitalizeFirstLetter()}",
+        "build${layout.schemaTypeName(name)}",
         ClassName(packageName, builderName),
         ClassName(packageName, mapName),
         requiresTypename = false

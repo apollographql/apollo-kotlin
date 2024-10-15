@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.normalizedcache.provider
 
+import com.apollographql.apollo.api.json.JsonNumber
 import com.apollographql.apollo.cache.normalized.api.CacheKey
 import com.apollographql.ijplugin.apollodebugserver.GetNormalizedCacheQuery
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache
@@ -49,7 +50,8 @@ private fun Any?.toFieldValue(): FieldValue {
       StringValue(this)
     }
 
-    is Number -> NumberValue(this)
+    is Number -> NumberValue(this.toString())
+    is JsonNumber -> NumberValue(this.value)
     is Boolean -> BooleanValue(this)
     is List<*> -> ListValue(map { it.toFieldValue() })
     is Map<*, *> -> CompositeValue(map { Field(it.key as String, it.value.toFieldValue()) })

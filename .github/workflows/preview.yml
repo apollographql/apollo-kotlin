@@ -1,0 +1,36 @@
+name: preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'The branch to build'
+        required: true
+        default: 'main'
+        type: string
+      prerelease:
+        description: 'The pre-release version'
+        required: true
+        type: string
+jobs:
+  preview:
+    runs-on: macos-14
+    if: github.repository == 'apollographql/apollo-kotlin'
+    steps:
+      - uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 #v4.2.1
+        with:
+          distribution: 'temurin'
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda #v3.4.2
+        with:
+          gradle-home-cache-cleanup: true
+      - run: |
+          git clone --depth 1 --single-branch --branch ${{ inputs.branch }} https://github.com/$GITHUB_REPOSITORY
+          cd apollo-kotlin
+          sed -i .old 's/VERSION_NAME=\([\.0-9]*\).*/VERSION_NAME=\1-${{ inputs.prerelease }}/g' gradle.properties
+          export GOOGLE_APPLICATION_CREDENTIALS=google-services.json
+          echo ${GOOGLE_SERVICES_JSON} > $GOOGLE_APPLICATION_CREDENTIALS
+          ./gradlew publishAllPublicationsToApolloPreviewsRepository
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          GITHUB_TOKEN: ${{ github.token }}

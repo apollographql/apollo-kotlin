@@ -1,0 +1,16 @@
+name: nightly
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  nightly:
+    runs-on: macos-14
+    if: github.repository == 'apollographql/apollo-kotlin'
+    steps:
+      - run: |
+          GH_REPO=${GITHUB_REPOSITORY} gh workflow run preview.yml -f branch=main -f prerelease=$(date '+%Y.%m.%d')
+    env:
+      GITHUB_TOKEN: ${{ github.token }}

@@ -1,11 +1,9 @@
 package com.apollographql.apollo.debugserver.internal.graphql
 
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.CacheDumpProviderContext
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.ast.GQLValue
-import com.apollographql.apollo.cache.normalized.api.CacheKey
-import com.apollographql.apollo.cache.normalized.api.Record
-import com.apollographql.apollo.cache.normalized.apolloStore
 import com.apollographql.execution.Coercing
 import com.apollographql.execution.ExecutableSchema
 import com.apollographql.execution.StringCoercing
@@ -13,11 +11,9 @@ import com.apollographql.execution.annotation.GraphQLName
 import com.apollographql.execution.annotation.GraphQLQuery
 import com.apollographql.execution.annotation.GraphQLScalar
 import com.apollographql.execution.internal.ExternalValue
-import com.apollographql.execution.internal.InternalValue
 import com.apollographql.execution.parseGraphQLRequest
 import okio.Buffer
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.reflect.KClass
 
 @GraphQLScalar(StringCoercing::class)
 internal typealias ID = String
@@ -81,9 +77,9 @@ internal class GraphQLApolloClient(
   fun displayName() = id
 
   fun normalizedCaches(): List<NormalizedCache> {
-    val apolloStore = runCatching { apolloClient.apolloStore }.getOrNull() ?: return emptyList()
-    return apolloStore.dump().map {
-      NormalizedCache(id, it.key, it.value)
+    val cacheDumpProvider = apolloClient.executionContext[CacheDumpProviderContext]?.cacheDumpProvider ?: return emptyList()
+    return cacheDumpProvider().map { (displayName, cacheDump) ->
+      NormalizedCache(apolloClientId = id, displayName = displayName, cacheDump = cacheDump)
     }
   }
 
@@ -94,17 +90,18 @@ internal class GraphQLApolloClient(
 
 internal class NormalizedCache(
     apolloClientId: ID,
-    private val clazz: KClass<*>,
-    private val records: Map<String, Record>,
+    private val displayName: String,
+    private val cacheDump: CacheDump,
 ) {
-  private val id: String = "$apolloClientId:${clazz.normalizedCacheName()}"
+  private val id: String = "$apolloClientId:$displayName"
   fun id(): ID = id
 
-  fun displayName() = clazz.normalizedCacheName()
+  fun displayName() = displayName
 
-  fun recordCount() = records.count()
+  fun recordCount() = cacheDump.count()
 
-  fun records(): List<GraphQLRecord> = records.map { GraphQLRecord(it.value) }
+  fun records(): List<GraphQLRecord> =
+    cacheDump.map { (key, record) -> GraphQLRecord(key = key, sizeInBytes = record.first, fields = record.second) }
 }
 
 @GraphQLScalar(FieldsCoercing::class)
@@ -112,50 +109,49 @@ typealias Fields = Map<String, Any?>
 
 @GraphQLName("Record")
 internal class GraphQLRecord(
-    private val record: Record,
+    private val key: String,
+    private val sizeInBytes: Int,
+    private val fields: Fields,
 ) {
-  fun key(): String = record.key
+  fun key(): String = key
 
-  fun fields(): Fields = record.fields
+  fun fields(): Fields = fields
 
-  fun sizeInBytes(): Int = record.sizeInBytes
+  fun sizeInBytes(): Int = sizeInBytes
 }
 
 internal object FieldsCoercing : Coercing<Fields> {
-  // Taken from JsonRecordSerializer
-  @Suppress("UNCHECKED_CAST")
-  private fun InternalValue.toExternal(): ExternalValue {
-    return when (this) {
-      null -> this
-      is String -> this
-      is Boolean -> this
-      is Int -> this
-      is Long -> this
-      is Double -> this
-      is CacheKey -> this.serialize()
-      is List<*> -> {
-        map { it.toExternal() }
-      }
-
-      is Map<*, *> -> {
-        mapValues { it.value.toExternal() }
-      }
-
-      else -> error("Unsupported record value type: '$this'")
-    }
-  }
-
   override fun serialize(internalValue: Map<String, Any?>): ExternalValue {
-    return internalValue.toExternal()
+    return internalValue
   }
 
   override fun deserialize(value: ExternalValue): Map<String, Any?> {
-    TODO("Not yet implemented")
+    throw NotImplementedError()
   }
 
-  override fun parseLiteral(gqlValue: GQLValue): Map<String, Any?> {
-    TODO("Not yet implemented")
+  override fun parseLiteral(value: GQLValue): Map<String, Any?> {
+    throw NotImplementedError()
   }
 }
 
-private fun KClass<*>.normalizedCacheName(): String = qualifiedName ?: toString()
+private typealias CacheDump = Map<
+    // Record key
+    String,
+
+    // Record size and fields
+    Pair<
+        // Record size in bytes
+        Int,
+
+        // Record fields
+        Map<String, Any?>,
+        >,
+    >
+
+private typealias CacheDumpProvider = () -> Map<
+    // Cache name
+    String,
+
+    // Cache dump
+    CacheDump,
+    >
