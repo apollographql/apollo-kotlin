@@ -9,7 +9,7 @@ import com.apollographql.apollo.benchmark.Utils.operationBasedQuery
 import com.apollographql.apollo.benchmark.Utils.resource
 import com.apollographql.apollo.benchmark.test.R
 import com.apollographql.cache.normalized.ApolloStore
-import com.apollographql.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.cache.normalized.memory.MemoryCacheFactory
 import com.apollographql.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
 import org.junit.Assert
