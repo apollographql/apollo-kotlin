@@ -8,8 +8,11 @@
 [![Slack](https://img.shields.io/static/v1?label=kotlinlang&message=apollo-kotlin&color=A97BFF&logo=slack&style=flat-square)](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)
 [![Discord](https://img.shields.io/discord/1022972389463687228.svg?color=7389D8&labelColor=6A7EC2&logo=discord&logoColor=ffffff&style=flat-square)](https://discord.com/invite/graphos)
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-api?style=flat-square)](https://central.sonatype.com/namespace/com.apollographql.apollo)
-[![OSS Snapshots](https://img.shields.io/nexus/s/com.apollographql.apollo/apollo-api?server=https%3A%2F%2Fs01.oss.sonatype.org&label=oss-snapshots&style=flat-square)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo/)
+[![OSS Snapshots](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fs01.oss.sonatype.org%2Fcontent%2Frepositories%2Fsnapshots%2Fcom%2Fapollographql%2Fapollo%2Fapollo-api-jvm%2Fmaven-metadata.xml&style=flat-square&label=oss-snapshots&color=%2315252D
+)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo/)
+[![Apollo Preview](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fstorage.googleapis.com%2Fapollo-previews%2Fm2%2Fcom%2Fapollographql%2Fapollo%2Fapollo-api-jvm%2Fmaven-metadata.xml&style=flat-square&label=apollo-previews&color=%23365E72)](https://storage.googleapis.com/apollo-previews/)
+[![Maven Central](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fcom%2Fapollographql%2Fapollo%2Fapollo-api-jvm%2Fmaven-metadata.xml&style=flat-square&label=maven-central&color=%235C96B2
+)](https://central.sonatype.com/namespace/com.apollographql.apollo)
 
 [![Revved up by Develocity](https://img.shields.io/badge/Revved%20up%20by-Develocity-06A0CE?logo=Gradle&labelColor=02303A&style=flat-square)](https://ge.apollographql.com/scans)
 
