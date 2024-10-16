@@ -30,7 +30,7 @@ if (response.data != null) {
 }
 ```
 
-This is also true when calling `toFlow()` (e.g. with [subscriptions](../essentials/subscription)) and `watch()` (with the [normalized cache](../caching/query-watchers)).
+This is also true when calling `toFlow()` (e.g. with [subscriptions](/kotlin/essentials/subscriptions)) and `watch()` (with the [normalized cache](/kotlin/caching/query-watchers)).
 
 ```kotlin
 apolloClient.subscription(subscription).toFlow().collect { response ->
