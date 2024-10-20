@@ -136,6 +136,10 @@ tasks.configureEach {
   }
 }
 
+val apolloPublished = configurations.dependencyScope("apolloPublished").get()
+
+configurations.getByName("implementation").extendsFrom(apolloPublished)
+
 dependencies {
   // IntelliJ Platform dependencies must be declared before the intellijPlatform block - see https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1784
   intellijPlatform {
@@ -162,7 +166,7 @@ dependencies {
   implementation(libs.apollo.normalizedcache.sqlite.incubating) {
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
   }
-  implementation(libs.apollo.runtime.published) {
+  add("apolloPublished", libs.apollo.runtime.published.get().toString()) {
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
   }
   runtimeOnly(libs.slf4j.simple)

@@ -44,10 +44,10 @@ kotlin {
 
     findByName("concurrentMain")?.apply {
       dependencies {
-        implementation(libs.ktor.server.core)
-        implementation(libs.ktor.server.cio)
-        implementation(libs.ktor.server.websockets)
-        implementation(libs.ktor.network)
+        implementation(libs.ktor2.server.core)
+        implementation(libs.ktor2.server.cio)
+        implementation(libs.ktor2.server.websockets)
+        implementation(libs.ktor2.network)
       }
     }
   }

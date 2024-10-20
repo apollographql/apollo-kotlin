@@ -1,10 +1,6 @@
-plugins {
-  id("org.jetbrains.kotlin.multiplatform")
-}
-
-apolloLibrary(
-    namespace = "com.apollographql.apollo.engine.ktor",
-    withLinux = false,
-    withWasm = false
+apolloTombstone(
+    group = "com.apollographql.ktor",
+    artifact = "apollo-engine-ktor",
+    version = "0.0.2"
 )
 

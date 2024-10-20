@@ -16,6 +16,14 @@ class KotlinCompilerOptions(
     val version: KotlinVersion = KotlinVersion.KOTLIN_2_0,
 )
 
+fun Project.apolloTombstone(
+    group: String,
+    artifact: String,
+    version: String,
+) {
+  configurePublishing(tombstone = Tombstone(group, artifact, version))
+}
+
 fun Project.apolloLibrary(
     namespace: String,
     jvmTarget: Int? = null,
@@ -49,8 +57,10 @@ fun Project.apolloLibrary(
   // Within the 'tests' project (a composite build), dependencies are automatically substituted to use the project's one.
   // But we don't want this, for example apollo-tooling depends on a published version of apollo-api.
   // So disable this behavior (see https://docs.gradle.org/current/userguide/composite_builds.html#deactivate_included_build_substitutions).
-  configurations.all {
-    resolutionStrategy.useGlobalDependencySubstitutionRules.set(false)
+  configurations.configureEach {
+    if (name != "apolloPublished") {
+      return@configureEach
+    }
   }
 
   if (extensions.findByName("kotlin") is KotlinMultiplatformExtension) {

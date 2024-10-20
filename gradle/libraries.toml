@@ -34,6 +34,7 @@ kotlinx-coroutines = "1.8.0"
 kotlinx-datetime = "0.5.0"
 kotlinx-serialization-runtime = "1.6.2"
 ksp = "2.0.20-1.0.24"
+ktor2 = "2.3.11"
 ktor = "3.0.0"
 moshix = "0.14.1"
 node-fetch = "2.6.7"
@@ -155,6 +156,15 @@ ktor-server-core = { group = "io.ktor", name = "ktor-server-core", version.ref =
 ktor-server-cio = { group = "io.ktor", name = "ktor-server-cio", version.ref = "ktor" }
 ktor-server-websockets = { group = "io.ktor", name = "ktor-server-websockets", version.ref = "ktor" }
 ktor-network = { module = "io.ktor:ktor-network", version.ref = "ktor" }
+ktor2-client-core = { group = "io.ktor", name= "ktor-client-core", version.ref = "ktor2" }
+ktor2-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor2" }
+ktor2-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor2" }
+ktor2-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor2" }
+ktor2-client-websockets = { group = "io.ktor", name = "ktor-client-websockets", version.ref = "ktor2" }
+ktor2-server-core = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor2" }
+ktor2-server-cio = { group = "io.ktor", name = "ktor-server-cio", version.ref = "ktor2" }
+ktor2-server-websockets = { group = "io.ktor", name = "ktor-server-websockets", version.ref = "ktor2" }
+ktor2-network = { module = "io.ktor:ktor-network", version.ref = "ktor2" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }

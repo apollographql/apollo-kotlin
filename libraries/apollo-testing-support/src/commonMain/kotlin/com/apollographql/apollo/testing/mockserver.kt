@@ -44,6 +44,7 @@ fun <D : Operation.Data> MockServer.enqueue(
 
 @Deprecated(
     "This is only used for internal Apollo tests and will be removed in a future version.",
+    level = DeprecationLevel.ERROR
 )
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun MockServer.enqueueData(
