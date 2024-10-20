@@ -428,6 +428,17 @@ private fun Project.setDefaultPomFields(mavenPublication: MavenPublication) {
         name.set(findProperty("POM_DEVELOPER_NAME") as String?)
       }
     }
+    val relocatedGroup = findProperty("RELOCATED_GROUP") as String?
+    if (relocatedGroup != null) {
+      distributionManagement {
+        relocation {
+          groupId.set(relocatedGroup)
+          artifactId.set(findProperty("RELOCATED_ARTIFACT_ID") as String?)
+          version.set(findProperty("RELOCATED_VERSION") as String?)
+          message.set("This artifact is has moved. See https://go.apollo.dev/ak-moved-artifacts")
+        }
+      }
+    }
   }
 }
 
