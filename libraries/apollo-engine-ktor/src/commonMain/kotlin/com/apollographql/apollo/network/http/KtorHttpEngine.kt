@@ -11,6 +11,7 @@ import com.apollographql.apollo.exception.ApolloNetworkException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.HttpTimeoutConfig
 import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
@@ -35,8 +36,8 @@ class KtorHttpEngine(
 
   /**
    * @param connectTimeoutMillis The connection timeout in milliseconds. The connection timeout is the time period in which a client should establish a connection with a server.
-   * @param readTimeoutMillis The socket read timeout in milliseconds. On JVM and Apple this maps to [HttpTimeout.HttpTimeoutCapabilityConfiguration.socketTimeoutMillis], on JS
-   * this maps to [HttpTimeout.HttpTimeoutCapabilityConfiguration.requestTimeoutMillis]
+   * @param readTimeoutMillis The socket read timeout in milliseconds. On JVM and Apple this maps to [HttpTimeoutConfig.socketTimeoutMillis], on JS
+   * this maps to [HttpTimeoutConfig.requestTimeoutMillis]
    */
   constructor(connectTimeoutMillis: Long, readTimeoutMillis: Long) : this(
       HttpClient {
@@ -88,4 +89,4 @@ class KtorHttpEngine(
 }
 
 @ApolloInternal
-expect fun HttpTimeout.HttpTimeoutCapabilityConfiguration.setReadTimeout(readTimeoutMillis: Long)
+expect fun HttpTimeoutConfig.setReadTimeout(readTimeoutMillis: Long)

@@ -6,6 +6,8 @@ import io.ktor.network.sockets.InetSocketAddress
 import io.ktor.network.sockets.aSocket
 import io.ktor.network.sockets.openReadChannel
 import io.ktor.network.sockets.openWriteChannel
+import io.ktor.utils.io.readAvailable
+import io.ktor.utils.io.writeFully
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +19,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import okio.IOException
 import io.ktor.network.sockets.Socket as WrappedSocket
@@ -27,8 +30,12 @@ actual fun TcpServer(port: Int): TcpServer = KtorTcpServer(port)
 class KtorTcpServer(port: Int = 0, private val acceptDelayMillis: Int = 0, dispatcher: CoroutineDispatcher = Dispatchers.IO) : TcpServer {
   private val selectorManager = SelectorManager(dispatcher)
   private val scope = CoroutineScope(SupervisorJob() + dispatcher)
-  private val serverSocket = aSocket(selectorManager).tcp().bind("127.0.0.1", port)
-
+  private val serverSocket = runBlocking {
+    aSocket(selectorManager).tcp().bind(
+        hostname = "127.0.0.1",
+        port = port
+    )
+  }
 
   override fun close() {
     scope.cancel()
