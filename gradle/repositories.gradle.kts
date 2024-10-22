@@ -4,7 +4,7 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
     // maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/") }
 
     mavenCentral()
-    mavenLocal()
+    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     exclusiveContent {
       forRepository(::google)
       filter {
