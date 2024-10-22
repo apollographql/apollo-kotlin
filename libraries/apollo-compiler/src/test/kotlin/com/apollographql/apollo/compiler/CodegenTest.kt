@@ -391,7 +391,7 @@ class CodegenTest {
       }
 
       val generateAsInternal = when (folder.name) {
-        "mutation_create_review", "simple_fragment" -> true
+        "mutation_create_review", "simple_fragment", "enum_field" -> true
         else -> false
       }
 

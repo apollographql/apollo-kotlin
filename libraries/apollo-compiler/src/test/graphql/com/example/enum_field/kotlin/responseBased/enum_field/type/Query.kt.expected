@@ -7,7 +7,7 @@ package com.example.enum_field.type
 
 import com.apollographql.apollo.api.ObjectType
 
-public class Query {
+internal class Query {
   public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()
   }
