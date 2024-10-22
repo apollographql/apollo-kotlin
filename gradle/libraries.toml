@@ -1,7 +1,7 @@
 [versions]
 # The version we use by default in tests and benchmarks
 # Can be as high as IJ supports
-android-plugin = "8.2.2"
+android-plugin = "8.7.0"
 # The version we compile against
 android-plugin-min = "8.0.0"
 # The version used by the 'android-plugin-max' test
@@ -27,13 +27,13 @@ javaPoet = "1.13.0"
 jetbrains-annotations = "24.0.1"
 junit = "4.13.2"
 kotlin-plugin-min = "1.9.0"
-kotlin-plugin = "2.0.20"
-kotlin-plugin-max = "2.0.20"
+kotlin-plugin = "2.1.0-RC-250"
+kotlin-plugin-max = "2.1.0-RC-250"
 kotlin-stdlib = "2.0.0"
 kotlinx-coroutines = "1.8.0"
 kotlinx-datetime = "0.5.0"
 kotlinx-serialization-runtime = "1.6.2"
-ksp = "2.0.20-1.0.24"
+ksp = "2.0.21-1.0.26-SNAPSHOT"
 ktor = "2.3.11"
 moshix = "0.14.1"
 node-fetch = "2.6.7"
@@ -133,8 +133,11 @@ kotlin-stdlib-wasm-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" } # the Kotlin plugin resolves the version
 kotlin-test-js = { group = "org.jetbrains.kotlin", name = "kotlin-test-js" } # the Kotlin plugin resolves the version
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit" } # the Kotlin plugin resolves the version
+kotlin-test-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin-stdlib" } # use the same version as the stdlib
+kotlin-test-junit-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin-stdlib" } # use the same version as the stdlib
 kotlinx-benchmark-runtime = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.8"
 kotlinx-benchmark = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin:0.4.8"
+kotlinx-browser = "org.jetbrains.kotlinx:kotlinx-browser:0.2"
 androidx-benchmark-macro = "androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha16"
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx2", version.ref = "kotlinx-coroutines" }
@@ -144,7 +147,7 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 kotlin-node = "org.jetbrains.kotlin-wrappers:kotlin-node:18.16.12-pre.634"
 kotlinx-serialization-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-plugin" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-runtime" }
-kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.15.0-Beta.2" }
+kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.16.3" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
 ktor-client-core = { group = "io.ktor", name= "ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }

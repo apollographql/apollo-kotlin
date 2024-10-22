@@ -8,15 +8,19 @@
 // Library unique name: <com.apollographql.apollo:apollo-annotations>
 open annotation class com.apollographql.apollo.annotations/ApolloAdaptableWith : kotlin/Annotation { // com.apollographql.apollo.annotations/ApolloAdaptableWith|null[0]
     constructor <init>(kotlin.reflect/KClass<*>) // com.apollographql.apollo.annotations/ApolloAdaptableWith.<init>|<init>(kotlin.reflect.KClass<*>){}[0]
+
     final val adapter // com.apollographql.apollo.annotations/ApolloAdaptableWith.adapter|{}adapter[0]
         final fun <get-adapter>(): kotlin.reflect/KClass<*> // com.apollographql.apollo.annotations/ApolloAdaptableWith.adapter.<get-adapter>|<get-adapter>(){}[0]
 }
+
 open annotation class com.apollographql.apollo.annotations/ApolloExperimental : kotlin/Annotation { // com.apollographql.apollo.annotations/ApolloExperimental|null[0]
     constructor <init>() // com.apollographql.apollo.annotations/ApolloExperimental.<init>|<init>(){}[0]
 }
+
 open annotation class com.apollographql.apollo.annotations/ApolloInternal : kotlin/Annotation { // com.apollographql.apollo.annotations/ApolloInternal|null[0]
     constructor <init>() // com.apollographql.apollo.annotations/ApolloInternal.<init>|<init>(){}[0]
 }
+
 open annotation class com.apollographql.apollo.annotations/ApolloRequiresOptIn : kotlin/Annotation { // com.apollographql.apollo.annotations/ApolloRequiresOptIn|null[0]
     constructor <init>() // com.apollographql.apollo.annotations/ApolloRequiresOptIn.<init>|<init>(){}[0]
 }
