@@ -177,7 +177,7 @@ class SampleServerTest {
       val error = response.exception.cast<SubscriptionOperationException>().payload
           .cast<Map<String, String>>()
           .get("message")
-      assertEquals("Woops", error)
+      assertEquals("Error collecting the source event stream: Woops", error)
     }
   }
 

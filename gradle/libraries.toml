@@ -15,7 +15,7 @@ android-sdkversion-target = "30"
 androidx-sqlite = "2.3.1"
 # This is used by the gradle integration tests to get the artifacts locally
 apollo = "4.0.2-SNAPSHOT"
-apollo-execution = "0.0.3"
+apollo-execution = "0.1.0-SNAPSHOT"
 apollo-normalizedcache-incubating = "0.0.3"
 apollo-normalizedcache-incubating-snapshot = "0.0.4-SNAPSHOT"
 # Used by the apollo-tooling project which uses a published version of Apollo
@@ -63,7 +63,7 @@ apollo-api = { group = "com.apollographql.apollo", name = "apollo-api", version.
 apollo-api-java = { group = "com.apollographql.apollo", name = "apollo-api-java", version.ref = "apollo" }
 apollo-httpCache = { group = "com.apollographql.apollo", name = "apollo-http-cache", version.ref = "apollo" }
 apollo-idlingresource = { group = "com.apollographql.apollo", name = "apollo-idling-resource", version.ref = "apollo" }
-apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-mockserver", version = "0.0.3" }
+apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-mockserver", version = "0.1.0-SNAPSHOT" }
 apollo-mpputils = { group = "com.apollographql.apollo", name = "apollo-mpp-utils", version.ref = "apollo" }
 apollo-normalizedcache = { group = "com.apollographql.apollo", name = "apollo-normalized-cache", version.ref = "apollo" }
 apollo-normalizedcache-incubating-snapshot = { group = "com.apollographql.cache", name = "normalized-cache-incubating", version.ref = "apollo-normalizedcache-incubating-snapshot" }

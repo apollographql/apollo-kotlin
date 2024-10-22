@@ -3,8 +3,7 @@ package com.apollographql.apollo.sample.server
 import com.apollographql.apollo.sample.server.graphql.SubscriptionRoot
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.execution.ExecutableSchema
-import com.apollographql.execution.parseGraphQLRequest
-import com.apollographql.execution.parseGraphQLRequest
+import com.apollographql.execution.parseAsGraphQLRequest
 import com.apollographql.execution.websocket.ConnectionInitAck
 import com.apollographql.execution.websocket.ConnectionInitError
 import com.apollographql.execution.websocket.ConnectionInitHandler
@@ -16,6 +15,7 @@ import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import okio.buffer
 import okio.source
@@ -59,8 +59,8 @@ class GraphQLHttpHandler(private val executableSchema: ExecutableSchema, private
   override fun invoke(request: Request): Response {
 
     val graphQLRequestResult = when (request.method) {
-      Method.GET -> request.uri.toString().parseGraphQLRequest()
-      Method.POST -> request.body.stream.source().buffer().use { it.parseGraphQLRequest() }
+      Method.GET -> request.uri.toString().parseAsGraphQLRequest()
+      Method.POST -> request.body.stream.source().buffer().use { it.parseAsGraphQLRequest() }
       else -> error("")
     }
 
@@ -68,7 +68,9 @@ class GraphQLHttpHandler(private val executableSchema: ExecutableSchema, private
       return Response(BAD_REQUEST).body(graphQLRequestResult.exceptionOrNull()!!.message!!)
     }
 
-    val response = executableSchema.execute(graphQLRequestResult.getOrThrow(), executionContext)
+    val response = runBlocking {
+      executableSchema.execute(graphQLRequestResult.getOrThrow(), executionContext)
+    }
 
     val buffer = Buffer()
     response.serialize(buffer)
