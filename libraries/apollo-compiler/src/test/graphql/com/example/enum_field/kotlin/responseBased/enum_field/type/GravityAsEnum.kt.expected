@@ -11,7 +11,7 @@ import kotlin.Deprecated
 import kotlin.Suppress
 import kotlin.collections.List
 
-public enum class GravityAsEnum(
+internal enum class GravityAsEnum(
   public val rawValue: kotlin.String,
 ) {
   TOP("TOP"),

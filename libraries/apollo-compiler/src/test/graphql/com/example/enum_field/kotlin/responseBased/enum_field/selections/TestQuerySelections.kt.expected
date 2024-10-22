@@ -11,7 +11,7 @@ import com.example.enum_field.type.Gravity
 import com.example.enum_field.type.GravityAsEnum
 import kotlin.collections.List
 
-public object TestQuerySelections {
+internal object TestQuerySelections {
   public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "gravity",

@@ -14,7 +14,7 @@ import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 
-public sealed interface Gravity {
+internal sealed interface Gravity {
   public val rawValue: kotlin.String
 
   public companion object {
