@@ -61,6 +61,7 @@ fun Project.apolloLibrary(
     if (name != "apolloPublished") {
       return@configureEach
     }
+    resolutionStrategy.useGlobalDependencySubstitutionRules.set(false)
   }
 
   if (extensions.findByName("kotlin") is KotlinMultiplatformExtension) {
