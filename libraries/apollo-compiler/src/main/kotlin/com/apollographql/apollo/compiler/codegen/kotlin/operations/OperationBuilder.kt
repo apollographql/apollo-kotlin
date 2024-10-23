@@ -144,7 +144,7 @@ internal class OperationBuilder(
   private fun operationIdFunSpec() = FunSpec.builder(Identifier.id)
       .addModifiers(KModifier.OVERRIDE)
       .returns(KotlinSymbols.String)
-      .addStatement("return·${Identifier.OPERATION_ID}")
+      .addStatement("return ${Identifier.OPERATION_ID}")
       .build()
 
   private fun queryDocumentFunSpec(generateQueryDocument: Boolean) = FunSpec.builder(Identifier.document)
@@ -152,9 +152,9 @@ internal class OperationBuilder(
       .returns(KotlinSymbols.String)
       .apply {
         if (generateQueryDocument) {
-          addStatement("return·${Identifier.OPERATION_DOCUMENT}")
+          addStatement("return ${Identifier.OPERATION_DOCUMENT}")
         } else {
-          addStatement("error(\"The·query·document·was·removed·from·this·operation.·Use·generateQueryDocument.set(true)·if·you·need·it\")")
+          addStatement("error(\"The query document was removed from this operation. Use generateQueryDocument.set(true) if you need it\")")
         }
       }
       .build()
@@ -162,7 +162,7 @@ internal class OperationBuilder(
   private fun nameFunSpec() = FunSpec.builder(Identifier.name)
       .addModifiers(KModifier.OVERRIDE)
       .returns(KotlinSymbols.String)
-      .addStatement("return·OPERATION_NAME")
+      .addStatement("return OPERATION_NAME")
       .build()
 
   private fun companionTypeSpec(): TypeSpec {
@@ -175,7 +175,7 @@ internal class OperationBuilder(
         .applyIf(generateQueryDocument) {
           addProperty(PropertySpec.builder(Identifier.OPERATION_DOCUMENT, KotlinSymbols.String)
               .getter(FunSpec.getterBuilder()
-                  .addStatement("return·%S", QueryDocumentMinifier.minify(operation.sourceWithFragments))
+                  .addStatement("return %S", QueryDocumentMinifier.minify(operation.sourceWithFragments))
                   .build()
               )
               .addKdoc("%L", """

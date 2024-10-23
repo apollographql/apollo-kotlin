@@ -56,7 +56,7 @@ internal fun adapterFunSpec(
       .returns(KotlinSymbols.Adapter.parameterizedBy(context.resolver.resolveIrType(type, context.jsExport)))
       .addCode(
           CodeBlock.of(
-              "return·%L",
+              "return %L",
               context.resolver.adapterInitializer(type, property.requiresBuffering, context.jsExport)
           )
       )
@@ -69,13 +69,13 @@ internal fun rootFieldFunSpec(context: KotlinOperationsContext, parentType: Stri
       .returns(KotlinSymbols.CompiledField)
       .addCode(
           CodeBlock.builder()
-              .add("return·%T(\n", KotlinSymbols.CompiledFieldBuilder)
+              .add("return %T(\n", KotlinSymbols.CompiledFieldBuilder)
               .indent()
-              .add("name·=·%S,\n", Identifier.data)
-              .add("type·=·%L\n", context.resolver.resolveCompiledType(parentType))
+              .add("name = %S,\n", Identifier.data)
+              .add("type = %L\n", context.resolver.resolveCompiledType(parentType))
               .unindent()
               .add(")\n")
-              .add(".$selections(selections·=·%T.$root)\n", selectionsClassName)
+              .add(".$selections(selections = %T.$root)\n", selectionsClassName)
               .add(".build()\n")
               .build()
       )

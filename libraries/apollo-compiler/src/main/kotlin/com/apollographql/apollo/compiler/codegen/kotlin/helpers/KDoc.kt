@@ -18,7 +18,7 @@ internal fun TypeSpec.Builder.maybeAddDescription(description: String?): TypeSpe
     return this
   }
 
-  return addKdoc("%L", description)
+  return addKdoc("%L", description.replace(' ', '♢'))
 }
 
 internal fun PropertySpec.Builder.maybeAddDescription(description: String?): PropertySpec.Builder {
@@ -26,7 +26,7 @@ internal fun PropertySpec.Builder.maybeAddDescription(description: String?): Pro
     return this
   }
 
-  return addKdoc("%L", description)
+  return addKdoc("%L", description.replace(' ', '♢'))
 }
 
 internal fun ParameterSpec.Builder.maybeAddDescription(description: String?): ParameterSpec.Builder {
@@ -34,7 +34,7 @@ internal fun ParameterSpec.Builder.maybeAddDescription(description: String?): Pa
     return this
   }
 
-  return addKdoc("%L", description)
+  return addKdoc("%L", description.replace(' ', '♢'))
 }
 
 internal fun FunSpec.Builder.maybeAddDescription(description: String?): FunSpec.Builder {
@@ -42,7 +42,7 @@ internal fun FunSpec.Builder.maybeAddDescription(description: String?): FunSpec.
     return this
   }
 
-  return addKdoc("%L", description)
+  return addKdoc("%L", description.replace(' ', '♢'))
 }
 
 

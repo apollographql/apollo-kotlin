@@ -48,8 +48,8 @@ internal class EnumResponseAdapterBuilder(
         .returns(adaptedTypeName)
         .addCode(
             CodeBlock.builder()
-                .addStatement("val·rawValue·=·reader.nextString()!!")
-                .addStatement("return·%T.${Identifier.safeValueOf}(rawValue)", adaptedTypeName)
+                .addStatement("val rawValue = reader.nextString()!!")
+                .addStatement("return %T.${Identifier.safeValueOf}(rawValue)", adaptedTypeName)
                 .build()
         )
         .addModifiers(KModifier.OVERRIDE)
