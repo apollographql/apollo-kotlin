@@ -15,11 +15,11 @@ android-sdkversion-target = "30"
 androidx-sqlite = "2.3.1"
 # This is used by the gradle integration tests to get the artifacts locally
 apollo = "4.0.2-SNAPSHOT"
-apollo-execution = "0.1.0-SNAPSHOT"
+apollo-execution = "0.1.0"
 apollo-normalizedcache-incubating = "0.0.3"
-apollo-normalizedcache-incubating-snapshot = "0.0.4-SNAPSHOT"
+apollo-normalizedcache-incubating-snapshot = "0.0.4"
 # Used by the apollo-tooling project which uses a published version of Apollo
-apollo-published = "4.0.0-rc.1"
+apollo-published = "4.0.1"
 atomicfu = "0.24.0"
 compose = "1.5.1"
 guava = "31.1-jre"
@@ -63,7 +63,7 @@ apollo-api = { group = "com.apollographql.apollo", name = "apollo-api", version.
 apollo-api-java = { group = "com.apollographql.apollo", name = "apollo-api-java", version.ref = "apollo" }
 apollo-httpCache = { group = "com.apollographql.apollo", name = "apollo-http-cache", version.ref = "apollo" }
 apollo-idlingresource = { group = "com.apollographql.apollo", name = "apollo-idling-resource", version.ref = "apollo" }
-apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-mockserver", version = "0.1.0-SNAPSHOT" }
+apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-mockserver", version = "0.1.0" }
 apollo-mpputils = { group = "com.apollographql.apollo", name = "apollo-mpp-utils", version.ref = "apollo" }
 apollo-normalizedcache = { group = "com.apollographql.apollo", name = "apollo-normalized-cache", version.ref = "apollo" }
 apollo-normalizedcache-incubating-snapshot = { group = "com.apollographql.cache", name = "normalized-cache-incubating", version.ref = "apollo-normalizedcache-incubating-snapshot" }
@@ -144,7 +144,7 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 kotlin-node = "org.jetbrains.kotlin-wrappers:kotlin-node:18.16.12-pre.634"
 kotlinx-serialization-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-plugin" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-runtime" }
-kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.15.0-Beta.2" }
+kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.16.3" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
 ktor-client-core = { group = "io.ktor", name= "ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
