@@ -21,7 +21,12 @@ import org.jetbrains.dokka.gradle.engine.plugins.DokkaVersioningPluginParameters
 import org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask
 import javax.inject.Inject
 
-fun Project.configurePublishing(isAggregateKdoc: Boolean = false) {
+class Tombstone(
+    val group: String,
+    val artifact: String,
+    val version: String,
+    )
+fun Project.configurePublishing(isAggregateKdoc: Boolean = false, tombstone: Tombstone? = null) {
   apply {
     plugin("signing")
   }
@@ -44,7 +49,7 @@ fun Project.configurePublishing(isAggregateKdoc: Boolean = false) {
   if (isAggregateKdoc) {
     configureDokkaAggregate()
   }
-  configurePublishingInternal()
+  configurePublishingInternal(tombstone)
 }
 
 fun Project.configureDokkaCommon(): DokkaExtension {
@@ -194,7 +199,7 @@ private fun Project.getOssStagingUrl(): String {
   }
 }
 
-private fun Project.configurePublishingInternal() {
+private fun Project.configurePublishingInternal(tombstone: Tombstone?) {
   val emptyJavadocJar = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
     archiveClassifier.set("javadoc")
 
@@ -282,6 +287,20 @@ private fun Project.configurePublishingInternal() {
             artifact(createJavaSourcesTask())
 
             artifactId = project.name
+          }
+        }
+        tombstone != null ->{
+          withType(MavenPublication::class.java).configureEach {
+            pom {
+              distributionManagement {
+                relocation {
+                  groupId.set(tombstone.group)
+                  artifactId.set(tombstone.artifact)
+                  version.set(tombstone.version)
+                  message.set("This artifact is has moved. See https://go.apollo.dev/ak-moved-artifacts")
+                }
+              }
+            }
           }
         }
 

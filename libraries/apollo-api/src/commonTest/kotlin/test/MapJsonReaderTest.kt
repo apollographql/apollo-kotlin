@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.MapJsonReader
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class MapJsonReaderTest {
   @Test
@@ -89,7 +90,7 @@ class MapJsonReaderTest {
       assertEquals("key0", nextName())
       assertEquals("0", nextString())
       assertEquals("key1", nextName())
-      assertEquals("1.0", nextString())
+      assertTrue(nextString().startsWith("1")) // In JS, 1.0.toString() returns "1", others return "1.0"
       assertEquals("key2", nextName())
       assertEquals("2", nextString())
       assertEquals("key3", nextName())

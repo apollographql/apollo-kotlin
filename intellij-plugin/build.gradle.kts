@@ -2,6 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import java.net.URI
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -99,7 +100,7 @@ tasks.register("downloadMockJdk") {
     val rtJar = mockJdkRoot.resolve("java/mockJDK-1.7/jre/lib/rt.jar")
     if (!rtJar.exists()) {
       rtJar.parentFile.mkdirs()
-      rtJar.writeBytes(URL("https://github.com/JetBrains/intellij-community/raw/master/java/mockJDK-1.7/jre/lib/rt.jar").openStream()
+      rtJar.writeBytes(URI("https://github.com/JetBrains/intellij-community/raw/master/java/mockJDK-1.7/jre/lib/rt.jar").toURL().openStream()
           .readBytes()
       )
     }
@@ -135,6 +136,10 @@ tasks.configureEach {
   }
 }
 
+val apolloPublished = configurations.dependencyScope("apolloPublished").get()
+
+configurations.getByName("implementation").extendsFrom(apolloPublished)
+
 dependencies {
   // IntelliJ Platform dependencies must be declared before the intellijPlatform block - see https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1784
   intellijPlatform {
@@ -161,7 +166,7 @@ dependencies {
   implementation(libs.apollo.normalizedcache.sqlite.incubating) {
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
   }
-  implementation(libs.apollo.runtime.published) {
+  add("apolloPublished", libs.apollo.runtime.published.get().toString()) {
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
   }
   runtimeOnly(libs.slf4j.simple)

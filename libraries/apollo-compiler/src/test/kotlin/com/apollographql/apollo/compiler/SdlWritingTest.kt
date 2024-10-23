@@ -5,8 +5,8 @@ import com.apollographql.apollo.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo.ast.introspection.toJson
 import com.apollographql.apollo.ast.toFullSchemaGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
-import com.apollographql.apollo.ast.toSchema
 import com.apollographql.apollo.ast.toUtf8
+import com.apollographql.apollo.ast.validateAsSchema
 import org.junit.Assert
 import org.junit.Test
 import java.io.File
@@ -15,7 +15,7 @@ import kotlin.test.assertTrue
 class SdlWritingTest {
 
   /**
-   * A dirty diff that compares two documents while skipping the [SourceLocation] fields
+   * A dirty diff that compares two documents while skipping the [com.apollographql.apollo.ast.SourceLocation] fields
    * because we can't carry whitespace information and this changes between two invocations
    */
   private fun diff(a: Any?, b: Any?, path: String = "root"): String? {
@@ -51,8 +51,8 @@ class SdlWritingTest {
       clazz.isPrimitive -> return if (a != b) path else null
       a is String || a is Int || a is Boolean || a is Double ->return if (a != b) path else null
       !clazz.`package`.name.startsWith("com.apollographql.apollo.compiler.frontend.gql") -> {
-        // don't compare classes outside of our control
-        // espectially since Int has circular references
+        // don't compare classes outside our control
+        // especially since Int has circular references
         return null
 
       }
@@ -80,13 +80,13 @@ class SdlWritingTest {
      * - leading/trailing spaces in descriptions
      * - defaultValue coercion
      */
-    val schema1 = File("src/test/sdl/schema.sdl").toSchema().toGQLDocument()
+    val schema1 = File("src/test/sdl/schema.sdl").toGQLDocument().validateAsSchema().getOrThrow().toGQLDocument()
 
     val scratchFile = File("build/sdl-test/schema.sdl")
     scratchFile.parentFile.mkdirs()
     schema1.toUtf8(scratchFile)
 
-    val schema2 = scratchFile.toSchema().toGQLDocument()
+    val schema2 = scratchFile.toGQLDocument().validateAsSchema().getOrThrow().toGQLDocument()
 
     val path = diff(schema1,schema2)
     if (path != null) {

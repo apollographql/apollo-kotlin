@@ -9,7 +9,7 @@ import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.interceptor.ApolloInterceptor
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
-import com.apollographql.apollo.testing.connectionAckMessage
+import test.network.connectionAckMessage
 import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer

@@ -45,3 +45,5 @@ suspend fun WebsocketMockRequest.awaitComplete(timeout: Duration = 1.seconds) {
     "Expected complete, got '${map.get("type")}"
   }
 }
+
+fun connectionAckMessage(): String = "{\"type\": \"connection_ack\"}"

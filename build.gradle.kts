@@ -77,7 +77,7 @@ tasks.register("ciTestsNoGradle") {
       dependsOn(tasks.matching { it.name == "test" })
     }
     dependsOn(tasks.matching { it.name == "jvmTest" })
-    dependsOn(tasks.matching { it.name == "jsIrTest" })
+    dependsOn(tasks.matching { it.name == "jsNodeTest" })
     dependsOn(tasks.withType(KotlinNativeHostTest::class.java))
     dependsOn(tasks.matching { it.name == "apiCheck" })
   }

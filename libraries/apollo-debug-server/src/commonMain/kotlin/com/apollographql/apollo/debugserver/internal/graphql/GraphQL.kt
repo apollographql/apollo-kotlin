@@ -10,8 +10,9 @@ import com.apollographql.execution.StringCoercing
 import com.apollographql.execution.annotation.GraphQLName
 import com.apollographql.execution.annotation.GraphQLQuery
 import com.apollographql.execution.annotation.GraphQLScalar
-import com.apollographql.execution.internal.ExternalValue
-import com.apollographql.execution.parseGraphQLRequest
+import com.apollographql.execution.ExternalValue
+import com.apollographql.execution.parseAsGraphQLRequest
+import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import java.util.concurrent.atomic.AtomicReference
 
@@ -29,12 +30,14 @@ internal class GraphQL(
   }
 
   fun executeGraphQL(jsonBody: String): String {
-    val graphQLRequestResult = Buffer().writeUtf8(jsonBody).parseGraphQLRequest()
+    val graphQLRequestResult = Buffer().writeUtf8(jsonBody).parseAsGraphQLRequest()
     if (!graphQLRequestResult.isSuccess) {
       return graphQLRequestResult.exceptionOrNull()!!.message!!
     }
 
-    val graphQlResponse = executableSchema.execute(graphQLRequestResult.getOrThrow(), ExecutionContext.Empty)
+    val graphQlResponse = runBlocking {
+      executableSchema.execute(graphQLRequestResult.getOrThrow(), ExecutionContext.Empty)
+    }
 
     val buffer = Buffer()
     graphQlResponse.serialize(buffer)

@@ -8,6 +8,10 @@ apolloLibrary(
     namespace = "com.apollographql.apollo.tooling"
 )
 
+val apolloPublished = configurations.dependencyScope("apolloPublished").get()
+
+configurations.getByName("implementation").extendsFrom(apolloPublished)
+
 dependencies {
   api(project(":apollo-compiler"))
 
@@ -17,7 +21,7 @@ dependencies {
 
   implementation(project(":apollo-ast"))
 
-  implementation(libs.apollo.runtime.published)
+  apolloPublished.dependencies.add(libs.apollo.runtime.published.get())
   implementation(libs.okhttp)
   implementation(libs.kotlinx.serialization.json)
 

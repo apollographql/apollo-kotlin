@@ -19,7 +19,7 @@ import test.FooSubscription
 import test.FooSubscription.Companion.completeMessage
 import test.FooSubscription.Companion.errorMessage
 import test.FooSubscription.Companion.nextMessage
-import com.apollographql.apollo.testing.connectionAckMessage
+import test.network.connectionAckMessage
 import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.CloseFrame
 import com.apollographql.mockserver.MockServer

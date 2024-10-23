@@ -402,7 +402,6 @@ public final class com/apollographql/apollo/api/CompiledVariable {
 public final class com/apollographql/apollo/api/CustomScalarAdapters : com/apollographql/apollo/api/ExecutionContext$Element {
 	public static final field Empty Lcom/apollographql/apollo/api/CustomScalarAdapters;
 	public static final field Key Lcom/apollographql/apollo/api/CustomScalarAdapters$Key;
-	public static final field PassThrough Lcom/apollographql/apollo/api/CustomScalarAdapters;
 	public final field deferredFragmentIdentifiers Ljava/util/Set;
 	public final field errors Ljava/util/List;
 	public final field falseVariables Ljava/util/Set;
