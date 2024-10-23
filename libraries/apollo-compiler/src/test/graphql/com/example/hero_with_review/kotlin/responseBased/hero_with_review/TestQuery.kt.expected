@@ -35,8 +35,7 @@ public data class TestQuery(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
@@ -92,8 +91,7 @@ public data class TestQuery(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "mutation TestQuery(${'$'}ep: Episode!) { createReview(episode: ${'$'}ep, review: { stars: 5 listOfEnums: [JEDI,EMPIRE,NEWHOPE] listOfStringNonOptional: [\"1\",\"2\",\"3\"] favoriteColor: { red: 1 blue: 1 }  } ) { stars commentary } }"
+      get() = "mutation TestQuery(${'$'}ep: Episode!) { createReview(episode: ${'$'}ep, review: { stars: 5 listOfEnums: [JEDI,EMPIRE,NEWHOPE] listOfStringNonOptional: [\"1\",\"2\",\"3\"] favoriteColor: { red: 1 blue: 1 }  } ) { stars commentary } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

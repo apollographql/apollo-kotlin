@@ -16,7 +16,5 @@ public object __Schema {
   public val all: List<CompiledNamedType> = listOf(
       )
 
-
-  public fun possibleTypes(type: CompiledNamedType): List<ObjectType> =
-      com.apollographql.apollo.api.possibleTypes(all, type)
+  public fun possibleTypes(type: CompiledNamedType): List<ObjectType> = com.apollographql.apollo.api.possibleTypes(all, type)
 }

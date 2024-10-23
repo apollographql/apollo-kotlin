@@ -45,5 +45,6 @@ public class HeroFragmentImpl() : Fragment<HeroFragmentImpl.Data> {
      * The name of the character
      */
     override val name: String,
-  ) : HeroFragment, Fragment.Data
+  ) : HeroFragment,
+      Fragment.Data
 }

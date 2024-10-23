@@ -106,13 +106,15 @@ public class TestQuery() : Query<TestQuery.Data> {
         override val scalar2: String?,
         override val scalar3: String?,
         public val scalar4: String?,
-      ) : Iface2, Iface1.Impl2Iface2
+      ) : Iface2,
+          Iface1.Impl2Iface2
 
       public data class OtherIface2(
         override val __typename: String,
         override val scalar1: String?,
         override val scalar3: String?,
-      ) : Iface2, Iface1.Iface2
+      ) : Iface2,
+          Iface1.Iface2
     }
 
     public data class OtherIface1(
@@ -134,12 +136,14 @@ public class TestQuery() : Query<TestQuery.Data> {
         override val __typename: String,
         override val scalar1: String?,
         override val scalar2: String?,
-      ) : Iface2, Iface1.Impl2Iface2
+      ) : Iface2,
+          Iface1.Impl2Iface2
 
       public data class OtherIface2(
         override val __typename: String,
         override val scalar1: String?,
-      ) : Iface2, Iface1.Iface2
+      ) : Iface2,
+          Iface1.Iface2
     }
   }
 
@@ -182,8 +186,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { iface1 { __typename ... on Iface1 { iface2 { __typename ... on Iface2 { scalar1 } ... on Impl2 { scalar2 } } } ... on Impl1 { iface2 { __typename ... on Iface2 { scalar3 } ... on Impl2 { scalar4 } } } } }"
+      get() = "query TestQuery { iface1 { __typename ... on Iface1 { iface2 { __typename ... on Iface2 { scalar1 } ... on Impl2 { scalar2 } } } ... on Impl1 { iface2 { __typename ... on Iface2 { scalar3 } ... on Impl2 { scalar4 } } } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

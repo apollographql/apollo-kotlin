@@ -14,4 +14,3 @@ internal val __CustomScalarAdapters: CustomScalarAdapters = CustomScalarAdapters
       .add(URL.type, com.example.UrlAdapter)
       .add(GraphQLString.type, com.example.MyStringAdapter())
       .build()
-

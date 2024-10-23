@@ -21,8 +21,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("i")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _i: TestQuery.Data.I? = null
 
       while (true) {
@@ -49,8 +48,7 @@ public object TestQuery_ResponseAdapter {
     private object I : Adapter<TestQuery.Data.I> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.I {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.I {
         var __typename: String? = null
 
         while (true) {
@@ -61,8 +59,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val _iFragment = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.fromJson(reader,
-            customScalarAdapters)
+        val _iFragment = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.fromJson(reader, customScalarAdapters)
 
         return TestQuery.Data.I(
           __typename = __typename ?: missingField(reader, "__typename"),
@@ -78,8 +75,7 @@ public object TestQuery_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.toJson(writer,
-            customScalarAdapters, value.iFragment)
+        com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.toJson(writer, customScalarAdapters, value.iFragment)
       }
     }
   }

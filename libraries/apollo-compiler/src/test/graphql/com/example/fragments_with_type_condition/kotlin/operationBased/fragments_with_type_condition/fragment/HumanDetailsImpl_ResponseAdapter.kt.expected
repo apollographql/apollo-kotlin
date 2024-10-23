@@ -17,12 +17,10 @@ import kotlin.String
 import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
-  public object HumanDetails :
-      Adapter<com.example.fragments_with_type_condition.fragment.HumanDetails> {
+  public object HumanDetails : Adapter<com.example.fragments_with_type_condition.fragment.HumanDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "height")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.fragments_with_type_condition.fragment.HumanDetails {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.fragments_with_type_condition.fragment.HumanDetails {
       var _name: String? = null
       var _height: Double? = null
 

@@ -12,8 +12,7 @@ import com.apollographql.apollo.api.json.JsonWriter
 import com.example.list_field_clash.type.AmenityCategory
 
 public object AmenityCategory_ResponseAdapter : Adapter<AmenityCategory> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      AmenityCategory {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): AmenityCategory {
     val rawValue = reader.nextString()!!
     return AmenityCategory.safeValueOf(rawValue)
   }

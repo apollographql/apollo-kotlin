@@ -33,8 +33,7 @@ public object TestQuery_VariablesAdapter {
     BooleanAdapter.toJson(writer, customScalarAdapters, value.skipHumanDetails)
     if (value.optionalWithDefaultFalse is Optional.Present) {
       writer.name("optionalWithDefaultFalse")
-      NullableBooleanAdapter.present().toJson(writer, customScalarAdapters,
-          value.optionalWithDefaultFalse)
+      NullableBooleanAdapter.present().toJson(writer, customScalarAdapters, value.optionalWithDefaultFalse)
     }
     else if (withDefaultValues) {
       writer.name("optionalWithDefaultFalse")
@@ -42,8 +41,7 @@ public object TestQuery_VariablesAdapter {
     }
     if (value.optionalWithDefaultTrue is Optional.Present) {
       writer.name("optionalWithDefaultTrue")
-      NullableBooleanAdapter.present().toJson(writer, customScalarAdapters,
-          value.optionalWithDefaultTrue)
+      NullableBooleanAdapter.present().toJson(writer, customScalarAdapters, value.optionalWithDefaultTrue)
     }
     else if (withDefaultValues) {
       writer.name("optionalWithDefaultTrue")
@@ -51,8 +49,7 @@ public object TestQuery_VariablesAdapter {
     }
     if (value.optionalWithNoDefault is Optional.Present) {
       writer.name("optionalWithNoDefault")
-      NullableBooleanAdapter.present().toJson(writer, customScalarAdapters,
-          value.optionalWithNoDefault)
+      NullableBooleanAdapter.present().toJson(writer, customScalarAdapters, value.optionalWithNoDefault)
     }
   }
 }

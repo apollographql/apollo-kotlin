@@ -12,8 +12,7 @@ import com.apollographql.apollo.api.json.JsonWriter
 import com.example.enum_field.type.GravityAsEnum
 
 internal object GravityAsEnum_ResponseAdapter : Adapter<GravityAsEnum> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      GravityAsEnum {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GravityAsEnum {
     val rawValue = reader.nextString()!!
     return GravityAsEnum.safeValueOf(rawValue)
   }

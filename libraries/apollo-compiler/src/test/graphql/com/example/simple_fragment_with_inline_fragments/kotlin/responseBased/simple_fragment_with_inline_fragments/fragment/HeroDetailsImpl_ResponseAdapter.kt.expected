@@ -26,8 +26,7 @@ public object HeroDetailsImpl_ResponseAdapter {
   public object Data : Adapter<HeroDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "friends")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        HeroDetailsImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HeroDetailsImpl.Data {
       var _name: String? = null
       var _friends: List<HeroDetailsImpl.Data.Friend?>? = null
 
@@ -58,8 +57,7 @@ public object HeroDetailsImpl_ResponseAdapter {
     }
 
     private object Friend : Adapter<HeroDetailsImpl.Data.Friend> {
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          HeroDetailsImpl.Data.Friend {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HeroDetailsImpl.Data.Friend {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
@@ -77,12 +75,9 @@ public object HeroDetailsImpl_ResponseAdapter {
         `value`: HeroDetailsImpl.Data.Friend,
       ) {
         when(value) {
-          is HeroDetailsImpl.Data.HumanFriend -> HumanFriend.toJson(writer, customScalarAdapters,
-              value)
-          is HeroDetailsImpl.Data.DroidFriend -> DroidFriend.toJson(writer, customScalarAdapters,
-              value)
-          is HeroDetailsImpl.Data.OtherFriend -> OtherFriend.toJson(writer, customScalarAdapters,
-              value)
+          is HeroDetailsImpl.Data.HumanFriend -> HumanFriend.toJson(writer, customScalarAdapters, value)
+          is HeroDetailsImpl.Data.DroidFriend -> DroidFriend.toJson(writer, customScalarAdapters, value)
+          is HeroDetailsImpl.Data.OtherFriend -> OtherFriend.toJson(writer, customScalarAdapters, value)
         }
       }
     }

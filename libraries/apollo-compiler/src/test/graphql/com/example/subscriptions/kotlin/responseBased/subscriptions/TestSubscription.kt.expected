@@ -34,8 +34,7 @@ public data class TestSubscription(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    TestSubscription_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    TestSubscription_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = TestSubscription_ResponseAdapter.Data.obj()
@@ -84,8 +83,7 @@ public data class TestSubscription(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "subscription TestSubscription(${'$'}repo: String!) { commentAdded(repoFullName: ${'$'}repo) { id content } }"
+      get() = "subscription TestSubscription(${'$'}repo: String!) { commentAdded(repoFullName: ${'$'}repo) { id content } }"
 
     public const val OPERATION_NAME: String = "TestSubscription"
   }

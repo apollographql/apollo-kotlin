@@ -50,7 +50,8 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
      * The friends of the character exposed as a connection with edges
      */
     override val friendsConnection: FriendsConnection,
-  ) : HeroDetails, Fragment.Data {
+  ) : HeroDetails,
+      Fragment.Data {
     public data class FriendsConnection(
       /**
        * The total number of friends

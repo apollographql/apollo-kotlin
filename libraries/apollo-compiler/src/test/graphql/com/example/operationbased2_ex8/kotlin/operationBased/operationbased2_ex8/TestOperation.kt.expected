@@ -94,8 +94,7 @@ public class TestOperation() : Query<TestOperation.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestOperation { animal { __typename ...AnimalFragment } }  fragment AnimalFragment on Animal { species parent { __typename species ... on Lion { temperature } ... on Cat { name } } }"
+      get() = "query TestOperation { animal { __typename ...AnimalFragment } }  fragment AnimalFragment on Animal { species parent { __typename species ... on Lion { temperature } ... on Cat { name } } }"
 
     public const val OPERATION_NAME: String = "TestOperation"
   }

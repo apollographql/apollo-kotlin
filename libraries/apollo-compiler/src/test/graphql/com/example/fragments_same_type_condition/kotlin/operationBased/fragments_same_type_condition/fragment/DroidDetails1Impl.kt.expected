@@ -30,8 +30,7 @@ public class DroidDetails1Impl() : Fragment<DroidDetails1> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<DroidDetails1> =
-      DroidDetails1Impl_ResponseAdapter.DroidDetails1.obj()
+  override fun adapter(): Adapter<DroidDetails1> = DroidDetails1Impl_ResponseAdapter.DroidDetails1.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

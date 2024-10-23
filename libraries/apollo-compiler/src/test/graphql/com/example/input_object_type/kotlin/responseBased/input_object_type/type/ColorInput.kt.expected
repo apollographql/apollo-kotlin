@@ -11,6 +11,12 @@ import kotlin.Int
 
 /**
  * The input object sent when passing in a color
+ *
+ * @param red A description with a dollar sign: $10
+ * @param green Green color
+ * @param blue Blue color
+ * @param enumWithDefaultValue for test purpose only
+ * @param reviewRefInput Circle ref to review input
  */
 public data class ColorInput(
   /**

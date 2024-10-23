@@ -24,8 +24,7 @@ public object GetA_ResponseAdapter {
   public object Data : Adapter<GetA.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("a")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        GetA.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetA.Data {
       var _a: GetA.Data.A? = null
 
       while (true) {
@@ -52,8 +51,7 @@ public object GetA_ResponseAdapter {
     private object A : Adapter<GetA.Data.A> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          GetA.Data.A {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetA.Data.A {
         var __typename: String? = null
 
         while (true) {
@@ -70,15 +68,13 @@ public object GetA_ResponseAdapter {
         var _onB: GetA.Data.A.OnB? = null
         if (possibleTypes("B").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onB = com.example.used_arguments.adapter.GetA_ResponseAdapter.Data.A.OnB.fromJson(reader,
-              customScalarAdapters)
+          _onB = com.example.used_arguments.adapter.GetA_ResponseAdapter.Data.A.OnB.fromJson(reader, customScalarAdapters)
         }
 
         var _onC: GetA.Data.A.OnC? = null
         if (possibleTypes("C").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onC = com.example.used_arguments.adapter.GetA_ResponseAdapter.Data.A.OnC.fromJson(reader,
-              customScalarAdapters)
+          _onC = com.example.used_arguments.adapter.GetA_ResponseAdapter.Data.A.OnC.fromJson(reader, customScalarAdapters)
         }
 
         return GetA.Data.A(
@@ -97,21 +93,18 @@ public object GetA_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onB != null) {
-          com.example.used_arguments.adapter.GetA_ResponseAdapter.Data.A.OnB.toJson(writer,
-              customScalarAdapters, value.onB)
+          com.example.used_arguments.adapter.GetA_ResponseAdapter.Data.A.OnB.toJson(writer, customScalarAdapters, value.onB)
         }
 
         if (value.onC != null) {
-          com.example.used_arguments.adapter.GetA_ResponseAdapter.Data.A.OnC.toJson(writer,
-              customScalarAdapters, value.onC)
+          com.example.used_arguments.adapter.GetA_ResponseAdapter.Data.A.OnC.toJson(writer, customScalarAdapters, value.onC)
         }
       }
 
       private object OnB : Adapter<GetA.Data.A.OnB> {
         public val RESPONSE_NAMES: List<String> = listOf("field")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            GetA.Data.A.OnB {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetA.Data.A.OnB {
           var _field: Int? = null
 
           while (true) {
@@ -139,8 +132,7 @@ public object GetA_ResponseAdapter {
       private object OnC : Adapter<GetA.Data.A.OnC> {
         public val RESPONSE_NAMES: List<String> = listOf("field")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            GetA.Data.A.OnC {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetA.Data.A.OnC {
           var _field: Int? = null
 
           while (true) {

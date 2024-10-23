@@ -18,13 +18,12 @@ internal sealed interface Gravity {
   public val rawValue: kotlin.String
 
   public companion object {
-    public val type: EnumType = EnumType("Gravity", listOf("TOP", "CENTER", "BOTTOM", "bottom",
-        "is", "type", "String", "field"))
+    public val type: EnumType =
+        EnumType("Gravity", listOf("TOP", "CENTER", "BOTTOM", "bottom", "is", "type", "String", "field"))
 
     /**
      * Returns the [Gravity] that represents the specified [rawValue].
-     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
-     * schema instead of calling this function directly.
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
      */
     @Suppress("DEPRECATION")
     public fun safeValueOf(rawValue: kotlin.String): Gravity = when(rawValue) {

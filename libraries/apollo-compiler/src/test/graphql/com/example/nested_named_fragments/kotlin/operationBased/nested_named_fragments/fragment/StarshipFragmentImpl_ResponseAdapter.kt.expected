@@ -19,12 +19,10 @@ import kotlin.String
 import kotlin.collections.List
 
 public object StarshipFragmentImpl_ResponseAdapter {
-  public object StarshipFragment :
-      Adapter<com.example.nested_named_fragments.fragment.StarshipFragment> {
+  public object StarshipFragment : Adapter<com.example.nested_named_fragments.fragment.StarshipFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("id", "name", "pilotConnection")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.nested_named_fragments.fragment.StarshipFragment {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.nested_named_fragments.fragment.StarshipFragment {
       var _id: String? = null
       var _name: String? = null
       var _pilotConnection: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection? = null
@@ -60,12 +58,10 @@ public object StarshipFragmentImpl_ResponseAdapter {
       PilotConnection.obj().nullable().toJson(writer, customScalarAdapters, value.pilotConnection)
     }
 
-    private object PilotConnection :
-        Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection> {
+    private object PilotConnection : Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection {
         var _edges: List<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge?>? = null
 
         while (true) {
@@ -89,13 +85,10 @@ public object StarshipFragmentImpl_ResponseAdapter {
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
 
-      private object Edge :
-          Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge>
-          {
+      private object Edge : Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge {
           var _node: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node? = null
 
           while (true) {
@@ -119,13 +112,10 @@ public object StarshipFragmentImpl_ResponseAdapter {
           Node.obj(true).nullable().toJson(writer, customScalarAdapters, value.node)
         }
 
-        private object Node :
-            Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node>
-            {
+        private object Node : Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node {
             var __typename: String? = null
 
             while (true) {
@@ -136,8 +126,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
             }
 
             reader.rewind()
-            val _pilotFragment = com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.fromJson(reader,
-                customScalarAdapters)
+            val _pilotFragment = com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.fromJson(reader, customScalarAdapters)
 
             return com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node(
               __typename = __typename ?: missingField(reader, "__typename"),
@@ -153,8 +142,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.toJson(writer,
-                customScalarAdapters, value.pilotFragment)
+            com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.toJson(writer, customScalarAdapters, value.pilotFragment)
           }
         }
       }

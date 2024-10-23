@@ -28,8 +28,7 @@ public object TestQuery_VariablesAdapter {
   ) {
     if (value.episode is Optional.Present) {
       writer.name("episode")
-      Episode_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
-          value.episode)
+      Episode_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters, value.episode)
     }
   }
 }

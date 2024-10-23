@@ -34,8 +34,7 @@ public data class TestQuery(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
@@ -77,8 +76,7 @@ public data class TestQuery(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery(${'$'}operation: String) { typeWithGraphQLKeywords { on null(fragment: ${'$'}operation) alias: null(fragment: \"A string\\nwith a new line\") } }"
+      get() = "query TestQuery(${'$'}operation: String) { typeWithGraphQLKeywords { on null(fragment: ${'$'}operation) alias: null(fragment: \"A string\\nwith a new line\") } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

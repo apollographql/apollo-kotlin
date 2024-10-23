@@ -37,8 +37,7 @@ public class DroidFragmentImpl() : Fragment<DroidFragment> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<DroidFragment> =
-      DroidFragmentImpl_ResponseAdapter.DroidFragment.obj()
+  override fun adapter(): Adapter<DroidFragment> = DroidFragmentImpl_ResponseAdapter.DroidFragment.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
@@ -48,8 +47,7 @@ public class DroidFragmentImpl() : Fragment<DroidFragment> {
   .build()
 
   public companion object {
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: DroidBuilder.() -> Unit = {}): DroidFragment = buildData(
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: DroidBuilder.() -> Unit = {}): DroidFragment = buildData(
       Droid,
       block,
       DroidFragmentImpl_ResponseAdapter.DroidFragment,

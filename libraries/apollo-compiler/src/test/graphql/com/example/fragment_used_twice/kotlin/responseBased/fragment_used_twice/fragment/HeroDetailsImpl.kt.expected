@@ -51,7 +51,9 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
      * The date character was born.
      */
     override val birthDate: Any,
-  ) : CharacterDetails, HeroDetails, Fragment.Data {
+  ) : CharacterDetails,
+      HeroDetails,
+      Fragment.Data {
     public companion object {
       @Suppress("USELESS_CAST")
       public fun Data.characterDetails(): CharacterDetails? = this as? CharacterDetails

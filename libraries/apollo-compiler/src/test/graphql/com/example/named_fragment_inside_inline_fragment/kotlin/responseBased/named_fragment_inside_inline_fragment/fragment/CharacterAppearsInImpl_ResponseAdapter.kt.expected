@@ -21,8 +21,7 @@ public object CharacterAppearsInImpl_ResponseAdapter {
   public object Data : Adapter<CharacterAppearsInImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        CharacterAppearsInImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): CharacterAppearsInImpl.Data {
       var _appearsIn: List<Episode?>? = null
 
       while (true) {
@@ -43,8 +42,7 @@ public object CharacterAppearsInImpl_ResponseAdapter {
       `value`: CharacterAppearsInImpl.Data,
     ) {
       writer.name("appearsIn")
-      Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
-          value.appearsIn)
+      Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters, value.appearsIn)
     }
   }
 }

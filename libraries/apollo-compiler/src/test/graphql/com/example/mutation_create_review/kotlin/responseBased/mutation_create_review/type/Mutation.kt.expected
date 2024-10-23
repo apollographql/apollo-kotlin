@@ -29,8 +29,7 @@ internal class Mutation {
 
     public val type: ObjectType = ObjectType.Builder(name = "Mutation").build()
 
-    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): MutationBuilder =
-        MutationBuilder(customScalarAdapters)
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): MutationBuilder = MutationBuilder(customScalarAdapters)
   }
 }
 
@@ -49,5 +48,4 @@ internal class MutationMap(
   __fields: Map<String, Any?>,
 ) : Map<String, Any?> by __fields
 
-internal fun BuilderScope.buildMutation(block: MutationBuilder.() -> Unit): MutationMap =
-    MutationBuilder(customScalarAdapters).apply(block).build()
+internal fun BuilderScope.buildMutation(block: MutationBuilder.() -> Unit): MutationMap = MutationBuilder(customScalarAdapters).apply(block).build()

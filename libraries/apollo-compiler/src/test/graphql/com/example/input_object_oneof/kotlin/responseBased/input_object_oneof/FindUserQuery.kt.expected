@@ -34,8 +34,7 @@ public data class FindUserQuery(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    FindUserQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    FindUserQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = FindUserQuery_ResponseAdapter.Data.obj()
@@ -73,8 +72,7 @@ public data class FindUserQuery(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query FindUserQuery(${'$'}findUserInput: FindUserInput!) { findUser(findUserInput: ${'$'}findUserInput) { id } }"
+      get() = "query FindUserQuery(${'$'}findUserInput: FindUserInput!) { findUser(findUserInput: ${'$'}findUserInput) { id } }"
 
     public const val OPERATION_NAME: String = "FindUserQuery"
   }

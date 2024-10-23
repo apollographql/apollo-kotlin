@@ -20,8 +20,7 @@ import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
   public object Data : Adapter<HumanDetailsImpl.Data> {
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        HumanDetailsImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HumanDetailsImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
         "Human",
@@ -37,8 +36,7 @@ public object HumanDetailsImpl_ResponseAdapter {
       `value`: HumanDetailsImpl.Data,
     ) {
       when(value) {
-        is HumanDetailsImpl.CharacterData -> CharacterData.toJson(writer, customScalarAdapters,
-            value)
+        is HumanDetailsImpl.CharacterData -> CharacterData.toJson(writer, customScalarAdapters, value)
         is HumanDetailsImpl.OtherData -> OtherData.toJson(writer, customScalarAdapters, value)
       }
     }

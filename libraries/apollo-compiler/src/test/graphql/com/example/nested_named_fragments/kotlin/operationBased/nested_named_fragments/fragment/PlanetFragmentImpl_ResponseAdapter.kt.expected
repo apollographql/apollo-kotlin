@@ -14,12 +14,10 @@ import kotlin.String
 import kotlin.collections.List
 
 public object PlanetFragmentImpl_ResponseAdapter {
-  public object PlanetFragment : Adapter<com.example.nested_named_fragments.fragment.PlanetFragment>
-      {
+  public object PlanetFragment : Adapter<com.example.nested_named_fragments.fragment.PlanetFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.nested_named_fragments.fragment.PlanetFragment {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.nested_named_fragments.fragment.PlanetFragment {
       var _name: String? = null
 
       while (true) {

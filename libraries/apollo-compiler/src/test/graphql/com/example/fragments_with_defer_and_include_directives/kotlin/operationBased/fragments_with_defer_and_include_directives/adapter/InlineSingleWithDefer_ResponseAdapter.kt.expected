@@ -25,8 +25,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
   public object Data : Adapter<InlineSingleWithDefer.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        InlineSingleWithDefer.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): InlineSingleWithDefer.Data {
       var _hero: InlineSingleWithDefer.Data.Hero? = null
 
       while (true) {
@@ -53,8 +52,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
     private object Hero : Adapter<InlineSingleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          InlineSingleWithDefer.Data.Hero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): InlineSingleWithDefer.Data.Hero {
         var __typename: String? = null
 
         val __path = reader.getPath()
@@ -72,8 +70,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
         var _onDroid: InlineSingleWithDefer.Data.Hero.OnDroid? = null
         if (and(possibleTypes("Droid"),label()).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
-          _onDroid = com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
-              customScalarAdapters)
+          _onDroid = com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader, customScalarAdapters)
         }
 
         return InlineSingleWithDefer.Data.Hero(
@@ -91,16 +88,14 @@ public object InlineSingleWithDefer_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onDroid != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.Data.Hero.OnDroid.toJson(writer,
-              customScalarAdapters, value.onDroid)
+          com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.Data.Hero.OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
         }
       }
 
       private object OnDroid : Adapter<InlineSingleWithDefer.Data.Hero.OnDroid> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            InlineSingleWithDefer.Data.Hero.OnDroid {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): InlineSingleWithDefer.Data.Hero.OnDroid {
           var _name: String? = null
 
           while (true) {

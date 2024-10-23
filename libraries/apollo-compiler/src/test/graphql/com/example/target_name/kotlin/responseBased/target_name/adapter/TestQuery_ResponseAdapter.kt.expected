@@ -26,11 +26,10 @@ import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
-    public val RESPONSE_NAMES: List<String> = listOf("object", "interface", "union", "scalar",
-        "enum")
+    public val RESPONSE_NAMES: List<String> =
+        listOf("object", "interface", "union", "scalar", "enum")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _object: TestQuery.Data.Object? = null
       var _interface: TestQuery.Data.Interface? = null
       var _union: TestQuery.Data.Union? = null
@@ -81,8 +80,7 @@ public object TestQuery_ResponseAdapter {
     private object Object : Adapter<TestQuery.Data.Object> {
       public val RESPONSE_NAMES: List<String> = listOf("field")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Object {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Object {
         var _field: String? = null
 
         while (true) {
@@ -110,8 +108,7 @@ public object TestQuery_ResponseAdapter {
     private object Interface : Adapter<TestQuery.Data.Interface> {
       public val RESPONSE_NAMES: List<String> = listOf("field")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Interface {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Interface {
         var _field: String? = null
 
         while (true) {
@@ -137,8 +134,7 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Union : Adapter<TestQuery.Data.Union> {
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Union {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Union {
         val __typename = reader.readTypename()
         return when(__typename) {
           "ReservedObject",
@@ -154,8 +150,7 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.Union,
       ) {
         when(value) {
-          is TestQuery.Data.ReservedObjectUnion -> ReservedObjectUnion.toJson(writer,
-              customScalarAdapters, value)
+          is TestQuery.Data.ReservedObjectUnion -> ReservedObjectUnion.toJson(writer, customScalarAdapters, value)
           is TestQuery.Data.OtherUnion -> OtherUnion.toJson(writer, customScalarAdapters, value)
         }
       }

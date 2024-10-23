@@ -14,8 +14,7 @@ import com.example.java8annotation.type.Login
 import kotlin.IllegalStateException
 
 public object Login_InputAdapter : Adapter<Login> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Login =
-      throw IllegalStateException("Input type used in output position")
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Login = throw IllegalStateException("Input type used in output position")
 
   override fun toJson(
     writer: JsonWriter,

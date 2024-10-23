@@ -25,8 +25,7 @@ public object TestOperation_ResponseAdapter {
   public object Data : Adapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestOperation.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
       while (true) {
@@ -53,8 +52,7 @@ public object TestOperation_ResponseAdapter {
     private object Animal : Adapter<TestOperation.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "species", "parent")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestOperation.Data.Animal {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Animal {
         var __typename: String? = null
         var _species: String? = null
         var _parent: TestOperation.Data.Animal.Parent? = null
@@ -91,8 +89,7 @@ public object TestOperation_ResponseAdapter {
       }
 
       private object Parent : Adapter<TestOperation.Data.Animal.Parent> {
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestOperation.Data.Animal.Parent {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Animal.Parent {
           val __typename = reader.readTypename()
           return when(__typename) {
             "Lion",
@@ -110,12 +107,9 @@ public object TestOperation_ResponseAdapter {
           `value`: TestOperation.Data.Animal.Parent,
         ) {
           when(value) {
-            is TestOperation.Data.Animal.LionParent -> LionParent.toJson(writer,
-                customScalarAdapters, value)
-            is TestOperation.Data.Animal.CatParent -> CatParent.toJson(writer, customScalarAdapters,
-                value)
-            is TestOperation.Data.Animal.OtherParent -> OtherParent.toJson(writer,
-                customScalarAdapters, value)
+            is TestOperation.Data.Animal.LionParent -> LionParent.toJson(writer, customScalarAdapters, value)
+            is TestOperation.Data.Animal.CatParent -> CatParent.toJson(writer, customScalarAdapters, value)
+            is TestOperation.Data.Animal.OtherParent -> OtherParent.toJson(writer, customScalarAdapters, value)
           }
         }
       }

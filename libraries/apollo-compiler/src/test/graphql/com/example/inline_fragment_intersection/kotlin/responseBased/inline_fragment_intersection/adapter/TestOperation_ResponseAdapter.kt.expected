@@ -30,8 +30,7 @@ public object TestOperation_ResponseAdapter {
   public object Data : Adapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("random")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestOperation.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data {
       var _random: TestOperation.Data.Random? = null
 
       while (true) {
@@ -56,8 +55,7 @@ public object TestOperation_ResponseAdapter {
     }
 
     private object Random : Adapter<TestOperation.Data.Random> {
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestOperation.Data.Random {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
@@ -75,19 +73,16 @@ public object TestOperation_ResponseAdapter {
         `value`: TestOperation.Data.Random,
       ) {
         when(value) {
-          is TestOperation.Data.BeingHumanRandom -> BeingHumanRandom.toJson(writer,
-              customScalarAdapters, value)
-          is TestOperation.Data.BeingWookieRandom -> BeingWookieRandom.toJson(writer,
-              customScalarAdapters, value)
-          is TestOperation.Data.OtherRandom -> OtherRandom.toJson(writer, customScalarAdapters,
-              value)
+          is TestOperation.Data.BeingHumanRandom -> BeingHumanRandom.toJson(writer, customScalarAdapters, value)
+          is TestOperation.Data.BeingWookieRandom -> BeingWookieRandom.toJson(writer, customScalarAdapters, value)
+          is TestOperation.Data.OtherRandom -> OtherRandom.toJson(writer, customScalarAdapters, value)
         }
       }
     }
 
     public object BeingHumanRandom {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends",
-          "profilePictureUrl")
+      public val RESPONSE_NAMES: List<String> =
+          listOf("__typename", "name", "friends", "profilePictureUrl")
 
       public fun fromJson(
         reader: JsonReader,
@@ -136,8 +131,7 @@ public object TestOperation_ResponseAdapter {
       }
 
       private object Friend : Adapter<TestOperation.Data.BeingHumanRandom.Friend> {
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestOperation.Data.BeingHumanRandom.Friend {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.BeingHumanRandom.Friend {
           val __typename = reader.readTypename()
           return when(__typename) {
             "Wookie",
@@ -153,17 +147,15 @@ public object TestOperation_ResponseAdapter {
           `value`: TestOperation.Data.BeingHumanRandom.Friend,
         ) {
           when(value) {
-            is TestOperation.Data.BeingHumanRandom.WookieFriend -> WookieFriend.toJson(writer,
-                customScalarAdapters, value)
-            is TestOperation.Data.BeingHumanRandom.OtherFriend -> OtherFriend.toJson(writer,
-                customScalarAdapters, value)
+            is TestOperation.Data.BeingHumanRandom.WookieFriend -> WookieFriend.toJson(writer, customScalarAdapters, value)
+            is TestOperation.Data.BeingHumanRandom.OtherFriend -> OtherFriend.toJson(writer, customScalarAdapters, value)
           }
         }
       }
 
       public object WookieFriend {
-        public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "lifeExpectancy",
-            "isFamous", "race")
+        public val RESPONSE_NAMES: List<String> =
+            listOf("__typename", "name", "lifeExpectancy", "isFamous", "race")
 
         public fun fromJson(
           reader: JsonReader,
@@ -313,8 +305,7 @@ public object TestOperation_ResponseAdapter {
       }
 
       private object Friend : Adapter<TestOperation.Data.BeingWookieRandom.Friend> {
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestOperation.Data.BeingWookieRandom.Friend {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.BeingWookieRandom.Friend {
           val __typename = reader.readTypename()
           return when(__typename) {
             "Wookie",
@@ -330,10 +321,8 @@ public object TestOperation_ResponseAdapter {
           `value`: TestOperation.Data.BeingWookieRandom.Friend,
         ) {
           when(value) {
-            is TestOperation.Data.BeingWookieRandom.WookieFriend -> WookieFriend.toJson(writer,
-                customScalarAdapters, value)
-            is TestOperation.Data.BeingWookieRandom.OtherFriend -> OtherFriend.toJson(writer,
-                customScalarAdapters, value)
+            is TestOperation.Data.BeingWookieRandom.WookieFriend -> WookieFriend.toJson(writer, customScalarAdapters, value)
+            is TestOperation.Data.BeingWookieRandom.OtherFriend -> OtherFriend.toJson(writer, customScalarAdapters, value)
           }
         }
       }

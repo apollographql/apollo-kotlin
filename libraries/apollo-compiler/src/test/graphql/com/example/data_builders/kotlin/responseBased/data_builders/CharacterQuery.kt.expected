@@ -89,14 +89,16 @@ public class CharacterQuery() : Query<CharacterQuery.Data> {
       override val id: String,
       override val name: String,
       override val homePlanet: String,
-    ) : Character, HumanFragment
+    ) : Character,
+        HumanFragment
 
     public data class DroidCharacter(
       override val __typename: String,
       override val id: String,
       override val name: String,
       override val primaryFunction: String,
-    ) : Character, DroidFragment
+    ) : Character,
+        DroidFragment
 
     public data class OtherCharacter(
       override val __typename: String,
@@ -134,13 +136,11 @@ public class CharacterQuery() : Query<CharacterQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query CharacterQuery { character { __typename id name ...HumanFragment ...DroidFragment } }  fragment HumanFragment on Human { homePlanet }  fragment DroidFragment on Droid { primaryFunction }"
+      get() = "query CharacterQuery { character { __typename id name ...HumanFragment ...DroidFragment } }  fragment HumanFragment on Human { homePlanet }  fragment DroidFragment on Droid { primaryFunction }"
 
     public const val OPERATION_NAME: String = "CharacterQuery"
 
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: QueryBuilder.() -> Unit = {}): Data = buildData(
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: QueryBuilder.() -> Unit = {}): Data = buildData(
       CompiledQuery,
       block,
       CharacterQuery_ResponseAdapter.Data,

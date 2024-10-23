@@ -28,8 +28,7 @@ internal class Review {
   public companion object : BuilderFactory<ReviewBuilder> {
     public val type: ObjectType = ObjectType.Builder(name = "Review").build()
 
-    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): ReviewBuilder =
-        ReviewBuilder(customScalarAdapters)
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): ReviewBuilder = ReviewBuilder(customScalarAdapters)
   }
 }
 
@@ -61,5 +60,4 @@ internal class ReviewMap(
   __fields: Map<String, Any?>,
 ) : Map<String, Any?> by __fields
 
-internal fun BuilderScope.buildReview(block: ReviewBuilder.() -> Unit): ReviewMap =
-    ReviewBuilder(customScalarAdapters).apply(block).build()
+internal fun BuilderScope.buildReview(block: ReviewBuilder.() -> Unit): ReviewMap = ReviewBuilder(customScalarAdapters).apply(block).build()

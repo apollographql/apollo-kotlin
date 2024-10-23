@@ -45,5 +45,6 @@ public class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
      * What this human calls themselves
      */
     override val name: String,
-  ) : HumanDetails, Fragment.Data
+  ) : HumanDetails,
+      Fragment.Data
 }

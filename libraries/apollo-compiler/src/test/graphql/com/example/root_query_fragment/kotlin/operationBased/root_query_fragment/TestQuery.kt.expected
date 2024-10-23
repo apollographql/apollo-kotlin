@@ -81,8 +81,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { __typename ...QueryFragment }  fragment QueryFragment on Query { __typename hero { name } }"
+      get() = "query TestQuery { __typename ...QueryFragment }  fragment QueryFragment on Query { __typename hero { name } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

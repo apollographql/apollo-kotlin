@@ -99,8 +99,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { hero { __typename name ...HumanDetails ...DroidDetails } }  fragment HumanDetails on Human { height }  fragment DroidDetails on Droid { primaryFunction }"
+      get() = "query TestQuery { hero { __typename name ...HumanDetails ...DroidDetails } }  fragment HumanDetails on Human { height }  fragment DroidDetails on Droid { primaryFunction }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

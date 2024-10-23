@@ -46,15 +46,13 @@ public object JavaPrimitiveQuery_VariablesAdapter {
     }
     if (value.nullableInput is Optional.Present) {
       writer.name("nullableInput")
-      MyInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
-          value.nullableInput)
+      MyInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters, value.nullableInput)
     }
     writer.name("nonNullableInput")
     MyInput_InputAdapter.obj().toJson(writer, customScalarAdapters, value.nonNullableInput)
     if (value.nonNullableInputWithDefault is Optional.Present) {
       writer.name("nonNullableInputWithDefault")
-      MyInput_InputAdapter.obj().present().toJson(writer, customScalarAdapters,
-          value.nonNullableInputWithDefault)
+      MyInput_InputAdapter.obj().present().toJson(writer, customScalarAdapters, value.nonNullableInputWithDefault)
     }
     else if (withDefaultValues) {
       writer.name("nonNullableInputWithDefault")

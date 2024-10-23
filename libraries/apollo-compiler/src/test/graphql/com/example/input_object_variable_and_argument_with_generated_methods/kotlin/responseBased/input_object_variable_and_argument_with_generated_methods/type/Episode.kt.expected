@@ -47,8 +47,8 @@ public enum class Episode(
   ;
 
   public companion object {
-    public val type: EnumType = EnumType("Episode", listOf("NEWHOPE", "EMPIRE", "JEDI",
-        "DEPRECATED", "new"))
+    public val type: EnumType =
+        EnumType("Episode", listOf("NEWHOPE", "EMPIRE", "JEDI", "DEPRECATED", "new"))
 
     /**
      * All [Episode] known at compile time
@@ -73,10 +73,8 @@ public enum class Episode(
 
     /**
      * Returns the [Episode] that represents the specified [rawValue].
-     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
-     * schema instead of calling this function directly.
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
      */
-    public fun safeValueOf(rawValue: String): Episode = values().find { it.rawValue == rawValue } ?:
-        UNKNOWN__
+    public fun safeValueOf(rawValue: String): Episode = values().find { it.rawValue == rawValue } ?: UNKNOWN__
   }
 }

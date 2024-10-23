@@ -47,8 +47,7 @@ public class DogFragmentImpl() : Fragment<DogFragment> {
   .build()
 
   public companion object {
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: DogBuilder.() -> Unit = {}): DogFragment = buildData(
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: DogBuilder.() -> Unit = {}): DogFragment = buildData(
       Dog,
       block,
       DogFragmentImpl_ResponseAdapter.DogFragment,

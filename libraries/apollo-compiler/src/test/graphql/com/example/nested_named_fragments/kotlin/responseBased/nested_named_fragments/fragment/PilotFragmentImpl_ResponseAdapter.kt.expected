@@ -21,8 +21,7 @@ public object PilotFragmentImpl_ResponseAdapter {
   public object Data : Adapter<PilotFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "homeworld")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        PilotFragmentImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): PilotFragmentImpl.Data {
       var _name: String? = null
       var _homeworld: PilotFragmentImpl.Data.Homeworld? = null
 
@@ -55,8 +54,7 @@ public object PilotFragmentImpl_ResponseAdapter {
     private object Homeworld : Adapter<PilotFragmentImpl.Data.Homeworld> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          PilotFragmentImpl.Data.Homeworld {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): PilotFragmentImpl.Data.Homeworld {
         var __typename: String? = null
         var _name: String? = null
 

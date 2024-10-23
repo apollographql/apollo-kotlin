@@ -42,5 +42,6 @@ public class Fragment1Impl() : Fragment<Fragment1Impl.Data> {
 
   public data class Data(
     override val field1: String?,
-  ) : Fragment1, Fragment.Data
+  ) : Fragment1,
+      Fragment.Data
 }

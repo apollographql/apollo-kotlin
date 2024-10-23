@@ -18,12 +18,10 @@ import kotlin.String
 import kotlin.collections.List
 
 public object CharacterAppearsInImpl_ResponseAdapter {
-  public object CharacterAppearsIn :
-      Adapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn> {
+  public object CharacterAppearsIn : Adapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn> {
     public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn {
       var _appearsIn: List<Episode?>? = null
 
       while (true) {
@@ -44,8 +42,7 @@ public object CharacterAppearsInImpl_ResponseAdapter {
       `value`: com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn,
     ) {
       writer.name("appearsIn")
-      Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
-          value.appearsIn)
+      Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters, value.appearsIn)
     }
   }
 }

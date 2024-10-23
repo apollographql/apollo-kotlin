@@ -15,12 +15,10 @@ import kotlin.String
 import kotlin.collections.List
 
 public object UserFragmentImpl_ResponseAdapter {
-  public object UserFragment :
-      Adapter<com.example.named_fragment_with_variables.fragment.UserFragment> {
+  public object UserFragment : Adapter<com.example.named_fragment_with_variables.fragment.UserFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("firstName", "lastName", "avatar")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.named_fragment_with_variables.fragment.UserFragment {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.named_fragment_with_variables.fragment.UserFragment {
       var _firstName: String? = null
       var _lastName: String? = null
       var _avatar: String? = null

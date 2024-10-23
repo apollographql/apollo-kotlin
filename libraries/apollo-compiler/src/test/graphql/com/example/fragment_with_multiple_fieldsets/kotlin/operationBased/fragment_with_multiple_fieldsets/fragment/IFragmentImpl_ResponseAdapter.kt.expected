@@ -17,12 +17,10 @@ import kotlin.String
 import kotlin.collections.List
 
 public object IFragmentImpl_ResponseAdapter {
-  public object IFragment : Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment>
-      {
+  public object IFragment : Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.fragment_with_multiple_fieldsets.fragment.IFragment {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.fragment_with_multiple_fieldsets.fragment.IFragment {
       var __typename: String? = null
 
       while (true) {
@@ -39,8 +37,7 @@ public object IFragmentImpl_ResponseAdapter {
       var _onA: com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA? = null
       if (possibleTypes("A").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind()
-        _onA = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.OnA.fromJson(reader,
-            customScalarAdapters)
+        _onA = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.OnA.fromJson(reader, customScalarAdapters)
       }
 
       return com.example.fragment_with_multiple_fieldsets.fragment.IFragment(
@@ -58,17 +55,14 @@ public object IFragmentImpl_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       if (value.onA != null) {
-        com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.OnA.toJson(writer,
-            customScalarAdapters, value.onA)
+        com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.OnA.toJson(writer, customScalarAdapters, value.onA)
       }
     }
 
-    private object OnA :
-        Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA> {
+    private object OnA : Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA> {
       public val RESPONSE_NAMES: List<String> = listOf("fieldA")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA {
         var _fieldA: String? = null
 
         while (true) {

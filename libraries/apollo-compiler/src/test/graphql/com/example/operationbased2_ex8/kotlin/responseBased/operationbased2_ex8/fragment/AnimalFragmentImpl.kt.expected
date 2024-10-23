@@ -44,7 +44,8 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
   public data class Data(
     override val species: String,
     override val parent: Parent,
-  ) : AnimalFragment, Fragment.Data {
+  ) : AnimalFragment,
+      Fragment.Data {
     public sealed interface Parent : AnimalFragment.Parent {
       override val __typename: String
 
@@ -63,17 +64,20 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
       override val __typename: String,
       override val species: String,
       override val temperature: Int,
-    ) : Parent, AnimalFragment.LionParent
+    ) : Parent,
+        AnimalFragment.LionParent
 
     public data class CatParent(
       override val __typename: String,
       override val species: String,
       override val name: String,
-    ) : Parent, AnimalFragment.CatParent
+    ) : Parent,
+        AnimalFragment.CatParent
 
     public data class OtherParent(
       override val __typename: String,
       override val species: String,
-    ) : Parent, AnimalFragment.Parent
+    ) : Parent,
+        AnimalFragment.Parent
   }
 }

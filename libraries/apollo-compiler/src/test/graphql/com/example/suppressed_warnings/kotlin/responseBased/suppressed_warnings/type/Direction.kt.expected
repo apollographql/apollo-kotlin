@@ -53,10 +53,8 @@ public enum class Direction(
 
     /**
      * Returns the [Direction] that represents the specified [rawValue].
-     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
-     * schema instead of calling this function directly.
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
      */
-    public fun safeValueOf(rawValue: String): Direction = values().find { it.rawValue == rawValue }
-        ?: UNKNOWN__
+    public fun safeValueOf(rawValue: String): Direction = values().find { it.rawValue == rawValue } ?: UNKNOWN__
   }
 }

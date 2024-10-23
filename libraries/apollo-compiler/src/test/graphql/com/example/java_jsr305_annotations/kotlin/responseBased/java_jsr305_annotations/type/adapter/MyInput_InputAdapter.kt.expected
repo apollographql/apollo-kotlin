@@ -17,8 +17,7 @@ import com.example.java_jsr305_annotations.type.MyInput
 import kotlin.IllegalStateException
 
 public object MyInput_InputAdapter : Adapter<MyInput> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): MyInput =
-      throw IllegalStateException("Input type used in output position")
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): MyInput = throw IllegalStateException("Input type used in output position")
 
   override fun toJson(
     writer: JsonWriter,

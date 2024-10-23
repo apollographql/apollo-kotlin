@@ -107,7 +107,9 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
      * The friends of the character exposed as a connection with edges
      */
     override val friendsConnection: FriendsConnection,
-  ) : Data, HumanDetails, HumanHeroDetails {
+  ) : Data,
+      HumanDetails,
+      HumanHeroDetails {
     public data class FriendsConnection(
       /**
        * The total number of friends
@@ -117,7 +119,8 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
        * The edges for each of the character's friends.
        */
       override val edges: List<Edge?>?,
-    ) : Data.FriendsConnection, HumanHeroDetails.FriendsConnection {
+    ) : Data.FriendsConnection,
+        HumanHeroDetails.FriendsConnection {
       public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
       public data class Edge(
@@ -125,13 +128,15 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
          * The character represented by this friendship edge
          */
         override val node: Node?,
-      ) : Data.FriendsConnection.Edge, HumanHeroDetails.FriendsConnection.Edge {
+      ) : Data.FriendsConnection.Edge,
+          HumanHeroDetails.FriendsConnection.Edge {
         public data class Node(
           /**
            * The name of the character
            */
           override val name: String,
-        ) : Data.FriendsConnection.Edge.Node, HumanHeroDetails.FriendsConnection.Edge.Node
+        ) : Data.FriendsConnection.Edge.Node,
+            HumanHeroDetails.FriendsConnection.Edge.Node
       }
     }
   }
@@ -151,7 +156,9 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
      * The friends of the character exposed as a connection with edges
      */
     override val friendsConnection: FriendsConnection,
-  ) : Data, DroidDetails, DroidHeroDetails {
+  ) : Data,
+      DroidDetails,
+      DroidHeroDetails {
     public data class FriendsConnection(
       /**
        * The total number of friends
@@ -161,7 +168,8 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
        * The edges for each of the character's friends.
        */
       override val edges: List<Edge?>?,
-    ) : Data.FriendsConnection, DroidHeroDetails.FriendsConnection {
+    ) : Data.FriendsConnection,
+        DroidHeroDetails.FriendsConnection {
       public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
       public data class Edge(
@@ -169,13 +177,15 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
          * The character represented by this friendship edge
          */
         override val node: Node?,
-      ) : Data.FriendsConnection.Edge, DroidHeroDetails.FriendsConnection.Edge {
+      ) : Data.FriendsConnection.Edge,
+          DroidHeroDetails.FriendsConnection.Edge {
         public data class Node(
           /**
            * The name of the character
            */
           override val name: String,
-        ) : Data.FriendsConnection.Edge.Node, DroidHeroDetails.FriendsConnection.Edge.Node
+        ) : Data.FriendsConnection.Edge.Node,
+            DroidHeroDetails.FriendsConnection.Edge.Node
       }
     }
   }
@@ -190,7 +200,8 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
      * The friends of the character exposed as a connection with edges
      */
     override val friendsConnection: FriendsConnection,
-  ) : Data, HeroDetails {
+  ) : Data,
+      HeroDetails {
     public data class FriendsConnection(
       /**
        * The total number of friends
@@ -200,7 +211,8 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
        * The edges for each of the character's friends.
        */
       override val edges: List<Edge?>?,
-    ) : Data.FriendsConnection, HeroDetails.FriendsConnection {
+    ) : Data.FriendsConnection,
+        HeroDetails.FriendsConnection {
       public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
       public data class Edge(
@@ -208,13 +220,15 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
          * The character represented by this friendship edge
          */
         override val node: Node?,
-      ) : Data.FriendsConnection.Edge, HeroDetails.FriendsConnection.Edge {
+      ) : Data.FriendsConnection.Edge,
+          HeroDetails.FriendsConnection.Edge {
         public data class Node(
           /**
            * The name of the character
            */
           override val name: String,
-        ) : Data.FriendsConnection.Edge.Node, HeroDetails.FriendsConnection.Edge.Node
+        ) : Data.FriendsConnection.Edge.Node,
+            HeroDetails.FriendsConnection.Edge.Node
       }
     }
   }

@@ -37,8 +37,7 @@ public data class CatQuery(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    CatQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    CatQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = CatQuery_ResponseAdapter.Data.obj()
@@ -78,8 +77,7 @@ public data class CatQuery(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query CatQuery(${'$'}filter: Filter) { search(filter: ${'$'}filter) { mustaches } direction }"
+      get() = "query CatQuery(${'$'}filter: Filter) { search(filter: ${'$'}filter) { mustaches } direction }"
 
     public const val OPERATION_NAME: String = "CatQuery"
   }

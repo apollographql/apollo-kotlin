@@ -38,8 +38,7 @@ public data class GetUser(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    GetUser_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    GetUser_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = GetUser_ResponseAdapter.Data.obj(true)
@@ -92,8 +91,7 @@ public data class GetUser(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query GetUser(${'$'}organizationId: String!, ${'$'}query: UserQuery!, ${'$'}size: Int!) { __typename ...QueryFragment }  fragment UserFragment on User { firstName lastName avatar(size: ${'$'}size) }  fragment QueryFragment on Query { organization(id: ${'$'}organizationId) { id user(query: ${'$'}query) { __typename ...UserFragment } } }"
+      get() = "query GetUser(${'$'}organizationId: String!, ${'$'}query: UserQuery!, ${'$'}size: Int!) { __typename ...QueryFragment }  fragment UserFragment on User { firstName lastName avatar(size: ${'$'}size) }  fragment QueryFragment on Query { organization(id: ${'$'}organizationId) { id user(query: ${'$'}query) { __typename ...UserFragment } } }"
 
     public const val OPERATION_NAME: String = "GetUser"
   }

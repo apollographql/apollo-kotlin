@@ -17,8 +17,7 @@ public object BFragmentImpl_ResponseAdapter {
   public object Data : Adapter<BFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("fieldB1")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        BFragmentImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): BFragmentImpl.Data {
       var _fieldB1: String? = null
 
       while (true) {

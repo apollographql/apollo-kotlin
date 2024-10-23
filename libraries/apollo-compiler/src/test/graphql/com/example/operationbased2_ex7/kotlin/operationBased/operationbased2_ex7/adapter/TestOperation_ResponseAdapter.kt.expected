@@ -25,8 +25,7 @@ public object TestOperation_ResponseAdapter {
   public object Data : Adapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestOperation.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
       while (true) {
@@ -53,8 +52,7 @@ public object TestOperation_ResponseAdapter {
     private object Animal : Adapter<TestOperation.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestOperation.Data.Animal {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Animal {
         var __typename: String? = null
 
         while (true) {
@@ -65,8 +63,7 @@ public object TestOperation_ResponseAdapter {
         }
 
         reader.rewind()
-        val _onAnimal = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.fromJson(reader,
-            customScalarAdapters)
+        val _onAnimal = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.fromJson(reader, customScalarAdapters)
 
         return TestOperation.Data.Animal(
           __typename = __typename ?: missingField(reader, "__typename"),
@@ -82,15 +79,13 @@ public object TestOperation_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.toJson(writer,
-            customScalarAdapters, value.onAnimal)
+        com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.toJson(writer, customScalarAdapters, value.onAnimal)
       }
 
       private object OnAnimal : Adapter<TestOperation.Data.Animal.OnAnimal> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestOperation.Data.Animal.OnAnimal {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Animal.OnAnimal {
           var __typename: String? = null
           var _species: String? = null
 
@@ -109,15 +104,13 @@ public object TestOperation_ResponseAdapter {
           var _onWarmBlooded: TestOperation.Data.Animal.OnAnimal.OnWarmBlooded? = null
           if (possibleTypes("Lion","Cat","Panther").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
             reader.rewind()
-            _onWarmBlooded = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnWarmBlooded.fromJson(reader,
-                customScalarAdapters)
+            _onWarmBlooded = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnWarmBlooded.fromJson(reader, customScalarAdapters)
           }
 
           var _onPet: TestOperation.Data.Animal.OnAnimal.OnPet? = null
           if (possibleTypes("Cat","Turtle").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
             reader.rewind()
-            _onPet = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnPet.fromJson(reader,
-                customScalarAdapters)
+            _onPet = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnPet.fromJson(reader, customScalarAdapters)
           }
 
           return TestOperation.Data.Animal.OnAnimal(
@@ -140,21 +133,18 @@ public object TestOperation_ResponseAdapter {
           StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
           if (value.onWarmBlooded != null) {
-            com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnWarmBlooded.toJson(writer,
-                customScalarAdapters, value.onWarmBlooded)
+            com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnWarmBlooded.toJson(writer, customScalarAdapters, value.onWarmBlooded)
           }
 
           if (value.onPet != null) {
-            com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnPet.toJson(writer,
-                customScalarAdapters, value.onPet)
+            com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnPet.toJson(writer, customScalarAdapters, value.onPet)
           }
         }
 
         private object OnWarmBlooded : Adapter<TestOperation.Data.Animal.OnAnimal.OnWarmBlooded> {
           public val RESPONSE_NAMES: List<String> = listOf("temperature")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestOperation.Data.Animal.OnAnimal.OnWarmBlooded {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Animal.OnAnimal.OnWarmBlooded {
             var _temperature: Int? = null
 
             while (true) {
@@ -182,8 +172,7 @@ public object TestOperation_ResponseAdapter {
         private object OnPet : Adapter<TestOperation.Data.Animal.OnAnimal.OnPet> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestOperation.Data.Animal.OnAnimal.OnPet {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Animal.OnAnimal.OnPet {
             var _name: String? = null
 
             while (true) {

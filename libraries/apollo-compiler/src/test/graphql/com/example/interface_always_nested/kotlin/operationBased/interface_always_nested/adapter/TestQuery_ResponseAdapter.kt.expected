@@ -23,8 +23,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("root")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _root: TestQuery.Data.Root? = null
 
       while (true) {
@@ -51,8 +50,7 @@ public object TestQuery_ResponseAdapter {
     private object Root : Adapter<TestQuery.Data.Root> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Root {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Root {
         var __typename: String? = null
 
         while (true) {
@@ -69,8 +67,7 @@ public object TestQuery_ResponseAdapter {
         var _onA: TestQuery.Data.Root.OnA? = null
         if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onA = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.fromJson(reader,
-              customScalarAdapters)
+          _onA = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.fromJson(reader, customScalarAdapters)
         }
 
         return TestQuery.Data.Root(
@@ -88,16 +85,14 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onA != null) {
-          com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.toJson(writer,
-              customScalarAdapters, value.onA)
+          com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.toJson(writer, customScalarAdapters, value.onA)
         }
       }
 
       private object OnA : Adapter<TestQuery.Data.Root.OnA> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.Root.OnA {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Root.OnA {
           var __typename: String? = null
           var _fieldA1: String? = null
 
@@ -116,8 +111,7 @@ public object TestQuery_ResponseAdapter {
           var _onB: TestQuery.Data.Root.OnA.OnB? = null
           if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
             reader.rewind()
-            _onB = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.fromJson(reader,
-                customScalarAdapters)
+            _onB = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.fromJson(reader, customScalarAdapters)
           }
 
           return TestQuery.Data.Root.OnA(
@@ -139,16 +133,14 @@ public object TestQuery_ResponseAdapter {
           NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1)
 
           if (value.onB != null) {
-            com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.toJson(writer,
-                customScalarAdapters, value.onB)
+            com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.toJson(writer, customScalarAdapters, value.onB)
           }
         }
 
         private object OnB : Adapter<TestQuery.Data.Root.OnA.OnB> {
           public val RESPONSE_NAMES: List<String> = listOf("fieldB1")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestQuery.Data.Root.OnA.OnB {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Root.OnA.OnB {
             var _fieldB1: String? = null
 
             while (true) {

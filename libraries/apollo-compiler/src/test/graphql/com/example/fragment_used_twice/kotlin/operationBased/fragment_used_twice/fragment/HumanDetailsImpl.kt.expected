@@ -30,8 +30,7 @@ public class HumanDetailsImpl() : Fragment<HumanDetails> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<HumanDetails> =
-      HumanDetailsImpl_ResponseAdapter.HumanDetails.obj(true)
+  override fun adapter(): Adapter<HumanDetails> = HumanDetailsImpl_ResponseAdapter.HumanDetails.obj(true)
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

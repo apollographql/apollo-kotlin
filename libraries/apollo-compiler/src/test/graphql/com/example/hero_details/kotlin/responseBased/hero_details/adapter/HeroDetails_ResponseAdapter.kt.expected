@@ -26,8 +26,7 @@ public object HeroDetails_ResponseAdapter {
   public object Data : Adapter<HeroDetails.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        HeroDetails.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HeroDetails.Data {
       var _hero: HeroDetails.Data.Hero? = null
 
       while (true) {
@@ -54,8 +53,7 @@ public object HeroDetails_ResponseAdapter {
     private object Hero : Adapter<HeroDetails.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("type", "name", "friendsConnection")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          HeroDetails.Data.Hero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HeroDetails.Data.Hero {
         var _type: Hero_type? = null
         var _name: String? = null
         var _friendsConnection: HeroDetails.Data.Hero.FriendsConnection? = null
@@ -94,8 +92,7 @@ public object HeroDetails_ResponseAdapter {
       private object FriendsConnection : Adapter<HeroDetails.Data.Hero.FriendsConnection> {
         public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            HeroDetails.Data.Hero.FriendsConnection {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HeroDetails.Data.Hero.FriendsConnection {
           var _totalCount: Int? = null
           var _edges: List<HeroDetails.Data.Hero.FriendsConnection.Edge?>? = null
 
@@ -128,8 +125,7 @@ public object HeroDetails_ResponseAdapter {
         private object Edge : Adapter<HeroDetails.Data.Hero.FriendsConnection.Edge> {
           public val RESPONSE_NAMES: List<String> = listOf("node")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              HeroDetails.Data.Hero.FriendsConnection.Edge {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HeroDetails.Data.Hero.FriendsConnection.Edge {
             var _node: HeroDetails.Data.Hero.FriendsConnection.Edge.Node? = null
 
             while (true) {
@@ -156,8 +152,7 @@ public object HeroDetails_ResponseAdapter {
           private object Node : Adapter<HeroDetails.Data.Hero.FriendsConnection.Edge.Node> {
             public val RESPONSE_NAMES: List<String> = listOf("name")
 
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                HeroDetails.Data.Hero.FriendsConnection.Edge.Node {
+            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HeroDetails.Data.Hero.FriendsConnection.Edge.Node {
               var _name: String? = null
 
               while (true) {

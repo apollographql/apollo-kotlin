@@ -102,8 +102,7 @@ public class InlineMultipleWithDefer() : Query<InlineMultipleWithDefer.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query InlineMultipleWithDefer { hero { __typename ... on Droid @defer(label: \"d_first\") { name } ... on Droid @defer(label: \"d_second\") { id } } }"
+      get() = "query InlineMultipleWithDefer { hero { __typename ... on Droid @defer(label: \"d_first\") { name } ... on Droid @defer(label: \"d_second\") { id } } }"
 
     public const val OPERATION_NAME: String = "InlineMultipleWithDefer"
   }

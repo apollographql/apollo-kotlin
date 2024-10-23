@@ -31,8 +31,7 @@ public object TestQuery_VariablesAdapter {
   ) {
     if (value.input is Optional.Present) {
       writer.name("input")
-      RenamedInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
-          value.input)
+      RenamedInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters, value.input)
     }
     if (value.scalar is Optional.Present) {
       writer.name("scalar")
@@ -40,8 +39,7 @@ public object TestQuery_VariablesAdapter {
     }
     if (value.`enum` is Optional.Present) {
       writer.name("enum")
-      RenamedEnum_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
-          value.`enum`)
+      RenamedEnum_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters, value.`enum`)
     }
   }
 }

@@ -117,8 +117,7 @@ public class HeroDetailsQuery() : Query<HeroDetailsQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query HeroDetails { hero { name friendsConnection { totalCount edges { node { name } } } } }"
+      get() = "query HeroDetails { hero { name friendsConnection { totalCount edges { node { name } } } } }"
 
     public const val OPERATION_NAME: String = "HeroDetails"
   }

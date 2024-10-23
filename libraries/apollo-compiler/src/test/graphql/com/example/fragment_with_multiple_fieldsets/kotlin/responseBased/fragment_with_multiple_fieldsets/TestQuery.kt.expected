@@ -70,11 +70,13 @@ public class TestQuery() : Query<TestQuery.Data> {
     public data class AI(
       override val __typename: String,
       override val fieldA: String?,
-    ) : I, AIFragment
+    ) : I,
+        AIFragment
 
     public data class OtherI(
       override val __typename: String,
-    ) : I, IFragment
+    ) : I,
+        IFragment
   }
 
   public companion object {
@@ -102,8 +104,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { i { __typename ...iFragment } }  fragment iFragment on I { __typename ... on A { fieldA } }"
+      get() = "query TestQuery { i { __typename ...iFragment } }  fragment iFragment on I { __typename ... on A { fieldA } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

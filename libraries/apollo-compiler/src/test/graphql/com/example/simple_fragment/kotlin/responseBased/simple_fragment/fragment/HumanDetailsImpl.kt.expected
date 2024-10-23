@@ -56,11 +56,11 @@ internal class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
      * What this human calls themselves
      */
     override val name: String,
-  ) : HumanDetails, Fragment.Data
+  ) : HumanDetails,
+      Fragment.Data
 
   public companion object {
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: HumanBuilder.() -> Unit = {}): Data = buildData(
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: HumanBuilder.() -> Unit = {}): Data = buildData(
       Human,
       block,
       HumanDetailsImpl_ResponseAdapter.Data,

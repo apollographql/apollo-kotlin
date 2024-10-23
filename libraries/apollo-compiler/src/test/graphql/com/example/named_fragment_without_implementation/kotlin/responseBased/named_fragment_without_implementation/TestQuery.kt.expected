@@ -89,7 +89,8 @@ public class TestQuery() : Query<TestQuery.Data> {
        * Height in the preferred unit, default is meters
        */
       override val height: Double?,
-    ) : Hero, HumanDetails
+    ) : Hero,
+        HumanDetails
 
     public data class DroidHero(
       override val __typename: String,
@@ -101,7 +102,8 @@ public class TestQuery() : Query<TestQuery.Data> {
        * This droid's primary function
        */
       override val primaryFunction: String?,
-    ) : Hero, DroidDetails
+    ) : Hero,
+        DroidDetails
 
     public data class OtherHero(
       override val __typename: String,
@@ -140,8 +142,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { hero { __typename name ...HumanDetails ...DroidDetails } }  fragment HumanDetails on Human { height }  fragment DroidDetails on Droid { primaryFunction }"
+      get() = "query TestQuery { hero { __typename name ...HumanDetails ...DroidDetails } }  fragment HumanDetails on Human { height }  fragment DroidDetails on Droid { primaryFunction }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

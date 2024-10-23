@@ -47,8 +47,7 @@ public class CatFragmentImpl() : Fragment<CatFragment> {
   .build()
 
   public companion object {
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: CatBuilder.() -> Unit = {}): CatFragment = buildData(
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: CatBuilder.() -> Unit = {}): CatFragment = buildData(
       Cat,
       block,
       CatFragmentImpl_ResponseAdapter.CatFragment,

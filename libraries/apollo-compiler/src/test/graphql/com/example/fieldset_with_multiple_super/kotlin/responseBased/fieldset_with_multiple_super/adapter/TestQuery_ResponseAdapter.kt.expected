@@ -24,8 +24,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("c")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _c: TestQuery.Data.C? = null
 
       while (true) {
@@ -50,8 +49,7 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object C : Adapter<TestQuery.Data.C> {
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.C {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.C {
         val __typename = reader.readTypename()
         return when(__typename) {
           "ABC",
@@ -80,8 +78,8 @@ public object TestQuery_ResponseAdapter {
     }
 
     public object ABC {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1", "fieldB1",
-          "fieldB2", "fieldA2")
+      public val RESPONSE_NAMES: List<String> =
+          listOf("__typename", "fieldA1", "fieldB1", "fieldB2", "fieldA2")
 
       public fun fromJson(
         reader: JsonReader,

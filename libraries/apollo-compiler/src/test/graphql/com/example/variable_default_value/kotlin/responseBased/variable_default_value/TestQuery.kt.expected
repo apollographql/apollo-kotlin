@@ -36,8 +36,7 @@ public data class TestQuery @JvmOverloads constructor(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
@@ -78,8 +77,7 @@ public data class TestQuery @JvmOverloads constructor(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery(${'$'}episode: Episode! = JEDI ) { hero(episode: ${'$'}episode) { name } }"
+      get() = "query TestQuery(${'$'}episode: Episode! = JEDI ) { hero(episode: ${'$'}episode) { name } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

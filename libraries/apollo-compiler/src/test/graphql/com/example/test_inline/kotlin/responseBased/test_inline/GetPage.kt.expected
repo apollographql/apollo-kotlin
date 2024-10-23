@@ -65,8 +65,7 @@ public class GetPage() : Query<GetPage.Data> {
 
       public companion object {
         @Suppress("USELESS_CAST")
-        public fun Collection.asParticularCollection(): ParticularCollectionCollection? = this as?
-            ParticularCollectionCollection
+        public fun Collection.asParticularCollection(): ParticularCollectionCollection? = this as? ParticularCollectionCollection
       }
     }
 
@@ -89,12 +88,14 @@ public class GetPage() : Query<GetPage.Data> {
         override val title: String,
         override val __typename: String,
         public val image: String,
-      ) : Item, Collection.Item
+      ) : Item,
+          Collection.Item
 
       public data class OtherItem(
         override val title: String,
         override val __typename: String,
-      ) : Item, Collection.Item
+      ) : Item,
+          Collection.Item
     }
 
     public data class OtherCollection(
@@ -135,8 +136,7 @@ public class GetPage() : Query<GetPage.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query GetPage { collection { __typename items { title } ... on ParticularCollection { items { __typename ... on ParticularItem { image } } } } }"
+      get() = "query GetPage { collection { __typename items { title } ... on ParticularCollection { items { __typename ... on ParticularItem { image } } } } }"
 
     public const val OPERATION_NAME: String = "GetPage"
   }

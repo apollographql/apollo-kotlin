@@ -23,8 +23,7 @@ public object CreateReviewForEpisodeMutation_ResponseAdapter {
   public object Data : Adapter<CreateReviewForEpisodeMutation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("createReview")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        CreateReviewForEpisodeMutation.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): CreateReviewForEpisodeMutation.Data {
       var _createReview: CreateReviewForEpisodeMutation.Data.CreateReview? = null
 
       while (true) {
@@ -51,8 +50,7 @@ public object CreateReviewForEpisodeMutation_ResponseAdapter {
     private object CreateReview : Adapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
       public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          CreateReviewForEpisodeMutation.Data.CreateReview {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): CreateReviewForEpisodeMutation.Data.CreateReview {
         var _stars: Int? = null
         var _commentary: String? = null
 

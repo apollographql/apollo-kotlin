@@ -20,8 +20,7 @@ import com.example.mutation_create_review.type.ColorInput
 import kotlin.IllegalStateException
 
 internal object ColorInput_InputAdapter : Adapter<ColorInput> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): ColorInput
-      = throw IllegalStateException("Input type used in output position")
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): ColorInput = throw IllegalStateException("Input type used in output position")
 
   override fun toJson(
     writer: JsonWriter,
@@ -42,13 +41,11 @@ internal object ColorInput_InputAdapter : Adapter<ColorInput> {
     }
     if (value.enumWithDefaultValue is Optional.Present) {
       writer.name("enumWithDefaultValue")
-      Episode_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
-          value.enumWithDefaultValue)
+      Episode_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters, value.enumWithDefaultValue)
     }
     if (value.reviewRefInput is Optional.Present) {
       writer.name("reviewRefInput")
-      ReviewRefInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
-          value.reviewRefInput)
+      ReviewRefInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters, value.reviewRefInput)
     }
   }
 }

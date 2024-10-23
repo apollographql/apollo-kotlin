@@ -15,12 +15,10 @@ import kotlin.String
 import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
-  public object HeroDetails :
-      Adapter<com.example.fragment_spread_with_include_directive.fragment.HeroDetails> {
+  public object HeroDetails : Adapter<com.example.fragment_spread_with_include_directive.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.fragment_spread_with_include_directive.fragment.HeroDetails {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.fragment_spread_with_include_directive.fragment.HeroDetails {
       var _name: String? = null
 
       while (true) {

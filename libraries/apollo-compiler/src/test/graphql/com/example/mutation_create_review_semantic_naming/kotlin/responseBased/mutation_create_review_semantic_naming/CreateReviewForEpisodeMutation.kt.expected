@@ -37,8 +37,7 @@ public data class CreateReviewForEpisodeMutation(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    CreateReviewForEpisodeMutation_VariablesAdapter.serializeVariables(writer, this,
-        customScalarAdapters, withDefaultValues)
+    CreateReviewForEpisodeMutation_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = CreateReviewForEpisodeMutation_ResponseAdapter.Data.obj()
@@ -84,8 +83,7 @@ public data class CreateReviewForEpisodeMutation(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) { createReview(episode: ${'$'}ep, review: ${'$'}review) { stars commentary } }"
+      get() = "mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) { createReview(episode: ${'$'}ep, review: ${'$'}review) { stars commentary } }"
 
     public const val OPERATION_NAME: String = "CreateReviewForEpisode"
   }

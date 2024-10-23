@@ -47,10 +47,8 @@ public enum class Hero_type(
 
     /**
      * Returns the [Hero_type] that represents the specified [rawValue].
-     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
-     * schema instead of calling this function directly.
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
      */
-    public fun safeValueOf(rawValue: String): Hero_type = values().find { it.rawValue == rawValue }
-        ?: UNKNOWN__
+    public fun safeValueOf(rawValue: String): Hero_type = values().find { it.rawValue == rawValue } ?: UNKNOWN__
   }
 }

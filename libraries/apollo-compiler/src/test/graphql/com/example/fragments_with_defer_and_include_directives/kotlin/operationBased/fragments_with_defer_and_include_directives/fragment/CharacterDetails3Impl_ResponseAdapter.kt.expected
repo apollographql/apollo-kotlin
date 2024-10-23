@@ -16,12 +16,10 @@ import kotlin.String
 import kotlin.collections.List
 
 public object CharacterDetails3Impl_ResponseAdapter {
-  public object CharacterDetails3 :
-      Adapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3> {
+  public object CharacterDetails3 : Adapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3> {
     public val RESPONSE_NAMES: List<String> = listOf("birthDate")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3 {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3 {
       var _birthDate: Any? = null
 
       while (true) {

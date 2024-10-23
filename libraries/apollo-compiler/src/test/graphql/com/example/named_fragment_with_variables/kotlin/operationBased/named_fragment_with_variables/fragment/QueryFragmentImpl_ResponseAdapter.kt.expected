@@ -18,12 +18,10 @@ import kotlin.String
 import kotlin.collections.List
 
 public object QueryFragmentImpl_ResponseAdapter {
-  public object QueryFragment :
-      Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
+  public object QueryFragment : Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("organization")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.named_fragment_with_variables.fragment.QueryFragment {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.named_fragment_with_variables.fragment.QueryFragment {
       var _organization: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization? = null
 
       while (true) {
@@ -47,12 +45,10 @@ public object QueryFragmentImpl_ResponseAdapter {
       Organization.obj().nullable().toJson(writer, customScalarAdapters, value.organization)
     }
 
-    private object Organization :
-        Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization> {
+    private object Organization : Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.named_fragment_with_variables.fragment.QueryFragment.Organization {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.named_fragment_with_variables.fragment.QueryFragment.Organization {
         var _id: String? = null
         var _user: List<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>? = null
 
@@ -82,13 +78,10 @@ public object QueryFragmentImpl_ResponseAdapter {
         User.obj(true).list().toJson(writer, customScalarAdapters, value.user)
       }
 
-      private object User :
-          Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>
-          {
+      private object User : Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User {
           var __typename: String? = null
 
           while (true) {
@@ -99,8 +92,7 @@ public object QueryFragmentImpl_ResponseAdapter {
           }
 
           reader.rewind()
-          val _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.fromJson(reader,
-              customScalarAdapters)
+          val _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.fromJson(reader, customScalarAdapters)
 
           return com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User(
             __typename = __typename ?: missingField(reader, "__typename"),
@@ -116,8 +108,7 @@ public object QueryFragmentImpl_ResponseAdapter {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-          com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.toJson(writer,
-              customScalarAdapters, value.userFragment)
+          com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.toJson(writer, customScalarAdapters, value.userFragment)
         }
       }
     }

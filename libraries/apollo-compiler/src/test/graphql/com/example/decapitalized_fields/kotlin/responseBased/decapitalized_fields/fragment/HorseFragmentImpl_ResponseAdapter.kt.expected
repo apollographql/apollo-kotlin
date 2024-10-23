@@ -19,8 +19,7 @@ public object HorseFragmentImpl_ResponseAdapter {
   public object Data : Adapter<HorseFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("Cow")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        HorseFragmentImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HorseFragmentImpl.Data {
       var _Cow: HorseFragmentImpl.Data.Cow? = null
 
       while (true) {
@@ -47,8 +46,7 @@ public object HorseFragmentImpl_ResponseAdapter {
     private object Cow : Adapter<HorseFragmentImpl.Data.Cow> {
       public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          HorseFragmentImpl.Data.Cow {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HorseFragmentImpl.Data.Cow {
         var _Moo: String? = null
 
         while (true) {

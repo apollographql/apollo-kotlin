@@ -85,8 +85,7 @@ public class SpreadMultipleWithDefer() : Query<SpreadMultipleWithDefer.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query SpreadMultipleWithDefer { hero { __typename ...DroidDetails @defer(label: \"a_first\") ...DroidDetails @defer(label: \"a_second\") } }  fragment DroidDetails on Droid { name }"
+      get() = "query SpreadMultipleWithDefer { hero { __typename ...DroidDetails @defer(label: \"a_first\") ...DroidDetails @defer(label: \"a_second\") } }  fragment DroidDetails on Droid { name }"
 
     public const val OPERATION_NAME: String = "SpreadMultipleWithDefer"
   }

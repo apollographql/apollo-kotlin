@@ -107,14 +107,16 @@ public class AllStarships() : Query<AllStarships.Data> {
                  * A planet that this person was born on or inhabits.
                  */
                 override val homeworld: Homeworld?,
-              ) : PilotFragment, StarshipFragment.PilotConnection.Edge.Node {
+              ) : PilotFragment,
+                  StarshipFragment.PilotConnection.Edge.Node {
                 public data class Homeworld(
                   override val __typename: String,
                   /**
                    * The name of this planet.
                    */
                   override val name: String?,
-                ) : PlanetFragment, PilotFragment.Homeworld,
+                ) : PlanetFragment,
+                    PilotFragment.Homeworld,
                     StarshipFragment.PilotConnection.Edge.Node.Homeworld {
                   public companion object {
                     @Suppress("USELESS_CAST")
@@ -186,8 +188,7 @@ public class AllStarships() : Query<AllStarships.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query AllStarships { allStarships(first: 7) { edges { node { __typename ...starshipFragment } } } }  fragment planetFragment on Planet { name }  fragment pilotFragment on Person { name homeworld { __typename ...planetFragment } }  fragment starshipFragment on Starship { id name pilotConnection { edges { node { __typename ...pilotFragment } } } }"
+      get() = "query AllStarships { allStarships(first: 7) { edges { node { __typename ...starshipFragment } } } }  fragment planetFragment on Planet { name }  fragment pilotFragment on Person { name homeworld { __typename ...planetFragment } }  fragment starshipFragment on Starship { id name pilotConnection { edges { node { __typename ...pilotFragment } } } }"
 
     public const val OPERATION_NAME: String = "AllStarships"
   }

@@ -20,8 +20,7 @@ public class Cat {
     public val type: ObjectType =
         ObjectType.Builder(name = "Cat").interfaces(listOf(Node.type)).build()
 
-    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): CatBuilder =
-        CatBuilder(customScalarAdapters)
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): CatBuilder = CatBuilder(customScalarAdapters)
   }
 }
 
@@ -40,7 +39,8 @@ public class CatBuilder(
 
 public class CatMap(
   __fields: Map<String, Any?>,
-) : NodeMap, AnimalMap, Map<String, Any?> by __fields
+) : NodeMap,
+    AnimalMap,
+    Map<String, Any?> by __fields
 
-public fun BuilderScope.buildCat(block: CatBuilder.() -> Unit): CatMap =
-    CatBuilder(customScalarAdapters).apply(block).build()
+public fun BuilderScope.buildCat(block: CatBuilder.() -> Unit): CatMap = CatBuilder(customScalarAdapters).apply(block).build()

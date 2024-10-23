@@ -18,8 +18,7 @@ public object HumanFragmentImpl_ResponseAdapter {
   public object HumanFragment : Adapter<com.example.data_builders.fragment.HumanFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("homePlanet")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.data_builders.fragment.HumanFragment {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.data_builders.fragment.HumanFragment {
       var _homePlanet: String? = null
 
       while (true) {

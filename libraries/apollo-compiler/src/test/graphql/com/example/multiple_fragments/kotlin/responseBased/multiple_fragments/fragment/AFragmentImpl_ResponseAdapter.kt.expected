@@ -23,8 +23,7 @@ public object AFragmentImpl_ResponseAdapter {
   public object Data : Adapter<AFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        AFragmentImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): AFragmentImpl.Data {
       var _node: AFragmentImpl.Data.Node? = null
 
       while (true) {
@@ -49,8 +48,7 @@ public object AFragmentImpl_ResponseAdapter {
     }
 
     private object Node : Adapter<AFragmentImpl.Data.Node> {
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          AFragmentImpl.Data.Node {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): AFragmentImpl.Data.Node {
         val __typename = reader.readTypename()
         return when(__typename) {
           "ANode",

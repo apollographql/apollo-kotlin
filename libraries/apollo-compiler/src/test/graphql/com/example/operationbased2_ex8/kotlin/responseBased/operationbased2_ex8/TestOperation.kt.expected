@@ -77,18 +77,21 @@ public class TestOperation() : Query<TestOperation.Data> {
         override val __typename: String,
         override val species: String,
         override val temperature: Int,
-      ) : Parent, AnimalFragment.LionParent
+      ) : Parent,
+          AnimalFragment.LionParent
 
       public data class CatParent(
         override val __typename: String,
         override val species: String,
         override val name: String,
-      ) : Parent, AnimalFragment.CatParent
+      ) : Parent,
+          AnimalFragment.CatParent
 
       public data class OtherParent(
         override val __typename: String,
         override val species: String,
-      ) : Parent, AnimalFragment.Parent
+      ) : Parent,
+          AnimalFragment.Parent
 
       public companion object {
         @Suppress("USELESS_CAST")
@@ -129,8 +132,7 @@ public class TestOperation() : Query<TestOperation.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestOperation { animal { __typename ...AnimalFragment } }  fragment AnimalFragment on Animal { species parent { __typename species ... on Lion { temperature } ... on Cat { name } } }"
+      get() = "query TestOperation { animal { __typename ...AnimalFragment } }  fragment AnimalFragment on Animal { species parent { __typename species ... on Lion { temperature } ... on Cat { name } } }"
 
     public const val OPERATION_NAME: String = "TestOperation"
   }

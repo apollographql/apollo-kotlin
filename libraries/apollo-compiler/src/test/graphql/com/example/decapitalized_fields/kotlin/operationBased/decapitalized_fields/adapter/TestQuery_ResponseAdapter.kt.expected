@@ -22,8 +22,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("Horse")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _Horse: TestQuery.Data.Horse? = null
 
       while (true) {
@@ -50,8 +49,7 @@ public object TestQuery_ResponseAdapter {
     private object Horse : Adapter<TestQuery.Data.Horse> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "Donkey")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Horse {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Horse {
         var __typename: String? = null
         var _Donkey: String? = null
 
@@ -64,12 +62,10 @@ public object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val _onHorse = com.example.decapitalized_fields.adapter.TestQuery_ResponseAdapter.Data.Horse.OnHorse.fromJson(reader,
-            customScalarAdapters)
+        val _onHorse = com.example.decapitalized_fields.adapter.TestQuery_ResponseAdapter.Data.Horse.OnHorse.fromJson(reader, customScalarAdapters)
 
         reader.rewind()
-        val _horseFragment = com.example.decapitalized_fields.fragment.HorseFragmentImpl_ResponseAdapter.HorseFragment.fromJson(reader,
-            customScalarAdapters)
+        val _horseFragment = com.example.decapitalized_fields.fragment.HorseFragmentImpl_ResponseAdapter.HorseFragment.fromJson(reader, customScalarAdapters)
 
         return TestQuery.Data.Horse(
           __typename = __typename ?: missingField(reader, "__typename"),
@@ -90,18 +86,15 @@ public object TestQuery_ResponseAdapter {
         writer.name("Donkey")
         NullableStringAdapter.toJson(writer, customScalarAdapters, value.donkey)
 
-        com.example.decapitalized_fields.adapter.TestQuery_ResponseAdapter.Data.Horse.OnHorse.toJson(writer,
-            customScalarAdapters, value.onHorse)
+        com.example.decapitalized_fields.adapter.TestQuery_ResponseAdapter.Data.Horse.OnHorse.toJson(writer, customScalarAdapters, value.onHorse)
 
-        com.example.decapitalized_fields.fragment.HorseFragmentImpl_ResponseAdapter.HorseFragment.toJson(writer,
-            customScalarAdapters, value.horseFragment)
+        com.example.decapitalized_fields.fragment.HorseFragmentImpl_ResponseAdapter.HorseFragment.toJson(writer, customScalarAdapters, value.horseFragment)
       }
 
       private object OnHorse : Adapter<TestQuery.Data.Horse.OnHorse> {
         public val RESPONSE_NAMES: List<String> = listOf("Cow")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.Horse.OnHorse {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Horse.OnHorse {
           var _Cow: TestQuery.Data.Horse.OnHorse.Cow? = null
 
           while (true) {
@@ -128,8 +121,7 @@ public object TestQuery_ResponseAdapter {
         private object Cow : Adapter<TestQuery.Data.Horse.OnHorse.Cow> {
           public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestQuery.Data.Horse.OnHorse.Cow {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Horse.OnHorse.Cow {
             var _Moo: String? = null
 
             while (true) {

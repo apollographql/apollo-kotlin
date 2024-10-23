@@ -17,8 +17,7 @@ import com.example.named_fragment_with_variables.type.UserQuery
 import kotlin.IllegalStateException
 
 public object UserQuery_InputAdapter : Adapter<UserQuery> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): UserQuery =
-      throw IllegalStateException("Input type used in output position")
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): UserQuery = throw IllegalStateException("Input type used in output position")
 
   override fun toJson(
     writer: JsonWriter,

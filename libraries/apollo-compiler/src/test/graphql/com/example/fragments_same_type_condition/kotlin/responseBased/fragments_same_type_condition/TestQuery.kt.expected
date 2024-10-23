@@ -80,7 +80,9 @@ public class TestQuery() : Query<TestQuery.Data> {
        * This droid's primary function
        */
       override val primaryFunction: String?,
-    ) : Hero, DroidDetails1, DroidDetails2
+    ) : Hero,
+        DroidDetails1,
+        DroidDetails2
 
     public data class OtherHero(
       override val __typename: String,
@@ -114,8 +116,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { hero { __typename ...DroidDetails1 ...DroidDetails2 } }  fragment DroidDetails1 on Droid { name }  fragment DroidDetails2 on Droid { primaryFunction }"
+      get() = "query TestQuery { hero { __typename ...DroidDetails1 ...DroidDetails2 } }  fragment DroidDetails1 on Droid { name }  fragment DroidDetails2 on Droid { primaryFunction }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

@@ -24,8 +24,7 @@ public object AnimalQuery_ResponseAdapter {
   public object Data : Adapter<AnimalQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        AnimalQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): AnimalQuery.Data {
       var _animal: AnimalQuery.Data.Animal? = null
 
       while (true) {
@@ -52,8 +51,7 @@ public object AnimalQuery_ResponseAdapter {
     private object Animal : Adapter<AnimalQuery.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          AnimalQuery.Data.Animal {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): AnimalQuery.Data.Animal {
         var __typename: String? = null
 
         while (true) {
@@ -70,15 +68,13 @@ public object AnimalQuery_ResponseAdapter {
         var _catFragment: CatFragment? = null
         if (possibleTypes("Cat").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _catFragment = com.example.data_builders.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.fromJson(reader,
-              customScalarAdapters)
+          _catFragment = com.example.data_builders.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.fromJson(reader, customScalarAdapters)
         }
 
         var _dogFragment: DogFragment? = null
         if (possibleTypes("Dog").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _dogFragment = com.example.data_builders.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.fromJson(reader,
-              customScalarAdapters)
+          _dogFragment = com.example.data_builders.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.fromJson(reader, customScalarAdapters)
         }
 
         return AnimalQuery.Data.Animal(
@@ -97,13 +93,11 @@ public object AnimalQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.catFragment != null) {
-          com.example.data_builders.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.toJson(writer,
-              customScalarAdapters, value.catFragment)
+          com.example.data_builders.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.toJson(writer, customScalarAdapters, value.catFragment)
         }
 
         if (value.dogFragment != null) {
-          com.example.data_builders.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.toJson(writer,
-              customScalarAdapters, value.dogFragment)
+          com.example.data_builders.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.toJson(writer, customScalarAdapters, value.dogFragment)
         }
       }
     }

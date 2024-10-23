@@ -54,8 +54,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     public val amenityCategories: List<AmenityCategory?>?,
     public val category: com.example.list_field_clash.type.AmenityCategory?,
   ) : Query.Data {
-    public fun amenityCategoriesFilterNotNull(): List<AmenityCategory>? =
-        amenityCategories?.filterNotNull()
+    public fun amenityCategoriesFilterNotNull(): List<AmenityCategory>? = amenityCategories?.filterNotNull()
 
     public data class AmenityCategory(
       public val text: String?,

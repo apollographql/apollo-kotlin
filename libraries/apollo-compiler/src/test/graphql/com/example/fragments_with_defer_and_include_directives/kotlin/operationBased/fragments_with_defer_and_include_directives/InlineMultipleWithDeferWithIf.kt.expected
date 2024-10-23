@@ -33,8 +33,7 @@ public data class InlineMultipleWithDeferWithIf(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    InlineMultipleWithDeferWithIf_VariablesAdapter.serializeVariables(writer, this,
-        customScalarAdapters, withDefaultValues)
+    InlineMultipleWithDeferWithIf_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = InlineMultipleWithDeferWithIf_ResponseAdapter.Data.obj()
@@ -114,8 +113,7 @@ public data class InlineMultipleWithDeferWithIf(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query InlineMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ... on Character @defer(label: \"f_first\", if: false) { id } ... on Character @defer(label: \"f_second\", if: true) { name } ... on Character @defer(label: \"f_third\", if: ${'$'}cond) { name } } }"
+      get() = "query InlineMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ... on Character @defer(label: \"f_first\", if: false) { id } ... on Character @defer(label: \"f_second\", if: true) { name } ... on Character @defer(label: \"f_third\", if: ${'$'}cond) { name } } }"
 
     public const val OPERATION_NAME: String = "InlineMultipleWithDeferWithIf"
   }

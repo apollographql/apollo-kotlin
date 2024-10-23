@@ -109,8 +109,7 @@ public class TestOperation() : Query<TestOperation.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestOperation { animal { __typename ... on Animal { __typename species ... on WarmBlooded { temperature } ... on Pet { name } } } }"
+      get() = "query TestOperation { animal { __typename ... on Animal { __typename species ... on WarmBlooded { temperature } ... on Pet { name } } } }"
 
     public const val OPERATION_NAME: String = "TestOperation"
   }

@@ -17,8 +17,7 @@ public object Fragment2Impl_ResponseAdapter {
   public object Fragment2 : Adapter<com.example.multiple_fragments.fragment.Fragment2> {
     public val RESPONSE_NAMES: List<String> = listOf("field2")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.multiple_fragments.fragment.Fragment2 {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.multiple_fragments.fragment.Fragment2 {
       var _field2: String? = null
 
       while (true) {

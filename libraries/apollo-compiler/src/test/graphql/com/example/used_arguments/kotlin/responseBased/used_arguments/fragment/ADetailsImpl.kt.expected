@@ -41,5 +41,6 @@ public class ADetailsImpl() : Fragment<ADetailsImpl.Data> {
 
   public data class Data(
     override val `field`: Int?,
-  ) : ADetails, Fragment.Data
+  ) : ADetails,
+      Fragment.Data
 }

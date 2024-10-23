@@ -34,8 +34,7 @@ public data class TestQuery(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
@@ -130,8 +129,7 @@ public data class TestQuery(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery(${'$'}withDetails: Boolean!, ${'$'}skipHumanDetails: Boolean!) { hero { __typename id ... on Human @include(if: ${'$'}withDetails) @skip(if: ${'$'}skipHumanDetails) { name homePlanet } ... on Droid @include(if: ${'$'}withDetails) { name primaryFunction } ... on Character @include(if: ${'$'}withDetails) { name } } }"
+      get() = "query TestQuery(${'$'}withDetails: Boolean!, ${'$'}skipHumanDetails: Boolean!) { hero { __typename id ... on Human @include(if: ${'$'}withDetails) @skip(if: ${'$'}skipHumanDetails) { name homePlanet } ... on Droid @include(if: ${'$'}withDetails) { name primaryFunction } ... on Character @include(if: ${'$'}withDetails) { name } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

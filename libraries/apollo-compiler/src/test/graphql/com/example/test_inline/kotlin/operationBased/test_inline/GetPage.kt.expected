@@ -111,8 +111,7 @@ public class GetPage() : Query<GetPage.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query GetPage { collection { __typename items { title } ... on ParticularCollection { items { __typename ... on ParticularItem { image } } } } }"
+      get() = "query GetPage { collection { __typename items { title } ... on ParticularCollection { items { __typename ... on ParticularItem { image } } } } }"
 
     public const val OPERATION_NAME: String = "GetPage"
   }

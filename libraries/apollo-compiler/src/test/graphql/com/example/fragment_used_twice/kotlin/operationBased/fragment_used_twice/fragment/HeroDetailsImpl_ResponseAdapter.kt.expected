@@ -18,8 +18,7 @@ public object HeroDetailsImpl_ResponseAdapter {
   public object HeroDetails : Adapter<com.example.fragment_used_twice.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.fragment_used_twice.fragment.HeroDetails {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.fragment_used_twice.fragment.HeroDetails {
       var __typename: String? = null
       var _name: String? = null
 
@@ -32,8 +31,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       }
 
       reader.rewind()
-      val _characterDetails = com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.fromJson(reader,
-          customScalarAdapters)
+      val _characterDetails = com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.fromJson(reader, customScalarAdapters)
 
       return com.example.fragment_used_twice.fragment.HeroDetails(
         __typename = __typename ?: missingField(reader, "__typename"),
@@ -53,8 +51,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
-      com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.toJson(writer,
-          customScalarAdapters, value.characterDetails)
+      com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.toJson(writer, customScalarAdapters, value.characterDetails)
     }
   }
 }

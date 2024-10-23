@@ -30,8 +30,7 @@ public object TestOperation_ResponseAdapter {
   public object Data : Adapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("random")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestOperation.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data {
       var _random: TestOperation.Data.Random? = null
 
       while (true) {
@@ -58,8 +57,7 @@ public object TestOperation_ResponseAdapter {
     private object Random : Adapter<TestOperation.Data.Random> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestOperation.Data.Random {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random {
         var __typename: String? = null
 
         while (true) {
@@ -76,15 +74,13 @@ public object TestOperation_ResponseAdapter {
         var _onBeing: TestOperation.Data.Random.OnBeing? = null
         if (possibleTypes("Human","Wookie").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.fromJson(reader,
-              customScalarAdapters)
+          _onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.fromJson(reader, customScalarAdapters)
         }
 
         var _onWookie: TestOperation.Data.Random.OnWookie? = null
         if (possibleTypes("Wookie").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.fromJson(reader,
-              customScalarAdapters)
+          _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.fromJson(reader, customScalarAdapters)
         }
 
         return TestOperation.Data.Random(
@@ -103,21 +99,18 @@ public object TestOperation_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onBeing != null) {
-          com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.toJson(writer,
-              customScalarAdapters, value.onBeing)
+          com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.toJson(writer, customScalarAdapters, value.onBeing)
         }
 
         if (value.onWookie != null) {
-          com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.toJson(writer,
-              customScalarAdapters, value.onWookie)
+          com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.toJson(writer, customScalarAdapters, value.onWookie)
         }
       }
 
       private object OnBeing : Adapter<TestOperation.Data.Random.OnBeing> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestOperation.Data.Random.OnBeing {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnBeing {
           var __typename: String? = null
           var _name: String? = null
           var _friends: List<TestOperation.Data.Random.OnBeing.Friend>? = null
@@ -138,8 +131,7 @@ public object TestOperation_ResponseAdapter {
           var _onHuman: TestOperation.Data.Random.OnBeing.OnHuman? = null
           if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
             reader.rewind()
-            _onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.fromJson(reader,
-                customScalarAdapters)
+            _onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.fromJson(reader, customScalarAdapters)
           }
 
           return TestOperation.Data.Random.OnBeing(
@@ -165,16 +157,14 @@ public object TestOperation_ResponseAdapter {
           Friend.obj(true).list().toJson(writer, customScalarAdapters, value.friends)
 
           if (value.onHuman != null) {
-            com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.toJson(writer,
-                customScalarAdapters, value.onHuman)
+            com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
           }
         }
 
         private object Friend : Adapter<TestOperation.Data.Random.OnBeing.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestOperation.Data.Random.OnBeing.Friend {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnBeing.Friend {
             var __typename: String? = null
             var _name: String? = null
 
@@ -193,8 +183,7 @@ public object TestOperation_ResponseAdapter {
             var _onWookie: TestOperation.Data.Random.OnBeing.Friend.OnWookie? = null
             if (possibleTypes("Wookie").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
               reader.rewind()
-              _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.fromJson(reader,
-                  customScalarAdapters)
+              _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.fromJson(reader, customScalarAdapters)
             }
 
             return TestOperation.Data.Random.OnBeing.Friend(
@@ -216,16 +205,14 @@ public object TestOperation_ResponseAdapter {
             StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
             if (value.onWookie != null) {
-              com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.toJson(writer,
-                  customScalarAdapters, value.onWookie)
+              com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.toJson(writer, customScalarAdapters, value.onWookie)
             }
           }
 
           private object OnWookie : Adapter<TestOperation.Data.Random.OnBeing.Friend.OnWookie> {
             public val RESPONSE_NAMES: List<String> = listOf("lifeExpectancy")
 
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                TestOperation.Data.Random.OnBeing.Friend.OnWookie {
+            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnBeing.Friend.OnWookie {
               var _lifeExpectancy: Double? = null
 
               while (true) {
@@ -254,8 +241,7 @@ public object TestOperation_ResponseAdapter {
         private object OnHuman : Adapter<TestOperation.Data.Random.OnBeing.OnHuman> {
           public val RESPONSE_NAMES: List<String> = listOf("profilePictureUrl", "friends")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestOperation.Data.Random.OnBeing.OnHuman {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnBeing.OnHuman {
             var _profilePictureUrl: String? = null
             var _friends: List<TestOperation.Data.Random.OnBeing.OnHuman.Friend>? = null
 
@@ -288,8 +274,7 @@ public object TestOperation_ResponseAdapter {
           private object Friend : Adapter<TestOperation.Data.Random.OnBeing.OnHuman.Friend> {
             public val RESPONSE_NAMES: List<String> = listOf("__typename", "isFamous")
 
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                TestOperation.Data.Random.OnBeing.OnHuman.Friend {
+            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnBeing.OnHuman.Friend {
               var __typename: String? = null
               var _isFamous: Boolean? = null
 
@@ -308,8 +293,7 @@ public object TestOperation_ResponseAdapter {
               var _onWookie: TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie? = null
               if (possibleTypes("Wookie").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
                 reader.rewind()
-                _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.fromJson(reader,
-                    customScalarAdapters)
+                _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.fromJson(reader, customScalarAdapters)
               }
 
               return TestOperation.Data.Random.OnBeing.OnHuman.Friend(
@@ -331,17 +315,14 @@ public object TestOperation_ResponseAdapter {
               NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.isFamous)
 
               if (value.onWookie != null) {
-                com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.toJson(writer,
-                    customScalarAdapters, value.onWookie)
+                com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.toJson(writer, customScalarAdapters, value.onWookie)
               }
             }
 
-            private object OnWookie :
-                Adapter<TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie> {
+            private object OnWookie : Adapter<TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie> {
               public val RESPONSE_NAMES: List<String> = listOf("race")
 
-              override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                  TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie {
+              override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie {
                 var _race: Race? = null
 
                 while (true) {
@@ -372,8 +353,7 @@ public object TestOperation_ResponseAdapter {
       private object OnWookie : Adapter<TestOperation.Data.Random.OnWookie> {
         public val RESPONSE_NAMES: List<String> = listOf("race", "friends")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestOperation.Data.Random.OnWookie {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnWookie {
           var _race: Race? = null
           var _friends: List<TestOperation.Data.Random.OnWookie.Friend>? = null
 
@@ -406,8 +386,7 @@ public object TestOperation_ResponseAdapter {
         private object Friend : Adapter<TestOperation.Data.Random.OnWookie.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("lifeExpectancy")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestOperation.Data.Random.OnWookie.Friend {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnWookie.Friend {
             var _lifeExpectancy: Double? = null
 
             while (true) {

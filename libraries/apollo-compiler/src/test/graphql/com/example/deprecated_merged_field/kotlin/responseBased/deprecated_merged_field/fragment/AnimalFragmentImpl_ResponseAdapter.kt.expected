@@ -18,8 +18,7 @@ import kotlin.collections.List
 
 public object AnimalFragmentImpl_ResponseAdapter {
   public object Data : Adapter<AnimalFragmentImpl.Data> {
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        AnimalFragmentImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): AnimalFragmentImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
         "Cat",

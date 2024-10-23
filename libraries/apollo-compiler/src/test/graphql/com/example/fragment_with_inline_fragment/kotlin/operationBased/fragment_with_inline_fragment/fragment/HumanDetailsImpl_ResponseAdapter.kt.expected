@@ -15,12 +15,10 @@ import kotlin.String
 import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
-  public object HumanDetails :
-      Adapter<com.example.fragment_with_inline_fragment.fragment.HumanDetails> {
+  public object HumanDetails : Adapter<com.example.fragment_with_inline_fragment.fragment.HumanDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.fragment_with_inline_fragment.fragment.HumanDetails {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.fragment_with_inline_fragment.fragment.HumanDetails {
       var _name: String? = null
 
       while (true) {

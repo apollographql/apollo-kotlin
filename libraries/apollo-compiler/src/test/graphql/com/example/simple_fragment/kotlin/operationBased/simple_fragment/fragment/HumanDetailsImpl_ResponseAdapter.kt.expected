@@ -18,8 +18,7 @@ internal object HumanDetailsImpl_ResponseAdapter {
   public object HumanDetails : Adapter<com.example.simple_fragment.fragment.HumanDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.simple_fragment.fragment.HumanDetails {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.simple_fragment.fragment.HumanDetails {
       var __typename: String? = null
       var _name: String? = null
 

@@ -15,9 +15,7 @@ import com.example.hero_name_query_long_name.type.GraphQLString
 import com.example.hero_name_query_long_name.type.Query
 import kotlin.collections.List
 
-public object
-    TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameSelections
-    {
+public object TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameSelections {
   private val __hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",

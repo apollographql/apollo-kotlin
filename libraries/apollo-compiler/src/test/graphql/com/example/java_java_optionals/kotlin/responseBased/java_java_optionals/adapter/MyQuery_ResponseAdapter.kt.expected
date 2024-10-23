@@ -24,12 +24,10 @@ import kotlin.collections.List
 
 public object MyQuery_ResponseAdapter {
   public object Data : Adapter<MyQuery.Data> {
-    public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt",
-        "nullableMyType", "nonNullableMyType", "nullableListOfNullableString",
-        "nullableListOfNonNullableString")
+    public val RESPONSE_NAMES: List<String> =
+        listOf("nullableInt", "nonNullableInt", "nullableMyType", "nonNullableMyType", "nullableListOfNullableString", "nullableListOfNonNullableString")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        MyQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): MyQuery.Data {
       var _nullableInt: Int? = null
       var _nonNullableInt: Int? = null
       var _nullableMyType: MyQuery.Data.NullableMyType? = null
@@ -77,19 +75,16 @@ public object MyQuery_ResponseAdapter {
       NonNullableMyType.obj().toJson(writer, customScalarAdapters, value.nonNullableMyType)
 
       writer.name("nullableListOfNullableString")
-      NullableStringAdapter.list().nullable().toJson(writer, customScalarAdapters,
-          value.nullableListOfNullableString)
+      NullableStringAdapter.list().nullable().toJson(writer, customScalarAdapters, value.nullableListOfNullableString)
 
       writer.name("nullableListOfNonNullableString")
-      StringAdapter.list().nullable().toJson(writer, customScalarAdapters,
-          value.nullableListOfNonNullableString)
+      StringAdapter.list().nullable().toJson(writer, customScalarAdapters, value.nullableListOfNonNullableString)
     }
 
     private object NullableMyType : Adapter<MyQuery.Data.NullableMyType> {
       public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          MyQuery.Data.NullableMyType {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): MyQuery.Data.NullableMyType {
         var _nullableInt: Int? = null
         var _nonNullableInt: Int? = null
 
@@ -123,8 +118,7 @@ public object MyQuery_ResponseAdapter {
     private object NonNullableMyType : Adapter<MyQuery.Data.NonNullableMyType> {
       public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          MyQuery.Data.NonNullableMyType {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): MyQuery.Data.NonNullableMyType {
         var _nullableInt: Int? = null
         var _nonNullableInt: Int? = null
 

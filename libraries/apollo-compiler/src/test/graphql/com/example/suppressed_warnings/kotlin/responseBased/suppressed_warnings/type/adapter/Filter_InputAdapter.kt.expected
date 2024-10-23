@@ -21,8 +21,7 @@ import kotlin.Suppress
 @Suppress("DEPRECATION")
 @OptIn(ApolloRequiresOptIn::class)
 public object Filter_InputAdapter : Adapter<Filter> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Filter =
-      throw IllegalStateException("Input type used in output position")
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Filter = throw IllegalStateException("Input type used in output position")
 
   override fun toJson(
     writer: JsonWriter,
