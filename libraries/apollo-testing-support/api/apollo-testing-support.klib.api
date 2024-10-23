@@ -13,13 +13,17 @@ final fun <#A: com.apollographql.apollo.api/Operation.Data> (com.apollographql.a
 final fun com.apollographql.apollo.testing/checkFile(kotlin/String, kotlin/String) // com.apollographql.apollo.testing/checkFile|checkFile(kotlin.String;kotlin.String){}[0]
 final fun com.apollographql.apollo.testing/pathToJsonReader(kotlin/String): com.apollographql.apollo.api.json/JsonReader // com.apollographql.apollo.testing/pathToJsonReader|pathToJsonReader(kotlin.String){}[0]
 final fun com.apollographql.apollo.testing/pathToUtf8(kotlin/String): kotlin/String // com.apollographql.apollo.testing/pathToUtf8|pathToUtf8(kotlin.String){}[0]
-// Targets: [apple, js]
-final fun com.apollographql.apollo.testing/shouldUpdateTestFixtures(): kotlin/Boolean // com.apollographql.apollo.testing/shouldUpdateTestFixtures|shouldUpdateTestFixtures(){}[0]
+
 // Targets: [apple, js]
 final val com.apollographql.apollo.testing/testsPath // com.apollographql.apollo.testing/testsPath|{}testsPath[0]
     final fun <get-testsPath>(): kotlin/String // com.apollographql.apollo.testing/testsPath.<get-testsPath>|<get-testsPath>(){}[0]
+
+// Targets: [apple, js]
+final fun com.apollographql.apollo.testing/shouldUpdateTestFixtures(): kotlin/Boolean // com.apollographql.apollo.testing/shouldUpdateTestFixtures|shouldUpdateTestFixtures(){}[0]
+
 // Targets: [apple]
 final fun com.apollographql.apollo.testing/cwd(): kotlin/String // com.apollographql.apollo.testing/cwd|cwd(){}[0]
+
 // Targets: [js]
 final val com.apollographql.apollo.testing/HostFileSystem // com.apollographql.apollo.testing/HostFileSystem|{}HostFileSystem[0]
     final fun <get-HostFileSystem>(): okio/FileSystem // com.apollographql.apollo.testing/HostFileSystem.<get-HostFileSystem>|<get-HostFileSystem>(){}[0]

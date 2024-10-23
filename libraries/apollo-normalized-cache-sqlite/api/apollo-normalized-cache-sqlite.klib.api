@@ -16,10 +16,12 @@ final class com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCache : c
     final fun remove(com.apollographql.apollo.cache.normalized.api/CacheKey, kotlin/Boolean): kotlin/Boolean // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCache.remove|remove(com.apollographql.apollo.cache.normalized.api.CacheKey;kotlin.Boolean){}[0]
     final fun remove(kotlin/String): kotlin/Int // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCache.remove|remove(kotlin.String){}[0]
 }
+
 final class com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCacheFactory : com.apollographql.apollo.cache.normalized.api/NormalizedCacheFactory { // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCacheFactory|null[0]
     constructor <init>() // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCacheFactory.<init>|<init>(){}[0]
     constructor <init>(app.cash.sqldelight.db/SqlDriver) // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCacheFactory.<init>|<init>(app.cash.sqldelight.db.SqlDriver){}[0]
     constructor <init>(kotlin/String? = ...) // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCacheFactory.<init>|<init>(kotlin.String?){}[0]
     constructor <init>(kotlin/String?, kotlin/String?) // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCacheFactory.<init>|<init>(kotlin.String?;kotlin.String?){}[0]
+
     final fun create(): com.apollographql.apollo.cache.normalized.api/NormalizedCache // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCacheFactory.create|create(){}[0]
 }

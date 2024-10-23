@@ -6,7 +6,24 @@
 // - Show declarations: true
 
 // Library unique name: <com.apollographql.apollo:apollo-normalized-cache>
+final enum class com.apollographql.apollo.cache.normalized/FetchPolicy : kotlin/Enum<com.apollographql.apollo.cache.normalized/FetchPolicy> { // com.apollographql.apollo.cache.normalized/FetchPolicy|null[0]
+    enum entry CacheAndNetwork // com.apollographql.apollo.cache.normalized/FetchPolicy.CacheAndNetwork|null[0]
+    enum entry CacheFirst // com.apollographql.apollo.cache.normalized/FetchPolicy.CacheFirst|null[0]
+    enum entry CacheOnly // com.apollographql.apollo.cache.normalized/FetchPolicy.CacheOnly|null[0]
+    enum entry NetworkFirst // com.apollographql.apollo.cache.normalized/FetchPolicy.NetworkFirst|null[0]
+    enum entry NetworkOnly // com.apollographql.apollo.cache.normalized/FetchPolicy.NetworkOnly|null[0]
+
+    final val entries // com.apollographql.apollo.cache.normalized/FetchPolicy.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.apollographql.apollo.cache.normalized/FetchPolicy> // com.apollographql.apollo.cache.normalized/FetchPolicy.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.apollographql.apollo.cache.normalized/FetchPolicy // com.apollographql.apollo.cache.normalized/FetchPolicy.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.apollographql.apollo.cache.normalized/FetchPolicy> // com.apollographql.apollo.cache.normalized/FetchPolicy.values|values#static(){}[0]
+}
+
 abstract interface com.apollographql.apollo.cache.normalized/ApolloStore { // com.apollographql.apollo.cache.normalized/ApolloStore|null[0]
+    abstract val changedKeys // com.apollographql.apollo.cache.normalized/ApolloStore.changedKeys|{}changedKeys[0]
+        abstract fun <get-changedKeys>(): kotlinx.coroutines.flow/SharedFlow<kotlin.collections/Set<kotlin/String>> // com.apollographql.apollo.cache.normalized/ApolloStore.changedKeys.<get-changedKeys>|<get-changedKeys>(){}[0]
+
     abstract fun <#A1: com.apollographql.apollo.api/Fragment.Data> readFragment(com.apollographql.apollo.api/Fragment<#A1>, com.apollographql.apollo.cache.normalized.api/CacheKey, com.apollographql.apollo.api/CustomScalarAdapters = ..., com.apollographql.apollo.cache.normalized.api/CacheHeaders = ...): #A1 // com.apollographql.apollo.cache.normalized/ApolloStore.readFragment|readFragment(com.apollographql.apollo.api.Fragment<0:0>;com.apollographql.apollo.cache.normalized.api.CacheKey;com.apollographql.apollo.api.CustomScalarAdapters;com.apollographql.apollo.cache.normalized.api.CacheHeaders){0§<com.apollographql.apollo.api.Fragment.Data>}[0]
     abstract fun <#A1: com.apollographql.apollo.api/Fragment.Data> writeFragmentSync(com.apollographql.apollo.api/Fragment<#A1>, com.apollographql.apollo.cache.normalized.api/CacheKey, #A1, com.apollographql.apollo.api/CustomScalarAdapters = ..., com.apollographql.apollo.cache.normalized.api/CacheHeaders = ...): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.cache.normalized/ApolloStore.writeFragmentSync|writeFragmentSync(com.apollographql.apollo.api.Fragment<0:0>;com.apollographql.apollo.cache.normalized.api.CacheKey;0:0;com.apollographql.apollo.api.CustomScalarAdapters;com.apollographql.apollo.cache.normalized.api.CacheHeaders){0§<com.apollographql.apollo.api.Fragment.Data>}[0]
     abstract fun <#A1: com.apollographql.apollo.api/Operation.Data> normalize(com.apollographql.apollo.api/Operation<#A1>, #A1, com.apollographql.apollo.api/CustomScalarAdapters): kotlin.collections/Map<kotlin/String, com.apollographql.apollo.cache.normalized.api/Record> // com.apollographql.apollo.cache.normalized/ApolloStore.normalize|normalize(com.apollographql.apollo.api.Operation<0:0>;0:0;com.apollographql.apollo.api.CustomScalarAdapters){0§<com.apollographql.apollo.api.Operation.Data>}[0]
@@ -25,24 +42,11 @@ abstract interface com.apollographql.apollo.cache.normalized/ApolloStore { // co
     abstract suspend fun <#A1: com.apollographql.apollo.api/Operation.Data> writeOptimisticUpdates(com.apollographql.apollo.api/Operation<#A1>, #A1, com.benasher44.uuid/Uuid, com.apollographql.apollo.api/CustomScalarAdapters = ..., kotlin/Boolean = ...): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.cache.normalized/ApolloStore.writeOptimisticUpdates|writeOptimisticUpdates(com.apollographql.apollo.api.Operation<0:0>;0:0;com.benasher44.uuid.Uuid;com.apollographql.apollo.api.CustomScalarAdapters;kotlin.Boolean){0§<com.apollographql.apollo.api.Operation.Data>}[0]
     abstract suspend fun publish(kotlin.collections/Set<kotlin/String>) // com.apollographql.apollo.cache.normalized/ApolloStore.publish|publish(kotlin.collections.Set<kotlin.String>){}[0]
     abstract suspend fun rollbackOptimisticUpdates(com.benasher44.uuid/Uuid, kotlin/Boolean = ...): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.cache.normalized/ApolloStore.rollbackOptimisticUpdates|rollbackOptimisticUpdates(com.benasher44.uuid.Uuid;kotlin.Boolean){}[0]
-    abstract val changedKeys // com.apollographql.apollo.cache.normalized/ApolloStore.changedKeys|{}changedKeys[0]
-        abstract fun <get-changedKeys>(): kotlinx.coroutines.flow/SharedFlow<kotlin.collections/Set<kotlin/String>> // com.apollographql.apollo.cache.normalized/ApolloStore.changedKeys.<get-changedKeys>|<get-changedKeys>(){}[0]
 }
+
 final class com.apollographql.apollo.cache.normalized/CacheInfo : com.apollographql.apollo.api/ExecutionContext.Element { // com.apollographql.apollo.cache.normalized/CacheInfo|null[0]
     constructor <init>(kotlin/Long, kotlin/Long, kotlin/Boolean, kotlin/String?, kotlin/String?) // com.apollographql.apollo.cache.normalized/CacheInfo.<init>|<init>(kotlin.Long;kotlin.Long;kotlin.Boolean;kotlin.String?;kotlin.String?){}[0]
-    final class Builder { // com.apollographql.apollo.cache.normalized/CacheInfo.Builder|null[0]
-        constructor <init>() // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.<init>|<init>(){}[0]
-        final fun build(): com.apollographql.apollo.cache.normalized/CacheInfo // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.build|build(){}[0]
-        final fun cacheEndMillis(kotlin/Long): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.cacheEndMillis|cacheEndMillis(kotlin.Long){}[0]
-        final fun cacheHit(kotlin/Boolean): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.cacheHit|cacheHit(kotlin.Boolean){}[0]
-        final fun cacheMissException(com.apollographql.apollo.exception/CacheMissException?): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.cacheMissException|cacheMissException(com.apollographql.apollo.exception.CacheMissException?){}[0]
-        final fun cacheStartMillis(kotlin/Long): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.cacheStartMillis|cacheStartMillis(kotlin.Long){}[0]
-        final fun networkEndMillis(kotlin/Long): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.networkEndMillis|networkEndMillis(kotlin.Long){}[0]
-        final fun networkException(com.apollographql.apollo.exception/ApolloException?): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.networkException|networkException(com.apollographql.apollo.exception.ApolloException?){}[0]
-        final fun networkStartMillis(kotlin/Long): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.networkStartMillis|networkStartMillis(kotlin.Long){}[0]
-    }
-    final fun newBuilder(): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.newBuilder|newBuilder(){}[0]
-    final object Key : com.apollographql.apollo.api/ExecutionContext.Key<com.apollographql.apollo.cache.normalized/CacheInfo> // com.apollographql.apollo.cache.normalized/CacheInfo.Key|null[0]
+
     final val cacheEndMillis // com.apollographql.apollo.cache.normalized/CacheInfo.cacheEndMillis|{}cacheEndMillis[0]
         final fun <get-cacheEndMillis>(): kotlin/Long // com.apollographql.apollo.cache.normalized/CacheInfo.cacheEndMillis.<get-cacheEndMillis>|<get-cacheEndMillis>(){}[0]
     final val cacheMissException // com.apollographql.apollo.cache.normalized/CacheInfo.cacheMissException|{}cacheMissException[0]
@@ -69,22 +73,50 @@ final class com.apollographql.apollo.cache.normalized/CacheInfo : com.apollograp
         final fun <get-networkException>(): com.apollographql.apollo.exception/ApolloException? // com.apollographql.apollo.cache.normalized/CacheInfo.networkException.<get-networkException>|<get-networkException>(){}[0]
     final val networkStartMillis // com.apollographql.apollo.cache.normalized/CacheInfo.networkStartMillis|{}networkStartMillis[0]
         final fun <get-networkStartMillis>(): kotlin/Long // com.apollographql.apollo.cache.normalized/CacheInfo.networkStartMillis.<get-networkStartMillis>|<get-networkStartMillis>(){}[0]
+
+    final fun newBuilder(): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.newBuilder|newBuilder(){}[0]
+
+    final class Builder { // com.apollographql.apollo.cache.normalized/CacheInfo.Builder|null[0]
+        constructor <init>() // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.<init>|<init>(){}[0]
+
+        final fun build(): com.apollographql.apollo.cache.normalized/CacheInfo // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.build|build(){}[0]
+        final fun cacheEndMillis(kotlin/Long): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.cacheEndMillis|cacheEndMillis(kotlin.Long){}[0]
+        final fun cacheHit(kotlin/Boolean): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.cacheHit|cacheHit(kotlin.Boolean){}[0]
+        final fun cacheMissException(com.apollographql.apollo.exception/CacheMissException?): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.cacheMissException|cacheMissException(com.apollographql.apollo.exception.CacheMissException?){}[0]
+        final fun cacheStartMillis(kotlin/Long): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.cacheStartMillis|cacheStartMillis(kotlin.Long){}[0]
+        final fun networkEndMillis(kotlin/Long): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.networkEndMillis|networkEndMillis(kotlin.Long){}[0]
+        final fun networkException(com.apollographql.apollo.exception/ApolloException?): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.networkException|networkException(com.apollographql.apollo.exception.ApolloException?){}[0]
+        final fun networkStartMillis(kotlin/Long): com.apollographql.apollo.cache.normalized/CacheInfo.Builder // com.apollographql.apollo.cache.normalized/CacheInfo.Builder.networkStartMillis|networkStartMillis(kotlin.Long){}[0]
+    }
+
+    final object Key : com.apollographql.apollo.api/ExecutionContext.Key<com.apollographql.apollo.cache.normalized/CacheInfo> // com.apollographql.apollo.cache.normalized/CacheInfo.Key|null[0]
 }
+
 final class com.apollographql.apollo.cache.normalized/CacheMissLoggingInterceptor : com.apollographql.apollo.interceptor/ApolloInterceptor { // com.apollographql.apollo.cache.normalized/CacheMissLoggingInterceptor|null[0]
     constructor <init>(kotlin/Function1<kotlin/String, kotlin/Unit>) // com.apollographql.apollo.cache.normalized/CacheMissLoggingInterceptor.<init>|<init>(kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
+
     final fun <#A1: com.apollographql.apollo.api/Operation.Data> intercept(com.apollographql.apollo.api/ApolloRequest<#A1>, com.apollographql.apollo.interceptor/ApolloInterceptorChain): kotlinx.coroutines.flow/Flow<com.apollographql.apollo.api/ApolloResponse<#A1>> // com.apollographql.apollo.cache.normalized/CacheMissLoggingInterceptor.intercept|intercept(com.apollographql.apollo.api.ApolloRequest<0:0>;com.apollographql.apollo.interceptor.ApolloInterceptorChain){0§<com.apollographql.apollo.api.Operation.Data>}[0]
 }
-final enum class com.apollographql.apollo.cache.normalized/FetchPolicy : kotlin/Enum<com.apollographql.apollo.cache.normalized/FetchPolicy> { // com.apollographql.apollo.cache.normalized/FetchPolicy|null[0]
-    enum entry CacheAndNetwork // com.apollographql.apollo.cache.normalized/FetchPolicy.CacheAndNetwork|null[0]
-    enum entry CacheFirst // com.apollographql.apollo.cache.normalized/FetchPolicy.CacheFirst|null[0]
-    enum entry CacheOnly // com.apollographql.apollo.cache.normalized/FetchPolicy.CacheOnly|null[0]
-    enum entry NetworkFirst // com.apollographql.apollo.cache.normalized/FetchPolicy.NetworkFirst|null[0]
-    enum entry NetworkOnly // com.apollographql.apollo.cache.normalized/FetchPolicy.NetworkOnly|null[0]
-    final fun valueOf(kotlin/String): com.apollographql.apollo.cache.normalized/FetchPolicy // com.apollographql.apollo.cache.normalized/FetchPolicy.valueOf|valueOf#static(kotlin.String){}[0]
-    final fun values(): kotlin/Array<com.apollographql.apollo.cache.normalized/FetchPolicy> // com.apollographql.apollo.cache.normalized/FetchPolicy.values|values#static(){}[0]
-    final val entries // com.apollographql.apollo.cache.normalized/FetchPolicy.entries|#static{}entries[0]
-        final fun <get-entries>(): kotlin.enums/EnumEntries<com.apollographql.apollo.cache.normalized/FetchPolicy> // com.apollographql.apollo.cache.normalized/FetchPolicy.entries.<get-entries>|<get-entries>#static(){}[0]
-}
+
+final val com.apollographql.apollo.cache.normalized/CacheAndNetworkInterceptor // com.apollographql.apollo.cache.normalized/CacheAndNetworkInterceptor|{}CacheAndNetworkInterceptor[0]
+    final fun <get-CacheAndNetworkInterceptor>(): com.apollographql.apollo.interceptor/ApolloInterceptor // com.apollographql.apollo.cache.normalized/CacheAndNetworkInterceptor.<get-CacheAndNetworkInterceptor>|<get-CacheAndNetworkInterceptor>(){}[0]
+final val com.apollographql.apollo.cache.normalized/CacheFirstInterceptor // com.apollographql.apollo.cache.normalized/CacheFirstInterceptor|{}CacheFirstInterceptor[0]
+    final fun <get-CacheFirstInterceptor>(): com.apollographql.apollo.interceptor/ApolloInterceptor // com.apollographql.apollo.cache.normalized/CacheFirstInterceptor.<get-CacheFirstInterceptor>|<get-CacheFirstInterceptor>(){}[0]
+final val com.apollographql.apollo.cache.normalized/CacheOnlyInterceptor // com.apollographql.apollo.cache.normalized/CacheOnlyInterceptor|{}CacheOnlyInterceptor[0]
+    final fun <get-CacheOnlyInterceptor>(): com.apollographql.apollo.interceptor/ApolloInterceptor // com.apollographql.apollo.cache.normalized/CacheOnlyInterceptor.<get-CacheOnlyInterceptor>|<get-CacheOnlyInterceptor>(){}[0]
+final val com.apollographql.apollo.cache.normalized/NetworkFirstInterceptor // com.apollographql.apollo.cache.normalized/NetworkFirstInterceptor|{}NetworkFirstInterceptor[0]
+    final fun <get-NetworkFirstInterceptor>(): com.apollographql.apollo.interceptor/ApolloInterceptor // com.apollographql.apollo.cache.normalized/NetworkFirstInterceptor.<get-NetworkFirstInterceptor>|<get-NetworkFirstInterceptor>(){}[0]
+final val com.apollographql.apollo.cache.normalized/NetworkOnlyInterceptor // com.apollographql.apollo.cache.normalized/NetworkOnlyInterceptor|{}NetworkOnlyInterceptor[0]
+    final fun <get-NetworkOnlyInterceptor>(): com.apollographql.apollo.interceptor/ApolloInterceptor // com.apollographql.apollo.cache.normalized/NetworkOnlyInterceptor.<get-NetworkOnlyInterceptor>|<get-NetworkOnlyInterceptor>(){}[0]
+final val com.apollographql.apollo.cache.normalized/apolloStore // com.apollographql.apollo.cache.normalized/apolloStore|@com.apollographql.apollo.ApolloClient{}apolloStore[0]
+    final fun (com.apollographql.apollo/ApolloClient).<get-apolloStore>(): com.apollographql.apollo.cache.normalized/ApolloStore // com.apollographql.apollo.cache.normalized/apolloStore.<get-apolloStore>|<get-apolloStore>@com.apollographql.apollo.ApolloClient(){}[0]
+final val com.apollographql.apollo.cache.normalized/cacheHeaders // com.apollographql.apollo.cache.normalized/cacheHeaders|@com.apollographql.apollo.api.ApolloResponse<0:0>{0§<com.apollographql.apollo.api.Operation.Data>}cacheHeaders[0]
+    final fun <#A1: com.apollographql.apollo.api/Operation.Data> (com.apollographql.apollo.api/ApolloResponse<#A1>).<get-cacheHeaders>(): com.apollographql.apollo.cache.normalized.api/CacheHeaders // com.apollographql.apollo.cache.normalized/cacheHeaders.<get-cacheHeaders>|<get-cacheHeaders>@com.apollographql.apollo.api.ApolloResponse<0:0>(){0§<com.apollographql.apollo.api.Operation.Data>}[0]
+final val com.apollographql.apollo.cache.normalized/cacheInfo // com.apollographql.apollo.cache.normalized/cacheInfo|@com.apollographql.apollo.api.ApolloResponse<0:0>{0§<com.apollographql.apollo.api.Operation.Data>}cacheInfo[0]
+    final fun <#A1: com.apollographql.apollo.api/Operation.Data> (com.apollographql.apollo.api/ApolloResponse<#A1>).<get-cacheInfo>(): com.apollographql.apollo.cache.normalized/CacheInfo? // com.apollographql.apollo.cache.normalized/cacheInfo.<get-cacheInfo>|<get-cacheInfo>@com.apollographql.apollo.api.ApolloResponse<0:0>(){0§<com.apollographql.apollo.api.Operation.Data>}[0]
+final val com.apollographql.apollo.cache.normalized/isFromCache // com.apollographql.apollo.cache.normalized/isFromCache|@com.apollographql.apollo.api.ApolloResponse<0:0>{0§<com.apollographql.apollo.api.Operation.Data>}isFromCache[0]
+    final fun <#A1: com.apollographql.apollo.api/Operation.Data> (com.apollographql.apollo.api/ApolloResponse<#A1>).<get-isFromCache>(): kotlin/Boolean // com.apollographql.apollo.cache.normalized/isFromCache.<get-isFromCache>|<get-isFromCache>@com.apollographql.apollo.api.ApolloResponse<0:0>(){0§<com.apollographql.apollo.api.Operation.Data>}[0]
+
 final fun (com.apollographql.apollo/ApolloClient.Builder).com.apollographql.apollo.cache.normalized/logCacheMisses(kotlin/Function1<kotlin/String, kotlin/Unit> = ...): com.apollographql.apollo/ApolloClient.Builder // com.apollographql.apollo.cache.normalized/logCacheMisses|logCacheMisses@com.apollographql.apollo.ApolloClient.Builder(kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
 final fun (com.apollographql.apollo/ApolloClient.Builder).com.apollographql.apollo.cache.normalized/normalizedCache(com.apollographql.apollo.cache.normalized.api/NormalizedCacheFactory, com.apollographql.apollo.cache.normalized.api/CacheKeyGenerator = ..., com.apollographql.apollo.cache.normalized.api/CacheResolver = ..., kotlin/Boolean = ...): com.apollographql.apollo/ApolloClient.Builder // com.apollographql.apollo.cache.normalized/normalizedCache|normalizedCache@com.apollographql.apollo.ApolloClient.Builder(com.apollographql.apollo.cache.normalized.api.NormalizedCacheFactory;com.apollographql.apollo.cache.normalized.api.CacheKeyGenerator;com.apollographql.apollo.cache.normalized.api.CacheResolver;kotlin.Boolean){}[0]
 final fun (com.apollographql.apollo/ApolloClient.Builder).com.apollographql.apollo.cache.normalized/store(com.apollographql.apollo.cache.normalized/ApolloStore, kotlin/Boolean = ...): com.apollographql.apollo/ApolloClient.Builder // com.apollographql.apollo.cache.normalized/store|store@com.apollographql.apollo.ApolloClient.Builder(com.apollographql.apollo.cache.normalized.ApolloStore;kotlin.Boolean){}[0]
@@ -107,21 +139,3 @@ final fun <#A: kotlin/Any?> (com.apollographql.apollo.api/MutableExecutionOption
 final fun <#A: kotlin/Any?> (com.apollographql.apollo.api/MutableExecutionOptions<#A>).com.apollographql.apollo.cache.normalized/storePartialResponses(kotlin/Boolean): #A // com.apollographql.apollo.cache.normalized/storePartialResponses|storePartialResponses@com.apollographql.apollo.api.MutableExecutionOptions<0:0>(kotlin.Boolean){0§<kotlin.Any?>}[0]
 final fun <#A: kotlin/Any?> (com.apollographql.apollo.api/MutableExecutionOptions<#A>).com.apollographql.apollo.cache.normalized/writeToCacheAsynchronously(kotlin/Boolean): #A // com.apollographql.apollo.cache.normalized/writeToCacheAsynchronously|writeToCacheAsynchronously@com.apollographql.apollo.api.MutableExecutionOptions<0:0>(kotlin.Boolean){0§<kotlin.Any?>}[0]
 final fun com.apollographql.apollo.cache.normalized/ApolloStore(com.apollographql.apollo.cache.normalized.api/NormalizedCacheFactory, com.apollographql.apollo.cache.normalized.api/CacheKeyGenerator = ..., com.apollographql.apollo.cache.normalized.api/CacheResolver = ...): com.apollographql.apollo.cache.normalized/ApolloStore // com.apollographql.apollo.cache.normalized/ApolloStore|ApolloStore(com.apollographql.apollo.cache.normalized.api.NormalizedCacheFactory;com.apollographql.apollo.cache.normalized.api.CacheKeyGenerator;com.apollographql.apollo.cache.normalized.api.CacheResolver){}[0]
-final val com.apollographql.apollo.cache.normalized/CacheAndNetworkInterceptor // com.apollographql.apollo.cache.normalized/CacheAndNetworkInterceptor|{}CacheAndNetworkInterceptor[0]
-    final fun <get-CacheAndNetworkInterceptor>(): com.apollographql.apollo.interceptor/ApolloInterceptor // com.apollographql.apollo.cache.normalized/CacheAndNetworkInterceptor.<get-CacheAndNetworkInterceptor>|<get-CacheAndNetworkInterceptor>(){}[0]
-final val com.apollographql.apollo.cache.normalized/CacheFirstInterceptor // com.apollographql.apollo.cache.normalized/CacheFirstInterceptor|{}CacheFirstInterceptor[0]
-    final fun <get-CacheFirstInterceptor>(): com.apollographql.apollo.interceptor/ApolloInterceptor // com.apollographql.apollo.cache.normalized/CacheFirstInterceptor.<get-CacheFirstInterceptor>|<get-CacheFirstInterceptor>(){}[0]
-final val com.apollographql.apollo.cache.normalized/CacheOnlyInterceptor // com.apollographql.apollo.cache.normalized/CacheOnlyInterceptor|{}CacheOnlyInterceptor[0]
-    final fun <get-CacheOnlyInterceptor>(): com.apollographql.apollo.interceptor/ApolloInterceptor // com.apollographql.apollo.cache.normalized/CacheOnlyInterceptor.<get-CacheOnlyInterceptor>|<get-CacheOnlyInterceptor>(){}[0]
-final val com.apollographql.apollo.cache.normalized/NetworkFirstInterceptor // com.apollographql.apollo.cache.normalized/NetworkFirstInterceptor|{}NetworkFirstInterceptor[0]
-    final fun <get-NetworkFirstInterceptor>(): com.apollographql.apollo.interceptor/ApolloInterceptor // com.apollographql.apollo.cache.normalized/NetworkFirstInterceptor.<get-NetworkFirstInterceptor>|<get-NetworkFirstInterceptor>(){}[0]
-final val com.apollographql.apollo.cache.normalized/NetworkOnlyInterceptor // com.apollographql.apollo.cache.normalized/NetworkOnlyInterceptor|{}NetworkOnlyInterceptor[0]
-    final fun <get-NetworkOnlyInterceptor>(): com.apollographql.apollo.interceptor/ApolloInterceptor // com.apollographql.apollo.cache.normalized/NetworkOnlyInterceptor.<get-NetworkOnlyInterceptor>|<get-NetworkOnlyInterceptor>(){}[0]
-final val com.apollographql.apollo.cache.normalized/apolloStore // com.apollographql.apollo.cache.normalized/apolloStore|@com.apollographql.apollo.ApolloClient{}apolloStore[0]
-    final fun (com.apollographql.apollo/ApolloClient).<get-apolloStore>(): com.apollographql.apollo.cache.normalized/ApolloStore // com.apollographql.apollo.cache.normalized/apolloStore.<get-apolloStore>|<get-apolloStore>@com.apollographql.apollo.ApolloClient(){}[0]
-final val com.apollographql.apollo.cache.normalized/cacheHeaders // com.apollographql.apollo.cache.normalized/cacheHeaders|@com.apollographql.apollo.api.ApolloResponse<0:0>{0§<com.apollographql.apollo.api.Operation.Data>}cacheHeaders[0]
-    final fun <#A1: com.apollographql.apollo.api/Operation.Data> (com.apollographql.apollo.api/ApolloResponse<#A1>).<get-cacheHeaders>(): com.apollographql.apollo.cache.normalized.api/CacheHeaders // com.apollographql.apollo.cache.normalized/cacheHeaders.<get-cacheHeaders>|<get-cacheHeaders>@com.apollographql.apollo.api.ApolloResponse<0:0>(){0§<com.apollographql.apollo.api.Operation.Data>}[0]
-final val com.apollographql.apollo.cache.normalized/cacheInfo // com.apollographql.apollo.cache.normalized/cacheInfo|@com.apollographql.apollo.api.ApolloResponse<0:0>{0§<com.apollographql.apollo.api.Operation.Data>}cacheInfo[0]
-    final fun <#A1: com.apollographql.apollo.api/Operation.Data> (com.apollographql.apollo.api/ApolloResponse<#A1>).<get-cacheInfo>(): com.apollographql.apollo.cache.normalized/CacheInfo? // com.apollographql.apollo.cache.normalized/cacheInfo.<get-cacheInfo>|<get-cacheInfo>@com.apollographql.apollo.api.ApolloResponse<0:0>(){0§<com.apollographql.apollo.api.Operation.Data>}[0]
-final val com.apollographql.apollo.cache.normalized/isFromCache // com.apollographql.apollo.cache.normalized/isFromCache|@com.apollographql.apollo.api.ApolloResponse<0:0>{0§<com.apollographql.apollo.api.Operation.Data>}isFromCache[0]
-    final fun <#A1: com.apollographql.apollo.api/Operation.Data> (com.apollographql.apollo.api/ApolloResponse<#A1>).<get-isFromCache>(): kotlin/Boolean // com.apollographql.apollo.cache.normalized/isFromCache.<get-isFromCache>|<get-isFromCache>@com.apollographql.apollo.api.ApolloResponse<0:0>(){0§<com.apollographql.apollo.api.Operation.Data>}[0]
