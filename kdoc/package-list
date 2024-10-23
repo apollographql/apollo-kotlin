@@ -43,11 +43,6 @@ com.apollographql.apollo.compiler.pqm
 module:apollo-debug-server
 com.apollographql.apollo.debugserver
 com.apollographql.apollo.debugserver.internal.graphql
-module:apollo-engine-ktor
-com.apollographql.apollo.network
-com.apollographql.apollo.network.adapter
-com.apollographql.apollo.network.http
-com.apollographql.apollo.network.ws
 module:apollo-engine-tests
 com.apollographql.apollo.engine.tests
 module:apollo-gradle-plugin-external
@@ -55,8 +50,6 @@ com.apollographql.apollo.gradle.api
 com.apollographql.apollo.gradle.internal
 module:apollo-http-cache
 com.apollographql.apollo.cache.http
-module:apollo-mockserver
-com.apollographql.apollo.mockserver
 module:apollo-mpp-utils
 com.apollographql.apollo.mpp
 module:apollo-normalized-cache
@@ -94,6 +87,7 @@ com.apollographql.apollo.rx3
 module:apollo-rx3-support-java
 com.apollographql.apollo.rx3.java
 module:apollo-testing-support
+com.apollographql.apollo.mockserver
 com.apollographql.apollo.testing
 com.apollographql.apollo.testing.internal
 module:apollo-tooling
