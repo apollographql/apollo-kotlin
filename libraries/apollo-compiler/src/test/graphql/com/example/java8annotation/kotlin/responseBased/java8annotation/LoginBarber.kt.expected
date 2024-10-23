@@ -34,8 +34,7 @@ public data class LoginBarber(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    LoginBarber_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    LoginBarber_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = LoginBarber_ResponseAdapter.Data.obj()

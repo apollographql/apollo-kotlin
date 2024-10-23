@@ -29,8 +29,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
       while (true) {
@@ -57,8 +56,7 @@ public object TestQuery_ResponseAdapter {
     private object Hero : Adapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Hero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero {
         var __typename: String? = null
         var _name: String? = null
 
@@ -77,15 +75,13 @@ public object TestQuery_ResponseAdapter {
         var _onHuman: TestQuery.Data.Hero.OnHuman? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onHuman = com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
-              customScalarAdapters)
+          _onHuman = com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader, customScalarAdapters)
         }
 
         var _onDroid: TestQuery.Data.Hero.OnDroid? = null
         if (possibleTypes("Droid").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onDroid = com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
-              customScalarAdapters)
+          _onDroid = com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader, customScalarAdapters)
         }
 
         return TestQuery.Data.Hero(
@@ -108,21 +104,18 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         if (value.onHuman != null) {
-          com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.toJson(writer,
-              customScalarAdapters, value.onHuman)
+          com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
         }
 
         if (value.onDroid != null) {
-          com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.toJson(writer,
-              customScalarAdapters, value.onDroid)
+          com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
         }
       }
 
       private object OnHuman : Adapter<TestQuery.Data.Hero.OnHuman> {
         public val RESPONSE_NAMES: List<String> = listOf("height", "friends")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.Hero.OnHuman {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnHuman {
           var _height: Double? = null
           var _friends: List<TestQuery.Data.Hero.OnHuman.Friend?>? = null
 
@@ -149,15 +142,13 @@ public object TestQuery_ResponseAdapter {
           NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
 
           writer.name("friends")
-          Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters,
-              value.friends)
+          Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
         }
 
         private object Friend : Adapter<TestQuery.Data.Hero.OnHuman.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestQuery.Data.Hero.OnHuman.Friend {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnHuman.Friend {
             var _appearsIn: List<Episode?>? = null
 
             while (true) {
@@ -178,8 +169,7 @@ public object TestQuery_ResponseAdapter {
             `value`: TestQuery.Data.Hero.OnHuman.Friend,
           ) {
             writer.name("appearsIn")
-            Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
-                value.appearsIn)
+            Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters, value.appearsIn)
           }
         }
       }
@@ -187,8 +177,7 @@ public object TestQuery_ResponseAdapter {
       private object OnDroid : Adapter<TestQuery.Data.Hero.OnDroid> {
         public val RESPONSE_NAMES: List<String> = listOf("primaryFunction", "friends")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.Hero.OnDroid {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnDroid {
           var _primaryFunction: String? = null
           var _friends: List<TestQuery.Data.Hero.OnDroid.Friend?>? = null
 
@@ -215,15 +204,13 @@ public object TestQuery_ResponseAdapter {
           NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
 
           writer.name("friends")
-          Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters,
-              value.friends)
+          Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
         }
 
         private object Friend : Adapter<TestQuery.Data.Hero.OnDroid.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("id")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestQuery.Data.Hero.OnDroid.Friend {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnDroid.Friend {
             var _id: String? = null
 
             while (true) {

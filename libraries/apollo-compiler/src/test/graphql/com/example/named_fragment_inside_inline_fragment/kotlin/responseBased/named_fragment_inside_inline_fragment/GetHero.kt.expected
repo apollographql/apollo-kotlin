@@ -67,7 +67,8 @@ public class GetHero() : Query<GetHero.Data> {
        * The movies this character appears in
        */
       override val appearsIn: List<Episode?>,
-    ) : CharacterName, CharacterAppearsIn {
+    ) : CharacterName,
+        CharacterAppearsIn {
       public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
       public companion object {
@@ -110,8 +111,7 @@ public class GetHero() : Query<GetHero.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query GetHero { hero { __typename ... on Character { __typename ...characterName ...characterAppearsIn } } }  fragment characterName on Character { name }  fragment characterAppearsIn on Character { appearsIn }"
+      get() = "query GetHero { hero { __typename ... on Character { __typename ...characterName ...characterAppearsIn } } }  fragment characterName on Character { name }  fragment characterAppearsIn on Character { appearsIn }"
 
     public const val OPERATION_NAME: String = "GetHero"
   }

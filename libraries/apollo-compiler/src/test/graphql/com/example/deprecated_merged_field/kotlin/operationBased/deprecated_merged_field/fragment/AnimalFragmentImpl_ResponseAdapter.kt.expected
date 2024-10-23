@@ -18,12 +18,10 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 public object AnimalFragmentImpl_ResponseAdapter {
-  public object AnimalFragment :
-      Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment> {
+  public object AnimalFragment : Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.deprecated_merged_field.fragment.AnimalFragment {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.deprecated_merged_field.fragment.AnimalFragment {
       var __typename: String? = null
 
       while (true) {
@@ -40,15 +38,13 @@ public object AnimalFragmentImpl_ResponseAdapter {
       var _onCat: com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat? = null
       if (possibleTypes("Cat").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind()
-        _onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.fromJson(reader,
-            customScalarAdapters)
+        _onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.fromJson(reader, customScalarAdapters)
       }
 
       var _onDog: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog? = null
       if (possibleTypes("Dog").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind()
-        _onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.fromJson(reader,
-            customScalarAdapters)
+        _onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.fromJson(reader, customScalarAdapters)
       }
 
       return com.example.deprecated_merged_field.fragment.AnimalFragment(
@@ -67,22 +63,18 @@ public object AnimalFragmentImpl_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       if (value.onCat != null) {
-        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.toJson(writer,
-            customScalarAdapters, value.onCat)
+        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.toJson(writer, customScalarAdapters, value.onCat)
       }
 
       if (value.onDog != null) {
-        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.toJson(writer,
-            customScalarAdapters, value.onDog)
+        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.toJson(writer, customScalarAdapters, value.onDog)
       }
     }
 
-    private object OnCat :
-        Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat> {
+    private object OnCat : Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat> {
       public val RESPONSE_NAMES: List<String> = listOf("name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat {
         var _name: String? = null
 
         while (true) {
@@ -107,12 +99,10 @@ public object AnimalFragmentImpl_ResponseAdapter {
       }
     }
 
-    private object OnDog :
-        Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog> {
+    private object OnDog : Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog> {
       public val RESPONSE_NAMES: List<String> = listOf("name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog {
         var _name: String? = null
 
         while (true) {

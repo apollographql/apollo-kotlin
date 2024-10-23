@@ -89,7 +89,7 @@ internal class EnumAsEnumBuilder(
   private fun IrEnum.knownValuesFunSpec(): FunSpec {
     return FunSpec.builder(Identifier.knownValues)
         .addKdoc("Returns all [%T] known at compile time", selfClassName)
-        .addAnnotation(deprecatedAnnotation("Use knownEntries instead").toBuilder().addMember("replaceWith·=·ReplaceWith(%S)", "this.knownEntries").build())
+        .addAnnotation(deprecatedAnnotation("Use knownEntries instead").toBuilder().addMember("replaceWith = ReplaceWith(%S)", "this.knownEntries").build())
         .returns(KotlinSymbols.Array.parameterizedBy(selfClassName))
         .addCode("return %N.toTypedArray()", Identifier.knownEntries)
         .build()
@@ -103,7 +103,7 @@ internal class EnumAsEnumBuilder(
         .getter(
             FunSpec.getterBuilder()
                 .addCode(CodeBlock.builder()
-                    .add("return·listOf(\n")
+                    .add("return listOf(\n")
                     .indent()
                     .add(
                         values.map {
@@ -131,7 +131,7 @@ internal class EnumAsEnumBuilder(
         .addParameter("rawValue", String::
         class)
         .returns(selfClassName)
-        .addCode("return·$entries.find·{·it.rawValue·==·rawValue·} ?: ")
+        .addCode("return $entries.find { it.rawValue == rawValue } ?: ")
         .apply {
           if (withUnknown) {
             addCode(Identifier.UNKNOWN__)

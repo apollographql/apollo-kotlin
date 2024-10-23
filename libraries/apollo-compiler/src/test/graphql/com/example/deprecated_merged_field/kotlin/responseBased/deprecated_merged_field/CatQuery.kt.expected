@@ -92,7 +92,8 @@ public class CatQuery() : Query<CatQuery.Data> {
     public data class OtherAnimalCat(
       override val __typename: String,
       override val name: String,
-    ) : AnimalCat, CatAnimalFragment
+    ) : AnimalCat,
+        CatAnimalFragment
   }
 
   public companion object {
@@ -123,8 +124,7 @@ public class CatQuery() : Query<CatQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query CatQuery { cat { __typename ...AnimalFragment } }  fragment AnimalFragment on Animal { __typename ... on Cat { name } ... on Dog { name } }"
+      get() = "query CatQuery { cat { __typename ...AnimalFragment } }  fragment AnimalFragment on Animal { __typename ... on Cat { name } ... on Dog { name } }"
 
     public const val OPERATION_NAME: String = "CatQuery"
   }

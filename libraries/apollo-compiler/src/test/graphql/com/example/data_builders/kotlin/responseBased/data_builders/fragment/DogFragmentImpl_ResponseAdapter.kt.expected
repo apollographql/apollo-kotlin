@@ -18,8 +18,7 @@ public object DogFragmentImpl_ResponseAdapter {
   public object Data : Adapter<DogFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("woof")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        DogFragmentImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): DogFragmentImpl.Data {
       var _woof: String? = null
 
       while (true) {

@@ -20,8 +20,7 @@ public object QueryFragmentImpl_ResponseAdapter {
   public object Data : Adapter<QueryFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "hero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        QueryFragmentImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): QueryFragmentImpl.Data {
       var __typename: String? = null
       var _hero: QueryFragmentImpl.Data.Hero? = null
 
@@ -54,8 +53,7 @@ public object QueryFragmentImpl_ResponseAdapter {
     private object Hero : Adapter<QueryFragmentImpl.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          QueryFragmentImpl.Data.Hero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): QueryFragmentImpl.Data.Hero {
         var _name: String? = null
 
         while (true) {

@@ -21,8 +21,7 @@ public object QueryFragmentImpl_ResponseAdapter {
   public object Data : Adapter<QueryFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid", "human")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        QueryFragmentImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): QueryFragmentImpl.Data {
       var __typename: String? = null
       var _hero: QueryFragmentImpl.Data.Hero? = null
       var _droid: QueryFragmentImpl.Data.Droid? = null
@@ -67,8 +66,7 @@ public object QueryFragmentImpl_ResponseAdapter {
     private object Hero : Adapter<QueryFragmentImpl.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          QueryFragmentImpl.Data.Hero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): QueryFragmentImpl.Data.Hero {
         var __typename: String? = null
         var _name: String? = null
 
@@ -102,8 +100,7 @@ public object QueryFragmentImpl_ResponseAdapter {
     private object Droid : Adapter<QueryFragmentImpl.Data.Droid> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          QueryFragmentImpl.Data.Droid {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): QueryFragmentImpl.Data.Droid {
         var __typename: String? = null
         var _name: String? = null
         var _primaryFunction: String? = null
@@ -143,8 +140,7 @@ public object QueryFragmentImpl_ResponseAdapter {
     private object Human : Adapter<QueryFragmentImpl.Data.Human> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homePlanet")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          QueryFragmentImpl.Data.Human {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): QueryFragmentImpl.Data.Human {
         var __typename: String? = null
         var _name: String? = null
         var _homePlanet: String? = null

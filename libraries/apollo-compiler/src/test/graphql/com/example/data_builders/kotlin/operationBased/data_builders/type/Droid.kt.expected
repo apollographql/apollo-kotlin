@@ -20,8 +20,7 @@ public class Droid {
     public val type: ObjectType =
         ObjectType.Builder(name = "Droid").interfaces(listOf(Character.type)).build()
 
-    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): DroidBuilder =
-        DroidBuilder(customScalarAdapters)
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): DroidBuilder = DroidBuilder(customScalarAdapters)
   }
 }
 
@@ -40,7 +39,7 @@ public class DroidBuilder(
 
 public class DroidMap(
   __fields: Map<String, Any?>,
-) : CharacterMap, Map<String, Any?> by __fields
+) : CharacterMap,
+    Map<String, Any?> by __fields
 
-public fun BuilderScope.buildDroid(block: DroidBuilder.() -> Unit): DroidMap =
-    DroidBuilder(customScalarAdapters).apply(block).build()
+public fun BuilderScope.buildDroid(block: DroidBuilder.() -> Unit): DroidMap = DroidBuilder(customScalarAdapters).apply(block).build()

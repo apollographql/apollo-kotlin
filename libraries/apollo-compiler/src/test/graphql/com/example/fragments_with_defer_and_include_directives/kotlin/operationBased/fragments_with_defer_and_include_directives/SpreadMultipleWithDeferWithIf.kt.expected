@@ -36,8 +36,7 @@ public data class SpreadMultipleWithDeferWithIf(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    SpreadMultipleWithDeferWithIf_VariablesAdapter.serializeVariables(writer, this,
-        customScalarAdapters, withDefaultValues)
+    SpreadMultipleWithDeferWithIf_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = SpreadMultipleWithDeferWithIf_ResponseAdapter.Data.obj()
@@ -102,8 +101,7 @@ public data class SpreadMultipleWithDeferWithIf(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query SpreadMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ...CharacterDetails @defer(label: \"c_first\", if: false) ...CharacterDetails2 @defer(label: \"c_second\", if: true) ...CharacterDetails3 @defer(label: \"c_third\", if: ${'$'}cond) } }  fragment CharacterDetails on Droid { name }  fragment CharacterDetails2 on Droid { id }  fragment CharacterDetails3 on Droid { birthDate }"
+      get() = "query SpreadMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ...CharacterDetails @defer(label: \"c_first\", if: false) ...CharacterDetails2 @defer(label: \"c_second\", if: true) ...CharacterDetails3 @defer(label: \"c_third\", if: ${'$'}cond) } }  fragment CharacterDetails on Droid { name }  fragment CharacterDetails2 on Droid { id }  fragment CharacterDetails3 on Droid { birthDate }"
 
     public const val OPERATION_NAME: String = "SpreadMultipleWithDeferWithIf"
   }

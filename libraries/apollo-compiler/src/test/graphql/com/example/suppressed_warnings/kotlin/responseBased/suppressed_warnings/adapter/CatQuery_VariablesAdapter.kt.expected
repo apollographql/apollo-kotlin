@@ -29,8 +29,7 @@ public object CatQuery_VariablesAdapter {
   ) {
     if (value.filter is Optional.Present) {
       writer.name("filter")
-      Filter_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
-          value.filter)
+      Filter_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters, value.filter)
     }
   }
 }

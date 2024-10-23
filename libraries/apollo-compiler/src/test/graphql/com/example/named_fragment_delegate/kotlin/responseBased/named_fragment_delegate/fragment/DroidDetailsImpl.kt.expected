@@ -54,7 +54,8 @@ public class DroidDetailsImpl() : Fragment<DroidDetailsImpl.Data> {
      * This droid's friends, or an empty list if they have none
      */
     override val friends: List<Friend?>?,
-  ) : DroidDetails, Fragment.Data {
+  ) : DroidDetails,
+      Fragment.Data {
     public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
     public data class Friend(

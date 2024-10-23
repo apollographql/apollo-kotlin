@@ -20,8 +20,7 @@ public class Dog {
     public val type: ObjectType =
         ObjectType.Builder(name = "Dog").interfaces(listOf(Node.type)).build()
 
-    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): DogBuilder =
-        DogBuilder(customScalarAdapters)
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): DogBuilder = DogBuilder(customScalarAdapters)
   }
 }
 
@@ -40,7 +39,8 @@ public class DogBuilder(
 
 public class DogMap(
   __fields: Map<String, Any?>,
-) : NodeMap, AnimalMap, Map<String, Any?> by __fields
+) : NodeMap,
+    AnimalMap,
+    Map<String, Any?> by __fields
 
-public fun BuilderScope.buildDog(block: DogBuilder.() -> Unit): DogMap =
-    DogBuilder(customScalarAdapters).apply(block).build()
+public fun BuilderScope.buildDog(block: DogBuilder.() -> Unit): DogMap = DogBuilder(customScalarAdapters).apply(block).build()

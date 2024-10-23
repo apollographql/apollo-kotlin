@@ -23,8 +23,7 @@ public object HumanDetailsImpl_ResponseAdapter {
   public object Data : Adapter<HumanDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "profileLink", "friendsConnection")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        HumanDetailsImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HumanDetailsImpl.Data {
       var _name: String? = null
       var _profileLink: Any? = null
       var _friendsConnection: HumanDetailsImpl.Data.FriendsConnection? = null
@@ -63,8 +62,7 @@ public object HumanDetailsImpl_ResponseAdapter {
     private object FriendsConnection : Adapter<HumanDetailsImpl.Data.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          HumanDetailsImpl.Data.FriendsConnection {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HumanDetailsImpl.Data.FriendsConnection {
         var _edges: List<HumanDetailsImpl.Data.FriendsConnection.Edge?>? = null
 
         while (true) {
@@ -91,8 +89,7 @@ public object HumanDetailsImpl_ResponseAdapter {
       private object Edge : Adapter<HumanDetailsImpl.Data.FriendsConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            HumanDetailsImpl.Data.FriendsConnection.Edge {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HumanDetailsImpl.Data.FriendsConnection.Edge {
           var _node: HumanDetailsImpl.Data.FriendsConnection.Edge.Node? = null
 
           while (true) {
@@ -119,8 +116,7 @@ public object HumanDetailsImpl_ResponseAdapter {
         private object Node : Adapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              HumanDetailsImpl.Data.FriendsConnection.Edge.Node {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HumanDetailsImpl.Data.FriendsConnection.Edge.Node {
             var _name: String? = null
 
             while (true) {

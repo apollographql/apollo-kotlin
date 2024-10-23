@@ -17,16 +17,11 @@ import com.example.hero_name_query_long_name.TestQueryWithAVeryAVeryAVeryAVeryAV
 import kotlin.String
 import kotlin.collections.List
 
-public object
-    TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter
-    {
-  public object Data :
-      Adapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>
-      {
+public object TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter {
+  public object Data : Adapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("heroAVeryAVeryAVeryAVeryAVeryAVeryAV")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data {
       var _heroAVeryAVeryAVeryAVeryAVeryAVeryAV: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV? = null
 
       while (true) {
@@ -47,18 +42,14 @@ public object
       `value`: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data,
     ) {
       writer.name("heroAVeryAVeryAVeryAVeryAVeryAVeryAV")
-      HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.obj().nullable().toJson(writer, customScalarAdapters,
-          value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV)
+      HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.obj().nullable().toJson(writer, customScalarAdapters, value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV)
     }
 
-    private object HeroAVeryAVeryAVeryAVeryAVeryAVeryAV :
-        Adapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>
-        {
+    private object HeroAVeryAVeryAVeryAVeryAVeryAVeryAV : Adapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV> {
       public val RESPONSE_NAMES: List<String> =
           listOf("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV {
         var _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: String? = null
 
         while (true) {
@@ -79,8 +70,7 @@ public object
         `value`: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV,
       ) {
         writer.name("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
-        StringAdapter.toJson(writer, customScalarAdapters,
-            value.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
+        StringAdapter.toJson(writer, customScalarAdapters, value.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
       }
     }
   }

@@ -42,8 +42,7 @@ public data class MyQuery(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    MyQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    MyQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = MyQuery_ResponseAdapter.Data.obj()
@@ -64,8 +63,7 @@ public data class MyQuery(
     public val nullableListOfNullableString: List<String?>?,
     public val nullableListOfNonNullableString: List<String>?,
   ) : Query.Data {
-    public fun nullableListOfNullableStringFilterNotNull(): List<String>? =
-        nullableListOfNullableString?.filterNotNull()
+    public fun nullableListOfNullableStringFilterNotNull(): List<String>? = nullableListOfNullableString?.filterNotNull()
 
     public data class NullableMyType(
       public val nullableInt: Int?,
@@ -87,18 +85,12 @@ public data class MyQuery(
      * The un-minimized version is:
      *
      * ```
-     * query MyQuery($nullableInt: Int, $nonNullableInt: Int!, $nonNullableIntWithDefault: Int! = 4
-     * , $nullableInput: MyInput, $nonNullableInput: MyInput!, $nonNullableInputWithDefault: MyInput! =
-     * {
+     * query MyQuery($nullableInt: Int, $nonNullableInt: Int!, $nonNullableIntWithDefault: Int! = 4 , $nullableInput: MyInput, $nonNullableInput: MyInput!, $nonNullableInputWithDefault: MyInput! = {
      *   nonNullableInt: 4
      * }
      *  ) {
-     *   nullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt,
-     * nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput,
-     * nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault)
-     *   nonNullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt,
-     * nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput,
-     * nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault)
+     *   nullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt, nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput, nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault)
+     *   nonNullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt, nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput, nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault)
      *   nullableMyType {
      *     nullableInt
      *     nonNullableInt
@@ -113,8 +105,7 @@ public data class MyQuery(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query MyQuery(${'$'}nullableInt: Int, ${'$'}nonNullableInt: Int!, ${'$'}nonNullableIntWithDefault: Int! = 4 , ${'$'}nullableInput: MyInput, ${'$'}nonNullableInput: MyInput!, ${'$'}nonNullableInputWithDefault: MyInput! = { nonNullableInt: 4 } ) { nullableInt(nullableInt: ${'$'}nullableInt, nonNullableInt: ${'$'}nonNullableInt, nonNullableIntWithDefault: ${'$'}nonNullableIntWithDefault, nullableInput: ${'$'}nullableInput, nonNullableInput: ${'$'}nonNullableInput, nonNullableInputWithDefault: ${'$'}nonNullableInputWithDefault) nonNullableInt(nullableInt: ${'$'}nullableInt, nonNullableInt: ${'$'}nonNullableInt, nonNullableIntWithDefault: ${'$'}nonNullableIntWithDefault, nullableInput: ${'$'}nullableInput, nonNullableInput: ${'$'}nonNullableInput, nonNullableInputWithDefault: ${'$'}nonNullableInputWithDefault) nullableMyType { nullableInt nonNullableInt } nonNullableMyType { nullableInt nonNullableInt } nullableListOfNullableString nullableListOfNonNullableString }"
+      get() = "query MyQuery(${'$'}nullableInt: Int, ${'$'}nonNullableInt: Int!, ${'$'}nonNullableIntWithDefault: Int! = 4 , ${'$'}nullableInput: MyInput, ${'$'}nonNullableInput: MyInput!, ${'$'}nonNullableInputWithDefault: MyInput! = { nonNullableInt: 4 } ) { nullableInt(nullableInt: ${'$'}nullableInt, nonNullableInt: ${'$'}nonNullableInt, nonNullableIntWithDefault: ${'$'}nonNullableIntWithDefault, nullableInput: ${'$'}nullableInput, nonNullableInput: ${'$'}nonNullableInput, nonNullableInputWithDefault: ${'$'}nonNullableInputWithDefault) nonNullableInt(nullableInt: ${'$'}nullableInt, nonNullableInt: ${'$'}nonNullableInt, nonNullableIntWithDefault: ${'$'}nonNullableIntWithDefault, nullableInput: ${'$'}nullableInput, nonNullableInput: ${'$'}nonNullableInput, nonNullableInputWithDefault: ${'$'}nonNullableInputWithDefault) nullableMyType { nullableInt nonNullableInt } nonNullableMyType { nullableInt nonNullableInt } nullableListOfNullableString nullableListOfNonNullableString }"
 
     public const val OPERATION_NAME: String = "MyQuery"
   }

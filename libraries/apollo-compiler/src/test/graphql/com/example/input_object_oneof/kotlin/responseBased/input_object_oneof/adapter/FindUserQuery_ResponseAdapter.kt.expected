@@ -21,8 +21,7 @@ public object FindUserQuery_ResponseAdapter {
   public object Data : Adapter<FindUserQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("findUser")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        FindUserQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): FindUserQuery.Data {
       var _findUser: FindUserQuery.Data.FindUser? = null
 
       while (true) {
@@ -49,8 +48,7 @@ public object FindUserQuery_ResponseAdapter {
     private object FindUser : Adapter<FindUserQuery.Data.FindUser> {
       public val RESPONSE_NAMES: List<String> = listOf("id")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          FindUserQuery.Data.FindUser {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): FindUserQuery.Data.FindUser {
         var _id: String? = null
 
         while (true) {

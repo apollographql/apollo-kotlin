@@ -118,7 +118,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
 
     builder.add(typenameFromReaderCodeBlock())
 
-    builder.beginControlFlow("return·when($__typename) {")
+    builder.beginControlFlow("return when($__typename) {")
     implementations.sortedByDescending {
       it.typeSet.size
     }.sortedByDescending {

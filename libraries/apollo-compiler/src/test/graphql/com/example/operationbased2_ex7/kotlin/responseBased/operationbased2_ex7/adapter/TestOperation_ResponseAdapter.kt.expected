@@ -25,8 +25,7 @@ public object TestOperation_ResponseAdapter {
   public object Data : Adapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestOperation.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
       while (true) {
@@ -51,8 +50,7 @@ public object TestOperation_ResponseAdapter {
     }
 
     private object Animal : Adapter<TestOperation.Data.Animal> {
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestOperation.Data.Animal {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Animal {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Cat",
@@ -73,21 +71,17 @@ public object TestOperation_ResponseAdapter {
         `value`: TestOperation.Data.Animal,
       ) {
         when(value) {
-          is TestOperation.Data.PetWarmBloodedAnimal -> PetWarmBloodedAnimal.toJson(writer,
-              customScalarAdapters, value)
-          is TestOperation.Data.OtherWarmBloodedAnimal -> OtherWarmBloodedAnimal.toJson(writer,
-              customScalarAdapters, value)
-          is TestOperation.Data.OtherPetAnimal -> OtherPetAnimal.toJson(writer,
-              customScalarAdapters, value)
-          is TestOperation.Data.OtherAnimal -> OtherAnimal.toJson(writer, customScalarAdapters,
-              value)
+          is TestOperation.Data.PetWarmBloodedAnimal -> PetWarmBloodedAnimal.toJson(writer, customScalarAdapters, value)
+          is TestOperation.Data.OtherWarmBloodedAnimal -> OtherWarmBloodedAnimal.toJson(writer, customScalarAdapters, value)
+          is TestOperation.Data.OtherPetAnimal -> OtherPetAnimal.toJson(writer, customScalarAdapters, value)
+          is TestOperation.Data.OtherAnimal -> OtherAnimal.toJson(writer, customScalarAdapters, value)
         }
       }
     }
 
     public object PetWarmBloodedAnimal {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename", "species", "temperature",
-          "name")
+      public val RESPONSE_NAMES: List<String> =
+          listOf("__typename", "species", "temperature", "name")
 
       public fun fromJson(
         reader: JsonReader,

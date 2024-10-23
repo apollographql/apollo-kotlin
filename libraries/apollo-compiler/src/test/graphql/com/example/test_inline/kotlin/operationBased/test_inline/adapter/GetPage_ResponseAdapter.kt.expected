@@ -23,8 +23,7 @@ public object GetPage_ResponseAdapter {
   public object Data : Adapter<GetPage.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("collection")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        GetPage.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetPage.Data {
       var _collection: GetPage.Data.Collection? = null
 
       while (true) {
@@ -51,8 +50,7 @@ public object GetPage_ResponseAdapter {
     private object Collection : Adapter<GetPage.Data.Collection> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          GetPage.Data.Collection {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetPage.Data.Collection {
         var __typename: String? = null
         var _items: List<GetPage.Data.Collection.Item>? = null
 
@@ -71,8 +69,7 @@ public object GetPage_ResponseAdapter {
         var _onParticularCollection: GetPage.Data.Collection.OnParticularCollection? = null
         if (possibleTypes("ParticularCollection").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.fromJson(reader,
-              customScalarAdapters)
+          _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.fromJson(reader, customScalarAdapters)
         }
 
         return GetPage.Data.Collection(
@@ -94,16 +91,14 @@ public object GetPage_ResponseAdapter {
         Item.obj().list().toJson(writer, customScalarAdapters, value.items)
 
         if (value.onParticularCollection != null) {
-          com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.toJson(writer,
-              customScalarAdapters, value.onParticularCollection)
+          com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.toJson(writer, customScalarAdapters, value.onParticularCollection)
         }
       }
 
       private object Item : Adapter<GetPage.Data.Collection.Item> {
         public val RESPONSE_NAMES: List<String> = listOf("title")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            GetPage.Data.Collection.Item {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetPage.Data.Collection.Item {
           var _title: String? = null
 
           while (true) {
@@ -128,12 +123,10 @@ public object GetPage_ResponseAdapter {
         }
       }
 
-      private object OnParticularCollection :
-          Adapter<GetPage.Data.Collection.OnParticularCollection> {
+      private object OnParticularCollection : Adapter<GetPage.Data.Collection.OnParticularCollection> {
         public val RESPONSE_NAMES: List<String> = listOf("items")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            GetPage.Data.Collection.OnParticularCollection {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetPage.Data.Collection.OnParticularCollection {
           var _items: List<GetPage.Data.Collection.OnParticularCollection.Item>? = null
 
           while (true) {
@@ -160,8 +153,7 @@ public object GetPage_ResponseAdapter {
         private object Item : Adapter<GetPage.Data.Collection.OnParticularCollection.Item> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              GetPage.Data.Collection.OnParticularCollection.Item {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetPage.Data.Collection.OnParticularCollection.Item {
             var __typename: String? = null
 
             while (true) {
@@ -178,8 +170,7 @@ public object GetPage_ResponseAdapter {
             var _onParticularItem: GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem? = null
             if (possibleTypes("ParticularItem").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
               reader.rewind()
-              _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.fromJson(reader,
-                  customScalarAdapters)
+              _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.fromJson(reader, customScalarAdapters)
             }
 
             return GetPage.Data.Collection.OnParticularCollection.Item(
@@ -197,17 +188,14 @@ public object GetPage_ResponseAdapter {
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
             if (value.onParticularItem != null) {
-              com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.toJson(writer,
-                  customScalarAdapters, value.onParticularItem)
+              com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.toJson(writer, customScalarAdapters, value.onParticularItem)
             }
           }
 
-          private object OnParticularItem :
-              Adapter<GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem> {
+          private object OnParticularItem : Adapter<GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem> {
             public val RESPONSE_NAMES: List<String> = listOf("image")
 
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem {
+            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem {
               var _image: String? = null
 
               while (true) {

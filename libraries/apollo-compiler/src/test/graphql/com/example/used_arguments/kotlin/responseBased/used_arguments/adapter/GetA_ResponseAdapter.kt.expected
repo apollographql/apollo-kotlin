@@ -25,8 +25,7 @@ public object GetA_ResponseAdapter {
   public object Data : Adapter<GetA.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("a")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        GetA.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetA.Data {
       var _a: GetA.Data.A? = null
 
       while (true) {
@@ -51,8 +50,7 @@ public object GetA_ResponseAdapter {
     }
 
     private object A : Adapter<GetA.Data.A> {
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          GetA.Data.A {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetA.Data.A {
         val __typename = reader.readTypename()
         return when(__typename) {
           "B",

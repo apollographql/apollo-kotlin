@@ -15,9 +15,7 @@ import com.example.hero_name_query_long_name.type.adapter.Episode_ResponseAdapte
 import kotlin.Boolean
 import kotlin.Suppress
 
-public object
-    TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter
-    {
+public object TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter {
   @Suppress(
     "UNUSED_PARAMETER",
     "UNUSED_VARIABLE",
@@ -28,12 +26,9 @@ public object
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    if
-        (value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
-        is Optional.Present) {
+    if (value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName is Optional.Present) {
       writer.name("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
-      Episode_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
-          value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
+      Episode_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters, value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
     }
   }
 }

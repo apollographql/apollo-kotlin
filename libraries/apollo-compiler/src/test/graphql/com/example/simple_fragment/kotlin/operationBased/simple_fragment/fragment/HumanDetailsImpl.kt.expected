@@ -40,8 +40,7 @@ internal class HumanDetailsImpl() : Fragment<HumanDetails> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<HumanDetails> =
-      HumanDetailsImpl_ResponseAdapter.HumanDetails.obj()
+  override fun adapter(): Adapter<HumanDetails> = HumanDetailsImpl_ResponseAdapter.HumanDetails.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
@@ -51,8 +50,7 @@ internal class HumanDetailsImpl() : Fragment<HumanDetails> {
   .build()
 
   public companion object {
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: HumanBuilder.() -> Unit = {}): HumanDetails = buildData(
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: HumanBuilder.() -> Unit = {}): HumanDetails = buildData(
       Human,
       block,
       HumanDetailsImpl_ResponseAdapter.HumanDetails,

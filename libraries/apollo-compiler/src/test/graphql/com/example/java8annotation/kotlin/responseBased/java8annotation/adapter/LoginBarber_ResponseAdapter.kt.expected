@@ -20,8 +20,7 @@ public object LoginBarber_ResponseAdapter {
   public object Data : Adapter<LoginBarber.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("login")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        LoginBarber.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LoginBarber.Data {
       var _login: LoginBarber.Data.Login? = null
 
       while (true) {
@@ -48,8 +47,7 @@ public object LoginBarber_ResponseAdapter {
     private object Login : Adapter<LoginBarber.Data.Login> {
       public val RESPONSE_NAMES: List<String> = listOf("response")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          LoginBarber.Data.Login {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LoginBarber.Data.Login {
         var _response: String? = null
 
         while (true) {

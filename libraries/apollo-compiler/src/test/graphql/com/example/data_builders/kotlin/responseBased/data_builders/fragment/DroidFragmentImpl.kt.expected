@@ -49,11 +49,11 @@ public class DroidFragmentImpl() : Fragment<DroidFragmentImpl.Data> {
 
   public data class Data(
     override val primaryFunction: String,
-  ) : DroidFragment, Fragment.Data
+  ) : DroidFragment,
+      Fragment.Data
 
   public companion object {
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: DroidBuilder.() -> Unit = {}): Data = buildData(
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: DroidBuilder.() -> Unit = {}): Data = buildData(
       Droid,
       block,
       DroidFragmentImpl_ResponseAdapter.Data,

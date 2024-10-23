@@ -14,12 +14,10 @@ import kotlin.String
 import kotlin.collections.List
 
 public object DroidDetailsImpl_ResponseAdapter {
-  public object DroidDetails :
-      Adapter<com.example.named_fragment_without_implementation.fragment.DroidDetails> {
+  public object DroidDetails : Adapter<com.example.named_fragment_without_implementation.fragment.DroidDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("primaryFunction")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.named_fragment_without_implementation.fragment.DroidDetails {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.named_fragment_without_implementation.fragment.DroidDetails {
       var _primaryFunction: String? = null
 
       while (true) {

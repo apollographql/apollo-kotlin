@@ -84,7 +84,7 @@ internal fun dataBuilderCtor(
       )
       .addCode(
           CodeBlock.builder()
-              .add("return·%M(\n", KotlinSymbols.buildData)
+              .add("return %M(\n", KotlinSymbols.buildData)
               .indent()
               .apply {
                 if (builderFactoryParameterRequired) {
@@ -141,10 +141,10 @@ internal fun topLevelBuildFunSpec(
       .receiver(KotlinSymbols.BuilderScope)
       .addCode(
           CodeBlock.builder()
-              .add("return·%T(${customScalarAdapters}).apply($block)", builderClassName)
+              .add("return %T(${customScalarAdapters}).apply($block)", builderClassName)
               .apply {
                 if (requiresTypename) {
-                  add(".apply·{·__typename·=·typename·}")
+                  add(".apply { __typename = typename }")
                 }
               }
               .add(".build()")
@@ -214,7 +214,7 @@ internal fun concreteBuilderTypeSpec(
       .addFunction(buildFunSpec(packageName, mapName))
       .apply {
         if (typename != null) {
-          addInitializerBlock(CodeBlock.of("$__typename·=·%S", typename))
+          addInitializerBlock(CodeBlock.of("$__typename = %S", typename))
         }
       }
       .build()
@@ -242,7 +242,7 @@ private fun buildFunSpec(packageName: String, mapName: String): FunSpec {
       .addModifiers(KModifier.OVERRIDE)
       .addCode(
           CodeBlock.builder()
-              .addStatement("return·%T(${Identifier.__fields})", mapClassName)
+              .addStatement("return %T(${Identifier.__fields})", mapClassName)
               .build()
       )
       .build()

@@ -140,7 +140,7 @@ internal fun TypeSpec.Builder.withEqualsImplementation(className: ClassName): Ty
   fun methodCode(): CodeBlock {
     if (propertySpecs.isEmpty()) {
       return CodeBlock.builder()
-          .addStatement("return·other != null·&&·other::class·==·this::class")
+          .addStatement("return other != null && other::class == this::class")
           .build()
     }
     return CodeBlock.builder()
@@ -183,7 +183,7 @@ internal fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder = a
 
   fun methodCode(): CodeBlock {
     if (propertySpecs.isEmpty()) {
-      return CodeBlock.builder().addStatement("return·this::class.hashCode()").build()
+      return CodeBlock.builder().addStatement("return this::class.hashCode()").build()
     }
     return CodeBlock.builder()
         .beginControlFlow("if (%L == null)", MEMOIZED_HASH_CODE_VAR)

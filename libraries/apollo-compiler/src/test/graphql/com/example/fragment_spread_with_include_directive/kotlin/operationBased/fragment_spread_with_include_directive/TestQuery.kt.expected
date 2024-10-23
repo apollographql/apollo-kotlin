@@ -42,8 +42,7 @@ public data class TestQuery(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
@@ -94,9 +93,7 @@ public data class TestQuery(
      * The un-minimized version is:
      *
      * ```
-     * query TestQuery($withDetails: Boolean!, $skipHumanDetails: Boolean!,
-     * $optionalWithDefaultFalse: Boolean = false , $optionalWithDefaultTrue: Boolean = true ,
-     * $optionalWithNoDefault: Boolean) {
+     * query TestQuery($withDetails: Boolean!, $skipHumanDetails: Boolean!, $optionalWithDefaultFalse: Boolean = false , $optionalWithDefaultTrue: Boolean = true , $optionalWithNoDefault: Boolean) {
      *   hero {
      *     __typename
      *     id
@@ -126,8 +123,7 @@ public data class TestQuery(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery(${'$'}withDetails: Boolean!, ${'$'}skipHumanDetails: Boolean!, ${'$'}optionalWithDefaultFalse: Boolean = false , ${'$'}optionalWithDefaultTrue: Boolean = true , ${'$'}optionalWithNoDefault: Boolean) { hero { __typename id ...HeroDetails @include(if: ${'$'}withDetails) @skip(if: ${'$'}skipHumanDetails) ...HumanDetails @include(if: ${'$'}withDetails) ...DroidDetails @skip(if: ${'$'}optionalWithDefaultTrue) ...OtherDroidDetails @include(if: ${'$'}optionalWithDefaultTrue) } getBoolean(booleanArg: ${'$'}optionalWithNoDefault) }  fragment HeroDetails on Character { name }  fragment HumanDetails on Human { homePlanet }  fragment DroidDetails on Droid { primaryFunction }  fragment OtherDroidDetails on Droid { id }"
+      get() = "query TestQuery(${'$'}withDetails: Boolean!, ${'$'}skipHumanDetails: Boolean!, ${'$'}optionalWithDefaultFalse: Boolean = false , ${'$'}optionalWithDefaultTrue: Boolean = true , ${'$'}optionalWithNoDefault: Boolean) { hero { __typename id ...HeroDetails @include(if: ${'$'}withDetails) @skip(if: ${'$'}skipHumanDetails) ...HumanDetails @include(if: ${'$'}withDetails) ...DroidDetails @skip(if: ${'$'}optionalWithDefaultTrue) ...OtherDroidDetails @include(if: ${'$'}optionalWithDefaultTrue) } getBoolean(booleanArg: ${'$'}optionalWithNoDefault) }  fragment HeroDetails on Character { name }  fragment HumanDetails on Human { homePlanet }  fragment DroidDetails on Droid { primaryFunction }  fragment OtherDroidDetails on Droid { id }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

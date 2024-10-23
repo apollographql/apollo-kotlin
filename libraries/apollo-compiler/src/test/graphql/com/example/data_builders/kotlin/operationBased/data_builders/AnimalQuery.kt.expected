@@ -101,13 +101,11 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query AnimalQuery { animal { __typename ...CatFragment ...DogFragment } }  fragment CatFragment on Cat { meow }  fragment DogFragment on Dog { woof }"
+      get() = "query AnimalQuery { animal { __typename ...CatFragment ...DogFragment } }  fragment CatFragment on Cat { meow }  fragment DogFragment on Dog { woof }"
 
     public const val OPERATION_NAME: String = "AnimalQuery"
 
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: QueryBuilder.() -> Unit = {}): Data = buildData(
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: QueryBuilder.() -> Unit = {}): Data = buildData(
       CompiledQuery,
       block,
       AnimalQuery_ResponseAdapter.Data,

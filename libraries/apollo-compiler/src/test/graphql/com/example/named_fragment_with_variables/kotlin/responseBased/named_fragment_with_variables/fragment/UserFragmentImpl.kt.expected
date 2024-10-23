@@ -26,8 +26,7 @@ public data class UserFragmentImpl(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    UserFragmentImpl_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    UserFragmentImpl_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = UserFragmentImpl_ResponseAdapter.Data.obj()
@@ -43,5 +42,6 @@ public data class UserFragmentImpl(
     override val firstName: String,
     override val lastName: String,
     override val avatar: String,
-  ) : UserFragment, Fragment.Data
+  ) : UserFragment,
+      Fragment.Data
 }

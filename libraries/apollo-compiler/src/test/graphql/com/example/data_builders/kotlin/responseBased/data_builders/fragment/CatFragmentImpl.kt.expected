@@ -49,11 +49,11 @@ public class CatFragmentImpl() : Fragment<CatFragmentImpl.Data> {
 
   public data class Data(
     override val meow: String,
-  ) : CatFragment, Fragment.Data
+  ) : CatFragment,
+      Fragment.Data
 
   public companion object {
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: CatBuilder.() -> Unit = {}): Data = buildData(
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: CatBuilder.() -> Unit = {}): Data = buildData(
       Cat,
       block,
       CatFragmentImpl_ResponseAdapter.Data,

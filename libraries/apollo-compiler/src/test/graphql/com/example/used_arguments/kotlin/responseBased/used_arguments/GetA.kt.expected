@@ -103,8 +103,7 @@ public class GetA() : Query<GetA.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query GetA { a { __typename ... on B { field(arg: 42) } ... on C { field(arg: 42) } } }"
+      get() = "query GetA { a { __typename ... on B { field(arg: 42) } ... on C { field(arg: 42) } } }"
 
     public const val OPERATION_NAME: String = "GetA"
   }

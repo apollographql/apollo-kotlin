@@ -14,12 +14,7 @@ import kotlin.collections.List
  */
 public object __Schema {
   public val all: List<CompiledNamedType> = listOf(
-        com.example.data_builders.type.Animal.type, com.example.data_builders.type.Cat.type,
-            com.example.data_builders.type.Character.type, com.example.data_builders.type.Dog.type,
-            com.example.data_builders.type.Droid.type, com.example.data_builders.type.Human.type,
-            com.example.data_builders.type.Node.type, com.example.data_builders.type.Query.type)
+        com.example.data_builders.type.Animal.type, com.example.data_builders.type.Cat.type, com.example.data_builders.type.Character.type, com.example.data_builders.type.Dog.type, com.example.data_builders.type.Droid.type, com.example.data_builders.type.Human.type, com.example.data_builders.type.Node.type, com.example.data_builders.type.Query.type)
 
-
-  public fun possibleTypes(type: CompiledNamedType): List<ObjectType> =
-      com.apollographql.apollo.api.possibleTypes(all, type)
+  public fun possibleTypes(type: CompiledNamedType): List<ObjectType> = com.apollographql.apollo.api.possibleTypes(all, type)
 }

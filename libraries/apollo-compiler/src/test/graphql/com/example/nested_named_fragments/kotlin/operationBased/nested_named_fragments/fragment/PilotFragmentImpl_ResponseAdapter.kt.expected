@@ -21,8 +21,7 @@ public object PilotFragmentImpl_ResponseAdapter {
   public object PilotFragment : Adapter<com.example.nested_named_fragments.fragment.PilotFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "homeworld")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.nested_named_fragments.fragment.PilotFragment {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.nested_named_fragments.fragment.PilotFragment {
       var _name: String? = null
       var _homeworld: com.example.nested_named_fragments.fragment.PilotFragment.Homeworld? = null
 
@@ -52,12 +51,10 @@ public object PilotFragmentImpl_ResponseAdapter {
       Homeworld.obj(true).nullable().toJson(writer, customScalarAdapters, value.homeworld)
     }
 
-    private object Homeworld :
-        Adapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld> {
+    private object Homeworld : Adapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.nested_named_fragments.fragment.PilotFragment.Homeworld {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.nested_named_fragments.fragment.PilotFragment.Homeworld {
         var __typename: String? = null
 
         while (true) {
@@ -68,8 +65,7 @@ public object PilotFragmentImpl_ResponseAdapter {
         }
 
         reader.rewind()
-        val _planetFragment = com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.fromJson(reader,
-            customScalarAdapters)
+        val _planetFragment = com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.fromJson(reader, customScalarAdapters)
 
         return com.example.nested_named_fragments.fragment.PilotFragment.Homeworld(
           __typename = __typename ?: missingField(reader, "__typename"),
@@ -85,8 +81,7 @@ public object PilotFragmentImpl_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.toJson(writer,
-            customScalarAdapters, value.planetFragment)
+        com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.toJson(writer, customScalarAdapters, value.planetFragment)
       }
     }
   }

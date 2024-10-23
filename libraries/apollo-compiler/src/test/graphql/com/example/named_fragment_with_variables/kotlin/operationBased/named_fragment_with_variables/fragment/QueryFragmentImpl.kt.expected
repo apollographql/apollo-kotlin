@@ -29,12 +29,10 @@ public data class QueryFragmentImpl(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    QueryFragmentImpl_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    QueryFragmentImpl_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
-  override fun adapter(): Adapter<QueryFragment> =
-      QueryFragmentImpl_ResponseAdapter.QueryFragment.obj()
+  override fun adapter(): Adapter<QueryFragment> = QueryFragmentImpl_ResponseAdapter.QueryFragment.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

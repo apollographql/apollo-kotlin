@@ -18,8 +18,7 @@ public object UserFragmentImpl_ResponseAdapter {
   public object Data : Adapter<UserFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("firstName", "lastName", "avatar")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        UserFragmentImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): UserFragmentImpl.Data {
       var _firstName: String? = null
       var _lastName: String? = null
       var _avatar: String? = null

@@ -24,8 +24,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("r2", "luke")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _r2: TestQuery.Data.R2? = null
       var _luke: TestQuery.Data.Luke? = null
 
@@ -58,8 +57,7 @@ public object TestQuery_ResponseAdapter {
     private object R2 : Adapter<TestQuery.Data.R2> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.R2 {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.R2 {
         var __typename: String? = null
 
         while (true) {
@@ -76,15 +74,13 @@ public object TestQuery_ResponseAdapter {
         var _humanDetails: HumanDetails? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
-              customScalarAdapters)
+          _humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader, customScalarAdapters)
         }
 
         var _droidDetails: DroidDetails? = null
         if (possibleTypes("Droid").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-              customScalarAdapters)
+          _droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader, customScalarAdapters)
         }
 
         return TestQuery.Data.R2(
@@ -103,13 +99,11 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.humanDetails != null) {
-          com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
-              customScalarAdapters, value.humanDetails)
+          com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer, customScalarAdapters, value.humanDetails)
         }
 
         if (value.droidDetails != null) {
-          com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-              customScalarAdapters, value.droidDetails)
+          com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer, customScalarAdapters, value.droidDetails)
         }
       }
     }
@@ -117,8 +111,7 @@ public object TestQuery_ResponseAdapter {
     private object Luke : Adapter<TestQuery.Data.Luke> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Luke {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Luke {
         var __typename: String? = null
 
         while (true) {
@@ -135,15 +128,13 @@ public object TestQuery_ResponseAdapter {
         var _humanDetails: HumanDetails? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
-              customScalarAdapters)
+          _humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader, customScalarAdapters)
         }
 
         var _droidDetails: DroidDetails? = null
         if (possibleTypes("Droid").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-              customScalarAdapters)
+          _droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader, customScalarAdapters)
         }
 
         return TestQuery.Data.Luke(
@@ -162,13 +153,11 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.humanDetails != null) {
-          com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
-              customScalarAdapters, value.humanDetails)
+          com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer, customScalarAdapters, value.humanDetails)
         }
 
         if (value.droidDetails != null) {
-          com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-              customScalarAdapters, value.droidDetails)
+          com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer, customScalarAdapters, value.droidDetails)
         }
       }
     }

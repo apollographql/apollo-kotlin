@@ -23,8 +23,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("c")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _c: TestQuery.Data.C? = null
 
       while (true) {
@@ -51,8 +50,7 @@ public object TestQuery_ResponseAdapter {
     private object C : Adapter<TestQuery.Data.C> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.C {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.C {
         var __typename: String? = null
 
         while (true) {
@@ -69,15 +67,13 @@ public object TestQuery_ResponseAdapter {
         var _onA: TestQuery.Data.C.OnA? = null
         if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.fromJson(reader,
-              customScalarAdapters)
+          _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.fromJson(reader, customScalarAdapters)
         }
 
         var _onB: TestQuery.Data.C.OnB? = null
         if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.fromJson(reader,
-              customScalarAdapters)
+          _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.fromJson(reader, customScalarAdapters)
         }
 
         return TestQuery.Data.C(
@@ -96,21 +92,18 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onA != null) {
-          com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.toJson(writer,
-              customScalarAdapters, value.onA)
+          com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.toJson(writer, customScalarAdapters, value.onA)
         }
 
         if (value.onB != null) {
-          com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.toJson(writer,
-              customScalarAdapters, value.onB)
+          com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.toJson(writer, customScalarAdapters, value.onB)
         }
       }
 
       private object OnA : Adapter<TestQuery.Data.C.OnA> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.C.OnA {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.C.OnA {
           var __typename: String? = null
           var _fieldA1: String? = null
 
@@ -129,8 +122,7 @@ public object TestQuery_ResponseAdapter {
           var _onB: TestQuery.Data.C.OnA.OnB? = null
           if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
             reader.rewind()
-            _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.OnB.fromJson(reader,
-                customScalarAdapters)
+            _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.OnB.fromJson(reader, customScalarAdapters)
           }
 
           return TestQuery.Data.C.OnA(
@@ -152,16 +144,14 @@ public object TestQuery_ResponseAdapter {
           NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1)
 
           if (value.onB != null) {
-            com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.OnB.toJson(writer,
-                customScalarAdapters, value.onB)
+            com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.OnB.toJson(writer, customScalarAdapters, value.onB)
           }
         }
 
         private object OnB : Adapter<TestQuery.Data.C.OnA.OnB> {
           public val RESPONSE_NAMES: List<String> = listOf("fieldB1")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestQuery.Data.C.OnA.OnB {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.C.OnA.OnB {
             var _fieldB1: String? = null
 
             while (true) {
@@ -190,8 +180,7 @@ public object TestQuery_ResponseAdapter {
       private object OnB : Adapter<TestQuery.Data.C.OnB> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldB2")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.C.OnB {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.C.OnB {
           var __typename: String? = null
           var _fieldB2: String? = null
 
@@ -210,8 +199,7 @@ public object TestQuery_ResponseAdapter {
           var _onA: TestQuery.Data.C.OnB.OnA? = null
           if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
             reader.rewind()
-            _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.OnA.fromJson(reader,
-                customScalarAdapters)
+            _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.OnA.fromJson(reader, customScalarAdapters)
           }
 
           return TestQuery.Data.C.OnB(
@@ -233,16 +221,14 @@ public object TestQuery_ResponseAdapter {
           NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB2)
 
           if (value.onA != null) {
-            com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.OnA.toJson(writer,
-                customScalarAdapters, value.onA)
+            com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.OnA.toJson(writer, customScalarAdapters, value.onA)
           }
         }
 
         private object OnA : Adapter<TestQuery.Data.C.OnB.OnA> {
           public val RESPONSE_NAMES: List<String> = listOf("fieldA2")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestQuery.Data.C.OnB.OnA {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.C.OnB.OnA {
             var _fieldA2: String? = null
 
             while (true) {

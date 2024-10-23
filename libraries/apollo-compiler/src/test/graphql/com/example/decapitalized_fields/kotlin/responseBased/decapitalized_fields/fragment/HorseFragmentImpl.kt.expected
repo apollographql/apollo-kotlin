@@ -42,7 +42,8 @@ public class HorseFragmentImpl() : Fragment<HorseFragmentImpl.Data> {
 
   public data class Data(
     override val cow: Cow?,
-  ) : HorseFragment, Fragment.Data {
+  ) : HorseFragment,
+      Fragment.Data {
     public data class Cow(
       override val moo: String?,
     ) : HorseFragment.Cow

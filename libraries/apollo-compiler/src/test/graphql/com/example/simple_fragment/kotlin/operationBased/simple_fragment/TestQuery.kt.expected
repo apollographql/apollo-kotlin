@@ -107,13 +107,11 @@ internal class TestQuery() : Query<TestQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { hero { __typename ...HeroDetails ...HumanDetails } }  fragment HumanDetails on Human { __typename name }  fragment HeroDetails on Character { __typename ...HumanDetails }"
+      get() = "query TestQuery { hero { __typename ...HeroDetails ...HumanDetails } }  fragment HumanDetails on Human { __typename name }  fragment HeroDetails on Character { __typename ...HumanDetails }"
 
     public const val OPERATION_NAME: String = "TestQuery"
 
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: QueryBuilder.() -> Unit = {}): Data = buildData(
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: QueryBuilder.() -> Unit = {}): Data = buildData(
       CompiledQuery,
       block,
       TestQuery_ResponseAdapter.Data,

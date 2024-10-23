@@ -21,8 +21,7 @@ public object AFragmentImpl_ResponseAdapter {
   public object AFragment : Adapter<com.example.multiple_fragments.fragment.AFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.multiple_fragments.fragment.AFragment {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.multiple_fragments.fragment.AFragment {
       var _node: com.example.multiple_fragments.fragment.AFragment.Node? = null
 
       while (true) {
@@ -49,8 +48,7 @@ public object AFragmentImpl_ResponseAdapter {
     private object Node : Adapter<com.example.multiple_fragments.fragment.AFragment.Node> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.multiple_fragments.fragment.AFragment.Node {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.multiple_fragments.fragment.AFragment.Node {
         var __typename: String? = null
 
         while (true) {
@@ -67,15 +65,13 @@ public object AFragmentImpl_ResponseAdapter {
         var _fragment1: Fragment1? = null
         if (possibleTypes("ANode").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.fromJson(reader,
-              customScalarAdapters)
+          _fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.fromJson(reader, customScalarAdapters)
         }
 
         var _fragment2: Fragment2? = null
         if (possibleTypes("ANode").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.fromJson(reader,
-              customScalarAdapters)
+          _fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.fromJson(reader, customScalarAdapters)
         }
 
         return com.example.multiple_fragments.fragment.AFragment.Node(
@@ -94,13 +90,11 @@ public object AFragmentImpl_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.fragment1 != null) {
-          com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.toJson(writer,
-              customScalarAdapters, value.fragment1)
+          com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.toJson(writer, customScalarAdapters, value.fragment1)
         }
 
         if (value.fragment2 != null) {
-          com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.toJson(writer,
-              customScalarAdapters, value.fragment2)
+          com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.toJson(writer, customScalarAdapters, value.fragment2)
         }
       }
     }

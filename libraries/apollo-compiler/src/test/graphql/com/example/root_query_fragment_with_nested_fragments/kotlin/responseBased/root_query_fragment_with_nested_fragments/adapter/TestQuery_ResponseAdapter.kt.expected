@@ -22,8 +22,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid", "human")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var __typename: String? = null
       var _hero: TestQuery.Data.Hero? = null
       var _droid: TestQuery.Data.Droid? = null
@@ -68,8 +67,7 @@ public object TestQuery_ResponseAdapter {
     private object Hero : Adapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Hero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero {
         var __typename: String? = null
         var _name: String? = null
 
@@ -103,8 +101,7 @@ public object TestQuery_ResponseAdapter {
     private object Droid : Adapter<TestQuery.Data.Droid> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Droid {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Droid {
         var __typename: String? = null
         var _name: String? = null
         var _primaryFunction: String? = null
@@ -144,8 +141,7 @@ public object TestQuery_ResponseAdapter {
     private object Human : Adapter<TestQuery.Data.Human> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homePlanet")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Human {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Human {
         var __typename: String? = null
         var _name: String? = null
         var _homePlanet: String? = null

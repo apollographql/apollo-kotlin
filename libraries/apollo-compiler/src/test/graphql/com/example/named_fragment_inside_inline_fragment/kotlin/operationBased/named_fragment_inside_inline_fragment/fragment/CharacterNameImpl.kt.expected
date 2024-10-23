@@ -30,8 +30,7 @@ public class CharacterNameImpl() : Fragment<CharacterName> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<CharacterName> =
-      CharacterNameImpl_ResponseAdapter.CharacterName.obj()
+  override fun adapter(): Adapter<CharacterName> = CharacterNameImpl_ResponseAdapter.CharacterName.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

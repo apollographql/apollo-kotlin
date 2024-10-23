@@ -82,7 +82,8 @@ public class TestQuery() : Query<TestQuery.Data> {
       override val __typename: String,
       public val fieldB1: String?,
       override val fieldB2: String?,
-    ) : ARoot, BRoot
+    ) : ARoot,
+        BRoot
 
     public data class OtherRoot(
       override val __typename: String,
@@ -124,8 +125,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { root { __typename ... on A { __typename ... on B { fieldB1 } } ... on B { fieldB2 } } }"
+      get() = "query TestQuery { root { __typename ... on A { __typename ... on B { fieldB1 } } ... on B { fieldB2 } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

@@ -24,8 +24,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("nonOptionalHero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
 
       while (true) {
@@ -50,8 +49,7 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object NonOptionalHero : Adapter<TestQuery.Data.NonOptionalHero> {
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.NonOptionalHero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.NonOptionalHero {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
@@ -67,10 +65,8 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.NonOptionalHero,
       ) {
         when(value) {
-          is TestQuery.Data.HumanNonOptionalHero -> HumanNonOptionalHero.toJson(writer,
-              customScalarAdapters, value)
-          is TestQuery.Data.OtherNonOptionalHero -> OtherNonOptionalHero.toJson(writer,
-              customScalarAdapters, value)
+          is TestQuery.Data.HumanNonOptionalHero -> HumanNonOptionalHero.toJson(writer, customScalarAdapters, value)
+          is TestQuery.Data.OtherNonOptionalHero -> OtherNonOptionalHero.toJson(writer, customScalarAdapters, value)
         }
       }
     }

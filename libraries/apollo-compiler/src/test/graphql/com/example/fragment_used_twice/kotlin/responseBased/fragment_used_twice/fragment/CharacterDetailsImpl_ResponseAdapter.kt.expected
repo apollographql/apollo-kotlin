@@ -20,8 +20,7 @@ public object CharacterDetailsImpl_ResponseAdapter {
   public object Data : Adapter<CharacterDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "birthDate")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        CharacterDetailsImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): CharacterDetailsImpl.Data {
       var _name: String? = null
       var _birthDate: Any? = null
 

@@ -18,8 +18,7 @@ public object CharacterNameImpl_ResponseAdapter {
   public object Data : Adapter<CharacterNameImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        CharacterNameImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): CharacterNameImpl.Data {
       var _name: String? = null
 
       while (true) {

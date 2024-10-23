@@ -100,8 +100,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { __schema { queryType { name } types { name } } __type(name: \"Vehicle\") { name kind } }"
+      get() = "query TestQuery { __schema { queryType { name } types { name } } __type(name: \"Vehicle\") { name kind } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

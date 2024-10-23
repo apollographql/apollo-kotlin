@@ -18,8 +18,7 @@ public object HeroFragmentImpl_ResponseAdapter {
   public object Data : Adapter<HeroFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        HeroFragmentImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HeroFragmentImpl.Data {
       var _name: String? = null
 
       while (true) {

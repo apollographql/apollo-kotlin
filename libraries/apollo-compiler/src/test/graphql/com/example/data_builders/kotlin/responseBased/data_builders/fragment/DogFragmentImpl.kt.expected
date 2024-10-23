@@ -49,11 +49,11 @@ public class DogFragmentImpl() : Fragment<DogFragmentImpl.Data> {
 
   public data class Data(
     override val woof: String,
-  ) : DogFragment, Fragment.Data
+  ) : DogFragment,
+      Fragment.Data
 
   public companion object {
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: DogBuilder.() -> Unit = {}): Data = buildData(
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: DogBuilder.() -> Unit = {}): Data = buildData(
       Dog,
       block,
       DogFragmentImpl_ResponseAdapter.Data,

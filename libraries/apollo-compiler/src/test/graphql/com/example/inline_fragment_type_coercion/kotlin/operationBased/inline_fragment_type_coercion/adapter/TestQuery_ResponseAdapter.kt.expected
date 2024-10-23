@@ -23,8 +23,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("foo")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _foo: TestQuery.Data.Foo? = null
 
       while (true) {
@@ -51,8 +50,7 @@ public object TestQuery_ResponseAdapter {
     private object Foo : Adapter<TestQuery.Data.Foo> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "foo")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Foo {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Foo {
         var __typename: String? = null
         var _foo: String? = null
 
@@ -71,8 +69,7 @@ public object TestQuery_ResponseAdapter {
         var _onBar: TestQuery.Data.Foo.OnBar? = null
         if (possibleTypes("BarObject","FooBar").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Data.Foo.OnBar.fromJson(reader,
-              customScalarAdapters)
+          _onBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Data.Foo.OnBar.fromJson(reader, customScalarAdapters)
         }
 
         return TestQuery.Data.Foo(
@@ -94,16 +91,14 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.foo)
 
         if (value.onBar != null) {
-          com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Data.Foo.OnBar.toJson(writer,
-              customScalarAdapters, value.onBar)
+          com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Data.Foo.OnBar.toJson(writer, customScalarAdapters, value.onBar)
         }
       }
 
       private object OnBar : Adapter<TestQuery.Data.Foo.OnBar> {
         public val RESPONSE_NAMES: List<String> = listOf("bar")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.Foo.OnBar {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Foo.OnBar {
           var _bar: String? = null
 
           while (true) {

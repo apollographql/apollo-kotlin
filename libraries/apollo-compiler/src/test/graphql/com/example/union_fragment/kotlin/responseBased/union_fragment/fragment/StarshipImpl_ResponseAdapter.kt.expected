@@ -18,8 +18,7 @@ public object StarshipImpl_ResponseAdapter {
   public object Data : Adapter<StarshipImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        StarshipImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): StarshipImpl.Data {
       var _name: String? = null
 
       while (true) {

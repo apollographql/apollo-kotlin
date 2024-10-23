@@ -48,7 +48,7 @@ internal fun readFromResponseCodeBlock(
     }
 
     CodeBlock.of(
-        "var·%N:·%T·=·%L",
+        "var %N: %T = %L",
         property.info.responseName.variableName(),
         context.resolver.resolveIrType(property.info.type, context.jsExport).copy(nullable = !property.info.type.optional),
         variableInitializer
@@ -66,14 +66,14 @@ internal fun readFromResponseCodeBlock(
    */
   val loop = if (regularProperties.isNotEmpty()) {
     CodeBlock.builder()
-        .beginControlFlow("while·(true)")
-        .beginControlFlow("when·($reader.selectName($RESPONSE_NAMES))")
+        .beginControlFlow("while (true)")
+        .beginControlFlow("when ($reader.selectName($RESPONSE_NAMES))")
         .add(
             regularProperties.mapIndexed { index, property ->
               val variableName = property.info.responseName.variableName()
               val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport)
               CodeBlock.of(
-                  "%L·->·%N·=·%L.$fromJson($reader,·${customScalarAdapters})",
+                  "%L -> %N = %L.$fromJson($reader, ${customScalarAdapters})",
                   index,
                   variableName,
                   adapterInitializer,
@@ -104,7 +104,7 @@ internal fun readFromResponseCodeBlock(
             add("$reader.rewind()\n")
             add(typenameFromReaderCodeBlock())
           } else {
-            beginControlFlow("check($__typename·!=·null)")
+            beginControlFlow("check($__typename != null)")
             add("%S\n", "__typename was not found")
             endControlFlow()
           }
@@ -119,7 +119,7 @@ internal fun readFromResponseCodeBlock(
         .apply {
           if (property.condition != BooleanExpression.True) {
             add(
-                "var·%N:·%T·=·null\n",
+                "var %N: %T = null\n",
                 property.info.responseName.variableName(),
                 context.resolver.resolveIrType(property.info.type, context.jsExport).copy(nullable = !property.info.type.optional),
             )
@@ -133,17 +133,17 @@ internal fun readFromResponseCodeBlock(
             } else {
               "null"
             }
-            beginControlFlow("if·(%L.%M($customScalarAdapters.falseVariables,·$typenameLiteral,·$customScalarAdapters.deferredFragmentIdentifiers,·$pathLiteral))", property.condition.codeBlock(), evaluate)
+            beginControlFlow("if (%L.%M($customScalarAdapters.falseVariables, $typenameLiteral, $customScalarAdapters.deferredFragmentIdentifiers, $pathLiteral))", property.condition.codeBlock(), evaluate)
             add("$reader.rewind()\n")
           } else {
             checkedProperties.add(property.info.responseName)
             add("$reader.rewind()\n")
-            add("val·")
+            add("val ")
           }
         }
         .add(
             CodeBlock.of(
-                "%N·=·%L.$fromJson($reader, $customScalarAdapters)\n",
+                "%N = %L.$fromJson($reader, $customScalarAdapters)\n",
                 property.info.responseName.variableName(),
                 context.resolver.resolveModelAdapter(property.info.type.modelPath()),
             )
@@ -155,7 +155,7 @@ internal fun readFromResponseCodeBlock(
   }.joinToCode("\n")
 
   val suffix = CodeBlock.builder()
-      .addStatement("return·%T(", context.resolver.resolveModel(model.id))
+      .addStatement("return %T(", context.resolver.resolveModel(model.id))
       .indent()
       .add(model.properties.map { property ->
         val maybeAssertNotNull = if (
@@ -163,12 +163,12 @@ internal fun readFromResponseCodeBlock(
             && !property.info.type.optional
             && !checkedProperties.contains(property.info.responseName)
         ) {
-          CodeBlock.of("·?:·%M(reader,·%S)", KotlinSymbols.missingField, property.info.responseName)
+          CodeBlock.of(" ?: %M(reader, %S)", KotlinSymbols.missingField, property.info.responseName)
         } else {
           CodeBlock.of("")
         }
         CodeBlock.of(
-            "%N·=·%N%L",
+            "%N = %N%L",
             context.layout.propertyName(property.info.responseName),
             property.info.responseName.variableName(),
             maybeAssertNotNull
@@ -229,7 +229,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
      * Output types do not distinguish between null and absent
      */
     if (this.info.type.nullable) {
-      builder.beginControlFlow("if·($value.%N·!=·null)", propertyName)
+      builder.beginControlFlow("if ($value.%N != null)", propertyName)
     }
     builder.addStatement(
         "%L.$toJson($writer, $customScalarAdapters, $value.%N)",

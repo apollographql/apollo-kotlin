@@ -45,5 +45,6 @@ public class PlanetFragmentImpl() : Fragment<PlanetFragmentImpl.Data> {
      * The name of this planet.
      */
     override val name: String?,
-  ) : PlanetFragment, Fragment.Data
+  ) : PlanetFragment,
+      Fragment.Data
 }

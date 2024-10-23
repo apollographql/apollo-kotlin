@@ -23,8 +23,7 @@ public object CatQuery_ResponseAdapter {
   public object Data : Adapter<CatQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("cat")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        CatQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): CatQuery.Data {
       var _cat: CatQuery.Data.Cat? = null
 
       while (true) {
@@ -49,8 +48,7 @@ public object CatQuery_ResponseAdapter {
     }
 
     private object Cat : Adapter<CatQuery.Data.Cat> {
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          CatQuery.Data.Cat {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): CatQuery.Data.Cat {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Cat",
@@ -66,8 +64,7 @@ public object CatQuery_ResponseAdapter {
         `value`: CatQuery.Data.Cat,
       ) {
         when(value) {
-          is CatQuery.Data.OtherAnimalCat -> OtherAnimalCat.toJson(writer, customScalarAdapters,
-              value)
+          is CatQuery.Data.OtherAnimalCat -> OtherAnimalCat.toJson(writer, customScalarAdapters, value)
           is CatQuery.Data.OtherCat -> OtherCat.toJson(writer, customScalarAdapters, value)
         }
       }

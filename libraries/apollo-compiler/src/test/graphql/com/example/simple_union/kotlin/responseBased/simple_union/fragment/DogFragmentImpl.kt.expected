@@ -42,5 +42,6 @@ public class DogFragmentImpl() : Fragment<DogFragmentImpl.Data> {
 
   public data class Data(
     override val woof: String,
-  ) : DogFragment, Fragment.Data
+  ) : DogFragment,
+      Fragment.Data
 }

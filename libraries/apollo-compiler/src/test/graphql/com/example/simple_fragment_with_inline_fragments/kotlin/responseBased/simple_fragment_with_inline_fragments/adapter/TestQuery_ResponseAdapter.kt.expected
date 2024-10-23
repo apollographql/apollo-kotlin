@@ -27,8 +27,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
       while (true) {
@@ -55,8 +54,7 @@ public object TestQuery_ResponseAdapter {
     private object Hero : Adapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Hero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero {
         var __typename: String? = null
         var _name: String? = null
         var _friends: List<TestQuery.Data.Hero.Friend?>? = null
@@ -89,13 +87,11 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("friends")
-        Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters,
-            value.friends)
+        Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
       }
 
       private object Friend : Adapter<TestQuery.Data.Hero.Friend> {
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.Hero.Friend {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.Friend {
           val __typename = reader.readTypename()
           return when(__typename) {
             "Human",
@@ -113,12 +109,9 @@ public object TestQuery_ResponseAdapter {
           `value`: TestQuery.Data.Hero.Friend,
         ) {
           when(value) {
-            is TestQuery.Data.Hero.HumanFriend -> HumanFriend.toJson(writer, customScalarAdapters,
-                value)
-            is TestQuery.Data.Hero.DroidFriend -> DroidFriend.toJson(writer, customScalarAdapters,
-                value)
-            is TestQuery.Data.Hero.OtherFriend -> OtherFriend.toJson(writer, customScalarAdapters,
-                value)
+            is TestQuery.Data.Hero.HumanFriend -> HumanFriend.toJson(writer, customScalarAdapters, value)
+            is TestQuery.Data.Hero.DroidFriend -> DroidFriend.toJson(writer, customScalarAdapters, value)
+            is TestQuery.Data.Hero.OtherFriend -> OtherFriend.toJson(writer, customScalarAdapters, value)
           }
         }
       }

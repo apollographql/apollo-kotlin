@@ -26,8 +26,7 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
   public object Data : Adapter<SpreadMultipleWithDefer.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        SpreadMultipleWithDefer.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): SpreadMultipleWithDefer.Data {
       var _hero: SpreadMultipleWithDefer.Data.Hero? = null
 
       while (true) {
@@ -54,8 +53,7 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
     private object Hero : Adapter<SpreadMultipleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          SpreadMultipleWithDefer.Data.Hero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): SpreadMultipleWithDefer.Data.Hero {
         var __typename: String? = null
 
         val __path = reader.getPath()
@@ -73,8 +71,7 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
         var _droidDetails: DroidDetails? = null
         if (and(possibleTypes("Droid"),or(label("a_first"),label("a_second"))).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
-          _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-              customScalarAdapters)
+          _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader, customScalarAdapters)
         }
 
         return SpreadMultipleWithDefer.Data.Hero(
@@ -92,8 +89,7 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.droidDetails != null) {
-          com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-              customScalarAdapters, value.droidDetails)
+          com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer, customScalarAdapters, value.droidDetails)
         }
       }
     }

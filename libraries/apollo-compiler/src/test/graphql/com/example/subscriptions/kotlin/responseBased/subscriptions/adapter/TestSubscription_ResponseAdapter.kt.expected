@@ -23,8 +23,7 @@ public object TestSubscription_ResponseAdapter {
   public object Data : Adapter<TestSubscription.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("commentAdded")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestSubscription.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestSubscription.Data {
       var _commentAdded: TestSubscription.Data.CommentAdded? = null
 
       while (true) {
@@ -51,8 +50,7 @@ public object TestSubscription_ResponseAdapter {
     private object CommentAdded : Adapter<TestSubscription.Data.CommentAdded> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "content")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestSubscription.Data.CommentAdded {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestSubscription.Data.CommentAdded {
         var _id: Int? = null
         var _content: String? = null
 

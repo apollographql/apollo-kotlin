@@ -39,8 +39,7 @@ public data class TestQuery(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
@@ -109,8 +108,7 @@ public data class TestQuery(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery(${'$'}input: ReservedInput, ${'$'}scalar: ReservedScalar, ${'$'}enum: ReservedEnum) { object(input: ${'$'}input) { field } interface { field } union { __typename ... on ReservedObject { field } } scalar(scalar: ${'$'}scalar) enum(enum: ${'$'}enum) }"
+      get() = "query TestQuery(${'$'}input: ReservedInput, ${'$'}scalar: ReservedScalar, ${'$'}enum: ReservedEnum) { object(input: ${'$'}input) { field } interface { field } union { __typename ... on ReservedObject { field } } scalar(scalar: ${'$'}scalar) enum(enum: ${'$'}enum) }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

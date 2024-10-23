@@ -17,8 +17,7 @@ public object PlanetFragmentImpl_ResponseAdapter {
   public object Data : Adapter<PlanetFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        PlanetFragmentImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): PlanetFragmentImpl.Data {
       var _name: String? = null
 
       while (true) {

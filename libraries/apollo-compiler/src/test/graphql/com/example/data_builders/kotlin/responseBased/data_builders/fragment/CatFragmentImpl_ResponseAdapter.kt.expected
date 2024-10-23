@@ -18,8 +18,7 @@ public object CatFragmentImpl_ResponseAdapter {
   public object Data : Adapter<CatFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("meow")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        CatFragmentImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): CatFragmentImpl.Data {
       var _meow: String? = null
 
       while (true) {

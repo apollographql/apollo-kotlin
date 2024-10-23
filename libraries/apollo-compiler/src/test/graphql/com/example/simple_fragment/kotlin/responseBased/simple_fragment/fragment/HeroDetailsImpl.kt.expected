@@ -72,11 +72,14 @@ internal class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
      * What this human calls themselves
      */
     override val name: String,
-  ) : Data, HumanDetails, HumanHeroDetails
+  ) : Data,
+      HumanDetails,
+      HumanHeroDetails
 
   public data class OtherData(
     override val __typename: String,
-  ) : Data, HeroDetails
+  ) : Data,
+      HeroDetails
 
   public companion object {
     public fun <M : CharacterMap, Builder : ObjectBuilder<M>> Data(

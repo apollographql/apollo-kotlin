@@ -35,8 +35,7 @@ public data class TestQuery(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
@@ -80,8 +79,7 @@ public data class TestQuery(
      * The un-minimized version is:
      *
      * ```
-     * query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) @operationDirective(dummy:
-     * "hello") {
+     * query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) @operationDirective(dummy: "hello") {
      *   hero {
      *     name @include(if: $includeName)
      *     friendsConnection @skip(if: $skipFriends) {
@@ -92,8 +90,7 @@ public data class TestQuery(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) @operationDirective(dummy: \"hello\") { hero { name @include(if: ${'$'}includeName) friendsConnection @skip(if: ${'$'}skipFriends) { totalCount } } }"
+      get() = "query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) @operationDirective(dummy: \"hello\") { hero { name @include(if: ${'$'}includeName) friendsConnection @skip(if: ${'$'}skipFriends) { totalCount } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

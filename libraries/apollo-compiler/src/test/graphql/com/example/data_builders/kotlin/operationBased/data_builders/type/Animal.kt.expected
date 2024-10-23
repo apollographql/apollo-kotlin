@@ -19,8 +19,7 @@ public class Animal {
   public companion object : BuilderFactory<OtherAnimalBuilder> {
     public val type: UnionType = UnionType("Animal", Cat.type, Dog.type)
 
-    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): OtherAnimalBuilder =
-        OtherAnimalBuilder(customScalarAdapters)
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): OtherAnimalBuilder = OtherAnimalBuilder(customScalarAdapters)
   }
 }
 
@@ -34,8 +33,7 @@ public class OtherAnimalBuilder(
 
 public class OtherAnimalMap(
   __fields: Map<String, Any?>,
-) : AnimalMap, Map<String, Any?> by __fields
+) : AnimalMap,
+    Map<String, Any?> by __fields
 
-public fun BuilderScope.buildOtherAnimal(typename: String, block: OtherAnimalBuilder.() -> Unit):
-    OtherAnimalMap =
-    OtherAnimalBuilder(customScalarAdapters).apply(block).apply { __typename = typename }.build()
+public fun BuilderScope.buildOtherAnimal(typename: String, block: OtherAnimalBuilder.() -> Unit): OtherAnimalMap = OtherAnimalBuilder(customScalarAdapters).apply(block).apply { __typename = typename }.build()

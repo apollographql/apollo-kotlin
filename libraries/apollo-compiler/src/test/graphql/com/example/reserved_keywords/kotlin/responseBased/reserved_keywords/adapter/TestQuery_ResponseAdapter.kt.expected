@@ -24,8 +24,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("yield", "objects")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _yield: TestQuery.Data.Yield? = null
       var _objects: List<TestQuery.Data.Object?>? = null
 
@@ -58,8 +57,7 @@ public object TestQuery_ResponseAdapter {
     private object Yield : Adapter<TestQuery.Data.Yield> {
       public val RESPONSE_NAMES: List<String> = listOf("while", "it")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Yield {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Yield {
         var _while: String? = null
         var _it: String? = null
 
@@ -91,8 +89,7 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Object : Adapter<TestQuery.Data.Object> {
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Object {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Object {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Droid",
@@ -109,8 +106,7 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.Object,
       ) {
         when(value) {
-          is TestQuery.Data.CharacterObject -> CharacterObject.toJson(writer, customScalarAdapters,
-              value)
+          is TestQuery.Data.CharacterObject -> CharacterObject.toJson(writer, customScalarAdapters, value)
           is TestQuery.Data.OtherObject -> OtherObject.toJson(writer, customScalarAdapters, value)
         }
       }

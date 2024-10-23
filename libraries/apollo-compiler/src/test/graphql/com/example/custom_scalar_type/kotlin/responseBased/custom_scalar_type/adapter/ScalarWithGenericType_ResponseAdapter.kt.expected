@@ -19,8 +19,7 @@ public object ScalarWithGenericType_ResponseAdapter {
   public object Data : Adapter<ScalarWithGenericType.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("listOfString")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        ScalarWithGenericType.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): ScalarWithGenericType.Data {
       var _listOfString: List<String?>? = null
 
       while (true) {
@@ -41,8 +40,7 @@ public object ScalarWithGenericType_ResponseAdapter {
       `value`: ScalarWithGenericType.Data,
     ) {
       writer.name("listOfString")
-      customScalarAdapters.responseAdapterFor<List<String?>>(ListOfString.type).nullable().toJson(writer,
-          customScalarAdapters, value.listOfString)
+      customScalarAdapters.responseAdapterFor<List<String?>>(ListOfString.type).nullable().toJson(writer, customScalarAdapters, value.listOfString)
     }
   }
 }

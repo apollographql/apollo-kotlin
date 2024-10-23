@@ -71,10 +71,10 @@ internal fun NamedType.toSetterFunSpec(context: KotlinContext): FunSpec {
   val body = CodeBlock.builder()
   val parameterType: IrType
   if (type.optional) {
-    body.add("this.%N·=·%T(%N)\n", propertyName, KotlinSymbols.Present, propertyName)
+    body.add("this.%N = %T(%N)\n", propertyName, KotlinSymbols.Present, propertyName)
     parameterType = type.optional(false)
   } else {
-    body.add("this.%N·=·%N\n", propertyName, propertyName)
+    body.add("this.%N = %N\n", propertyName, propertyName)
     parameterType = type
   }
   body.add("return this")
@@ -124,14 +124,14 @@ private fun List<NamedType>.toBuildFunSpec(context: KotlinContext, returnedClass
       .returns(returnedClassName)
       .addCode(
           CodeBlock.builder()
-              .add("return·%T(\n", returnedClassName)
+              .add("return %T(\n", returnedClassName)
               .indent()
               .apply {
                 forEach {
                   val propertyName = context.layout.propertyName(it.graphQlName)
-                  add("%N·=·%N", propertyName, propertyName)
+                  add("%N = %N", propertyName, propertyName)
                   if (!it.type.nullable && !it.type.optional) {
-                    add("·?:·error(\"missing·value·for·$propertyName\")")
+                    add(" ?: error(\"missing value for $propertyName\")")
                   }
                   add(",\n")
                 }

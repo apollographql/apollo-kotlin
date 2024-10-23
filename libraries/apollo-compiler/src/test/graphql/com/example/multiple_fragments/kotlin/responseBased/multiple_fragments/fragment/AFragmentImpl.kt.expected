@@ -43,7 +43,8 @@ public class AFragmentImpl() : Fragment<AFragmentImpl.Data> {
 
   public data class Data(
     override val node: Node?,
-  ) : AFragment, Fragment.Data {
+  ) : AFragment,
+      Fragment.Data {
     public sealed interface Node : AFragment.Node {
       override val __typename: String
 
@@ -63,10 +64,14 @@ public class AFragmentImpl() : Fragment<AFragmentImpl.Data> {
       override val __typename: String,
       override val field1: String?,
       override val field2: String?,
-    ) : Node, Fragment1, Fragment2, AFragment.ANodeNode
+    ) : Node,
+        Fragment1,
+        Fragment2,
+        AFragment.ANodeNode
 
     public data class OtherNode(
       override val __typename: String,
-    ) : Node, AFragment.Node
+    ) : Node,
+        AFragment.Node
   }
 }

@@ -19,8 +19,7 @@ public object HorseFragmentImpl_ResponseAdapter {
   public object HorseFragment : Adapter<com.example.decapitalized_fields.fragment.HorseFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("Cow")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.decapitalized_fields.fragment.HorseFragment {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.decapitalized_fields.fragment.HorseFragment {
       var _Cow: com.example.decapitalized_fields.fragment.HorseFragment.Cow? = null
 
       while (true) {
@@ -47,8 +46,7 @@ public object HorseFragmentImpl_ResponseAdapter {
     private object Cow : Adapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow> {
       public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.decapitalized_fields.fragment.HorseFragment.Cow {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.decapitalized_fields.fragment.HorseFragment.Cow {
         var _Moo: String? = null
 
         while (true) {

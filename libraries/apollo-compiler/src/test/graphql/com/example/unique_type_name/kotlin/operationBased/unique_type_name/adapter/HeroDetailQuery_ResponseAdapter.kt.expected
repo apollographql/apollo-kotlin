@@ -28,8 +28,7 @@ public object HeroDetailQuery_ResponseAdapter {
   public object Data : Adapter<HeroDetailQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("heroDetailQuery")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.unique_type_name.HeroDetailQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.unique_type_name.HeroDetailQuery.Data {
       var _heroDetailQuery: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery? = null
 
       while (true) {
@@ -50,16 +49,13 @@ public object HeroDetailQuery_ResponseAdapter {
       `value`: com.example.unique_type_name.HeroDetailQuery.Data,
     ) {
       writer.name("heroDetailQuery")
-      HeroDetailQuery.obj(true).nullable().toJson(writer, customScalarAdapters,
-          value.heroDetailQuery)
+      HeroDetailQuery.obj(true).nullable().toJson(writer, customScalarAdapters, value.heroDetailQuery)
     }
 
-    private object HeroDetailQuery :
-        Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery> {
+    private object HeroDetailQuery : Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery {
         var __typename: String? = null
         var _name: String? = null
         var _friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friend?>? = null
@@ -80,8 +76,7 @@ public object HeroDetailQuery_ResponseAdapter {
         var _onHuman: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onHuman = com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.Data.HeroDetailQuery.OnHuman.fromJson(reader,
-              customScalarAdapters)
+          _onHuman = com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.Data.HeroDetailQuery.OnHuman.fromJson(reader, customScalarAdapters)
         }
 
         return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery(
@@ -104,21 +99,17 @@ public object HeroDetailQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("friends")
-        Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters,
-            value.friends)
+        Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
 
         if (value.onHuman != null) {
-          com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.Data.HeroDetailQuery.OnHuman.toJson(writer,
-              customScalarAdapters, value.onHuman)
+          com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.Data.HeroDetailQuery.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
         }
       }
 
-      private object Friend :
-          Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friend> {
+      private object Friend : Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friend> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friend {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friend {
           var _name: String? = null
 
           while (true) {
@@ -143,12 +134,10 @@ public object HeroDetailQuery_ResponseAdapter {
         }
       }
 
-      private object OnHuman :
-          Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman> {
+      private object OnHuman : Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman> {
         public val RESPONSE_NAMES: List<String> = listOf("height", "friends")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman {
           var _height: Double? = null
           var _friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend?>? = null
 
@@ -175,17 +164,13 @@ public object HeroDetailQuery_ResponseAdapter {
           NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
 
           writer.name("friends")
-          Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters,
-              value.friends)
+          Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
         }
 
-        private object Friend :
-            Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend>
-            {
+        private object Friend : Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("appearsIn", "friends")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend {
             var _appearsIn: List<Episode?>? = null
             var _friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend.Friend?>? = null
 
@@ -209,21 +194,16 @@ public object HeroDetailQuery_ResponseAdapter {
             `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend,
           ) {
             writer.name("appearsIn")
-            Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
-                value.appearsIn)
+            Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters, value.appearsIn)
 
             writer.name("friends")
-            Friend.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
-                value.friends)
+            Friend.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
           }
 
-          private object Friend :
-              Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend.Friend>
-              {
+          private object Friend : Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend.Friend> {
             public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend.Friend {
+            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend.Friend {
               var __typename: String? = null
 
               while (true) {
@@ -234,8 +214,7 @@ public object HeroDetailQuery_ResponseAdapter {
               }
 
               reader.rewind()
-              val _heroDetails = com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
-                  customScalarAdapters)
+              val _heroDetails = com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader, customScalarAdapters)
 
               return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend.Friend(
                 __typename = __typename ?: missingField(reader, "__typename"),
@@ -251,8 +230,7 @@ public object HeroDetailQuery_ResponseAdapter {
               writer.name("__typename")
               StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-              com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
-                  customScalarAdapters, value.heroDetails)
+              com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer, customScalarAdapters, value.heroDetails)
             }
           }
         }

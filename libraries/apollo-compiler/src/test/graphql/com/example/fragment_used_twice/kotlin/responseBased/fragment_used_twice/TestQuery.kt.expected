@@ -92,7 +92,9 @@ public class TestQuery() : Query<TestQuery.Data> {
        * The date character was born.
        */
       override val birthDate: Any,
-    ) : Hero, HeroDetails, CharacterHumanDetails
+    ) : Hero,
+        HeroDetails,
+        CharacterHumanDetails
 
     public data class OtherHero(
       override val __typename: String,
@@ -104,7 +106,8 @@ public class TestQuery() : Query<TestQuery.Data> {
        * The date character was born.
        */
       override val birthDate: Any,
-    ) : Hero, HeroDetails
+    ) : Hero,
+        HeroDetails
   }
 
   public companion object {
@@ -143,8 +146,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { hero { __typename ...HeroDetails ...HumanDetails } }  fragment CharacterDetails on Character { name birthDate }  fragment HeroDetails on Character { __typename name ...CharacterDetails }  fragment HumanDetails on Human { __typename name ...CharacterDetails }"
+      get() = "query TestQuery { hero { __typename ...HeroDetails ...HumanDetails } }  fragment CharacterDetails on Character { name birthDate }  fragment HeroDetails on Character { __typename name ...CharacterDetails }  fragment HumanDetails on Human { __typename name ...CharacterDetails }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

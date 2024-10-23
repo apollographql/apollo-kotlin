@@ -39,8 +39,7 @@ public data class TestQuery(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    TestQuery_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
@@ -97,8 +96,7 @@ public data class TestQuery(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery(${'$'}episode: Episode, ${'$'}stars: Int!, ${'$'}greenValue: Float!) { heroWithReview(episode: ${'$'}episode, review: { stars: ${'$'}stars favoriteColor: { red: 0 green: ${'$'}greenValue blue: 0 }  booleanNonOptional: false listOfStringNonOptional: [] } , listOfInts: [${'$'}stars,${'$'}stars]) { name height(unit: FOOT) } }"
+      get() = "query TestQuery(${'$'}episode: Episode, ${'$'}stars: Int!, ${'$'}greenValue: Float!) { heroWithReview(episode: ${'$'}episode, review: { stars: ${'$'}stars favoriteColor: { red: 0 green: ${'$'}greenValue blue: 0 }  booleanNonOptional: false listOfStringNonOptional: [] } , listOfInts: [${'$'}stars,${'$'}stars]) { name height(unit: FOOT) } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

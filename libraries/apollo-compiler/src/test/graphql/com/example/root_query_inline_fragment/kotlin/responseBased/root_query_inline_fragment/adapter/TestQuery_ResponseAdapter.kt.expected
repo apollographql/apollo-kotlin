@@ -29,8 +29,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var __typename: String? = null
       var _hero: TestQuery.Data.Hero? = null
       var _droid: TestQuery.Data.Droid? = null
@@ -67,8 +66,7 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Hero : Adapter<TestQuery.Data.Hero> {
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Hero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
@@ -133,8 +131,7 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("appearsIn")
-        Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
-            value.appearsIn)
+        Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters, value.appearsIn)
 
         writer.name("height")
         NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
@@ -181,16 +178,14 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("appearsIn")
-        Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
-            value.appearsIn)
+        Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters, value.appearsIn)
       }
     }
 
     private object Droid : Adapter<TestQuery.Data.Droid> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Droid {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Droid {
         var __typename: String? = null
         var _name: String? = null
         var _primaryFunction: String? = null

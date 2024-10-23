@@ -129,7 +129,8 @@ public class TestQuery() : Query<TestQuery.Data> {
        * The movies this character appears in
        */
       override val appearsIn: List<Episode?>,
-    ) : Hero, HumanHeroDetails {
+    ) : Hero,
+        HumanHeroDetails {
       public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
       public data class FriendsConnection(
@@ -141,7 +142,8 @@ public class TestQuery() : Query<TestQuery.Data> {
          * The edges for each of the character's friends.
          */
         override val edges: List<Edge?>?,
-      ) : Hero.FriendsConnection, HumanHeroDetails.FriendsConnection {
+      ) : Hero.FriendsConnection,
+          HumanHeroDetails.FriendsConnection {
         public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
         public data class Edge(
@@ -149,13 +151,15 @@ public class TestQuery() : Query<TestQuery.Data> {
            * The character represented by this friendship edge
            */
           override val node: Node?,
-        ) : Hero.FriendsConnection.Edge, HumanHeroDetails.FriendsConnection.Edge {
+        ) : Hero.FriendsConnection.Edge,
+            HumanHeroDetails.FriendsConnection.Edge {
           public data class Node(
             /**
              * The name of the character
              */
             override val name: String,
-          ) : Hero.FriendsConnection.Edge.Node, HumanHeroDetails.FriendsConnection.Edge.Node
+          ) : Hero.FriendsConnection.Edge.Node,
+              HumanHeroDetails.FriendsConnection.Edge.Node
         }
       }
     }
@@ -179,7 +183,8 @@ public class TestQuery() : Query<TestQuery.Data> {
        * The movies this character appears in
        */
       override val appearsIn: List<Episode?>,
-    ) : Hero, DroidHeroDetails {
+    ) : Hero,
+        DroidHeroDetails {
       public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
       public data class FriendsConnection(
@@ -191,7 +196,8 @@ public class TestQuery() : Query<TestQuery.Data> {
          * The edges for each of the character's friends.
          */
         override val edges: List<Edge?>?,
-      ) : Hero.FriendsConnection, DroidHeroDetails.FriendsConnection {
+      ) : Hero.FriendsConnection,
+          DroidHeroDetails.FriendsConnection {
         public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
         public data class Edge(
@@ -199,13 +205,15 @@ public class TestQuery() : Query<TestQuery.Data> {
            * The character represented by this friendship edge
            */
           override val node: Node?,
-        ) : Hero.FriendsConnection.Edge, DroidHeroDetails.FriendsConnection.Edge {
+        ) : Hero.FriendsConnection.Edge,
+            DroidHeroDetails.FriendsConnection.Edge {
           public data class Node(
             /**
              * The name of the character
              */
             override val name: String,
-          ) : Hero.FriendsConnection.Edge.Node, DroidHeroDetails.FriendsConnection.Edge.Node
+          ) : Hero.FriendsConnection.Edge.Node,
+              DroidHeroDetails.FriendsConnection.Edge.Node
         }
       }
     }
@@ -224,7 +232,8 @@ public class TestQuery() : Query<TestQuery.Data> {
        * The movies this character appears in
        */
       override val appearsIn: List<Episode?>,
-    ) : Hero, HeroDetails {
+    ) : Hero,
+        HeroDetails {
       public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
       public data class FriendsConnection(
@@ -236,7 +245,8 @@ public class TestQuery() : Query<TestQuery.Data> {
          * The edges for each of the character's friends.
          */
         override val edges: List<Edge?>?,
-      ) : Hero.FriendsConnection, HeroDetails.FriendsConnection {
+      ) : Hero.FriendsConnection,
+          HeroDetails.FriendsConnection {
         public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
         public data class Edge(
@@ -244,13 +254,15 @@ public class TestQuery() : Query<TestQuery.Data> {
            * The character represented by this friendship edge
            */
           override val node: Node?,
-        ) : Hero.FriendsConnection.Edge, HeroDetails.FriendsConnection.Edge {
+        ) : Hero.FriendsConnection.Edge,
+            HeroDetails.FriendsConnection.Edge {
           public data class Node(
             /**
              * The name of the character
              */
             override val name: String,
-          ) : Hero.FriendsConnection.Edge.Node, HeroDetails.FriendsConnection.Edge.Node
+          ) : Hero.FriendsConnection.Edge.Node,
+              HeroDetails.FriendsConnection.Edge.Node
         }
       }
     }
@@ -303,8 +315,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { hero { __typename name ...HeroDetails appearsIn } }  fragment HumanDetails on Human { name }  fragment DroidDetails on Droid { name primaryFunction }  fragment HeroDetails on Character { __typename ...HumanDetails ... on Droid { __typename ...DroidDetails } name friendsConnection { totalCount edges { node { name } } } }"
+      get() = "query TestQuery { hero { __typename name ...HeroDetails appearsIn } }  fragment HumanDetails on Human { name }  fragment DroidDetails on Droid { name primaryFunction }  fragment HeroDetails on Character { __typename ...HumanDetails ... on Droid { __typename ...DroidDetails } name friendsConnection { totalCount edges { node { name } } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

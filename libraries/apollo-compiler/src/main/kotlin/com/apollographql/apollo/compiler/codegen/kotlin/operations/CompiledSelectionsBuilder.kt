@@ -49,9 +49,9 @@ internal class CompiledSelectionsBuilder(
     val builder = CodeBlock.builder()
     builder.add("%T(\n", KotlinSymbols.CompiledFieldBuilder)
     builder.indent()
-    builder.add("name·=·%S,\n", name)
+    builder.add("name = %S,\n", name)
     builder.add(
-        CodeBlock.of("type·=·%L\n", type.codeBlock(context))
+        CodeBlock.of("type = %L\n", type.codeBlock(context))
     )
     builder.unindent()
     builder.add(")")
@@ -77,8 +77,8 @@ internal class CompiledSelectionsBuilder(
     val builder = CodeBlock.builder()
     builder.add("%T(\n", KotlinSymbols.CompiledFragmentBuilder)
     builder.indent()
-    builder.add("typeCondition·=·%S,\n", typeCondition)
-    builder.add("possibleTypes·=·%L\n", possibleTypes.map { CodeBlock.of("%S", it) }.toListInitializerCodeblock(false))
+    builder.add("typeCondition = %S,\n", typeCondition)
+    builder.add("possibleTypes = %L\n", possibleTypes.map { CodeBlock.of("%S", it) }.toListInitializerCodeblock(false))
     builder.unindent()
     builder.add(")")
 
@@ -119,7 +119,7 @@ internal class CompiledSelectionsBuilder(
 
     check(expression is BooleanExpression.Element)
 
-    return CodeBlock.of("%T(%S,·%L)", KotlinSymbols.CompiledCondition, expression.value.name, inverted.toString())
+    return CodeBlock.of("%T(%S, %L)", KotlinSymbols.CompiledCondition, expression.value.name, inverted.toString())
   }
 
   private fun IrArgument.codeBlock(): CodeBlock {

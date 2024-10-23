@@ -17,8 +17,7 @@ import com.example.mutation_create_review_semantic_naming.type.ReviewRefInput
 import kotlin.IllegalStateException
 
 public object ReviewRefInput_InputAdapter : Adapter<ReviewRefInput> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      ReviewRefInput = throw IllegalStateException("Input type used in output position")
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): ReviewRefInput = throw IllegalStateException("Input type used in output position")
 
   override fun toJson(
     writer: JsonWriter,
@@ -27,8 +26,7 @@ public object ReviewRefInput_InputAdapter : Adapter<ReviewRefInput> {
   ) {
     if (value.reviewInput is Optional.Present) {
       writer.name("reviewInput")
-      ReviewInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
-          value.reviewInput)
+      ReviewInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters, value.reviewInput)
     }
   }
 }

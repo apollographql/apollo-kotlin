@@ -24,8 +24,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
       while (true) {
@@ -52,8 +51,7 @@ public object TestQuery_ResponseAdapter {
     private object Hero : Adapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Hero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero {
         var __typename: String? = null
         var _name: String? = null
         var _appearsIn: List<Episode?>? = null
@@ -68,8 +66,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
-            customScalarAdapters)
+        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader, customScalarAdapters)
 
         return TestQuery.Data.Hero(
           __typename = __typename ?: missingField(reader, "__typename"),
@@ -91,11 +88,9 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("appearsIn")
-        Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
-            value.appearsIn)
+        Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters, value.appearsIn)
 
-        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
-            customScalarAdapters, value.heroDetails)
+        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer, customScalarAdapters, value.heroDetails)
       }
     }
   }

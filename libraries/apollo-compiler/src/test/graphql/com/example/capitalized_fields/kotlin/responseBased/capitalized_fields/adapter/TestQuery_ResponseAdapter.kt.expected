@@ -22,8 +22,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("Horse")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _Horse: TestQuery.Horse? = null
 
       while (true) {
@@ -51,8 +50,7 @@ public object TestQuery_ResponseAdapter {
   public object Horse : Adapter<TestQuery.Horse> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "Donkey", "Cow")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Horse {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Horse {
       var __typename: String? = null
       var _Donkey: String? = null
       var _Cow: TestQuery.Cow? = null
@@ -92,8 +90,7 @@ public object TestQuery_ResponseAdapter {
   public object Cow : Adapter<TestQuery.Cow> {
     public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Cow {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Cow {
       var _Moo: String? = null
 
       while (true) {

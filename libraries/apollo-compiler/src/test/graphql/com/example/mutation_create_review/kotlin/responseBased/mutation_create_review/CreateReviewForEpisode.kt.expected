@@ -46,8 +46,7 @@ internal data class CreateReviewForEpisode(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    CreateReviewForEpisode_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    CreateReviewForEpisode_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = CreateReviewForEpisode_ResponseAdapter.Data.obj()
@@ -122,13 +121,11 @@ internal data class CreateReviewForEpisode(
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) { createReview(episode: ${'$'}ep, review: ${'$'}review) { stars commentary listOfListOfString listOfListOfEnum listOfListOfCustom listOfListOfObject { name } } }"
+      get() = "mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) { createReview(episode: ${'$'}ep, review: ${'$'}review) { stars commentary listOfListOfString listOfListOfEnum listOfListOfCustom listOfListOfObject { name } } }"
 
     public const val OPERATION_NAME: String = "CreateReviewForEpisode"
 
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: MutationBuilder.() -> Unit = {}): Data = buildData(
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: MutationBuilder.() -> Unit = {}): Data = buildData(
       CompiledMutation,
       block,
       CreateReviewForEpisode_ResponseAdapter.Data,

@@ -24,8 +24,7 @@ public object CharacterQuery_ResponseAdapter {
   public object Data : Adapter<CharacterQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("character")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        CharacterQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): CharacterQuery.Data {
       var _character: CharacterQuery.Data.Character? = null
 
       while (true) {
@@ -52,8 +51,7 @@ public object CharacterQuery_ResponseAdapter {
     private object Character : Adapter<CharacterQuery.Data.Character> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          CharacterQuery.Data.Character {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): CharacterQuery.Data.Character {
         var __typename: String? = null
         var _id: String? = null
         var _name: String? = null
@@ -74,15 +72,13 @@ public object CharacterQuery_ResponseAdapter {
         var _humanFragment: HumanFragment? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _humanFragment = com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.fromJson(reader,
-              customScalarAdapters)
+          _humanFragment = com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.fromJson(reader, customScalarAdapters)
         }
 
         var _droidFragment: DroidFragment? = null
         if (possibleTypes("Droid").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _droidFragment = com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader,
-              customScalarAdapters)
+          _droidFragment = com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader, customScalarAdapters)
         }
 
         return CharacterQuery.Data.Character(
@@ -109,13 +105,11 @@ public object CharacterQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         if (value.humanFragment != null) {
-          com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.toJson(writer,
-              customScalarAdapters, value.humanFragment)
+          com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.toJson(writer, customScalarAdapters, value.humanFragment)
         }
 
         if (value.droidFragment != null) {
-          com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer,
-              customScalarAdapters, value.droidFragment)
+          com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer, customScalarAdapters, value.droidFragment)
         }
       }
     }

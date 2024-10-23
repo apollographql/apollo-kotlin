@@ -85,7 +85,8 @@ public class TestQuery() : Query<TestQuery.Data> {
        * Height in the preferred unit, default is meters
        */
       override val height: Double?,
-    ) : R2, HumanDetails
+    ) : R2,
+        HumanDetails
 
     public data class DroidR2(
       override val __typename: String,
@@ -97,7 +98,8 @@ public class TestQuery() : Query<TestQuery.Data> {
        * This droid's primary function
        */
       override val primaryFunction: String?,
-    ) : R2, DroidDetails
+    ) : R2,
+        DroidDetails
 
     public data class OtherR2(
       override val __typename: String,
@@ -131,7 +133,8 @@ public class TestQuery() : Query<TestQuery.Data> {
        * Height in the preferred unit, default is meters
        */
       override val height: Double?,
-    ) : Luke, HumanDetails
+    ) : Luke,
+        HumanDetails
 
     public data class DroidLuke(
       override val __typename: String,
@@ -143,7 +146,8 @@ public class TestQuery() : Query<TestQuery.Data> {
        * This droid's primary function
        */
       override val primaryFunction: String?,
-    ) : Luke, DroidDetails
+    ) : Luke,
+        DroidDetails
 
     public data class OtherLuke(
       override val __typename: String,
@@ -184,8 +188,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { r2: hero { __typename ...HumanDetails ...DroidDetails } luke: hero { __typename ...HumanDetails ...DroidDetails } }  fragment HumanDetails on Human { name height }  fragment DroidDetails on Droid { name primaryFunction }"
+      get() = "query TestQuery { r2: hero { __typename ...HumanDetails ...DroidDetails } luke: hero { __typename ...HumanDetails ...DroidDetails } }  fragment HumanDetails on Human { name height }  fragment DroidDetails on Droid { name primaryFunction }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

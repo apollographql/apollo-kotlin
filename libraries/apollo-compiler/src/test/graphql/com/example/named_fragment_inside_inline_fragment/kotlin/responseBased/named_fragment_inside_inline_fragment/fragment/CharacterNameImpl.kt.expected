@@ -45,5 +45,6 @@ public class CharacterNameImpl() : Fragment<CharacterNameImpl.Data> {
      * The name of the character
      */
     override val name: String,
-  ) : CharacterName, Fragment.Data
+  ) : CharacterName,
+      Fragment.Data
 }

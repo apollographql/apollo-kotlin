@@ -22,8 +22,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("amenityCategories", "category")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _amenityCategories: List<TestQuery.Data.AmenityCategory?>? = null
       var _category: com.example.list_field_clash.type.AmenityCategory? = null
 
@@ -47,19 +46,16 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("amenityCategories")
-      AmenityCategory.obj().nullable().list().nullable().toJson(writer, customScalarAdapters,
-          value.amenityCategories)
+      AmenityCategory.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.amenityCategories)
 
       writer.name("category")
-      AmenityCategory_ResponseAdapter.nullable().toJson(writer, customScalarAdapters,
-          value.category)
+      AmenityCategory_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.category)
     }
 
     private object AmenityCategory : Adapter<TestQuery.Data.AmenityCategory> {
       public val RESPONSE_NAMES: List<String> = listOf("text")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.AmenityCategory {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.AmenityCategory {
         var _text: String? = null
 
         while (true) {

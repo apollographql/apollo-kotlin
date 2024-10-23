@@ -42,5 +42,6 @@ public class CatFragmentImpl() : Fragment<CatFragmentImpl.Data> {
 
   public data class Data(
     override val meow: String,
-  ) : CatFragment, Fragment.Data
+  ) : CatFragment,
+      Fragment.Data
 }

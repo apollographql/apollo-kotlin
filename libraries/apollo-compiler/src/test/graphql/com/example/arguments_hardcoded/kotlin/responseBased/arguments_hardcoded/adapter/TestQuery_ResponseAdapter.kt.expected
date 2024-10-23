@@ -24,8 +24,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("reviews", "testNullableArguments")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _reviews: List<TestQuery.Data.Review?>? = null
       var _testNullableArguments: Int? = null
 
@@ -58,8 +57,7 @@ public object TestQuery_ResponseAdapter {
     private object Review : Adapter<TestQuery.Data.Review> {
       public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Review {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Review {
         var _stars: Int? = null
         var _commentary: String? = null
 

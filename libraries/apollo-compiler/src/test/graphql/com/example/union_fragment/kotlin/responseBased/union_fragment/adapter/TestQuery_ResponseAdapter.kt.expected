@@ -24,8 +24,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("search")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _search: List<TestQuery.Data.Search?>? = null
 
       while (true) {
@@ -50,8 +49,7 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Search : Adapter<TestQuery.Data.Search> {
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Search {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Starship",
@@ -67,8 +65,7 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.Search,
       ) {
         when(value) {
-          is TestQuery.Data.StarshipSearch -> StarshipSearch.toJson(writer, customScalarAdapters,
-              value)
+          is TestQuery.Data.StarshipSearch -> StarshipSearch.toJson(writer, customScalarAdapters, value)
           is TestQuery.Data.OtherSearch -> OtherSearch.toJson(writer, customScalarAdapters, value)
         }
       }

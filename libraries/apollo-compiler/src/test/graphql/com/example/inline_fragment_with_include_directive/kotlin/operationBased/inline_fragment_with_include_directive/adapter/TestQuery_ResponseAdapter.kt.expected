@@ -27,8 +27,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
       while (true) {
@@ -55,8 +54,7 @@ public object TestQuery_ResponseAdapter {
     private object Hero : Adapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Hero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero {
         var __typename: String? = null
         var _id: String? = null
 
@@ -75,22 +73,19 @@ public object TestQuery_ResponseAdapter {
         var _onHuman: TestQuery.Data.Hero.OnHuman? = null
         if (and(possibleTypes("Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onHuman = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
-              customScalarAdapters)
+          _onHuman = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader, customScalarAdapters)
         }
 
         var _onDroid: TestQuery.Data.Hero.OnDroid? = null
         if (and(possibleTypes("Droid"),variable("withDetails")).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onDroid = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
-              customScalarAdapters)
+          _onDroid = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader, customScalarAdapters)
         }
 
         var _onCharacter: TestQuery.Data.Hero.OnCharacter? = null
         if (variable("withDetails").evaluate(customScalarAdapters.falseVariables, null, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onCharacter = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
-              customScalarAdapters)
+          _onCharacter = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader, customScalarAdapters)
         }
 
         return TestQuery.Data.Hero(
@@ -114,26 +109,22 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
         if (value.onHuman != null) {
-          com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.toJson(writer,
-              customScalarAdapters, value.onHuman)
+          com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
         }
 
         if (value.onDroid != null) {
-          com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.toJson(writer,
-              customScalarAdapters, value.onDroid)
+          com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
         }
 
         if (value.onCharacter != null) {
-          com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.toJson(writer,
-              customScalarAdapters, value.onCharacter)
+          com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
         }
       }
 
       private object OnHuman : Adapter<TestQuery.Data.Hero.OnHuman> {
         public val RESPONSE_NAMES: List<String> = listOf("name", "homePlanet")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.Hero.OnHuman {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnHuman {
           var _name: String? = null
           var _homePlanet: String? = null
 
@@ -167,8 +158,7 @@ public object TestQuery_ResponseAdapter {
       private object OnDroid : Adapter<TestQuery.Data.Hero.OnDroid> {
         public val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.Hero.OnDroid {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnDroid {
           var _name: String? = null
           var _primaryFunction: String? = null
 
@@ -202,8 +192,7 @@ public object TestQuery_ResponseAdapter {
       private object OnCharacter : Adapter<TestQuery.Data.Hero.OnCharacter> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.Hero.OnCharacter {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnCharacter {
           var _name: String? = null
 
           while (true) {

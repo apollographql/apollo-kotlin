@@ -20,8 +20,7 @@ public class Human {
     public val type: ObjectType =
         ObjectType.Builder(name = "Human").interfaces(listOf(Character.type)).build()
 
-    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): HumanBuilder =
-        HumanBuilder(customScalarAdapters)
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): HumanBuilder = HumanBuilder(customScalarAdapters)
   }
 }
 
@@ -42,7 +41,7 @@ public class HumanBuilder(
 
 public class HumanMap(
   __fields: Map<String, Any?>,
-) : CharacterMap, Map<String, Any?> by __fields
+) : CharacterMap,
+    Map<String, Any?> by __fields
 
-public fun BuilderScope.buildHuman(block: HumanBuilder.() -> Unit): HumanMap =
-    HumanBuilder(customScalarAdapters).apply(block).build()
+public fun BuilderScope.buildHuman(block: HumanBuilder.() -> Unit): HumanMap = HumanBuilder(customScalarAdapters).apply(block).build()

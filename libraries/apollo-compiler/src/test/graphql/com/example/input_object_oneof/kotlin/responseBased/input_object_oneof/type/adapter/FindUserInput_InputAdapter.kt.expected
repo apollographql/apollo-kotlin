@@ -18,8 +18,7 @@ import com.example.input_object_oneof.type.FindUserInput
 import kotlin.IllegalStateException
 
 public object FindUserInput_InputAdapter : Adapter<FindUserInput> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      FindUserInput = throw IllegalStateException("Input type used in output position")
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): FindUserInput = throw IllegalStateException("Input type used in output position")
 
   override fun toJson(
     writer: JsonWriter,
@@ -36,13 +35,11 @@ public object FindUserInput_InputAdapter : Adapter<FindUserInput> {
     }
     if (value.identity is Optional.Present) {
       writer.name("identity")
-      FindUserBySocialNetworkInput_InputAdapter.obj().nullable().present().toJson(writer,
-          customScalarAdapters, value.identity)
+      FindUserBySocialNetworkInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters, value.identity)
     }
     if (value.friends is Optional.Present) {
       writer.name("friends")
-      FindUserByFriendInput_InputAdapter.obj().nullable().present().toJson(writer,
-          customScalarAdapters, value.friends)
+      FindUserByFriendInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters, value.friends)
     }
   }
 }

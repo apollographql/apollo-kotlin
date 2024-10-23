@@ -24,8 +24,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("nonOptionalHero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
 
       while (true) {
@@ -52,8 +51,7 @@ public object TestQuery_ResponseAdapter {
     private object NonOptionalHero : Adapter<TestQuery.Data.NonOptionalHero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.NonOptionalHero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.NonOptionalHero {
         var __typename: String? = null
         var _name: String? = null
 
@@ -72,8 +70,7 @@ public object TestQuery_ResponseAdapter {
         var _onHuman: TestQuery.Data.NonOptionalHero.OnHuman? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onHuman = com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.fromJson(reader,
-              customScalarAdapters)
+          _onHuman = com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.fromJson(reader, customScalarAdapters)
         }
 
         return TestQuery.Data.NonOptionalHero(
@@ -95,16 +92,14 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         if (value.onHuman != null) {
-          com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.toJson(writer,
-              customScalarAdapters, value.onHuman)
+          com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
         }
       }
 
       private object OnHuman : Adapter<TestQuery.Data.NonOptionalHero.OnHuman> {
         public val RESPONSE_NAMES: List<String> = listOf("height")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.NonOptionalHero.OnHuman {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.NonOptionalHero.OnHuman {
           var _height: Double? = null
 
           while (true) {

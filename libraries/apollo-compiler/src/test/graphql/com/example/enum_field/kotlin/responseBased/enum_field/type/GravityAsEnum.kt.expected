@@ -43,8 +43,8 @@ internal enum class GravityAsEnum(
   ;
 
   public companion object {
-    public val type: EnumType = EnumType("GravityAsEnum", listOf("TOP", "CENTER", "BOTTOM",
-        "bottom", "is", "while", "type", "String", "field"))
+    public val type: EnumType =
+        EnumType("GravityAsEnum", listOf("TOP", "CENTER", "BOTTOM", "bottom", "is", "while", "type", "String", "field"))
 
     /**
      * All [GravityAsEnum] known at compile time
@@ -73,10 +73,8 @@ internal enum class GravityAsEnum(
 
     /**
      * Returns the [GravityAsEnum] that represents the specified [rawValue].
-     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your
-     * schema instead of calling this function directly.
+     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
      */
-    public fun safeValueOf(rawValue: kotlin.String): GravityAsEnum =
-        entries.find { it.rawValue == rawValue } ?: UNKNOWN__
+    public fun safeValueOf(rawValue: kotlin.String): GravityAsEnum = entries.find { it.rawValue == rawValue } ?: UNKNOWN__
   }
 }

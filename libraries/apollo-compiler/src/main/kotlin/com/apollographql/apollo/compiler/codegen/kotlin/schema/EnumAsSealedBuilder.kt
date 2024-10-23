@@ -110,22 +110,22 @@ internal class EnumAsSealedBuilder(
                 .addModifiers(KModifier.OVERRIDE)
                 .addParameter(ParameterSpec("other", KotlinSymbols.Any.copy(nullable = true)))
                 .returns(KotlinSymbols.Boolean)
-                .addCode("if·(other·!is·%T) return false\n", unknownValueClassName())
-                .addCode("return·this.rawValue·==·other.rawValue")
+                .addCode("if (other !is %T) return false\n", unknownValueClassName())
+                .addCode("return this.rawValue == other.rawValue")
                 .build()
         )
         .addFunction(
             FunSpec.builder("hashCode")
                 .addModifiers(KModifier.OVERRIDE)
                 .returns(KotlinSymbols.Int)
-                .addCode("return·this.rawValue.hashCode()")
+                .addCode("return this.rawValue.hashCode()")
                 .build()
         )
         .addFunction(
             FunSpec.builder("toString")
                 .addModifiers(KModifier.OVERRIDE)
                 .returns(KotlinSymbols.String)
-                .addCode("return·\"UNKNOWN__(${'$'}rawValue)\"")
+                .addCode("return \"UNKNOWN__(${'$'}rawValue)\"")
                 .build()
         )
         .build()
@@ -142,10 +142,10 @@ internal class EnumAsSealedBuilder(
         .maybeAddOptIn(context.resolver, enum.values)
         .addParameter("rawValue", KotlinSymbols.String)
         .returns(selfClassName)
-        .beginControlFlow("return·when(rawValue)")
+        .beginControlFlow("return when(rawValue)")
         .addCode(
             values
-                .map { CodeBlock.of("%S·->·%T", it.name, it.valueClassName()) }
+                .map { CodeBlock.of("%S -> %T", it.name, it.valueClassName()) }
                 .joinToCode(separator = "\n", suffix = "\n")
         )
         .addCode("else -> %T(rawValue)\n", unknownValueClassName())
@@ -161,7 +161,7 @@ internal class EnumAsSealedBuilder(
         .returns(KotlinSymbols.Array.parameterizedBy(selfClassName))
         .addCode(
             CodeBlock.builder()
-                .add("return·arrayOf(\n")
+                .add("return arrayOf(\n")
                 .indent()
                 .add(
                     values.map {

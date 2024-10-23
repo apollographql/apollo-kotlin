@@ -23,8 +23,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("iface1")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _iface1: TestQuery.Data.Iface1? = null
 
       while (true) {
@@ -51,8 +50,7 @@ public object TestQuery_ResponseAdapter {
     private object Iface1 : Adapter<TestQuery.Data.Iface1> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.Iface1 {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1 {
         var __typename: String? = null
 
         while (true) {
@@ -67,14 +65,12 @@ public object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val _onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.fromJson(reader,
-            customScalarAdapters)
+        val _onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.fromJson(reader, customScalarAdapters)
 
         var _onImpl1: TestQuery.Data.Iface1.OnImpl1? = null
         if (possibleTypes("Impl1").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
-          _onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.fromJson(reader,
-              customScalarAdapters)
+          _onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.fromJson(reader, customScalarAdapters)
         }
 
         return TestQuery.Data.Iface1(
@@ -92,20 +88,17 @@ public object TestQuery_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.toJson(writer,
-            customScalarAdapters, value.onIface1)
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.toJson(writer, customScalarAdapters, value.onIface1)
 
         if (value.onImpl1 != null) {
-          com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.toJson(writer,
-              customScalarAdapters, value.onImpl1)
+          com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.toJson(writer, customScalarAdapters, value.onImpl1)
         }
       }
 
       private object OnIface1 : Adapter<TestQuery.Data.Iface1.OnIface1> {
         public val RESPONSE_NAMES: List<String> = listOf("iface2")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.Iface1.OnIface1 {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnIface1 {
           var _iface2: TestQuery.Data.Iface1.OnIface1.Iface2? = null
 
           while (true) {
@@ -132,8 +125,7 @@ public object TestQuery_ResponseAdapter {
         private object Iface2 : Adapter<TestQuery.Data.Iface1.OnIface1.Iface2> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestQuery.Data.Iface1.OnIface1.Iface2 {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnIface1.Iface2 {
             var __typename: String? = null
 
             while (true) {
@@ -148,14 +140,12 @@ public object TestQuery_ResponseAdapter {
             }
 
             reader.rewind()
-            val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.fromJson(reader,
-                customScalarAdapters)
+            val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.fromJson(reader, customScalarAdapters)
 
             var _onImpl2: TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2? = null
             if (possibleTypes("Impl2").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
               reader.rewind()
-              _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.fromJson(reader,
-                  customScalarAdapters)
+              _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.fromJson(reader, customScalarAdapters)
             }
 
             return TestQuery.Data.Iface1.OnIface1.Iface2(
@@ -173,20 +163,17 @@ public object TestQuery_ResponseAdapter {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.toJson(writer,
-                customScalarAdapters, value.onIface2)
+            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.toJson(writer, customScalarAdapters, value.onIface2)
 
             if (value.onImpl2 != null) {
-              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.toJson(writer,
-                  customScalarAdapters, value.onImpl2)
+              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.toJson(writer, customScalarAdapters, value.onImpl2)
             }
           }
 
           private object OnIface2 : Adapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2> {
             public val RESPONSE_NAMES: List<String> = listOf("scalar1")
 
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2 {
+            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2 {
               var _scalar1: String? = null
 
               while (true) {
@@ -214,8 +201,7 @@ public object TestQuery_ResponseAdapter {
           private object OnImpl2 : Adapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2> {
             public val RESPONSE_NAMES: List<String> = listOf("scalar2")
 
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2 {
+            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2 {
               var _scalar2: String? = null
 
               while (true) {
@@ -245,8 +231,7 @@ public object TestQuery_ResponseAdapter {
       private object OnImpl1 : Adapter<TestQuery.Data.Iface1.OnImpl1> {
         public val RESPONSE_NAMES: List<String> = listOf("iface2")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.Iface1.OnImpl1 {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnImpl1 {
           var _iface2: TestQuery.Data.Iface1.OnImpl1.Iface2? = null
 
           while (true) {
@@ -273,8 +258,7 @@ public object TestQuery_ResponseAdapter {
         private object Iface2 : Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestQuery.Data.Iface1.OnImpl1.Iface2 {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnImpl1.Iface2 {
             var __typename: String? = null
 
             while (true) {
@@ -289,14 +273,12 @@ public object TestQuery_ResponseAdapter {
             }
 
             reader.rewind()
-            val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.fromJson(reader,
-                customScalarAdapters)
+            val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.fromJson(reader, customScalarAdapters)
 
             var _onImpl2: TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2? = null
             if (possibleTypes("Impl2").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
               reader.rewind()
-              _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.fromJson(reader,
-                  customScalarAdapters)
+              _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.fromJson(reader, customScalarAdapters)
             }
 
             return TestQuery.Data.Iface1.OnImpl1.Iface2(
@@ -314,20 +296,17 @@ public object TestQuery_ResponseAdapter {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.toJson(writer,
-                customScalarAdapters, value.onIface2)
+            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.toJson(writer, customScalarAdapters, value.onIface2)
 
             if (value.onImpl2 != null) {
-              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.toJson(writer,
-                  customScalarAdapters, value.onImpl2)
+              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.toJson(writer, customScalarAdapters, value.onImpl2)
             }
           }
 
           private object OnIface2 : Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2> {
             public val RESPONSE_NAMES: List<String> = listOf("scalar3")
 
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2 {
+            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2 {
               var _scalar3: String? = null
 
               while (true) {
@@ -355,8 +334,7 @@ public object TestQuery_ResponseAdapter {
           private object OnImpl2 : Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2> {
             public val RESPONSE_NAMES: List<String> = listOf("scalar4")
 
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2 {
+            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2 {
               var _scalar4: String? = null
 
               while (true) {

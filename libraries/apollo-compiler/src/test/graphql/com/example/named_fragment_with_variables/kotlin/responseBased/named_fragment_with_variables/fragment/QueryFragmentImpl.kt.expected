@@ -31,8 +31,7 @@ public data class QueryFragmentImpl(
     customScalarAdapters: CustomScalarAdapters,
     withDefaultValues: Boolean,
   ) {
-    QueryFragmentImpl_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters,
-        withDefaultValues)
+    QueryFragmentImpl_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
   override fun adapter(): Adapter<Data> = QueryFragmentImpl_ResponseAdapter.Data.obj()
@@ -46,7 +45,8 @@ public data class QueryFragmentImpl(
 
   public data class Data(
     override val organization: Organization?,
-  ) : QueryFragment, Fragment.Data {
+  ) : QueryFragment,
+      Fragment.Data {
     public data class Organization(
       override val id: String,
       override val user: List<User>,
@@ -56,7 +56,8 @@ public data class QueryFragmentImpl(
         override val firstName: String,
         override val lastName: String,
         override val avatar: String,
-      ) : UserFragment, QueryFragment.Organization.User {
+      ) : UserFragment,
+          QueryFragment.Organization.User {
         public companion object {
           @Suppress("USELESS_CAST")
           public fun User.userFragment(): UserFragment? = this as? UserFragment

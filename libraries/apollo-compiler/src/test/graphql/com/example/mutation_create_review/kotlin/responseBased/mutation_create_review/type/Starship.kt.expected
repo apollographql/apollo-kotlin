@@ -19,8 +19,7 @@ internal class Starship {
   public companion object : BuilderFactory<StarshipBuilder> {
     public val type: ObjectType = ObjectType.Builder(name = "Starship").build()
 
-    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): StarshipBuilder =
-        StarshipBuilder(customScalarAdapters)
+    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): StarshipBuilder = StarshipBuilder(customScalarAdapters)
   }
 }
 
@@ -35,7 +34,7 @@ internal class StarshipBuilder(
 
 internal class StarshipMap(
   __fields: Map<String, Any?>,
-) : SearchResultMap, Map<String, Any?> by __fields
+) : SearchResultMap,
+    Map<String, Any?> by __fields
 
-internal fun BuilderScope.buildStarship(block: StarshipBuilder.() -> Unit): StarshipMap =
-    StarshipBuilder(customScalarAdapters).apply(block).build()
+internal fun BuilderScope.buildStarship(block: StarshipBuilder.() -> Unit): StarshipMap = StarshipBuilder(customScalarAdapters).apply(block).build()

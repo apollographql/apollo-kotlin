@@ -27,8 +27,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
   public object Data : Adapter<InlineMultipleWithDeferAndInclude.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        InlineMultipleWithDeferAndInclude.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): InlineMultipleWithDeferAndInclude.Data {
       var _hero: InlineMultipleWithDeferAndInclude.Data.Hero? = null
 
       while (true) {
@@ -55,8 +54,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
     private object Hero : Adapter<InlineMultipleWithDeferAndInclude.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          InlineMultipleWithDeferAndInclude.Data.Hero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): InlineMultipleWithDeferAndInclude.Data.Hero {
         var __typename: String? = null
 
         val __path = reader.getPath()
@@ -74,43 +72,37 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         var _onDroidIfCond1: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1? = null
         if (and(possibleTypes("Droid"),variable("cond1")).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
-          _onDroidIfCond1 = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfCond1.fromJson(reader,
-              customScalarAdapters)
+          _onDroidIfCond1 = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfCond1.fromJson(reader, customScalarAdapters)
         }
 
         var _onDroidIfNotCond2: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2? = null
         if (and(possibleTypes("Droid"),not(variable("cond2"))).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
-          _onDroidIfNotCond2 = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfNotCond2.fromJson(reader,
-              customScalarAdapters)
+          _onDroidIfNotCond2 = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfNotCond2.fromJson(reader, customScalarAdapters)
         }
 
         var _onDroidDeferE_first: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_first? = null
         if (and(possibleTypes("Droid"),label("e_first")).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
-          _onDroidDeferE_first = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_first.fromJson(reader,
-              customScalarAdapters)
+          _onDroidDeferE_first = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_first.fromJson(reader, customScalarAdapters)
         }
 
         var _onDroidDeferE_second: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_second? = null
         if (and(possibleTypes("Droid"),label("e_second")).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
-          _onDroidDeferE_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_second.fromJson(reader,
-              customScalarAdapters)
+          _onDroidDeferE_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_second.fromJson(reader, customScalarAdapters)
         }
 
         var _onDroidDeferE_third: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_third? = null
         if (and(possibleTypes("Droid"),and(label("e_third"),variable("cond3"))).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
-          _onDroidDeferE_third = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_third.fromJson(reader,
-              customScalarAdapters)
+          _onDroidDeferE_third = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_third.fromJson(reader, customScalarAdapters)
         }
 
         var _onDroidDeferE_fourth: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_fourth? = null
         if (and(possibleTypes("Droid"),and(label("e_fourth"),not(variable("cond4")))).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
-          _onDroidDeferE_fourth = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_fourth.fromJson(reader,
-              customScalarAdapters)
+          _onDroidDeferE_fourth = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_fourth.fromJson(reader, customScalarAdapters)
         }
 
         return InlineMultipleWithDeferAndInclude.Data.Hero(
@@ -133,42 +125,34 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onDroidIfCond1 != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfCond1.toJson(writer,
-              customScalarAdapters, value.onDroidIfCond1)
+          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfCond1.toJson(writer, customScalarAdapters, value.onDroidIfCond1)
         }
 
         if (value.onDroidIfNotCond2 != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfNotCond2.toJson(writer,
-              customScalarAdapters, value.onDroidIfNotCond2)
+          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfNotCond2.toJson(writer, customScalarAdapters, value.onDroidIfNotCond2)
         }
 
         if (value.onDroidDeferE_first != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_first.toJson(writer,
-              customScalarAdapters, value.onDroidDeferE_first)
+          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_first.toJson(writer, customScalarAdapters, value.onDroidDeferE_first)
         }
 
         if (value.onDroidDeferE_second != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_second.toJson(writer,
-              customScalarAdapters, value.onDroidDeferE_second)
+          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_second.toJson(writer, customScalarAdapters, value.onDroidDeferE_second)
         }
 
         if (value.onDroidDeferE_third != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_third.toJson(writer,
-              customScalarAdapters, value.onDroidDeferE_third)
+          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_third.toJson(writer, customScalarAdapters, value.onDroidDeferE_third)
         }
 
         if (value.onDroidDeferE_fourth != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_fourth.toJson(writer,
-              customScalarAdapters, value.onDroidDeferE_fourth)
+          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_fourth.toJson(writer, customScalarAdapters, value.onDroidDeferE_fourth)
         }
       }
 
-      private object OnDroidIfCond1 :
-          Adapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1> {
+      private object OnDroidIfCond1 : Adapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1 {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1 {
           var _name: String? = null
 
           while (true) {
@@ -193,12 +177,10 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         }
       }
 
-      private object OnDroidIfNotCond2 :
-          Adapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2> {
+      private object OnDroidIfNotCond2 : Adapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2> {
         public val RESPONSE_NAMES: List<String> = listOf("id")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2 {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2 {
           var _id: String? = null
 
           while (true) {
@@ -223,12 +205,10 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         }
       }
 
-      private object OnDroidDeferE_first :
-          Adapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_first> {
+      private object OnDroidDeferE_first : Adapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_first> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_first {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_first {
           var _name: String? = null
 
           while (true) {
@@ -253,12 +233,10 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         }
       }
 
-      private object OnDroidDeferE_second :
-          Adapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_second> {
+      private object OnDroidDeferE_second : Adapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_second> {
         public val RESPONSE_NAMES: List<String> = listOf("id")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_second {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_second {
           var _id: String? = null
 
           while (true) {
@@ -283,12 +261,10 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         }
       }
 
-      private object OnDroidDeferE_third :
-          Adapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_third> {
+      private object OnDroidDeferE_third : Adapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_third> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_third {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_third {
           var _name: String? = null
 
           while (true) {
@@ -313,12 +289,10 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         }
       }
 
-      private object OnDroidDeferE_fourth :
-          Adapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_fourth> {
+      private object OnDroidDeferE_fourth : Adapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_fourth> {
         public val RESPONSE_NAMES: List<String> = listOf("id")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_fourth {
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_fourth {
           var _id: String? = null
 
           while (true) {

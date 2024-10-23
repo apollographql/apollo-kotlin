@@ -20,8 +20,7 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("typeWithGraphQLKeywords")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
 
       while (true) {
@@ -42,15 +41,13 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("typeWithGraphQLKeywords")
-      TypeWithGraphQLKeywords.obj().nullable().toJson(writer, customScalarAdapters,
-          value.typeWithGraphQLKeywords)
+      TypeWithGraphQLKeywords.obj().nullable().toJson(writer, customScalarAdapters, value.typeWithGraphQLKeywords)
     }
 
     private object TypeWithGraphQLKeywords : Adapter<TestQuery.Data.TypeWithGraphQLKeywords> {
       public val RESPONSE_NAMES: List<String> = listOf("on", "null", "alias")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.TypeWithGraphQLKeywords {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.TypeWithGraphQLKeywords {
         var _on: String? = null
         var _null: String? = null
         var _alias: String? = null

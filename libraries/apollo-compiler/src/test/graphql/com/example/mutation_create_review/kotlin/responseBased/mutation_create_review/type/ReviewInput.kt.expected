@@ -14,6 +14,30 @@ import kotlin.collections.List
 
 /**
  * The input object sent when someone is creating a new review
+ *
+ * @param stars 0-5 stars
+ * @param nullableIntFieldWithDefaultValue for test purpose only
+ * @param commentary Comment about the movie, optional
+ * @param favoriteColor Favorite color, optional
+ * @param enumWithDefaultValue for test purpose only
+ * @param nonNullableEnumWithDefaultValue for test purpose only
+ * @param nullableEnum for test purpose only
+ * @param listOfCustomScalar for test purpose only
+ * @param customScalar for test purpose only
+ * @param listOfEnums for test purpose only
+ * @param listOfInt for test purpose only
+ * @param listOfString for test purpose only
+ * @param listOfStringNonOptional for test purpose only
+ * @param listOfInputTypes for test purpose only
+ * @param booleanWithDefaultValue for test purpose only
+ * @param booleanNonOptional for test purpose only
+ * @param listOfListOfString for test purpose only
+ * @param listOfListOfEnum for test purpose only
+ * @param listOfListOfCustom for test purpose only
+ * @param listOfListOfObject for test purpose only
+ * @param CapitalizedField for test purpose only
+ * @param CapitalizedInt for test purpose only
+ * @param in for test purpose only
  */
 internal data class ReviewInput(
   /**

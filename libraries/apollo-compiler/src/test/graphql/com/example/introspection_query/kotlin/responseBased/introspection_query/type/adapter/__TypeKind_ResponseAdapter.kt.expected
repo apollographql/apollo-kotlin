@@ -12,8 +12,7 @@ import com.apollographql.apollo.api.json.JsonWriter
 import com.example.introspection_query.type.__TypeKind
 
 public object __TypeKind_ResponseAdapter : Adapter<__TypeKind> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      __TypeKind {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): __TypeKind {
     val rawValue = reader.nextString()!!
     return __TypeKind.safeValueOf(rawValue)
   }

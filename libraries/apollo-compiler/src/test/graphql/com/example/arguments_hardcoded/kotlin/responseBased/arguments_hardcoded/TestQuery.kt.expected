@@ -82,14 +82,12 @@ public class TestQuery() : Query<TestQuery.Data> {
      *     stars
      *     commentary
      *   }
-     *   testNullableArguments(int: null, string: null, float: null, review: null, episode: null,
-     * boolean: null, list: null)
+     *   testNullableArguments(int: null, string: null, float: null, review: null, episode: null, boolean: null, list: null)
      * }
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { reviews(episode: JEDI, starsInt: 10, starsFloat: 9.9) { stars commentary } testNullableArguments(int: null, string: null, float: null, review: null, episode: null, boolean: null, list: null) }"
+      get() = "query TestQuery { reviews(episode: JEDI, starsInt: 10, starsFloat: 9.9) { stars commentary } testNullableArguments(int: null, string: null, float: null, review: null, episode: null, boolean: null, list: null) }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

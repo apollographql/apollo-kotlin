@@ -221,8 +221,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { search(text: \"test\") { __typename ... on Character { id name friends { __typename ... on Character { name } ... on Human { homePlanet friends { __typename ... on Character { firstAppearsIn } } } ... on Droid { primaryFunction friends { id } } } } ... on Starship { name } } }"
+      get() = "query TestQuery { search(text: \"test\") { __typename ... on Character { id name friends { __typename ... on Character { name } ... on Human { homePlanet friends { __typename ... on Character { firstAppearsIn } } } ... on Droid { primaryFunction friends { id } } } } ... on Starship { name } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

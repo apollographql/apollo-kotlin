@@ -49,11 +49,11 @@ public class HumanFragmentImpl() : Fragment<HumanFragmentImpl.Data> {
 
   public data class Data(
     override val homePlanet: String,
-  ) : HumanFragment, Fragment.Data
+  ) : HumanFragment,
+      Fragment.Data
 
   public companion object {
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: HumanBuilder.() -> Unit = {}): Data = buildData(
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: HumanBuilder.() -> Unit = {}): Data = buildData(
       Human,
       block,
       HumanFragmentImpl_ResponseAdapter.Data,

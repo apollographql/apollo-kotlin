@@ -58,14 +58,16 @@ public class TestQuery() : Query<TestQuery.Data> {
     override val hero: Hero?,
     override val droid: Droid?,
     override val human: Human?,
-  ) : QueryFragment, Query.Data {
+  ) : QueryFragment,
+      Query.Data {
     public data class Hero(
       override val __typename: String,
       /**
        * The name of the character
        */
       override val name: String,
-    ) : HeroFragment, QueryFragment.Hero {
+    ) : HeroFragment,
+        QueryFragment.Hero {
       public companion object {
         @Suppress("USELESS_CAST")
         public fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
@@ -82,7 +84,8 @@ public class TestQuery() : Query<TestQuery.Data> {
        * This droid's primary function
        */
       override val primaryFunction: String?,
-    ) : DroidFragment, QueryFragment.Droid {
+    ) : DroidFragment,
+        QueryFragment.Droid {
       public companion object {
         @Suppress("USELESS_CAST")
         public fun Droid.droidFragment(): DroidFragment? = this as? DroidFragment
@@ -151,8 +154,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query TestQuery { __typename ...QueryFragment }  fragment heroFragment on Character { name }  fragment droidFragment on Droid { name primaryFunction }  fragment QueryFragment on Query { __typename hero { __typename ...heroFragment } droid(id: 1) { __typename ...droidFragment } human(id: 1) { __typename ... on Human { name homePlanet } } }"
+      get() = "query TestQuery { __typename ...QueryFragment }  fragment heroFragment on Character { name }  fragment droidFragment on Droid { name primaryFunction }  fragment QueryFragment on Query { __typename hero { __typename ...heroFragment } droid(id: 1) { __typename ...droidFragment } human(id: 1) { __typename ... on Human { name homePlanet } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

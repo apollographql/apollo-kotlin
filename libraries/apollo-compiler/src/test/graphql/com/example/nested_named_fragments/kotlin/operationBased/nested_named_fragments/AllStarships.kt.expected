@@ -126,8 +126,7 @@ public class AllStarships() : Query<AllStarships.Data> {
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query AllStarships { allStarships(first: 7) { edges { node { __typename ...starshipFragment } } } }  fragment planetFragment on Planet { name }  fragment pilotFragment on Person { name homeworld { __typename ...planetFragment } }  fragment starshipFragment on Starship { id name pilotConnection { edges { node { __typename ...pilotFragment } } } }"
+      get() = "query AllStarships { allStarships(first: 7) { edges { node { __typename ...starshipFragment } } } }  fragment planetFragment on Planet { name }  fragment pilotFragment on Person { name homeworld { __typename ...planetFragment } }  fragment starshipFragment on Starship { id name pilotConnection { edges { node { __typename ...pilotFragment } } } }"
 
     public const val OPERATION_NAME: String = "AllStarships"
   }

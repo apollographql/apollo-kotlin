@@ -19,8 +19,7 @@ public object GetUser_ResponseAdapter {
   public object Data : Adapter<GetUser.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        GetUser.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetUser.Data {
       var __typename: String? = null
 
       while (true) {
@@ -31,8 +30,7 @@ public object GetUser_ResponseAdapter {
       }
 
       reader.rewind()
-      val _queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
-          customScalarAdapters)
+      val _queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader, customScalarAdapters)
 
       return GetUser.Data(
         __typename = __typename ?: missingField(reader, "__typename"),
@@ -48,8 +46,7 @@ public object GetUser_ResponseAdapter {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-      com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer,
-          customScalarAdapters, value.queryFragment)
+      com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer, customScalarAdapters, value.queryFragment)
     }
   }
 }

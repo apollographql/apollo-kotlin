@@ -12,8 +12,7 @@ import com.apollographql.apollo.api.json.JsonWriter
 import com.example.target_name.type.RenamedEnum
 
 public object RenamedEnum_ResponseAdapter : Adapter<RenamedEnum> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      RenamedEnum {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): RenamedEnum {
     val rawValue = reader.nextString()!!
     return RenamedEnum.safeValueOf(rawValue)
   }

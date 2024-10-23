@@ -16,9 +16,7 @@ import com.example.input_object_oneof.type.FindUserBySocialNetworkInput
 import kotlin.IllegalStateException
 
 public object FindUserBySocialNetworkInput_InputAdapter : Adapter<FindUserBySocialNetworkInput> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      FindUserBySocialNetworkInput = throw
-      IllegalStateException("Input type used in output position")
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): FindUserBySocialNetworkInput = throw IllegalStateException("Input type used in output position")
 
   override fun toJson(
     writer: JsonWriter,

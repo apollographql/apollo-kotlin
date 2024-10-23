@@ -18,8 +18,7 @@ public object DroidDetails1Impl_ResponseAdapter {
   public object Data : Adapter<DroidDetails1Impl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        DroidDetails1Impl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): DroidDetails1Impl.Data {
       var _name: String? = null
 
       while (true) {

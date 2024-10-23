@@ -12,4 +12,3 @@ import com.apollographql.apollo.api.CustomScalarAdapters
  */
 internal val __CustomScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Builder()
       .build()
-

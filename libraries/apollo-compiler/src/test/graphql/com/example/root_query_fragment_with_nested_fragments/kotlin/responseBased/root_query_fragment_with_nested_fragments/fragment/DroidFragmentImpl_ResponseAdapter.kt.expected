@@ -19,8 +19,7 @@ public object DroidFragmentImpl_ResponseAdapter {
   public object Data : Adapter<DroidFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        DroidFragmentImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): DroidFragmentImpl.Data {
       var _name: String? = null
       var _primaryFunction: String? = null
 

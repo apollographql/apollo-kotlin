@@ -21,11 +21,10 @@ import kotlin.collections.List
 
 public object JavaPrimitiveQuery_ResponseAdapter {
   public object Data : Adapter<JavaPrimitiveQuery.Data> {
-    public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt",
-        "nullableMyType", "nonNullableMyType")
+    public val RESPONSE_NAMES: List<String> =
+        listOf("nullableInt", "nonNullableInt", "nullableMyType", "nonNullableMyType")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        JavaPrimitiveQuery.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): JavaPrimitiveQuery.Data {
       var _nullableInt: Int? = null
       var _nonNullableInt: Int? = null
       var _nullableMyType: JavaPrimitiveQuery.Data.NullableMyType? = null
@@ -70,8 +69,7 @@ public object JavaPrimitiveQuery_ResponseAdapter {
     private object NullableMyType : Adapter<JavaPrimitiveQuery.Data.NullableMyType> {
       public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          JavaPrimitiveQuery.Data.NullableMyType {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): JavaPrimitiveQuery.Data.NullableMyType {
         var _nullableInt: Int? = null
         var _nonNullableInt: Int? = null
 
@@ -105,8 +103,7 @@ public object JavaPrimitiveQuery_ResponseAdapter {
     private object NonNullableMyType : Adapter<JavaPrimitiveQuery.Data.NonNullableMyType> {
       public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          JavaPrimitiveQuery.Data.NonNullableMyType {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): JavaPrimitiveQuery.Data.NonNullableMyType {
         var _nullableInt: Int? = null
         var _nonNullableInt: Int? = null
 

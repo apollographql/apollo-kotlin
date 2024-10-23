@@ -24,8 +24,7 @@ public object GetHero_ResponseAdapter {
   public object Data : Adapter<GetHero.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        GetHero.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetHero.Data {
       var _hero: GetHero.Data.Hero? = null
 
       while (true) {
@@ -52,8 +51,7 @@ public object GetHero_ResponseAdapter {
     private object Hero : Adapter<GetHero.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          GetHero.Data.Hero {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetHero.Data.Hero {
         var __typename: String? = null
         var _name: String? = null
         var _appearsIn: List<Episode?>? = null
@@ -86,8 +84,7 @@ public object GetHero_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("appearsIn")
-        Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
-            value.appearsIn)
+        Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters, value.appearsIn)
       }
     }
   }

@@ -18,8 +18,7 @@ public object ADetailsImpl_ResponseAdapter {
   public object Data : Adapter<ADetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("field")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        ADetailsImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): ADetailsImpl.Data {
       var _field: Int? = null
 
       while (true) {

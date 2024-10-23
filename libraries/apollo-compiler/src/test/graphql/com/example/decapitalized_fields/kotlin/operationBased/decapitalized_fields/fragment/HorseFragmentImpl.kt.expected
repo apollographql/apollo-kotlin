@@ -30,8 +30,7 @@ public class HorseFragmentImpl() : Fragment<HorseFragment> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<HorseFragment> =
-      HorseFragmentImpl_ResponseAdapter.HorseFragment.obj()
+  override fun adapter(): Adapter<HorseFragment> = HorseFragmentImpl_ResponseAdapter.HorseFragment.obj()
 
   override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

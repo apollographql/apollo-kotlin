@@ -19,8 +19,7 @@ import kotlin.collections.List
 
 public object IFragmentImpl_ResponseAdapter {
   public object Data : Adapter<IFragmentImpl.Data> {
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        IFragmentImpl.Data {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): IFragmentImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
         "A",
