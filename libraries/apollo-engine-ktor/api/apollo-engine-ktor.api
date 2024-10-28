@@ -1,8 +1,0 @@
-public final class com/apollographql/apollo/network/adapter/KtorHttpUrlAdapter : com/apollographql/apollo/api/Adapter {
-	public static final field INSTANCE Lcom/apollographql/apollo/network/adapter/KtorHttpUrlAdapter;
-	public fun fromJson (Lcom/apollographql/apollo/api/json/JsonReader;Lcom/apollographql/apollo/api/CustomScalarAdapters;)Lio/ktor/http/Url;
-	public synthetic fun fromJson (Lcom/apollographql/apollo/api/json/JsonReader;Lcom/apollographql/apollo/api/CustomScalarAdapters;)Ljava/lang/Object;
-	public fun toJson (Lcom/apollographql/apollo/api/json/JsonWriter;Lcom/apollographql/apollo/api/CustomScalarAdapters;Lio/ktor/http/Url;)V
-	public synthetic fun toJson (Lcom/apollographql/apollo/api/json/JsonWriter;Lcom/apollographql/apollo/api/CustomScalarAdapters;Ljava/lang/Object;)V
-}
-

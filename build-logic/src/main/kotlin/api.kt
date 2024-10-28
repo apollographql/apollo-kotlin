@@ -16,14 +16,6 @@ class KotlinCompilerOptions(
     val version: KotlinVersion = KotlinVersion.KOTLIN_2_0,
 )
 
-fun Project.apolloTombstone(
-    group: String,
-    artifact: String,
-    version: String,
-) {
-  configurePublishing(tombstone = Tombstone(group, artifact, version))
-}
-
 fun Project.apolloLibrary(
     namespace: String,
     jvmTarget: Int? = null,
