@@ -32,7 +32,7 @@ class ApolloUnusedFieldInspectionTest : ApolloTestCase() {
 
     moveCaret("id")
 
-    val quickFixAction = myFixture.findSingleIntention("Delete field");
+    val quickFixAction = myFixture.findSingleIntention("Delete field")
     assertNotNull(quickFixAction)
     myFixture.launchAction(quickFixAction)
     myFixture.checkResult("""
@@ -70,7 +70,7 @@ class ApolloUnusedFieldInspectionTest : ApolloTestCase() {
 
     moveCaret("... on Cat")
 
-    val quickFixAction = myFixture.findSingleIntention("Delete field");
+    val quickFixAction = myFixture.findSingleIntention("Delete field")
     assertNotNull(quickFixAction)
     myFixture.launchAction(quickFixAction)
     myFixture.checkResult("""
