@@ -98,7 +98,7 @@ fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
   })
 }
 
-fun federationDefinitions(): List<GQLDefinition> = definitionsFromString(federationDefinitions_2_9)
+internal fun federationDefinitions(): List<GQLDefinition> = definitionsFromString(federationDefinitions_2_9)
 
 /**
  * The foreign schemas supported by Apollo Kotlin.
