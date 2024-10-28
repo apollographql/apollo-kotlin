@@ -1,6 +1,7 @@
 package com.apollographql.apollo.graphql.ast.test
 
 import com.apollographql.apollo.ast.ForeignSchema
+import com.apollographql.apollo.ast.builtinForeignSchemas
 import com.apollographql.apollo.ast.internal.SchemaValidationOptions
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
@@ -115,5 +116,23 @@ class SchemaTest {
 
     assertEquals(1, result.issues.size)
     assertEquals("Apollo: unknown definition '@unknownDirective'", result.issues.first().message)
+  }
+
+  @Test
+  fun federationIsSupported() {
+    // language=graphql
+    val schemaString = """
+      extend schema
+      @link(url: "https://specs.apollo.dev/federation/v2.4",
+          import: ["@key", "@extends", "@external"])
+      
+      type Query {
+        foo: Int 
+      }
+    """.trimIndent()
+
+    val result = schemaString.toGQLDocument().validateAsSchema(SchemaValidationOptions(false, builtinForeignSchemas()))
+
+    assertEquals(0, result.issues.size)
   }
 }

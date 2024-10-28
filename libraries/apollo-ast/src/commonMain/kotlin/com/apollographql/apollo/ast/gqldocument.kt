@@ -6,6 +6,7 @@ import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.internal.ExtensionsMerger
 import com.apollographql.apollo.ast.internal.builtinsDefinitionsStr
 import com.apollographql.apollo.ast.internal.ensureSchemaDefinition
+import com.apollographql.apollo.ast.internal.federationDefinitions_2_9
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_3
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_4
 import com.apollographql.apollo.ast.internal.linkDefinitionsStr
@@ -97,6 +98,8 @@ fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
   })
 }
 
+fun federationDefinitions(): List<GQLDefinition> = definitionsFromString(federationDefinitions_2_9)
+
 /**
  * The foreign schemas supported by Apollo Kotlin.
  * This is exported in case users want to validate documents meant for Apollo Kotlin.
@@ -108,6 +111,20 @@ fun builtinForeignSchemas(): List<ForeignSchema> {
       ForeignSchema("kotlin_labs", "v0.3", kotlinLabsDefinitions("v0.3"), listOf("optional", "nonnull")),
       ForeignSchema("kotlin_labs", "v0.4", kotlinLabsDefinitions("v0.4"), listOf("optional")),
       ForeignSchema("nullability", "v0.4", nullabilityDefinitions("v0.4"), listOf("catch")),
+      /**
+       * See https://github.com/apollographql/apollo-kotlin/issues/6221.
+       * Apollo Kotlin doesn't use the federation directives but adding them allows validating the schema.
+       */
+      ForeignSchema("federation", "v2.0", federationDefinitions(), emptyList()),
+      ForeignSchema("federation", "v2.1", federationDefinitions(), emptyList()),
+      ForeignSchema("federation", "v2.2", federationDefinitions(), emptyList()),
+      ForeignSchema("federation", "v2.3", federationDefinitions(), emptyList()),
+      ForeignSchema("federation", "v2.4", federationDefinitions(), emptyList()),
+      ForeignSchema("federation", "v2.5", federationDefinitions(), emptyList()),
+      ForeignSchema("federation", "v2.6", federationDefinitions(), emptyList()),
+      ForeignSchema("federation", "v2.7", federationDefinitions(), emptyList()),
+      ForeignSchema("federation", "v2.8", federationDefinitions(), emptyList()),
+      ForeignSchema("federation", "v2.9", federationDefinitions(), emptyList()),
   )
 }
 

@@ -324,7 +324,7 @@ private fun List<GQLSchemaExtension>.getImports(
       if (gqlDirective.name == "link") {
         /**
          * Validate `@link` using a very minimal schema.
-         * This ensure we can safely cast the arguments below
+         * This ensures we can safely cast the arguments below
          */
         val minimalSchema = builtinDefinitions + linkDefinitions()
         val scope = DefaultValidationScope(
