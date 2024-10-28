@@ -34,14 +34,6 @@ kotlin {
         implementation(libs.apollo.execution)
       }
     }
-
-    getByName("jvmMain") {
-      dependencies {
-        implementation(libs.apollo.execution.ktor)
-        implementation(libs.ktor.server.cio)
-        implementation(libs.slf4j.nop)
-      }
-    }
     getByName("jvmTest") {
       dependencies {
         implementation(libs.kotlin.test)
