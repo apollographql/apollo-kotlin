@@ -45,7 +45,7 @@ class GradleToolingModelService(
   private var fetchToolingModelsTask: FetchToolingModelsTask? = null
 
   var apolloKotlinServices: List<ApolloKotlinService> = project.projectSettingsState.apolloKotlinServices
-      private set
+    private set
 
   init {
     logd("project=${project.name}")
@@ -54,8 +54,9 @@ class GradleToolingModelService(
     startOrAbortFetchToolingModels()
     startObserveSettings()
 
-    if (apolloKotlinServices.isNotEmpty()) {
-      // Services are available, notify interested parties
+    if (shouldFetchToolingModels()) {
+      // Contribute immediately, even though the ApolloKotlinServices are not available yet. They will be contributed later when available.
+      // This avoids falling back to the default schema discovery of the GraphQL plugin which can be problematic (see https://github.com/apollographql/apollo-kotlin/issues/6219)
       project.messageBus.syncPublisher(ApolloKotlinServiceListener.TOPIC).apolloKotlinServicesAvailable()
     }
   }
@@ -111,7 +112,8 @@ class GradleToolingModelService(
       private var contributeConfigurationToGraphqlPlugin: Boolean = project.projectSettingsState.contributeConfigurationToGraphqlPlugin
 
       override fun settingsChanged(projectSettingsState: ProjectSettingsState) {
-        val contributeConfigurationToGraphqlPluginChanged = contributeConfigurationToGraphqlPlugin != projectSettingsState.contributeConfigurationToGraphqlPlugin
+        val contributeConfigurationToGraphqlPluginChanged =
+          contributeConfigurationToGraphqlPlugin != projectSettingsState.contributeConfigurationToGraphqlPlugin
         contributeConfigurationToGraphqlPlugin = projectSettingsState.contributeConfigurationToGraphqlPlugin
         logd("contributeConfigurationToGraphqlPluginChanged=$contributeConfigurationToGraphqlPluginChanged")
         if (contributeConfigurationToGraphqlPluginChanged) {
@@ -161,7 +163,8 @@ class GradleToolingModelService(
       logd()
       val rootProjectPath = project.getGradleRootPath() ?: return
       val gradleExecutionHelper = GradleExecutionHelperCompat()
-      val executionSettings = ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
+      val executionSettings =
+        ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
       val rootGradleProject = gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
         gradleCancellation = GradleConnector.newCancellationTokenSource()
         logd("Fetch Gradle project model")
@@ -317,20 +320,20 @@ private val ApolloGradleToolingModel.projectPathCompat: String
   }
 
 private fun ApolloGradleToolingModel.ServiceInfo.upstreamProjectPathsCompat(toolingModel: ApolloGradleToolingModel) =
-    if (toolingModel.versionMinor >= 3) {
-      upstreamProjectPaths
-    } else {
-      @Suppress("DEPRECATION")
-      upstreamProjects
-    }
+  if (toolingModel.versionMinor >= 3) {
+    upstreamProjectPaths
+  } else {
+    @Suppress("DEPRECATION")
+    upstreamProjects
+  }
 
 private fun ApolloGradleToolingModel.ServiceInfo.endpointUrlCompat(toolingModel: ApolloGradleToolingModel) =
-    if (toolingModel.versionMinor >= 1) endpointUrl else null
+  if (toolingModel.versionMinor >= 1) endpointUrl else null
 
 private fun ApolloGradleToolingModel.ServiceInfo.endpointHeadersCompat(toolingModel: ApolloGradleToolingModel) =
-    if (toolingModel.versionMinor >= 1) endpointHeaders else null
+  if (toolingModel.versionMinor >= 1) endpointHeaders else null
 
 private fun ApolloGradleToolingModel.ServiceInfo.useSemanticNamingCompat(toolingModel: ApolloGradleToolingModel) =
-    if (toolingModel.versionMinor >= 4) useSemanticNaming else true
+  if (toolingModel.versionMinor >= 4) useSemanticNaming else true
 
 val Project.gradleToolingModelService get() = service<GradleToolingModelService>()
