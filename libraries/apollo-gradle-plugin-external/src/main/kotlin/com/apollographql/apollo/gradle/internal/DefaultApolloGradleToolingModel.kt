@@ -24,6 +24,7 @@ internal data class DefaultServiceInfo(
     override val upstreamProjectPaths: Set<String>,
     override val endpointUrl: String?,
     override val endpointHeaders: Map<String, String>?,
+    override val useSemanticNaming: Boolean,
 ) : ApolloGradleToolingModel.ServiceInfo, Serializable
 
 internal data class DefaultTelemetryData(

@@ -40,6 +40,7 @@ public abstract interface class com/apollographql/apollo/gradle/api/ApolloGradle
 	public abstract fun getSchemaFiles ()Ljava/util/Set;
 	public abstract fun getUpstreamProjectPaths ()Ljava/util/Set;
 	public abstract fun getUpstreamProjects ()Ljava/util/Set;
+	public abstract fun getUseSemanticNaming ()Z
 }
 
 public abstract interface class com/apollographql/apollo/gradle/api/ApolloGradleToolingModel$TelemetryData {

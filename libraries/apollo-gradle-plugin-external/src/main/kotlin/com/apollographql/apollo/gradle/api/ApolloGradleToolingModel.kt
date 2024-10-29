@@ -32,6 +32,9 @@ interface ApolloGradleToolingModel {
 
     // Introduced in 1.1
     val endpointHeaders: Map<String, String>?
+
+    // Introduced in 1.4
+    val useSemanticNaming: Boolean
   }
 
   interface TelemetryData {
@@ -87,6 +90,6 @@ interface ApolloGradleToolingModel {
      * Current minor version of the tooling model.
      * Increment this value when the model changes in compatible ways (additions).
      */
-    internal const val VERSION_MINOR = 3
+    internal const val VERSION_MINOR = 4
   }
 }
