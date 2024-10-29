@@ -46,6 +46,9 @@ data class ApolloKotlinService(
 
     @XCollection
     val upstreamServiceIds: List<Id> = emptyList(),
+
+    @Attribute
+    val useSemanticNaming: Boolean = true,
 ) {
   data class Id(
       @Attribute

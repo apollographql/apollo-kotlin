@@ -257,7 +257,8 @@ class GradleToolingModelService(
                 .distinct(),
             endpointUrl = serviceInfo.endpointUrlCompat(toolingModel),
             endpointHeaders = serviceInfo.endpointHeadersCompat(toolingModel),
-            upstreamServiceIds = upstreamApolloKotlinServices.map { it.id }
+            upstreamServiceIds = upstreamApolloKotlinServices.map { it.id },
+            useSemanticNaming = serviceInfo.useSemanticNamingCompat(toolingModel),
         )
       }
     }
@@ -328,5 +329,8 @@ private fun ApolloGradleToolingModel.ServiceInfo.endpointUrlCompat(toolingModel:
 
 private fun ApolloGradleToolingModel.ServiceInfo.endpointHeadersCompat(toolingModel: ApolloGradleToolingModel) =
     if (toolingModel.versionMinor >= 1) endpointHeaders else null
+
+private fun ApolloGradleToolingModel.ServiceInfo.useSemanticNamingCompat(toolingModel: ApolloGradleToolingModel) =
+    if (toolingModel.versionMinor >= 4) useSemanticNaming else true
 
 val Project.gradleToolingModelService get() = service<GradleToolingModelService>()

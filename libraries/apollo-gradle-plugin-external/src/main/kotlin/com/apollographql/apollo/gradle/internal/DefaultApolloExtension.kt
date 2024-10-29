@@ -59,6 +59,7 @@ abstract class DefaultApolloExtension(
         upstreamProjectPaths = service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.dependencyProject.path }.toSet(),
         endpointUrl = service.introspection?.endpointUrl?.orNull,
         endpointHeaders = service.introspection?.headers?.orNull,
+        useSemanticNaming = service.useSemanticNaming.getOrElse(true),
     )
   }
 

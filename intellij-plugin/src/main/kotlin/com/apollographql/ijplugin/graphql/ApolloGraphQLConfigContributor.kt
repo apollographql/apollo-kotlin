@@ -41,17 +41,22 @@ class ApolloGraphQLConfigContributor : GraphQLConfigContributor {
   private fun ApolloKotlinService.toGraphQLRawProjectConfig() = GraphQLRawProjectConfig(
       schema = schemaPaths.map { GraphQLRawSchemaPointer(it) },
       include = operationPaths.map { "$it/**/*.graphql" },
-      extensions = endpointUrl?.let {
-        mapOf(
-            GraphQLConfigKeys.EXTENSION_ENDPOINTS to mapOf(
-                serviceName to buildMap {
-                  put(GraphQLConfigKeys.EXTENSION_ENDPOINT_URL, endpointUrl)
-                  if (endpointHeaders != null) {
-                    put(GraphQLConfigKeys.HEADERS, endpointHeaders)
-                  }
-                }
+      extensions = mapOf(EXTENSION_APOLLO_KOTLIN_SERVICE_ID to this.id.toString()) +
+          (endpointUrl?.let {
+            mapOf(
+                GraphQLConfigKeys.EXTENSION_ENDPOINTS to mapOf(
+                    serviceName to buildMap {
+                      put(GraphQLConfigKeys.EXTENSION_ENDPOINT_URL, endpointUrl)
+                      if (endpointHeaders != null) {
+                        put(GraphQLConfigKeys.HEADERS, endpointHeaders)
+                      }
+                    }
+                )
             )
-        )
-      }
+          } ?: emptyMap())
   )
+
+  companion object {
+    const val EXTENSION_APOLLO_KOTLIN_SERVICE_ID = "apolloKotlinServiceId"
+  }
 }

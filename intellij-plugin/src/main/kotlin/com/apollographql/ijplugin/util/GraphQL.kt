@@ -1,5 +1,8 @@
 package com.apollographql.ijplugin.util
 
+import com.apollographql.ijplugin.gradle.ApolloKotlinService
+import com.apollographql.ijplugin.gradle.gradleToolingModelService
+import com.apollographql.ijplugin.graphql.ApolloGraphQLConfigContributor
 import com.intellij.lang.jsgraphql.ide.config.GraphQLConfigProvider
 import com.intellij.lang.jsgraphql.psi.GraphQLDirective
 import com.intellij.lang.jsgraphql.psi.GraphQLElement
@@ -81,7 +84,7 @@ private fun matchingFieldCoordinates(
 }
 
 /**
- * Return the schema files associated with the given element.
+ * Return the schema files associated with the given GraphQL element.
  */
 fun GraphQLElement.schemaFiles(): List<GraphQLFile> {
   val containingFile = containingFile ?: return emptyList()
@@ -89,6 +92,17 @@ fun GraphQLElement.schemaFiles(): List<GraphQLFile> {
   return projectConfig.schema.mapNotNull { schema ->
     schema.filePath?.let { path -> project.findPsiFileByUrl(schema.dir.url + "/" + path) } as? GraphQLFile
   }
+}
+
+/**
+ * Return the [ApolloKotlinService] associated with the given GraphQL element.
+ */
+fun GraphQLElement.apolloKotlinService(): ApolloKotlinService? {
+  val containingFile = containingFile ?: return null
+  val projectConfig = GraphQLConfigProvider.getInstance(project).resolveProjectConfig(containingFile) ?: return null
+  val apolloKotlinServiceId =
+    projectConfig.extensions[ApolloGraphQLConfigContributor.EXTENSION_APOLLO_KOTLIN_SERVICE_ID] as? String ?: return null
+  return project.gradleToolingModelService.apolloKotlinServices.firstOrNull { it.id.toString() == apolloKotlinServiceId }
 }
 
 fun GraphQLDirective.argumentValue(argumentName: String): GraphQLValue? =
