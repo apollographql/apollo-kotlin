@@ -8,19 +8,22 @@ import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.util.isProcessCanceled
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.lang.jsgraphql.psi.GraphQLIdentifier
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLVisitor
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.childrenOfType
 
 class ApolloUnusedOperationInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     return object : GraphQLVisitor() {
       override fun visitTypedOperationDefinition(o: GraphQLTypedOperationDefinition) {
         if (isUnusedOperation(o)) {
+          val nameElement = o.childrenOfType<GraphQLIdentifier>().firstOrNull() ?: return
           holder.registerProblem(
-              o,
+              nameElement,
               ApolloBundle.message("inspection.unusedOperation.reportText"),
-              DeleteElementQuickFix(label = "inspection.unusedOperation.quickFix", telemetryEvent = { TelemetryEvent.ApolloIjUnusedOperationQuickFix() }) { it }
+              DeleteElementQuickFix(label = "inspection.unusedOperation.quickFix", telemetryEvent = { TelemetryEvent.ApolloIjUnusedOperationQuickFix() }) { it.parent }
           )
         }
       }

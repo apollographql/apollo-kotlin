@@ -19,7 +19,8 @@ class ApolloUnusedOperationInspectionTest : ApolloTestCase() {
     var highlightInfos = doHighlighting()
     assertTrue(highlightInfos.any { it.description == "Unused operation" })
 
-    val quickFixAction = myFixture.findSingleIntention("Delete operation");
+    moveCaret("Computers")
+    val quickFixAction = myFixture.findSingleIntention("Delete operation")
     assertNotNull(quickFixAction)
     myFixture.launchAction(quickFixAction)
     myFixture.checkResult("""
