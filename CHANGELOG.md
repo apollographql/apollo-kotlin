@@ -12,7 +12,7 @@ Version 4.1.0 updates usages of Ktor from 2.3.11 to 3.0.0:
 * If you are using `apollo-runtime-js` or `apollo-debug-server-jvm` (note that `apollo-debug-server-android` is unaffected), you need to update your app to Ktor 3.0.0+ at the same time as updating to Apollo 4.1.0.
 * If you are using the deprecated `apollo-mockserver` or `apollo-ktor-support` from this repo, you need to update to the [new coordinates](https://www.apollographql.com/docs/kotlin/migration/4.0#moved-artifacts).
 
-All other cases are unaffected. In particular, `apollo-runtime` on Android and iOS uses OkHttp and NsUrlConnection respectively and are not impacted by the Ktor update.
+All other cases are unaffected. In particular, `apollo-runtime` on Android and iOS uses OkHttp and NsUrlConnection respectively and is not impacted by the Ktor update.
 
 You can read more details in the [pull request](https://github.com/apollographql/apollo-kotlin/pull/6214).
 
