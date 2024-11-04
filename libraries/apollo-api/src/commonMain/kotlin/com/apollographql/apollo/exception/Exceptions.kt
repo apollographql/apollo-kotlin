@@ -93,7 +93,10 @@ class ApolloWebSocketClosedException(
 data object ApolloWebSocketForceCloseException : ApolloException(message = "closeConnection() was called")
 
 /**
- * The response was received but the response code was not 200
+ * The response was received but the media type was `application/json` and the code was not 2xx.
+ * Note that `application/graphql-response+json` do not throw this exception.
+ *
+ * See https://graphql.github.io/graphql-over-http/draft/.
  *
  * @param statusCode the HTTP status code
  * @param headers the HTTP headers
