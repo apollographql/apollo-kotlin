@@ -28,23 +28,18 @@ private fun String.toByteString(): ByteString {
 suspend fun gzipTest(engine: HttpEngine) {
   val mockServer = MockServer()
 
-  try {
-    mockServer.enqueue(MockResponse.Builder()
-        .addHeader("content-type", "application/text")
-        .addHeader("content-encoding", "gzip")
-        .body(gzipData.toByteString())
-        .build()
-    )
+  mockServer.enqueue(MockResponse.Builder()
+      .addHeader("content-type", "application/text")
+      .addHeader("content-encoding", "gzip")
+      .body(gzipData.toByteString())
+      .build()
+  )
 
-    val response = engine.get(mockServer.url())
-        .execute()
+  val response = engine.get(mockServer.url())
+      .execute()
 
-    val result = response.body?.readUtf8()
-    assertEquals("Hello World", result)
-
-  } catch (e: Exception) {
-    e.printStackTrace()
-  }
+  val result = response.body?.readUtf8()
+  assertEquals("Hello World", result)
 
   mockServer.close()
   engine.close()
