@@ -1,6 +1,49 @@
 Change Log
 ==========
 
+# Version 4.1.0
+
+_2024-11-04_
+
+## Ktor 3.0.0
+
+Version 4.1.0 updates usages of Ktor from 2.3.11 to 3.0.0:
+
+* If you are using `apollo-runtime-js` or `apollo-debug-server-jvm` (note that `apollo-debug-server-android` is unaffected), you need to update your app to Ktor 3.0.0+ at the same time as updating to Apollo 4.1.0.
+* If you are using the deprecated `apollo-mockserver` or `apollo-ktor-support` from this repo, you need to update to the [new coordinates](https://www.apollographql.com/docs/kotlin/migration/4.0#moved-artifacts).
+
+All other cases are unaffected. In particular, `apollo-runtime` on Android and iOS uses OkHttp and NsUrlConnection respectively and is not impacted by the Ktor update.
+
+You can read more details in the [pull request](https://github.com/apollographql/apollo-kotlin/pull/6214).
+
+## `application/graphql-response+json`
+
+`application/graphql-response+json` is a new media type being introduced by the [GraphQL over HTTP draft](https://graphql.github.io/graphql-over-http/draft/). It allows differentiating a valid GraphQL response from an error JSON response that could be transmitted by a cache or proxy in the HTTP chain. 
+
+If your server uses `application/graphql-response+json` and returns non-2xx response, Apollo Kotlin will now parse those responses and expose `data` and `errors` instead of returning an `ApolloHttpException` before.
+
+## 👷‍♂️ All changes
+
+* [all] Update kotlinpoet to 2.0.0 (#6215)
+* [all] Update to Ktor 3 (#6214)
+* [all] Remove `apollo-mockserver` and `apollo-ktor-support` (#6215)
+* [all] Remove mockserver as a dependency of apollo-testing-support (#6218)
+* [ast] Do not escape slashes in single quoted strings (#6190)
+* [runtime] Add support for application/graphql-response+json (#6170)
+* [runtime] Do not call experimental webSocket() method re-entrently (#6197)
+* [debug server] Remove Ktor dependency from apollo-debug-server JVM (#6224)
+* [codegen] Do not add internal to private members (#6213)
+* [codegen] Fix name clash in data builder names when two types differ only by their case (#6195)
+* [gradle plugin] Allow null in KSP arguments for Apollo Compiler Plugins (#6200)
+* [gradle plugin] Do not log the full introspection JSON (#6199)
+* [gradle plugin] Deprecate TargetLanguage.KOTLIN_1_5 (#6193)
+* [IJ Plugin] Make the cache viewer understand the blob db format (#6187)
+* [IJ Plugin] Bump IJ Platform Gradle Plugin to 2.0.1 (#6185)
+* [IJ Plugin] Migrate to the K2 compatible Analysis API (#6150)
+* [IJ Plugin] Schedule the GraphQL configuration reload early (#6228)
+* [IJ Plugin] Rename related generated code when renaming an Operation/Fragment (#6227)
+* [IJ Plugin] Only highlight the name of unused operations, rather than the whole operation (#6226)
+
 # Version 4.0.1
 
 _2024-10-01_
