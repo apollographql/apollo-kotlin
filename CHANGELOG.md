@@ -9,18 +9,22 @@ _2024-11-04_
 
 Version 4.1.0 updates usages of Ktor from 2.3.11 to 3.0.0:
 
-* If you are using `apollo-runtime-js` or `apollo-debug-server-jvm` (note that `apollo-debug-server-android` is unaffected), you need to update your app to Ktor 3.0.0+ at the same time as updating to Apollo 4.1.0.
+* If you are using `apollo-runtime-js` or `apollo-debug-server-jvm`, you need to update your app to Ktor 3.0.0+ at the same time as updating to Apollo 4.1.0 (`apollo-debug-server-android` is unaffected).
 * If you are using the deprecated `apollo-mockserver` or `apollo-ktor-support` from this repo, you need to update to the [new coordinates](https://www.apollographql.com/docs/kotlin/migration/4.0#moved-artifacts).
 
 All other cases are unaffected. In particular, `apollo-runtime` on Android and iOS uses OkHttp and NsUrlConnection respectively and is not impacted by the Ktor update.
 
 You can read more details in the [pull request](https://github.com/apollographql/apollo-kotlin/pull/6214).
 
-## `application/graphql-response+json`
+### New media type: `application/graphql-response+json`
 
 `application/graphql-response+json` is a new media type being introduced by the [GraphQL over HTTP draft](https://graphql.github.io/graphql-over-http/draft/). It allows differentiating a valid GraphQL response from an error JSON response that could be transmitted by a cache or proxy in the HTTP chain. 
 
 If your server uses `application/graphql-response+json` and returns non-2xx response, Apollo Kotlin will now parse those responses and expose `data` and `errors` instead of returning an `ApolloHttpException` before.
+
+### K2 support for the IntelliJ plugin
+
+The IntelliJ plugin is now compatible with K2 (#6150)
 
 ## 👷‍♂️ All changes
 
@@ -43,7 +47,6 @@ If your server uses `application/graphql-response+json` and returns non-2xx resp
 * [IJ Plugin] Schedule the GraphQL configuration reload early (#6228)
 * [IJ Plugin] Rename related generated code when renaming an Operation/Fragment (#6227)
 * [IJ Plugin] Only highlight the name of unused operations, rather than the whole operation (#6226)
-
 # Version 4.0.1
 
 _2024-10-01_
