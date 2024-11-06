@@ -163,7 +163,8 @@ moshi = { group = "com.squareup.moshi", name = "moshi", version = "1.14.0" }
 okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
 okio-nodefilesystem = { group = "com.squareup.okio", name = "okio-nodefilesystem", version.ref = "okio" }
 poet-java = { group = "com.squareup", name = "javapoet", version.ref = "javaPoet" }
-poet-kotlin = { group = "com.squareup", name = "kotlinpoet", version = "2.0.0" }
+# Depend on the -jvm artifact directly to workaround https://github.com/gradle/gradle/issues/31158
+poet-kotlin = "com.squareup:kotlinpoet-jvm:2.0.0"
 rx-java2 = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rx-java2" }
 rx-java3 = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rx-java3" }
 sqldelight-android = { group = "app.cash.sqldelight", name = "android-driver", version.ref = "sqldelight" }
