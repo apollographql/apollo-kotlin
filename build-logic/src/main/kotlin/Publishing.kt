@@ -418,7 +418,6 @@ private fun Project.setDefaultPomFields(mavenPublication: MavenPublication) {
     licenses {
       license {
         name.set(findProperty("POM_LICENCE_NAME") as String?)
-        url.set(findProperty("POM_LICENCE_URL") as String?)
       }
     }
 
