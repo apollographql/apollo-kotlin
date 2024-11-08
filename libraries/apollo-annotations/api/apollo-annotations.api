@@ -8,6 +8,9 @@ public abstract interface annotation class com/apollographql/apollo/annotations/
 public abstract interface annotation class com/apollographql/apollo/annotations/ApolloInternal : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class com/apollographql/apollo/annotations/ApolloPrivateEnumConstructor : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class com/apollographql/apollo/annotations/ApolloRequiresOptIn : java/lang/annotation/Annotation {
 }
 

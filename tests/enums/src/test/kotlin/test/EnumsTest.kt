@@ -5,6 +5,7 @@ import enums.kotlin15.type.Foo
 import enums.kotlin15.type.FooEnum
 import enums.kotlin15.type.FooSealed
 import enums.kotlin15.type.Gravity
+import enums.kotlin19.type.Color
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -113,5 +114,27 @@ class EnumsTest {
         ).toList(),
         Gravity.knownValues().toList()
     )
+  }
+
+  /**
+   * This is only used to check it compiles properly
+   */
+  @Suppress("unused")
+  fun foo(color: Color) {
+    when (color.unwrap()) {
+      Color.BLUEBERRY -> TODO()
+      Color.CANDY -> TODO()
+      Color.CHERRY -> TODO()
+    }
+  }
+
+  /**
+   * Turns a maybe unknown color value into a known one
+   */
+  private fun Color.unwrap(): Color.KNOWN__ = when (this) {
+    is Color.UNKNOWN__ -> Color.CANDY
+    // Sadly cannot use `else ->` here so we use explicit branches
+    // See https://youtrack.jetbrains.com/issue/KT-18950/Smart-Cast-should-work-within-else-branch-for-sealed-subclasses
+    is Color.KNOWN__ -> this
   }
 }
