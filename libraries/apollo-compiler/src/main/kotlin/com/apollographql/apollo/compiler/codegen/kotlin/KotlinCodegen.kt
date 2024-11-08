@@ -28,7 +28,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.operations.OperationSele
 import com.apollographql.apollo.compiler.codegen.kotlin.operations.OperationVariablesAdapterBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.CustomScalarAdaptersBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumAsEnumBuilder
-import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumAsSealedBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumAsSealedInterfaceBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumResponseAdapterBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.InlineClassBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.InputObjectAdapterBuilder
@@ -190,7 +190,7 @@ internal object KotlinCodegen {
       }
       irSchema.irEnums.forEach { irEnum ->
         if (sealedClassesForEnumsMatching.any { Regex(it).matches(irEnum.name) }) {
-          builders.add(EnumAsSealedBuilder(context, irEnum))
+          builders.add(EnumAsSealedInterfaceBuilder(context, irEnum))
         } else {
           builders.add(EnumAsEnumBuilder(context, irEnum, addUnknownForEnums))
         }

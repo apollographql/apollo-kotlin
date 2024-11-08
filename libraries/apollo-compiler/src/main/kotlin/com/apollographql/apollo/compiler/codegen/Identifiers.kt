@@ -41,9 +41,7 @@ internal object Identifier {
   const val copy = "copy"
   const val Data = "Data"
 
-  const val cacheKeyForObject = "cacheKeyForObject"
   const val field = "field"
-  const val __map = "__map"
   const val __path = "__path"
   const val __fields = "__fields"
 
@@ -63,11 +61,16 @@ internal object Identifier {
   const val knownValues = "knownValues"
   const val knownEntries = "knownEntries"
 
-  // extra underscores at the end to prevent potential name clashes
+  /**
+   * UNKNOWN__ and KNOWN__ should probably have been __UNKNOWN because GraphQL reserves the leading __ but it's too late now.
+   *
+   * All in all it's not too bad because typing 'U', 'N', ... is usually more intuitive and in the very unlikely event that
+   * there is a name clash, it can always be resolved with `@targetName`
+   */
   const val UNKNOWN__ = "UNKNOWN__"
+  const val KNOWN__ = "KNOWN__"
   const val rawValue = "rawValue"
   const val types = "types"
-  const val testResolver = "testResolver"
   const val block = "block"
   const val resolver = "resolver"
   const val newBuilder = "newBuilder"

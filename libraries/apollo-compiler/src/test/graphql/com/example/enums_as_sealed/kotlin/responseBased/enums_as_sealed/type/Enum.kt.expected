@@ -5,12 +5,14 @@
 //
 package com.example.enums_as_sealed.type
 
+import com.apollographql.apollo.annotations.ApolloPrivateEnumConstructor
 import com.apollographql.apollo.api.EnumType
 import kotlin.Any
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.Deprecated
 import kotlin.Int
+import kotlin.OptIn
 import kotlin.String
 import kotlin.Suppress
 
@@ -21,8 +23,10 @@ public sealed interface Enum {
     public val type: EnumType = EnumType("Enum", listOf("north", "North", "NORTH", "SOUTH", "type"))
 
     /**
-     * Returns the [Enum] that represents the specified [rawValue].
-     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
+     * Returns an instance of [Enum] representing [rawValue].
+     *
+     * The returned value may be an instance of [UNKNOWN__] if the enum value is not known at build time. 
+     * You may want to update your schema instead of calling this function directly.
      */
     @Suppress("DEPRECATION")
     public fun safeValueOf(rawValue: String): Enum = when(rawValue) {
@@ -31,11 +35,14 @@ public sealed interface Enum {
       "NORTH" -> NORTH
       "SOUTH" -> SOUTH
       "type" -> type_
-      else -> UNKNOWN__Enum(rawValue)
+      else -> {
+        @OptIn(ApolloPrivateEnumConstructor::class)
+        UNKNOWN__(rawValue)
+      }
     }
 
     /**
-     * Returns all [Enum] known at compile time
+     * Returns all [Enum] known at build time
      */
     @Suppress("DEPRECATION")
     public fun knownValues(): Array<Enum> = arrayOf(
@@ -47,44 +54,49 @@ public sealed interface Enum {
   }
 
   @Deprecated(message = "No longer supported")
-  public object north : Enum {
+  public object north : KNOWN__ {
     override val rawValue: String = "north"
   }
 
   @Deprecated(message = "No longer supported")
-  public object North : Enum {
+  public object North : KNOWN__ {
     override val rawValue: String = "North"
   }
 
-  public object NORTH : Enum {
+  public object NORTH : KNOWN__ {
     override val rawValue: String = "NORTH"
   }
 
-  public object SOUTH : Enum {
+  public object SOUTH : KNOWN__ {
     override val rawValue: String = "SOUTH"
   }
 
-  public object type_ : Enum {
+  public object type_ : KNOWN__ {
     override val rawValue: String = "type"
   }
 
   /**
-   * An enum value that wasn't known at compile time.
+   * An enum value that is known at build time.
    */
-  public interface UNKNOWN__ : Enum {
+  @Suppress("ClassName")
+  public sealed interface KNOWN__ : Enum {
     override val rawValue: String
   }
-}
 
-private class UNKNOWN__Enum(
-  override val rawValue: String,
-) : Enum.UNKNOWN__ {
-  override fun equals(other: Any?): Boolean {
-    if (other !is UNKNOWN__Enum) return false
-    return this.rawValue == other.rawValue
+  /**
+   * An enum value that isn't known at build time.
+   */
+  @Suppress("ClassName")
+  public class UNKNOWN__ @ApolloPrivateEnumConstructor constructor(
+    override val rawValue: String,
+  ) : Enum {
+    override fun equals(other: Any?): Boolean {
+      if (other !is UNKNOWN__) return false
+      return this.rawValue == other.rawValue
+    }
+
+    override fun hashCode(): Int = this.rawValue.hashCode()
+
+    override fun toString(): String = "UNKNOWN__($rawValue)"
   }
-
-  override fun hashCode(): Int = this.rawValue.hashCode()
-
-  override fun toString(): String = "UNKNOWN__($rawValue)"
 }

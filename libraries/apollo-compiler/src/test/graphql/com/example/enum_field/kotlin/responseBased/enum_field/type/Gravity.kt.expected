@@ -5,13 +5,14 @@
 //
 package com.example.enum_field.type
 
+import com.apollographql.apollo.annotations.ApolloPrivateEnumConstructor
 import com.apollographql.apollo.api.EnumType
 import kotlin.Any
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.Deprecated
 import kotlin.Int
-import kotlin.String
+import kotlin.OptIn
 import kotlin.Suppress
 
 internal sealed interface Gravity {
@@ -22,8 +23,10 @@ internal sealed interface Gravity {
         EnumType("Gravity", listOf("TOP", "CENTER", "BOTTOM", "bottom", "is", "type", "String", "field"))
 
     /**
-     * Returns the [Gravity] that represents the specified [rawValue].
-     * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
+     * Returns an instance of [Gravity] representing [rawValue].
+     *
+     * The returned value may be an instance of [UNKNOWN__] if the enum value is not known at build time. 
+     * You may want to update your schema instead of calling this function directly.
      */
     @Suppress("DEPRECATION")
     public fun safeValueOf(rawValue: kotlin.String): Gravity = when(rawValue) {
@@ -35,11 +38,14 @@ internal sealed interface Gravity {
       "type" -> type_
       "String" -> String
       "field" -> `field`
-      else -> UNKNOWN__Gravity(rawValue)
+      else -> {
+        @OptIn(ApolloPrivateEnumConstructor::class)
+        UNKNOWN__(rawValue)
+      }
     }
 
     /**
-     * Returns all [Gravity] known at compile time
+     * Returns all [Gravity] known at build time
      */
     @Suppress("DEPRECATION")
     public fun knownValues(): Array<Gravity> = arrayOf(
@@ -53,56 +59,61 @@ internal sealed interface Gravity {
       `field`)
   }
 
-  public object TOP : Gravity {
+  public object TOP : KNOWN__ {
     override val rawValue: kotlin.String = "TOP"
   }
 
-  public object CENTER : Gravity {
+  public object CENTER : KNOWN__ {
     override val rawValue: kotlin.String = "CENTER"
   }
 
-  public object BOTTOM : Gravity {
+  public object BOTTOM : KNOWN__ {
     override val rawValue: kotlin.String = "BOTTOM"
   }
 
   @Deprecated(message = "use BOTTOM instead")
-  public object bottom : Gravity {
+  public object bottom : KNOWN__ {
     override val rawValue: kotlin.String = "bottom"
   }
 
-  public object `is` : Gravity {
+  public object `is` : KNOWN__ {
     override val rawValue: kotlin.String = "is"
   }
 
-  public object type_ : Gravity {
+  public object type_ : KNOWN__ {
     override val rawValue: kotlin.String = "type"
   }
 
-  public object String : Gravity {
+  public object String : KNOWN__ {
     override val rawValue: kotlin.String = "String"
   }
 
-  public object `field` : Gravity {
+  public object `field` : KNOWN__ {
     override val rawValue: kotlin.String = "field"
   }
 
   /**
-   * An enum value that wasn't known at compile time.
+   * An enum value that is known at build time.
    */
-  public interface UNKNOWN__ : Gravity {
+  @Suppress("ClassName")
+  public sealed interface KNOWN__ : Gravity {
     override val rawValue: kotlin.String
   }
-}
 
-private class UNKNOWN__Gravity(
-  override val rawValue: String,
-) : Gravity.UNKNOWN__ {
-  override fun equals(other: Any?): Boolean {
-    if (other !is UNKNOWN__Gravity) return false
-    return this.rawValue == other.rawValue
+  /**
+   * An enum value that isn't known at build time.
+   */
+  @Suppress("ClassName")
+  public class UNKNOWN__ @ApolloPrivateEnumConstructor constructor(
+    override val rawValue: kotlin.String,
+  ) : Gravity {
+    override fun equals(other: Any?): Boolean {
+      if (other !is UNKNOWN__) return false
+      return this.rawValue == other.rawValue
+    }
+
+    override fun hashCode(): Int = this.rawValue.hashCode()
+
+    override fun toString(): kotlin.String = "UNKNOWN__($rawValue)"
   }
-
-  override fun hashCode(): Int = this.rawValue.hashCode()
-
-  override fun toString(): String = "UNKNOWN__($rawValue)"
 }
