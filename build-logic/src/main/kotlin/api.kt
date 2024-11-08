@@ -1,3 +1,5 @@
+import app.cash.licensee.LicenseeExtension
+import app.cash.licensee.UnusedAction
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskProvider
@@ -74,6 +76,22 @@ fun Project.apolloLibrary(
     manifest {
       attributes(mapOf("Automatic-Module-Name" to namespace))
     }
+  }
+
+  plugins.apply("app.cash.licensee")
+  extensions.getByType(LicenseeExtension::class.java).apply {
+    unusedAction(UnusedAction.IGNORE)
+
+    allow("Apache-2.0")
+    allow("MIT")
+    allow("CC0-1.0")
+    allow("MIT-0")
+
+    allowUrl("https://raw.githubusercontent.com/apollographql/apollo-kotlin-execution/main/LICENSE")
+    allowUrl("https://raw.githubusercontent.com/apollographql/apollo-kotlin-mockserver/main/LICENSE")
+    allowUrl("https://raw.githubusercontent.com/apollographql/apollo-kotlin/main/LICENSE")
+    allowUrl("https://asm.ow2.io/license.html")
+    allowUrl("https://spdx.org/licenses/MIT.txt")
   }
 }
 

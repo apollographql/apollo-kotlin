@@ -4,8 +4,10 @@ import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.toExecutableDocument
+import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.ast.toSchema
 import com.apollographql.apollo.ast.toUtf8
+import com.apollographql.apollo.ast.validateAsSchema
 import com.apollographql.apollo.compiler.internal.addRequiredFields
 import com.google.common.truth.Truth.assertThat
 import com.google.testing.junit.testparameterinjector.TestParameter
@@ -24,7 +26,7 @@ class TypenameTest(
   @Test
   fun testTypename() {
     val schemaFile = File("src/test/graphql/schema.sdl")
-    val schema = schemaFile.toSchema()
+    val schema = schemaFile.toGQLDocument().toSchema()
 
     val definitions = graphQLFile.source().buffer().toExecutableDocument(schema).definitions
 
