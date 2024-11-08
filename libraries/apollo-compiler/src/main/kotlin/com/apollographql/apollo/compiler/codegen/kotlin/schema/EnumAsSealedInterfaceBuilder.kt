@@ -161,7 +161,7 @@ internal class EnumAsSealedInterfaceBuilder(
     return FunSpec.builder(safeValueOf)
         .addKdoc(
             """
-            $safeValueOf returns an instance of [%T] representing [$rawValue].
+            Returns an instance of [%T] representing [$rawValue].
             
             The returned value may be an instance of [$UNKNOWN__] if the enum value is not known at build time. 
             You may want to update your schema instead of calling this function directly.
