@@ -2,7 +2,7 @@
 <html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>sealedClassesForEnumsMatching</title>
+    <title>ApolloPrivateEnumConstructor</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
     <script>document.documentElement.classList.replace("no-js","js");</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
@@ -46,14 +46,14 @@
                             apollo-kdoc
                     </a>            </div>
             <div class="library-version">
-<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.gradle.api/-service/sealed-classes-for-enums-matching.html&quot;}"><div class="versions-dropdown">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.annotations/-apollo-private-enum-constructor/index.html&quot;}"><div class="versions-dropdown">
   <div class="versions-dropdown-button">4.1.1-SNAPSHOT</div>
-  <div class="versions-dropdown-data"><a href="sealed-classes-for-enums-matching.html">4.1.1-SNAPSHOT</a><a href="../../../not-found-version.html?v=3.8.2">3.8.2</a></div>
+  <div class="versions-dropdown-data"><a href="index.html">4.1.1-SNAPSHOT</a><a href="../../../not-found-version.html?v=3.8.2">3.8.2</a></div>
 </div>
 </dokka-template-command>            </div>
         </div>
         <div class="filter-section" id="filter-section">
-                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-gradle-plugin-external/main">jvm</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-annotations/commonMain">common</button>
         </div>
     </div>
     <div class="navigation-controls">
@@ -66,12 +66,16 @@
                 <div class="sidebar--inner" id="sideMenu"></div>
             </div>
             <div id="main">
-<div class="main-content" data-page-type="member" id="content" pageids="apollo-gradle-plugin-external::com.apollographql.apollo.gradle.api/Service/sealedClassesForEnumsMatching/#/PointingToDeclaration//1812556619">
-  <div class="breadcrumbs"><a href="../../index.html">apollo-gradle-plugin-external</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.gradle.api</a><span class="delimiter">/</span><a href="index.html">Service</a><span class="delimiter">/</span><span class="current">sealedClassesForEnumsMatching</span></div>
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-annotations::com.apollographql.apollo.annotations/ApolloPrivateEnumConstructor///PointingToDeclaration//1749561137">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-annotations</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.annotations</a><span class="delimiter">/</span><span class="current">ApolloPrivateEnumConstructor</span></div>
   <div class="cover ">
-    <h1 class="cover"><span>sealed</span><wbr><span>Classes</span><wbr><span>For</span><wbr><span>Enums</span><wbr><span><span>Matching</span></span></h1>
+    <h1 class="cover"><span>Apollo</span><wbr><span>Private</span><wbr><span>Enum</span><wbr><span><span>Constructor</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-annotations/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-target/index.html"><span class="token annotation builtin">Target</span></a><span class="token punctuation">(</span><span>allowedTargets<span class="token operator"> = </span><span class="token punctuation">[</span><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-c-o-n-s-t-r-u-c-t-o-r/index.html">AnnotationTarget.CONSTRUCTOR</a></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">annotation class </span><a href="index.html">ApolloPrivateEnumConstructor</a></div><p class="paragraph">Kotlin has no static factory functions like Java so we rely on an OptIn marker to prevent public usage. See https://youtrack.jetbrains.com/issue/KT-19400/Allow-access-to-private-members-between-nested-classes-of-the-same-class</p></div></div>
   </div>
-  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="sealed-classes-for-enums-matching.html">sealedClassesForEnumsMatching</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/ListProperty///PointingToDeclaration/">ListProperty</span><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><p class="paragraph">A list of <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-regex/index.html">Regex</a> patterns for GraphQL enums that should be generated as a Kotlin sealed interface.</p><p class="paragraph">This provides several benefits over the default of mapping GraphQL enums to Kotlin enums:</p><ul><li><p class="paragraph">the client can access the string value of unknown values (enum values added on the server after the client has been compiled).</p></li><li><p class="paragraph">it introduces an intermediate <code class="lang-kotlin">KNOWN__</code> type that does not contain the unknown value for the cases where you want to map all unknown values to a known one.</p></li><li><p class="paragraph">it's harder to create instances of <code class="lang-kotlin">UNKNOWN__</code> values, making it more explicit that those values are dangerous to be used as input.</p></li></ul><p class="paragraph">Only valid when <a href="generate-kotlin-models.html">generateKotlinModels</a> is <code class="lang-kotlin">true</code>.</p><p class="paragraph">Default: <code class="lang-kotlin">emptyList()</code></p></div></div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"></div>
+    <div class="tabs-section-body"></div>
+  </div>
 </div>
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
