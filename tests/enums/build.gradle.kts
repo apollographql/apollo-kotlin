@@ -23,12 +23,12 @@ apollo {
 
   service("kotlin19") {
     packageName.set("enums.kotlin19")
-    sealedClassesForEnumsMatching.set(listOf(".*avity", "FooSealed"))
+    sealedClassesForEnumsMatching.set(listOf(".*avity", "FooSealed", "Color"))
   }
 
   service("java") {
     packageName.set("enums.java")
-    classesForEnumsMatching.set(listOf(".*avity", "FooClass"))
+    classesForEnumsMatching.set(listOf(".*avity", "FooClass", "Color"))
     generateKotlinModels.set(false)
     outputDirConnection {
       connectToJavaSourceSet("main")
