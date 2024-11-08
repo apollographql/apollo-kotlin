@@ -116,7 +116,7 @@ internal class EnumAsSealedInterfaceBuilder(
 
   private fun IrEnum.unknownValueTypeSpec(): TypeSpec {
     return TypeSpec.classBuilder(UNKNOWN__)
-        .addKdoc("An enum value that wasn't known at build time.")
+        .addKdoc("An enum value that isn't known at build time.")
         .addSuperinterface(selfClassName)
         .primaryConstructor(
             FunSpec.constructorBuilder()
