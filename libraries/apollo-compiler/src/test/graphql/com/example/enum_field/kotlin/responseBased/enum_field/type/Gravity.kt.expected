@@ -101,7 +101,7 @@ internal sealed interface Gravity {
   }
 
   /**
-   * An enum value that wasn't known at build time.
+   * An enum value that isn't known at build time.
    */
   @Suppress("ClassName")
   public class UNKNOWN__ @ApolloPrivateEnumConstructor constructor(

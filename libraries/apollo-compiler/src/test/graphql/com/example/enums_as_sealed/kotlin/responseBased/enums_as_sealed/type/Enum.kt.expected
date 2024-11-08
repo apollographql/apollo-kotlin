@@ -84,7 +84,7 @@ public sealed interface Enum {
   }
 
   /**
-   * An enum value that wasn't known at build time.
+   * An enum value that isn't known at build time.
    */
   @Suppress("ClassName")
   public class UNKNOWN__ @ApolloPrivateEnumConstructor constructor(
