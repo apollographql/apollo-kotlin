@@ -106,11 +106,12 @@ private abstract class GenerateSourcesFromIr : WorkAction<GenerateSourcesFromIrP
           hasPlugin
       )
 
+      val upstreamCodegenMetadata = upstreamMetadata.files.map { it.toCodegenMetadata() }
       ApolloCompiler.buildSchemaAndOperationsSourcesFromIr(
           codegenSchema = codegenSchema,
           irOperations = irOperations.get().asFile.toIrOperations(),
           downstreamUsedCoordinates = downstreamUsedCoordinates.get().toUsedCoordinates(),
-          upstreamCodegenMetadata = upstreamMetadata.files.map { it.toCodegenMetadata() },
+          upstreamCodegenMetadata = upstreamCodegenMetadata,
           codegenOptions = codegenOptions.get().asFile.toCodegenOptions(),
           layout = plugin?.layout(codegenSchema),
           irOperationsTransform = plugin?.irOperationsTransform(),
@@ -120,8 +121,10 @@ private abstract class GenerateSourcesFromIr : WorkAction<GenerateSourcesFromIrP
           operationOutputGenerator = plugin?.toOperationOutputGenerator(),
       ).writeTo(outputDir.get().asFile, true, metadataOutputFile.orNull?.asFile)
 
-      plugin?.schemaListener()?.let { onSchemaDocument ->
-        onSchemaDocument.onSchema(codegenSchema.schema, outputDir.get().asFile)
+      if (upstreamCodegenMetadata.isEmpty()) {
+        plugin?.schemaListener()?.let { onSchemaDocument ->
+          onSchemaDocument.onSchema(codegenSchema.schema, outputDir.get().asFile)
+        }
       }
     }
   }
