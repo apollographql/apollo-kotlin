@@ -22,6 +22,7 @@ dependencies {
 
   implementation(libs.kotlinx.benchmark)
   implementation(libs.dokka)
+  implementation(libs.licensee)
   implementation(libs.apollo.execution.gradle.plugin)
 
   // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution

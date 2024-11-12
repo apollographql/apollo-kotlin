@@ -23,7 +23,7 @@ public sealed interface Enum {
     public val type: EnumType = EnumType("Enum", listOf("north", "North", "NORTH", "SOUTH", "type"))
 
     /**
-     * safeValueOf returns an instance of [Enum] representing [rawValue].
+     * Returns an instance of [Enum] representing [rawValue].
      *
      * The returned value may be an instance of [UNKNOWN__] if the enum value is not known at build time. 
      * You may want to update your schema instead of calling this function directly.

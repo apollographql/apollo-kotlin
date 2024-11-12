@@ -38,7 +38,7 @@ ktor = "3.0.0"
 moshix = "0.14.1"
 node-fetch = "2.6.7"
 okio = "3.9.0"
-okhttp = "4.11.0"
+okhttp = "4.12.0"
 rx-java2 = "2.2.21"
 rx-java3 = "3.1.6"
 sqldelight = "2.0.1"
@@ -134,7 +134,7 @@ kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" } # the Kot
 kotlin-test-js = { group = "org.jetbrains.kotlin", name = "kotlin-test-js" } # the Kotlin plugin resolves the version
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit" } # the Kotlin plugin resolves the version
 kotlinx-benchmark-runtime = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.8"
-kotlinx-benchmark = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin:0.4.8"
+kotlinx-benchmark = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin:0.4.12"
 androidx-benchmark-macro = "androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha16"
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx2", version.ref = "kotlinx-coroutines" }
@@ -186,6 +186,7 @@ uuid = { group = "com.benasher44", name = "uuid", version = "0.8.2" }
 vespene = { group = "net.mbonnin.vespene", name = "vespene-lib", version = "0.5" }
 slf4j-simple = "org.slf4j:slf4j-simple:2.0.13"
 slf4j-nop = "org.slf4j:slf4j-nop:2.0.13"
+licensee = "app.cash.licensee:licensee-gradle-plugin:1.12.0"
 
 [plugins]
 apollo = { id = "com.apollographql.apollo", version.ref = "apollo" }

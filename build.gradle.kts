@@ -80,6 +80,7 @@ tasks.register("ciTestsNoGradle") {
     dependsOn(tasks.matching { it.name == "jsNodeTest" })
     dependsOn(tasks.withType(KotlinNativeHostTest::class.java))
     dependsOn(tasks.matching { it.name == "apiCheck" })
+    dependsOn(tasks.matching { it.name == "licensee" })
   }
 
   /**

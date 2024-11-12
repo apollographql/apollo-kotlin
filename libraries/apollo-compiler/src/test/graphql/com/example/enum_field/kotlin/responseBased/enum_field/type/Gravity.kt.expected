@@ -23,7 +23,7 @@ internal sealed interface Gravity {
         EnumType("Gravity", listOf("TOP", "CENTER", "BOTTOM", "bottom", "is", "type", "String", "field"))
 
     /**
-     * safeValueOf returns an instance of [Gravity] representing [rawValue].
+     * Returns an instance of [Gravity] representing [rawValue].
      *
      * The returned value may be an instance of [UNKNOWN__] if the enum value is not known at build time. 
      * You may want to update your schema instead of calling this function directly.
