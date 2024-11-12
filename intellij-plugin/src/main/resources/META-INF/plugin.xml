@@ -13,6 +13,7 @@
   <depends>com.intellij.gradle</depends>
   <depends>com.intellij.lang.jsgraphql</depends>
   <depends>org.toml.lang</depends>
+  <depends>com.intellij.modules.json</depends>
   <depends optional="true" config-file="com.apollographql.ijplugin-android.xml">org.jetbrains.android</depends>
 
   <resource-bundle>messages.ApolloBundle</resource-bundle>
