@@ -2,8 +2,11 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.COMPATIBILITY_PROBLEMS
+import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.INTERNAL_API_USAGES
+import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.INVALID_PLUGIN
+import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.PLUGIN_STRUCTURE_WARNINGS
 import java.net.URI
-import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -100,7 +103,8 @@ tasks.register("downloadMockJdk") {
     val rtJar = mockJdkRoot.resolve("java/mockJDK-1.7/jre/lib/rt.jar")
     if (!rtJar.exists()) {
       rtJar.parentFile.mkdirs()
-      rtJar.writeBytes(URI("https://github.com/JetBrains/intellij-community/raw/master/java/mockJDK-1.7/jre/lib/rt.jar").toURL().openStream()
+      rtJar.writeBytes(URI("https://github.com/JetBrains/intellij-community/raw/master/java/mockJDK-1.7/jre/lib/rt.jar").toURL()
+          .openStream()
           .readBytes()
       )
     }
@@ -227,5 +231,13 @@ intellijPlatform {
     ides {
       recommended()
     }
+    failureLevel.set(
+        setOf(
+            COMPATIBILITY_PROBLEMS,
+            INTERNAL_API_USAGES,
+            INVALID_PLUGIN,
+            PLUGIN_STRUCTURE_WARNINGS,
+        )
+    )
   }
 }
