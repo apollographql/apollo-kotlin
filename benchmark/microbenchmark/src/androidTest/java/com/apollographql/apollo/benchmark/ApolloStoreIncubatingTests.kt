@@ -51,7 +51,7 @@ class ApolloStoreIncubatingTests {
           // Let each thread execute a few writes/reads
           repeat(WORK_LOAD) {
             apolloStore.writeOperation(query, data)
-            val data2 = apolloStore.readOperation(query)
+            val data2 = apolloStore.readOperation(query).data
             Assert.assertEquals(data, data2)
           }
         }
