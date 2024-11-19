@@ -59,6 +59,14 @@ Received: Person(id=1, firstName=John, lastName=Doe, onUser=null))
 Received: Person(id=1, firstName=John, lastName=Doe, onUser=OnUser(friends=[Friend(id=2), Friend(id=3)]))
 ```
 
+### Error handling
+When using `@defer`, the incremental payloads received from the server may each contain GraphQL errors related to the fields being returned.
+These errors are accumulated and exposed in the [`ApolloResponse.errors`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-api/com.apollographql.apollo.api/-apollo-response/errors.html) field.
+
+Fetch errors like network failures can also happen during collection of the flow, and will be exposed in [`ApolloResponse.exception`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-api/com.apollographql.apollo.api/-apollo-response/exception.html)
+
+See also the [error handling section](../essentials/errors).
+
 ### Limitations/known issues
 * `@defer` cannot be used with `responseBased` codegen.
 * Some servers might send an empty payload to signal the end of the stream. In such a case you will receive an extra terminal emission. You can filter it out by using `distinctUntilChangedBy()`:
