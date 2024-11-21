@@ -65,9 +65,7 @@ abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBaseTask()
           operationOutputGenerator = operationOutputGenerator
       ).writeTo(outputDir.get().asFile, true, metadataOutputFile.orNull?.asFile)
     } else {
-      val workQueue = getWorkerExecutor().classLoaderIsolation { workerSpec ->
-        workerSpec.classpath.from(classpath)
-      }
+      val workQueue = getWorkQueue()
 
       workQueue.submit(GenerateSourcesFromIr::class.java) {
         it.codegenSchemas.from(codegenSchemas)

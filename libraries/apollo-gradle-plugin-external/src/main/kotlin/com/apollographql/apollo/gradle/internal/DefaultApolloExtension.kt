@@ -464,6 +464,7 @@ abstract class DefaultApolloExtension(
         service.pluginDependency != null,
         (service.compilerPlugin as DefaultCompilerPlugin?)?.arguments.orEmpty(),
         LogLevel.entries.first { project.logger.isEnabled(it) },
+        service.useProcessIsolation
     )
 
     if (service.languageVersion.orNull == "1.5") {
@@ -859,6 +860,7 @@ abstract class DefaultApolloExtension(
     task.classpath.from(classpathOptions.classpath)
     task.arguments.set(classpathOptions.arguments)
     task.logLevel.set(classpathOptions.logLevel)
+    task.useProcessIsolation.set(classpathOptions.useProcessIsolation)
   }
 
   private fun configureBaseCodegenTask(

@@ -42,15 +42,10 @@ abstract class ApolloGenerateIrOperationsTask: ApolloTaskWithClasspath() {
   @get:OutputFile
   abstract val irOperationsFile: RegularFileProperty
 
-  @Inject
-  abstract fun getWorkerExecutor(): WorkerExecutor
-
   @TaskAction
   fun taskAction() {
 
-    val workQueue = getWorkerExecutor().classLoaderIsolation { workerSpec ->
-      workerSpec.classpath.from(classpath)
-    }
+    val workQueue = getWorkQueue()
 
     workQueue.submit(GenerateIrOperations::class.java) {
       it.codegenSchemaFiles = codegenSchemaFiles.isolate()

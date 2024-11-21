@@ -41,9 +41,6 @@ abstract class ApolloGenerateCodegenSchemaTask : ApolloTaskWithClasspath() {
   @get:Optional
   abstract val codegenSchemaFile: RegularFileProperty
 
-  @Inject
-  abstract fun getWorkerExecutor(): WorkerExecutor
-
   @TaskAction
   fun taskAction() {
     if (upstreamSchemaFiles.files.isNotEmpty()) {
@@ -57,9 +54,7 @@ abstract class ApolloGenerateCodegenSchemaTask : ApolloTaskWithClasspath() {
       return
     }
 
-    val workQueue = getWorkerExecutor().classLoaderIsolation { workerSpec ->
-      workerSpec.classpath.from(classpath)
-    }
+    val workQueue = getWorkQueue()
 
     workQueue.submit(GenerateCodegenSchema::class.java) {
       it.codegenSchemaFile = codegenSchemaFile

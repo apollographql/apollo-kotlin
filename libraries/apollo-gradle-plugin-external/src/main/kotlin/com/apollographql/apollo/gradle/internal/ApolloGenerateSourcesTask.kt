@@ -69,9 +69,7 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
           operationManifestFile = operationManifestFile.orNull?.asFile
       ).writeTo(outputDir.get().asFile, true, null)
     } else {
-      val workQueue = getWorkerExecutor().classLoaderIsolation { workerSpec ->
-        workerSpec.classpath.from(classpath)
-      }
+      val workQueue = getWorkQueue()
 
       workQueue.submit(GenerateSources::class.java) {
         it.hasPlugin = hasPlugin.get()
