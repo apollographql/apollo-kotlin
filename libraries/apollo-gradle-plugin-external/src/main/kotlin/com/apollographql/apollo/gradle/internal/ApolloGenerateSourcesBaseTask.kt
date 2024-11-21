@@ -45,9 +45,6 @@ abstract class ApolloGenerateSourcesBaseTask : ApolloTaskWithClasspath() {
 
   @get:OutputDirectory
   abstract val outputDir: DirectoryProperty
-
-  @Inject
-  abstract fun getWorkerExecutor(): WorkerExecutor
 }
 
 fun ApolloGenerateSourcesBaseTask.layout(): LayoutFactory {

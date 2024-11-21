@@ -728,6 +728,17 @@ interface Service {
    */
   val decapitalizeFields: Property<Boolean>
 
+  /**
+   * Whether to use process isolation. By default, the Apollo tasks use classloader isolation, which may leak and increase memory usage over time.
+   * By using process isolation, the tasks are run in a separate process and the memory is reclaimed when the process stops. This comes at a price
+   * of more forking time.
+   *
+   * See https://github.com/apollographql/apollo-kotlin/issues/6266
+   * See https://github.com/gradle/gradle/issues/18313
+   */
+  @ApolloExperimental
+  val useProcessIsolation: Property<Boolean>
+
   @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   fun usedCoordinates(file: File)
