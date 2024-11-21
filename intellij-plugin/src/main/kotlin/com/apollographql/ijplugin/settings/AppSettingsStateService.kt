@@ -42,6 +42,13 @@ class AppSettingsStateService : PersistentStateComponent<AppSettingsStateImpl>, 
       notifySettingsChanged()
     }
 
+  override var lspModeEnabled: Boolean
+    get() = _state.lspModeEnabled
+    set(value) {
+      _state.lspModeEnabled = value
+      notifySettingsChanged()
+    }
+
   private var lastNotifiedState: AppSettingsState? = null
   private fun notifySettingsChanged() {
     if (lastNotifiedState != _state) {
@@ -54,11 +61,13 @@ class AppSettingsStateService : PersistentStateComponent<AppSettingsStateImpl>, 
 interface AppSettingsState {
   var hasShownTelemetryOptOutDialog: Boolean
   var telemetryEnabled: Boolean
+  var lspModeEnabled: Boolean
 }
 
 data class AppSettingsStateImpl(
     override var hasShownTelemetryOptOutDialog: Boolean = false,
     override var telemetryEnabled: Boolean = true,
+    override var lspModeEnabled: Boolean = false,
 ) : AppSettingsState
 
 val appSettingsState get(): AppSettingsState = service<AppSettingsStateService>()

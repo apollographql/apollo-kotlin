@@ -19,6 +19,7 @@ plugins {
   id("org.jetbrains.kotlin.jvm")
   id("org.jetbrains.intellij.platform")
   alias(libs.plugins.apollo.published)
+  alias(libs.plugins.grammarkit)
 }
 
 commonSetup()
@@ -90,6 +91,12 @@ tasks {
       showStandardStreams = true
     }
     inputs.files(apolloDependencies)
+  }
+
+  generateLexer {
+    purgeOldFiles.set(true)
+    sourceFile.set(file("src/main/grammars/ApolloGraphQLLexer.flex"))
+    targetOutputDir.set(file("src/main/java/com/apollographql/ijplugin/psi"))
   }
 }
 

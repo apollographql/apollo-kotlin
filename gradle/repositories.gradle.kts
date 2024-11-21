@@ -33,6 +33,10 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
 
         // For org.jetbrains.intellij.platform
         includeModule("org.jetbrains.intellij.platform", "intellij-platform-gradle-plugin")
+
+        // For org.jetbrains.grammarkit
+        includeModule("org.jetbrains.grammarkit", "org.jetbrains.grammarkit.gradle.plugin")
+        includeModule("org.jetbrains.intellij.plugins", "gradle-grammarkit-plugin")
       }
     }
   }
