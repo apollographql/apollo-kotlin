@@ -2,7 +2,6 @@ package com.apollographql.ijplugin.settings.lsp
 
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.rover.RoverHelper
-import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.observable.properties.GraphProperty
 import com.intellij.ui.dsl.builder.AlignX
@@ -17,9 +16,7 @@ fun Panel.lspGroup(lspModeEnabledProperty: GraphProperty<Boolean>) {
   var installationInstructionsLink: Row? = null
   group(ApolloBundle.message("settings.rover.title")) {
     row {
-      text(ApolloBundle.message("settings.rover.intro")) {
-        BrowserUtil.browse("https://www.apollographql.com/docs/rover")
-      }
+      text(ApolloBundle.message("settings.rover.intro"))
     }
 
     row {
@@ -29,11 +26,7 @@ fun Panel.lspGroup(lspModeEnabledProperty: GraphProperty<Boolean>) {
 
     installationInstructionsLink =
       row {
-        text(
-            ApolloBundle.message("settings.rover.notInstalled.instructions"),
-        ) {
-          BrowserUtil.browse("https://www.apollographql.com/docs/rover/getting-started")
-        }
+        text(ApolloBundle.message("settings.rover.notInstalled.instructions"))
       }
           .visible(false)
 
@@ -59,7 +52,12 @@ fun Panel.lspGroup(lspModeEnabledProperty: GraphProperty<Boolean>) {
     val roverStatus = RoverHelper.getRoverStatus()
     when (roverStatus) {
       is RoverHelper.RoverStatus.Installed -> {
-        roverVersionLabel!!.component.text = ApolloBundle.message("settings.rover.installed", roverStatus.version)
+        if (!roverStatus.hasLsp) {
+          roverVersionLabel!!.component.text = ApolloBundle.message("settings.rover.installed.noLsp", roverStatus.version)
+          installationInstructionsLink!!.visible(true)
+        } else {
+          roverVersionLabel!!.component.text = ApolloBundle.message("settings.rover.installed.withLsp", roverStatus.version)
+        }
       }
 
       is RoverHelper.RoverStatus.NotInstalled -> {

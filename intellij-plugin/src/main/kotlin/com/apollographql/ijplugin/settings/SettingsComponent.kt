@@ -110,10 +110,12 @@ class SettingsComponent(private val project: Project) {
       lspGroup(lspModeEnabledProperty)
     }
 
-    row {
-      checkBox(ApolloBundle.message("settings.telemetry.telemetryEnabled.text"))
-          .comment(ApolloBundle.message("settings.telemetry.telemetryEnabled.comment"))
-          .bindSelected(telemetryEnabledProperty)
+    group(ApolloBundle.message("settings.telemetry.telemetryEnabled.title")) {
+      row {
+        checkBox(ApolloBundle.message("settings.telemetry.telemetryEnabled.text"))
+            .comment(ApolloBundle.message("settings.telemetry.telemetryEnabled.comment"))
+            .bindSelected(telemetryEnabledProperty)
+      }
     }
   }
 

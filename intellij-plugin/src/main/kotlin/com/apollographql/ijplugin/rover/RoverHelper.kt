@@ -29,7 +29,14 @@ object RoverHelper {
 
   sealed interface RoverStatus {
     data object NotInstalled : RoverStatus
-    class Installed(val version: String) : RoverStatus
+    class Installed(val version: String) : RoverStatus {
+      val hasLsp: Boolean
+        get() {
+          // Need at least 0.27.0
+          val (major, minor) = version.split('.').take(2).map { it.toIntOrNull() ?: 0 }
+          return major > 0 || minor >= 27
+        }
+    }
   }
 
   fun getRoverStatus(): RoverStatus {
