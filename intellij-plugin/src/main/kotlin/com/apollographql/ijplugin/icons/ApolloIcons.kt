@@ -10,6 +10,7 @@ object ApolloIcons {
 
   object Symbol {
     val GraphQL by lazy { load("/icons/symbol-graphql.svg") }
+    val ApolloGraphQL by lazy { load("/icons/symbol-apollo-graphql.svg") }
   }
 
   object Action {
@@ -27,6 +28,10 @@ object ApolloIcons {
 
   object Node {
     val Package by lazy { load("/icons/node-package.svg") }
+  }
+
+  object StatusBar {
+    val Apollo by lazy { load("/icons/status-apollo-monochrome.svg") }
   }
 
   private fun load(path: String): Icon {

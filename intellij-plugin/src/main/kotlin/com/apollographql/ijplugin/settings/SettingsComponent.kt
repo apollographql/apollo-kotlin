@@ -1,8 +1,11 @@
 package com.apollographql.ijplugin.settings
 
 import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.lsp.isLspAvailable
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.settings.lsp.lspGroup
 import com.apollographql.ijplugin.settings.studio.ApiKeyDialog
+import com.intellij.openapi.observable.properties.GraphProperty
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.project.Project
 import com.intellij.ui.AddEditRemovePanel
@@ -19,6 +22,7 @@ class SettingsComponent(private val project: Project) {
   private val automaticCodegenTriggeringProperty = propertyGraph.property(false)
   private val contributeConfigurationToGraphqlPluginProperty = propertyGraph.property(false)
   private val telemetryEnabledProperty = propertyGraph.property(false)
+  private val lspModeEnabledProperty: GraphProperty<Boolean> = propertyGraph.property(false)
 
   var automaticCodegenTriggering: Boolean by automaticCodegenTriggeringProperty
   var contributeConfigurationToGraphqlPlugin: Boolean by contributeConfigurationToGraphqlPluginProperty
@@ -28,6 +32,7 @@ class SettingsComponent(private val project: Project) {
       addEditRemovePanel?.data = value.toMutableList()
     }
   var telemetryEnabled: Boolean by telemetryEnabledProperty
+  var lspModeEnabled: Boolean by lspModeEnabledProperty
 
   private lateinit var chkAutomaticCodegenTriggering: JCheckBox
   private var addEditRemovePanel: AddEditRemovePanel<ApolloKotlinServiceConfiguration>? = null
@@ -100,10 +105,17 @@ class SettingsComponent(private val project: Project) {
         }
       }
     }
-    row {
-      checkBox(ApolloBundle.message("settings.telemetry.telemetryEnabled.text"))
-          .comment(ApolloBundle.message("settings.telemetry.telemetryEnabled.comment"))
-          .bindSelected(telemetryEnabledProperty)
+
+    if (isLspAvailable()) {
+      lspGroup(lspModeEnabledProperty)
+    }
+
+    group(ApolloBundle.message("settings.telemetry.telemetryEnabled.title")) {
+      row {
+        checkBox(ApolloBundle.message("settings.telemetry.telemetryEnabled.text"))
+            .comment(ApolloBundle.message("settings.telemetry.telemetryEnabled.comment"))
+            .bindSelected(telemetryEnabledProperty)
+      }
     }
   }
 
