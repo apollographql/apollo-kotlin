@@ -18,7 +18,7 @@ This plugin for Android Studio and IntelliJ helps you work with the
   - Apollo Android 2.x → Apollo Kotlin 3.x
   - Apollo Kotlin 3.x → Apollo Kotlin 4.x
   - `compat` codegen → `operationBased` codegen
-- Integration with [Rover](https://www.apollographql.com/docs/rover) for an enhanced schema editing experience
+- Integration with [Rover](https://www.apollographql.com/docs/rover) for a rich schema editing experience
 - More to come!
 
 ## Compatibility
