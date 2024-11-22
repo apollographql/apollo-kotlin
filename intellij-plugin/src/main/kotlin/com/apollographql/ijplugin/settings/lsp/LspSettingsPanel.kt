@@ -2,19 +2,27 @@ package com.apollographql.ijplugin.settings.lsp
 
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.rover.RoverHelper
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.observable.properties.GraphProperty
+import com.intellij.ui.components.JBLabel
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.Row
 import com.intellij.ui.dsl.builder.bindSelected
+import com.intellij.ui.scale.JBUIScale
 import javax.swing.JLabel
+import javax.swing.SwingConstants
 
 fun Panel.lspGroup(lspModeEnabledProperty: GraphProperty<Boolean>) {
   var roverVersionLabel: Cell<JLabel>? = null
   var installationInstructionsLink: Row? = null
-  group(ApolloBundle.message("settings.rover.title")) {
+  group(JBLabel(ApolloBundle.message("settings.rover.title")).apply {
+    setHorizontalTextPosition(SwingConstants.LEFT)
+    setIconTextGap(JBUIScale.scale(8))
+    setIcon(AllIcons.General.Beta)
+  }) {
     row {
       text(ApolloBundle.message("settings.rover.intro"))
     }
