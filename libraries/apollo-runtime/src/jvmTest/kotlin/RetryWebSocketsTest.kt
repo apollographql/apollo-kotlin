@@ -13,7 +13,6 @@ import test.network.connectionAckMessage
 import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
-import com.apollographql.mockserver.assertNoRequest
 import com.apollographql.mockserver.awaitWebSocketRequest
 import com.apollographql.mockserver.enqueueWebSocket
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +21,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
