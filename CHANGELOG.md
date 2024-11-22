@@ -20,7 +20,25 @@ You can read more details in the [pull request](https://github.com/apollographql
 
 `application/graphql-response+json` is a new media type being introduced by the [GraphQL over HTTP draft](https://graphql.github.io/graphql-over-http/draft/). It allows differentiating a valid GraphQL response from an error JSON response that could be transmitted by a cache or proxy in the HTTP chain. 
 
-If your server uses `application/graphql-response+json` and returns non-2xx response, Apollo Kotlin will now parse those responses and expose `data` and `errors` instead of returning an `ApolloHttpException` before.
+If your server uses `application/graphql-response+json` and returns non-2xx response, Apollo Kotlin will now parse those responses and expose `data` and `errors` instead of returning an `ApolloHttpException` before. 
+
+If you need to access the status code, you can do so using `executionContext[HttpInfo]`. For an example, you can restore the throwing behaviour with the following interceptor:
+
+```kotlin
+object : ApolloInterceptor {
+  override fun <D : Operation.Data> intercept(
+      request: ApolloRequest<D>,
+      chain: ApolloInterceptorChain,
+  ): Flow<ApolloResponse<D>> {
+    return chain.proceed(request).onEach {
+      val httpInfo = it.executionContext[HttpInfo]
+      if (httpInfo != null && httpInfo.statusCode !in 200..299) {
+        throw ApolloHttpException(httpInfo.statusCode, httpInfo.headers, null, "HTTP request failed")
+      }
+    }
+  }
+}
+```
 
 ### K2 support for the IntelliJ plugin
 
