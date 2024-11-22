@@ -33,7 +33,7 @@ Because generated types are operation-specific, you can only access data that yo
 
 This library is designed with Android in mind, but you can use it in any Kotlin application, including KMP ([Kotlin Multi Platform](https://kotlinlang.org/docs/multiplatform.html)).
 
-Apollo Kotlin aims to comply with the the [Working Draft of the GraphQL specification](https://spec.graphql.org/draft/).
+Apollo Kotlin aims to comply with the [Working Draft of the GraphQL specification](https://spec.graphql.org/draft/).
 
 ## 📚 Documentation
 
