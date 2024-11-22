@@ -602,6 +602,8 @@ final class com.apollographql.apollo.api.json/JsonNumber { // com.apollographql.
 
     final val value // com.apollographql.apollo.api.json/JsonNumber.value|{}value[0]
         final fun <get-value>(): kotlin/String // com.apollographql.apollo.api.json/JsonNumber.value.<get-value>|<get-value>(){}[0]
+
+    final fun toString(): kotlin/String // com.apollographql.apollo.api.json/JsonNumber.toString|toString(){}[0]
 }
 
 final class com.apollographql.apollo.api.json/MapJsonReader : com.apollographql.apollo.api.json/JsonReader { // com.apollographql.apollo.api.json/MapJsonReader|null[0]
