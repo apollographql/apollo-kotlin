@@ -37,7 +37,7 @@ After a feedback phase, the current `.ws` APIs will become deprecated and the `.
 
 ### Changing the WebSocket HTTP header on Error
 
-The HTTP headers of `ApolloCall` are honored and different WebSockets are create for different header values. This means you can use an interceptor to change the header value on error:
+The HTTP headers of `ApolloCall` are honored and different WebSockets are created for different header values. This means you can use an interceptor to change the header value on error:
 
 ```kotlin
 private class UpdateAuthorizationHeaderInterceptor : ApolloInterceptor {
