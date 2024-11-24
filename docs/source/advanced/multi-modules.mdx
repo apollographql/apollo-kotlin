@@ -118,3 +118,8 @@ The `bidirectional` parameter is experimental and not compatible with <a href="h
 
 </ExperimentalFeature>
 
+## Optional optimizations
+
+In Android projects, to further improve build times you can consider making your schema module a jvm module instead of an Android library. Since apollo-kotlin is multiplatform, and android is capable of depending on jvm-only modules, you can benefit from reducing the amount of work needed to compile the schema module. This is true because jvm modules build faster than Android libraries even with identical source code.  
+This is often a good idea because apollo often happens to be on the critical path of compiling your app. This happens when all the feature modules that use apollo need to wait for all the type-safe code to be generated before they themselves can start building too.
+
