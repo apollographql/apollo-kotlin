@@ -5,8 +5,8 @@ package com.apollographql.ijplugin.lsp
 import com.apollographql.ijplugin.file.ApolloGraphQLFileType
 import com.apollographql.ijplugin.icons.ApolloIcons
 import com.apollographql.ijplugin.rover.RoverHelper
-import com.apollographql.ijplugin.settings.SettingsConfigurable
 import com.apollographql.ijplugin.settings.appSettingsState
+import com.apollographql.ijplugin.settings.lsp.LspSettingsConfigurable
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
@@ -29,7 +29,7 @@ internal class ApolloLspServerSupportProvider : LspServerSupportProvider {
         lspServer = lspServer,
         currentFile = currentFile,
         icon = ApolloIcons.StatusBar.Apollo,
-        settingsPageClass = SettingsConfigurable::class.java,
+        settingsPageClass = LspSettingsConfigurable::class.java,
     )
   }
 }

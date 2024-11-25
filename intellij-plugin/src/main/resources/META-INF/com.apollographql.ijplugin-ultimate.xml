@@ -25,5 +25,16 @@
         implementation="com.apollographql.ijplugin.lsp.ApolloLspServerSupportProvider"
     />
 
+    <!-- Note: the value of `parentId` corresponds to the settings `id` of the JS GraphQL plugin -->
+    <!-- See https://github.com/JetBrains/js-graphql-intellij-plugin/blob/396770c293a57f4903acdf427ba5136db6a79d0b/resources/META-INF/plugin.xml#L151 -->
+    <projectConfigurable
+        id="com.apollographql.ijplugin.settings.lsp.LspSettingsConfigurable"
+        parentId="settings.jsgraphql"
+        instance="com.apollographql.ijplugin.settings.lsp.LspSettingsConfigurable"
+        key="settings.rover.title"
+        nonDefaultProject="true"
+        bundle="messages.ApolloBundle"
+    />
+
   </extensions>
 </idea-plugin>
