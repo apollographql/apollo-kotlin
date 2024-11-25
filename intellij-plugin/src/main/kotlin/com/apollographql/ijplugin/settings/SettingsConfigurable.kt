@@ -19,8 +19,7 @@ class SettingsConfigurable(private val project: Project) : Configurable {
     return settingsComponent!!.automaticCodegenTriggering != project.projectSettingsState.automaticCodegenTriggering ||
         settingsComponent!!.contributeConfigurationToGraphqlPlugin != project.projectSettingsState.contributeConfigurationToGraphqlPlugin ||
         settingsComponent!!.apolloKotlinServiceConfigurations != project.projectSettingsState.apolloKotlinServiceConfigurations ||
-        settingsComponent!!.telemetryEnabled != appSettingsState.telemetryEnabled ||
-        settingsComponent!!.lspModeEnabled != appSettingsState.lspModeEnabled
+        settingsComponent!!.telemetryEnabled != appSettingsState.telemetryEnabled
   }
 
   override fun apply() {
@@ -28,7 +27,6 @@ class SettingsConfigurable(private val project: Project) : Configurable {
     project.projectSettingsState.contributeConfigurationToGraphqlPlugin = settingsComponent!!.contributeConfigurationToGraphqlPlugin
     project.projectSettingsState.apolloKotlinServiceConfigurations = settingsComponent!!.apolloKotlinServiceConfigurations
     appSettingsState.telemetryEnabled = settingsComponent!!.telemetryEnabled
-    appSettingsState.lspModeEnabled = settingsComponent!!.lspModeEnabled
   }
 
   override fun reset() {
@@ -36,7 +34,6 @@ class SettingsConfigurable(private val project: Project) : Configurable {
     settingsComponent!!.contributeConfigurationToGraphqlPlugin = project.projectSettingsState.contributeConfigurationToGraphqlPlugin
     settingsComponent!!.apolloKotlinServiceConfigurations = project.projectSettingsState.apolloKotlinServiceConfigurations
     settingsComponent!!.telemetryEnabled = appSettingsState.telemetryEnabled
-    settingsComponent!!.lspModeEnabled = appSettingsState.lspModeEnabled
   }
 
   override fun getPreferredFocusedComponent() = settingsComponent!!.preferredFocusedComponent
