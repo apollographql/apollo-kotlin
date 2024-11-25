@@ -197,7 +197,8 @@ intellijPlatform {
     version.set(project.version.toString())
     ideaVersion {
       sinceBuild = properties("pluginSinceBuild")
-      untilBuild = properties("pluginUntilBuild")
+      // No untilBuild specified, the plugin wants to be compatible with all future versions
+      untilBuild = provider { null }
     }
     // Extract the <!-- Plugin description --> section from README.md and provide it to the plugin's manifest
     description.set(
