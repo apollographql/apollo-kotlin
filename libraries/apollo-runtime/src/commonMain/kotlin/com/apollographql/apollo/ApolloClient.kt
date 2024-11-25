@@ -220,6 +220,11 @@ private constructor(
     concurrencyInfo.coroutineScope.cancel()
     networkTransport.dispose()
     subscriptionNetworkTransport.dispose()
+    for (interceptor in interceptors) {
+      if (interceptor is Closeable) {
+        interceptor.close()
+      }
+    }
   }
 
   private val networkInterceptor = NetworkInterceptor(
