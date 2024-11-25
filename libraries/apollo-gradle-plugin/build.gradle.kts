@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("java-gradle-plugin")
@@ -5,29 +7,20 @@ plugins {
   id("com.gradleup.gr8")
 }
 
+val jvmTarget = 11 // AGP requires 11
 apolloLibrary(
     namespace = "com.apollographql.apollo.gradle.relocated",
-    jvmTarget = 11 // AGP requires 11
+    jvmTarget = jvmTarget,
+    kotlinCompilerOptions = KotlinCompilerOptions(KotlinVersion.KOTLIN_1_9)
 )
-
-// Configuration for extra jar to pass to R8 to give it more context about what can be relocated
-configurations.create("gr8Classpath")
-// Configuration dependencies that will be shadowed
-val shadeConfiguration = configurations.create("shade")
 
 // Set to false to skip relocation and save some building time during development
 val relocateJar = System.getenv("APOLLO_RELOCATE_JAR")?.toBoolean() ?: true
 
-dependencies {
-  /**
-   * OkHttp has some bytecode that checks for Conscrypt at runtime (https://github.com/square/okhttp/blob/71427d373bfd449f80178792fe231f60e4c972db/okhttp/src/main/kotlin/okhttp3/internal/platform/ConscryptPlatform.kt#L59)
-   * Put this in the classpath so that R8 knows it can relocate DisabledHostnameVerifier as the superclass is not package-private
-   *
-   * Keep in sync with https://github.com/square/okhttp/blob/71427d373bfd449f80178792fe231f60e4c972db/buildSrc/src/main/kotlin/deps.kt#L24
-   */
-  add("gr8Classpath", "org.conscrypt:conscrypt-openjdk-uber:2.5.2")
+val shadowedDependencies = configurations.create("shadowedDependencies")
 
-  add("shade", project(":apollo-gradle-plugin-external"))
+dependencies {
+  add(shadowedDependencies.name, project(":apollo-gradle-plugin-external"))
 
   testImplementation(project(":apollo-ast"))
   testImplementation(libs.junit)
@@ -45,63 +38,35 @@ dependencies {
   testImplementation(libs.slf4j.nop.get().toString()) {
     because("jetty uses SL4F")
   }
-
 }
+
 
 if (relocateJar) {
   gr8 {
-    val shadowedJar = create("shadow") {
-      proguardFile("rules.pro")
-      configuration("shade")
-      classPathConfiguration("gr8Classpath")
-
-      exclude(".*MANIFEST.MF")
-      exclude("META-INF/versions/9/module-info\\.class")
-      exclude("META-INF/kotlin-stdlib.*\\.kotlin_module")
-
-      // Remove the following error:
-      // /Users/mbonnin/.m2/repository/com/apollographql/apollo/apollo-gradle-plugin/3.3.3-SNAPSHOT/apollo-gradle-plugin-3.3.3-SNAPSHOT.jar!/META-INF/kotlinpoet.kotlin_module:
-      // Module was compiled with an incompatible version of Kotlin. The binary version of its metadata is 1.7.1,
-      // expected version is 1.5.1.
-      exclude("META-INF/kotlinpoet.kotlin_module")
-
-      //Remove the following error:
-      // /Users/mbonnin/git/test-gradle-7-4/src/main/kotlin/Main.kt: (2, 5): Class 'kotlin.Unit' was compiled
-      // with an incompatible version of Kotlin. The binary version of its metadata is 1.7.1, expected version
-      // is 1.5.1.
-      exclude("kotlin/Unit.class")
-
-      // Remove proguard rules from dependencies, we'll manage them ourselves
-      exclude("META-INF/proguard/.*")
-
+    val shadowedJar = create("default") {
+      addProgramJarsFrom(shadowedDependencies)
+      addProgramJarsFrom(tasks.getByName("jar"))
+      r8Version("887704078a06fc0090e7772c921a30602bf1a49f")
       systemClassesToolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(jvmTarget))
       }
+      proguardFile("rules.pro")
+      registerFilterTransform(listOf(".*/impldep/META-INF/versions/.*"))
     }
 
-    // The java-gradle-plugin adds `gradleApi()` to the `api` implementation but it contains some JDK15 bytecode at
-    // org/gradle/internal/impldep/META-INF/versions/15/org/bouncycastle/jcajce/provider/asymmetric/edec/SignatureSpi$EdDSA.class:
-    // java.lang.IllegalArgumentException: Unsupported class file major version 59
-    // So remove it
-    val apiDependencies = project.configurations.getByName("api").dependencies
-    apiDependencies.firstOrNull {
-      it is FileCollectionDependency
-    }.let {
-      apiDependencies.remove(it)
-    }
-
+    removeGradleApiFromApi()
     configurations.named("compileOnly").configure {
-      extendsFrom(shadeConfiguration)
+      extendsFrom(shadowedDependencies)
     }
     configurations.named("testImplementation").configure {
-      extendsFrom(shadeConfiguration)
+      extendsFrom(shadowedDependencies)
     }
 
     replaceOutgoingJar2(shadowedJar)
   }
 } else {
   configurations.named("implementation").configure {
-    extendsFrom(shadeConfiguration)
+    extendsFrom(shadowedDependencies)
   }
 }
 
@@ -112,7 +77,6 @@ fun replaceOutgoingJar2(newJar: Any) {
         it.name == "apollo-gradle-plugin" && it.type == "jar" && it.classifier.isNullOrEmpty()
       }
       if (removed) {
-
         artifact(newJar) {
           // Pom and maven consumers do not like the `-all` or `-shadowed` classifiers
           classifier = ""

@@ -7,9 +7,24 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
     exclusiveContent {
       forRepository(::google)
       filter {
-        includeModuleByRegex("com\\.android.*", ".*")
+        includeGroup("com.android")
+        includeGroup("com.android.library")
+        includeGroup("com.android.application")
+        includeGroup("com.android.databinding")
+        includeGroup("com.android.lint")
+        includeGroup("com.google.testing.platform")
+        /*
+         * The com.android.tools groupId is verbose because we don't want to clash with com.android.tools:r8 in the raw repository
+         */
+        includeModule("com.android.tools", "sdk-common")
+        includeModule("com.android.tools", "sdklib")
+        includeModule("com.android.tools", "repository")
+        includeModule("com.android.tools", "common")
+        includeModule("com.android.tools", "dvlib")
+        includeModule("com.android.tools", "annotations")
+        includeModule("com.android.tools", "play-sdk-proto")
+        includeGroupByRegex("com\\.android\\.tools\\..*")
         includeModuleByRegex("androidx\\..*", ".*")
-        includeModuleByRegex("com.google.testing.platform", ".*")
       }
     }
 

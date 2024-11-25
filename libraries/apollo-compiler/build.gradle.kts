@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -6,7 +7,8 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo.compiler"
+    namespace = "com.apollographql.apollo.compiler",
+    kotlinCompilerOptions = KotlinCompilerOptions(KotlinVersion.KOTLIN_1_9)
 )
 
 dependencies {
