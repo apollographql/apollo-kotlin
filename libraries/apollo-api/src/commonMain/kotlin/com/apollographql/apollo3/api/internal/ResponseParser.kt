@@ -20,6 +20,7 @@ internal object ResponseParser {
       jsonReader: JsonReader,
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
+      checkEof: Boolean = true,
   ): ApolloResponse<D>  {
     @Suppress("NAME_SHADOWING")
     return jsonReader.use { jsonReader ->
@@ -40,7 +41,7 @@ internal object ResponseParser {
 
       jsonReader.endObject()
 
-      if (jsonReader.peek() != JsonReader.Token.END_DOCUMENT) {
+      if (checkEof && jsonReader.peek() != JsonReader.Token.END_DOCUMENT) {
         throw JsonDataException("Expected END_DOCUMENT but was ${jsonReader.peek()}")
       }
 

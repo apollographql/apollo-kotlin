@@ -3,6 +3,7 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.internal.ResponseParser
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -59,15 +60,25 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     jsonReader: JsonReader,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ): ApolloResponse<D> {
+  return parseJsonResponseInternal(jsonReader, customScalarAdapters, true)
+}
+
+@ApolloInternal
+fun <D : Operation.Data> Operation<D>.parseJsonResponseInternal(
+  jsonReader: JsonReader,
+  customScalarAdapters: CustomScalarAdapters,
+  checkEof: Boolean
+): ApolloResponse<D> {
   val variables = variables(customScalarAdapters, withDefaultBooleanValues = true)
   return ResponseParser.parse(
-      jsonReader,
-      this,
-      customScalarAdapters.newBuilder()
-          .adapterContext(customScalarAdapters.adapterContext.newBuilder()
-              .variables(variables)
-              .build())
-          .build()
+    jsonReader,
+    this,
+    customScalarAdapters.newBuilder()
+      .adapterContext(customScalarAdapters.adapterContext.newBuilder()
+        .variables(variables)
+        .build())
+      .build(),
+    checkEof
   )
 }
 

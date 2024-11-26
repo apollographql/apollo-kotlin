@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.api.parseJsonResponseInternal
 import com.apollographql.apollo3.api.withDeferredFragmentIds
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
@@ -153,10 +154,12 @@ private constructor(
                 reader.beginObject()
                 reader.nextName()
 
+
                 // TODO: make parseJsonResponse not close the jsonReader
-                operation.parseJsonResponse(
+                operation.parseJsonResponseInternal(
                     jsonReader = reader,
-                    customScalarAdapters = customScalarAdapters
+                    customScalarAdapters = customScalarAdapters,
+                    checkEof = false
                 )
               }
 

@@ -23,14 +23,5 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         includeVersion("org.jetbrains.kotlin.plugin.serialization", "org.jetbrains.kotlin.plugin.serialization.gradle.plugin", "1.6.10")
       }
     }
-
-    exclusiveContent {
-      @Suppress("DEPRECATION")
-      forRepository(::jcenter)
-      filter {
-        // https://github.com/Kotlin/kotlinx-nodejs/issues/16
-        includeModule("org.jetbrains.kotlinx", "kotlinx-nodejs")
-      }
-    }
   }
 }
