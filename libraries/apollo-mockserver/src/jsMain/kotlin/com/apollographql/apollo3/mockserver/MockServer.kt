@@ -56,12 +56,7 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
   }
 
   override suspend fun url() = url ?: suspendCoroutine { cont ->
-    val server = requireNotNull(this.server) { "Server is not listening, please call listen() before calling address()" }
-
     server.once(Event.LISTENING) {
-      val server = requireNotNull(this.server) {
-        "close() was called during a call to address()"
-      }
       val address = server.address().unsafeCast<AddressInfo>()
       url = "http://localhost:${address.port}/"
       cont.resume(url!!)
