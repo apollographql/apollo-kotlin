@@ -65,7 +65,7 @@ class SchemaValidationOptions(
 
 internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaValidationOptions): GQLResult<Schema> {
   val issues = mutableListOf<Issue>()
-  val builtinDefinitions = builtinDefinitions() + linkDefinitions()
+  val builtinDefinitions = builtinDefinitions()
 
   // If the builtin definitions are already in the schema, keep them
   var allDefinitions = combineDefinitions(definitions, builtinDefinitions, ConflictResolution.TakeLeft)
@@ -318,15 +318,20 @@ private fun List<GQLSchemaExtension>.getImports(
   val schemaExtensions = this
 
   val imports = mutableListOf<Import>()
-
+  val linkForeignSchema = ForeignSchema("link", "v1.0", linkDefinitions())
+  val linkImport = Import(linkForeignSchema, linkForeignSchema.definitions, mapOf("link" to "link"))
   schemaExtensions.forEach { schemaExtension ->
     schemaExtension.directives.forEach eachDirective@{ gqlDirective ->
       if (gqlDirective.name == "link") {
+        if (!imports.contains(linkImport)) {
+          imports.add(linkImport)
+        }
+
         /**
          * Validate `@link` using a very minimal schema.
          * This ensure we can safely cast the arguments below
          */
-        val minimalSchema = builtinDefinitions
+        val minimalSchema = builtinDefinitions + linkForeignSchema.definitions
         val scope = DefaultValidationScope(
             minimalSchema.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
             minimalSchema.filterIsInstance<GQLDirectiveDefinition>().associateBy { it.name },

@@ -80,9 +80,11 @@ class SchemaTest {
       extend schema
       @link(url: "https://specs.apollo.dev/cache/v0.1/", import: ["@cacheControl"])
       @link(url: "https://example.com/example/v0.1/", import: ["@example"])
-      
+      extend schema
+      @link(url: "https://example.com/example2/v0.1/", import: ["@example2"])
+
       type Query {
-        foo: Int @cacheControl(maxAge: 100) @example
+        foo: Int @cacheControl(maxAge: 100) @example @example2
       }
     """.trimIndent()
 
@@ -92,10 +94,10 @@ class SchemaTest {
             foreignSchemas = listOf(
                 cacheControlSchema,
                 ForeignSchema("example", "v0.1",
-                    listOf(
-                        "directive @example on FIELD_DEFINITION".parseAsGQLDocument()
-                            .getOrThrow().definitions.single()
-                    )
+                    listOf("directive @example on FIELD_DEFINITION".parseAsGQLDocument().getOrThrow().definitions.single())
+                ),
+                ForeignSchema("example2", "v0.1",
+                    listOf("directive @example2 on FIELD_DEFINITION".parseAsGQLDocument().getOrThrow().definitions.single())
                 )
             )
         )
