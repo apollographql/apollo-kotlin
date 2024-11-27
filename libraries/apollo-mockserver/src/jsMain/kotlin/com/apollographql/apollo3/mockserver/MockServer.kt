@@ -1,13 +1,14 @@
 package com.apollographql.apollo3.mockserver
 
-import Buffer
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.AddressInfo
-import net.Socket
-import net.createServer
+import node.buffer.Buffer
+import node.events.Event
+import node.net.AddressInfo
+import node.net.Socket
+import node.net.createServer
 import okio.Sink
 import okio.Timeout
 import okio.buffer
@@ -26,10 +27,10 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
   @OptIn(DelicateCoroutinesApi::class)
   private val server = createServer { socket ->
     val requestBody = okio.Buffer()
-    socket.on("data") { chunk ->
+    socket.on(Event.DATA) { chunk ->
       when (chunk) {
         is String -> requestBody.writeUtf8(chunk)
-        is Buffer -> requestBody.write(chunk.asByteArray())
+        is Buffer -> requestBody.write(chunk.toByteArray())
         else -> error("Unexpected chunk type: ${chunk::class}")
       }
       val request = readRequest(requestBody)!!
@@ -48,18 +49,23 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
         socket.end()
       }
     }
-  }.listen()
+  }
+
+  init {
+    server.listen()
+  }
 
   override suspend fun url() = url ?: suspendCoroutine { cont ->
-    url = "http://localhost:${server.address().unsafeCast<AddressInfo>().port}/"
-    server.on("listening") { _ ->
+    server.once(Event.LISTENING) {
+      val address = server.address().unsafeCast<AddressInfo>()
+      url = "http://localhost:${address.port}/"
       cont.resume(url!!)
     }
   }
 
   override fun enqueue(mockResponse: MockResponse) {
     (mockServerHandler as? QueueMockServerHandler)?.enqueue(mockResponse)
-        ?: error("Apollo: cannot call MockServer.enqueue() with a custom handler")
+      ?: error("Apollo: cannot call MockServer.enqueue() with a custom handler")
   }
 
   override fun takeRequest(): MockRequest {
@@ -91,6 +97,7 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
       skip(count)
       return array
     }
+
     override fun close() {}
     override fun flush() {}
     override fun timeout() = Timeout.NONE

@@ -9,12 +9,13 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.exception.AutoPersistedQueriesNotSupported
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.map
 
 internal class AutoPersistedQueryInterceptor(
-    private val httpMethodForHashedQueries: HttpMethod,
-    private val httpMethodForDocumentQueries: HttpMethod,
+  private val httpMethodForHashedQueries: HttpMethod,
+  private val httpMethodForDocumentQueries: HttpMethod,
 ) : ApolloInterceptor {
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
@@ -35,25 +36,28 @@ internal class AutoPersistedQueryInterceptor(
         .build()
 
     return flow {
-      var response = chain.proceed(request).single()
-
-      when {
-        isPersistedQueryNotFound(response.errors) -> {
-          val retryRequest = request
+      val responses = chain.proceed(request)
+      responses.collect { response ->
+        when {
+          isPersistedQueryNotFound(response.errors) -> {
+            val retryRequest = request
               .newBuilder()
               .httpMethod(if (isMutation) HttpMethod.Post else httpMethodForDocumentQueries)
               .sendDocument(true)
               .sendApqExtensions(true)
               .build()
 
-          response = chain.proceed(retryRequest).single()
-          emit(response.withAutoPersistedQueryInfo(false))
-        }
-        isPersistedQueryNotSupported(response.errors) -> {
-          throw AutoPersistedQueriesNotSupported()
-        }
-        else -> {
-          emit(response.withAutoPersistedQueryInfo(true))
+            emitAll(chain.proceed(retryRequest).map { it.withAutoPersistedQueryInfo(false) })
+            return@collect
+          }
+
+          isPersistedQueryNotSupported(response.errors) -> {
+            throw AutoPersistedQueriesNotSupported()
+          }
+
+          else -> {
+            emit(response.withAutoPersistedQueryInfo(true))
+          }
         }
       }
     }
