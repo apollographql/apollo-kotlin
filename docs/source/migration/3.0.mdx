@@ -499,6 +499,7 @@ val response = apolloClient.query(request)
 Watchers now default to a `CacheOnly` refetchPolicy instead `CACHE_FIRST`. To keep behaviour unchanged, set a `refetchPolicy` on your watchers:
 
 ```kotlin
+// Replace
 val response = apolloClient.query(query)
                       .watcher()
                       .toFlow()
@@ -508,6 +509,18 @@ val response = apolloClient.query(query)
                       .refetchPolicy(CacheFirst)
                       .watch()
 ```
+
+Watchers are now only watching field keys such as `User:42.name` and not object keys such as `User:42`. This is so that query only get refetch when fields they actually watch change, not when the object changes.
+
+```kotlin
+// Replace
+apolloClient.apolloStore.publish("User:42")
+
+// With
+apolloClient.apolloStore.publish("User:42.name")
+
+```
+
 
 #### `CacheKeyResolver`
 
