@@ -15,7 +15,11 @@ import java.util.concurrent.atomic.AtomicReference
 import okhttp3.WebSocket as PlatformWebSocket
 import okhttp3.WebSocketListener as PlatformWebSocketListener
 
-internal class JvmWebSocketEngine(private val webSocketFactory: PlatformWebSocket.Factory) : WebSocketEngine {
+internal class JvmWebSocketEngine(webSocketFactory: () -> PlatformWebSocket.Factory) : WebSocketEngine {
+  private val webSocketFactory by lazy { webSocketFactory() }
+
+  constructor(webSocketFactory: PlatformWebSocket.Factory) : this({ webSocketFactory })
+
   var closed = false
   override fun newWebSocket(url: String, headers: List<HttpHeader>, listener: WebSocketListener): WebSocket {
     require(!closed) {
@@ -88,11 +92,11 @@ internal class JvmWebSocket(
   }
 
   private fun List<HttpHeader>.toOkHttpHeaders(): Headers =
-      Headers.Builder().also { headers ->
-        this.forEach {
-          headers.add(it.name, it.value)
-        }
-      }.build()
+    Headers.Builder().also { headers ->
+      this.forEach {
+        headers.add(it.name, it.value)
+      }
+    }.build()
 
   override fun send(data: ByteArray) {
     platformWebSocket.get()?.send(data.toByteString())
@@ -110,7 +114,21 @@ internal class JvmWebSocket(
 }
 
 
-actual fun WebSocketEngine(): WebSocketEngine = JvmWebSocketEngine(defaultOkHttpClientBuilder.build())
+actual fun WebSocketEngine(): WebSocketEngine = JvmWebSocketEngine { defaultOkHttpClientBuilder.build() }
 
+/**
+ * Creates a new [WebSocketEngine] from [webSocketFactory]
+ *
+ * This factory function accepts a function so that OkHttp is initialized from a background thread
+ */
+@ApolloExperimental
+fun WebSocketEngine(webSocketFactory: () -> PlatformWebSocket.Factory): WebSocketEngine = JvmWebSocketEngine(webSocketFactory)
+
+/**
+ * Creates a new [WebSocketEngine] from [webSocketFactory]
+ *
+ * Prefer using the factory function accepting a function so that OkHttp is initialized from a background thread.
+ * See https://github.com/square/okhttp/pull/8248
+ */
 @ApolloExperimental
 fun WebSocketEngine(webSocketFactory: PlatformWebSocket.Factory): WebSocketEngine = JvmWebSocketEngine(webSocketFactory)
