@@ -1,7 +1,8 @@
 [versions]
 # The version we use by default in tests and benchmarks
 # Can be as high as IJ supports
-android-plugin = "8.7.0"
+# Consult https://kotlinlang.org/docs/multiplatform-compatibility-guide.html#version-compatibility for compatibility with KGP
+android-plugin = "8.2.2"
 # The version we compile against
 android-plugin-min = "8.0.0"
 # The version used by the 'android-plugin-max' test

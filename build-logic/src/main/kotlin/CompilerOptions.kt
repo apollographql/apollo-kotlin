@@ -114,10 +114,13 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptio
   }
   project.tasks.withType(JavaCompile::class.java).configureEach {
     // For JVM only modules, this dictates the "org.gradle.jvm.version" Gradle attribute
-    // Do not use options.release - see https://issuetracker.google.com/issues/278800528
-    sourceCompatibility = "$jvmTarget"
-    targetCompatibility = "$jvmTarget"
-
+    if (androidExtensionOrNull == null) {
+      options.release.set(jvmTarget)
+    } else {
+      // Do not use options.release - see https://issuetracker.google.com/issues/278800528
+      sourceCompatibility = "$jvmTarget"
+      targetCompatibility = "$jvmTarget"
+    }
   }
   androidExtensionOrNull?.run {
     compileOptions {
