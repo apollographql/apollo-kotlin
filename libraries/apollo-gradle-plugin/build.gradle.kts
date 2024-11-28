@@ -150,7 +150,8 @@ tasks.withType<Test> {
   addRelativeInput("testFiles", "testFiles")
   addRelativeInput("testProjects", "testProjects")
 
-  maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).takeIf { it > 0 } ?: 1
+  println("available processors: " + Runtime.getRuntime().availableProcessors())
+  maxParallelForks = 5
 }
 
 val allTests = tasks.create("allTests")
