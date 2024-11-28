@@ -148,17 +148,7 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptio
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
   }
 
-  project.configurations.configureEach {
-    withDependencies {
-      filterIsInstance<ExternalDependency>()
-          .filter { it.group == "org.jetbrains.kotlin" && it.version.isNullOrEmpty() }
-          .forEach {
-            it.version {
-              require("${kotlinCompilerOptions.version.version}.0")
-            }
-          }
-    }
-  }
+  kotlinExtensionOrNull?.coreLibrariesVersion = "${kotlinCompilerOptions.version.version}.0"
   /**
    * Required because of:
    *
