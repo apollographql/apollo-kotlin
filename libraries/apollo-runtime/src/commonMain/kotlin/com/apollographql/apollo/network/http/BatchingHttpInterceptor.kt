@@ -20,9 +20,9 @@ import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.DefaultApolloException
 import com.apollographql.apollo.exception.JsonDataException
-import com.apollographql.apollo.internal.CloseableSingleThreadDispatcher
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -54,6 +54,8 @@ import kotlin.time.TimeSource.Monotonic.markNow
  * HTTP headers will be merged from all requests in the batch by keeping the ones that have the same name and value in all requests. Any
  * headers present in only some requests, or with different values in some requests will be dropped.
  *
+ * Disposing [com.apollographql.apollo.network.http.BatchingHttpInterceptor] is not necessary but will cancel any pending request saving some bandwidth if needed.
+ *
  * @param batchIntervalMillis the maximum time interval before a new batch is sent
  * @param maxBatchSize the maximum number of requests queued before a new batch is sent
  * @param exposeErrorBody configures whether to expose the error body in [ApolloHttpException].
@@ -69,8 +71,8 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     private val exposeErrorBody: Boolean = false,
 ) : HttpInterceptor {
   private val startMark = markNow()
-  private val dispatcher = CloseableSingleThreadDispatcher()
-  private val scope = CoroutineScope(dispatcher.coroutineDispatcher)
+  private val dispatcher = Dispatchers.Default.limitedParallelism(1)
+  private val scope = CoroutineScope(dispatcher)
   private val mutex = Mutex()
   private var disposed = false
 
@@ -231,11 +233,15 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     }
   }
 
+  /**
+   * Cancels pending requests.
+   *
+   * Disposing [BatchingHttpInterceptor] is not necessary but allows reclaiming resources more rapidly.
+   */
   override fun dispose() {
     if (!disposed) {
       interceptorChain = null
       scope.cancel()
-      dispatcher.close()
       disposed = true
     }
   }

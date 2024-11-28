@@ -10,7 +10,6 @@ import com.apollographql.apollo.api.toApolloResponse
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.SubscriptionOperationException
-import com.apollographql.apollo.internal.CloseableSingleThreadDispatcher
 import com.apollographql.apollo.internal.DeferredJsonMerger
 import com.apollographql.apollo.internal.isDeferred
 import com.apollographql.apollo.internal.transformWhile
@@ -31,6 +30,7 @@ import com.apollographql.apollo.network.ws.internal.StopOperation
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
@@ -86,14 +86,12 @@ private constructor(
 
   val subscriptionCount = mutableEvents.subscriptionCount
 
-  private val backgroundDispatcher = CloseableSingleThreadDispatcher()
-  private val coroutineScope = CoroutineScope(backgroundDispatcher.coroutineDispatcher)
+  private val backgroundDispatcher = Dispatchers.Default.limitedParallelism(1)
+  private val coroutineScope = CoroutineScope(backgroundDispatcher)
 
   init {
     coroutineScope.launch {
-      backgroundDispatcher.use {
-        supervise(this)
-      }
+      supervise(this)
     }
   }
 
@@ -345,6 +343,12 @@ private constructor(
       .isLast(true)
       .build()
 
+  /**
+   * Closes the WebSocket. Active subscriptions stop receiving events.
+   *
+   * This is an asynchronous operation. The WebSocket is closed shortly after this call.
+   * Disposing [WebSocketNetworkTransport] is not necessary but allows reclaiming resources more rapidly.
+   */
   override fun dispose() {
     messages.trySend(Dispose)
   }
