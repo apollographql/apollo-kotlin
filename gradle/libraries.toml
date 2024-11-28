@@ -128,11 +128,14 @@ kotlin-plugin-max = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plug
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" } # use same version as apiVersion
 kotlin-stdlib-common = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-common" } # use same version as apiVersion
 kotlin-stdlib-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib" } # use same version as apiVersion
-kotlin-stdlib-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-js" } # use same version as apiVersion
-kotlin-stdlib-wasm-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-wasm-js" } # use same version as apiVersion
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" } # use same version as apiVersion
 kotlin-test-js = { group = "org.jetbrains.kotlin", name = "kotlin-test-js" } # use same version as apiVersion
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit" } # use same version as apiVersion
+# Kotlin/JS has no apiVersion:
+# The Kotlin/JS standard library has an older version (2.0.20-release-360) than the compiler (2.1.0). Such a configuration is not supported.
+# Please, make sure that the standard library has the version in the range [2.1.0 .. 2.1.255]. Adjust your project's settings if necessary.
+kotlin-stdlib-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-js", version.ref = "kotlin-plugin" }
+kotlin-stdlib-wasm-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-wasm-js", version.ref = "kotlin-plugin"  }
 kotlinx-benchmark-runtime = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.8"
 kotlinx-benchmark = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin:0.4.12"
 kotlinx-browser = "org.jetbrains.kotlinx:kotlinx-browser:0.2"
