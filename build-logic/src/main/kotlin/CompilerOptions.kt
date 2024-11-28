@@ -1,7 +1,7 @@
-
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
+import org.gradle.api.artifacts.ExternalDependency
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
@@ -29,6 +29,7 @@ fun KotlinCommonCompilerOptions.configure(target: Int, kotlinCompilerOptions: Ko
       // D8 can dex Java17 bytecode
       17
     }
+
     else -> target
   }
 
@@ -67,7 +68,7 @@ fun KotlinCommonCompilerOptions.configure(target: Int, kotlinCompilerOptions: Ko
 }
 
 private fun Int.toJvmTarget(): JvmTarget {
-  return when(this) {
+  return when (this) {
     8 -> JvmTarget.JVM_1_8
     else -> JvmTarget.fromTarget(this.toString())
   }
@@ -107,7 +108,7 @@ val Project.androidExtensionOrNull: BaseExtension?
 
 fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptions: KotlinCompilerOptions) {
   @Suppress("NAME_SHADOWING")
-  val jvmTarget = jvmTarget?: 8
+  val jvmTarget = jvmTarget ?: 8
 
   kotlinExtensionOrNull?.forEachCompilerOptions { isAndroid ->
     configure(jvmTarget, kotlinCompilerOptions, isAndroid)
@@ -147,6 +148,17 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptio
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
   }
 
+  project.configurations.configureEach {
+    withDependencies {
+      filterIsInstance<ExternalDependency>()
+          .filter { it.group == "org.jetbrains.kotlin" && it.version.isNullOrEmpty() }
+          .forEach {
+            it.version {
+              require("${kotlinCompilerOptions.version.version}.0")
+            }
+          }
+    }
+  }
   /**
    * Required because of:
    *
