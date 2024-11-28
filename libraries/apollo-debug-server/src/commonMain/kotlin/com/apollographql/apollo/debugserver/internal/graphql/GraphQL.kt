@@ -6,11 +6,11 @@ import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.ast.GQLValue
 import com.apollographql.execution.Coercing
 import com.apollographql.execution.ExecutableSchema
+import com.apollographql.execution.ExternalValue
 import com.apollographql.execution.StringCoercing
 import com.apollographql.execution.annotation.GraphQLName
 import com.apollographql.execution.annotation.GraphQLQuery
 import com.apollographql.execution.annotation.GraphQLScalar
-import com.apollographql.execution.ExternalValue
 import com.apollographql.execution.parseAsGraphQLRequest
 import kotlinx.coroutines.runBlocking
 import okio.Buffer
@@ -49,6 +49,7 @@ internal class GraphQL(
  * The root query
  */
 @GraphQLQuery
+// Prefixing private fields with _ to work around https://github.com/google/ksp/issues/2135
 internal class Query(private val _apolloClients: AtomicReference<Map<ApolloClient, String>>) {
   private fun graphQLApolloClients() =
     _apolloClients.get().map { (apolloClient, apolloClientId) ->
