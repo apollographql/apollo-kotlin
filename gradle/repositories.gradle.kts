@@ -2,6 +2,8 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
   it.apply {
     // Uncomment this one to use the Kotlin "dev" repository
     // maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/") }
+    // Uncomment this one to use the Sonatype OSSRH snapshots repository
+    // maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
 
     mavenCentral()
     exclusiveContent {

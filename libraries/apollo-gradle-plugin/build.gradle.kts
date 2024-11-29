@@ -150,6 +150,8 @@ tasks.withType<Test> {
   addRelativeInput("testFiles", "testFiles")
   addRelativeInput("testProjects", "testProjects")
 
+  maxHeapSize = "1g"
+
   maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).takeIf { it > 0 } ?: 1
 }
 

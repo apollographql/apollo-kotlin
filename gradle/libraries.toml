@@ -1,6 +1,7 @@
 [versions]
 # The version we use by default in tests and benchmarks
 # Can be as high as IJ supports
+# Consult https://kotlinlang.org/docs/multiplatform-compatibility-guide.html#version-compatibility for compatibility with KGP
 android-plugin = "8.2.2"
 # The version we compile against
 android-plugin-min = "8.0.0"
@@ -27,13 +28,12 @@ javaPoet = "1.13.0"
 jetbrains-annotations = "24.0.1"
 junit = "4.13.2"
 kotlin-plugin-min = "1.9.0"
-kotlin-plugin = "2.0.20"
-kotlin-plugin-max = "2.0.20"
-kotlin-stdlib = "2.0.0"
+kotlin-plugin = "2.1.0"
+kotlin-plugin-max = "2.1.0"
 kotlinx-coroutines = "1.9.0"
 kotlinx-datetime = "0.5.0"
 kotlinx-serialization-runtime = "1.6.2"
-ksp = "2.0.20-1.0.24"
+ksp = "2.1.0-1.0.29"
 ktor = "3.0.0"
 moshix = "0.14.1"
 node-fetch = "2.6.7"
@@ -117,7 +117,7 @@ intellij-changelog = "org.jetbrains.intellij.plugins:gradle-changelog-plugin:2.0
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-allopen = { group = "org.jetbrains.kotlin", name = "kotlin-allopen", version.ref = "kotlin-plugin" }
-kotlin-compiletesting = { group = "dev.zacsweers.kctfork", name = "core", version = "0.4.0" }
+kotlin-compiletesting = { group = "dev.zacsweers.kctfork", name = "core", version = "0.6.0" }
 graphql-java = "com.graphql-java:graphql-java:20.4"
 # The main kotlin version for build-logic and Gradle tests
 kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin" }
@@ -125,16 +125,20 @@ kotlin-plugin-compose = { group = "org.jetbrains.kotlin", name = "compose-compil
 # For Gradle integration tests to make sure we stay compatible with 1.5.0
 kotlin-plugin-min = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin-min" }
 kotlin-plugin-max = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin-max" }
-kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" } # the Kotlin plugin resolves the version
-kotlin-stdlib-common = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-common", version.ref = "kotlin-stdlib" }
-kotlin-stdlib-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin-stdlib" }
-kotlin-stdlib-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-js", version.ref = "kotlin-stdlib" }
-kotlin-stdlib-wasm-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-wasm-js", version.ref = "kotlin-stdlib" }
-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" } # the Kotlin plugin resolves the version
-kotlin-test-js = { group = "org.jetbrains.kotlin", name = "kotlin-test-js" } # the Kotlin plugin resolves the version
-kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit" } # the Kotlin plugin resolves the version
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" } # use same version as apiVersion
+kotlin-stdlib-common = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-common" } # use same version as apiVersion
+kotlin-stdlib-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib" } # use same version as apiVersion
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" } # use same version as apiVersion
+kotlin-test-js = { group = "org.jetbrains.kotlin", name = "kotlin-test-js" } # use same version as apiVersion
+kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit" } # use same version as apiVersion
+# Kotlin/JS has no apiVersion:
+# The Kotlin/JS standard library has an older version (2.0.20-release-360) than the compiler (2.1.0). Such a configuration is not supported.
+# Please, make sure that the standard library has the version in the range [2.1.0 .. 2.1.255]. Adjust your project's settings if necessary.
+kotlin-stdlib-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-js", version.ref = "kotlin-plugin" }
+kotlin-stdlib-wasm-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-wasm-js", version.ref = "kotlin-plugin"  }
 kotlinx-benchmark-runtime = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.8"
 kotlinx-benchmark = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin:0.4.12"
+kotlinx-browser = "org.jetbrains.kotlinx:kotlinx-browser:0.2"
 androidx-benchmark-macro = "androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha16"
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx2", version.ref = "kotlinx-coroutines" }

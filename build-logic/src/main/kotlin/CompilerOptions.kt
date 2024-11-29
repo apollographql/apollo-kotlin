@@ -1,7 +1,7 @@
-
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
+import org.gradle.api.artifacts.ExternalDependency
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
@@ -29,6 +29,7 @@ fun KotlinCommonCompilerOptions.configure(target: Int, kotlinCompilerOptions: Ko
       // D8 can dex Java17 bytecode
       17
     }
+
     else -> target
   }
 
@@ -67,7 +68,7 @@ fun KotlinCommonCompilerOptions.configure(target: Int, kotlinCompilerOptions: Ko
 }
 
 private fun Int.toJvmTarget(): JvmTarget {
-  return when(this) {
+  return when (this) {
     8 -> JvmTarget.JVM_1_8
     else -> JvmTarget.fromTarget(this.toString())
   }
@@ -107,14 +108,20 @@ val Project.androidExtensionOrNull: BaseExtension?
 
 fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptions: KotlinCompilerOptions) {
   @Suppress("NAME_SHADOWING")
-  val jvmTarget = jvmTarget?: 8
+  val jvmTarget = jvmTarget ?: 8
 
   kotlinExtensionOrNull?.forEachCompilerOptions { isAndroid ->
     configure(jvmTarget, kotlinCompilerOptions, isAndroid)
   }
   project.tasks.withType(JavaCompile::class.java).configureEach {
     // For JVM only modules, this dictates the "org.gradle.jvm.version" Gradle attribute
-    options.release.set(jvmTarget)
+    if (androidExtensionOrNull == null) {
+      options.release.set(jvmTarget)
+    } else {
+      // Do not use options.release - see https://issuetracker.google.com/issues/278800528
+      sourceCompatibility = "$jvmTarget"
+      targetCompatibility = "$jvmTarget"
+    }
   }
   androidExtensionOrNull?.run {
     compileOptions {
@@ -141,6 +148,7 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptio
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
   }
 
+  kotlinExtensionOrNull?.coreLibrariesVersion = "${kotlinCompilerOptions.version.version}.0"
   /**
    * Required because of:
    *
