@@ -1,18 +1,34 @@
 package com.apollographql.apollo.cache.normalized.sql
 
+import app.cash.sqldelight.db.SqlDriver
 import com.apollographql.apollo.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo.cache.normalized.api.ApolloCacheHeaders.EVICT_AFTER_READ
 import com.apollographql.apollo.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo.cache.normalized.api.CacheKey
 import com.apollographql.apollo.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo.cache.normalized.api.Record
+import com.apollographql.apollo.cache.normalized.sql.internal.JsonRecordDatabase
 import com.apollographql.apollo.cache.normalized.sql.internal.RecordDatabase
+import com.apollographql.apollo.cache.normalized.sql.internal.checkDatabase
+import com.apollographql.apollo.cache.normalized.sql.internal.json.JsonDatabase
 import com.apollographql.apollo.exception.apolloExceptionHandler
 import kotlin.reflect.KClass
 
 class SqlNormalizedCache internal constructor(
-    private val recordDatabase: RecordDatabase,
+    private val driver: SqlDriver,
+    doChecks: Boolean
 ) : NormalizedCache() {
+
+  constructor(driver: SqlDriver): this(driver, true)
+
+  private val recordDatabase: RecordDatabase
+
+  init {
+    if (doChecks) {
+      checkDatabase(driver)
+    }
+    recordDatabase = JsonRecordDatabase(JsonDatabase(driver).jsonQueries)
+  }
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.MEMORY_CACHE_ONLY)) {
@@ -211,5 +227,9 @@ class SqlNormalizedCache internal constructor(
     return keys.chunked(999).flatMap { chunkedKeys ->
       recordDatabase.select(chunkedKeys)
     }
+  }
+
+  override fun close() {
+    driver.close()
   }
 }

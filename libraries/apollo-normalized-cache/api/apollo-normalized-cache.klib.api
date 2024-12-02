@@ -20,7 +20,7 @@ final enum class com.apollographql.apollo.cache.normalized/FetchPolicy : kotlin/
     final fun values(): kotlin/Array<com.apollographql.apollo.cache.normalized/FetchPolicy> // com.apollographql.apollo.cache.normalized/FetchPolicy.values|values#static(){}[0]
 }
 
-abstract interface com.apollographql.apollo.cache.normalized/ApolloStore { // com.apollographql.apollo.cache.normalized/ApolloStore|null[0]
+abstract interface com.apollographql.apollo.cache.normalized/ApolloStore : okio/Closeable { // com.apollographql.apollo.cache.normalized/ApolloStore|null[0]
     abstract val changedKeys // com.apollographql.apollo.cache.normalized/ApolloStore.changedKeys|{}changedKeys[0]
         abstract fun <get-changedKeys>(): kotlinx.coroutines.flow/SharedFlow<kotlin.collections/Set<kotlin/String>> // com.apollographql.apollo.cache.normalized/ApolloStore.changedKeys.<get-changedKeys>|<get-changedKeys>(){}[0]
 
@@ -32,7 +32,6 @@ abstract interface com.apollographql.apollo.cache.normalized/ApolloStore { // co
     abstract fun <#A1: com.apollographql.apollo.api/Operation.Data> writeOptimisticUpdatesSync(com.apollographql.apollo.api/Operation<#A1>, #A1, com.benasher44.uuid/Uuid, com.apollographql.apollo.api/CustomScalarAdapters = ...): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.cache.normalized/ApolloStore.writeOptimisticUpdatesSync|writeOptimisticUpdatesSync(com.apollographql.apollo.api.Operation<0:0>;0:0;com.benasher44.uuid.Uuid;com.apollographql.apollo.api.CustomScalarAdapters){0§<com.apollographql.apollo.api.Operation.Data>}[0]
     abstract fun <#A1: kotlin/Any?> accessCache(kotlin/Function1<com.apollographql.apollo.cache.normalized.api/NormalizedCache, #A1>): #A1 // com.apollographql.apollo.cache.normalized/ApolloStore.accessCache|accessCache(kotlin.Function1<com.apollographql.apollo.cache.normalized.api.NormalizedCache,0:0>){0§<kotlin.Any?>}[0]
     abstract fun clearAll(): kotlin/Boolean // com.apollographql.apollo.cache.normalized/ApolloStore.clearAll|clearAll(){}[0]
-    abstract fun dispose() // com.apollographql.apollo.cache.normalized/ApolloStore.dispose|dispose(){}[0]
     abstract fun dump(): kotlin.collections/Map<kotlin.reflect/KClass<*>, kotlin.collections/Map<kotlin/String, com.apollographql.apollo.cache.normalized.api/Record>> // com.apollographql.apollo.cache.normalized/ApolloStore.dump|dump(){}[0]
     abstract fun remove(com.apollographql.apollo.cache.normalized.api/CacheKey, kotlin/Boolean = ...): kotlin/Boolean // com.apollographql.apollo.cache.normalized/ApolloStore.remove|remove(com.apollographql.apollo.cache.normalized.api.CacheKey;kotlin.Boolean){}[0]
     abstract fun remove(kotlin.collections/List<com.apollographql.apollo.cache.normalized.api/CacheKey>, kotlin/Boolean = ...): kotlin/Int // com.apollographql.apollo.cache.normalized/ApolloStore.remove|remove(kotlin.collections.List<com.apollographql.apollo.cache.normalized.api.CacheKey>;kotlin.Boolean){}[0]
@@ -42,6 +41,8 @@ abstract interface com.apollographql.apollo.cache.normalized/ApolloStore { // co
     abstract suspend fun <#A1: com.apollographql.apollo.api/Operation.Data> writeOptimisticUpdates(com.apollographql.apollo.api/Operation<#A1>, #A1, com.benasher44.uuid/Uuid, com.apollographql.apollo.api/CustomScalarAdapters = ..., kotlin/Boolean = ...): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.cache.normalized/ApolloStore.writeOptimisticUpdates|writeOptimisticUpdates(com.apollographql.apollo.api.Operation<0:0>;0:0;com.benasher44.uuid.Uuid;com.apollographql.apollo.api.CustomScalarAdapters;kotlin.Boolean){0§<com.apollographql.apollo.api.Operation.Data>}[0]
     abstract suspend fun publish(kotlin.collections/Set<kotlin/String>) // com.apollographql.apollo.cache.normalized/ApolloStore.publish|publish(kotlin.collections.Set<kotlin.String>){}[0]
     abstract suspend fun rollbackOptimisticUpdates(com.benasher44.uuid/Uuid, kotlin/Boolean = ...): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.cache.normalized/ApolloStore.rollbackOptimisticUpdates|rollbackOptimisticUpdates(com.benasher44.uuid.Uuid;kotlin.Boolean){}[0]
+    open fun close() // com.apollographql.apollo.cache.normalized/ApolloStore.close|close(){}[0]
+    open fun dispose() // com.apollographql.apollo.cache.normalized/ApolloStore.dispose|dispose(){}[0]
 }
 
 final class com.apollographql.apollo.cache.normalized/CacheInfo : com.apollographql.apollo.api/ExecutionContext.Element { // com.apollographql.apollo.cache.normalized/CacheInfo|null[0]

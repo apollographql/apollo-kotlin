@@ -20,6 +20,7 @@ import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlCursor
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlPreparedStatement
+import com.apollographql.apollo.cache.normalized.sql.internal.json.JsonDatabase
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -331,7 +332,7 @@ class SqlNormalizedCacheTest {
 
   @Test
   fun exceptionCallsExceptionHandler() {
-    val badCache = SqlNormalizedCache(JsonRecordDatabase(JsonQueries(BadDriver)))
+    val badCache = SqlNormalizedCache(BadDriver, doChecks = false)
     var throwable: Throwable? = null
     apolloExceptionHandler = {
       throwable = it

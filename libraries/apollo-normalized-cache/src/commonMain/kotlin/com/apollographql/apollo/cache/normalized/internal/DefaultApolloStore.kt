@@ -1,5 +1,6 @@
 package com.apollographql.apollo.cache.normalized.internal
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
@@ -295,6 +296,20 @@ internal class DefaultApolloStore(
     }
   }
 
-  override fun dispose() {}
+  @Deprecated("Use close instead", ReplaceWith("close()"))
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
+  override fun dispose() {
+    close()
+  }
+
+  override fun close() {
+    lock.write {
+      var cache: NormalizedCache? = this.cache
+      while (cache != null) {
+        cache.close()
+        cache = cache.nextCache
+      }
+    }
+  }
 }
 

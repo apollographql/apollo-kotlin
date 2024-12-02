@@ -28,7 +28,7 @@ abstract class com.apollographql.apollo.cache.normalized.api/CacheKeyResolver : 
     open fun listOfCacheKeysForField(com.apollographql.apollo.api/CompiledField, com.apollographql.apollo.api/Executable.Variables): kotlin.collections/List<com.apollographql.apollo.cache.normalized.api/CacheKey?>? // com.apollographql.apollo.cache.normalized.api/CacheKeyResolver.listOfCacheKeysForField|listOfCacheKeysForField(com.apollographql.apollo.api.CompiledField;com.apollographql.apollo.api.Executable.Variables){}[0]
 }
 
-abstract class com.apollographql.apollo.cache.normalized.api/NormalizedCache : com.apollographql.apollo.cache.normalized.api/ReadOnlyNormalizedCache { // com.apollographql.apollo.cache.normalized.api/NormalizedCache|null[0]
+abstract class com.apollographql.apollo.cache.normalized.api/NormalizedCache : com.apollographql.apollo.cache.normalized.api/ReadOnlyNormalizedCache, okio/Closeable { // com.apollographql.apollo.cache.normalized.api/NormalizedCache|null[0]
     constructor <init>() // com.apollographql.apollo.cache.normalized.api/NormalizedCache.<init>|<init>(){}[0]
 
     final var nextCache // com.apollographql.apollo.cache.normalized.api/NormalizedCache.nextCache|{}nextCache[0]
@@ -40,6 +40,7 @@ abstract class com.apollographql.apollo.cache.normalized.api/NormalizedCache : c
     abstract fun remove(com.apollographql.apollo.cache.normalized.api/CacheKey, kotlin/Boolean): kotlin/Boolean // com.apollographql.apollo.cache.normalized.api/NormalizedCache.remove|remove(com.apollographql.apollo.cache.normalized.api.CacheKey;kotlin.Boolean){}[0]
     abstract fun remove(kotlin/String): kotlin/Int // com.apollographql.apollo.cache.normalized.api/NormalizedCache.remove|remove(kotlin.String){}[0]
     final fun chain(com.apollographql.apollo.cache.normalized.api/NormalizedCache): com.apollographql.apollo.cache.normalized.api/NormalizedCache // com.apollographql.apollo.cache.normalized.api/NormalizedCache.chain|chain(com.apollographql.apollo.cache.normalized.api.NormalizedCache){}[0]
+    open fun close() // com.apollographql.apollo.cache.normalized.api/NormalizedCache.close|close(){}[0]
 
     final object Companion { // com.apollographql.apollo.cache.normalized.api/NormalizedCache.Companion|null[0]
         final fun patternToRegex(kotlin/String): kotlin.text/Regex // com.apollographql.apollo.cache.normalized.api/NormalizedCache.Companion.patternToRegex|patternToRegex(kotlin.String){}[0]

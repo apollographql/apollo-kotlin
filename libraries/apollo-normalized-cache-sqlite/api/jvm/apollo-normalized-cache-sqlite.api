@@ -1,5 +1,7 @@
 public final class com/apollographql/apollo/cache/normalized/sql/SqlNormalizedCache : com/apollographql/apollo/cache/normalized/api/NormalizedCache {
+	public fun <init> (Lapp/cash/sqldelight/db/SqlDriver;)V
 	public fun clearAll ()V
+	public fun close ()V
 	public fun dump ()Ljava/util/Map;
 	public fun loadRecord (Ljava/lang/String;Lcom/apollographql/apollo/cache/normalized/api/CacheHeaders;)Lcom/apollographql/apollo/cache/normalized/api/Record;
 	public fun loadRecords (Ljava/util/Collection;Lcom/apollographql/apollo/cache/normalized/api/CacheHeaders;)Ljava/util/Collection;

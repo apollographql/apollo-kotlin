@@ -1,7 +1,8 @@
-public abstract interface class com/apollographql/apollo/cache/normalized/ApolloStore {
+public abstract interface class com/apollographql/apollo/cache/normalized/ApolloStore : java/io/Closeable {
 	public abstract fun accessCache (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public abstract fun clearAll ()Z
-	public abstract fun dispose ()V
+	public fun close ()V
+	public fun dispose ()V
 	public abstract fun dump ()Ljava/util/Map;
 	public abstract fun getChangedKeys ()Lkotlinx/coroutines/flow/SharedFlow;
 	public abstract fun normalize (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/Operation$Data;Lcom/apollographql/apollo/api/CustomScalarAdapters;)Ljava/util/Map;
