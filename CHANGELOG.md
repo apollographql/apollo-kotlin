@@ -5,6 +5,8 @@ Change Log
 
 _2024-11-04_
 
+* Kotlin 2.1.0 means you'll need KGP 2.1.0 to consume [native](https://github.com/JetBrains/kotlin/blob/8add2e3b98904f34ce5db575e9543cb3d3c9ec0b/compiler/util-klib/KotlinAbiVersionBumpHistory.md?plain=1#L3-L5) (and maybe JS?) libs.
+
 ## Ktor 3.0.0
 
 Version 4.1.0 updates usages of Ktor from 2.3.11 to 3.0.0:
