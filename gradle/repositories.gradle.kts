@@ -2,14 +2,31 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
   it.apply {
     // Uncomment this one to use the Kotlin "dev" repository
     // maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/") }
+    // Uncomment this one to use the Sonatype OSSRH snapshots repository
+    // maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
 
     mavenCentral()
     exclusiveContent {
       forRepository(::google)
       filter {
-        includeModuleByRegex("com\\.android.*", ".*")
+        includeGroup("com.android")
+        includeGroup("com.android.library")
+        includeGroup("com.android.application")
+        includeGroup("com.android.databinding")
+        includeGroup("com.android.lint")
+        includeGroup("com.google.testing.platform")
+        /*
+         * The com.android.tools groupId is verbose because we don't want to clash with com.android.tools:r8 in the raw repository
+         */
+        includeModule("com.android.tools", "sdk-common")
+        includeModule("com.android.tools", "sdklib")
+        includeModule("com.android.tools", "repository")
+        includeModule("com.android.tools", "common")
+        includeModule("com.android.tools", "dvlib")
+        includeModule("com.android.tools", "annotations")
+        includeModule("com.android.tools", "play-sdk-proto")
+        includeGroupByRegex("com\\.android\\.tools\\..*")
         includeModuleByRegex("androidx\\..*", ".*")
-        includeModuleByRegex("com.google.testing.platform", ".*")
       }
     }
 
@@ -33,6 +50,10 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
 
         // For org.jetbrains.intellij.platform
         includeModule("org.jetbrains.intellij.platform", "intellij-platform-gradle-plugin")
+
+        // For org.jetbrains.grammarkit
+        includeModule("org.jetbrains.grammarkit", "org.jetbrains.grammarkit.gradle.plugin")
+        includeModule("org.jetbrains.intellij.plugins", "gradle-grammarkit-plugin")
       }
     }
   }

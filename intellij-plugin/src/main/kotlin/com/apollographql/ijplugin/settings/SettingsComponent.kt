@@ -13,7 +13,6 @@ import javax.swing.JCheckBox
 import javax.swing.JComponent
 import javax.swing.JPanel
 
-
 class SettingsComponent(private val project: Project) {
   private val propertyGraph = PropertyGraph()
   private val automaticCodegenTriggeringProperty = propertyGraph.property(false)
@@ -100,10 +99,13 @@ class SettingsComponent(private val project: Project) {
         }
       }
     }
-    row {
-      checkBox(ApolloBundle.message("settings.telemetry.telemetryEnabled.text"))
-          .comment(ApolloBundle.message("settings.telemetry.telemetryEnabled.comment"))
-          .bindSelected(telemetryEnabledProperty)
+
+    group(ApolloBundle.message("settings.telemetry.telemetryEnabled.title")) {
+      row {
+        checkBox(ApolloBundle.message("settings.telemetry.telemetryEnabled.text"))
+            .comment(ApolloBundle.message("settings.telemetry.telemetryEnabled.comment"))
+            .bindSelected(telemetryEnabledProperty)
+      }
     }
   }
 

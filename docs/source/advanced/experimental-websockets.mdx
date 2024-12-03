@@ -26,11 +26,93 @@ The `com.apollographql.apollo.network.websocket` implementation provides the fol
 
 ## Status
 
-While they are `@ApolloExperimental`, we believe the new `.websocket` APIS to be more robust than the non-experimental `.ws` ones. They are safe to use in non-lib use cases.
+`.websocket` APIs are more robust than the non-experimental `.ws` ones, especially in scenarios involving retries/connection errors. They are safe to use in non-lib use cases.
 
-The "experimental" tag is to account for required API breaking changes based on community feedback. Ideally no change will be needed.
+The `@ApolloExperimental` annotation accounts for required API breaking changes based on community feedback. Ideally no change will be needed.
 
 After a feedback phase, the current `.ws` APIs will become deprecated and the `.websocket` one promoted to stable by removing the `@ApolloExperimental` annotations. 
+
+## Handling errors 
+
+
+### Changing the WebSocket HTTP header on Error
+
+The HTTP headers of `ApolloCall` are honored and different WebSockets are created for different header values. This means you can use an interceptor to change the header value on error:
+
+```kotlin
+private class UpdateAuthorizationHeaderInterceptor : ApolloInterceptor {
+  @OptIn(ExperimentalCoroutinesApi::class)
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    return flow {
+      // Retrieve a new access token every time
+      val request = request.newBuilder()
+          .addHttpHeader("Authorization", "Bearer ${accessToken()}")
+          .build()
+
+      emitAll(chain.proceed(request))
+    }
+  }
+}
+```
+
+### Changing the connectionPayload on Error
+
+The connection payload is `WsProtocol` specific and you can pass a lambda to your `WsProtocol` constructor that is evaluated every time a WebSocket needs to be created.
+
+```kotlin
+ApolloClient.Builder()
+  .httpServerUrl(mockServer.url())
+  .subscriptionNetworkTransport(
+      WebSocketNetworkTransport.Builder()
+          .serverUrl(mockServer.url())
+          .wsProtocol(GraphQLWsProtocol(
+              connectionPayload = {
+                getFreshConnectionPayload()
+              }
+          ))
+          .build()
+  )
+  .build()
+```
+
+### retryOnErrorInterceptor
+
+By default, `ApolloClient` does not retry. You can override that behaviour with `retryOnErrorInterceptor`. You can combine that interceptor with the [`UpdateAuthorizationHeaderInterceptor`](#changing-the-websocket-http-header-on-error):
+
+```kotlin
+private object RetryException : Exception()
+
+private class RetryOnErrorInterceptor : ApolloInterceptor {
+    override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+      var attempt = 0
+      return flow {
+        val request =  request.newBuilder()
+                .addHttpHeader("Authorization", "Bearer ${accessToken()}")
+                .build()
+    
+        emitAll(chain.proceed(request))
+      }.onEach {
+        when (val exception = it.exception) {
+          is ApolloWebSocketClosedException -> {
+            if (exception.code == 1002 && exception.reason == "unauthorized") {
+              attempt = 0 // retry immediately
+              throw RetryException
+            }
+          }
+          is ApolloNetworkException -> {
+            // Retry all network exceptions
+            throw RetryException
+          }
+          else -> {
+            // Terminate the subscription
+          }
+        }
+      }.retryWhen { cause, _ ->
+        cause is RetryException
+      }
+    }
+}
+```
 
 ## Migration guide
 

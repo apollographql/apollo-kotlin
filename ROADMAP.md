@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2024-11-14**
+**Last updated: 2024-11-28**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -33,6 +33,7 @@ _This is currently available as an experimental feature.  We will release a stab
 - UNKNOWN__ sealed hierarchy.
 - Project isolation compatibility for the Gradle plugin (might work already but at least requires some tests).
 - Stable Jetpack Compose extensions - user feedback is critical here, please do try out the experimental extensions and let us know what's working and what could be improved!
+- Rich schema authoring experience for the IntelliJ plugin
 
 ## Version 3 releases
 

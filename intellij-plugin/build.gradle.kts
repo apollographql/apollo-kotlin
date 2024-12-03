@@ -19,6 +19,7 @@ plugins {
   id("org.jetbrains.kotlin.jvm")
   id("org.jetbrains.intellij.platform")
   alias(libs.plugins.apollo.published)
+  alias(libs.plugins.grammarkit)
 }
 
 commonSetup()
@@ -27,6 +28,8 @@ commonSetup()
 repositories {
   // Uncomment this one to use the Kotlin "dev" repository
   // maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/") }
+  // Uncomment this one to use the Sonatype OSSRH snapshots repository
+  // maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
   mavenCentral()
 
   intellijPlatform {
@@ -90,6 +93,12 @@ tasks {
       showStandardStreams = true
     }
     inputs.files(apolloDependencies)
+  }
+
+  generateLexer {
+    purgeOldFiles.set(true)
+    sourceFile.set(file("src/main/grammars/ApolloGraphQLLexer.flex"))
+    targetOutputDir.set(file("src/main/java/com/apollographql/ijplugin/psi"))
   }
 }
 
@@ -190,7 +199,8 @@ intellijPlatform {
     version.set(project.version.toString())
     ideaVersion {
       sinceBuild = properties("pluginSinceBuild")
-      untilBuild = properties("pluginUntilBuild")
+      // No untilBuild specified, the plugin wants to be compatible with all future versions
+      untilBuild = provider { null }
     }
     // Extract the <!-- Plugin description --> section from README.md and provide it to the plugin's manifest
     description.set(

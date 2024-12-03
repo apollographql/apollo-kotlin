@@ -13,6 +13,8 @@ interface HttpInterceptorChain {
 
 interface HttpInterceptor {
   suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse
+
+  // TODO: remove dispose
   fun dispose() {}
 }
 

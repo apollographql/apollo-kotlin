@@ -1,6 +1,9 @@
 package com.apollographql.apollo.network.websocket
 
 import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo.exception.DefaultApolloException
 import com.apollographql.apollo.network.toNSData
 import kotlinx.atomicfu.atomic
@@ -8,6 +11,7 @@ import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 import kotlinx.cinterop.convert
 import okio.ByteString.Companion.toByteString
+import okio.internal.commonToUtf8String
 import platform.Foundation.NSData
 import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSOperationQueue
@@ -23,6 +27,7 @@ import platform.Foundation.NSURLSessionWebSocketTask
 import platform.Foundation.setHTTPMethod
 import platform.Foundation.setValue
 import platform.darwin.NSObject
+import platform.posix.ENOTCONN
 
 internal class AppleWebSocketEngine : WebSocketEngine {
   private val delegate = Delegate()
@@ -126,7 +131,13 @@ internal class AppleWebSocket(
     nsurlSessionWebSocketTask.receiveMessageWithCompletionHandler { message, nsError ->
       if (nsError != null) {
         if (disposed.compareAndSet(expect = false, update = true)) {
-          listener.onError(DefaultApolloException("Error reading websocket: ${nsError.localizedDescription}"))
+          val exception = if (nsError.domain == "NSPOSIXErrorDomain" && nsError.code.toLong() == ENOTCONN.toLong()) {
+            ApolloWebSocketClosedException(nsurlSessionWebSocketTask.closeCode.convert(), nsurlSessionWebSocketTask.closeReason?.toByteString()
+                ?.toByteArray()?.commonToUtf8String())
+          } else {
+            ApolloNetworkException("Error reading websocket: ${nsError.localizedDescription}", platformCause = nsError)
+          }
+          listener.onError(exception)
         }
       } else if (message != null) {
         when (message.type) {

@@ -15,6 +15,7 @@
   <depends>org.toml.lang</depends>
   <depends>com.intellij.modules.json</depends>
   <depends optional="true" config-file="com.apollographql.ijplugin-android.xml">org.jetbrains.android</depends>
+  <depends optional="true" config-file="com.apollographql.ijplugin-ultimate.xml">com.intellij.modules.ultimate</depends>
 
   <resource-bundle>messages.ApolloBundle</resource-bundle>
 

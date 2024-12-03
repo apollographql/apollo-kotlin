@@ -3,6 +3,8 @@ package com.apollographql.ijplugin.project
 import com.apollographql.ijplugin.codegen.ApolloCodegenService
 import com.apollographql.ijplugin.gradle.GradleToolingModelService
 import com.apollographql.ijplugin.graphql.GraphQLConfigService
+import com.apollographql.ijplugin.lsp.ApolloLspService
+import com.apollographql.ijplugin.lsp.isLspAvailable
 import com.apollographql.ijplugin.settings.ProjectSettingsService
 import com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsService
 import com.apollographql.ijplugin.studio.sandbox.SandboxService
@@ -12,6 +14,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManagerListener
+import com.intellij.util.application
 
 internal class ApolloProjectManagerListener : ProjectManagerListener {
   override fun projectOpened(project: Project) {
@@ -28,6 +31,9 @@ internal class ApolloProjectManagerListener : ProjectManagerListener {
       project.service<SandboxService>()
       project.service<FieldInsightsService>()
       project.service<TelemetryService>()
+      if (isLspAvailable()) {
+        application.service<ApolloLspService>()
+      }
 
       project.apolloProjectService.isInitialized = true
     }

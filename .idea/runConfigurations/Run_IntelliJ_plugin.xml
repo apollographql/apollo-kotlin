@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run IntelliJ plugin" type="GradleRunConfiguration" factoryName="Gradle">
-    <log_file alias="idea.log" path="$PROJECT_DIR$/intellij-plugin/build/idea-sandbox/IC-2024.1.4/log_runLocalIde/idea.log" />
+    <log_file alias="idea.log" path="$PROJECT_DIR$/intellij-plugin/build/idea-sandbox/*/log_runLocalIde/idea.log" />
     <ExternalSystemSettings>
       <option name="env">
         <map>

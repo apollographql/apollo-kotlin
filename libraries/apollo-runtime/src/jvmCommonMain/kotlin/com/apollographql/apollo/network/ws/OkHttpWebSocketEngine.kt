@@ -13,10 +13,23 @@ import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okio.ByteString
 
+/**
+ * Creates a new [DefaultWebSocketEngine] from [webSocketFactory]
+ *
+ * This constructor accepts a function so that OkHttp is initialized from a background thread
+ */
 actual class DefaultWebSocketEngine(
-    private val webSocketFactory: WebSocket.Factory,
+    webSocketFactory: () -> WebSocket.Factory,
 ) : WebSocketEngine {
+  private val webSocketFactory by lazy { webSocketFactory() }
 
+  /**
+   * Creates a new [DefaultWebSocketEngine] from [webSocketFactory]
+   *
+   * Prefer using the factory function accepting a function so that OkHttp is initialized from a background thread.
+   * See https://github.com/square/okhttp/pull/8248
+   */
+  constructor(webSocketFactory: WebSocket.Factory): this({webSocketFactory})
   actual constructor() : this(
       webSocketFactory = defaultOkHttpClientBuilder.build()
   )

@@ -2,7 +2,6 @@ package test.network
 
 import app.cash.turbine.test
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.Operation
@@ -13,13 +12,10 @@ import com.apollographql.apollo.exception.DefaultApolloException
 import com.apollographql.apollo.exception.SubscriptionOperationException
 import com.apollographql.apollo.interceptor.ApolloInterceptor
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo.interceptor.RetryOnErrorInterceptor
+import com.apollographql.apollo.network.websocket.GraphQLWsProtocol
 import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo.network.websocket.closeConnection
-import test.FooSubscription
-import test.FooSubscription.Companion.completeMessage
-import test.FooSubscription.Companion.errorMessage
-import test.FooSubscription.Companion.nextMessage
-import test.network.connectionAckMessage
 import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.CloseFrame
 import com.apollographql.mockserver.MockServer
@@ -33,12 +29,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.retryWhen
 import okio.use
+import test.FooSubscription
+import test.FooSubscription.Companion.completeMessage
+import test.FooSubscription.Companion.errorMessage
+import test.FooSubscription.Companion.nextMessage
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -228,19 +228,9 @@ class WebSocketNetworkTransportTest {
                   webSocketBody.enqueueMessage(CloseFrame(3666, "closed"))
 
                   awaitItem().exception.apply {
-                    @Suppress("DEPRECATION")
-                    when (com.apollographql.apollo.testing.platform()) {
-                      com.apollographql.apollo.testing.Platform.Native -> {
-                        assertIs<DefaultApolloException>(this)
-                        assertTrue(message?.contains("Error reading websocket") == true)
-                      }
-
-                      else -> {
-                        assertIs<ApolloWebSocketClosedException>(this)
-                        assertEquals(3666, code)
-                        assertEquals("closed", reason)
-                      }
-                    }
+                    assertIs<ApolloWebSocketClosedException>(this)
+                    assertEquals(3666, code)
+                    assertEquals("closed", reason)
                   }
 
                   awaitComplete()
@@ -291,19 +281,9 @@ class WebSocketNetworkTransportTest {
           awaitItem()
           serverWriter.enqueueMessage(CloseFrame(1001, "flowThrowsIfNoReconnect"))
           awaitItem().exception.apply {
-            @Suppress("DEPRECATION")
-            when (com.apollographql.apollo.testing.platform()) {
-              com.apollographql.apollo.testing.Platform.Native -> {
-                assertIs<DefaultApolloException>(this)
-                assertTrue(message?.contains("Error reading websocket") == true)
-              }
-
-              else -> {
-                assertIs<ApolloWebSocketClosedException>(this)
-                assertEquals(1001, code)
-                assertEquals("flowThrowsIfNoReconnect", reason)
-              }
-            }
+            assertIs<ApolloWebSocketClosedException>(this)
+            assertEquals(1001, code)
+            assertEquals("flowThrowsIfNoReconnect", reason)
           }
           awaitComplete()
         }
@@ -376,16 +356,24 @@ class WebSocketNetworkTransportTest {
   }
 
   @Test
-  fun canChangeHeadersInInterceptor() = runTest {
+  fun canChangeHeadersAndConnectionPayloadOnError() = runTest {
     MockServer().use { mockServer ->
+      var connectionPayload = "init0"
       ApolloClient.Builder()
           .httpServerUrl(mockServer.url())
           .subscriptionNetworkTransport(
               WebSocketNetworkTransport.Builder()
                   .serverUrl(mockServer.url())
+                  .wsProtocol(GraphQLWsProtocol(
+                      connectionPayload = {
+                        connectionPayload.also {
+                          connectionPayload = "init1"
+                        }
+                      }
+                  ))
                   .build()
           )
-          .addInterceptor(MyInterceptor())
+          .retryOnErrorInterceptor(UpdateAuthorizationHeaderOnError())
           .build()
           .use { apolloClient ->
             val serverWriter0 = mockServer.enqueueWebSocket()
@@ -394,7 +382,11 @@ class WebSocketNetworkTransportTest {
                 .test(timeout = 300.seconds) {
                   val serverReader0 = mockServer.awaitWebSocketRequest()
                   assertEquals("0", serverReader0.headers.headerValueOf("authorization"))
-                  serverReader0.awaitMessage()
+                  serverReader0.awaitMessage().apply {
+                    assertIs<TextMessage>(this)
+                    assertEquals("{\"type\":\"connection_init\",\"payload\":\"init0\"}", this.text)
+                  }
+
                   serverWriter0.enqueueMessage(connectionAckMessage())
                   val id0 = serverReader0.awaitSubscribe()
                   serverWriter0.enqueueMessage(nextMessage(id0, 0))
@@ -407,11 +399,14 @@ class WebSocketNetworkTransportTest {
                   val serverWriter1 = mockServer.enqueueWebSocket()
 
                   // Send an error to the interceptor, should retry the chain under the hood
-                  serverWriter0.enqueueMessage(nextMessage(id0, "unauthorized"))
+                  serverWriter0.enqueueMessage(CloseFrame(1002, "unauthorized"))
 
                   val serverReader1 = mockServer.awaitWebSocketRequest()
                   assertEquals("1", serverReader1.headers.headerValueOf("authorization"))
-                  serverReader1.awaitMessage()
+                  serverReader1.awaitMessage().apply {
+                    assertIs<TextMessage>(this)
+                    assertEquals("{\"type\":\"connection_init\",\"payload\":\"init1\"}", this.text)
+                  }
                   serverWriter1.enqueueMessage(connectionAckMessage())
                   val id1 = serverReader1.awaitSubscribe()
                   serverWriter1.enqueueMessage(nextMessage(id1, 1))
@@ -459,23 +454,28 @@ class WebSocketNetworkTransportTest {
 
   private object RetryException : Exception()
 
-  private class MyInterceptor : ApolloInterceptor {
+  private class UpdateAuthorizationHeaderOnError : ApolloInterceptor {
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
       var counter = -1
 
       return flow {
         counter++
-        emit(
-            request.newBuilder()
+        val request =  request.newBuilder()
                 .addHttpHeader("Authorization", counter.toString())
                 .build()
-        )
-      }.flatMapConcat {
-        chain.proceed(it)
+
+        emitAll(chain.proceed(request))
       }.onEach {
-        if (it.errors.orEmpty().isNotEmpty()) {
-          throw RetryException
+        when (val exception = it.exception) {
+          is ApolloWebSocketClosedException -> {
+            if (exception.code == 1002 && exception.reason == "unauthorized") {
+              throw RetryException
+            }
+          }
+          else -> {
+            // Terminate the subscription if the exception is terminal or retry
+          }
         }
       }.retryWhen { cause, _ ->
         cause is RetryException

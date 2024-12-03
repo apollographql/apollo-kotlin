@@ -96,10 +96,16 @@ jobs:
       version: ${{ steps.properties.outputs.version }}
     steps:
       # Free GitHub Actions Environment Disk Space
-      - name: Maximize Build Space
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/ghc
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be #v1.3.1
+        with:
+          tool-cache: false
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
 
       # Check out current repository
       - name: Fetch Sources
@@ -151,6 +157,8 @@ jobs:
 
       # Run Verify Plugin task and IntelliJ Plugin Verifier tool
       - name: Run Plugin Verification tasks
+        env:
+          JAVA_TOOL_OPTIONS: -Dlogback.configurationFile=${{ github.workspace }}/intellij-plugin/logback.xml
         run: ./gradlew :intellij-plugin:verifyPlugin -Pplugin.verifier.home.dir=${{ steps.properties.outputs.pluginVerifierHomeDir }}
 
       # Collect Plugin Verifier Result

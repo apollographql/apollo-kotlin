@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("java-gradle-plugin")
@@ -8,7 +10,8 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.gradle",
-    jvmTarget = 11 // AGP requires 11
+    jvmTarget = 11, // AGP requires 11
+    kotlinCompilerOptions = KotlinCompilerOptions(KotlinVersion.KOTLIN_1_9)
 )
 
 dependencies {
