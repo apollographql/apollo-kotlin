@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.settings
 
+import com.android.tools.idea.concurrency.executeOnPooledThread
 import com.apollographql.ijplugin.gradle.ApolloKotlinService
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.generateServiceName
@@ -12,6 +13,7 @@ import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.StoragePathMacros
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.guessProjectDir
 import com.intellij.util.xmlb.XmlSerializerUtil
 import com.intellij.util.xmlb.annotations.Attribute
 import com.intellij.util.xmlb.annotations.Transient
@@ -77,6 +79,34 @@ class ProjectSettingsService(private val project: Project) : PersistentStateComp
       _state.apolloKotlinServices = value
     }
 
+  override var lspPassPathToSuperGraphYaml: Boolean
+    get() = _state.lspPassPathToSuperGraphYaml
+    set(value) {
+      _state.lspPassPathToSuperGraphYaml = value
+      notifySettingsChanged()
+    }
+
+  override var lspPathToSuperGraphYaml: String
+    get() = _state.lspPathToSuperGraphYaml
+    set(value) {
+      _state.lspPathToSuperGraphYaml = value
+      notifySettingsChanged()
+    }
+
+  override var lspPassAdditionalArguments: Boolean
+    get() = _state.lspPassAdditionalArguments
+    set(value) {
+      _state.lspPassAdditionalArguments = value
+      notifySettingsChanged()
+    }
+
+  override var lspAdditionalArguments: String
+    get() = _state.lspAdditionalArguments
+    set(value) {
+      _state.lspAdditionalArguments = value
+      notifySettingsChanged()
+    }
+
   private var lastNotifiedState: ProjectSettingsState? = null
 
   private fun notifySettingsChanged() {
@@ -96,6 +126,17 @@ class ProjectSettingsService(private val project: Project) : PersistentStateComp
     if (telemetryInstanceId.isEmpty()) {
       telemetryInstanceId = UUID.randomUUID().toString()
     }
+
+    if (lspPathToSuperGraphYaml.isEmpty()) {
+      executeOnPooledThread {
+        val superGraphYamlFilePath = project.guessProjectDir()?.findChild("supergraph.yaml")?.path
+        if (superGraphYamlFilePath != null) {
+          lspPathToSuperGraphYaml = superGraphYamlFilePath
+        } else {
+          lspPassPathToSuperGraphYaml = false
+        }
+      }
+    }
   }
 }
 
@@ -111,6 +152,10 @@ interface ProjectSettingsState {
    * @see com.apollographql.ijplugin.gradle.GradleToolingModelService
    */
   var apolloKotlinServices: List<ApolloKotlinService>
+  var lspPassPathToSuperGraphYaml: Boolean
+  var lspPathToSuperGraphYaml: String
+  var lspPassAdditionalArguments: Boolean
+  var lspAdditionalArguments: String
 }
 
 /**
@@ -150,6 +195,10 @@ data class ProjectSettingsStateImpl(
     override var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration> = emptyList(),
     override var telemetryInstanceId: String = "",
     override var apolloKotlinServices: List<ApolloKotlinService> = emptyList(),
+    override var lspPassPathToSuperGraphYaml: Boolean = true,
+    override var lspPathToSuperGraphYaml: String = "",
+    override var lspPassAdditionalArguments: Boolean = false,
+    override var lspAdditionalArguments: String = "",
 ) : ProjectSettingsState
 
 

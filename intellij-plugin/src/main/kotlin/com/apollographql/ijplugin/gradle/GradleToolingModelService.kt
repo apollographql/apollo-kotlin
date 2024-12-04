@@ -9,12 +9,12 @@ import com.apollographql.ijplugin.settings.ProjectSettingsState
 import com.apollographql.ijplugin.settings.projectSettingsState
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.dispose
+import com.apollographql.ijplugin.util.executeOnPooledThread
 import com.apollographql.ijplugin.util.isNotDisposed
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
 import com.apollographql.ijplugin.util.newDisposable
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId
@@ -144,7 +144,7 @@ class GradleToolingModelService(
       return
     }
 
-    fetchToolingModelsTask = FetchToolingModelsTask().also { ApplicationManager.getApplication().executeOnPooledThread(it) }
+    fetchToolingModelsTask = FetchToolingModelsTask().also { executeOnPooledThread { it.run() } }
   }
 
   private inner class FetchToolingModelsTask : Runnable {

@@ -1,12 +1,12 @@
 package com.apollographql.ijplugin.ui.tree
 
 import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.util.executeOnPooledThread
 import com.apollographql.ijplugin.util.logw
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.treeStructure.NullNode
 import com.intellij.ui.treeStructure.SimpleNode
-import org.jetbrains.kotlin.idea.util.application.executeOnPooledThread
 
 abstract class DynamicNode(
     project: Project,

@@ -1,12 +1,12 @@
 package com.apollographql.ijplugin.studio.sandbox
 
+import com.apollographql.ijplugin.util.executeOnPooledThread
 import com.apollographql.ijplugin.util.logd
 import com.intellij.lang.jsgraphql.GraphQLFileType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionToolbar
 import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -44,7 +44,7 @@ class SandboxService(
         object : FileEditorManagerListener {
           override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
             logd("$file")
-            ApplicationManager.getApplication().executeOnPooledThread {
+            executeOnPooledThread {
               invokeLater {
                 addOpenInSandboxAction(file)
               }

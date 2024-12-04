@@ -1,12 +1,16 @@
 package com.apollographql.ijplugin.util
 
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.runInEdt
+import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.util.application
+import java.util.concurrent.Callable
+import java.util.concurrent.Future
 
 fun runWriteActionInEdt(action: () -> Unit) {
-  ApplicationManager.getApplication().invokeLater {
-    ApplicationManager.getApplication().runWriteAction<Unit>(action)
+  runInEdt {
+    runWriteAction { action() }
   }
 }
 
@@ -18,3 +22,6 @@ fun isProcessCanceled(): Boolean {
   }
   return false
 }
+
+inline fun <T> executeOnPooledThread(crossinline action: () -> T): Future<T> =
+  application.executeOnPooledThread(Callable { action() })
