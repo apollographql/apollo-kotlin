@@ -1,8 +1,10 @@
 package com.apollographql.ijplugin.rover
 
+import com.apollographql.ijplugin.settings.projectSettingsState
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.processTools.getResultStdoutStr
 import com.intellij.execution.processTools.mapFlat
+import com.intellij.openapi.project.Project
 import kotlinx.coroutines.runBlocking
 
 object RoverHelper {
@@ -10,7 +12,23 @@ object RoverHelper {
 
   private fun getRoverExecutablePath() = "${getRoverBinDirectory()}/rover"
 
-  fun getLspCommandLine() = object : GeneralCommandLine("rover", "lsp") {
+  fun getLspCommandLine(project: Project): GeneralCommandLine = RoverCommandLine(project)
+
+  private class RoverCommandLine(project: Project) : GeneralCommandLine() {
+    init {
+      setExePath(getRoverExecutablePath())
+      setWorkDirectory(getRoverBinDirectory())
+      getEnvironment().put("RUST_BACKTRACE", "full")
+      addParameter("lsp")
+      if (project.projectSettingsState.lspPassPathToSuperGraphYaml && project.projectSettingsState.lspPathToSuperGraphYaml.isNotBlank()) {
+        addParameter("--supergraph-config")
+        addParameter(project.projectSettingsState.lspPathToSuperGraphYaml)
+      }
+      if (project.projectSettingsState.lspPassAdditionalArguments && project.projectSettingsState.lspAdditionalArguments.isNotBlank()) {
+        addParameters(project.projectSettingsState.lspAdditionalArguments.split(' '))
+      }
+    }
+
     override fun createProcess(processBuilder: ProcessBuilder): Process {
       return try {
         super.createProcess(processBuilder)
@@ -23,9 +41,6 @@ object RoverHelper {
       }
     }
   }
-      .withExePath(getRoverExecutablePath())
-      .withWorkDirectory(getRoverBinDirectory())
-      .withEnvironment("RUST_BACKTRACE", "full")
 
   sealed interface RoverStatus {
     data object NotInstalled : RoverStatus

@@ -1,11 +1,11 @@
 package com.apollographql.ijplugin.settings
 
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
+import com.intellij.util.application
 import com.intellij.util.xmlb.XmlSerializerUtil
 
 /**
@@ -16,7 +16,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
     name = "com.apollographql.ijplugin.settings.AppSettingsState",
     storages = [Storage("apollo.xml")]
 )
-class AppSettingsStateService : PersistentStateComponent<AppSettingsStateImpl>, AppSettingsState {
+class AppSettingsService : PersistentStateComponent<AppSettingsStateImpl>, AppSettingsState {
   private val _state = AppSettingsStateImpl()
 
   override fun getState(): AppSettingsStateImpl {
@@ -53,7 +53,7 @@ class AppSettingsStateService : PersistentStateComponent<AppSettingsStateImpl>, 
   private fun notifySettingsChanged() {
     if (lastNotifiedState != _state) {
       lastNotifiedState = _state.copy()
-      ApplicationManager.getApplication().messageBus.syncPublisher(AppSettingsListener.TOPIC).settingsChanged(_state)
+      application.messageBus.syncPublisher(AppSettingsListener.TOPIC).settingsChanged(_state)
     }
   }
 }
@@ -70,4 +70,4 @@ data class AppSettingsStateImpl(
     override var lspModeEnabled: Boolean = false,
 ) : AppSettingsState
 
-val appSettingsState get(): AppSettingsState = service<AppSettingsStateService>()
+val appSettingsState get(): AppSettingsState = service<AppSettingsService>()

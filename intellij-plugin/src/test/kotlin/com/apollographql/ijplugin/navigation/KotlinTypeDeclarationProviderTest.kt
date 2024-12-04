@@ -1,12 +1,12 @@
 package com.apollographql.ijplugin.navigation
 
 import com.apollographql.ijplugin.ApolloTestCase
+import com.apollographql.ijplugin.util.executeOnPooledThread
 import com.apollographql.ijplugin.util.resolveKtName
 import com.intellij.lang.jsgraphql.psi.GraphQLFragmentDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLIdentifier
 import com.intellij.lang.jsgraphql.psi.GraphQLTypeNameDefinition
 import com.intellij.lang.jsgraphql.psi.GraphQLTypedOperationDefinition
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.runReadAction
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtProperty
@@ -14,7 +14,6 @@ import org.jetbrains.kotlin.psi.KtReferenceExpression
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.util.concurrent.Callable
 
 @RunWith(JUnit4::class)
 class KotlinTypeDeclarationProviderTest : ApolloTestCase() {
@@ -38,11 +37,11 @@ class KotlinTypeDeclarationProviderTest : ApolloTestCase() {
 
     // Simulate navigation
     // XXX TypeDeclarationProvider.getSymbolTypeDeclarations() throws KtInaccessibleLifetimeOwnerAccessException when called from the EDT
-    val foundGqlDeclarationElements = ApplicationManager.getApplication().executeOnPooledThread(Callable {
+    val foundGqlDeclarationElements = executeOnPooledThread {
       runReadAction {
         kotlinTypeDeclarationProvider.getSymbolTypeDeclarations(ktElement)!!
       }
-    }).get()
+    }.get()
 
     // We want our target (gql), but also the original targets (Kotlin)
     assertTrue(foundGqlDeclarationElements.size > 1)

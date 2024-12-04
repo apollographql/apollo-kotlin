@@ -3,7 +3,8 @@ package com.apollographql.ijplugin.project
 import com.apollographql.ijplugin.codegen.ApolloCodegenService
 import com.apollographql.ijplugin.gradle.GradleToolingModelService
 import com.apollographql.ijplugin.graphql.GraphQLConfigService
-import com.apollographql.ijplugin.lsp.ApolloLspService
+import com.apollographql.ijplugin.lsp.ApolloLspAppService
+import com.apollographql.ijplugin.lsp.ApolloLspProjectService
 import com.apollographql.ijplugin.lsp.isLspAvailable
 import com.apollographql.ijplugin.settings.ProjectSettingsService
 import com.apollographql.ijplugin.studio.fieldinsights.FieldInsightsService
@@ -32,7 +33,8 @@ internal class ApolloProjectManagerListener : ProjectManagerListener {
       project.service<FieldInsightsService>()
       project.service<TelemetryService>()
       if (isLspAvailable()) {
-        application.service<ApolloLspService>()
+        project.service<ApolloLspProjectService>()
+        application.service<ApolloLspAppService>()
       }
 
       project.apolloProjectService.isInitialized = true

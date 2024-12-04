@@ -11,7 +11,6 @@ import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
 import com.intellij.history.LocalHistory
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.externalSystem.service.execution.ProgressExecutionMode
 import com.intellij.openapi.externalSystem.util.ExternalSystemUtil
@@ -27,6 +26,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.refactoring.BaseRefactoringProcessor
 import com.intellij.refactoring.ui.UsageViewDescriptorAdapter
 import com.intellij.usageView.UsageInfo
+import com.intellij.util.application
 import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtPsiFactory
@@ -113,7 +113,7 @@ abstract class ApolloMigrationRefactoringProcessor(project: Project) : BaseRefac
       }
       return usageInfos.toTypedArray()
     } finally {
-      ApplicationManager.getApplication().invokeLater({ WriteAction.run<Throwable>(::finishMigration) }, myProject.disposed)
+      application.invokeLater({ WriteAction.run<Throwable>(::finishMigration) }, myProject.disposed)
     }
   }
 

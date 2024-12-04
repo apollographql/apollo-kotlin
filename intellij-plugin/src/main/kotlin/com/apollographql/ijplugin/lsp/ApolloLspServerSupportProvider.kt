@@ -7,7 +7,7 @@ import com.apollographql.ijplugin.icons.ApolloIcons
 import com.apollographql.ijplugin.rover.RoverHelper
 import com.apollographql.ijplugin.settings.appSettingsState
 import com.apollographql.ijplugin.settings.lsp.LspSettingsConfigurable
-import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.VirtualFile
@@ -36,7 +36,7 @@ internal class ApolloLspServerSupportProvider : LspServerSupportProvider {
 
 private class ApolloLspServerDescriptor(project: Project) : ProjectWideLspServerDescriptor(project, "Apollo") {
   override fun isSupportedFile(file: VirtualFile) = file.extension in ApolloGraphQLFileType.SUPPORTED_EXTENSIONS
-  override fun createCommandLine() = RoverHelper.getLspCommandLine()
+  override fun createCommandLine() = RoverHelper.getLspCommandLine(project)
 
   override fun getLanguageId(file: VirtualFile): String {
     return "graphql"
@@ -44,8 +44,8 @@ private class ApolloLspServerDescriptor(project: Project) : ProjectWideLspServer
 }
 
 fun restartApolloLsp() {
-  invokeLater {
-    for (project in ProjectManager.getInstance().getOpenProjects()) {
+  runInEdt {
+    for (project in ProjectManager.getInstance().openProjects) {
       LspServerManager.getInstance(project).stopAndRestartIfNeeded(ApolloLspServerSupportProvider::class.java)
     }
   }

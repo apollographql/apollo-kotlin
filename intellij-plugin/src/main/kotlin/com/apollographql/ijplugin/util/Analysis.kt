@@ -1,6 +1,6 @@
 package com.apollographql.ijplugin.util
 
-import com.intellij.openapi.application.ApplicationManager
+import com.android.tools.idea.concurrency.executeOnPooledThread
 import com.intellij.openapi.application.runReadAction
 import org.jetbrains.kotlin.analysis.api.KaSession
 import org.jetbrains.kotlin.analysis.api.analyze
@@ -11,7 +11,6 @@ import org.jetbrains.kotlin.psi.KtCallElement
 import org.jetbrains.kotlin.psi.KtDeclaration
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtExpression
-import java.util.concurrent.Callable
 
 fun KtExpression.canBeNull(): Boolean? = runAnalyze(this) {
   expressionType?.nullability?.isNullable
@@ -41,11 +40,11 @@ fun KtCallElement.getParameterNames(): List<String>? {
  */
 private inline fun <R> runAnalyze(useSiteElement: KtElement, crossinline action: KaSession.() -> R): R {
   return if (isUnitTestMode()) {
-    ApplicationManager.getApplication().executeOnPooledThread(Callable {
+    executeOnPooledThread {
       runReadAction {
         analyze(useSiteElement, action)
       }
-    }).get()
+    }.get()
   } else {
     analyze(useSiteElement, action)
   }
