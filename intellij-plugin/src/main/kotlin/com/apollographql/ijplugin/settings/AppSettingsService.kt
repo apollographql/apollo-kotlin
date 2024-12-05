@@ -1,5 +1,8 @@
 package com.apollographql.ijplugin.settings
 
+import com.apollographql.ijplugin.util.isJavaPluginPresent
+import com.apollographql.ijplugin.util.isKotlinPluginPresent
+import com.apollographql.ijplugin.util.isLspAvailable
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
@@ -54,6 +57,14 @@ class AppSettingsService : PersistentStateComponent<AppSettingsStateImpl>, AppSe
     if (lastNotifiedState != _state) {
       lastNotifiedState = _state.copy()
       application.messageBus.syncPublisher(AppSettingsListener.TOPIC).settingsChanged(_state)
+    }
+  }
+
+  override fun initializeComponent() {
+    // Running in an IDE without the Java or Kotlin plugin (e.g. RustRover): the user is most likely not an Apollo Kotlin developer.
+    // In that case, the LSP mode (if available) is the best default.
+    if (isLspAvailable && (!isJavaPluginPresent || !isKotlinPluginPresent)) {
+      lspModeEnabled = true
     }
   }
 }

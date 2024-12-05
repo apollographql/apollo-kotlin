@@ -8,8 +8,8 @@
   <!-- In most cases, this should be the same list as what is listed under gradle.properties/platformPlugins -->
   <!-- See https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html#declaring-plugin-dependencies -->
   <depends>com.intellij.modules.platform</depends>
-  <depends>com.intellij.modules.java</depends>
-  <depends>org.jetbrains.kotlin</depends>
+  <depends optional="true" config-file="com.apollographql.ijplugin-java.xml">com.intellij.modules.java</depends>
+  <depends optional="true" config-file="com.apollographql.ijplugin-kotlin.xml">org.jetbrains.kotlin</depends>
   <depends>com.intellij.gradle</depends>
   <depends>com.intellij.lang.jsgraphql</depends>
   <depends>org.toml.lang</depends>
