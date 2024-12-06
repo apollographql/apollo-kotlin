@@ -17,6 +17,5 @@ apollo {
     mapScalar("Long", "kotlin.Long")
     isADependencyOf(project(":multi-module-1-child"))
     isADependencyOf(project(":multi-module-1-file-path"))
-    languageVersion.set("1.5")
   }
 }

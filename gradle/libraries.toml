@@ -36,7 +36,7 @@ kotlinx-serialization-runtime = "1.6.2"
 ksp = "2.1.0-1.0.29"
 ktor = "3.0.0"
 moshix = "0.14.1"
-node-fetch = "2.6.7"
+node-fetch = "2.7.0"
 okio = "3.9.0"
 okhttp = "4.12.0"
 rx-java2 = "2.2.21"
@@ -63,7 +63,7 @@ apollo-api = { group = "com.apollographql.apollo", name = "apollo-api", version.
 apollo-api-java = { group = "com.apollographql.apollo", name = "apollo-api-java", version.ref = "apollo" }
 apollo-httpCache = { group = "com.apollographql.apollo", name = "apollo-http-cache", version.ref = "apollo" }
 apollo-idlingresource = { group = "com.apollographql.apollo", name = "apollo-idling-resource", version.ref = "apollo" }
-apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-mockserver", version = "0.1.0" }
+apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-mockserver", version = "0.1.1-SNAPSHOT" }
 apollo-mpputils = { group = "com.apollographql.apollo", name = "apollo-mpp-utils", version.ref = "apollo" }
 apollo-normalizedcache = { group = "com.apollographql.apollo", name = "apollo-normalized-cache", version.ref = "apollo" }
 apollo-normalizedcache-incubating-snapshot = { group = "com.apollographql.cache", name = "normalized-cache-incubating", version.ref = "apollo-normalizedcache-incubating-snapshot" }
@@ -121,6 +121,7 @@ kotlin-compiletesting = { group = "dev.zacsweers.kctfork", name = "core", versio
 graphql-java = "com.graphql-java:graphql-java:20.4"
 # The main kotlin version for build-logic and Gradle tests
 kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin" }
+kotlin-plugin-annotations = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin-annotations", version.ref = "kotlin-plugin"}
 kotlin-plugin-compose = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin-plugin" }
 # For Gradle integration tests to make sure we stay compatible with 1.5.0
 kotlin-plugin-min = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin-min" }
@@ -145,7 +146,7 @@ kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coro
 kotlinx-coroutines-rx3 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx3", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
-kotlin-node = "org.jetbrains.kotlin-wrappers:kotlin-node:18.16.12-pre.634"
+kotlin-node = "org.jetbrains.kotlin-wrappers:kotlin-node:20.14.10-pre.804"
 kotlinx-serialization-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-plugin" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-runtime" }
 kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.16.3" }

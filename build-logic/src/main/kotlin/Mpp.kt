@@ -2,9 +2,9 @@
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 internal val allAppleTargets = setOf(
@@ -61,6 +61,10 @@ fun Project.configureMpp(
                 useChromeHeadless()
               }
             })
+
+            webpackTask {
+              this.args += ""
+            }
           }
         } else {
           nodejs {
@@ -72,6 +76,12 @@ fun Project.configureMpp(
             })
           }
         }
+      }
+    }
+    if (withWasm) {
+      @OptIn(ExperimentalWasmDsl::class)
+      wasmJs {
+        nodejs()
       }
     }
 
@@ -100,15 +110,6 @@ fun Project.configureMpp(
           "tvosX64" -> tvosX64()
           "tvosSimulatorArm64" -> tvosSimulatorArm64()
         }
-      }
-    }
-    if (withWasm) {
-      @OptIn(ExperimentalWasmDsl::class)
-      wasmJs {
-        /**
-         * See https://youtrack.jetbrains.com/issue/KT-63014
-         */
-        nodejs()
       }
     }
 

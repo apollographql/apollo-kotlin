@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.tooling
 
 import com.apollographql.mockserver.MockServer

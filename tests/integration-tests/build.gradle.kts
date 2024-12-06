@@ -1,4 +1,5 @@
 import com.apollographql.apollo.compiler.MANIFEST_OPERATION_OUTPUT
+import com.apollographql.apollo.compiler.MANIFEST_PERSISTED_QUERY
 
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
@@ -37,6 +38,7 @@ kotlin {
     findByName("jvmTest")?.apply {
       dependencies {
         implementation(libs.okhttp.logging)
+        implementation(libs.slf4j.simple)
       }
     }
   }
@@ -52,7 +54,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
           service("${it.name}-$extra") {
             when (it.name) {
               "httpcache" -> {
-                operationManifestFormat.set(MANIFEST_OPERATION_OUTPUT)
+                operationManifestFormat.set(MANIFEST_PERSISTED_QUERY)
                 if (generateKotlinModels) {
                   mapScalarToKotlinString("Date")
                 } else {
@@ -88,7 +90,6 @@ fun configureApollo(generateKotlinModels: Boolean) {
             this.generateKotlinModels.set(generateKotlinModels)
             generateOptionalOperationVariables.set(false)
             configureConnection(generateKotlinModels)
-            languageVersion.set("1.5")
           }
         }
     file("src/commonTest/kotlin/test").listFiles()!!
@@ -111,7 +112,6 @@ fun configureApollo(generateKotlinModels: Boolean) {
             packageName.set(it.name)
             generateOptionalOperationVariables.set(false)
             configureConnection(generateKotlinModels)
-            languageVersion.set("1.5")
           }
         }
   }

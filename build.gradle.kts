@@ -42,7 +42,6 @@ tasks.register("ciPublishSnapshot") {
   }
 }
 
-
 tasks.register("ciPublishRelease") {
   description = "Publishes all artifacts to OSSRH and the Gradle Plugin Portal"
 
@@ -117,7 +116,6 @@ tasks.named("dependencyUpdates").configure {
   }
 }
 
-rootProject.configureNode()
 rootProject.configureJapiCmp()
 
 configure<kotlinx.validation.ApiValidationExtension> {

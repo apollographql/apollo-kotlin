@@ -13,7 +13,6 @@ dependencies {
 apollo {
   service("kotlin") {
     packageName.set("com.example.kotlin")
-    languageVersion.set("1.5")
   }
   service("java") {
     packageName.set("com.example.java")

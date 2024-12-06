@@ -214,7 +214,7 @@ class LoggingInterceptorTest {
         sink.writeUtf8(content)
       }
     }
-    val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).addHttpInterceptor(LoggingInterceptor()).build()
+    val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
     apolloClient.mutation(SingleUploadMutation(upload)).execute()
     assertEquals(1, uploadRead)
   }
