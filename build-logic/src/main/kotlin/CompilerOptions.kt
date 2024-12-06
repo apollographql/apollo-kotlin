@@ -149,15 +149,7 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptio
   }
 
   kotlinExtensionOrNull?.coreLibrariesVersion = "${kotlinCompilerOptions.version.version}.0"
-  /**
-   * Required because of:
-   *
-   * > Task :apollo-runtime:compileKotlinWasmJs
-   * w: duplicate library name: kotlin
-   *
-   * (maybe https://youtrack.jetbrains.com/issue/KT-51110?)
-   */
-  allWarningsAsErrors(false)
+  allWarningsAsErrors(true)
 }
 
 fun setTestToolchain(project: Project, test: Test, javaVersion: Int) {

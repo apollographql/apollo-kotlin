@@ -31,6 +31,5 @@ apollo {
     mapScalar("Date", "kotlin.Long")
     codegenModels.set("responseBased")
     sealedClassesForEnumsMatching.set(setOf("StarshipType"))
-    languageVersion.set("1.5")
   }
 }

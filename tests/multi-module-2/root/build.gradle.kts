@@ -18,7 +18,6 @@ apollo {
     generateApolloMetadata.set(true)
     @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
-    languageVersion.set("1.5")
   }
 }
 

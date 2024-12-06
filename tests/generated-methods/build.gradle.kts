@@ -16,7 +16,6 @@ dependencies {
 apollo {
   service("service") {
     packageName.set("generatedMethods")
-    languageVersion.set("1.5")
     @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
     generateMethods.set(listOf("toString", "equalsHashCode", "copy"))

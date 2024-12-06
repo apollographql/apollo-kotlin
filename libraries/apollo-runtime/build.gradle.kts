@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsExec
 
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
@@ -97,3 +98,8 @@ kotlin {
     }
   }
 }
+
+kotlin.js {
+  useCommonJs()
+}
+

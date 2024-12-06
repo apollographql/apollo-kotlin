@@ -41,7 +41,6 @@ fun configureApollo(generateKotlinModels: Boolean) {
       codegenModels.set("operationBased")
       this.generateKotlinModels.set(generateKotlinModels)
       configureConnection(generateKotlinModels)
-      languageVersion.set("1.5")
     }
   }
 }
