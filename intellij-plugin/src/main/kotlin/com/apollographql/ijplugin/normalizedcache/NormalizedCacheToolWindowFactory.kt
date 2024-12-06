@@ -14,6 +14,7 @@ import com.apollographql.ijplugin.telemetry.TelemetryEvent.ApolloIjNormalizedCac
 import com.apollographql.ijplugin.telemetry.TelemetryEvent.ApolloIjNormalizedCacheOpenDeviceFile
 import com.apollographql.ijplugin.telemetry.TelemetryEvent.ApolloIjNormalizedCacheOpenLocalFile
 import com.apollographql.ijplugin.telemetry.telemetryService
+import com.apollographql.ijplugin.util.isAndroidPluginPresent
 import com.apollographql.ijplugin.util.logw
 import com.apollographql.ijplugin.util.showNotification
 import com.intellij.icons.AllIcons

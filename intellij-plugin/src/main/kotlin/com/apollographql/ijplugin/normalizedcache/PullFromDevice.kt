@@ -14,13 +14,6 @@ import java.io.File
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 
-val isAndroidPluginPresent = try {
-  Class.forName("com.android.ddmlib.AndroidDebugBridge")
-  true
-} catch (e: ClassNotFoundException) {
-  false
-}
-
 fun getConnectedDevices(): List<IDevice> {
   return AndroidDebugBridge.createBridge(1, TimeUnit.SECONDS).devices.sortedBy { it.name }
 }
