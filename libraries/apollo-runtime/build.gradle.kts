@@ -98,8 +98,3 @@ kotlin {
     }
   }
 }
-
-kotlin.js {
-  useCommonJs()
-}
-
