@@ -30,6 +30,7 @@ actual class DefaultWebSocketEngine(
    * See https://github.com/square/okhttp/pull/8248
    */
   constructor(webSocketFactory: WebSocket.Factory): this({webSocketFactory})
+
   actual constructor() : this(
       webSocketFactory = defaultOkHttpClientBuilder.build()
   )
