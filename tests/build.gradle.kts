@@ -2,9 +2,6 @@ plugins {
   id("build.logic") apply false
 }
 
-
-rootProject.configureNode()
-
 val ciBuild = tasks.register("ciBuild") {
   description = """Execute the 'build' task in subprojects and the `termination:run` task too"""
   subprojects {
@@ -16,4 +13,4 @@ val ciBuild = tasks.register("ciBuild") {
   }
 }
 
-rootSetup(ciBuild)
+apolloRoot(ciBuild)

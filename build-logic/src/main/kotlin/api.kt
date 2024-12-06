@@ -88,7 +88,6 @@ fun Project.apolloLibrary(
     allow("MIT-0")
 
     allowUrl("https://raw.githubusercontent.com/apollographql/apollo-kotlin-execution/main/LICENSE")
-    allowUrl("https://raw.githubusercontent.com/apollographql/apollo-kotlin-mockserver/main/LICENSE")
     allowUrl("https://raw.githubusercontent.com/apollographql/apollo-kotlin/main/LICENSE")
     allowUrl("https://asm.ow2.io/license.html")
     allowUrl("https://spdx.org/licenses/MIT.txt")
@@ -124,29 +123,7 @@ fun Project.apolloTest(
 }
 
 fun Project.apolloRoot(ciBuild: TaskProvider<Task>) {
-  configureWasmCompatibleNode()
+  configureNode()
   rootSetup(ciBuild)
 }
 
-/**
- * See https://youtrack.jetbrains.com/issue/KT-63014
- */
-private fun Project.configureWasmCompatibleNode() {
-  check(this == rootProject) {
-    "Must only be called in root project"
-  }
-  plugins.withType(NodeJsRootPlugin::class.java).configureEach {
-    extensions.getByType(NodeJsRootExtension::class.java).apply {
-      version = "21.0.0-v8-canary202309143a48826a08"
-      downloadBaseUrl = "https://nodejs.org/download/v8-canary"
-    }
-
-    tasks.withType(KotlinNpmInstallTask::class.java).configureEach {
-      args.add("--ignore-engines")
-    }
-  }
-}
-
-fun Project.apolloTestRoot() {
-  configureWasmCompatibleNode()
-}

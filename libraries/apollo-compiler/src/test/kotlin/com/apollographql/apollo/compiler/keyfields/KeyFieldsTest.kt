@@ -114,7 +114,7 @@ class KeyFieldsTest {
         .getOrThrow()
         .definitions
 
-    val (operationDefinitions, schemaDefinitions) = definitions.partition { it is GQLExecutableDefinition }
+    val (_, schemaDefinitions) = definitions.partition { it is GQLExecutableDefinition }
 
     val issues = GQLDocument(schemaDefinitions, null)
         .validateAsSchemaAndAddApolloDefinition()

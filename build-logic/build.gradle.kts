@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverExtension
 import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverGradleSubplugin
@@ -38,9 +39,9 @@ dependencies {
   implementation(libs.androidx.lint.gradle.plugin)
   implementation(libs.kotlin.plugin.compose)
 
-  // We want the KSP plugin to use the version from the classpath and not force a newer version
-  // of the Gradle plugin
   implementation(libs.kotlin.plugin)
+  implementation(libs.kotlin.plugin.annotations)
+
   runtimeOnly(libs.ksp)
   // XXX: This is only needed for tests. We could have different build logic for different
   // builds but this seems just overkill for now
@@ -64,7 +65,7 @@ tasks.withType<JavaCompile>().configureEach {
   options.release.set(17)
 }
 tasks.withType(KotlinJvmCompile::class.java).configureEach {
-  kotlinOptions.jvmTarget = "17"
+  compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
 }
 
 gradlePlugin {

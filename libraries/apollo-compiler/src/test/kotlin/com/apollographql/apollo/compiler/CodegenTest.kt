@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.annotations.ApolloExperimental
@@ -253,7 +255,7 @@ class CodegenTest {
         "mutation_create_review", "simple_fragment", "data_builders" -> true
         else -> false
       }
-      @Suppress("DEPRECATION") val operationIdGenerator = when (folder.name) {
+      val operationIdGenerator = when (folder.name) {
         "operation_id_generator" -> object : OperationIdGenerator {
           override fun apply(operationDocument: String, operationName: String): String {
             return "hash"
@@ -279,10 +281,8 @@ class CodegenTest {
 
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
 
-      @Suppress("DEPRECATION")
       val operationOutputGenerator = OperationOutputGenerator.Default(operationIdGenerator)
 
-      @Suppress("DEPRECATION")
       val targetLanguage = if (generateKotlinModels) {
         if (folder.name == "enum_field") KOTLIN_1_9 else KOTLIN_1_5
       } else {
