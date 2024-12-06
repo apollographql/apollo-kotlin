@@ -6,7 +6,6 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import com.apollographql.apollo.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo.cache.normalized.sql.internal.createDriver
-import com.apollographql.apollo.cache.normalized.sql.internal.createRecordDatabase
 import com.apollographql.apollo.cache.normalized.sql.internal.getSchema
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import app.cash.sqldelight.db.SqlDriver
@@ -52,7 +51,7 @@ actual class SqlNormalizedCacheFactory actual constructor(
   actual constructor(name: String?): this(createDriver(name, null, getSchema()))
 
   actual override fun create(): NormalizedCache {
-    return SqlNormalizedCache(createRecordDatabase(driver))
+    return SqlNormalizedCache(driver)
   }
 }
 
