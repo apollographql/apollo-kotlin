@@ -18,8 +18,9 @@ internal fun FileCollection.toInputFiles(): List<InputFile> {
 }
 
 /**
- * See https://github.com/gradle/gradle/issues/28147 for why this is needed
+ * Isolates inputs so we can use them from a separate classloader.
+ *
+ * See also https://github.com/gradle/gradle/issues/28147 for why this is needed.
  */
-internal fun FileCollection.isolate(): List<Pair<String, File>> = toInputFiles().isolate()
-internal fun List<InputFile>.isolate(): List<Pair<String, File>> = map { it.normalizedPath to it.file }
-internal fun List<Pair<String, File>>.toInputFiles(): List<InputFile> = map { InputFile(it.second, it.first) }
+internal fun FileCollection.isolate(): List<Any> = toInputFiles().isolate()
+internal fun List<InputFile>.isolate(): List<Any> = flatMap { listOf(it.normalizedPath, it.file) }

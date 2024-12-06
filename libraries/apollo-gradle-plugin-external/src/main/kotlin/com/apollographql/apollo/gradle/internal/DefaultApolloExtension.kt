@@ -29,6 +29,7 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -49,6 +50,7 @@ abstract class DefaultApolloExtension(
   private var hasExplicitService = false
   private val adhocComponentWithVariants: AdhocComponentWithVariants
   private val apolloMetadataConfiguration: Configuration
+  private lateinit var apolloBuildServiceProvider: Provider<ApolloBuildService>
 
   internal fun getServiceInfos(project: Project): List<ApolloGradleToolingModel.ServiceInfo> = services.map { service ->
     DefaultServiceInfo(
@@ -187,6 +189,8 @@ abstract class DefaultApolloExtension(
       it.isCanBeResolved = false
     }
 
+    apolloBuildServiceProvider = project.gradle.sharedServices.registerIfAbsent("apollo", ApolloBuildService::class.java) {}
+
     project.afterEvaluate {
       @Suppress("DEPRECATION")
       val hasApolloBlock = !defaultService.graphqlSourceDirectorySet.isEmpty
@@ -227,6 +231,7 @@ abstract class DefaultApolloExtension(
       maybeLinkSqlite()
       checkForLegacyJsTarget()
       checkApolloMetadataIsEmpty()
+
     }
   }
 
@@ -464,7 +469,6 @@ abstract class DefaultApolloExtension(
         service.pluginDependency != null,
         (service.compilerPlugin as DefaultCompilerPlugin?)?.arguments.orEmpty(),
         LogLevel.entries.first { project.logger.isEnabled(it) },
-        service.useProcessIsolation
     )
 
     if (service.languageVersion.orNull == "1.5") {
@@ -860,7 +864,8 @@ abstract class DefaultApolloExtension(
     task.classpath.from(classpathOptions.classpath)
     task.arguments.set(classpathOptions.arguments)
     task.logLevel.set(classpathOptions.logLevel)
-    task.useProcessIsolation.set(classpathOptions.useProcessIsolation)
+    task.apolloBuildService.set(apolloBuildServiceProvider)
+    task.usesService(apolloBuildServiceProvider)
   }
 
   private fun configureBaseCodegenTask(

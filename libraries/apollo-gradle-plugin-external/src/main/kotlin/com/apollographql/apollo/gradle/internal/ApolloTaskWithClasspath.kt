@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.compiler.EntryPoints
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
@@ -22,10 +23,6 @@ abstract class ApolloTaskWithClasspath: DefaultTask() {
   abstract val hasPlugin: Property<Boolean>
 
   @get:Input
-  @get:Optional
-  abstract val useProcessIsolation: Property<Boolean>
-
-  @get:Input
   abstract val arguments: MapProperty<String, Any?>
 
   @get:Input
@@ -34,17 +31,13 @@ abstract class ApolloTaskWithClasspath: DefaultTask() {
   @Inject
   abstract fun getWorkerExecutor(): WorkerExecutor
 
+  // This property provides access to the service instance
+  @get:Internal
+  abstract val apolloBuildService: Property<ApolloBuildService>
+
   @Internal
   fun getWorkQueue(): WorkQueue {
-    return if (useProcessIsolation.orElse(false).get()) {
-      getWorkerExecutor().processIsolation { workerSpec ->
-        workerSpec.classpath.from(classpath)
-      }
-    } else {
-      getWorkerExecutor().classLoaderIsolation { workerSpec ->
-        workerSpec.classpath.from(classpath)
-      }
-    }
+    return getWorkerExecutor().noIsolation()
   }
 
   class Options(
@@ -52,6 +45,12 @@ abstract class ApolloTaskWithClasspath: DefaultTask() {
       val hasPlugin: Boolean,
       val arguments: Map<String, Any?>,
       val logLevel: LogLevel,
-      val useProcessIsolation: Property<Boolean>
   )
 }
+
+internal fun runInIsolation(buildService: ApolloBuildService, classpath: FileCollection,  block: (Any) -> Unit) {
+  val clazz = buildService.classloader(classpath).loadClass("com.apollographql.apollo.compiler.EntryPoints")
+
+  block(clazz.declaredConstructors.single().newInstance())
+}
+

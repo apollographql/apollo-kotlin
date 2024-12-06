@@ -1,10 +1,9 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.ApolloCompiler
-import com.apollographql.apollo.compiler.toCodegenSchemaOptions
-import com.apollographql.apollo.compiler.writeTo
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
@@ -15,9 +14,8 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.workers.WorkAction
 import org.gradle.workers.WorkParameters
-import org.gradle.workers.WorkerExecutor
 import java.io.File
-import javax.inject.Inject
+import java.util.function.Consumer
 
 @CacheableTask
 abstract class ApolloGenerateCodegenSchemaTask : ApolloTaskWithClasspath() {
@@ -64,6 +62,8 @@ abstract class ApolloGenerateCodegenSchemaTask : ApolloTaskWithClasspath() {
       it.hasPlugin = hasPlugin.get()
       it.arguments = arguments.get()
       it.logLevel = logLevel.get().ordinal
+      it.apolloBuildService.set(apolloBuildService)
+      it.classpath = classpath
     }
   }
 }
@@ -72,30 +72,32 @@ abstract class ApolloGenerateCodegenSchemaTask : ApolloTaskWithClasspath() {
 private abstract class GenerateCodegenSchema : WorkAction<GenerateCodegenSchemaParameters> {
   override fun execute() {
     with(parameters) {
-      val plugin = apolloCompilerPlugin(
-          arguments,
-          logLevel,
-          hasPlugin
-      )
-
-      val normalizedSchemaFiles = (schemaFiles.takeIf { it.isNotEmpty() }?: fallbackSchemaFiles).toInputFiles()
-
-      ApolloCompiler.buildCodegenSchema(
-          schemaFiles = normalizedSchemaFiles,
-          logger = logger(),
-          codegenSchemaOptions = codegenSchemaOptionsFile.get().asFile.toCodegenSchemaOptions(),
-          foreignSchemas = plugin?.foreignSchemas().orEmpty()
-      ).writeTo(codegenSchemaFile.get().asFile)
+      runInIsolation(apolloBuildService.get(), classpath) {
+        it.javaClass.declaredMethods.single { it.name == "buildCodegenSchema" }
+            .invoke(
+                it,
+                arguments,
+                logLevel,
+                hasPlugin,
+                (schemaFiles.takeIf { it.isNotEmpty() }?: fallbackSchemaFiles),
+                Consumer<String> { logger().warning(it) },
+                codegenSchemaOptionsFile.get().asFile,
+                codegenSchemaFile.get().asFile
+            )
+      }
     }
   }
 }
+
 private interface GenerateCodegenSchemaParameters : WorkParameters {
   var codegenSchemaFile: RegularFileProperty
-  var schemaFiles: List<Pair<String, File>>
-  var fallbackSchemaFiles: List<Pair<String, File>>
+  var schemaFiles: List<Any>
+  var fallbackSchemaFiles: List<Any>
   val codegenSchemaOptionsFile: RegularFileProperty
   var hasPlugin: Boolean
   var arguments: Map<String, Any?>
   var logLevel: Int
+  val apolloBuildService: Property<ApolloBuildService>
+  var classpath: FileCollection
 }
 

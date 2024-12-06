@@ -1,13 +1,9 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.ApolloCompiler
-import com.apollographql.apollo.compiler.toCodegenSchema
-import com.apollographql.apollo.compiler.toIrOperations
-import com.apollographql.apollo.compiler.toIrOptions
-import com.apollographql.apollo.compiler.writeTo
-import com.apollographql.apollo.gradle.internal.ApolloGenerateSourcesFromIrTask.Companion.findCodegenSchemaFile
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
@@ -17,12 +13,11 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.workers.WorkAction
 import org.gradle.workers.WorkParameters
-import org.gradle.workers.WorkerExecutor
 import java.io.File
-import javax.inject.Inject
+import java.util.function.Consumer
 
 @CacheableTask
-abstract class ApolloGenerateIrOperationsTask: ApolloTaskWithClasspath() {
+abstract class ApolloGenerateIrOperationsTask : ApolloTaskWithClasspath() {
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val codegenSchemaFiles: ConfigurableFileCollection
@@ -55,6 +50,8 @@ abstract class ApolloGenerateIrOperationsTask: ApolloTaskWithClasspath() {
       it.irOperationsFile.set(irOperationsFile)
       it.arguments = arguments.get()
       it.logLevel = logLevel.get().ordinal
+      it.apolloBuildService.set(apolloBuildService)
+      it.classpath = classpath
     }
   }
 }
@@ -62,27 +59,32 @@ abstract class ApolloGenerateIrOperationsTask: ApolloTaskWithClasspath() {
 private abstract class GenerateIrOperations : WorkAction<GenerateIrOperationsParameters> {
   override fun execute() {
     with(parameters) {
-      val upstreamIrOperations = upstreamIrFiles.toInputFiles().map { it.file.toIrOperations() }
-      val plugin = apolloCompilerPlugin(arguments, logLevel)
-
-      ApolloCompiler.buildIrOperations(
-          executableFiles = graphqlFiles.toInputFiles(),
-          codegenSchema = codegenSchemaFiles.toInputFiles().map { it.file }.findCodegenSchemaFile().toCodegenSchema(),
-          upstreamCodegenModels = upstreamIrOperations.map { it.codegenModels },
-          upstreamFragmentDefinitions = upstreamIrOperations.flatMap { it.fragmentDefinitions },
-          documentTransform = plugin?.documentTransform(),
-          options = irOptionsFile.get().asFile.toIrOptions(),
-          logger = logger(),
-      ).writeTo(irOperationsFile.get().asFile)
+      runInIsolation(apolloBuildService.get(), classpath) {
+        it.javaClass.declaredMethods.single { it.name == "buildIr" }
+            .invoke(
+                it,
+                arguments,
+                logLevel,
+                graphqlFiles,
+                codegenSchemaFiles,
+                upstreamIrFiles,
+                irOptionsFile.get().asFile,
+                Consumer<String> { logger().warning(it) },
+                irOperationsFile.get().asFile
+            )
+      }
     }
   }
 }
+
 private interface GenerateIrOperationsParameters : WorkParameters {
-  var codegenSchemaFiles: List<Pair<String, File>>
-  var graphqlFiles: List<Pair<String, File>>
-  var upstreamIrFiles: List<Pair<String, File>>
+  var codegenSchemaFiles: List<Any>
+  var graphqlFiles: List<Any>
+  var upstreamIrFiles: List<Any>
   val irOptionsFile: RegularFileProperty
   val irOperationsFile: RegularFileProperty
   var arguments: Map<String, Any?>
   var logLevel: Int
+  val apolloBuildService: Property<ApolloBuildService>
+  var classpath: FileCollection
 }

@@ -91,21 +91,6 @@ internal fun DefaultService.operationManifestFormat(): Provider<String> {
   }
 }
 
-internal fun ApolloCompilerPlugin.toOperationOutputGenerator(): OperationOutputGenerator {
-  return object : OperationOutputGenerator {
-    override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
-      var operationIds = operationIds(operationDescriptorList.toList())
-      if (operationIds == null) {
-        operationIds = operationDescriptorList.map { OperationId(OperationIdGenerator.Sha256.apply(it.source, it.name), it.name) }
-      }
-      return operationDescriptorList.associateBy { descriptor ->
-        val operationId = operationIds.firstOrNull { it.name == descriptor.name } ?: error("No id found for operation ${descriptor.name}")
-        operationId.id
-      }
-    }
-  }
-}
-
 internal fun generateFilterNotNull(targetLanguage: TargetLanguage, isKmp: Boolean): Boolean? {
   return if (targetLanguage == TargetLanguage.JAVA) {
     null
