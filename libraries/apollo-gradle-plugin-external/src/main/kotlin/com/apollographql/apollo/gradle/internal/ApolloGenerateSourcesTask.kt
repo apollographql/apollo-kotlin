@@ -105,7 +105,7 @@ private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
                 codegenSchemaOptions.get().asFile,
                 codegenOptions.get().asFile,
                 irOptions.get().asFile,
-                Consumer<String> { logger().warning(it) },
+                warningMessageConsumer,
                 operationManifestFile.orNull?.asFile,
                 outputDir.get().asFile
             )

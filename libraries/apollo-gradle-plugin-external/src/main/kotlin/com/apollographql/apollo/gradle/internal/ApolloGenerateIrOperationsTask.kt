@@ -69,7 +69,7 @@ private abstract class GenerateIrOperations : WorkAction<GenerateIrOperationsPar
                 codegenSchemaFiles,
                 upstreamIrFiles,
                 irOptionsFile.get().asFile,
-                Consumer<String> { logger().warning(it) },
+                warningMessageConsumer,
                 irOperationsFile.get().asFile
             )
       }

@@ -1,18 +1,18 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.EntryPoints
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
 import org.gradle.api.logging.LogLevel
+import org.gradle.api.logging.Logging
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
-import org.gradle.api.tasks.Optional
 import org.gradle.workers.WorkQueue
 import org.gradle.workers.WorkerExecutor
+import java.util.function.Consumer
 import javax.inject.Inject
 
 abstract class ApolloTaskWithClasspath: DefaultTask() {
@@ -54,3 +54,10 @@ internal fun runInIsolation(buildService: ApolloBuildService, classpath: FileCol
   block(clazz.declaredConstructors.single().newInstance())
 }
 
+internal val warningMessageConsumer: Consumer<String> = object : Consumer<String> {
+  private val logger = Logging.getLogger("apollo")
+
+  override fun accept(p0: String) {
+    logger.lifecycle(p0)
+  }
+}

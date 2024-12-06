@@ -80,7 +80,7 @@ private abstract class GenerateCodegenSchema : WorkAction<GenerateCodegenSchemaP
                 logLevel,
                 hasPlugin,
                 (schemaFiles.takeIf { it.isNotEmpty() }?: fallbackSchemaFiles),
-                Consumer<String> { logger().warning(it) },
+                warningMessageConsumer,
                 codegenSchemaOptionsFile.get().asFile,
                 codegenSchemaFile.get().asFile
             )
