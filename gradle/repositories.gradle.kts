@@ -6,7 +6,6 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
     // maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
 
     mavenCentral()
-    mavenLocal()
     exclusiveContent {
       forRepository(::google)
       filter {

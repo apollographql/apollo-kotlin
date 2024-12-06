@@ -61,10 +61,6 @@ fun Project.configureMpp(
                 useChromeHeadless()
               }
             })
-
-            webpackTask {
-              this.args += ""
-            }
           }
         } else {
           nodejs {
