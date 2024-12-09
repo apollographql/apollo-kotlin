@@ -1,4 +1,3 @@
-import com.apollographql.apollo.compiler.MANIFEST_OPERATION_OUTPUT
 import com.apollographql.apollo.compiler.MANIFEST_PERSISTED_QUERY
 
 plugins {
