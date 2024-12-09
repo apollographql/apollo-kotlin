@@ -157,6 +157,7 @@ class EntryPoints {
   }
 }
 
+@Suppress("DEPRECATION")
 internal fun ApolloCompilerPlugin.toOperationOutputGenerator(): OperationOutputGenerator {
   return object : OperationOutputGenerator {
     override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
