@@ -58,7 +58,7 @@ abstract class DefaultApolloExtension(
         schemaFiles = service.schemaFilesSnapshot(project),
         graphqlSrcDirs = service.graphqlSourceDirectorySet.srcDirs,
         upstreamProjects = service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.name }.toSet(),
-        upstreamProjectPaths = service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.dependencyProject.path }.toSet(),
+        upstreamProjectPaths = service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet(),
         endpointUrl = service.introspection?.endpointUrl?.orNull,
         endpointHeaders = service.introspection?.headers?.orNull,
         useSemanticNaming = service.useSemanticNaming.getOrElse(true),
@@ -239,7 +239,7 @@ abstract class DefaultApolloExtension(
     check(apolloMetadataConfiguration.dependencies.isEmpty()) {
       val projectLines = apolloMetadataConfiguration.dependencies.map {
         when (it) {
-          is ProjectDependency -> "project(\"${it.dependencyProject.path}\")"
+          is ProjectDependency -> "project(\"${it.getPathCompat()}\")"
           is ExternalModuleDependency -> "\"group:artifact:version\""
           else -> "project(\":foo\")"
 
