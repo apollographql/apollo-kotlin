@@ -40,6 +40,5 @@ apollo {
     jsExport.set(true)
     codegenModels.set("responseBased")
     mapScalar("Point", "Point", "PointAdapter")
-    languageVersion.set("1.5")
   }
 }

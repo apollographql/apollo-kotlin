@@ -36,7 +36,7 @@ class NormalizedCacheThreadingTest {
     val query = CharacterNameByIdQuery("")
     apolloClient.enqueueTestResponse(query, CharacterNameByIdQuery.Data(CharacterNameByIdQuery.Character("")))
     apolloClient.query(query).execute()
-    println("cacheCreateThreadName: $cacheCreateThreadName")
+    //println("cacheCreateThreadName: $cacheCreateThreadName")
     assertNotEquals(testThreadName, cacheCreateThreadName)
   }
 }

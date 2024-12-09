@@ -32,7 +32,6 @@ apollo {
               }
             }
           }
-          languageVersion.set("1.5")
 
           when (name) {
             "schemacodegen" -> {

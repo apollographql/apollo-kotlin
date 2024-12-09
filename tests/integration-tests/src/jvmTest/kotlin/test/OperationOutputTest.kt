@@ -4,6 +4,8 @@ import com.apollographql.apollo.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo.testing.HostFileSystem
 import com.apollographql.apollo.testing.pathToUtf8
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import okio.Path.Companion.toPath
@@ -22,15 +24,17 @@ import kotlin.test.assertEquals
 class OperationOutputTest {
   @Test
   fun operationOutputMatchesTheModels() {
-    @Suppress("DEPRECATION") val operationOutput = pathToUtf8("integration-tests/build/generated/manifest/apollo/httpcache-kotlin/operationOutput.json")
-    val source = Json.parseToJsonElement(operationOutput).jsonObject.entries.mapNotNull {
-      val descriptor = it.value.jsonObject
-      if (descriptor.getValue("name").jsonPrimitive.content == "AllFilms") {
-        descriptor.getValue("source").jsonPrimitive.content
-      } else {
-        null
-      }
-    }.single()
+    @Suppress("DEPRECATION") val operationOutput = pathToUtf8("integration-tests/build/generated/manifest/apollo/httpcache-kotlin/persistedQueryManifest.json")
+    val source = Json.parseToJsonElement(operationOutput).jsonObject
+        .getValue("operations")
+        .jsonArray
+        .filterIsInstance<JsonObject>()
+        .single { element ->
+          element.get("name")!!.jsonPrimitive.content == "AllFilms"
+        }
+        .get("body")!!
+        .jsonPrimitive
+        .content
 
     assertEquals(AllFilmsQuery().document(), source)
   }

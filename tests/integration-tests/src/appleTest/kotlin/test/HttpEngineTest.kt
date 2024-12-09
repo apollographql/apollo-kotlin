@@ -72,13 +72,13 @@ class HttpEngineTest {
 
     val before = currentTimeMillis()
     try {
-      println("Before " + currentTimeMillis())
+      //println("Before " + currentTimeMillis())
       engine.get(mockServer.url()).execute()
-      println("After " + currentTimeMillis())
+      //println("After " + currentTimeMillis())
       fail("We expected an exception")
     } catch (e: ApolloNetworkException) {
       val platformCause = e.platformCause
-      println(platformCause)
+      //println(platformCause)
       assertTrue(platformCause is NSError)
       assertEquals(platformCause.domain, NSURLErrorDomain)
       assertEquals(platformCause.code, NSURLErrorTimedOut)

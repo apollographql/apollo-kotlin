@@ -13,7 +13,7 @@ object KotlinCompiler {
       files: Set<File>,
   ) {
     val kotlinFiles = files.filter { it.extension == "kt" }.map {
-      SourceFile.fromPath(it)
+      SourceFile.kotlin(it.path, it.readText())
     }.toList()
 
     val result = KotlinCompilation().apply {
