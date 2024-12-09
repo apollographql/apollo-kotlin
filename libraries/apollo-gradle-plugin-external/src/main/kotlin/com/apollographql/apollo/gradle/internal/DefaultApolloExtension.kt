@@ -50,7 +50,7 @@ abstract class DefaultApolloExtension(
   private var hasExplicitService = false
   private val adhocComponentWithVariants: AdhocComponentWithVariants
   private val apolloMetadataConfiguration: Configuration
-  private lateinit var apolloBuildServiceProvider: Provider<ApolloBuildService>
+  private var apolloBuildServiceProvider: Provider<ApolloBuildService>
 
   internal fun getServiceInfos(project: Project): List<ApolloGradleToolingModel.ServiceInfo> = services.map { service ->
     DefaultServiceInfo(
