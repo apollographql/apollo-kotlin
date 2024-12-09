@@ -1,6 +1,5 @@
 package com.apollographql.ijplugin.util
 
-import com.android.tools.idea.concurrency.executeOnPooledThread
 import com.intellij.openapi.application.runReadAction
 import org.jetbrains.kotlin.analysis.api.KaSession
 import org.jetbrains.kotlin.analysis.api.analyze

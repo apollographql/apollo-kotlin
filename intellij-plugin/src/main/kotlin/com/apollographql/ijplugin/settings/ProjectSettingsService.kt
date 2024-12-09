@@ -1,7 +1,7 @@
 package com.apollographql.ijplugin.settings
 
-import com.android.tools.idea.concurrency.executeOnPooledThread
 import com.apollographql.ijplugin.gradle.ApolloKotlinService
+import com.apollographql.ijplugin.util.executeOnPooledThread
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.generateServiceName
 import com.intellij.ide.passwordSafe.PasswordSafe
