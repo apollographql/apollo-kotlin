@@ -369,16 +369,11 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
   }
 
   /**
-   * This assumes the case where `deprecationReason == null && isDeprecated` is not valid
-   * which is unclear from reading the spec as the below seems allowed:
+   * This assumes the case where `deprecationReason == null && isDeprecated` is not valid.
    *
-   * ```
-   * type Query {
-   *   foo: Int @deprecated(reason: null)
-   * }
-   * ```
+   * See https://github.com/graphql/graphql-spec/pull/1040
    *
-   * If there are legit use cases for `@deprecated(reason: null)` we should update this function
+   * If a legacy schema contains `@deprecated(reason: null)`, the field appears as non-deprecated.
    */
   fun makeDirectives(deprecationReason: String?): List<GQLDirective> {
     if (deprecationReason == null) {
