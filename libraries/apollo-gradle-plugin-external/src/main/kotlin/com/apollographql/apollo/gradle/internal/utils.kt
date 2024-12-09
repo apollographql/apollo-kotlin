@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.InputFile
+import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.file.FileCollection
 import java.io.File
 
@@ -24,3 +25,15 @@ internal fun FileCollection.toInputFiles(): List<InputFile> {
  */
 internal fun FileCollection.isolate(): List<Any> = toInputFiles().isolate()
 internal fun List<InputFile>.isolate(): List<Any> = flatMap { listOf(it.normalizedPath, it.file) }
+
+
+internal fun ProjectDependency.getPathCompat(): String {
+  val method = this::class.java.getDeclaredMethod("getPath")
+  return if (method != null) {
+    // Gradle 8.11+ path
+    // See https://docs.gradle.org/8.11/userguide/upgrading_version_8.html#deprecate_get_dependency_project
+    method.invoke(this) as String
+  } else {
+    dependencyProject.path
+  }
+}

@@ -198,7 +198,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     upstreamDependencies.add(project.dependencies.create(dependencyNotation))
     if (bidirectional) {
       val upstreamProject = when (dependencyNotation) {
-        is ProjectDependency -> project.rootProject.project(dependencyNotation.dependencyProject.path)
+        is ProjectDependency -> project.rootProject.project(dependencyNotation.getPathCompat())
         is Project -> dependencyNotation
         else -> error("dependsOn(dependencyNotation, true) requires a Project or ProjectDependency")
       }
