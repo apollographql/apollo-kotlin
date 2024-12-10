@@ -6,6 +6,7 @@ import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLeve
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.INTERNAL_API_USAGES
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.INVALID_PLUGIN
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.PLUGIN_STRUCTURE_WARNINGS
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -27,9 +28,9 @@ commonSetup()
 // XXX: this should use the settings repositories instead
 repositories {
   // Uncomment this one to use the Kotlin "dev" repository
-  // maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/") }
+  maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/") }
   // Uncomment this one to use the Sonatype OSSRH snapshots repository
-  // maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+  maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
   mavenCentral()
 
   intellijPlatform {
@@ -56,6 +57,9 @@ kotlin {
 
 val apolloDependencies = configurations.create("apolloDependencies").apply {
   listOf(":apollo-annotations", ":apollo-api", ":apollo-runtime").forEach {
+    attributes {
+      attribute(KotlinPlatformType.attribute, KotlinPlatformType.jvm)
+    }
     dependencies.add(project.dependencies.project(it, "jvmApiElements"))
   }
 }
