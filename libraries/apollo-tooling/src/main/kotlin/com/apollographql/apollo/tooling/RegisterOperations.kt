@@ -51,7 +51,6 @@ private fun GQLSelection.score(): String {
     is GQLField -> "a$name"
     is GQLFragmentSpread -> "b$name"
     is GQLInlineFragment -> "c" // apollo-tooling doesn't sort inline fragments
-    else -> error("Cannot sort Selection '$this'")
   }
 }
 
