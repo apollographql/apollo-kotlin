@@ -73,6 +73,7 @@ import kotlin.jvm.JvmStatic
  *
  * On native targets, [ApolloClient.close] must be called to release resources when not in use anymore.
  */
+@Suppress("DEPRECATION")
 class ApolloClient
 private constructor(
     private val builder: Builder,
@@ -351,6 +352,8 @@ private constructor(
     val interceptors: List<ApolloInterceptor> = _interceptors
 
     private val _httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
+    @Deprecated("HTTP properties should be set on HttpNetworkTransport directly")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     val httpInterceptors: List<HttpInterceptor> = _httpInterceptors
 
     private val _listeners: MutableList<ApolloClientListener> = mutableListOf()
@@ -378,20 +381,36 @@ private constructor(
       private set
     var httpServerUrl: String? = null
       private set
+    @Deprecated("HTTP properties should be set on HttpNetworkTransport directly")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     var httpEngine: HttpEngine? = null
       private set
+    @Deprecated("WebSockets properties should be set on WebSocketNetworkTransport directly")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     var webSocketServerUrl: String? = null
       private set
+    @Deprecated("WebSockets properties should be set on WebSocketNetworkTransport directly")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     var webSocketIdleTimeoutMillis: Long? = null
       private set
+    @Deprecated("WebSockets properties should be set on WebSocketNetworkTransport directly")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     var wsProtocolFactory: WsProtocol.Factory? = null
       private set
+    @Deprecated("HTTP properties should be set on HttpNetworkTransport directly")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     var httpExposeErrorBody: Boolean? = null
       private set
+    @Deprecated("WebSockets properties should be set on WebSocketNetworkTransport directly")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     var webSocketEngine: WebSocketEngine? = null
       private set
+    @Deprecated("WebSockets properties should be set on WebSocketNetworkTransport directly")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     var webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
       private set
+    @Deprecated("WebSockets properties should be set on WebSocketNetworkTransport directly")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     var webSocketReopenServerUrl: (suspend () -> String)? = null
       private set
 
@@ -560,11 +579,11 @@ private constructor(
     /**
      * The http:// or https:// url of the GraphQL server.
      *
-     * This is the same as [httpServerUrl].
-     *
-     * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
+     * This is a convenience function that configures a default [HttpNetworkTransport] to use with queries/mutations
+     * and a default [WebSocketNetworkTransport] to use with subscriptions.
      *
      * @see networkTransport
+     * @see subscriptionNetworkTransport
      */
     fun serverUrl(serverUrl: String) = apply {
       httpServerUrl = serverUrl
@@ -573,12 +592,18 @@ private constructor(
     /**
      * The http:// or https:// url of the GraphQL server.
      *
-     * This is the same as [serverUrl].
-     *
      * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
      *
      * @see networkTransport
      */
+    @Deprecated(
+        "Use networkTransport() instead",
+        ReplaceWith(
+            "networkTransport(HttpNetworkTransport.Builder().serverUrl(httpServerUrl).build())",
+            "com.apollographql.apollo.network.http.HttpNetworkTransport"
+        )
+    )
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     fun httpServerUrl(httpServerUrl: String?) = apply {
       this.httpServerUrl = httpServerUrl
     }
@@ -590,6 +615,14 @@ private constructor(
      *
      * @see networkTransport
      */
+    @Deprecated(
+        "Use networkTransport() instead",
+        ReplaceWith(
+            "networkTransport(HttpNetworkTransport.Builder().httpEngine(httpEngine).build())",
+            "com.apollographql.apollo.network.http.HttpNetworkTransport"
+        )
+    )
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     fun httpEngine(httpEngine: HttpEngine?) = apply {
       this.httpEngine = httpEngine
     }
@@ -604,17 +637,33 @@ private constructor(
      *
      * @param httpExposeErrorBody whether to expose the error body or `null` to use the `false` default.
      */
+    @Deprecated(
+        "Use networkTransport() instead",
+        ReplaceWith(
+            "networkTransport(HttpNetworkTransport.Builder().exposeErrorBody(httpExposeErrorBody).build())",
+            "com.apollographql.apollo.network.http.HttpNetworkTransport"
+        )
+    )
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     fun httpExposeErrorBody(httpExposeErrorBody: Boolean?) = apply {
       this.httpExposeErrorBody = httpExposeErrorBody
     }
 
     /**
-     * Adds [httpInterceptor] to the list of HTTP interceptors.
+     * Adds [httpInterceptors] to the list of HTTP interceptors.
      *
      * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
      *
      * @see networkTransport
      */
+    @Deprecated(
+        "Use networkTransport() instead",
+        ReplaceWith(
+            "networkTransport(HttpNetworkTransport.Builder().interceptors(httpInterceptors).build())",
+            "com.apollographql.apollo.network.http.HttpNetworkTransport"
+        )
+    )
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     fun httpInterceptors(httpInterceptors: List<HttpInterceptor>) = apply {
       _httpInterceptors.clear()
       _httpInterceptors.addAll(httpInterceptors)
@@ -627,6 +676,14 @@ private constructor(
      *
      * @see networkTransport
      */
+    @Deprecated(
+        "Use networkTransport() instead",
+        ReplaceWith(
+            "networkTransport(HttpNetworkTransport.Builder().addInterceptor(httpInterceptor).build())",
+            "com.apollographql.apollo.network.http.HttpNetworkTransport"
+        )
+    )
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     fun addHttpInterceptor(httpInterceptor: HttpInterceptor) = apply {
       _httpInterceptors += httpInterceptor
     }
@@ -634,6 +691,10 @@ private constructor(
     /**
      * Removes [httpInterceptor] from the list of HTTP interceptors.
      */
+    @Deprecated(
+        "Use networkTransport() instead",
+    )
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     fun removeHttpInterceptor(httpInterceptor: HttpInterceptor) = apply {
       _httpInterceptors -= httpInterceptor
     }
@@ -646,6 +707,14 @@ private constructor(
      *
      * @see subscriptionNetworkTransport
      */
+    @Deprecated(
+        "Use subscriptionNetworkTransport() instead",
+        ReplaceWith(
+            "subscriptionNetworkTransport(WebSocketNetworkTransport.Builder().serverUrl(webSocketServerUrl).build())",
+            "com.apollographql.apollo.network.ws.WebSocketNetworkTransport"
+        )
+    )
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     fun webSocketServerUrl(webSocketServerUrl: String?) = apply {
       this.webSocketServerUrl = webSocketServerUrl
     }
@@ -664,6 +733,14 @@ private constructor(
      *
      * @see subscriptionNetworkTransport
      */
+    @Deprecated(
+        "Use subscriptionNetworkTransport() instead",
+        ReplaceWith(
+            "subscriptionNetworkTransport(WebSocketNetworkTransport.Builder().serverUrl(webSocketServerUrl).build())",
+            "com.apollographql.apollo.network.ws.WebSocketNetworkTransport"
+        )
+    )
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     fun webSocketServerUrl(webSocketServerUrl: (suspend () -> String)?) = apply {
       this.webSocketReopenServerUrl = webSocketServerUrl
     }
@@ -677,6 +754,14 @@ private constructor(
      *
      * @see subscriptionNetworkTransport
      */
+    @Deprecated(
+        "Use subscriptionNetworkTransport() instead",
+        ReplaceWith(
+            "subscriptionNetworkTransport(WebSocketNetworkTransport.Builder().idleTimeoutMillis(webSocketIdleTimeoutMillis).build())",
+            "com.apollographql.apollo.network.ws.WebSocketNetworkTransport"
+        )
+    )
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     fun webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis: Long?) = apply {
       this.webSocketIdleTimeoutMillis = webSocketIdleTimeoutMillis
     }
@@ -688,6 +773,14 @@ private constructor(
      *
      * @see subscriptionNetworkTransport
      */
+    @Deprecated(
+        "Use subscriptionNetworkTransport() instead",
+        ReplaceWith(
+            "subscriptionNetworkTransport(WebSocketNetworkTransport.Builder().protocol(wsProtocolFactory).build())",
+            "com.apollographql.apollo.network.ws.WebSocketNetworkTransport"
+        )
+    )
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     fun wsProtocol(wsProtocolFactory: WsProtocol.Factory?) = apply {
       this.wsProtocolFactory = wsProtocolFactory
     }
@@ -699,6 +792,14 @@ private constructor(
      *
      * @see subscriptionNetworkTransport
      */
+    @Deprecated(
+        "Use subscriptionNetworkTransport() instead",
+        ReplaceWith(
+            "subscriptionNetworkTransport(WebSocketNetworkTransport.Builder().webSocketEngine(webSocketEngine).build())",
+            "com.apollographql.apollo.network.ws.WebSocketNetworkTransport"
+        )
+    )
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     fun webSocketEngine(webSocketEngine: WebSocketEngine?) = apply {
       this.webSocketEngine = webSocketEngine
     }
@@ -717,6 +818,14 @@ private constructor(
      *
      * @see subscriptionNetworkTransport
      */
+    @Deprecated(
+        "Use subscriptionNetworkTransport() instead",
+        ReplaceWith(
+            "subscriptionNetworkTransport(WebSocketNetworkTransport.Builder().reopenWhen(webSocketReopenWhen).build())",
+            "com.apollographql.apollo.network.ws.WebSocketNetworkTransport"
+        )
+    )
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
     fun webSocketReopenWhen(webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)?) = apply {
       this.webSocketReopenWhen = webSocketReopenWhen
     }
