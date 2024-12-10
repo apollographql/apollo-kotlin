@@ -6,6 +6,7 @@ import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.INTERNAL_API_USAGES
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.INVALID_PLUGIN
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.PLUGIN_STRUCTURE_WARNINGS
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -55,6 +56,9 @@ kotlin {
 }
 
 val apolloDependencies = configurations.create("apolloDependencies").apply {
+  attributes {
+    attribute(KotlinPlatformType.attribute, KotlinPlatformType.jvm)
+  }
   listOf(":apollo-annotations", ":apollo-api", ":apollo-runtime").forEach {
     dependencies.add(project.dependencies.project(it, "jvmApiElements"))
   }
