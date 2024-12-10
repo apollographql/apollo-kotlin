@@ -1,0 +1,438 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  rooms: [Room!]!
+
+  sessions(first: Int = 10, after: String = null, filter: SessionFilterInput = null, orderBy: SessionOrderByInput = {
+    field: STARTS_AT
+    direction: ASCENDING
+  }
+  ): SessionConnection!
+
+  speakers: [Speaker!]! @deprecated(reason: "Use speakersPage instead")
+
+  speakersPage(first: Int = null, after: String = null): SpeakerConnection!
+
+  speaker(id: String!): Speaker!
+
+  venue(id: String!): Venue!
+
+  venues: [Venue!]!
+
+  partnerGroups: [PartnerGroup!]!
+
+  session(id: String!): Session!
+
+  config: Conference!
+
+  bookmarks: Bookmarks @deprecated(reason: "Use bookmarkConnection instead")
+
+  bookmarkConnection: BookmarkConnection
+
+  conferences(orderBy: ConferenceOrderByInput = null): [Conference!]!
+}
+
+type Mutation {
+  addBookmark(sessionId: String!): Bookmarks!
+
+  removeBookmark(sessionId: String!): Bookmarks!
+
+  """
+   Deletes the current user account, requires authentication
+  """
+  deleteAccount: Boolean!
+}
+
+type Room {
+  id: String!
+
+  name: String!
+
+  capacity: Int
+}
+
+type SessionConnection {
+  nodes: [Session!]!
+
+  pageInfo: PageInfo!
+}
+
+input SessionFilterInput {
+  startsAt: LocalDateTimeFilterInput = null
+
+  endsAt: LocalDateTimeFilterInput = null
+}
+
+input SessionOrderByInput {
+  field: SessionField!
+
+  direction: OrderByDirection!
+}
+
+type Speaker {
+  id: String!
+
+  name: String!
+
+  bio: String
+
+  tagline: String
+
+  company: String
+
+  companyLogoUrl: String
+
+  city: String
+
+  socials: [Social!]!
+
+  photoUrl: String
+
+  photoUrlThumbnail: String
+
+  sessions: [Session!]!
+}
+
+type SpeakerConnection {
+  nodes: [Speaker!]!
+
+  pageInfo: PageInfo!
+}
+
+type Venue {
+  id: String!
+
+  name: String!
+
+  latitude: Float
+
+  longitude: Float
+
+  address: String
+
+  imageUrl: String
+
+  """
+   the url to an image containing the floor plan
+  """
+  floorPlanUrl: String
+
+  coordinates: String @deprecated(reason: "use latitude and longitude instead")
+
+  descriptionFr: String! @deprecated(reason: "use description(language: \"fr\") instead")
+
+  description(language: String = "en"): String!
+}
+
+type PartnerGroup {
+  title: String!
+
+  partners: [Partner!]!
+}
+
+type Session {
+  id: String!
+
+  title: String!
+
+  description: String
+
+  """
+   A shorter version of description for use when real estate is scarce like watches for an example.
+   This field might have the same value as description if a shortDescription is not available.
+  """
+  shortDescription: String
+
+  """
+   An [IETF language code](https://en.wikipedia.org/wiki/IETF_language_tag) like en-US.
+  """
+  language: String
+
+  tags: [String!]!
+
+  startInstant: Instant! @deprecated(reason: "use startsAt instead")
+
+  endInstant: Instant! @deprecated(reason: "use endsAt instead")
+
+  startsAt: LocalDateTime!
+
+  endsAt: LocalDateTime!
+
+  complexity: String
+
+  feedbackId: String
+
+  """
+   One of "break", "lunch", "party", "keynote", "talk" or any other conference-specific format.
+  """
+  type: String!
+
+  links: [Link!]!
+
+  speakers: [Speaker!]!
+
+  room: Room
+
+  rooms: [Room!]!
+}
+
+type Conference {
+  id: String!
+
+  name: String!
+
+  timezone: String!
+
+  days: [LocalDate!]!
+
+  themeColor: String
+}
+
+type Bookmarks {
+  sessionIds: [String!]!
+
+  id: String!
+}
+
+type BookmarkConnection {
+  nodes: [Session!]!
+}
+
+input ConferenceOrderByInput {
+  field: ConferenceField!
+
+  direction: OrderByDirection!
+}
+
+type PageInfo {
+  endCursor: String
+}
+
+input LocalDateTimeFilterInput {
+  before: LocalDateTime = null
+
+  after: LocalDateTime = null
+}
+
+enum SessionField {
+  STARTS_AT
+}
+
+enum OrderByDirection {
+  ASCENDING
+
+  DESCENDING
+}
+
+type Social {
+  icon: String
+
+  link: String! @deprecated(reason: "use url instead")
+
+  name: String!
+
+  url: String!
+}
+
+type Partner {
+  name: String!
+
+  url: String!
+
+  """
+   @param dark returns the logo for use on a dark background or fallbacks to the light mode if none exist
+  """
+  logoUrl(dark: Boolean = false): String!
+}
+
+"""
+ A type representing a formatted kotlinx.datetime.Instant
+"""
+scalar Instant
+
+"""
+ A type representing a formatted kotlinx.datetime.LocalDateTime
+"""
+scalar LocalDateTime
+
+type Link {
+  type: LinkType!
+
+  url: String!
+}
+
+"""
+ A type representing a formatted kotlinx.datetime.LocalDate
+"""
+scalar LocalDate
+
+enum ConferenceField {
+  DAYS
+}
+
+enum LinkType {
+  YouTube
+
+  Audio
+
+  AudioUncompressed
+
+  Other
+}
+
+type __Schema {
+  description: String
+
+  types: [__Type!]!
+
+  queryType: __Type!
+
+  mutationType: __Type
+
+  subscriptionType: __Type
+
+  directives: [__Directive!]!
+}
+
+type __Type {
+  kind: __TypeKind!
+
+  name: String
+
+  description: String
+
+  fields(includeDeprecated: Boolean = false): [__Field!]
+
+  interfaces: [__Type!]
+
+  possibleTypes: [__Type!]
+
+  enumValues(includeDeprecated: Boolean = false): [__EnumValue!]
+
+  inputFields(includeDeprecated: Boolean = false): [__InputValue!]
+
+  ofType: __Type
+
+  specifiedByURL: String
+}
+
+enum __TypeKind {
+  SCALAR
+
+  OBJECT
+
+  INTERFACE
+
+  UNION
+
+  ENUM
+
+  INPUT_OBJECT
+
+  LIST
+
+  NON_NULL
+}
+
+type __Field {
+  name: String!
+
+  description: String
+
+  args(includeDeprecated: Boolean = false): [__InputValue!]!
+
+  type: __Type!
+
+  isDeprecated: Boolean!
+
+  deprecationReason: String
+}
+
+type __InputValue {
+  name: String!
+
+  description: String
+
+  type: __Type!
+
+  defaultValue: String
+
+  isDeprecated: Boolean!
+
+  deprecationReason: String
+}
+
+type __EnumValue {
+  name: String!
+
+  description: String
+
+  isDeprecated: Boolean!
+
+  deprecationReason: String
+}
+
+type __Directive {
+  name: String!
+
+  description: String
+
+  locations: [__DirectiveLocation!]!
+
+  args(includeDeprecated: Boolean = false): [__InputValue!]!
+
+  isRepeatable: Boolean!
+}
+
+enum __DirectiveLocation {
+  QUERY
+
+  MUTATION
+
+  SUBSCRIPTION
+
+  FIELD
+
+  FRAGMENT_DEFINITION
+
+  FRAGMENT_SPREAD
+
+  INLINE_FRAGMENT
+
+  VARIABLE_DEFINITION
+
+  SCHEMA
+
+  SCALAR
+
+  OBJECT
+
+  FIELD_DEFINITION
+
+  ARGUMENT_DEFINITION
+
+  INTERFACE
+
+  UNION
+
+  ENUM
+
+  ENUM_VALUE
+
+  INPUT_OBJECT
+
+  INPUT_FIELD_DEFINITION
+}
+
+directive @skip (if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
+
+directive @include (if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
+
+directive @deprecated (reason: String = "No longer supported") on FIELD_DEFINITION|ARGUMENT_DEFINITION|INPUT_FIELD_DEFINITION|ENUM_VALUE
+
+directive @defer (label: String, if: Boolean! = true) on FRAGMENT_SPREAD|INLINE_FRAGMENT
+
+directive @specifiedBy (url: String!) on SCALAR

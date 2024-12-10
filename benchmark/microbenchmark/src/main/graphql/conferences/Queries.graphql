@@ -1,0 +1,150 @@
+query GetConferenceData($first: Int! = 1000, $after: String = null) {
+    sessions(first: $first, after: $after) {
+        nodes {
+            ...SessionDetails
+        }
+        pageInfo {
+            endCursor
+        }
+    }
+    speakers: speakersPage(first: 1000) {
+        nodes {
+            ...SpeakerDetails
+        }
+    }
+    rooms {
+        ...RoomDetails
+    }
+    config {
+        id
+        name
+        timezone
+        days
+        themeColor
+    }
+    venues {
+        id
+        name
+        address
+        description
+        latitude
+        longitude
+        imageUrl
+        floorPlanUrl
+    }
+}
+
+query GetSessions($first: Int! = 1000, $after: String = null) {
+    sessions(first: $first, after: $after) {
+        nodes {
+            ...SessionDetails
+        }
+        pageInfo {
+            endCursor
+        }
+    }
+    config {
+        timezone
+    }
+}
+
+query GetSpeaker($id: String!) {
+    speaker(id: $id) {
+        ...SpeakerDetails
+    }
+}
+
+query GetSpeakers($first: Int! = 1000, $after: String = null) {
+    speakers: speakersPage(first: $first, after: $after) {
+        nodes {
+            ...SpeakerDetails
+        }
+        pageInfo {
+            endCursor
+        }
+    }
+}
+
+query GetSession($id: String!){
+    session(id: $id) {
+        ...SessionDetails
+    }
+    config {
+        timezone
+    }
+}
+
+query GetConferences{
+    conferences {
+        id
+        timezone
+        days
+        name
+        timezone
+        themeColor
+    }
+}
+
+query GetVenue {
+    conferences {
+        id
+        name
+    }
+
+    venues {
+        id
+        name
+        address
+        description
+        latitude
+        longitude
+        imageUrl
+        floorPlanUrl
+    }
+}
+
+fragment SessionDetails on Session {
+    id
+    title
+    type
+    startsAt,
+    endsAt
+    sessionDescription: description
+    language
+    speakers {
+        ...SpeakerDetails
+    }
+    room {
+        name
+    }
+    tags
+}
+
+fragment SpeakerDetails on Speaker {
+    id
+    name
+    photoUrl
+    photoUrlThumbnail
+    tagline
+    company
+    companyLogoUrl
+    city
+    bio
+  	sessions {
+      id
+      title
+      startsAt
+    }
+    socials {
+        name
+        url
+        icon
+    }
+}
+
+fragment RoomDetails on Room {
+    id
+    name
+    capacity
+}
+
