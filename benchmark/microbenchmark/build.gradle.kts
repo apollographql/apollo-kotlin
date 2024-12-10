@@ -1,3 +1,5 @@
+import com.apollographql.apollo.annotations.ApolloExperimental
+
 plugins {
   id("com.android.library")
   id("org.jetbrains.kotlin.android")
@@ -30,17 +32,17 @@ dependencies {
   implementation(libs.moshi)
   ksp(libs.moshix.ksp)
 
+  // Stable cache
+  implementation(libs.apollo.normalizedcache)
+  implementation(libs.apollo.normalizedcache.sqlite)
+
+  // Incubating cache
+  implementation(libs.apollo.normalizedcache.sqlite.incubating.snapshot)
+
   androidTestImplementation(libs.benchmark.junit4)
   androidTestImplementation(libs.androidx.test.core)
   androidTestImplementation(libs.apollo.mockserver)
   androidTestImplementation(libs.apollo.testingsupport)
-
-  // Stable cache
-  androidTestImplementation(libs.apollo.normalizedcache)
-  androidTestImplementation(libs.apollo.normalizedcache.sqlite)
-
-  // Incubating cache
-  androidTestImplementation(libs.apollo.normalizedcache.sqlite.incubating.snapshot)
 }
 
 java {
@@ -63,5 +65,13 @@ configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
     srcDir("src/main/graphql/calendar")
     codegenModels.set("operationBased")
     packageName.set("com.apollographql.apollo.calendar.operation")
+  }
+  service("conferences") {
+    srcDir("src/main/graphql/conferences")
+    packageName.set("com.apollographql.apollo.conferences")
+    @OptIn(ApolloExperimental::class)
+    plugin("com.apollographql.cache:normalized-cache-apollo-compiler-plugin:0.0.5-SNAPSHOT") {
+      argument("packageName", packageName.get())
+    }
   }
 }
