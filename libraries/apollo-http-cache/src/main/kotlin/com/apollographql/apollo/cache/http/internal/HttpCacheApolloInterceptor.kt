@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.cache.http.CachingHttpInterceptor
 import com.apollographql.apollo.cache.http.HttpFetchPolicy
 import com.apollographql.apollo.cache.http.HttpFetchPolicyContext
+import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.interceptor.ApolloInterceptor
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import kotlinx.coroutines.flow.Flow
@@ -48,9 +49,17 @@ internal class HttpCacheApolloInterceptor(
         .run {
           if (request.operation is Query<*>) {
             onEach { response ->
-              // Revert caching of responses with errors
               val cacheKey = synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey[request.requestUuid.toString()] }
-              if (response.hasErrors()) {
+              /**
+               * We revert caching if:
+               * - there are GraphQL errors
+               * - or if data was received (not an ApolloNetworkException) but could not be parsed to a valid GraphQL response
+               *
+               * This is fragile as it might remove useful data.
+               * A better version of this should probably delegate that decision to the server using HTTP codes.
+               * See https://github.com/apollographql/apollo-kotlin/issues/6313#issuecomment-2531538619
+               */
+              if (response.hasErrors() || response.exception != null && response.exception !is ApolloNetworkException) {
                 try {
                   cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
                 } catch (_: IOException) {
