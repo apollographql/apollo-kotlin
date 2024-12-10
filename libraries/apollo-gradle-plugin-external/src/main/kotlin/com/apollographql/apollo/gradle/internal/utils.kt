@@ -28,7 +28,9 @@ internal fun List<InputFile>.isolate(): List<Any> = flatMap { listOf(it.normaliz
 
 
 internal fun ProjectDependency.getPathCompat(): String {
-  val method = this::class.java.getDeclaredMethod("getPath")
+  val method = this::class.java.methods.firstOrNull {
+    it.name == "getPath" && it.parameters.isEmpty()
+  }
   return if (method != null) {
     // Gradle 8.11+ path
     // See https://docs.gradle.org/8.11/userguide/upgrading_version_8.html#deprecate_get_dependency_project
