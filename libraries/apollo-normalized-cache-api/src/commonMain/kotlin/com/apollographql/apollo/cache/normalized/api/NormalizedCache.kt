@@ -1,5 +1,6 @@
 package com.apollographql.apollo.cache.normalized.api
 
+import okio.Closeable
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSuppressWildcards
 import kotlin.reflect.KClass
@@ -17,7 +18,7 @@ import kotlin.reflect.KClass
  *
  * A [NormalizedCache] can choose to store records in any manner.
  */
-abstract class NormalizedCache : ReadOnlyNormalizedCache {
+abstract class NormalizedCache : ReadOnlyNormalizedCache, Closeable {
   var nextCache: NormalizedCache? = null
     private set
 
@@ -145,6 +146,13 @@ abstract class NormalizedCache : ReadOnlyNormalizedCache {
     }
 
     private val specialChars = "()^$.*?+{}"
+  }
+
+  /**
+   * Closes resources associated with the cache if any.
+   * This function must not call `nextCache.close()`, this is done by the caller.
+   */
+  override fun close() {
   }
 }
 
