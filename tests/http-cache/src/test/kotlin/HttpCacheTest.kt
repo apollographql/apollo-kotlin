@@ -11,6 +11,7 @@ import com.apollographql.apollo.cache.http.httpFetchPolicy
 import com.apollographql.apollo.cache.http.isFromHttpCache
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.HttpCacheMissException
+import com.apollographql.apollo.exception.JsonEncodingException
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueError
@@ -21,6 +22,7 @@ import httpcache.GetRandom2Query
 import httpcache.GetRandomQuery
 import httpcache.RandomSubscription
 import httpcache.SetRandomMutation
+import junit.framework.TestCase.assertFalse
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -31,6 +33,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class HttpCacheTest {
   lateinit var mockServer: MockServer
@@ -215,17 +218,70 @@ class HttpCacheTest {
     }
   }
 
+  /**
+   * Whether an incomplete Json is an IO error is still an open question:
+   * - [ResponseParser] considers yes (and throws an ApolloNetworkException)
+   * - [ProxySource] considers no (and doesn't abort)
+   *
+   * This isn't great and will need to be revisited if that ever becomes a bigger problem
+   */
   @Test
-  fun incompleteJsonIsNotCached() = runTest(before = { before() }, after = { tearDown() }) {
+  fun incompleteJsonTriggersNetworkException() = runTest(before = { before() }, after = { tearDown() }) {
     mockServer.enqueueString("""{"data":""")
+    apolloClient.query(GetRandomQuery()).execute().apply {
+      assertIs<ApolloNetworkException>(exception)
+    }
+
+    apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute().apply {
+      /**
+       * Because there's a disagreement between ProxySource and HttpCacheApolloInterceptor, the value is stored in the
+       * HTTP cache and is replayed here
+       */
+      assertIs<ApolloNetworkException>(exception)
+    }
+  }
+
+  @Test
+  fun malformedJsonIsNotCached() = runTest(before = { before() }, after = { tearDown() }) {
+    mockServer.enqueueString("""{"data":}""")
     apolloClient.query(GetRandomQuery()).execute().exception.apply {
-      assertIs<ApolloNetworkException>(this)
+      assertIs<JsonEncodingException>(this)
     }
     // Should not have been cached
-    assertIs<HttpCacheMissException>(
-        apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute().exception
-    )
+    apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute().apply {
+      assertIs<HttpCacheMissException>(exception)
+    }
   }
+
+  @Test
+  fun ioErrorDoesNotRemoveData() = runTest(before = { before() }, after = { tearDown() }) {
+    mockServer.enqueueString("""
+        {
+          "data": {
+            "random": "42"
+          }
+        }
+      """.trimIndent())
+
+    // Warm the cache
+    apolloClient.query(GetRandomQuery()).execute().apply {
+      assertEquals(42, data?.random)
+      assertFalse(isFromHttpCache)
+    }
+
+    // Go offline
+    mockServer.close()
+    apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.NetworkOnly).execute().apply {
+      assertIs<ApolloNetworkException>(exception)
+    }
+
+    // The data is still there
+    apolloClient.query(GetRandomQuery()).execute().apply {
+      assertEquals(42, data?.random)
+      assertTrue(isFromHttpCache)
+    }
+  }
+
 
   @Test
   fun responseWithGraphQLErrorIsNotCached() = runTest(before = { before() }, after = { tearDown() }) {
