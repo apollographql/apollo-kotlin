@@ -16,7 +16,7 @@ extend type Book @typePolicy(keyFields: "id")
 
 With declarative cache IDs, the codegen process adds ID fields automatically and generates type-safe code that can return a valid cache ID for any object.
 
-To do this, Apollo Kotlin extends your backend schema. The GraphQL spec supports [object extensions](https://spec.graphql.org/draft/#sec-Object-Extensions) using the `extend type` keywords. We can use this together with the `@typePolicy` and `@fieldPolicy` directives, along with an extra `.graphqls` file named `extra.graphqls`.
+To do this, Apollo Kotlin extends your backend schema. The GraphQL spec supports [object](https://spec.graphql.org/draft/#sec-Object-Extensions) and [interface](https://spec.graphql.org/draft/#sec-Interface-Extensions) extensions using the `extend` keyword. We can use this together with the `@typePolicy` and `@fieldPolicy` directives, along with an extra `.graphqls` file named `extra.graphqls`.
 
 Note that you'll need to make sure that the `extra.graphqls` file is included in your [schema configuration](https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration#combining-multiple-schema-files).
 
@@ -47,7 +47,7 @@ We can add the following definition to an `extra.graphqls` file in the same dire
 extend type Book @typePolicy(keyFields: "id")
 ```
 
-Apollo Kotlin now knows to use the `id` field of a `Book` type to generate its cache ID. A cache record may now look like
+Apollo Kotlin now knows to use the `id` field of a `Book` type to generate its cache ID. A cache record may now look like:
 
 ```
 "Book:bk123": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"}
@@ -64,6 +64,12 @@ In this case, the cache ID for an `Author` object includes the values of both it
 
 ```
 "Author:PierreBordage": {"id": "au456", "firstName": "Pierre", "lastName": "Bordage"}
+```
+
+It is also possible to use `@typePolicy` on _interfaces_. This specifies the key fields for all the implementing types:
+
+```graphql title="extra.graphqls"
+extend interface Node @typePolicy(keyFields: "id")
 ```
 
 > All of an object type's key fields must return a [scalar type](https://www.apollographql.com/docs/apollo-server/schema/schema/#scalar-types).
