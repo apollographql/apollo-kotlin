@@ -114,10 +114,12 @@ class MultiModulesTests {
   @Test
   fun `metadata is published`() {
     TestUtils.withTestProject("multi-modules-publishing-producer") { dir ->
-      TestUtils.executeTaskAndAssertSuccess(
+      val result = TestUtils.executeTask(
           "publishAllPublicationsToPluginTestRepository",
           dir
       )
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":schema:publishAllPublicationsToPluginTestRepository")?.outcome)
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":fragments:publishAllPublicationsToPluginTestRepository")?.outcome)
     }
     TestUtils.withTestProject("multi-modules-publishing-consumer") { dir ->
       TestUtils.executeTaskAndAssertSuccess(
