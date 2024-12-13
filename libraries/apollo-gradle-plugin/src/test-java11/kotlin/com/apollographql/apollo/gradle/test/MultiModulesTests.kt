@@ -115,7 +115,7 @@ class MultiModulesTests {
   fun `metadata is published`() {
     TestUtils.withTestProject("multi-modules-publishing-producer") { dir ->
       TestUtils.executeTaskAndAssertSuccess(
-          ":publishAllPublicationsToPluginTestRepository",
+          "publishAllPublicationsToPluginTestRepository",
           dir
       )
     }

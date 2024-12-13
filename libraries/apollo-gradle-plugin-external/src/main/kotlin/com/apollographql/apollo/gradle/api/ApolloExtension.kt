@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.api
 
+import com.apollographql.apollo.annotations.ApolloExperimental
 import org.gradle.api.Action
 import org.gradle.api.provider.Property
 
@@ -88,6 +89,9 @@ interface ApolloExtension {
    * Default: true.
    */
   val generateSourcesDuringGradleSync: Property<Boolean>
+
+  @ApolloExperimental
+  val useGradleVariants: Property<Boolean>
 
   /**
    * Common apollo dependencies using the same version as the Apollo Gradle Plugin currently in the classpath
