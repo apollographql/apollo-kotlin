@@ -13,6 +13,8 @@ dependencies {
 }
 
 apollo {
+  useGradleVariants.set(true)
+
   service("service1") {
     packageName.set("com.service1")
     dependsOn(project(":schema"))

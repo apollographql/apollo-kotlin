@@ -1038,10 +1038,6 @@ abstract class DefaultApolloExtension(
 
   private fun Project.adhocComponentWithVariants(): AdhocComponentWithVariants {
     if (useGradleVariants.getOrElse(false)) {
-      return softwareComponentFactory.adhoc("apollo").also {
-        project.components.add(it)
-      }
-    } else {
       val javaComponent = project.components.findByName("java")
       if (javaComponent != null) {
         // JVM
@@ -1054,6 +1050,10 @@ abstract class DefaultApolloExtension(
       }
 
       error("Impossible to find an AdHocComponent")
+    } else {
+      return softwareComponentFactory.adhoc("apollo").also {
+        project.components.add(it)
+      }
     }
   }
 }
