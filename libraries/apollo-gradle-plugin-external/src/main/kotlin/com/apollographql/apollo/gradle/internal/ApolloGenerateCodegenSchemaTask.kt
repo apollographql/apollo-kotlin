@@ -73,17 +73,16 @@ private abstract class GenerateCodegenSchema : WorkAction<GenerateCodegenSchemaP
   override fun execute() {
     with(parameters) {
       runInIsolation(apolloBuildService.get(), classpath) {
-        it.javaClass.declaredMethods.single { it.name == "buildCodegenSchema" }
-            .invoke(
-                it,
-                arguments,
-                logLevel,
-                hasPlugin,
-                (schemaFiles.takeIf { it.isNotEmpty() }?: fallbackSchemaFiles),
-                warningMessageConsumer,
-                codegenSchemaOptionsFile.get().asFile,
-                codegenSchemaFile.get().asFile
-            )
+        it.reflectiveCall(
+            "buildCodegenSchema",
+            arguments,
+            logLevel,
+            hasPlugin,
+            (schemaFiles.takeIf { it.isNotEmpty() } ?: fallbackSchemaFiles),
+            warningMessageConsumer,
+            codegenSchemaOptionsFile.get().asFile,
+            codegenSchemaFile.get().asFile
+        )
       }
     }
   }

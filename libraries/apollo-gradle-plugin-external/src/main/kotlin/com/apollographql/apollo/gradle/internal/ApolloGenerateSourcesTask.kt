@@ -94,9 +94,7 @@ private abstract class GenerateSources : WorkAction<GenerateSourcesParameters> {
   override fun execute() {
     with(parameters) {
       runInIsolation(apolloBuildService.get(), classpath) {
-        it.javaClass.declaredMethods.single { it.name == "buildSources" }
-            .invoke(
-                it,
+        it.reflectiveCall("buildSources",
                 arguments,
                 logLevel,
                 hasPlugin,

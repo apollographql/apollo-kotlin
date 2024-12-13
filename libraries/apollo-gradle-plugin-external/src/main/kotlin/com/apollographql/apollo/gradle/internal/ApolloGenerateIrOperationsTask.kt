@@ -60,18 +60,17 @@ private abstract class GenerateIrOperations : WorkAction<GenerateIrOperationsPar
   override fun execute() {
     with(parameters) {
       runInIsolation(apolloBuildService.get(), classpath) {
-        it.javaClass.declaredMethods.single { it.name == "buildIr" }
-            .invoke(
-                it,
-                arguments,
-                logLevel,
-                graphqlFiles,
-                codegenSchemaFiles,
-                upstreamIrFiles,
-                irOptionsFile.get().asFile,
-                warningMessageConsumer,
-                irOperationsFile.get().asFile
-            )
+        it.reflectiveCall(
+            "buildIr",
+            arguments,
+            logLevel,
+            graphqlFiles,
+            codegenSchemaFiles,
+            upstreamIrFiles,
+            irOptionsFile.get().asFile,
+            warningMessageConsumer,
+            irOperationsFile.get().asFile
+        )
       }
     }
   }
