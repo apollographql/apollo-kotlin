@@ -74,16 +74,20 @@ fun BooleanExpression<BTerm>.evaluate(
   return evaluate {
     when (it) {
       is BVariable -> !(variables?.contains(it.name) ?: false)
-      is BLabel -> hasDeferredFragment(deferredFragmentIdentifiers, croppedPath!!, it.label)
+      is BLabel -> !isDeferredFragmentPending(deferredFragmentIdentifiers, croppedPath!!, it.label)
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }
   }
 }
 
-private fun hasDeferredFragment(deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?, path: List<Any>, label: String?): Boolean {
+private fun isDeferredFragmentPending(
+    deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?,
+    path: List<Any>,
+    label: String?,
+): Boolean {
   if (deferredFragmentIdentifiers == null) {
     // By default, parse all deferred fragments - this is the case when parsing from the normalized cache.
-    return true
+    return false
   }
   return deferredFragmentIdentifiers.contains(DeferredFragmentIdentifier(path, label))
 }

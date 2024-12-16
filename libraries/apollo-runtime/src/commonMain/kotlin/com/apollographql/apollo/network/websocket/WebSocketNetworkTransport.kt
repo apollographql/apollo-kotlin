@@ -215,7 +215,7 @@ private class DefaultSubscriptionParser<D : Operation.Data>(private val request:
     }
 
     val (payload, mergedFragmentIds) = if (responseMap.isDeferred()) {
-      deferredJsonMerger.merge(responseMap) to deferredJsonMerger.mergedFragmentIds
+      deferredJsonMerger.merge(responseMap) to deferredJsonMerger.pendingFragmentIds
     } else {
       responseMap to null
     }
