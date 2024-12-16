@@ -3,6 +3,7 @@ package test
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.Error
+import com.apollographql.apollo.api.Error.Builder
 import com.apollographql.apollo.autoPersistedQueryInfo
 import com.apollographql.apollo.mpp.currentTimeMillis
 import com.apollographql.apollo.testing.internal.runTest
@@ -43,11 +44,8 @@ class DeferTest {
   @Test
   fun deferWithFragmentSpreads() = runTest(before = { setUp() }, after = { tearDown() }) {
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"path":["computers",1]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":true},"path":["computers",1,"screen"],"label":"a"}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
+        """{"hasNext":true,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"},{"id":"3","path":["computers",1,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"1"},{"data":{"isColor":false},"id":"2"},{"data":{"isColor":true},"id":"3"}],"completed":[{"id":"0"},{"id":"1"},{"id":"2"},{"id":"3"}]}""",
     )
 
     val expectedDataList = listOf(
@@ -60,35 +58,17 @@ class DeferTest {
         WithFragmentSpreadsQuery.Data(
             listOf(
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                    ComputerFields.Screen("Screen", "640x480", null))),
-                WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
-            )
-        ),
-        WithFragmentSpreadsQuery.Data(
-            listOf(
-                WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                    ComputerFields.Screen("Screen", "640x480", null))),
-                WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
-                    ComputerFields.Screen("Screen", "800x600", null))),
-            )
-        ),
-        WithFragmentSpreadsQuery.Data(
-            listOf(
-                WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                     ComputerFields.Screen("Screen", "640x480",
-                        ScreenFields(false)))),
-                WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
-                    ComputerFields.Screen("Screen", "800x600", null))),
-            )
-        ),
-        WithFragmentSpreadsQuery.Data(
-            listOf(
-                WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                    ComputerFields.Screen("Screen", "640x480",
-                        ScreenFields(false)))),
+                        ScreenFields(false)
+                    )
+                )
+                ),
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
                     ComputerFields.Screen("Screen", "800x600",
-                        ScreenFields(true)))),
+                        ScreenFields(true)
+                    )
+                )
+                ),
             )
         ),
     )
@@ -101,11 +81,8 @@ class DeferTest {
   @Test
   fun deferWithInlineFragments() = runTest(before = { setUp() }, after = { tearDown() }) {
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"path":["computers",1]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"b"}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":true},"path":["computers",1,"screen"],"label":"b"}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
+        """{"hasNext":false,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"b"},{"id":"3","path":["computers",1,"screen"],"label":"b"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"1"},{"data":{"isColor":false},"id":"2"},{"data":{"isColor":true},"id":"3"}],"completed":[{"id":"0"},{"id":"1"},{"id":"2"},{"id":"3"}]}""",
     )
 
     val expectedDataList = listOf(
@@ -118,35 +95,17 @@ class DeferTest {
         WithInlineFragmentsQuery.Data(
             listOf(
                 WithInlineFragmentsQuery.Computer("Computer", "Computer1", WithInlineFragmentsQuery.OnComputer("386", 1993,
-                    WithInlineFragmentsQuery.Screen("Screen", "640x480", null))),
-                WithInlineFragmentsQuery.Computer("Computer", "Computer2", null),
-            )
-        ),
-        WithInlineFragmentsQuery.Data(
-            listOf(
-                WithInlineFragmentsQuery.Computer("Computer", "Computer1", WithInlineFragmentsQuery.OnComputer("386", 1993,
-                    WithInlineFragmentsQuery.Screen("Screen", "640x480", null))),
-                WithInlineFragmentsQuery.Computer("Computer", "Computer2", WithInlineFragmentsQuery.OnComputer("486", 1996,
-                    WithInlineFragmentsQuery.Screen("Screen", "800x600", null))),
-            )
-        ),
-        WithInlineFragmentsQuery.Data(
-            listOf(
-                WithInlineFragmentsQuery.Computer("Computer", "Computer1", WithInlineFragmentsQuery.OnComputer("386", 1993,
                     WithInlineFragmentsQuery.Screen("Screen", "640x480",
-                        WithInlineFragmentsQuery.OnScreen(false)))),
-                WithInlineFragmentsQuery.Computer("Computer", "Computer2", WithInlineFragmentsQuery.OnComputer("486", 1996,
-                    WithInlineFragmentsQuery.Screen("Screen", "800x600", null))),
-            )
-        ),
-        WithInlineFragmentsQuery.Data(
-            listOf(
-                WithInlineFragmentsQuery.Computer("Computer", "Computer1", WithInlineFragmentsQuery.OnComputer("386", 1993,
-                    WithInlineFragmentsQuery.Screen("Screen", "640x480",
-                        WithInlineFragmentsQuery.OnScreen(false)))),
+                        WithInlineFragmentsQuery.OnScreen(false)
+                    )
+                )
+                ),
                 WithInlineFragmentsQuery.Computer("Computer", "Computer2", WithInlineFragmentsQuery.OnComputer("486", 1996,
                     WithInlineFragmentsQuery.Screen("Screen", "800x600",
-                        WithInlineFragmentsQuery.OnScreen(true)))),
+                        WithInlineFragmentsQuery.OnScreen(true)
+                    )
+                )
+                ),
             )
         ),
     )
@@ -159,11 +118,8 @@ class DeferTest {
   @Test
   fun deferWithFragmentSpreadsAndError() = runTest(before = { setUp() }, after = { tearDown() }) {
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
-        """{"incremental": [{"data":null,"path":["computers",0,"screen"],"label":"b","errors":[{"message":"Cannot resolve isColor","locations":[{"line":1,"column":119}],"path":["computers",0,"screen","isColor"]}]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"path":["computers",1]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":true},"path":["computers",1,"screen"],"label":"a"}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
+        """{"hasNext":false,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"},{"id":"3","path":["computers",1,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"1"},{"data":{"isColor":true},"id":"3"}],"completed":[{"id":"0"},{"id":"1"},{"id":"2","errors":[{"message":"Error field","locations":[{"line":3,"column":35}],"path":["computers",0,"screen","isColor"]}]},{"id":"3"}]}""",
     )
 
     val query = WithFragmentSpreadsQuery()
@@ -178,58 +134,10 @@ class DeferTest {
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null),
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
             )
-        )).build(),
-
-        ApolloResponse.Builder(
-            query,
-            uuid,
-        ).data(
-            WithFragmentSpreadsQuery.Data(
-                listOf(
-                    WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                        ComputerFields.Screen("Screen", "640x480", null))),
-                    WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
-                )
-            )
-        ).build(),
-
-        ApolloResponse.Builder(
-            query,
-            uuid,
         )
-            .data(
-                WithFragmentSpreadsQuery.Data(
-                    listOf(
-                        WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                            ComputerFields.Screen("Screen", "640x480", null))),
-                        WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
-                    )
-                )
-            )
-            .errors(
-                listOf(
-                    Error.Builder(message = "Cannot resolve isColor")
-                        .locations(listOf(Error.Location(1, 119)))
-                        .path(listOf("computers", 0, "screen", "isColor"))
-                        .build()
-                )
-            )
-            .build(),
-
-        ApolloResponse.Builder(
-            query,
-            uuid,
-        ).data(
-            WithFragmentSpreadsQuery.Data(
-                listOf(
-                    WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                        ComputerFields.Screen("Screen", "640x480", null))),
-                    WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
-                        ComputerFields.Screen("Screen", "800x600", null))),
-                )
-            )
         ).build(),
 
+
         ApolloResponse.Builder(
             query,
             uuid,
@@ -237,13 +145,25 @@ class DeferTest {
             WithFragmentSpreadsQuery.Data(
                 listOf(
                     WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                        ComputerFields.Screen("Screen", "640x480", null))),
+                        ComputerFields.Screen("Screen", "640x480", null)
+                    )
+                    ),
                     WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
                         ComputerFields.Screen("Screen", "800x600",
-                            ScreenFields(true)))),
+                            ScreenFields(true)
+                        )
+                    )
+                    ),
                 )
             )
-        ).build(),
+        ).errors(
+            listOf(
+                Builder("Error field")
+                    .locations(listOf(Error.Location(3, 35)))
+                    .path(listOf("computers", 0, "screen", "isColor"))
+                    .build()
+            )
+        ).build()
     )
 
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
@@ -270,11 +190,8 @@ class DeferTest {
     }
 
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"path":["computers",1]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":true},"path":["computers",1,"screen"],"label":"a"}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
+        """{"hasNext":true,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"},{"id":"3","path":["computers",1,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"1"},{"data":{"isColor":false},"id":"2"},{"data":{"isColor":true},"id":"3"}],"completed":[{"id":"0"},{"id":"1"},{"id":"2"},{"id":"3"}]}""",
     )
 
     jsonList.withIndex().forEach { (index, value) ->
@@ -292,21 +209,27 @@ class DeferTest {
   @Test
   fun emptyPayloadsAreIgnored() = runTest(before = { setUp() }, after = { tearDown() }) {
     val jsonWithEmptyPayload = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"computer1"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386"},"path":["computers",0]}],"hasNext":true}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
+        """{"hasNext":true,"incremental":[{"data":{"cpu":"386"},"id":"0"},{"data":{"cpu":"486"},"id":"1"}],"completed":[{"id":"0"},{"id":"1"}]}""",
         """{"hasNext":false}""",
     )
     val jsonWithoutEmptyPayload = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"computer1"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386"},"path":["computers",0]}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
+        """{"hasNext":false,"incremental":[{"data":{"cpu":"386"},"id":"0"},{"data":{"cpu":"486"},"id":"1"}],"completed":[{"id":"0"},{"id":"1"}]}""",
     )
 
     val expectedDataList = listOf(
         SimpleDeferQuery.Data(
-            listOf(SimpleDeferQuery.Computer("Computer", "computer1", null))
+            listOf(
+                SimpleDeferQuery.Computer("Computer", "Computer1", null),
+                SimpleDeferQuery.Computer("Computer", "Computer2", null),
+            )
         ),
         SimpleDeferQuery.Data(
-            listOf(SimpleDeferQuery.Computer("Computer", "computer1", SimpleDeferQuery.OnComputer("386")))
+            listOf(
+                SimpleDeferQuery.Computer("Computer", "Computer1", SimpleDeferQuery.OnComputer("386")),
+                SimpleDeferQuery.Computer("Computer", "Computer2", SimpleDeferQuery.OnComputer("486")),
+            )
         ),
     )
 
@@ -327,11 +250,8 @@ class DeferTest {
         .build()
 
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"path":["computers",1]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":true},"path":["computers",1,"screen"],"label":"a"}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
+        """{"hasNext":true,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"},{"id":"3","path":["computers",1,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"1"},{"data":{"isColor":false},"id":"2"},{"data":{"isColor":true},"id":"3"}],"completed":[{"id":"0"},{"id":"1"},{"id":"2"},{"id":"3"}]}""",
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     val finalResponse = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().last()
@@ -341,10 +261,16 @@ class DeferTest {
             listOf(
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                     ComputerFields.Screen("Screen", "640x480",
-                        ScreenFields(false)))),
+                        ScreenFields(false)
+                    )
+                )
+                ),
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
                     ComputerFields.Screen("Screen", "800x600",
-                        ScreenFields(true)))),
+                        ScreenFields(true)
+                    )
+                )
+                ),
             )
         ),
         finalResponse.dataOrThrow()
@@ -360,11 +286,8 @@ class DeferTest {
 
     mockServer.enqueueString("""{"errors":[{"message":"PersistedQueryNotFound"}]}""")
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"path":["computers",1]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":true},"path":["computers",1,"screen"],"label":"a"}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
+        """{"hasNext":true,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"},{"id":"3","path":["computers",1,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"1"},{"data":{"isColor":false},"id":"2"},{"data":{"isColor":true},"id":"3"}],"completed":[{"id":"0"},{"id":"1"},{"id":"2"},{"id":"3"}]}""",
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     val finalResponse = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().last()
@@ -374,10 +297,16 @@ class DeferTest {
             listOf(
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                     ComputerFields.Screen("Screen", "640x480",
-                        ScreenFields(false)))),
+                        ScreenFields(false)
+                    )
+                )
+                ),
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
                     ComputerFields.Screen("Screen", "800x600",
-                        ScreenFields(true)))),
+                        ScreenFields(true)
+                    )
+                )
+                ),
             )
         ),
         finalResponse.dataOrThrow()

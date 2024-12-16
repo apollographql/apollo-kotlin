@@ -59,6 +59,7 @@ class DeferredJsonMerger {
       handleCompleted(payload)
       return merged
     }
+    handlePending(payload)
 
     val incrementalList = payload["incremental"] as? List<JsonMap>
     if (incrementalList == null) {
@@ -74,7 +75,6 @@ class DeferredJsonMerger {
 
     hasNext = payload["hasNext"] as Boolean? ?: false
 
-    handlePending(payload)
     handleCompleted(payload)
 
     (payload["extensions"] as? JsonMap)?.let { getOrPutExtensions() += it }
