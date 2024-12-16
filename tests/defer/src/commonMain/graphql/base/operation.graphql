@@ -109,7 +109,25 @@ query CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery {
   }
 }
 
+query DeferFragmentThatIsAlsoNotDeferredIsSkipped1Query {
+  computer(id: "Computer1") {
+    screen {
+      ...ScreenFields @defer
+      ...ScreenFields
+    }
+  }
+}
+
 query CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery {
+  computer(id: "Computer1") {
+    screen {
+      ...ScreenFields
+      ...ScreenFields @defer
+    }
+  }
+}
+
+query DeferFragmentThatIsAlsoNotDeferredIsSkipped2Query {
   computer(id: "Computer1") {
     screen {
       ...ScreenFields
