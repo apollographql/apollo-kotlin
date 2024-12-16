@@ -205,8 +205,8 @@ final class com.apollographql.apollo.internal/DeferredJsonMerger { // com.apollo
 
     final val merged // com.apollographql.apollo.internal/DeferredJsonMerger.merged|{}merged[0]
         final fun <get-merged>(): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal/DeferredJsonMerger.merged.<get-merged>|<get-merged>(){}[0]
-    final val mergedFragmentIds // com.apollographql.apollo.internal/DeferredJsonMerger.mergedFragmentIds|{}mergedFragmentIds[0]
-        final fun <get-mergedFragmentIds>(): kotlin.collections/Set<com.apollographql.apollo.api/DeferredFragmentIdentifier> // com.apollographql.apollo.internal/DeferredJsonMerger.mergedFragmentIds.<get-mergedFragmentIds>|<get-mergedFragmentIds>(){}[0]
+    final val pendingFragmentIds // com.apollographql.apollo.internal/DeferredJsonMerger.pendingFragmentIds|{}pendingFragmentIds[0]
+        final fun <get-pendingFragmentIds>(): kotlin.collections/Set<com.apollographql.apollo.api/DeferredFragmentIdentifier> // com.apollographql.apollo.internal/DeferredJsonMerger.pendingFragmentIds.<get-pendingFragmentIds>|<get-pendingFragmentIds>(){}[0]
 
     final var hasNext // com.apollographql.apollo.internal/DeferredJsonMerger.hasNext|{}hasNext[0]
         final fun <get-hasNext>(): kotlin/Boolean // com.apollographql.apollo.internal/DeferredJsonMerger.hasNext.<get-hasNext>|<get-hasNext>(){}[0]

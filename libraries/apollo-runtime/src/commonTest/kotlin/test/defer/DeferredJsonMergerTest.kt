@@ -75,7 +75,12 @@ class DeferredJsonMergerTest {
     """
     deferredJsonMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
-    assertEquals(setOf(), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(
+          setOf(
+              DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0")
+          ),
+          deferredJsonMerger.pendingFragmentIds
+      )
 
     //language=JSON
     val payload2 = """
@@ -150,9 +155,9 @@ class DeferredJsonMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0")
+            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0")
         ),
-        deferredJsonMerger.mergedFragmentIds
+        deferredJsonMerger.pendingFragmentIds
     )
 
     //language=JSON
@@ -232,10 +237,9 @@ class DeferredJsonMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        deferredJsonMerger.mergedFragmentIds
+        deferredJsonMerger.pendingFragmentIds
     )
 
     //language=JSON
@@ -331,10 +335,10 @@ class DeferredJsonMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3_4), deferredJsonMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        deferredJsonMerger.mergedFragmentIds
+        deferredJsonMerger.pendingFragmentIds
     )
 
     //language=JSON
@@ -439,11 +443,9 @@ class DeferredJsonMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), deferredJsonMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
-            DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        deferredJsonMerger.mergedFragmentIds
+        deferredJsonMerger.pendingFragmentIds
     )
   }
 
@@ -514,7 +516,13 @@ class DeferredJsonMergerTest {
     """
     deferredJsonMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
-    assertEquals(setOf(), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(
+          setOf(
+              DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+              DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+          ),
+          deferredJsonMerger.pendingFragmentIds
+      )
 
     //language=JSON
     val payload2_3 = """
@@ -615,10 +623,10 @@ class DeferredJsonMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        deferredJsonMerger.mergedFragmentIds
+        deferredJsonMerger.pendingFragmentIds
     )
 
     //language=JSON
@@ -743,11 +751,9 @@ class DeferredJsonMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), deferredJsonMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
-            DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        deferredJsonMerger.mergedFragmentIds
+        deferredJsonMerger.pendingFragmentIds
     )
   }
 
@@ -838,7 +844,7 @@ class DeferredJsonMergerTest {
   }
 
   /**
-   * Example A from https://github.com/graphql/defer-stream-wg/discussions/69 (Nov 1 2024 version)
+   * Example A from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
    */
   @Test
   fun june2023ExampleA() {
@@ -879,7 +885,12 @@ class DeferredJsonMergerTest {
     """
     deferredJsonMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
-    assertEquals(setOf(), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(
+          setOf(
+              DeferredFragmentIdentifier(path = listOf(), label = null),
+          ),
+          deferredJsonMerger.pendingFragmentIds
+      )
 
     //language=JSON
     val payload2 = """
@@ -912,15 +923,13 @@ class DeferredJsonMergerTest {
     deferredJsonMerger.merge(payload2.buffer())
     assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
     assertEquals(
-        setOf(
-            DeferredFragmentIdentifier(path = listOf(), label = null),
-        ),
-        deferredJsonMerger.mergedFragmentIds
+        setOf(),
+        deferredJsonMerger.pendingFragmentIds
     )
   }
 
   /**
-   * Example A2 from https://github.com/graphql/defer-stream-wg/discussions/69 (Nov 1 2024 version)
+   * Example A2 from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
    */
   @Test
   fun june2023ExampleA2() {
@@ -958,7 +967,12 @@ class DeferredJsonMergerTest {
     """
     deferredJsonMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
-    assertEquals(setOf(), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(
+          setOf(
+              DeferredFragmentIdentifier(path = listOf(), label = "D1"),
+          ),
+          deferredJsonMerger.pendingFragmentIds
+      )
 
     //language=JSON
     val payload2 = """
@@ -998,9 +1012,9 @@ class DeferredJsonMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf(), label = "D1"),
+            DeferredFragmentIdentifier(path = listOf("f2", "c", "f"), label = "D2"),
         ),
-        deferredJsonMerger.mergedFragmentIds
+        deferredJsonMerger.pendingFragmentIds
     )
 
     //language=JSON
@@ -1042,16 +1056,13 @@ class DeferredJsonMergerTest {
     deferredJsonMerger.merge(payload3.buffer())
     assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
     assertEquals(
-        setOf(
-            DeferredFragmentIdentifier(path = listOf(), label = "D1"),
-            DeferredFragmentIdentifier(path = listOf("f2", "c", "f"), label = "D2"),
-        ),
-        deferredJsonMerger.mergedFragmentIds
+        setOf(),
+        deferredJsonMerger.pendingFragmentIds
     )
   }
 
   /**
-   * Example B1 from https://github.com/graphql/defer-stream-wg/discussions/69 (Nov 1 2024 version)
+   * Example B1 from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
    */
   @Test
   fun june2023ExampleB1() {
@@ -1086,7 +1097,13 @@ class DeferredJsonMergerTest {
     """
     deferredJsonMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
-    assertEquals(setOf(), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(
+          setOf(
+              DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
+              DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
+          ),
+          deferredJsonMerger.pendingFragmentIds
+      )
 
     //language=JSON
     val payload2 = """
@@ -1121,9 +1138,9 @@ class DeferredJsonMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
+            DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
         ),
-        deferredJsonMerger.mergedFragmentIds
+        deferredJsonMerger.pendingFragmentIds
     )
 
     //language=JSON
@@ -1161,16 +1178,13 @@ class DeferredJsonMergerTest {
     deferredJsonMerger.merge(payload3.buffer())
     assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
     assertEquals(
-        setOf(
-            DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
-            DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
-        ),
-        deferredJsonMerger.mergedFragmentIds
+        setOf(),
+        deferredJsonMerger.pendingFragmentIds
     )
   }
 
   /**
-   * Example B2 from https://github.com/graphql/defer-stream-wg/discussions/69 (Nov 1 2024 version)
+   * Example B2 from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
    */
   @Test
   fun june2023ExampleB2() {
@@ -1205,7 +1219,13 @@ class DeferredJsonMergerTest {
     """
     deferredJsonMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
-    assertEquals(setOf(), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(
+          setOf(
+              DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
+              DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
+          ),
+          deferredJsonMerger.pendingFragmentIds
+      )
 
     //language=JSON
     val payload2 = """
@@ -1243,9 +1263,9 @@ class DeferredJsonMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
+            DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
         ),
-        deferredJsonMerger.mergedFragmentIds
+        deferredJsonMerger.pendingFragmentIds
     )
 
     //language=JSON
@@ -1283,16 +1303,13 @@ class DeferredJsonMergerTest {
     deferredJsonMerger.merge(payload3.buffer())
     assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
     assertEquals(
-        setOf(
-            DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
-            DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
-        ),
-        deferredJsonMerger.mergedFragmentIds
+        setOf(),
+        deferredJsonMerger.pendingFragmentIds
     )
   }
 
   /**
-   * Example D from https://github.com/graphql/defer-stream-wg/discussions/69 (Nov 1 2024 version)
+   * Example D from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
    */
   @Test
   fun june2023ExampleD() {
@@ -1318,7 +1335,13 @@ class DeferredJsonMergerTest {
     """
     deferredJsonMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
-    assertEquals(setOf(), deferredJsonMerger.mergedFragmentIds)
+      assertEquals(
+          setOf(
+              DeferredFragmentIdentifier(path = listOf(), label = null),
+              DeferredFragmentIdentifier(path = listOf("me"), label = null),
+          ),
+          deferredJsonMerger.pendingFragmentIds
+      )
 
     //language=JSON
     val payload2 = """
@@ -1354,9 +1377,9 @@ class DeferredJsonMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("me"), label = null),
+            DeferredFragmentIdentifier(path = listOf(), label = null),
         ),
-        deferredJsonMerger.mergedFragmentIds
+        deferredJsonMerger.pendingFragmentIds
     )
 
     //language=JSON
@@ -1388,11 +1411,339 @@ class DeferredJsonMergerTest {
     deferredJsonMerger.merge(payload3.buffer())
     assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
     assertEquals(
-        setOf(
-            DeferredFragmentIdentifier(path = listOf("me"), label = null),
-            DeferredFragmentIdentifier(path = listOf(), label = null),
-        ),
-        deferredJsonMerger.mergedFragmentIds
+        setOf(),
+        deferredJsonMerger.pendingFragmentIds
     )
   }
+
+    /**
+     * Example F from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
+     */
+    @Test
+    fun june2023ExampleF() {
+        val deferredJsonMerger = DeferredJsonMerger()
+        //language=JSON
+        val payload1 = """
+      {
+        "data": {
+          "me": {}
+        },
+        "pending": [
+          {"id": "0", "path": ["me"], "label": "B"}
+        ],
+        "hasNext": true
+      }
+    """
+        //language=JSON
+        val mergedPayloads_1 = """
+      {
+        "data": {
+          "me": {}
+        }
+      }
+    """
+        deferredJsonMerger.merge(payload1.buffer())
+        assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+        assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
+        ),
+            deferredJsonMerger.pendingFragmentIds
+        )
+
+        //language=JSON
+        val payload2 = """
+      {
+        "incremental": [
+          {"id":"0" , "data": {"a": "A", "b": "B"}}
+        ],
+        "completed": [
+          {"id": "0"}
+        ],
+        "hasNext": false
+      }
+    """
+        //language=JSON
+        val mergedPayloads_1_2 = """
+      {
+        "data": {
+          "me": {
+            "a": "A",
+            "b": "B"
+          }
+        }
+      }
+    """
+        deferredJsonMerger.merge(payload2.buffer())
+        assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+        assertEquals(
+            setOf(),
+            deferredJsonMerger.pendingFragmentIds
+    )
+  }
+
+    /**
+     * Example G from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
+     */
+    @Test
+    fun june2023ExampleG() {
+        val deferredJsonMerger = DeferredJsonMerger()
+        //language=JSON
+        val payload1 = """
+      {
+        "data": {
+          "me": {
+            "id": 1,
+            "avatarUrl": "http://…",
+            "projects": [{ "name": "My Project" }]
+          }
+        },
+        "pending": [
+          { "id": "0", "path": ["me"], "label": "Billing" },
+          { "id": "1", "path": ["me"], "label": "Prev" }
+        ],
+        "hasNext": true
+      }
+    """
+        //language=JSON
+        val mergedPayloads_1 = """
+      {
+        "data": {
+          "me": {
+            "id": 1,
+            "avatarUrl": "http://…",
+            "projects": [{ "name": "My Project" }]
+          }
+        }
+      }
+    """
+        deferredJsonMerger.merge(payload1.buffer())
+        assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+        assertEquals(
+            setOf(
+                DeferredFragmentIdentifier(path = listOf("me"), label = "Billing"),
+                DeferredFragmentIdentifier(path = listOf("me"), label = "Prev"),
+            ),
+            deferredJsonMerger.pendingFragmentIds
+        )
+
+        //language=JSON
+        val payload2 = """
+      {
+        "incremental": [
+          {
+            "id": "0",
+            "data": {
+              "tier": "BRONZE",
+              "renewalDate": "2023-03-20",
+              "latestInvoiceTotal": "${'$'}12.34"
+            }
+          }
+        ],
+        "completed": [{ "id": "0" }],
+        "hasNext": true
+      }
+    """
+        //language=JSON
+        val mergedPayloads_1_2 = """
+      {
+        "data": {
+          "me": {
+            "id": 1,
+            "avatarUrl": "http://…",
+            "projects": [{ "name": "My Project" }],
+            "tier": "BRONZE",
+            "renewalDate": "2023-03-20",
+            "latestInvoiceTotal": "${'$'}12.34"
+          }
+        }
+      }
+    """
+        deferredJsonMerger.merge(payload2.buffer())
+        assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+        assertEquals(
+            setOf(
+                DeferredFragmentIdentifier(path = listOf("me"), label = "Prev"),
+            ),
+            deferredJsonMerger.pendingFragmentIds
+        )
+
+        //language=JSON
+        val payload3 = """
+      {
+        "incremental": [
+          {
+            "id": "1",
+            "data": { "previousInvoices": [{ "name": "My Invoice" }] }
+          }
+        ],
+        "completed": [{ "id": "1" }],
+        "hasNext": false
+      }
+    """
+        //language=JSON
+        val mergedPayloads_1_2_3 = """
+      {
+        "data": {
+          "me": {
+            "id": 1,
+            "avatarUrl": "http://…",
+            "projects": [{ "name": "My Project" }],
+            "tier": "BRONZE",
+            "renewalDate": "2023-03-20",
+            "latestInvoiceTotal": "${'$'}12.34",
+            "previousInvoices": [{ "name": "My Invoice" }]
+          }
+        }
+      }
+    """
+        deferredJsonMerger.merge(payload3.buffer())
+        assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+        assertEquals(
+            setOf(),
+            deferredJsonMerger.pendingFragmentIds
+        )
+    }
+
+    /**
+     * Example H from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
+     */
+    @Test
+    fun june2023ExampleH() {
+        val deferredJsonMerger = DeferredJsonMerger()
+        //language=JSON
+        val payload1 = """
+      {
+        "data": {
+          "me": {}
+        },
+        "pending": [
+          {"id": "0", "path": [], "label": "A"},
+          {"id": "1", "path": ["me"], "label": "B"}
+        ],
+        "hasNext": true
+      }
+    """
+        //language=JSON
+        val mergedPayloads_1 = """
+      {
+        "data": {
+          "me": {}
+        }
+      }
+    """
+        deferredJsonMerger.merge(payload1.buffer())
+        assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+        assertEquals(
+            setOf(
+                DeferredFragmentIdentifier(path = listOf(), label = "A"),
+                DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
+            ),
+            deferredJsonMerger.pendingFragmentIds
+        )
+
+        //language=JSON
+        val payload2 = """
+      {
+        "incremental": [
+          {
+            "id": "0", 
+            "subPath": ["me"], 
+            "data": { "foo": { "bar": {} } }
+          },
+          {
+            "id": "0",
+            "subPath": ["me", "foo", "bar"],
+            "data": {
+              "baz": "BAZ"
+            }
+          }
+        ],
+        "completed": [
+          {"id": "0"}
+        ],
+        "hasNext": true
+      }
+    """
+        //language=JSON
+        val mergedPayloads_1_2 = """
+      {
+        "data": {
+          "me": {
+            "foo": {
+              "bar": {
+                "baz": "BAZ"
+              }
+            }
+          }
+        }
+      }
+    """
+        deferredJsonMerger.merge(payload2.buffer())
+        assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+        assertEquals(
+            setOf(
+                DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
+            ),
+            deferredJsonMerger.pendingFragmentIds
+        )
+
+        //language=JSON
+        val payload3 = """
+      {
+        "completed": [
+          {
+            "id": "1", 
+            "errors": [
+              {
+                "message": "Cannot return null for non-nullable field Bar.qux.",
+                "locations": [
+                  {
+                    "line": 1,
+                    "column": 1
+                  }
+                ],
+                "path": ["foo", "bar", "qux"]
+              }
+            ]
+          }
+        ],
+        "hasNext": false
+      }
+    """
+        //language=JSON
+        val mergedPayloads_1_2_3 = """
+      {
+        "data": {
+          "me": {
+            "foo": {
+              "bar": {
+                "baz": "BAZ"
+              }
+            }
+          }
+        },
+        "errors": [
+          {
+            "message": "Cannot return null for non-nullable field Bar.qux.",
+            "locations": [
+              {
+                "line": 1,
+                "column": 1
+              }
+            ],
+            "path": ["foo", "bar", "qux"]
+          }
+        ]
+      }
+    """
+        deferredJsonMerger.merge(payload3.buffer())
+        assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+        assertEquals(
+            setOf(
+                DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
+            ),
+            deferredJsonMerger.pendingFragmentIds
+        )
+    }
 }

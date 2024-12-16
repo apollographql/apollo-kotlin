@@ -12,7 +12,7 @@ private typealias MutableJsonMap = MutableMap<String, Any?>
 /**
  * Utility class for merging GraphQL JSON payloads received in multiple chunks when using the `@defer` directive.
  *
- * Each call to [merge] will merge the given chunk into the [merged] Map, and will also update the [mergedFragmentIds] Set with the
+ * Each call to [merge] will merge the given chunk into the [merged] Map, and will also update the [pendingFragmentIds] Set with the
  * value of its `path` and `label` field.
  *
  * The fields in `data` are merged into the node found in [merged] at the path known by looking at the `id` field (for the first call to
@@ -32,10 +32,8 @@ class DeferredJsonMerger {
   /**
    * Map of identifiers to their corresponding DeferredFragmentIdentifier, found in `pending`.
    */
-  private val idsToDeferredFragmentIdentifiers = mutableMapOf<String, DeferredFragmentIdentifier>()
-
-  private val _mergedFragmentIds = mutableSetOf<DeferredFragmentIdentifier>()
-  val mergedFragmentIds: Set<DeferredFragmentIdentifier> = _mergedFragmentIds
+  private val _pendingFragmentIds = mutableMapOf<String, DeferredFragmentIdentifier>()
+  val pendingFragmentIds: Set<DeferredFragmentIdentifier> get() = _pendingFragmentIds.values.toSet()
 
   var hasNext: Boolean = true
     private set
@@ -95,7 +93,7 @@ class DeferredJsonMerger {
         val id = pendingItem["id"] as String
         val path = pendingItem["path"] as List<Any>
         val label = pendingItem["label"] as String?
-        idsToDeferredFragmentIdentifiers[id] = DeferredFragmentIdentifier(path = path, label = label)
+        _pendingFragmentIds[id] = DeferredFragmentIdentifier(path = path, label = label)
       }
     }
   }
@@ -104,16 +102,14 @@ class DeferredJsonMerger {
     val completed = payload["completed"] as? List<JsonMap>
     if (completed != null) {
       for (completedItem in completed) {
+        // Merge errors (if any) of the completed item
         val errors = completedItem["errors"] as? List<JsonMap>
         if (errors != null) {
-          // Merge errors (if any) of the completed item
           getOrPutMergedErrors() += errors
         } else {
-          // No errors: we have merged all the fields of the fragment so it can be parsed
+          // Fragment is no longer pending - only if there were no errors
           val id = completedItem["id"] as String
-          val deferredFragmentIdentifier = idsToDeferredFragmentIdentifiers.remove(id)
-              ?: error("Id '$id' not found in pending results")
-          _mergedFragmentIds += deferredFragmentIdentifier
+          _pendingFragmentIds.remove(id) ?: error("Id '$id' not found in pending results")
         }
       }
     }
@@ -123,7 +119,7 @@ class DeferredJsonMerger {
     val id = incrementalItem["id"] as String? ?: error("No id found in incremental item")
     val data = incrementalItem["data"] as JsonMap? ?: error("No data found in incremental item")
     val subPath = incrementalItem["subPath"] as List<Any>? ?: emptyList()
-    val path = (idsToDeferredFragmentIdentifiers[id]?.path ?: error("Id '$id' not found in pending results")) + subPath
+    val path = (_pendingFragmentIds[id]?.path ?: error("Id '$id' not found in pending results")) + subPath
     val mergedData = merged["data"] as JsonMap
     val nodeToMergeInto = nodeAtPath(mergedData, path) as MutableJsonMap
     deepMerge(nodeToMergeInto, data)
@@ -165,7 +161,7 @@ class DeferredJsonMerger {
 
   fun reset() {
     _merged.clear()
-    _mergedFragmentIds.clear()
+    _pendingFragmentIds.clear()
     hasNext = true
     isEmptyPayload = false
   }

@@ -219,7 +219,7 @@ public final class com/apollographql/apollo/internal/DeferredJsonMerger {
 	public fun <init> ()V
 	public final fun getHasNext ()Z
 	public final fun getMerged ()Ljava/util/Map;
-	public final fun getMergedFragmentIds ()Ljava/util/Set;
+	public final fun getPendingFragmentIds ()Ljava/util/Set;
 	public final fun isEmptyPayload ()Z
 	public final fun merge (Ljava/util/Map;)Ljava/util/Map;
 	public final fun merge (Lokio/BufferedSource;)Ljava/util/Map;
