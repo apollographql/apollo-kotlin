@@ -4,6 +4,7 @@ import com.apollographql.apollo.compiler.InputFile
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.file.FileCollection
 import java.io.File
+import java.lang.reflect.InvocationTargetException
 
 
 internal fun FileCollection.toInputFiles(): List<InputFile> {
@@ -37,5 +38,25 @@ internal fun ProjectDependency.getPathCompat(): String {
     method.invoke(this) as String
   } else {
     dependencyProject.path
+  }
+}
+
+internal fun Any.reflectiveCall(methodName: String, vararg args: Any?) {
+  try {
+    javaClass.declaredMethods.single { it.name == methodName }.invoke(this, *args)
+  } catch (e: InvocationTargetException) {
+    /**
+     * Unwrap the exception so it's displayed in Gradle error messages:
+     *
+     * Execution failed for task ':generateServiceApolloSources'.
+     * > A failure occurred while executing com.apollographql.apollo.gradle.internal.GenerateSources
+     *    > e: operation.graphql: (2, 5): Can't query `foo2` on type `Query`
+     *      ----------------------------------------------------
+     *      [1]:query GetFoo {
+     *      [2]:    foo2
+     *      [3]:}
+     *      ----------------------------------------------------
+     */
+    throw e.cause!!
   }
 }

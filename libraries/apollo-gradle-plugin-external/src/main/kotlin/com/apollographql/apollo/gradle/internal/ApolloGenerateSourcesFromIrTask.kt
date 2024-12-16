@@ -91,21 +91,20 @@ private abstract class GenerateSourcesFromIr : WorkAction<GenerateSourcesFromIrP
   override fun execute() {
     with(parameters) {
       runInIsolation(apolloBuildService.get(), classpath) {
-        it.javaClass.declaredMethods.single { it.name == "buildSourcesFromIr" }
-            .invoke(
-                it,
-                arguments,
-                logLevel,
-                hasPlugin,
-                codegenSchemas.toInputFiles().isolate(),
-                upstreamMetadata.toInputFiles().isolate(),
-                irOperations.get().asFile,
-                downstreamUsedCoordinates.get(),
-                codegenOptions.get().asFile,
-                operationManifestFile.orNull?.asFile,
-                outputDir.get().asFile,
-                metadataOutputFile.orNull?.asFile
-            )
+        it.reflectiveCall(
+            "buildSourcesFromIr",
+            arguments,
+            logLevel,
+            hasPlugin,
+            codegenSchemas.toInputFiles().isolate(),
+            upstreamMetadata.toInputFiles().isolate(),
+            irOperations.get().asFile,
+            downstreamUsedCoordinates.get(),
+            codegenOptions.get().asFile,
+            operationManifestFile.orNull?.asFile,
+            outputDir.get().asFile,
+            metadataOutputFile.orNull?.asFile
+        )
       }
     }
   }
