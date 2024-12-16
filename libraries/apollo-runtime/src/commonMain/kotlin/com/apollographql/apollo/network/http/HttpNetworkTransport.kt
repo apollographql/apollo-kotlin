@@ -213,7 +213,7 @@ private constructor(
               jsonMerger = DeferredJsonMerger()
             }
             val merged = jsonMerger!!.merge(part)
-            val deferredFragmentIds = jsonMerger!!.mergedFragmentIds
+            val deferredFragmentIds = jsonMerger!!.pendingFragmentIds
             val isLast = !jsonMerger!!.hasNext
 
             if (jsonMerger!!.isEmptyPayload) {
