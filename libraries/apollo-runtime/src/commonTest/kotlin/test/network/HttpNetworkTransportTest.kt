@@ -10,6 +10,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo.network.http.HttpInfo
 import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueError
 import com.apollographql.mockserver.enqueueString
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
@@ -30,6 +31,21 @@ class HttpNetworkTransportTest {
             mockServer.enqueueString(string = FooQuery.errorResponse, statusCode = 500, contentType = "application/graphql-response+json")
             val response = apolloClient.query(FooQuery()).execute()
             assertEquals("Oh no! Something went wrong :(", response.errors?.single()?.message)
+          }
+    }
+  }
+
+  @Test
+  fun postContentTypeIsApplicationJson() = runTest {
+    MockServer().use { mockServer ->
+      ApolloClient.Builder()
+          .serverUrl(mockServer.url())
+          .build()
+          .use { apolloClient ->
+            mockServer.enqueueError(500)
+            apolloClient.query(FooQuery()).execute()
+            val headers = mockServer.takeRequest().headers
+            assertEquals("application/json", headers.get("Content-Type"))
           }
     }
   }
