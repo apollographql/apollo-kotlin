@@ -6,17 +6,17 @@ plugins {
 
 dependencies {
   add("implementation", libs.apollo.api)
-  add("implementation", "com.jvm:jvm-producer:1.0.0")
+  add("implementation", "com.fragments:fragments:1.0.0")
 }
 
 apollo {
-  service("jvm") {
-    packageName.set("com.consumer")
-    dependsOn("com.jvm:jvm-producer-apollo:1.0.0")
+  service("service1") {
+    packageName.set("com.service1")
+    dependsOn("com.fragments:fragments:1.0.0")
   }
-  service("jvm2") {
-    packageName.set("com.consumer2")
-    dependsOn("com.jvm:jvm-producer-apollo:1.0.0")
+  service("service2") {
+    packageName.set("com.service2")
+    dependsOn("com.fragments:fragments:1.0.0")
   }
 }
 

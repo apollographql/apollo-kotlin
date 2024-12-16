@@ -35,6 +35,7 @@ import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
 import java.io.File
+import java.lang.reflect.Field
 import java.util.concurrent.Callable
 import javax.inject.Inject
 
@@ -48,7 +49,9 @@ abstract class DefaultApolloExtension(
   private val checkVersionsTask: TaskProvider<Task>
   private val generateApolloSources: TaskProvider<Task>
   private var hasExplicitService = false
-  private val adhocComponentWithVariants: AdhocComponentWithVariants
+  private val adhocComponentWithVariants: AdhocComponentWithVariants by lazy {
+    project.adhocComponentWithVariants()
+  }
   private val apolloMetadataConfiguration: Configuration
   private var apolloBuildServiceProvider: Provider<ApolloBuildService>
 
@@ -143,9 +146,6 @@ abstract class DefaultApolloExtension(
     require(GradleVersion.current() >= GradleVersion.version(MIN_GRADLE_VERSION)) {
       "apollo-kotlin requires Gradle version $MIN_GRADLE_VERSION or greater"
     }
-
-    adhocComponentWithVariants = softwareComponentFactory.adhoc("apollo")
-    project.components.add(adhocComponentWithVariants)
 
     checkVersionsTask = registerCheckVersionsTask()
 
@@ -386,7 +386,7 @@ abstract class DefaultApolloExtension(
   class Configurations(
       val scope: Configuration,
       val consumable: Configuration,
-      val resolvable: Configuration
+      val resolvable: Configuration,
   )
   private fun createConfigurations(
       serviceName: String,
@@ -1035,4 +1035,27 @@ abstract class DefaultApolloExtension(
   }
 
   override val deps: ApolloDependencies = ApolloDependencies(project.dependencies)
+
+  private fun Project.adhocComponentWithVariants(): AdhocComponentWithVariants {
+    if (useGradleVariants.getOrElse(false)) {
+      val javaComponent = project.components.findByName("java")
+      if (javaComponent != null) {
+        // JVM
+        return javaComponent as AdhocComponentWithVariants
+      }
+
+      val kotlin = project.kotlinMultiplatformExtension
+      if (kotlin != null) {
+        error("Adding variants to multiplatform project is not possible. See https://youtrack.jetbrains.com/issue/KT-58830/")
+      }
+
+      error("Impossible to find an AdHocComponent")
+    } else {
+      return softwareComponentFactory.adhoc("apollo").also {
+        project.components.add(it)
+      }
+    }
+  }
 }
+
+
