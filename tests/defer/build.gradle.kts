@@ -74,5 +74,12 @@ tasks.withType(AbstractTestTask::class.java) {
   } else {
     filter.setExcludePatterns("test.DeferWithRouterTest")
   }
-}
 
+  // Run the defer with Apollo Server tests only from a specific CI job
+  val runDeferWithApolloServerTests = System.getenv("DEFER_WITH_APOLLO_SERVER_TESTS").toBoolean()
+  if (runDeferWithApolloServerTests) {
+    filter.setIncludePatterns("test.DeferWithApolloServerTest")
+  } else {
+    filter.setExcludePatterns("test.DeferWithApolloServerTest")
+  }
+}

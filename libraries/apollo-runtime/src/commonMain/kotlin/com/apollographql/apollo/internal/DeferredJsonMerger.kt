@@ -52,30 +52,29 @@ class DeferredJsonMerger {
   }
 
   fun merge(payload: JsonMap): JsonMap {
+    val completed = payload["completed"] as? List<JsonMap>
     if (merged.isEmpty()) {
       // Initial payload, no merging needed (strip some fields that should not appear in the final result)
       _merged += payload - "hasNext" - "pending"
       handlePending(payload)
-      handleCompleted(payload)
+      handleCompleted(completed)
       return merged
     }
     handlePending(payload)
 
     val incrementalList = payload["incremental"] as? List<JsonMap>
-    if (incrementalList == null) {
-      isEmptyPayload = true
-    } else {
-      isEmptyPayload = false
+    if (incrementalList != null) {
       for (incrementalItem in incrementalList) {
         mergeIncrementalData(incrementalItem)
         // Merge errors (if any) of the incremental item
         (incrementalItem["errors"] as? List<JsonMap>)?.let { getOrPutMergedErrors() += it }
       }
     }
+    isEmptyPayload = completed == null && incrementalList == null
 
     hasNext = payload["hasNext"] as Boolean? ?: false
 
-    handleCompleted(payload)
+    handleCompleted(completed)
 
     (payload["extensions"] as? JsonMap)?.let { getOrPutExtensions() += it }
 
@@ -98,8 +97,7 @@ class DeferredJsonMerger {
     }
   }
 
-  private fun handleCompleted(payload: JsonMap) {
-    val completed = payload["completed"] as? List<JsonMap>
+  private fun handleCompleted(completed: List<JsonMap>?) {
     if (completed != null) {
       for (completedItem in completed) {
         // Merge errors (if any) of the completed item
