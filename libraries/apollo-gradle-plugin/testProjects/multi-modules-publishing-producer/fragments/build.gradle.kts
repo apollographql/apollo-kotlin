@@ -13,15 +13,19 @@ dependencies {
 }
 
 apollo {
-  useGradleVariants.set(true)
-
   service("service1") {
     packageName.set("com.service1")
     dependsOn(project(":schema"))
+    outgoingVariantsConnection {
+      addToSoftwareComponent("java")
+    }
   }
   service("service2") {
     packageName.set("com.service2")
     dependsOn(project(":schema"))
+    outgoingVariantsConnection {
+      addToSoftwareComponent("java")
+    }
   }
 }
 

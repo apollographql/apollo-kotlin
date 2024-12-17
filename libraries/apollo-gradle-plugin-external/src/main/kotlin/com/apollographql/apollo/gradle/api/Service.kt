@@ -11,6 +11,8 @@ import com.apollographql.apollo.compiler.OperationOutputGenerator
 import com.apollographql.apollo.compiler.PackageNameGenerator
 import org.gradle.api.Action
 import org.gradle.api.Task
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.component.SoftwareComponent
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
@@ -914,4 +916,32 @@ interface Service {
 
   @ApolloExperimental
   fun plugin(dependencyNotation: Any, block: Action<CompilerPlugin>)
+
+  /**
+   * Overrides the way the outgoing variants are connected.
+   * Use this to publish the metadata to an already existing software component.
+   *
+   * By default, a new software component named "apollo" is created.
+   *
+   * ```kotlin
+   * service("service") {
+   *   outgoingVariantsConnection {
+   *     addToSoftwareComponent("java")
+   *   }
+   * }
+   * ```
+   */
+  @ApolloExperimental
+  fun outgoingVariantsConnection(action: Action<in OutgoingVariantsConnection>)
+
+  /**
+   * An [OutgoingVariantsConnection] defines how outgoing variants are added to software components.
+   */
+  @ApolloExperimental
+  interface OutgoingVariantsConnection {
+    fun addToSoftwareComponent(name: String)
+    fun addToSoftwareComponent(softwareComponent: SoftwareComponent)
+
+    val outgoingVariants: List<Configuration>
+  }
 }
