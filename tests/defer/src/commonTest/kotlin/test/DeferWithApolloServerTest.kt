@@ -14,6 +14,9 @@ import defer.DoesNotDisableDeferWithNullIfArgumentQuery
 import defer.HandlesErrorsThrownInDeferredFragmentsQuery
 import defer.HandlesNonNullableErrorsThrownInDeferredFragmentsQuery
 import defer.HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery
+import defer.Overlapping2Query
+import defer.OverlappingQuery
+import defer.SubPathQuery
 import defer.WithFragmentSpreadsMutation
 import defer.WithFragmentSpreadsQuery
 import defer.WithInlineFragmentsQuery
@@ -21,6 +24,7 @@ import defer.fragment.ComputerErrorField
 import defer.fragment.ComputerFields
 import defer.fragment.FragmentOnQuery
 import defer.fragment.ScreenFields
+import defer.notypename.SkippingEmptyFragmentQuery
 import kotlinx.coroutines.flow.toList
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -357,4 +361,176 @@ class DeferWithApolloServerTest {
     val actualResponseList = apolloClient.query(query).toFlow().toList()
     assertResponseListEquals(expectedDataList, actualResponseList)
   }
+
+  @Test
+  fun overlapping() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{"computer":{"__typename":"Computer","id":"Computer1"}},"pending":[{"id":"0","path":["computer"],"label":"b"}],"hasNext":true}
+    // {"hasNext":false,"incremental":[{"data":{"cpu":"386","year":1993},"id":"0"}],"completed":[{"id":"0"}]}
+    val query = OverlappingQuery()
+    val uuid = uuid4()
+
+    val expectedDataList = listOf(
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            OverlappingQuery.Data(
+                OverlappingQuery.Computer(
+                    "Computer", "Computer1", OverlappingQuery.OnComputer(
+                    "Computer", "Computer1", null,
+                )
+                )
+            )
+        )
+            .build(),
+
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            OverlappingQuery.Data(
+                OverlappingQuery.Computer(
+                    "Computer", "Computer1", OverlappingQuery.OnComputer(
+                    "Computer", "Computer1", OverlappingQuery.OnComputer1("Computer1", "386", 1993)
+                )
+                )
+            )
+        )
+            .build()
+    )
+    val actualResponseList = apolloClient.query(query).toFlow().toList()
+    assertResponseListEquals(expectedDataList, actualResponseList)
+  }
+
+  @Test
+  fun overlapping2() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{"computer":{"__typename":"Computer","id":"Computer1"}},"pending":[{"id":"0","path":["computer"],"label":"b"}],"hasNext":true}
+    // {"hasNext":false,"incremental":[{"data":{"cpu":"386","year":1993},"id":"0"}],"completed":[{"id":"0"}]}
+    val query = Overlapping2Query()
+    val uuid = uuid4()
+
+    val expectedDataList = listOf(
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            Overlapping2Query.Data(
+                Overlapping2Query.Computer(
+                    "Computer", "Computer1", Overlapping2Query.OnComputerDeferA("Computer1"
+                ), null
+                )
+            )
+        )
+            .build(),
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            Overlapping2Query.Data(
+                Overlapping2Query.Computer(
+                    "Computer", "Computer1", Overlapping2Query.OnComputerDeferA("Computer1"
+                ), Overlapping2Query.OnComputerDeferB(
+                    "Computer1", "386", 1993
+                )
+                )
+            )
+        )
+            .build()
+    )
+    val actualResponseList = apolloClient.query(query).toFlow().toList()
+    assertResponseListEquals(expectedDataList, actualResponseList)
+  }
+
+  @Test
+  fun subPath() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{"__typename":"Query","computer":{"id":"Computer1"}},"pending":[{"id":"0","path":[],"label":"a"}],"hasNext":true}
+    // {"hasNext":false,"incremental":[{"data":{"screen":{"isColor":false}},"id":"0","subPath":["computer"]},{"data":{"MyFragment":"Query"},"id":"0"}],"completed":[{"id":"0"}]}
+    val query = SubPathQuery()
+    val uuid = uuid4()
+
+    val expectedDataList = listOf(
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            SubPathQuery.Data(
+                "Query", SubPathQuery.Computer(
+                "Computer1"
+            ), null
+            )
+        )
+            .build(),
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            SubPathQuery.Data(
+                "Query", SubPathQuery.Computer(
+                "Computer1"
+            ), SubPathQuery.OnQuery(
+                "Query", SubPathQuery.Computer1(
+                "Computer1",
+                SubPathQuery.Screen(false
+                )
+            )
+            )
+            )
+        )
+            .build()
+    )
+    val actualResponseList = apolloClient.query(query).toFlow().toList()
+    assertResponseListEquals(expectedDataList, actualResponseList)
+  }
+
+  @Test
+  fun skippingEmptyFragment() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{"computer":{}},"pending":[{"id":"0","path":["computer"],"label":"c"}],"hasNext":true}
+    // {"hasNext":false,"incremental":[{"data":{"id":"Computer1"},"id":"0"}],"completed":[{"id":"0"}]}
+    val query = SkippingEmptyFragmentQuery()
+    val uuid = uuid4()
+
+    val expectedDataList = listOf(
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            SkippingEmptyFragmentQuery.Data(
+                SkippingEmptyFragmentQuery.Computer(
+                    SkippingEmptyFragmentQuery.OnComputer(
+                        SkippingEmptyFragmentQuery.OnComputer1(
+                            null
+                        )
+                    )
+                )
+            )
+        )
+            .build(),
+
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            SkippingEmptyFragmentQuery.Data(
+                SkippingEmptyFragmentQuery.Computer(
+                    SkippingEmptyFragmentQuery.OnComputer(
+                        SkippingEmptyFragmentQuery.OnComputer1(
+                            SkippingEmptyFragmentQuery.OnComputer2(
+                                "Computer1"
+                            )
+                        )
+                    )
+                )
+            )
+        )
+            .build()
+    )
+    val actualResponseList = apolloClient.query(query).toFlow().toList()
+    assertResponseListEquals(expectedDataList, actualResponseList)
+  }
+
+
 }
