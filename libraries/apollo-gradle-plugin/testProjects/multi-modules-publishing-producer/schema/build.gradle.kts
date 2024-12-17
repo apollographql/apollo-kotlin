@@ -13,17 +13,21 @@ dependencies {
 }
 
 apollo {
-  useGradleVariants.set(true)
-
   service("service1") {
     packageName.set("com.service1")
     generateApolloMetadata.set(true)
     alwaysGenerateTypesMatching.add(".*")
+    outgoingVariantsConnection {
+      addToSoftwareComponent("java")
+    }
   }
   service("service2") {
     packageName.set("com.service2")
     generateApolloMetadata.set(true)
     alwaysGenerateTypesMatching.add(".*")
+    outgoingVariantsConnection {
+      addToSoftwareComponent("java")
+    }
   }
 }
 

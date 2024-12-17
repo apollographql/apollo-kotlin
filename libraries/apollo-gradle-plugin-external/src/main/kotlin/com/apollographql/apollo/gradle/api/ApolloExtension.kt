@@ -90,9 +90,6 @@ interface ApolloExtension {
    */
   val generateSourcesDuringGradleSync: Property<Boolean>
 
-  @ApolloExperimental
-  val useGradleVariants: Property<Boolean>
-
   /**
    * Common apollo dependencies using the same version as the Apollo Gradle Plugin currently in the classpath
    */

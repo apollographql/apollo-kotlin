@@ -24,6 +24,7 @@ import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.attributes.HasConfigurableAttributes
 import org.gradle.api.attributes.Usage
 import org.gradle.api.component.AdhocComponentWithVariants
+import org.gradle.api.component.SoftwareComponent
 import org.gradle.api.component.SoftwareComponentFactory
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
@@ -35,7 +36,6 @@ import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
 import java.io.File
-import java.lang.reflect.Field
 import java.util.concurrent.Callable
 import javax.inject.Inject
 
@@ -50,7 +50,9 @@ abstract class DefaultApolloExtension(
   private val generateApolloSources: TaskProvider<Task>
   private var hasExplicitService = false
   private val adhocComponentWithVariants: AdhocComponentWithVariants by lazy {
-    project.adhocComponentWithVariants()
+    softwareComponentFactory.adhoc("apollo").also {
+      project.components.add(it)
+    }
   }
   private val apolloMetadataConfiguration: Configuration
   private var apolloBuildServiceProvider: Provider<ApolloBuildService>
@@ -576,10 +578,28 @@ abstract class DefaultApolloExtension(
        * - downstream module publishes jar
        * In such scenarios, the user must set `alwaysGenerateTypesMatching.set(listOf(".*"))` on the schema module.
        */
-      adhocComponentWithVariants.addVariantsFromConfiguration(codegenMetadata.consumable) {}
-      adhocComponentWithVariants.addVariantsFromConfiguration(upstreamIr.consumable) {}
-      adhocComponentWithVariants.addVariantsFromConfiguration(codegenSchema.consumable) {}
-      adhocComponentWithVariants.addVariantsFromConfiguration(otherOptions.consumable) {}
+      val outgoingVariantsConnection = object : Service.OutgoingVariantsConnection {
+        override fun addToSoftwareComponent(name: String) {
+          addToSoftwareComponent(project.components.getByName(name))
+        }
+
+        override fun addToSoftwareComponent(softwareComponent: SoftwareComponent) {
+          check (softwareComponent is AdhocComponentWithVariants) {
+            "Software component '$softwareComponent' is not an instance of AdhocComponentWithVariants"
+          }
+          outgoingVariants.forEach {
+            softwareComponent.addVariantsFromConfiguration(it) {  }
+          }
+        }
+
+        override val outgoingVariants: List<Configuration>
+          get() = listOf(codegenMetadata.consumable, upstreamIr.consumable, codegenSchema.consumable, otherOptions.consumable)
+      }
+      if (service.outgoingVariantsConnection != null) {
+        service.outgoingVariantsConnection!!.execute(outgoingVariantsConnection)
+      } else {
+        outgoingVariantsConnection.addToSoftwareComponent(adhocComponentWithVariants)
+      }
 
       service.upstreamDependencies.forEach {
         otherOptions.scope.dependencies.add(it)
@@ -1035,27 +1055,6 @@ abstract class DefaultApolloExtension(
   }
 
   override val deps: ApolloDependencies = ApolloDependencies(project.dependencies)
-
-  private fun Project.adhocComponentWithVariants(): AdhocComponentWithVariants {
-    if (useGradleVariants.getOrElse(false)) {
-      val javaComponent = project.components.findByName("java")
-      if (javaComponent != null) {
-        // JVM
-        return javaComponent as AdhocComponentWithVariants
-      }
-
-      val kotlin = project.kotlinMultiplatformExtension
-      if (kotlin != null) {
-        error("Adding variants to multiplatform project is not possible. See https://youtrack.jetbrains.com/issue/KT-58830/")
-      }
-
-      error("Impossible to find an AdHocComponent")
-    } else {
-      return softwareComponentFactory.adhoc("apollo").also {
-        project.components.add(it)
-      }
-    }
-  }
 }
 
 

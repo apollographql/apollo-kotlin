@@ -120,6 +120,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   var operationOutputAction: Action<in Service.OperationOutputConnection>? = null
   var operationManifestAction: Action<in Service.OperationManifestConnection>? = null
+  var outgoingVariantsConnection: Action<in Service.OutgoingVariantsConnection>? = null
 
   @Deprecated("Use operationManifestConnection", replaceWith = ReplaceWith("operationManifestConnection"))
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
@@ -133,10 +134,18 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   override fun operationManifestConnection(action: Action<in Service.OperationManifestConnection>) {
     check(!registered) {
-      "Apollo: operationOutputConnection {} cannot be configured outside of a service {} block"
+      "Apollo: operationManifestConnection {} cannot be configured outside of a service {} block"
     }
 
     this.operationManifestAction = action
+  }
+
+  override fun outgoingVariantsConnection(action: Action<in Service.OutgoingVariantsConnection>) {
+    check(!registered) {
+      "Apollo: outgoingVariantsConnection {} cannot be configured outside of a service {} block"
+    }
+
+    this.outgoingVariantsConnection = action
   }
 
   var outputDirAction: Action<in Service.DirectoryConnection>? = null
