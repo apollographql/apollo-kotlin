@@ -926,9 +926,7 @@ interface Service {
    * ```kotlin
    * service("service") {
    *   outgoingVariantsConnection {
-   *     outgoingVariants.forEach {
-   *       (components["java"] as AdhocSoftwareComponent).addVariantsFromConfiguration(it) {}
-   *     }
+   *     addToSoftwareComponent("java")
    *   }
    * }
    * ```
