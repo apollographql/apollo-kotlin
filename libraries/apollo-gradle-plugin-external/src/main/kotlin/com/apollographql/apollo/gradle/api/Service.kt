@@ -933,11 +933,13 @@ interface Service {
    * }
    * ```
    */
+  @ApolloExperimental
   fun outgoingVariantsConnection(action: Action<in OutgoingVariantsConnection>)
 
   /**
    * An [OutgoingVariantsConnection] defines how outgoing variants are added to software components.
    */
+  @ApolloExperimental
   interface OutgoingVariantsConnection {
     fun addToSoftwareComponent(name: String)
     fun addToSoftwareComponent(softwareComponent: SoftwareComponent)
