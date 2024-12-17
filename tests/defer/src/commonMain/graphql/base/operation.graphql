@@ -168,3 +168,46 @@ query HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery {
 fragment ComputerIdField on Computer {
   id
 }
+
+query OverlappingQuery {
+  computer(id: "Computer1") {
+    id
+    ... on Computer @defer(label: "a") {
+      id
+      ... on Computer @defer(label: "b") {
+        id
+        cpu
+        year
+      }
+    }
+  }
+}
+
+query Overlapping2Query {
+  computer(id: "Computer1") {
+    id
+    ... on Computer @defer(label: "a") {
+      id
+    }
+    ... on Computer @defer(label: "b") {
+      id
+      cpu
+      year
+    }
+  }
+}
+
+query SubPathQuery {
+  computer(id: "Computer1") {
+    id
+  }
+  ... on Query @defer(label: "a") {
+    MyFragment: __typename
+    computer(id: "Computer1") {
+      id
+      screen {
+        isColor
+      }
+    }
+  }
+}
