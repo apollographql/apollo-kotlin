@@ -1,0 +1,11 @@
+query SkippingEmptyFragmentQuery {
+  computer(id: "Computer1") {
+    ... on Computer @defer(label: "a") {
+      ... on Computer @defer(label: "b") {
+        ... on Computer @defer(label: "c") {
+          id
+        }
+      }
+    }
+  }
+}
