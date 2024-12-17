@@ -1,0 +1,27 @@
+type Query {
+  computers: [Computer!]!
+  computer(id: ID!): Computer
+}
+
+type Mutation {
+  computers: [Computer!]!
+}
+
+type Computer {
+  id: ID!
+  cpu: String!
+  year: Int!
+  screen: Screen!
+  errorField: String
+  nonNullErrorField: String!
+}
+
+type Screen {
+  resolution: String!
+  isColor: Boolean!
+}
+
+directive @defer(
+  if: Boolean! = true
+  label: String
+) on FRAGMENT_SPREAD | INLINE_FRAGMENT
