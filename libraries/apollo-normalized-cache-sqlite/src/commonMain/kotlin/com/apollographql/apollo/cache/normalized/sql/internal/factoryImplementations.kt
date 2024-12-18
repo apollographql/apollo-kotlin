@@ -10,5 +10,7 @@ internal expect fun createDriver(name: String?, baseDir: String?, schema: SqlSch
  * will take care of migrations
  *
  * Others like JVM don't do this automatically. This is when [maybeCreateOrMigrateSchema] is needed
+ *
+ * See https://github.com/sqldelight/sqldelight/issues/1901
  */
 internal expect fun maybeCreateOrMigrateSchema(driver: SqlDriver, schema: SqlSchema<QueryResult.Value<Unit>>)

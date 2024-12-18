@@ -8,7 +8,7 @@ import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.db.use
 
-internal fun createRecordDatabase(driver: SqlDriver): RecordDatabase {
+internal fun checkDatabase(driver: SqlDriver) {
   maybeCreateOrMigrateSchema(driver, getSchema())
 
   val tableNames = mutableListOf<String>()
@@ -39,8 +39,6 @@ internal fun createRecordDatabase(driver: SqlDriver): RecordDatabase {
   check(tableNames.isEmpty() || tableNames.contains(expectedTableName)) {
     "Apollo: Cannot find the '$expectedTableName' table? (found '$tableNames' instead)"
   }
-
-  return JsonRecordDatabase(JsonDatabase(driver).jsonQueries)
 }
 
 internal fun getSchema(): SqlSchema<QueryResult.Value<Unit>> = JsonDatabase.Schema
