@@ -28,8 +28,18 @@ import kotlin.reflect.KClass
 interface ApolloStore {
   /**
    * Exposes the keys of records that have changed.
+   * A special key [ALL_KEYS] is used to indicate that all records have changed.
    */
   val changedKeys: SharedFlow<Set<String>>
+
+  companion object {
+    val ALL_KEYS = object : AbstractSet<String>() {
+      override val size = 0
+      override fun iterator() = emptySet<String>().iterator()
+      override fun equals(other: Any?) = other === this
+      override fun hashCode() = 0
+    }
+  }
 
   /**
    * Read GraphQL operation from store.
@@ -239,6 +249,9 @@ interface ApolloStore {
 
   /**
    * @param keys A set of keys of [Record] which have changed.
+   *
+   * Pass [ALL_KEYS] to indicate that all records have changed, for instance after a [clearAll] operation.
+   *
    */
   suspend fun publish(keys: Set<String>)
 

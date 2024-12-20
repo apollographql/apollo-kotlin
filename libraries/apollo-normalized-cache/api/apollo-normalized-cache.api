@@ -1,4 +1,5 @@
 public abstract interface class com/apollographql/apollo/cache/normalized/ApolloStore {
+	public static final field Companion Lcom/apollographql/apollo/cache/normalized/ApolloStore$Companion;
 	public abstract fun accessCache (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public abstract fun clearAll ()Z
 	public abstract fun dispose ()V
@@ -29,6 +30,10 @@ public abstract interface class com/apollographql/apollo/cache/normalized/Apollo
 	public static synthetic fun writeOptimisticUpdates$default (Lcom/apollographql/apollo/cache/normalized/ApolloStore;Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/Operation$Data;Ljava/util/UUID;Lcom/apollographql/apollo/api/CustomScalarAdapters;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun writeOptimisticUpdatesSync (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/Operation$Data;Ljava/util/UUID;Lcom/apollographql/apollo/api/CustomScalarAdapters;)Ljava/util/Set;
 	public static synthetic fun writeOptimisticUpdatesSync$default (Lcom/apollographql/apollo/cache/normalized/ApolloStore;Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/Operation$Data;Ljava/util/UUID;Lcom/apollographql/apollo/api/CustomScalarAdapters;ILjava/lang/Object;)Ljava/util/Set;
+}
+
+public final class com/apollographql/apollo/cache/normalized/ApolloStore$Companion {
+	public final fun getALL_KEYS ()Lkotlin/collections/AbstractSet;
 }
 
 public final class com/apollographql/apollo/cache/normalized/ApolloStoreKt {

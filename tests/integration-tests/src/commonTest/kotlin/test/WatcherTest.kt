@@ -1,6 +1,7 @@
 package test
 
 import IdCacheKeyGenerator
+import app.cash.turbine.test
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.CustomScalarAdapters
@@ -635,6 +636,27 @@ class WatcherTest {
     job.cancel()
   }
 
+  @Test
+  fun publishAllKeys() = runTest(before = { setUp() }) {
+    val query = EpisodeHeroNameQuery(Episode.EMPIRE)
+    apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.CacheOnly)
+        .watch()
+        .test {
+          // Start empty
+          assertIs<CacheMissException>(awaitItem().exception)
+
+          // Add data to the cache
+          apolloClient.enqueueTestResponse(query, episodeHeroNameData)
+          apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
+          assertEquals("R2-D2", awaitItem().data?.hero?.name)
+
+          // Clear the cache
+          store.clearAll()
+          store.publish(ApolloStore.ALL_KEYS)
+          assertIs<CacheMissException>(awaitItem().exception)
+        }
+  }
 }
 
 internal suspend fun <D> Channel<D>.assertCount(count: Int) {

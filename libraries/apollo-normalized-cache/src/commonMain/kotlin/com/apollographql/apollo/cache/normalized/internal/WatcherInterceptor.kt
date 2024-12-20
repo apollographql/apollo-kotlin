@@ -42,10 +42,10 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor, A
           emit(Unit)
         }
         .filter { changedKeys ->
-          if (changedKeys !is Set<*>) {
-            return@filter true
-          }
-          watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()
+          changedKeys !is Set<*> ||
+              changedKeys === ApolloStore.ALL_KEYS ||
+              watchedKeys == null ||
+              changedKeys.intersect(watchedKeys!!).isNotEmpty()
         }.map {
           if (it == Unit) {
             flowOf(ApolloResponse.Builder(request.operation, request.requestUuid).exception(WatcherSentinel).build())
