@@ -59,7 +59,7 @@ internal class DefaultApolloStore(
   private val lock = Lock()
 
   override suspend fun publish(keys: Set<String>) {
-    if (keys.isEmpty()) {
+    if (keys.isEmpty() && keys !== ApolloStore.ALL_KEYS) {
       return
     }
 
