@@ -7,7 +7,10 @@
 
 // Library unique name: <com.apollographql.apollo:apollo-normalized-cache-sqlite>
 final class com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCache : com.apollographql.apollo.cache.normalized.api/NormalizedCache { // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCache|null[0]
+    constructor <init>(app.cash.sqldelight.db/SqlDriver) // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCache.<init>|<init>(app.cash.sqldelight.db.SqlDriver){}[0]
+
     final fun clearAll() // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCache.clearAll|clearAll(){}[0]
+    final fun close() // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCache.close|close(){}[0]
     final fun dump(): kotlin.collections/Map<kotlin.reflect/KClass<*>, kotlin.collections/Map<kotlin/String, com.apollographql.apollo.cache.normalized.api/Record>> // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCache.dump|dump(){}[0]
     final fun loadRecord(kotlin/String, com.apollographql.apollo.cache.normalized.api/CacheHeaders): com.apollographql.apollo.cache.normalized.api/Record? // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCache.loadRecord|loadRecord(kotlin.String;com.apollographql.apollo.cache.normalized.api.CacheHeaders){}[0]
     final fun loadRecords(kotlin.collections/Collection<kotlin/String>, com.apollographql.apollo.cache.normalized.api/CacheHeaders): kotlin.collections/Collection<com.apollographql.apollo.cache.normalized.api/Record> // com.apollographql.apollo.cache.normalized.sql/SqlNormalizedCache.loadRecords|loadRecords(kotlin.collections.Collection<kotlin.String>;com.apollographql.apollo.cache.normalized.api.CacheHeaders){}[0]

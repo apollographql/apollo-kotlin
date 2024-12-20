@@ -104,11 +104,12 @@ public final class com/apollographql/apollo/cache/normalized/api/MemoryCacheFact
 	public synthetic fun create ()Lcom/apollographql/apollo/cache/normalized/api/NormalizedCache;
 }
 
-public abstract class com/apollographql/apollo/cache/normalized/api/NormalizedCache : com/apollographql/apollo/cache/normalized/api/ReadOnlyNormalizedCache {
+public abstract class com/apollographql/apollo/cache/normalized/api/NormalizedCache : com/apollographql/apollo/cache/normalized/api/ReadOnlyNormalizedCache, java/io/Closeable {
 	public static final field Companion Lcom/apollographql/apollo/cache/normalized/api/NormalizedCache$Companion;
 	public fun <init> ()V
 	public final fun chain (Lcom/apollographql/apollo/cache/normalized/api/NormalizedCache;)Lcom/apollographql/apollo/cache/normalized/api/NormalizedCache;
 	public abstract fun clearAll ()V
+	public fun close ()V
 	public final fun getNextCache ()Lcom/apollographql/apollo/cache/normalized/api/NormalizedCache;
 	public abstract fun merge (Lcom/apollographql/apollo/cache/normalized/api/Record;Lcom/apollographql/apollo/cache/normalized/api/CacheHeaders;)Ljava/util/Set;
 	public abstract fun merge (Ljava/util/Collection;Lcom/apollographql/apollo/cache/normalized/api/CacheHeaders;)Ljava/util/Set;

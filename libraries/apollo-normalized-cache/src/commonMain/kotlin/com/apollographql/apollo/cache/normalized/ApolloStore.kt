@@ -1,5 +1,6 @@
 package com.apollographql.apollo.cache.normalized
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
@@ -17,6 +18,7 @@ import com.apollographql.apollo.cache.normalized.internal.DefaultApolloStore
 import com.apollographql.apollo.interceptor.ApolloInterceptor
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
+import okio.Closeable
 import kotlin.reflect.KClass
 
 /**
@@ -25,7 +27,7 @@ import kotlin.reflect.KClass
  * Note that most operations are synchronous and might block if the underlying cache is doing IO - calling them from the main thread
  * should be avoided.
  */
-interface ApolloStore {
+interface ApolloStore: Closeable {
   /**
    * Exposes the keys of records that have changed.
    */
@@ -259,7 +261,19 @@ interface ApolloStore {
   /**
    * Release resources associated with this store.
    */
-  fun dispose()
+  @Deprecated("Use close() instead", ReplaceWith("close()"))
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_1)
+  fun dispose() {
+
+  }
+
+  /**
+   * Release resources associated with this store.
+   */
+  override fun close() {
+    @Suppress("DEPRECATION")
+    dispose()
+  }
 }
 
 fun ApolloStore(
