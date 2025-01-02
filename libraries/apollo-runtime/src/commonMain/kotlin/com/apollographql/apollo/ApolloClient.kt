@@ -733,7 +733,7 @@ private constructor(
     }
 
     /**
-     * Configures the [NetworkTransport] to use for queries and mutations.
+     * Configures the [NetworkTransport] to use for subscriptions.
      *
      * By default, an instance of [WebSocketNetworkTransport] using [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md) is created.
      *
