@@ -12,12 +12,14 @@ import com.apollographql.apollo.compiler.PackageNameGenerator
 import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.ExcludeRule
 import org.gradle.api.component.SoftwareComponent
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.internal.artifacts.DefaultExcludeRule
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
@@ -775,8 +777,12 @@ interface Service {
   /**
    * Adds a dependency for the codegen. Use this when some types/fragments are generated
    * in upstream modules.
+   *
+   * @param excludeRules List of [DefaultExcludeRule] to specify which dependencies should be excluded.
+   * Each rule can define group and/or module to exclude.
+   * Default is an empty list, meaning no exclusions.
    */
-  fun dependsOn(dependencyNotation: Any)
+  fun dependsOn(dependencyNotation: Any, excludeRules: List<DefaultExcludeRule> = emptyList())
 
   /**
    * Counterpoint of [dependsOn]. [isADependencyOf] allows a schema module to discover
@@ -784,7 +790,6 @@ interface Service {
    *
    * This works by setting a dependency on the IR in downstream modules.
    * Because the IR task and the codegen task are separate this does not create a cycle.
-   *
    * @see [alwaysGenerateTypesMatching]
    */
   fun isADependencyOf(dependencyNotation: Any)
@@ -797,9 +802,13 @@ interface Service {
    *
    * @param bidirectional if true and if [dependencyNotation] is a project dependency,
    * automatically configure the symmetrical dependency for automatic detection of used types.
+   *
+   * @param excludeRules List of [DefaultExcludeRule] to specify which dependencies should be excluded.
+   * Each rule can define group and/or module to exclude.
+   * Default is an empty list, meaning no exclusions.
    */
   @ApolloExperimental
-  fun dependsOn(dependencyNotation: Any, bidirectional: Boolean)
+  fun dependsOn(dependencyNotation: Any, bidirectional: Boolean, excludeRules: List<DefaultExcludeRule> = emptyList())
 
   class OperationOutputConnection(
       /**

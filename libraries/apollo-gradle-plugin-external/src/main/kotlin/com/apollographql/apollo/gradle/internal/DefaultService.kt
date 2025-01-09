@@ -14,6 +14,8 @@ import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.internal.artifacts.DefaultExcludeRule
+import org.gradle.api.artifacts.ModuleDependency
 import java.io.File
 import javax.inject.Inject
 
@@ -199,12 +201,19 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   override fun mapScalarToUpload(graphQLName: String) = mapScalar(graphQLName, "com.apollographql.apollo.api.Upload", "com.apollographql.apollo.api.UploadAdapter")
 
-  override fun dependsOn(dependencyNotation: Any) {
-    dependsOn(dependencyNotation, false)
+  override fun dependsOn(dependencyNotation: Any, excludeRules: List<DefaultExcludeRule>) {
+    dependsOn(dependencyNotation, false, excludeRules)
   }
 
-  override fun dependsOn(dependencyNotation: Any, bidirectional: Boolean) {
-    upstreamDependencies.add(project.dependencies.create(dependencyNotation))
+  override fun dependsOn(dependencyNotation: Any, bidirectional: Boolean, excludeRules: List<DefaultExcludeRule>) {
+    upstreamDependencies.add(project.dependencies.create(dependencyNotation).apply {
+      if (this is ModuleDependency) {
+        excludeRules.forEach { rule ->
+          exclude(mapOf("group" to rule.group).plus(mapOf("module" to rule.module)))
+        }
+      }
+    })
+
     if (bidirectional) {
       val upstreamProject = when (dependencyNotation) {
         is ProjectDependency -> project.rootProject.project(dependencyNotation.getPathCompat())
