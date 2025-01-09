@@ -22,15 +22,8 @@ internal sealed interface Gravity {
         EnumType("Gravity", listOf("TOP", "CENTER", "BOTTOM", "bottom", "is", "type", "String", "field"))
 
     /**
-<<<<<<< HEAD
-     * Returns an instance of [Gravity] representing [rawValue].
-     *
-     * The returned value may be an instance of [UNKNOWN__] if the enum value is not known at build time. 
-     * You may want to update your schema instead of calling this function directly.
-=======
      * Returns the [Gravity] that represents the specified [rawValue].
      * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
->>>>>>> parent of b13606094f ([compiler] Add Enum.KNOWN__ as an intermediary interface (#6248))
      */
     @Suppress("DEPRECATION")
     public fun safeValueOf(rawValue: kotlin.String): Gravity = when(rawValue) {
