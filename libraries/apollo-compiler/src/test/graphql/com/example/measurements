@@ -2,8 +2,8 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  202606
-aggregate-kotlin-responseBased                                                                  65303
+aggregate-all                                                                                  202583
+aggregate-kotlin-responseBased                                                                  65280
 aggregate-kotlin-operationBased                                                                 41281
 aggregate-kotlin-compat                                                                             0
 aggregate-java-operationBased                                                                   96022
@@ -193,12 +193,12 @@ kotlin-responseBased-root_query_fragment                                        
 kotlin-responseBased-typename_always_first                                                        534
 java-operationBased-arguments_hardcoded                                                           531
 kotlin-operationBased-fragment_with_multiple_fieldsets                                            528
-kotlin-responseBased-enum_field                                                                   527
 kotlin-responseBased-input_object_oneof                                                           527
 java-operationBased-antlr_tokens                                                                  521
 kotlin-operationBased-operationbased2_ex7                                                         521
 java-operationBased-subscriptions                                                                 520
 kotlin-operationBased-typename_always_first                                                       517
+kotlin-responseBased-enum_field                                                                   516
 kotlin-operationBased-path_vs_flat_accessors                                                      513
 kotlin-responseBased-hero_name                                                                    507
 kotlin-operationBased-interface_on_interface                                                      506
@@ -235,8 +235,8 @@ kotlin-responseBased-starships                                                  
 kotlin-operationBased-inline_fragment_simple                                                      399
 kotlin-responseBased-java8annotation                                                              397
 kotlin-responseBased-antlr_tokens                                                                 391
-kotlin-responseBased-enums_as_sealed                                                              385
 kotlin-responseBased-subscriptions                                                                385
+kotlin-responseBased-enums_as_sealed                                                              373
 kotlin-responseBased-case_sensitive_enum                                                          342
 kotlin-responseBased-operation_id_generator                                                       342
 kotlin-responseBased-merged_include                                                               340

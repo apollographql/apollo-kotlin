@@ -1,0 +1,242 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.schema",
+    "module": "schema",
+    "version": "1.0.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.10"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "com.apollographql.apollo",
+          "module": "apollo-api",
+          "version": {
+            "requires": "4.1.1-SNAPSHOT"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.1.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "schema-1.0.0.aar",
+          "url": "schema-1.0.0.aar",
+          "size": 69314,
+          "sha512": "8a681ba60f8d0edc6995db4c3eff180056aae48160b249cb18db4aa6093bc38e06847eb4a49a1f38b0bee5c59bdcd8587b1c54d4e86b7fd126f59ccc34f4531e",
+          "sha256": "123c944d83742a3e8687c300319daed8975838434c7a09d7d3e1bbb7ab25c05d",
+          "sha1": "18d21602f19b1c15a5e3bd6d9b0230eceb2b3b90",
+          "md5": "a0e42eb68470485a40e036254132fde0"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.apollographql.apollo",
+          "module": "apollo-api",
+          "version": {
+            "requires": "4.1.1-SNAPSHOT"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.1.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "schema-1.0.0.aar",
+          "url": "schema-1.0.0.aar",
+          "size": 69314,
+          "sha512": "8a681ba60f8d0edc6995db4c3eff180056aae48160b249cb18db4aa6093bc38e06847eb4a49a1f38b0bee5c59bdcd8587b1c54d4e86b7fd126f59ccc34f4531e",
+          "sha256": "123c944d83742a3e8687c300319daed8975838434c7a09d7d3e1bbb7ab25c05d",
+          "sha1": "18d21602f19b1c15a5e3bd6d9b0230eceb2b3b90",
+          "md5": "a0e42eb68470485a40e036254132fde0"
+        }
+      ]
+    },
+    {
+      "name": "apolloService1CodegenMetadataConsumable",
+      "attributes": {
+        "com.apollographql.direction": "Upstream",
+        "com.apollographql.service": "service1",
+        "org.gradle.usage": "CodegenMetadata"
+      },
+      "files": [
+        {
+          "name": "schema-1.0.0-codegen-metadata-service1.json",
+          "url": "schema-1.0.0-codegen-metadata-service1.json",
+          "size": 12961,
+          "sha512": "56398fc87367fee9819c3a72b3ec2ac5a499180dab4e7e87d9116246048f79bad7bdd950c21163debf2d64dfcc8b65d2439e5fc077b96ad8dd12d58b26f57132",
+          "sha256": "8c1ffb78e65ed631f4e7685812b8863a903858ea2ce790656a4535d7c38f9375",
+          "sha1": "0675fa893959f31b900182e1c11127eb08a98ada",
+          "md5": "2349721ca76336572ba705c396078300"
+        }
+      ]
+    },
+    {
+      "name": "apolloService1IrConsumable",
+      "attributes": {
+        "com.apollographql.direction": "Upstream",
+        "com.apollographql.service": "service1",
+        "org.gradle.usage": "Ir"
+      },
+      "files": [
+        {
+          "name": "schema-1.0.0-ir-service1.json",
+          "url": "schema-1.0.0-ir-service1.json",
+          "size": 1265,
+          "sha512": "5ef7cf117fcd691827e42e90ac12cc3c3c055ff1afe6e9852bd4269ff6fbd8986d7ff41efdefae6ae2aeb508b9f3823e7dfe272a51d87401101c960a082f5f74",
+          "sha256": "9b8dc8d0abcdd819c32de6bc3a27d7f978da5f47c3bb7120beafab396854bab9",
+          "sha1": "cc974982ea3d091d6212337186b13ec293a58ea2",
+          "md5": "931d219fcf731364428fc513898f3b8d"
+        }
+      ]
+    },
+    {
+      "name": "apolloService1CodegenSchemaConsumable",
+      "attributes": {
+        "com.apollographql.direction": "Upstream",
+        "com.apollographql.service": "service1",
+        "org.gradle.usage": "CodegenSchema"
+      },
+      "files": [
+        {
+          "name": "schema-1.0.0-codegen-schema-service1.json",
+          "url": "schema-1.0.0-codegen-schema-service1.json",
+          "size": 6263,
+          "sha512": "9cf3829ad982bcc41ff3cbcab0ad059707f4f6498494265b8a53be4bed40f72b6255777ca036b4c8bbd083a9c07c29267e11540c625b6420048ffa10e918f250",
+          "sha256": "f32ffba8b91952fb1c41a1fa2647f394b1b17d0013b6e508936b0ab3657e3d6f",
+          "sha1": "a7826086efcbd124bc533e6d676cb8b57b169b3d",
+          "md5": "9695b97ab1900ae1c8f44f476d50ca33"
+        }
+      ]
+    },
+    {
+      "name": "apolloService1OtherOptionsConsumable",
+      "attributes": {
+        "com.apollographql.direction": "Upstream",
+        "com.apollographql.service": "service1",
+        "org.gradle.usage": "OtherOptions"
+      },
+      "files": [
+        {
+          "name": "schema-1.0.0-other-options-service1.json",
+          "url": "schema-1.0.0-other-options-service1.json",
+          "size": 64,
+          "sha512": "5b3918422db2e2167d25b73524018d3e627b59ea303996929489e6d27c55b99c400a682c65d64932efbee53d98f59ffbfd816bbeb84adfbeb5c638be756b73e3",
+          "sha256": "63fd406bbc9a11b2ca343e310840de9fa3c4059fba0dbf6ddf5d9911025dbc2b",
+          "sha1": "c456f81c30cb12114fca7a4fa990b2d717ae8ad3",
+          "md5": "8a15e70d860441ef57cfaf2ed93e1393"
+        }
+      ]
+    },
+    {
+      "name": "apolloService2CodegenMetadataConsumable",
+      "attributes": {
+        "com.apollographql.direction": "Upstream",
+        "com.apollographql.service": "service2",
+        "org.gradle.usage": "CodegenMetadata"
+      },
+      "files": [
+        {
+          "name": "schema-1.0.0-codegen-metadata-service2.json",
+          "url": "schema-1.0.0-codegen-metadata-service2.json",
+          "size": 12961,
+          "sha512": "47f31ea9c5b08a91bf7c233ef09cf9ef27b4041bea96f73f65150c1955438005991550cadf8bd4af4d0125eb10d79214a64f5d51b3f1f4d9faf93b6ac378a850",
+          "sha256": "64c917c3aa27c3c62670fec00f6bf392e1d4e1e43b832e694b73cce26166faf7",
+          "sha1": "befeefe4b85c6404dd12b2f3385b32f6c538f868",
+          "md5": "dec6ad107130265c864ddc3d01b44fc1"
+        }
+      ]
+    },
+    {
+      "name": "apolloService2IrConsumable",
+      "attributes": {
+        "com.apollographql.direction": "Upstream",
+        "com.apollographql.service": "service2",
+        "org.gradle.usage": "Ir"
+      },
+      "files": [
+        {
+          "name": "schema-1.0.0-ir-service2.json",
+          "url": "schema-1.0.0-ir-service2.json",
+          "size": 1265,
+          "sha512": "5ef7cf117fcd691827e42e90ac12cc3c3c055ff1afe6e9852bd4269ff6fbd8986d7ff41efdefae6ae2aeb508b9f3823e7dfe272a51d87401101c960a082f5f74",
+          "sha256": "9b8dc8d0abcdd819c32de6bc3a27d7f978da5f47c3bb7120beafab396854bab9",
+          "sha1": "cc974982ea3d091d6212337186b13ec293a58ea2",
+          "md5": "931d219fcf731364428fc513898f3b8d"
+        }
+      ]
+    },
+    {
+      "name": "apolloService2CodegenSchemaConsumable",
+      "attributes": {
+        "com.apollographql.direction": "Upstream",
+        "com.apollographql.service": "service2",
+        "org.gradle.usage": "CodegenSchema"
+      },
+      "files": [
+        {
+          "name": "schema-1.0.0-codegen-schema-service2.json",
+          "url": "schema-1.0.0-codegen-schema-service2.json",
+          "size": 6263,
+          "sha512": "9cf3829ad982bcc41ff3cbcab0ad059707f4f6498494265b8a53be4bed40f72b6255777ca036b4c8bbd083a9c07c29267e11540c625b6420048ffa10e918f250",
+          "sha256": "f32ffba8b91952fb1c41a1fa2647f394b1b17d0013b6e508936b0ab3657e3d6f",
+          "sha1": "a7826086efcbd124bc533e6d676cb8b57b169b3d",
+          "md5": "9695b97ab1900ae1c8f44f476d50ca33"
+        }
+      ]
+    },
+    {
+      "name": "apolloService2OtherOptionsConsumable",
+      "attributes": {
+        "com.apollographql.direction": "Upstream",
+        "com.apollographql.service": "service2",
+        "org.gradle.usage": "OtherOptions"
+      },
+      "files": [
+        {
+          "name": "schema-1.0.0-other-options-service2.json",
+          "url": "schema-1.0.0-other-options-service2.json",
+          "size": 64,
+          "sha512": "5b3918422db2e2167d25b73524018d3e627b59ea303996929489e6d27c55b99c400a682c65d64932efbee53d98f59ffbfd816bbeb84adfbeb5c638be756b73e3",
+          "sha256": "63fd406bbc9a11b2ca343e310840de9fa3c4059fba0dbf6ddf5d9911025dbc2b",
+          "sha1": "c456f81c30cb12114fca7a4fa990b2d717ae8ad3",
+          "md5": "8a15e70d860441ef57cfaf2ed93e1393"
+        }
+      ]
+    }
+  ]
+}

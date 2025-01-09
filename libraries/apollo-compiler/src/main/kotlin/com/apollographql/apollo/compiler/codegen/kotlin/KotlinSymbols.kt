@@ -15,6 +15,10 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
  * Symbols can be [ClassName] or [MemberName]
  */
 internal object KotlinSymbols {
+  val ExecutableSchemaBuilder = ClassName(ClassNames.apolloExecutionPackageName, "ExecutableSchema", "Builder")
+  val Resolver = ClassName(ClassNames.apolloExecutionPackageName, "Resolver")
+  val ResolveInfo = ClassName(ClassNames.apolloExecutionPackageName, "ResolveInfo")
+  val Roots = ClassName(ClassNames.apolloExecutionPackageName, "Roots")
   val Schema = ClassName(ClassNames.apolloAstPackageName, "Schema")
   val ObjectType = ClassNames.ObjectType.toKotlinPoetClassName()
   val ObjectTypeBuilder = ClassNames.ObjectTypeBuilder.toKotlinPoetClassName()
@@ -101,7 +105,6 @@ internal object KotlinSymbols {
 
   val ApolloAdaptableWith = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloAdaptableWith")
   val ApolloExperimental = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloExperimental")
-  val ApolloPrivateEnumConstructor = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloPrivateEnumConstructor")
 
   val JsExport = ClassName("kotlin.js", "JsExport")
 
@@ -111,6 +114,7 @@ internal object KotlinSymbols {
   val errorAware = MemberName(apolloApiPackageName, "errorAware")
   val readTypename = MemberName(apolloApiJsonPackageName, "readTypename")
   val buildData = MemberName(apolloApiPackageName, "buildData")
+  val GlobalBuilder = MemberName(apolloApiPackageName, "GlobalBuilder")
   val assertOneOf = MemberName(apolloApiPackageName, "assertOneOf")
   val missingField = MemberName(apolloApiPackageName, "missingField")
   val FieldResult = ClassNames.FieldResult.toKotlinPoetClassName()
