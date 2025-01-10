@@ -6,6 +6,8 @@ import com.apollographql.apollo.api.http.HttpRequest
 import com.apollographql.apollo.api.http.HttpResponse
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.network.toNSData
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.atomicfu.locks.withLock
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr
@@ -207,6 +209,8 @@ private class StreamingDataDelegate : NSObject(), NSURLSessionDataDelegateProtoc
     fun onComplete(error: NSError?)
   }
 
+  private val lock = reentrantLock()
+
   private val handlers = mutableMapOf<NSURLSessionTask, Handler>()
 
   override fun URLSession(
@@ -215,7 +219,9 @@ private class StreamingDataDelegate : NSObject(), NSURLSessionDataDelegateProtoc
       didReceiveResponse: NSURLResponse,
       completionHandler: (NSURLSessionResponseDisposition) -> Unit,
   ) {
-    handlers[dataTask]?.onResponse(didReceiveResponse as NSHTTPURLResponse)
+    lock.withLock {
+      handlers[dataTask]
+    }?.onResponse(didReceiveResponse as NSHTTPURLResponse)
     completionHandler(NSURLSessionResponseAllow)
   }
 
@@ -224,7 +230,9 @@ private class StreamingDataDelegate : NSObject(), NSURLSessionDataDelegateProtoc
       dataTask: NSURLSessionDataTask,
       didReceiveData: NSData,
   ) {
-    handlers[dataTask]?.onData(didReceiveData)
+    lock.withLock {
+      handlers[dataTask]
+    }?.onData(didReceiveData)
   }
 
   override fun URLSession(
@@ -232,10 +240,12 @@ private class StreamingDataDelegate : NSObject(), NSURLSessionDataDelegateProtoc
       task: NSURLSessionTask,
       didCompleteWithError: NSError?,
   ) {
-    handlers[task]?.onComplete(didCompleteWithError)
-
-    // Cleanup
-    handlers.remove(task)
+    lock.withLock {
+      handlers[task].also {
+        // Cleanup
+        handlers.remove(task)
+      }
+    }?.onComplete(didCompleteWithError)
   }
 
   override fun URLSession(
@@ -244,16 +254,20 @@ private class StreamingDataDelegate : NSObject(), NSURLSessionDataDelegateProtoc
       willCacheResponse: NSCachedURLResponse,
       completionHandler: (NSCachedURLResponse?) -> Unit,
   ) {
-    handlers[dataTask]?.onComplete(null)
-
-    // Cleanup
-    handlers.remove(dataTask)
+    lock.withLock {
+      handlers[dataTask].also {
+        // Cleanup
+        handlers.remove(dataTask)
+      }
+    }?.onComplete(null)
 
     completionHandler(willCacheResponse)
   }
 
   fun registerHandlerForTask(task: NSURLSessionTask, handler: Handler) {
-    handlers[task] = handler
+    lock.withLock {
+      handlers[task] = handler
+    }
   }
 }
 
