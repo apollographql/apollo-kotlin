@@ -23,7 +23,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.operations.OperationSele
 import com.apollographql.apollo.compiler.codegen.kotlin.operations.OperationVariablesAdapterBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.CustomScalarAdaptersBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumAsEnumBuilder
-import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumAsSealedInterfaceBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumAsSealedBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumResponseAdapterBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.InputObjectAdapterBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.InputObjectBuilder
@@ -49,6 +49,7 @@ import com.apollographql.apollo.compiler.generateMethodsKotlin
 import com.apollographql.apollo.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.IrSchema
+import com.apollographql.apollo.compiler.ir.IrTargetObject
 import com.apollographql.apollo.compiler.maybeTransform
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.operationoutput.findOperationId
@@ -178,7 +179,7 @@ internal object KotlinCodegen {
       }
       irSchema.irEnums.forEach { irEnum ->
         if (sealedClassesForEnumsMatching.any { Regex(it).matches(irEnum.name) }) {
-          builders.add(EnumAsSealedInterfaceBuilder(context, irEnum))
+          builders.add(EnumAsSealedBuilder(context, irEnum))
         } else {
           builders.add(EnumAsEnumBuilder(context, irEnum, addUnknownForEnums))
         }

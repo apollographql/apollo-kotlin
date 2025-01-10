@@ -21,10 +21,6 @@ open annotation class com.apollographql.apollo.annotations/ApolloInternal : kotl
     constructor <init>() // com.apollographql.apollo.annotations/ApolloInternal.<init>|<init>(){}[0]
 }
 
-open annotation class com.apollographql.apollo.annotations/ApolloPrivateEnumConstructor : kotlin/Annotation { // com.apollographql.apollo.annotations/ApolloPrivateEnumConstructor|null[0]
-    constructor <init>() // com.apollographql.apollo.annotations/ApolloPrivateEnumConstructor.<init>|<init>(){}[0]
-}
-
 open annotation class com.apollographql.apollo.annotations/ApolloRequiresOptIn : kotlin/Annotation { // com.apollographql.apollo.annotations/ApolloRequiresOptIn|null[0]
     constructor <init>() // com.apollographql.apollo.annotations/ApolloRequiresOptIn.<init>|<init>(){}[0]
 }

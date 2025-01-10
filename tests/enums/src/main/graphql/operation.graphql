@@ -6,7 +6,3 @@ query GetEnums {
   fooClass
   fooEnum
 }
-
-query GetColor {
-  color
-}
