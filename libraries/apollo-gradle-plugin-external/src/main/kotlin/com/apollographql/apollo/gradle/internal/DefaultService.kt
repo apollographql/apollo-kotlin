@@ -17,8 +17,7 @@ import org.gradle.api.file.RegularFileProperty
 import java.io.File
 import javax.inject.Inject
 
-abstract class DefaultService @Inject constructor(val project: Project, override val name: String)
-  : Service {
+abstract class DefaultService @Inject constructor(val project: Project, override val name: String) : Service {
 
   internal val upstreamDependencies = mutableListOf<Dependency>()
   internal val downstreamDependencies = mutableListOf<Dependency>()
@@ -164,6 +163,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   val scalarTypeMapping = mutableMapOf<String, String>()
   val scalarAdapterMapping = mutableMapOf<String, String>()
+  val scalarInlineClassPropertyMapping = mutableMapOf<String, String>()
 
   override fun mapScalar(
       graphQLName: String,
@@ -176,28 +176,76 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       graphQLName: String,
       targetName: String,
       expression: String,
+      inlineClassProperty: String?,
   ) {
     scalarTypeMapping[graphQLName] = targetName
     scalarAdapterMapping[graphQLName] = expression
+    inlineClassProperty?.let {
+      scalarInlineClassPropertyMapping[graphQLName] = it
+    }
   }
 
-  override fun mapScalarToKotlinString(graphQLName: String) = mapScalar(graphQLName, "kotlin.String", "com.apollographql.apollo.api.StringAdapter")
-  override fun mapScalarToKotlinInt(graphQLName: String) = mapScalar(graphQLName, "kotlin.Int", "com.apollographql.apollo.api.IntAdapter")
-  override fun mapScalarToKotlinDouble(graphQLName: String) = mapScalar(graphQLName, "kotlin.Double", "com.apollographql.apollo.api.DoubleAdapter")
-  override fun mapScalarToKotlinFloat(graphQLName: String) = mapScalar(graphQLName, "kotlin.Float", "com.apollographql.apollo.api.FloatAdapter")
-  override fun mapScalarToKotlinLong(graphQLName: String) = mapScalar(graphQLName, "kotlin.Long", "com.apollographql.apollo.api.LongAdapter")
-  override fun mapScalarToKotlinBoolean(graphQLName: String) = mapScalar(graphQLName, "kotlin.Boolean", "com.apollographql.apollo.api.BooleanAdapter")
+  override fun mapScalarToKotlinString(graphQLName: String) =
+    mapScalar(graphQLName, "kotlin.String", "com.apollographql.apollo.api.StringAdapter")
+
+  override fun mapScalarToKotlinString(graphQLName: String, inlineClass: String, inlineClassProperty: String) =
+    mapScalar(graphQLName, inlineClass, "com.apollographql.apollo.api.StringAdapter", inlineClassProperty)
+
+  override fun mapScalarToKotlinInt(graphQLName: String) =
+    mapScalar(graphQLName, "kotlin.Int", "com.apollographql.apollo.api.IntAdapter")
+
+  override fun mapScalarToKotlinInt(graphQLName: String, inlineClass: String, inlineClassProperty: String) =
+    mapScalar(graphQLName, inlineClass, "com.apollographql.apollo.api.IntAdapter", inlineClassProperty)
+
+  override fun mapScalarToKotlinDouble(graphQLName: String) =
+    mapScalar(graphQLName, "kotlin.Double", "com.apollographql.apollo.api.DoubleAdapter")
+
+  override fun mapScalarToKotlinDouble(graphQLName: String, inlineClass: String, inlineClassProperty: String) =
+    mapScalar(graphQLName, inlineClass, "com.apollographql.apollo.api.DoubleAdapter", inlineClassProperty)
+
+  override fun mapScalarToKotlinFloat(graphQLName: String) =
+    mapScalar(graphQLName, "kotlin.Float", "com.apollographql.apollo.api.FloatAdapter")
+
+  override fun mapScalarToKotlinFloat(graphQLName: String, inlineClass: String, inlineClassProperty: String) =
+    mapScalar(graphQLName, inlineClass, "com.apollographql.apollo.api.FloatAdapter", inlineClassProperty)
+
+  override fun mapScalarToKotlinLong(graphQLName: String) =
+    mapScalar(graphQLName, "kotlin.Long", "com.apollographql.apollo.api.LongAdapter")
+
+  override fun mapScalarToKotlinLong(graphQLName: String, inlineClass: String, inlineClassProperty: String) =
+    mapScalar(graphQLName, inlineClass, "com.apollographql.apollo.api.LongAdapter", inlineClassProperty)
+
+  override fun mapScalarToKotlinBoolean(graphQLName: String) =
+    mapScalar(graphQLName, "kotlin.Boolean", "com.apollographql.apollo.api.BooleanAdapter")
+
+  override fun mapScalarToKotlinBoolean(graphQLName: String, inlineClass: String, inlineClassProperty: String) =
+    mapScalar(graphQLName, inlineClass, "com.apollographql.apollo.api.BooleanAdapter", inlineClassProperty)
+
   override fun mapScalarToKotlinAny(graphQLName: String) = mapScalar(graphQLName, "kotlin.Any", "com.apollographql.apollo.api.AnyAdapter")
 
-  override fun mapScalarToJavaString(graphQLName: String) = mapScalar(graphQLName, "java.lang.String", "com.apollographql.apollo.api.Adapters.StringAdapter")
-  override fun mapScalarToJavaInteger(graphQLName: String) = mapScalar(graphQLName, "java.lang.Integer", "com.apollographql.apollo.api.Adapters.IntAdapter")
-  override fun mapScalarToJavaDouble(graphQLName: String) = mapScalar(graphQLName, "java.lang.Double", "com.apollographql.apollo.api.Adapters.DoubleAdapter")
-  override fun mapScalarToJavaFloat(graphQLName: String) = mapScalar(graphQLName, "java.lang.Float", "com.apollographql.apollo.api.Adapters.FloatAdapter")
-  override fun mapScalarToJavaLong(graphQLName: String) = mapScalar(graphQLName, "java.lang.Long", "com.apollographql.apollo.api.Adapters.LongAdapter")
-  override fun mapScalarToJavaBoolean(graphQLName: String) = mapScalar(graphQLName, "java.lang.Boolean", "com.apollographql.apollo.api.Adapters.BooleanAdapter")
-  override fun mapScalarToJavaObject(graphQLName: String) = mapScalar(graphQLName, "java.lang.Object", "com.apollographql.apollo.api.Adapters.AnyAdapter")
+  override fun mapScalarToJavaString(graphQLName: String) =
+    mapScalar(graphQLName, "java.lang.String", "com.apollographql.apollo.api.Adapters.StringAdapter")
 
-  override fun mapScalarToUpload(graphQLName: String) = mapScalar(graphQLName, "com.apollographql.apollo.api.Upload", "com.apollographql.apollo.api.UploadAdapter")
+  override fun mapScalarToJavaInteger(graphQLName: String) =
+    mapScalar(graphQLName, "java.lang.Integer", "com.apollographql.apollo.api.Adapters.IntAdapter")
+
+  override fun mapScalarToJavaDouble(graphQLName: String) =
+    mapScalar(graphQLName, "java.lang.Double", "com.apollographql.apollo.api.Adapters.DoubleAdapter")
+
+  override fun mapScalarToJavaFloat(graphQLName: String) =
+    mapScalar(graphQLName, "java.lang.Float", "com.apollographql.apollo.api.Adapters.FloatAdapter")
+
+  override fun mapScalarToJavaLong(graphQLName: String) =
+    mapScalar(graphQLName, "java.lang.Long", "com.apollographql.apollo.api.Adapters.LongAdapter")
+
+  override fun mapScalarToJavaBoolean(graphQLName: String) =
+    mapScalar(graphQLName, "java.lang.Boolean", "com.apollographql.apollo.api.Adapters.BooleanAdapter")
+
+  override fun mapScalarToJavaObject(graphQLName: String) =
+    mapScalar(graphQLName, "java.lang.Object", "com.apollographql.apollo.api.Adapters.AnyAdapter")
+
+  override fun mapScalarToUpload(graphQLName: String) =
+    mapScalar(graphQLName, "com.apollographql.apollo.api.Upload", "com.apollographql.apollo.api.UploadAdapter")
 
   override fun dependsOn(dependencyNotation: Any) {
     dependsOn(dependencyNotation, false)
@@ -226,7 +274,9 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     downstreamDependencies.add(project.dependencies.create(dependencyNotation))
   }
 
-  internal fun isMultiModule(): Boolean = generateApolloMetadata.getOrElse(false) || downstreamDependencies.isNotEmpty() || upstreamDependencies.isNotEmpty()
+  internal fun isMultiModule(): Boolean =
+    generateApolloMetadata.getOrElse(false) || downstreamDependencies.isNotEmpty() || upstreamDependencies.isNotEmpty()
+
   internal fun isSchemaModule(): Boolean = upstreamDependencies.isEmpty()
 
   override fun plugin(dependencyNotation: Any) {
@@ -234,7 +284,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   }
 
   override fun plugin(dependencyNotation: Any, block: Action<CompilerPlugin>) {
-    require (compilerPlugin == null) {
+    require(compilerPlugin == null) {
       "Apollo: only one Apollo Compiler Plugin is allowed."
     }
     compilerPlugin = DefaultCompilerPlugin()

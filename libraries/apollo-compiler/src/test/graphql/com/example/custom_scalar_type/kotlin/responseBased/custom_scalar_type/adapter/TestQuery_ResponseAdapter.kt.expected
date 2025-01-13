@@ -14,6 +14,7 @@ import com.apollographql.apollo.api.list
 import com.apollographql.apollo.api.missingField
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
+import com.example.Timestamp
 import com.example.custom_scalar_type.TestQuery
 import com.example.custom_scalar_type.type.GraphQLID
 import kotlin.Any
@@ -25,20 +26,39 @@ import java.util.Date as UtilDate
 
 public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
-    public val RESPONSE_NAMES: List<String> = listOf("hero")
+    public val RESPONSE_NAMES: List<String> =
+        listOf("hero", "nonNullTimestamp", "nullableTimestamp", "nonNullListOfNonNullTimestamp", "nonNullListOfNullableTimestamp", "nullableListOfNonNullTimestamp", "nullableListOfNullableTimestamp")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
+      var _nonNullTimestamp: Timestamp? = null
+      var _nullableTimestamp: Timestamp? = null
+      var _nonNullListOfNonNullTimestamp: List<Timestamp>? = null
+      var _nonNullListOfNullableTimestamp: List<Timestamp?>? = null
+      var _nullableListOfNonNullTimestamp: List<Timestamp>? = null
+      var _nullableListOfNullableTimestamp: List<Timestamp?>? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          1 -> _nonNullTimestamp = com.example.Timestamp(com.apollographql.apollo.api.LongAdapter.fromJson(reader, customScalarAdapters))
+          2 -> _nullableTimestamp = com.apollographql.apollo.api.LongAdapter.nullable().fromJson(reader, customScalarAdapters)?.let { com.example.Timestamp(it) }
+          3 -> _nonNullListOfNonNullTimestamp = com.apollographql.apollo.api.LongAdapter.list().fromJson(reader, customScalarAdapters).map { com.example.Timestamp(it) }
+          4 -> _nonNullListOfNullableTimestamp = com.apollographql.apollo.api.LongAdapter.nullable().list().fromJson(reader, customScalarAdapters).map { it?.let { com.example.Timestamp(it) } }
+          5 -> _nullableListOfNonNullTimestamp = com.apollographql.apollo.api.LongAdapter.list().nullable().fromJson(reader, customScalarAdapters)?.map { com.example.Timestamp(it) }
+          6 -> _nullableListOfNullableTimestamp = com.apollographql.apollo.api.LongAdapter.nullable().list().nullable().fromJson(reader, customScalarAdapters)?.map { it?.let { com.example.Timestamp(it) } }
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = _hero
+        hero = _hero,
+        nonNullTimestamp = _nonNullTimestamp ?: missingField(reader, "nonNullTimestamp"),
+        nullableTimestamp = _nullableTimestamp,
+        nonNullListOfNonNullTimestamp = _nonNullListOfNonNullTimestamp ?: missingField(reader, "nonNullListOfNonNullTimestamp"),
+        nonNullListOfNullableTimestamp = _nonNullListOfNullableTimestamp ?: missingField(reader, "nonNullListOfNullableTimestamp"),
+        nullableListOfNonNullTimestamp = _nullableListOfNonNullTimestamp,
+        nullableListOfNullableTimestamp = _nullableListOfNullableTimestamp
       )
     }
 
@@ -49,6 +69,24 @@ public object TestQuery_ResponseAdapter {
     ) {
       writer.name("hero")
       Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
+
+      writer.name("nonNullTimestamp")
+      com.apollographql.apollo.api.LongAdapter.toJson(writer, customScalarAdapters, value.nonNullTimestamp.ts)
+
+      writer.name("nullableTimestamp")
+      com.apollographql.apollo.api.LongAdapter.nullable().toJson(writer, customScalarAdapters, value.nullableTimestamp?.ts)
+
+      writer.name("nonNullListOfNonNullTimestamp")
+      com.apollographql.apollo.api.LongAdapter.list().toJson(writer, customScalarAdapters, value.nonNullListOfNonNullTimestamp.map { it.ts })
+
+      writer.name("nonNullListOfNullableTimestamp")
+      com.apollographql.apollo.api.LongAdapter.nullable().list().toJson(writer, customScalarAdapters, value.nonNullListOfNullableTimestamp.map { it?.ts })
+
+      writer.name("nullableListOfNonNullTimestamp")
+      com.apollographql.apollo.api.LongAdapter.list().nullable().toJson(writer, customScalarAdapters, value.nullableListOfNonNullTimestamp?.map { it.ts })
+
+      writer.name("nullableListOfNullableTimestamp")
+      com.apollographql.apollo.api.LongAdapter.nullable().list().nullable().toJson(writer, customScalarAdapters, value.nullableListOfNullableTimestamp?.map { it?.ts })
     }
 
     private object Hero : Adapter<TestQuery.Data.Hero> {

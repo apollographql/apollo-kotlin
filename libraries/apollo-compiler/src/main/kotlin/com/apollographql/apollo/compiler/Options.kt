@@ -640,7 +640,10 @@ object RuntimeAdapterInitializer : AdapterInitializer
 class ScalarInfo(
     val targetName: String,
     val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer,
-    val userDefined: Boolean = true,
+    /**
+     * If the target is an inline class, the property to access the underlying value, `null` otherwise.
+     */
+    val inlineClassProperty: String? = null,
 )
 
 private val NoOpLogger = object : ApolloCompiler.Logger {

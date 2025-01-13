@@ -277,6 +277,64 @@ internal class KotlinResolver(
     }
   }
 
+  internal fun unwrapInlineClass(type: IrType): String {
+    return when (type) {
+      is IrListType -> {
+        if (type.rawType() is IrScalarType && scalarMapping[type.rawType().name]?.inlineClassProperty != null) {
+          if (type.nullable) {
+            "?.map { it${unwrapInlineClass(type.ofType)} }"
+          } else {
+            ".map { it${unwrapInlineClass(type.ofType)} }"
+          }
+        } else {
+          ""
+        }
+      }
+
+      is IrScalarType -> {
+        val inlineClassProperty = scalarMapping[type.name]?.inlineClassProperty
+        when {
+          inlineClassProperty == null -> ""
+          type.nullable -> "?.$inlineClassProperty"
+          else -> ".$inlineClassProperty"
+        }
+      }
+
+      else -> ""
+    }
+  }
+
+  internal fun wrapInlineClass(expression: String, type: IrType): String {
+    return when (type) {
+      is IrListType -> {
+        if (type.rawType() is IrScalarType && scalarMapping[type.rawType().name]?.inlineClassProperty != null) {
+          if (type.nullable) {
+            "$expression?.map { ${wrapInlineClass("it", type.ofType)} }"
+          } else {
+            "$expression.map { ${wrapInlineClass("it", type.ofType)} }"
+          }
+        } else {
+          expression
+        }
+      }
+
+      is IrScalarType -> {
+        val inlineClassProperty = scalarMapping[type.name]?.inlineClassProperty
+        if (inlineClassProperty == null) {
+          expression
+        } else {
+          val targetName = scalarMapping[type.name]!!.targetName
+          when {
+            type.nullable -> "$expression?.let { $targetName(it) }"
+            else -> "$targetName($expression)"
+          }
+        }
+      }
+
+      else -> expression
+    }
+  }
+
   fun resolveCompiledType(name: String): CodeBlock {
     return CodeBlock.of("%T.$type", resolveAndAssert(ResolverKeyKind.SchemaType, name))
   }

@@ -315,6 +315,12 @@ type Query {
   typeWithGraphQLKeywords: TypeWithGraphQLKeywords
   getBoolean(booleanArg: Boolean): Boolean
   listOfString: ListOfString
+  nonNullTimestamp: Timestamp!
+  nullableTimestamp: Timestamp
+  nonNullListOfNonNullTimestamp: [Timestamp!]!
+  nonNullListOfNullableTimestamp: [Timestamp]!
+  nullableListOfNonNullTimestamp: [Timestamp!]
+  nullableListOfNullableTimestamp: [Timestamp]
 }
 
 """Represents a review for a movie"""
@@ -449,3 +455,5 @@ type TypeWithGraphQLKeywords {
 }
 
 scalar ListOfString
+
+scalar Timestamp
