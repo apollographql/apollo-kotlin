@@ -10,8 +10,8 @@ import com.apollographql.apollo.api.CompiledSelection
 import com.apollographql.apollo.api.list
 import com.apollographql.apollo.api.notNull
 import com.example.custom_scalar_type.type.Character
+import com.example.custom_scalar_type.type.CharacterID
 import com.example.custom_scalar_type.type.Date
-import com.example.custom_scalar_type.type.GraphQLID
 import com.example.custom_scalar_type.type.GraphQLString
 import com.example.custom_scalar_type.type.Timestamp
 import com.example.custom_scalar_type.type.URL
@@ -22,7 +22,7 @@ public object TestQuerySelections {
   private val __hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = GraphQLID.type.notNull()
+          type = CharacterID.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",

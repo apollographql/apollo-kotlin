@@ -199,3 +199,18 @@ fun GQLFieldDefinition.findSemanticNonNulls(schema: Schema): List<Int> {
   }
   return semanticNonNull.getArgumentValueOrDefault("levels", schema)!!.toListOfInt()
 }
+
+@ApolloInternal
+fun GQLScalarTypeDefinition.findInlineClassCoerceAs(schema: Schema): String? =
+  directives.filter { schema.originalDirectiveName(it.name) == Schema.INLINE_CLASS }
+      .map {
+        it.arguments
+            .firstOrNull { it.name == "coerceAs" }
+            ?.value
+            ?.let { value ->
+              if (value !is GQLEnumValue) {
+                throw ConversionException("coerceAs must be an enum", it.sourceLocation)
+              }
+              value.value
+            }
+      }.firstOrNull()

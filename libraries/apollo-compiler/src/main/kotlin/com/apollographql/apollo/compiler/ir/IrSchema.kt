@@ -17,6 +17,7 @@ import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo.ast.fieldDefinitions
 import com.apollographql.apollo.ast.findDeprecationReason
+import com.apollographql.apollo.ast.findInlineClassCoerceAs
 import com.apollographql.apollo.ast.findOneOf
 import com.apollographql.apollo.ast.findOptInFeature
 import com.apollographql.apollo.ast.findTargetName
@@ -95,8 +96,35 @@ internal data class IrScalar(
     override val name: String,
     val description: String?,
     val deprecationReason: String?,
+    val inlineClassCoerceAs: IrScalarInlineClassCoerceAs?,
 ) : IrSchemaType {
   val type = IrScalarType(name, nullable = true)
+}
+
+@Serializable
+internal enum class IrScalarInlineClassCoerceAs {
+  STRING,
+  BOOLEAN,
+  INT,
+  LONG,
+  DOUBLE,
+  ANY,
+  ;
+
+  companion object {
+    // String, Boolean, Int, Long, Double, JsonNumber, Any
+    fun fromString(value: String): IrScalarInlineClassCoerceAs {
+      return when (value) {
+        "String" -> STRING
+        "Boolean" -> BOOLEAN
+        "Int" -> INT
+        "Long" -> LONG
+        "Double" -> DOUBLE
+        "Any" -> ANY
+        else -> error("Unknown IrScalarInlineClassCoerceAs value $value")
+      }
+    }
+  }
 }
 
 /**
@@ -211,12 +239,13 @@ internal fun GQLUnionTypeDefinition.toIr(): IrUnion {
   )
 }
 
-internal fun GQLScalarTypeDefinition.toIr(): IrScalar {
+internal fun GQLScalarTypeDefinition.toIr(schema: Schema): IrScalar {
   return IrScalar(
       name = name,
       description = description,
       // XXX: this is not spec-compliant. Directive cannot be on scalar definitions
-      deprecationReason = directives.findDeprecationReason()
+      deprecationReason = directives.findDeprecationReason(),
+      inlineClassCoerceAs = findInlineClassCoerceAs(schema)?.let { IrScalarInlineClassCoerceAs.fromString(it) }
   )
 }
 

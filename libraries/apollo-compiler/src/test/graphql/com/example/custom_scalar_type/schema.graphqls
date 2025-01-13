@@ -20,7 +20,7 @@ type Query {
 """A character from the Star Wars universe"""
 interface Character {
   """The ID of the character"""
-  id: ID!
+  id: CharacterID!
 
   """The name of the character"""
   name: String!
@@ -71,3 +71,5 @@ scalar URL
 scalar ListOfString
 
 scalar Timestamp
+
+scalar CharacterID @inlineClass(coerceAs: String)
