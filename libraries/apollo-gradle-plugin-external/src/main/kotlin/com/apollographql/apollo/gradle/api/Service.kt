@@ -121,10 +121,12 @@ interface Service {
    * Map a GraphQL scalar type to the Java/Kotlin type and provided adapter expression.
    * The adapter will be configured at compile time and you must not call [com.apollographql.apollo.ApolloClient.Builder.addCustomScalarAdapter].
    *
-   * @param graphQLName: the name of the scalar to map as found in the GraphQL schema
-   * @param targetName: the fully qualified Java or Kotlin name of the type the scalar is mapped to
-   * @param expression: an expression that will be used by the codegen to get an adapter for the
+   * @param graphQLName the name of the scalar to map as found in the GraphQL schema
+   * @param targetName the fully qualified Java or Kotlin name of the type the scalar is mapped to
+   * @param expression an expression that will be used by the codegen to get an adapter for the
    * given scalar. [expression] is passed verbatim to JavaPoet/KotlinPoet.
+   * @param inlineClassProperty if [targetName] is an [inline class](https://kotlinlang.org/docs/inline-classes.html), the property
+   * to access the underlying value, `null` otherwise.
    *
    * For example in Kotlin:
    * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter")` (a top level property or object)
@@ -133,7 +135,7 @@ interface Service {
    * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter.INSTANCE")` (a top level property or object)
    * - `mapScalar("Date", "com.example.Date", "new com.example.DateAdapter()")` (create a new instance every time)
    */
-  fun mapScalar(graphQLName: String, targetName: String, expression: String)
+  fun mapScalar(graphQLName: String, targetName: String, expression: String, inlineClassProperty: String? = null)
 
   /**
    * Map the given GraphQL scalar to [kotlin.String] and use the builtin adapter
@@ -141,9 +143,19 @@ interface Service {
   fun mapScalarToKotlinString(graphQLName: String)
 
   /**
+   * Map the given GraphQL scalar to a [kotlin.String] wrapped in an inline class and use the builtin adapter
+   */
+  fun mapScalarToKotlinString(graphQLName: String, inlineClass: String, inlineClassProperty: String)
+
+  /**
    * Map the given GraphQL scalar to [kotlin.Int] and use the builtin adapter
    */
   fun mapScalarToKotlinInt(graphQLName: String)
+
+  /**
+   * Map the given GraphQL scalar to a [kotlin.Int] wrapped in an inline class and use the builtin adapter
+   */
+  fun mapScalarToKotlinInt(graphQLName: String, inlineClass: String, inlineClassProperty: String)
 
   /**
    * Map the given GraphQL scalar to [kotlin.Double] and use the builtin adapter
@@ -151,9 +163,19 @@ interface Service {
   fun mapScalarToKotlinDouble(graphQLName: String)
 
   /**
+   * Map the given GraphQL scalar to a [kotlin.Double] wrapped in an inline class and use the builtin adapter
+   */
+  fun mapScalarToKotlinDouble(graphQLName: String, inlineClass: String, inlineClassProperty: String)
+
+  /**
    * Map the given GraphQL scalar to [kotlin.Float] and use the builtin adapter
    */
   fun mapScalarToKotlinFloat(graphQLName: String)
+
+  /**
+   * Map the given GraphQL scalar to a [kotlin.Float] wrapped in an inline class and use the builtin adapter
+   */
+  fun mapScalarToKotlinFloat(graphQLName: String, inlineClass: String, inlineClassProperty: String)
 
   /**
    * Map the given GraphQL scalar to [kotlin.Long] and use the builtin adapter
@@ -161,9 +183,19 @@ interface Service {
   fun mapScalarToKotlinLong(graphQLName: String)
 
   /**
+   * Map the given GraphQL scalar to a [kotlin.Long] wrapped in an inline class and use the builtin adapter
+   */
+  fun mapScalarToKotlinLong(graphQLName: String, inlineClass: String, inlineClassProperty: String)
+
+  /**
    * Map the given GraphQL scalar to [kotlin.Boolean] and use the builtin adapter
    */
   fun mapScalarToKotlinBoolean(graphQLName: String)
+
+  /**
+   * Map the given GraphQL scalar to a [kotlin.Boolean] wrapped in an inline class and use the builtin adapter
+   */
+  fun mapScalarToKotlinBoolean(graphQLName: String, inlineClass: String, inlineClassProperty: String)
 
   /**
    * Map the given GraphQL scalar to [kotlin.Any] and use the builtin adapter

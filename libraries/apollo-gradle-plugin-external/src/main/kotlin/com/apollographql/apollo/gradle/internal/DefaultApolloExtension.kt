@@ -201,6 +201,7 @@ abstract class DefaultApolloExtension(
           || defaultService.alwaysGenerateTypesMatching.isPresent
           || defaultService.scalarTypeMapping.isNotEmpty()
           || defaultService.scalarAdapterMapping.isNotEmpty()
+          || defaultService.scalarInlineClassPropertyMapping.isNotEmpty()
           || defaultService.excludes.isPresent
           || defaultService.includes.isPresent
           || defaultService.failOnWarnings.isPresent
@@ -711,6 +712,7 @@ abstract class DefaultApolloExtension(
        */
       task.scalarTypeMapping.set(service.scalarTypeMapping)
       task.scalarAdapterMapping.set(service.scalarAdapterMapping)
+      task.scalarInlineClassPropertyMapping.set(service.scalarInlineClassPropertyMapping)
       task.generateDataBuilders.set(service.generateDataBuilders)
 
       task.codegenSchemaOptionsFile.set(BuildDirLayout.codegenSchemaOptions(project, service))

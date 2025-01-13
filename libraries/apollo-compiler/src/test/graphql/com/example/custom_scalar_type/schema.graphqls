@@ -1,0 +1,73 @@
+"""
+The query type, represents all of the entry points into our object graph
+"""
+type Query {
+  hero(
+    episode: Episode
+
+    """for test purpose only"""
+    listOfListOfStringArgs: [[String]]
+  ): Character
+  nonNullTimestamp: Timestamp!
+  nullableTimestamp: Timestamp
+  nonNullListOfNonNullTimestamp: [Timestamp!]!
+  nonNullListOfNullableTimestamp: [Timestamp]!
+  nullableListOfNonNullTimestamp: [Timestamp!]
+  nullableListOfNullableTimestamp: [Timestamp]
+  listOfString: ListOfString
+}
+
+"""A character from the Star Wars universe"""
+interface Character {
+  """The ID of the character"""
+  id: ID!
+
+  """The name of the character"""
+  name: String!
+
+  """The date character was born."""
+  birthDate: Date!
+
+  """The dates of appearances"""
+  appearanceDates: [Date!]!
+
+  """The date character was born."""
+  fieldWithUnsupportedType: UnsupportedType!
+
+  """Profile link"""
+  profileLink: URL!
+
+  """Links"""
+  links: [URL!]!
+}
+
+"""The `Date` scalar type represents date format."""
+scalar Date
+
+"""The episodes in the Star Wars trilogy"""
+enum Episode {
+  """Star Wars Episode IV: A New Hope, released in 1977."""
+  NEWHOPE
+
+  """Star Wars Episode V: The Empire Strikes Back, released in 1980."""
+  EMPIRE
+
+  """Star Wars Episode VI: Return of the Jedi, released in 1983."""
+  JEDI
+
+  """Test deprecated enum value"""
+  DEPRECATED @deprecated(reason: "For test purpose only")
+
+  """Test java reserved word"""
+  new @deprecated(reason: "For test purpose only")
+}
+
+"""UnsupportedType for testing"""
+scalar UnsupportedType
+
+"""URL for testing"""
+scalar URL
+
+scalar ListOfString
+
+scalar Timestamp

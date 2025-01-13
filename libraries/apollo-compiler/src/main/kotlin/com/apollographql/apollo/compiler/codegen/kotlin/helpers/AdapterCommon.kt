@@ -73,7 +73,7 @@ internal fun readFromResponseCodeBlock(
               val variableName = property.info.responseName.variableName()
               val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport)
               CodeBlock.of(
-                  "%L -> %N = %L.$fromJson($reader, ${customScalarAdapters})",
+                  "%L -> %N = ${context.resolver.wrapInlineClass("%L.$fromJson($reader, ${customScalarAdapters})", property.info.type)}",
                   index,
                   variableName,
                   adapterInitializer,
@@ -218,9 +218,10 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering, context.jsExport)
     builder.addStatement("${writer}.name(%S)", info.responseName)
     builder.addStatement(
-        "%L.$toJson($writer, $customScalarAdapters, $value.%N)",
+        "%L.$toJson($writer, $customScalarAdapters, $value.%N%L)",
         adapterInitializer,
         propertyName,
+        context.resolver.unwrapInlineClass(info.type),
     )
   } else {
     val adapterInitializer = context.resolver.resolveModelAdapter(info.type.modelPath())
