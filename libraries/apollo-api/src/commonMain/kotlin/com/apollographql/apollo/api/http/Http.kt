@@ -62,6 +62,7 @@ private constructor(
   ).apply {
     if (body != null) body(body)
     addHeaders(headers)
+    addExecutionContext(executionContext)
   }
 
   class Builder(
