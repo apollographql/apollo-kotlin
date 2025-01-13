@@ -175,6 +175,9 @@ on OBJECT
     | SCALAR
     | INPUT_OBJECT
 
+# TODO increment version and document this
+enum InlineClassCoercion { String, Boolean, Int, Long, Double, Any }
+directive @inlineClass(coerceAs: InlineClassCoercion!) on SCALAR
 """.trimIndent()
 
 // Built in scalar and introspection types from the Draft:

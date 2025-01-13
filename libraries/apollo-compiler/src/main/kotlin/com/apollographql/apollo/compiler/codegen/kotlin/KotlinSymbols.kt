@@ -84,6 +84,7 @@ internal object KotlinSymbols {
   val Suppress = ClassName("kotlin", "Suppress")
   val OptIn = ClassName("kotlin", "OptIn")
   val JvmOverloads = ClassName("kotlin.jvm", "JvmOverloads")
+  val JvmInline = ClassName("kotlin.jvm", "JvmInline")
 
   /**
    * Adapters

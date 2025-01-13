@@ -19,7 +19,6 @@ import java.util.Date
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
-import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import com.example.custom_scalar_type.type.Query as CompiledQuery
@@ -70,7 +69,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * The ID of the character
        */
-      public val id: Long,
+      public val id: Any,
       /**
        * The name of the character
        */

@@ -16,9 +16,7 @@ import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
 import com.example.Timestamp
 import com.example.custom_scalar_type.TestQuery
-import com.example.custom_scalar_type.type.GraphQLID
 import kotlin.Any
-import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import com.example.custom_scalar_type.type.Date as TypeDate
@@ -94,7 +92,7 @@ public object TestQuery_ResponseAdapter {
           listOf("id", "name", "birthDate", "appearanceDates", "fieldWithUnsupportedType", "profileLink", "links")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero {
-        var _id: Long? = null
+        var _id: Any? = null
         var _name: String? = null
         var _birthDate: UtilDate? = null
         var _appearanceDates: List<UtilDate>? = null
@@ -104,7 +102,7 @@ public object TestQuery_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).fromJson(reader, customScalarAdapters)
+            0 -> _id = AnyAdapter.fromJson(reader, customScalarAdapters)
             1 -> _name = com.example.MyStringAdapter().fromJson(reader, customScalarAdapters)
             2 -> _birthDate = customScalarAdapters.responseAdapterFor<UtilDate>(TypeDate.type).fromJson(reader, customScalarAdapters)
             3 -> _appearanceDates = customScalarAdapters.responseAdapterFor<UtilDate>(TypeDate.type).list().fromJson(reader, customScalarAdapters)
@@ -132,7 +130,7 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.Hero,
       ) {
         writer.name("id")
-        customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).toJson(writer, customScalarAdapters, value.id)
+        AnyAdapter.toJson(writer, customScalarAdapters, value.id)
 
         writer.name("name")
         com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.name)

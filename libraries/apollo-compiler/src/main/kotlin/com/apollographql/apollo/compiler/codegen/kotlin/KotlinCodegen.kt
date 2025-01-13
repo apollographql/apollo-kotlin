@@ -31,6 +31,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.schema.InterfaceBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.ObjectBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.PaginationBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.ScalarBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.schema.ScalarInlineClassBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.SchemaBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.UnionBuilder
 import com.apollographql.apollo.compiler.defaultAddDefaultArgumentForInputObjects
@@ -49,7 +50,6 @@ import com.apollographql.apollo.compiler.generateMethodsKotlin
 import com.apollographql.apollo.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.IrSchema
-import com.apollographql.apollo.compiler.ir.IrTargetObject
 import com.apollographql.apollo.compiler.maybeTransform
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.operationoutput.findOperationId
@@ -176,6 +176,9 @@ internal object KotlinCodegen {
 
       irSchema.irScalars.forEach { irScalar ->
         builders.add(ScalarBuilder(context, irScalar, scalarMapping.get(irScalar.name)?.targetName))
+        if (irScalar.inlineClassCoerceAs != null) {
+          builders.add(ScalarInlineClassBuilder(context, irScalar))
+        }
       }
       irSchema.irEnums.forEach { irEnum ->
         if (sealedClassesForEnumsMatching.any { Regex(it).matches(irEnum.name) }) {

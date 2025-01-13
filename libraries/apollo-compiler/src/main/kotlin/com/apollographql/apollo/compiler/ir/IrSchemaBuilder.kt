@@ -36,7 +36,7 @@ internal object IrSchemaBuilder {
 
       when {
         typeDefinition is GQLScalarTypeDefinition -> {
-          irScalars.add(typeDefinition.toIr())
+          irScalars.add(typeDefinition.toIr(schema))
         }
         typeDefinition is GQLEnumTypeDefinition -> {
           irEnums.add(typeDefinition.toIr(schema))
