@@ -33,6 +33,7 @@ object TestUtils {
     File(dest, "gradle.properties").writeText("""
       |org.gradle.jvmargs=-Xmx4g 
       |
+      |org.gradle.unsafe.isolated-projects=true
     """.trimMargin())
 
     // dest is kept around for debug purposes. All test directories are removed
@@ -178,7 +179,11 @@ object TestUtils {
         .forwardStdOutput(output)
         .forwardStdError(error)
         .withProjectDir(projectDir)
-        .withDebug(true)
+        /*
+         * Disable withDebug because it breaks with CC
+         * See https://github.com/gradle/gradle/issues/22765#issuecomment-1339427241
+         */
+        //.withDebug(true)
         .withArguments("--stacktrace", *args)
         .apply {
           if (gradleVersion != null) {
@@ -215,4 +220,10 @@ fun File.replaceInText(oldValue: String, newValue: String) {
 fun File.replaceInText(oldValue: Regex, newValue: String) {
   val text = readText()
   writeText(text.replace(oldValue, newValue))
+}
+
+fun File.disableIsolatedProjects() {
+  resolve("gradle.properties").let {
+    it.writeText(it.readText().replace("org.gradle.unsafe.isolated-projects=true", ""))
+  }
 }

@@ -74,7 +74,8 @@ class GradleToolingTests {
 
   @Test
   fun `tooling model exposes apollo metadata dependencies`() {
-    TestUtils.withTestProject("multi-modules-diamond") { dir ->
+    testProjectWithIsolatedProjectsWorkaround("multi-modules-diamond") { dir ->
+
       val toolingModel = GradleConnector.newConnector()
           .forProjectDirectory(File(dir, "leaf"))
           .connect()
