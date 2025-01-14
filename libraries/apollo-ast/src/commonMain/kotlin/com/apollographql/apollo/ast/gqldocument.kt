@@ -8,6 +8,7 @@ import com.apollographql.apollo.ast.internal.builtinsDefinitionsStr
 import com.apollographql.apollo.ast.internal.ensureSchemaDefinition
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_3
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_4
+import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_5
 import com.apollographql.apollo.ast.internal.linkDefinitionsStr
 import com.apollographql.apollo.ast.internal.nullabilityDefinitionsStr
 import okio.Buffer
@@ -93,6 +94,8 @@ fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
     "v0.2", "v0.3" -> kotlinLabsDefinitions_0_3
     // v0.4 doesn't have `@nonnull`
     "v0.4" -> kotlinLabsDefinitions_0_4
+    // v0.5 adds `@inlineClass`
+    "v0.5" -> kotlinLabsDefinitions_0_5
     else -> error("kotlin_labs/$version definitions are not supported, please use $KOTLIN_LABS_VERSION")
   })
 }
@@ -107,6 +110,7 @@ fun builtinForeignSchemas(): List<ForeignSchema> {
       ForeignSchema("kotlin_labs", "v0.2", kotlinLabsDefinitions("v0.2"), listOf("optional", "nonnull")),
       ForeignSchema("kotlin_labs", "v0.3", kotlinLabsDefinitions("v0.3"), listOf("optional", "nonnull")),
       ForeignSchema("kotlin_labs", "v0.4", kotlinLabsDefinitions("v0.4"), listOf("optional")),
+      ForeignSchema("kotlin_labs", "v0.5", kotlinLabsDefinitions("v0.5"), listOf("optional")),
       ForeignSchema("nullability", "v0.4", nullabilityDefinitions("v0.4"), listOf("catch")),
   )
 }

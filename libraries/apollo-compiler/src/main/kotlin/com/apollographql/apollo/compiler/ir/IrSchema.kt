@@ -17,7 +17,7 @@ import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo.ast.fieldDefinitions
 import com.apollographql.apollo.ast.findDeprecationReason
-import com.apollographql.apollo.ast.findInlineClassCoerceAs
+import com.apollographql.apollo.ast.findInlineClassCoercion
 import com.apollographql.apollo.ast.findOneOf
 import com.apollographql.apollo.ast.findOptInFeature
 import com.apollographql.apollo.ast.findTargetName
@@ -96,13 +96,13 @@ internal data class IrScalar(
     override val name: String,
     val description: String?,
     val deprecationReason: String?,
-    val inlineClassCoerceAs: IrScalarInlineClassCoerceAs?,
+    val inlineClassCoercion: IrScalarInlineClassCoercion?,
 ) : IrSchemaType {
   val type = IrScalarType(name, nullable = true)
 }
 
 @Serializable
-internal enum class IrScalarInlineClassCoerceAs {
+internal enum class IrScalarInlineClassCoercion {
   STRING,
   BOOLEAN,
   INT,
@@ -113,8 +113,7 @@ internal enum class IrScalarInlineClassCoerceAs {
   ;
 
   companion object {
-    // String, Boolean, Int, Long, Double, JsonNumber, Any
-    fun fromString(value: String): IrScalarInlineClassCoerceAs {
+    fun fromString(value: String): IrScalarInlineClassCoercion {
       return when (value) {
         "String" -> STRING
         "Boolean" -> BOOLEAN
@@ -123,7 +122,7 @@ internal enum class IrScalarInlineClassCoerceAs {
         "Float" -> FLOAT
         "Double" -> DOUBLE
         "Any" -> ANY
-        else -> error("Unknown IrScalarInlineClassCoerceAs value $value")
+        else -> error("Unknown IrScalarInlineClassCoercion value $value")
       }
     }
   }
@@ -247,7 +246,7 @@ internal fun GQLScalarTypeDefinition.toIr(schema: Schema): IrScalar {
       description = description,
       // XXX: this is not spec-compliant. Directive cannot be on scalar definitions
       deprecationReason = directives.findDeprecationReason(),
-      inlineClassCoerceAs = findInlineClassCoerceAs(schema)?.let { IrScalarInlineClassCoerceAs.fromString(it) }
+      inlineClassCoercion = findInlineClassCoercion(schema)?.let { IrScalarInlineClassCoercion.fromString(it) }
   )
 }
 

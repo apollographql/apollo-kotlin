@@ -1,3 +1,5 @@
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.5/", import: ["@inlineClass", "InlineClassCoercion"])
+
 """
 The query type, represents all of the entry points into our object graph
 """
@@ -72,4 +74,4 @@ scalar ListOfString
 
 scalar Timestamp
 
-scalar CharacterID @inlineClass(coerceAs: String)
+scalar CharacterID @inlineClass(coercion: String)

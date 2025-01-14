@@ -9,13 +9,13 @@ import com.apollographql.apollo.compiler.codegen.kotlin.helpers.maybeAddDeprecat
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo.compiler.codegen.typeScalarPackageName
 import com.apollographql.apollo.compiler.ir.IrScalar
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.ANY
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.BOOLEAN
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.DOUBLE
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.FLOAT
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.INT
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.LONG
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.STRING
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion.ANY
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion.BOOLEAN
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion.DOUBLE
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion.FLOAT
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion.INT
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion.LONG
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion.STRING
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -42,7 +42,7 @@ internal class ScalarInlineClassBuilder(
   }
 
   private fun IrScalar.typeSpec(): TypeSpec {
-    val valueType = when (scalar.inlineClassCoerceAs) {
+    val valueType = when (scalar.inlineClassCoercion) {
       STRING -> String::class
       BOOLEAN -> Boolean::class
       INT -> Int::class
@@ -50,7 +50,7 @@ internal class ScalarInlineClassBuilder(
       FLOAT -> Float::class
       DOUBLE -> Double::class
       ANY -> Any::class
-      null -> error("inlineClassCoerceAs is null")
+      null -> error("inlineClassCoercion is null")
     }.asClassName()
     return TypeSpec
         .classBuilder(simpleName)

@@ -201,15 +201,15 @@ fun GQLFieldDefinition.findSemanticNonNulls(schema: Schema): List<Int> {
 }
 
 @ApolloInternal
-fun GQLScalarTypeDefinition.findInlineClassCoerceAs(schema: Schema): String? =
+fun GQLScalarTypeDefinition.findInlineClassCoercion(schema: Schema): String? =
   directives.filter { schema.originalDirectiveName(it.name) == Schema.INLINE_CLASS }
       .map {
         it.arguments
-            .firstOrNull { it.name == "coerceAs" }
+            .firstOrNull { it.name == "coercion" }
             ?.value
             ?.let { value ->
               if (value !is GQLEnumValue) {
-                throw ConversionException("coerceAs must be an enum", it.sourceLocation)
+                throw ConversionException("coercion must be an enum", it.sourceLocation)
               }
               value.value
             }

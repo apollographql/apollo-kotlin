@@ -25,3 +25,7 @@ query Address {
 query Decimal {
   decimal
 }
+
+query InlineClass {
+  lengthListList
+}
