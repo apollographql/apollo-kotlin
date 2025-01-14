@@ -43,6 +43,13 @@ fun Project.apolloGetKotlinPluginVersion(): String? {
   return project.getKotlinPluginVersion()
 }
 
+/*
+ * Inspired by SQLDelight:
+ * https://github.com/sqldelight/sqldelight/blob/ae8c348f6cf76822828bc65832106ec151ca5b6c/sqldelight-gradle-plugin/src/main/kotlin/app/cash/sqldelight/gradle/kotlin/LinkSqlite.kt#L7
+ * https://github.com/sqldelight/sqldelight/issues/1442
+ *
+ * Ideally this can be forwarded automatically, but I don't think this can be done as of today.
+ */
 internal fun linkSqlite(project: Project) {
   val extension = project.kotlinMultiplatformExtension ?: return
 

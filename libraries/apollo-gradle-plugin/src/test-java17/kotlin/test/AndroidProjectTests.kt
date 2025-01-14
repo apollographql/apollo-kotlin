@@ -10,6 +10,7 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import util.disableIsolatedProjects
 import java.io.File
 
 class AndroidProjectTests {
@@ -93,6 +94,7 @@ class AndroidProjectTests {
   @Test
   fun `kotlin Android min version succeeds`() {
     withTestProject("kotlin-android-plugin-version") { dir ->
+      dir.disableIsolatedProjects()
       val result = TestUtils.executeTask("build", dir)
 
       Truth.assertThat(result.task(":build")!!.outcome).isEqualTo(TaskOutcome.SUCCESS)

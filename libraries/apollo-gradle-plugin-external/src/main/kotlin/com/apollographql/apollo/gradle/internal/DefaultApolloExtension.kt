@@ -278,8 +278,15 @@ abstract class DefaultApolloExtension(
       null -> { // default: automatic detection
         project.configurations.configureEach {
           it.dependencies.configureEach {
-            // Try to detect if a native version of apollo-normalized-cache-sqlite is in the classpath
-            if (it.group?.contains("apollo") == true
+            /*
+             * Try to detect if a native version of apollo-normalized-cache-sqlite is in the classpath
+             * This is a heuristic and will not work in 100% of the cases.
+             *
+             * Note: we only check external dependencies as reading the group of project dependencies
+             * is not compatible with isolated projects
+             */
+            if (it is ExternalModuleDependency
+                && it.group?.contains("apollo") == true
                 && it.name.contains("normalized-cache-sqlite")
                 && !it.name.contains("jvm")
                 && !it.name.contains("android")) {
@@ -360,10 +367,8 @@ abstract class DefaultApolloExtension(
 
       it.inputs.property("allVersions", Callable {
         val allDeps = (
-            getDeps(project.rootProject.buildscript.configurations) +
                 getDeps(project.buildscript.configurations) +
                 getDeps(project.configurations)
-
             )
         allDeps.distinct().sorted()
       })
@@ -1033,12 +1038,16 @@ abstract class DefaultApolloExtension(
             .filter {
               /**
                * When using plugins {}, the group is the plugin id, not the maven group
-               */
-              /**
+               *
                * the "_" check is for refreshVersions,
                * see https://github.com/jmfayard/refreshVersions/issues/507
+               *
+               * Note: we only check external dependencies as reading the group of project dependencies
+               * is not compatible with isolated projects
+               *
                */
-              it.group in listOf("com.apollographql.apollo", "com.apollographql.apollo.external")
+              it is ExternalModuleDependency
+                  && it.group in listOf("com.apollographql.apollo", "com.apollographql.apollo.external")
                   && it.version != "_"
             }.mapNotNull { dependency ->
               dependency.version

@@ -5,12 +5,14 @@ import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.junit.Assert
 import org.junit.Test
 import util.TestUtils
+import util.disableIsolatedProjects
 import java.io.File
 
 class LanguageVersionTests {
   @Test
   fun `compiling with 1_5 features with Kotlin 1_5 is working`() {
     withProject(kotlinLanguageVersion = "1.5", apolloLanguageVersion = "1.5") { dir ->
+      dir.disableIsolatedProjects() // old KGP versions do not support isolated projects
       TestUtils.executeTaskAndAssertSuccess(":assemble", dir)
     }
   }

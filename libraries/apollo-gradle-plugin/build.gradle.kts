@@ -134,7 +134,8 @@ tasks.register("cleanStaleTestProjects") {
   }
 }
 
-tasks.withType<Test> {
+tasks.register("publishDependencies") {
+  dependsOn("publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-annotations:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-ast:publishAllPublicationsToPluginTestRepository")
@@ -143,8 +144,10 @@ tasks.withType<Test> {
   dependsOn(":apollo-compiler:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-gradle-plugin-external:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-tooling:publishAllPublicationsToPluginTestRepository")
-  dependsOn("publishAllPublicationsToPluginTestRepository")
+}
 
+tasks.withType<Test> {
+  dependsOn("publishDependencies")
   dependsOn("cleanStaleTestProjects")
 
   addRelativeInput("testFiles", "testFiles")

@@ -36,16 +36,21 @@ apollo {
 
     val apolloConfiguration = """
 abstract class InstallGraphQLFilesTask: DefaultTask() {
+  @get:InputDirectory
+  abstract val inputDir: DirectoryProperty
+
   @get:OutputDirectory
   abstract val outputDir: DirectoryProperty
+
   @TaskAction
   fun taskAction() {
     println("installing graphql files")
-    project.file( "src/main/graphql/com/example").copyRecursively(outputDir.asFile.get())
+    inputDir.asFile.get().copyRecursively(outputDir.asFile.get())
   }
 }
 val installTask = tasks.register("installTask", InstallGraphQLFilesTask::class.java) {
   outputDir.set(project.file("build/toto"))
+  inputDir.set(project.file("src/main/graphql/com/example"))
 }
 apollo {
   service("service") {
