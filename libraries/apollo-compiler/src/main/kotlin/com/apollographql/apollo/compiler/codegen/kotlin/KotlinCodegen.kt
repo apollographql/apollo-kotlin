@@ -1,12 +1,18 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
+import com.apollographql.apollo.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.findInlineClassCoerceAs
 import com.apollographql.apollo.compiler.APOLLO_VERSION
 import com.apollographql.apollo.compiler.CodegenMetadata
 import com.apollographql.apollo.compiler.CodegenSchema
+import com.apollographql.apollo.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo.compiler.KotlinOperationsCodegenOptions
 import com.apollographql.apollo.compiler.KotlinSchemaCodegenOptions
+import com.apollographql.apollo.compiler.ScalarInfo
 import com.apollographql.apollo.compiler.TargetLanguage
 import com.apollographql.apollo.compiler.Transform
+import com.apollographql.apollo.compiler.codegen.Identifier
 import com.apollographql.apollo.compiler.codegen.OperationsLayout
 import com.apollographql.apollo.compiler.codegen.ResolverKey
 import com.apollographql.apollo.compiler.codegen.ResolverKeyKind
@@ -34,6 +40,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.schema.ScalarBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.ScalarInlineClassBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.SchemaBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.UnionBuilder
+import com.apollographql.apollo.compiler.codegen.typeScalarPackageName
 import com.apollographql.apollo.compiler.defaultAddDefaultArgumentForInputObjects
 import com.apollographql.apollo.compiler.defaultAddJvmOverloads
 import com.apollographql.apollo.compiler.defaultAddUnkownForEnums
@@ -49,6 +56,14 @@ import com.apollographql.apollo.compiler.defaultSealedClassesForEnumsMatching
 import com.apollographql.apollo.compiler.generateMethodsKotlin
 import com.apollographql.apollo.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo.compiler.ir.IrOperations
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.ANY
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.BOOLEAN
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.DOUBLE
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.FLOAT
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.INT
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.LONG
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.STRING
 import com.apollographql.apollo.compiler.ir.IrSchema
 import com.apollographql.apollo.compiler.maybeTransform
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
@@ -222,6 +237,14 @@ internal object KotlinCodegen {
       layout: OperationsLayout,
       kotlinOutputTransform: Transform<KotlinOutput>?,
   ): KotlinOutput {
+    // Add scalar mapping for inline classes generated when using @inlineClass
+    @Suppress("NAME_SHADOWING")
+    val codegenSchema = CodegenSchema(
+        schema = codegenSchema.schema,
+        normalizedPath = codegenSchema.normalizedPath,
+        scalarMapping = codegenSchema.scalarMapping + scalarMappingForInlineClasses(codegenSchema.schema, layout as SchemaLayout),
+        generateDataBuilders = codegenSchema.generateDataBuilders
+    )
     val generateDataBuilders = codegenSchema.generateDataBuilders
     val flatten = irOperations.flattenModels
 
@@ -313,5 +336,34 @@ internal object KotlinCodegen {
           }
     }
   }
-}
 
+  private fun scalarMappingForInlineClasses(schema: Schema, layout: SchemaLayout): Map<String, ScalarInfo> {
+    return schema.typeDefinitions.values
+        .filterIsInstance<GQLScalarTypeDefinition>()
+        .mapNotNull { scalarTypeDefinition ->
+          val name = scalarTypeDefinition.name
+          val inlineClassCoerceAs = scalarTypeDefinition.findInlineClassCoerceAs(schema)
+          if (inlineClassCoerceAs == null) {
+            null
+          } else {
+            val packageName = layout.typeScalarPackageName()
+            val simpleName = layout.schemaTypeName(name)
+            name to ScalarInfo(
+                targetName = "$packageName.$simpleName",
+                adapterInitializer = ExpressionAdapterInitializer(
+                    when (IrScalarInlineClassCoerceAs.fromString(inlineClassCoerceAs)) {
+                      STRING -> KotlinSymbols.StringAdapter.canonicalName
+                      BOOLEAN -> KotlinSymbols.BooleanAdapter.canonicalName
+                      INT -> KotlinSymbols.IntAdapter.canonicalName
+                      LONG -> KotlinSymbols.LongAdapter.canonicalName
+                      FLOAT -> KotlinSymbols.FloatAdapter.canonicalName
+                      DOUBLE -> KotlinSymbols.DoubleAdapter.canonicalName
+                      ANY -> KotlinSymbols.AnyAdapter.canonicalName
+                    }
+                ),
+                inlineClassProperty = Identifier.value
+            )
+          }
+        }.associate { it }
+  }
+}
