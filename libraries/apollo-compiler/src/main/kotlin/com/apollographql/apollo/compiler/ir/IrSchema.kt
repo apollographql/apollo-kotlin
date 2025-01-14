@@ -107,6 +107,7 @@ internal enum class IrScalarInlineClassCoerceAs {
   BOOLEAN,
   INT,
   LONG,
+  FLOAT,
   DOUBLE,
   ANY,
   ;
@@ -119,6 +120,7 @@ internal enum class IrScalarInlineClassCoerceAs {
         "Boolean" -> BOOLEAN
         "Int" -> INT
         "Long" -> LONG
+        "Float" -> FLOAT
         "Double" -> DOUBLE
         "Any" -> ANY
         else -> error("Unknown IrScalarInlineClassCoerceAs value $value")

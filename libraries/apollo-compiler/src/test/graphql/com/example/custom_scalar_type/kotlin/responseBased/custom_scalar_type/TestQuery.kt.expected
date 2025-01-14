@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.obj
 import com.example.Timestamp
 import com.example.custom_scalar_type.adapter.TestQuery_ResponseAdapter
 import com.example.custom_scalar_type.selections.TestQuerySelections
+import com.example.custom_scalar_type.type.scalar.CharacterID
 import java.util.Date
 import kotlin.Any
 import kotlin.Boolean
@@ -69,7 +70,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * The ID of the character
        */
-      public val id: Any,
+      public val id: CharacterID,
       /**
        * The name of the character
        */

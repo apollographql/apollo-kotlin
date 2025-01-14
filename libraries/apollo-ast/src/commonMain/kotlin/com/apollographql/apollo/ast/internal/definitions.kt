@@ -176,7 +176,7 @@ on OBJECT
     | INPUT_OBJECT
 
 # TODO increment version and document this
-enum InlineClassCoercion { String, Boolean, Int, Long, Double, Any }
+enum InlineClassCoercion { String, Boolean, Int, Long, Float, Double, Any }
 directive @inlineClass(coerceAs: InlineClassCoercion!) on SCALAR
 """.trimIndent()
 

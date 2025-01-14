@@ -12,6 +12,7 @@ import com.apollographql.apollo.compiler.ir.IrScalar
 import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.ANY
 import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.BOOLEAN
 import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.DOUBLE
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.FLOAT
 import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.INT
 import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.LONG
 import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.STRING
@@ -46,6 +47,7 @@ internal class ScalarInlineClassBuilder(
       BOOLEAN -> Boolean::class
       INT -> Int::class
       LONG -> Long::class
+      FLOAT -> Float::class
       DOUBLE -> Double::class
       ANY -> Any::class
       null -> error("inlineClassCoerceAs is null")
