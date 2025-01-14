@@ -1,0 +1,3 @@
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.5/", import: ["@inlineClass", "InlineClassCoercion"])
+
+extend scalar Length @inlineClass(coercion: Long)

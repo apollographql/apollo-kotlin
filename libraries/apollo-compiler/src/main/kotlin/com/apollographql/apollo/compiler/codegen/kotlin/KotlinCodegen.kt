@@ -2,7 +2,7 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo.ast.Schema
-import com.apollographql.apollo.ast.findInlineClassCoerceAs
+import com.apollographql.apollo.ast.findInlineClassCoercion
 import com.apollographql.apollo.compiler.APOLLO_VERSION
 import com.apollographql.apollo.compiler.CodegenMetadata
 import com.apollographql.apollo.compiler.CodegenSchema
@@ -56,14 +56,14 @@ import com.apollographql.apollo.compiler.defaultSealedClassesForEnumsMatching
 import com.apollographql.apollo.compiler.generateMethodsKotlin
 import com.apollographql.apollo.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo.compiler.ir.IrOperations
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.ANY
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.BOOLEAN
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.DOUBLE
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.FLOAT
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.INT
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.LONG
-import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoerceAs.STRING
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion.ANY
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion.BOOLEAN
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion.DOUBLE
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion.FLOAT
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion.INT
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion.LONG
+import com.apollographql.apollo.compiler.ir.IrScalarInlineClassCoercion.STRING
 import com.apollographql.apollo.compiler.ir.IrSchema
 import com.apollographql.apollo.compiler.maybeTransform
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
@@ -191,7 +191,7 @@ internal object KotlinCodegen {
 
       irSchema.irScalars.forEach { irScalar ->
         builders.add(ScalarBuilder(context, irScalar, scalarMapping.get(irScalar.name)?.targetName))
-        if (irScalar.inlineClassCoerceAs != null) {
+        if (irScalar.inlineClassCoercion != null) {
           builders.add(ScalarInlineClassBuilder(context, irScalar))
         }
       }
@@ -342,8 +342,8 @@ internal object KotlinCodegen {
         .filterIsInstance<GQLScalarTypeDefinition>()
         .mapNotNull { scalarTypeDefinition ->
           val name = scalarTypeDefinition.name
-          val inlineClassCoerceAs = scalarTypeDefinition.findInlineClassCoerceAs(schema)
-          if (inlineClassCoerceAs == null) {
+          val inlineClassCoercion = scalarTypeDefinition.findInlineClassCoercion(schema)
+          if (inlineClassCoercion == null) {
             null
           } else {
             val packageName = layout.typeScalarPackageName()
@@ -351,7 +351,7 @@ internal object KotlinCodegen {
             name to ScalarInfo(
                 targetName = "$packageName.$simpleName",
                 adapterInitializer = ExpressionAdapterInitializer(
-                    when (IrScalarInlineClassCoerceAs.fromString(inlineClassCoerceAs)) {
+                    when (IrScalarInlineClassCoercion.fromString(inlineClassCoercion)) {
                       STRING -> KotlinSymbols.StringAdapter.canonicalName
                       BOOLEAN -> KotlinSymbols.BooleanAdapter.canonicalName
                       INT -> KotlinSymbols.IntAdapter.canonicalName
