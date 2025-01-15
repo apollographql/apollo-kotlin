@@ -27,7 +27,7 @@ enum class TargetLanguage {
   /**
    * Base language version.
    */
-  @Deprecated("Use KOTLIN_1_9 instead" , ReplaceWith("KOTLIN_1_9"))
+  @Deprecated("Use KOTLIN_1_9 instead", ReplaceWith("KOTLIN_1_9"))
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_2)
   KOTLIN_1_5,
 
@@ -244,6 +244,7 @@ interface CommonCodegenOpt {
    * Default: false
    */
   val decapitalizeFields: Boolean?
+
   /**
    * When true, the operation class names are suffixed with their operation type like ('Query', 'Mutation' ot 'Subscription').
    * For an example, `query getDroid { ... }` GraphQL query generates the 'GetDroidQuery' class.
@@ -251,6 +252,7 @@ interface CommonCodegenOpt {
    * Default value: true
    */
   val useSemanticNaming: Boolean?
+
   /**
    * Specifies which methods will be auto generated on operations, models, fragments and input objects.
    *
@@ -332,6 +334,7 @@ interface SchemaCodegenOpt {
    * Default: false
    */
   val generateSchema: Boolean?
+
   /**
    * Class name to use when generating the Schema class.
    *
@@ -435,10 +438,12 @@ interface KotlinCodegenOpt {
    * on servers
    */
   val addUnknownForEnums: Boolean?
+
   /**
    * Whether to add default arguments for input objects.
    */
   val addDefaultArgumentForInputObjects: Boolean?
+
   /**
    * Kotlin native generates [Any?] for optional types
    * Setting generateFilterNotNull generates extra `filterNotNull` functions that help keep the type information.
@@ -487,10 +492,10 @@ interface KotlinCodegenOpt {
   val jsExport: Boolean?
 }
 
-interface JavaOperationsCodegenOptions: CommonCodegenOpt, OperationsCodegenOpt, JavaCodegenOpt
-interface KotlinOperationsCodegenOptions: CommonCodegenOpt, OperationsCodegenOpt, KotlinCodegenOpt
-interface JavaSchemaCodegenOptions: CommonCodegenOpt, SchemaCodegenOpt, JavaCodegenOpt
-interface KotlinSchemaCodegenOptions: CommonCodegenOpt, SchemaCodegenOpt, KotlinCodegenOpt
+interface JavaOperationsCodegenOptions : CommonCodegenOpt, OperationsCodegenOpt, JavaCodegenOpt
+interface KotlinOperationsCodegenOptions : CommonCodegenOpt, OperationsCodegenOpt, KotlinCodegenOpt
+interface JavaSchemaCodegenOptions : CommonCodegenOpt, SchemaCodegenOpt, JavaCodegenOpt
+interface KotlinSchemaCodegenOptions : CommonCodegenOpt, SchemaCodegenOpt, KotlinCodegenOpt
 
 interface SchemaCodegenOptions : JavaSchemaCodegenOptions, KotlinSchemaCodegenOptions
 interface OperationsCodegenOptions : JavaOperationsCodegenOptions, KotlinOperationsCodegenOptions
@@ -521,7 +526,7 @@ class CodegenOptions(
     override val nullableFieldStyle: JavaNullable?,
     override val generateFragmentImplementations: Boolean?,
     override val generateQueryDocument: Boolean?,
-): SchemaCodegenOptions, OperationsCodegenOptions
+) : SchemaCodegenOptions, OperationsCodegenOptions
 
 fun buildCodegenOptions(
     targetLanguage: TargetLanguage? = null,
@@ -640,11 +645,19 @@ object RuntimeAdapterInitializer : AdapterInitializer
 class ScalarInfo(
     val targetName: String,
     val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer,
+    val userDefined: Boolean = true,
+
     /**
      * If the target is an inline class, the property to access the underlying value, `null` otherwise.
      */
     val inlineClassProperty: String? = null,
-)
+) {
+  constructor(
+      targetName: String,
+      adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer,
+      userDefined: Boolean = true,
+  ) : this(targetName, adapterInitializer, userDefined, null)
+}
 
 private val NoOpLogger = object : ApolloCompiler.Logger {
   override fun warning(message: String) {
@@ -652,6 +665,7 @@ private val NoOpLogger = object : ApolloCompiler.Logger {
 }
 
 internal val defaultAlwaysGenerateTypesMatching = emptySet<String>()
+
 @Suppress("DEPRECATION")
 internal val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
 internal val defaultLogger = NoOpLogger
