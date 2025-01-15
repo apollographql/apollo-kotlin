@@ -74,7 +74,7 @@ class LoggingInterceptor(
      * Post /graphql
      * X-APOLLO-OPERATION-ID: 9311
      * [end of headers]
-     * {"operationName":"LaunchList","variables":{"cursor":"1584533760"},"query":"query LaunchList($cursor: String)}
+     * {"operationName":"LaunchList","variables":{"cursor":"1584533760"},"query":"query LaunchList($cursor: String) { launches(after: $cursor) { cursor hasMore launches { id site mission { name missionPatch(size: SMALL) } } } }"}
      *
      * HTTP: 200
      * Content-Type: application/json; charset=utf-8
