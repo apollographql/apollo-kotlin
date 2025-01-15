@@ -642,7 +642,9 @@ class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
 object RuntimeAdapterInitializer : AdapterInitializer
 
 @Serializable
-class ScalarInfo(
+class ScalarInfo
+@ApolloExperimental
+constructor(
     val targetName: String,
     val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer,
     val userDefined: Boolean = true,
@@ -650,6 +652,7 @@ class ScalarInfo(
     /**
      * If the target is an inline class, the property to access the underlying value, `null` otherwise.
      */
+    @ApolloExperimental
     val inlineClassProperty: String? = null,
 ) {
   constructor(

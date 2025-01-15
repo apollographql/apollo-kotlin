@@ -185,6 +185,8 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     }
   }
 
+  override fun mapScalar(graphQLName: String, targetName: String, expression: String) = mapScalar(graphQLName, targetName, expression, null)
+
   override fun mapScalarToKotlinString(graphQLName: String) =
     mapScalar(graphQLName, "kotlin.String", "com.apollographql.apollo.api.StringAdapter")
 
@@ -222,6 +224,9 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     mapScalar(graphQLName, inlineClass, "com.apollographql.apollo.api.BooleanAdapter", inlineClassProperty)
 
   override fun mapScalarToKotlinAny(graphQLName: String) = mapScalar(graphQLName, "kotlin.Any", "com.apollographql.apollo.api.AnyAdapter")
+
+  override fun mapScalarToKotlinAny(graphQLName: String, inlineClass: String, inlineClassProperty: String) =
+    mapScalar(graphQLName, inlineClass, "com.apollographql.apollo.api.AnyAdapter", inlineClassProperty)
 
   override fun mapScalarToJavaString(graphQLName: String) =
     mapScalar(graphQLName, "java.lang.String", "com.apollographql.apollo.api.Adapters.StringAdapter")
