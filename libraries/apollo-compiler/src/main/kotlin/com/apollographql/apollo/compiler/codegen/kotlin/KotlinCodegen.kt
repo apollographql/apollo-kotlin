@@ -364,6 +364,6 @@ internal object KotlinCodegen {
                 inlineClassProperty = Identifier.value
             )
           }
-        }.associate { it }
+        }.toMap()
   }
 }
