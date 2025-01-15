@@ -201,6 +201,9 @@ class CustomScalarTest {
     mockServer.enqueueString("""
       {
         "data": {
+          "nonNullableLength": 1,
+          "nullableLength": null,
+          "nonNullableLengthList": [1, 2],
           "lengthListList": [
             [1, 2],
             [3, 4]
@@ -214,11 +217,19 @@ class CustomScalarTest {
         .query(InlineClassQuery())
         .execute()
         .dataOrThrow()
-    assertContentEquals(listOf(
+    assertEquals(Length(1), data.nonNullableLength)
+    assertNull(data.nullableLength)
+    assertContentEquals(
         listOf(Length(1), Length(2)),
-        listOf(Length(3), Length(4)
-        )
-    ), data.lengthListList
+        data.nonNullableLengthList
+    )
+    assertContentEquals(
+        listOf(
+            listOf(Length(1), Length(2)),
+            listOf(Length(3), Length(4)
+            )
+        ),
+        data.lengthListList
     )
   }
 }
