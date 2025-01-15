@@ -374,7 +374,10 @@ public final class com/apollographql/apollo/compiler/ScalarInfo {
 	public static final field Companion Lcom/apollographql/apollo/compiler/ScalarInfo$Companion;
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo/compiler/AdapterInitializer;Z)V
 	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo/compiler/AdapterInitializer;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo/compiler/AdapterInitializer;ZLjava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo/compiler/AdapterInitializer;ZLjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getAdapterInitializer ()Lcom/apollographql/apollo/compiler/AdapterInitializer;
+	public final fun getInlineClassProperty ()Ljava/lang/String;
 	public final fun getTargetName ()Ljava/lang/String;
 	public final fun getUserDefined ()Z
 }

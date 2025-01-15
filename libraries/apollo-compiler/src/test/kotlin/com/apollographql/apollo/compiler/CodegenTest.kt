@@ -315,7 +315,7 @@ class CodegenTest {
               "ID" to ScalarInfo("kotlin.Long"),
               "String" to ScalarInfo("kotlin.String", ExpressionAdapterInitializer("com.example.MyStringAdapter()")),
               "ListOfString" to ScalarInfo("List<String?>"),
-              "Timestamp" to ScalarInfo("com.example.Timestamp", ExpressionAdapterInitializer("com.apollographql.apollo.api.LongAdapter"), "ts"),
+              "Timestamp" to ScalarInfo("com.example.Timestamp", ExpressionAdapterInitializer("com.apollographql.apollo.api.LongAdapter"), inlineClassProperty = "ts"),
           )
         }
       } else {

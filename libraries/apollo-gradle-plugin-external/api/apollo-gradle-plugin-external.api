@@ -158,7 +158,8 @@ public abstract interface class com/apollographql/apollo/gradle/api/Service {
 	public abstract fun introspection (Lorg/gradle/api/Action;)V
 	public abstract fun isADependencyOf (Ljava/lang/Object;)V
 	public abstract fun mapScalar (Ljava/lang/String;Ljava/lang/String;)V
-	public abstract fun mapScalar (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun mapScalar (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public static synthetic fun mapScalar$default (Lcom/apollographql/apollo/gradle/api/Service;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)V
 	public abstract fun mapScalarToJavaBoolean (Ljava/lang/String;)V
 	public abstract fun mapScalarToJavaDouble (Ljava/lang/String;)V
 	public abstract fun mapScalarToJavaFloat (Ljava/lang/String;)V
@@ -168,11 +169,17 @@ public abstract interface class com/apollographql/apollo/gradle/api/Service {
 	public abstract fun mapScalarToJavaString (Ljava/lang/String;)V
 	public abstract fun mapScalarToKotlinAny (Ljava/lang/String;)V
 	public abstract fun mapScalarToKotlinBoolean (Ljava/lang/String;)V
+	public abstract fun mapScalarToKotlinBoolean (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun mapScalarToKotlinDouble (Ljava/lang/String;)V
+	public abstract fun mapScalarToKotlinDouble (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun mapScalarToKotlinFloat (Ljava/lang/String;)V
+	public abstract fun mapScalarToKotlinFloat (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun mapScalarToKotlinInt (Ljava/lang/String;)V
+	public abstract fun mapScalarToKotlinInt (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun mapScalarToKotlinLong (Ljava/lang/String;)V
+	public abstract fun mapScalarToKotlinLong (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun mapScalarToKotlinString (Ljava/lang/String;)V
+	public abstract fun mapScalarToKotlinString (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun mapScalarToUpload (Ljava/lang/String;)V
 	public abstract fun operationManifestConnection (Lorg/gradle/api/Action;)V
 	public abstract fun operationOutputConnection (Lorg/gradle/api/Action;)V
