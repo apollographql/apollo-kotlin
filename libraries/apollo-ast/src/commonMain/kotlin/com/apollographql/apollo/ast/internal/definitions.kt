@@ -184,7 +184,7 @@ Since: 4.1.1
 enum InlineClassCoercion { String, Boolean, Int, Long, Float, Double, Any }
 
 ""${'"'}
-Generate an inline class for the given scalar type. The underlying type of the inline class is determined by the `coercion` argument.
+Generate an inline class for the given scalar type. The wrapped type is determined by the `coercion` argument.
 Since: 4.1.1
 ""${'"'}
 directive @inlineClass(coercion: InlineClassCoercion!) on SCALAR
