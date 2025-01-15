@@ -1,7 +1,16 @@
-plugins {
-  id("build.logic") apply false
+buildscript {
+  dependencies {
+    classpath("com.apollographql.apollo.build:build-logic")
+  }
+  repositories {
+    /*
+     * This duplicates the repositories in
+     */
+    mavenCentral()
+    google()
+    gradlePluginPortal()
+  }
 }
-
 val ciBuild = tasks.register("ciBuild") {
   description = """Execute the 'build' task in subprojects and the `termination:run` task too"""
   subprojects {
