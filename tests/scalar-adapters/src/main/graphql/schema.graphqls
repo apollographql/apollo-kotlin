@@ -24,5 +24,8 @@ type Query {
   notMapped: NotMapped!
   nullableNotMapped: NotMapped
   decimal: Decimal
-  lengthListList: [[Length]]
+  nonNullableLength: Length!
+  nullableLength: Length
+  nonNullableLengthList: [Length!]!
+  lengthListList: [[Length!]]
 }

@@ -27,5 +27,8 @@ query Decimal {
 }
 
 query InlineClass {
+  nonNullableLength
+  nullableLength
+  nonNullableLengthList
   lengthListList
 }
