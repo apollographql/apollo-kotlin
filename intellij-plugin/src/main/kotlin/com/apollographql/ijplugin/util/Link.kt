@@ -7,6 +7,7 @@ import com.apollographql.apollo.ast.GQLDefinition
 import com.apollographql.apollo.ast.GQLDirectiveDefinition
 import com.apollographql.apollo.ast.GQLNamed
 import com.apollographql.apollo.ast.KOTLIN_LABS_VERSION
+import com.apollographql.apollo.ast.KOTLIN_LABS_VERSION_LATEST
 import com.apollographql.apollo.ast.NULLABILITY_VERSION
 import com.apollographql.apollo.ast.kotlinLabsDefinitions
 import com.apollographql.apollo.ast.nullabilityDefinitions
@@ -34,7 +35,11 @@ val KOTLIN_LABS_DEFINITIONS: List<GQLDefinition> by lazy {
   kotlinLabsDefinitions(KOTLIN_LABS_VERSION)
 }
 
-const val CATCH = "catch"
+const val KOTLIN_LABS_LATEST_URL = "https://specs.apollo.dev/kotlin_labs/$KOTLIN_LABS_VERSION_LATEST"
+
+val KOTLIN_LABS_LATEST_DEFINITIONS: List<GQLDefinition> by lazy {
+  kotlinLabsDefinitions(KOTLIN_LABS_VERSION_LATEST)
+}
 
 fun List<GQLDefinition>.directives(): List<GQLDirectiveDefinition> {
   return filterIsInstance<GQLDirectiveDefinition>()

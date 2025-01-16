@@ -82,8 +82,17 @@ fun builtinDefinitions() = definitionsFromString(builtinsDefinitionsStr)
  */
 fun linkDefinitions() = definitionsFromString(linkDefinitionsStr)
 
+/**
+ * Version of kotlin-labs definitions which are implicitly imported.
+ */
 @ApolloInternal
 const val KOTLIN_LABS_VERSION = "v0.3"
+
+/**
+ * Latest version of kotlin-labs definitions, which need to be explicitly imported to be referenced.
+ */
+@ApolloInternal
+const val KOTLIN_LABS_VERSION_LATEST = "v0.5"
 
 /**
  * Extra apollo Kotlin specific definitions from https://specs.apollo.dev/kotlin_labs/<[version]>

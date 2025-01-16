@@ -2,7 +2,7 @@ package com.apollographql.ijplugin.inspection
 
 import com.apollographql.apollo.ast.GQLDirectiveDefinition
 import com.apollographql.apollo.ast.linkDefinitions
-import com.apollographql.ijplugin.util.KOTLIN_LABS_DEFINITIONS
+import com.apollographql.ijplugin.util.KOTLIN_LABS_LATEST_DEFINITIONS
 import com.apollographql.ijplugin.util.NULLABILITY_DEFINITIONS
 import com.apollographql.ijplugin.util.NULLABILITY_URL
 import com.apollographql.ijplugin.util.directives
@@ -16,7 +16,7 @@ import com.intellij.lang.jsgraphql.psi.GraphQLDirectivesAware
 import com.intellij.psi.PsiElement
 
 private val KNOWN_DIRECTIVES: List<GQLDirectiveDefinition> by lazy {
-  linkDefinitions().directives() + NULLABILITY_DEFINITIONS.directives() + KOTLIN_LABS_DEFINITIONS.directives()
+  linkDefinitions().directives() + NULLABILITY_DEFINITIONS.directives() + KOTLIN_LABS_LATEST_DEFINITIONS.directives()
 }
 
 /**

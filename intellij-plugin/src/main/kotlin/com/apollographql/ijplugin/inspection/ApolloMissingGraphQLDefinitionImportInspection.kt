@@ -13,6 +13,8 @@ import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.telemetry.TelemetryEvent
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.KOTLIN_LABS_DEFINITIONS
+import com.apollographql.ijplugin.util.KOTLIN_LABS_LATEST_DEFINITIONS
+import com.apollographql.ijplugin.util.KOTLIN_LABS_LATEST_URL
 import com.apollographql.ijplugin.util.KOTLIN_LABS_URL
 import com.apollographql.ijplugin.util.NULLABILITY_DEFINITIONS
 import com.apollographql.ijplugin.util.NULLABILITY_URL
@@ -46,8 +48,9 @@ class ApolloMissingGraphQLDefinitionImportInspection : LocalInspectionTool() {
       override fun visitDirective(o: GraphQLDirective) {
         super.visitDirective(o)
         if (!o.project.apolloProjectService.apolloVersion.isAtLeastV4) return
-        visitDirective(o, holder, NULLABILITY_DEFINITIONS, NULLABILITY_URL, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
-        visitDirective(o, holder, KOTLIN_LABS_DEFINITIONS, KOTLIN_LABS_URL, ProblemHighlightType.WEAK_WARNING)
+        if (visitDirective(o, holder, NULLABILITY_DEFINITIONS, NULLABILITY_URL, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)) return
+        if (visitDirective(o, holder, KOTLIN_LABS_DEFINITIONS, KOTLIN_LABS_URL, ProblemHighlightType.WEAK_WARNING, definitionsAlternateUrl = KOTLIN_LABS_LATEST_URL)) return
+        if (visitDirective(o, holder, KOTLIN_LABS_LATEST_DEFINITIONS, KOTLIN_LABS_LATEST_URL, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)) return
       }
     }
   }
@@ -58,10 +61,12 @@ class ApolloMissingGraphQLDefinitionImportInspection : LocalInspectionTool() {
       definitions: List<GQLDefinition>,
       definitionsUrl: String,
       highlightType: ProblemHighlightType,
-  ) {
-    if (directiveElement.name !in definitions.directives().map { it.name }) return
-    val message = if (highlightType == ProblemHighlightType.WEAK_WARNING) "inspection.missingGraphQLDefinitionImport.reportText.warning" else "inspection.missingGraphQLDefinitionImport.reportText.error"
-    if (!directiveElement.isImported(definitionsUrl)) {
+      definitionsAlternateUrl: String? = null,
+  ): Boolean {
+    if (directiveElement.name !in definitions.directives().map { it.name }) return false
+    val message =
+      if (highlightType == ProblemHighlightType.WEAK_WARNING) "inspection.missingGraphQLDefinitionImport.reportText.warning" else "inspection.missingGraphQLDefinitionImport.reportText.error"
+    if (!directiveElement.isImported(definitionsUrl) && (definitionsAlternateUrl == null || !directiveElement.isImported(definitionsAlternateUrl))) {
       val typeKind = ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.directive")
       holder.registerProblem(
           directiveElement,
@@ -69,24 +74,26 @@ class ApolloMissingGraphQLDefinitionImportInspection : LocalInspectionTool() {
           highlightType,
           ImportDefinitionQuickFix(typeKind = typeKind, elementName = directiveElement.name!!, definitions = definitions, definitionsUrl = definitionsUrl),
       )
-    } else {
-      val directiveDefinition = definitions.directives().firstOrNull { it.name == directiveElement.name } ?: return
-      val knownDefinitionNames = definitions.filterIsInstance<GQLNamed>().map { it.name }
-      val arguments = directiveElement.arguments?.argumentList.orEmpty()
-      for (argument in arguments) {
-        val argumentDefinition = directiveDefinition.arguments.firstOrNull { it.name == argument.name } ?: continue
-        val argumentTypeToImport = argumentDefinition.type.rawType().name.takeIf { it in knownDefinitionNames } ?: continue
-        if (!isImported(directiveElement, argumentTypeToImport, definitionsUrl)) {
-          val typeKind = getTypeKind(argumentTypeToImport)
-          holder.registerProblem(
-              argument,
-              ApolloBundle.message(message, typeKind, argumentTypeToImport),
-              highlightType,
-              ImportDefinitionQuickFix(typeKind = typeKind, elementName = argumentTypeToImport, definitions = definitions, definitionsUrl = definitionsUrl),
-          )
-        }
+      return true
+    }
+    val directiveDefinition = definitions.directives().firstOrNull { it.name == directiveElement.name } ?: return true
+    val knownDefinitionNames = definitions.filterIsInstance<GQLNamed>().map { it.name }
+    val arguments = directiveElement.arguments?.argumentList.orEmpty()
+    for (argument in arguments) {
+      val argumentDefinition = directiveDefinition.arguments.firstOrNull { it.name == argument.name } ?: continue
+      val argumentTypeToImport = argumentDefinition.type.rawType().name.takeIf { it in knownDefinitionNames } ?: continue
+      if (!isImported(directiveElement, argumentTypeToImport, definitionsUrl)) {
+        val typeKind = getTypeKind(argumentTypeToImport)
+        holder.registerProblem(
+            argument,
+            ApolloBundle.message(message, typeKind, argumentTypeToImport),
+            highlightType,
+            ImportDefinitionQuickFix(typeKind = typeKind, elementName = argumentTypeToImport, definitions = definitions, definitionsUrl = definitionsUrl),
+        )
+        return true
       }
     }
+    return true
   }
 }
 
@@ -123,7 +130,8 @@ private class ImportDefinitionQuickFix(
     val linkDirective = schemaFiles.flatMap { it.linkDirectives(definitionsUrl) }.firstOrNull()
 
     if (linkDirective == null) {
-      val linkDirectiveSchemaExtension = createLinkDirectiveSchemaExtension(project, setOf(element.nameForImport), definitions, definitionsUrl)
+      val linkDirectiveSchemaExtension =
+        createLinkDirectiveSchemaExtension(project, setOf(element.nameForImport), definitions, definitionsUrl)
       val extraSchemaFile = schemaFiles.firstOrNull { it.name == "extra.graphqls" }
       if (extraSchemaFile == null) {
         GraphQLElementFactory.createFile(project, linkDirectiveSchemaExtension.text).also {
@@ -140,7 +148,8 @@ private class ImportDefinitionQuickFix(
       }
     } else {
       val importedNames = buildSet {
-        addAll(linkDirective.arguments!!.argumentList.firstOrNull { it.name == "import" }?.value?.cast<GraphQLArrayValue>()?.valueList.orEmpty().map { it.text.unquoted() })
+        addAll(linkDirective.arguments!!.argumentList.firstOrNull { it.name == "import" }?.value?.cast<GraphQLArrayValue>()?.valueList.orEmpty()
+            .map { it.text.unquoted() })
         add(element.nameForImport)
       }
       linkDirective.replace(createLinkDirective(project, importedNames, definitions, definitionsUrl))
