@@ -13,16 +13,13 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskType
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import org.gradle.tooling.Failure
 import org.gradle.tooling.model.GradleProject
-import org.jetbrains.kotlin.idea.configuration.GRADLE_SYSTEM_ID
+import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
 
@@ -42,7 +39,8 @@ class DownloadSchemaAction : AnAction() {
 }
 
 private val DOWNLOAD_SCHEMA_TASK_REGEX = Regex("download.+ApolloSchemaFrom(Introspection|Registry)")
-private const val SCHEMA_CONFIGURATION_DOC_URL = "https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration#downloading-a-schema"
+private const val SCHEMA_CONFIGURATION_DOC_URL =
+  "https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration#downloading-a-schema"
 
 private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
     project,
@@ -51,14 +49,13 @@ private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
 ) {
   override fun run(indicator: ProgressIndicator) {
     val rootProjectPath = project.getGradleRootPath() ?: return
-    val gradleExecutionHelper = GradleExecutionHelperCompat()
-    val executionSettings = ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
+    val gradleExecutionHelper = GradleExecutionHelper()
+    val executionSettings =
+      ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
     val rootGradleProject = gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
       logd("Fetch Gradle project model")
       return@execute try {
-        val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.RESOLVE_PROJECT, project)
-        gradleExecutionHelper.getModelBuilder(GradleProject::class.java, connection, id, executionSettings, ExternalSystemTaskNotificationListener.NULL_OBJECT)
-            .get()
+        connection.model<GradleProject>(GradleProject::class.java).get()
       } catch (t: Throwable) {
         logw(t, "Couldn't fetch Gradle project model")
         null
@@ -85,8 +82,7 @@ private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
 
     gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
       try {
-        val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.EXECUTE_TASK, project)
-        gradleExecutionHelper.getBuildLauncher(connection, id, allDownloadSchemaTasks, executionSettings, ExternalSystemTaskNotificationListener.NULL_OBJECT)
+        connection.newBuild()
             .forTasks(*allDownloadSchemaTasks.toTypedArray())
             .addProgressListener(object : SimpleProgressListener() {
               override fun onFailure(failures: List<Failure>) {
@@ -95,14 +91,16 @@ private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
                     project = project,
                     title = ApolloBundle.message("action.DownloadSchemaAction.buildFail.title"),
                     content = ApolloBundle.message("action.DownloadSchemaAction.buildFail.content", failures.firstOrNull()?.message
-                        ?: "(no message)", allDownloadSchemaTasks.joinToString(" ")),
+                        ?: "(no message)", allDownloadSchemaTasks.joinToString(" ")
+                    ),
                     type = NotificationType.WARNING
                 )
               }
 
               override fun onSuccess() {
                 super.onSuccess()
-                val schemas = if (allDownloadSchemaTasks.size > 1) ApolloBundle.message("action.DownloadSchemaAction.schema.plural") else ApolloBundle.message("action.DownloadSchemaAction.schema.singular")
+                val schemas =
+                  if (allDownloadSchemaTasks.size > 1) ApolloBundle.message("action.DownloadSchemaAction.schema.plural") else ApolloBundle.message("action.DownloadSchemaAction.schema.singular")
                 showNotification(
                     project = project,
                     content = ApolloBundle.message("action.DownloadSchemaAction.buildSuccess.content", schemas),

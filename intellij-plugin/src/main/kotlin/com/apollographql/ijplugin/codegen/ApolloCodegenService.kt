@@ -1,7 +1,6 @@
 package com.apollographql.ijplugin.codegen
 
 import com.apollographql.ijplugin.gradle.CODEGEN_GRADLE_TASK_NAME
-import com.apollographql.ijplugin.gradle.GradleExecutionHelperCompat
 import com.apollographql.ijplugin.gradle.GradleHasSyncedListener
 import com.apollographql.ijplugin.gradle.SimpleProgressListener
 import com.apollographql.ijplugin.gradle.getGradleRootPath
@@ -25,9 +24,6 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskType
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent
@@ -39,7 +35,7 @@ import com.intellij.openapi.util.CheckedDisposable
 import com.intellij.openapi.vfs.VfsUtil
 import org.gradle.tooling.CancellationTokenSource
 import org.gradle.tooling.GradleConnector
-import org.jetbrains.kotlin.idea.configuration.GRADLE_SYSTEM_ID
+import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import java.util.concurrent.Executors
@@ -85,7 +81,8 @@ class ApolloCodegenService(
     })
   }
 
-  private fun shouldTriggerCodegenAutomatically() = project.apolloProjectService.apolloVersion.isAtLeastV3 && project.projectSettingsState.automaticCodegenTriggering
+  private fun shouldTriggerCodegenAutomatically() =
+    project.apolloProjectService.apolloVersion.isAtLeastV3 && project.projectSettingsState.automaticCodegenTriggering
 
   private fun startOrStopCodegenObservers() {
     if (shouldTriggerCodegenAutomatically()) {
@@ -120,7 +117,8 @@ class ApolloCodegenService(
     EditorFactory.getInstance().eventMulticaster.addDocumentListener(object : DocumentListener {
       override fun documentChanged(event: DocumentEvent) {
         val vFile = FileDocumentManager.getInstance().getFile(event.document) ?: return
-        val isGqlFileInProject = vFile.fileType is GraphQLFileType && ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(vFile) != null
+        val isGqlFileInProject =
+          vFile.fileType is GraphQLFileType && ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(vFile) != null
         if (!isGqlFileInProject) {
           // Not a GraphQL file or not from this project: ignore
           return
@@ -182,18 +180,19 @@ class ApolloCodegenService(
 
     val modules = ModuleManager.getInstance(project).modules
     val rootProjectPath = project.getGradleRootPath() ?: return
-    val executionSettings = ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
+    val executionSettings =
+      ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
 
     gradleExecutorService.submit {
-      val gradleExecutionHelper = GradleExecutionHelperCompat()
+      val gradleExecutionHelper = GradleExecutionHelper()
       gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
         gradleCodegenCancellation = GradleConnector.newCancellationTokenSource()
         logd("Start Gradle")
         try {
-          val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.EXECUTE_TASK, project)
-          gradleExecutionHelper.getBuildLauncher(connection, id, listOf(CODEGEN_GRADLE_TASK_NAME), executionSettings, ExternalSystemTaskNotificationListener.NULL_OBJECT)
+          val cancellationToken = gradleCodegenCancellation!!.token()
+          connection.newBuild()
               .forTasks(CODEGEN_GRADLE_TASK_NAME)
-              .withCancellationToken(gradleCodegenCancellation!!.token())
+              .withCancellationToken(cancellationToken)
               .addArguments("--continuous")
               .addProgressListener(object : SimpleProgressListener() {
                 override fun onSuccess() {
