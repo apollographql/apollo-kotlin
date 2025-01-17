@@ -178,16 +178,66 @@ on OBJECT
 
 internal val kotlinLabsDefinitions_0_5 = kotlinLabsDefinitions_0_4 + """
 ""${'"'}
-Possible values for the `coercion` argument of the `@inlineClass` directive.
-Since: 4.1.1
+A list of built in classes that are known by the Apollo compiler.
+The compiler has Adapters for those types and can map scalars automatically.
 ""${'"'}
-enum InlineClassCoercion { String, Boolean, Int, Long, Float, Double, Any }
+enum BuiltInClass {
+  ""${'"'}
+  kotlin.Boolean or java.lang.Boolean
+  ""${'"'}
+  BOOLEAN
+  ""${'"'}
+  kotlin.Int or java.lang.Integer
+  ""${'"'}
+  INT
+  ""${'"'}
+  kotlin.Long or java.lang.Long
+  ""${'"'}
+  LONG
+  ""${'"'}
+  kotlin.Double or java.lang.Double
+  ""${'"'}
+  DOUBLE
+  ""${'"'}
+  kotlin.Float or java.lang.Float
+  ""${'"'}
+  FLOAT
+  ""${'"'}
+  kotlin.String or java.lang.String
+  ""${'"'}
+  STRING
+}
 
 ""${'"'}
-Generate an inline class for the given scalar type. The wrapped type is determined by the `coercion` argument.
-Since: 4.1.1
+A class defined by the user
 ""${'"'}
-directive @inlineClass(coercion: InlineClassCoercion!) on SCALAR
+input UserClass {
+  ""${'"'}
+  The fully qualified name of the class
+  ""${'"'}
+  name: String!
+  ""${'"'}
+  The Adapter to adapt this class to/from JSON
+  ""${'"'}
+  adapter: String = null
+}
+
+""${'"'}
+A class that a scalar can map to. Can be either built-in or user provided
+""${'"'}
+input Class @oneOf {
+  builtIn: BuiltInClass
+  user: UserClass
+}
+
+""${'"'}
+Generate an inline class to wrap the value. The generated class has the same name as the scalar and a `value` property.
+""${'"'}
+directive @inline on SCALAR
+""${'"'}
+Configures the Apollo compiler to map the given scalar to the given class
+""${'"'}
+directive @map(to: Class!) on SCALAR
 """
 
 // Built in scalar and introspection types from the Draft:
