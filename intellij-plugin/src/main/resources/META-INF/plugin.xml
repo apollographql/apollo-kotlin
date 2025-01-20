@@ -94,6 +94,7 @@
     />
 
     <!-- "Apollo Kotlin 4 is available" inspection -->
+    <!-- Runs on Kotlin (build.gradle.kts) and Toml (*.versions.toml) files -->
     <!--suppress PluginXmlCapitalization, PluginXmlExtensionRegistration -->
     <localInspection
         implementationClass="com.apollographql.ijplugin.inspection.Apollo4AvailableInspection"
@@ -102,6 +103,19 @@
         key="inspection.apollo4Available.displayName"
         enabledByDefault="true"
         level="WARNING"
+        language="kotlin"
+        shortName="Apollo4AvailableKotlin"
+    />
+    <!--suppress PluginXmlCapitalization, PluginXmlExtensionRegistration -->
+    <localInspection
+        implementationClass="com.apollographql.ijplugin.inspection.Apollo4AvailableInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.apollo4Available.displayName"
+        enabledByDefault="true"
+        level="WARNING"
+        language="TOML"
+        shortName="Apollo4AvailableToml"
     />
 
     <!-- Unused operation inspection -->
@@ -180,6 +194,7 @@
     />
 
     <!-- "GraphQL config file present" inspection -->
+    <!-- Must be declared for each language the config file can be implemented in -->
     <!--suppress PluginXmlCapitalization, PluginXmlExtensionRegistration -->
     <localInspection
         implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentInspection"
@@ -188,6 +203,52 @@
         key="inspection.graphQLConfigFilePresent.displayName"
         enabledByDefault="true"
         level="WARNING"
+        language="yaml"
+        shortName="ApolloGraphQLConfigFilePresentYaml"
+    />
+    <!--suppress PluginXmlCapitalization, PluginXmlExtensionRegistration -->
+    <localInspection
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.graphQLConfigFilePresent.displayName"
+        enabledByDefault="true"
+        level="WARNING"
+        language="JSON"
+        shortName="ApolloGraphQLConfigFilePresentJson"
+    />
+    <!--suppress PluginXmlCapitalization, PluginXmlExtensionRegistration -->
+    <localInspection
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.graphQLConfigFilePresent.displayName"
+        enabledByDefault="true"
+        level="WARNING"
+        language="TEXT"
+        shortName="ApolloGraphQLConfigFilePresentText"
+    />
+    <!--suppress PluginXmlCapitalization, PluginXmlExtensionRegistration -->
+    <localInspection
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.graphQLConfigFilePresent.displayName"
+        enabledByDefault="true"
+        level="WARNING"
+        language="TypeScript"
+        shortName="ApolloGraphQLConfigFilePresentTypeScript"
+    />
+    <!--suppress PluginXmlCapitalization, PluginXmlExtensionRegistration -->
+    <localInspection
+        implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentInspection"
+        groupPathKey="inspection.group.graphql"
+        groupKey="inspection.group.graphql.apolloKotlin"
+        key="inspection.graphQLConfigFilePresent.displayName"
+        enabledByDefault="true"
+        level="WARNING"
+        language="ECMAScript 6"
+        shortName="ApolloGraphQLConfigFilePresentECMAScript6"
     />
 
     <!-- "@OneOf GraphQL violation" inspection -->
@@ -202,6 +263,8 @@
         level="ERROR"
     />
 
+    <!-- "GraphQL config file present" annotator -->
+    <!-- Must be declared for each language the config file can be implemented in -->
     <annotator
         language="yaml"
         implementationClass="com.apollographql.ijplugin.inspection.ApolloGraphQLConfigFilePresentAnnotator" />
