@@ -3,6 +3,8 @@ package com.apollographql.ijplugin.settings
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.settings.studio.ApiKeyDialog
+import com.apollographql.ijplugin.util.isGradlePluginPresent
+import com.apollographql.ijplugin.util.isKotlinPluginPresent
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.project.Project
 import com.intellij.ui.AddEditRemovePanel
@@ -32,6 +34,7 @@ class SettingsComponent(private val project: Project) {
   private var addEditRemovePanel: AddEditRemovePanel<ApolloKotlinServiceConfiguration>? = null
 
   val panel: JPanel = panel {
+    // Some options are irrelevant without the Kotlin or Gradle plugins (e.g. in RustRover).
     group(ApolloBundle.message("settings.codegen.title")) {
       row {
         chkAutomaticCodegenTriggering = checkBox(ApolloBundle.message("settings.codegen.automaticCodegenTriggering.text"))
@@ -39,14 +42,14 @@ class SettingsComponent(private val project: Project) {
             .bindSelected(automaticCodegenTriggeringProperty)
             .component
       }
-    }
+    }.visible(isKotlinPluginPresent && isGradlePluginPresent)
     group(ApolloBundle.message("settings.graphqlPlugin.title")) {
       row {
         checkBox(ApolloBundle.message("settings.graphqlPlugin.contributeConfigurationToGraphqlPlugin.text"))
             .comment(ApolloBundle.message("settings.graphqlPlugin.contributeConfigurationToGraphqlPlugin.comment"))
             .bindSelected(contributeConfigurationToGraphqlPluginProperty)
       }
-    }
+    }.visible(isKotlinPluginPresent && isGradlePluginPresent)
     group(ApolloBundle.message("settings.studio.title")) {
       if (!project.apolloProjectService.apolloVersion.isAtLeastV4) {
         row { label(ApolloBundle.message("settings.studio.apiKeys.needV4.message")) }
@@ -98,7 +101,7 @@ class SettingsComponent(private val project: Project) {
               .comment(ApolloBundle.message("settings.studio.apiKeys.comment"))
         }
       }
-    }
+    }.visible(isKotlinPluginPresent && isGradlePluginPresent)
 
     group(ApolloBundle.message("settings.telemetry.telemetryEnabled.title")) {
       row {

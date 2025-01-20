@@ -7,3 +7,5 @@ val isAndroidPluginPresent = runCatching { Class.forName("com.android.ddmlib.And
 val isJavaPluginPresent = runCatching { Class.forName("com.intellij.psi.PsiJavaFile") }.isSuccess
 
 val isKotlinPluginPresent = runCatching { Class.forName("org.jetbrains.kotlin.psi.KtFile") }.isSuccess
+
+val isGradlePluginPresent = runCatching { Class.forName("org.jetbrains.plugins.gradle.util.GradleConstants") }.isSuccess
