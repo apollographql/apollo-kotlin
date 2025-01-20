@@ -25,11 +25,13 @@
 <link href="../../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../../styles/logo-styles.css" rel="Stylesheet">
 <link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
 <script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../ui-kit/ui-kit.min.js" defer></script>
 <script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
 <link href="../../../../images/apollo.svg">
 <link href="../../../../styles/style.css" rel="Stylesheet">
@@ -37,33 +39,68 @@
 <link href="../../../../styles/logo-styles.css" rel="Stylesheet"></head>
 <body>
     <div class="root">
-<nav class="navigation" id="navigation-wrapper">
-    <div class="navigation--inner">
-        <div class="navigation-title">
-            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
-            <div class="library-name">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
 <a class="library-name--link" href="../../../../index.html">
-                            apollo-kdoc
-                    </a>            </div>
-            <div class="library-version">
-<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.ast/-schema/-companion/index.html&quot;}"><div class="versions-dropdown">
-  <div class="versions-dropdown-button">4.1.1-SNAPSHOT</div>
-  <div class="versions-dropdown-data"><a href="index.html">4.1.1-SNAPSHOT</a><a href="../../../../not-found-version.html?v=3.8.2">3.8.2</a></div>
+                    apollo-kdoc
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.ast/-schema/-companion/index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
+  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">4.1.1-SNAPSHOT</div>
+  <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
+    <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
+    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">4.1.1-SNAPSHOT</a></div>
+    <div><a href="../../../../not-found-version.html?v=3.8.2" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.8.2</a></div>
+  </div>
+  <div class="dropdown--overlay"></div>
 </div>
-</dokka-template-command>            </div>
-        </div>
-        <div class="filter-section" id="filter-section">
+</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
                 <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-ast/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":apollo-ast/commonMain" data-filter=":apollo-ast/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
         </div>
-    </div>
-    <div class="navigation-controls">
-        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
-        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
-    </div>
-</nav>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
         <div id="container">
             <div class="sidebar" id="leftColumn">
-                <div class="sidebar--inner" id="sideMenu"></div>
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    apollo-kdoc
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
             </div>
             <div id="main">
 <div class="main-content" data-page-type="classlike" id="content" pageids="apollo-ast::com.apollographql.apollo.ast/Schema.Companion///PointingToDeclaration//-1528585073">
@@ -96,7 +133,7 @@
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-c-a-t-c-h_-b-y_-d-e-f-a-u-l-t.html"><span><span>CATCH_BY_DEFAULT</span></span></a></div>
+                  <div><a href="-c-a-t-c-h_-b-y_-d-e-f-a-u-l-t.html"><span>CATCH_</span><wbr><span>BY_</span><wbr><span>DEFAULT</span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1475456261%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
@@ -111,7 +148,7 @@
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-f-i-e-l-d_-p-o-l-i-c-y.html"><span><span>FIELD_POLICY</span></span></a></div>
+                  <div><a href="-f-i-e-l-d_-p-o-l-i-c-y.html"><span>FIELD_</span><wbr><span>POLICY</span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1374660639%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
@@ -126,7 +163,7 @@
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-f-i-e-l-d_-p-o-l-i-c-y_-f-o-r_-f-i-e-l-d.html"><span><span>FIELD_POLICY_FOR_FIELD</span></span></a></div>
+                  <div><a href="-f-i-e-l-d_-p-o-l-i-c-y_-f-o-r_-f-i-e-l-d.html"><span>FIELD_</span><wbr><span>POLICY_</span><wbr><span>FOR_</span><wbr><span>FIELD</span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-7197124%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
@@ -141,7 +178,7 @@
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-f-i-e-l-d_-p-o-l-i-c-y_-k-e-y_-a-r-g-s.html"><span><span>FIELD_POLICY_KEY_ARGS</span></span></a></div>
+                  <div><a href="-f-i-e-l-d_-p-o-l-i-c-y_-k-e-y_-a-r-g-s.html"><span>FIELD_</span><wbr><span>POLICY_</span><wbr><span>KEY_</span><wbr><span>ARGS</span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="950842205%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
@@ -156,7 +193,7 @@
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-f-i-e-l-d_-p-o-l-i-c-y_-p-a-g-i-n-a-t-i-o-n_-a-r-g-s.html"><span><span>FIELD_POLICY_PAGINATION_ARGS</span></span></a></div>
+                  <div><a href="-f-i-e-l-d_-p-o-l-i-c-y_-p-a-g-i-n-a-t-i-o-n_-a-r-g-s.html"><span>FIELD_</span><wbr><span>POLICY_</span><wbr><span>PAGINATION_</span><wbr><span>ARGS</span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1328187678%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
@@ -201,7 +238,7 @@
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-o-n-e_-o-f.html"><span><span>ONE_OF</span></span></a></div>
+                  <div><a href="-o-n-e_-o-f.html"><span>ONE_</span><wbr><span>OF</span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1086138376%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
@@ -231,7 +268,7 @@
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-r-e-q-u-i-r-e-s_-o-p-t_-i-n.html"><span><span>REQUIRES_OPT_IN</span></span></a></div>
+                  <div><a href="-r-e-q-u-i-r-e-s_-o-p-t_-i-n.html"><span>REQUIRES_</span><wbr><span>OPT_</span><wbr><span>IN</span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="185427872%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
@@ -246,7 +283,7 @@
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-s-e-m-a-n-t-i-c_-n-o-n_-n-u-l-l.html"><span><span>SEMANTIC_NON_NULL</span></span></a></div>
+                  <div><a href="-s-e-m-a-n-t-i-c_-n-o-n_-n-u-l-l.html"><span>SEMANTIC_</span><wbr><span>NON_</span><wbr><span>NULL</span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1849907760%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
@@ -261,7 +298,7 @@
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-s-e-m-a-n-t-i-c_-n-o-n_-n-u-l-l_-f-i-e-l-d.html"><span><span>SEMANTIC_NON_NULL_FIELD</span></span></a></div>
+                  <div><a href="-s-e-m-a-n-t-i-c_-n-o-n_-n-u-l-l_-f-i-e-l-d.html"><span>SEMANTIC_</span><wbr><span>NON_</span><wbr><span>NULL_</span><wbr><span>FIELD</span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-955062155%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
@@ -276,7 +313,7 @@
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-t-a-r-g-e-t_-n-a-m-e.html"><span><span>TARGET_NAME</span></span></a></div>
+                  <div><a href="-t-a-r-g-e-t_-n-a-m-e.html"><span>TARGET_</span><wbr><span>NAME</span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1347822199%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
@@ -291,7 +328,7 @@
           <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="-t-y-p-e_-p-o-l-i-c-y.html"><span><span>TYPE_POLICY</span></span></a></div>
+                  <div><a href="-t-y-p-e_-p-o-l-i-c-y.html"><span>TYPE_</span><wbr><span>POLICY</span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1883095531%2FProperties%2F-1528585073"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
@@ -326,12 +363,18 @@
     </div>
   </div>
 </div>
-      <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2025 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
-      </div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
             </div>
         </div>
     </div>
 </body>
 </html>
-
