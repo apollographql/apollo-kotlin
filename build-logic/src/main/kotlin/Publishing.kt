@@ -54,8 +54,6 @@ fun Project.configureDokkaCommon(): DokkaExtension {
   val dokka = extensions.getByType(DokkaExtension::class.java)
 
   dokka.apply {
-    // Workaround for https://github.com/Kotlin/dokka/issues/3798
-    dokkaEngineVersion.set("1.9.20")
     pluginsConfiguration.getByName("html") {
       this as DokkaHtmlPluginParameters
       customStyleSheets.from(
