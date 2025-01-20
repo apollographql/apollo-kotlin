@@ -1,0 +1,161 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ExecutableSchema</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../images/apollo.svg">
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            apollo-kdoc
+                    </a>            </div>
+            <div class="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.execution/-executable-schema/index.html&quot;}"><div class="versions-dropdown">
+  <div class="versions-dropdown-button">4.1.1-SNAPSHOT</div>
+  <div class="versions-dropdown-data"><a href="index.html">4.1.1-SNAPSHOT</a><a href="../../../not-found-version.html?v=3.8.2">3.8.2</a></div>
+</div>
+</dokka-template-command>            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-execution/commonMain">common</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-execution::com.apollographql.apollo.execution/ExecutableSchema///PointingToDeclaration//-1371816987">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-execution</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.execution</a><span class="delimiter">/</span><span class="current">ExecutableSchema</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Executable</span><wbr><span><span>Schema</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-execution/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">ExecutableSchema</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">schema<span class="token operator">: </span><a href="../../../apollo-ast/com.apollographql.apollo.ast/-schema/index.html">Schema</a><span class="token punctuation">, </span></span><span class="parameter ">coercings<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="../-coercing/index.html">Coercing</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">queryRoot<span class="token operator">: </span><a href="../-root-resolver/index.html">RootResolver</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">mutationRoot<span class="token operator">: </span><a href="../-root-resolver/index.html">RootResolver</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">subscriptionRoot<span class="token operator">: </span><a href="../-root-resolver/index.html">RootResolver</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">resolver<span class="token operator">: </span><a href="../-resolver/index.html">Resolver</a><span class="token punctuation">, </span></span><span class="parameter ">typeResolver<span class="token operator">: </span><a href="../-type-resolver/index.html">TypeResolver</a><span class="token punctuation">, </span></span><span class="parameter ">instrumentations<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../-instrumentation/index.html">Instrumentation</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">persistedDocumentCache<span class="token operator">: </span><a href="../-persisted-document-cache/index.html">PersistedDocumentCache</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><p class="paragraph">A GraphQL schema with execution information:</p><ul><li><p class="paragraph">root values</p></li><li><p class="paragraph">coercings</p></li><li><p class="paragraph">resolver</p></li></ul><p class="paragraph"><a href="index.html">ExecutableSchema</a> also includes handling for persisted documents. This part is not technically part of the main GraphQL spec but is popular that we add first party support to it.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-155811680%2FConstructors%2F-1371816987" anchor-label="ExecutableSchema" id="-155811680%2FConstructors%2F-1371816987" data-filterable-set=":apollo-execution/commonMain"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":apollo-execution/commonMain" data-filterable-set=":apollo-execution/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-executable-schema.html"><span>Executable</span><wbr><span><span>Schema</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-155811680%2FConstructors%2F-1371816987"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-execution/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">schema<span class="token operator">: </span><a href="../../../apollo-ast/com.apollographql.apollo.ast/-schema/index.html">Schema</a><span class="token punctuation">, </span></span><span class="parameter ">coercings<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="../-coercing/index.html">Coercing</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">queryRoot<span class="token operator">: </span><a href="../-root-resolver/index.html">RootResolver</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">mutationRoot<span class="token operator">: </span><a href="../-root-resolver/index.html">RootResolver</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">subscriptionRoot<span class="token operator">: </span><a href="../-root-resolver/index.html">RootResolver</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">resolver<span class="token operator">: </span><a href="../-resolver/index.html">Resolver</a><span class="token punctuation">, </span></span><span class="parameter ">typeResolver<span class="token operator">: </span><a href="../-type-resolver/index.html">TypeResolver</a><span class="token punctuation">, </span></span><span class="parameter ">instrumentations<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../-instrumentation/index.html">Instrumentation</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">persistedDocumentCache<span class="token operator">: </span><a href="../-persisted-document-cache/index.html">PersistedDocumentCache</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="1563027748%2FClasslikes%2F-1371816987" anchor-label="Builder" id="1563027748%2FClasslikes%2F-1371816987" data-filterable-set=":apollo-execution/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-execution/commonMain" data-filterable-set=":apollo-execution/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-builder/index.html"><span><span>Builder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1563027748%2FClasslikes%2F-1371816987"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-execution/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-builder/index.html">Builder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1158065771%2FFunctions%2F-1371816987" anchor-label="execute" id="1158065771%2FFunctions%2F-1371816987" data-filterable-set=":apollo-execution/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-execution/commonMain" data-filterable-set=":apollo-execution/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="execute.html"><span><span>execute</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1158065771%2FFunctions%2F-1371816987"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-execution/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="execute.html"><span class="token function">execute</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">request<span class="token operator">: </span><a href="../-graph-q-l-request/index.html">GraphQLRequest</a><span class="token punctuation">, </span></span><span class="parameter ">executionContext<span class="token operator">: </span><a href="../../../apollo-api/com.apollographql.apollo.api/-execution-context/index.html">ExecutionContext</a><span class="token operator"> = </span>ExecutionContext.Empty</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-graph-q-l-response/index.html">GraphQLResponse</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-489084672%2FFunctions%2F-1371816987" anchor-label="subscribe" id="-489084672%2FFunctions%2F-1371816987" data-filterable-set=":apollo-execution/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-execution/commonMain" data-filterable-set=":apollo-execution/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="subscribe.html"><span><span>subscribe</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-489084672%2FFunctions%2F-1371816987"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-execution/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="subscribe.html"><span class="token function">subscribe</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">request<span class="token operator">: </span><a href="../-graph-q-l-request/index.html">GraphQLRequest</a><span class="token punctuation">, </span></span><span class="parameter ">executionContext<span class="token operator">: </span><a href="../../../apollo-api/com.apollographql.apollo.api/-execution-context/index.html">ExecutionContext</a><span class="token operator"> = </span>ExecutionContext.Empty</span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/Flow///PointingToDeclaration/">Flow</span><span class="token operator">&lt;</span><a href="../-subscription-event/index.html">SubscriptionEvent</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2025 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

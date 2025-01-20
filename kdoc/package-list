@@ -45,6 +45,8 @@ com.apollographql.apollo.debugserver
 com.apollographql.apollo.debugserver.internal.graphql
 module:apollo-engine-tests
 com.apollographql.apollo.engine.tests
+module:apollo-execution
+com.apollographql.apollo.execution
 module:apollo-gradle-plugin-external
 com.apollographql.apollo.gradle.api
 com.apollographql.apollo.gradle.internal
