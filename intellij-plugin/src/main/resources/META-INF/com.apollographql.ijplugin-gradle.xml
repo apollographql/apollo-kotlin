@@ -1,0 +1,9 @@
+<idea-plugin>
+  <!-- Add here declarations that only work in presence of the Gradle plugin -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Listen to Gradle sync -->
+    <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.gradle.GradleListener" />
+
+  </extensions>
+</idea-plugin>
