@@ -159,14 +159,6 @@
       <override-text place="RevealInPopup" />
     </action>
 
-    <!-- Tools / Apollo / Normalized Cache Viewer -->
-    <action
-        id="ShowNormalizedCacheToolWindowAction"
-        class="com.apollographql.ijplugin.normalizedcache.ShowNormalizedCacheToolWindowAction"
-    >
-      <add-to-group group-id="ApolloToolsActionGroup" />
-    </action>
-
     <!-- Tools / Apollo / Internal group that only appears when run from the IDE ("internal mode") -->
     <!-- See https://plugins.jetbrains.com/docs/intellij/enabling-internal.html -->
     <group
