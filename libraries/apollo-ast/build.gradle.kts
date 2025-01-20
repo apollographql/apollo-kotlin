@@ -12,9 +12,6 @@ apolloLibrary(
 )
 
 kotlin {
-  jvm {
-    withJava()
-  }
   sourceSets {
     getByName("commonMain") {
       dependencies {
