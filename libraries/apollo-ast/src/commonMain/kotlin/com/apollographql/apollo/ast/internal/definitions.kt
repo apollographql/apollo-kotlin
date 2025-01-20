@@ -206,6 +206,10 @@ enum BuiltInClass {
   kotlin.String or java.lang.String
   ""${'"'}
   STRING
+  ""${'"'}
+  kotlin.Any or java.lang.Object
+  ""${'"'}
+  ANY
 }
 
 ""${'"'}
@@ -233,7 +237,7 @@ input Class @oneOf {
 ""${'"'}
 Generate an inline class to wrap the value. The generated class has the same name as the scalar and a `value` property.
 ""${'"'}
-directive @inline on SCALAR
+directive @inline(propertyName: String! = "value") on SCALAR
 ""${'"'}
 Configures the Apollo compiler to map the given scalar to the given class
 ""${'"'}

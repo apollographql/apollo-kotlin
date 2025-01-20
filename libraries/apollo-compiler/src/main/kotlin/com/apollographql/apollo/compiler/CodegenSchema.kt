@@ -14,7 +14,6 @@ class CodegenSchema(
     @Serializable(with = SchemaSerializer::class)
     val schema: Schema,
     val normalizedPath: String,
-    val scalarMapping: Map<String, ScalarInfo>,
     val generateDataBuilders: Boolean
 )
 

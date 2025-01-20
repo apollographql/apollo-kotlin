@@ -94,7 +94,7 @@ fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
     "v0.2", "v0.3" -> kotlinLabsDefinitions_0_3
     // v0.4 doesn't have `@nonnull`
     "v0.4" -> kotlinLabsDefinitions_0_4
-    // v0.5 adds `@inlineClass`
+    // v0.5 adds `@map`
     "v0.5" -> kotlinLabsDefinitions_0_5
     else -> error("kotlin_labs/$version definitions are not supported, please use $KOTLIN_LABS_VERSION")
   })

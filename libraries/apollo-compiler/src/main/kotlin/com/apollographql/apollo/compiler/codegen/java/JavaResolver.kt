@@ -3,7 +3,6 @@ package com.apollographql.apollo.compiler.codegen.java
 import com.apollographql.apollo.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo.compiler.JavaNullable
 import com.apollographql.apollo.compiler.RuntimeAdapterInitializer
-import com.apollographql.apollo.compiler.ScalarInfo
 import com.apollographql.apollo.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo.compiler.codegen.Identifier.type
 import com.apollographql.apollo.compiler.codegen.ResolverClassName
@@ -23,6 +22,7 @@ import com.apollographql.apollo.compiler.ir.IrModelType
 import com.apollographql.apollo.compiler.ir.IrNamedType
 import com.apollographql.apollo.compiler.ir.IrNonNullType2
 import com.apollographql.apollo.compiler.ir.IrObjectType
+import com.apollographql.apollo.compiler.ir.IrScalar
 import com.apollographql.apollo.compiler.ir.IrScalarType
 import com.apollographql.apollo.compiler.ir.IrScalarType2
 import com.apollographql.apollo.compiler.ir.IrType
@@ -41,7 +41,7 @@ import com.squareup.javapoet.TypeName
 internal class JavaResolver(
     entries: List<ResolverEntry>,
     val next: JavaResolver?,
-    private val scalarMapping: Map<String, ScalarInfo>,
+    private val scalars: Map<String, IrScalar>,
     private val generatePrimitiveTypes: Boolean,
     private val nullableFieldStyle: JavaNullable,
 ) {

@@ -2,7 +2,7 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo.ast.Schema
-import com.apollographql.apollo.ast.findInlineClassCoercion
+import com.apollographql.apollo.ast.findMapTo
 import com.apollographql.apollo.compiler.APOLLO_VERSION
 import com.apollographql.apollo.compiler.CodegenMetadata
 import com.apollographql.apollo.compiler.CodegenSchema
@@ -335,35 +335,5 @@ internal object KotlinCodegen {
             )
           }
     }
-  }
-
-  private fun scalarMappingForInlineClasses(schema: Schema, layout: SchemaLayout): Map<String, ScalarInfo> {
-    return schema.typeDefinitions.values
-        .filterIsInstance<GQLScalarTypeDefinition>()
-        .mapNotNull { scalarTypeDefinition ->
-          val name = scalarTypeDefinition.name
-          val inlineClassCoercion = scalarTypeDefinition.findInlineClassCoercion(schema)
-          if (inlineClassCoercion == null) {
-            null
-          } else {
-            val packageName = layout.typeScalarPackageName()
-            val simpleName = layout.schemaTypeName(name)
-            name to ScalarInfo(
-                targetName = "$packageName.$simpleName",
-                adapterInitializer = ExpressionAdapterInitializer(
-                    when (IrScalarInlineClassCoercion.fromString(inlineClassCoercion)) {
-                      STRING -> KotlinSymbols.StringAdapter.canonicalName
-                      BOOLEAN -> KotlinSymbols.BooleanAdapter.canonicalName
-                      INT -> KotlinSymbols.IntAdapter.canonicalName
-                      LONG -> KotlinSymbols.LongAdapter.canonicalName
-                      FLOAT -> KotlinSymbols.FloatAdapter.canonicalName
-                      DOUBLE -> KotlinSymbols.DoubleAdapter.canonicalName
-                      ANY -> KotlinSymbols.AnyAdapter.canonicalName
-                    }
-                ),
-                inlineClassProperty = Identifier.value
-            )
-          }
-        }.toMap()
   }
 }

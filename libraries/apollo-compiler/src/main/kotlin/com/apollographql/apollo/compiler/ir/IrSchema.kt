@@ -13,16 +13,18 @@ import com.apollographql.apollo.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo.ast.GQLType
 import com.apollographql.apollo.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo.ast.MapTo
 import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo.ast.fieldDefinitions
 import com.apollographql.apollo.ast.findDeprecationReason
-import com.apollographql.apollo.ast.findInlineClassCoercion
+import com.apollographql.apollo.ast.findMapTo
 import com.apollographql.apollo.ast.findOneOf
 import com.apollographql.apollo.ast.findOptInFeature
 import com.apollographql.apollo.ast.findTargetName
 import com.apollographql.apollo.ast.internal.toConnectionFields
 import com.apollographql.apollo.ast.internal.toEmbeddedFields
+import com.apollographql.apollo.compiler.ScalarInfo
 import com.apollographql.apollo.compiler.UsedCoordinates
 import com.apollographql.apollo.compiler.codegen.keyArgs
 import com.apollographql.apollo.compiler.codegen.paginationArgs
@@ -41,6 +43,11 @@ internal class DefaultIrSchema(
 
 interface IrSchema
 
+internal fun IrSchema.scalarMapping(): Map<String, ScalarInfo> {
+  return (this as DefaultIrSchema).irScalars.map {
+    it.name to it.mapTo
+  }
+}
 internal sealed interface IrSchemaType {
   val name: String
 }
@@ -96,7 +103,7 @@ internal data class IrScalar(
     override val name: String,
     val description: String?,
     val deprecationReason: String?,
-    val inlineClassCoercion: IrScalarInlineClassCoercion?,
+    val mapTo: MapTo?,
 ) : IrSchemaType {
   val type = IrScalarType(name, nullable = true)
 }
@@ -111,21 +118,6 @@ internal enum class IrScalarInlineClassCoercion {
   DOUBLE,
   ANY,
   ;
-
-  companion object {
-    fun fromString(value: String): IrScalarInlineClassCoercion {
-      return when (value) {
-        "String" -> STRING
-        "Boolean" -> BOOLEAN
-        "Int" -> INT
-        "Long" -> LONG
-        "Float" -> FLOAT
-        "Double" -> DOUBLE
-        "Any" -> ANY
-        else -> error("Unknown IrScalarInlineClassCoercion value $value")
-      }
-    }
-  }
 }
 
 /**
@@ -246,7 +238,7 @@ internal fun GQLScalarTypeDefinition.toIr(schema: Schema): IrScalar {
       description = description,
       // XXX: this is not spec-compliant. Directive cannot be on scalar definitions
       deprecationReason = directives.findDeprecationReason(),
-      inlineClassCoercion = findInlineClassCoercion(schema)?.let { IrScalarInlineClassCoercion.fromString(it) }
+      inlineClassCoercion = findMapTo(schema)?.let { IrScalarInlineClassCoercion.valueOf(it) }
   )
 }
 

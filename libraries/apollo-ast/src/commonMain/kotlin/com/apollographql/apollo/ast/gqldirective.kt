@@ -201,16 +201,77 @@ fun GQLFieldDefinition.findSemanticNonNulls(schema: Schema): List<Int> {
 }
 
 @ApolloInternal
-fun GQLScalarTypeDefinition.findInlineClassCoercion(schema: Schema): String? =
-  directives.filter { schema.originalDirectiveName(it.name) == Schema.INLINE_CLASS }
-      .map {
-        it.arguments
-            .firstOrNull { it.name == "coercion" }
-            ?.value
-            ?.let { value ->
-              if (value !is GQLEnumValue) {
-                throw ConversionException("coercion must be an enum", it.sourceLocation)
-              }
-              value.value
-            }
-      }.firstOrNull()
+sealed interface MapTo
+
+@ApolloInternal
+enum class BuiltIn {
+  BOOLEAN,
+  INT,
+  LONG,
+  DOUBLE,
+  FLOAT,
+  STRING,
+}
+@ApolloInternal
+class MapToBuiltIn(
+    val builtIn: BuiltIn
+) : MapTo
+
+@ApolloInternal
+class MapToUser(
+    val name: String,
+    val adapter: String?,
+) : MapTo
+
+@ApolloInternal
+fun GQLScalarTypeDefinition.findMapTo(schema: Schema): MapTo? {
+  val directive = directives.firstOrNull { schema.originalDirectiveName(it.name) == Schema.MAP }
+  if (directive == null) {
+    return null
+  }
+
+  val to = directive.arguments.firstOrNull { it.name == "to" }?.value
+
+  if (to !is GQLObjectValue) {
+    throw ConversionException("'to' must be an input object", to?.sourceLocation)
+  }
+
+  to.fields.forEach {
+    if (it.name == "builtIn") {
+      val builtIn = it.value
+      if (builtIn !is GQLEnumValue) {
+        throw ConversionException("'builtIn' must be an enum", builtIn.sourceLocation)
+      }
+      return MapToBuiltIn(BuiltIn.valueOf(builtIn.value))
+    }
+    if (it.name == "builtIn") {
+      val user = it.value
+      if (user !is GQLObjectValue) {
+        throw ConversionException("'user' must be an input object", user.sourceLocation)
+      }
+      var name:String? = null
+      var adapter: String? = null
+      user.fields.forEach {
+        if(it.name == "name") {
+          if (it.value !is GQLStringValue) {
+            throw ConversionException("'name' must be a String", it.value.sourceLocation)
+          }
+          name = it.value.value
+        } else if (it.name == "adapter") {
+          if (it.value !is GQLStringValue) {
+            throw ConversionException("'adapter' must be a String", it.value.sourceLocation)
+          }
+          adapter = it.value.value
+        }
+      }
+      if (name == null) {
+        throw ConversionException("'name' is required", user.sourceLocation)
+      }
+      return MapToUser(
+          name = name!!,
+          adapter = adapter
+      )
+    }
+  }
+  throw ConversionException("'to' must contain either 'builtIn' or 'user'", to.sourceLocation)
+}

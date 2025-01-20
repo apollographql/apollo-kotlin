@@ -226,7 +226,7 @@ class Schema internal constructor(
     const val FIELD_POLICY_PAGINATION_ARGS = "paginationArgs"
 
     @ApolloExperimental
-    const val INLINE_CLASS = "inlineClass"
+    const val MAP = "map"
 
     /**
      * Parses the given [map] and creates a new [Schema].

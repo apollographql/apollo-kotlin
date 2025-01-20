@@ -65,8 +65,9 @@ private class OutputBuilder {
   val builders = mutableListOf<JavaClassBuilder>()
 }
 
+
 private fun buildOutput(
-    codegenSchema: CodegenSchema,
+    irSchema: IrSchema,
     upstreamCodegenMetadata: List<CodegenMetadata>,
     generatePrimitiveTypes: Boolean,
     nullableFieldStyle: JavaNullable,
@@ -76,7 +77,7 @@ private fun buildOutput(
   val resolver = JavaResolver(
       entries = upstreamCodegenMetadata.flatMap { it.entries },
       next = null,
-      scalarMapping = codegenSchema.scalarMapping,
+      scalarMapping = irSchema.scalarMapping(),
       generatePrimitiveTypes = generatePrimitiveTypes,
       nullableFieldStyle = nullableFieldStyle,
   )

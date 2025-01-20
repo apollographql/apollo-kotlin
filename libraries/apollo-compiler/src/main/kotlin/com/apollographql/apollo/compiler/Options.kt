@@ -641,27 +641,6 @@ class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
 @SerialName("runtime")
 object RuntimeAdapterInitializer : AdapterInitializer
 
-@Serializable
-class ScalarInfo
-@ApolloExperimental
-constructor(
-    val targetName: String,
-    val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer,
-    val userDefined: Boolean = true,
-
-    /**
-     * If the target is an inline class, the property to access the underlying value, `null` otherwise.
-     */
-    @ApolloExperimental
-    val inlineClassProperty: String? = null,
-) {
-  constructor(
-      targetName: String,
-      adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer,
-      userDefined: Boolean = true,
-  ) : this(targetName, adapterInitializer, userDefined, null)
-}
-
 private val NoOpLogger = object : ApolloCompiler.Logger {
   override fun warning(message: String) {
   }

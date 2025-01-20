@@ -136,27 +136,6 @@ interface Service {
   fun mapScalar(graphQLName: String, targetName: String, expression: String)
 
   /**
-   * Map a GraphQL scalar type to the Java/Kotlin type and provided adapter expression.
-   * The adapter will be configured at compile time and you must not call [com.apollographql.apollo.ApolloClient.Builder.addCustomScalarAdapter].
-   *
-   * @param graphQLName the name of the scalar to map as found in the GraphQL schema
-   * @param targetName the fully qualified Java or Kotlin name of the type the scalar is mapped to
-   * @param expression an expression that will be used by the codegen to get an adapter for the
-   * given scalar. [expression] is passed verbatim to JavaPoet/KotlinPoet.
-   * @param inlineClassProperty if [targetName] is an [inline class](https://kotlinlang.org/docs/inline-classes.html), the property
-   * to access the underlying value, `null` otherwise.
-   *
-   * For example in Kotlin:
-   * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter")` (a top level property or object)
-   * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter()")` (create a new instance every time)
-   * Or in Java:
-   * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter.INSTANCE")` (a top level property or object)
-   * - `mapScalar("Date", "com.example.Date", "new com.example.DateAdapter()")` (create a new instance every time)
-   */
-  @ApolloExperimental
-  fun mapScalar(graphQLName: String, targetName: String, expression: String, inlineClassProperty: String? = null)
-
-  /**
    * Map the given GraphQL scalar to [kotlin.String] and use the builtin adapter
    */
   fun mapScalarToKotlinString(graphQLName: String)
