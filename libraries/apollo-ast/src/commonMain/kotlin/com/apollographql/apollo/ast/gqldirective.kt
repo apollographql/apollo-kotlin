@@ -211,7 +211,14 @@ enum class BuiltIn {
   DOUBLE,
   FLOAT,
   STRING,
+  ANY,
 }
+
+fun foo(a: Int) {
+  mar
+}
+
+
 @ApolloInternal
 class MapToBuiltIn(
     val builtIn: BuiltIn
