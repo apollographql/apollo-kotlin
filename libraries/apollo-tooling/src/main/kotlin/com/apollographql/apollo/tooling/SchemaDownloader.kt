@@ -59,15 +59,31 @@ object SchemaDownloader {
 
     when {
       endpoint != null -> {
-        introspectionDataJson = downloadIntrospection(
-            endpoint = endpoint,
-            headers = headers,
-            insecure = insecure,
-        )
-        introspectionSchema = try {
-          introspectionDataJson.toIntrospectionSchema()
+        try {
+          introspectionDataJson = downloadIntrospection(
+              endpoint = endpoint,
+              headers = headers,
+              insecure = insecure,
+              failSafe = false,
+          )
+          introspectionSchema = try {
+            introspectionDataJson.toIntrospectionSchema()
+          } catch (e: Exception) {
+            throw Exception("Introspection response from $endpoint can not be parsed", e)
+          }
         } catch (e: Exception) {
-          throw Exception("Introspection response from $endpoint can not be parsed", e)
+          // 2-step introspection didn't work: fallback to no pre-introspection query and minimal introspection query
+          introspectionDataJson = downloadIntrospection(
+              endpoint = endpoint,
+              headers = headers,
+              insecure = insecure,
+              failSafe = true,
+          )
+          introspectionSchema = try {
+            introspectionDataJson.toIntrospectionSchema()
+          } catch (e: Exception) {
+            throw Exception("Introspection response from $endpoint can not be parsed", e)
+          }
         }
       }
 
@@ -124,7 +140,8 @@ object SchemaDownloader {
    */
   @ApolloExperimental
   fun getIntrospectionQuery(features: Set<GraphQLFeature>): String {
-    val baseIntrospectionSource = SchemaHelper::class.java.classLoader!!.getResourceAsStream("base-introspection.graphql")!!.source().buffer()
+    val baseIntrospectionSource =
+      SchemaHelper::class.java.classLoader!!.getResourceAsStream("base-introspection.graphql")!!.source().buffer()
     val baseIntrospectionGql: GQLDocument = baseIntrospectionSource.parseAsGQLDocument().value!!
     val introspectionGql: GQLDocument = baseIntrospectionGql.copy(
         definitions = baseIntrospectionGql.definitions
@@ -135,17 +152,29 @@ object SchemaDownloader {
     return introspectionGql.toUtf8()
   }
 
+  @Deprecated(level = DeprecationLevel.HIDDEN, message = "Kept for binary compatibility")
   fun downloadIntrospection(
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
+  ): String = downloadIntrospection(endpoint, headers, insecure, failSafe = false)
+
+  fun downloadIntrospection(
+      endpoint: String,
+      headers: Map<String, String>,
+      insecure: Boolean,
+      failSafe: Boolean = false,
   ): String {
-    val preIntrospectionData: PreIntrospectionQuery.Data = SchemaHelper.executePreIntrospectionQuery(
-        endpoint = endpoint,
-        headers = headers,
-        insecure = insecure,
-    )
-    val features = preIntrospectionData.getFeatures()
+    val features = if (failSafe) {
+      emptySet()
+    } else {
+      val preIntrospectionData: PreIntrospectionQuery.Data = SchemaHelper.executePreIntrospectionQuery(
+          endpoint = endpoint,
+          headers = headers,
+          insecure = insecure,
+      )
+      preIntrospectionData.getFeatures()
+    }
     val introspectionQuery = getIntrospectionQuery(features)
     return SchemaHelper.executeIntrospectionQuery(
         introspectionQuery = introspectionQuery,
@@ -193,6 +222,6 @@ object SchemaDownloader {
     SchemaHelper.client.dispatcher.executorService.shutdown()
     SchemaHelper.client.connectionPool.evictAll()
   }
-  
+
   inline fun <reified T> Any?.cast() = this as? T
 }
