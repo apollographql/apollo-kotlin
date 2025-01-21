@@ -59,6 +59,7 @@
         <div class="navigation-controls">
         <div class="filter-section filter-section_loading" id="filter-section">
                 <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-ast/commonMain">common</button>
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-ast/jvmMain">jvm</button>
             <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
                 <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
                 <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
@@ -72,6 +73,13 @@
                                 <input type="checkbox" class="checkbox--input" id=":apollo-ast/commonMain" data-filter=":apollo-ast/commonMain">
                                 <span class="checkbox--icon"></span>
                                 common
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":apollo-ast/jvmMain" data-filter=":apollo-ast/jvmMain">
+                                <span class="checkbox--icon"></span>
+                                jvm
                             </label>
                         </li>
                 </ul>
@@ -321,17 +329,19 @@
               </div>
             </div>
           </div>
-<a data-name="-1526579213%2FFunctions%2F-1528585073" anchor-label="toUtf8" id="-1526579213%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+<a data-name="1719580955%2FFunctions%2F1977987940" anchor-label="toUtf8" id="1719580955%2FFunctions%2F1977987940" data-filterable-set=":apollo-ast/commonMain,:apollo-ast/jvmMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-ast/commonMain,:apollo-ast/jvmMain" data-filterable-set=":apollo-ast/commonMain,:apollo-ast/jvmMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="../to-utf8.html"><span>to</span><wbr><span><span>Utf8</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1526579213%2FFunctions%2F-1528585073"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1719580955%2FFunctions%2F1977987940"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-g-q-l-node/index.html">GQLNode</a><span class="token punctuation">.</span><a href="../to-utf8.html"><span class="token function">toUtf8</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">indent<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">"  "</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">fun </span><a href="../-g-q-l-node/index.html">GQLNode</a><span class="token punctuation">.</span><a href="../to-utf8.html"><span class="token function">toUtf8</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sink<span class="token operator">: </span><span data-unresolved-link="okio/BufferedSink///PointingToDeclaration/">BufferedSink</span><span class="token punctuation">, </span></span><span class="parameter ">indent<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">"  "</span></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain" data-active="" data-toggle=":apollo-ast/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":apollo-ast/jvmMain" data-filterable-set=":apollo-ast/jvmMain" data-toggle=":apollo-ast/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-g-q-l-node/index.html">GQLNode</a><span class="token punctuation">.</span><a href="../to-utf8.html"><span class="token function">toUtf8</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">indent<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">"  "</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">fun </span><a href="../-g-q-l-node/index.html">GQLNode</a><span class="token punctuation">.</span><a href="../to-utf8.html"><span class="token function">toUtf8</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sink<span class="token operator">: </span><span data-unresolved-link="okio/BufferedSink///PointingToDeclaration/">BufferedSink</span><span class="token punctuation">, </span></span><span class="parameter ">indent<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">"  "</span></span></span><span class="token punctuation">)</span></div></div><div class="content sourceset-dependent-content" data-togglable=":apollo-ast/jvmMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-g-q-l-node/index.html#1615705784%2FMain%2F989170055">GQLNode</a><span class="token punctuation">.</span><a href="../to-utf8.html"><span class="token function">toUtf8</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">file<span class="token operator">: </span><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/File.html">File</a><span class="token punctuation">, </span></span><span class="parameter ">indent<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">"  "</span></span></span><span class="token punctuation">)</span></div></div>                  </div>
                 </div>
               </div>
             </div>
