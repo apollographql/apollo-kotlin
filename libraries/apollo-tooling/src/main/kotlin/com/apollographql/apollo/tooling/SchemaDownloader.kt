@@ -42,6 +42,7 @@ object SchemaDownloader {
    * Else it will use SDL. Prefer SDL if you can as it is more compact and carries more information.
    * @param insecure if set to true, TLS/SSL certificates will not be checked when downloading.
    * @param headers extra HTTP headers to send during introspection.
+   * @param failSafeIntrospection if set to true a minimal introspection query is used and no pre-introspection query.
    */
   fun download(
       endpoint: String?,
@@ -52,6 +53,7 @@ object SchemaDownloader {
       schema: File,
       insecure: Boolean = false,
       headers: Map<String, String> = emptyMap(),
+      failSafeIntrospection: Boolean = false,
   ) {
     var introspectionDataJson: String? = null
     var introspectionSchema: IntrospectionSchema? = null
@@ -63,6 +65,7 @@ object SchemaDownloader {
             endpoint = endpoint,
             headers = headers,
             insecure = insecure,
+            failSafe = failSafeIntrospection,
         )
         introspectionSchema = try {
           introspectionDataJson.toIntrospectionSchema()
@@ -119,12 +122,25 @@ object SchemaDownloader {
     }
   }
 
+  @Deprecated(level = DeprecationLevel.HIDDEN, message = "Kept for binary compatibility")
+  fun download(
+      endpoint: String?,
+      graph: String?,
+      key: String?,
+      graphVariant: String,
+      registryUrl: String = "https://api.apollographql.com/graphql",
+      schema: File,
+      insecure: Boolean = false,
+      headers: Map<String, String> = emptyMap(),
+  ) = download(endpoint, graph, key, graphVariant, registryUrl, schema, insecure, headers, failSafeIntrospection = false)
+
   /**
    * Get an introspection query that is compatible with the given [features], as a JSON string.
    */
   @ApolloExperimental
   fun getIntrospectionQuery(features: Set<GraphQLFeature>): String {
-    val baseIntrospectionSource = SchemaHelper::class.java.classLoader!!.getResourceAsStream("base-introspection.graphql")!!.source().buffer()
+    val baseIntrospectionSource =
+      SchemaHelper::class.java.classLoader!!.getResourceAsStream("base-introspection.graphql")!!.source().buffer()
     val baseIntrospectionGql: GQLDocument = baseIntrospectionSource.parseAsGQLDocument().value!!
     val introspectionGql: GQLDocument = baseIntrospectionGql.copy(
         definitions = baseIntrospectionGql.definitions
@@ -135,17 +151,29 @@ object SchemaDownloader {
     return introspectionGql.toUtf8()
   }
 
+  @Deprecated(level = DeprecationLevel.HIDDEN, message = "Kept for binary compatibility")
   fun downloadIntrospection(
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
+  ): String = downloadIntrospection(endpoint, headers, insecure, failSafe = false)
+
+  fun downloadIntrospection(
+      endpoint: String,
+      headers: Map<String, String>,
+      insecure: Boolean,
+      failSafe: Boolean = false,
   ): String {
-    val preIntrospectionData: PreIntrospectionQuery.Data = SchemaHelper.executePreIntrospectionQuery(
-        endpoint = endpoint,
-        headers = headers,
-        insecure = insecure,
-    )
-    val features = preIntrospectionData.getFeatures()
+    val features = if (failSafe) {
+      emptySet()
+    } else {
+      val preIntrospectionData: PreIntrospectionQuery.Data = SchemaHelper.executePreIntrospectionQuery(
+          endpoint = endpoint,
+          headers = headers,
+          insecure = insecure,
+      )
+      preIntrospectionData.getFeatures()
+    }
     val introspectionQuery = getIntrospectionQuery(features)
     return SchemaHelper.executeIntrospectionQuery(
         introspectionQuery = introspectionQuery,
@@ -193,6 +221,6 @@ object SchemaDownloader {
     SchemaHelper.client.dispatcher.executorService.shutdown()
     SchemaHelper.client.connectionPool.evictAll()
   }
-  
+
   inline fun <reified T> Any?.cast() = this as? T
 }

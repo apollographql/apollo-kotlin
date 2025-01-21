@@ -2,10 +2,10 @@
 
 package com.apollographql.apollo.tooling
 
-import com.apollographql.mockserver.MockServer
-import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.apollo.testing.pathToUtf8
+import com.apollographql.mockserver.MockServer
+import com.apollographql.mockserver.enqueueString
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
@@ -21,6 +21,8 @@ private val introspectionRequestDraft = pathToUtf8("apollo-tooling/src/test/fixt
 
 private val preIntrospectionResponseOneOf = pathToUtf8("apollo-tooling/src/test/fixtures/pre-introspection-response-oneOf.json")
 private val introspectionRequestOneOf = pathToUtf8("apollo-tooling/src/test/fixtures/introspection-request-oneOf.json")
+
+private val introspectionRequestFailSafe = pathToUtf8("apollo-tooling/src/test/fixtures/introspection-request-failSafe.json")
 
 private val introspectionResponse = pathToUtf8("apollo-tooling/src/test/fixtures/introspection-response.json")
 
@@ -113,4 +115,23 @@ class SchemaDownloaderTests {
     assertEquals(introspectionRequestOneOf, introspectionRequest)
     assertEquals(introspectionResponse, tempFile.readText())
   }
+
+  @Test
+  fun `schema is downloaded correctly when using fail-safe introspection query`() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueueString(introspectionResponse)
+
+    SchemaDownloader.download(
+        endpoint = mockServer.url(),
+        graph = null,
+        key = null,
+        graphVariant = "",
+        schema = tempFile,
+        failSafeIntrospection = true,
+    )
+
+    val introspectionRequest = mockServer.takeRequest().body.utf8()
+    assertEquals(introspectionRequestFailSafe, introspectionRequest)
+    assertEquals(introspectionResponse, tempFile.readText())
+  }
+
 }

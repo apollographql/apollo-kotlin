@@ -257,6 +257,21 @@ class DownloadSchemaTests {
   }
 
   @Test
+  fun `manually downloading a schema in failSafe mode is working`() {
+    TestUtils.withSimpleProject(apolloConfiguration = "") { dir ->
+      mockServer.enqueue(MockResponse().setBody(schemaString1))
+      val schema = File("build/testProject/schema.json")
+      TestUtils.executeGradle(dir, "downloadApolloSchema",
+          "--schema=${schema.absolutePath}",
+          "--endpoint=${mockServer.url("/")}",
+          "--failSafeIntrospection"
+      )
+
+      Assert.assertEquals(schemaString1, schema.readText())
+    }
+  }
+
+  @Test
   fun `download a schema from a real server is working`() {
     val executableSchema = ExecutableSchema.Builder()
         .schema("type Query {foo: Int}")
