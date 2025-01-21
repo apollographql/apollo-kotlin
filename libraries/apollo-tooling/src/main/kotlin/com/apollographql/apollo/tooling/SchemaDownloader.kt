@@ -42,7 +42,6 @@ object SchemaDownloader {
    * Else it will use SDL. Prefer SDL if you can as it is more compact and carries more information.
    * @param insecure if set to true, TLS/SSL certificates will not be checked when downloading.
    * @param headers extra HTTP headers to send during introspection.
-   * @param failSafeIntrospection if set to true a minimal introspection query is used and no pre-introspection query.
    */
   fun download(
       endpoint: String?,
@@ -53,7 +52,6 @@ object SchemaDownloader {
       schema: File,
       insecure: Boolean = false,
       headers: Map<String, String> = emptyMap(),
-      failSafeIntrospection: Boolean = false,
   ) {
     var introspectionDataJson: String? = null
     var introspectionSchema: IntrospectionSchema? = null
@@ -61,16 +59,31 @@ object SchemaDownloader {
 
     when {
       endpoint != null -> {
-        introspectionDataJson = downloadIntrospection(
-            endpoint = endpoint,
-            headers = headers,
-            insecure = insecure,
-            failSafe = failSafeIntrospection,
-        )
-        introspectionSchema = try {
-          introspectionDataJson.toIntrospectionSchema()
+        try {
+          introspectionDataJson = downloadIntrospection(
+              endpoint = endpoint,
+              headers = headers,
+              insecure = insecure,
+              failSafe = false,
+          )
+          introspectionSchema = try {
+            introspectionDataJson.toIntrospectionSchema()
+          } catch (e: Exception) {
+            throw Exception("Introspection response from $endpoint can not be parsed", e)
+          }
         } catch (e: Exception) {
-          throw Exception("Introspection response from $endpoint can not be parsed", e)
+          // 2-step introspection didn't work: fallback to no pre-introspection query and minimal introspection query
+          introspectionDataJson = downloadIntrospection(
+              endpoint = endpoint,
+              headers = headers,
+              insecure = insecure,
+              failSafe = true,
+          )
+          introspectionSchema = try {
+            introspectionDataJson.toIntrospectionSchema()
+          } catch (e: Exception) {
+            throw Exception("Introspection response from $endpoint can not be parsed", e)
+          }
         }
       }
 
@@ -121,18 +134,6 @@ object SchemaDownloader {
       }
     }
   }
-
-  @Deprecated(level = DeprecationLevel.HIDDEN, message = "Kept for binary compatibility")
-  fun download(
-      endpoint: String?,
-      graph: String?,
-      key: String?,
-      graphVariant: String,
-      registryUrl: String = "https://api.apollographql.com/graphql",
-      schema: File,
-      insecure: Boolean = false,
-      headers: Map<String, String> = emptyMap(),
-  ) = download(endpoint, graph, key, graphVariant, registryUrl, schema, insecure, headers, failSafeIntrospection = false)
 
   /**
    * Get an introspection query that is compatible with the given [features], as a JSON string.

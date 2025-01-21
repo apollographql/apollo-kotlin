@@ -71,11 +71,6 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
   @get:Option(option = "insecure", description = "if set to true, TLS/SSL certificates will not be checked when downloading")
   abstract val insecure: Property<Boolean>
 
-  @get:Optional
-  @get:Input
-  @get:Option(option = "failSafeIntrospection", description = "if set to true a minimal introspection query is used and no pre-introspection query")
-  abstract val failSafeIntrospection: Property<Boolean>
-
   init {
     /**
      * We cannot know in advance if the backend schema changed so don't cache or mark this task up-to-date
@@ -106,7 +101,6 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
         schema = file,
         insecure = insecure.getOrElse(false),
         headers = header.toMap() + extraHeaders,
-        failSafeIntrospection = failSafeIntrospection.getOrElse(false),
     )
 
     logger.info("Apollo: schema downloaded to ${file.absolutePath}")

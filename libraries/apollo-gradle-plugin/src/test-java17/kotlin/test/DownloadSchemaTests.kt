@@ -130,6 +130,16 @@ class DownloadSchemaTests {
   """.trimIndent()
 
   private val schemaString2 = schemaString1.replace("foo", "bar")
+  private val schemaStringError = """
+    {
+      "data": null,
+      "errors": [
+        {
+          "message": "unexpected field specifiedByURL type on __Type"
+        }
+      ]
+    }
+  """.trimIndent()
 
   private val apolloConfiguration = """
       apollo {
@@ -257,14 +267,15 @@ class DownloadSchemaTests {
   }
 
   @Test
-  fun `manually downloading a schema in failSafe mode is working`() {
+  fun `manually downloading a schema when 2-step mode fails is working`() {
     TestUtils.withSimpleProject(apolloConfiguration = "") { dir ->
+      mockServer.enqueue(MockResponse().setBody(preIntrospectionResponse))
+      mockServer.enqueue(MockResponse().setBody(schemaStringError))
       mockServer.enqueue(MockResponse().setBody(schemaString1))
       val schema = File("build/testProject/schema.json")
       TestUtils.executeGradle(dir, "downloadApolloSchema",
           "--schema=${schema.absolutePath}",
           "--endpoint=${mockServer.url("/")}",
-          "--failSafeIntrospection"
       )
 
       Assert.assertEquals(schemaString1, schema.readText())
