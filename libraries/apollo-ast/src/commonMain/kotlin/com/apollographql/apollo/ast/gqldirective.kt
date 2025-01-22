@@ -214,11 +214,6 @@ enum class BuiltIn {
   ANY,
 }
 
-fun foo(a: Int) {
-  mar
-}
-
-
 @ApolloInternal
 class MapToBuiltIn(
     val builtIn: BuiltIn
@@ -275,10 +270,27 @@ fun GQLScalarTypeDefinition.findMapTo(schema: Schema): MapTo? {
         throw ConversionException("'name' is required", user.sourceLocation)
       }
       return MapToUser(
-          name = name!!,
+          name = name,
           adapter = adapter
       )
     }
   }
+
   throw ConversionException("'to' must contain either 'builtIn' or 'user'", to.sourceLocation)
+}
+
+@ApolloInternal
+fun List<GQLDirective>.findInlineProperty(schema: Schema): String? {
+  val directive = firstOrNull { schema.originalDirectiveName(it.name) == Schema.INLINE }
+  if (directive == null) {
+    return null
+  }
+
+  val propertyName = directive.arguments.firstOrNull { it.name == "propertyName" }?.value
+
+  if (propertyName !is GQLStringValue) {
+    throw ConversionException("'propertyName' must be a string", propertyName?.sourceLocation)
+  }
+
+  return propertyName.value
 }

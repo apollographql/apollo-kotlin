@@ -2,7 +2,6 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo.compiler.RuntimeAdapterInitializer
-import com.apollographql.apollo.compiler.ScalarInfo
 import com.apollographql.apollo.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo.compiler.codegen.Identifier.type
 import com.apollographql.apollo.compiler.codegen.ResolverClassName

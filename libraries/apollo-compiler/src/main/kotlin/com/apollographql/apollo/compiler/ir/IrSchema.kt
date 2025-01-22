@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo.ast.BuiltIn
 import com.apollographql.apollo.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo.ast.GQLEnumValueDefinition
 import com.apollographql.apollo.ast.GQLFieldDefinition
@@ -15,19 +14,17 @@ import com.apollographql.apollo.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo.ast.GQLType
 import com.apollographql.apollo.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo.ast.MapTo
-import com.apollographql.apollo.ast.MapToBuiltIn
-import com.apollographql.apollo.ast.MapToUser
 import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo.ast.fieldDefinitions
 import com.apollographql.apollo.ast.findDeprecationReason
+import com.apollographql.apollo.ast.findInlineProperty
 import com.apollographql.apollo.ast.findMapTo
 import com.apollographql.apollo.ast.findOneOf
 import com.apollographql.apollo.ast.findOptInFeature
 import com.apollographql.apollo.ast.findTargetName
 import com.apollographql.apollo.ast.internal.toConnectionFields
 import com.apollographql.apollo.ast.internal.toEmbeddedFields
-import com.apollographql.apollo.compiler.ScalarInfo
 import com.apollographql.apollo.compiler.UsedCoordinates
 import com.apollographql.apollo.compiler.codegen.keyArgs
 import com.apollographql.apollo.compiler.codegen.paginationArgs
@@ -46,11 +43,6 @@ internal class DefaultIrSchema(
 
 interface IrSchema
 
-internal fun IrSchema.scalarMapping(): Map<String, ScalarInfo> {
-  return (this as DefaultIrSchema).irScalars.map {
-    it.name to it.mapTo
-  }
-}
 internal sealed interface IrSchemaType {
   val name: String
 }
@@ -106,10 +98,8 @@ internal data class IrScalar(
     override val name: String,
     val description: String?,
     val deprecationReason: String?,
-    val className: String,
-    val adapter: String?,
-    val inlineProperty: String?,
     val mapTo: MapTo?,
+    val inlineProperty: String?,
 ) : IrSchemaType {
   val type = IrScalarType(name, nullable = true)
 }
@@ -239,29 +229,13 @@ internal fun GQLUnionTypeDefinition.toIr(): IrUnion {
 }
 
 internal fun GQLScalarTypeDefinition.toIr(schema: Schema): IrScalar {
-  val mapTo = findMapTo(schema = schema)
-  var className: String
-  when(mapTo) {
-    is MapToBuiltIn -> {
-      when(mapTo.builtIn) {
-        BuiltIn.BOOLEAN -> TODO()
-        BuiltIn.INT -> TODO()
-        BuiltIn.LONG -> TODO()
-        BuiltIn.DOUBLE -> TODO()
-        BuiltIn.FLOAT -> TODO()
-        BuiltIn.STRING -> TODO()
-      }
-    }
-    is MapToUser -> TODO()
-    null -> TODO()
-  }
   return IrScalar(
       name = name,
       description = description,
       // XXX: this is not spec-compliant. Directive cannot be on scalar definitions
       deprecationReason = directives.findDeprecationReason(),
-      className = ,
-      inlineClassCoercion = findMapTo(schema)?.let { IrScalarInlineClassCoercion.valueOf(it) }
+      mapTo = findMapTo(schema = schema),
+      inlineProperty = directives.findInlineProperty(schema)
   )
 }
 
@@ -302,7 +276,6 @@ internal fun GQLInterfaceTypeDefinition.toIr(schema: Schema, usedCoordinates: Us
       },
   )
 }
-
 
 /**
  * If [typeName] is declared as a Relay Connection type (via the `@typePolicy` directive), return the standard arguments

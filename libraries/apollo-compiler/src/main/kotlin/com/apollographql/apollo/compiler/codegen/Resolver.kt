@@ -7,9 +7,6 @@ class ResolverClassName(val packageName: String, val simpleNames: List<String>) 
   constructor(packageName: String, vararg simpleNames: String): this(packageName, simpleNames.toList())
 }
 
-@Serializable
-internal class ResolverMemberName(val className: ResolverClassName, val name: String)
-
 /**
  * Must be a data class because it is used as a key in resolvers
  */
@@ -17,6 +14,9 @@ internal class ResolverMemberName(val className: ResolverClassName, val name: St
 data class ResolverKey(val kind: ResolverKeyKind, val id: String)
 
 enum class ResolverKeyKind {
+  /**
+   * `id` is the name of the GraphQL type
+   */
   SchemaType,
   Model,
   SchemaTypeAdapter,

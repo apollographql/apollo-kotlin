@@ -228,6 +228,9 @@ class Schema internal constructor(
     @ApolloExperimental
     const val MAP = "map"
 
+    @ApolloExperimental
+    const val INLINE = "inline"
+
     /**
      * Parses the given [map] and creates a new [Schema].
      * The [map] must come from a previous call to [toMap] to make sure the schema is valid
