@@ -93,7 +93,7 @@ benmanes-versions = { group = "com.github.ben-manes", name = "gradle-versions-pl
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 dokka = "org.jetbrains.dokka:dokka-gradle-plugin:2.0.0"
-dgp = "com.gradle:develocity-gradle-plugin:3.19" # // sync with settings.gradle.kts
+dgp = "com.gradle:develocity-gradle-plugin:3.19.1" # // sync with settings.gradle.kts
 # Not updating because it fails in apollo-compiler Java tests with
 # annotation @org.jetbrains.annotations.Nullable not applicable in this type context
 google-testing-compile = { group = "com.google.testing.compile", name = "compile-testing", version = "0.19" }
