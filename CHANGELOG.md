@@ -9,7 +9,7 @@ _2025-01-24_
 
 The artifacts are now compiled with [Kotlin 2.1.0](https://kotlinlang.org/docs/whatsnew21.html). This change should be transparent for JVM and Android users thanks to [`languageVersion`](https://kotlinlang.org/docs/compatibility-modes.html) but [requires klib consumers (native + JS) to update their KGP version to 2.1.0](https://github.com/JetBrains/kotlin/blob/8add2e3b98904f34ce5db575e9543cb3d3c9ec0b/compiler/util-klib/KotlinAbiVersionBumpHistory.md?plain=1#L3-L5).
 
-# Rover LSP support in the IntelliJ plugin (#6274)
+## Rover LSP support in the IntelliJ plugin (#6274)
 
 The IntelliJ plugin now has a dedicated mode for backend developers that uses [Rover](https://github.com/apollographql/rover) LSP ([Language Server Protocol](https://en.wikipedia.org/wiki/Language_Server_Protocol)) to parse federation and connectors directives. This mode is only available when using IntelliJ ultimate and is recommended for subgraphs authors.
 
