@@ -15,7 +15,7 @@ android-sdkversion-benchmark-min = "24"
 android-sdkversion-target = "30"
 androidx-sqlite = "2.3.1"
 # This is used by the gradle integration tests to get the artifacts locally
-apollo = "4.1.1-SNAPSHOT"
+apollo = "4.1.1"
 apollo-execution = "0.1.0"
 apollo-normalizedcache-incubating = "0.0.3"
 apollo-normalizedcache-incubating-snapshot = "0.0.5-SNAPSHOT"
