@@ -1,5 +1,6 @@
 package com.apollographql.apollo.cache.normalized
 
+import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
@@ -57,6 +58,19 @@ interface ApolloStore {
       customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
   ): D
+
+  /**
+   * Read a GraphQL operation from the store, returning only the data that is present in the cache.
+   * Fields that are not present will be returned as `null` if their type is nullable, bubbling up to the parent otherwise.
+   * When a field is missing, a corresponding `Error` will be present in [ApolloResponse.errors].
+   */
+ suspend fun <D : Operation.Data> readOperationPartial(
+      operation: Operation<D>,
+      schema: String,
+      customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+      cacheHeaders: CacheHeaders = CacheHeaders.NONE,
+  ): ApolloResponse<D>
+
 
   /**
    * Read a GraphQL fragment from the store.

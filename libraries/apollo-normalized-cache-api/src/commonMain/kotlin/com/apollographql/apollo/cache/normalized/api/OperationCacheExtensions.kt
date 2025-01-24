@@ -45,6 +45,7 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
       cacheResolver = cacheResolver,
       cacheHeaders = cacheHeaders,
       variables = variables,
+      partialResults = false,
   ).toData(adapter(), customScalarAdapters, variables)
 }
 
@@ -61,7 +62,8 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
       cache = cache,
       cacheResolver = cacheResolver,
       cacheHeaders = cacheHeaders,
-      variables = variables
+      variables = variables,
+      partialResults = false,
   ).toData(adapter(), customScalarAdapters, variables)
 }
 
@@ -71,12 +73,14 @@ fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
     cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
     variables: Executable.Variables,
+    partialResults: Boolean,
 ): CacheData = readInternal(
     cacheKey = CacheKey.rootKey(),
     cache = cache,
     cacheResolver = cacheResolver,
     cacheHeaders = cacheHeaders,
-    variables = variables
+    variables = variables,
+    partialResults = partialResults,
 )
 
 @ApolloInternal
@@ -92,6 +96,7 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCacheInternal(
     cacheResolver = cacheResolver,
     cacheHeaders = cacheHeaders,
     variables = variables,
+    partialResults = false,
 )
 
 private fun <D : Executable.Data> Executable<D>.readInternal(
@@ -100,6 +105,7 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
     cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
     variables: Executable.Variables,
+    partialResults: Boolean,
 ): CacheData {
   return CacheBatchReader(
       cache = cache,
@@ -108,7 +114,8 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
       variables = variables,
       rootKey = cacheKey.key,
       rootSelections = rootField().selections,
-      rootTypename = rootField().type.rawType().name
+      rootTypename = rootField().type.rawType().name,
+      partialResults = partialResults,
   ).collectData()
 }
 

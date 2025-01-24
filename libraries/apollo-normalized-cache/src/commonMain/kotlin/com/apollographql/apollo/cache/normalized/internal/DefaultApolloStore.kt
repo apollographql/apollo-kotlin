@@ -1,8 +1,12 @@
 package com.apollographql.apollo.cache.normalized.internal
 
+import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Error
+import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.variables
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.api.CacheHeaders
@@ -16,7 +20,11 @@ import com.apollographql.apollo.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo.cache.normalized.api.normalize
 import com.apollographql.apollo.cache.normalized.api.readDataFromCacheInternal
 import com.apollographql.apollo.cache.normalized.api.toData
+import com.apollographql.apollo.execution.ExecutableSchema
+import com.apollographql.apollo.execution.GraphQLRequest
+import com.apollographql.apollo.execution.GraphQLResponse
 import com.benasher44.uuid.Uuid
+import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -120,9 +128,76 @@ internal class DefaultApolloStore(
           cache = cache,
           cacheResolver = cacheResolver,
           cacheHeaders = cacheHeaders,
-          variables = variables
+          variables = variables,
+          partialResults = false,
       )
     }.toData(operation.adapter(), customScalarAdapters, variables)
+  }
+
+  override suspend fun <D : Operation.Data> readOperationPartial(
+      operation: Operation<D>,
+      schema: String,
+      customScalarAdapters: CustomScalarAdapters,
+      cacheHeaders: CacheHeaders,
+  ): ApolloResponse<D> {
+    val variables = operation.variables(customScalarAdapters, true)
+    val dataAsMapWithCacheMisses: Map<String, Any?> = lock.read {
+      operation.readDataFromCacheInternal(
+          cache = cache,
+          cacheResolver = cacheResolver,
+          cacheHeaders = cacheHeaders,
+          variables = variables,
+          partialResults = true,
+      )
+    }.toMap()
+    val graphQLRequest = GraphQLRequest.Builder()
+        .document(operation.document())
+        .variables(variables.valueMap)
+        .build()
+    val graphQLResponse: GraphQLResponse = ExecutableSchema.Builder()
+        .schema(schema)
+        .resolver { resolveInfo ->
+          dataAsMapWithCacheMisses.valueAtPath(resolveInfo.path)
+        }
+        .build()
+        .execute(graphQLRequest, ExecutionContext.Empty)
+
+    @Suppress("UNCHECKED_CAST")
+    val dataAsMapWithNullFields = graphQLResponse.data as Map<String, Any?>?
+    val falseVariablesCustomScalarAdapter =
+      customScalarAdapters.newBuilder().falseVariables(variables.valueMap.filter { it.value == false }.keys).build()
+    val data = dataAsMapWithNullFields?.let { operation.adapter().fromJson(it.jsonReader(), falseVariablesCustomScalarAdapter) }
+    return ApolloResponse.Builder(operation, uuid4())
+        .data(data)
+        .errors(graphQLResponse.errors)
+        .build()
+  }
+
+  private fun Map<String, Any?>.valueAtPath(path: List<Any>): Any? {
+    var value: Any? = this
+    for (key in path) {
+      value = when (value) {
+        is List<*> -> {
+          value[key as Int]
+        }
+
+        is Map<*, *> -> {
+          @Suppress("UNCHECKED_CAST")
+          value as Map<String, Any?>
+          value[key]
+        }
+
+        is Error -> {
+          // Short circuit if we encounter a cache miss error
+          return value
+        }
+
+        else -> {
+          error("Unknown value type: $value")
+        }
+      }
+    }
+    return value
   }
 
   override fun <D : Fragment.Data> readFragment(
@@ -157,7 +232,7 @@ internal class DefaultApolloStore(
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys =  writeOperationSync(
+    val changedKeys = writeOperationSync(
         operation = operation,
         operationData = operationData,
         cacheHeaders = cacheHeaders,
@@ -171,7 +246,12 @@ internal class DefaultApolloStore(
     return changedKeys
   }
 
-  override fun <D : Operation.Data> writeOperationSync(operation: Operation<D>, operationData: D, customScalarAdapters: CustomScalarAdapters, cacheHeaders: CacheHeaders): Set<String> {
+  override fun <D : Operation.Data> writeOperationSync(
+      operation: Operation<D>,
+      operationData: D,
+      customScalarAdapters: CustomScalarAdapters,
+      cacheHeaders: CacheHeaders,
+  ): Set<String> {
     val records = operation.normalize(
         data = operationData,
         customScalarAdapters = customScalarAdapters,

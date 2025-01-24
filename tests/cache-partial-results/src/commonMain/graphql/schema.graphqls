@@ -1,0 +1,24 @@
+type Query {
+  me: User!
+  users(ids: [ID!]!): [User]!
+  project(id: ID! = "1"): Project
+}
+
+type User {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  nickName: String
+  email: String!
+  bestFriend: User
+  projects: [Project!]!
+  mainProject: Project!
+}
+
+type Project {
+  id: ID!
+  name: String!
+  description: String
+  lead: User
+  users: [User!]!
+}

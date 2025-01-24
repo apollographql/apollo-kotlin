@@ -1,0 +1,75 @@
+query MeWithoutNickNameWithEmailQuery {
+  me {
+    firstName
+    lastName
+    email
+
+    ... on User {
+      id
+    }
+  }
+}
+
+query MeWithoutNickNameWithoutEmailQuery {
+  me {
+    id
+    firstName
+    lastName
+  }
+}
+
+query MeWithNickNameQuery {
+  me {
+    id
+    firstName
+    lastName
+    nickName
+  }
+}
+
+query UsersQuery($ids: [ID!]!) {
+  users(ids: $ids) {
+    id
+    firstName
+    lastName
+    email
+  }
+}
+
+query MeWithBestFriendQuery {
+  me {
+    id
+    firstName
+    lastName
+    bestFriend {
+      id
+      firstName
+      lastName
+    }
+    projects {
+      lead {
+        id
+        firstName
+        lastName
+      }
+      users {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
+
+query DefaultProjectQuery($id: ID! = "42") {
+  project(id: $id) {
+    id
+    name
+    description
+  }
+  project2: project(id: "44") {
+    id
+    name
+    description
+  }
+}

@@ -17,6 +17,8 @@ kotlin {
         implementation(libs.atomicfu.library.get().toString()) {
           because("Use of ReentrantLock in DefaultApolloStore for Apple (we don't use the gradle plugin rewrite)")
         }
+
+        implementation("com.apollographql.apollo:apollo-execution")
       }
     }
   }
