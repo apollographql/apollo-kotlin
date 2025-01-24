@@ -11,7 +11,7 @@ The artifacts are now compiled with [Kotlin 2.1.0](https://kotlinlang.org/docs/w
 
 ## Rover LSP support in the IntelliJ plugin (#6274)
 
-The IntelliJ plugin now has a dedicated mode for backend developers that uses [Rover](https://github.com/apollographql/rover) LSP ([Language Server Protocol](https://en.wikipedia.org/wiki/Language_Server_Protocol)) to parse federation and connectors directives. This mode is only available when using IntelliJ ultimate and is recommended for subgraphs authors.
+The IntelliJ plugin now has a dedicated mode for backend developers that uses [Rover](https://github.com/apollographql/rover) LSP ([Language Server Protocol](https://en.wikipedia.org/wiki/Language_Server_Protocol)) to parse federation and connectors directives. This mode is only available when using IntelliJ Ultimate and other IDEs with LSP support. It is recommended for subgraphs authors.
 
 ## Gradle isolated projects support (#6351)
 
