@@ -1,6 +1,62 @@
 Change Log
 ==========
 
+# Version 4.1.1
+
+_2025-01-24_
+
+## Kotlin 2.1.0 (#6291)
+
+The artifacts are now compiled with [Kotlin 2.1.0](https://kotlinlang.org/docs/whatsnew21.html). This change should be transparent for JVM and Android users thanks to [`languageVersion`](https://kotlinlang.org/docs/compatibility-modes.html) but [requires klib consumers (native + JS) to update their KGP version to 2.1.0](https://github.com/JetBrains/kotlin/blob/8add2e3b98904f34ce5db575e9543cb3d3c9ec0b/compiler/util-klib/KotlinAbiVersionBumpHistory.md?plain=1#L3-L5).
+
+## Rover LSP support in the IntelliJ plugin (#6274)
+
+The IntelliJ plugin now has a dedicated mode for backend developers that uses [Rover](https://github.com/apollographql/rover) LSP ([Language Server Protocol](https://en.wikipedia.org/wiki/Language_Server_Protocol)) to parse federation and connectors directives. This mode is only available when using IntelliJ Ultimate and other IDEs with LSP support. It is recommended for subgraphs authors.
+
+## Gradle isolated projects support (#6351)
+
+This release supports [Gradle isolated projects](https://docs.gradle.org/current/userguide/isolated_projects.html) for shorter configuration times.
+
+## Contributors 💙💙
+
+Many thanks to @jvanderwee, @varahash, @whyoleg, @StylianosGakis and @scana for all the contributions and help in this release 💙!
+
+## 👷‍♂️ All changes
+
+* [all] Do not set the license URL in the POMs (#6247)
+* [all] Bump Kotlin to 2.1.0 (#6291)
+* [all] Bump atomicfu (#6245)
+* [intellij-plugin] Play nice with IDEs without Kotlin/Gradle (#6358)
+* [intellij-plugin] Reduce usage of GradleExecutionHelper (#6355)
+* [intellij-plugin] Use our own executeOnPooledThread instead of Android Plugin's (#6310)
+* [intellij-plugin] Make Java and Kotlin dependencies optional (#6304)
+* [intellij-plugin] Pass arguments to rover (#6303)
+* [intellij-plugin] Move Rover settings to own section and add note about needing v0.27.0+ (#6278)
+* [intellij-plugin] Remove untilBuild (#6279)
+* [intellij-plugin] Add support for the Apollo LSP via Rover (#6274)
+* [intellij-plugin] Don't reference AdbShellCommandsUtil.executeCommandBlocking that's been removed (#6268)
+* [intellij-plugin] Make verifyPlugin fail on certain problems (#6256)
+* [intellij-plugin] Do not use internal symbol (#6255)
+* [intellij-plugin] Add explicit dependency to com.intellij.modules.json (#6254)
+* [gradle-plugin] Add a fail-safe mode to disable 2-step introspection and use minimal introspection query (#6360)
+* [gradle-plugin] Isolated Projects support (#6351)
+* [gradle-plugin] expose the outgoing variants (#6329)
+* [gradle-plugin] Better Gradle error message (#6326)
+* [gradle-plugin] Fix classloader caching. Many thanks @scana for catching this (#6309)
+* [gradle-plugin] Manage our classloaders manually (#6305)
+* [gradle-plugin] Only call `onSchema()` once in multi-module scenrios (#6252)
+* [runtime] Copy executionContext inside HttpRequest.newBuilder (#6350)
+* [runtime] Apple HttpEngine: lock the handlers map (#6348)
+* [runtime] Allow to initialize WebSocketEngine lazily (#6290)
+* [runtime] Remove CloseableBackgroundDispatcher (#6286)
+* [runtime] Override JsonNumber.toString() (#6273)
+* [runtime] Implement ApolloWebSocketClosedException on darwin targets and update docs (#6275)
+* [ast] Make deprecation.reason non-nullable (#6311)
+* [ast] Allow multiple @link schema extensions (#6284)
+* [normalized-cache] Add ApolloStore.ALL_KEYS to notify all watchers (#6337)
+* [http-cache] HTTP cache: do not remove cached entries on transport errors (#6314)
+* [execution] Add apollo-execution (#6356)
+
 # Version 4.1.0
 
 _2024-11-04_
