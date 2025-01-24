@@ -1,3 +1,7 @@
+pluginManagement {
+  includeBuild("../build-logic")
+}
+
 plugins {
   id("com.gradle.develocity") version "3.19" // sync with libraries.toml
   id("com.gradle.common-custom-user-data-gradle-plugin") version "2.0.2"
@@ -23,7 +27,6 @@ rootProject.projectDir
     }
 
 includeBuild("../")
-includeBuild("../build-logic")
 
 dependencyResolutionManagement {
   versionCatalogs {
