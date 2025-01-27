@@ -1,0 +1,152 @@
+switcher:
+  heading: "Apollo Kotlin"
+  versions:
+    - label: v4
+      latest: true
+      href: ./
+    - label: v3
+      href: ./v3
+    - label: v2
+      href: ./v2
+items:
+  - label: Get Started
+    href: "."
+  - label: Migrating to v4
+    href: ./migration/4.0
+  - label: Modules
+    href: ./essentials/modules
+  - label: Evolution policy
+    href: ./essentials/evolution
+  - label: Kdoc
+    href: https://apollographql.github.io/apollo-kotlin/kdoc/
+  - label: Changelog
+    href: https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md
+  - label: Tutorial
+    children:
+      - label: 0. Introduction
+        href: ./tutorial/00-introduction
+      - label: 1. Configure your project
+        href: ./tutorial/01-configure-project
+      - label: 2. Add the GraphQL schema
+        href: ./tutorial/02-add-the-graphql-schema
+      - label: 3. Write your first query
+        href: ./tutorial/03-write-your-first-query
+      - label: 4. Execute your first query
+        href: ./tutorial/04-execute-the-query
+      - label: 5. Connect your queries to your UI
+        href: ./tutorial/05-connect-queries-to-your-ui
+      - label: 6. Add more info to the list
+        href: ./tutorial/06-add-more-info
+      - label: 7. Paginate results
+        href: ./tutorial/07-paginate-results
+      - label: 8. Add a details view
+        href: ./tutorial/08-add-a-details-view
+      - label: 9. Write your first mutation
+        href: ./tutorial/09-write-your-first-mutation
+      - label: 10. Authenticate your operations
+        href: ./tutorial/10-authenticate-your-queries
+      - label: 11. Write your first subscription
+        href: ./tutorial/11-subscriptions
+  - label: Configuration
+    children:
+      - label: Gradle plugin configuration
+        href: ./advanced/plugin-configuration
+      - label: Gradle plugin recipes
+        href: ./advanced/plugin-recipes
+      - label: Multi Modules
+        href: ./advanced/multi-modules
+      - label: File types
+        href: ./essentials/file-types
+      - label: Client Awareness
+        href: ./advanced/client-awareness
+  - label: Fetching
+    children:
+      - label: Queries
+        href: ./essentials/queries
+      - label: Mutations
+        href: ./essentials/mutations
+      - label: Subscriptions
+        href: ./essentials/subscriptions
+      - label: GraphQL variables
+        href: ./advanced/operation-variables
+      - label: Error handling
+        href: ./essentials/errors
+      - label: Custom scalars
+        href: ./essentials/custom-scalars
+      - label: Fragments
+        href: ./essentials/fragments
+      - label: "@defer support"
+        href: ./fetching/defer
+      - label: Persisted queries
+        href: ./advanced/persisted-queries
+  - label: Caching
+    children:
+      - label: Introduction
+        href: ./caching/introduction
+      - label: Normalized caches
+        href: ./caching/normalized-cache
+      - label: Declarative cache IDs
+        href: ./caching/declarative-ids
+      - label: Programmatic cache IDs
+        href: ./caching/programmatic-ids
+      - label: Watching cached data
+        href: ./caching/query-watchers
+      - label: ApolloStore
+        href: ./caching/store
+      - label: HTTP cache
+        href: ./caching/http-cache
+      - label: Troubleshooting
+        href: ./caching/troubleshooting
+  - label: Networking
+    children:
+      - label: Interceptors
+        href: ./advanced/interceptors-http
+      - label: Custom HTTP clients
+        href: ./advanced/http-engine
+      - label: Using the models without apollo-runtime
+        href: ./advanced/no-runtime
+      - label: Authentication
+        href: ./advanced/authentication
+      - label: WebSocket errors
+        href: ./advanced/websocket-errors
+      - label: Batching operations
+        href: ./advanced/query-batching
+  - label: Development & Testing
+    children:
+      - label: Testing overview
+        href: ./testing/overview
+      - label: Mocking HTTP responses
+        href: ./testing/mocking-http-responses
+      - label: Mocking GraphQL responses
+        href: ./testing/mocking-graphql-responses
+      - label: Data builders
+        href: ./testing/data-builders
+      - label: Android Studio plugin
+        href: ./testing/android-studio-plugin
+      - label: Apollo Debug Server
+        href: ./testing/apollo-debug-server
+  - label: Advanced
+    children:
+      - label: Uploading files
+        href: ./advanced/upload
+      - label: Monitoring the network state
+        href: ./advanced/network-connectivity
+      - label: Handling nullability
+        href: ./advanced/nullability
+      - label: Experimental WebSockets
+        href: ./advanced/experimental-websockets
+      - label: Using aliases
+        href: ./advanced/using-aliases
+      - label: Using Java
+        href: ./advanced/java
+      - label: Apollo AST
+        href: ./advanced/apollo-ast
+      - label: Compiler plugins
+        href: ./advanced/compiler-plugins
+      - label: JS Interoperability
+        href: ./advanced/js-interop
+      - label: Response based codegen
+        href: ./advanced/response-based
+      - label: Apollo Kotlin galaxy
+        href: ./advanced/galaxy
+
