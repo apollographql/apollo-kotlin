@@ -48,7 +48,7 @@ Many thanks to @jvanderwee, @varahash, @whyoleg, @StylianosGakis and @scana for 
 * [runtime] Copy executionContext inside HttpRequest.newBuilder (#6350)
 * [runtime] Apple HttpEngine: lock the handlers map (#6348)
 * [runtime] Allow to initialize WebSocketEngine lazily (#6290)
-* [runtime] Remove CloseableBackgroundDispatcher (#6286)
+* [runtime] Remove CloseableBackgroundDispatcher and bump coroutines version (#6286)
 * [runtime] Override JsonNumber.toString() (#6273)
 * [runtime] Implement ApolloWebSocketClosedException on darwin targets and update docs (#6275)
 * [ast] Make deprecation.reason non-nullable (#6311)
