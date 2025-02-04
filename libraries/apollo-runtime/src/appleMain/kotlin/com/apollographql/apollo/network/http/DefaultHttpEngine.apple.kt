@@ -63,7 +63,7 @@ private class AppleHttpEngine(
 
   constructor(timeoutMillis: Long) : this(
       timeoutMillis = timeoutMillis,
-      nsUrlSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
+      nsUrlSessionConfiguration = NSURLSessionConfiguration.ephemeralSessionConfiguration()
   )
 
   private val delegate = StreamingDataDelegate()
