@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2025-01-23**
+**Last updated: 2025-02-06**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -15,8 +15,12 @@ For up to date release notes, refer to the project [Changelog](https://github.co
 
 ## [Cache improvements](https://github.com/apollographql/apollo-kotlin/issues/2331)
 
-The declarative cache makes working with the cache and defining unique object ids easier.  We also want to include helpers to handle with common cases like pagination, garbage collection and eviction. Follow [#2331](https://github.com/apollographql/apollo-kotlin/issues/2331) for a high level overview.  Cache control is now available ([doc](https://apollographql.github.io/apollo-kotlin-normalized-cache-incubating/cache-control.html)) 🎉.  The current focus is now on implementing [garbage collection](https://github.com/apollographql/apollo-kotlin/issues/3805).  
-Cache control is available to try now but may be slower than the current cache due to the extra metadata stored.  We're planning to improve this after garbage collection is feature complete. 
+The declarative cache makes working with the cache and defining unique object ids easier.  We also want to include helpers to handle with common cases like pagination, garbage collection and eviction. Follow [#2331](https://github.com/apollographql/apollo-kotlin/issues/2331) for a high level overview.  
+
+* Cache control is now available ([doc](https://apollographql.github.io/apollo-kotlin-normalized-cache-incubating/cache-control.html)) 🎉.  
+* A [first implementation of garbage collection](https://github.com/apollographql/apollo-kotlin-normalized-cache-incubating/pull/69) is also available ([doc](https://apollographql.github.io/apollo-kotlin-normalized-cache-incubating/garbage-collection.html)).
+
+Using the incubtating cache, early results show a speed improvement. This is to be confirmed on real life use cases. As always, your feedback is greatly appreciated and helps us moving the artifact out of experimental state faster.
 
 ## [Testing utilities](https://github.com/apollographql/apollo-kotlin/issues/6076)
 
@@ -30,7 +34,6 @@ _This is currently available as an experimental feature.  We will release a stab
 
 ## Future feature releases 
 
-- Project isolation compatibility for the Gradle plugin (might work already but at least requires some tests).
 - Better support for inline value classes.
 - Stable Jetpack Compose extensions - user feedback is critical here, please do try out the experimental extensions and let us know what's working and what could be improved!
 
