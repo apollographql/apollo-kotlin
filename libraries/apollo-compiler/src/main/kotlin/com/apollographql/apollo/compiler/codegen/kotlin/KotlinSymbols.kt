@@ -84,14 +84,17 @@ internal object KotlinSymbols {
   val Suppress = ClassName("kotlin", "Suppress")
   val OptIn = ClassName("kotlin", "OptIn")
   val JvmOverloads = ClassName("kotlin.jvm", "JvmOverloads")
+  val JvmInline = ClassName("kotlin.jvm", "JvmInline")
 
   /**
    * Adapters
    */
   val AnyAdapter = MemberName(apolloApiPackageName, "AnyAdapter")
   val BooleanAdapter = MemberName(apolloApiPackageName, "BooleanAdapter")
+  val FloatAdapter = MemberName(apolloApiPackageName, "FloatAdapter")
   val DoubleAdapter = MemberName(apolloApiPackageName, "DoubleAdapter")
   val IntAdapter = MemberName(apolloApiPackageName, "IntAdapter")
+  val LongAdapter = MemberName(apolloApiPackageName, "LongAdapter")
   val StringAdapter = MemberName(apolloApiPackageName, "StringAdapter")
   val NullableAnyAdapter = MemberName(apolloApiPackageName, "NullableAnyAdapter")
   val NullableBooleanAdapter = MemberName(apolloApiPackageName, "NullableBooleanAdapter")
