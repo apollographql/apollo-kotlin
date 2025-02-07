@@ -70,7 +70,7 @@ configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
     srcDir("src/main/graphql/conferences")
     packageName.set("com.apollographql.apollo.conferences")
     @OptIn(ApolloExperimental::class)
-    plugin("com.apollographql.cache:normalized-cache-apollo-compiler-plugin:0.0.5-SNAPSHOT") {
+    plugin("com.apollographql.cache:normalized-cache-apollo-compiler-plugin:0.0.5") {
       argument("packageName", packageName.get())
     }
   }

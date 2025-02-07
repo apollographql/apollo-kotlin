@@ -9,15 +9,6 @@ extend schema
   import: ["@cacheControl", "@cacheControlField"]
 )
 
-# Workaround for https://github.com/apollographql/apollo-kotlin/pull/6284
-# Remove when the fix is released
-directive @link(
-  url: String!,
-  as: String,
-  import: [Import],
-  for: Purpose)
-repeatable on SCHEMA
-
 extend type Session @typePolicy(keyFields: "id")
 extend type Bookmarks @typePolicy(keyFields: "id")
 extend type Speaker @typePolicy(keyFields: "id")
