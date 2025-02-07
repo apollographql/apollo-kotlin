@@ -42,6 +42,8 @@ All Apollo Kotlin documentation, including caching and helpful recipes, can be f
 The Apollo Kotlin API reference can be found at: <br/>
 [https://apollographql.github.io/apollo-kotlin/kdoc/](https://apollographql.github.io/apollo-kotlin/kdoc/)
 
+ Tutorials can be found in the Odyssey learning platform: [part1](https://www.apollographql.com/tutorials/apollo-kotlin-android-part1), [part2](https://www.apollographql.com/tutorials/apollo-kotlin-android-part2).
+
 ## 👨‍💻 Who is Apollo?
 
 [Apollo](https://apollographql.com/) builds open-source tools and commercial services to make application development easier, better, and accessible to more people. We help you ship faster with:

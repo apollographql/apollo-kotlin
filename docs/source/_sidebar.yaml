@@ -17,36 +17,12 @@ items:
     href: ./essentials/modules
   - label: Evolution policy
     href: ./essentials/evolution
+  - label: Tutorial
+    href: https://www.apollographql.com/tutorials/apollo-kotlin-android-part1
   - label: Kdoc
     href: https://apollographql.github.io/apollo-kotlin/kdoc/
   - label: Changelog
     href: https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md
-  - label: Tutorial
-    children:
-      - label: 0. Introduction
-        href: ./tutorial/00-introduction
-      - label: 1. Configure your project
-        href: ./tutorial/01-configure-project
-      - label: 2. Add the GraphQL schema
-        href: ./tutorial/02-add-the-graphql-schema
-      - label: 3. Write your first query
-        href: ./tutorial/03-write-your-first-query
-      - label: 4. Execute your first query
-        href: ./tutorial/04-execute-the-query
-      - label: 5. Connect your queries to your UI
-        href: ./tutorial/05-connect-queries-to-your-ui
-      - label: 6. Add more info to the list
-        href: ./tutorial/06-add-more-info
-      - label: 7. Paginate results
-        href: ./tutorial/07-paginate-results
-      - label: 8. Add a details view
-        href: ./tutorial/08-add-a-details-view
-      - label: 9. Write your first mutation
-        href: ./tutorial/09-write-your-first-mutation
-      - label: 10. Authenticate your operations
-        href: ./tutorial/10-authenticate-your-queries
-      - label: 11. Write your first subscription
-        href: ./tutorial/11-subscriptions
   - label: Configuration
     children:
       - label: Gradle plugin configuration
