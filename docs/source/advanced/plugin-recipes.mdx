@@ -173,7 +173,7 @@ apollo {
     // This creates a downloadStarwarsApolloSchemaFromRegistry task
     registry {
       key.set(System.getenv("APOLLO_KEY"))
-      graph.set(System.geten("APOLLO_GRAPH"))
+      graph.set(System.getenv("APOLLO_GRAPH"))
       // The path is interpreted relative to the current project here, no need to prepend 'app'
       schemaFile.set(file("src/main/graphql/com/example/schema.graphqls"))
     }
