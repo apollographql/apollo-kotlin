@@ -120,7 +120,7 @@ val String.normalizedCacheSimpleName: String
   get() = when (this) {
     "$apollo3.cache.normalized.api.MemoryCache",
     "$apollo4.cache.normalized.api.MemoryCache",
-    "com.apollographql.cache.normalized.sql.MemoryCache",
+    "com.apollographql.cache.normalized.memory.MemoryCache",
     -> "MemoryCache"
 
     "$apollo3.cache.normalized.sql.SqlNormalizedCache",
