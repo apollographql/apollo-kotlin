@@ -37,7 +37,7 @@ dependencies {
   implementation(libs.apollo.normalizedcache.sqlite)
 
   // Incubating cache
-  implementation(libs.apollo.normalizedcache.sqlite.incubating.snapshot)
+  implementation(libs.apollo.normalizedcache.sqlite.incubating)
 
   androidTestImplementation(libs.benchmark.junit4)
   androidTestImplementation(libs.androidx.test.core)
@@ -70,7 +70,7 @@ configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
     srcDir("src/main/graphql/conferences")
     packageName.set("com.apollographql.apollo.conferences")
     @OptIn(ApolloExperimental::class)
-    plugin("com.apollographql.cache:normalized-cache-apollo-compiler-plugin:0.0.5") {
+    plugin(libs.apollo.normalizedcache.apollo.compiler.plugin.incubating.get()) {
       argument("packageName", packageName.get())
     }
   }
