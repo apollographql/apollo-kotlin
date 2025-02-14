@@ -12,6 +12,10 @@ import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.fileTypes.ex.FileTypeManagerEx
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.guessProjectDir
+import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.openapi.vfs.newvfs.BulkFileListener
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.util.application
 
 @Service(Service.Level.APP)
@@ -49,6 +53,7 @@ class ApolloLspProjectService(private val project: Project) : Disposable {
   init {
     logd()
     startObserveSettings()
+    startObserveVfsChanges()
   }
 
   private fun startObserveSettings() {
@@ -71,6 +76,22 @@ class ApolloLspProjectService(private val project: Project) : Disposable {
         logd("lspPassPathToSuperGraphYamlChanged=$lspPassPathToSuperGraphYamlChanged lspPathToSuperGraphYamlChanged=$lspPathToSuperGraphYamlChanged lspPassAdditionalArgumentsChanged=$lspPassAdditionalArgumentsChanged lspAdditionalArgumentsChanged=$lspAdditionalArgumentsChanged")
         if (lspPassPathToSuperGraphYamlChanged || lspPathToSuperGraphYamlChanged || lspPassAdditionalArgumentsChanged || lspAdditionalArgumentsChanged) {
           restartApolloLsp()
+        }
+      }
+    })
+  }
+
+  private fun startObserveVfsChanges() {
+    project.messageBus.connect(this).subscribe(VirtualFileManager.VFS_CHANGES, object : BulkFileListener {
+      override fun after(events: MutableList<out VFileEvent>) {
+        for (event in events) {
+          val vFile = event.file!!
+          val isSupergraphYaml = vFile == project.guessProjectDir()?.findChild("supergraph.yaml") ||
+              vFile.path == project.projectSettingsState.lspPathToSuperGraphYaml
+          if (isSupergraphYaml) {
+            logd("supergraph.yaml changed: restarting Apollo LSP")
+            restartApolloLsp()
+          }
         }
       }
     })

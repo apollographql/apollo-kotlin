@@ -132,6 +132,7 @@ class ProjectSettingsService(private val project: Project) : PersistentStateComp
         val superGraphYamlFilePath = project.guessProjectDir()?.findChild("supergraph.yaml")?.path
         if (superGraphYamlFilePath != null) {
           lspPathToSuperGraphYaml = superGraphYamlFilePath
+          lspPassPathToSuperGraphYaml = true
         } else {
           lspPassPathToSuperGraphYaml = false
         }

@@ -5,7 +5,9 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.processTools.getResultStdoutStr
 import com.intellij.execution.processTools.mapFlat
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.guessProjectDir
 import kotlinx.coroutines.runBlocking
+import java.io.File
 
 object RoverHelper {
   private fun getRoverBinDirectory() = "${System.getProperty("user.home")}/.rover/bin"
@@ -20,9 +22,18 @@ object RoverHelper {
       setWorkDirectory(getRoverBinDirectory())
       getEnvironment().put("RUST_BACKTRACE", "full")
       addParameter("lsp")
-      if (project.projectSettingsState.lspPassPathToSuperGraphYaml && project.projectSettingsState.lspPathToSuperGraphYaml.isNotBlank()) {
+      if (project.projectSettingsState.lspPassPathToSuperGraphYaml &&
+          project.projectSettingsState.lspPathToSuperGraphYaml.isNotBlank() &&
+          File(project.projectSettingsState.lspPathToSuperGraphYaml).exists()
+      ) {
         addParameter("--supergraph-config")
         addParameter(project.projectSettingsState.lspPathToSuperGraphYaml)
+      } else {
+        val superGraphYamlFilePath = project.guessProjectDir()?.findChild("supergraph.yaml")?.path
+        if (superGraphYamlFilePath != null) {
+          addParameter("--supergraph-config")
+          addParameter(superGraphYamlFilePath)
+        }
       }
       if (project.projectSettingsState.lspPassAdditionalArguments && project.projectSettingsState.lspAdditionalArguments.isNotBlank()) {
         addParameters(project.projectSettingsState.lspAdditionalArguments.split(' '))
