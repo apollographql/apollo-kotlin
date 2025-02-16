@@ -5,6 +5,7 @@ scalar GeoPoint
 scalar Address
 scalar NotMapped
 scalar Decimal
+scalar Length
 
 type Query {
   float: CustomFloat
@@ -23,5 +24,8 @@ type Query {
   notMapped: NotMapped!
   nullableNotMapped: NotMapped
   decimal: Decimal
+  nonNullableLength: Length!
+  nullableLength: Length
+  nonNullableLengthList: [Length!]!
+  lengthListList: [[Length!]]
 }
-

@@ -10,9 +10,10 @@ import com.apollographql.apollo.api.CompiledListType;
 import com.apollographql.apollo.api.CompiledNotNullType;
 import com.apollographql.apollo.api.CompiledSelection;
 import com.example.custom_scalar_type.type.Character;
+import com.example.custom_scalar_type.type.CharacterID;
 import com.example.custom_scalar_type.type.Date;
-import com.example.custom_scalar_type.type.GraphQLID;
 import com.example.custom_scalar_type.type.GraphQLString;
+import com.example.custom_scalar_type.type.Timestamp;
 import com.example.custom_scalar_type.type.URL;
 import com.example.custom_scalar_type.type.UnsupportedType;
 import java.util.Arrays;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> __hero = Arrays.asList(
-    new CompiledField.Builder("id", new CompiledNotNullType(GraphQLID.type)).build(),
+    new CompiledField.Builder("id", new CompiledNotNullType(CharacterID.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("birthDate", new CompiledNotNullType(Date.type)).build(),
     new CompiledField.Builder("appearanceDates", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Date.type)))).build(),
@@ -30,6 +31,12 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("hero", Character.type).selections(__hero).build()
+    new CompiledField.Builder("hero", Character.type).selections(__hero).build(),
+    new CompiledField.Builder("nonNullTimestamp", new CompiledNotNullType(Timestamp.type)).build(),
+    new CompiledField.Builder("nullableTimestamp", Timestamp.type).build(),
+    new CompiledField.Builder("nonNullListOfNonNullTimestamp", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Timestamp.type)))).build(),
+    new CompiledField.Builder("nonNullListOfNullableTimestamp", new CompiledNotNullType(new CompiledListType(Timestamp.type))).build(),
+    new CompiledField.Builder("nullableListOfNonNullTimestamp", new CompiledListType(new CompiledNotNullType(Timestamp.type))).build(),
+    new CompiledField.Builder("nullableListOfNullableTimestamp", new CompiledListType(Timestamp.type)).build()
   );
 }
