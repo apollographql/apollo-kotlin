@@ -1,0 +1,31 @@
+type Query {
+  computers: [Computer!]!
+  computer(id: ID!): Computer
+}
+
+type Mutation {
+  computers: [Computer!]!
+}
+
+type Subscription {
+  count(to: Int!): Counter!
+}
+
+type Counter {
+  value: Int!
+  valueTimesTwo: Int!
+}
+
+type Computer {
+  id: ID!
+  cpu: String!
+  year: Int!
+  screen: Screen!
+  errorField: String
+  nonNullErrorField: String!
+}
+
+type Screen {
+  resolution: String!
+  isColor: Boolean!
+}
