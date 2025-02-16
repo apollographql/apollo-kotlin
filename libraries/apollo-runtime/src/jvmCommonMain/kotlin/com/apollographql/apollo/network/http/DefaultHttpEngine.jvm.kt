@@ -27,6 +27,9 @@ actual fun DefaultHttpEngine(timeoutMillis: Long): HttpEngine = JvmHttpEngine(ti
 
 fun DefaultHttpEngine(httpCallFactory: Call.Factory): HttpEngine = JvmHttpEngine(httpCallFactory)
 
+/**
+ * See https://github.com/square/okhttp/pull/8248 for why we use a lambda here
+ */
 fun DefaultHttpEngine(httpCallFactory: () -> Call.Factory): HttpEngine = JvmHttpEngine(httpCallFactory)
 
 fun DefaultHttpEngine(okHttpClient: OkHttpClient): HttpEngine = JvmHttpEngine(okHttpClient)
