@@ -18,7 +18,7 @@ items:
   - label: Evolution policy
     href: ./essentials/evolution
   - label: Tutorial
-    href: https://www.apollographql.com/tutorials/apollo-kotlin-android-part1
+    href: ./essentials/tutorial
   - label: Kdoc
     href: https://apollographql.github.io/apollo-kotlin/kdoc/
   - label: Changelog
