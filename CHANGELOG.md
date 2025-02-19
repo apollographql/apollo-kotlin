@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+# Next version
+
+* Downloading or converting a SDL schema from introspection now includes scalar definitions. This is required for clients to get a [full view of the schema](https://github.com/graphql/graphql-wg/blob/main/rfcs/FullSchemas.md). 
+
 # Version 4.1.1
 
 _2025-01-24_

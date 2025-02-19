@@ -1,6 +1,7 @@
 package com.apollographql.apollo.graphql.ast.test
 
 import com.apollographql.apollo.ast.parseAsGQLDocument
+import com.apollographql.apollo.ast.toFullSchemaGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.ast.toSDL
 import com.apollographql.apollo.ast.withBuiltinDefinitions
@@ -15,15 +16,6 @@ class SDLWriterTest {
 
     checkExpected(sdlSchema) {
       it.parseAsGQLDocument().getOrThrow().toSDL("    ")
-    }
-  }
-
-  @Test
-  fun typeRedefinitionInspectionIsIgnored() {
-    val sdlSchema = File("${CWD}/test-fixtures/sdl/type_redefinitions.graphqls")
-
-    checkExpected(sdlSchema) {
-      it.parseAsGQLDocument().getOrThrow().withBuiltinDefinitions().toSDL("    ")
     }
   }
 

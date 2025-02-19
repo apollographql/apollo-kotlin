@@ -5,6 +5,7 @@ import com.apollographql.apollo.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo.ast.introspection.writeTo
 import com.apollographql.apollo.ast.toFullSchemaGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
+import com.apollographql.apollo.ast.toSDL
 import com.apollographql.apollo.ast.toUtf8
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
@@ -46,7 +47,9 @@ abstract class ApolloConvertSchemaTask : DefaultTask() {
     }
 
     if (from.isIntrospection()) {
-      from.toIntrospectionSchema().toGQLDocument().toUtf8(to)
+      from.toIntrospectionSchema().toGQLDocument().toSDL(includeBuiltInScalarDefinitions = true).let {
+        to.writeText(it)
+      }
     } else {
       from.toGQLDocument().toFullSchemaGQLDocument().toIntrospectionSchema().writeTo(to)
     }

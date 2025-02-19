@@ -22,6 +22,8 @@ import okio.Buffer
  * Scalars: https://spec.graphql.org/draft/#sel-GAHXJHABAB_D4G
  * Directives: https://spec.graphql.org/draft/#sel-FAHnBPLCAACCcooU
  */
+@Deprecated("use toFullSchemaGQLDocument instead", ReplaceWith("toFullSchemaGQLDocument()"))
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_2)
 fun GQLDocument.withBuiltinDefinitions(): GQLDocument {
   return withDefinitions(builtinDefinitions())
 }
@@ -201,22 +203,18 @@ private fun GQLDocument.withDefinitions(definitions: List<GQLDefinition>): GQLDo
  * See https://spec.graphql.org/draft/#sel-GAHXJHABAB_D4G
  */
 @ApolloExperimental
-fun GQLDocument.toSDL(indent: String = "  "): String {
+fun GQLDocument.toSDL(indent: String = "  ", includeBuiltInScalarDefinitions: Boolean = false): String {
   val buffer = Buffer()
   val writer = SDLWriter(buffer, indent)
 
   definitions.forEachIndexed { index, definition ->
     when {
-      definition is GQLScalarTypeDefinition && definition.name in GQLTypeDefinition.builtInTypes -> {
+      definition is GQLScalarTypeDefinition
+          && definition.name in GQLTypeDefinition.builtInTypes
+          && !includeBuiltInScalarDefinitions -> {
         // Always skip scalar definitions, it's a must in the spec
         return@forEachIndexed
       }
-
-      definition is GQLTypeDefinition && definition.name in GQLTypeDefinition.builtInTypes ||
-          definition is GQLDirectiveDefinition && definition.name in GQLDirectiveDefinition.builtInDirectives -> {
-        writer.write(definition)
-      }
-
       else -> {
         writer.write(definition)
       }
@@ -227,3 +225,8 @@ fun GQLDocument.toSDL(indent: String = "  "): String {
   }
   return buffer.readUtf8()
 }
+
+@ApolloExperimental
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_2)
+@Deprecated("This is only kept for backward compatibility reasons. Use the overload instead.", level = DeprecationLevel.HIDDEN)
+fun GQLDocument.toSDL(indent: String = "  ") = toSDL(indent, false)
