@@ -127,7 +127,7 @@ object SchemaDownloader {
       if (sdlSchema == null) {
         check(introspectionSchema != null)
         // Convert from JSON to SDL
-        schema.writeText(introspectionSchema.toGQLDocument().toSDL(indent = "  "))
+        schema.writeText(introspectionSchema.toGQLDocument().toSDL(indent = "  ", includeBuiltInScalarDefinitions = true))
       } else {
         // Copy SDL verbatim
         schema.writeText(sdlSchema)
