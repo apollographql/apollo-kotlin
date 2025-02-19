@@ -47,7 +47,9 @@ abstract class ApolloConvertSchemaTask : DefaultTask() {
     }
 
     if (from.isIntrospection()) {
-      from.toIntrospectionSchema().toGQLDocument().toSDL(includeBuiltInScalarDefinitions = true)
+      from.toIntrospectionSchema().toGQLDocument().toSDL(includeBuiltInScalarDefinitions = true).let {
+        to.writeText(it)
+      }
     } else {
       from.toGQLDocument().toFullSchemaGQLDocument().toIntrospectionSchema().writeTo(to)
     }
