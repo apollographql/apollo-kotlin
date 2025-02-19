@@ -179,7 +179,7 @@ For fields of `List` type, `@catch` applies only to the first level. If you need
 query GetUser {
   user {
     # map friends[i] to FieldResult
-    friends @catch(to: RESULT, level: 1)
+    friends @catch(to: RESULT, levels: [1])
   }
 }
 ```
