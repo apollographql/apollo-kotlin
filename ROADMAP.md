@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2025-02-06**
+**Last updated: 2025-02-20**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -19,8 +19,9 @@ The declarative cache makes working with the cache and defining unique object id
 
 * Cache control is now available ([doc](https://apollographql.github.io/apollo-kotlin-normalized-cache-incubating/cache-control.html)) 🎉.  
 * A [first implementation of garbage collection](https://github.com/apollographql/apollo-kotlin-normalized-cache-incubating/pull/69) is also available ([doc](https://apollographql.github.io/apollo-kotlin-normalized-cache-incubating/garbage-collection.html)).
+* [Partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache-incubating/issues/57) is also available.
 
-Using the incubtating cache, early results show a speed improvement. This is to be confirmed on real life use cases. As always, your feedback is greatly appreciated and helps us moving the artifact out of experimental state faster.
+Using the incubating cache, early results show a speed improvement. This is to be confirmed on real life use cases. As always, your feedback is greatly appreciated and helps us moving the artifact out of experimental state faster.
 
 ## [Testing utilities](https://github.com/apollographql/apollo-kotlin/issues/6076)
 
