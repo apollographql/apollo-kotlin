@@ -154,6 +154,7 @@ internal fun SchemaLayout.typePackageName() = "${schemaPackageName()}.type"
 internal fun SchemaLayout.typeBuilderPackageName() = "${schemaPackageName()}.type.builder"
 internal fun SchemaLayout.typeAdapterPackageName() = "${schemaPackageName()}.type.adapter"
 internal fun SchemaLayout.typeUtilPackageName() = "${schemaPackageName()}.type.util"
+internal fun SchemaLayout.typeScalarPackageName() = "${schemaPackageName()}.type.scalar"
 
 internal fun SchemaLayout.paginationPackageName() = "${schemaPackageName()}.pagination"
 internal fun SchemaLayout.schemaSubPackageName() = "${schemaPackageName()}.schema"

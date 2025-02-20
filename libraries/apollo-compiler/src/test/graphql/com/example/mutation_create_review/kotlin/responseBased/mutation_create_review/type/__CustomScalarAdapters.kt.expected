@@ -13,4 +13,5 @@ import com.apollographql.apollo.api.CustomScalarAdapters
 internal val __CustomScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Builder()
       .add(URL.type, com.example.UrlAdapter)
       .add(GraphQLString.type, com.example.MyStringAdapter())
+      .add(Timestamp.type, com.apollographql.apollo.api.LongAdapter)
       .build()

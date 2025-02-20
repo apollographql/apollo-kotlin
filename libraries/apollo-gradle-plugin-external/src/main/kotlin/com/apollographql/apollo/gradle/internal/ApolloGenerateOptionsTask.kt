@@ -6,8 +6,6 @@ import com.apollographql.apollo.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo.compiler.GeneratedMethod
 import com.apollographql.apollo.compiler.IrOptions
 import com.apollographql.apollo.compiler.JavaNullable
-import com.apollographql.apollo.compiler.MANIFEST_OPERATION_OUTPUT
-import com.apollographql.apollo.compiler.MANIFEST_PERSISTED_QUERY
 import com.apollographql.apollo.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo.compiler.MODELS_OPERATION_BASED_WITH_INTERFACES
 import com.apollographql.apollo.compiler.MODELS_RESPONSE_BASED
@@ -56,6 +54,10 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
   @get:Input
   @get:Optional
   abstract val scalarAdapterMapping: MapProperty<String, String>
+
+  @get:Input
+  @get:Optional
+  abstract val scalarInlineClassPropertyMapping: MapProperty<String, String>
 
   @get:Input
   @get:Optional
@@ -237,14 +239,15 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
 
     val upstreamOtherOptions = upstreamOtherOptions.firstOrNull()?.toOtherOptions()
     val upstreamTargetLanguage = upstreamOtherOptions?.targetLanguage
-    val targetLanguage = targetLanguage(generateKotlinModels.orNull, languageVersion.orNull, isJavaPluginApplied, kgpVersion, upstreamTargetLanguage)
+    val targetLanguage =
+      targetLanguage(generateKotlinModels.orNull, languageVersion.orNull, isJavaPluginApplied, kgpVersion, upstreamTargetLanguage)
     val generateFilterNotNull = generateFilterNotNull(targetLanguage, isKmp)
     val alwaysGenerateTypesMatching = alwaysGenerateTypesMatching(alwaysGenerateTypesMatching.orNull, generateAllTypes)
     val upstreamCodegenModels = upstreamOtherOptions?.codegenModels
     val codegenModels = codegenModels(codegenModels.orNull, upstreamCodegenModels)
 
     CodegenSchemaOptions(
-        scalarMapping = scalarMapping(scalarTypeMapping, scalarAdapterMapping),
+        scalarMapping = scalarMapping(scalarTypeMapping, scalarAdapterMapping, scalarInlineClassPropertyMapping),
         generateDataBuilders = generateDataBuilders.orNull,
     ).writeTo(codegenSchemaOptionsFile.get().asFile)
 
@@ -311,68 +314,76 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
   }
 }
 
-private fun targetLanguage(generateKotlinModels: Boolean?,
-                           languageVersion: String?,
-                           javaPluginApplied: Boolean,
-                           kgpVersion: String?,
-                           upstreamTargetLanguage: TargetLanguage?): TargetLanguage {
-    return when {
-      generateKotlinModels != null -> {
-        if (generateKotlinModels) {
-          check(kgpVersion != null) {
-            "Apollo: generateKotlinModels.set(true) requires to apply a Kotlin plugin"
-          }
-          val targetLanguage = getKotlinTargetLanguage(kgpVersion, languageVersion)
-
-          check(upstreamTargetLanguage == null || targetLanguage == upstreamTargetLanguage) {
-            "Apollo: Expected '$upstreamTargetLanguage', got '$targetLanguage'. Check your generateKotlinModels and languageVersion settings."
-          }
-          targetLanguage
-        } else {
-          check(javaPluginApplied) {
-            "Apollo: generateKotlinModels.set(false) requires to apply the Java plugin"
-          }
-
-          check(upstreamTargetLanguage == null || TargetLanguage.JAVA == upstreamTargetLanguage) {
-            "Apollo: Expected '$upstreamTargetLanguage', got '${TargetLanguage.JAVA}'. Check your generateKotlinModels settings."
-          }
-
-          TargetLanguage.JAVA
+private fun targetLanguage(
+    generateKotlinModels: Boolean?,
+    languageVersion: String?,
+    javaPluginApplied: Boolean,
+    kgpVersion: String?,
+    upstreamTargetLanguage: TargetLanguage?,
+): TargetLanguage {
+  return when {
+    generateKotlinModels != null -> {
+      if (generateKotlinModels) {
+        check(kgpVersion != null) {
+          "Apollo: generateKotlinModels.set(true) requires to apply a Kotlin plugin"
         }
-      }
+        val targetLanguage = getKotlinTargetLanguage(kgpVersion, languageVersion)
 
-      upstreamTargetLanguage != null -> {
-        upstreamTargetLanguage
-      }
-      kgpVersion != null -> {
-        getKotlinTargetLanguage(kgpVersion, languageVersion)
-      }
+        check(upstreamTargetLanguage == null || targetLanguage == upstreamTargetLanguage) {
+          "Apollo: Expected '$upstreamTargetLanguage', got '$targetLanguage'. Check your generateKotlinModels and languageVersion settings."
+        }
+        targetLanguage
+      } else {
+        check(javaPluginApplied) {
+          "Apollo: generateKotlinModels.set(false) requires to apply the Java plugin"
+        }
 
-      javaPluginApplied -> {
+        check(upstreamTargetLanguage == null || TargetLanguage.JAVA == upstreamTargetLanguage) {
+          "Apollo: Expected '$upstreamTargetLanguage', got '${TargetLanguage.JAVA}'. Check your generateKotlinModels settings."
+        }
+
         TargetLanguage.JAVA
       }
-      else -> {
-        error("Apollo: No Java or Kotlin plugin found")
-      }
     }
-}
 
+    upstreamTargetLanguage != null -> {
+      upstreamTargetLanguage
+    }
+
+    kgpVersion != null -> {
+      getKotlinTargetLanguage(kgpVersion, languageVersion)
+    }
+
+    javaPluginApplied -> {
+      TargetLanguage.JAVA
+    }
+
+    else -> {
+      error("Apollo: No Java or Kotlin plugin found")
+    }
+  }
+}
 
 
 private fun scalarMapping(
     scalarTypeMapping: MapProperty<String, String>,
     scalarAdapterMapping: MapProperty<String, String>,
+    scalarValueClassPropertyMapping: MapProperty<String, String>,
 ): Map<String, ScalarInfo> {
   return scalarTypeMapping.getOrElse(emptyMap()).mapValues { (graphQLName, targetName) ->
     val adapterInitializerExpression = scalarAdapterMapping.getOrElse(emptyMap())[graphQLName]
-    ScalarInfo(targetName, if (adapterInitializerExpression == null) RuntimeAdapterInitializer else ExpressionAdapterInitializer(adapterInitializerExpression))
+    ScalarInfo(
+        targetName = targetName,
+        adapterInitializer = if (adapterInitializerExpression == null) RuntimeAdapterInitializer else ExpressionAdapterInitializer(adapterInitializerExpression),
+        inlineClassProperty = scalarValueClassPropertyMapping.getOrElse(emptyMap())[graphQLName]
+    )
   }
 }
 
 @Serializable
 internal class OtherOptions(
     val targetLanguage: TargetLanguage,
-    val codegenModels: String
+    val codegenModels: String,
 )
 
 internal fun OtherOptions.writeTo(file: File) {
