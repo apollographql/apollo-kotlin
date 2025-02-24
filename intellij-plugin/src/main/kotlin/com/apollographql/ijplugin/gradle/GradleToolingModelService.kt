@@ -302,10 +302,6 @@ class GradleToolingModelService(
   }
 }
 
-private fun GradleProject.allChildrenRecursively(): List<GradleProject> {
-  return listOf(this) + children.flatMap { it.allChildrenRecursively() }
-}
-
 private val ApolloGradleToolingModel.projectPathCompat: String
   get() = if (versionMinor >= 3) {
     projectPath

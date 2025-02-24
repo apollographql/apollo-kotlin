@@ -62,7 +62,7 @@ private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
       }
     } ?: return
 
-    val allDownloadSchemaTasks: List<String> = (rootGradleProject.children + rootGradleProject)
+    val allDownloadSchemaTasks: List<String> = rootGradleProject.allChildrenRecursively()
         .flatMap { gradleProject -> gradleProject.tasks.filter { task -> task.name.matches(DOWNLOAD_SCHEMA_TASK_REGEX) } }
         .map { it.name }
         .distinct()
