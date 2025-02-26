@@ -174,8 +174,21 @@ on OBJECT
     | UNION
     | SCALAR
     | INPUT_OBJECT
-
 """.trimIndent()
+
+internal val kotlinLabsDefinitions_0_5 = kotlinLabsDefinitions_0_4 + """
+""${'"'}
+Possible values for the `coercion` argument of the `@inlineClass` directive.
+Since: 4.1.1
+""${'"'}
+enum InlineClassCoercion { String, Boolean, Int, Long, Float, Double, Any }
+
+""${'"'}
+Generate an inline class for the given scalar type. The wrapped type is determined by the `coercion` argument.
+Since: 4.1.1
+""${'"'}
+directive @inlineClass(coercion: InlineClassCoercion!) on SCALAR
+"""
 
 // Built in scalar and introspection types from the Draft:
 // - https://spec.graphql.org/draft/#sec-Scalars

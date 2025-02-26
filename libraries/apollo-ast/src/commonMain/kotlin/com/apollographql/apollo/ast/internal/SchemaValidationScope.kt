@@ -224,6 +224,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
   mergedScope.validateUnions()
   mergedScope.validateInputObjects()
   mergedScope.validateCatch(mergedSchemaDefinition)
+  mergedScope.validateScalars()
 
   val keyFields = mergedScope.validateAndComputeKeyFields()
   val connectionTypes = mergedScope.computeConnectionTypes()
@@ -650,6 +651,14 @@ private fun ValidationScope.validateInputObjects() {
           registerIssue("Input field '${gqlInputValueDefinition.name}' of OneOf input object '${o.name}' must not have a default value", gqlInputValueDefinition.sourceLocation)
         }
       }
+    }
+  }
+}
+
+private fun ValidationScope.validateScalars() {
+  typeDefinitions.values.filterIsInstance<GQLScalarTypeDefinition>().forEach { i ->
+    validateDirectives(i.directives, i) {
+      issues.add(it.constContextError())
     }
   }
 }
