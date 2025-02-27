@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.inspection
 
+import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.GQLDirectiveDefinition
 import com.apollographql.apollo.ast.linkDefinitions
 import com.apollographql.ijplugin.util.KOTLIN_LABS_DEFINITIONS
@@ -15,6 +16,7 @@ import com.intellij.lang.jsgraphql.psi.GraphQLDirective
 import com.intellij.lang.jsgraphql.psi.GraphQLDirectivesAware
 import com.intellij.psi.PsiElement
 
+@OptIn(ApolloInternal::class)
 private val KNOWN_DIRECTIVES: List<GQLDirectiveDefinition> by lazy {
   linkDefinitions().directives() + NULLABILITY_DEFINITIONS.directives() + KOTLIN_LABS_DEFINITIONS.directives()
 }

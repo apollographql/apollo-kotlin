@@ -40,7 +40,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
   @get:Optional
   @get:Input
-  @get:Option(option = "registryUrl", description = "[Apollo Studio users only] The registry url of the registry instance used to download the schema. Defaults to \"https://graphql.api.apollographql.com/api/graphql\"")
+  @get:Option(option = "registryUrl", description = "[Apollo Studio users only] The registry url of the registry instance used to download the schema. Defaults to \"https://api.apollographql.com/graphql\"")
   abstract val registryUrl: Property<String>
 
 

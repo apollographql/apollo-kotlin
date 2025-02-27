@@ -19,11 +19,11 @@ import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.UnknownDirective
 import com.apollographql.apollo.ast.UnusedFragment
 import com.apollographql.apollo.ast.UnusedVariable
+import com.apollographql.apollo.ast.builtinForeignSchemas
 import com.apollographql.apollo.ast.checkEmpty
 import com.apollographql.apollo.ast.internal.SchemaValidationOptions
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.pretty
-import com.apollographql.apollo.ast.builtinForeignSchemas
 import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.ast.validateAsExecutable
 import com.apollographql.apollo.ast.validateAsSchema
@@ -589,27 +589,15 @@ internal fun List<Issue>.group(
   val warnings = mutableListOf<Issue>()
   val errors = mutableListOf<Issue>()
 
-  /**
-   * The kotlin_labs directives as of v0.3: https://specs.apollo.dev/kotlin_labs/v0.3/
-   * v0.4 removed `@nonnull` but we may still have users on v0.3.
-   *
-   * Moving forward, do not add new names there. If the directive is already defined, it
-   * should be removed. This should even be an error.
-   */
-  val apolloDirectives = setOf("optional", "nonnull", "typePolicy", "fieldPolicy", "requiresOptIn", "targetName")
-
   forEach {
     val severity = when (it) {
       is DeprecatedUsage -> if (warnOnDeprecatedUsages) Severity.Warning else Severity.None
       is DifferentShape -> if (fieldsOnDisjointTypesMustMerge) Severity.Error else Severity.Warning
       is UnusedVariable -> Severity.Warning
       is UnusedFragment -> Severity.None
-      is UnknownDirective -> if (it.requireDefinition) Severity.Error else Severity.Warning
-      /**
-       * Because some users might have added the apollo directive to their schema, we just let that through for now
-       */
-      is DirectiveRedefinition -> if (it.name in apolloDirectives) Severity.None else Severity.Warning
+      is UnknownDirective -> Severity.Error
       is IncompatibleDefinition -> Severity.Warning
+      is DirectiveRedefinition -> Severity.Warning
       else -> Severity.Error
     }
 

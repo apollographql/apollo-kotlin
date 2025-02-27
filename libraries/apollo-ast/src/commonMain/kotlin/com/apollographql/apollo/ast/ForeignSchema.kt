@@ -18,4 +18,7 @@ class ForeignSchema(
     val version: String,
     val definitions: List<GQLDefinition>,
     val directivesToStrip: List<String> = definitions.filterIsInstance<GQLDirective>().map { it.name },
-)
+) {
+  val nameWithVersion: String
+    get() = "$name/$version"
+}

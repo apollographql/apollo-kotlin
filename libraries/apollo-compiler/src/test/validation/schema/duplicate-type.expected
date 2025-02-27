@@ -1,2 +1,5 @@
+OtherValidationIssue (5:1)
+Conflicting definition 'Field'
+------------
 OtherValidationIssue (9:1)
-Type 'Field' is defined multiple times. First definition is: duplicate-type.graphql: (5, 1)
+Conflicting definition 'Field'

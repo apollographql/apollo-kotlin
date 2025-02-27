@@ -1,6 +1,6 @@
 extend schema
 @link(
-  url: "https://specs.apollo.dev/kotlin_labs/v0.3",
+  url: "https://specs.apollo.dev/kotlin_labs/v0.4",
   import: ["@fieldPolicy", "@typePolicy"]
 )
 

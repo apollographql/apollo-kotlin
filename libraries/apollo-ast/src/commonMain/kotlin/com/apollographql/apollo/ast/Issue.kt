@@ -1,6 +1,6 @@
 package com.apollographql.apollo.ast
 
-import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 
 /**
  * All the issues that can be collected while analyzing a graphql document
@@ -33,20 +33,17 @@ class ParsingError(override val message: String, override val sourceLocation: So
 /**
  * An unknown directive was found.
  *
- * In a perfect world everyone uses SDL schemas, and we can validate directives but in this world, a lot of users rely
- * on introspection schemas that do not contain directives. If this happens, we pass them through without validation.
+ * In case a user rely on non-introspection schemas (that do not contain directives definitions), the apollo compiler:
+ * - adds the built-in directives (`@include`, `@skip`, ...)
+ * - adds the `kotlin_labs/v3` directives (for legacy reasons, will be removed in a future version)
  *
- * In some cases (e.g. `@oneOf`) we want to enforce that the directive is defined. In that case [requireDefinition] is true and the issue
- * will be raised as an error rather than warning.
+ * For anything else, including `@defer` and `@oneOf`, a full schema is required so that the compiler can do feature
+ * detection and validate operation based on what the server actually supports.
  */
-class UnknownDirective @ApolloInternal constructor(
+class UnknownDirective(
     override val message: String,
     override val sourceLocation: SourceLocation?,
-    @ApolloInternal
-    val requireDefinition: Boolean,
-) : GraphQLValidationIssue {
-  constructor(message: String, sourceLocation: SourceLocation?) : this(message, sourceLocation, false)
-}
+) : GraphQLValidationIssue
 
 /**
  * The definition is inconsistent with the expected one.
@@ -72,12 +69,16 @@ class UnusedFragment(override val message: String, override val sourceLocation: 
  */
 class DuplicateTypeName(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLValidationIssue
 
+/**
+ * This is a bit abused for kotlin_labs directive that override the existing ones for compatibility reasons.
+ * This is so that `ApolloCompiler` can later on treat them as warnings.
+ */
 class DirectiveRedefinition(
     val name: String,
     existingSourceLocation: SourceLocation?,
     override val sourceLocation: SourceLocation?,
 ) : GraphQLValidationIssue {
-  override val message = "Directive '${name}' is defined multiple times. First definition is: ${existingSourceLocation.pretty()}"
+  override val message = "Implicit kotlin_labs definition '@${name}' overrides explicit one provided by the schema. Import kotlin_labs explicitly using @link."
 }
 
 class NoQueryType(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLValidationIssue

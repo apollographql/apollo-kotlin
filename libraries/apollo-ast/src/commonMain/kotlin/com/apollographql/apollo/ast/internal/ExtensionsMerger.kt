@@ -44,11 +44,9 @@ import kotlin.reflect.KClass
  */
 internal class ExtensionsMerger(private val definitions: List<GQLDefinition>, internal val mergeOptions: MergeOptions) {
   val issues = mutableListOf<Issue>()
-  val directiveDefinitions: Map<String, GQLDirectiveDefinition>
-
-  init {
-    directiveDefinitions = definitions.filterIsInstance<GQLDirectiveDefinition>().associateBy { it.name }
-  }
+  val directiveDefinitions: Map<String, GQLDirectiveDefinition> = definitions
+      .filterIsInstance<GQLDirectiveDefinition>()
+      .associateBy { it.name }
 
   fun merge(): GQLResult<List<GQLDefinition>> {
     val newDefinitions = mutableListOf<GQLDefinition>()
