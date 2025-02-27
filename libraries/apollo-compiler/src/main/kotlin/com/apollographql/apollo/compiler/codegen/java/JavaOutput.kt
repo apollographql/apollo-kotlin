@@ -14,14 +14,7 @@ import java.io.OutputStream
 class JavaOutput(
     val javaFiles: List<JavaFile>,
     val codegenMetadata: CodegenMetadata,
-) {
-  operator fun plus(other: JavaOutput): JavaOutput {
-    return JavaOutput(
-        javaFiles + other.javaFiles,
-        codegenMetadata + other.codegenMetadata
-    )
-  }
-}
+)
 
 fun JavaOutput.toSourceOutput(): SourceOutput {
   return SourceOutput(

@@ -7,9 +7,6 @@ package com.example.optional.type;
 
 import com.apollographql.apollo.api.ObjectType;
 
-/**
- * The query type, represents all of the entry points into our object graph
- */
 public class Query {
   public static ObjectType type = (new ObjectType.Builder("Query")).build();
 }

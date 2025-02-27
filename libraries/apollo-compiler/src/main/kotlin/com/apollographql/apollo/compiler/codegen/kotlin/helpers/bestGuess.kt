@@ -8,7 +8,7 @@ import com.squareup.kotlinpoet.TypeName
  * Best guess a type name. Handles simple generics like `Map<String, Int?>`, but no variance or wildcards.
  * Common types such as `String`, `List`, `Map` are automatically prefixed with `kotlin.` or `kotlin.collections.`.
  */
-internal fun bestGuess(name: String): TypeName {
+internal fun parseType(name: String): TypeName {
   val isNullable = name.endsWith('?')
   val className = ClassName.bestGuess(name.substringBeforeLast('?').substringBefore('<').withPackage())
   val typeArgs = name.substringAfter('<', "").substringBefore('>', "")
@@ -18,7 +18,7 @@ internal fun bestGuess(name: String): TypeName {
   return if (typeArgs.isEmpty()) {
     className
   } else {
-    className.parameterizedBy(typeArgs.map { bestGuess(it) })
+    className.parameterizedBy(typeArgs.map { parseType(it) })
   }
       .copy(nullable = isNullable)
 }

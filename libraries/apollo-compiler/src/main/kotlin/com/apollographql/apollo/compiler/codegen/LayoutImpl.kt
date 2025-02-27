@@ -46,9 +46,11 @@ internal class LayoutImpl(
     /**
      * Make it possible to support several types with different cases. Example:
      *
+     * ```graphql
      * type URL @targetName(newName: "Url1")
      * type Url
      * type url
+     * ```
      *
      * Because we capitalize the first letter, we need to escape the name because else `Url` and `url` clash
      */
@@ -154,6 +156,7 @@ internal fun SchemaLayout.typePackageName() = "${schemaPackageName()}.type"
 internal fun SchemaLayout.typeBuilderPackageName() = "${schemaPackageName()}.type.builder"
 internal fun SchemaLayout.typeAdapterPackageName() = "${schemaPackageName()}.type.adapter"
 internal fun SchemaLayout.typeUtilPackageName() = "${schemaPackageName()}.type.util"
+internal fun SchemaLayout.typeScalarPackageName() = "${schemaPackageName()}.type.scalar"
 
 internal fun SchemaLayout.paginationPackageName() = "${schemaPackageName()}.pagination"
 internal fun SchemaLayout.schemaSubPackageName() = "${schemaPackageName()}.schema"

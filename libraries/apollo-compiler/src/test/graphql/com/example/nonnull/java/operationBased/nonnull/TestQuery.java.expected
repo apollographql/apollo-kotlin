@@ -173,9 +173,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
-    /**
-     * The name of the character
-     */
     public String name;
 
     private transient volatile int $hashCode;

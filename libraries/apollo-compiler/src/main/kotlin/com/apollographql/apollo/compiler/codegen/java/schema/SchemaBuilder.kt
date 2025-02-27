@@ -1,8 +1,6 @@
 package com.apollographql.apollo.compiler.codegen.java.schema
 
 
-import com.apollographql.apollo.compiler.ExpressionAdapterInitializer
-import com.apollographql.apollo.compiler.ScalarInfo
 import com.apollographql.apollo.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo.compiler.codegen.Identifier.type
 import com.apollographql.apollo.compiler.codegen.Identifier.types
@@ -17,6 +15,7 @@ import com.apollographql.apollo.compiler.codegen.schemaSubPackageName
 import com.apollographql.apollo.compiler.ir.IrEnum
 import com.apollographql.apollo.compiler.ir.IrInterface
 import com.apollographql.apollo.compiler.ir.IrObject
+import com.apollographql.apollo.compiler.ir.IrScalar
 import com.apollographql.apollo.compiler.ir.IrUnion
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -28,7 +27,7 @@ import javax.lang.model.element.Modifier
 
 internal class SchemaBuilder(
     private val context: JavaSchemaContext,
-    private val scalarMapping: Map<String, ScalarInfo>,
+    private val scalars: List<IrScalar>,
     private val objects: List<IrObject>,
     private val interfaces: List<IrInterface>,
     private val unions: List<IrUnion>,
@@ -82,10 +81,10 @@ internal class SchemaBuilder(
                 .add("new $T()\n", JavaClassNames.CustomScalarAdaptersBuilder)
                 .indent()
                 .apply {
-                  scalarMapping.entries.forEach {
-                    val adapterInitializer = it.value.adapterInitializer
-                    if (adapterInitializer is ExpressionAdapterInitializer) {
-                      add(".add($T.type, $L)\n", context.resolver.resolveSchemaType(it.key), adapterInitializer.expression)
+                  scalars.forEach {
+                    val adapterInitializer = context.resolver.resolveScalarAdapterInitializer(it.name)
+                    if (adapterInitializer != null && context.resolver.isScalarUserDefined(it.name)) {
+                      add(".add($T.type, $L)\n", context.resolver.resolveSchemaType(it.name), adapterInitializer)
                     }
                   }
                 }

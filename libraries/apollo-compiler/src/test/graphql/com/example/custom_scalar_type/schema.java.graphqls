@@ -1,0 +1,4 @@
+
+extend scalar ListOfString @map(to: "List<String>")
+extend scalar URL @map(to: "java.lang.String", with: "com.example.UrlAdapter.INSTANCE")
+extend scalar String @map(to: "java.lang.String", with: "new com.example.MyStringAdapter()")

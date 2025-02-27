@@ -53,9 +53,6 @@ public class TestQuery() : Query<TestQuery.Data> {
     public val hero: Hero,
   ) : Query.Data {
     public data class Hero(
-      /**
-       * The name of the character
-       */
       public val name: String,
     )
   }

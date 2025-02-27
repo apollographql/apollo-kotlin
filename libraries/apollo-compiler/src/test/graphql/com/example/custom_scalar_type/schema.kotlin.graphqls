@@ -1,0 +1,6 @@
+
+extend scalar ListOfString @map(to: "List<String?>")
+extend scalar URL @map(to: "kotlin.String", with: "com.example.UrlAdapter")
+extend scalar String @map(to: "kotlin.String", with: "com.example.MyStringAdapter()")
+
+extend scalar Timestamp @map(to: "com.example.Timestamp", with: "com.apollographql.apollo.api.LongAdapter", inlineProperty: "ts")

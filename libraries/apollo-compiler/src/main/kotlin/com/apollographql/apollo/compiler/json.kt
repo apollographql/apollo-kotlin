@@ -8,6 +8,7 @@ import com.apollographql.apollo.compiler.ir.IrSchema
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.pqm.PersistedQueryManifest
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -68,8 +69,27 @@ fun File.toIrOperations(): IrOperations = parseFromJson<IrOperations>()
 @JvmName("readIrSchema")
 fun File.toIrSchema(): IrSchema = parseFromJson<DefaultIrSchema>()
 
+/**
+ * A minimal class that is only used to read a version
+ */
+@Serializable
+internal class MinimalCodegen(
+    val version: String? = null,
+)
+
 @JvmName("readCodegenMetadata")
-fun File.toCodegenMetadata(): CodegenMetadata = parseFromJson()
+fun File.toCodegenMetadata(): CodegenMetadata {
+  val json = Json {
+    ignoreUnknownKeys = true
+  }
+  // XXX: use a streaming API when they are not experimental anymore
+  val version = json.decodeFromString<MinimalCodegen>(readText()).version
+
+  check(version == CODEGEN_METADATA_VERSION) {
+    "Apollo: unsupported metadata version '$version' (expected '$CODEGEN_METADATA_VERSION')"
+  }
+  return parseFromJson()
+}
 
 @JvmName("readOperationOutput")
 fun File.toOperationOutput(): OperationOutput = parseFromJson<Map<String, OperationDescriptor>>()
@@ -98,4 +118,4 @@ fun PersistedQueryManifest.writeTo(file: File) = encodeToJson(file)
 @JvmName("writeOperationOutput")
 fun OperationOutput.writeTo(file: File) = this.encodeToJson(file)
 
-internal fun UsedCoordinates.writeTo(file: File) = file.writeText(prettyPrintJson.encodeToString (this))
+internal fun UsedCoordinates.writeTo(file: File) = file.writeText(prettyPrintJson.encodeToString(this))

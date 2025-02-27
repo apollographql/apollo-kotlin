@@ -14,7 +14,6 @@ import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.custom_scalar_type.adapter.TestQuery_ResponseAdapter;
 import com.example.custom_scalar_type.selections.TestQuerySelections;
 import java.io.IOException;
-import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -22,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "1d5498a23394700442413af8ec1b8edce1445ce533afdb2e9d5ec9c0ed40a9e3";
+  public static final String OPERATION_ID = "60b4c0088b4e38080bd241601da65e11cc8fedf8a7d91571a4f4d39ccccb084f";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -38,9 +37,15 @@ public class TestQuery implements Query<TestQuery.Data> {
    *     profileLink
    *     links
    *   }
+   *   nonNullTimestamp
+   *   nullableTimestamp
+   *   nonNullListOfNonNullTimestamp
+   *   nonNullListOfNullableTimestamp
+   *   nullableListOfNonNullTimestamp
+   *   nullableListOfNullableTimestamp
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { id name birthDate appearanceDates fieldWithUnsupportedType profileLink links } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { id name birthDate appearanceDates fieldWithUnsupportedType profileLink links } nonNullTimestamp nullableTimestamp nonNullListOfNonNullTimestamp nonNullListOfNullableTimestamp nullableListOfNonNullTimestamp nullableListOfNullableTimestamp }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -136,14 +141,34 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class Data implements Query.Data {
     public Hero hero;
 
+    public Object nonNullTimestamp;
+
+    public Object nullableTimestamp;
+
+    public List<Object> nonNullListOfNonNullTimestamp;
+
+    public List<Object> nonNullListOfNullableTimestamp;
+
+    public List<Object> nullableListOfNonNullTimestamp;
+
+    public List<Object> nullableListOfNullableTimestamp;
+
     private transient volatile int $hashCode;
 
     private transient volatile boolean $hashCodeMemoized;
 
     private transient volatile String $toString;
 
-    public Data(Hero hero) {
+    public Data(Hero hero, Object nonNullTimestamp, Object nullableTimestamp,
+        List<Object> nonNullListOfNonNullTimestamp, List<Object> nonNullListOfNullableTimestamp,
+        List<Object> nullableListOfNonNullTimestamp, List<Object> nullableListOfNullableTimestamp) {
       this.hero = hero;
+      this.nonNullTimestamp = nonNullTimestamp;
+      this.nullableTimestamp = nullableTimestamp;
+      this.nonNullListOfNonNullTimestamp = nonNullListOfNonNullTimestamp;
+      this.nonNullListOfNullableTimestamp = nonNullListOfNullableTimestamp;
+      this.nullableListOfNonNullTimestamp = nullableListOfNonNullTimestamp;
+      this.nullableListOfNullableTimestamp = nullableListOfNullableTimestamp;
     }
 
     @Override
@@ -153,7 +178,13 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero));
+        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero))
+         &&((this.nonNullTimestamp == null) ? (that.nonNullTimestamp == null) : this.nonNullTimestamp.equals(that.nonNullTimestamp))
+         &&((this.nullableTimestamp == null) ? (that.nullableTimestamp == null) : this.nullableTimestamp.equals(that.nullableTimestamp))
+         &&((this.nonNullListOfNonNullTimestamp == null) ? (that.nonNullListOfNonNullTimestamp == null) : this.nonNullListOfNonNullTimestamp.equals(that.nonNullListOfNonNullTimestamp))
+         &&((this.nonNullListOfNullableTimestamp == null) ? (that.nonNullListOfNullableTimestamp == null) : this.nonNullListOfNullableTimestamp.equals(that.nonNullListOfNullableTimestamp))
+         &&((this.nullableListOfNonNullTimestamp == null) ? (that.nullableListOfNonNullTimestamp == null) : this.nullableListOfNonNullTimestamp.equals(that.nullableListOfNonNullTimestamp))
+         &&((this.nullableListOfNullableTimestamp == null) ? (that.nullableListOfNullableTimestamp == null) : this.nullableListOfNullableTimestamp.equals(that.nullableListOfNullableTimestamp));
       }
       return false;
     }
@@ -164,6 +195,18 @@ public class TestQuery implements Query<TestQuery.Data> {
         int __h = 1;
         __h *= 1000003;
         __h ^= (hero == null) ? 0 : hero.hashCode();
+        __h *= 1000003;
+        __h ^= (nonNullTimestamp == null) ? 0 : nonNullTimestamp.hashCode();
+        __h *= 1000003;
+        __h ^= (nullableTimestamp == null) ? 0 : nullableTimestamp.hashCode();
+        __h *= 1000003;
+        __h ^= (nonNullListOfNonNullTimestamp == null) ? 0 : nonNullListOfNonNullTimestamp.hashCode();
+        __h *= 1000003;
+        __h ^= (nonNullListOfNullableTimestamp == null) ? 0 : nonNullListOfNullableTimestamp.hashCode();
+        __h *= 1000003;
+        __h ^= (nullableListOfNonNullTimestamp == null) ? 0 : nullableListOfNonNullTimestamp.hashCode();
+        __h *= 1000003;
+        __h ^= (nullableListOfNullableTimestamp == null) ? 0 : nullableListOfNullableTimestamp.hashCode();
         $hashCode = __h;
         $hashCodeMemoized = true;
       }
@@ -174,7 +217,13 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Data{"
-          + "hero=" + hero
+          + "hero=" + hero + ", "
+          + "nonNullTimestamp=" + nonNullTimestamp + ", "
+          + "nullableTimestamp=" + nullableTimestamp + ", "
+          + "nonNullListOfNonNullTimestamp=" + nonNullListOfNonNullTimestamp + ", "
+          + "nonNullListOfNullableTimestamp=" + nonNullListOfNullableTimestamp + ", "
+          + "nullableListOfNonNullTimestamp=" + nullableListOfNonNullTimestamp + ", "
+          + "nullableListOfNullableTimestamp=" + nullableListOfNullableTimestamp
           + "}";
       }
       return $toString;
@@ -185,7 +234,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The ID of the character
      */
-    public Long id;
+    public String id;
 
     /**
      * The name of the character
@@ -223,7 +272,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(Long id, String name, Date birthDate, List<Date> appearanceDates,
+    public Hero(String id, String name, Date birthDate, List<Date> appearanceDates,
         Object fieldWithUnsupportedType, String profileLink, List<String> links) {
       this.id = id;
       this.name = name;

@@ -1,16 +1,16 @@
 package com.apollographql.apollo.compiler.codegen.java
 
-import com.apollographql.apollo.compiler.ExpressionAdapterInitializer
+import com.apollographql.apollo.compiler.CodegenMetadata
 import com.apollographql.apollo.compiler.JavaNullable
-import com.apollographql.apollo.compiler.RuntimeAdapterInitializer
-import com.apollographql.apollo.compiler.ScalarInfo
+import com.apollographql.apollo.compiler.CODEGEN_METADATA_VERSION
+import com.apollographql.apollo.compiler.TargetLanguage
 import com.apollographql.apollo.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo.compiler.codegen.Identifier.type
 import com.apollographql.apollo.compiler.codegen.ResolverClassName
 import com.apollographql.apollo.compiler.codegen.ResolverEntry
 import com.apollographql.apollo.compiler.codegen.ResolverKey
 import com.apollographql.apollo.compiler.codegen.ResolverKeyKind
-import com.apollographql.apollo.compiler.codegen.java.helpers.bestGuess
+import com.apollographql.apollo.compiler.codegen.java.helpers.parseType
 import com.apollographql.apollo.compiler.codegen.java.helpers.singletonAdapterInitializer
 import com.apollographql.apollo.compiler.ir.IrCatchTo
 import com.apollographql.apollo.compiler.ir.IrCompositeType2
@@ -39,12 +39,20 @@ import com.squareup.javapoet.TypeName
 
 
 internal class JavaResolver(
-    entries: List<ResolverEntry>,
-    val next: JavaResolver?,
-    private val scalarMapping: Map<String, ScalarInfo>,
+    upstreamCodegenMetadata: CodegenMetadata,
     private val generatePrimitiveTypes: Boolean,
     private val nullableFieldStyle: JavaNullable,
 ) {
+  private val upstreamEntries = upstreamCodegenMetadata.entries.associate { it.key to it.className.toJavaPoetClassName() }
+  private val upstreamScalarAdapters = upstreamCodegenMetadata.scalarAdapters
+  private val upstreamScalarTargets = upstreamCodegenMetadata.scalarTargets
+  private val upstreamScalarIsUserDefined = upstreamCodegenMetadata.scalarIsUserDefined
+
+  private val classNames = mutableMapOf<ResolverKey, ClassName>()
+
+  private val scalarAdapters = mutableMapOf<String, String>()
+  private val scalarTargets = mutableMapOf<String, String>()
+  private val scalarIsUserDefined = mutableMapOf<String, Boolean>()
 
   private val optionalClassName: ClassName = when (nullableFieldStyle) {
     JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptional
@@ -84,13 +92,8 @@ internal class JavaResolver(
   }
 
   fun resolve(key: ResolverKey): ClassName? {
-    return classNames[key] ?: next?.resolve(key)
+    return classNames[key] ?: upstreamEntries[key]
   }
-
-  private var classNames = entries.associateBy(
-      keySelector = { it.key },
-      valueTransform = { it.className.toJavaPoetClassName() }
-  ).toMutableMap()
 
   private fun resolve(kind: ResolverKeyKind, id: String) = resolve(ResolverKey(kind, id))
   private fun resolveAndAssert(kind: ResolverKeyKind, id: String): ClassName {
@@ -129,7 +132,7 @@ internal class JavaResolver(
     return when (type) {
       is IrListType -> resolveIrType(type.ofType).filterTypeUseAnnotations().wrapInList()
       is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
-      is IrScalarType -> resolveIrScalarType(type, asPrimitiveType = generatePrimitiveTypes)
+      is IrScalarType -> resolveIrScalarTargetOrPrimitive(type, asPrimitiveType = generatePrimitiveTypes)
       is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
     }
   }
@@ -171,16 +174,19 @@ internal class JavaResolver(
     }
   }
 
-  private fun resolveIrScalarType(type: IrScalarType, asPrimitiveType: Boolean): TypeName {
-    // Try mapping first, then built-ins, then fallback to Object
-    return resolveScalarTarget(type.name) ?: when (type.name) {
-      "String" -> JavaClassNames.String
-      "ID" -> JavaClassNames.String
-      "Float" -> if (asPrimitiveType) TypeName.DOUBLE else JavaClassNames.Double
-      "Int" -> if (asPrimitiveType) TypeName.INT else JavaClassNames.Integer
-      "Boolean" -> if (asPrimitiveType) TypeName.BOOLEAN else JavaClassNames.Boolean
-      else -> JavaClassNames.Object
+  private fun resolveIrScalarTargetOrPrimitive(type: IrScalarType, asPrimitiveType: Boolean): TypeName {
+    val target = resolveScalarTarget(type.name)
+
+    if(asPrimitiveType) {
+      when(target.toString()) {
+        "java.lang.Integer" -> return TypeName.INT
+        "java.lang.Boolean" -> return TypeName.BOOLEAN
+        "java.lang.Float" -> return TypeName.FLOAT
+        "java.lang.Double" -> return TypeName.DOUBLE
+      }
     }
+
+    return target
   }
 
   fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
@@ -189,21 +195,13 @@ internal class JavaResolver(
     } else if (type.catchTo != IrCatchTo.NoCatch) {
       error("Java codegen does not support @catch")
     } else if (type.nullable) {
-      // Don't hardcode the adapter when the scalar is mapped to a user-defined type
-      val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
-      when {
-        type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("String")
-        type is IrScalarType && type.name == "ID" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("String")
-        type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("Boolean")
-        type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("Int")
-        type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("Double")
-        type is IrScalarType && resolveScalarTarget(type.name) == null -> {
-          adapterCodeBlock("NullableAnyAdapter")
-        }
+      val initializer = adapterInitializer(type.nullable(false), requiresBuffering)
 
-        else -> {
-          CodeBlock.of("new $T<>($L)", getOptionalOrNullableAdapterClassName(), adapterInitializer(type.nullable(false), requiresBuffering))
-        }
+      val match = Regex("com\\.apollographql\\.apollo\\.api\\.Adapters\\.([a-zA-Z]*)Adapter").matchEntire(initializer.toString())
+      if (match != null) {
+        nullableAdapterCodeBlock(match.groupValues[1])
+      } else {
+        CodeBlock.of("new $T<>($L)", getOptionalOrNullableAdapterClassName(), adapterInitializer(type.nullable(false), requiresBuffering))
       }
     } else {
       when (type) {
@@ -240,10 +238,30 @@ internal class JavaResolver(
     }
   }
 
-  private fun resolveScalarTarget(name: String): TypeName? {
-    return scalarMapping[name]?.targetName?.let {
-      bestGuess(it)
+  fun resolveScalarTarget(name: String): TypeName {
+    val custom = scalarTargets[name] ?: upstreamScalarTargets[name]
+    check(custom != null) {
+      "Cannot resolve scalar target for '$name'"
     }
+
+    return parseType(custom) ?: error("Cannot parse type '$custom'")
+  }
+
+  fun registerScalarTarget(name: String, target: String) {
+    scalarTargets.put(name, target)
+  }
+
+  fun registerScalarIsUserDefined(name: String) {
+    scalarIsUserDefined.put(name, true)
+  }
+
+  fun isScalarUserDefined(name: String): Boolean {
+    val custom = scalarIsUserDefined[name] ?: upstreamScalarIsUserDefined[name]
+    if(custom != null) {
+      return custom
+    }
+
+    return false
   }
 
   fun resolveCompiledType(name: String): CodeBlock {
@@ -251,49 +269,20 @@ internal class JavaResolver(
   }
 
   private fun scalarAdapterInitializer(name: String): CodeBlock {
-    return when (val adapterInitializer = scalarMapping[name]?.adapterInitializer) {
-      is ExpressionAdapterInitializer -> {
-        CodeBlock.of(adapterInitializer.expression)
-      }
-
-      is RuntimeAdapterInitializer -> {
-        val target = resolveScalarTarget(name)
-        CodeBlock.of(
-            "($customScalarAdapters.<$T>responseAdapterFor($L))",
-            target,
-            resolveCompiledType(name)
-        )
-      }
-
-      else -> {
-        when (name) {
-          "Boolean" -> adapterCodeBlock("BooleanAdapter")
-          "ID" -> adapterCodeBlock("StringAdapter")
-          "String" -> adapterCodeBlock("StringAdapter")
-          "Int" -> adapterCodeBlock("IntAdapter")
-          "Float" -> adapterCodeBlock("DoubleAdapter")
-          else -> {
-            val target = resolveScalarTarget(name)
-            if (target == null) {
-              adapterCodeBlock("AnyAdapter")
-            } else {
-              CodeBlock.of(
-                  "($customScalarAdapters.<$T>responseAdapterFor($L))",
-                  target,
-                  resolveCompiledType(name)
-              )
-            }
-          }
-        }
-      }
+    val adapterInitializer = resolveScalarAdapterInitializer(name)
+    return if (adapterInitializer == null) {
+      val target = resolveScalarTarget(name)
+      CodeBlock.of(
+          "($customScalarAdapters.<$T>responseAdapterFor($L))",
+          target,
+          resolveCompiledType(name)
+      )
+    } else {
+      adapterInitializer
     }
   }
 
-  /**
-   * Nullable adapters are @JvmField properties
-   */
-  private fun adapterCodeBlock(name: String) = CodeBlock.of("$T.$L", JavaClassNames.Adapters, name)
-  private fun scalarAdapterCodeBlock(typeName: String): CodeBlock {
+  private fun nullableAdapterCodeBlock(typeName: String): CodeBlock {
     val className: ClassName
     val adapterNamePrefix: String
     when (nullableFieldStyle) {
@@ -387,7 +376,7 @@ internal class JavaResolver(
       is IrNonNullType2 -> error("")
       is IrListType2 -> adapterInitializer2(type.ofType)?.listAdapter(isComposite = type.ofType.isCompositeOrWrappedComposite())
       is IrScalarType2 -> {
-        if (scalarMapping.containsKey(type.name)) {
+        if (isScalarUserDefined(type.name)) {
           scalarAdapterInitializer(type.name)
         } else {
           null
@@ -425,6 +414,36 @@ internal class JavaResolver(
 
   fun registerJavaOptionalAdapters(className: ClassName) = register(ResolverKeyKind.JavaOptionalAdapters, "", className)
   fun resolveJavaOptionalAdapters() = resolveAndAssert(ResolverKeyKind.JavaOptionalAdapters, "")
+  fun registerScalarAdapter(name: String, adapter: String) {
+    this@JavaResolver.scalarAdapters[name] = adapter
+  }
+  fun resolveScalarAdapterInitializer(name: String): CodeBlock? {
+    val customAdapter = this@JavaResolver.scalarAdapters[name] ?: upstreamScalarAdapters[name]
+    if (customAdapter != null) {
+      val match = Regex("com\\.apollographql\\.apollo\\.api\\.Adapters\\.([a-zA-Z]*)Adapter").matchEntire(customAdapter)
+      if (match != null) {
+        // Make the generated code look a bit nicer in case this is one of the built-in adapters
+        return CodeBlock.of("$T.${match.groupValues[1]}Adapter", JavaClassNames.Adapters)
+      }
+
+      return CodeBlock.of(L, customAdapter)
+    }
+
+    return null
+  }
+
+  fun toCodegenMetadata(targetLanguage: TargetLanguage): CodegenMetadata {
+    val entries = classNames.map { ResolverEntry(it.key, ResolverClassName(it.value.packageName(), it.value.simpleNames())) }
+    return CodegenMetadata(
+        entries = entries,
+        version = CODEGEN_METADATA_VERSION,
+        targetLanguage = targetLanguage,
+        inlineProperties = emptyMap(),
+        scalarTargets = scalarTargets,
+        scalarAdapters = this@JavaResolver.scalarAdapters,
+        scalarIsUserDefined = this@JavaResolver.scalarIsUserDefined
+    )
+  }
 }
 
 

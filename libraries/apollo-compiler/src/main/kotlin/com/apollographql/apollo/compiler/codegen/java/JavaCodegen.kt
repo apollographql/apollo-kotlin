@@ -7,6 +7,7 @@ import com.apollographql.apollo.compiler.JavaNullable
 import com.apollographql.apollo.compiler.JavaOperationsCodegenOptions
 import com.apollographql.apollo.compiler.JavaSchemaCodegenOptions
 import com.apollographql.apollo.compiler.MODELS_OPERATION_BASED
+import com.apollographql.apollo.compiler.CODEGEN_METADATA_VERSION
 import com.apollographql.apollo.compiler.TargetLanguage
 import com.apollographql.apollo.compiler.Transform
 import com.apollographql.apollo.compiler.codegen.OperationsLayout
@@ -65,18 +66,28 @@ private class OutputBuilder {
   val builders = mutableListOf<JavaClassBuilder>()
 }
 
+
 private fun buildOutput(
-    codegenSchema: CodegenSchema,
-    upstreamCodegenMetadata: List<CodegenMetadata>,
+    upstreamCodegenMetadatas: List<CodegenMetadata>,
     generatePrimitiveTypes: Boolean,
     nullableFieldStyle: JavaNullable,
     javaOutputTransform: Transform<JavaOutput>?,
     block: OutputBuilder.(resolver: JavaResolver) -> Unit,
 ): JavaOutput {
+  val upstreamCodegenMetadata = upstreamCodegenMetadatas.fold(CodegenMetadata(
+      version = CODEGEN_METADATA_VERSION,
+      targetLanguage = TargetLanguage.JAVA,
+      emptyList(),
+      emptyMap(),
+      emptyMap(),
+      emptyMap(),
+      emptyMap()
+  )) { acc, metadata ->
+    acc + metadata
+  }
+
   val resolver = JavaResolver(
-      entries = upstreamCodegenMetadata.flatMap { it.entries },
-      next = null,
-      scalarMapping = codegenSchema.scalarMapping,
+      upstreamCodegenMetadata = upstreamCodegenMetadata,
       generatePrimitiveTypes = generatePrimitiveTypes,
       nullableFieldStyle = nullableFieldStyle,
   )
@@ -106,10 +117,7 @@ private fun buildOutput(
 
   return JavaOutput(
       javaFiles,
-      CodegenMetadata(
-          targetLanguage = TargetLanguage.JAVA,
-          entries = resolver.entries()
-      )
+      resolver.toCodegenMetadata(TargetLanguage.JAVA)
   ).maybeTransform(javaOutputTransform)
 }
 
@@ -133,11 +141,8 @@ internal object JavaCodegen {
     val generatePrimitiveTypes = codegenOptions.generatePrimitiveTypes ?: defaultGeneratePrimitiveTypes
     val nullableFieldStyle = codegenOptions.nullableFieldStyle ?: defaultNullableFieldStyle
 
-    val scalarMapping = codegenSchema.scalarMapping
-
     return buildOutput(
-        codegenSchema = codegenSchema,
-        upstreamCodegenMetadata = emptyList(),
+        upstreamCodegenMetadatas = emptyList(),
         generatePrimitiveTypes = generatePrimitiveTypes,
         nullableFieldStyle = nullableFieldStyle,
         javaOutputTransform = javaOutputTransform
@@ -152,7 +157,7 @@ internal object JavaCodegen {
       )
 
       irSchema.irScalars.forEach { irScalar ->
-        builders.add(ScalarBuilder(context, irScalar, scalarMapping.get(irScalar.name)?.targetName))
+        builders.add(ScalarBuilder(context, irScalar))
       }
       irSchema.irEnums.forEach { irEnum ->
         if (classesForEnumsMatching.any { Regex(it).matches(irEnum.name) }) {
@@ -198,7 +203,7 @@ internal object JavaCodegen {
         }
       }
       if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
-        builders.add(SchemaBuilder(context, scalarMapping, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
+        builders.add(SchemaBuilder(context, irSchema.irScalars, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
       }
       if (generateDataBuilders) {
         builders.add(BuilderFactoryBuilder(context, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions))
@@ -210,7 +215,7 @@ internal object JavaCodegen {
       codegenSchema: CodegenSchema,
       irOperations: IrOperations,
       operationOutput: OperationOutput,
-      upstreamCodegenMetadata: List<CodegenMetadata>,
+      upstreamCodegenMetadatas: List<CodegenMetadata>,
       codegenOptions: JavaOperationsCodegenOptions,
       layout: OperationsLayout,
       javaOutputTransform: Transform<JavaOutput>?,
@@ -235,8 +240,7 @@ internal object JavaCodegen {
     val nullableFieldStyle = codegenOptions.nullableFieldStyle ?: defaultNullableFieldStyle
 
     return buildOutput(
-        codegenSchema = codegenSchema,
-        upstreamCodegenMetadata = upstreamCodegenMetadata,
+        upstreamCodegenMetadatas = upstreamCodegenMetadatas,
         generatePrimitiveTypes = generatePrimitiveTypes,
         nullableFieldStyle = nullableFieldStyle,
         javaOutputTransform = javaOutputTransform,

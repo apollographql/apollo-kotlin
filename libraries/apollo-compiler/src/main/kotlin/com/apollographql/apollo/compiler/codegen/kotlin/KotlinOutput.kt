@@ -13,14 +13,7 @@ import java.io.OutputStream
 class KotlinOutput(
     val fileSpecs: List<FileSpec>,
     val codegenMetadata: CodegenMetadata,
-) {
-  operator fun plus(other: KotlinOutput): KotlinOutput {
-    return KotlinOutput(
-        fileSpecs + other.fileSpecs,
-        codegenMetadata + other.codegenMetadata
-    )
-  }
-}
+)
 
 fun KotlinOutput.toSourceOutput(): SourceOutput {
   return SourceOutput(

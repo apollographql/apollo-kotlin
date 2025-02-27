@@ -1,0 +1,14 @@
+type Query {
+  hero: Character
+}
+
+type Character {
+  name: String!
+  appearsIn: [Episode]!
+}
+
+enum Episode {
+  NEWHOPE
+  EMPIRE
+  JEDI
+}

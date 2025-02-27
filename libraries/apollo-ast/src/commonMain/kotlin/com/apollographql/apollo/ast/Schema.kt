@@ -229,6 +229,12 @@ class Schema internal constructor(
     @ApolloExperimental
     const val FIELD_POLICY_PAGINATION_ARGS = "paginationArgs"
 
+    @ApolloExperimental
+    const val MAP = "map"
+
+    @ApolloExperimental
+    const val MAP_TO = "mapTo"
+
     /**
      * Parses the given [map] and creates a new [Schema].
      * The [map] must come from a previous call to [toMap] to make sure the schema is valid

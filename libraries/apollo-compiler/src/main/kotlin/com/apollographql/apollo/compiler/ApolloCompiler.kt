@@ -8,14 +8,12 @@ import com.apollographql.apollo.ast.GQLDefinition
 import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLOperationDefinition
-import com.apollographql.apollo.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo.ast.GQLSchemaDefinition
 import com.apollographql.apollo.ast.GQLTypeDefinition
 import com.apollographql.apollo.ast.IncompatibleDefinition
 import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.QueryDocumentMinifier
-import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.UnknownDirective
 import com.apollographql.apollo.ast.UnusedFragment
 import com.apollographql.apollo.ast.UnusedVariable
@@ -46,7 +44,6 @@ import com.apollographql.apollo.compiler.internal.checkConditionalFragments
 import com.apollographql.apollo.compiler.internal.checkKeyFields
 import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.IrOperationsBuilder
-import com.apollographql.apollo.compiler.ir.IrSchema
 import com.apollographql.apollo.compiler.ir.IrSchemaBuilder
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.pqm.toPersistedQueryManifest
@@ -55,19 +52,6 @@ import java.io.File
 object ApolloCompiler {
   interface Logger {
     fun warning(message: String)
-  }
-
-  fun buildCodegenSchema(
-      schemaFiles: List<InputFile>,
-      logger: Logger?,
-      codegenSchemaOptions: CodegenSchemaOptions,
-  ): CodegenSchema {
-    return buildCodegenSchema(
-        schemaFiles,
-        logger,
-        codegenSchemaOptions,
-        emptyList()
-    )
   }
 
   fun buildCodegenSchema(
@@ -103,18 +87,37 @@ object ApolloCompiler {
 
     if (mainSchemaDocuments.size > 1) {
       error("Multiple schemas found:\n${mainSchemaDocuments.map { it.sourceLocation?.filePath }.joinToString("\n")}\n" +
-          "Use different services for different schemas")
+          "Use different services for different schemas"
+      )
     } else if (mainSchemaDocuments.isEmpty()) {
       error("Schema(s) found:\n${schemaFiles.map { it.normalizedPath }.joinToString("\n")}\n" +
-          "But none of them contain type definitions.")
+          "But none of them contain type definitions."
+      )
     }
     val mainSchemaDocument = mainSchemaDocuments.single()
 
-    // Sort the other schema document as type extensions are order sensitive
+    // Sort the other schema document as type extensions are order sensitive, and we want this to be under the user control
     val otherSchemaDocumentSorted = otherSchemaDocuments.sortedBy { it.sourceLocation?.filePath?.substringAfterLast(File.pathSeparator) }
+
     val schemaDefinitions = (listOf(mainSchemaDocument) + otherSchemaDocumentSorted).flatMap { it.definitions }
+
+    val sdl = buildString {
+      if (codegenSchemaOptions.scalarTypeMapping.isNotEmpty()) {
+        appendLine("extend schema @link(url: \"https://specs.apollo.dev/kotlin_compiler_options/v0.0/\")")
+        codegenSchemaOptions.scalarTypeMapping.forEach {
+          append("extend scalar ${it.key} @kotlin_compiler_options__map(to: \"${it.value}\"")
+          val adapterInitializer = codegenSchemaOptions.scalarAdapterMapping.get(it.key)
+          if (adapterInitializer != null) {
+            append(", with: \"$adapterInitializer\"")
+          }
+          append(")\n")
+        }
+      }
+    }
+    val scalarExtensions = sdl.toGQLDocument().definitions
+
     val schemaDocument = GQLDocument(
-        definitions = schemaDefinitions,
+        definitions = schemaDefinitions + scalarExtensions,
         sourceLocation = null
     )
 
@@ -138,13 +141,9 @@ object ApolloCompiler {
 
     val schema = result.value!!
 
-    val scalarMapping = codegenSchemaOptions.scalarMapping
-    checkScalars(schema, scalarMapping)
-
     return CodegenSchema(
         schema = schema,
         normalizedPath = mainSchemaNormalizedPath ?: "",
-        scalarMapping = scalarMapping,
         generateDataBuilders = codegenSchemaOptions.generateDataBuilders ?: defaultGenerateDataBuilders
     )
   }
@@ -170,7 +169,6 @@ object ApolloCompiler {
 
     return definitions
   }
-
 
   fun buildIrOperations(
       codegenSchema: CodegenSchema,
@@ -311,49 +309,18 @@ object ApolloCompiler {
     ).build()
   }
 
-  private fun buildIrSchema(
-      codegenSchema: CodegenSchema,
-      usedCoordinates: UsedCoordinates?,
-  ): IrSchema {
-
-    @Suppress("NAME_SHADOWING")
-    val usedCoordinates = usedCoordinates?.mergeWith((codegenSchema.scalarMapping.keys + setOf("Int", "Float", "String", "ID", "Boolean")).toUsedCoordinates()  )
-        ?: codegenSchema.schema.typeDefinitions.keys.toUsedCoordinates()
-
-    return IrSchemaBuilder.build(
-        schema = codegenSchema.schema,
-        usedCoordinates = usedCoordinates,
-        alreadyVisitedTypes = emptySet(),
-    )
-  }
-
-  private fun checkScalars(schema: Schema, scalarMapping: Map<String, ScalarInfo>) {
-    /**
-     * Generate the mapping for all scalars
-     *
-     * If the user specified a mapping, use it, else fallback to [Any]
-     */
-    val schemaScalars = schema
-        .typeDefinitions
-        .values
-        .filterIsInstance<GQLScalarTypeDefinition>()
-        .map { type -> type.name }
-        .toSet()
-    val unknownScalars = scalarMapping.keys.subtract(schemaScalars)
-    check(unknownScalars.isEmpty()) {
-      "Apollo: unknown scalar(s): ${unknownScalars.joinToString(",")}"
-    }
-  }
-
   fun buildSchemaSources(
       codegenSchema: CodegenSchema,
-      usedCoordinates: UsedCoordinates?,
+      usedCoordinates: UsedCoordinates,
       codegenOptions: CodegenOptions,
       schemaLayout: SchemaLayout?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
   ): SourceOutput {
-    val irSchema = buildIrSchema(codegenSchema, usedCoordinates)
+    val irSchema = IrSchemaBuilder.build(
+        schema = codegenSchema.schema,
+        usedCoordinates = usedCoordinates,
+    )
 
     val targetLanguage = defaultTargetLanguage(codegenOptions.targetLanguage, emptyList())
     codegenOptions.validate()
@@ -362,7 +329,7 @@ object ApolloCompiler {
         codegenSchema = codegenSchema,
         packageName = codegenOptions.packageName,
         rootPackageName = codegenOptions.rootPackageName,
-        useSemanticNaming = codegenOptions.useSemanticNaming ,
+        useSemanticNaming = codegenOptions.useSemanticNaming,
         decapitalizeFields = codegenOptions.decapitalizeFields,
         generatedSchemaName = codegenOptions.generatedSchemaName,
     )
@@ -390,7 +357,7 @@ object ApolloCompiler {
   fun buildSchemaAndOperationsSourcesFromIr(
       codegenSchema: CodegenSchema,
       irOperations: IrOperations,
-      downstreamUsedCoordinates: UsedCoordinates?,
+      downstreamUsedCoordinates: UsedCoordinates,
       upstreamCodegenMetadata: List<CodegenMetadata>,
       codegenOptions: CodegenOptions,
       layout: SchemaAndOperationsLayout?,
@@ -449,7 +416,7 @@ object ApolloCompiler {
     if (upstreamCodegenMetadata.isEmpty()) {
       sourceOutput = sourceOutput plus buildSchemaSources(
           codegenSchema = codegenSchema,
-          usedCoordinates = downstreamUsedCoordinates?.mergeWith(irOperations.usedCoordinates),
+          usedCoordinates = downstreamUsedCoordinates.mergeWith(irOperations.usedCoordinates),
           codegenOptions = codegenOptions,
           schemaLayout = layout,
           javaOutputTransform = javaOutputTransform,
@@ -461,7 +428,7 @@ object ApolloCompiler {
           codegenSchema = codegenSchema,
           irOperations = irOperations,
           operationOutput = operationOutput,
-          upstreamCodegenMetadata = upstreamCodegenMetadata + listOfNotNull(sourceOutput?.codegenMetadata),
+          upstreamCodegenMetadatas = upstreamCodegenMetadata + listOfNotNull(sourceOutput?.codegenMetadata),
           codegenOptions = codegenOptions,
           layout = layout,
           javaOutputTransform = javaOutputTransform,
@@ -596,7 +563,7 @@ internal fun List<Issue>.group(
       is UnusedVariable -> Severity.Warning
       is UnusedFragment -> Severity.None
       is UnknownDirective -> Severity.Error
-      is IncompatibleDefinition -> Severity.Warning
+      is IncompatibleDefinition -> Severity.Warning // This should probably be an error
       is DirectiveRedefinition -> Severity.Warning
       else -> Severity.Error
     }
@@ -612,7 +579,7 @@ internal fun List<Issue>.group(
 }
 
 /**
- * An input file together with its normalizedPath
+ * An input file together with its normalizedPath.
  * normalizedPath is used to compute the package name in some cases
  */
 class InputFile(val file: File, val normalizedPath: String)

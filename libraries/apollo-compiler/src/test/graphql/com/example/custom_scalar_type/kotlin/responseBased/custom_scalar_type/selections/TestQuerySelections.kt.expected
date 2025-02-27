@@ -10,9 +10,10 @@ import com.apollographql.apollo.api.CompiledSelection
 import com.apollographql.apollo.api.list
 import com.apollographql.apollo.api.notNull
 import com.example.custom_scalar_type.type.Character
+import com.example.custom_scalar_type.type.CharacterID
 import com.example.custom_scalar_type.type.Date
-import com.example.custom_scalar_type.type.GraphQLID
 import com.example.custom_scalar_type.type.GraphQLString
+import com.example.custom_scalar_type.type.Timestamp
 import com.example.custom_scalar_type.type.URL
 import com.example.custom_scalar_type.type.UnsupportedType
 import kotlin.collections.List
@@ -21,7 +22,7 @@ public object TestQuerySelections {
   private val __hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = GraphQLID.type.notNull()
+          type = CharacterID.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
@@ -54,6 +55,30 @@ public object TestQuerySelections {
           name = "hero",
           type = Character.type
         ).selections(__hero)
-        .build()
+        .build(),
+        CompiledField.Builder(
+          name = "nonNullTimestamp",
+          type = Timestamp.type.notNull()
+        ).build(),
+        CompiledField.Builder(
+          name = "nullableTimestamp",
+          type = Timestamp.type
+        ).build(),
+        CompiledField.Builder(
+          name = "nonNullListOfNonNullTimestamp",
+          type = Timestamp.type.notNull().list().notNull()
+        ).build(),
+        CompiledField.Builder(
+          name = "nonNullListOfNullableTimestamp",
+          type = Timestamp.type.list().notNull()
+        ).build(),
+        CompiledField.Builder(
+          name = "nullableListOfNonNullTimestamp",
+          type = Timestamp.type.notNull().list()
+        ).build(),
+        CompiledField.Builder(
+          name = "nullableListOfNullableTimestamp",
+          type = Timestamp.type.list()
+        ).build()
       )
 }

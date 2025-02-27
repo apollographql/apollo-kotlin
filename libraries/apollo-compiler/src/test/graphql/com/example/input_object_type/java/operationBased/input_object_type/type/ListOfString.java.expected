@@ -8,5 +8,5 @@ package com.example.input_object_type.type;
 import com.apollographql.apollo.api.CustomScalarType;
 
 public class ListOfString {
-  public static CustomScalarType type = new CustomScalarType("ListOfString", "List<String>");
+  public static CustomScalarType type = new CustomScalarType("ListOfString", "java.util.List<java.lang.String>");
 }

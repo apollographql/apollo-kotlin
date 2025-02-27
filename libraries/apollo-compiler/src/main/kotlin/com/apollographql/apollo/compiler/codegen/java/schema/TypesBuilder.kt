@@ -16,20 +16,16 @@ import com.apollographql.apollo.compiler.ir.IrEnum
 import com.apollographql.apollo.compiler.ir.IrInterface
 import com.apollographql.apollo.compiler.ir.IrObject
 import com.apollographql.apollo.compiler.ir.IrUnion
+import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
+import com.squareup.javapoet.TypeName
 import javax.lang.model.element.Modifier
 
-internal fun IrScalar.typeFieldSpec(targetTypeName: String?): FieldSpec {
-  /**
-   * Custom Scalars without a mapping will generate code using [com.apollographql.apollo.api.AnyAdapter] directly
-   * so the fallback isn't really required here. We still write it as a way to hint the user
-   * to what's happening behind the scenes
-   */
-  val typeName = targetTypeName ?: builtinScalarJavaName(name) ?: "java.lang.Object"
+internal fun IrScalar.typeFieldSpec(target: TypeName): FieldSpec {
   return FieldSpec
       .builder(JavaClassNames.CustomScalarType, Identifier.type, Modifier.STATIC, Modifier.PUBLIC)
-      .initializer("new $T($S, $S)", JavaClassNames.CustomScalarType, name, typeName)
+      .initializer("new $T($S, $S)", JavaClassNames.CustomScalarType, name, target.toString())
       .build()
 }
 

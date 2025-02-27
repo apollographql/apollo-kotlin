@@ -2,7 +2,9 @@
     "typeToFieldsToArguments": {
         "Character": {
         },
-        "ID": {
+        "Timestamp": {
+        },
+        "CharacterID": {
         },
         "String": {
         },

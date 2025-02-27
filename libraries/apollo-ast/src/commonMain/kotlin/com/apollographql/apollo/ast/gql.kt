@@ -1161,7 +1161,7 @@ class GQLInputValueDefinition(
     val defaultValue: GQLValue?,
 ) : GQLNode, GQLDescribed, GQLNamed, GQLHasDirectives {
 
-  override val children = directives
+  override val children: List<GQLNode> = directives + type + listOfNotNull(defaultValue)
 
   /**
    * @param inline whether the input value definition is used inline (for an example a field argument)
@@ -1217,7 +1217,9 @@ class GQLInputValueDefinition(
 
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
-        directives = container.take()
+        directives = container.take(),
+        type = container.takeSingle()!!,
+        defaultValue = container.takeSingle()
     )
   }
 }

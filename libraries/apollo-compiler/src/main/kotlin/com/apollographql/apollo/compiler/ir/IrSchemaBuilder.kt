@@ -13,7 +13,6 @@ internal object IrSchemaBuilder {
   fun build(
       schema: Schema,
       usedCoordinates: UsedCoordinates,
-      alreadyVisitedTypes: Set<String>,
   ): IrSchema {
 
     val irEnums = mutableListOf<IrEnum>()
@@ -23,8 +22,37 @@ internal object IrSchemaBuilder {
     val irInterfaces = mutableListOf<IrInterface>()
     val irObjects = mutableListOf<IrObject>()
 
-    val visitedTypes = alreadyVisitedTypes.toMutableSet()
+    /**
+     * Always generate the types for builtin scalars.
+     * Not 100% sure why. This has always been the case and too afraid to touch it now.
+     *
+     * Warning: this modifies some mutable state
+     */
+    listOf(
+        "String",
+        "Int",
+        "Boolean",
+        "Float",
+        "ID",
+    ).forEach {
+      usedCoordinates.putType(it)
+    }
+
+    /**
+     * Always generate the types for scalars that contain a mapping.
+     * Not 100% sure why. This has always been the case and too afraid to touch it now.
+     *
+     * Warning: this modifies some mutable state
+     */
+    schema.typeDefinitions.values.forEach {
+      if (it is GQLScalarTypeDefinition && (it.findMapTo(schema) != null || it.directives.findMapToBuiltin(schema) != null)) {
+        usedCoordinates.putType(it.name)
+      }
+    }
+
+    val visitedTypes = mutableSetOf<String>()
     val typesStack = usedCoordinates.getTypes().toMutableList()
+
     while (typesStack.isNotEmpty()) {
       val name = typesStack.removeFirst()
       if (visitedTypes.contains(name)) {
@@ -36,7 +64,7 @@ internal object IrSchemaBuilder {
 
       when {
         typeDefinition is GQLScalarTypeDefinition -> {
-          irScalars.add(typeDefinition.toIr())
+          irScalars.add(typeDefinition.toIr(schema, usedCoordinates))
         }
         typeDefinition is GQLEnumTypeDefinition -> {
           irEnums.add(typeDefinition.toIr(schema))

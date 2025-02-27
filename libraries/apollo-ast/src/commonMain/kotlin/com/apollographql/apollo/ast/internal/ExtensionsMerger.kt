@@ -160,7 +160,7 @@ private inline fun <reified T, E> ExtensionsMerger.mergeTypedDefinition(
 ) where T : GQLDefinition, E : GQLTypeSystemExtension {
   val index = newDefinitions.indexOfFirst { it is T }
   if (index == -1) {
-    issues.add(OtherValidationIssue("Cannot find $extra definition to apply extension", extension.sourceLocation))
+    issues.add(OtherValidationIssue("Cannot find $extra definition to apply the following extension:\n${extension.toUtf8()}", extension.sourceLocation))
   } else {
     newDefinitions.set(index, merge(newDefinitions[index] as T))
   }
@@ -188,7 +188,7 @@ private inline fun <reified T, E> ExtensionsMerger.mergeNamedDefinition(
 
   when (indexedValues.size) {
     0 -> {
-      issues.add(OtherValidationIssue("Cannot find $extra type `${extension.name}` to apply extension", extension.sourceLocation))
+      issues.add(OtherValidationIssue("Cannot find $extra type `${extension.name}` to apply the following extension:\n${extension.toUtf8()}", extension.sourceLocation))
     }
 
     1 -> {

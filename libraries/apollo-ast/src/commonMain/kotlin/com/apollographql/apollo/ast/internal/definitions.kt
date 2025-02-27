@@ -174,8 +174,69 @@ on OBJECT
     | UNION
     | SCALAR
     | INPUT_OBJECT
-
 """.trimIndent()
+
+/**
+ * These definitions are publicly part of `kotlin_labs` but in order to avoid conflicting with user imports
+ * they are imported under a different foreign schema name by the Apollo compiler.
+ *
+ * Ideally, we move all configuration to `.graphqls` files and we can remove that.
+ */
+internal val compilerOptions_0_0 = """
+""${'"'}
+Configure the Apollo compiler to map the given scalar to the given class.
+""${'"'}
+directive @map(
+  ""${'"'}
+  The fully qualified type name to map the scalar to. 
+  Simple generic types without variance or wildcards are also supported. 
+  
+  Examples: 
+    - `java.util.Date`
+    - `kotlin.collections.Map<kotlin.String, java.util.Date>`
+  ""${'"'}
+  to: String!, 
+
+  ""${'"'}
+  A fully qualified expression referencing the adapter used to adapt to/from the type
+  or inline property type, or `null` to specify the adapter at runtime.
+   
+  Examples:
+    - `com.apollographql.adapter.datetime.KotlinxInstantAdapter`
+    - `com.example.MyAdapter()`
+  ""${'"'}
+  with: String = null, 
+  
+  ""${'"'}
+  If non null, contains the name of the property used to wrap/unwrap the inline class.
+  [to] must be an inline class.
+  
+  Only used in Kotlin codegen.
+  ""${'"'}  
+  inlineProperty: String = null
+) on SCALAR
+
+""${'"'}
+Built-in types known at compile time. Apollo Kotlin knows the adapters for those types.
+""${'"'}
+enum BuiltIn { String, Boolean, Int, Long, Float, Double }
+
+""${'"'}
+Use the given builtin type for this scalar.
+""${'"'}
+directive @mapTo(
+  ""${'"'}
+  The built-in type to use for this scalar.
+  ""${'"'}
+  builtIn: BuiltIn!, 
+  ""${'"'}
+  Whether to generate a wrapper inline class for this scalar.
+  ""${'"'}
+  inline: Boolean! = true
+) on SCALAR
+"""
+
+internal val kotlinLabsDefinitions_0_5 = kotlinLabsDefinitions_0_4 + compilerOptions_0_0
 
 /**
  * Built in scalar and introspection types from the Draft
@@ -479,4 +540,8 @@ directive @defer(
   label: String
   if: Boolean! = true
 ) on FRAGMENT_SPREAD | INLINE_FRAGMENT  
+""".trimIndent()
+
+internal val nonNullDefinitionStr = """
+directive @nonnull(fields: String! = "") on OBJECT | FIELD
 """.trimIndent()

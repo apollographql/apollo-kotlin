@@ -1,4 +1,4 @@
-extend schema @link(url: "https://specs.apollo.dev/nullability/v0.4", import: ["@semanticNonNullField", "@semanticNonNull", "@catch", "@catchByDefault", "CatchTo"])
+extend schema @link(url: "https://specs.apollo.dev/nullability/v0.4", import: ["@semanticNonNullField", "@semanticNonNull", "@catch", "@catchByDefault"])
 
 type Query {
   nullable: Int
