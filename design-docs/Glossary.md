@@ -125,3 +125,29 @@ Fields that are used to compute a Cache key for an object.
 
 Field arguments that control pagination, e.g. `first`, `after`, etc. They should be omitted when computing a field key so different pages can be merged into the same field.
 
+
+### API schema
+
+The server schema as seen from introspection (can be either JSON or SDL)
+
+### Server definition
+
+A definition present in the API schema.
+
+Examples: `@include`, `@oneOf`, `__Schema`
+
+### Client definition
+
+A definition that is added to the API schema by the client, using either @link or by concatenating new definitions to the schema.
+
+### Linked definition
+
+A definition is added to a schema using @link.
+ 
+Examples: `@targetName`, `@typePolicy`
+
+### Checked definitions
+
+A definition that is recognized by Apollo Kotlin and required to be a certain shape. Apollo Kotlin checks those definitions to avoid crashes in the compiler and/or surprising behaviours. This is typically the case for server definitions that and are not specified yet and/or may vary depending on the version of the spec used.
+
+Examples: `@oneOf`, `@semanticNonNull`, `@targetName`
