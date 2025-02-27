@@ -113,6 +113,10 @@ object SchemaDownloader {
       if (introspectionSchema == null) {
         check(sdlSchema != null)
         // Convert from SDL to JSON
+        /*
+         * As of Feb. 2025, the registry schema contains the introspection types but not
+         * the scalars and we therefore need to call `toFullSchemaGQLDocument()`
+         */
         sdlSchema
             .toGQLDocument()
             .toFullSchemaGQLDocument()

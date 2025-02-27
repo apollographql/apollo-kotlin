@@ -177,13 +177,16 @@ on OBJECT
 
 """.trimIndent()
 
-// Built in scalar and introspection types from the Draft:
-// - https://spec.graphql.org/draft/#sec-Scalars
-// - https://spec.graphql.org/draft/#sec-Schema-Introspection.Schema-Introspection-Schema
-// In theory the user needs to provide the builtin definitions because we cannot know in advance what
-// version of the spec they are using neither if they have extended any of the introspection types.
-// This file is a fallback to make a best-effort guess in case the user didn't provide these definitions, at the
-// risk of potentially validating invalid queries.
+/**
+ * Built in scalar and introspection types from the Draft
+ *  - https://spec.graphql.org/draft/#sec-Scalars
+ *  - https://spec.graphql.org/draft/#sec-Schema-Introspection.Schema-Introspection-Schema
+ *
+ * In theory the user needs to provide the builtin definitions because we cannot know in advance what
+ * version of the spec they are using neither if they have extended any of the introspection types.
+ *
+ * TODO v5: Only keep built-in scalars as almost everything else may evolve and requiring an explicit decision from the user is safer.
+ */
 internal val builtinsDefinitionsStr = """
   ""${'"'}
   The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
@@ -318,7 +321,7 @@ internal val builtinsDefinitionsStr = """
     if: Boolean! = true
   ) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
-  directive @specifiedBy(url: String!) on SCALAR
+  directive @specifiedBy(url: String!) on SCALAR  
 """.trimIndent()
 
 internal val linkDefinitionsStr = """
@@ -465,4 +468,15 @@ enum CatchTo {
     ""${'"'}
     THROW
 }
+""".trimIndent()
+
+internal val oneOfDefinitionsStr = """
+directive @oneOf on INPUT_OBJECT  
+""".trimIndent()
+
+internal val deferDefinitionsStr = """
+directive @defer(
+  label: String
+  if: Boolean! = true
+) on FRAGMENT_SPREAD | INLINE_FRAGMENT  
 """.trimIndent()

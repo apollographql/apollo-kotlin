@@ -1,5 +1,5 @@
 OtherValidationIssue (1:1)
-Found an executable definition. Schemas should only contain type system definitions.
+Unsupported definition. Schemas should only contain type system definitions or extensions.
 ------------
 NoQueryType (null:null)
 No schema definition and no query type found

@@ -70,12 +70,10 @@ internal object TestUtils {
 
   fun findSchema(dir: File): Schema? {
     return listOf("graphqls", "sdl", "json").map { File(dir, "schema.$it") }
-        .firstOrNull { it.exists() }
-        ?.let {
-          it.toGQLDocument(allowJson = true)
-              .validateAsSchemaAndAddApolloDefinition()
-              .apolloGetOrThrow()
-        }
+          .firstOrNull { it.exists() }
+          ?.toGQLDocument(allowJson = true)
+          ?.validateAsSchemaAndAddApolloDefinition()
+          ?.apolloGetOrThrow()
   }
 
   /**

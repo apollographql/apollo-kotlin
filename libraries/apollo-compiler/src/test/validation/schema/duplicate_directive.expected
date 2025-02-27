@@ -1,2 +1,5 @@
-DirectiveRedefinition (7:1)
-Directive 'foo' is defined multiple times. First definition is: duplicate_directive.graphql: (6, 1)
+OtherValidationIssue (6:1)
+Conflicting definition '@foo'
+------------
+OtherValidationIssue (7:1)
+Conflicting definition '@foo'

@@ -3,10 +3,10 @@
 package com.apollographql.ijplugin.util
 
 import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.ast.AUTO_IMPORTED_KOTLIN_LABS_VERSION
 import com.apollographql.apollo.ast.GQLDefinition
 import com.apollographql.apollo.ast.GQLDirectiveDefinition
 import com.apollographql.apollo.ast.GQLNamed
-import com.apollographql.apollo.ast.KOTLIN_LABS_VERSION
 import com.apollographql.apollo.ast.NULLABILITY_VERSION
 import com.apollographql.apollo.ast.kotlinLabsDefinitions
 import com.apollographql.apollo.ast.nullabilityDefinitions
@@ -28,10 +28,10 @@ val NULLABILITY_DEFINITIONS: List<GQLDefinition> by lazy {
   nullabilityDefinitions(NULLABILITY_VERSION)
 }
 
-const val KOTLIN_LABS_URL = "https://specs.apollo.dev/kotlin_labs/$KOTLIN_LABS_VERSION"
+const val KOTLIN_LABS_URL = "https://specs.apollo.dev/kotlin_labs/$AUTO_IMPORTED_KOTLIN_LABS_VERSION"
 
 val KOTLIN_LABS_DEFINITIONS: List<GQLDefinition> by lazy {
-  kotlinLabsDefinitions(KOTLIN_LABS_VERSION)
+  kotlinLabsDefinitions(AUTO_IMPORTED_KOTLIN_LABS_VERSION)
 }
 
 const val CATCH = "catch"

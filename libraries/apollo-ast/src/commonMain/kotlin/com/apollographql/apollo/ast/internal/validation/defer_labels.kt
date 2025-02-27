@@ -69,7 +69,7 @@ private class Scope(
 
   private fun List<GQLDirective>.validate(operation: GQLOperationDefinition?, path: List<String>) {
     forEach {
-      if (it.name == "defer") {
+      if (it.name == Schema.DEFER) {
         it.validateDeferDirective(operation, path)
       }
     }

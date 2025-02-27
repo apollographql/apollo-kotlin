@@ -1,2 +1,2 @@
 DirectiveRedefinition (6:1)
-Directive 'nonnull' is defined multiple times. First definition is: null: (9, 1)
+Implicit kotlin_labs definition '@nonnull' overrides explicit one provided by the schema. Import kotlin_labs explicitly using @link.

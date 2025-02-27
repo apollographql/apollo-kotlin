@@ -20,7 +20,7 @@ class IntrospectionTest {
           .toGQLDocument(allowJson = true)
           .toSchema()
     } catch (e: SourceAwareException) {
-      assertTrue(e.message!!.contains("is defined multiple times"))
+      assertTrue(e.message!!.contains("Conflicting definition"))
     }
   }
 

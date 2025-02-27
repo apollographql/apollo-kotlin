@@ -1,4 +1,4 @@
-extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3", import: ["@requiresOptIn"])
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.4", import: ["@requiresOptIn"])
 
 type Query {
   newField(input: SomeInput! @experimental): Direction! @requiresOptIn(feature: "experimental")

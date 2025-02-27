@@ -58,9 +58,9 @@ class Schema internal constructor(
   )
 
   /**
-   * @param name the current name of the directive (like "kotlin_labs__nonnull")
+   * @param name the current name of the directive (like "kotlin_labs__targetName")
    *
-   * @return the original directive name (like "nonnull")
+   * @return the original directive name (like "targetName") or null if the directive was not linked.
    */
   fun originalDirectiveName(name: String): String {
     return foreignNames["@$name"]?.substring(1) ?: name
@@ -179,7 +179,7 @@ class Schema internal constructor(
     val directives = typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>().flatMap { it.directives } +
         typeDefinitions.values.filterIsInstance<GQLInterfaceTypeDefinition>().flatMap { it.directives } +
         typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().flatMap { it.directives }
-    return directives.any { it.name == TYPE_POLICY }
+    return directives.any { originalDirectiveName(it.name) == TYPE_POLICY }
   }
 
   /**
@@ -199,6 +199,14 @@ class Schema internal constructor(
   }
 
   companion object {
+    @ApolloExperimental
+    const val ONE_OF = "oneOf"
+    @ApolloExperimental
+    const val DEFER = "defer"
+
+    @ApolloExperimental
+    const val LINK = "link"
+
     const val TYPE_POLICY = "typePolicy"
     const val FIELD_POLICY = "fieldPolicy"
     const val NONNULL = "nonnull"
@@ -207,8 +215,6 @@ class Schema internal constructor(
     const val TARGET_NAME = "targetName"
 
     @ApolloExperimental
-    const val ONE_OF = "oneOf"
-    @ApolloExperimental
     const val CATCH = "catch"
     @ApolloExperimental
     const val CATCH_BY_DEFAULT = "catchByDefault"
@@ -216,8 +222,6 @@ class Schema internal constructor(
     const val SEMANTIC_NON_NULL = "semanticNonNull"
     @ApolloExperimental
     const val SEMANTIC_NON_NULL_FIELD = "semanticNonNullField"
-    @ApolloExperimental
-    const val LINK = "link"
 
     const val FIELD_POLICY_FOR_FIELD = "forField"
     const val FIELD_POLICY_KEY_ARGS = "keyArgs"
@@ -242,14 +246,18 @@ class Schema internal constructor(
     }
 
     internal fun rootOperationTypeDefinition(operationType: String, definitions: List<GQLDefinition>): GQLTypeDefinition? {
-      return definitions.filterIsInstance<GQLSchemaDefinition>().single()
+      return rootOperationTypeDefinition(definitions.filterIsInstance<GQLSchemaDefinition>().single(), operationType, definitions.filterIsInstance<GQLObjectTypeDefinition>().associateBy { it.name })
+    }
+
+    internal fun rootOperationTypeDefinition(schemaTypeDefinition: GQLSchemaDefinition, operationType: String, typeDefinitions: Map<String, GQLTypeDefinition>): GQLTypeDefinition? {
+      return schemaTypeDefinition
           .rootOperationTypeDefinitions
           .singleOrNull {
             it.operationType == operationType
           }
           ?.namedType
           ?.let { namedType ->
-            definitions.filterIsInstance<GQLObjectTypeDefinition>().single { it.name == namedType }
+            typeDefinitions.get(namedType)
           }
     }
   }

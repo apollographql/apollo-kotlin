@@ -112,6 +112,13 @@ private fun ValidationScope.validateDirectiveInternal(
   )
 }
 
+internal fun ValidationScope.validateDirectivesInConstContext(
+    directives: List<GQLDirective>,
+    directiveContext: GQLNode,
+) = validateDirectives(directives, directiveContext) {
+  issues.add(it.constContextError())
+}
+
 /**
  * @param directiveContext the node representing the location where this directive is applied
  */
@@ -152,26 +159,7 @@ internal fun ValidationScope.validateDirectives(
   val pairs = directives.mapNotNull { directive ->
     val directiveDefinition = directiveDefinitions[directive.name]
     if (directiveDefinition == null) {
-      when (val originalName = originalDirectiveName(directive.name)) {
-        Schema.OPTIONAL,
-        Schema.NONNULL,
-        Schema.TYPE_POLICY,
-        Schema.FIELD_POLICY,
-        Schema.REQUIRES_OPT_IN,
-        Schema.TARGET_NAME,
-        -> {
-          /**
-           * This validation is lenient for historical reasons. We don't want to break users relying on this.
-           * If you're reading this and there's a good reason to, you can move directives out of this branch and require user to
-           * specify the correct `@link` directive
-           */
-          issues.add(UnknownDirective("Unknown directive '@${directive.name}'", directive.sourceLocation, requireDefinition = false))
-        }
-        else -> {
-          issues.add(UnknownDirective("No directive definition found for '@${originalName}'", directive.sourceLocation, requireDefinition = true))
-        }
-      }
-
+      issues.add(UnknownDirective("Unknown directive '@${directive.name}'", directive.sourceLocation))
       return@mapNotNull null
     }
 
