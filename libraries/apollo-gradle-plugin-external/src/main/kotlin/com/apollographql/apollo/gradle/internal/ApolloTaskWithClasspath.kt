@@ -25,7 +25,7 @@ abstract class ApolloTaskWithClasspath: DefaultTask() {
   @get:Input
   abstract val arguments: MapProperty<String, Any?>
 
-  @get:Input
+  @get:Internal
   abstract val logLevel: Property<LogLevel>
 
   @Inject
