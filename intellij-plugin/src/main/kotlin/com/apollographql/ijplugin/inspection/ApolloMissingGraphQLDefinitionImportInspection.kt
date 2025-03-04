@@ -127,7 +127,8 @@ private class ImportDefinitionQuickFix(
     if (linkDirective == null) {
       val linkDirectiveSchemaExtension =
         createLinkDirectiveSchemaExtension(project, setOf(element.nameForImport), definitions, definitionsUrl)
-      val extraSchemaFile = (element.containingFile as? GraphQLFile) ?: schemaFiles.firstOrNull { it.name == "extra.graphqls" }
+      val extraSchemaFile = (element.containingFile as? GraphQLFile)?.takeIf { it.name == "extra.graphqls" }
+          ?: schemaFiles.firstOrNull { it.name == "extra.graphqls" }
       if (extraSchemaFile == null) {
         GraphQLElementFactory.createFile(project, linkDirectiveSchemaExtension.text).also {
           // Save the file to the project
