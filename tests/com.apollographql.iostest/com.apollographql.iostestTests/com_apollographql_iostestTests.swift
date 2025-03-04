@@ -7,8 +7,8 @@ struct com_apollographql_iostestTests {
     final class AuthenticationInterceptor: Apollo_runtimeHttpInterceptor {
 
         func intercept(request: HttpRequest, chain: Apollo_runtimeHttpInterceptorChain) async throws -> HttpResponse {
-            //throw DefaultApolloException(message: "interceptor error", cause: nil)
-            try await chain.proceed(request: request)
+            throw DefaultApolloException(message: "interceptor error", cause: nil)
+            //try await chain.proceed(request: request)
         }
         
         func dispose() {
