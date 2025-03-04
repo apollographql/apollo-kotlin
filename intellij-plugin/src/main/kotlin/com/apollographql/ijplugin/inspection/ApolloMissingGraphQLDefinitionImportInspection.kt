@@ -35,6 +35,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.jsgraphql.psi.GraphQLArrayValue
 import com.intellij.lang.jsgraphql.psi.GraphQLDirective
 import com.intellij.lang.jsgraphql.psi.GraphQLElementFactory
+import com.intellij.lang.jsgraphql.psi.GraphQLFile
 import com.intellij.lang.jsgraphql.psi.GraphQLVisitor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
@@ -60,7 +61,8 @@ class ApolloMissingGraphQLDefinitionImportInspection : LocalInspectionTool() {
       highlightType: ProblemHighlightType,
   ) {
     if (directiveElement.name !in definitions.directives().map { it.name }) return
-    val message = if (highlightType == ProblemHighlightType.WEAK_WARNING) "inspection.missingGraphQLDefinitionImport.reportText.warning" else "inspection.missingGraphQLDefinitionImport.reportText.error"
+    val message =
+      if (highlightType == ProblemHighlightType.WEAK_WARNING) "inspection.missingGraphQLDefinitionImport.reportText.warning" else "inspection.missingGraphQLDefinitionImport.reportText.error"
     if (!directiveElement.isImported(definitionsUrl)) {
       val typeKind = ApolloBundle.message("inspection.missingGraphQLDefinitionImport.reportText.directive")
       holder.registerProblem(
@@ -123,13 +125,16 @@ private class ImportDefinitionQuickFix(
     val linkDirective = schemaFiles.flatMap { it.linkDirectives(definitionsUrl) }.firstOrNull()
 
     if (linkDirective == null) {
-      val linkDirectiveSchemaExtension = createLinkDirectiveSchemaExtension(project, setOf(element.nameForImport), definitions, definitionsUrl)
-      val extraSchemaFile = schemaFiles.firstOrNull { it.name == "extra.graphqls" }
+      val linkDirectiveSchemaExtension =
+        createLinkDirectiveSchemaExtension(project, setOf(element.nameForImport), definitions, definitionsUrl)
+      val extraSchemaFile = (element.containingFile as? GraphQLFile)?.takeIf { it.name == "extra.graphqls" }
+          ?: schemaFiles.firstOrNull { it.name == "extra.graphqls" }
       if (extraSchemaFile == null) {
         GraphQLElementFactory.createFile(project, linkDirectiveSchemaExtension.text).also {
           // Save the file to the project
           it.name = "extra.graphqls"
-          schemaFiles.first().containingDirectory!!.add(it)
+          val directory = schemaFiles.firstOrNull()?.containingDirectory ?: element.containingFile.containingDirectory ?: return
+          directory.add(it)
 
           // There's a new schema file, reload the configuration
           project.gradleToolingModelService.triggerFetchToolingModels()
@@ -140,7 +145,8 @@ private class ImportDefinitionQuickFix(
       }
     } else {
       val importedNames = buildSet {
-        addAll(linkDirective.arguments!!.argumentList.firstOrNull { it.name == "import" }?.value?.cast<GraphQLArrayValue>()?.valueList.orEmpty().map { it.text.unquoted() })
+        addAll(linkDirective.arguments!!.argumentList.firstOrNull { it.name == "import" }?.value?.cast<GraphQLArrayValue>()?.valueList.orEmpty()
+            .map { it.text.unquoted() })
         add(element.nameForImport)
       }
       linkDirective.replace(createLinkDirective(project, importedNames, definitions, definitionsUrl))
