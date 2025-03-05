@@ -5,8 +5,6 @@
 #                                                      ^ Unresolved reference: kotlinMultiplatformExtension
 -keep class kotlin.Metadata { *; }
 -keep class kotlin.Unit { *; }
--keep class kotlin.RequiresOptIn { *; }
-
 # Keep the @RequiresOptIn annotation so we get proper warnings in gradle build files
 -keep class kotlin.RequiresOptIn { *; }
 
@@ -14,8 +12,8 @@
 # Else it fails with
 # 'Declaration of property alwaysGenerateTypesMatching does not include any type arguments in its property type interface org.gradle.api.provider.SetProperty'
 -keepattributes Signature,InnerClasses,EnclosingMethod
-# Similarly, Gradle needs the @Inject annotations
--keepattributes RuntimeVisible*Annotation*
+# Gradle needs the @Inject annotations, the Kotlin compiler needs @RequiresOptIn, etc..
+-keepattributes *Annotation*
 # For debug
 -keepattributes SourceFile,LineNumberTable
 
