@@ -142,7 +142,6 @@ configure<kotlinx.validation.ApiValidationExtension> {
 
   nonPublicMarkers.addAll(
       listOf(
-          "com.apollographql.apollo.annotations.ApolloInternal",
           "com.apollographql.apollo.annotations.ApolloExperimental",
       )
   )

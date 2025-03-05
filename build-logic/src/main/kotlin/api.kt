@@ -40,7 +40,6 @@ fun Project.apolloLibrary(
   configureJavaAndKotlinCompilers(jvmTarget, kotlinCompilerOptions)
 
   addOptIn(
-      "com.apollographql.apollo.annotations.ApolloExperimental",
       "com.apollographql.apollo.annotations.ApolloInternal"
   )
 

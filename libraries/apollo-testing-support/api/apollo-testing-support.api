@@ -4,6 +4,10 @@ public final class com/apollographql/apollo/testing/-FileSystemCommon {
 	public static final fun pathToUtf8 (Ljava/lang/String;)Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo/testing/CurrentThreadId_jvmCommonKt {
+	public static final fun currentThreadId ()Ljava/lang/String;
+}
+
 public final class com/apollographql/apollo/testing/MockserverKt {
 	public static final fun enqueue (Lcom/apollographql/apollo/mockserver/MockServer;Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/Operation$Data;Lcom/apollographql/apollo/api/CustomScalarAdapters;J)V
 	public static synthetic fun enqueue$default (Lcom/apollographql/apollo/mockserver/MockServer;Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/Operation$Data;Lcom/apollographql/apollo/api/CustomScalarAdapters;JILjava/lang/Object;)V
@@ -13,8 +17,28 @@ public final class com/apollographql/apollo/testing/MockserverKt {
 	public static synthetic fun enqueueData$default (Lcom/apollographql/apollo/mockserver/MockServer;Ljava/util/Map;Lcom/apollographql/apollo/api/CustomScalarAdapters;JIILjava/lang/Object;)V
 }
 
+public final class com/apollographql/apollo/testing/Platform : java/lang/Enum {
+	public static final field Js Lcom/apollographql/apollo/testing/Platform;
+	public static final field Jvm Lcom/apollographql/apollo/testing/Platform;
+	public static final field Native Lcom/apollographql/apollo/testing/Platform;
+	public static final field WasmJs Lcom/apollographql/apollo/testing/Platform;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo/testing/Platform;
+	public static fun values ()[Lcom/apollographql/apollo/testing/Platform;
+}
+
+public final class com/apollographql/apollo/testing/Platform_jvmCommonKt {
+	public static final fun platform ()Lcom/apollographql/apollo/testing/Platform;
+}
+
 public final class com/apollographql/apollo/testing/ReadFile_jvmKt {
 	public static final fun getTestsPath ()Ljava/lang/String;
 	public static final fun shouldUpdateTestFixtures ()Z
+}
+
+public final class com/apollographql/apollo/testing/internal/RunTestKt {
+	public static final fun runTest (Lkotlin/jvm/functions/Function2;)V
+	public static final fun runTest (Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun runTest$default (Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 

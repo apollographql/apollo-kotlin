@@ -534,6 +534,7 @@ public final class com/apollographql/apollo/api/Executable$Variables {
 
 public final class com/apollographql/apollo/api/Executables {
 	public static final fun composeData (Lcom/apollographql/apollo/api/Executable;Lcom/apollographql/apollo/api/json/JsonWriter;Lcom/apollographql/apollo/api/CustomScalarAdapters;Lcom/apollographql/apollo/api/Executable$Data;)V
+	public static final fun falseVariables (Lcom/apollographql/apollo/api/Executable;Lcom/apollographql/apollo/api/CustomScalarAdapters;)Ljava/util/Set;
 	public static final fun parseData (Lcom/apollographql/apollo/api/Executable;Lcom/apollographql/apollo/api/json/JsonReader;)Lcom/apollographql/apollo/api/Executable$Data;
 	public static final fun parseData (Lcom/apollographql/apollo/api/Executable;Lcom/apollographql/apollo/api/json/JsonReader;Lcom/apollographql/apollo/api/CustomScalarAdapters;)Lcom/apollographql/apollo/api/Executable$Data;
 	public static final fun parseData (Lcom/apollographql/apollo/api/Executable;Lcom/apollographql/apollo/api/json/JsonReader;Lcom/apollographql/apollo/api/CustomScalarAdapters;Ljava/util/Set;)Lcom/apollographql/apollo/api/Executable$Data;
@@ -541,6 +542,7 @@ public final class com/apollographql/apollo/api/Executables {
 	public static final fun parseData (Lcom/apollographql/apollo/api/Executable;Lcom/apollographql/apollo/api/json/JsonReader;Lcom/apollographql/apollo/api/CustomScalarAdapters;Ljava/util/Set;Ljava/util/Set;Ljava/util/List;)Lcom/apollographql/apollo/api/Executable$Data;
 	public static synthetic fun parseData$default (Lcom/apollographql/apollo/api/Executable;Lcom/apollographql/apollo/api/json/JsonReader;Lcom/apollographql/apollo/api/CustomScalarAdapters;Ljava/util/Set;Ljava/util/Set;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/api/Executable$Data;
 	public static final fun variables (Lcom/apollographql/apollo/api/Executable;Lcom/apollographql/apollo/api/CustomScalarAdapters;)Lcom/apollographql/apollo/api/Executable$Variables;
+	public static final fun variables (Lcom/apollographql/apollo/api/Executable;Lcom/apollographql/apollo/api/CustomScalarAdapters;Z)Lcom/apollographql/apollo/api/Executable$Variables;
 	public static final fun variablesJson (Lcom/apollographql/apollo/api/Executable;Lcom/apollographql/apollo/api/CustomScalarAdapters;)Ljava/lang/String;
 }
 
@@ -992,14 +994,26 @@ public final class com/apollographql/apollo/api/http/HttpResponse$Builder {
 	public final fun headers (Ljava/util/List;)Lcom/apollographql/apollo/api/http/HttpResponse$Builder;
 }
 
+public final class com/apollographql/apollo/api/http/UploadsHttpBody : com/apollographql/apollo/api/http/HttpBody {
+	public fun <init> (Ljava/util/Map;Lokio/ByteString;)V
+	public fun getContentLength ()J
+	public fun getContentType ()Ljava/lang/String;
+	public fun writeTo (Lokio/BufferedSink;)V
+}
+
 public final class com/apollographql/apollo/api/http/internal/UrlEncodeKt {
 	public static final fun urlDecode (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun urlEncode (Ljava/lang/String;)Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo/api/internal/ResponseParserKt {
+	public static final fun readErrors (Lcom/apollographql/apollo/api/json/JsonReader;)Ljava/util/List;
+}
+
 public final class com/apollographql/apollo/api/json/-JsonReaders {
 	public static final fun jsonReader (Ljava/util/Map;)Lcom/apollographql/apollo/api/json/JsonReader;
 	public static final fun jsonReader (Lokio/BufferedSource;)Lcom/apollographql/apollo/api/json/JsonReader;
+	public static final fun readAny (Lcom/apollographql/apollo/api/json/JsonReader;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo/api/json/-JsonWriters {
@@ -1254,6 +1268,8 @@ public final class com/apollographql/apollo/exception/AutoPersistedQueriesNotSup
 public final class com/apollographql/apollo/exception/CacheMissException : com/apollographql/apollo/exception/ApolloException {
 	public static final field Companion Lcom/apollographql/apollo/exception/CacheMissException$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Z)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getFieldName ()Ljava/lang/String;
 	public final fun getKey ()Ljava/lang/String;
 }

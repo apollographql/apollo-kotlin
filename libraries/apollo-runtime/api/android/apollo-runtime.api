@@ -67,6 +67,7 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public final fun addHttpInterceptor (Lcom/apollographql/apollo/network/http/HttpInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun addInterceptor (Lcom/apollographql/apollo/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public final fun addListener (Lcom/apollographql/apollo/internal/ApolloClientListener;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun autoPersistedQueries ()Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun autoPersistedQueries (Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun autoPersistedQueries (Lcom/apollographql/apollo/api/http/HttpMethod;Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/ApolloClient$Builder;
@@ -117,6 +118,7 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public synthetic fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Ljava/lang/Object;
 	public final fun httpServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public final fun listeners (Ljava/util/List;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun networkTransport (Lcom/apollographql/apollo/network/NetworkTransport;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun removeHttpInterceptor (Lcom/apollographql/apollo/network/http/HttpInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun removeInterceptor (Lcom/apollographql/apollo/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
@@ -152,7 +154,22 @@ public final class com/apollographql/apollo/AutoPersistedQueryInfoKt {
 	public static final fun getAutoPersistedQueryInfo (Lcom/apollographql/apollo/api/ApolloResponse;)Lcom/apollographql/apollo/AutoPersistedQueryInfo;
 }
 
+public final class com/apollographql/apollo/CacheDumpProviderContext : com/apollographql/apollo/api/ExecutionContext$Element {
+	public static final field Key Lcom/apollographql/apollo/CacheDumpProviderContext$Key;
+	public fun <init> (Lkotlin/jvm/functions/Function0;)V
+	public final fun getCacheDumpProvider ()Lkotlin/jvm/functions/Function0;
+	public fun getKey ()Lcom/apollographql/apollo/api/ExecutionContext$Key;
+}
+
+public final class com/apollographql/apollo/CacheDumpProviderContext$Key : com/apollographql/apollo/api/ExecutionContext$Key {
+}
+
 public final class com/apollographql/apollo/ConcurrencyInfo$Key : com/apollographql/apollo/api/ExecutionContext$Key {
+}
+
+public final class com/apollographql/apollo/ConflatedResponsesKt {
+	public static final fun conflateFetchPolicyInterceptorResponses (Lcom/apollographql/apollo/api/MutableExecutionOptions;Z)Ljava/lang/Object;
+	public static final fun getConflateFetchPolicyInterceptorResponses (Lcom/apollographql/apollo/api/ApolloRequest;)Z
 }
 
 public abstract interface class com/apollographql/apollo/interceptor/ApolloInterceptor {
@@ -172,6 +189,36 @@ public final class com/apollographql/apollo/interceptor/AutoPersistedQueryInterc
 }
 
 public final class com/apollographql/apollo/interceptor/AutoPersistedQueryInterceptor$Companion {
+}
+
+public abstract interface class com/apollographql/apollo/internal/ApolloClientListener {
+	public abstract fun requestCompleted (Lcom/apollographql/apollo/api/ApolloRequest;)V
+	public abstract fun requestStarted (Lcom/apollographql/apollo/api/ApolloRequest;)V
+}
+
+public final class com/apollographql/apollo/internal/DeferredJsonMerger {
+	public fun <init> ()V
+	public final fun getHasNext ()Z
+	public final fun getMerged ()Ljava/util/Map;
+	public final fun getMergedFragmentIds ()Ljava/util/Set;
+	public final fun isEmptyPayload ()Z
+	public final fun merge (Ljava/util/Map;)Ljava/util/Map;
+	public final fun merge (Lokio/BufferedSource;)Ljava/util/Map;
+	public final fun reset ()V
+}
+
+public final class com/apollographql/apollo/internal/MultipartReader : java/io/Closeable {
+	public fun <init> (Lokio/BufferedSource;Ljava/lang/String;)V
+	public fun close ()V
+	public final fun getBoundary ()Ljava/lang/String;
+	public final fun nextPart ()Lcom/apollographql/apollo/internal/MultipartReader$Part;
+}
+
+public final class com/apollographql/apollo/internal/MultipartReader$Part : java/io/Closeable {
+	public fun <init> (Ljava/util/List;Lokio/BufferedSource;)V
+	public fun close ()V
+	public final fun getBody ()Lokio/BufferedSource;
+	public final fun getHeaders ()Ljava/util/List;
 }
 
 public abstract interface class com/apollographql/apollo/network/NetworkTransport {
