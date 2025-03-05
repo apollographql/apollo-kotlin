@@ -5,6 +5,7 @@
 #                                                      ^ Unresolved reference: kotlinMultiplatformExtension
 -keep class kotlin.Metadata { *; }
 -keep class kotlin.Unit { *; }
+-keep class kotlin.RequiresOptIn { *; }
 
 # Keep the @RequiresOptIn annotation so we get proper warnings in gradle build files
 -keep class kotlin.RequiresOptIn { *; }
