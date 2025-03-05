@@ -6,6 +6,18 @@
 // - Show declarations: true
 
 // Library unique name: <com.apollographql.apollo:apollo-ast>
+final enum class com.apollographql.apollo.ast/CatchTo : kotlin/Enum<com.apollographql.apollo.ast/CatchTo> { // com.apollographql.apollo.ast/CatchTo|null[0]
+    enum entry NULL // com.apollographql.apollo.ast/CatchTo.NULL|null[0]
+    enum entry RESULT // com.apollographql.apollo.ast/CatchTo.RESULT|null[0]
+    enum entry THROW // com.apollographql.apollo.ast/CatchTo.THROW|null[0]
+
+    final val entries // com.apollographql.apollo.ast/CatchTo.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.apollographql.apollo.ast/CatchTo> // com.apollographql.apollo.ast/CatchTo.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.apollographql.apollo.ast/CatchTo // com.apollographql.apollo.ast/CatchTo.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.apollographql.apollo.ast/CatchTo> // com.apollographql.apollo.ast/CatchTo.values|values#static(){}[0]
+}
+
 final enum class com.apollographql.apollo.ast/GQLDirectiveLocation : kotlin/Enum<com.apollographql.apollo.ast/GQLDirectiveLocation> { // com.apollographql.apollo.ast/GQLDirectiveLocation|null[0]
     enum entry ARGUMENT_DEFINITION // com.apollographql.apollo.ast/GQLDirectiveLocation.ARGUMENT_DEFINITION|null[0]
     enum entry ENUM // com.apollographql.apollo.ast/GQLDirectiveLocation.ENUM|null[0]
@@ -103,6 +115,22 @@ final class com.apollographql.apollo.ast/AnonymousOperation : com.apollographql.
         final fun <get-message>(): kotlin/String // com.apollographql.apollo.ast/AnonymousOperation.message.<get-message>|<get-message>(){}[0]
     final val sourceLocation // com.apollographql.apollo.ast/AnonymousOperation.sourceLocation|{}sourceLocation[0]
         final fun <get-sourceLocation>(): com.apollographql.apollo.ast/SourceLocation? // com.apollographql.apollo.ast/AnonymousOperation.sourceLocation.<get-sourceLocation>|<get-sourceLocation>(){}[0]
+}
+
+final class com.apollographql.apollo.ast/Catch { // com.apollographql.apollo.ast/Catch|null[0]
+    constructor <init>(com.apollographql.apollo.ast/CatchTo, kotlin.collections/List<kotlin/Int>?) // com.apollographql.apollo.ast/Catch.<init>|<init>(com.apollographql.apollo.ast.CatchTo;kotlin.collections.List<kotlin.Int>?){}[0]
+
+    final val levels // com.apollographql.apollo.ast/Catch.levels|{}levels[0]
+        final fun <get-levels>(): kotlin.collections/List<kotlin/Int>? // com.apollographql.apollo.ast/Catch.levels.<get-levels>|<get-levels>(){}[0]
+    final val to // com.apollographql.apollo.ast/Catch.to|{}to[0]
+        final fun <get-to>(): com.apollographql.apollo.ast/CatchTo // com.apollographql.apollo.ast/Catch.to.<get-to>|<get-to>(){}[0]
+
+    final fun component1(): com.apollographql.apollo.ast/CatchTo // com.apollographql.apollo.ast/Catch.component1|component1(){}[0]
+    final fun component2(): kotlin.collections/List<kotlin/Int>? // com.apollographql.apollo.ast/Catch.component2|component2(){}[0]
+    final fun copy(com.apollographql.apollo.ast/CatchTo = ..., kotlin.collections/List<kotlin/Int>? = ...): com.apollographql.apollo.ast/Catch // com.apollographql.apollo.ast/Catch.copy|copy(com.apollographql.apollo.ast.CatchTo;kotlin.collections.List<kotlin.Int>?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.apollographql.apollo.ast/Catch.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.apollographql.apollo.ast/Catch.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.apollographql.apollo.ast/Catch.toString|toString(){}[0]
 }
 
 final class com.apollographql.apollo.ast/ConditionalFragment : com.apollographql.apollo.ast/ApolloIssue { // com.apollographql.apollo.ast/ConditionalFragment|null[0]
@@ -1088,6 +1116,8 @@ final class com.apollographql.apollo.ast/ReservedEnumValueName : com.apollograph
 }
 
 final class com.apollographql.apollo.ast/Schema { // com.apollographql.apollo.ast/Schema|null[0]
+    final val connectionTypes // com.apollographql.apollo.ast/Schema.connectionTypes|{}connectionTypes[0]
+        final fun <get-connectionTypes>(): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.ast/Schema.connectionTypes.<get-connectionTypes>|<get-connectionTypes>(){}[0]
     final val directiveDefinitions // com.apollographql.apollo.ast/Schema.directiveDefinitions|{}directiveDefinitions[0]
         final fun <get-directiveDefinitions>(): kotlin.collections/Map<kotlin/String, com.apollographql.apollo.ast/GQLDirectiveDefinition> // com.apollographql.apollo.ast/Schema.directiveDefinitions.<get-directiveDefinitions>|<get-directiveDefinitions>(){}[0]
     final val errorAware // com.apollographql.apollo.ast/Schema.errorAware|{}errorAware[0]
@@ -1098,6 +1128,8 @@ final class com.apollographql.apollo.ast/Schema { // com.apollographql.apollo.as
         final fun <get-mutationTypeDefinition>(): com.apollographql.apollo.ast/GQLTypeDefinition? // com.apollographql.apollo.ast/Schema.mutationTypeDefinition.<get-mutationTypeDefinition>|<get-mutationTypeDefinition>(){}[0]
     final val queryTypeDefinition // com.apollographql.apollo.ast/Schema.queryTypeDefinition|{}queryTypeDefinition[0]
         final fun <get-queryTypeDefinition>(): com.apollographql.apollo.ast/GQLTypeDefinition // com.apollographql.apollo.ast/Schema.queryTypeDefinition.<get-queryTypeDefinition>|<get-queryTypeDefinition>(){}[0]
+    final val schemaDefinition // com.apollographql.apollo.ast/Schema.schemaDefinition|{}schemaDefinition[0]
+        final fun <get-schemaDefinition>(): com.apollographql.apollo.ast/GQLSchemaDefinition? // com.apollographql.apollo.ast/Schema.schemaDefinition.<get-schemaDefinition>|<get-schemaDefinition>(){}[0]
     final val subscriptionTypeDefinition // com.apollographql.apollo.ast/Schema.subscriptionTypeDefinition|{}subscriptionTypeDefinition[0]
         final fun <get-subscriptionTypeDefinition>(): com.apollographql.apollo.ast/GQLTypeDefinition? // com.apollographql.apollo.ast/Schema.subscriptionTypeDefinition.<get-subscriptionTypeDefinition>|<get-subscriptionTypeDefinition>(){}[0]
     final val typeDefinitions // com.apollographql.apollo.ast/Schema.typeDefinitions|{}typeDefinitions[0]
@@ -1107,14 +1139,17 @@ final class com.apollographql.apollo.ast/Schema { // com.apollographql.apollo.as
     final fun implementedTypes(kotlin/String): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.ast/Schema.implementedTypes|implementedTypes(kotlin.String){}[0]
     final fun isTypeASubTypeOf(kotlin/String, kotlin/String): kotlin/Boolean // com.apollographql.apollo.ast/Schema.isTypeASubTypeOf|isTypeASubTypeOf(kotlin.String;kotlin.String){}[0]
     final fun isTypeASuperTypeOf(kotlin/String, kotlin/String): kotlin/Boolean // com.apollographql.apollo.ast/Schema.isTypeASuperTypeOf|isTypeASuperTypeOf(kotlin.String;kotlin.String){}[0]
+    final fun keyFields(kotlin/String): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.ast/Schema.keyFields|keyFields(kotlin.String){}[0]
     final fun originalDirectiveName(kotlin/String): kotlin/String // com.apollographql.apollo.ast/Schema.originalDirectiveName|originalDirectiveName(kotlin.String){}[0]
     final fun originalTypeName(kotlin/String): kotlin/String // com.apollographql.apollo.ast/Schema.originalTypeName|originalTypeName(kotlin.String){}[0]
     final fun possibleTypes(com.apollographql.apollo.ast/GQLTypeDefinition): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.ast/Schema.possibleTypes|possibleTypes(com.apollographql.apollo.ast.GQLTypeDefinition){}[0]
     final fun possibleTypes(kotlin/String): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.ast/Schema.possibleTypes|possibleTypes(kotlin.String){}[0]
     final fun rootTypeNameFor(kotlin/String): kotlin/String // com.apollographql.apollo.ast/Schema.rootTypeNameFor|rootTypeNameFor(kotlin.String){}[0]
     final fun rootTypeNameOrNullFor(kotlin/String): kotlin/String? // com.apollographql.apollo.ast/Schema.rootTypeNameOrNullFor|rootTypeNameOrNullFor(kotlin.String){}[0]
+    final fun shouldStrip(kotlin/String): kotlin/Boolean // com.apollographql.apollo.ast/Schema.shouldStrip|shouldStrip(kotlin.String){}[0]
     final fun superTypes(com.apollographql.apollo.ast/GQLObjectTypeDefinition): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.ast/Schema.superTypes|superTypes(com.apollographql.apollo.ast.GQLObjectTypeDefinition){}[0]
     final fun toGQLDocument(): com.apollographql.apollo.ast/GQLDocument // com.apollographql.apollo.ast/Schema.toGQLDocument|toGQLDocument(){}[0]
+    final fun toMap(): kotlin.collections/Map<kotlin/String, kotlin/Any> // com.apollographql.apollo.ast/Schema.toMap|toMap(){}[0]
     final fun typeDefinition(kotlin/String): com.apollographql.apollo.ast/GQLTypeDefinition // com.apollographql.apollo.ast/Schema.typeDefinition|typeDefinition(kotlin.String){}[0]
 
     final object Companion { // com.apollographql.apollo.ast/Schema.Companion|null[0]
@@ -1134,6 +1169,8 @@ final class com.apollographql.apollo.ast/Schema { // com.apollographql.apollo.as
             final fun <get-TARGET_NAME>(): kotlin/String // com.apollographql.apollo.ast/Schema.Companion.TARGET_NAME.<get-TARGET_NAME>|<get-TARGET_NAME>(){}[0]
         final const val TYPE_POLICY // com.apollographql.apollo.ast/Schema.Companion.TYPE_POLICY|{}TYPE_POLICY[0]
             final fun <get-TYPE_POLICY>(): kotlin/String // com.apollographql.apollo.ast/Schema.Companion.TYPE_POLICY.<get-TYPE_POLICY>|<get-TYPE_POLICY>(){}[0]
+
+        final fun fromMap(kotlin.collections/Map<kotlin/String, kotlin/Any>): com.apollographql.apollo.ast/Schema // com.apollographql.apollo.ast/Schema.Companion.fromMap|fromMap(kotlin.collections.Map<kotlin.String,kotlin.Any>){}[0]
     }
 }
 
@@ -1224,6 +1261,16 @@ final class com.apollographql.apollo.ast/VariableUsage { // com.apollographql.ap
         final fun <get-variable>(): com.apollographql.apollo.ast/GQLVariableValue // com.apollographql.apollo.ast/VariableUsage.variable.<get-variable>|<get-variable>(){}[0]
 }
 
+open class com.apollographql.apollo.ast/SDLWriter : okio/Closeable { // com.apollographql.apollo.ast/SDLWriter|null[0]
+    constructor <init>(okio/BufferedSink, kotlin/String) // com.apollographql.apollo.ast/SDLWriter.<init>|<init>(okio.BufferedSink;kotlin.String){}[0]
+
+    final fun indent() // com.apollographql.apollo.ast/SDLWriter.indent|indent(){}[0]
+    final fun unindent() // com.apollographql.apollo.ast/SDLWriter.unindent|unindent(){}[0]
+    final fun write(kotlin/String) // com.apollographql.apollo.ast/SDLWriter.write|write(kotlin.String){}[0]
+    open fun close() // com.apollographql.apollo.ast/SDLWriter.close|close(){}[0]
+    open fun write(com.apollographql.apollo.ast/GQLNode) // com.apollographql.apollo.ast/SDLWriter.write|write(com.apollographql.apollo.ast.GQLNode){}[0]
+}
+
 open class com.apollographql.apollo.ast/SourceAwareException : kotlin/RuntimeException { // com.apollographql.apollo.ast/SourceAwareException|null[0]
     constructor <init>(kotlin/String, com.apollographql.apollo.ast/SourceLocation?) // com.apollographql.apollo.ast/SourceAwareException.<init>|<init>(kotlin.String;com.apollographql.apollo.ast.SourceLocation?){}[0]
 
@@ -1254,16 +1301,30 @@ final object com.apollographql.apollo.ast/QueryDocumentMinifier { // com.apollog
     final fun minify(kotlin/String): kotlin/String // com.apollographql.apollo.ast/QueryDocumentMinifier.minify|minify(kotlin.String){}[0]
 }
 
+final const val com.apollographql.apollo.ast/AUTO_IMPORTED_KOTLIN_LABS_VERSION // com.apollographql.apollo.ast/AUTO_IMPORTED_KOTLIN_LABS_VERSION|{}AUTO_IMPORTED_KOTLIN_LABS_VERSION[0]
+    final fun <get-AUTO_IMPORTED_KOTLIN_LABS_VERSION>(): kotlin/String // com.apollographql.apollo.ast/AUTO_IMPORTED_KOTLIN_LABS_VERSION.<get-AUTO_IMPORTED_KOTLIN_LABS_VERSION>|<get-AUTO_IMPORTED_KOTLIN_LABS_VERSION>(){}[0]
+final const val com.apollographql.apollo.ast/KOTLIN_LABS_VERSION // com.apollographql.apollo.ast/KOTLIN_LABS_VERSION|{}KOTLIN_LABS_VERSION[0]
+    final fun <get-KOTLIN_LABS_VERSION>(): kotlin/String // com.apollographql.apollo.ast/KOTLIN_LABS_VERSION.<get-KOTLIN_LABS_VERSION>|<get-KOTLIN_LABS_VERSION>(){}[0]
+final const val com.apollographql.apollo.ast/NULLABILITY_VERSION // com.apollographql.apollo.ast/NULLABILITY_VERSION|{}NULLABILITY_VERSION[0]
+    final fun <get-NULLABILITY_VERSION>(): kotlin/String // com.apollographql.apollo.ast/NULLABILITY_VERSION.<get-NULLABILITY_VERSION>|<get-NULLABILITY_VERSION>(){}[0]
+
 final fun (com.apollographql.apollo.ast.introspection/ApolloIntrospectionSchema).com.apollographql.apollo.ast.introspection/toJson(): kotlin/String // com.apollographql.apollo.ast.introspection/toJson|toJson@com.apollographql.apollo.ast.introspection.ApolloIntrospectionSchema(){}[0]
+final fun (com.apollographql.apollo.ast.introspection/IntrospectionSchema).com.apollographql.apollo.ast.introspection/normalize(): com.apollographql.apollo.ast.introspection/IntrospectionSchema // com.apollographql.apollo.ast.introspection/normalize|normalize@com.apollographql.apollo.ast.introspection.IntrospectionSchema(){}[0]
 final fun (com.apollographql.apollo.ast.introspection/IntrospectionSchema).com.apollographql.apollo.ast.introspection/toGQLDocument(): com.apollographql.apollo.ast/GQLDocument // com.apollographql.apollo.ast.introspection/toGQLDocument|toGQLDocument@com.apollographql.apollo.ast.introspection.IntrospectionSchema(){}[0]
+final fun (com.apollographql.apollo.ast/GQLDirective).com.apollographql.apollo.ast/getArgumentValueOrDefault(kotlin/String, com.apollographql.apollo.ast/Schema): com.apollographql.apollo.ast/GQLValue? // com.apollographql.apollo.ast/getArgumentValueOrDefault|getArgumentValueOrDefault@com.apollographql.apollo.ast.GQLDirective(kotlin.String;com.apollographql.apollo.ast.Schema){}[0]
 final fun (com.apollographql.apollo.ast/GQLDocument).com.apollographql.apollo.ast.introspection/toIntrospectionSchema(): com.apollographql.apollo.ast.introspection/ApolloIntrospectionSchema // com.apollographql.apollo.ast.introspection/toIntrospectionSchema|toIntrospectionSchema@com.apollographql.apollo.ast.GQLDocument(){}[0]
 final fun (com.apollographql.apollo.ast/GQLDocument).com.apollographql.apollo.ast/toSchema(): com.apollographql.apollo.ast/Schema // com.apollographql.apollo.ast/toSchema|toSchema@com.apollographql.apollo.ast.GQLDocument(){}[0]
+final fun (com.apollographql.apollo.ast/GQLDocument).com.apollographql.apollo.ast/validateAsSchemaAndAddApolloDefinition(): com.apollographql.apollo.ast/GQLResult<com.apollographql.apollo.ast/Schema> // com.apollographql.apollo.ast/validateAsSchemaAndAddApolloDefinition|validateAsSchemaAndAddApolloDefinition@com.apollographql.apollo.ast.GQLDocument(){}[0]
 final fun (com.apollographql.apollo.ast/GQLDocument).com.apollographql.apollo.ast/withBuiltinDefinitions(): com.apollographql.apollo.ast/GQLDocument // com.apollographql.apollo.ast/withBuiltinDefinitions|withBuiltinDefinitions@com.apollographql.apollo.ast.GQLDocument(){}[0]
 final fun (com.apollographql.apollo.ast/GQLDocument).com.apollographql.apollo.ast/withoutBuiltinDefinitions(): com.apollographql.apollo.ast/GQLDocument // com.apollographql.apollo.ast/withoutBuiltinDefinitions|withoutBuiltinDefinitions@com.apollographql.apollo.ast.GQLDocument(){}[0]
 final fun (com.apollographql.apollo.ast/GQLField).com.apollographql.apollo.ast/definitionFromScope(com.apollographql.apollo.ast/Schema, com.apollographql.apollo.ast/GQLTypeDefinition): com.apollographql.apollo.ast/GQLFieldDefinition? // com.apollographql.apollo.ast/definitionFromScope|definitionFromScope@com.apollographql.apollo.ast.GQLField(com.apollographql.apollo.ast.Schema;com.apollographql.apollo.ast.GQLTypeDefinition){}[0]
 final fun (com.apollographql.apollo.ast/GQLField).com.apollographql.apollo.ast/definitionFromScope(com.apollographql.apollo.ast/Schema, kotlin/String): com.apollographql.apollo.ast/GQLFieldDefinition? // com.apollographql.apollo.ast/definitionFromScope|definitionFromScope@com.apollographql.apollo.ast.GQLField(com.apollographql.apollo.ast.Schema;kotlin.String){}[0]
+final fun (com.apollographql.apollo.ast/GQLField).com.apollographql.apollo.ast/findCatch(com.apollographql.apollo.ast/Schema): com.apollographql.apollo.ast/Catch? // com.apollographql.apollo.ast/findCatch|findCatch@com.apollographql.apollo.ast.GQLField(com.apollographql.apollo.ast.Schema){}[0]
 final fun (com.apollographql.apollo.ast/GQLField).com.apollographql.apollo.ast/responseName(): kotlin/String // com.apollographql.apollo.ast/responseName|responseName@com.apollographql.apollo.ast.GQLField(){}[0]
+final fun (com.apollographql.apollo.ast/GQLFieldDefinition).com.apollographql.apollo.ast/findSemanticNonNulls(com.apollographql.apollo.ast/Schema): kotlin.collections/List<kotlin/Int> // com.apollographql.apollo.ast/findSemanticNonNulls|findSemanticNonNulls@com.apollographql.apollo.ast.GQLFieldDefinition(com.apollographql.apollo.ast.Schema){}[0]
+final fun (com.apollographql.apollo.ast/GQLFragmentDefinition).com.apollographql.apollo.ast/findCatchByDefault(com.apollographql.apollo.ast/Schema): com.apollographql.apollo.ast/CatchTo? // com.apollographql.apollo.ast/findCatchByDefault|findCatchByDefault@com.apollographql.apollo.ast.GQLFragmentDefinition(com.apollographql.apollo.ast.Schema){}[0]
 final fun (com.apollographql.apollo.ast/GQLNode).com.apollographql.apollo.ast/toUtf8(kotlin/String = ...): kotlin/String // com.apollographql.apollo.ast/toUtf8|toUtf8@com.apollographql.apollo.ast.GQLNode(kotlin.String){}[0]
+final fun (com.apollographql.apollo.ast/GQLOperationDefinition).com.apollographql.apollo.ast/findCatchByDefault(com.apollographql.apollo.ast/Schema): com.apollographql.apollo.ast/CatchTo? // com.apollographql.apollo.ast/findCatchByDefault|findCatchByDefault@com.apollographql.apollo.ast.GQLOperationDefinition(com.apollographql.apollo.ast.Schema){}[0]
 final fun (com.apollographql.apollo.ast/GQLOperationDefinition).com.apollographql.apollo.ast/rootTypeDefinition(com.apollographql.apollo.ast/Schema): com.apollographql.apollo.ast/GQLTypeDefinition? // com.apollographql.apollo.ast/rootTypeDefinition|rootTypeDefinition@com.apollographql.apollo.ast.GQLOperationDefinition(com.apollographql.apollo.ast.Schema){}[0]
 final fun (com.apollographql.apollo.ast/GQLOperationDefinition).com.apollographql.apollo.ast/validate(com.apollographql.apollo.ast/Schema, kotlin.collections/Map<kotlin/String, com.apollographql.apollo.ast/GQLFragmentDefinition>): kotlin.collections/List<com.apollographql.apollo.ast/Issue> // com.apollographql.apollo.ast/validate|validate@com.apollographql.apollo.ast.GQLOperationDefinition(com.apollographql.apollo.ast.Schema;kotlin.collections.Map<kotlin.String,com.apollographql.apollo.ast.GQLFragmentDefinition>){}[0]
 final fun (com.apollographql.apollo.ast/GQLType).com.apollographql.apollo.ast/leafType(): com.apollographql.apollo.ast/GQLNamedType // com.apollographql.apollo.ast/leafType|leafType@com.apollographql.apollo.ast.GQLType(){}[0]
@@ -1273,13 +1334,21 @@ final fun (com.apollographql.apollo.ast/GQLTypeDefinition).com.apollographql.apo
 final fun (com.apollographql.apollo.ast/GQLTypeDefinition).com.apollographql.apollo.ast/fieldDefinitions(com.apollographql.apollo.ast/Schema): kotlin.collections/List<com.apollographql.apollo.ast/GQLFieldDefinition> // com.apollographql.apollo.ast/fieldDefinitions|fieldDefinitions@com.apollographql.apollo.ast.GQLTypeDefinition(com.apollographql.apollo.ast.Schema){}[0]
 final fun (com.apollographql.apollo.ast/GQLTypeDefinition).com.apollographql.apollo.ast/implementsAbstractType(com.apollographql.apollo.ast/Schema): kotlin/Boolean // com.apollographql.apollo.ast/implementsAbstractType|implementsAbstractType@com.apollographql.apollo.ast.GQLTypeDefinition(com.apollographql.apollo.ast.Schema){}[0]
 final fun (com.apollographql.apollo.ast/GQLTypeDefinition).com.apollographql.apollo.ast/isAbstract(): kotlin/Boolean // com.apollographql.apollo.ast/isAbstract|isAbstract@com.apollographql.apollo.ast.GQLTypeDefinition(){}[0]
+final fun (com.apollographql.apollo.ast/GQLTypeDefinition).com.apollographql.apollo.ast/isFieldNonNull(kotlin/String, com.apollographql.apollo.ast/Schema? = ...): kotlin/Boolean // com.apollographql.apollo.ast/isFieldNonNull|isFieldNonNull@com.apollographql.apollo.ast.GQLTypeDefinition(kotlin.String;com.apollographql.apollo.ast.Schema?){}[0]
 final fun (com.apollographql.apollo.ast/GQLTypeDefinition).com.apollographql.apollo.ast/possibleTypes(com.apollographql.apollo.ast/Schema): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.ast/possibleTypes|possibleTypes@com.apollographql.apollo.ast.GQLTypeDefinition(com.apollographql.apollo.ast.Schema){}[0]
 final fun (com.apollographql.apollo.ast/GQLValue).com.apollographql.apollo.ast/coerceInExecutableContextOrThrow(com.apollographql.apollo.ast/GQLType, com.apollographql.apollo.ast/Schema): com.apollographql.apollo.ast/GQLValue // com.apollographql.apollo.ast/coerceInExecutableContextOrThrow|coerceInExecutableContextOrThrow@com.apollographql.apollo.ast.GQLValue(com.apollographql.apollo.ast.GQLType;com.apollographql.apollo.ast.Schema){}[0]
 final fun (com.apollographql.apollo.ast/GQLValue).com.apollographql.apollo.ast/coerceInSchemaContextOrThrow(com.apollographql.apollo.ast/GQLType, com.apollographql.apollo.ast/Schema): com.apollographql.apollo.ast/GQLValue // com.apollographql.apollo.ast/coerceInSchemaContextOrThrow|coerceInSchemaContextOrThrow@com.apollographql.apollo.ast.GQLValue(com.apollographql.apollo.ast.GQLType;com.apollographql.apollo.ast.Schema){}[0]
 final fun (com.apollographql.apollo.ast/SourceLocation?).com.apollographql.apollo.ast/pretty(): kotlin/String // com.apollographql.apollo.ast/pretty|pretty@com.apollographql.apollo.ast.SourceLocation?(){}[0]
+final fun (kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>).com.apollographql.apollo.ast.internal/toConnectionFields(): kotlin.collections/List<kotlin/String> // com.apollographql.apollo.ast.internal/toConnectionFields|toConnectionFields@kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>(){}[0]
+final fun (kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>).com.apollographql.apollo.ast.internal/toEmbeddedFields(): kotlin.collections/List<kotlin/String> // com.apollographql.apollo.ast.internal/toEmbeddedFields|toEmbeddedFields@kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>(){}[0]
+final fun (kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>).com.apollographql.apollo.ast/findCatch(com.apollographql.apollo.ast/Schema): com.apollographql.apollo.ast/Catch? // com.apollographql.apollo.ast/findCatch|findCatch@kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>(com.apollographql.apollo.ast.Schema){}[0]
 final fun (kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>).com.apollographql.apollo.ast/findDeprecationReason(): kotlin/String? // com.apollographql.apollo.ast/findDeprecationReason|findDeprecationReason@kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>(){}[0]
+final fun (kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>).com.apollographql.apollo.ast/findNonnull(com.apollographql.apollo.ast/Schema): kotlin/Boolean // com.apollographql.apollo.ast/findNonnull|findNonnull@kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>(com.apollographql.apollo.ast.Schema){}[0]
 final fun (kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>).com.apollographql.apollo.ast/findOneOf(): kotlin/Boolean // com.apollographql.apollo.ast/findOneOf|findOneOf@kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>(){}[0]
+final fun (kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>).com.apollographql.apollo.ast/findOptInFeature(com.apollographql.apollo.ast/Schema): kotlin/String? // com.apollographql.apollo.ast/findOptInFeature|findOptInFeature@kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>(com.apollographql.apollo.ast.Schema){}[0]
 final fun (kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>).com.apollographql.apollo.ast/findSpecifiedBy(): kotlin/String? // com.apollographql.apollo.ast/findSpecifiedBy|findSpecifiedBy@kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>(){}[0]
+final fun (kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>).com.apollographql.apollo.ast/findTargetName(com.apollographql.apollo.ast/Schema): kotlin/String? // com.apollographql.apollo.ast/findTargetName|findTargetName@kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>(com.apollographql.apollo.ast.Schema){}[0]
+final fun (kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>).com.apollographql.apollo.ast/optionalValue(com.apollographql.apollo.ast/Schema?): kotlin/Boolean? // com.apollographql.apollo.ast/optionalValue|optionalValue@kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>(com.apollographql.apollo.ast.Schema?){}[0]
 final fun (kotlin.collections/List<com.apollographql.apollo.ast/Issue>).com.apollographql.apollo.ast/checkEmpty() // com.apollographql.apollo.ast/checkEmpty|checkEmpty@kotlin.collections.List<com.apollographql.apollo.ast.Issue>(){}[0]
 final fun (kotlin.collections/List<com.apollographql.apollo.ast/Issue>).com.apollographql.apollo.ast/checkValidGraphQL() // com.apollographql.apollo.ast/checkValidGraphQL|checkValidGraphQL@kotlin.collections.List<com.apollographql.apollo.ast.Issue>(){}[0]
 final fun (kotlin/String).com.apollographql.apollo.ast.introspection/toIntrospectionSchema(): com.apollographql.apollo.ast.introspection/IntrospectionSchema // com.apollographql.apollo.ast.introspection/toIntrospectionSchema|toIntrospectionSchema@kotlin.String(){}[0]
@@ -1298,4 +1367,6 @@ final fun (kotlin/String).com.apollographql.apollo.ast/toGQLValue(com.apollograp
 final fun (okio/Path).com.apollographql.apollo.ast/parseAsGQLDocument(com.apollographql.apollo.ast/ParserOptions = ...): com.apollographql.apollo.ast/GQLResult<com.apollographql.apollo.ast/GQLDocument> // com.apollographql.apollo.ast/parseAsGQLDocument|parseAsGQLDocument@okio.Path(com.apollographql.apollo.ast.ParserOptions){}[0]
 final fun (okio/Path).com.apollographql.apollo.ast/toGQLDocument(com.apollographql.apollo.ast/ParserOptions = ..., kotlin/Boolean = ...): com.apollographql.apollo.ast/GQLDocument // com.apollographql.apollo.ast/toGQLDocument|toGQLDocument@okio.Path(com.apollographql.apollo.ast.ParserOptions;kotlin.Boolean){}[0]
 final fun com.apollographql.apollo.ast/builtinDefinitions(): kotlin.collections/List<com.apollographql.apollo.ast/GQLDefinition> // com.apollographql.apollo.ast/builtinDefinitions|builtinDefinitions(){}[0]
+final fun com.apollographql.apollo.ast/kotlinLabsDefinitions(kotlin/String): kotlin.collections/List<com.apollographql.apollo.ast/GQLDefinition> // com.apollographql.apollo.ast/kotlinLabsDefinitions|kotlinLabsDefinitions(kotlin.String){}[0]
+final fun com.apollographql.apollo.ast/linkDefinitions(): kotlin.collections/List<com.apollographql.apollo.ast/GQLDefinition> // com.apollographql.apollo.ast/linkDefinitions|linkDefinitions(){}[0]
 final fun com.apollographql.apollo.ast/nullabilityDefinitions(kotlin/String): kotlin.collections/List<com.apollographql.apollo.ast/GQLDefinition> // com.apollographql.apollo.ast/nullabilityDefinitions|nullabilityDefinitions(kotlin.String){}[0]

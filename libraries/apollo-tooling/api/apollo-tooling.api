@@ -38,3 +38,22 @@ public final class com/apollographql/apollo/tooling/SerializationKt {
 	public static final fun toJsonElement (Ljava/lang/Object;)Lkotlinx/serialization/json/JsonElement;
 }
 
+public final class com/apollographql/apollo/tooling/Telemetry {
+	public static final field INSTANCE Lcom/apollographql/apollo/tooling/Telemetry;
+	public final fun trackApolloKotlinUsage (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun trackApolloKotlinUsage$default (Lcom/apollographql/apollo/tooling/Telemetry;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo/tooling/Telemetry$TelemetryEvent {
+	public fun <init> (Ljava/lang/String;Ljava/time/Instant;Ljava/lang/Object;)V
+	public final fun getDate ()Ljava/time/Instant;
+	public final fun getPayload ()Ljava/lang/Object;
+	public final fun getType ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo/tooling/Telemetry$TelemetryProperty {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun getPayload ()Ljava/lang/Object;
+	public final fun getType ()Ljava/lang/String;
+}
+

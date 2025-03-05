@@ -1,0 +1,24 @@
+public final class com/apollographql/apollo/engine/tests/All_testsKt {
+	public static final fun runAllTests (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo/engine/tests/GzipTestKt {
+	public static final fun gzipTest (Lcom/apollographql/apollo/network/http/HttpEngine;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo/engine/tests/HttpEngineTestKt {
+	public static final fun connectTimeout (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun errorWithBody (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun headers (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun post (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun readTimeout (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo/engine/tests/WebSocketEngineTestKt {
+	public static final fun binaryFrames (Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun headers (Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun serverCloseAbruptly (Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun serverCloseNicely (Lkotlin/jvm/functions/Function0;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun textFrames (Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+

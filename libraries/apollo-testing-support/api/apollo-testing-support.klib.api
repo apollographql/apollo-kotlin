@@ -7,12 +7,27 @@
 // - Show declarations: true
 
 // Library unique name: <com.apollographql.apollo:apollo-testing-support>
+final enum class com.apollographql.apollo.testing/Platform : kotlin/Enum<com.apollographql.apollo.testing/Platform> { // com.apollographql.apollo.testing/Platform|null[0]
+    enum entry Js // com.apollographql.apollo.testing/Platform.Js|null[0]
+    enum entry Jvm // com.apollographql.apollo.testing/Platform.Jvm|null[0]
+    enum entry Native // com.apollographql.apollo.testing/Platform.Native|null[0]
+    enum entry WasmJs // com.apollographql.apollo.testing/Platform.WasmJs|null[0]
+
+    final val entries // com.apollographql.apollo.testing/Platform.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.apollographql.apollo.testing/Platform> // com.apollographql.apollo.testing/Platform.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.apollographql.apollo.testing/Platform // com.apollographql.apollo.testing/Platform.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.apollographql.apollo.testing/Platform> // com.apollographql.apollo.testing/Platform.values|values#static(){}[0]
+}
+
 final fun (com.apollographql.apollo.mockserver/MockServer).com.apollographql.apollo.testing/enqueueData(com.apollographql.apollo.api/Operation.Data, com.apollographql.apollo.api/CustomScalarAdapters = ..., kotlin/Long = ..., kotlin/Int = ...) // com.apollographql.apollo.testing/enqueueData|enqueueData@com.apollographql.apollo.mockserver.MockServer(com.apollographql.apollo.api.Operation.Data;com.apollographql.apollo.api.CustomScalarAdapters;kotlin.Long;kotlin.Int){}[0]
 final fun (com.apollographql.apollo.mockserver/MockServer).com.apollographql.apollo.testing/enqueueData(kotlin.collections/Map<kotlin/String, kotlin/Any?>, com.apollographql.apollo.api/CustomScalarAdapters = ..., kotlin/Long = ..., kotlin/Int = ...) // com.apollographql.apollo.testing/enqueueData|enqueueData@com.apollographql.apollo.mockserver.MockServer(kotlin.collections.Map<kotlin.String,kotlin.Any?>;com.apollographql.apollo.api.CustomScalarAdapters;kotlin.Long;kotlin.Int){}[0]
 final fun <#A: com.apollographql.apollo.api/Operation.Data> (com.apollographql.apollo.mockserver/MockServer).com.apollographql.apollo.testing/enqueue(com.apollographql.apollo.api/Operation<#A>, #A, com.apollographql.apollo.api/CustomScalarAdapters = ..., kotlin/Long = ...) // com.apollographql.apollo.testing/enqueue|enqueue@com.apollographql.apollo.mockserver.MockServer(com.apollographql.apollo.api.Operation<0:0>;0:0;com.apollographql.apollo.api.CustomScalarAdapters;kotlin.Long){0§<com.apollographql.apollo.api.Operation.Data>}[0]
 final fun com.apollographql.apollo.testing/checkFile(kotlin/String, kotlin/String) // com.apollographql.apollo.testing/checkFile|checkFile(kotlin.String;kotlin.String){}[0]
+final fun com.apollographql.apollo.testing/currentThreadId(): kotlin/String // com.apollographql.apollo.testing/currentThreadId|currentThreadId(){}[0]
 final fun com.apollographql.apollo.testing/pathToJsonReader(kotlin/String): com.apollographql.apollo.api.json/JsonReader // com.apollographql.apollo.testing/pathToJsonReader|pathToJsonReader(kotlin.String){}[0]
 final fun com.apollographql.apollo.testing/pathToUtf8(kotlin/String): kotlin/String // com.apollographql.apollo.testing/pathToUtf8|pathToUtf8(kotlin.String){}[0]
+final fun com.apollographql.apollo.testing/platform(): com.apollographql.apollo.testing/Platform // com.apollographql.apollo.testing/platform|platform(){}[0]
 
 // Targets: [apple, js]
 final val com.apollographql.apollo.testing/testsPath // com.apollographql.apollo.testing/testsPath|{}testsPath[0]
@@ -22,7 +37,19 @@ final val com.apollographql.apollo.testing/testsPath // com.apollographql.apollo
 final fun com.apollographql.apollo.testing/shouldUpdateTestFixtures(): kotlin/Boolean // com.apollographql.apollo.testing/shouldUpdateTestFixtures|shouldUpdateTestFixtures(){}[0]
 
 // Targets: [apple]
+final fun com.apollographql.apollo.testing.internal/runTest(kotlin.coroutines/SuspendFunction1<kotlinx.coroutines/CoroutineScope, kotlin/Unit> = ..., kotlin.coroutines/SuspendFunction1<kotlinx.coroutines/CoroutineScope, kotlin/Unit> = ..., kotlin.coroutines/SuspendFunction1<kotlinx.coroutines/CoroutineScope, kotlin/Unit>) // com.apollographql.apollo.testing.internal/runTest|runTest(kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope,kotlin.Unit>;kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope,kotlin.Unit>;kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope,kotlin.Unit>){}[0]
+
+// Targets: [apple]
+final fun com.apollographql.apollo.testing.internal/runTest(kotlin.coroutines/SuspendFunction1<kotlinx.coroutines/CoroutineScope, kotlin/Unit>) // com.apollographql.apollo.testing.internal/runTest|runTest(kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope,kotlin.Unit>){}[0]
+
+// Targets: [apple]
 final fun com.apollographql.apollo.testing/cwd(): kotlin/String // com.apollographql.apollo.testing/cwd|cwd(){}[0]
+
+// Targets: [js, wasmJs]
+final fun com.apollographql.apollo.testing.internal/runTest(kotlin.coroutines/SuspendFunction1<kotlinx.coroutines/CoroutineScope, kotlin/Unit> = ..., kotlin.coroutines/SuspendFunction1<kotlinx.coroutines/CoroutineScope, kotlin/Unit> = ..., kotlin.coroutines/SuspendFunction1<kotlinx.coroutines/CoroutineScope, kotlin/Unit>): kotlinx.coroutines.test.internal/JsPromiseInterfaceForTesting // com.apollographql.apollo.testing.internal/runTest|runTest(kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope,kotlin.Unit>;kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope,kotlin.Unit>;kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope,kotlin.Unit>){}[0]
+
+// Targets: [js, wasmJs]
+final fun com.apollographql.apollo.testing.internal/runTest(kotlin.coroutines/SuspendFunction1<kotlinx.coroutines/CoroutineScope, kotlin/Unit>): kotlinx.coroutines.test.internal/JsPromiseInterfaceForTesting // com.apollographql.apollo.testing.internal/runTest|runTest(kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope,kotlin.Unit>){}[0]
 
 // Targets: [js]
 final val com.apollographql.apollo.testing/HostFileSystem // com.apollographql.apollo.testing/HostFileSystem|{}HostFileSystem[0]
