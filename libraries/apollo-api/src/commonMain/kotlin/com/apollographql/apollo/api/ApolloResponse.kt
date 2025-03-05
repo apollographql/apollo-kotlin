@@ -128,6 +128,16 @@ private constructor(
         .isLast(isLast)
   }
 
+  override fun toString(): String {
+    return "ApolloResponse(" +
+        "operationName=${operation.name()}, " +
+        "data=${if (data == null) "null" else "${operation.name()}.Data"}, " +
+        "errors=${errors?.size ?: "null"}, " +
+        "exception=${if (exception == null) "null" else exception::class.simpleName ?: "true"}, " +
+        "isLast=$isLast" +
+        ")"
+  }
+
   class Builder<D : Operation.Data> internal constructor(
       private val operation: Operation<D>,
       private var requestUuid: Uuid,
