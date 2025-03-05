@@ -20,28 +20,14 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.joinToCode
 
-internal fun IrScalar.typePropertySpec(targetTypeName: String?): PropertySpec {
-  /**
-   * Custom Scalars without a mapping will generate code using [AnyResponseAdapter] directly
-   * so the fallback isn't really required here. We still write it as a way to hint the user
-   * to what's happening behind the scenes
-   */
-  val kotlinName = targetTypeName ?: builtinScalarKotlinName(name) ?: "kotlin.Any"
+internal fun IrScalar.typePropertySpec(target: TypeName): PropertySpec {
   return PropertySpec
       .builder(Identifier.type, KotlinSymbols.CustomScalarType)
-      .initializer("%T(%S, %S)", KotlinSymbols.CustomScalarType, name, kotlinName)
+      .initializer("%T(%S, %S)", KotlinSymbols.CustomScalarType, name, target.toString())
       .build()
-}
-
-private fun builtinScalarKotlinName(name: String): String? = when (name) {
-  "Int" -> "kotlin.Int"
-  "Float" -> "kotlin.Double"
-  "String" -> "kotlin.String"
-  "Boolean" -> "kotlin.Boolean"
-  "ID" -> "kotlin.String"
-  else -> null
 }
 
 internal fun IrEnum.typePropertySpec(): PropertySpec {

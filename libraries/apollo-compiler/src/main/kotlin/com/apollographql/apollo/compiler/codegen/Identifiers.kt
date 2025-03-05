@@ -13,6 +13,7 @@ internal object Identifier {
   const val type = "type"
   const val customScalarAdapters = "customScalarAdapters"
   const val value = "value"
+  const val inlinePropertyValue = "value"
   const val reader = "reader"
   const val writer = "writer"
   const val build = "build"

@@ -11,6 +11,6 @@ import com.apollographql.apollo.api.CustomScalarAdapters
  * A [CustomScalarAdapters] instance containing all the adapters known at build time
  */
 internal val __CustomScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Builder()
-      .add(URL.type, com.example.UrlAdapter)
       .add(GraphQLString.type, com.example.MyStringAdapter())
+      .add(URL.type, com.example.UrlAdapter)
       .build()

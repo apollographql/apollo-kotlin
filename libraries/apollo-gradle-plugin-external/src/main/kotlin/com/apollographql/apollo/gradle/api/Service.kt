@@ -110,8 +110,8 @@ interface Service {
    * Map a GraphQL scalar type to the Java/Kotlin type.
    * The adapter must be configured at runtime via [com.apollographql.apollo.ApolloClient.Builder.addCustomScalarAdapter].
    *
-   * @param graphQLName: the name of the scalar to map as found in the GraphQL schema
-   * @param targetName: the fully qualified Java or Kotlin name of the type the scalar is mapped to
+   * @param graphQLName the name of the scalar to map as found in the GraphQL schema
+   * @param targetName the fully qualified Java or Kotlin name of the type the scalar is mapped to
    *
    * For example: `mapScalar("Date", "com.example.Date")`
    */
@@ -121,9 +121,9 @@ interface Service {
    * Map a GraphQL scalar type to the Java/Kotlin type and provided adapter expression.
    * The adapter will be configured at compile time and you must not call [com.apollographql.apollo.ApolloClient.Builder.addCustomScalarAdapter].
    *
-   * @param graphQLName: the name of the scalar to map as found in the GraphQL schema
-   * @param targetName: the fully qualified Java or Kotlin name of the type the scalar is mapped to
-   * @param expression: an expression that will be used by the codegen to get an adapter for the
+   * @param graphQLName the name of the scalar to map as found in the GraphQL schema
+   * @param targetName the fully qualified Java or Kotlin name of the type the scalar is mapped to
+   * @param expression an expression that will be used by the codegen to get an adapter for the
    * given scalar. [expression] is passed verbatim to JavaPoet/KotlinPoet.
    *
    * For example in Kotlin:

@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  202583
-aggregate-kotlin-responseBased                                                                  65280
+aggregate-all                                                                                  202752
+aggregate-kotlin-responseBased                                                                  65361
 aggregate-kotlin-operationBased                                                                 41281
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   96022
+aggregate-java-operationBased                                                                   96110
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5540
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3363
@@ -27,12 +27,12 @@ kotlin-responseBased-nested_named_fragments                                     
 java-operationBased-root_query_fragment_with_nested_fragments                                    1587
 java-operationBased-simple_fragment                                                              1490
 java-operationBased-named_fragment_delegate                                                      1478
-kotlin-responseBased-mutation_create_review                                                      1451
+kotlin-responseBased-mutation_create_review                                                      1452
 java-operationBased-named_fragment_with_variables                                                1390
 kotlin-responseBased-named_fragment_delegate                                                     1355
 java-operationBased-nested_conditional_inline                                                    1325
 kotlin-responseBased-unique_type_name                                                            1322
-kotlin-responseBased-input_object_type                                                           1312
+kotlin-responseBased-input_object_type                                                           1313
 java-operationBased-fragment_used_twice                                                          1285
 kotlin-responseBased-root_query_fragment_with_nested_fragments                                   1276
 java-operationBased-multiple_fragments                                                           1274
@@ -70,6 +70,7 @@ kotlin-responseBased-simple_fragment_with_inline_fragments                      
 java-operationBased-inline_fragments_with_friends                                                1037
 java-operationBased-operationbased2_ex8                                                          1032
 kotlin-operationBased-root_query_fragment_with_nested_fragments                                  1027
+java-operationBased-custom_scalar_type                                                           1009
 kotlin-operationBased-simple_fragment                                                            1007
 kotlin-operationBased-named_fragment_delegate                                                     986
 java-operationBased-decapitalized_fields                                                          983
@@ -88,7 +89,6 @@ java-operationBased-fieldset_with_multiple_super                                
 java-operationBased-inline_fragment_with_include_directive                                        908
 java-operationBased-introspection_query                                                           896
 kotlin-operationBased-named_fragment_with_variables                                               891
-java-operationBased-custom_scalar_type                                                            889
 java-operationBased-union_fragment                                                                888
 java-operationBased-inline_fragment_inside_inline_fragment                                        878
 java-operationBased-test_inline                                                                   876
@@ -112,6 +112,7 @@ kotlin-operationBased-root_query_inline_fragment                                
 kotlin-responseBased-named_fragment_inside_inline_fragment                                        778
 java-operationBased-suppressed_warnings                                                           778
 kotlin-operationBased-target_name                                                                 777
+kotlin-responseBased-custom_scalar_type                                                           776
 java-operationBased-path_vs_flat_accessors                                                        771
 java-operationBased-reserved_keywords                                                             767
 kotlin-responseBased-root_query_inline_fragment                                                   764
@@ -141,7 +142,6 @@ kotlin-responseBased-java_java_optionals                                        
 kotlin-responseBased-java_jetbrains_annotations                                                   654
 kotlin-responseBased-java_jsr305_annotations                                                      654
 kotlin-operationBased-simple_union                                                                650
-kotlin-responseBased-custom_scalar_type                                                           649
 kotlin-operationBased-fragments_same_type_condition                                               648
 kotlin-responseBased-named_fragment_without_implementation                                        648
 java-operationBased-hero_with_review                                                              647
@@ -175,12 +175,12 @@ kotlin-operationBased-simple_inline_fragment                                    
 kotlin-responseBased-input_object_variable_and_argument                                           600
 java-operationBased-inline_fragment_for_non_optional_field                                        597
 kotlin-responseBased-reserved_keywords                                                            593
-java-operationBased-optional                                                                      588
 java-operationBased-enum_field                                                                    587
 java-operationBased-two_heroes_unique                                                             586
 java-operationBased-inline_fragment_type_coercion                                                 582
 java-operationBased-inline_fragment_simple                                                        568
 kotlin-operationBased-test_inline                                                                 566
+java-operationBased-optional                                                                      565
 kotlin-operationBased-reserved_keywords                                                           563
 java-operationBased-list_field_clash                                                              557
 kotlin-responseBased-path_vs_flat_accessors                                                       554
@@ -213,8 +213,6 @@ kotlin-responseBased-inline_fragment_for_non_optional_field                     
 kotlin-responseBased-monomorphic                                                                  469
 kotlin-operationBased-monomorphic                                                                 464
 kotlin-operationBased-interface_always_nested                                                     463
-kotlin-responseBased-optional                                                                     458
-java-operationBased-nonnull                                                                       452
 kotlin-operationBased-hero_name                                                                   447
 kotlin-operationBased-capitalized_fields                                                          446
 java-operationBased-enums_as_sealed                                                               446
@@ -222,11 +220,13 @@ java-operationBased-companion                                                   
 kotlin-responseBased-field_with_include_directive                                                 444
 kotlin-responseBased-inline_fragment_type_coercion                                                444
 java-operationBased-case_sensitive_enum                                                           443
+java-operationBased-nonnull                                                                       443
 java-operationBased-object                                                                        439
 kotlin-responseBased-recursive_selection                                                          433
 kotlin-responseBased-inline_fragment_simple                                                       429
 kotlin-operationBased-inline_fragment_for_non_optional_field                                      426
 kotlin-responseBased-arguments_hardcoded                                                          423
+kotlin-responseBased-optional                                                                     419
 kotlin-responseBased-two_heroes_unique                                                            414
 kotlin-responseBased-list_field_clash                                                             413
 kotlin-responseBased-capitalized_fields                                                           411
@@ -242,8 +242,8 @@ kotlin-responseBased-operation_id_generator                                     
 kotlin-responseBased-merged_include                                                               340
 java-operationBased-java_hashcode                                                                 338
 kotlin-responseBased-big_query                                                                    337
-kotlin-responseBased-nonnull                                                                      324
 kotlin-operationBased-companion                                                                   317
+kotlin-responseBased-nonnull                                                                      315
 kotlin-responseBased-object                                                                       315
 kotlin-responseBased-java_hashcode                                                                254
 kotlin-responseBased-__schema                                                                     127

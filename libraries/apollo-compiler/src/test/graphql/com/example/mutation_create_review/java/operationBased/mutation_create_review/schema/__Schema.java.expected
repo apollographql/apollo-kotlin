@@ -27,8 +27,8 @@ import java.util.List;
  */
 public class __Schema {
   public static CustomScalarAdapters customScalarAdapters = new CustomScalarAdapters.Builder()
-    .add(URL.type, com.example.UrlAdapter.INSTANCE)
     .add(GraphQLString.type, new com.example.MyStringAdapter())
+    .add(URL.type, com.example.UrlAdapter.INSTANCE)
     .build();
 
   public static List<CompiledNamedType> types = Arrays.asList(

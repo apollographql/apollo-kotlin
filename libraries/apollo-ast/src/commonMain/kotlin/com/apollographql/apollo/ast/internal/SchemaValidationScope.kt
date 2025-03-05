@@ -73,14 +73,13 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
    * This can lead to issues if the Apollo Kotlin built-in definitions do not match the schema ones.
    * In those cases, some operations might be considered valid while they are in fact not supported
    * by the server.
-   * But it's convenient if introspection is disabled or just to iterate quickly on a mock schema.
    */
   val fullDefinitions = definitions.withBuiltinDefinitions()
 
-  val imports = definitions.filterIsInstance<GQLSchemaExtension>().getImports(issues, options.foreignSchemas).toMutableList()
+  val linkedSchemas = definitions.filterIsInstance<GQLSchemaExtension>().getLinkedSchemas(issues, options.foreignSchemas).toMutableList()
 
-  if (options.addKotlinLabsDefinitions && imports.none { it.foreignSchema.name == "kotlin_labs" }) {
-    imports.add(autoLinkedKotlinLabsForeignSchema.asNonPrefixedImport())
+  if (options.addKotlinLabsDefinitions && linkedSchemas.none { it.foreignSchema.name == "kotlin_labs" }) {
+    linkedSchemas.add(autoLinkedKotlinLabsForeignSchema.asNonPrefixedImport())
   }
 
   val typeDefinitions = mutableMapOf<String, GQLTypeDefinition>()
@@ -162,7 +161,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
   val importedTypeDefinitions = mutableMapOf<String, LinkedDefinition<GQLTypeDefinition>>()
   val importedDirectiveDefinitions = mutableMapOf<String, LinkedDefinition<GQLDirectiveDefinition>>()
   reportedDefinitions.clear()
-  imports.forEach { import ->
+  linkedSchemas.forEach { import ->
     import.renamedDefinitions.forEach { definition ->
       when (definition) {
         is GQLTypeDefinition -> {
@@ -214,18 +213,32 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
     if (existing != null) {
       if (entry.value.linkedSchema.foreignSchema == autoLinkedKotlinLabsForeignSchema) {
         /*
-         * This is an auto-linked definition. For compatibility reasons, they take precedence over the user-provided ones.
+         * This may be an auto-linked definition.
+         * For compatibility reasons, it takes precedence over the user-provided ones.
+         * In the future, we should ask the user to explicitly import the definitions
+         * and rename them so that they do not clash.
          * TODO v5: remove this branch
          */
         issues.add(DirectiveRedefinition(entry.key, existing.sourceLocation, existing.sourceLocation))
         directiveDefinitions.put(entry.key, entry.value.definition)
+      } else if (entry.value.linkedSchema.foreignSchema.name == "link") {
+        /*
+         * Since we don't support renaming @link just yet, there's no good resolution if the directive
+         * is already defined in the API schema. Just ignore the schema one in this case
+         */
+        issues.add(DirectiveRedefinition(entry.key, existing.sourceLocation, existing.sourceLocation))
+        directiveDefinitions.put(entry.key, entry.value.definition)
       } else {
-        issues.add(OtherValidationIssue("Linked definition '${entry.value.linkedSchema.foreignSchema.nameWithVersion}/${entry.value.definition.definitionName()}' is conflicting with an existing definition", existing.sourceLocation))
+        issues.add(OtherValidationIssue("Definition is conflicting with linked definition '${entry.value.linkedSchema.foreignSchema.nameWithVersion}/${entry.value.definition.definitionName()}'", existing.sourceLocation))
       }
     } else {
       directiveDefinitions.put(entry.key, entry.value.definition)
     }
   }
+
+  val foreignNames = linkedSchemas.flatMap {
+    it.newNames.entries
+  }.associateBy(keySelector = { it.value }, valueTransform = { it.key })
 
   /*
    * For definitions that we have special processing for, verify that they match
@@ -240,11 +253,14 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
    * processing for the directives that are defined on the clients (which would be quite
    * hard to do at the moment because we do not distinguish server vs client `.graphqls`
    * files).
+   *
+   * TODO: should this be done after merging?
    */
   listOf(
       oneOfDefinitionsStr,
       deferDefinitionsStr,
-      kotlinLabsDefinitions_0_3, // 0.3 is a superset of 0.4
+      nonNullDefinitionStr,
+      kotlinLabsDefinitions_0_5,
       nullabilityDefinitionsStr
   ).flatMap {
     it.parseAsGQLDocument().getOrThrow().definitions
@@ -255,7 +271,14 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
       is GQLDirectiveDefinition -> directiveDefinitions.get(expected.name)
       else -> error("")// should never happen
     }
-    if (existing != null && !existing.semanticEquals(expected)) {
+    if (existing != null && !foreignNames.containsKey(expected.definitionName()) && !existing.semanticEquals(expected)) {
+      /*
+       * For non-linked definitions, check that the definitions match 1:1.
+       * We do not check linked definitions because:
+       * - we know we support them by construction.
+       * - someone may rename argument types, which makes validation much harder. One example is importing `@catch` but not
+       * `@catchTo`.
+       */
       issues.add(IncompatibleDefinition(expected.name, expected.toSemanticSdl(), existing.sourceLocation))
     }
   }
@@ -270,10 +293,6 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
    */
   val dedupedDefinitions = listOfNotNull(schemaDefinition) + directiveDefinitions.values + typeDefinitions.values
   val mergedDefinitions = ExtensionsMerger(dedupedDefinitions + typeSystemExtensions, MergeOptions(true)).merge().getOrThrow()
-
-  val foreignNames = imports.flatMap {
-    it.newNames.entries
-  }.associateBy(keySelector = { it.value }, valueTransform = { it.key })
 
   val mergedScope = DefaultValidationScope(
       typeDefinitions = mergedDefinitions.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
@@ -291,6 +310,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
   mergedScope.validateObjects()
   mergedScope.validateUnions()
   mergedScope.validateInputObjects()
+  mergedScope.validateScalars()
 
   val keyFields = mergedScope.validateAndComputeKeyFields()
   val connectionTypes = mergedScope.computeConnectionTypes()
@@ -300,7 +320,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
           definitions = mergedDefinitions,
           keyFields = keyFields,
           foreignNames = foreignNames,
-          directivesToStrip = imports.flatMap { it.foreignSchema.directivesToStrip },
+          directivesToStrip = linkedSchemas.flatMap { it.foreignSchema.directivesToStrip },
           connectionTypes = connectionTypes,
       ),
       issues
@@ -347,7 +367,7 @@ internal fun syntheticSchemaDefinition(typeDefinitions: Map<String, GQLTypeDefin
 private class LinkedSchema(
     val foreignSchema: ForeignSchema,
     val renamedDefinitions: List<GQLDefinition>,
-    val newNames: Map<String, String>,
+    val newNames: Map<DefinitionName, DefinitionName>,
     val foreignSchemaImportLocation: SourceLocation?,
 )
 
@@ -375,7 +395,7 @@ private fun String.parseLink(): UrlParseResult? {
  *
  * Example: extend schema @link(url: "https://specs.apollo.dev/nullability/v0.4/", import: ["@catchByDefault", "CatchTo"])
  */
-private fun List<GQLSchemaExtension>.getImports(
+private fun List<GQLSchemaExtension>.getLinkedSchemas(
     issues: MutableList<Issue>,
     foreignSchemas: List<ForeignSchema>,
 ): List<LinkedSchema> {
@@ -423,8 +443,8 @@ private fun List<GQLSchemaExtension>.getImports(
           prefix = urlParseResult.name
         }
 
-        val import = (arguments.firstOrNull { it.name == "import" }?.value as GQLListValue?)?.values
-        val mappings = import.orEmpty().parseImport(issues)
+        val importArgumentValue = (arguments.firstOrNull { it.name == "import" }?.value as GQLListValue?)?.values
+        val imports = importArgumentValue.orEmpty().parseImport(issues)
 
         val foreignSchema = foreignSchemas.firstOrNull { it.name == foreignName && it.version == foreignVersion }
 
@@ -432,14 +452,15 @@ private fun List<GQLSchemaExtension>.getImports(
           /*
            * Check that the mappings refer to existing definitions
            */
-          mappings.keys.forEach { key ->
-            if (foreignSchema.definitions.none { it is GQLNamed && it.definitionName() == key }) {
-              issues.add(OtherValidationIssue("Apollo: unknown definition '$key'", gqlDirective.sourceLocation)
-              )
+          imports.forEach { import ->
+            val key = import.key
+            val linkedDefinition = foreignSchema.definitions.firstOrNull { it is GQLNamed && it.definitionName() == key }
+            if (linkedDefinition == null) {
+              issues.add(OtherValidationIssue("Apollo: unknown definition '$key'", gqlDirective.sourceLocation))
             }
           }
 
-          val (definitions, renames) = foreignSchema.definitions.rename(mappings, prefix)
+          val (definitions, renames) = foreignSchema.definitions.rename(imports, prefix)
           linkedSchemas.add(
               LinkedSchema(
                   foreignSchema = foreignSchema,
@@ -489,7 +510,10 @@ private fun List<GQLSchemaExtension>.getImports(
 private fun List<GQLValue>.parseImport(issues: MutableList<Issue>): Map<DefinitionName, DefinitionName> {
   return mapNotNull {
     when (it) {
-      is GQLStringValue -> it.value to it.value
+      is GQLStringValue -> {
+        // Simple case: import the definition without renaming
+        it.value to it.value
+      }
       is GQLObjectValue -> {
         if (it.fields.size != 2) {
           issues.add(OtherValidationIssue("Too many fields in 'import' argument", it.sourceLocation))
@@ -500,13 +524,19 @@ private fun List<GQLValue>.parseImport(issues: MutableList<Issue>): Map<Definiti
         if (name == null) {
           issues.add(OtherValidationIssue("import 'name' argument is either missing or not a string", it.sourceLocation))
         }
-        val as2 = (it.fields.firstOrNull { it.name == "as" }?.value as? GQLStringValue)?.value
+        val asValue = it.fields.firstOrNull { it.name == "as" }?.value
+        val as2 = (asValue as? GQLStringValue)?.value
         if (as2 == null) {
           issues.add(OtherValidationIssue("import 'as' argument is either missing or not a string", it.sourceLocation))
         }
         if (name == null || as2 == null) {
           return@mapNotNull null
         }
+        if (name.startsWith('@') && !as2.startsWith('@')) {
+          issues.add(OtherValidationIssue("Apollo: 'as' argument value must start with '@' when importing directives", asValue.sourceLocation))
+          return@mapNotNull null
+        }
+
         name to as2
       }
 
@@ -526,7 +556,7 @@ private fun List<GQLValue>.parseImport(issues: MutableList<Issue>): Map<Definiti
 private typealias DefinitionName = String
 
 private fun List<GQLDefinition>.rename(
-    mappings: Map<DefinitionName, DefinitionName>,
+    imports: Map<DefinitionName, DefinitionName>,
     prefix: String,
 ): Pair<List<GQLDefinition>, Map<DefinitionName, DefinitionName>> {
   val renames = mutableMapOf<DefinitionName, DefinitionName>()
@@ -534,7 +564,7 @@ private fun List<GQLDefinition>.rename(
     val definitionName = definitionName()
 
     val isDirective = this is GQLDirectiveDefinition
-    var rename = mappings.get(definitionName)
+    var rename = imports.get(definitionName)
     if (rename == null) {
       // default rename if nothing is explicitly imported
       val at = if (isDirective) {
@@ -546,9 +576,9 @@ private fun List<GQLDefinition>.rename(
     }
 
     renames[definitionName] = rename
-    return if (isDirective) {/*
+    return if (isDirective) {
+      /*
        * Do not add an extra '@' in the directive name.
-       * We can be sure that there is a '@' because we checked before that the mappings where valid.
        */
       rename.substring(1)
     } else {
@@ -557,6 +587,9 @@ private fun List<GQLDefinition>.rename(
   }
 
   val definitions = this.map { gqlDefinition ->
+    /*
+     * First pass: rename the types
+     */
     gqlDefinition.transform2 { gqlNode ->
       when (gqlNode) {
         is GQLScalarTypeDefinition -> gqlNode.copy(name = gqlNode.newName())
@@ -566,8 +599,18 @@ private fun List<GQLDefinition>.rename(
         is GQLUnionTypeDefinition -> gqlNode.copy(name = gqlNode.newName())
         is GQLInputObjectTypeDefinition -> gqlNode.copy(name = gqlNode.newName())
         is GQLDirectiveDefinition -> gqlNode.copy(name = gqlNode.newName())
-        is GQLNamedType -> gqlNode.copy(name = gqlNode.newName())
         else -> gqlNode
+      }
+    } as GQLDefinition
+  }.map { gqlDefinition ->
+    /*
+     * Second pass: rename the references using the previously computed renames.
+     */
+    gqlDefinition.transform2 { gqlNode ->
+      if (gqlNode is GQLNamedType) {
+        gqlNode.copy(name = renames[gqlNode.name] ?: gqlNode.name)
+      } else {
+        gqlNode
       }
     } as GQLDefinition
   }
@@ -670,6 +713,26 @@ private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition)
     )
     )
     return
+  }
+}
+
+private fun ValidationScope.validateScalars() {
+  typeDefinitions.values.filterIsInstance<GQLScalarTypeDefinition>().forEach { scalarTypeDefinition ->
+    validateDirectivesInConstContext(scalarTypeDefinition.directives, scalarTypeDefinition)
+    var hasMap = false
+    var hasMapTo = false
+    scalarTypeDefinition.directives.forEach {
+      when (originalDirectiveName(it.name)) {
+        Schema.MAP_TO -> hasMapTo = true
+        Schema.MAP -> hasMap = true
+      }
+    }
+    if (hasMap && hasMapTo) {
+      issues.add(OtherValidationIssue(
+          message = "Only one of @map and @mapTo can be added to a scalar.",
+          sourceLocation = scalarTypeDefinition.sourceLocation
+      ))
+    }
   }
 }
 

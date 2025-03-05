@@ -9,25 +9,17 @@ import com.apollographql.apollo.api.EnumType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Objects;
 
-/**
- * The episodes in the Star Wars trilogy
- */
 public class Episode {
-  public static EnumType type = new EnumType("Episode", Arrays.asList("NEWHOPE", "EMPIRE", "JEDI", "DEPRECATED", "new"));
+  public static EnumType type = new EnumType("Episode", Arrays.asList("NEWHOPE", "EMPIRE", "JEDI"));
 
   public static Episode NEWHOPE = new Episode("NEWHOPE");
 
   public static Episode EMPIRE = new Episode("EMPIRE");
 
   public static Episode JEDI = new Episode("JEDI");
-
-  public static Episode DEPRECATED = new Episode("DEPRECATED");
-
-  public static Episode new_ = new Episode("new");
 
   public String rawValue;
 
@@ -39,14 +31,11 @@ public class Episode {
    * Returns the Episode that represents the specified rawValue.
    * Note: unknown values of rawValue will return UNKNOWN__. You may want to update your schema instead of calling this method directly.
    */
-  @SuppressWarnings("deprecation")
   public static Episode safeValueOf(String rawValue) {
     switch (Objects.requireNonNull(rawValue)) {
       case "NEWHOPE": return Episode.NEWHOPE;
       case "EMPIRE": return Episode.EMPIRE;
       case "JEDI": return Episode.JEDI;
-      case "DEPRECATED": return Episode.DEPRECATED;
-      case "new": return Episode.new_;
       default: return new Episode.UNKNOWN__(rawValue);
     }
   }

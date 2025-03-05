@@ -176,14 +176,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
-    /**
-     * The name of the character
-     */
     public String name;
 
-    /**
-     * The movies this character appears in
-     */
     public List<Episode> appearsIn;
 
     private transient volatile int $hashCode;

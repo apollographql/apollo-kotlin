@@ -1,16 +1,16 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
-import com.apollographql.apollo.compiler.ExpressionAdapterInitializer
-import com.apollographql.apollo.compiler.RuntimeAdapterInitializer
-import com.apollographql.apollo.compiler.ScalarInfo
+import com.apollographql.apollo.compiler.CodegenMetadata
+import com.apollographql.apollo.compiler.CODEGEN_METADATA_VERSION
+import com.apollographql.apollo.compiler.TargetLanguage
 import com.apollographql.apollo.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo.compiler.codegen.Identifier.type
 import com.apollographql.apollo.compiler.codegen.ResolverClassName
 import com.apollographql.apollo.compiler.codegen.ResolverEntry
 import com.apollographql.apollo.compiler.codegen.ResolverKey
 import com.apollographql.apollo.compiler.codegen.ResolverKeyKind
-import com.apollographql.apollo.compiler.codegen.kotlin.helpers.bestGuess
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.obj
+import com.apollographql.apollo.compiler.codegen.kotlin.helpers.parseType
 import com.apollographql.apollo.compiler.ir.IrCatchTo
 import com.apollographql.apollo.compiler.ir.IrCompositeType2
 import com.apollographql.apollo.compiler.ir.IrEnumType
@@ -36,22 +36,27 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.WildcardTypeName
-
+import com.squareup.kotlinpoet.buildCodeBlock
 
 internal class KotlinResolver(
-    entries: List<ResolverEntry>,
-    val next: KotlinResolver?,
-    private val scalarMapping: Map<String, ScalarInfo>,
+    upstreamCodegenMetadata: CodegenMetadata,
     private val requiresOptInAnnotation: String?,
 ) {
+  private val upstreamEntries = upstreamCodegenMetadata.entries.associate { it.key to it.className.toKotlinPoetClassName() }
+  private val upstreamScalarAdapters = upstreamCodegenMetadata.scalarAdapters
+  private val upstreamScalarTargets = upstreamCodegenMetadata.scalarTargets
+  private val upstreamInlineProperties = upstreamCodegenMetadata.inlineProperties
+  private val upstreamScalarIsUserDefined = upstreamCodegenMetadata.scalarIsUserDefined
+
   fun resolve(key: ResolverKey): ClassName? {
-    return classNames[key] ?: next?.resolve(key)
+    return classNames[key] ?: upstreamEntries[key]
   }
 
-  private var classNames = entries.associateBy(
-      keySelector = { it.key },
-      valueTransform = { it.className.toKotlinPoetClassName() }
-  ).toMutableMap()
+  private val classNames = mutableMapOf<ResolverKey, ClassName>()
+  private val scalarAdapters = mutableMapOf<String, String>()
+  private val scalarTargets = mutableMapOf<String, String>()
+  private val inlineProperties = mutableMapOf<String, String>()
+  private val scalarIsUserDefined = mutableMapOf<String, Boolean>()
 
   private fun ResolverClassName.toKotlinPoetClassName() = ClassName(packageName, simpleNames)
 
@@ -104,26 +109,15 @@ internal class KotlinResolver(
       else -> {
         when (type) {
           is IrListType -> resolveIrType(type.ofType, jsExport, isInterface).wrapInList(jsExport, isInterface)
-          is IrScalarType -> {
-            // Try mapping first, then built-ins, then fallback to Any
-            resolveScalarTarget(type.name) ?: when (type.name) {
-              "String" -> KotlinSymbols.String
-              "Float" -> KotlinSymbols.Double
-              "Int" -> KotlinSymbols.Int
-              "Boolean" -> KotlinSymbols.Boolean
-              "ID" -> KotlinSymbols.String
-              else -> KotlinSymbols.Any
-            }
-          }
-
           is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
           is IrEnumType -> if (jsExport) {
             KotlinSymbols.String
           } else {
             resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
           }
+          is IrScalarType -> resolveScalarTarget(type.name)
 
-          is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
+          is IrNamedType -> resolveSchemaType(type.name)
         }
       }
     }
@@ -141,12 +135,6 @@ internal class KotlinResolver(
       this
     }
     return listType.parameterizedBy(param)
-  }
-
-  private fun resolveScalarTarget(name: String): TypeName? {
-    return scalarMapping[name]?.targetName?.let {
-      bestGuess(it)
-    }
   }
 
   internal fun resolveIrType2(type: IrType2): TypeName {
@@ -186,7 +174,7 @@ internal class KotlinResolver(
       is IrNonNullType2 -> error("")
       is IrListType2 -> adapterInitializer2(type.ofType, jsExport)?.list(jsExport)
       is IrScalarType2 -> {
-        if (scalarMapping.containsKey(type.name)) {
+        if (isScalarUserDefined(type.name)) {
           scalarAdapterInitializer(type.name)
         } else {
           null
@@ -226,22 +214,21 @@ internal class KotlinResolver(
       }
 
       type.nullable -> {
-        // Don't hardcode the adapter when the scalar is mapped to a user-defined type
-        val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
-        when {
-          type is IrScalarType && type.name == "ID" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringAdapter)
-          type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableBooleanAdapter)
-          type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringAdapter)
-          type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableIntAdapter)
-          type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableDoubleAdapter)
-          type is IrScalarType && resolveScalarTarget(type.name) == null -> {
-            CodeBlock.of("%M", KotlinSymbols.NullableAnyAdapter)
-          }
+        val initializer = adapterInitializer(type.nullable(false), requiresBuffering, jsExport)
 
-          else -> {
-            val nullableFun = MemberName("com.apollographql.apollo.api", "nullable")
-            CodeBlock.of("%L.%M()", adapterInitializer(type.nullable(false), requiresBuffering, jsExport), nullableFun)
-          }
+        val nonNullableBuiltin = when (initializer.toString()) {
+          KotlinSymbols.StringAdapter.canonicalName -> KotlinSymbols.NullableStringAdapter
+          KotlinSymbols.BooleanAdapter.canonicalName -> KotlinSymbols.NullableBooleanAdapter
+          KotlinSymbols.IntAdapter.canonicalName -> KotlinSymbols.NullableIntAdapter
+          KotlinSymbols.DoubleAdapter.canonicalName -> KotlinSymbols.NullableDoubleAdapter
+          KotlinSymbols.AnyAdapter.canonicalName -> KotlinSymbols.NullableAnyAdapter
+          else -> null
+        }
+        return if (nonNullableBuiltin != null) {
+          CodeBlock.of("%M", nonNullableBuiltin)
+        } else {
+          val nullableFun = MemberName("com.apollographql.apollo.api", "nullable")
+          CodeBlock.of("%L.%M()", initializer, nullableFun)
         }
       }
 
@@ -277,46 +264,84 @@ internal class KotlinResolver(
     }
   }
 
+  internal fun unwrapInlineClass(type: IrType): CodeBlock {
+    val inlineClassProperty = resolveScalarInlineProperty(type.rawType().name)
+    return buildCodeBlock {
+      when (type) {
+        is IrListType -> {
+          if (inlineClassProperty != null) {
+            if (type.nullable) {
+              add("?")
+            }
+            add(".map { it%L }", unwrapInlineClass(type.ofType))
+          }
+        }
+
+        is IrScalarType -> {
+          if (inlineClassProperty != null) {
+            if (type.nullable) {
+              add("?")
+            }
+            add(".%L", inlineClassProperty)
+          }
+        }
+
+        else -> Unit
+      }
+    }
+  }
+
+  internal fun wrapInlineClass(expression: CodeBlock, type: IrType): CodeBlock {
+    val inlineClassProperty = resolveScalarInlineProperty(type.rawType().name)
+
+    return buildCodeBlock {
+      when (type) {
+        is IrListType -> {
+          if (inlineClassProperty != null) {
+            add(expression)
+            if (type.nullable) {
+              add("?")
+            }
+            add(".map { %L }", wrapInlineClass(CodeBlock.of("it"), type.ofType))
+          } else {
+            add(expression)
+          }
+        }
+
+        is IrScalarType -> {
+          if (inlineClassProperty == null) {
+            add(expression)
+          } else {
+            val targetName = resolveScalarTarget(type.name)
+            when {
+              type.nullable -> add("%L?.let { %T(it) }", expression, targetName)
+              else -> add("%T(%L)", targetName, expression)
+            }
+          }
+        }
+
+        else -> {
+          add(expression)
+        }
+      }
+    }
+  }
+
   fun resolveCompiledType(name: String): CodeBlock {
     return CodeBlock.of("%T.$type", resolveAndAssert(ResolverKeyKind.SchemaType, name))
   }
 
   private fun scalarAdapterInitializer(name: String): CodeBlock {
-    return when (val adapterInitializer = scalarMapping[name]?.adapterInitializer) {
-      is ExpressionAdapterInitializer -> {
-        CodeBlock.of(adapterInitializer.expression)
-      }
-
-      is RuntimeAdapterInitializer -> {
-        val target = resolveScalarTarget(name)
-        CodeBlock.of(
-            "$customScalarAdapters.responseAdapterFor<%T>(%L)",
-            target,
-            resolveCompiledType(name)
-        )
-      }
-
-      else -> {
-        when (name) {
-          "Boolean" -> CodeBlock.of("%M", KotlinSymbols.BooleanAdapter)
-          "ID" -> CodeBlock.of("%M", KotlinSymbols.StringAdapter)
-          "String" -> CodeBlock.of("%M", KotlinSymbols.StringAdapter)
-          "Int" -> CodeBlock.of("%M", KotlinSymbols.IntAdapter)
-          "Float" -> CodeBlock.of("%M", KotlinSymbols.DoubleAdapter)
-          else -> {
-            val target = resolveScalarTarget(name)
-            if (target == null) {
-              CodeBlock.of("%M", KotlinSymbols.AnyAdapter)
-            } else {
-              CodeBlock.of(
-                  "$customScalarAdapters.responseAdapterFor<%T>(%L)",
-                  target,
-                  resolveCompiledType(name)
-              )
-            }
-          }
-        }
-      }
+    val adapterInitializer = resolveScalarAdapterInitializer(name)
+    return if (adapterInitializer == null) {
+      val target = resolveScalarTarget(name)
+      CodeBlock.of(
+          "$customScalarAdapters.responseAdapterFor<%T>(%L)",
+          target,
+          resolveCompiledType(name)
+      )
+    } else {
+      adapterInitializer
     }
   }
 
@@ -358,7 +383,6 @@ internal class KotlinResolver(
   fun registerFragmentSelections(name: String, className: ClassName) = register(ResolverKeyKind.FragmentSelections, name, className)
   fun resolveFragmentSelections(name: String) = resolveAndAssert(ResolverKeyKind.FragmentSelections, name)
 
-  fun entries() = classNames.map { ResolverEntry(it.key, ResolverClassName(it.value.packageName, it.value.simpleNames)) }
 
   fun resolveSchemaType(name: String) = resolveAndAssert(ResolverKeyKind.SchemaType, name)
   fun registerSchemaType(name: String, className: ClassName) = register(ResolverKeyKind.SchemaType, name, className)
@@ -394,4 +418,62 @@ internal class KotlinResolver(
 
   fun registerArgumentDefinition(id: String, className: ClassName) = register(ResolverKeyKind.ArgumentDefinition, id, className)
   fun resolveArgumentDefinition(id: String) = resolveAndAssert(ResolverKeyKind.ArgumentDefinition, id)
+  fun toCodegenMetadata(targetLanguage: TargetLanguage): CodegenMetadata {
+    val entries = classNames.map { ResolverEntry(it.key, ResolverClassName(it.value.packageName, it.value.simpleNames)) }
+    return CodegenMetadata(
+        entries = entries,
+        version = CODEGEN_METADATA_VERSION,
+        targetLanguage = targetLanguage,
+        inlineProperties = inlineProperties,
+        scalarAdapters = scalarAdapters,
+        scalarTargets = scalarTargets,
+        scalarIsUserDefined = scalarIsUserDefined
+    )
+  }
+
+  fun resolveScalarTarget(name: String): TypeName {
+    val custom = scalarTargets[name] ?: upstreamScalarTargets[name]
+    check(custom != null) {
+      "Cannot resolve scalar target for '$name'"
+    }
+
+    return parseType(custom)
+  }
+
+  fun registerScalarTarget(name: String, target: String) {
+    scalarTargets[name] = target
+  }
+
+  fun registerScalarAdapter(id: String, expression: String) {
+    scalarAdapters[id] = expression
+  }
+
+  internal fun resolveScalarAdapterInitializer(name: String): CodeBlock? {
+    val customAdapter = scalarAdapters[name] ?: upstreamScalarAdapters[name]
+    if (customAdapter != null) {
+      if (customAdapter.matches(Regex("com\\.apollographql\\.apollo\\.api\\.[a-zA-Z]*Adapter"))) {
+        // Make the generated code look a bit nicer in case this is one of the built-in adapters
+        return CodeBlock.of("%T", ClassName.bestGuess(customAdapter))
+      }
+      return CodeBlock.of("%L", customAdapter)
+    }
+
+    return null
+  }
+
+  fun registerScalarInlineProperty(id: String, propertyName: String) {
+    inlineProperties[id] = propertyName
+  }
+
+  private fun resolveScalarInlineProperty(id: String): String? {
+    return inlineProperties[id] ?: upstreamInlineProperties.get(id)
+  }
+
+  fun registerScalarIsUserDefined(id: String) {
+    scalarIsUserDefined[id] = true
+  }
+
+  fun isScalarUserDefined(id: String): Boolean {
+    return scalarIsUserDefined[id] ?: upstreamScalarIsUserDefined.get(id) ?: false
+  }
 }

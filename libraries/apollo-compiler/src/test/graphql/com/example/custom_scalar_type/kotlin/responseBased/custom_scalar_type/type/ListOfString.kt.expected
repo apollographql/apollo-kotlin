@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.CustomScalarType
 
 public class ListOfString {
   public companion object {
-    public val type: CustomScalarType = CustomScalarType("ListOfString", "List<String?>")
+    public val type: CustomScalarType =
+        CustomScalarType("ListOfString", "kotlin.collections.List<kotlin.String?>")
   }
 }

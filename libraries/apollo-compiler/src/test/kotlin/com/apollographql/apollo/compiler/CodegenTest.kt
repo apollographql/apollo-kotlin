@@ -272,12 +272,13 @@ class CodegenTest {
         else -> true
       }
 
-
       val generateSchema = folder.name == "__schema"
 
       val schemaFile =
-        folder.listFiles()!!.find { it.isFile && (it.name == "schema.sdl" || it.name == "schema.json" || it.name == "schema.graphqls") }
-            ?: File("src/test/graphql/schema.sdl")
+        folder.listFiles()!!.find { it.isFile && (it.name == "schema.json" || it.name == "schema.graphqls") }
+            ?: File("src/test/graphql/schema.graphqls")
+      val target = if (generateKotlinModels) "kotlin" else "java"
+      val languageSpecificSchemaFile = folder.listFiles()!!.firstOrNull { it.name == "schema.$target.graphqls" }
 
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
 
@@ -293,32 +294,6 @@ class CodegenTest {
         folder.name in listOf("capitalized_fields", "companion") -> true
         targetLanguage == JAVA -> true
         else -> false
-      }
-      val scalarMapping = if (folder.name in listOf(
-              "custom_scalar_type",
-              "input_object_type",
-              "mutation_create_review"
-          )
-      ) {
-        if (targetLanguage == JAVA) {
-          mapOf(
-              "Date" to ScalarInfo("java.util.Date"),
-              "URL" to ScalarInfo("java.lang.String", ExpressionAdapterInitializer("com.example.UrlAdapter.INSTANCE")),
-              "ID" to ScalarInfo("java.lang.Long"),
-              "String" to ScalarInfo("java.lang.String", ExpressionAdapterInitializer("new com.example.MyStringAdapter()")),
-              "ListOfString" to ScalarInfo("List<String>"),
-          )
-        } else {
-          mapOf(
-              "Date" to ScalarInfo("java.util.Date"),
-              "URL" to ScalarInfo("kotlin.String", ExpressionAdapterInitializer("com.example.UrlAdapter")),
-              "ID" to ScalarInfo("kotlin.Long"),
-              "String" to ScalarInfo("kotlin.String", ExpressionAdapterInitializer("com.example.MyStringAdapter()")),
-              "ListOfString" to ScalarInfo("List<String?>"),
-          )
-        }
-      } else {
-        emptyMap()
       }
 
       val packageName = "com.example.${folder.name}"
@@ -416,10 +391,11 @@ class CodegenTest {
       )
 
       val (irOperations, sourceOutput) = ApolloCompiler.buildSchemaAndOperationsSourcesAndReturnIrOperations(
-          schemaFiles = setOf(schemaFile).toInputFiles(),
+          schemaFiles = (setOf(schemaFile) + setOfNotNull(languageSpecificSchemaFile)).toInputFiles(),
           executableFiles = graphqlFiles.toInputFiles(),
-          codegenSchemaOptions = buildCodegenSchemaOptions(
-              scalarMapping = scalarMapping,
+          codegenSchemaOptions = CodegenSchemaOptions(
+              scalarTypeMapping = emptyMap(),
+              scalarAdapterMapping = emptyMap(),
               generateDataBuilders = generateDataBuilders
           ),
           irOptions = buildIrOptions(
@@ -438,7 +414,13 @@ class CodegenTest {
       )
 
       sourceOutput.writeTo(outputDir, true, null)
-      irOperations.usedCoordinates.writeTo(File(outputDir, "com/example/used-coordinates.json"))
+
+      File(outputDir, "com/example/used-coordinates.json").let {
+        // mkdirs is required for the 'empty' test
+        it.parentFile.mkdirs()
+        irOperations.usedCoordinates.writeTo(it)
+      }
+
       return outputDir
     }
 

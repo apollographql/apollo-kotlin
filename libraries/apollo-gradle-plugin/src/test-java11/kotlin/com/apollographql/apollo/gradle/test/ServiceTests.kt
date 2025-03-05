@@ -48,7 +48,7 @@ class ServiceTests {
         TestUtils.executeTask("generateApolloSources", dir)
         fail("Registering an unknown scalar should fail")
       } catch (e: UnexpectedBuildFailure) {
-        Truth.assertThat(e.message).contains("unknown scalar(s)")
+        Truth.assertThat(e.message).contains("Cannot find scalar type `UnknownScalar`")
       }
     }
   }

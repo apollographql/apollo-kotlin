@@ -1,0 +1,8 @@
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.5/", import: ["@map"])
+
+extend scalar Date @map(to: "java.util.Date")
+extend scalar ID @map(to: "java.lang.Long")
+
+extend scalar ListOfString @map(to: "List<String>")
+extend scalar URL @map(to: "java.lang.String", with: "com.example.UrlAdapter.INSTANCE")
+extend scalar String @map(to: "java.lang.String", with: "new com.example.MyStringAdapter()")

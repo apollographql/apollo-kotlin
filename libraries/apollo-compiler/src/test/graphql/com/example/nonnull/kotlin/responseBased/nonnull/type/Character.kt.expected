@@ -5,13 +5,10 @@
 //
 package com.example.nonnull.type
 
-import com.apollographql.apollo.api.InterfaceType
+import com.apollographql.apollo.api.ObjectType
 
-/**
- * A character from the Star Wars universe
- */
 public class Character {
   public companion object {
-    public val type: InterfaceType = InterfaceType.Builder(name = "Character").build()
+    public val type: ObjectType = ObjectType.Builder(name = "Character").build()
   }
 }

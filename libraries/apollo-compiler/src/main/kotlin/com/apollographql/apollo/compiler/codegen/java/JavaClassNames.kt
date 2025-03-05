@@ -91,6 +91,8 @@ internal object JavaClassNames {
    */
   val String: ClassName = ClassName.get("java.lang", "String")
   val Integer: ClassName = ClassName.get("java.lang", "Integer")
+  val Long: ClassName = ClassName.get("java.lang", "Long")
+  val Float: ClassName = ClassName.get("java.lang", "Float")
   val Double: ClassName = ClassName.get("java.lang", "Double")
   val Object: ClassName = ClassName.get("java.lang", "Object")
   val Boolean: ClassName = ClassName.get("java.lang", "Boolean")

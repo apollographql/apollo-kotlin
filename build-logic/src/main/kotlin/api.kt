@@ -48,14 +48,14 @@ fun Project.apolloLibrary(
     configurePublishing()
   }
 
-  // Within the 'tests' project (a composite build), dependencies are automatically substituted to use the project's one.
-  // But we don't want this, for example apollo-tooling depends on a published version of apollo-api.
-  // So disable this behavior (see https://docs.gradle.org/current/userguide/composite_builds.html#deactivate_included_build_substitutions).
   configurations.configureEach {
-    if (name != "apolloPublished") {
-      return@configureEach
+    if (name == "apolloPublished" || name.matches(Regex("apollo.*Compiler"))) {
+      // Within the 'tests' project (a composite build), dependencies are automatically substituted to use the project's one.
+      // apollo-tooling depends on a published version of apollo-api which should not be substituted for both the runtime
+      // and compiler classpaths.
+      // See (see https://docs.gradle.org/current/userguide/composite_builds.html#deactivate_included_build_substitutions).
+      this.resolutionStrategy.useGlobalDependencySubstitutionRules.set(false)
     }
-    resolutionStrategy.useGlobalDependencySubstitutionRules.set(false)
   }
 
   if (extensions.findByName("kotlin") is KotlinMultiplatformExtension) {

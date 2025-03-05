@@ -1,10 +1,10 @@
 package com.apollographql.apollo.compiler.conditionalFragments
 
 import com.apollographql.apollo.compiler.ApolloCompiler
+import com.apollographql.apollo.compiler.CodegenSchemaOptions
 import com.apollographql.apollo.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo.compiler.buildCodegenOptions
-import com.apollographql.apollo.compiler.buildCodegenSchemaOptions
 import com.apollographql.apollo.compiler.buildIrOptions
 import com.apollographql.apollo.compiler.toInputFiles
 import com.google.testing.junit.testparameterinjector.TestParameter
@@ -28,7 +28,7 @@ class ConditionalFragmentsTest {
       ApolloCompiler.buildSchemaAndOperationsSources(
           executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo/compiler/conditionalFragments/$fileName")).toInputFiles(),
           schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo/compiler/conditionalFragments/schema.graphqls")).toInputFiles(),
-          codegenSchemaOptions = buildCodegenSchemaOptions(),
+          codegenSchemaOptions = CodegenSchemaOptions(),
           irOptions = buildIrOptions(flattenModels = false, codegenModels = MODELS_RESPONSE_BASED),
           codegenOptions = buildCodegenOptions(packageName = ""),
           logger = null,
@@ -50,7 +50,7 @@ class ConditionalFragmentsTest {
     ApolloCompiler.buildSchemaAndOperationsSources(
         executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo/compiler/conditionalFragments/$fileName")).toInputFiles(),
         schemaFiles = setOf(File("src/test/kotlin/com/apollographql/apollo/compiler/conditionalFragments/schema.graphqls")).toInputFiles(),
-        codegenSchemaOptions = buildCodegenSchemaOptions(),
+        codegenSchemaOptions = CodegenSchemaOptions(),
         irOptions = buildIrOptions(flattenModels = false, codegenModels = MODELS_OPERATION_BASED),
         codegenOptions = buildCodegenOptions(packageName = ""),
         logger = null,

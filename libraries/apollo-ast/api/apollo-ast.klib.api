@@ -517,7 +517,7 @@ final class com.apollographql.apollo.ast/GQLInputValueDefinition : com.apollogra
     constructor <init>(com.apollographql.apollo.ast/SourceLocation? = ..., kotlin/String?, kotlin/String, kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>, com.apollographql.apollo.ast/GQLType, com.apollographql.apollo.ast/GQLValue?) // com.apollographql.apollo.ast/GQLInputValueDefinition.<init>|<init>(com.apollographql.apollo.ast.SourceLocation?;kotlin.String?;kotlin.String;kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>;com.apollographql.apollo.ast.GQLType;com.apollographql.apollo.ast.GQLValue?){}[0]
 
     final val children // com.apollographql.apollo.ast/GQLInputValueDefinition.children|{}children[0]
-        final fun <get-children>(): kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective> // com.apollographql.apollo.ast/GQLInputValueDefinition.children.<get-children>|<get-children>(){}[0]
+        final fun <get-children>(): kotlin.collections/List<com.apollographql.apollo.ast/GQLNode> // com.apollographql.apollo.ast/GQLInputValueDefinition.children.<get-children>|<get-children>(){}[0]
     final val defaultValue // com.apollographql.apollo.ast/GQLInputValueDefinition.defaultValue|{}defaultValue[0]
         final fun <get-defaultValue>(): com.apollographql.apollo.ast/GQLValue? // com.apollographql.apollo.ast/GQLInputValueDefinition.defaultValue.<get-defaultValue>|<get-defaultValue>(){}[0]
     final val description // com.apollographql.apollo.ast/GQLInputValueDefinition.description|{}description[0]

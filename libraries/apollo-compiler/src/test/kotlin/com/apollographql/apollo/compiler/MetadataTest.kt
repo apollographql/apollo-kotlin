@@ -35,7 +35,7 @@ class MetadataTest {
 
 
   private fun compileRoot(directory: String) {
-    buildCodegenSchemaOptions().writeTo(codegenSchemaOptionsFile)
+    CodegenSchemaOptions().writeTo(codegenSchemaOptionsFile)
     buildIrOptions().writeTo(irOptionsFile)
     buildCodegenOptions(packageName = rootPackageName).writeTo(rootCodegenOptionsFile)
     buildCodegenOptions(packageName = leafPackageName).writeTo(leafCodegenOptionsFile)

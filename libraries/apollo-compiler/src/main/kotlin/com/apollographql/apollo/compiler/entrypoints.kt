@@ -15,6 +15,8 @@ import java.util.function.Consumer
  * EntryPoints contains code that is called using reflection from the Gradle plugin.
  * This is so that the classloader can be isolated, and we can use our preferred version of
  * Kotlin and other dependencies without risking conflicts.
+ *
+ * It is a version of [ApolloCompiler] that takes plain [File]s and other classes available to the bootstrap classloader only.
  */
 @Suppress("UNUSED") // Used from reflection
 @ApolloInternal
@@ -22,7 +24,7 @@ class EntryPoints {
   fun buildCodegenSchema(
       arguments: Map<String, Any?>,
       logLevel: Int,
-      warnIfNotFound: Boolean = false,
+      warnIfNotFound: Boolean,
       normalizedSchemaFiles: List<Any>,
       warning: Consumer<String>,
       codegenSchemaOptionsFile: File,
@@ -69,7 +71,7 @@ class EntryPoints {
   fun buildSourcesFromIr(
       arguments: Map<String, Any?>,
       logLevel: Int,
-      warnIfNotFound: Boolean = false,
+      warnIfNotFound: Boolean,
       codegenSchemaFiles: List<Any>,
       upstreamMetadata: List<Any>,
       irOperations: File,
@@ -111,7 +113,7 @@ class EntryPoints {
   fun buildSources(
       arguments: Map<String, Any?>,
       logLevel: Int,
-      warnIfNotFound: Boolean = false,
+      warnIfNotFound: Boolean,
       schemaFiles: List<Any>,
       graphqlFiles: List<Any>,
       codegenSchemaOptions: File,

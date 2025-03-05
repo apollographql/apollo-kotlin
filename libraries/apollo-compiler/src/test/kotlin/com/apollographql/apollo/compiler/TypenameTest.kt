@@ -25,7 +25,7 @@ class TypenameTest(
 ) {
   @Test
   fun testTypename() {
-    val schemaFile = File("src/test/graphql/schema.sdl")
+    val schemaFile = File("src/test/graphql/schema.graphqls")
     val schema = schemaFile.toGQLDocument().toSchema()
 
     val definitions = graphQLFile.source().buffer().toExecutableDocument(schema).definitions

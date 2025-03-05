@@ -15,9 +15,7 @@ import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.json.JsonReader;
 import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.custom_scalar_type.TestQuery;
-import com.example.custom_scalar_type.type.GraphQLID;
 import java.io.IOException;
-import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -29,23 +27,45 @@ public class TestQuery_ResponseAdapter {
   public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("hero", "nonNullTimestamp", "nullableTimestamp", "nonNullListOfNonNullTimestamp", "nonNullListOfNullableTimestamp", "nullableListOfNonNullTimestamp", "nullableListOfNullableTimestamp");
 
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       TestQuery.Hero _hero = null;
+      Object _nonNullTimestamp = null;
+      Object _nullableTimestamp = null;
+      List<Object> _nonNullListOfNonNullTimestamp = null;
+      List<Object> _nonNullListOfNullableTimestamp = null;
+      List<Object> _nullableListOfNonNullTimestamp = null;
+      List<Object> _nullableListOfNullableTimestamp = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 1: _nonNullTimestamp = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: _nullableTimestamp = Adapters.NullableAnyAdapter.fromJson(reader, customScalarAdapters); break;
+          case 3: _nonNullListOfNonNullTimestamp = new ListAdapter<>(Adapters.AnyAdapter).fromJson(reader, customScalarAdapters); break;
+          case 4: _nonNullListOfNullableTimestamp = new ListAdapter<>(Adapters.NullableAnyAdapter).fromJson(reader, customScalarAdapters); break;
+          case 5: _nullableListOfNonNullTimestamp = new NullableAdapter<>(new ListAdapter<>(Adapters.AnyAdapter)).fromJson(reader, customScalarAdapters); break;
+          case 6: _nullableListOfNullableTimestamp = new NullableAdapter<>(new ListAdapter<>(Adapters.NullableAnyAdapter)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
+      Assertions.checkFieldNotMissing(_nonNullTimestamp, "nonNullTimestamp");
+      Assertions.checkFieldNotMissing(_nonNullListOfNonNullTimestamp, "nonNullListOfNonNullTimestamp");
+      Assertions.checkFieldNotMissing(_nonNullListOfNullableTimestamp, "nonNullListOfNullableTimestamp");
+
       return new TestQuery.Data(
-        _hero
+        _hero,
+        _nonNullTimestamp,
+        _nullableTimestamp,
+        _nonNullListOfNonNullTimestamp,
+        _nonNullListOfNullableTimestamp,
+        _nullableListOfNonNullTimestamp,
+        _nullableListOfNullableTimestamp
       );
     }
 
@@ -54,6 +74,24 @@ public class TestQuery_ResponseAdapter {
         TestQuery.Data value) throws IOException {
       writer.name("hero");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).toJson(writer, customScalarAdapters, value.hero);
+
+      writer.name("nonNullTimestamp");
+      Adapters.AnyAdapter.toJson(writer, customScalarAdapters, value.nonNullTimestamp);
+
+      writer.name("nullableTimestamp");
+      Adapters.NullableAnyAdapter.toJson(writer, customScalarAdapters, value.nullableTimestamp);
+
+      writer.name("nonNullListOfNonNullTimestamp");
+      new ListAdapter<>(Adapters.AnyAdapter).toJson(writer, customScalarAdapters, value.nonNullListOfNonNullTimestamp);
+
+      writer.name("nonNullListOfNullableTimestamp");
+      new ListAdapter<>(Adapters.NullableAnyAdapter).toJson(writer, customScalarAdapters, value.nonNullListOfNullableTimestamp);
+
+      writer.name("nullableListOfNonNullTimestamp");
+      new NullableAdapter<>(new ListAdapter<>(Adapters.AnyAdapter)).toJson(writer, customScalarAdapters, value.nullableListOfNonNullTimestamp);
+
+      writer.name("nullableListOfNullableTimestamp");
+      new NullableAdapter<>(new ListAdapter<>(Adapters.NullableAnyAdapter)).toJson(writer, customScalarAdapters, value.nullableListOfNullableTimestamp);
     }
   }
 
@@ -65,7 +103,7 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      Long _id = null;
+      String _id = null;
       String _name = null;
       Date _birthDate = null;
       List<Date> _appearanceDates = null;
@@ -76,7 +114,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = (customScalarAdapters.<Long>responseAdapterFor(GraphQLID.type)).fromJson(reader, customScalarAdapters); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _name = new com.example.MyStringAdapter().fromJson(reader, customScalarAdapters); break;
           case 2: _birthDate = (customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).fromJson(reader, customScalarAdapters); break;
           case 3: _appearanceDates = new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).fromJson(reader, customScalarAdapters); break;
@@ -110,7 +148,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Hero value) throws IOException {
       writer.name("id");
-      (customScalarAdapters.<Long>responseAdapterFor(GraphQLID.type)).toJson(writer, customScalarAdapters, value.id);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
 
       writer.name("name");
       new com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.name);

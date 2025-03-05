@@ -1,19 +1,18 @@
 package com.apollographql.apollo.compiler.codegen.kotlin.schema
 
-import com.apollographql.apollo.compiler.ExpressionAdapterInitializer
-import com.apollographql.apollo.compiler.ScalarInfo
 import com.apollographql.apollo.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSchemaContext
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo.compiler.codegen.typePackageName
+import com.apollographql.apollo.compiler.ir.IrScalar
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.PropertySpec
 
 internal class CustomScalarAdaptersBuilder(
     private val context: KotlinSchemaContext,
-    private val scalarMapping: Map<String, ScalarInfo>,
+    private val scalars: List<IrScalar>,
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
@@ -38,10 +37,10 @@ internal class CustomScalarAdaptersBuilder(
                 .add("%T()\n", KotlinSymbols.CustomScalarAdaptersBuilder)
                 .indent()
                 .apply {
-                  scalarMapping.entries.forEach {
-                    val adapterInitializer = it.value.adapterInitializer
-                    if (adapterInitializer is ExpressionAdapterInitializer) {
-                      add(".add(%T.type, %L)\n", context.resolver.resolveSchemaType(it.key), adapterInitializer.expression)
+                  scalars.forEach {
+                    val initializer = context.resolver.resolveScalarAdapterInitializer(it.name)
+                    if (initializer != null && context.resolver.isScalarUserDefined(it.name)) {
+                      add(".add(%T.type, %L)\n", context.resolver.resolveSchemaType(it.name), initializer)
                     }
                   }
                 }

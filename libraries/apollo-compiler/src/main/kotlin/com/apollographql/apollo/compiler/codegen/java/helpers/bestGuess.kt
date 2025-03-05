@@ -7,7 +7,7 @@ import com.squareup.javapoet.TypeName
 /**
  * Best guess a type name. Handles simple generics like `Map<String, Integer>`, but no variance or wildcards.
  */
-internal fun bestGuess(name: String): TypeName? {
+internal fun parseType(name: String): TypeName? {
   val className = ClassName.bestGuess(name.substringBefore('<').withPackage())
   val typeArgs = name.substringAfter('<', "").substringBefore('>', "")
       .split(',')
@@ -16,7 +16,7 @@ internal fun bestGuess(name: String): TypeName? {
   return if (typeArgs.isEmpty()) {
     className
   } else {
-    ParameterizedTypeName.get(className, *typeArgs.map { bestGuess(it) }.toTypedArray())
+    ParameterizedTypeName.get(className, *typeArgs.map { parseType(it) }.toTypedArray())
   }
 }
 

@@ -5,6 +5,7 @@ import com.apollographql.apollo.compiler.CodegenMetadata
 import com.apollographql.apollo.compiler.CodegenSchema
 import com.apollographql.apollo.compiler.KotlinOperationsCodegenOptions
 import com.apollographql.apollo.compiler.KotlinSchemaCodegenOptions
+import com.apollographql.apollo.compiler.CODEGEN_METADATA_VERSION
 import com.apollographql.apollo.compiler.TargetLanguage
 import com.apollographql.apollo.compiler.Transform
 import com.apollographql.apollo.compiler.codegen.OperationsLayout
@@ -31,8 +32,10 @@ import com.apollographql.apollo.compiler.codegen.kotlin.schema.InterfaceBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.ObjectBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.PaginationBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.ScalarBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.schema.InlineClassBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.SchemaBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.UnionBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.schema.asTargetClassName
 import com.apollographql.apollo.compiler.defaultAddDefaultArgumentForInputObjects
 import com.apollographql.apollo.compiler.defaultAddJvmOverloads
 import com.apollographql.apollo.compiler.defaultAddUnkownForEnums
@@ -49,7 +52,6 @@ import com.apollographql.apollo.compiler.generateMethodsKotlin
 import com.apollographql.apollo.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.IrSchema
-import com.apollographql.apollo.compiler.ir.IrTargetObject
 import com.apollographql.apollo.compiler.maybeTransform
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.operationoutput.findOperationId
@@ -60,7 +62,6 @@ private class OutputBuilder {
 }
 
 private fun buildOutput(
-    codegenSchema: CodegenSchema,
     upstreamCodegenMetadatas: List<CodegenMetadata>,
     requiresOptInAnnotation: String?,
     targetLanguage: TargetLanguage,
@@ -69,15 +70,19 @@ private fun buildOutput(
     block: OutputBuilder.(KotlinResolver) -> Unit,
 ): KotlinOutput {
 
-  upstreamCodegenMetadatas.forEach {
-    check(it.targetLanguage == targetLanguage) {
-      "Apollo: Cannot depend on '${it.targetLanguage}' generated models (expected: '$targetLanguage')."
-    }
+  val upstreamCodegenMetadata = upstreamCodegenMetadatas.fold(CodegenMetadata(
+      version = CODEGEN_METADATA_VERSION,
+      targetLanguage = targetLanguage,
+      emptyList(),
+      emptyMap(),
+      emptyMap(),
+      emptyMap(),
+      emptyMap()
+  )) { acc, metadata ->
+    acc + metadata
   }
   val resolver = KotlinResolver(
-      entries = upstreamCodegenMetadatas.flatMap { it.entries },
-      next = null,
-      scalarMapping = codegenSchema.scalarMapping,
+      upstreamCodegenMetadata = upstreamCodegenMetadata,
       requiresOptInAnnotation = requiresOptInAnnotation,
   )
 
@@ -128,7 +133,7 @@ private fun buildOutput(
       }
   return KotlinOutput(
       fileSpecs = fileSpecs,
-      codegenMetadata = CodegenMetadata(targetLanguage = targetLanguage, entries = resolver.entries())
+      codegenMetadata = resolver.toCodegenMetadata(targetLanguage = targetLanguage)
   ).maybeTransform(kotlinOutputTransform)
 }
 
@@ -156,10 +161,7 @@ internal object KotlinCodegen {
     val addDefaultArgumentForInputObjects = codegenOptions.addDefaultArgumentForInputObjects
         ?: defaultAddDefaultArgumentForInputObjects
 
-    val scalarMapping = codegenSchema.scalarMapping
-
     return buildOutput(
-        codegenSchema = codegenSchema,
         upstreamCodegenMetadatas = emptyList(),
         requiresOptInAnnotation = requiresOptInAnnotation,
         targetLanguage = targetLanguage,
@@ -175,7 +177,12 @@ internal object KotlinCodegen {
       )
 
       irSchema.irScalars.forEach { irScalar ->
-        builders.add(ScalarBuilder(context, irScalar, scalarMapping.get(irScalar.name)?.targetName))
+        var inlineClassBuilder: InlineClassBuilder? = null
+        if (irScalar.mapToBuiltIn?.inline == true) {
+          inlineClassBuilder = InlineClassBuilder(context, irScalar, irScalar.mapToBuiltIn.builtIn.asTargetClassName())
+          builders.add(inlineClassBuilder)
+        }
+        builders.add(ScalarBuilder(context, irScalar, inlineClassBuilder?.className))
       }
       irSchema.irEnums.forEach { irEnum ->
         if (sealedClassesForEnumsMatching.any { Regex(it).matches(irEnum.name) }) {
@@ -200,7 +207,7 @@ internal object KotlinCodegen {
       }
       if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
         builders.add(SchemaBuilder(context, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
-        builders.add(CustomScalarAdaptersBuilder(context, scalarMapping))
+        builders.add(CustomScalarAdaptersBuilder(context, irSchema.irScalars))
       }
 
       if (irSchema.connectionTypes.isNotEmpty() && context.resolver.resolve(ResolverKey(ResolverKeyKind.Pagination, "")) == null) {
@@ -234,7 +241,6 @@ internal object KotlinCodegen {
     val requiresOptInAnnotation = codegenOptions.requiresOptInAnnotation ?: defaultRequiresOptInAnnotation
 
     return buildOutput(
-        codegenSchema = codegenSchema,
         upstreamCodegenMetadatas = upstreamCodegenMetadata,
         requiresOptInAnnotation = requiresOptInAnnotation,
         targetLanguage = targetLanguage,
@@ -311,4 +317,3 @@ internal object KotlinCodegen {
     }
   }
 }
-

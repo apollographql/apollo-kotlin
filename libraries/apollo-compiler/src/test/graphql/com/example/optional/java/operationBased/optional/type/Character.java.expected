@@ -5,11 +5,8 @@
 //
 package com.example.optional.type;
 
-import com.apollographql.apollo.api.InterfaceType;
+import com.apollographql.apollo.api.ObjectType;
 
-/**
- * A character from the Star Wars universe
- */
 public class Character {
-  public static InterfaceType type = (new InterfaceType.Builder("Character")).build();
+  public static ObjectType type = (new ObjectType.Builder("Character")).build();
 }

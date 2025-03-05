@@ -8,16 +8,18 @@ package com.example.custom_scalar_type.adapter
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.AnyAdapter
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.LongAdapter
+import com.apollographql.apollo.api.StringAdapter
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.list
 import com.apollographql.apollo.api.missingField
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
+import com.example.Timestamp
 import com.example.custom_scalar_type.TestQuery
-import com.example.custom_scalar_type.type.GraphQLID
+import com.example.custom_scalar_type.type.scalar.CharacterID
 import kotlin.Any
-import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import com.example.custom_scalar_type.type.Date as TypeDate
@@ -25,20 +27,39 @@ import java.util.Date as UtilDate
 
 public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
-    public val RESPONSE_NAMES: List<String> = listOf("hero")
+    public val RESPONSE_NAMES: List<String> =
+        listOf("hero", "nonNullTimestamp", "nullableTimestamp", "nonNullListOfNonNullTimestamp", "nonNullListOfNullableTimestamp", "nullableListOfNonNullTimestamp", "nullableListOfNullableTimestamp")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
+      var _nonNullTimestamp: Timestamp? = null
+      var _nullableTimestamp: Timestamp? = null
+      var _nonNullListOfNonNullTimestamp: List<Timestamp>? = null
+      var _nonNullListOfNullableTimestamp: List<Timestamp?>? = null
+      var _nullableListOfNonNullTimestamp: List<Timestamp>? = null
+      var _nullableListOfNullableTimestamp: List<Timestamp?>? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          1 -> _nonNullTimestamp = Timestamp(LongAdapter.fromJson(reader, customScalarAdapters))
+          2 -> _nullableTimestamp = LongAdapter.nullable().fromJson(reader, customScalarAdapters)?.let { Timestamp(it) }
+          3 -> _nonNullListOfNonNullTimestamp = LongAdapter.list().fromJson(reader, customScalarAdapters).map { Timestamp(it) }
+          4 -> _nonNullListOfNullableTimestamp = LongAdapter.nullable().list().fromJson(reader, customScalarAdapters).map { it?.let { Timestamp(it) } }
+          5 -> _nullableListOfNonNullTimestamp = LongAdapter.list().nullable().fromJson(reader, customScalarAdapters)?.map { Timestamp(it) }
+          6 -> _nullableListOfNullableTimestamp = LongAdapter.nullable().list().nullable().fromJson(reader, customScalarAdapters)?.map { it?.let { Timestamp(it) } }
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = _hero
+        hero = _hero,
+        nonNullTimestamp = _nonNullTimestamp ?: missingField(reader, "nonNullTimestamp"),
+        nullableTimestamp = _nullableTimestamp,
+        nonNullListOfNonNullTimestamp = _nonNullListOfNonNullTimestamp ?: missingField(reader, "nonNullListOfNonNullTimestamp"),
+        nonNullListOfNullableTimestamp = _nonNullListOfNullableTimestamp ?: missingField(reader, "nonNullListOfNullableTimestamp"),
+        nullableListOfNonNullTimestamp = _nullableListOfNonNullTimestamp,
+        nullableListOfNullableTimestamp = _nullableListOfNullableTimestamp
       )
     }
 
@@ -49,6 +70,24 @@ public object TestQuery_ResponseAdapter {
     ) {
       writer.name("hero")
       Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
+
+      writer.name("nonNullTimestamp")
+      LongAdapter.toJson(writer, customScalarAdapters, value.nonNullTimestamp.ts)
+
+      writer.name("nullableTimestamp")
+      LongAdapter.nullable().toJson(writer, customScalarAdapters, value.nullableTimestamp?.ts)
+
+      writer.name("nonNullListOfNonNullTimestamp")
+      LongAdapter.list().toJson(writer, customScalarAdapters, value.nonNullListOfNonNullTimestamp.map { it.ts })
+
+      writer.name("nonNullListOfNullableTimestamp")
+      LongAdapter.nullable().list().toJson(writer, customScalarAdapters, value.nonNullListOfNullableTimestamp.map { it?.ts })
+
+      writer.name("nullableListOfNonNullTimestamp")
+      LongAdapter.list().nullable().toJson(writer, customScalarAdapters, value.nullableListOfNonNullTimestamp?.map { it.ts })
+
+      writer.name("nullableListOfNullableTimestamp")
+      LongAdapter.nullable().list().nullable().toJson(writer, customScalarAdapters, value.nullableListOfNullableTimestamp?.map { it?.ts })
     }
 
     private object Hero : Adapter<TestQuery.Data.Hero> {
@@ -56,7 +95,7 @@ public object TestQuery_ResponseAdapter {
           listOf("id", "name", "birthDate", "appearanceDates", "fieldWithUnsupportedType", "profileLink", "links")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero {
-        var _id: Long? = null
+        var _id: CharacterID? = null
         var _name: String? = null
         var _birthDate: UtilDate? = null
         var _appearanceDates: List<UtilDate>? = null
@@ -66,7 +105,7 @@ public object TestQuery_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).fromJson(reader, customScalarAdapters)
+            0 -> _id = CharacterID(StringAdapter.fromJson(reader, customScalarAdapters))
             1 -> _name = com.example.MyStringAdapter().fromJson(reader, customScalarAdapters)
             2 -> _birthDate = customScalarAdapters.responseAdapterFor<UtilDate>(TypeDate.type).fromJson(reader, customScalarAdapters)
             3 -> _appearanceDates = customScalarAdapters.responseAdapterFor<UtilDate>(TypeDate.type).list().fromJson(reader, customScalarAdapters)
@@ -94,7 +133,7 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.Hero,
       ) {
         writer.name("id")
-        customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).toJson(writer, customScalarAdapters, value.id)
+        StringAdapter.toJson(writer, customScalarAdapters, value.id.value)
 
         writer.name("name")
         com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.name)

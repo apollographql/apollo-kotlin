@@ -2,6 +2,7 @@ package com.apollographql.apollo.ast.internal
 
 import com.apollographql.apollo.ast.DeprecatedUsage
 import com.apollographql.apollo.ast.GQLArgument
+import com.apollographql.apollo.ast.GQLDefinition
 import com.apollographql.apollo.ast.GQLDirective
 import com.apollographql.apollo.ast.GQLDirectiveDefinition
 import com.apollographql.apollo.ast.GQLDirectiveLocation
@@ -83,6 +84,10 @@ internal class DefaultValidationScope(
     issues: MutableList<Issue>? = null,
     override val foreignNames: Map<String, String> = emptyMap(),
 ) : ValidationScope {
+  constructor(definitions: List<GQLDefinition>) : this(
+      definitions.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
+      definitions.filterIsInstance<GQLDirectiveDefinition>().associateBy { it.name },
+  )
   constructor(schema: Schema) : this(schema.typeDefinitions, schema.directiveDefinitions)
 
   override val issues = issues ?: mutableListOf()

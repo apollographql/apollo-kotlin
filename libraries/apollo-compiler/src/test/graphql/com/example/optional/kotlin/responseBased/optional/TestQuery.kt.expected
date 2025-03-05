@@ -55,13 +55,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     public val hero: Hero?,
   ) : Query.Data {
     public data class Hero(
-      /**
-       * The name of the character
-       */
       public val name: String,
-      /**
-       * The movies this character appears in
-       */
       public val appearsIn: List<Episode?>?,
     ) {
       public fun appearsInFilterNotNull(): List<Episode>? = appearsIn?.filterNotNull()
