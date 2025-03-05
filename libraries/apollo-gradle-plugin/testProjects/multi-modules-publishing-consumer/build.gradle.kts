@@ -12,11 +12,20 @@ dependencies {
 apollo {
   service("service1") {
     packageName.set("com.service1")
-    dependsOn("com.fragments:fragments:1.0.0")
+    alwaysGenerateTypesMatching.set(emptyList())
+    generateApolloMetadata.set(true)
   }
   service("service2") {
     packageName.set("com.service2")
-    dependsOn("com.fragments:fragments:1.0.0")
+    alwaysGenerateTypesMatching.set(emptyList())
+    generateApolloMetadata.set(true)
   }
 }
+
+
+dependencies {
+  add("apolloService1", "com.fragments:fragments:1.0.0")
+  add("apolloService2", "com.fragments:fragments:1.0.0")
+}
+
 

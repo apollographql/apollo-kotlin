@@ -186,6 +186,9 @@ internal fun Consumer<String>.toLogger(): ApolloCompiler.Logger {
 @ApolloInternal
 fun Iterable<File>.findCodegenSchemaFile(): File {
   return firstOrNull {
+    /*
+     * TODO v5: simplify this and add a schema { } block to the Gradle configuration
+     */
     it.length() > 0
   } ?: error("Cannot find CodegenSchema in $this")
 }

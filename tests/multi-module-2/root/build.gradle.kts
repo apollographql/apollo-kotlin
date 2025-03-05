@@ -14,10 +14,12 @@ dependencies {
 apollo {
   service("multimodule2") {
     packageName.set("multimodule2.root")
-    isADependencyOf(project(":multi-module-2-child"))
     generateApolloMetadata.set(true)
     @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
   }
 }
 
+dependencies {
+  add("apolloMultimodule2UsedCoordinates", project(":multi-module-2-child"))
+}

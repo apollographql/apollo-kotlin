@@ -12,7 +12,12 @@ dependencies {
 apollo {
   service("service") {
     packageNamesFromFilePaths()
-    isADependencyOf(project(":leaf"))
-    dependsOn(project(":root"))
+    generateApolloMetadata.set(true)
+    alwaysGenerateTypesMatching.set(emptyList())
   }
+}
+
+dependencies {
+  add("apolloService", project(":root"))
+  add("apolloServiceUsedCoordinates", project(":leaf"))
 }

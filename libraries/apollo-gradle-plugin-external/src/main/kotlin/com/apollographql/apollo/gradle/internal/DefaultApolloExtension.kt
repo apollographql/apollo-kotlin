@@ -72,7 +72,7 @@ abstract class DefaultApolloExtension(
 
   internal fun registerDownstreamProject(serviceName: String, projectPath: String) {
     project.configurations.configureEach {
-      if (it.name == ModelNames.configuration(serviceName, ApolloDirection.Downstream, ApolloUsage.Ir, ConfigurationKind.DependencyScope)) {
+      if (it.name == ModelNames.scopeConfiguration(serviceName, ApolloDirection.Downstream)) {
         it.dependencies.add(project.dependencies.project(mapOf("path" to projectPath)))
       }
     }
@@ -391,36 +391,32 @@ abstract class DefaultApolloExtension(
   }
 
   class Configurations(
-      val scope: Configuration,
       val consumable: Configuration,
       val resolvable: Configuration,
   )
+
   private fun createConfigurations(
       serviceName: String,
       apolloUsage: ApolloUsage,
       direction: ApolloDirection,
+      extendsFrom: Configuration
   ): Configurations {
-    val dependencyScope = project.configurations.create(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.DependencyScope )) {
-      it.isCanBeConsumed = false
-      it.isCanBeResolved = false
-    }
     val consumable = project.configurations.create(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.Consumable )) {
       it.isCanBeConsumed = true
       it.isCanBeResolved = false
 
-      it.extendsFrom(dependencyScope)
+      it.extendsFrom(extendsFrom)
       it.attributes(serviceName, apolloUsage, direction)
     }
     val resolvable = project.configurations.create(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.Resolvable )) {
       it.isCanBeConsumed = false
       it.isCanBeResolved = true
 
-      it.extendsFrom(dependencyScope)
+      it.extendsFrom(extendsFrom)
       it.attributes(serviceName, apolloUsage, direction)
     }
 
     return Configurations(
-        scope = dependencyScope,
         consumable = consumable,
         resolvable = resolvable
     )
@@ -455,10 +451,20 @@ abstract class DefaultApolloExtension(
 
     val sourcesBaseTaskProvider: TaskProvider<*>
 
+    val upstreamScope = project.configurations.create(ModelNames.scopeConfiguration(service.name, ApolloDirection.Upstream)) {
+      it.isCanBeConsumed = false
+      it.isCanBeResolved = false
+    }
+    val downstreamScope = project.configurations.create(ModelNames.scopeConfiguration(service.name, ApolloDirection.Downstream)) {
+      it.isCanBeConsumed = false
+      it.isCanBeResolved = false
+    }
+
     val otherOptions = createConfigurations(
         serviceName = service.name,
         apolloUsage = ApolloUsage.OtherOptions,
         direction = ApolloDirection.Upstream,
+        extendsFrom = upstreamScope
     )
 
     val compilerConfiguration = project.configurations.create(ModelNames.compilerConfiguration(service)) {
@@ -489,24 +495,28 @@ abstract class DefaultApolloExtension(
           serviceName = service.name,
           apolloUsage = ApolloUsage.CodegenSchema,
           direction = ApolloDirection.Upstream,
+          extendsFrom = upstreamScope
       )
 
       val upstreamIr = createConfigurations(
           serviceName = service.name,
           apolloUsage = ApolloUsage.Ir,
           direction = ApolloDirection.Upstream,
+          extendsFrom = upstreamScope
       )
 
       val downstreamIr = createConfigurations(
           serviceName = service.name,
           apolloUsage = ApolloUsage.Ir,
           direction = ApolloDirection.Downstream,
+          extendsFrom = downstreamScope
       )
 
       val codegenMetadata = createConfigurations(
           serviceName = service.name,
           apolloUsage = ApolloUsage.CodegenMetadata,
           direction = ApolloDirection.Upstream,
+          extendsFrom = upstreamScope
       )
 
       /**
@@ -607,14 +617,11 @@ abstract class DefaultApolloExtension(
       }
 
       service.upstreamDependencies.forEach {
-        otherOptions.scope.dependencies.add(it)
-        codegenSchema.scope.dependencies.add(it)
-        upstreamIr.scope.dependencies.add(it)
-        codegenMetadata.scope.dependencies.add(it)
+        upstreamScope.dependencies.add(it)
       }
 
       service.downstreamDependencies.forEach {
-        downstreamIr.scope.dependencies.add(it)
+        downstreamScope.dependencies.add(it)
       }
     }
 

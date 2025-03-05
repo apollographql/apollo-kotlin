@@ -15,18 +15,29 @@ dependencies {
 apollo {
   service("service1") {
     packageName.set("com.service1")
-    dependsOn(project(":schema"))
+    generateApolloMetadata.set(true)
+    alwaysGenerateTypesMatching.set(emptyList())
+
     outgoingVariantsConnection {
       addToSoftwareComponent("java")
+      generateApolloMetadata.set(true)
     }
   }
   service("service2") {
     packageName.set("com.service2")
-    dependsOn(project(":schema"))
+    generateApolloMetadata.set(true)
+    alwaysGenerateTypesMatching.set(emptyList())
+
     outgoingVariantsConnection {
       addToSoftwareComponent("java")
+      generateApolloMetadata.set(true)
     }
   }
+}
+
+dependencies {
+  add("apolloService1", project(":schema"))
+  add("apolloService2", project(":schema"))
 }
 
 configure<PublishingExtension> {
@@ -42,3 +53,4 @@ configure<PublishingExtension> {
     }
   }
 }
+

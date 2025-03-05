@@ -14,8 +14,12 @@ dependencies {
 apollo {
   service("service") {
     packageNamesFromFilePaths()
+    alwaysGenerateTypesMatching.set(emptyList())
     generateApolloMetadata.set(true)
     mapScalar("Date", "java.util.Date")
-    isADependencyOf(project(":leaf"))
   }
+}
+
+dependencies {
+  add("apolloServiceUsedCoordinates", project(":leaf"))
 }

@@ -11,7 +11,12 @@ dependencies {
 apollo {
   service("service") {
     // PLACEHOLDER
+    alwaysGenerateTypesMatching.set(emptyList())
+    generateApolloMetadata.set(true)
     packageNamesFromFilePaths()
-    dependsOn(project(":root"))
   }
+}
+
+dependencies {
+  add("apolloService", project(":root"))
 }
