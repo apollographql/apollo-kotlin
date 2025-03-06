@@ -108,6 +108,7 @@ public final class com/apollographql/apollo/api/ApolloResponse {
 	public final fun dataOrThrow ()Lcom/apollographql/apollo/api/Operation$Data;
 	public final fun hasErrors ()Z
 	public final fun newBuilder ()Lcom/apollographql/apollo/api/ApolloResponse$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo/api/ApolloResponse$Builder {
