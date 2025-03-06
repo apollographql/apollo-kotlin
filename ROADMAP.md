@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2025-02-20**
+**Last updated: 2025-03-06**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -33,7 +33,7 @@ _This is currently available as an experimental feature.  We will release a stab
 
 [Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin.  We are experimenting with a few different approaches for supporting Compose in the Apollo Kotlin library.  Our 3.8.0 release introduced an experimental API for use with Compose, please do try it out and give us feedback!
 
-## Future feature releases 
+## Future feature releases
 
 - Better support for inline value classes.
 - Stable Jetpack Compose extensions - user feedback is critical here, please do try out the experimental extensions and let us know what's working and what could be improved!
