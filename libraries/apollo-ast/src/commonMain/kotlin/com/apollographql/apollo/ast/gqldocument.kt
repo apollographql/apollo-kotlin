@@ -6,6 +6,7 @@ import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.internal.ExtensionsMerger
 import com.apollographql.apollo.ast.internal.builtinsDefinitionsStr
 import com.apollographql.apollo.ast.internal.compilerOptions_0_0
+import com.apollographql.apollo.ast.internal.disableErrorPropagationStr
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_3
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_4
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_5
