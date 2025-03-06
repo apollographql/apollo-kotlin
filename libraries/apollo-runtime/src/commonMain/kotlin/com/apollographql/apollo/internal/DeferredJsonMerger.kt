@@ -12,24 +12,28 @@ private typealias MutableJsonMap = MutableMap<String, Any?>
 /**
  * Utility class for merging GraphQL JSON payloads received in multiple chunks when using the `@defer` directive.
  *
- * Each call to [merge] will merge the given chunk into the [merged] Map, and will also update the [mergedFragmentIds] Set with the
+ * Each call to [merge] will merge the given chunk into the [merged] Map, and will also update the [pendingFragmentIds] Set with the
  * value of its `path` and `label` field.
  *
- * The fields in `data` are merged into the node found in [merged] at `path` (for the first call to [merge], the payload is
- * copied to [merged] as-is).
+ * The fields in `data` are merged into the node found in [merged] at the path known by looking at the `id` field (for the first call to
+ * [merge], the payload is copied to [merged] as-is).
  *
- * `errors` in incremental items (if present) are merged together in an array and then set to the `errors` field of the [merged] Map,
- * at each call to [merge].
- * `extensions` in incremental items (if present) are merged together in an array and then set to the `extensions/incremental` field of the
+ * `errors` in incremental and completed items (if present) are merged together in an array and then set to the `errors` field of the
  * [merged] Map, at each call to [merge].
+ * `extensions` in incremental items (if present) are merged together in an array and then set to the `extensions` field of the [merged]
+ * Map, at each call to [merge].
  */
 @ApolloInternal
+@Suppress("UNCHECKED_CAST")
 class DeferredJsonMerger {
   private val _merged: MutableJsonMap = mutableMapOf()
   val merged: JsonMap = _merged
 
-  private val _mergedFragmentIds = mutableSetOf<DeferredFragmentIdentifier>()
-  val mergedFragmentIds: Set<DeferredFragmentIdentifier> = _mergedFragmentIds
+  /**
+   * Map of identifiers to their corresponding DeferredFragmentIdentifier, found in `pending`.
+   */
+  private val _pendingFragmentIds = mutableMapOf<String, DeferredFragmentIdentifier>()
+  val pendingFragmentIds: Set<DeferredFragmentIdentifier> get() = _pendingFragmentIds.values.toSet()
 
   var hasNext: Boolean = true
     private set
@@ -47,61 +51,78 @@ class DeferredJsonMerger {
     return merge(payloadMap)
   }
 
-  @Suppress("UNCHECKED_CAST")
   fun merge(payload: JsonMap): JsonMap {
+    val completed = payload["completed"] as? List<JsonMap>
     if (merged.isEmpty()) {
-      // Initial payload, no merging needed
-      _merged += payload
+      // Initial payload, no merging needed (strip some fields that should not appear in the final result)
+      _merged += payload - "hasNext" - "pending"
+      handlePending(payload)
+      handleCompleted(completed)
       return merged
     }
+    handlePending(payload)
 
     val incrementalList = payload["incremental"] as? List<JsonMap>
-    if (incrementalList == null) {
-      isEmptyPayload = true
-    } else {
-      isEmptyPayload = false
-      val mergedErrors = mutableListOf<JsonMap>()
-      val mergedExtensions = mutableListOf<JsonMap>()
+    if (incrementalList != null) {
       for (incrementalItem in incrementalList) {
-        mergeData(incrementalItem)
-        // Merge errors and extensions (if any) of the incremental list
-        (incrementalItem["errors"] as? List<JsonMap>)?.let { mergedErrors += it }
-        (incrementalItem["extensions"] as? JsonMap)?.let { mergedExtensions += it }
-      }
-      // Keep only this payload's errors and extensions, if any
-      if (mergedErrors.isNotEmpty()) {
-        _merged["errors"] = mergedErrors
-      } else {
-        _merged.remove("errors")
-      }
-      if (mergedExtensions.isNotEmpty()) {
-        _merged["extensions"] = mapOf("incremental" to mergedExtensions)
-      } else {
-        _merged.remove("extensions")
+        mergeIncrementalData(incrementalItem)
+        // Merge errors (if any) of the incremental item
+        (incrementalItem["errors"] as? List<JsonMap>)?.let { getOrPutMergedErrors() += it }
       }
     }
+    isEmptyPayload = completed == null && incrementalList == null
 
     hasNext = payload["hasNext"] as Boolean? ?: false
+
+    handleCompleted(completed)
+
+    (payload["extensions"] as? JsonMap)?.let { getOrPutExtensions() += it }
 
     return merged
   }
 
-  @Suppress("UNCHECKED_CAST")
-  private fun mergeData(incrementalItem: JsonMap) {
-    val data = incrementalItem["data"] as JsonMap?
-    val path = incrementalItem["path"] as List<Any>
-    val mergedData = merged["data"] as JsonMap
+  private fun getOrPutMergedErrors() = _merged.getOrPut("errors") { mutableListOf<JsonMap>() } as MutableList<JsonMap>
 
-    // payloadData can be null if there are errors
-    if (data != null) {
-      val nodeToMergeInto = nodeAtPath(mergedData, path) as MutableJsonMap
-      deepMerge(nodeToMergeInto, data)
+  private fun getOrPutExtensions() = _merged.getOrPut("extensions") { mutableMapOf<String, Any?>() } as MutableJsonMap
 
-      _mergedFragmentIds += DeferredFragmentIdentifier(path = path, label = incrementalItem["label"] as String?)
+  private fun handlePending(payload: JsonMap) {
+    val pending = payload["pending"] as? List<JsonMap>
+    if (pending != null) {
+      for (pendingItem in pending) {
+        val id = pendingItem["id"] as String
+        val path = pendingItem["path"] as List<Any>
+        val label = pendingItem["label"] as String?
+        _pendingFragmentIds[id] = DeferredFragmentIdentifier(path = path, label = label)
+      }
     }
   }
 
-  @Suppress("UNCHECKED_CAST")
+  private fun handleCompleted(completed: List<JsonMap>?) {
+    if (completed != null) {
+      for (completedItem in completed) {
+        // Merge errors (if any) of the completed item
+        val errors = completedItem["errors"] as? List<JsonMap>
+        if (errors != null) {
+          getOrPutMergedErrors() += errors
+        } else {
+          // Fragment is no longer pending - only if there were no errors
+          val id = completedItem["id"] as String
+          _pendingFragmentIds.remove(id) ?: error("Id '$id' not found in pending results")
+        }
+      }
+    }
+  }
+
+  private fun mergeIncrementalData(incrementalItem: JsonMap) {
+    val id = incrementalItem["id"] as String? ?: error("No id found in incremental item")
+    val data = incrementalItem["data"] as JsonMap? ?: error("No data found in incremental item")
+    val subPath = incrementalItem["subPath"] as List<Any>? ?: emptyList()
+    val path = (_pendingFragmentIds[id]?.path ?: error("Id '$id' not found in pending results")) + subPath
+    val mergedData = merged["data"] as JsonMap
+    val nodeToMergeInto = nodeAtPath(mergedData, path) as MutableJsonMap
+    deepMerge(nodeToMergeInto, data)
+  }
+
   private fun deepMerge(destination: MutableJsonMap, map: JsonMap) {
     for ((key, value) in map) {
       if (destination.containsKey(key) && destination[key] is MutableMap<*, *>) {
@@ -116,7 +137,6 @@ class DeferredJsonMerger {
     }
   }
 
-  @Suppress("UNCHECKED_CAST")
   private fun jsonToMap(json: BufferedSource): JsonMap = BufferedSourceJsonReader(json).readAny() as JsonMap
 
 
@@ -130,7 +150,6 @@ class DeferredJsonMerger {
       node = if (node is List<*>) {
         node[key as Int]
       } else {
-        @Suppress("UNCHECKED_CAST")
         node as JsonMap
         node[key]
       }
@@ -140,7 +159,7 @@ class DeferredJsonMerger {
 
   fun reset() {
     _merged.clear()
-    _mergedFragmentIds.clear()
+    _pendingFragmentIds.clear()
     hasNext = true
     isEmptyPayload = false
   }
