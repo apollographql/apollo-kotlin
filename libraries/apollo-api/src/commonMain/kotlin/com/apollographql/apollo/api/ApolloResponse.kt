@@ -133,8 +133,7 @@ private constructor(
         "operationName=${operation.name()}, " +
         "data=${if (data == null) "null" else "${operation.name()}.Data"}, " +
         "errors=${errors?.size ?: "null"}, " +
-        "exception=${if (exception == null) "null" else exception::class.simpleName ?: "true"}, " +
-        "isLast=$isLast" +
+        "exception=${if (exception == null) "null" else exception::class.simpleName ?: "true"}" +
         ")"
   }
 
