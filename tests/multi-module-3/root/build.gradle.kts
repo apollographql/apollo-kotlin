@@ -15,10 +15,12 @@ apollo {
   service("multimodule3") {
     packageName.set("multimodule3.root")
     alwaysGenerateTypesMatching.set(listOf("Cat"))
-    isADependencyOf(project(":multi-module-3-child"))
     generateApolloMetadata.set(true)
     @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
   }
 }
 
+dependencies {
+  add("apolloMultimodule3UsedCoordinates", project(":multi-module-3-child"))
+}

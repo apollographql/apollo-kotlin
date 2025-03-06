@@ -33,29 +33,40 @@ internal object ModelNames {
   @Deprecated("Unused. Use dependsOn() instead.")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   fun metadataConfiguration() = "apolloMetadata"
-  fun configuration(serviceName: String, apolloDirection: ApolloDirection, apolloUsage: ApolloUsage, configurationKind: ConfigurationKind): String {
+
+  fun scopeConfiguration(
+      serviceName: String,
+      apolloDirection: ApolloDirection,
+  ): String {
+    return camelCase(
+        "apollo",
+        serviceName,
+        apolloDirection.pretty(),
+    )
+  }
+
+  fun configuration(
+      serviceName: String,
+      apolloDirection: ApolloDirection,
+      apolloUsage: ApolloUsage,
+      configurationKind: ConfigurationKind,
+  ): String {
     return camelCase(
         "apollo",
         serviceName,
         apolloDirection.pretty(),
         apolloUsage.name,
-        configurationKind.pretty()
+        configurationKind.name
     )
   }
-  fun compilerConfiguration(service: Service) = camelCase("apollo", service.name, "Compiler")
- }
 
-private fun ConfigurationKind.pretty(): String {
-  return when(this) {
-    ConfigurationKind.DependencyScope -> ""
-    else -> name
-  }
+  fun compilerConfiguration(service: Service) = camelCase("apollo", service.name, "Compiler")
 }
 
 
 private fun ApolloDirection.pretty(): String {
-  return when(this) {
+  return when (this) {
     ApolloDirection.Upstream -> ""
-    ApolloDirection.Downstream -> name
+    ApolloDirection.Downstream -> "UsedCoordinates"
   }
 }

@@ -18,7 +18,6 @@ internal enum class ApolloDirection {
 }
 
 internal enum class ConfigurationKind {
-  DependencyScope,
   Consumable,
   Resolvable
 }

@@ -14,6 +14,11 @@ dependencies {
 apollo {
   service("service") {
     packageNamesFromFilePaths()
-    dependsOn(project(":multi-module-1-root"))
+    generateApolloMetadata.set(true)
+    alwaysGenerateTypesMatching.set(emptyList())
   }
+}
+
+dependencies {
+  add("apolloService", project(":multi-module-1-root"))
 }

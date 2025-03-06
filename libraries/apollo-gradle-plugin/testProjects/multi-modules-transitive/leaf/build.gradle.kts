@@ -20,6 +20,11 @@ application {
 apollo {
   service("service") {
     packageNamesFromFilePaths()
-    dependsOn(project(":node"))
+    generateApolloMetadata.set(true)
+    alwaysGenerateTypesMatching.set(emptyList())
   }
+}
+
+dependencies {
+  add("apolloService", project(":node"))
 }

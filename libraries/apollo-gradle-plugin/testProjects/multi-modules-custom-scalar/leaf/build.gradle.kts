@@ -19,6 +19,11 @@ application {
 apollo {
   service("service") {
     packageName.set("com.library")
-    dependsOn(project(":root"))
+    alwaysGenerateTypesMatching.set(emptyList())
+    generateApolloMetadata.set(true)
   }
+}
+
+dependencies {
+  add("apolloService", project(":root"))
 }
