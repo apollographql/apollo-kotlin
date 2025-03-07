@@ -3,13 +3,57 @@ public final class com/apollographql/apollo/tooling/CannotModifyOperationBody : 
 	public final fun getMessage ()Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo/tooling/FieldInsights {
+	public static final field INSTANCE Lcom/apollographql/apollo/tooling/FieldInsights;
+	public final fun fetchFieldLatencies (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JDLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun fetchFieldLatencies$default (Lcom/apollographql/apollo/tooling/FieldInsights;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JDLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo/tooling/FieldInsights$FieldLatencies : com/apollographql/apollo/tooling/FieldInsights$FieldLatenciesResult {
+	public fun <init> (Ljava/util/List;)V
+	public final fun getFieldLatencies ()Ljava/util/List;
+	public final fun getLatency (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Double;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo/tooling/FieldInsights$FieldLatencies$FieldLatency {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;D)V
+	public final fun getDurationMs ()D
+	public final fun getFieldName ()Ljava/lang/String;
+	public final fun getParentType ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo/tooling/FieldInsights$FieldLatenciesResult {
+}
+
+public final class com/apollographql/apollo/tooling/FieldInsights$FieldLatenciesResult$Error : com/apollographql/apollo/tooling/FieldInsights$FieldLatenciesResult {
+	public fun <init> (Ljava/lang/Exception;)V
+	public final fun getCause ()Ljava/lang/Exception;
+}
+
 public final class com/apollographql/apollo/tooling/GraphNotFound : com/apollographql/apollo/tooling/PublishOperationsResult {
 	public static final field INSTANCE Lcom/apollographql/apollo/tooling/GraphNotFound;
+}
+
+public final class com/apollographql/apollo/tooling/GraphQLFeature : java/lang/Enum {
+	public static final field DeprecatedInputValues Lcom/apollographql/apollo/tooling/GraphQLFeature;
+	public static final field OneOf Lcom/apollographql/apollo/tooling/GraphQLFeature;
+	public static final field RepeatableDirectives Lcom/apollographql/apollo/tooling/GraphQLFeature;
+	public static final field SchemaDescription Lcom/apollographql/apollo/tooling/GraphQLFeature;
+	public static final field SpecifiedBy Lcom/apollographql/apollo/tooling/GraphQLFeature;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo/tooling/GraphQLFeature;
+	public static fun values ()[Lcom/apollographql/apollo/tooling/GraphQLFeature;
 }
 
 public final class com/apollographql/apollo/tooling/PermissionError : com/apollographql/apollo/tooling/PublishOperationsResult {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo/tooling/PersistedQueriesUploaderKt {
+	public static final fun publishOperations (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo/tooling/PublishOperationsResult;
 }
 
 public final class com/apollographql/apollo/tooling/PersistedQuery {
@@ -32,6 +76,31 @@ public final class com/apollographql/apollo/tooling/PublishOperationsSuccess : c
 	public final fun getRevision ()I
 	public final fun getUnaffected ()I
 	public final fun getUpdated ()I
+}
+
+public final class com/apollographql/apollo/tooling/RegisterOperations {
+	public static final field INSTANCE Lcom/apollographql/apollo/tooling/RegisterOperations;
+	public final fun registerOperations (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V
+	public final fun safelistingHash (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo/tooling/SchemaDownloader {
+	public static final field INSTANCE Lcom/apollographql/apollo/tooling/SchemaDownloader;
+	public final fun download (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;ZLjava/util/Map;)V
+	public static synthetic fun download$default (Lcom/apollographql/apollo/tooling/SchemaDownloader;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;ZLjava/util/Map;ILjava/lang/Object;)V
+	public final synthetic fun downloadIntrospection (Ljava/lang/String;Ljava/util/Map;Z)Ljava/lang/String;
+	public final fun downloadIntrospection (Ljava/lang/String;Ljava/util/Map;ZZ)Ljava/lang/String;
+	public static synthetic fun downloadIntrospection$default (Lcom/apollographql/apollo/tooling/SchemaDownloader;Ljava/lang/String;Ljava/util/Map;ZZILjava/lang/Object;)Ljava/lang/String;
+	public final fun downloadRegistry (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Z)Ljava/lang/String;
+	public static synthetic fun downloadRegistry$default (Lcom/apollographql/apollo/tooling/SchemaDownloader;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ZILjava/lang/Object;)Ljava/lang/String;
+	public final fun getIntrospectionQuery (Ljava/util/Set;)Ljava/lang/String;
+	public final fun shutdown ()V
+}
+
+public final class com/apollographql/apollo/tooling/SchemaUploader {
+	public static final field INSTANCE Lcom/apollographql/apollo/tooling/SchemaUploader;
+	public final fun uploadSchema (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V
+	public static synthetic fun uploadSchema$default (Lcom/apollographql/apollo/tooling/SchemaUploader;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)V
 }
 
 public final class com/apollographql/apollo/tooling/SerializationKt {

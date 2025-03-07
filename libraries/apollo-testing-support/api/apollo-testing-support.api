@@ -1,14 +1,49 @@
+public final class com/apollographql/apollo/mockserver/MockServer {
+	public fun <init> ()V
+}
+
+public final class com/apollographql/apollo/mockserver/WebsocketMockRequest {
+	public fun <init> ()V
+}
+
 public final class com/apollographql/apollo/testing/-FileSystemCommon {
 	public static final fun checkFile (Ljava/lang/String;Ljava/lang/String;)V
 	public static final fun pathToJsonReader (Ljava/lang/String;)Lcom/apollographql/apollo/api/json/JsonReader;
 	public static final fun pathToUtf8 (Ljava/lang/String;)Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo/testing/ChannelsKt {
+	public static final fun assertNoElement (Lkotlinx/coroutines/channels/Channel;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun assertNoElement$default (Lkotlinx/coroutines/channels/Channel;JLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun awaitElement (Lkotlinx/coroutines/channels/Channel;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun awaitElement$default (Lkotlinx/coroutines/channels/Channel;JLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
 public final class com/apollographql/apollo/testing/CurrentThreadId_jvmCommonKt {
 	public static final fun currentThreadId ()Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo/testing/MapTestNetworkTransport : com/apollographql/apollo/network/NetworkTransport {
+	public fun <init> ()V
+	public fun dispose ()V
+	public fun execute (Lcom/apollographql/apollo/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
+	public final fun register (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/ApolloResponse;)V
+	public final fun registerNetworkError (Lcom/apollographql/apollo/api/Operation;)V
+}
+
+public final class com/apollographql/apollo/testing/MockServerTest {
+	public fun <init> (Lcom/apollographql/apollo/mockserver/MockServer;Lcom/apollographql/apollo/ApolloClient;Lkotlinx/coroutines/CoroutineScope;)V
+	public final fun getApolloClient ()Lcom/apollographql/apollo/ApolloClient;
+	public final fun getMockServer ()Lcom/apollographql/apollo/mockserver/MockServer;
+	public final fun getScope ()Lkotlinx/coroutines/CoroutineScope;
+}
+
 public final class com/apollographql/apollo/testing/MockserverKt {
+	public static final fun awaitComplete-8Mi8wO0 (Lcom/apollographql/apollo/mockserver/WebsocketMockRequest;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun awaitComplete-8Mi8wO0$default (Lcom/apollographql/apollo/mockserver/WebsocketMockRequest;JLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun awaitSubscribe-dWUq8MI (Lcom/apollographql/apollo/mockserver/WebsocketMockRequest;JLjava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun awaitSubscribe-dWUq8MI$default (Lcom/apollographql/apollo/mockserver/WebsocketMockRequest;JLjava/util/Set;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun connectionAckMessage ()Ljava/lang/String;
 	public static final fun enqueue (Lcom/apollographql/apollo/mockserver/MockServer;Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/Operation$Data;Lcom/apollographql/apollo/api/CustomScalarAdapters;J)V
 	public static synthetic fun enqueue$default (Lcom/apollographql/apollo/mockserver/MockServer;Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/Operation$Data;Lcom/apollographql/apollo/api/CustomScalarAdapters;JILjava/lang/Object;)V
 	public static final fun enqueueData (Lcom/apollographql/apollo/mockserver/MockServer;Lcom/apollographql/apollo/api/Operation$Data;Lcom/apollographql/apollo/api/CustomScalarAdapters;JI)V
@@ -31,9 +66,37 @@ public final class com/apollographql/apollo/testing/Platform_jvmCommonKt {
 	public static final fun platform ()Lcom/apollographql/apollo/testing/Platform;
 }
 
+public final class com/apollographql/apollo/testing/QueueTestNetworkTransport : com/apollographql/apollo/network/NetworkTransport {
+	public fun <init> ()V
+	public fun dispose ()V
+	public final fun enqueue (Lcom/apollographql/apollo/api/ApolloResponse;)V
+	public final fun enqueueNetworkError ()V
+	public fun execute (Lcom/apollographql/apollo/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/apollographql/apollo/testing/ReadFile_concurrentKt {
+	public static final fun getHostFileSystem ()Lokio/FileSystem;
+}
+
 public final class com/apollographql/apollo/testing/ReadFile_jvmKt {
 	public static final fun getTestsPath ()Ljava/lang/String;
 	public static final fun shouldUpdateTestFixtures ()Z
+}
+
+public final class com/apollographql/apollo/testing/RunTestKt {
+	public static final fun mockServerTest (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun mockServerTest$default (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class com/apollographql/apollo/testing/TestNetworkTransportKt {
+	public static final fun enqueueTestNetworkError (Lcom/apollographql/apollo/ApolloClient;)V
+	public static final fun enqueueTestResponse (Lcom/apollographql/apollo/ApolloClient;Lcom/apollographql/apollo/api/ApolloResponse;)V
+	public static final fun enqueueTestResponse (Lcom/apollographql/apollo/ApolloClient;Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/Operation$Data;Ljava/util/List;)V
+	public static synthetic fun enqueueTestResponse$default (Lcom/apollographql/apollo/ApolloClient;Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/Operation$Data;Ljava/util/List;ILjava/lang/Object;)V
+	public static final fun registerTestNetworkError (Lcom/apollographql/apollo/ApolloClient;Lcom/apollographql/apollo/api/Operation;)V
+	public static final fun registerTestResponse (Lcom/apollographql/apollo/ApolloClient;Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/ApolloResponse;)V
+	public static final fun registerTestResponse (Lcom/apollographql/apollo/ApolloClient;Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/Operation$Data;Ljava/util/List;)V
+	public static synthetic fun registerTestResponse$default (Lcom/apollographql/apollo/ApolloClient;Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/Operation$Data;Ljava/util/List;ILjava/lang/Object;)V
 }
 
 public final class com/apollographql/apollo/testing/internal/RunTestKt {

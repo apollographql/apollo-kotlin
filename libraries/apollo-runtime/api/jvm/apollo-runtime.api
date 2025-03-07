@@ -14,10 +14,12 @@ public final class com/apollographql/apollo/ApolloCall : com/apollographql/apoll
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo/api/ExecutionContext;
+	public final fun getFailFastIfOffline ()Ljava/lang/Boolean;
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo/api/http/HttpMethod;
 	public final fun getIgnoreApolloClientHttpHeaders ()Ljava/lang/Boolean;
 	public final fun getOperation ()Lcom/apollographql/apollo/api/Operation;
+	public final fun getRetryOnError ()Ljava/lang/Boolean;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
 	public fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo/ApolloCall;
@@ -25,6 +27,7 @@ public final class com/apollographql/apollo/ApolloCall : com/apollographql/apoll
 	public fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/ApolloCall;
 	public synthetic fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Ljava/lang/Object;
 	public final fun ignoreApolloClientHttpHeaders (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
+	public final fun retryOnError (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
@@ -82,11 +85,13 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun executionContext (Lcom/apollographql/apollo/api/ExecutionContext;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public final fun failFastIfOffline (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public final fun getCustomScalarAdapters ()Lcom/apollographql/apollo/api/CustomScalarAdapters;
 	public final fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo/api/ExecutionContext;
+	public final fun getFailFastIfOffline ()Ljava/lang/Boolean;
 	public final fun getHttpEngine ()Lcom/apollographql/apollo/network/http/HttpEngine;
 	public final fun getHttpExposeErrorBody ()Ljava/lang/Boolean;
 	public fun getHttpHeaders ()Ljava/util/List;
@@ -95,6 +100,8 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public final fun getHttpServerUrl ()Ljava/lang/String;
 	public final fun getInterceptors ()Ljava/util/List;
 	public final fun getNetworkTransport ()Lcom/apollographql/apollo/network/NetworkTransport;
+	public final fun getRetryOnError ()Lkotlin/jvm/functions/Function1;
+	public final fun getRetryOnErrorInterceptor ()Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
 	public final fun getSubscriptionNetworkTransport ()Lcom/apollographql/apollo/network/NetworkTransport;
@@ -122,6 +129,8 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public final fun networkTransport (Lcom/apollographql/apollo/network/NetworkTransport;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun removeHttpInterceptor (Lcom/apollographql/apollo/network/http/HttpInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun removeInterceptor (Lcom/apollographql/apollo/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public final fun retryOnError (Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public final fun retryOnErrorInterceptor (Lcom/apollographql/apollo/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloClient$Builder;
@@ -164,6 +173,14 @@ public final class com/apollographql/apollo/CacheDumpProviderContext : com/apoll
 public final class com/apollographql/apollo/CacheDumpProviderContext$Key : com/apollographql/apollo/api/ExecutionContext$Key {
 }
 
+public final class com/apollographql/apollo/ConcurrencyInfo : com/apollographql/apollo/api/ExecutionContext$Element {
+	public static final field Key Lcom/apollographql/apollo/ConcurrencyInfo$Key;
+	public fun <init> (Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineScope;)V
+	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public final fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+	public fun getKey ()Lcom/apollographql/apollo/api/ExecutionContext$Key;
+}
+
 public final class com/apollographql/apollo/ConcurrencyInfo$Key : com/apollographql/apollo/api/ExecutionContext$Key {
 }
 
@@ -189,6 +206,10 @@ public final class com/apollographql/apollo/interceptor/AutoPersistedQueryInterc
 }
 
 public final class com/apollographql/apollo/interceptor/AutoPersistedQueryInterceptor$Companion {
+}
+
+public final class com/apollographql/apollo/interceptor/RetryOnErrorInterceptorKt {
+	public static final fun RetryOnErrorInterceptor (Lcom/apollographql/apollo/network/NetworkMonitor;)Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
 }
 
 public abstract interface class com/apollographql/apollo/internal/ApolloClientListener {
@@ -219,6 +240,10 @@ public final class com/apollographql/apollo/internal/MultipartReader$Part : java
 	public fun close ()V
 	public final fun getBody ()Lokio/BufferedSource;
 	public final fun getHeaders ()Ljava/util/List;
+}
+
+public abstract interface class com/apollographql/apollo/network/NetworkMonitor : java/io/Closeable {
+	public abstract fun isOnline ()Lkotlinx/coroutines/flow/StateFlow;
 }
 
 public abstract interface class com/apollographql/apollo/network/NetworkTransport {
@@ -369,8 +394,178 @@ public final class com/apollographql/apollo/network/http/LoggingInterceptor$Leve
 	public static fun values ()[Lcom/apollographql/apollo/network/http/LoggingInterceptor$Level;
 }
 
+public final class com/apollographql/apollo/network/websocket/AppSyncWsProtocol : com/apollographql/apollo/network/websocket/WsProtocol {
+	public static final field Companion Lcom/apollographql/apollo/network/websocket/AppSyncWsProtocol$Companion;
+	public fun <init> ()V
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun connectionInit (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getAuthorization ()Lkotlin/jvm/functions/Function1;
+	public fun getName ()Ljava/lang/String;
+	public fun operationStart (Lcom/apollographql/apollo/api/ApolloRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun operationStop (Lcom/apollographql/apollo/api/ApolloRequest;)Lcom/apollographql/apollo/network/websocket/ClientMessage;
+	public fun parseServerMessage (Ljava/lang/String;)Lcom/apollographql/apollo/network/websocket/ServerMessage;
+	public fun ping ()Lcom/apollographql/apollo/network/websocket/ClientMessage;
+	public fun pong ()Lcom/apollographql/apollo/network/websocket/ClientMessage;
+}
+
+public final class com/apollographql/apollo/network/websocket/AppSyncWsProtocol$Companion {
+	public final fun buildUrl (Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;)Ljava/lang/String;
+	public static synthetic fun buildUrl$default (Lcom/apollographql/apollo/network/websocket/AppSyncWsProtocol$Companion;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;ILjava/lang/Object;)Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo/network/websocket/ClientMessage {
+}
+
+public final class com/apollographql/apollo/network/websocket/CompleteServerMessage : com/apollographql/apollo/network/websocket/ServerMessage {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getId ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo/network/websocket/ConnectionAckServerMessage : com/apollographql/apollo/network/websocket/ServerMessage {
+	public static final field INSTANCE Lcom/apollographql/apollo/network/websocket/ConnectionAckServerMessage;
+}
+
+public final class com/apollographql/apollo/network/websocket/ConnectionErrorServerMessage : com/apollographql/apollo/network/websocket/ServerMessage {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun getPayload ()Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo/network/websocket/ConnectionKeepAliveServerMessage : com/apollographql/apollo/network/websocket/ServerMessage {
+	public static final field INSTANCE Lcom/apollographql/apollo/network/websocket/ConnectionKeepAliveServerMessage;
+}
+
+public final class com/apollographql/apollo/network/websocket/DataClientMessage : com/apollographql/apollo/network/websocket/ClientMessage {
+	public fun <init> ([B)V
+	public final fun getData ()[B
+}
+
+public final class com/apollographql/apollo/network/websocket/GraphQLWsProtocol : com/apollographql/apollo/network/websocket/WsProtocol {
+	public fun <init> ()V
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun connectionInit (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getConnectionPayload ()Lkotlin/jvm/functions/Function1;
+	public fun getName ()Ljava/lang/String;
+	public fun operationStart (Lcom/apollographql/apollo/api/ApolloRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun operationStop (Lcom/apollographql/apollo/api/ApolloRequest;)Lcom/apollographql/apollo/network/websocket/ClientMessage;
+	public fun parseServerMessage (Ljava/lang/String;)Lcom/apollographql/apollo/network/websocket/ServerMessage;
+	public fun ping ()Lcom/apollographql/apollo/network/websocket/ClientMessage;
+	public fun pong ()Lcom/apollographql/apollo/network/websocket/ClientMessage;
+}
+
+public final class com/apollographql/apollo/network/websocket/OperationErrorServerMessage : com/apollographql/apollo/network/websocket/ServerMessage {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun getId ()Ljava/lang/String;
+	public final fun getPayload ()Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo/network/websocket/ParseErrorServerMessage : com/apollographql/apollo/network/websocket/ServerMessage {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getErrorMessage ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo/network/websocket/PingServerMessage : com/apollographql/apollo/network/websocket/ServerMessage {
+	public static final field INSTANCE Lcom/apollographql/apollo/network/websocket/PingServerMessage;
+}
+
+public final class com/apollographql/apollo/network/websocket/PongServerMessage : com/apollographql/apollo/network/websocket/ServerMessage {
+	public static final field INSTANCE Lcom/apollographql/apollo/network/websocket/PongServerMessage;
+}
+
+public final class com/apollographql/apollo/network/websocket/ResponseServerMessage : com/apollographql/apollo/network/websocket/ServerMessage {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun getId ()Ljava/lang/String;
+	public final fun getResponse ()Ljava/lang/Object;
+}
+
+public abstract interface class com/apollographql/apollo/network/websocket/ServerMessage {
+}
+
+public abstract interface class com/apollographql/apollo/network/websocket/SubscriptionParser {
+	public abstract fun parse (Ljava/lang/Object;)Lcom/apollographql/apollo/api/ApolloResponse;
+}
+
+public abstract interface class com/apollographql/apollo/network/websocket/SubscriptionParserFactory {
+	public abstract fun createParser (Lcom/apollographql/apollo/api/ApolloRequest;)Lcom/apollographql/apollo/network/websocket/SubscriptionParser;
+}
+
+public final class com/apollographql/apollo/network/websocket/SubscriptionWsProtocol : com/apollographql/apollo/network/websocket/WsProtocol {
+	public fun <init> ()V
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun connectionInit (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getConnectionPayload ()Lkotlin/jvm/functions/Function1;
+	public fun getName ()Ljava/lang/String;
+	public fun operationStart (Lcom/apollographql/apollo/api/ApolloRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun operationStop (Lcom/apollographql/apollo/api/ApolloRequest;)Lcom/apollographql/apollo/network/websocket/ClientMessage;
+	public fun parseServerMessage (Ljava/lang/String;)Lcom/apollographql/apollo/network/websocket/ServerMessage;
+	public fun ping ()Lcom/apollographql/apollo/network/websocket/ClientMessage;
+	public fun pong ()Lcom/apollographql/apollo/network/websocket/ClientMessage;
+}
+
+public final class com/apollographql/apollo/network/websocket/TextClientMessage : com/apollographql/apollo/network/websocket/ClientMessage {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getText ()Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo/network/websocket/WebSocket {
+	public abstract fun close (ILjava/lang/String;)V
+	public abstract fun send (Ljava/lang/String;)V
+	public abstract fun send ([B)V
+}
+
+public abstract interface class com/apollographql/apollo/network/websocket/WebSocketEngine : java/io/Closeable {
+	public abstract fun newWebSocket (Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo/network/websocket/WebSocketListener;)Lcom/apollographql/apollo/network/websocket/WebSocket;
+	public static synthetic fun newWebSocket$default (Lcom/apollographql/apollo/network/websocket/WebSocketEngine;Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo/network/websocket/WebSocketListener;ILjava/lang/Object;)Lcom/apollographql/apollo/network/websocket/WebSocket;
+}
+
 public final class com/apollographql/apollo/network/websocket/WebSocketEngine_jvmKt {
 	public static final fun WebSocketEngine ()Lcom/apollographql/apollo/network/websocket/WebSocketEngine;
+	public static final fun WebSocketEngine (Lkotlin/jvm/functions/Function0;)Lcom/apollographql/apollo/network/websocket/WebSocketEngine;
+	public static final fun WebSocketEngine (Lokhttp3/WebSocket$Factory;)Lcom/apollographql/apollo/network/websocket/WebSocketEngine;
+}
+
+public abstract interface class com/apollographql/apollo/network/websocket/WebSocketListener {
+	public abstract fun onClosed (Ljava/lang/Integer;Ljava/lang/String;)V
+	public abstract fun onError (Lcom/apollographql/apollo/exception/ApolloException;)V
+	public abstract fun onMessage (Ljava/lang/String;)V
+	public abstract fun onMessage ([B)V
+	public abstract fun onOpen ()V
+}
+
+public final class com/apollographql/apollo/network/websocket/WebSocketNetworkTransport : com/apollographql/apollo/network/NetworkTransport {
+	public synthetic fun <init> (Lcom/apollographql/apollo/network/websocket/WebSocketEngine;Ljava/lang/String;Lcom/apollographql/apollo/network/websocket/WsProtocol;JLkotlin/time/Duration;JLcom/apollographql/apollo/network/websocket/SubscriptionParserFactory;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun closeConnection (Lcom/apollographql/apollo/exception/ApolloException;)V
+	public fun dispose ()V
+	public fun execute (Lcom/apollographql/apollo/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder {
+	public fun <init> ()V
+	public final fun build ()Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport;
+	public final fun connectionAcknowledgeTimeout-BwNAW2A (Lkotlin/time/Duration;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
+	public final fun idleTimeout-BwNAW2A (Lkotlin/time/Duration;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
+	public final fun parserFactory (Lcom/apollographql/apollo/network/websocket/SubscriptionParserFactory;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
+	public final fun pingInterval-BwNAW2A (Lkotlin/time/Duration;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
+	public final fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
+	public final fun webSocketEngine (Lcom/apollographql/apollo/network/websocket/WebSocketEngine;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
+	public final fun wsProtocol (Lcom/apollographql/apollo/network/websocket/WsProtocol;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
+}
+
+public final class com/apollographql/apollo/network/websocket/WebSocketNetworkTransportKt {
+	public static final fun closeConnection (Lcom/apollographql/apollo/network/NetworkTransport;)V
+	public static final fun closeConnection (Lcom/apollographql/apollo/network/NetworkTransport;Lcom/apollographql/apollo/exception/ApolloException;)V
+}
+
+public abstract interface class com/apollographql/apollo/network/websocket/WsProtocol {
+	public abstract fun connectionInit (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun operationStart (Lcom/apollographql/apollo/api/ApolloRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun operationStop (Lcom/apollographql/apollo/api/ApolloRequest;)Lcom/apollographql/apollo/network/websocket/ClientMessage;
+	public abstract fun parseServerMessage (Ljava/lang/String;)Lcom/apollographql/apollo/network/websocket/ServerMessage;
+	public abstract fun ping ()Lcom/apollographql/apollo/network/websocket/ClientMessage;
+	public abstract fun pong ()Lcom/apollographql/apollo/network/websocket/ClientMessage;
 }
 
 public final class com/apollographql/apollo/network/ws/AppSyncWsProtocol : com/apollographql/apollo/network/ws/WsProtocol {
@@ -420,8 +615,15 @@ public final class com/apollographql/apollo/network/ws/GraphQLWsProtocol$Factory
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;JLjava/util/Map;Ljava/util/Map;JLcom/apollographql/apollo/network/ws/WsFrameType;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;JLjava/util/Map;Ljava/util/Map;JLcom/apollographql/apollo/network/ws/WsFrameType;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun connectionAcknowledgeTimeoutMillis (J)V
+	public final fun connectionPayload (Lkotlin/jvm/functions/Function1;)V
 	public fun create (Lcom/apollographql/apollo/network/ws/WebSocketConnection;Lcom/apollographql/apollo/network/ws/WsProtocol$Listener;Lkotlinx/coroutines/CoroutineScope;)Lcom/apollographql/apollo/network/ws/WsProtocol;
+	public final fun frameType (Lcom/apollographql/apollo/network/ws/WsFrameType;)V
 	public fun getName ()Ljava/lang/String;
+	public final fun pingIntervalMillis (J)V
+	public final fun pingPayload (Ljava/util/Map;)V
+	public final fun pongPayload (Ljava/util/Map;)V
+	public final fun webSocketPayloadComposer (Lcom/apollographql/apollo/api/http/WebSocketPayloadComposer;)V
 }
 
 public final class com/apollographql/apollo/network/ws/SubscriptionWsProtocol : com/apollographql/apollo/network/ws/WsProtocol {

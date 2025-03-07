@@ -139,12 +139,6 @@ configure<kotlinx.validation.ApiValidationExtension> {
   )
 
   ignoredProjects.add("intellij-plugin")
-
-  nonPublicMarkers.addAll(
-      listOf(
-          "com.apollographql.apollo.annotations.ApolloExperimental",
-      )
-  )
 }
 
 tasks.register("rmbuild") {
