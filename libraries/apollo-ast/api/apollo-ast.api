@@ -1037,6 +1037,7 @@ public final class com/apollographql/apollo/ast/Schema {
 	public static final field CATCH_BY_DEFAULT Ljava/lang/String;
 	public static final field Companion Lcom/apollographql/apollo/ast/Schema$Companion;
 	public static final field DEFER Ljava/lang/String;
+	public static final field DISABLE_ERROR_PROPAGATION Ljava/lang/String;
 	public static final field FIELD_POLICY Ljava/lang/String;
 	public static final field FIELD_POLICY_FOR_FIELD Ljava/lang/String;
 	public static final field FIELD_POLICY_KEY_ARGS Ljava/lang/String;

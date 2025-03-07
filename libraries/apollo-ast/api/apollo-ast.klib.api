@@ -1223,6 +1223,8 @@ final class com.apollographql.apollo.ast/Schema { // com.apollographql.apollo.as
             final fun <get-CATCH_BY_DEFAULT>(): kotlin/String // com.apollographql.apollo.ast/Schema.Companion.CATCH_BY_DEFAULT.<get-CATCH_BY_DEFAULT>|<get-CATCH_BY_DEFAULT>(){}[0]
         final const val DEFER // com.apollographql.apollo.ast/Schema.Companion.DEFER|{}DEFER[0]
             final fun <get-DEFER>(): kotlin/String // com.apollographql.apollo.ast/Schema.Companion.DEFER.<get-DEFER>|<get-DEFER>(){}[0]
+        final const val DISABLE_ERROR_PROPAGATION // com.apollographql.apollo.ast/Schema.Companion.DISABLE_ERROR_PROPAGATION|{}DISABLE_ERROR_PROPAGATION[0]
+            final fun <get-DISABLE_ERROR_PROPAGATION>(): kotlin/String // com.apollographql.apollo.ast/Schema.Companion.DISABLE_ERROR_PROPAGATION.<get-DISABLE_ERROR_PROPAGATION>|<get-DISABLE_ERROR_PROPAGATION>(){}[0]
         final const val FIELD_POLICY // com.apollographql.apollo.ast/Schema.Companion.FIELD_POLICY|{}FIELD_POLICY[0]
             final fun <get-FIELD_POLICY>(): kotlin/String // com.apollographql.apollo.ast/Schema.Companion.FIELD_POLICY.<get-FIELD_POLICY>|<get-FIELD_POLICY>(){}[0]
         final const val FIELD_POLICY_FOR_FIELD // com.apollographql.apollo.ast/Schema.Companion.FIELD_POLICY_FOR_FIELD|{}FIELD_POLICY_FOR_FIELD[0]
