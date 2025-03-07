@@ -21,3 +21,5 @@ type User {
 type Product {
   price: String
 }
+
+directive @experimental_disableErrorPropagation on QUERY | MUTATION | SUBSCRIPTION

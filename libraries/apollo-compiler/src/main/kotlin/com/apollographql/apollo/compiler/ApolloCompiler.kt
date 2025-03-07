@@ -5,6 +5,7 @@ import com.apollographql.apollo.ast.DifferentShape
 import com.apollographql.apollo.ast.DirectiveRedefinition
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.GQLDefinition
+import com.apollographql.apollo.ast.GQLDirective
 import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLOperationDefinition
@@ -14,6 +15,7 @@ import com.apollographql.apollo.ast.IncompatibleDefinition
 import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.QueryDocumentMinifier
+import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.UnknownDirective
 import com.apollographql.apollo.ast.UnusedFragment
 import com.apollographql.apollo.ast.UnusedVariable
@@ -269,10 +271,19 @@ object ApolloCompiler {
       }
     }
 
+
     val operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
-      addRequiredFields(it, addTypename, schema, fragmentDefinitions).let {
-        documentTransform?.transform(schema, it) ?: it
+      var operation = addRequiredFields(it, addTypename, schema, fragmentDefinitions)
+      if (documentTransform != null) {
+        operation = documentTransform.transform(schema, it)
       }
+      if (schema.directiveDefinitions.containsKey(Schema.DISABLE_ERROR_PROPAGATION)
+          && schema.schemaDefinition?.directives?.any { schema.originalDirectiveName(it.name) == Schema.CATCH_BY_DEFAULT } == true) {
+        operation = operation.copy(
+            directives = operation.directives + GQLDirective(null, Schema.DISABLE_ERROR_PROPAGATION, emptyList())
+        )
+      }
+      operation
     }
 
     // Remember the fragments with the possibly updated fragments

@@ -261,7 +261,8 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
       deferDefinitionsStr,
       nonNullDefinitionStr,
       kotlinLabsDefinitions_0_5,
-      nullabilityDefinitionsStr
+      nullabilityDefinitionsStr,
+      disableErrorPropagationStr
   ).flatMap {
     it.parseAsGQLDocument().getOrThrow().definitions
   }

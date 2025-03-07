@@ -1,5 +1,7 @@
 package com.apollographql.apollo.ast.internal
 
+import com.apollographql.apollo.annotations.ApolloInternal
+
 /**
  * This file contains several groups of GraphQL definitions we use during codegen:
  *
@@ -544,4 +546,8 @@ directive @defer(
 
 internal val nonNullDefinitionStr = """
 directive @nonnull(fields: String! = "") on OBJECT | FIELD
+""".trimIndent()
+
+internal val disableErrorPropagationStr = """
+directive @experimental_disableErrorPropagation on QUERY | MUTATION | SUBSCRIPTION
 """.trimIndent()

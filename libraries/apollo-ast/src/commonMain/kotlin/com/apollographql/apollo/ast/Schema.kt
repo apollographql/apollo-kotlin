@@ -203,6 +203,8 @@ class Schema internal constructor(
     const val ONE_OF = "oneOf"
     @ApolloExperimental
     const val DEFER = "defer"
+    @ApolloExperimental
+    const val DISABLE_ERROR_PROPAGATION = "experimental_disableErrorPropagation"
 
     @ApolloExperimental
     const val LINK = "link"
