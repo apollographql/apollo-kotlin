@@ -6,9 +6,6 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
-import org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask
 
 class AndroidOptions(
     val withCompose: Boolean,
@@ -37,10 +34,15 @@ fun Project.apolloLibrary(
     configureAndroid(namespace, androidOptions)
   }
   commonSetup()
-  configureJavaAndKotlinCompilers(jvmTarget, kotlinCompilerOptions)
 
-  addOptIn(
-      "com.apollographql.apollo.annotations.ApolloInternal"
+  configureJavaAndKotlinCompilers(
+      jvmTarget,
+      kotlinCompilerOptions,
+      listOf(
+          "kotlin.RequiresOptIn",
+          "com.apollographql.apollo.annotations.ApolloInternal",
+          "com.apollographql.apollo.annotations.ApolloExperimental"
+      )
   )
 
   if (publish) {
@@ -102,10 +104,14 @@ fun Project.apolloTest(
     kotlinCompilerOptions: KotlinCompilerOptions = KotlinCompilerOptions(),
 ) {
   commonSetup()
-  configureJavaAndKotlinCompilers(null, kotlinCompilerOptions)
-  addOptIn(
-      "com.apollographql.apollo.annotations.ApolloExperimental",
-      "com.apollographql.apollo.annotations.ApolloInternal",
+  configureJavaAndKotlinCompilers(
+      null,
+      kotlinCompilerOptions,
+      listOf(
+          "kotlin.RequiresOptIn",
+          "com.apollographql.apollo.annotations.ApolloExperimental",
+          "com.apollographql.apollo.annotations.ApolloInternal"
+      )
   )
 
   if (extensions.findByName("kotlin") is KotlinMultiplatformExtension) {

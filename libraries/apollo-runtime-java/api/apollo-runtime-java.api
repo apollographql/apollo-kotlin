@@ -59,6 +59,7 @@ public class com/apollographql/apollo/runtime/java/ApolloClient$Builder : com/ap
 	public fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo/runtime/java/ApolloClient$Builder;
 	public fun networkTransport (Lcom/apollographql/apollo/runtime/java/network/NetworkTransport;)Lcom/apollographql/apollo/runtime/java/ApolloClient$Builder;
 	public fun okHttpClient (Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo/runtime/java/ApolloClient$Builder;
+	public fun retryOnError (Lcom/apollographql/apollo/runtime/java/ApolloClient$RetryOnError;)Lcom/apollographql/apollo/runtime/java/ApolloClient$Builder;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo/runtime/java/ApolloClient$Builder;
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo/runtime/java/ApolloClient$Builder;

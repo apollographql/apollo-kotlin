@@ -1,4 +1,5 @@
 public final class com/apollographql/apollo/cache/normalized/api/ApolloCacheHeaders {
+	public static final field DATE Ljava/lang/String;
 	public static final field DO_NOT_STORE Ljava/lang/String;
 	public static final field EVICT_AFTER_READ Ljava/lang/String;
 	public static final field INSTANCE Lcom/apollographql/apollo/cache/normalized/api/ApolloCacheHeaders;
@@ -79,6 +80,11 @@ public final class com/apollographql/apollo/cache/normalized/api/DefaultCacheRes
 	public fun resolveField (Lcom/apollographql/apollo/api/CompiledField;Lcom/apollographql/apollo/api/Executable$Variables;Ljava/util/Map;Ljava/lang/String;)Ljava/lang/Object;
 }
 
+public final class com/apollographql/apollo/cache/normalized/api/ExpireDateCacheResolver : com/apollographql/apollo/cache/normalized/api/CacheResolver {
+	public fun <init> ()V
+	public fun resolveField (Lcom/apollographql/apollo/api/CompiledField;Lcom/apollographql/apollo/api/Executable$Variables;Ljava/util/Map;Ljava/lang/String;)Ljava/lang/Object;
+}
+
 public final class com/apollographql/apollo/cache/normalized/api/FieldPolicyCacheResolver : com/apollographql/apollo/cache/normalized/api/CacheResolver {
 	public static final field INSTANCE Lcom/apollographql/apollo/cache/normalized/api/FieldPolicyCacheResolver;
 	public fun resolveField (Lcom/apollographql/apollo/api/CompiledField;Lcom/apollographql/apollo/api/Executable$Variables;Ljava/util/Map;Ljava/lang/String;)Ljava/lang/Object;
@@ -150,6 +156,11 @@ public abstract interface class com/apollographql/apollo/cache/normalized/api/Re
 	public abstract fun loadRecords (Ljava/util/Collection;Lcom/apollographql/apollo/cache/normalized/api/CacheHeaders;)Ljava/util/Collection;
 }
 
+public final class com/apollographql/apollo/cache/normalized/api/ReceiveDateCacheResolver : com/apollographql/apollo/cache/normalized/api/CacheResolver {
+	public fun <init> (I)V
+	public fun resolveField (Lcom/apollographql/apollo/api/CompiledField;Lcom/apollographql/apollo/api/Executable$Variables;Ljava/util/Map;Ljava/lang/String;)Ljava/lang/Object;
+}
+
 public final class com/apollographql/apollo/cache/normalized/api/Record : java/util/Map, kotlin/jvm/internal/markers/KMappedMarker {
 	public static final field Companion Lcom/apollographql/apollo/cache/normalized/api/Record$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/util/Map;Ljava/util/UUID;)V
@@ -169,6 +180,7 @@ public final class com/apollographql/apollo/cache/normalized/api/Record : java/u
 	public final fun fieldKeys ()Ljava/util/Set;
 	public final fun get (Ljava/lang/Object;)Ljava/lang/Object;
 	public fun get (Ljava/lang/String;)Ljava/lang/Object;
+	public final fun getDate ()Ljava/util/Map;
 	public fun getEntries ()Ljava/util/Set;
 	public final fun getFields ()Ljava/util/Map;
 	public final fun getKey ()Ljava/lang/String;
@@ -182,6 +194,7 @@ public final class com/apollographql/apollo/cache/normalized/api/Record : java/u
 	public synthetic fun merge (Ljava/lang/Object;Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
 	public fun merge (Ljava/lang/String;Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
 	public final fun mergeWith (Lcom/apollographql/apollo/cache/normalized/api/Record;)Lkotlin/Pair;
+	public final fun mergeWith (Lcom/apollographql/apollo/cache/normalized/api/Record;Ljava/lang/Long;)Lkotlin/Pair;
 	public synthetic fun put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun put (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun putAll (Ljava/util/Map;)V

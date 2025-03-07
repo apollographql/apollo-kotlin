@@ -1,7 +1,6 @@
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
-import org.gradle.api.artifacts.ExternalDependency
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
@@ -17,12 +16,16 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinNativeCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 /**
  * @param target the JVM version we want to be compatible with (bytecode + bootstrap classpath)
  */
-fun KotlinCommonCompilerOptions.configure(target: Int, kotlinCompilerOptions: KotlinCompilerOptions, isAndroid: Boolean) {
+fun KotlinCommonCompilerOptions.configure(
+    target: Int,
+    kotlinCompilerOptions: KotlinCompilerOptions,
+    isAndroid: Boolean,
+    optIns: List<String>
+) {
   val actualTarget = when {
     isAndroid -> {
       // https://blog.blundellapps.co.uk/setting-jdk-level-in-android-gradle-builds/
@@ -35,13 +38,9 @@ fun KotlinCommonCompilerOptions.configure(target: Int, kotlinCompilerOptions: Ko
 
   freeCompilerArgs.add("-Xexpect-actual-classes")
 
-  /**
-   * Inside our own codebase, we opt-in ApolloInternal and ApolloExperimental
-   * We might want to do something more precise where we only opt-in for libraries but still require integration tests to opt-in with more granularity
-   */
-  freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
-  freeCompilerArgs.add("-opt-in=com.apollographql.apollo.annotations.ApolloExperimental")
-  freeCompilerArgs.add("-opt-in=com.apollographql.apollo.annotations.ApolloInternal")
+  optIns.forEach {
+    freeCompilerArgs.add("-opt-in=$it")
+  }
 
   apiVersion.set(kotlinCompilerOptions.version)
   languageVersion.set(kotlinCompilerOptions.version)
@@ -106,12 +105,12 @@ val Project.androidExtensionOrNull: BaseExtension?
     return (extensions.findByName("android") as? BaseExtension)
   }
 
-fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptions: KotlinCompilerOptions) {
+fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptions: KotlinCompilerOptions, optIns: List<String>) {
   @Suppress("NAME_SHADOWING")
   val jvmTarget = jvmTarget ?: 8
 
   kotlinExtensionOrNull?.forEachCompilerOptions { isAndroid ->
-    configure(jvmTarget, kotlinCompilerOptions, isAndroid)
+    configure(jvmTarget, kotlinCompilerOptions, isAndroid, optIns)
   }
   project.tasks.withType(JavaCompile::class.java).configureEach {
     // For JVM only modules, this dictates the "org.gradle.jvm.version" Gradle attribute
@@ -129,11 +128,6 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptio
       targetCompatibility = JavaVersion.VERSION_17
       sourceCompatibility = JavaVersion.VERSION_17
     }
-  }
-
-  (kotlinExtensionOrNull as? KotlinMultiplatformExtension)?.sourceSets?.configureEach {
-    languageSettings.optIn("com.apollographql.apollo.annotations.ApolloExperimental")
-    languageSettings.optIn("com.apollographql.apollo.annotations.ApolloInternal")
   }
 
   /**
@@ -158,14 +152,6 @@ fun setTestToolchain(project: Project, test: Test, javaVersion: Int) {
     languageVersion.set(JavaLanguageVersion.of(javaVersion))
   })
 
-}
-
-internal fun Project.addOptIn(vararg annotations: String) {
-  tasks.withType(KotlinCompilationTask::class.java).configureEach {
-    compilerOptions {
-      freeCompilerArgs.addAll(annotations.map { "-opt-in=$it" })
-    }
-  }
 }
 
 fun Project.allWarningsAsErrors(allWarningsAsErrors: Boolean) {
