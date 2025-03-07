@@ -277,7 +277,8 @@ object ApolloCompiler {
       if (documentTransform != null) {
         operation = documentTransform.transform(schema, it)
       }
-      if (schema.directiveDefinitions.containsKey(Schema.DISABLE_ERROR_PROPAGATION)) {
+      if (schema.directiveDefinitions.containsKey(Schema.DISABLE_ERROR_PROPAGATION)
+          && schema.schemaDefinition?.directives?.any { schema.originalDirectiveName(it.name) == Schema.CATCH_BY_DEFAULT } == true) {
         operation = operation.copy(
             directives = operation.directives + GQLDirective(null, Schema.DISABLE_ERROR_PROPAGATION, emptyList())
         )
