@@ -404,7 +404,7 @@ private fun List<GQLSchemaExtension>.getLinkedSchemas(
 
   val linkedSchemas = mutableListOf<LinkedSchema>()
   val linkForeignSchema = ForeignSchema("link", "v1.0", linkDefinitions())
-  val linkLinkedSchema = LinkedSchema(linkForeignSchema, linkForeignSchema.definitions, mapOf("link" to "link"), null)
+  val linkLinkedSchema = LinkedSchema(linkForeignSchema, linkForeignSchema.definitions, mapOf("@link" to "@link"), null)
   schemaExtensions.forEach { schemaExtension ->
     schemaExtension.directives.forEach eachDirective@{ gqlDirective ->
       if (gqlDirective.name == "link") {

@@ -32,6 +32,18 @@ object BuildDirLayout {
     )
   }
 
+  internal fun fullSchema(project: Project, service: Service): Provider<RegularFile> {
+    return project.layout.buildDirectory.file(
+        "generated/graphqls/apollo/${service.name}/fullSchema.graphqls"
+    )
+  }
+
+  internal fun linkedDefinitions(project: Project, service: Service): Provider<RegularFile> {
+    return project.layout.buildDirectory.file(
+        "generated/graphqls/apollo/${service.name}/linkedDefinitions.graphqls"
+    )
+  }
+
   internal fun irOptions(project: Project, service: Service): Provider<RegularFile> {
     return project.layout.buildDirectory.file(
         "generated/options/apollo/${service.name}/irOptions.json"

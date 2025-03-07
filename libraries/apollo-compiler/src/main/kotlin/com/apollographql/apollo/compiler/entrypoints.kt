@@ -1,6 +1,9 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.ast.GQLDirectiveDefinition
+import com.apollographql.apollo.ast.GQLNamed
+import com.apollographql.apollo.ast.toUtf8
 import com.apollographql.apollo.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo.compiler.codegen.writeTo
 import com.apollographql.apollo.compiler.internal.GradleCompilerPluginLogger
@@ -114,9 +117,8 @@ class EntryPoints {
       arguments: Map<String, Any?>,
       logLevel: Int,
       warnIfNotFound: Boolean,
-      schemaFiles: List<Any>,
+      codegenSchemaFile: File,
       graphqlFiles: List<Any>,
-      codegenSchemaOptions: File,
       codegenOptions: File,
       irOptions: File,
       warning: Consumer<String>,
@@ -129,12 +131,7 @@ class EntryPoints {
         warnIfNotFound
     )
 
-    val codegenSchema = ApolloCompiler.buildCodegenSchema(
-        schemaFiles = schemaFiles.toInputFiles(),
-        codegenSchemaOptions = codegenSchemaOptions.toCodegenSchemaOptions(),
-        foreignSchemas = plugin?.foreignSchemas().orEmpty(),
-        logger = warning.toLogger()
-    )
+    val codegenSchema = codegenSchemaFile.toCodegenSchema()
 
     ApolloCompiler.buildSchemaAndOperationsSources(
         codegenSchema,
@@ -156,6 +153,32 @@ class EntryPoints {
     ).writeTo(outputDir, true, null)
 
     plugin?.schemaListener()?.onSchema(codegenSchema.schema, outputDir)
+  }
+
+  fun buildSchemaForIntelliJ(
+      codegenSchemas: List<Any>,
+      fullSchema: File,
+      linkedDefinitions: File
+  ) {
+   val codegenSchema = codegenSchemas.toInputFiles().map { it.file }.findCodegenSchemaFile().toCodegenSchema()
+
+    val document = codegenSchema.schema.toGQLDocument()
+    fullSchema.writeText(document.toUtf8())
+
+    val linkedDefinitionsDocument = document.copy(definitions = document.definitions.filter { it is GQLNamed && codegenSchema.schema.foreignNames.containsKey(it.definitionName()) })
+    linkedDefinitions.writeText(linkedDefinitionsDocument.toUtf8())
+  }
+}
+
+private fun GQLNamed.definitionName(): String {
+  return when (this) {
+    is GQLDirectiveDefinition -> {
+      "@${name}"
+    }
+
+    else -> {
+      name
+    }
   }
 }
 

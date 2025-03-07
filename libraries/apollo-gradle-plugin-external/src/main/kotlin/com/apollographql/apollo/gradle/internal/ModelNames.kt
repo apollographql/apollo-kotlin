@@ -19,6 +19,7 @@ internal object ModelNames {
   fun generateApolloSources() = "generateApolloSources"
   fun generateApolloSources(service: Service) = camelCase("generate", service.name, "ApolloSources")
   fun generateApolloCodegenSchema(service: Service) = camelCase("generate", service.name, "ApolloCodegenSchema")
+  fun generateApolloSchemaForIntelliJ(service: DefaultService): String = camelCase("generate", service.name, "ApolloSchemaForIntelliJ")
   fun generateApolloIrOperations(service: Service) = camelCase("generate", service.name, "ApolloIrOperations")
   fun generateApolloOptions(service: Service) = camelCase("generate", service.name, "ApolloOptions")
   fun downloadApolloSchema() = camelCase("downloadApolloSchema")

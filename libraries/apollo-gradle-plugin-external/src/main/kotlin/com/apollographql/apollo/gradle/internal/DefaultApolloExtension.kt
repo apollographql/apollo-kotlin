@@ -227,7 +227,8 @@ abstract class DefaultApolloExtension(
                 $packageNameLine
               }
             }
-          """.trimIndent())
+          """.trimIndent()
+        )
       }
 
       maybeLinkSqlite()
@@ -275,6 +276,7 @@ abstract class DefaultApolloExtension(
         // explicit opt-in
         linkSqlite(project)
       }
+
       null -> { // default: automatic detection
         project.configurations.configureEach {
           it.dependencies.configureEach {
@@ -289,7 +291,8 @@ abstract class DefaultApolloExtension(
                 && it.group?.contains("apollo") == true
                 && it.name.contains("normalized-cache-sqlite")
                 && !it.name.contains("jvm")
-                && !it.name.contains("android")) {
+                && !it.name.contains("android")
+            ) {
               linkSqlite(project)
             }
           }
@@ -367,7 +370,7 @@ abstract class DefaultApolloExtension(
 
       it.inputs.property("allVersions", Callable {
         val allDeps = (
-                getDeps(project.buildscript.configurations) +
+            getDeps(project.buildscript.configurations) +
                 getDeps(project.configurations)
             )
         allDeps.distinct().sorted()
@@ -399,22 +402,24 @@ abstract class DefaultApolloExtension(
       serviceName: String,
       apolloUsage: ApolloUsage,
       direction: ApolloDirection,
-      extendsFrom: Configuration
+      extendsFrom: Configuration,
   ): Configurations {
-    val consumable = project.configurations.create(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.Consumable )) {
-      it.isCanBeConsumed = true
-      it.isCanBeResolved = false
+    val consumable =
+      project.configurations.create(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.Consumable)) {
+        it.isCanBeConsumed = true
+        it.isCanBeResolved = false
 
-      it.extendsFrom(extendsFrom)
-      it.attributes(serviceName, apolloUsage, direction)
-    }
-    val resolvable = project.configurations.create(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.Resolvable )) {
-      it.isCanBeConsumed = false
-      it.isCanBeResolved = true
+        it.extendsFrom(extendsFrom)
+        it.attributes(serviceName, apolloUsage, direction)
+      }
+    val resolvable =
+      project.configurations.create(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.Resolvable)) {
+        it.isCanBeConsumed = false
+        it.isCanBeResolved = true
 
-      it.extendsFrom(extendsFrom)
-      it.attributes(serviceName, apolloUsage, direction)
-    }
+        it.extendsFrom(extendsFrom)
+        it.attributes(serviceName, apolloUsage, direction)
+      }
 
     return Configurations(
         consumable = consumable,
@@ -488,16 +493,27 @@ abstract class DefaultApolloExtension(
       project.logger.lifecycle("Apollo: languageVersion 1.5 is deprecated, please use 1.9 or leave empty")
     }
     val optionsTaskProvider = registerOptionsTask(project, service, otherOptions.resolvable)
-    if (!service.isMultiModule()) {
-      sourcesBaseTaskProvider = registerSourcesTask(project, optionsTaskProvider, service, classpathOptions)
-    } else {
-      val codegenSchema = createConfigurations(
-          serviceName = service.name,
-          apolloUsage = ApolloUsage.CodegenSchema,
-          direction = ApolloDirection.Upstream,
-          extendsFrom = upstreamScope
-      )
 
+    val codegenSchema = createConfigurations(
+        serviceName = service.name,
+        apolloUsage = ApolloUsage.CodegenSchema,
+        direction = ApolloDirection.Upstream,
+        extendsFrom = upstreamScope
+    )
+
+    val codegenSchemaTaskProvider = registerCodegenSchemaTask(
+        project = project,
+        service = service,
+        optionsTaskProvider = optionsTaskProvider,
+        schemaConsumerConfiguration = codegenSchema.resolvable,
+        classpathOptions = classpathOptions
+    )
+
+    registerGenerateSchemaForIntelliJTask(project, service,codegenSchema.resolvable, codegenSchemaTaskProvider, classpathOptions)
+
+    if (!service.isMultiModule()) {
+      sourcesBaseTaskProvider = registerSourcesTask(project, optionsTaskProvider, codegenSchemaTaskProvider, service, classpathOptions)
+    } else {
       val upstreamIr = createConfigurations(
           serviceName = service.name,
           apolloUsage = ApolloUsage.Ir,
@@ -518,28 +534,6 @@ abstract class DefaultApolloExtension(
           direction = ApolloDirection.Upstream,
           extendsFrom = upstreamScope
       )
-
-      /**
-       * Tasks
-       */
-      val codegenSchemaTaskProvider = if (service.isSchemaModule()) {
-        registerCodegenSchemaTask(
-            project = project,
-            service = service,
-            optionsTaskProvider = optionsTaskProvider,
-            schemaConsumerConfiguration = codegenSchema.resolvable,
-            classpathOptions = classpathOptions
-        )
-      } else {
-        check(service.scalarTypeMapping.isEmpty()) {
-          "Apollo: the custom scalar configuration is not used in non-schema modules. Add custom scalars to your schema module."
-        }
-        check(!service.generateDataBuilders.isPresent) {
-          "Apollo: generateDataBuilders is not used in non-schema modules. Add generateDataBuilders to your schema module."
-        }
-
-        null
-      }
 
       val irOperationsTaskProvider = registerIrOperationsTask(
           project = project,
@@ -566,13 +560,11 @@ abstract class DefaultApolloExtension(
       sourcesBaseTaskProvider = sourcesFromIrTaskProvider
 
       project.artifacts {
-        if (codegenSchemaTaskProvider != null) {
-          it.add(codegenSchema.consumable.name, codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile }) {
-            it.classifier = "codegen-schema-${service.name}"
-          }
-          it.add(otherOptions.consumable.name, optionsTaskProvider.flatMap { it.otherOptions }) {
-            it.classifier = "other-options-${service.name}"
-          }
+        it.add(codegenSchema.consumable.name, codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile }) {
+          it.classifier = "codegen-schema-${service.name}"
+        }
+        it.add(otherOptions.consumable.name, optionsTaskProvider.flatMap { it.otherOptions }) {
+          it.classifier = "other-options-${service.name}"
         }
         it.add(upstreamIr.consumable.name, irOperationsTaskProvider.flatMap { it.irOperationsFile }) {
           it.classifier = "ir-${service.name}"
@@ -599,11 +591,11 @@ abstract class DefaultApolloExtension(
         }
 
         override fun addToSoftwareComponent(softwareComponent: SoftwareComponent) {
-          check (softwareComponent is AdhocComponentWithVariants) {
+          check(softwareComponent is AdhocComponentWithVariants) {
             "Software component '$softwareComponent' is not an instance of AdhocComponentWithVariants"
           }
           outgoingVariants.forEach {
-            softwareComponent.addVariantsFromConfiguration(it) {  }
+            softwareComponent.addVariantsFromConfiguration(it) { }
           }
         }
 
@@ -797,6 +789,28 @@ abstract class DefaultApolloExtension(
     }
   }
 
+  private fun registerGenerateSchemaForIntelliJTask(
+      project: Project,
+      service: DefaultService,
+      schemaConsumerConfiguration: Configuration,
+      schemaTaskProvider: TaskProvider<ApolloGenerateCodegenSchemaTask>?,
+      classpathOptions: ApolloTaskWithClasspath.Options,
+  ): TaskProvider<ApolloGenerateSchemaForIJTask> {
+    return project.tasks.register(ModelNames.generateApolloSchemaForIntelliJ(service), ApolloGenerateSchemaForIJTask::class.java) { task ->
+      task.group = TASK_GROUP
+      task.description = "Generate Apollo schema and linked definitions for service '${service.name}' for IntelliJ."
+
+      configureTaskWithClassPath(task, classpathOptions)
+      task.codegenSchemas.from(schemaConsumerConfiguration)
+      if (schemaTaskProvider != null) {
+        task.codegenSchemas.from(schemaTaskProvider.flatMap { it.codegenSchemaFile })
+      }
+
+      task.fullSchema.set(BuildDirLayout.fullSchema(project, service))
+      task.linkedDefinitions.set(BuildDirLayout.linkedDefinitions(project, service))
+    }
+  }
+
   private fun registerIrOperationsTask(
       project: Project,
       service: DefaultService,
@@ -890,7 +904,7 @@ abstract class DefaultApolloExtension(
 
   private fun configureTaskWithClassPath(
       task: ApolloTaskWithClasspath,
-      classpathOptions: ApolloTaskWithClasspath.Options
+      classpathOptions: ApolloTaskWithClasspath.Options,
   ) {
     task.hasPlugin.set(classpathOptions.hasPlugin)
     task.classpath.from(classpathOptions.classpath)
@@ -914,7 +928,8 @@ abstract class DefaultApolloExtension(
     task.packageNameGenerator = service.packageNameGenerator.orNull
     service.packageNameGenerator.disallowChanges()
 
-    task.operationOutputGenerator = service.operationOutputGenerator.orElse(service.operationIdGenerator.map { OperationOutputGenerator.Default(it) }).orNull
+    task.operationOutputGenerator =
+      service.operationOutputGenerator.orElse(service.operationIdGenerator.map { OperationOutputGenerator.Default(it) }).orNull
     service.operationOutputGenerator.disallowChanges()
 
 
@@ -925,6 +940,7 @@ abstract class DefaultApolloExtension(
   private fun registerSourcesTask(
       project: Project,
       optionsTaskProvider: TaskProvider<ApolloGenerateOptionsTask>,
+      codegenSchemaTaskProvider: TaskProvider<ApolloGenerateCodegenSchemaTask>,
       service: DefaultService,
       classpathOptions: ApolloTaskWithClasspath.Options,
   ): TaskProvider<ApolloGenerateSourcesTask> {
@@ -935,8 +951,7 @@ abstract class DefaultApolloExtension(
       configureBaseCodegenTask(project, task, optionsTaskProvider, service, classpathOptions)
 
       task.graphqlFiles.from(service.graphqlSourceDirectorySet)
-      task.schemaFiles.from(service.schemaFiles(project))
-      task.fallbackSchemaFiles.from(service.fallbackSchemaFiles(project))
+      task.codegenSchema.set(codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile })
       task.codegenSchemaOptionsFile.set(optionsTaskProvider.map { it.codegenSchemaOptionsFile.get() })
       task.irOptionsFile.set(optionsTaskProvider.map { it.irOptionsFile.get() })
     }
@@ -948,25 +963,27 @@ abstract class DefaultApolloExtension(
     var connection: Action<SchemaConnection>? = null
 
     if (introspection != null) {
-      taskProvider = project.tasks.register(ModelNames.downloadApolloSchemaIntrospection(service), ApolloDownloadSchemaTask::class.java) { task ->
+      taskProvider =
+        project.tasks.register(ModelNames.downloadApolloSchemaIntrospection(service), ApolloDownloadSchemaTask::class.java) { task ->
 
-        task.group = TASK_GROUP
-        task.outputFile.set(service.guessSchemaFile(project, introspection.schemaFile))
-        task.endpoint.set(introspection.endpointUrl)
-        task.header = introspection.headers.get().map { "${it.key}: ${it.value}" }
-      }
+          task.group = TASK_GROUP
+          task.outputFile.set(service.guessSchemaFile(project, introspection.schemaFile))
+          task.endpoint.set(introspection.endpointUrl)
+          task.header = introspection.headers.get().map { "${it.key}: ${it.value}" }
+        }
       connection = introspection.schemaConnection
     }
     val registry = service.registry
     if (registry != null) {
-      taskProvider = project.tasks.register(ModelNames.downloadApolloSchemaRegistry(service), ApolloDownloadSchemaTask::class.java) { task ->
+      taskProvider =
+        project.tasks.register(ModelNames.downloadApolloSchemaRegistry(service), ApolloDownloadSchemaTask::class.java) { task ->
 
-        task.group = TASK_GROUP
-        task.outputFile.set(service.guessSchemaFile(project, registry.schemaFile))
-        task.graph.set(registry.graph)
-        task.key.set(registry.key)
-        task.graphVariant.set(registry.graphVariant)
-      }
+          task.group = TASK_GROUP
+          task.outputFile.set(service.guessSchemaFile(project, registry.schemaFile))
+          task.graph.set(registry.graph)
+          task.key.set(registry.key)
+          task.graphVariant.set(registry.graphVariant)
+        }
       connection = registry.schemaConnection
     }
     if (connection != null && taskProvider != null) {
@@ -1034,6 +1051,7 @@ abstract class DefaultApolloExtension(
 
   companion object {
     private const val TASK_GROUP = "apollo"
+
     // Keep in sync gradle-api-min
     const val MIN_GRADLE_VERSION = "8.0"
 
