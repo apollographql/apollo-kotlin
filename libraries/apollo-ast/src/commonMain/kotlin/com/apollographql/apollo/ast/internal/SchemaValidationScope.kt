@@ -221,7 +221,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
          */
         issues.add(DirectiveRedefinition(entry.key, existing.sourceLocation, existing.sourceLocation))
         directiveDefinitions.put(entry.key, entry.value.definition)
-      } else if (entry.value.linkedSchema.foreignSchema.name == "link") {
+      } else if (entry.value.linkedSchema.foreignSchema.name == Schema.LINK) {
         /*
          * Since we don't support renaming @link just yet, there's no good resolution if the directive
          * is already defined in the API schema. Just ignore the schema one in this case
@@ -304,8 +304,9 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
   mergedScope.validateNoIntrospectionNames()
 
   // The cast never fails because we enforce a single schema definition above.
-  val mergedSchemaDefinition = mergedDefinitions.single { it is GQLSchemaDefinition } as GQLSchemaDefinition
+  var mergedSchemaDefinition = mergedDefinitions.single { it is GQLSchemaDefinition } as GQLSchemaDefinition
 
+  mergedSchemaDefinition = mergedSchemaDefinition.copy(directives = mergedSchemaDefinition.directives.filter { it.name != Schema.LINK })
   mergedScope.validateSchemaDefinition(mergedSchemaDefinition)
   mergedScope.validateInterfaces()
   mergedScope.validateObjects()
@@ -403,11 +404,10 @@ private fun List<GQLSchemaExtension>.getLinkedSchemas(
   val schemaExtensions = this
 
   val linkedSchemas = mutableListOf<LinkedSchema>()
-  val linkForeignSchema = ForeignSchema("link", "v1.0", linkDefinitions())
-  val linkLinkedSchema = LinkedSchema(linkForeignSchema, linkForeignSchema.definitions, mapOf("link" to "link"), null)
+  val linkLinkedSchema = ForeignSchema("link", "v1.0", linkDefinitions()).asNonPrefixedImport()
   schemaExtensions.forEach { schemaExtension ->
     schemaExtension.directives.forEach eachDirective@{ gqlDirective ->
-      if (gqlDirective.name == "link") {
+      if (gqlDirective.name == Schema.LINK) {
         if (!linkedSchemas.contains(linkLinkedSchema)) {
           linkedSchemas.add(linkLinkedSchema)
         }
@@ -416,7 +416,7 @@ private fun List<GQLSchemaExtension>.getLinkedSchemas(
          * Validate `@link` using a very minimal schema.
          * This ensures we can safely cast the arguments below
          */
-        val minimalSchema = builtinDefinitions() + linkForeignSchema.definitions
+        val minimalSchema = builtinDefinitions() + linkLinkedSchema.foreignSchema.definitions
         val scope = DefaultValidationScope(
             minimalSchema.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
             minimalSchema.filterIsInstance<GQLDirectiveDefinition>().associateBy { it.name },
