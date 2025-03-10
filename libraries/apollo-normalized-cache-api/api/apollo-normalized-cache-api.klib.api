@@ -128,6 +128,12 @@ final class com.apollographql.apollo.cache.normalized.api/CacheKeyGeneratorConte
         final fun <get-variables>(): com.apollographql.apollo.api/Executable.Variables // com.apollographql.apollo.cache.normalized.api/CacheKeyGeneratorContext.variables.<get-variables>|<get-variables>(){}[0]
 }
 
+final class com.apollographql.apollo.cache.normalized.api/ExpireDateCacheResolver : com.apollographql.apollo.cache.normalized.api/CacheResolver { // com.apollographql.apollo.cache.normalized.api/ExpireDateCacheResolver|null[0]
+    constructor <init>() // com.apollographql.apollo.cache.normalized.api/ExpireDateCacheResolver.<init>|<init>(){}[0]
+
+    final fun resolveField(com.apollographql.apollo.api/CompiledField, com.apollographql.apollo.api/Executable.Variables, kotlin.collections/Map<kotlin/String, kotlin/Any?>, kotlin/String): kotlin/Any? // com.apollographql.apollo.cache.normalized.api/ExpireDateCacheResolver.resolveField|resolveField(com.apollographql.apollo.api.CompiledField;com.apollographql.apollo.api.Executable.Variables;kotlin.collections.Map<kotlin.String,kotlin.Any?>;kotlin.String){}[0]
+}
+
 final class com.apollographql.apollo.cache.normalized.api/MemoryCache : com.apollographql.apollo.cache.normalized.api/NormalizedCache { // com.apollographql.apollo.cache.normalized.api/MemoryCache|null[0]
     constructor <init>(kotlin/Int = ..., kotlin/Long = ...) // com.apollographql.apollo.cache.normalized.api/MemoryCache.<init>|<init>(kotlin.Int;kotlin.Long){}[0]
 
@@ -148,6 +154,12 @@ final class com.apollographql.apollo.cache.normalized.api/MemoryCacheFactory : c
     constructor <init>(kotlin/Int = ..., kotlin/Long = ...) // com.apollographql.apollo.cache.normalized.api/MemoryCacheFactory.<init>|<init>(kotlin.Int;kotlin.Long){}[0]
 
     final fun create(): com.apollographql.apollo.cache.normalized.api/MemoryCache // com.apollographql.apollo.cache.normalized.api/MemoryCacheFactory.create|create(){}[0]
+}
+
+final class com.apollographql.apollo.cache.normalized.api/ReceiveDateCacheResolver : com.apollographql.apollo.cache.normalized.api/CacheResolver { // com.apollographql.apollo.cache.normalized.api/ReceiveDateCacheResolver|null[0]
+    constructor <init>(kotlin/Int) // com.apollographql.apollo.cache.normalized.api/ReceiveDateCacheResolver.<init>|<init>(kotlin.Int){}[0]
+
+    final fun resolveField(com.apollographql.apollo.api/CompiledField, com.apollographql.apollo.api/Executable.Variables, kotlin.collections/Map<kotlin/String, kotlin/Any?>, kotlin/String): kotlin/Any? // com.apollographql.apollo.cache.normalized.api/ReceiveDateCacheResolver.resolveField|resolveField(com.apollographql.apollo.api.CompiledField;com.apollographql.apollo.api.Executable.Variables;kotlin.collections.Map<kotlin.String,kotlin.Any?>;kotlin.String){}[0]
 }
 
 final class com.apollographql.apollo.cache.normalized.api/Record : kotlin.collections/Map<kotlin/String, kotlin/Any?> { // com.apollographql.apollo.cache.normalized.api/Record|null[0]
@@ -171,12 +183,16 @@ final class com.apollographql.apollo.cache.normalized.api/Record : kotlin.collec
     final val values // com.apollographql.apollo.cache.normalized.api/Record.values|{}values[0]
         final fun <get-values>(): kotlin.collections/Collection<kotlin/Any?> // com.apollographql.apollo.cache.normalized.api/Record.values.<get-values>|<get-values>(){}[0]
 
+    final var date // com.apollographql.apollo.cache.normalized.api/Record.date|{}date[0]
+        final fun <get-date>(): kotlin.collections/Map<kotlin/String, kotlin/Long?>? // com.apollographql.apollo.cache.normalized.api/Record.date.<get-date>|<get-date>(){}[0]
+
     final fun containsKey(kotlin/String): kotlin/Boolean // com.apollographql.apollo.cache.normalized.api/Record.containsKey|containsKey(kotlin.String){}[0]
     final fun containsValue(kotlin/Any?): kotlin/Boolean // com.apollographql.apollo.cache.normalized.api/Record.containsValue|containsValue(kotlin.Any?){}[0]
     final fun fieldKeys(): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.cache.normalized.api/Record.fieldKeys|fieldKeys(){}[0]
     final fun get(kotlin/String): kotlin/Any? // com.apollographql.apollo.cache.normalized.api/Record.get|get(kotlin.String){}[0]
     final fun isEmpty(): kotlin/Boolean // com.apollographql.apollo.cache.normalized.api/Record.isEmpty|isEmpty(){}[0]
     final fun mergeWith(com.apollographql.apollo.cache.normalized.api/Record): kotlin/Pair<com.apollographql.apollo.cache.normalized.api/Record, kotlin.collections/Set<kotlin/String>> // com.apollographql.apollo.cache.normalized.api/Record.mergeWith|mergeWith(com.apollographql.apollo.cache.normalized.api.Record){}[0]
+    final fun mergeWith(com.apollographql.apollo.cache.normalized.api/Record, kotlin/Long?): kotlin/Pair<com.apollographql.apollo.cache.normalized.api/Record, kotlin.collections/Set<kotlin/String>> // com.apollographql.apollo.cache.normalized.api/Record.mergeWith|mergeWith(com.apollographql.apollo.cache.normalized.api.Record;kotlin.Long?){}[0]
     final fun referencedFields(): kotlin.collections/List<com.apollographql.apollo.cache.normalized.api/CacheKey> // com.apollographql.apollo.cache.normalized.api/Record.referencedFields|referencedFields(){}[0]
 
     final object Companion // com.apollographql.apollo.cache.normalized.api/Record.Companion|null[0]
@@ -196,6 +212,8 @@ final object com.apollographql.apollo.cache.normalized.api.internal/JsonRecordSe
 }
 
 final object com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders { // com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders|null[0]
+    final const val DATE // com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders.DATE|{}DATE[0]
+        final fun <get-DATE>(): kotlin/String // com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders.DATE.<get-DATE>|<get-DATE>(){}[0]
     final const val DO_NOT_STORE // com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders.DO_NOT_STORE|{}DO_NOT_STORE[0]
         final fun <get-DO_NOT_STORE>(): kotlin/String // com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders.DO_NOT_STORE.<get-DO_NOT_STORE>|<get-DO_NOT_STORE>(){}[0]
     final const val EVICT_AFTER_READ // com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders.EVICT_AFTER_READ|{}EVICT_AFTER_READ[0]
