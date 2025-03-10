@@ -58,11 +58,13 @@ abstract class DefaultApolloExtension(
   private var apolloBuildServiceProvider: Provider<ApolloBuildService>
 
   internal fun getServiceInfos(project: Project): List<ApolloGradleToolingModel.ServiceInfo> = services.map { service ->
+    val upstreamProjects = service.upstreamScope.dependencies.filterIsInstance<ProjectDependency>().map { it.name }.toSet()
+
     DefaultServiceInfo(
         name = service.name,
         schemaFiles = service.schemaFilesSnapshot(project),
         graphqlSrcDirs = service.graphqlSourceDirectorySet.srcDirs,
-        upstreamProjects = service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.name }.toSet(),
+        upstreamProjects = upstreamProjects,
         upstreamProjectPaths = service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet(),
         endpointUrl = service.introspection?.endpointUrl?.orNull,
         endpointHeaders = service.introspection?.headers?.orNull,
@@ -451,10 +453,6 @@ abstract class DefaultApolloExtension(
 
     val sourcesBaseTaskProvider: TaskProvider<*>
 
-    val upstreamScope = project.configurations.create(ModelNames.scopeConfiguration(service.name, ApolloDirection.Upstream)) {
-      it.isCanBeConsumed = false
-      it.isCanBeResolved = false
-    }
     val downstreamScope = project.configurations.create(ModelNames.scopeConfiguration(service.name, ApolloDirection.Downstream)) {
       it.isCanBeConsumed = false
       it.isCanBeResolved = false
@@ -464,7 +462,7 @@ abstract class DefaultApolloExtension(
         serviceName = service.name,
         apolloUsage = ApolloUsage.OtherOptions,
         direction = ApolloDirection.Upstream,
-        extendsFrom = upstreamScope
+        extendsFrom = service.upstreamScope
     )
 
     val compilerConfiguration = project.configurations.create(ModelNames.compilerConfiguration(service)) {
@@ -495,14 +493,14 @@ abstract class DefaultApolloExtension(
           serviceName = service.name,
           apolloUsage = ApolloUsage.CodegenSchema,
           direction = ApolloDirection.Upstream,
-          extendsFrom = upstreamScope
+          extendsFrom = service.upstreamScope
       )
 
       val upstreamIr = createConfigurations(
           serviceName = service.name,
           apolloUsage = ApolloUsage.Ir,
           direction = ApolloDirection.Upstream,
-          extendsFrom = upstreamScope
+          extendsFrom = service.upstreamScope
       )
 
       val downstreamIr = createConfigurations(
@@ -516,7 +514,7 @@ abstract class DefaultApolloExtension(
           serviceName = service.name,
           apolloUsage = ApolloUsage.CodegenMetadata,
           direction = ApolloDirection.Upstream,
-          extendsFrom = upstreamScope
+          extendsFrom = service.upstreamScope
       )
 
       /**
@@ -617,7 +615,7 @@ abstract class DefaultApolloExtension(
       }
 
       service.upstreamDependencies.forEach {
-        upstreamScope.dependencies.add(it)
+        service.upstreamScope.dependencies.add(it)
       }
 
       service.downstreamDependencies.forEach {

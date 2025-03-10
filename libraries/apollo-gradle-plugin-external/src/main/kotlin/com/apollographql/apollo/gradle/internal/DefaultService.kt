@@ -28,6 +28,11 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   internal var registered = false
   internal var rootPackageName: String? = null
 
+  val upstreamScope = project.configurations.create(ModelNames.scopeConfiguration(name, ApolloDirection.Upstream)) {
+    it.isCanBeConsumed = false
+    it.isCanBeResolved = false
+  }
+
   init {
     // This allows users to call includes.put("Date", "java.util.Date")
     // see https://github.com/gradle/gradle/issues/7485
