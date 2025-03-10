@@ -45,7 +45,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
-import okio.use
 
 /**
  * A [NetworkTransport] that manages a single instance of a [WebSocketConnection].
@@ -304,7 +303,7 @@ private constructor(
           val responsePayload = response.payload
           val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters]!!
           val (payload, mergedFragmentIds) = if (responsePayload.isDeferred()) {
-            deferredJsonMerger.merge(responsePayload) to deferredJsonMerger.mergedFragmentIds
+            deferredJsonMerger.merge(responsePayload) to deferredJsonMerger.pendingFragmentIds
           } else {
             responsePayload to null
           }
