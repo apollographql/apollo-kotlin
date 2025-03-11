@@ -95,7 +95,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
-      - run: xcodebuild -allowProvisioningUpdates -project tests/com.apollographql.iostest/com.apollographql.iostest.xcodeproj -configuration Debug -scheme com.apollographql.iostest -sdk iphoneos -destination name='iPhone 16' test -test-timeouts-enabled YES
+      - run: /Applications/Xcode_16.2.0.app/Contents/Developer/usr/bin/xcodebuild -allowProvisioningUpdates -project tests/com.apollographql.iostest/com.apollographql.iostest.xcodeproj -configuration Debug -scheme com.apollographql.iostest -sdk iphoneos -destination name='iPhone 16' test -test-timeouts-enabled YES
   intellij-plugin:
     if: "!startsWith(github.head_ref, 'release-')"
     name: Build IntelliJ Plugin
