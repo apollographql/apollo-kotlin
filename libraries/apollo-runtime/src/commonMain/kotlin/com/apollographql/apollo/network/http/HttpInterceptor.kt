@@ -11,7 +11,7 @@ interface HttpInterceptorChain {
   /**
    * Continues with the request and call all downstream interceptors.
    */
-  @Throws(ApolloException::class, CancellationException::class)
+  @Throws(Throwable::class)
   suspend fun proceed(request: HttpRequest): HttpResponse
 }
 
