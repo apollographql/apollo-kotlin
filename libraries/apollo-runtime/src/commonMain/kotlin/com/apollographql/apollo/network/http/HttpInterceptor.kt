@@ -18,10 +18,12 @@ interface HttpInterceptorChain {
 interface HttpInterceptor {
   /**
    * Intercepts the request and returns a response.
-   * Implementation may throw [ApolloException] in case of error. Those errors are typically
-   * caught by the network transport and subsequently exposed in `ApolloResponse.exception`
+   * Implementation may throw in case of error. Those errors are typically
+   * caught by the network transport and subsequently exposed in `ApolloResponse.exception`.
+   * If the exception is not an instance of [ApolloException], it will be wrapped in an
+   * instance of [ApolloNetworkException].
    */
-  @Throws(ApolloException::class, CancellationException::class)
+  @Throws(Throwable::class)
   suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse
 
   // TODO: remove dispose

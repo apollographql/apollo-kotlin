@@ -8,15 +8,15 @@ import com.apollographql.apollo.network.http.HttpInterceptorChain
 import testInterceptor
 import kotlin.test.Test
 
-class MainTest {
+class JvmTest {
   @Test
-  fun exceptionTest() {
+  fun throwingInInterceptorIsExposedInResponse() {
     testInterceptor(object : HttpInterceptor {
       override suspend fun intercept(
           request: HttpRequest,
           chain: HttpInterceptorChain,
       ): HttpResponse {
-        throw DefaultApolloException("interceptor error")
+        throw Exception("interceptor error")
       }
     })
   }
