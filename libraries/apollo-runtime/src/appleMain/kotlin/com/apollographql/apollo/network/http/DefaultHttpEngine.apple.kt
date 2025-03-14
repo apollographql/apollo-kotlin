@@ -11,6 +11,7 @@ import kotlinx.atomicfu.locks.withLock
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.Buffer
 import okio.BufferedSource
