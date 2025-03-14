@@ -98,16 +98,16 @@ private constructor(
   init {
     networkTransport = if (builder.networkTransport != null) {
       check(builder.httpServerUrl == null) {
-        "Apollo: 'httpServerUrl' has no effect if 'networkTransport' is set"
+        "Apollo: 'httpServerUrl' has no effect if 'networkTransport' is set. Configure httpServerUrl on the networkTransport directly."
       }
       check(builder.httpEngine == null) {
-        "Apollo: 'httpEngine' has no effect if 'networkTransport' is set"
+        "Apollo: 'httpEngine' or 'okHttpClient' has no effect if 'networkTransport' is set. Configure httpEngine on the networkTransport directly."
       }
       check(builder.httpInterceptors.isEmpty()) {
-        "Apollo: 'addHttpInterceptor' has no effect if 'networkTransport' is set"
+        "Apollo: 'addHttpInterceptor' has no effect if 'networkTransport' is set. Configure the interceptors on the networkTransport directly."
       }
       check(builder.httpExposeErrorBody == null) {
-        "Apollo: 'httpExposeErrorBody' has no effect if 'networkTransport' is set"
+        "Apollo: 'httpExposeErrorBody' has no effect if 'networkTransport' is set. Configure httpExposeErrorBody on the networkTransport directly."
       }
       builder.networkTransport!!
     } else {
@@ -130,22 +130,22 @@ private constructor(
 
     subscriptionNetworkTransport = if (builder.subscriptionNetworkTransport != null) {
       check(builder.webSocketServerUrl == null) {
-        "Apollo: 'webSocketServerUrl' has no effect if 'subscriptionNetworkTransport' is set"
+        "Apollo: 'webSocketServerUrl' has no effect if 'subscriptionNetworkTransport' is set. Configure webSocketServerUrl on the subscriptionNetworkTransport directly."
       }
       check(builder.webSocketEngine == null) {
-        "Apollo: 'webSocketEngine' has no effect if 'subscriptionNetworkTransport' is set"
+        "Apollo: 'webSocketEngine' or 'okHttpClient' has no effect if 'subscriptionNetworkTransport' is set. Configure webSocketEngine on the subscriptionNetworkTransport directly."
       }
       check(builder.webSocketIdleTimeoutMillis == null) {
-        "Apollo: 'webSocketIdleTimeoutMillis' has no effect if 'subscriptionNetworkTransport' is set"
+        "Apollo: 'webSocketIdleTimeoutMillis' has no effect if 'subscriptionNetworkTransport' is set. Configure webSocketIdleTimeoutMillis on the subscriptionNetworkTransport directly."
       }
       check(builder.wsProtocolFactory == null) {
-        "Apollo: 'wsProtocolFactory' has no effect if 'subscriptionNetworkTransport' is set"
+        "Apollo: 'wsProtocolFactory' has no effect if 'subscriptionNetworkTransport' is set. Configure wsProtocolFactory on the subscriptionNetworkTransport directly."
       }
       check(builder.webSocketReopenWhen == null) {
-        "Apollo: 'webSocketReopenWhen' has no effect if 'subscriptionNetworkTransport' is set"
+        "Apollo: 'webSocketReopenWhen' has no effect if 'subscriptionNetworkTransport' is set. Configure webSocketReopenWhen on the subscriptionNetworkTransport directly."
       }
       check(builder.webSocketReopenServerUrl == null) {
-        "Apollo: 'webSocketReopenServerUrl' has no effect if 'subscriptionNetworkTransport' is set"
+        "Apollo: 'webSocketReopenServerUrl' has no effect if 'subscriptionNetworkTransport' is set. Configure webSocketReopenServerUrl on the subscriptionNetworkTransport directly."
       }
       builder.subscriptionNetworkTransport!!
     } else {
