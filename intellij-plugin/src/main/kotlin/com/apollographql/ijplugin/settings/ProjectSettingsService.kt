@@ -47,6 +47,13 @@ class ProjectSettingsService(private val project: Project) : PersistentStateComp
       notifySettingsChanged()
     }
 
+  override var automaticCodegenAdditionalGradleJvmArguments: String
+    get() = _state.automaticCodegenAdditionalGradleJvmArguments
+    set(value) {
+      _state.automaticCodegenAdditionalGradleJvmArguments = value
+      notifySettingsChanged()
+    }
+
   override var hasEnabledGraphQLPluginApolloKotlinSupport: Boolean
     get() = _state.hasEnabledGraphQLPluginApolloKotlinSupport
     set(value) {
@@ -143,6 +150,7 @@ class ProjectSettingsService(private val project: Project) : PersistentStateComp
 
 interface ProjectSettingsState {
   var automaticCodegenTriggering: Boolean
+  var automaticCodegenAdditionalGradleJvmArguments: String
   var hasEnabledGraphQLPluginApolloKotlinSupport: Boolean
   var contributeConfigurationToGraphqlPlugin: Boolean
   var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration>
@@ -191,6 +199,7 @@ data class ApolloKotlinServiceConfiguration(
 
 data class ProjectSettingsStateImpl(
     override var automaticCodegenTriggering: Boolean = true,
+    override var automaticCodegenAdditionalGradleJvmArguments: String = "-Xms64m -Xmx512m",
     override var hasEnabledGraphQLPluginApolloKotlinSupport: Boolean = false,
     override var contributeConfigurationToGraphqlPlugin: Boolean = true,
     override var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration> = emptyList(),
