@@ -140,8 +140,10 @@ fun String.toGQLSelections(options: ParserOptions = ParserOptions.Default): List
  * You can then use [validateAsSchema] to validate the contents and get a [Schema].
  * Or use [validateAsExecutable] to validate the contents get a list of operations/fragments.
  *
- * Closes [BufferedSource]
+ * Closes [BufferedSource].
  *
+ * @param filePath the path of a file on the host filesystem where the source is coming from. If provided, [filePath]
+ * is used to display context for parsing errors. If the source doesn't come from a file, pass `null`.
  * @return a [GQLResult] with either a non-null [GQLDocument] or a list of issues.
  */
 @ApolloExperimental
@@ -152,7 +154,10 @@ fun BufferedSource.parseAsGQLDocument(filePath: String? = null, options: ParserO
 /**
  * Parses the source to a [GQLValue], validating the syntax but not the contents of the value.
  *
- * Closes [BufferedSource]
+ * Closes [BufferedSource].
+ *
+ * @param filePath the path of a file on the host filesystem where the source is coming from. If provided, [filePath]
+ * is used to display context for parsing errors. If the source doesn't come from a file, pass `null`.
  */
 @ApolloExperimental
 fun BufferedSource.parseAsGQLValue(filePath: String? = null, options: ParserOptions = ParserOptions.Default): GQLResult<GQLValue> {
@@ -162,7 +167,10 @@ fun BufferedSource.parseAsGQLValue(filePath: String? = null, options: ParserOpti
 /**
  * Parses the source to a [GQLType], validating the syntax but not the contents of the value.
  *
- * Closes [BufferedSource]
+ * Closes [BufferedSource].
+ *
+ * @param filePath the path of a file on the host filesystem where the source is coming from. If provided, [filePath]
+ * is used to display context for parsing errors. If the source doesn't come from a file, pass `null`.
  */
 @ApolloExperimental
 fun BufferedSource.parseAsGQLType(filePath: String? = null, options: ParserOptions = ParserOptions.Default): GQLResult<GQLType> {
@@ -173,6 +181,9 @@ fun BufferedSource.parseAsGQLType(filePath: String? = null, options: ParserOptio
  * Parses the source to a [List]<[GQLSelection]>, validating the syntax but not the contents of the selections.
  *
  * Closes [BufferedSource]
+ *
+ * @param filePath the path of a file on the host filesystem where the source is coming from. If provided, [filePath]
+ * is used to display context for parsing errors. If the source doesn't come from a file, pass `null`.
  */
 @ApolloExperimental
 fun BufferedSource.parseAsGQLSelections(
