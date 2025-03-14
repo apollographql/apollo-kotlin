@@ -10,7 +10,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.AddEditRemovePanel
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.bindSelected
+import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
+import java.awt.Font
 import javax.swing.JCheckBox
 import javax.swing.JComponent
 import javax.swing.JPanel
@@ -18,10 +20,12 @@ import javax.swing.JPanel
 class SettingsComponent(private val project: Project) {
   private val propertyGraph = PropertyGraph()
   private val automaticCodegenTriggeringProperty = propertyGraph.property(false)
+  private val automaticCodegenAdditionalGradleJvmArgumentsProperty = propertyGraph.property("")
   private val contributeConfigurationToGraphqlPluginProperty = propertyGraph.property(false)
   private val telemetryEnabledProperty = propertyGraph.property(false)
 
   var automaticCodegenTriggering: Boolean by automaticCodegenTriggeringProperty
+  var automaticCodegenAdditionalGradleJvmArguments: String by automaticCodegenAdditionalGradleJvmArgumentsProperty
   var contributeConfigurationToGraphqlPlugin: Boolean by contributeConfigurationToGraphqlPluginProperty
   var apolloKotlinServiceConfigurations: List<ApolloKotlinServiceConfiguration>
     get() = addEditRemovePanel?.data?.toList() ?: emptyList()
@@ -41,6 +45,15 @@ class SettingsComponent(private val project: Project) {
             .comment(ApolloBundle.message("settings.codegen.automaticCodegenTriggering.comment"))
             .bindSelected(automaticCodegenTriggeringProperty)
             .component
+      }
+      row {
+        label(ApolloBundle.message("settings.codegen.additionalGradleJvmArguments.text"))
+        textField()
+            .align(AlignX.FILL)
+            .bindText(automaticCodegenAdditionalGradleJvmArgumentsProperty)
+            .applyToComponent {
+              font = Font(Font.MONOSPACED, font.style, font.size)
+            }
       }
     }.visible(isKotlinPluginPresent && isGradlePluginPresent)
     group(ApolloBundle.message("settings.graphqlPlugin.title")) {

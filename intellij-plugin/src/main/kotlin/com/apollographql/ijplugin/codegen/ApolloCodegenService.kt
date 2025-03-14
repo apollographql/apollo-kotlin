@@ -38,6 +38,7 @@ import org.gradle.tooling.GradleConnector
 import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
+import java.io.File
 import java.util.concurrent.Executors
 
 @Service(Service.Level.PROJECT)
@@ -191,9 +192,17 @@ class ApolloCodegenService(
         try {
           val cancellationToken = gradleCodegenCancellation!!.token()
           connection.newBuild()
+              .setJavaHome(executionSettings.javaHome?.let { File(it) })
               .forTasks(CODEGEN_GRADLE_TASK_NAME)
               .withCancellationToken(cancellationToken)
               .addArguments("--continuous")
+              .let {
+                if (project.projectSettingsState.automaticCodegenAdditionalGradleJvmArguments.isNotEmpty()) {
+                  it.addJvmArguments(project.projectSettingsState.automaticCodegenAdditionalGradleJvmArguments.split(' '))
+                } else {
+                  it
+                }
+              }
               .addProgressListener(object : SimpleProgressListener() {
                 override fun onSuccess() {
                   logd("Gradle build success, marking generated source roots as dirty")

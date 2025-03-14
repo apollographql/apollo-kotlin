@@ -22,6 +22,7 @@ import org.gradle.tooling.model.GradleProject
 import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
+import java.io.File
 
 class DownloadSchemaAction : AnAction() {
   override fun actionPerformed(e: AnActionEvent) {
@@ -55,7 +56,9 @@ private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
     val rootGradleProject = gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
       logd("Fetch Gradle project model")
       return@execute try {
-        connection.model<GradleProject>(GradleProject::class.java).get()
+        connection.model<GradleProject>(GradleProject::class.java)
+            .setJavaHome(executionSettings.javaHome?.let { File(it) })
+            .get()
       } catch (t: Throwable) {
         logw(t, "Couldn't fetch Gradle project model")
         null
@@ -83,6 +86,7 @@ private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
     gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
       try {
         connection.newBuild()
+            .setJavaHome(executionSettings.javaHome?.let { File(it) })
             .forTasks(*allDownloadSchemaTasks.toTypedArray())
             .addProgressListener(object : SimpleProgressListener() {
               override fun onFailure(failures: List<Failure>) {

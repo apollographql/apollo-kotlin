@@ -167,6 +167,7 @@ class GradleToolingModelService(
         logd("Fetch Gradle project model")
         return@execute try {
           connection.model<GradleProject>(GradleProject::class.java)
+              .setJavaHome(executionSettings.javaHome?.let { File(it) })
               .withCancellationToken(gradleCancellation!!.token())
               .get()
         } catch (t: Throwable) {
@@ -191,6 +192,7 @@ class GradleToolingModelService(
           logd("Fetch tooling model for ${gradleProject.path}")
           return@execute try {
             connection.model<ApolloGradleToolingModel>(ApolloGradleToolingModel::class.java)
+                .setJavaHome(executionSettings.javaHome?.let { File(it) })
                 .withCancellationToken(gradleCancellation!!.token())
                 .get()
                 .takeIf {
