@@ -29,6 +29,7 @@ import com.apollographql.apollo.mpp.currentTimeMillis
 import com.apollographql.apollo.network.NetworkTransport
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
@@ -62,20 +63,23 @@ private constructor(
   ): Flow<ApolloResponse<D>> {
     return flow {
       val millisStart = currentTimeMillis()
-      var apolloException: ApolloException? = null
+      var throwable: Throwable? = null
       val httpResponse: HttpResponse? = try {
         DefaultHttpInterceptorChain(
             interceptors = interceptors + engineInterceptor,
             index = 0
         ).proceed(httpRequest)
-      } catch (e: ApolloException) {
-        apolloException = e
+      } catch (t: Throwable) {
+        if (t is CancellationException) {
+          throw t
+        }
+        throwable = t
         null
       }
 
       val responses = when {
         httpResponse == null -> {
-          flowOf(errorResponse(request.operation, apolloException!!))
+          flowOf(errorResponse(request.operation, throwable!!))
         }
 
         httpResponse.statusCode !in 200..299 && !httpResponse.isGraphQLResponse -> {
@@ -212,11 +216,11 @@ private constructor(
             if (jsonMerger == null) {
               jsonMerger = DeferredJsonMerger()
             }
-            val merged = jsonMerger!!.merge(part)
-            val deferredFragmentIds = jsonMerger!!.mergedFragmentIds
-            val isLast = !jsonMerger!!.hasNext
+            val merged = jsonMerger.merge(part)
+            val deferredFragmentIds = jsonMerger.mergedFragmentIds
+            val isLast = !jsonMerger.hasNext
 
-            if (jsonMerger!!.isEmptyPayload) {
+            if (jsonMerger.isEmptyPayload) {
               null
             } else {
               @Suppress("DEPRECATION")
