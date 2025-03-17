@@ -34,6 +34,7 @@ internal object KotlinSymbols {
   val Optional = ClassNames.Optional.toKotlinPoetClassName()
   val Absent = ClassNames.Absent.toKotlinPoetClassName()
   val Present = ClassNames.Present.toKotlinPoetClassName()
+  val PresentMap = MemberName(apolloApiPackageName, "map")
   val Adapter = ClassNames.Adapter.toKotlinPoetClassName()
   val CompiledSelection = ClassNames.CompiledSelection.toKotlinPoetClassName()
   val CompiledNamedType = ClassNames.CompiledNamedType.toKotlinPoetClassName()

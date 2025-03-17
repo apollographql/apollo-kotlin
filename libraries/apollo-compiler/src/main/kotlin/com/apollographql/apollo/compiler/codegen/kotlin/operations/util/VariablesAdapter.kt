@@ -58,7 +58,11 @@ private fun IrVariable.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
     builder.beginControlFlow("if ($value.%N is %T)", propertyName, KotlinSymbols.Present)
   }
   builder.addStatement("$writer.name(%S)", name)
-  builder.addSerializeStatement(adapterInitializer, propertyName)
+  builder.addSerializeStatement(
+      adapterInitializer,
+      propertyName,
+      context.resolver.unwrapInlineClass(type)
+  )
   if (type.optional) {
     builder.endControlFlow()
     if (defaultValue != null) {

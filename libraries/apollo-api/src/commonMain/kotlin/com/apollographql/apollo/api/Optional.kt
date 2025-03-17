@@ -55,3 +55,7 @@ fun <V, R> Optional<V>.map(mapper: (V) -> R): Optional<R> {
     is Present -> Optional.present(mapper(value))
   }
 }
+
+fun <V, R> Present<V>.map(mapper: (V) -> R): Present<R> {
+  return Optional.present(mapper(value))
+}

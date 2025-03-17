@@ -266,26 +266,28 @@ internal class KotlinResolver(
 
   internal fun unwrapInlineClass(type: IrType): CodeBlock {
     val inlineClassProperty = resolveScalarInlineProperty(type.rawType().name)
+    if (inlineClassProperty == null) {
+      return CodeBlock.of("")
+    }
+
     return buildCodeBlock {
-      when (type) {
-        is IrListType -> {
-          if (inlineClassProperty != null) {
-            if (type.nullable) {
-              add("?")
-            }
-            add(".map { it%L }", unwrapInlineClass(type.ofType))
+      when {
+        type.optional -> {
+          add(".%M { it%L }", KotlinSymbols.PresentMap, unwrapInlineClass(type.copyWith(optional = false)))
+        }
+        type is IrListType -> {
+          if (type.nullable) {
+            add("?")
           }
+          add(".map { it%L }", unwrapInlineClass(type.ofType))
         }
 
-        is IrScalarType -> {
-          if (inlineClassProperty != null) {
-            if (type.nullable) {
-              add("?")
-            }
-            add(".%L", inlineClassProperty)
+        type is IrScalarType -> {
+          if (type.nullable) {
+            add("?")
           }
+          add(".%L", inlineClassProperty)
         }
-
         else -> Unit
       }
     }

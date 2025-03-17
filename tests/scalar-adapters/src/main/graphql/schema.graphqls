@@ -28,5 +28,26 @@ type Query {
   nullableLength: Length
   nonNullableLengthList: [Length!]!
   lengthListList: [[Length!]]
-  fieldWitArgs(length: Length!): Int
+  fieldWitArgs(input: MyInput!, length: Length!): Int
+}
+
+input MyInput {
+  float: CustomFloat
+  long: Long
+  any: Any
+  geoPoints: [GeoPoint]
+  address: Address
+  id: ID!
+  nullableId: ID
+  string: String!
+  nullableString: String
+  int: Int!
+  nullableInt: Int
+  boolean: Boolean!
+  nullableBoolean: Boolean
+  notMapped: NotMapped!
+  nullableNotMapped: NotMapped
+  decimal: Decimal
+  nonNullableLength: Length!
+  nullableLength: Length
 }

@@ -33,6 +33,6 @@ query InlineClass {
   lengthListList
 }
 
-query Variables($length: Length!) {
-  fieldWitArgs(length: $length)
+query Variables($length: Length!, $input: MyInput!) {
+  fieldWitArgs(length: $length, input: $input)
 }
