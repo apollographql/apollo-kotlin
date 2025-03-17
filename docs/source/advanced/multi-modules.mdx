@@ -52,6 +52,9 @@ apollo {
     
     // The 'feature' depends on the 'schema' module
     dependsOn(project(":schema")) // highlight-line
+
+    // If you want to reuse fragments from other modules, you can add them too
+    dependsOn(project(":fragments")) 
   }
 }
 ```
