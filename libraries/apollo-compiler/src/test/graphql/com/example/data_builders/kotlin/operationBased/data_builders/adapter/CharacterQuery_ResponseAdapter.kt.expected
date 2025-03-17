@@ -16,7 +16,9 @@ import com.apollographql.apollo.api.obj
 import com.apollographql.apollo.api.possibleTypes
 import com.example.data_builders.CharacterQuery
 import com.example.data_builders.fragment.DroidFragment
+import com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter
 import com.example.data_builders.fragment.HumanFragment
+import com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
@@ -105,11 +107,11 @@ public object CharacterQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         if (value.humanFragment != null) {
-          com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.toJson(writer, customScalarAdapters, value.humanFragment)
+          HumanFragmentImpl_ResponseAdapter.HumanFragment.toJson(writer, customScalarAdapters, value.humanFragment)
         }
 
         if (value.droidFragment != null) {
-          com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer, customScalarAdapters, value.droidFragment)
+          DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer, customScalarAdapters, value.droidFragment)
         }
       }
     }

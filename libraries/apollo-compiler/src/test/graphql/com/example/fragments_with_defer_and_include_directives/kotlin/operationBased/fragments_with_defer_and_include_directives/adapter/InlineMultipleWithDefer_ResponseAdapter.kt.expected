@@ -95,11 +95,11 @@ public object InlineMultipleWithDefer_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onDroidDeferD_first != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.Data.Hero.OnDroidDeferD_first.toJson(writer, customScalarAdapters, value.onDroidDeferD_first)
+          OnDroidDeferD_first.toJson(writer, customScalarAdapters, value.onDroidDeferD_first)
         }
 
         if (value.onDroidDeferD_second != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.Data.Hero.OnDroidDeferD_second.toJson(writer, customScalarAdapters, value.onDroidDeferD_second)
+          OnDroidDeferD_second.toJson(writer, customScalarAdapters, value.onDroidDeferD_second)
         }
       }
 

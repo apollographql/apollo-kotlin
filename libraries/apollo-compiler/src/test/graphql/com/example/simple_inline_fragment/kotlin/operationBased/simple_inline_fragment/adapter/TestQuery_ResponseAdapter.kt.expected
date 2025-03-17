@@ -98,14 +98,14 @@ public object TestQuery_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
+        OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
 
         if (value.onHuman != null) {
-          com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
+          OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
         }
 
         if (value.onDroid != null) {
-          com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
+          OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
         }
       }
 
@@ -145,7 +145,7 @@ public object TestQuery_ResponseAdapter {
           writer.name("id")
           StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
-          com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
+          OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
         }
 
         private object OnCharacter : Adapter<TestQuery.Data.Hero.OnCharacter.OnCharacter> {

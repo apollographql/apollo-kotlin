@@ -125,27 +125,27 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onDroidIfCond1 != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfCond1.toJson(writer, customScalarAdapters, value.onDroidIfCond1)
+          OnDroidIfCond1.toJson(writer, customScalarAdapters, value.onDroidIfCond1)
         }
 
         if (value.onDroidIfNotCond2 != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfNotCond2.toJson(writer, customScalarAdapters, value.onDroidIfNotCond2)
+          OnDroidIfNotCond2.toJson(writer, customScalarAdapters, value.onDroidIfNotCond2)
         }
 
         if (value.onDroidDeferE_first != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_first.toJson(writer, customScalarAdapters, value.onDroidDeferE_first)
+          OnDroidDeferE_first.toJson(writer, customScalarAdapters, value.onDroidDeferE_first)
         }
 
         if (value.onDroidDeferE_second != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_second.toJson(writer, customScalarAdapters, value.onDroidDeferE_second)
+          OnDroidDeferE_second.toJson(writer, customScalarAdapters, value.onDroidDeferE_second)
         }
 
         if (value.onDroidDeferE_third != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_third.toJson(writer, customScalarAdapters, value.onDroidDeferE_third)
+          OnDroidDeferE_third.toJson(writer, customScalarAdapters, value.onDroidDeferE_third)
         }
 
         if (value.onDroidDeferE_fourth != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_fourth.toJson(writer, customScalarAdapters, value.onDroidDeferE_fourth)
+          OnDroidDeferE_fourth.toJson(writer, customScalarAdapters, value.onDroidDeferE_fourth)
         }
       }
 

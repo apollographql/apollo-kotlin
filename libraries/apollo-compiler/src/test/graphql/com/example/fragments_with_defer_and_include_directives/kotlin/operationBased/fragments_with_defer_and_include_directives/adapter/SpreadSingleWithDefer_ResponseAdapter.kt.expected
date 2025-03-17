@@ -18,6 +18,7 @@ import com.apollographql.apollo.api.obj
 import com.apollographql.apollo.api.possibleTypes
 import com.example.fragments_with_defer_and_include_directives.SpreadSingleWithDefer
 import com.example.fragments_with_defer_and_include_directives.fragment.DroidDetails
+import com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
@@ -88,7 +89,7 @@ public object SpreadSingleWithDefer_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.droidDetails != null) {
-          com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer, customScalarAdapters, value.droidDetails)
+          DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer, customScalarAdapters, value.droidDetails)
         }
       }
     }

@@ -96,11 +96,11 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onCharacter != null) {
-          com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
+          OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
         }
 
         if (value.onStarship != null) {
-          com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnStarship.toJson(writer, customScalarAdapters, value.onStarship)
+          OnStarship.toJson(writer, customScalarAdapters, value.onStarship)
         }
       }
 
@@ -191,14 +191,14 @@ public object TestQuery_ResponseAdapter {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
+            OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
 
             if (value.onHuman != null) {
-              com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
+              OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
             }
 
             if (value.onDroid != null) {
-              com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
+              OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
             }
           }
 
@@ -293,7 +293,7 @@ public object TestQuery_ResponseAdapter {
                 writer.name("__typename")
                 StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-                com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
+                OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
               }
 
               private object OnCharacter : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter> {

@@ -56,7 +56,7 @@ public object TestQuery_ResponseAdapter {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-      com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.toJson(writer, customScalarAdapters, value.onQuery)
+      OnQuery.toJson(writer, customScalarAdapters, value.onQuery)
     }
 
     private object OnQuery : Adapter<TestQuery.Data.OnQuery> {
@@ -148,7 +148,7 @@ public object TestQuery_ResponseAdapter {
           Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters, value.appearsIn)
 
           if (value.onHuman != null) {
-            com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.Hero.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
+            OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
           }
         }
 
@@ -211,7 +211,7 @@ public object TestQuery_ResponseAdapter {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-          com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.Droid.OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
+          OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
         }
 
         private object OnDroid : Adapter<TestQuery.Data.OnQuery.Droid.OnDroid> {

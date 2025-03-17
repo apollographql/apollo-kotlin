@@ -88,7 +88,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onDroid != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.Data.Hero.OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
+          OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
         }
       }
 

@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.missingField
 import com.example.named_fragment_with_variables.GetUser
+import com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
@@ -46,7 +47,7 @@ public object GetUser_ResponseAdapter {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-      com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer, customScalarAdapters, value.queryFragment)
+      QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer, customScalarAdapters, value.queryFragment)
     }
   }
 }

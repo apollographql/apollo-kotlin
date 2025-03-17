@@ -92,7 +92,7 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         if (value.onHuman != null) {
-          com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
+          OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
         }
       }
 

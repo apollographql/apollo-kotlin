@@ -83,7 +83,7 @@ public object TestQuery_ResponseAdapter {
       writer.name("Donkey")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.Donkey)
 
-      com.example.capitalized_fields.adapter.TestQuery_ResponseAdapter.OnHorse.toJson(writer, customScalarAdapters, value.onHorse)
+      OnHorse.toJson(writer, customScalarAdapters, value.onHorse)
     }
   }
 

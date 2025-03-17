@@ -91,7 +91,7 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.foo)
 
         if (value.onBar != null) {
-          com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Data.Foo.OnBar.toJson(writer, customScalarAdapters, value.onBar)
+          OnBar.toJson(writer, customScalarAdapters, value.onBar)
         }
       }
 

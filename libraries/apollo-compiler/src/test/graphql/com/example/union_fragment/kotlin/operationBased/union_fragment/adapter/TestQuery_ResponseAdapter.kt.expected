@@ -18,6 +18,7 @@ import com.apollographql.apollo.api.obj
 import com.apollographql.apollo.api.possibleTypes
 import com.example.union_fragment.TestQuery
 import com.example.union_fragment.fragment.Starship
+import com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
@@ -94,11 +95,11 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onStarship != null) {
-          com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnStarship.toJson(writer, customScalarAdapters, value.onStarship)
+          OnStarship.toJson(writer, customScalarAdapters, value.onStarship)
         }
 
         if (value.starship != null) {
-          com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.toJson(writer, customScalarAdapters, value.starship)
+          StarshipImpl_ResponseAdapter.Starship.toJson(writer, customScalarAdapters, value.starship)
         }
       }
 

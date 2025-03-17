@@ -93,7 +93,7 @@ public object QueryFragmentImpl_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.toJson(writer, customScalarAdapters, value.heroFragment)
+        HeroFragmentImpl_ResponseAdapter.HeroFragment.toJson(writer, customScalarAdapters, value.heroFragment)
       }
     }
 
@@ -127,7 +127,7 @@ public object QueryFragmentImpl_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer, customScalarAdapters, value.droidFragment)
+        DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer, customScalarAdapters, value.droidFragment)
       }
     }
 
@@ -161,7 +161,7 @@ public object QueryFragmentImpl_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Human.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
+        OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
       }
 
       private object OnHuman : Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human.OnHuman> {

@@ -92,11 +92,11 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onA != null) {
-          com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.toJson(writer, customScalarAdapters, value.onA)
+          OnA.toJson(writer, customScalarAdapters, value.onA)
         }
 
         if (value.onB != null) {
-          com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnB.toJson(writer, customScalarAdapters, value.onB)
+          OnB.toJson(writer, customScalarAdapters, value.onB)
         }
       }
 
@@ -138,7 +138,7 @@ public object TestQuery_ResponseAdapter {
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
           if (value.onB != null) {
-            com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.toJson(writer, customScalarAdapters, value.onB)
+            OnB.toJson(writer, customScalarAdapters, value.onB)
           }
         }
 

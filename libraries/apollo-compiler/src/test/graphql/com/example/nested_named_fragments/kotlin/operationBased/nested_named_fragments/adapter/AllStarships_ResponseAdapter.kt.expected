@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.missingField
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
 import com.example.nested_named_fragments.AllStarships
+import com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
@@ -130,7 +131,7 @@ public object AllStarships_ResponseAdapter {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.toJson(writer, customScalarAdapters, value.starshipFragment)
+            StarshipFragmentImpl_ResponseAdapter.StarshipFragment.toJson(writer, customScalarAdapters, value.starshipFragment)
           }
         }
       }

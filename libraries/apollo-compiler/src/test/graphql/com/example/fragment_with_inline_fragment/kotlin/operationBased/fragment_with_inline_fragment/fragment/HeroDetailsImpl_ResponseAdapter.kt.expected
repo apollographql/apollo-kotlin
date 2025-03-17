@@ -79,11 +79,11 @@ public object HeroDetailsImpl_ResponseAdapter {
       FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
 
       if (value.onDroid != null) {
-        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
+        OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
       }
 
       if (value.humanDetails != null) {
-        com.example.fragment_with_inline_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer, customScalarAdapters, value.humanDetails)
+        HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer, customScalarAdapters, value.humanDetails)
       }
     }
 
@@ -207,7 +207,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.fragment_with_inline_fragment.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer, customScalarAdapters, value.droidDetails)
+        DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer, customScalarAdapters, value.droidDetails)
       }
     }
   }

@@ -54,7 +54,7 @@ internal object HeroDetailsImpl_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       if (value.humanDetails != null) {
-        com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer, customScalarAdapters, value.humanDetails)
+        HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer, customScalarAdapters, value.humanDetails)
       }
     }
   }

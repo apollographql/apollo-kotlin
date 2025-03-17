@@ -22,7 +22,10 @@ import com.apollographql.apollo.api.variable
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferWithIf
 import com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails
 import com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2
+import com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter
 import com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3
+import com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter
+import com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
@@ -107,15 +110,15 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.characterDetails != null) {
-          com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.toJson(writer, customScalarAdapters, value.characterDetails)
+          CharacterDetailsImpl_ResponseAdapter.CharacterDetails.toJson(writer, customScalarAdapters, value.characterDetails)
         }
 
         if (value.characterDetails2 != null) {
-          com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.toJson(writer, customScalarAdapters, value.characterDetails2)
+          CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.toJson(writer, customScalarAdapters, value.characterDetails2)
         }
 
         if (value.characterDetails3 != null) {
-          com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.toJson(writer, customScalarAdapters, value.characterDetails3)
+          CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.toJson(writer, customScalarAdapters, value.characterDetails3)
         }
       }
     }

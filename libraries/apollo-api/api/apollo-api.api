@@ -857,6 +857,7 @@ public final class com/apollographql/apollo/api/OptionalAdapter : com/apollograp
 
 public final class com/apollographql/apollo/api/OptionalKt {
 	public static final fun getOrElse (Lcom/apollographql/apollo/api/Optional;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun map (Lcom/apollographql/apollo/api/Optional$Present;Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo/api/Optional$Present;
 	public static final fun map (Lcom/apollographql/apollo/api/Optional;Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo/api/Optional;
 }
 

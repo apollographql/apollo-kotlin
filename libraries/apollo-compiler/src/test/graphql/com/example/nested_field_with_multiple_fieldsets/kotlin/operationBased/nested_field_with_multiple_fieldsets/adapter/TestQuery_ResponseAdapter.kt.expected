@@ -88,10 +88,10 @@ public object TestQuery_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.toJson(writer, customScalarAdapters, value.onIface1)
+        OnIface1.toJson(writer, customScalarAdapters, value.onIface1)
 
         if (value.onImpl1 != null) {
-          com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.toJson(writer, customScalarAdapters, value.onImpl1)
+          OnImpl1.toJson(writer, customScalarAdapters, value.onImpl1)
         }
       }
 
@@ -163,10 +163,10 @@ public object TestQuery_ResponseAdapter {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.toJson(writer, customScalarAdapters, value.onIface2)
+            OnIface2.toJson(writer, customScalarAdapters, value.onIface2)
 
             if (value.onImpl2 != null) {
-              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.toJson(writer, customScalarAdapters, value.onImpl2)
+              OnImpl2.toJson(writer, customScalarAdapters, value.onImpl2)
             }
           }
 
@@ -296,10 +296,10 @@ public object TestQuery_ResponseAdapter {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.toJson(writer, customScalarAdapters, value.onIface2)
+            OnIface2.toJson(writer, customScalarAdapters, value.onIface2)
 
             if (value.onImpl2 != null) {
-              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.toJson(writer, customScalarAdapters, value.onImpl2)
+              OnImpl2.toJson(writer, customScalarAdapters, value.onImpl2)
             }
           }
 

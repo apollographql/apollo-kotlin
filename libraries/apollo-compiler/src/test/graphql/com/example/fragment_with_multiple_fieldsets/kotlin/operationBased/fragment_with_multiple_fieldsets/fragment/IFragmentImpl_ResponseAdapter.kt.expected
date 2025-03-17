@@ -55,7 +55,7 @@ public object IFragmentImpl_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       if (value.onA != null) {
-        com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.OnA.toJson(writer, customScalarAdapters, value.onA)
+        OnA.toJson(writer, customScalarAdapters, value.onA)
       }
     }
 

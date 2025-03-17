@@ -16,7 +16,9 @@ import com.apollographql.apollo.api.obj
 import com.apollographql.apollo.api.possibleTypes
 import com.example.fragments_with_type_condition.TestQuery
 import com.example.fragments_with_type_condition.fragment.DroidDetails
+import com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter
 import com.example.fragments_with_type_condition.fragment.HumanDetails
+import com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
@@ -99,11 +101,11 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.humanDetails != null) {
-          com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer, customScalarAdapters, value.humanDetails)
+          HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer, customScalarAdapters, value.humanDetails)
         }
 
         if (value.droidDetails != null) {
-          com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer, customScalarAdapters, value.droidDetails)
+          DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer, customScalarAdapters, value.droidDetails)
         }
       }
     }
@@ -153,11 +155,11 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.humanDetails != null) {
-          com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer, customScalarAdapters, value.humanDetails)
+          HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer, customScalarAdapters, value.humanDetails)
         }
 
         if (value.droidDetails != null) {
-          com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer, customScalarAdapters, value.droidDetails)
+          DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer, customScalarAdapters, value.droidDetails)
         }
       }
     }

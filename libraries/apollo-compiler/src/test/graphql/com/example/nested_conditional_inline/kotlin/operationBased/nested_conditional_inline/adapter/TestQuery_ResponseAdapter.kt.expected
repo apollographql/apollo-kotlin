@@ -101,11 +101,11 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         if (value.onHuman != null) {
-          com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
+          OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
         }
 
         if (value.onDroid != null) {
-          com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
+          OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
         }
       }
 
@@ -180,7 +180,7 @@ public object TestQuery_ResponseAdapter {
             StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
             if (value.onHuman != null) {
-              com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.Friend.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
+              OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
             }
           }
 
@@ -285,7 +285,7 @@ public object TestQuery_ResponseAdapter {
             StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
             if (value.onHuman != null) {
-              com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.Friend.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
+              OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
             }
           }
 

@@ -108,7 +108,7 @@ public object QueryFragmentImpl_ResponseAdapter {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-          com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.toJson(writer, customScalarAdapters, value.userFragment)
+          UserFragmentImpl_ResponseAdapter.UserFragment.toJson(writer, customScalarAdapters, value.userFragment)
         }
       }
     }
