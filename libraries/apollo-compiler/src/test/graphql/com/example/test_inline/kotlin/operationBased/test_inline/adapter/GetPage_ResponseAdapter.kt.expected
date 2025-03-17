@@ -91,7 +91,7 @@ public object GetPage_ResponseAdapter {
         Item.obj().list().toJson(writer, customScalarAdapters, value.items)
 
         if (value.onParticularCollection != null) {
-          com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.toJson(writer, customScalarAdapters, value.onParticularCollection)
+          OnParticularCollection.toJson(writer, customScalarAdapters, value.onParticularCollection)
         }
       }
 
@@ -188,7 +188,7 @@ public object GetPage_ResponseAdapter {
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
             if (value.onParticularItem != null) {
-              com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.toJson(writer, customScalarAdapters, value.onParticularItem)
+              OnParticularItem.toJson(writer, customScalarAdapters, value.onParticularItem)
             }
           }
 

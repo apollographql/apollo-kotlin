@@ -81,7 +81,7 @@ public object PilotFragmentImpl_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.toJson(writer, customScalarAdapters, value.planetFragment)
+        PlanetFragmentImpl_ResponseAdapter.PlanetFragment.toJson(writer, customScalarAdapters, value.planetFragment)
       }
     }
   }

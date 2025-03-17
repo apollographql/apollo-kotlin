@@ -93,11 +93,11 @@ public object GetA_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onB != null) {
-          com.example.used_arguments.adapter.GetA_ResponseAdapter.Data.A.OnB.toJson(writer, customScalarAdapters, value.onB)
+          OnB.toJson(writer, customScalarAdapters, value.onB)
         }
 
         if (value.onC != null) {
-          com.example.used_arguments.adapter.GetA_ResponseAdapter.Data.A.OnC.toJson(writer, customScalarAdapters, value.onC)
+          OnC.toJson(writer, customScalarAdapters, value.onC)
         }
       }
 

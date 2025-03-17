@@ -95,14 +95,14 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
+        OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
 
         if (value.onCharacterDeferF_second != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacterDeferF_second.toJson(writer, customScalarAdapters, value.onCharacterDeferF_second)
+          OnCharacterDeferF_second.toJson(writer, customScalarAdapters, value.onCharacterDeferF_second)
         }
 
         if (value.onCharacterDeferF_third != null) {
-          com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacterDeferF_third.toJson(writer, customScalarAdapters, value.onCharacterDeferF_third)
+          OnCharacterDeferF_third.toJson(writer, customScalarAdapters, value.onCharacterDeferF_third)
         }
       }
 

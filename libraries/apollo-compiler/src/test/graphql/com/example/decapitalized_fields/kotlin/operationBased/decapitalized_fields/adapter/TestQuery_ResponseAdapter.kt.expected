@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.missingField
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
 import com.example.decapitalized_fields.TestQuery
+import com.example.decapitalized_fields.fragment.HorseFragmentImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
@@ -86,9 +87,9 @@ public object TestQuery_ResponseAdapter {
         writer.name("Donkey")
         NullableStringAdapter.toJson(writer, customScalarAdapters, value.donkey)
 
-        com.example.decapitalized_fields.adapter.TestQuery_ResponseAdapter.Data.Horse.OnHorse.toJson(writer, customScalarAdapters, value.onHorse)
+        OnHorse.toJson(writer, customScalarAdapters, value.onHorse)
 
-        com.example.decapitalized_fields.fragment.HorseFragmentImpl_ResponseAdapter.HorseFragment.toJson(writer, customScalarAdapters, value.horseFragment)
+        HorseFragmentImpl_ResponseAdapter.HorseFragment.toJson(writer, customScalarAdapters, value.horseFragment)
       }
 
       private object OnHorse : Adapter<TestQuery.Data.Horse.OnHorse> {

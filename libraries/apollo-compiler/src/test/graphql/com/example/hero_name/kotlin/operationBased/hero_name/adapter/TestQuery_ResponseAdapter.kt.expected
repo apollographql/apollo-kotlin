@@ -100,7 +100,7 @@ public object TestQuery_ResponseAdapter {
         AnyAdapter.toJson(writer, customScalarAdapters, value.birthDate)
 
         if (value.onDroid != null) {
-          com.example.hero_name.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
+          OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
         }
       }
 

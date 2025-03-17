@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.missingField
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
 import com.example.fragment_with_inline_fragment.TestQuery
+import com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter
 import com.example.fragment_with_inline_fragment.type.Episode
 import com.example.fragment_with_inline_fragment.type.adapter.Episode_ResponseAdapter
 import kotlin.String
@@ -90,7 +91,7 @@ public object TestQuery_ResponseAdapter {
         writer.name("appearsIn")
         Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters, value.appearsIn)
 
-        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer, customScalarAdapters, value.heroDetails)
+        HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer, customScalarAdapters, value.heroDetails)
       }
     }
   }

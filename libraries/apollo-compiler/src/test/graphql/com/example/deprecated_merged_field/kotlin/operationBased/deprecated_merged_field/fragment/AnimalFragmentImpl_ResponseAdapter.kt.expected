@@ -63,11 +63,11 @@ public object AnimalFragmentImpl_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       if (value.onCat != null) {
-        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.toJson(writer, customScalarAdapters, value.onCat)
+        OnCat.toJson(writer, customScalarAdapters, value.onCat)
       }
 
       if (value.onDog != null) {
-        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.toJson(writer, customScalarAdapters, value.onDog)
+        OnDog.toJson(writer, customScalarAdapters, value.onDog)
       }
     }
 

@@ -99,11 +99,11 @@ public object TestOperation_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onBeing != null) {
-          com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.toJson(writer, customScalarAdapters, value.onBeing)
+          OnBeing.toJson(writer, customScalarAdapters, value.onBeing)
         }
 
         if (value.onWookie != null) {
-          com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.toJson(writer, customScalarAdapters, value.onWookie)
+          OnWookie.toJson(writer, customScalarAdapters, value.onWookie)
         }
       }
 
@@ -157,7 +157,7 @@ public object TestOperation_ResponseAdapter {
           Friend.obj(true).list().toJson(writer, customScalarAdapters, value.friends)
 
           if (value.onHuman != null) {
-            com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
+            OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
           }
         }
 
@@ -205,7 +205,7 @@ public object TestOperation_ResponseAdapter {
             StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
             if (value.onWookie != null) {
-              com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.toJson(writer, customScalarAdapters, value.onWookie)
+              OnWookie.toJson(writer, customScalarAdapters, value.onWookie)
             }
           }
 
@@ -315,7 +315,7 @@ public object TestOperation_ResponseAdapter {
               NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.isFamous)
 
               if (value.onWookie != null) {
-                com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.toJson(writer, customScalarAdapters, value.onWookie)
+                OnWookie.toJson(writer, customScalarAdapters, value.onWookie)
               }
             }
 

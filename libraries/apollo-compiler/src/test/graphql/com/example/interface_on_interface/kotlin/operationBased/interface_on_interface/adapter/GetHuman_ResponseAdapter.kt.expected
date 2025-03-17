@@ -132,7 +132,7 @@ public object GetHuman_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onHuman != null) {
-          com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
+          OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
         }
       }
 

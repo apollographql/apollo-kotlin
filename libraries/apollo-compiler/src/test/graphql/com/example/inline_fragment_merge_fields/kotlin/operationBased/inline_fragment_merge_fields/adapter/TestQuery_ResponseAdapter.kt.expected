@@ -90,7 +90,7 @@ public object TestQuery_ResponseAdapter {
         writer.name("friendsConnection")
         FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
 
-        com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
+        OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
       }
 
       private object FriendsConnection : Adapter<TestQuery.Data.Hero.FriendsConnection> {

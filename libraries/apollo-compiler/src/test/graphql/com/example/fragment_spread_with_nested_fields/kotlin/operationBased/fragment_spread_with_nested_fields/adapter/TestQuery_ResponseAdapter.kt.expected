@@ -14,6 +14,7 @@ import com.apollographql.apollo.api.missingField
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
 import com.example.fragment_spread_with_nested_fields.TestQuery
+import com.example.fragment_spread_with_nested_fields.fragment.HeroDetailsImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
@@ -75,7 +76,7 @@ public object TestQuery_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.fragment_spread_with_nested_fields.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer, customScalarAdapters, value.heroDetails)
+        HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer, customScalarAdapters, value.heroDetails)
       }
     }
   }

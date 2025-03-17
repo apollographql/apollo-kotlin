@@ -90,11 +90,11 @@ public object AFragmentImpl_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.fragment1 != null) {
-          com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.toJson(writer, customScalarAdapters, value.fragment1)
+          Fragment1Impl_ResponseAdapter.Fragment1.toJson(writer, customScalarAdapters, value.fragment1)
         }
 
         if (value.fragment2 != null) {
-          com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.toJson(writer, customScalarAdapters, value.fragment2)
+          Fragment2Impl_ResponseAdapter.Fragment2.toJson(writer, customScalarAdapters, value.fragment2)
         }
       }
     }

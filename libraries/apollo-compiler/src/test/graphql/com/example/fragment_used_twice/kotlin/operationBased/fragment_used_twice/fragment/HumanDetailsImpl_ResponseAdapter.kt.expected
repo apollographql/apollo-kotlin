@@ -51,7 +51,7 @@ public object HumanDetailsImpl_ResponseAdapter {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
-      com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.toJson(writer, customScalarAdapters, value.characterDetails)
+      CharacterDetailsImpl_ResponseAdapter.CharacterDetails.toJson(writer, customScalarAdapters, value.characterDetails)
     }
   }
 }

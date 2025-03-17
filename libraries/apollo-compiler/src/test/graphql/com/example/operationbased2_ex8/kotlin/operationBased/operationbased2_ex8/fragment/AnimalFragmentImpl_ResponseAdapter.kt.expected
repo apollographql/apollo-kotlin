@@ -104,11 +104,11 @@ public object AnimalFragmentImpl_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
         if (value.onLion != null) {
-          com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.toJson(writer, customScalarAdapters, value.onLion)
+          OnLion.toJson(writer, customScalarAdapters, value.onLion)
         }
 
         if (value.onCat != null) {
-          com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.toJson(writer, customScalarAdapters, value.onCat)
+          OnCat.toJson(writer, customScalarAdapters, value.onCat)
         }
       }
 

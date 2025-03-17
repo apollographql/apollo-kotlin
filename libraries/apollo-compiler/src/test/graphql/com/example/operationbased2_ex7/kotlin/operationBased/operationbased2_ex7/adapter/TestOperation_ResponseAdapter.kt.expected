@@ -79,7 +79,7 @@ public object TestOperation_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.toJson(writer, customScalarAdapters, value.onAnimal)
+        OnAnimal.toJson(writer, customScalarAdapters, value.onAnimal)
       }
 
       private object OnAnimal : Adapter<TestOperation.Data.Animal.OnAnimal> {
@@ -133,11 +133,11 @@ public object TestOperation_ResponseAdapter {
           StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
           if (value.onWarmBlooded != null) {
-            com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnWarmBlooded.toJson(writer, customScalarAdapters, value.onWarmBlooded)
+            OnWarmBlooded.toJson(writer, customScalarAdapters, value.onWarmBlooded)
           }
 
           if (value.onPet != null) {
-            com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnPet.toJson(writer, customScalarAdapters, value.onPet)
+            OnPet.toJson(writer, customScalarAdapters, value.onPet)
           }
         }
 

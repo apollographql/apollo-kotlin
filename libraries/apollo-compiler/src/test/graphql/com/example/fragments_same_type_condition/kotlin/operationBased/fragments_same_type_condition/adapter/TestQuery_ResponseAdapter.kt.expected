@@ -16,7 +16,9 @@ import com.apollographql.apollo.api.obj
 import com.apollographql.apollo.api.possibleTypes
 import com.example.fragments_same_type_condition.TestQuery
 import com.example.fragments_same_type_condition.fragment.DroidDetails1
+import com.example.fragments_same_type_condition.fragment.DroidDetails1Impl_ResponseAdapter
 import com.example.fragments_same_type_condition.fragment.DroidDetails2
+import com.example.fragments_same_type_condition.fragment.DroidDetails2Impl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
@@ -93,11 +95,11 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.droidDetails1 != null) {
-          com.example.fragments_same_type_condition.fragment.DroidDetails1Impl_ResponseAdapter.DroidDetails1.toJson(writer, customScalarAdapters, value.droidDetails1)
+          DroidDetails1Impl_ResponseAdapter.DroidDetails1.toJson(writer, customScalarAdapters, value.droidDetails1)
         }
 
         if (value.droidDetails2 != null) {
-          com.example.fragments_same_type_condition.fragment.DroidDetails2Impl_ResponseAdapter.DroidDetails2.toJson(writer, customScalarAdapters, value.droidDetails2)
+          DroidDetails2Impl_ResponseAdapter.DroidDetails2.toJson(writer, customScalarAdapters, value.droidDetails2)
         }
       }
     }

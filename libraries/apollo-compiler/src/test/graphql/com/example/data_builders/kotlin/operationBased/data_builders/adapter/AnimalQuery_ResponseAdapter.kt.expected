@@ -16,7 +16,9 @@ import com.apollographql.apollo.api.obj
 import com.apollographql.apollo.api.possibleTypes
 import com.example.data_builders.AnimalQuery
 import com.example.data_builders.fragment.CatFragment
+import com.example.data_builders.fragment.CatFragmentImpl_ResponseAdapter
 import com.example.data_builders.fragment.DogFragment
+import com.example.data_builders.fragment.DogFragmentImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
@@ -93,11 +95,11 @@ public object AnimalQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.catFragment != null) {
-          com.example.data_builders.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.toJson(writer, customScalarAdapters, value.catFragment)
+          CatFragmentImpl_ResponseAdapter.CatFragment.toJson(writer, customScalarAdapters, value.catFragment)
         }
 
         if (value.dogFragment != null) {
-          com.example.data_builders.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.toJson(writer, customScalarAdapters, value.dogFragment)
+          DogFragmentImpl_ResponseAdapter.DogFragment.toJson(writer, customScalarAdapters, value.dogFragment)
         }
       }
     }

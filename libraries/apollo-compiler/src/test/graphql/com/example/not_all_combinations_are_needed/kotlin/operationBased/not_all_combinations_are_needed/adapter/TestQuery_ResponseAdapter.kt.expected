@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
 import com.apollographql.apollo.api.possibleTypes
 import com.example.not_all_combinations_are_needed.TestQuery
+import com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
@@ -86,7 +87,7 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onA != null) {
-          com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.toJson(writer, customScalarAdapters, value.onA)
+          OnA.toJson(writer, customScalarAdapters, value.onA)
         }
       }
 
@@ -134,7 +135,7 @@ public object TestQuery_ResponseAdapter {
           NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1)
 
           if (value.onB != null) {
-            com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.toJson(writer, customScalarAdapters, value.onB)
+            OnB.toJson(writer, customScalarAdapters, value.onB)
           }
         }
 
@@ -168,7 +169,7 @@ public object TestQuery_ResponseAdapter {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.toJson(writer, customScalarAdapters, value.bFragment)
+            BFragmentImpl_ResponseAdapter.BFragment.toJson(writer, customScalarAdapters, value.bFragment)
           }
         }
       }

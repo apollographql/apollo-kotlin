@@ -18,6 +18,7 @@ import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
 import com.apollographql.apollo.api.possibleTypes
 import com.example.unique_type_name.HeroDetailQuery
+import com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter
 import com.example.unique_type_name.type.Episode
 import com.example.unique_type_name.type.adapter.Episode_ResponseAdapter
 import kotlin.Double
@@ -102,7 +103,7 @@ public object HeroDetailQuery_ResponseAdapter {
         Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
 
         if (value.onHuman != null) {
-          com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.Data.HeroDetailQuery.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
+          OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
         }
       }
 
@@ -230,7 +231,7 @@ public object HeroDetailQuery_ResponseAdapter {
               writer.name("__typename")
               StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-              com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer, customScalarAdapters, value.heroDetails)
+              HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer, customScalarAdapters, value.heroDetails)
             }
           }
         }

@@ -92,11 +92,11 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onA != null) {
-          com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.toJson(writer, customScalarAdapters, value.onA)
+          OnA.toJson(writer, customScalarAdapters, value.onA)
         }
 
         if (value.onB != null) {
-          com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.toJson(writer, customScalarAdapters, value.onB)
+          OnB.toJson(writer, customScalarAdapters, value.onB)
         }
       }
 
@@ -144,7 +144,7 @@ public object TestQuery_ResponseAdapter {
           NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1)
 
           if (value.onB != null) {
-            com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.OnB.toJson(writer, customScalarAdapters, value.onB)
+            OnB.toJson(writer, customScalarAdapters, value.onB)
           }
         }
 
@@ -221,7 +221,7 @@ public object TestQuery_ResponseAdapter {
           NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB2)
 
           if (value.onA != null) {
-            com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.OnA.toJson(writer, customScalarAdapters, value.onA)
+            OnA.toJson(writer, customScalarAdapters, value.onA)
           }
         }
 

@@ -87,7 +87,7 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.onCharacter != null) {
-          com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
+          OnCharacter.toJson(writer, customScalarAdapters, value.onCharacter)
         }
       }
 
@@ -142,11 +142,11 @@ public object TestQuery_ResponseAdapter {
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
           if (value.onHuman != null) {
-            com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
+            OnHuman.toJson(writer, customScalarAdapters, value.onHuman)
           }
 
           if (value.onDroid != null) {
-            com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
+            OnDroid.toJson(writer, customScalarAdapters, value.onDroid)
           }
         }
 

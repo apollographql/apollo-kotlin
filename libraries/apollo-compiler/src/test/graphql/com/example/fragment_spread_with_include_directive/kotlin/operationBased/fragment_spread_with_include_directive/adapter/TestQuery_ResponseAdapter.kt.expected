@@ -21,9 +21,13 @@ import com.apollographql.apollo.api.possibleTypes
 import com.apollographql.apollo.api.variable
 import com.example.fragment_spread_with_include_directive.TestQuery
 import com.example.fragment_spread_with_include_directive.fragment.DroidDetails
+import com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter
 import com.example.fragment_spread_with_include_directive.fragment.HeroDetails
+import com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter
 import com.example.fragment_spread_with_include_directive.fragment.HumanDetails
+import com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter
 import com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails
+import com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter
 import kotlin.Boolean
 import kotlin.String
 import kotlin.collections.List
@@ -127,19 +131,19 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
         if (value.heroDetails != null) {
-          com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer, customScalarAdapters, value.heroDetails)
+          HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer, customScalarAdapters, value.heroDetails)
         }
 
         if (value.humanDetails != null) {
-          com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer, customScalarAdapters, value.humanDetails)
+          HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer, customScalarAdapters, value.humanDetails)
         }
 
         if (value.droidDetails != null) {
-          com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer, customScalarAdapters, value.droidDetails)
+          DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer, customScalarAdapters, value.droidDetails)
         }
 
         if (value.otherDroidDetails != null) {
-          com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.toJson(writer, customScalarAdapters, value.otherDroidDetails)
+          OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.toJson(writer, customScalarAdapters, value.otherDroidDetails)
         }
       }
     }
