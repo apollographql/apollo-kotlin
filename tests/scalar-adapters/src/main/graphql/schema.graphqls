@@ -28,4 +28,5 @@ type Query {
   nullableLength: Length
   nonNullableLengthList: [Length!]!
   lengthListList: [[Length!]]
+  fieldWitArgs(length: Length!): Int
 }

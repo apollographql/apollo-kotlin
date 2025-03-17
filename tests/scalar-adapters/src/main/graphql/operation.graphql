@@ -32,3 +32,7 @@ query InlineClass {
   nonNullableLengthList
   lengthListList
 }
+
+query Variables($length: Length!) {
+  fieldWitArgs(length: $length)
+}
