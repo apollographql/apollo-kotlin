@@ -56,6 +56,7 @@ fun <V, R> Optional<V>.map(mapper: (V) -> R): Optional<R> {
   }
 }
 
+@ApolloExperimental
 fun <V, R> Present<V>.map(mapper: (V) -> R): Present<R> {
   return Optional.present(mapper(value))
 }
