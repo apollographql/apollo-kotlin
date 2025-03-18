@@ -1,0 +1,15 @@
+query GetFoo {
+  foo
+}
+
+query GetProduct {
+  product {
+    bar
+  }
+}
+
+query GetNode {
+  node {
+    bar
+  }
+}

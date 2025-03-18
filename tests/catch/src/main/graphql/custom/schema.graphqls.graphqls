@@ -1,0 +1,17 @@
+extend schema
+@link(url: "https://specs.apollo.dev/nullability/v0.4",import: ["@semanticNonNull", "@catch", "@catchByDefault"])
+@catchByDefault(to: THROW)
+
+type Query {
+  foo: Int @semanticNonNull
+  product: Product
+  node: Node
+}
+
+interface Node {
+  bar: Int @semanticNonNull
+}
+
+type Product implements Node {
+  bar: Int
+}

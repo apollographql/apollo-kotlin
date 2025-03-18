@@ -29,4 +29,8 @@ apollo {
     srcDir("src/main/graphql/result")
     packageName.set("result")
   }
+  service("custom") {
+    srcDir("src/main/graphql/custom")
+    packageName.set("custom")
+  }
 }
