@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2025-03-06**
+**Last updated: 2025-03-20**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -21,11 +21,11 @@ The declarative cache makes working with the cache and defining unique object id
 * A [first implementation of garbage collection](https://github.com/apollographql/apollo-kotlin-normalized-cache-incubating/pull/69) is also available ([doc](https://apollographql.github.io/apollo-kotlin-normalized-cache-incubating/garbage-collection.html)).
 * [Partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache-incubating/issues/57) is also available.
 
-Using the incubating cache, early results show a speed improvement. This is to be confirmed on real life use cases. As always, your feedback is greatly appreciated and helps us moving the artifact out of experimental state faster.
+Using the incubating cache, early results show a speed improvement.  We're currently working on confirming those numbers and improving performance overall.  As always, your feedback is greatly appreciated and helps us moving the artifact out of experimental state faster.
 
 ## [Testing utilities](https://github.com/apollographql/apollo-kotlin/issues/6076)
 
-The community has given some consistent feedback around testing and data builders in particular.  We are in the process of organizing this feedback into actionable workstreams and will update this section of the Roadmap and the relevant Issues as details emerge.
+The community has given some consistent feedback around testing and data builders in particular.  Currently working on using apollo-execution algorithms to provide and easier and more consistent way to fake a GraphQL schema.
 
 ## Jetpack Compose extensions
 
