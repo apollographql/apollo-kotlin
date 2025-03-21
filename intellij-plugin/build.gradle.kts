@@ -3,9 +3,11 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.COMPATIBILITY_PROBLEMS
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.INTERNAL_API_USAGES
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.INVALID_PLUGIN
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.PLUGIN_STRUCTURE_WARNINGS
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -55,6 +57,9 @@ kotlin {
 }
 
 val apolloDependencies = configurations.create("apolloDependencies").apply {
+  attributes {
+    attribute(KotlinPlatformType.attribute, KotlinPlatformType.jvm)
+  }
   listOf(":apollo-annotations", ":apollo-api", ":apollo-runtime").forEach {
     dependencies.add(project.dependencies.project(it, "jvmApiElements"))
   }
@@ -243,8 +248,7 @@ intellijPlatform {
     }
     failureLevel.set(
         setOf(
-            // TODO: Temporarily disabled due to https://platform.jetbrains.com/t/plugin-verifier-fails-with-plugin-com-intellij-modules-json-not-declared-as-a-plugin-dependency/580
-//            COMPATIBILITY_PROBLEMS,
+            COMPATIBILITY_PROBLEMS,
             INTERNAL_API_USAGES,
             INVALID_PLUGIN,
             PLUGIN_STRUCTURE_WARNINGS,
