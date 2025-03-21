@@ -166,7 +166,7 @@ jobs:
       # Run Verify Plugin task and IntelliJ Plugin Verifier tool
       - name: Run Plugin Verification tasks
         env:
-          JAVA_TOOL_OPTIONS: -Xmx2g -Dlogback.configurationFile=${{ github.workspace }}/intellij-plugin/logback.xml
+          JAVA_TOOL_OPTIONS: -Xmx4g -Dlogback.configurationFile=${{ github.workspace }}/intellij-plugin/logback.xml
         run: ./gradlew :intellij-plugin:verifyPlugin -Pplugin.verifier.home.dir=${{ steps.properties.outputs.pluginVerifierHomeDir }}
 
       # Collect Plugin Verifier Result
