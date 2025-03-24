@@ -1,0 +1,10 @@
+query PlaylistRawTracksQuery($playlistID: ID!) {
+  playlist(playlistId: $playlistID) {
+    playlistId
+    name
+    rawTracks {
+      trackId
+      addedAt
+    }
+  }
+}

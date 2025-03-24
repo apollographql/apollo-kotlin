@@ -74,4 +74,8 @@ configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
       argument("packageName", packageName.get())
     }
   }
+  service("tracks") {
+    srcDir("src/main/graphql/tracks")
+    packageName.set("com.apollographql.apollo.tracks")
+  }
 }

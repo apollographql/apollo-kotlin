@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.parseJsonResponse
 import com.apollographql.apollo.benchmark.Utils.dbFile
 import com.apollographql.apollo.benchmark.Utils.dbName
+import com.apollographql.apollo.benchmark.Utils.largeListQuery
 import com.apollographql.apollo.benchmark.Utils.operationBasedQuery
 import com.apollographql.apollo.benchmark.Utils.registerCacheSize
 import com.apollographql.apollo.benchmark.Utils.resource
@@ -25,25 +26,35 @@ class CacheTests {
 
   @Test
   fun cacheOperationMemory() {
-    readFromCache("cacheOperationMemory", operationBasedQuery, sql = false, Utils::checkOperationBased)
+    readFromCache("cacheOperationMemory", operationBasedQuery, R.raw.calendar_response, sql = false, Utils::checkOperationBased)
   }
 
   @Test
   fun cacheOperationSql() {
-    readFromCache("cacheOperationSql", operationBasedQuery, sql = true, Utils::checkOperationBased)
+    readFromCache("cacheOperationSql", operationBasedQuery, R.raw.calendar_response, sql = true, Utils::checkOperationBased)
   }
 
   @Test
   fun cacheResponseMemory() {
-    readFromCache("cacheResponseMemory", responseBasedQuery, sql = false, Utils::checkResponseBased)
+    readFromCache("cacheResponseMemory", responseBasedQuery, R.raw.calendar_response, sql = false, Utils::checkResponseBased)
   }
 
   @Test
   fun cacheResponseSql() {
-    readFromCache("cacheResponseSql", responseBasedQuery, sql = true, Utils::checkResponseBased)
+    readFromCache("cacheResponseSql", responseBasedQuery, R.raw.calendar_response, sql = true, Utils::checkResponseBased)
   }
 
-  private fun <D : Query.Data> readFromCache(testName: String, query: Query<D>, sql: Boolean, check: (D) -> Unit) {
+  @Test
+  fun cacheLargeListMemory() {
+    readFromCache("cacheLargeListMemory", largeListQuery, R.raw.tracks_playlist_response, sql = false, Utils::checkLargeList)
+  }
+
+  @Test
+  fun cacheLargeListSql() {
+    readFromCache("cacheLargeListSql", largeListQuery, R.raw.tracks_playlist_response, sql = true, Utils::checkLargeList)
+  }
+
+  private fun <D : Query.Data> readFromCache(testName: String, query: Query<D>, jsonResponseResId: Int, sql: Boolean, check: (D) -> Unit) {
     val store = ApolloStore(
         if (sql) {
           dbFile.delete()
@@ -53,7 +64,7 @@ class CacheTests {
         }
     )
 
-    val data = query.parseJsonResponse(resource(R.raw.calendar_response).jsonReader()).data!!
+    val data = query.parseJsonResponse(resource(jsonResponseResId).jsonReader()).data!!
     runBlocking {
       store.writeOperation(query, data)
     }

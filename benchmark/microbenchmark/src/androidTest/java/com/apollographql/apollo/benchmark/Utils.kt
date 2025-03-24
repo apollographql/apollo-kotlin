@@ -9,6 +9,7 @@ import com.apollographql.apollo.calendar.operation.ItemsQuery
 import com.apollographql.apollo.calendar.response.ItemsQuery.Data.Items.Edge.Node.Companion.itemFragment
 import com.apollographql.apollo.calendar.response.fragment.CalendarFragment.Provider.Node.Companion.calendarProviderFragment
 import com.apollographql.apollo.calendar.response.fragment.ItemFragment.Calendar.Node.Companion.calendarFragment
+import com.apollographql.apollo.tracks.PlaylistRawTracksQuery
 import okio.Buffer
 import okio.BufferedSource
 import okio.source
@@ -21,6 +22,7 @@ object Utils {
   val dbFile: File = InstrumentationRegistry.getInstrumentation().context.getDatabasePath(dbName)
   val responseBasedQuery = com.apollographql.apollo.calendar.response.ItemsQuery(endingAfter = "", startingBefore = "")
   val operationBasedQuery = ItemsQuery(endingAfter = "", startingBefore = "")
+  val largeListQuery = PlaylistRawTracksQuery("42")
 
   /**
    * Reads a resource into a fully buffered [BufferedSource]. This function returns a peeked [BufferedSource]
@@ -52,7 +54,7 @@ object Utils {
             )
         )
     )
-    Outputs.writeFile("extraMetrics.json", "extraMetrics", true) {
+    Outputs.writeFile("extraMetrics.json", true) {
       it.writeText(
           buildJsonString {
             AnyAdapter.toJson(this, CustomScalarAdapters.Empty, extraMetrics)
@@ -69,4 +71,7 @@ object Utils {
     check(data.items!!.edges[248].node.itemFragment()!!.calendar!!.node.calendarFragment()!!.provider.node.calendarProviderFragment()!!.id == "cc8e4c28-f178-11ec-8ea0-0242ac120002")
   }
 
+  internal fun checkLargeList(data: PlaylistRawTracksQuery.Data) {
+    check(data.playlist!!.rawTracks.size == 10000 && data.playlist.rawTracks[9999]!!.trackId == "142429999")
+  }
 }
