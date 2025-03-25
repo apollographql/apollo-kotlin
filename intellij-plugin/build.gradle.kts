@@ -1,4 +1,3 @@
-
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
@@ -165,7 +164,9 @@ dependencies {
     bundledPlugins(properties("platformBundledPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
     plugins(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
     instrumentationTools()
-    pluginVerifier()
+    // Use a specific version of the verifier
+    // TODO: remove when https://youtrack.jetbrains.com/issue/MP-7366 is fixed
+    pluginVerifier(version = "1.383")
     testFramework(TestFrameworkType.Plugin.Java)
     zipSigner()
   }
@@ -248,7 +249,9 @@ intellijPlatform {
     }
     failureLevel.set(
         setOf(
-            COMPATIBILITY_PROBLEMS,
+            // Temporarily disabled due to https://platform.jetbrains.com/t/plugin-verifier-fails-with-plugin-com-intellij-modules-json-not-declared-as-a-plugin-dependency/580
+            // TODO: Uncomment when https://youtrack.jetbrains.com/issue/MP-7366 is fixed
+            // COMPATIBILITY_PROBLEMS,
             INTERNAL_API_USAGES,
             INVALID_PLUGIN,
             PLUGIN_STRUCTURE_WARNINGS,
