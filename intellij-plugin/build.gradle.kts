@@ -1,11 +1,12 @@
-
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.COMPATIBILITY_PROBLEMS
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.INTERNAL_API_USAGES
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.INVALID_PLUGIN
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.PLUGIN_STRUCTURE_WARNINGS
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -55,6 +56,9 @@ kotlin {
 }
 
 val apolloDependencies = configurations.create("apolloDependencies").apply {
+  attributes {
+    attribute(KotlinPlatformType.attribute, KotlinPlatformType.jvm)
+  }
   listOf(":apollo-annotations", ":apollo-api", ":apollo-runtime").forEach {
     dependencies.add(project.dependencies.project(it, "jvmApiElements"))
   }
@@ -160,7 +164,9 @@ dependencies {
     bundledPlugins(properties("platformBundledPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
     plugins(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
     instrumentationTools()
-    pluginVerifier()
+    // Use a specific version of the verifier
+    // TODO: remove when https://youtrack.jetbrains.com/issue/MP-7366 is fixed
+    pluginVerifier(version = "1.383")
     testFramework(TestFrameworkType.Plugin.Java)
     zipSigner()
   }
@@ -243,8 +249,9 @@ intellijPlatform {
     }
     failureLevel.set(
         setOf(
-            // TODO: Temporarily disabled due to https://platform.jetbrains.com/t/plugin-verifier-fails-with-plugin-com-intellij-modules-json-not-declared-as-a-plugin-dependency/580
-//            COMPATIBILITY_PROBLEMS,
+            // Temporarily disabled due to https://platform.jetbrains.com/t/plugin-verifier-fails-with-plugin-com-intellij-modules-json-not-declared-as-a-plugin-dependency/580
+            // TODO: Uncomment when https://youtrack.jetbrains.com/issue/MP-7366 is fixed
+            // COMPATIBILITY_PROBLEMS,
             INTERNAL_API_USAGES,
             INVALID_PLUGIN,
             PLUGIN_STRUCTURE_WARNINGS,
