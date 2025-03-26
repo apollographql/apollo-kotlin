@@ -7,6 +7,7 @@ import com.apollographql.apollo.compiler.codegen.java.L
 import com.apollographql.apollo.compiler.codegen.java.S
 import com.apollographql.apollo.compiler.codegen.java.T
 import com.apollographql.apollo.compiler.codegen.java.helpers.codeBlock
+import com.apollographql.apollo.compiler.codegen.java.helpers.suppressAnnotation
 import com.apollographql.apollo.compiler.codegen.java.helpers.toListInitializerCodeblock
 import com.apollographql.apollo.compiler.ir.BVariable
 import com.apollographql.apollo.compiler.ir.BooleanExpression
@@ -29,6 +30,7 @@ internal class CompiledSelectionsBuilder(
     return TypeSpec.classBuilder(rootName)
         .addModifiers(Modifier.PUBLIC)
         .addFields(selectionSets.map { it.fieldSpec() })
+        .addAnnotation(suppressAnnotation("unchecked"))
         .build()
   }
 

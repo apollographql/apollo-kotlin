@@ -21,6 +21,7 @@ internal class BuilderBuilder(
   fun build(): TypeSpec {
     return TypeSpec.classBuilder(JavaClassNames.Builder.simpleName())
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+        .addAnnotation(suppressAnnotation("unchecked"))
         .addFields(builderFields())
         .addMethod(MethodSpec.constructorBuilder().build())
         .addMethods(fieldSetterMethodSpecs())
