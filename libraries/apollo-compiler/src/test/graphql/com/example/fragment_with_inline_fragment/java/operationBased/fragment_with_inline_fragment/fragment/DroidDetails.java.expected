@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class DroidDetails implements Fragment.Data {
   /**
@@ -81,6 +82,7 @@ public class DroidDetails implements Fragment.Data {
     return new Builder();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private String name;
 

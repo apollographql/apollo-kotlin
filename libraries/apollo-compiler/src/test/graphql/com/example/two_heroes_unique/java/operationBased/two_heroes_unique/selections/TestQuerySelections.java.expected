@@ -13,9 +13,11 @@ import com.example.two_heroes_unique.type.Character;
 import com.example.two_heroes_unique.type.GraphQLID;
 import com.example.two_heroes_unique.type.GraphQLString;
 import com.example.two_heroes_unique.type.Query;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()

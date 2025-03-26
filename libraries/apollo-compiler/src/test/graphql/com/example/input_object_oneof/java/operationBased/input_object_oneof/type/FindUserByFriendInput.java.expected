@@ -8,6 +8,7 @@ package com.example.input_object_oneof.type;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class FindUserByFriendInput {
   public final String socialNetworkId;
@@ -67,6 +68,7 @@ public class FindUserByFriendInput {
     return new Builder();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private String socialNetworkId;
 

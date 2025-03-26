@@ -10,6 +10,7 @@ import com.apollographql.apollo.api.Optional;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class FindUserBySocialNetworkInput {
   public final Optional<String> facebookId;
@@ -70,6 +71,7 @@ public class FindUserBySocialNetworkInput {
     return new Builder();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Optional<String> facebookId = Optional.absent();
 

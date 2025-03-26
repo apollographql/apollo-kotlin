@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class HeroDetails_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
 
+    @SuppressWarnings("unchecked")
     @Override
     public HeroDetails.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -61,6 +63,7 @@ public class HeroDetails_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("type", "name", "friendsConnection");
 
+    @SuppressWarnings("unchecked")
     @Override
     public HeroDetails.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -108,6 +111,7 @@ public class HeroDetails_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("totalCount", "edges");
 
+    @SuppressWarnings("unchecked")
     @Override
     public HeroDetails.FriendsConnection fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -145,6 +149,7 @@ public class HeroDetails_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
+    @SuppressWarnings("unchecked")
     @Override
     public HeroDetails.Edge fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -176,6 +181,7 @@ public class HeroDetails_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
+    @SuppressWarnings("unchecked")
     @Override
     public HeroDetails.Node fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {

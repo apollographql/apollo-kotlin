@@ -17,6 +17,7 @@ import com.example.named_fragment_inside_inline_fragment.type.adapter.Episode_Re
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class CharacterAppearsInImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("appearsIn");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {

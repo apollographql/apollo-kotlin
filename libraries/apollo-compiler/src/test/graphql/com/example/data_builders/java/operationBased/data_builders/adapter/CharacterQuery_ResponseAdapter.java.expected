@@ -22,6 +22,7 @@ import com.example.data_builders.fragment.HumanFragment;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class CharacterQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("character");
 
+    @SuppressWarnings("unchecked")
     @Override
     public CharacterQuery.Data fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -64,6 +66,7 @@ public class CharacterQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "id", "name");
 
+    @SuppressWarnings("unchecked")
     @Override
     public CharacterQuery.Character fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {

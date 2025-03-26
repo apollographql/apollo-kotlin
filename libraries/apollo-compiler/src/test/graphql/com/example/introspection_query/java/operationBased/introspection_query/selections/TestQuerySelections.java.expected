@@ -15,9 +15,11 @@ import com.example.introspection_query.type.Query;
 import com.example.introspection_query.type.__Schema;
 import com.example.introspection_query.type.__Type;
 import com.example.introspection_query.type.__TypeKind;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __queryType = Arrays.asList(
     new CompiledField.Builder("name", GraphQLString.type).build()

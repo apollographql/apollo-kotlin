@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "e21794a17c37fd41b0530e7df079fae9a579bc77435bb811a2e869909de32a55";
@@ -129,6 +130,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
     }

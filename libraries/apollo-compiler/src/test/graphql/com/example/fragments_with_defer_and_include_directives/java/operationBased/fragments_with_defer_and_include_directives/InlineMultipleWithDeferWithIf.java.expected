@@ -19,6 +19,7 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDeferWithIf.Data> {
   public static final String OPERATION_ID = "9dc79c78df7375c3d860d16df3ea839ea45c7f8420976f63414610d338f0caf1";
@@ -132,6 +133,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Boolean cond;
 

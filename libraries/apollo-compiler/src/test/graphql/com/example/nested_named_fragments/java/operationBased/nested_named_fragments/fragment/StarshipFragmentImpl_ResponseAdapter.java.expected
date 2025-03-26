@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.json.JsonWriter;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class StarshipFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name", "pilotConnection");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.nested_named_fragments.fragment.StarshipFragment fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -71,6 +73,7 @@ public class StarshipFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("edges");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -103,6 +106,7 @@ public class StarshipFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.nested_named_fragments.fragment.StarshipFragment.Edge fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -135,6 +139,7 @@ public class StarshipFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.nested_named_fragments.fragment.StarshipFragment.Node fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {

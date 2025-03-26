@@ -18,6 +18,7 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class GetHuman implements Query<GetHuman.Data> {
   public static final String OPERATION_ID = "b5ec6431463438b91c2cf1c33eb4b6a1f9e2580b51fcf5150ef3685b9108a12c";
@@ -124,6 +125,7 @@ public class GetHuman implements Query<GetHuman.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
     }

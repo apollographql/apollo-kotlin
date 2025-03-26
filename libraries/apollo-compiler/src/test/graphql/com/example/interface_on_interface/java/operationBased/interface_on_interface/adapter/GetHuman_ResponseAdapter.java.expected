@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class GetHuman_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("human", "node");
 
+    @SuppressWarnings("unchecked")
     @Override
     public GetHuman.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -70,6 +72,7 @@ public class GetHuman_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name", "height");
 
+    @SuppressWarnings("unchecked")
     @Override
     public GetHuman.Human fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -117,6 +120,7 @@ public class GetHuman_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public GetHuman.Node fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -160,6 +164,7 @@ public class GetHuman_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("height");
 
+    @SuppressWarnings("unchecked")
     @Override
     public GetHuman.OnHuman fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {

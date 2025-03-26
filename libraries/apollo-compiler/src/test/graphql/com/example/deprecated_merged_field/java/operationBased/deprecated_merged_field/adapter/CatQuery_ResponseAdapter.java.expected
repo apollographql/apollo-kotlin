@@ -18,6 +18,7 @@ import com.example.deprecated_merged_field.fragment.AnimalFragment;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class CatQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("cat");
 
+    @SuppressWarnings("unchecked")
     @Override
     public CatQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -58,6 +60,7 @@ public class CatQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public CatQuery.Cat fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {

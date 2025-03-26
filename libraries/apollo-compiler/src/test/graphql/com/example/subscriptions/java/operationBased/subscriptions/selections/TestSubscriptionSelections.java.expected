@@ -14,9 +14,11 @@ import com.example.subscriptions.type.Comment;
 import com.example.subscriptions.type.GraphQLInt;
 import com.example.subscriptions.type.GraphQLString;
 import com.example.subscriptions.type.Subscription;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestSubscriptionSelections {
   private static List<CompiledSelection> __commentAdded = Arrays.asList(
     new CompiledField.Builder("id", new CompiledNotNullType(GraphQLInt.type)).build(),

@@ -10,6 +10,7 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class UserQuery {
   public final String name;
@@ -69,6 +70,7 @@ public class UserQuery {
     return new Builder();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private String name;
 

@@ -9,9 +9,11 @@ import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CompiledNotNullType;
 import com.apollographql.apollo.api.CompiledSelection;
 import com.example.simple_fragment.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class HumanDetailsSelections {
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),

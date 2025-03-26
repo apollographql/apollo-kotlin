@@ -8,9 +8,11 @@ package com.example.not_all_combinations_are_needed.fragment.selections;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CompiledSelection;
 import com.example.not_all_combinations_are_needed.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class BFragmentSelections {
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("fieldB1", GraphQLString.type).build()

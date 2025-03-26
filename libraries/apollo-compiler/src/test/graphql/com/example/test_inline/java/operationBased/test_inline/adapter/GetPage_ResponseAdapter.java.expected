@@ -21,6 +21,7 @@ import com.example.test_inline.GetPage;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class GetPage_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("collection");
 
+    @SuppressWarnings("unchecked")
     @Override
     public GetPage.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -63,6 +65,7 @@ public class GetPage_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "items");
 
+    @SuppressWarnings("unchecked")
     @Override
     public GetPage.Collection fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -114,6 +117,7 @@ public class GetPage_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("title");
 
+    @SuppressWarnings("unchecked")
     @Override
     public GetPage.Item fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -147,6 +151,7 @@ public class GetPage_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("items");
 
+    @SuppressWarnings("unchecked")
     @Override
     public GetPage.OnParticularCollection fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -180,6 +185,7 @@ public class GetPage_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public GetPage.Item1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -223,6 +229,7 @@ public class GetPage_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("image");
 
+    @SuppressWarnings("unchecked")
     @Override
     public GetPage.OnParticularItem fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {

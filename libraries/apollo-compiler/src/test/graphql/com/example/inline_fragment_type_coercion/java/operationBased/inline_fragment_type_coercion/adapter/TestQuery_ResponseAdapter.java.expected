@@ -21,6 +21,7 @@ import com.example.inline_fragment_type_coercion.TestQuery;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("foo");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -61,6 +63,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "foo");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Foo fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -112,6 +115,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("bar");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.OnBar fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {

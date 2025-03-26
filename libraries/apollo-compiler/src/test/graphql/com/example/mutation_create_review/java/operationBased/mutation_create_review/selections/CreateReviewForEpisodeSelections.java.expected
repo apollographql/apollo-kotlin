@@ -18,9 +18,11 @@ import com.example.mutation_create_review.type.GraphQLInt;
 import com.example.mutation_create_review.type.GraphQLString;
 import com.example.mutation_create_review.type.Mutation;
 import com.example.mutation_create_review.type.Review;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class CreateReviewForEpisodeSelections {
   private static List<CompiledSelection> __listOfListOfObject = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()

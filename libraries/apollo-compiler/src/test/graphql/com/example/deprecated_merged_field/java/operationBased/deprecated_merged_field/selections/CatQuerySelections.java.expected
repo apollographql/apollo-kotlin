@@ -12,9 +12,11 @@ import com.apollographql.apollo.api.CompiledSelection;
 import com.example.deprecated_merged_field.fragment.selections.AnimalFragmentSelections;
 import com.example.deprecated_merged_field.type.Cat;
 import com.example.deprecated_merged_field.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class CatQuerySelections {
   private static List<CompiledSelection> __cat = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),

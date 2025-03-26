@@ -13,9 +13,11 @@ import com.apollographql.apollo.api.CompiledVariable;
 import com.example.variable_default_value.type.Character;
 import com.example.variable_default_value.type.GraphQLString;
 import com.example.variable_default_value.type.Query;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()

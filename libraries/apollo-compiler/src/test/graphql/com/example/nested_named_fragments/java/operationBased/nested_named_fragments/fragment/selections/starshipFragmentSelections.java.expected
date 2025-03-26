@@ -15,9 +15,11 @@ import com.example.nested_named_fragments.type.GraphQLString;
 import com.example.nested_named_fragments.type.Person;
 import com.example.nested_named_fragments.type.StarshipPilotsConnection;
 import com.example.nested_named_fragments.type.StarshipPilotsEdge;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class StarshipFragmentSelections {
   private static List<CompiledSelection> __node = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),

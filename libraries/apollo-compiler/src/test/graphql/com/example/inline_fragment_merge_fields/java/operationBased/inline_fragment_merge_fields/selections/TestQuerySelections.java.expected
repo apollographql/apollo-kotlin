@@ -15,9 +15,11 @@ import com.example.inline_fragment_merge_fields.type.FriendsConnection;
 import com.example.inline_fragment_merge_fields.type.FriendsEdge;
 import com.example.inline_fragment_merge_fields.type.GraphQLString;
 import com.example.inline_fragment_merge_fields.type.URL;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __node = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()

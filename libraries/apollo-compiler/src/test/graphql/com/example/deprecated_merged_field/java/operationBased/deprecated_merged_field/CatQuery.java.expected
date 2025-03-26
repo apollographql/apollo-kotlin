@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class CatQuery implements Query<CatQuery.Data> {
   public static final String OPERATION_ID = "1339b44a5c30437b050faa2883275f02a22fffe77aa08983f50bccdab674d7ed";
@@ -127,6 +128,7 @@ public class CatQuery implements Query<CatQuery.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
     }

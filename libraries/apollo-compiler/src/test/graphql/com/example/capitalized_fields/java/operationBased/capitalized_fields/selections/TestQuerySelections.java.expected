@@ -12,9 +12,11 @@ import com.apollographql.apollo.api.CompiledSelection;
 import com.example.capitalized_fields.type.Cow;
 import com.example.capitalized_fields.type.GraphQLString;
 import com.example.capitalized_fields.type.Horse;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __Cow = Arrays.asList(
     new CompiledField.Builder("Moo", GraphQLString.type).build()

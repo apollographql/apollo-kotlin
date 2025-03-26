@@ -13,9 +13,11 @@ import com.example.simple_fragment.fragment.selections.HeroDetailsSelections;
 import com.example.simple_fragment.fragment.selections.HumanDetailsSelections;
 import com.example.simple_fragment.type.Character;
 import com.example.simple_fragment.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),

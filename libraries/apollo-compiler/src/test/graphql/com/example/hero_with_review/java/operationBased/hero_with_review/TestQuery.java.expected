@@ -20,6 +20,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class TestQuery implements Mutation<TestQuery.Data> {
   public static final String OPERATION_ID = "1faa220c7551ff1343a9bce722af8c12b87c70cc579f743aff1374ae1066f163";
@@ -135,6 +136,7 @@ public class TestQuery implements Mutation<TestQuery.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Episode ep;
 

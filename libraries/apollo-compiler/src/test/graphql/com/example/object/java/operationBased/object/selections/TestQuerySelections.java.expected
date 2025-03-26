@@ -9,9 +9,11 @@ import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CompiledSelection;
 import com.example.object.type.GraphQLInt;
 import com.example.object.type.Object;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __object = Arrays.asList(
     new CompiledField.Builder("random", GraphQLInt.type).build()

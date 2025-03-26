@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -59,6 +61,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "friendsConnection");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -112,6 +115,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("edges");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.FriendsConnection fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -143,6 +147,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Edge fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -174,6 +179,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Node fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -207,6 +213,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "profileLink", "friendsConnection");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.OnCharacter fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -254,6 +261,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("edges");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.FriendsConnection1 fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -285,6 +293,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Edge1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -316,6 +325,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Node1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {

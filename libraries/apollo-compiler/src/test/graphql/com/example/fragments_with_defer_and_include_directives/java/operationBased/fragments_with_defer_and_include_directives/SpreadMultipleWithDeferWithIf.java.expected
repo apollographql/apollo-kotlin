@@ -22,6 +22,7 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDeferWithIf.Data> {
   public static final String OPERATION_ID = "ecdac17ca37d6cbf3a6e5059904fabfd96193cbe0720eb27880026b518feec9f";
@@ -141,6 +142,7 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Boolean cond;
 

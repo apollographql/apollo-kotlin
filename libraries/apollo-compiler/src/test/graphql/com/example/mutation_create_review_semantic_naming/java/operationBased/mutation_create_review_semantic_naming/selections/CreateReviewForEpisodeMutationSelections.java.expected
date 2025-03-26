@@ -14,9 +14,11 @@ import com.example.mutation_create_review_semantic_naming.type.GraphQLInt;
 import com.example.mutation_create_review_semantic_naming.type.GraphQLString;
 import com.example.mutation_create_review_semantic_naming.type.Mutation;
 import com.example.mutation_create_review_semantic_naming.type.Review;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class CreateReviewForEpisodeMutationSelections {
   private static List<CompiledSelection> __createReview = Arrays.asList(
     new CompiledField.Builder("stars", new CompiledNotNullType(GraphQLInt.type)).build(),

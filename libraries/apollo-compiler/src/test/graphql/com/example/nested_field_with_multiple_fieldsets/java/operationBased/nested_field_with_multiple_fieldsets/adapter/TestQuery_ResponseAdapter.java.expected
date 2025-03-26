@@ -21,6 +21,7 @@ import com.example.nested_field_with_multiple_fieldsets.TestQuery;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface1");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -61,6 +63,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Iface1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -110,6 +113,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface2");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.OnIface1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -141,6 +145,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Iface2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -190,6 +195,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar1");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.OnIface2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -221,6 +227,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar2");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.OnImpl2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -252,6 +259,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface2");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.OnImpl1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -283,6 +291,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Iface21 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -332,6 +341,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar3");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.OnIface21 fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -363,6 +373,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar4");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.OnImpl21 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {

@@ -14,9 +14,11 @@ import com.example.suppressed_warnings.type.Cat;
 import com.example.suppressed_warnings.type.Direction;
 import com.example.suppressed_warnings.type.GraphQLInt;
 import com.example.suppressed_warnings.type.Query;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class CatQuerySelections {
   private static List<CompiledSelection> __search = Arrays.asList(
     new CompiledField.Builder("mustaches", new CompiledNotNullType(GraphQLInt.type)).build()

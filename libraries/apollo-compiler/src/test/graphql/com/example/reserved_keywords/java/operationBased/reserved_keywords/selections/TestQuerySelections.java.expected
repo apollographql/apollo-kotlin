@@ -16,9 +16,11 @@ import com.example.reserved_keywords.type.GraphQLID;
 import com.example.reserved_keywords.type.GraphQLString;
 import com.example.reserved_keywords.type.Query;
 import com.example.reserved_keywords.type.SearchResult;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("id", new CompiledNotNullType(GraphQLID.type)).alias("while").build(),

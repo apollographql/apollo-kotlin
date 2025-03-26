@@ -11,6 +11,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 /**
  * The input object sent when passing in a color
@@ -95,6 +96,7 @@ public class ColorInput {
     return new Builder();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Optional<Integer> red = Optional.absent();
 

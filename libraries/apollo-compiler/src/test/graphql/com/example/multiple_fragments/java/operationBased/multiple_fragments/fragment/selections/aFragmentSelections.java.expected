@@ -11,9 +11,11 @@ import com.apollographql.apollo.api.CompiledNotNullType;
 import com.apollographql.apollo.api.CompiledSelection;
 import com.example.multiple_fragments.type.GraphQLString;
 import com.example.multiple_fragments.type.Node;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class AFragmentSelections {
   private static List<CompiledSelection> __node = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),

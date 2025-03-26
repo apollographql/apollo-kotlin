@@ -17,6 +17,7 @@ import com.example.capitalized_fields.TestQuery;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Horse");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -57,6 +59,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "Donkey");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Horse fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -102,6 +105,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Cow");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.OnHorse fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -133,6 +137,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Moo");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Cow fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {

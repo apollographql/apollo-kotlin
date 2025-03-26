@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.json.JsonWriter;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("organization");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -57,6 +59,7 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "user");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment.Organization fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -98,6 +101,7 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment.User fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {

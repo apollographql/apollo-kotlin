@@ -11,9 +11,11 @@ import com.apollographql.apollo.api.CompiledNotNullType;
 import com.apollographql.apollo.api.CompiledSelection;
 import com.example.named_fragment_with_variables.fragment.selections.QueryFragmentSelections;
 import com.example.named_fragment_with_variables.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class GetUserSelections {
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),

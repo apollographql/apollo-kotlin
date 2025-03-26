@@ -13,9 +13,11 @@ import com.apollographql.apollo.api.CompiledSelection;
 import com.example.simple_fragment_with_inline_fragments.type.Character;
 import com.example.simple_fragment_with_inline_fragments.type.GraphQLFloat;
 import com.example.simple_fragment_with_inline_fragments.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class HeroDetailsSelections {
   private static List<CompiledSelection> __onHuman = Arrays.asList(
     new CompiledField.Builder("height", GraphQLFloat.type).build()

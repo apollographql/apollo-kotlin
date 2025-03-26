@@ -26,6 +26,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Date;
 import java.util.List;
 
@@ -161,6 +162,7 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
     return buildData(map, new DefaultFakeResolver(__Schema.types));
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Episode ep;
 

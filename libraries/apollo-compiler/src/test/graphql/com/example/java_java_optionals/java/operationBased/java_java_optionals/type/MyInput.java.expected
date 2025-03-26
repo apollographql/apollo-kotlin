@@ -9,6 +9,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
@@ -78,6 +79,7 @@ public class MyInput {
     return new Builder();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Optional<Optional<Integer>> nullableInt = Optional.empty();
 

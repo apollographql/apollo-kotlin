@@ -9,9 +9,11 @@ import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CompiledSelection;
 import com.example.decapitalized_fields.type.Cow;
 import com.example.decapitalized_fields.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class HorseFragmentSelections {
   private static List<CompiledSelection> __Cow = Arrays.asList(
     new CompiledField.Builder("Moo", GraphQLString.type).build()

@@ -15,6 +15,7 @@ import com.example.custom_scalar_type.type.ListOfString;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class ScalarWithGenericType_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("listOfString");
 
+    @SuppressWarnings("unchecked")
     @Override
     public ScalarWithGenericType.Data fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {

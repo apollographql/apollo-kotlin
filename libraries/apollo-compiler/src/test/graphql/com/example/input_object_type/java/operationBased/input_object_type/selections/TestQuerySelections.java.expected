@@ -14,9 +14,11 @@ import com.example.input_object_type.type.GraphQLInt;
 import com.example.input_object_type.type.GraphQLString;
 import com.example.input_object_type.type.Mutation;
 import com.example.input_object_type.type.Review;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __createReview = Arrays.asList(
     new CompiledField.Builder("stars", new CompiledNotNullType(GraphQLInt.type)).build(),

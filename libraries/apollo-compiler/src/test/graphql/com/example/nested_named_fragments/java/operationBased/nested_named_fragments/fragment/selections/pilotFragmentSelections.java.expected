@@ -11,9 +11,11 @@ import com.apollographql.apollo.api.CompiledNotNullType;
 import com.apollographql.apollo.api.CompiledSelection;
 import com.example.nested_named_fragments.type.GraphQLString;
 import com.example.nested_named_fragments.type.Planet;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class PilotFragmentSelections {
   private static List<CompiledSelection> __homeworld = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),

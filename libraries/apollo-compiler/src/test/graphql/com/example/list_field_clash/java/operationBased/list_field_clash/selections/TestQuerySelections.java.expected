@@ -11,9 +11,11 @@ import com.apollographql.apollo.api.CompiledSelection;
 import com.example.list_field_clash.type.AmenityCategory;
 import com.example.list_field_clash.type.GraphQLString;
 import com.example.list_field_clash.type.PropertyAmenityCategory;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __amenityCategories = Arrays.asList(
     new CompiledField.Builder("text", GraphQLString.type).build()

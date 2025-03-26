@@ -14,9 +14,11 @@ import com.example.unique_type_name.type.FriendsConnection;
 import com.example.unique_type_name.type.FriendsEdge;
 import com.example.unique_type_name.type.GraphQLInt;
 import com.example.unique_type_name.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class HeroDetailsSelections {
   private static List<CompiledSelection> __node = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()

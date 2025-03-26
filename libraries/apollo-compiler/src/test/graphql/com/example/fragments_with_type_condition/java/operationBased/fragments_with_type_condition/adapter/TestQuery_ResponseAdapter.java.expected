@@ -23,6 +23,7 @@ import com.example.fragments_with_type_condition.fragment.HumanDetails;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("r2", "luke");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -69,6 +71,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.R2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -123,6 +126,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Luke fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {

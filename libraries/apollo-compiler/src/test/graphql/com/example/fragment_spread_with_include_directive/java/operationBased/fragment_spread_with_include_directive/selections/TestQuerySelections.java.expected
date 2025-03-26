@@ -21,9 +21,11 @@ import com.example.fragment_spread_with_include_directive.type.GraphQLBoolean;
 import com.example.fragment_spread_with_include_directive.type.GraphQLID;
 import com.example.fragment_spread_with_include_directive.type.GraphQLString;
 import com.example.fragment_spread_with_include_directive.type.Query;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName implements Query<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data> {
   public static final String OPERATION_ID = "164dc148c38451cf968e075d4fd3114b0e03f4e5d8e126be67cf7156ef4cda9c";
@@ -125,6 +126,7 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Optional<Episode> episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = Optional.absent();
 

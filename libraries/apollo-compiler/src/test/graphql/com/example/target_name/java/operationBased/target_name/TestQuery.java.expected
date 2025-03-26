@@ -20,6 +20,7 @@ import com.example.target_name.type.RenamedInput;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "42f2acf77ef3db730fa970cbbba1ca04133fcea023d8355d4eb0c27ebe51e30f";
@@ -150,6 +151,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Optional<RenamedInput> input = Optional.absent();
 

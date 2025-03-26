@@ -11,9 +11,11 @@ import com.apollographql.apollo.api.CompiledSelection;
 import com.apollographql.apollo.api.CompiledVariable;
 import com.example.antlr_tokens.type.GraphQLString;
 import com.example.antlr_tokens.type.TypeWithGraphQLKeywords;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __typeWithGraphQLKeywords = Arrays.asList(
     new CompiledField.Builder("on", GraphQLString.type).build(),
