@@ -14,9 +14,11 @@ import com.example.data_builders.fragment.selections.HumanFragmentSelections;
 import com.example.data_builders.type.GraphQLID;
 import com.example.data_builders.type.GraphQLString;
 import com.example.data_builders.type.Node;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class NodeQuerySelections {
   private static List<CompiledSelection> __node = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),

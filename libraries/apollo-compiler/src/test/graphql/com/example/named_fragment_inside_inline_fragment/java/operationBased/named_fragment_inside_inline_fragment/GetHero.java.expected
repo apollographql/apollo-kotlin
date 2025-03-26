@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class GetHero implements Query<GetHero.Data> {
   public static final String OPERATION_ID = "9885eef2193cd56885e6e1bacd7f02b712820858880de6fb29b3f3b04458c831";
@@ -130,6 +131,7 @@ public class GetHero implements Query<GetHero.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
     }

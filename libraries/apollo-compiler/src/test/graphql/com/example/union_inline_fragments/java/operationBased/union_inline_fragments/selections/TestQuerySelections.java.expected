@@ -17,9 +17,11 @@ import com.example.union_inline_fragments.type.GraphQLID;
 import com.example.union_inline_fragments.type.GraphQLString;
 import com.example.union_inline_fragments.type.Query;
 import com.example.union_inline_fragments.type.SearchResult;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __onCharacter1 = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()

@@ -10,9 +10,11 @@ import com.apollographql.apollo.api.CompiledFragment;
 import com.apollographql.apollo.api.CompiledNotNullType;
 import com.apollographql.apollo.api.CompiledSelection;
 import com.example.fragment_with_multiple_fieldsets.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class IFragmentSelections {
   private static List<CompiledSelection> __onA = Arrays.asList(
     new CompiledField.Builder("fieldA", GraphQLString.type).build()

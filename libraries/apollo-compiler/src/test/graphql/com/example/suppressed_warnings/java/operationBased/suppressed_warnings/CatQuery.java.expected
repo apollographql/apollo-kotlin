@@ -22,6 +22,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class CatQuery implements Query<CatQuery.Data> {
   public static final String OPERATION_ID = "a9164e713b135ac6a07ce03604974a833b919eb0ff9099665d8e7ff076c2e2c5";
@@ -127,6 +128,7 @@ public class CatQuery implements Query<CatQuery.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Optional<Filter> filter = Optional.absent();
 

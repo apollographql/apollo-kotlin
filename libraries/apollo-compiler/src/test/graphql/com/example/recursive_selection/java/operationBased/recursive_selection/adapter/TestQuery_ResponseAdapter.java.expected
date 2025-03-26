@@ -18,6 +18,7 @@ import com.example.recursive_selection.TestQuery;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("tree");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -58,6 +60,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "children", "parent");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Tree fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -104,6 +107,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Child fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -137,6 +141,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Parent fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {

@@ -14,9 +14,11 @@ import com.example.data_builders.fragment.selections.HumanFragmentSelections;
 import com.example.data_builders.type.Character;
 import com.example.data_builders.type.GraphQLID;
 import com.example.data_builders.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class CharacterQuerySelections {
   private static List<CompiledSelection> __character = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),

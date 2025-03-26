@@ -15,9 +15,11 @@ import com.example.root_query_fragment_with_nested_fragments.type.Droid;
 import com.example.root_query_fragment_with_nested_fragments.type.GraphQLString;
 import com.example.root_query_fragment_with_nested_fragments.type.Human;
 import com.example.root_query_fragment_with_nested_fragments.type.Query;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class QueryFragmentSelections {
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),

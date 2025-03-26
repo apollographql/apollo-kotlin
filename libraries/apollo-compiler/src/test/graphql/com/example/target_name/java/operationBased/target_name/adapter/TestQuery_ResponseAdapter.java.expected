@@ -23,6 +23,7 @@ import com.example.target_name.type.adapter.RenamedEnum_ResponseAdapter;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("object", "interface", "union", "scalar", "enum");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -87,6 +89,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("field");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Object fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -118,6 +121,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("field");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Interface fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -149,6 +153,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Union fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -192,6 +197,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("field");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.OnReservedObject fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {

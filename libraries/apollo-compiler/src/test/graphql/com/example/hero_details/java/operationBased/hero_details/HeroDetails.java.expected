@@ -19,6 +19,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.List;
 
 public class HeroDetails implements Query<HeroDetails.Data> {
@@ -127,6 +128,7 @@ public class HeroDetails implements Query<HeroDetails.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
     }

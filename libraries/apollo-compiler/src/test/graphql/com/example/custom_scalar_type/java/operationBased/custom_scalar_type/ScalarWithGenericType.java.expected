@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.List;
 
 public class ScalarWithGenericType implements Query<ScalarWithGenericType.Data> {
@@ -114,6 +115,7 @@ public class ScalarWithGenericType implements Query<ScalarWithGenericType.Data> 
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
     }

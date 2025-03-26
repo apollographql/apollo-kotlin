@@ -9,6 +9,7 @@ import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo.compiler.codegen.java.JavaContext
 import com.apollographql.apollo.compiler.codegen.java.helpers.readFromResponseCodeBlock
 import com.apollographql.apollo.compiler.codegen.java.helpers.responseNamesFieldSpec
+import com.apollographql.apollo.compiler.codegen.java.helpers.suppressAnnotation
 import com.apollographql.apollo.compiler.codegen.java.helpers.toClassName
 import com.apollographql.apollo.compiler.codegen.java.helpers.writeToResponseCodeBlock
 import com.apollographql.apollo.compiler.ir.IrModel
@@ -74,6 +75,7 @@ internal class MonomorphicFieldResponseAdapterBuilder(
   private fun readFromResponseMethodSpec(): MethodSpec {
     return MethodSpec.methodBuilder(fromJson)
         .addModifiers(Modifier.PUBLIC)
+        .addAnnotation(suppressAnnotation("unchecked"))
         .returns(adaptedClassName)
         .addException(JavaClassNames.IOException)
         .addParameter(JavaClassNames.JsonReader, reader)

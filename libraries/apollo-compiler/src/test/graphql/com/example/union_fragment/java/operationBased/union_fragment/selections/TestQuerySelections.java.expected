@@ -16,9 +16,11 @@ import com.example.union_fragment.type.GraphQLID;
 import com.example.union_fragment.type.GraphQLString;
 import com.example.union_fragment.type.Query;
 import com.example.union_fragment.type.SearchResult;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __onStarship = Arrays.asList(
     new CompiledField.Builder("id", new CompiledNotNullType(GraphQLID.type)).build()

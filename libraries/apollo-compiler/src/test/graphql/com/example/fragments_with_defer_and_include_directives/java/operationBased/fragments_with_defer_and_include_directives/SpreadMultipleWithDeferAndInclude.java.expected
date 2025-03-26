@@ -20,6 +20,7 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWithDeferAndInclude.Data> {
   public static final String OPERATION_ID = "1c9d61b4af65df2bfed92353244efbb66d20a35daf747507e66ed9d20dcd1517";
@@ -156,6 +157,7 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Boolean cond1;
 

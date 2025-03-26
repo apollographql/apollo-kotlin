@@ -14,9 +14,11 @@ import com.apollographql.apollo.api.CompiledSelection;
 import com.example.inline_fragment_inside_inline_fragment.type.GraphQLString;
 import com.example.inline_fragment_inside_inline_fragment.type.Query;
 import com.example.inline_fragment_inside_inline_fragment.type.SearchResult;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __onHuman = Arrays.asList(
     new CompiledField.Builder("homePlanet", GraphQLString.type).build()

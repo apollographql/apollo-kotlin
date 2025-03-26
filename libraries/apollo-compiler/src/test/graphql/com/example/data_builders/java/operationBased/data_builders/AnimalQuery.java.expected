@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class AnimalQuery implements Query<AnimalQuery.Data> {
   public static final String OPERATION_ID = "0a4d6f7c4de2a81e6247e9f2205b24b2b42e03c1f25fe7267e13fe1342d905d7";
@@ -147,6 +148,7 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
     return buildData(map, new DefaultFakeResolver(__Schema.types));
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
     }

@@ -9,9 +9,11 @@ import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CompiledNotNullType;
 import com.apollographql.apollo.api.CompiledSelection;
 import com.example.data_builders.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class CatFragmentSelections {
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("meow", new CompiledNotNullType(GraphQLString.type)).build()

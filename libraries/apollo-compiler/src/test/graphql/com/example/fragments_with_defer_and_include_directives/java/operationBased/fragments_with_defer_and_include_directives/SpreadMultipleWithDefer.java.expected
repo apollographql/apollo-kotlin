@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class SpreadMultipleWithDefer implements Query<SpreadMultipleWithDefer.Data> {
   public static final String OPERATION_ID = "7cd4d1b6a14f96cff4bbbdbd3b3ab1aa365ffc65e1515ff6e22935010543ad71";
@@ -122,6 +123,7 @@ public class SpreadMultipleWithDefer implements Query<SpreadMultipleWithDefer.Da
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
     }

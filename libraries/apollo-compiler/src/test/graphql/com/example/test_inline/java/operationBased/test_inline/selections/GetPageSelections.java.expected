@@ -13,9 +13,11 @@ import com.apollographql.apollo.api.CompiledSelection;
 import com.example.test_inline.type.Collection;
 import com.example.test_inline.type.GraphQLString;
 import com.example.test_inline.type.Item;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class GetPageSelections {
   private static List<CompiledSelection> __items = Arrays.asList(
     new CompiledField.Builder("title", new CompiledNotNullType(GraphQLString.type)).build()

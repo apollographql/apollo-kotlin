@@ -20,6 +20,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "7d815b13df95ab484c7b20cb8059c07e3a8688d1ea0a251bff6d3f0b6fdb1cb7";
@@ -134,6 +135,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Boolean includeName;
 

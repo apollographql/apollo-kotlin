@@ -17,6 +17,7 @@ import com.example.hero_name_query_long_name.TestQueryWithAVeryAVeryAVeryAVeryAV
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("heroAVeryAVeryAVeryAVeryAVeryAVeryAV");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -58,6 +60,7 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {

@@ -15,9 +15,11 @@ import com.example.unique_type_name.type.Character;
 import com.example.unique_type_name.type.Episode;
 import com.example.unique_type_name.type.GraphQLFloat;
 import com.example.unique_type_name.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class HeroDetailQuerySelections {
   private static List<CompiledSelection> __friends = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()

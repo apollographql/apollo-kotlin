@@ -21,6 +21,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
   public static final String OPERATION_ID = "955e634c34cd7cd1d999806876aec12f800dbb9d36cc914e313b7a0050342605";
@@ -172,6 +173,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Optional<Integer> nullableInt = Optional.absent();
 
@@ -305,6 +307,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       return new Builder();
     }
 
+    @SuppressWarnings("unchecked")
     public static final class Builder {
       private Integer nullableInt;
 
@@ -408,6 +411,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       return new Builder();
     }
 
+    @SuppressWarnings("unchecked")
     public static final class Builder {
       private Integer nullableInt;
 
@@ -497,6 +501,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       return new Builder();
     }
 
+    @SuppressWarnings("unchecked")
     public static final class Builder {
       private Integer nullableInt;
 

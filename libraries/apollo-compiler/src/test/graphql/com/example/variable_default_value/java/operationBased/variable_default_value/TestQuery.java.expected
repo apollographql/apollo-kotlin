@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "7bba59b12a0090dd1fbc4c409ea7e72bd6885a6b31d442bfeb86f4a67e5b62d9";
@@ -124,6 +125,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Optional<Episode> episode = Optional.absent();
 

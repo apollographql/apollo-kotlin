@@ -14,9 +14,11 @@ import com.example.interface_on_interface.type.GraphQLID;
 import com.example.interface_on_interface.type.GraphQLString;
 import com.example.interface_on_interface.type.Human;
 import com.example.interface_on_interface.type.Node;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class GetHumanSelections {
   private static List<CompiledSelection> __human = Arrays.asList(
     new CompiledField.Builder("id", new CompiledNotNullType(GraphQLID.type)).build(),

@@ -21,6 +21,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -183,6 +184,7 @@ public class MyQuery implements Query<MyQuery.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Optional<Integer> nullableInt = Optional.absent();
 
@@ -339,6 +341,7 @@ public class MyQuery implements Query<MyQuery.Data> {
       return new Builder();
     }
 
+    @SuppressWarnings("unchecked")
     public static final class Builder {
       private Integer nullableInt;
 
@@ -459,6 +462,7 @@ public class MyQuery implements Query<MyQuery.Data> {
       return new Builder();
     }
 
+    @SuppressWarnings("unchecked")
     public static final class Builder {
       private Integer nullableInt;
 
@@ -549,6 +553,7 @@ public class MyQuery implements Query<MyQuery.Data> {
       return new Builder();
     }
 
+    @SuppressWarnings("unchecked")
     public static final class Builder {
       private Integer nullableInt;
 

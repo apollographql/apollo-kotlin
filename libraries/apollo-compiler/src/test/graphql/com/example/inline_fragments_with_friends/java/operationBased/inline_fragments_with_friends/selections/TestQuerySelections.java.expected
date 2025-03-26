@@ -15,9 +15,11 @@ import com.example.inline_fragments_with_friends.type.Episode;
 import com.example.inline_fragments_with_friends.type.GraphQLFloat;
 import com.example.inline_fragments_with_friends.type.GraphQLID;
 import com.example.inline_fragments_with_friends.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __friends = Arrays.asList(
     new CompiledField.Builder("appearsIn", new CompiledNotNullType(new CompiledListType(Episode.type))).build()

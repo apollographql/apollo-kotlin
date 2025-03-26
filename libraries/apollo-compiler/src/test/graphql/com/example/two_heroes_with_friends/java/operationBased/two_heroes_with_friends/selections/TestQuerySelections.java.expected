@@ -17,9 +17,11 @@ import com.example.two_heroes_with_friends.type.GraphQLID;
 import com.example.two_heroes_with_friends.type.GraphQLInt;
 import com.example.two_heroes_with_friends.type.GraphQLString;
 import com.example.two_heroes_with_friends.type.Query;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __node = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()

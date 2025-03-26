@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nonOptionalHero");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -63,6 +65,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.NonOptionalHero fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -114,6 +117,7 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("height");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestQuery.OnHuman fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {

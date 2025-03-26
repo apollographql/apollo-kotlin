@@ -19,6 +19,7 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "1fc50a1808d1ff72f74d821b563ee69df2fc04dd650e41d27d75d90d0413bd65";
@@ -142,6 +143,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Boolean withDetails;
 

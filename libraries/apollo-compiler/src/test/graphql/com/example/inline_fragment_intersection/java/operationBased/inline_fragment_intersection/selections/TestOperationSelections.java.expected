@@ -16,9 +16,11 @@ import com.example.inline_fragment_intersection.type.GraphQLBoolean;
 import com.example.inline_fragment_intersection.type.GraphQLFloat;
 import com.example.inline_fragment_intersection.type.GraphQLString;
 import com.example.inline_fragment_intersection.type.Race;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestOperationSelections {
   private static List<CompiledSelection> __onWookie = Arrays.asList(
     new CompiledField.Builder("lifeExpectancy", GraphQLFloat.type).build()

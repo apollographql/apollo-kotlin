@@ -12,9 +12,11 @@ import com.apollographql.apollo.api.CompiledSelection;
 import com.example.not_all_combinations_are_needed.fragment.selections.BFragmentSelections;
 import com.example.not_all_combinations_are_needed.type.C;
 import com.example.not_all_combinations_are_needed.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __onB = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),

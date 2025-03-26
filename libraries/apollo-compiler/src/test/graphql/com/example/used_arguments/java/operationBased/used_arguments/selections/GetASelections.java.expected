@@ -15,9 +15,11 @@ import com.example.used_arguments.type.B;
 import com.example.used_arguments.type.C;
 import com.example.used_arguments.type.GraphQLInt;
 import com.example.used_arguments.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class GetASelections {
   private static List<CompiledSelection> __onB = Arrays.asList(
     new CompiledField.Builder("field", GraphQLInt.type).arguments(Arrays.asList(new CompiledArgument.Builder(B.__field_arg).value(42).build())).build()

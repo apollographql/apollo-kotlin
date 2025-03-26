@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.json.JsonWriter;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "hero", "droid", "human");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -77,6 +79,7 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -117,6 +120,7 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -157,6 +161,7 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -197,6 +202,7 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "homePlanet");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.OnHuman fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {

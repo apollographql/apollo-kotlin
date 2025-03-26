@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.json.JsonWriter;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class HorseFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Cow");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.decapitalized_fields.fragment.HorseFragment fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -55,6 +57,7 @@ public class HorseFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Moo");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.decapitalized_fields.fragment.HorseFragment.Cow fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {

@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.Optional;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class RenamedInput {
   public final Optional<String> field;
@@ -61,6 +62,7 @@ public class RenamedInput {
     return new Builder();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Optional<String> field = Optional.absent();
 

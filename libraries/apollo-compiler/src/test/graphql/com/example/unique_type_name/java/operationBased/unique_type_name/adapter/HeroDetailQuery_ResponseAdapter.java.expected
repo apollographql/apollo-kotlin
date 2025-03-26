@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("heroDetailQuery");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.unique_type_name.HeroDetailQuery.Data fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -65,6 +67,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "friends");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -122,6 +125,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.unique_type_name.HeroDetailQuery.Friend fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -155,6 +159,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("height", "friends");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.unique_type_name.HeroDetailQuery.OnHuman fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -192,6 +197,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("appearsIn", "friends");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.unique_type_name.HeroDetailQuery.Friend1 fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -231,6 +237,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.unique_type_name.HeroDetailQuery.Friend2 fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {

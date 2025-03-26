@@ -10,6 +10,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.List;
 
 public class HeroDetails implements Fragment.Data {
@@ -185,6 +186,7 @@ public class HeroDetails implements Fragment.Data {
       return new Builder();
     }
 
+    @SuppressWarnings("unchecked")
     public static final class Builder {
       private Integer totalCount;
 
@@ -283,6 +285,7 @@ public class HeroDetails implements Fragment.Data {
       return new Builder();
     }
 
+    @SuppressWarnings("unchecked")
     public static final class Builder {
       private String __typename;
 
@@ -370,6 +373,7 @@ public class HeroDetails implements Fragment.Data {
       return new Builder();
     }
 
+    @SuppressWarnings("unchecked")
     public static final class Builder {
       private Node node;
 
@@ -450,6 +454,7 @@ public class HeroDetails implements Fragment.Data {
       return new Builder();
     }
 
+    @SuppressWarnings("unchecked")
     public static final class Builder {
       private String name;
 
@@ -470,6 +475,7 @@ public class HeroDetails implements Fragment.Data {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private String __typename;
 

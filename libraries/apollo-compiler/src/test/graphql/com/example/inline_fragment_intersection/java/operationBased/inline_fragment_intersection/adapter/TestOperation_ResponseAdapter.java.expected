@@ -25,6 +25,7 @@ import java.lang.Boolean;
 import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class TestOperation_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("random");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestOperation.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
@@ -67,6 +69,7 @@ public class TestOperation_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestOperation.Random fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -121,6 +124,7 @@ public class TestOperation_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "friends");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestOperation.OnBeing fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -179,6 +183,7 @@ public class TestOperation_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestOperation.Friend fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -230,6 +235,7 @@ public class TestOperation_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("lifeExpectancy");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestOperation.OnWookie fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -261,6 +267,7 @@ public class TestOperation_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("profilePictureUrl", "friends");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestOperation.OnHuman fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -300,6 +307,7 @@ public class TestOperation_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "isFamous");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestOperation.Friend1 fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -349,6 +357,7 @@ public class TestOperation_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("race");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestOperation.OnWookie1 fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -382,6 +391,7 @@ public class TestOperation_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("race", "friends");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestOperation.OnWookie2 fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -422,6 +432,7 @@ public class TestOperation_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("lifeExpectancy");
 
+    @SuppressWarnings("unchecked")
     @Override
     public TestOperation.Friend2 fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {

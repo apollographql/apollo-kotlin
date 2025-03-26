@@ -8,6 +8,7 @@ package com.example.java8annotation.type;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import org.jetbrains.annotations.NotNull;
 
 public class Login {
@@ -62,6 +63,7 @@ public class Login {
     return new Builder();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private String email;
 

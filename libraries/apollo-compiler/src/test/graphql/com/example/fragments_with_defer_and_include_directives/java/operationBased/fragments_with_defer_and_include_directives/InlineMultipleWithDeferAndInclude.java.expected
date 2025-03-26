@@ -19,6 +19,7 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWithDeferAndInclude.Data> {
   public static final String OPERATION_ID = "f159c1ac4f33a49c5c9833e06a2606e2fc7ede812e119909eb45f95dc2aa01fc";
@@ -163,6 +164,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Boolean cond1;
 

@@ -22,6 +22,7 @@ import java.lang.Deprecated;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "6a8dd101c1681dc829d72040868fdf394c52bacb692da3549bc73e9504013470";
@@ -128,6 +129,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Optional<Episode> episode = Optional.absent();
 

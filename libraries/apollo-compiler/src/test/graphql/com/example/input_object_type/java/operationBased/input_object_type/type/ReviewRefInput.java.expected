@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.Optional;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 /**
  * Circle ref to review input
@@ -64,6 +65,7 @@ public class ReviewRefInput {
     return new Builder();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Optional<ReviewInput> reviewInput = Optional.absent();
 

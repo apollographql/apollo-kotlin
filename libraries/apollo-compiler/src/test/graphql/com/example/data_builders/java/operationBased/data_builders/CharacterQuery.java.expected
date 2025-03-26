@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class CharacterQuery implements Query<CharacterQuery.Data> {
   public static final String OPERATION_ID = "f4b46cb156d293f68b745d169b5089b3e082087d36dea649b06aa4c6a7821e46";
@@ -149,6 +150,7 @@ public class CharacterQuery implements Query<CharacterQuery.Data> {
     return buildData(map, new DefaultFakeResolver(__Schema.types));
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
     }

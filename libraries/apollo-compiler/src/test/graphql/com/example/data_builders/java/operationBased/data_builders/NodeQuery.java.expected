@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class NodeQuery implements Query<NodeQuery.Data> {
   public static final String OPERATION_ID = "c91df108c7e22d226afdf25226288d452aad34224a2d09fc3b98e495f4903c4c";
@@ -148,6 +149,7 @@ public class NodeQuery implements Query<NodeQuery.Data> {
     return buildData(map, new DefaultFakeResolver(__Schema.types));
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
     }

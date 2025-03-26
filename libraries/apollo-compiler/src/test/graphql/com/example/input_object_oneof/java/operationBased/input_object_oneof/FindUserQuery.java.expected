@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class FindUserQuery implements Query<FindUserQuery.Data> {
   public static final String OPERATION_ID = "da63c6a7bf79d238f2d6fffd77742ac92c08bd4229714f24a726f773f7567fcc";
@@ -123,6 +124,7 @@ public class FindUserQuery implements Query<FindUserQuery.Data> {
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private FindUserInput findUserInput;
 

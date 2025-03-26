@@ -9,9 +9,11 @@ import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CompiledNotNullType;
 import com.apollographql.apollo.api.CompiledSelection;
 import com.example.fragment_spread_with_include_directive.type.GraphQLID;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class OtherDroidDetailsSelections {
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("id", new CompiledNotNullType(GraphQLID.type)).build()

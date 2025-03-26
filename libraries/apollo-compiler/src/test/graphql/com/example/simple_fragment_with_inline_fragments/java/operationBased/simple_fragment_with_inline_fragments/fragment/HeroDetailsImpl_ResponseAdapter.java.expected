@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friends");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -71,6 +73,7 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -134,6 +137,7 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("height");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
@@ -166,6 +170,7 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("primaryFunction");
 
+    @SuppressWarnings("unchecked")
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {

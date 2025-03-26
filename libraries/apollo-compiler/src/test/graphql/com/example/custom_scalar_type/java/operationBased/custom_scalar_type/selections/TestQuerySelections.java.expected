@@ -16,9 +16,11 @@ import com.example.custom_scalar_type.type.GraphQLString;
 import com.example.custom_scalar_type.type.Timestamp;
 import com.example.custom_scalar_type.type.URL;
 import com.example.custom_scalar_type.type.UnsupportedType;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("id", new CompiledNotNullType(CharacterID.type)).build(),

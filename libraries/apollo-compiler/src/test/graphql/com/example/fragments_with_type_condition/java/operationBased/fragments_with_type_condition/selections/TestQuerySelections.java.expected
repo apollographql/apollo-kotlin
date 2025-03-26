@@ -13,9 +13,11 @@ import com.example.fragments_with_type_condition.fragment.selections.DroidDetail
 import com.example.fragments_with_type_condition.fragment.selections.HumanDetailsSelections;
 import com.example.fragments_with_type_condition.type.Character;
 import com.example.fragments_with_type_condition.type.GraphQLString;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),

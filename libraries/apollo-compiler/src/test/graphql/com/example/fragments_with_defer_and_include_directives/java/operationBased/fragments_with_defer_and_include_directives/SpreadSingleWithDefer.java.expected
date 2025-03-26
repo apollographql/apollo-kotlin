@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class SpreadSingleWithDefer implements Query<SpreadSingleWithDefer.Data> {
   public static final String OPERATION_ID = "fad1c3622a6f35d5fa4ad7b5e4a8d50525c350d4688837022f0f7a6f0aed2ba0";
@@ -121,6 +122,7 @@ public class SpreadSingleWithDefer implements Query<SpreadSingleWithDefer.Data> 
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
     }

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> {
   public static final String OPERATION_ID = "70222802c9192f810f19a54d31e039ce0fc3b8baac231841f0a0e8b4200c312b";
@@ -118,6 +119,7 @@ public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> 
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
     }

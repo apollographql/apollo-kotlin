@@ -17,9 +17,11 @@ import com.example.nested_conditional_inline.type.GraphQLFloat;
 import com.example.nested_conditional_inline.type.GraphQLString;
 import com.example.nested_conditional_inline.type.Human;
 import com.example.nested_conditional_inline.type.Query;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TestQuerySelections {
   private static List<CompiledSelection> __onHuman1 = Arrays.asList(
     new CompiledField.Builder("height", GraphQLFloat.type).arguments(Arrays.asList(new CompiledArgument.Builder(Human.__height_unit).value("FOOT").build())).build()

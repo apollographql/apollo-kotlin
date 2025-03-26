@@ -10,9 +10,11 @@ import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CompiledSelection;
 import com.example.used_arguments.type.A;
 import com.example.used_arguments.type.GraphQLInt;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class ADetailsSelections {
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("field", GraphQLInt.type).arguments(Arrays.asList(new CompiledArgument.Builder(A.__field_arg).value(42).build())).build()

@@ -21,6 +21,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 
 public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForEpisodeMutation.Data> {
   public static final String OPERATION_ID = "0af665fbb1ccec4fbec377a80b620cb423b737162848a7b16b842c2fa382b54c";
@@ -133,6 +134,7 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
     .build();
   }
 
+  @SuppressWarnings("unchecked")
   public static final class Builder {
     private Episode ep;
 

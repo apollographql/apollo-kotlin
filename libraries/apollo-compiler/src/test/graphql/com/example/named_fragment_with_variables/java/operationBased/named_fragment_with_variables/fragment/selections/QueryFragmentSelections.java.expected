@@ -16,9 +16,11 @@ import com.example.named_fragment_with_variables.type.GraphQLString;
 import com.example.named_fragment_with_variables.type.Organization;
 import com.example.named_fragment_with_variables.type.Query;
 import com.example.named_fragment_with_variables.type.User;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class QueryFragmentSelections {
   private static List<CompiledSelection> __user = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
