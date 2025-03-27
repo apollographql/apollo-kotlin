@@ -1,11 +1,11 @@
 package com.apollographql.ijplugin.normalizedcache
 
+import com.android.adblib.DeviceSelector
 import com.android.adblib.syncRecv
 import com.android.ddmlib.AndroidDebugBridge
 import com.android.ddmlib.IDevice
 import com.android.tools.idea.adb.AdbShellCommandsUtil
 import com.android.tools.idea.adblib.AdbLibApplicationService
-import com.android.tools.idea.adblib.ddmlibcompatibility.toDeviceSelector
 import com.apollographql.ijplugin.util.execute
 import com.apollographql.ijplugin.util.executeCatching
 import com.apollographql.ijplugin.util.logd
@@ -75,7 +75,7 @@ suspend fun pullFile(device: IDevice, appPackageName: String, remoteDirName: Str
       val adbLibSession = AdbLibApplicationService.instance.session
       val fileChannel = adbLibSession.channelFactory.createFile(Paths.get(localFile.absolutePath))
       fileChannel.use {
-        adbLibSession.deviceServices.syncRecv(device.toDeviceSelector(), intermediateRemoteFilePath, fileChannel)
+        adbLibSession.deviceServices.syncRecv(DeviceSelector.fromSerialNumber(device.serialNumber), intermediateRemoteFilePath, fileChannel)
       }
     } finally {
       commandResult = shellCommandsUtil.execute("rm $intermediateRemoteFilePath")

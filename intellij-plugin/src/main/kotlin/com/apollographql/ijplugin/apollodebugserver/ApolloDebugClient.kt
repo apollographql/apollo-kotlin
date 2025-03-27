@@ -3,12 +3,18 @@ package com.apollographql.ijplugin.apollodebugserver
 import com.android.ddmlib.IDevice
 import com.android.tools.idea.adb.AdbShellCommandsUtil
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.network.http.LoggingInterceptor
 import com.apollographql.ijplugin.util.apollo3
 import com.apollographql.ijplugin.util.apollo4
 import com.apollographql.ijplugin.util.executeCatching
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import java.io.Closeable
 
 private const val SOCKET_NAME_PREFIX = "apollo_debug_"
@@ -64,6 +70,13 @@ class ApolloDebugClient(
       .serverUrl("http://localhost:$port")
       .addHttpInterceptor(LoggingInterceptor { line ->
         logd("ApolloDebugClient HTTP - $line")
+      })
+      // Use a dummy NetworkTransport for subscriptions (which are not used), because the default one
+      // references CoroutineDispatcher.limitedParallelism which doesn't exist in certain IDE versions.
+      // (See https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#coroutinesLibraries)
+      .subscriptionNetworkTransport(object: NetworkTransport{
+        override fun <D : Operation.Data> execute(request: ApolloRequest<D>): Flow<ApolloResponse<D>> = emptyFlow()
+        override fun dispose() {}
       })
       .build()
 
