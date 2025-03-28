@@ -1,11 +1,14 @@
 package com.apollographql.ijplugin.normalizedcache.provider
 
+import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.json.JsonNumber
+import com.apollographql.cache.normalized.api.CacheKey
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.Field
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.BooleanValue
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.CompositeValue
+import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.ErrorValue
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.ListValue
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.Null
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.NumberValue
@@ -25,16 +28,16 @@ import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory as Apoll
 class DatabaseNormalizedCacheProvider : NormalizedCacheProvider<File> {
   private enum class DbFormat {
     /**
-     * Classic normalized cache format with records containing JSON text, implemented in
+     * Classic format with records containing JSON text, implemented in
      * `com.apollographql.apollo:apollo-normalized-cache-sqlite`.
      */
-    JSON,
+    CLASSIC,
 
     /**
-     * Experimental blob format with records containing a binary format, implemented in
+     * Modern format with records containing a binary format, implemented in
      * `com.apollographql.cache:normalized-cache-sqlite-incubating`.
      */
-    BLOB,
+    MODERN,
 
     UNKNOWN_OR_ERROR,
   }
@@ -46,14 +49,14 @@ class DatabaseNormalizedCacheProvider : NormalizedCacheProvider<File> {
       runCatching {
         connection.createStatement().executeQuery("SELECT key, record FROM records").use { resultSet ->
           if (resultSet.next()) {
-            return DbFormat.JSON
+            return DbFormat.CLASSIC
           }
         }
       }
       runCatching {
-        connection.createStatement().executeQuery("SELECT key, blob FROM blobs").use { resultSet ->
+        connection.createStatement().executeQuery("SELECT key, record FROM record").use { resultSet ->
           if (resultSet.next()) {
-            return DbFormat.BLOB
+            return DbFormat.MODERN
           }
         }
       }
@@ -66,14 +69,14 @@ class DatabaseNormalizedCacheProvider : NormalizedCacheProvider<File> {
     return runCatching {
       val format = checkDatabase(url)
       when (format) {
-        DbFormat.JSON -> readJsonDb(url)
-        DbFormat.BLOB -> readBlobDb(url)
+        DbFormat.CLASSIC -> readClassicDb(url)
+        DbFormat.MODERN -> readModernDb(url)
         DbFormat.UNKNOWN_OR_ERROR -> error("Empty cache: no records were found")
       }
     }
   }
 
-  private fun readJsonDb(url: String): NormalizedCache {
+  private fun readClassicDb(url: String): NormalizedCache {
     val apolloNormalizedCache: ApolloClassicNormalizedCache = ApolloClassicSqlNormalizedCacheFactory(url).create()
     val apolloRecords: Map<String, ApolloClassicRecord> = apolloNormalizedCache.dump().values.first()
     return NormalizedCache(
@@ -89,13 +92,13 @@ class DatabaseNormalizedCacheProvider : NormalizedCacheProvider<File> {
     )
   }
 
-  private fun readBlobDb(url: String): NormalizedCache {
+  private fun readModernDb(url: String): NormalizedCache {
     val apolloNormalizedCache: ApolloModernNormalizedCache = ApolloModernSqlNormalizedCacheFactory(url).create()
-    val apolloRecords: Map<String, ApolloModernRecord> = apolloNormalizedCache.dump().values.first()
+    val apolloRecords: Map<CacheKey, ApolloModernRecord> = apolloNormalizedCache.dump().values.first()
     return NormalizedCache(
         apolloRecords.map { (key, apolloRecord) ->
           NormalizedCache.Record(
-              key = key,
+              key = key.key,
               fields = apolloRecord.map { (fieldKey, fieldValue) ->
                 Field(fieldKey, fieldValue.toFieldValue())
               },
@@ -117,6 +120,7 @@ private fun Any?.toFieldValue(): FieldValue {
     is Map<*, *> -> CompositeValue(map { Field(it.key as String, it.value.toFieldValue()) })
     is ApolloClassicCacheKey -> Reference(this.key)
     is ApolloModernCacheKey -> Reference(this.key)
+    is Error -> ErrorValue(this.message)
     else -> error("Unsupported type ${this::class}")
   }
 }

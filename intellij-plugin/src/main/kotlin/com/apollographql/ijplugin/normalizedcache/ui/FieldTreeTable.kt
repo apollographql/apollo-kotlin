@@ -55,6 +55,9 @@ class FieldTreeTable(selectRecord: (String) -> Unit) : JBTreeTable(FieldTreeTabl
                 append("→ ", SimpleTextAttributes.GRAY_ITALIC_ATTRIBUTES)
                 append(v.key, SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES)
               }
+              is NormalizedCache.FieldValue.ErrorValue -> {
+                append("Error: '${v.message}'", SimpleTextAttributes.ERROR_ATTRIBUTES)
+              }
             }
           }
         }
