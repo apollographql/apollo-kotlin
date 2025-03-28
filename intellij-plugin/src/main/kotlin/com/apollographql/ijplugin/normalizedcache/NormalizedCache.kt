@@ -24,6 +24,7 @@ data class NormalizedCache(
     data class CompositeValue(val value: List<Field>) : FieldValue
     data object Null : FieldValue
     data class Reference(val key: String) : FieldValue
+    data class ErrorValue(val message: String) : FieldValue
   }
 
   fun sorted() = NormalizedCache(

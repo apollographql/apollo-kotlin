@@ -1,13 +1,13 @@
 package com.apollographql.ijplugin.normalizedcache.provider
 
 import com.apollographql.apollo.api.json.JsonNumber
-import com.apollographql.apollo.cache.normalized.api.CacheKey
 import com.apollographql.ijplugin.apollodebugserver.GetNormalizedCacheQuery
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.Field
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.BooleanValue
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.CompositeValue
+import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.ErrorValue
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.ListValue
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.Null
 import com.apollographql.ijplugin.normalizedcache.NormalizedCache.FieldValue.NumberValue
@@ -44,10 +44,18 @@ private fun Any.toFields(): List<Field> {
 private fun Any?.toFieldValue(): FieldValue {
   return when (this) {
     null -> Null
-    is String -> if (CacheKey.canDeserialize(this)) {
-      Reference(CacheKey.deserialize(this).key)
-    } else {
-      StringValue(this)
+    is String -> when {
+      this.startsWith(APOLLO_CACHE_REFERENCE_PREFIX) -> {
+        Reference(this.removePrefix(APOLLO_CACHE_REFERENCE_PREFIX).removeSuffix("}"))
+      }
+
+      this.startsWith(APOLLO_CACHE_ERROR_PREFIX) -> {
+        ErrorValue(this.removePrefix(APOLLO_CACHE_ERROR_PREFIX).removeSuffix("}"))
+      }
+
+      else -> {
+        StringValue(this)
+      }
     }
 
     is Number -> NumberValue(this.toString())
@@ -58,3 +66,6 @@ private fun Any?.toFieldValue(): FieldValue {
     else -> error("Unsupported type ${this::class}")
   }
 }
+
+private const val APOLLO_CACHE_REFERENCE_PREFIX = "ApolloCacheReference{"
+private const val APOLLO_CACHE_ERROR_PREFIX = "ApolloCacheError{"
