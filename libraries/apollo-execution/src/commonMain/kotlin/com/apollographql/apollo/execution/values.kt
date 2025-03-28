@@ -31,7 +31,7 @@ typealias InternalValue = Any?
  * The result of a resolver
  *
  * - an [InternalValue] for leaf types
- * - an opaque value for composite types
+ * - an opaque value for composite types (doesn't have to be a map)
  * - a [List] for list types
  */
 internal typealias ResolverValue = Any?
@@ -42,14 +42,7 @@ internal typealias ResolverValue = Any?
 internal typealias ResolverValueOrError = Any?
 
 /**
- * A JSON value.
- * - Numbers are stored as Int, Long, Double or JsonNumber for arbitrary precision
- * - Enums are stored as Strings
- */
-typealias JsonValue = Any?
-
-/**
- * Any of [JsonValue] or [Error]
+ * Any of [com.apollographql.apollo.api.json.ApolloJsonElement] or [Error]
  */
 typealias ExternalValue = Any?
 
