@@ -10,6 +10,7 @@ kotlin {
     binaries {
       framework {
         export(libs.apollo.api)
+        binaryOption("bundleId", "shared_framework")
       }
     }
   }
