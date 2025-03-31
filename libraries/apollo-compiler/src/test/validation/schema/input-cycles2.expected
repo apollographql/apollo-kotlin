@@ -1,0 +1,14 @@
+OtherValidationIssue (7:5)
+Invalid circular reference. The Input Object 'SomeInputObject' references itself via the non-null fields: AnotherInputObject.startLoop, SomeInputObject.closeLoop
+------------
+OtherValidationIssue (11:5)
+Invalid circular reference. The Input Object 'SomeInputObject' references itself via the non-null fields: AnotherInputObject.startLoop, SomeInputObject.closeLoop
+------------
+OtherValidationIssue (12:5)
+Invalid circular reference. The Input Object 'AnotherInputObject' references itself via the non-null fields: YetAnotherInputObject.startSecondLoop, AnotherInputObject.closeSecondLoop
+------------
+OtherValidationIssue (16:5)
+Invalid circular reference. The Input Object 'AnotherInputObject' references itself via the non-null fields: YetAnotherInputObject.startSecondLoop, AnotherInputObject.closeSecondLoop
+------------
+OtherValidationIssue (17:5)
+Invalid circular reference. The Input Object 'YetAnotherInputObject' references itself in the non-null field YetAnotherInputObject.nonNullSelf

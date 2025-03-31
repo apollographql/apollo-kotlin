@@ -1,17 +1,17 @@
 ReservedEnumValueName (30:1)
-'Foo1' cannot be used as a target name for 'Bar' because it clashes with 'foo' defined at duplicate-target-name.graphql: (25, 1)
+'Foo1' cannot be used as a target name for 'Bar' because it clashes with 'foo' defined at duplicate-target-name.graphqls: (25, 1)
 ------------
 ReservedEnumValueName (9:1)
-'Enum' cannot be used as a target name for 'Enum2' because it clashes with 'Enum' defined at duplicate-target-name.graphql: (5, 1)
+'Enum' cannot be used as a target name for 'Enum2' because it clashes with 'Enum' defined at duplicate-target-name.graphqls: (5, 1)
 ------------
 ReservedEnumValueName (17:1)
-'RenamedEnum' cannot be used as a target name for 'Enum4' because it clashes with 'Enum3' defined at duplicate-target-name.graphql: (13, 1)
+'RenamedEnum' cannot be used as a target name for 'Enum4' because it clashes with 'Enum3' defined at duplicate-target-name.graphqls: (13, 1)
 ------------
 ReservedEnumValueName (38:1)
-'Type' cannot be used as a target name for 'Type2' because it clashes with 'Type' defined at duplicate-target-name.graphql: (34, 1)
+'Type' cannot be used as a target name for 'Type2' because it clashes with 'Type' defined at duplicate-target-name.graphqls: (34, 1)
 ------------
 ReservedEnumValueName (46:1)
-'RenamedType' cannot be used as a target name for 'Type4' because it clashes with 'Type3' defined at duplicate-target-name.graphql: (42, 1)
+'RenamedType' cannot be used as a target name for 'Type4' because it clashes with 'Type3' defined at duplicate-target-name.graphqls: (42, 1)
 ------------
 ReservedEnumValueName (51:1)
-'Query' cannot be used as a target name for 'Union' because it clashes with 'Query' defined at duplicate-target-name.graphql: (1, 1)
+'Query' cannot be used as a target name for 'Union' because it clashes with 'Query' defined at duplicate-target-name.graphqls: (1, 1)

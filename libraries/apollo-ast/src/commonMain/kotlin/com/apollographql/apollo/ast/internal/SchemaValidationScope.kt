@@ -10,7 +10,9 @@ import com.apollographql.apollo.ast.GQLDirectiveDefinition
 import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo.ast.GQLField
+import com.apollographql.apollo.ast.GQLFieldDefinition
 import com.apollographql.apollo.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo.ast.GQLInputValueDefinition
 import com.apollographql.apollo.ast.GQLInterfaceTypeDefinition
 import com.apollographql.apollo.ast.GQLListValue
 import com.apollographql.apollo.ast.GQLNamed
@@ -266,23 +268,23 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
   ).flatMap {
     it.parseAsGQLDocument().getOrThrow().definitions
   }
-  .forEach { expected ->
-    val existing = when (expected) {
-      is GQLTypeDefinition -> typeDefinitions.get(expected.name)
-      is GQLDirectiveDefinition -> directiveDefinitions.get(expected.name)
-      else -> error("")// should never happen
-    }
-    if (existing != null && !foreignNames.containsKey(expected.definitionName()) && !existing.semanticEquals(expected)) {
-      /*
-       * For non-linked definitions, check that the definitions match 1:1.
-       * We do not check linked definitions because:
-       * - we know we support them by construction.
-       * - someone may rename argument types, which makes validation much harder. One example is importing `@catch` but not
-       * `@catchTo`.
-       */
-      issues.add(IncompatibleDefinition(expected.name, expected.toSemanticSdl(), existing.sourceLocation))
-    }
-  }
+      .forEach { expected ->
+        val existing = when (expected) {
+          is GQLTypeDefinition -> typeDefinitions.get(expected.name)
+          is GQLDirectiveDefinition -> directiveDefinitions.get(expected.name)
+          else -> error("")// should never happen
+        }
+        if (existing != null && !foreignNames.containsKey(expected.definitionName()) && !existing.semanticEquals(expected)) {
+          /*
+           * For non-linked definitions, check that the definitions match 1:1.
+           * We do not check linked definitions because:
+           * - we know we support them by construction.
+           * - someone may rename argument types, which makes validation much harder. One example is importing `@catch` but not
+           * `@catchTo`.
+           */
+          issues.add(IncompatibleDefinition(expected.name, expected.toSemanticSdl(), existing.sourceLocation))
+        }
+      }
 
   /**
    * I'm not 100% clear on the order of validations, here I'm merging the extensions first thing
@@ -313,6 +315,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
   mergedScope.validateUnions()
   mergedScope.validateInputObjects()
   mergedScope.validateScalars()
+  mergedScope.validateDirectiveDefinitions()
 
   val keyFields = mergedScope.validateAndComputeKeyFields()
   val connectionTypes = mergedScope.computeConnectionTypes()
@@ -515,6 +518,7 @@ private fun List<GQLValue>.parseImport(issues: MutableList<Issue>): Map<Definiti
         // Simple case: import the definition without renaming
         it.value to it.value
       }
+
       is GQLObjectValue -> {
         if (it.fields.size != 2) {
           issues.add(OtherValidationIssue("Too many fields in 'import' argument", it.sourceLocation))
@@ -663,8 +667,8 @@ private fun ValidationScope.validateInterfaces() {
 
     validateDirectivesInConstContext(i.directives, i)
 
-    i.fields.forEach { gqlFieldDefinition ->
-      validateDirectivesInConstContext(gqlFieldDefinition.directives, gqlFieldDefinition)
+    i.fields.forEach { fieldDefinition ->
+      validateField(fieldDefinition)
     }
   }
 }
@@ -684,8 +688,20 @@ private fun ValidationScope.validateObjects() {
 
     validateDirectivesInConstContext(o.directives, o)
 
-    o.fields.forEach { gqlFieldDefinition ->
-      validateDirectivesInConstContext(gqlFieldDefinition.directives, gqlFieldDefinition)
+    o.fields.forEach { fieldDefinition ->
+      validateField(fieldDefinition)
+    }
+  }
+}
+
+private fun ValidationScope.validateField(fieldDefinition: GQLFieldDefinition) {
+  validateDirectivesInConstContext(fieldDefinition.directives, fieldDefinition)
+
+  fieldDefinition.arguments.forEach {
+    if (it.defaultValue != null) {
+      validateAndCoerceValue(it.defaultValue, it.type, false, false) {
+        issues.add(it.constContextError())
+      }
     }
   }
 }
@@ -716,6 +732,17 @@ private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition)
     return
   }
 }
+private fun ValidationScope.validateDirectiveDefinitions() {
+  directiveDefinitions.values.forEach {
+    it.arguments.forEach {
+      if (it.defaultValue != null) {
+        validateAndCoerceValue(it.defaultValue, it.type, false, false) {
+          issues.add(it.constContextError())
+        }
+      }
+    }
+  }
+}
 
 private fun ValidationScope.validateScalars() {
   typeDefinitions.values.filterIsInstance<GQLScalarTypeDefinition>().forEach { scalarTypeDefinition ->
@@ -732,18 +759,23 @@ private fun ValidationScope.validateScalars() {
       issues.add(OtherValidationIssue(
           message = "Only one of @map and @mapTo can be added to a scalar.",
           sourceLocation = scalarTypeDefinition.sourceLocation
-      ))
+      )
+      )
     }
   }
 }
 
 private fun ValidationScope.validateInputObjects() {
+  val traversalState = TraversalState()
+  val defaultValueTraversalState = DefaultValueTraversalState()
   typeDefinitions.values.filterIsInstance<GQLInputObjectTypeDefinition>().forEach { o ->
     if (o.inputFields.isEmpty()) {
       registerIssue("Input object must specify one or more input fields", o.sourceLocation)
     }
 
     validateDirectivesInConstContext(o.directives, o)
+    validateInputFieldCycles(o, traversalState)
+    validateInputObjectDefaultValue(o, defaultValueTraversalState)
 
     val isOneOfInputObject = o.directives.findOneOf()
     o.inputFields.forEach { gqlInputValueDefinition ->
@@ -757,6 +789,143 @@ private fun ValidationScope.validateInputObjects() {
       }
     }
   }
+}
+
+private class TraversalState {
+  val visitedTypes = mutableSetOf<String>()
+  val fieldPath = mutableListOf<Pair<String, SourceLocation?>>()
+  val fieldPathIndexByTypeName = mutableMapOf<String, Int>()
+}
+
+private class DefaultValueTraversalState {
+  val visitedFields = mutableSetOf<String>()
+  val fieldPath = mutableListOf<Pair<String, SourceLocation?>>()
+  val fieldPathIndex = mutableMapOf<String, Int>()
+}
+
+
+private fun ValidationScope.validateInputFieldCycles(inputObjectTypeDefinition: GQLInputObjectTypeDefinition, state: TraversalState) {
+  if (state.visitedTypes.contains(inputObjectTypeDefinition.name)) {
+    return
+  }
+  state.visitedTypes.add(inputObjectTypeDefinition.name)
+
+  state.fieldPathIndexByTypeName[inputObjectTypeDefinition.name] = state.fieldPath.size
+
+  inputObjectTypeDefinition.inputFields.forEach {
+    val type = it.type
+    if (type is GQLNonNullType && type.type is GQLNamedType) {
+      val fieldType = typeDefinitions.get(type.type.name)
+      if (fieldType is GQLInputObjectTypeDefinition) {
+        val cycleIndex = state.fieldPathIndexByTypeName.get(fieldType.name)
+
+        state.fieldPath.add("${fieldType.name}.${it.name}" to it.sourceLocation)
+
+        if (cycleIndex == null) {
+          validateInputFieldCycles(fieldType, state)
+        } else {
+          val cyclePath = state.fieldPath.subList(cycleIndex, state.fieldPath.size)
+
+          cyclePath.forEach {
+            issues.add(
+                OtherValidationIssue(
+                    buildString {
+                      append("Invalid circular reference. The Input Object '${fieldType.name}' references itself ")
+                      if (cyclePath.size > 1) {
+                        append("via the non-null fields: ")
+                      } else {
+                        append("in the non-null field ")
+                      }
+                      append(cyclePath.map { it.first }.joinToString(", "))
+                    },
+                    it.second
+                )
+            )
+          }
+        }
+
+        state.fieldPath.removeLast()
+      }
+    }
+  }
+
+  state.fieldPathIndexByTypeName.remove(inputObjectTypeDefinition.name)
+}
+private fun ValidationScope.validateInputObjectDefaultValue(
+    inputObjectTypeDefinition: GQLInputObjectTypeDefinition,
+    state: DefaultValueTraversalState
+) {
+  validateInputObjectDefaultValue(inputObjectTypeDefinition, GQLObjectValue(null,emptyList()), state)
+}
+private fun ValidationScope.validateInputObjectDefaultValue(
+    inputObjectTypeDefinition: GQLInputObjectTypeDefinition,
+    defaultValue: GQLValue,
+    state: DefaultValueTraversalState
+) {
+  if (defaultValue is GQLListValue) {
+    defaultValue.values.forEach {
+      validateInputObjectDefaultValue(inputObjectTypeDefinition, it, state)
+    }
+  } else if (defaultValue is GQLObjectValue) {
+    inputObjectTypeDefinition.inputFields.forEach { inputField ->
+      val rawType = inputField.type.rawType()
+      val typeDefinition = typeDefinitions.get(rawType.name)
+      if (typeDefinition !is GQLInputObjectTypeDefinition) {
+        return
+      }
+      val fieldDefaultValue = defaultValue.fields.firstOrNull { it.name == inputField.name}
+      if (fieldDefaultValue != null) {
+        validateInputObjectDefaultValue(typeDefinition, fieldDefaultValue.value, state)
+      } else {
+        validateInputFieldDefaultValue(inputField, "${inputObjectTypeDefinition.name}.${inputField.name}", defaultValue, typeDefinition, state)
+      }
+    }
+  }
+}
+
+private fun ValidationScope.validateInputFieldDefaultValue(
+    inputFieldDefinition: GQLInputValueDefinition,
+    fieldStr: String,
+    defaultValue: GQLObjectValue,
+    typeDefinition: GQLInputObjectTypeDefinition,
+    state: DefaultValueTraversalState
+) {
+  val fieldDefaultValue = inputFieldDefinition.defaultValue
+  if (fieldDefaultValue == null) {
+    return
+  }
+
+  val cycleIndex = state.fieldPathIndex[fieldStr]
+  if (cycleIndex != null) {
+    val cyclePath = state.fieldPath.subList(cycleIndex, state.fieldPath.size)
+    cyclePath.forEach {
+      issues.add(
+          OtherValidationIssue(
+              buildString {
+                append("Invalid circular reference. The default value of Input Object field $fieldStr references itself")
+                if (cyclePath.size > 1) {
+                  append(" via the default values of: ")
+                  append(cyclePath.map { it.first }.joinToString(", "))
+                }
+                append('.')
+              },
+              it.second
+          )
+      )
+    }
+  }
+  if (state.visitedFields.contains(fieldStr)) {
+    return
+  }
+
+  state.visitedFields.add(fieldStr)
+  state.fieldPathIndex.put(fieldStr, state.fieldPath.size)
+  state.fieldPath.add(fieldStr to fieldDefaultValue.sourceLocation)
+
+  validateInputObjectDefaultValue(typeDefinition, fieldDefaultValue, state)
+
+  state.fieldPathIndex.remove(fieldStr)
+  state.fieldPath.removeLast()
 }
 
 private fun ValidationScope.validateNoIntrospectionNames() {

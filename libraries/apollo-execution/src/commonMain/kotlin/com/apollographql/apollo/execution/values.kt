@@ -13,7 +13,6 @@ import com.apollographql.apollo.ast.GQLValue
 import com.apollographql.apollo.ast.GQLVariableValue
 import kotlinx.coroutines.Deferred
 
-
 /**
  * An internal value
  * - Numbers are either Int, Double or the result of custom scalar coercion (see below)
@@ -63,26 +62,5 @@ internal suspend fun ExternalValueOrDeferred.finalize(errors: MutableList<Error>
     is Map<*, *> -> mapValues { it.value?.finalize(errors) }
     is List<*> -> map { it?.finalize(errors) }
     else -> this
-  }
-}
-
-
-/**
- * This function is a bit weird and only exists because default values are not coerced.
- *
- * This is conceptually wrong but also what the spec is saying so this is what we want I guess.
- * See https://github.com/graphql/graphql-spec/pull/793
- */
-internal fun GQLValue.toInternalValue(): InternalValue {
-  return when (this) {
-    is GQLBooleanValue -> value
-    is GQLEnumValue -> value
-    is GQLFloatValue -> value.toDouble()
-    is GQLIntValue -> value.toInt()
-    is GQLListValue -> values.map { it.toInternalValue() }
-    is GQLNullValue -> null
-    is GQLObjectValue -> fields.associate { it.name to it.value.toInternalValue() }
-    is GQLStringValue -> value
-    is GQLVariableValue -> error("Variables can't be used in const context")
   }
 }

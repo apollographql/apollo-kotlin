@@ -438,6 +438,13 @@ internal class ExecutableValidationScope(
     validateDirectives(directives, this) {
       variableUsages.add(it)
     }
+    variableDefinitions.forEach {
+      if (it.defaultValue != null) {
+        validateAndCoerceValue(it.defaultValue, it.type, false, false) {
+          issues.add(it.constContextError())
+        }
+      }
+    }
   }
 
   private fun List<GQLSelection>.collectFragmentSpreads(): Set<String> {

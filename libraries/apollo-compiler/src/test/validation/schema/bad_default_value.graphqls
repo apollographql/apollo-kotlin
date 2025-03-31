@@ -1,0 +1,4 @@
+type Query {
+  field(arg: Int = 3.14): Int
+}
+directive @bad(arg: Int = 2.718) on FIELD
