@@ -187,7 +187,6 @@ fun Project.registerJavaCodegenTestTask() {
     "Only multiplatform projects can register a javaCodegenTest task"
   }
   val jvmTarget = kotlin.targets.getByName("jvm") as KotlinJvmTarget
-  jvmTarget.withJava()
 
   /**
    * This is an intermediate source set to make sure that we do not have expect/actual

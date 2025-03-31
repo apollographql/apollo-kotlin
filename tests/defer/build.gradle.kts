@@ -73,7 +73,7 @@ fun com.apollographql.apollo.gradle.api.Service.configureConnection(generateKotl
     if (generateKotlinModels) {
       connectToKotlinSourceSet("commonTest")
     } else {
-      connectToJavaSourceSet("javaCodegenTest")
+      connectToJavaSourceSet("jvmJavaCodegenTest")
     }
   }
 }
