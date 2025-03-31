@@ -633,7 +633,7 @@ abstract class DefaultApolloExtension(
     val directoryConnection = DefaultDirectoryConnection(
         project = project,
         task = sourcesBaseTaskProvider,
-        outputDir = sourcesBaseTaskProvider.flatMap { (it as ApolloGenerateSourcesBaseTask).outputDir }
+        outputDir = BuildDirLayout.outputDir(project, service)
     )
 
     if (project.hasKotlinPlugin()) {
