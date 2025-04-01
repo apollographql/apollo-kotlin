@@ -10,7 +10,14 @@ import org.gradle.api.tasks.TaskProvider
 internal class DefaultDirectoryConnection(
     private val project: Project,
     override val task: TaskProvider<out Task>,
-    override val outputDir: Provider<Directory>
+    override val outputDir: Provider<Directory>,
+    /**
+     * This is a workaround so that calling outputDir.get() in registerJavaGeneratingTask
+     * doesn't eagerly create the tasks.
+     * This is OK to do on Android because the taskProvider is also passed to setup task
+     * dependencies.
+     */
+    private val hardCodedOutputDir: Provider<Directory>
 ): Service.DirectoryConnection {
   override fun connectToKotlinSourceSet(name: String) {
     project.kotlinProjectExtensionOrThrow.sourceSets.getByName(name).kotlin.srcDir(outputDir)
@@ -25,14 +32,14 @@ internal class DefaultDirectoryConnection(
   }
 
   override fun connectToAndroidVariant(variant: Any) {
-    connectToAndroidVariant(variant, outputDir, task)
+    connectToAndroidVariant(variant, hardCodedOutputDir, task)
   }
 
   override fun connectToAndroidSourceSet(name: String) {
-    connectToAndroidSourceSet(project, name, outputDir, task)
+    connectToAndroidSourceSet(project, name, hardCodedOutputDir, task)
   }
 
   override fun connectToAllAndroidVariants() {
-    connectToAllAndroidVariants(project, outputDir, task)
+    connectToAllAndroidVariants(project, hardCodedOutputDir, task)
   }
 }
