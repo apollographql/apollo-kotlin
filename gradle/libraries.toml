@@ -82,6 +82,7 @@ apollo-runtime-published = { group = "com.apollographql.apollo", name = "apollo-
 apollo-annotations = { group = "com.apollographql.apollo", name = "apollo-annotations", version.ref = "apollo" }
 apollo-engine-ktor = { group = "com.apollographql.apollo", name = "apollo-engine-ktor", version.ref = "apollo" }
 apollo-testingsupport = { group = "com.apollographql.apollo", name = "apollo-testing-support", version.ref = "apollo" }
+apollo-testingsupport-internal = { group = "com.apollographql.apollo", name = "apollo-testing-support-internal", version.ref = "apollo" }
 apollo-tooling = { group = "com.apollographql.apollo", name = "apollo-tooling", version.ref = "apollo" }
 assertj = { group = "org.assertj", name = "assertj-core", version = "3.24.2" }
 atomicfu-library = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "atomicfu" }

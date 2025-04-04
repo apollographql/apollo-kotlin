@@ -16,7 +16,7 @@ kotlin {
 
     findByName("commonTest")?.apply {
       dependencies {
-        implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.testingsupport.internal)
         implementation(libs.apollo.mockserver)
       }
     }

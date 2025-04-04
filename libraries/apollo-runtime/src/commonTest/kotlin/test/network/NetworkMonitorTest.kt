@@ -14,19 +14,15 @@ import com.apollographql.mockserver.assertNoRequest
 import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo.network.NetworkMonitor
 import com.apollographql.apollo.network.waitForNetwork
-import test.FooQuery
 import com.apollographql.apollo.testing.internal.runTest
+import test.FooQuery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.test.TestResult
 import okio.use
 import kotlin.test.Test
@@ -115,7 +111,7 @@ class MockServerTest(val mockServer: MockServer, val apolloClient: ApolloClient,
 fun mockServerTest(
     clientBuilder: ApolloClient.Builder.() -> Unit = {},
     block: suspend MockServerTest.() -> Unit
-) = runTest() {
+) = runTest {
   MockServer().use { mockServer ->
     ApolloClient.Builder()
         .serverUrl(mockServer.url())
