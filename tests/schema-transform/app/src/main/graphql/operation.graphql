@@ -1,0 +1,13 @@
+query GetAll {
+  node {
+    id
+  }
+  product {
+    id
+    price
+  }
+  review {
+    id
+    stars
+  }
+}

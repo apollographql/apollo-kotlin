@@ -40,7 +40,8 @@ class EntryPoints {
         schemaFiles = normalizedSchemaFiles.toInputFiles(),
         logger = warning.toLogger(),
         codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions(),
-        foreignSchemas = plugin?.foreignSchemas().orEmpty()
+        foreignSchemas = plugin?.foreignSchemas().orEmpty(),
+        schemaTransform = plugin?.schemaTransform()
     ).writeTo(codegenSchemaFile)
   }
 
@@ -133,7 +134,8 @@ class EntryPoints {
         schemaFiles = schemaFiles.toInputFiles(),
         codegenSchemaOptions = codegenSchemaOptions.toCodegenSchemaOptions(),
         foreignSchemas = plugin?.foreignSchemas().orEmpty(),
-        logger = warning.toLogger()
+        logger = warning.toLogger(),
+        schemaTransform = plugin?.schemaTransform()
     )
 
     ApolloCompiler.buildSchemaAndOperationsSources(

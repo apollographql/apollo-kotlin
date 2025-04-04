@@ -52,7 +52,8 @@ abstract class ApolloGenerateSourcesTask : ApolloGenerateSourcesBaseTask() {
           schemaFiles = schemaInputFiles,
           codegenSchemaOptions = codegenSchemaOptionsFile.get().asFile.toCodegenSchemaOptions(),
           foreignSchemas = emptyList(),
-          logger = logger()
+          logger = logger(),
+          schemaTransform = null
       )
       ApolloCompiler.buildSchemaAndOperationsSources(
           codegenSchema = codegenSchema,
