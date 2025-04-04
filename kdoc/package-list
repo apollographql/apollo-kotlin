@@ -91,6 +91,5 @@ com.apollographql.apollo.rx3.java
 module:apollo-testing-support
 com.apollographql.apollo.mockserver
 com.apollographql.apollo.testing
-com.apollographql.apollo.testing.internal
 module:apollo-tooling
 com.apollographql.apollo.tooling
