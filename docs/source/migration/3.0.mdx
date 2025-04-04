@@ -819,6 +819,25 @@ If you feel some API is missing from `SubscriptionManager`,
 please [reach out](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=%3Asparkles%3A+Type%3A+Feature&template=feature_request.md&title=)
 so we can discuss the best way to add them.
 
+### Persisted queries
+
+Apollo Kotlin 3 has changed the name of the function to enable persisted queries and now defaults to use HTTP GET:
+
+```kotlin
+// Replace
+return ApolloClient.Builder()
+    .serverUrl(serverUrl)
+    .enableAutoPersistedQueries(true)
+    .useHttpGetMethodForPersistedQueries(true)
+    .build()
+
+// With
+return ApolloClient.Builder()
+    .serverUrl(serverUrl)
+    .autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Get)
+    .build()
+```
+
 ### Downloading schemas
 
 Because it is not possible to determine the Gradle current working directory reliably, the `downloadApolloSchema` task now uses paths relative to the root project directory:
