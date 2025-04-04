@@ -17,13 +17,6 @@ kotlin {
         api(libs.kotlinx.coroutines.test)
       }
     }
-
-    findByName("jvmTest")?.apply {
-      dependencies {
-        implementation(libs.truth)
-      }
-    }
-
     findByName("jsMain")?.apply {
       dependencies {
         implementation(libs.kotlin.test.js)
