@@ -9,6 +9,7 @@ apolloTest()
 
 dependencies {
   implementation(libs.apollo.runtime)
+  testImplementation(libs.apollo.testingsupport.internal)
   testImplementation(libs.apollo.testingsupport)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.junit)

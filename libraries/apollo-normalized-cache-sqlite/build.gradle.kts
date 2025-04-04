@@ -66,7 +66,7 @@ kotlin {
 
     findByName("commonTest")?.apply {
       dependencies {
-        implementation(project(":apollo-testing-support"))
+        implementation(project(":apollo-testing-support-internal"))
       }
     }
   }

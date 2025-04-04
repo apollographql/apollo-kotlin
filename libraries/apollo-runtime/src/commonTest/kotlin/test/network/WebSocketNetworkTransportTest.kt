@@ -12,7 +12,6 @@ import com.apollographql.apollo.exception.DefaultApolloException
 import com.apollographql.apollo.exception.SubscriptionOperationException
 import com.apollographql.apollo.interceptor.ApolloInterceptor
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
-import com.apollographql.apollo.interceptor.RetryOnErrorInterceptor
 import com.apollographql.apollo.network.websocket.GraphQLWsProtocol
 import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo.network.websocket.closeConnection

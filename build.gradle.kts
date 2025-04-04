@@ -139,6 +139,7 @@ configure<kotlinx.validation.ApiValidationExtension> {
   )
 
   ignoredProjects.add("intellij-plugin")
+  ignoredProjects.add("apollo-testing-support-internal")
 }
 
 tasks.register("rmbuild") {

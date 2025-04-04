@@ -8,7 +8,7 @@ apolloTest()
 dependencies {
   implementation(libs.apollo.runtime)
   implementation(libs.apollo.normalizedcache)
-  testImplementation(libs.apollo.testingsupport)
+  testImplementation(libs.apollo.testingsupport.internal)
   testImplementation(libs.apollo.mockserver)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.turbine)

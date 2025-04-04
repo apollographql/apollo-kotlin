@@ -10,7 +10,7 @@ apolloTest()
 dependencies {
   implementation(libs.apollo.runtime)
   implementation(libs.apollo.httpCache)
-  testImplementation(libs.apollo.testingsupport)
+  testImplementation(libs.apollo.testingsupport.internal)
   testImplementation(libs.kotlin.test.junit)
   testImplementation(libs.apollo.mockserver)
 }

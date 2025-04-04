@@ -28,7 +28,7 @@ dependencies {
   testImplementation(libs.junit)
   testImplementation(libs.truth)
   testImplementation(libs.apollo.mockserver)
-  testImplementation(project(":apollo-testing-support"))
+  testImplementation(project(":apollo-testing-support-internal"))
 }
 
 apollo {

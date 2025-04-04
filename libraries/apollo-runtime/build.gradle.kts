@@ -27,7 +27,7 @@ kotlin {
     fun KotlinDependencyHandler.commonTestDependencies() {
       implementation(libs.apollo.mockserver)
       implementation(libs.turbine)
-      implementation(project(":apollo-testing-support")) {
+      implementation(project(":apollo-testing-support-internal")) {
         because("runTest")
         // We have a circular dependency here that creates a warning in JS
         // w: duplicate library name: com.apollographql.apollo:apollo-mockserver
