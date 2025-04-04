@@ -1,29 +1,33 @@
 package com.apollographql.apollo.execution
 
+import com.apollographql.apollo.api.json.ApolloJsonElement
 import com.apollographql.apollo.api.json.JsonNumber
 import com.apollographql.apollo.ast.*
 
 /**
  * See https://www.graphql.de/blog/scalars-in-depth/
+ * See the diagram in https://github.com/graphql/graphql-js/pull/3049
+ *
+ * @param T the [InternalValue] to coerce
  */
 interface Coercing<T> {
   /**
-   * Serializes from an internal value (Kotlin) to an external value (typically JSON).
+   * Serializes from an internal Kotlin value to an external JSON value.
    *
    * Used to generate the response JSON.
    *
    * For an example Date --> String
    */
-  fun serialize(internalValue: T): JsonValue
+  fun serialize(internalValue: T): ApolloJsonElement
 
   /**
-   * Deserializes from an external value (typically JSON) to an internal value (Kotlin).
+   * Deserializes from an external JSON value to an internal Kotlin value.
    *
    * Used to parse the request variables.
    *
    * For an example String --> Date
    */
-  fun deserialize(value: JsonValue): T
+  fun deserialize(value: ApolloJsonElement): T
 
   /**
    * Deserializes from a GraphQL value to an internal value (Kotlin).

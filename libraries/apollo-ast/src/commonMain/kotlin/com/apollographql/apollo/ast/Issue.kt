@@ -1,10 +1,9 @@
 package com.apollographql.apollo.ast
 
-import com.apollographql.apollo.annotations.ApolloDeprecatedSince
-
 /**
  * All the issues that can be collected while analyzing a graphql document
  */
+// TODO: support multiple sourceLocations. A single issue like a redefinition for an example, might have several impacted sourceLocations.
 sealed interface Issue {
   val message: String
   val sourceLocation: SourceLocation?

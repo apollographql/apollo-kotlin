@@ -15,7 +15,6 @@ import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.execution.Coercing
 import com.apollographql.apollo.execution.ExternalValue
 import com.apollographql.apollo.execution.InternalValue
-import com.apollographql.apollo.execution.toInternalValue
 import com.apollographql.apollo.execution.scalarCoercingDeserialize
 
 internal fun coerceVariableValues(
@@ -28,31 +27,21 @@ internal fun coerceVariableValues(
 
   variableDefinitions.forEach { variableDefinition ->
     val hasValue = variables.containsKey(variableDefinition.name)
-    if (!hasValue && variableDefinition.defaultValue != null) {
-      /**
-       * Sadly defaultValues are not coerced 😞
-       * This is conceptually wrong but also what the spec is saying so this is what we want I guess
-       * See https://github.com/graphql/graphql-spec/pull/793
-       */
-      coercedValues.put(variableDefinition.name, variableDefinition.defaultValue!!.toInternalValue())
-      return@forEach
-    }
-    val value = variables.get(variableDefinition.name)
-    if (variableDefinition.type is GQLNonNullType) {
-      if (!hasValue) {
-        error("No variable found for '${variableDefinition.name}'")
-      }
-      if (value == null) {
-        error("'null' is not accepted for '${variableDefinition.name}'")
-      }
-    }
     if (hasValue) {
-      if (value == null) {
-        coercedValues.put(variableDefinition.name, null)
+      val defaultValue = variableDefinition.defaultValue
+      if (defaultValue != null) {
+        coercedValues.put(variableDefinition.name, coerceInputLiteralToInternal(schema, defaultValue, variableDefinition.type, coercings, null))
+        return@forEach
+      } else if (variableDefinition.type !is GQLNonNullType) {
+        // No value and nullable type, skip it
+        return@forEach
       } else {
-        coercedValues.put(variableDefinition.name, coerceExternalToInternal(schema, value, variableDefinition.type, coercings))
+        error("No variable found for variable of non-null type '${variableDefinition.name}'")
       }
     }
+
+    val value = variables.get(variableDefinition.name)
+    coercedValues.put(variableDefinition.name, coerceExternalToInternal(schema, value, variableDefinition.type, coercings))
   }
 
   return coercedValues
@@ -137,7 +126,7 @@ private fun coerceInputObject(schema: Schema, definition: GQLInputObjectTypeDefi
     val inputFieldType = inputValueDefinition.type
     if (!externalValue.containsKey(inputValueDefinition.name)) {
       if (inputValueDefinition.defaultValue != null) {
-        inputValueDefinition.name to inputValueDefinition.defaultValue!!.toInternalValue()
+        inputValueDefinition.name to coerceInputLiteralToInternal(schema, inputValueDefinition.defaultValue!!, inputFieldType, coercings, null)
       } else {
         if (inputFieldType is GQLNonNullType) {
           error("Missing input field '${inputValueDefinition.name}")

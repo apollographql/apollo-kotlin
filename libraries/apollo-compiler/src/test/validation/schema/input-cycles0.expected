@@ -1,0 +1,2 @@
+OtherValidationIssue (7:5)
+Invalid circular reference. The Input Object 'SomeInputObject' references itself in the non-null field SomeInputObject.nonNullSelf

@@ -1,0 +1,16 @@
+type Query {
+    field(arg: SomeInputObject): String
+}
+
+# cycle involving other objects
+input SomeInputObject {
+    startLoop: AnotherInputObject!
+}
+
+input AnotherInputObject {
+    nextInLoop: YetAnotherInputObject!
+}
+
+input YetAnotherInputObject {
+    closeLoop: SomeInputObject!
+}

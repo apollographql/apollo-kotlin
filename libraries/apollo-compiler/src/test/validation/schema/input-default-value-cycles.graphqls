@@ -1,0 +1,40 @@
+type Query {
+  field(arg1: A, arg2: B, arg3: C, arg4: D, arg5: E): String
+}
+
+input A {
+  x: A = {}
+}
+
+input B {
+  x: B2 = {}
+}
+
+input B2 {
+  x: B3 = {}
+}
+
+input B3 {
+  x: B = {}
+}
+
+input C {
+  x: [C] = [{}]
+}
+
+input D {
+  x: D = { x: { x: {} } }
+}
+
+input E {
+  x: E = { x: null }
+  y: E = { y: null }
+}
+
+input F {
+  x: F2! = {}
+}
+
+input F2 {
+  x: F = { x: {} }
+}

@@ -1,0 +1,26 @@
+OtherValidationIssue (6:10)
+Invalid circular reference. The default value of Input Object field A.x references itself.
+------------
+OtherValidationIssue (10:11)
+Invalid circular reference. The default value of Input Object field B.x references itself via the default values of: B.x, B2.x, B3.x.
+------------
+OtherValidationIssue (14:11)
+Invalid circular reference. The default value of Input Object field B.x references itself via the default values of: B.x, B2.x, B3.x.
+------------
+OtherValidationIssue (18:10)
+Invalid circular reference. The default value of Input Object field B.x references itself via the default values of: B.x, B2.x, B3.x.
+------------
+OtherValidationIssue (22:12)
+Invalid circular reference. The default value of Input Object field C.x references itself.
+------------
+OtherValidationIssue (26:10)
+Invalid circular reference. The default value of Input Object field D.x references itself.
+------------
+OtherValidationIssue (30:10)
+Invalid circular reference. The default value of Input Object field E.x references itself via the default values of: E.x, E.y.
+------------
+OtherValidationIssue (31:10)
+Invalid circular reference. The default value of Input Object field E.x references itself via the default values of: E.x, E.y.
+------------
+OtherValidationIssue (39:10)
+Invalid circular reference. The default value of Input Object field F2.x references itself.

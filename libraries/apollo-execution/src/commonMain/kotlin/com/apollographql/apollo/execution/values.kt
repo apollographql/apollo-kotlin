@@ -13,7 +13,6 @@ import com.apollographql.apollo.ast.GQLValue
 import com.apollographql.apollo.ast.GQLVariableValue
 import kotlinx.coroutines.Deferred
 
-
 /**
  * An internal value
  * - Numbers are either Int, Double or the result of custom scalar coercion (see below)
@@ -31,7 +30,7 @@ typealias InternalValue = Any?
  * The result of a resolver
  *
  * - an [InternalValue] for leaf types
- * - an opaque value for composite types
+ * - an opaque value for composite types (doesn't have to be a map)
  * - a [List] for list types
  */
 internal typealias ResolverValue = Any?
@@ -42,14 +41,7 @@ internal typealias ResolverValue = Any?
 internal typealias ResolverValueOrError = Any?
 
 /**
- * A JSON value.
- * - Numbers are stored as Int, Long, Double or JsonNumber for arbitrary precision
- * - Enums are stored as Strings
- */
-typealias JsonValue = Any?
-
-/**
- * Any of [JsonValue] or [Error]
+ * Any of [com.apollographql.apollo.api.json.ApolloJsonElement] or [Error]
  */
 typealias ExternalValue = Any?
 
@@ -70,26 +62,5 @@ internal suspend fun ExternalValueOrDeferred.finalize(errors: MutableList<Error>
     is Map<*, *> -> mapValues { it.value?.finalize(errors) }
     is List<*> -> map { it?.finalize(errors) }
     else -> this
-  }
-}
-
-
-/**
- * This function is a bit weird and only exists because default values are not coerced.
- *
- * This is conceptually wrong but also what the spec is saying so this is what we want I guess.
- * See https://github.com/graphql/graphql-spec/pull/793
- */
-internal fun GQLValue.toInternalValue(): InternalValue {
-  return when (this) {
-    is GQLBooleanValue -> value
-    is GQLEnumValue -> value
-    is GQLFloatValue -> value.toDouble()
-    is GQLIntValue -> value.toInt()
-    is GQLListValue -> values.map { it.toInternalValue() }
-    is GQLNullValue -> null
-    is GQLObjectValue -> fields.associate { it.name to it.value.toInternalValue() }
-    is GQLStringValue -> value
-    is GQLVariableValue -> error("Variables can't be used in const context")
   }
 }

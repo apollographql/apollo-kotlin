@@ -1,6 +1,5 @@
 package com.apollographql.apollo.ast
 
-import okio.FileSystem
 import okio.IOException
 import okio.Path.Companion.toPath
 import okio.buffer
@@ -8,7 +7,7 @@ import okio.buffer
 
 open class SourceAwareException(
     val error: String,
-    val sourceLocation: SourceLocation?,
+    val sourceLocation: SourceLocation?, // TODO: support lists of sourceLocation for redefinitions
 ) : RuntimeException(preview(
     error = error,
     sourceLocation = sourceLocation

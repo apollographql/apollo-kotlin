@@ -1,0 +1,5 @@
+OtherValidationIssue (2:20)
+Value `3.14` cannot be used in position expecting `Int`
+------------
+OtherValidationIssue (4:27)
+Value `2.718` cannot be used in position expecting `Int`

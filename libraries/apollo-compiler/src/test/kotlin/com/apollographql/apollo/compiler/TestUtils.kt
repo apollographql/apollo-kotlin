@@ -20,23 +20,30 @@ internal object TestUtils {
 
     return false
   }
+
   internal fun shouldUpdateMeasurements(): Boolean {
     return shouldUpdateTestFixtures()
   }
 
   internal fun checkTestFixture(actual: File, expected: File) {
-    val actualText = actual.readText()
-    val expectedText = expected.readText()
+    checkTestFixture(actual.readText(), expected)
+  }
 
-    if (actualText != expectedText) {
-      if (shouldUpdateTestFixtures()) {
-        expected.writeText(actualText)
-      } else {
-        throw Exception("""generatedFile content doesn't match the expectedFile content.
-      |If you changed the compiler recently, you need to update the testFixtures.
-      |Run the tests with `-DupdateTestFixtures=true` to do so.
-      |diff ${expected.path} ${actual.path}""".trimMargin())
-      }
+  internal fun checkTestFixture(actualText: String, expected: File) {
+    val matches = expected.exists() && expected.readText() == actualText
+    if (matches) {
+      return
+    }
+    if (shouldUpdateTestFixtures()) {
+      expected.writeText(actualText)
+    } else {
+      throw Exception(
+          """
+              |generatedFile content doesn't match the expectedFile content.
+              |If you changed the compiler recently, you need to update the testFixtures.
+              |Run the tests with `-DupdateTestFixtures=true` to do so.
+            """.trimMargin()
+      )
     }
   }
 
@@ -70,10 +77,10 @@ internal object TestUtils {
 
   fun findSchema(dir: File): Schema? {
     return listOf("graphqls", "sdl", "json").map { File(dir, "schema.$it") }
-          .firstOrNull { it.exists() }
-          ?.toGQLDocument(allowJson = true)
-          ?.validateAsSchemaAndAddApolloDefinition()
-          ?.apolloGetOrThrow()
+        .firstOrNull { it.exists() }
+        ?.toGQLDocument(allowJson = true)
+        ?.validateAsSchemaAndAddApolloDefinition()
+        ?.apolloGetOrThrow()
   }
 
   /**
@@ -96,7 +103,7 @@ internal object TestUtils {
       }
       parent = parent.parentFile
     }
-    check (schema != null) {
+    check(schema != null) {
       "Cannot find a schema for $graphQLFile"
     }
 
@@ -123,7 +130,7 @@ internal object TestUtils {
 
 internal fun String.buffer() = Buffer().writeUtf8(this)
 
-internal fun <V: Any> GQLResult<V>.apolloGetOrThrow(): V {
+internal fun <V : Any> GQLResult<V>.apolloGetOrThrow(): V {
   val groups = issues.group(false, true)
 
   groups.errors.firstOrNull()?.let {
