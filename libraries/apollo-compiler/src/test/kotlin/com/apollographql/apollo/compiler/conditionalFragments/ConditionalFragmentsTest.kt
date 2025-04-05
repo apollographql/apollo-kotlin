@@ -39,6 +39,7 @@ class ConditionalFragmentsTest {
           javaOutputTransform = null,
           kotlinOutputTransform = null,
           documentTransform = null,
+          schemaTransform = null
       )
     }
 
@@ -61,6 +62,7 @@ class ConditionalFragmentsTest {
         javaOutputTransform = null,
         kotlinOutputTransform = null,
         documentTransform = null,
+        schemaTransform = null
     )
   }
 }

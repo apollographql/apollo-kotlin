@@ -61,6 +61,7 @@ object ApolloCompiler {
       logger: Logger?,
       codegenSchemaOptions: CodegenSchemaOptions,
       foreignSchemas: List<ForeignSchema>,
+      schemaTransform: SchemaTransform?,
   ): CodegenSchema {
     val schemaDocuments = schemaFiles.map {
       it.normalizedPath to it.file.toGQLDocument(allowJson = true)
@@ -118,10 +119,14 @@ object ApolloCompiler {
     }
     val scalarExtensions = sdl.toGQLDocument().definitions
 
-    val schemaDocument = GQLDocument(
+    var schemaDocument = GQLDocument(
         definitions = schemaDefinitions + scalarExtensions,
         sourceLocation = null
     )
+
+    if (schemaTransform != null) {
+      schemaDocument = schemaTransform.transform(schemaDocument)
+    }
 
     val result = schemaDocument.validateAsSchema(
         validationOptions = SchemaValidationOptions(
@@ -475,6 +480,7 @@ object ApolloCompiler {
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
       documentTransform: DocumentTransform?,
+      schemaTransform: SchemaTransform?,
       logger: Logger?,
       operationManifestFile: File?,
   ): SourceOutput {
@@ -482,7 +488,8 @@ object ApolloCompiler {
         schemaFiles = schemaFiles,
         logger = logger,
         codegenSchemaOptions = codegenSchemaOptions,
-        foreignSchemas = emptyList()
+        foreignSchemas = emptyList(),
+        schemaTransform = schemaTransform
     )
 
     return buildSchemaAndOperationsSources(
