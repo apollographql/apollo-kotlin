@@ -63,6 +63,15 @@ interface ApolloCompilerPlugin {
   }
 
   /**
+   * @return a [SchemaTransform] to transform the schema
+   */
+  @ApolloExperimental
+  fun schemaTransform(): SchemaTransform? {
+    return null
+  }
+
+
+  /**
    * @return the [Transform] to be applied to [IrOperations] or null to use the default [Transform]
    */
   @ApolloExperimental
@@ -99,6 +108,15 @@ interface SchemaListener {
   fun onSchema(schema: Schema, outputDirectory: File)
 }
 
+@ApolloExperimental
+interface SchemaTransform {
+  /**
+   * Transforms the given schema document.
+   *
+   * [transform] is called before validation of the schema.
+   */
+  fun transform(schemaDocument: GQLDocument): GQLDocument
+}
 
 /**
  * A [DocumentTransform] transforms operations and fragments at build time. [DocumentTransform] can add or remove fields automatically for an example.

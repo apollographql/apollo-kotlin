@@ -45,6 +45,7 @@ class MetadataTest {
         logger = null,
         codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions(),
         foreignSchemas = emptyList(),
+        null
     ).writeTo(codegenSchemaFile)
 
     ApolloCompiler.buildIrOperations(
