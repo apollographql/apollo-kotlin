@@ -42,7 +42,7 @@ dependencies {
   androidTestImplementation(libs.benchmark.junit4)
   androidTestImplementation(libs.androidx.test.core)
   androidTestImplementation(libs.apollo.mockserver)
-  androidTestImplementation(libs.apollo.testingsupport.internal)
+  androidTestImplementation(libs.apollo.testingsupport)
 }
 
 java {
