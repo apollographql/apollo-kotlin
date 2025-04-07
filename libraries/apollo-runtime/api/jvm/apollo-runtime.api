@@ -76,7 +76,9 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public final fun autoPersistedQueries (Lcom/apollographql/apollo/api/http/HttpMethod;Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun autoPersistedQueries (Lcom/apollographql/apollo/api/http/HttpMethod;Lcom/apollographql/apollo/api/http/HttpMethod;Z)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public static synthetic fun autoPersistedQueries$default (Lcom/apollographql/apollo/ApolloClient$Builder;Lcom/apollographql/apollo/api/http/HttpMethod;Lcom/apollographql/apollo/api/http/HttpMethod;ZILjava/lang/Object;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public final fun autoPersistedQueriesInterceptor (Lcom/apollographql/apollo/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun build ()Lcom/apollographql/apollo/ApolloClient;
+	public final fun cacheInterceptor (Lcom/apollographql/apollo/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public fun canBeBatched (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public synthetic fun canBeBatched (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun copy ()Lcom/apollographql/apollo/ApolloClient$Builder;
@@ -86,6 +88,8 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun executionContext (Lcom/apollographql/apollo/api/ExecutionContext;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun failFastIfOffline (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public final fun getAutoPersistedQueryInterceptor ()Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
+	public final fun getCacheInterceptor ()Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public final fun getCustomScalarAdapters ()Lcom/apollographql/apollo/api/CustomScalarAdapters;
 	public final fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;

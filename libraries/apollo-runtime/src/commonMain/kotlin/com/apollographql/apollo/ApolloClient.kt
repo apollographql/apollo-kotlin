@@ -82,6 +82,8 @@ private constructor(
   val subscriptionNetworkTransport: NetworkTransport
   val interceptors: List<ApolloInterceptor> = builder.interceptors
   val customScalarAdapters: CustomScalarAdapters = builder.customScalarAdapters
+  private val cacheInterceptor: ApolloInterceptor? = builder.cacheInterceptor
+  private val autoPersistedQueryInterceptor: ApolloInterceptor? = builder.autoPersistedQueryInterceptor
   private val retryOnError: ((ApolloRequest<*>) -> Boolean)? = builder.retryOnError
   private val retryOnErrorInterceptor: ApolloInterceptor? = builder.retryOnErrorInterceptor
   private val failFastIfOffline = builder.failFastIfOffline
@@ -315,6 +317,12 @@ private constructor(
 
     val allInterceptors = buildList {
       addAll(interceptors)
+      if (cacheInterceptor != null) {
+        add(cacheInterceptor)
+      }
+      if (autoPersistedQueryInterceptor != null) {
+        add(autoPersistedQueryInterceptor)
+      }
       add(retryOnErrorInterceptor ?: RetryOnErrorInterceptor())
       add(networkInterceptor)
     }
@@ -407,6 +415,12 @@ private constructor(
     var failFastIfOffline: Boolean? = null
       private set
 
+    var cacheInterceptor: ApolloInterceptor? = null
+      private set
+
+    var autoPersistedQueryInterceptor: ApolloInterceptor? = null
+      private set
+
     /**
      * Whether to fail fast if the device is offline.
      * Requires setting an interceptor that is aware of the network state with [retryOnErrorInterceptor].
@@ -464,6 +478,24 @@ private constructor(
     @ApolloExperimental
     fun retryOnErrorInterceptor(retryOnErrorInterceptor: ApolloInterceptor?) = apply {
       this.retryOnErrorInterceptor = retryOnErrorInterceptor
+    }
+
+    /**
+     * Sets the [ApolloInterceptor] used for caching.
+     *
+     * @see addInterceptor
+     */
+    fun cacheInterceptor(cacheInterceptor: ApolloInterceptor?) = apply {
+      this.cacheInterceptor = cacheInterceptor
+    }
+
+    /**
+     * Sets the [ApolloInterceptor] used for auto persisted queries.
+     *
+     * @see addInterceptor
+     */
+    fun autoPersistedQueriesInterceptor(autoPersistedQueryInterceptor: ApolloInterceptor?) = apply {
+      this.autoPersistedQueryInterceptor = autoPersistedQueryInterceptor
     }
 
     /**
@@ -791,8 +823,18 @@ private constructor(
      * such as normalized cache and auto persisted queries. [ApolloClient] also inserts a terminating [ApolloInterceptor] that
      * executes the request.
      *
-     * **The order is important**. The [ApolloInterceptor]s are executed in the order they are added. Because cache and APQs also
-     * use interceptors, the order of the cache/APQs configuration also influences the final interceptor list.
+     * **The order is important**. The [ApolloInterceptor]s are added in the order they are added and always added before
+     * the built-in intercepted:
+     *
+     * - user interceptors
+     * - cacheInterceptor
+     * - autoPersistedQueriesInterceptor
+     * - retryOnErrorInterceptor
+     * - networkInterceptor
+     *
+     * @see cacheInterceptor
+     * @see autoPersistedQueriesInterceptor
+     * @see retryOnErrorInterceptor
      */
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {
       _interceptors.add(interceptor)
@@ -878,8 +920,7 @@ private constructor(
         httpMethodForDocumentQueries: HttpMethod = HttpMethod.Post,
         enableByDefault: Boolean = true,
     ) = apply {
-      _interceptors.removeAll { it is AutoPersistedQueryInterceptor }
-      addInterceptor(
+      autoPersistedQueriesInterceptor(
           AutoPersistedQueryInterceptor(
               httpMethodForHashedQueries,
               httpMethodForDocumentQueries
@@ -915,9 +956,9 @@ private constructor(
      * Creates an [ApolloClient] from this [Builder]
      */
     fun build(): ApolloClient {
-      return ApolloClient(
-          this.copy()
-      )
+      // Copy the builder so that any subsequent modifications of the builder
+      // doesn't change the ApolloClient owned one
+      return ApolloClient(copy())
     }
 
     fun copy(): Builder {
@@ -946,6 +987,8 @@ private constructor(
           .wsProtocol(wsProtocolFactory)
           .retryOnError(retryOnError)
           .retryOnErrorInterceptor(retryOnErrorInterceptor)
+          .cacheInterceptor(cacheInterceptor)
+          .autoPersistedQueriesInterceptor(autoPersistedQueryInterceptor)
           .failFastIfOffline(failFastIfOffline)
           .listeners(listeners)
     }

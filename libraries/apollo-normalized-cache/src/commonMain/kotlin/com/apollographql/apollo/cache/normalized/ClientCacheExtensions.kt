@@ -119,20 +119,51 @@ fun ApolloClient.Builder.logCacheMisses(
   return addInterceptor(CacheMissLoggingInterceptor(log))
 }
 
+private class DefaultInterceptorChain(
+    private val interceptors: List<ApolloInterceptor>,
+    private val index: Int,
+) : ApolloInterceptorChain {
+
+  override fun <D : Operation.Data> proceed(request: ApolloRequest<D>): Flow<ApolloResponse<D>> {
+    check(index < interceptors.size)
+    return interceptors[index].intercept(
+        request,
+        DefaultInterceptorChain(
+            interceptors = interceptors,
+            index = index + 1,
+        )
+    )
+  }
+}
+
+private fun ApolloInterceptorChain.asInterceptor(): ApolloInterceptor {
+  return object : ApolloInterceptor {
+    override fun <D : Operation.Data> intercept(
+        request: ApolloRequest<D>,
+        chain: ApolloInterceptorChain,
+    ): Flow<ApolloResponse<D>> {
+     return this@asInterceptor.proceed(request)
+    }
+  }
+}
+internal class CacheInterceptor(val store: ApolloStore): ApolloInterceptor {
+  private val delegates = listOf(
+      WatcherInterceptor(store),
+      FetchPolicyRouterInterceptor,
+      ApolloCacheInterceptor(store)
+  )
+
+  override fun <D : Operation.Data> intercept(
+      request: ApolloRequest<D>,
+      chain: ApolloInterceptorChain,
+  ): Flow<ApolloResponse<D>> {
+    return DefaultInterceptorChain(delegates + chain.asInterceptor(), 0).proceed(request)
+  }
+}
+
+
 fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
-  check(interceptors.none { it is AutoPersistedQueryInterceptor }) {
-    "Apollo: the normalized cache must be configured before the auto persisted queries"
-  }
-  // Removing existing interceptors added for configuring an [ApolloStore].
-  // If a builder is reused from an existing client using `newBuilder()` and we try to configure a new `store()` on it, we first need to
-  // remove the old interceptors.
-  val storeInterceptors = interceptors.filterIsInstance<ApolloStoreInterceptor>()
-  storeInterceptors.forEach {
-    removeInterceptor(it)
-  }
-  return addInterceptor(WatcherInterceptor(store))
-      .addInterceptor(FetchPolicyRouterInterceptor)
-      .addInterceptor(ApolloCacheInterceptor(store))
+  return addInterceptor(CacheInterceptor(store))
       .writeToCacheAsynchronously(writeToCacheAsynchronously)
       .addExecutionContext(CacheDumpProviderContext(store.cacheDumpProvider()))
 }
@@ -228,8 +259,8 @@ internal fun <D : Query.Data> ApolloCall<D>.watchInternal(data: D?): Flow<Apollo
 
 val ApolloClient.apolloStore: ApolloStore
   get() {
-    return interceptors.firstOrNull { it is ApolloCacheInterceptor }?.let {
-      (it as ApolloCacheInterceptor).store
+    return interceptors.firstOrNull { it is CacheInterceptor }?.let {
+      (it as CacheInterceptor).store
     } ?: error("no cache configured")
   }
 
