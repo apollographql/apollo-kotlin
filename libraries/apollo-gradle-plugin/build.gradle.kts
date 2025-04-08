@@ -158,7 +158,7 @@ tasks.withType<Test> {
   maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).takeIf { it > 0 } ?: 1
 }
 
-val allTests = tasks.create("allTests")
+val allTests = tasks.register("allTests")
 tasks.check {
   dependsOn(allTests)
 }
@@ -182,7 +182,9 @@ fun createTests(javaVersion: Int) {
     setTestToolchain(project, this, javaVersion)
   }
 
-  allTests.dependsOn(task)
+  allTests.configure {
+    dependsOn(task)
+  }
 }
 
 tasks.named("test").configure {

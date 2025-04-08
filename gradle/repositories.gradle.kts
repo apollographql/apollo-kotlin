@@ -1,9 +1,11 @@
 listOf(pluginManagement.repositories, dependencyResolutionManagement.repositories).forEach {
   it.apply {
     // Uncomment this one to use the Kotlin "dev" repository
-    // maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/") }
+    // maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
     // Uncomment this one to use the Sonatype OSSRH snapshots repository
-    // maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+    // maven("https://oss.sonatype.org/content/repositories/snapshots/")
+    // Uncomment this one to use the GradleUp repository
+    // maven("https://storage.googleapis.com/gradleup/m2")
 
     mavenCentral()
     exclusiveContent {

@@ -1,10 +1,10 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverExtension
 import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverGradleSubplugin
 
 plugins {
-  `embedded-kotlin`
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.kotlin.sam)
+  alias(libs.plugins.compat.patrouille)
   id("java-gradle-plugin")
 }
 
@@ -25,6 +25,7 @@ dependencies {
   implementation(libs.dokka)
   implementation(libs.licensee)
   implementation(libs.apollo.execution.gradle.plugin)
+  implementation(libs.compat.patrouille)
 
   // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution
   // See https://github.com/gradle/gradle/issues/4741
@@ -56,16 +57,10 @@ dependencies {
   runtimeOnly(libs.kotlinx.binarycompatibilityvalidator)
 }
 
-// Keep in sync with CompilerOptions.kt
-java {
-  toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-}
 
-tasks.withType<JavaCompile>().configureEach {
-  options.release.set(17)
-}
-tasks.withType(KotlinJvmCompile::class.java).configureEach {
-  compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
+compatPatrouille {
+  java(17)
+  kotlin(embeddedKotlinVersion)
 }
 
 gradlePlugin {
