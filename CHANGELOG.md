@@ -4,6 +4,7 @@ Change Log
 # Next version
 
 * Downloading or converting a SDL schema from introspection now includes scalar definitions. This is required for clients to get a [full view of the schema](https://github.com/graphql/graphql-wg/blob/main/rfcs/FullSchemas.md). 
+* The cache and auto persisted queries interceptors are now always added after all users interceptor. If you relied on some interceptors being called **after** `normalizedCache()` or `persistedQueries()`, you might have to update your code.  
 
 # Version 4.1.1
 
