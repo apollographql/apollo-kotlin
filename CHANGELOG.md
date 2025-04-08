@@ -4,7 +4,7 @@ Change Log
 # Next version
 
 * Downloading or converting a SDL schema from introspection now includes scalar definitions. This is required for clients to get a [full view of the schema](https://github.com/graphql/graphql-wg/blob/main/rfcs/FullSchemas.md). 
-* The cache and auto persisted queries interceptors are now always added after all users interceptor. If you relied on some interceptors being called **after** `normalizedCache()` or `persistedQueries()`, you might have to update your code.  
+* The cache and auto persisted queries interceptors are now always added after all users interceptor. If you relied on some interceptors being called **after** `normalizedCache()` or `persistedQueries()`, you might have to update your code. One example is if you need to change cache flags based on the GraphQL response. In those cases, we recommend you use a custom `NetworkTransport` instead (See [this commit](https://github.com/apollographql/apollo-kotlin/pull/6455/commits/a53a44e5e506af7b0f6f495eed1a9d477e18bf73) for an example). 
 
 # Version 4.1.1
 
