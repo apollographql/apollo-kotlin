@@ -113,9 +113,6 @@ fun ApolloClient.Builder.normalizedCache(
 fun ApolloClient.Builder.logCacheMisses(
     log: (String) -> Unit = { println(it) },
 ): ApolloClient.Builder {
-  check(interceptors.none { it is ApolloCacheInterceptor }) {
-    "Apollo: logCacheMisses() must be called before setting up your normalized cache"
-  }
   return addInterceptor(CacheMissLoggingInterceptor(log))
 }
 
