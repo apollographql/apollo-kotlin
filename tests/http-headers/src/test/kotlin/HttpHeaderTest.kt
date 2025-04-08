@@ -1,4 +1,3 @@
-
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.DefaultUpload
 import com.apollographql.apollo.api.Optional
@@ -28,7 +27,7 @@ class HttpHeadersTest {
   @Test
   fun getRequestsSendPreflightHeader() = mockServerTest(
       clientBuilder = { autoPersistedQueries() }
-  ){
+  ) {
 
     mockServer.enqueueString("")
     apolloClient.query(GetRandomQuery()).enableAutoPersistedQueries(true).execute()
@@ -63,14 +62,14 @@ class MockServerTest(val mockServer: MockServer, val apolloClient: ApolloClient,
 
 fun mockServerTest(
     clientBuilder: ApolloClient.Builder.() -> Unit = {},
-    block: suspend MockServerTest.() -> Unit
+    block: suspend MockServerTest.() -> Unit,
 ) = runTest {
   MockServer().use { mockServer ->
     ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .apply(clientBuilder)
         .build()
-        .use {apolloClient ->
+        .use { apolloClient ->
           MockServerTest(mockServer, apolloClient, this).block()
         }
   }

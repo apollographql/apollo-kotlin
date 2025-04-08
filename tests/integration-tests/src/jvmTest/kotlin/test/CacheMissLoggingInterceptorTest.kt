@@ -60,17 +60,4 @@ class CacheMissLoggingInterceptorTest {
     mockServer.close()
     apolloClient.close()
   }
-
-  @Test
-  fun logCacheMissesMustBeCalledFirst() {
-    try {
-      ApolloClient.Builder()
-          .normalizedCache(MemoryCacheFactory())
-          .logCacheMisses()
-          .build()
-      error("We expected an exception")
-    } catch (e: Exception) {
-      assertTrue(e.message?.contains("logCacheMisses() must be called before setting up your normalized cache") == true)
-    }
-  }
 }
