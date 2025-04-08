@@ -586,6 +586,8 @@ final class com.apollographql.apollo.network.ws/WebSocketNetworkTransport : com.
 }
 
 final class com.apollographql.apollo/ApolloClient : com.apollographql.apollo.api/ExecutionOptions, okio/Closeable { // com.apollographql.apollo/ApolloClient|null[0]
+    final val cacheInterceptor // com.apollographql.apollo/ApolloClient.cacheInterceptor|{}cacheInterceptor[0]
+        final fun <get-cacheInterceptor>(): com.apollographql.apollo.interceptor/ApolloInterceptor? // com.apollographql.apollo/ApolloClient.cacheInterceptor.<get-cacheInterceptor>|<get-cacheInterceptor>(){}[0]
     final val canBeBatched // com.apollographql.apollo/ApolloClient.canBeBatched|{}canBeBatched[0]
         final fun <get-canBeBatched>(): kotlin/Boolean? // com.apollographql.apollo/ApolloClient.canBeBatched.<get-canBeBatched>|<get-canBeBatched>(){}[0]
     final val customScalarAdapters // com.apollographql.apollo/ApolloClient.customScalarAdapters|{}customScalarAdapters[0]

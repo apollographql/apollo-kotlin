@@ -114,9 +114,13 @@ class CacheFlagsTest {
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     apolloClient = apolloClient.newBuilder().addInterceptor(object: ApolloInterceptor{
       override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-        return chain.proceed(request).map { response ->
-          response.newBuilder().cacheHeaders(CacheHeaders.Builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "").build()).build()
-        }
+        return chain.proceed(
+            request.newBuilder()
+                .cacheHeaders(
+                    CacheHeaders.Builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "").build()
+                )
+                .build()
+        )
       }
     }).build()
     apolloClient.enqueueTestResponse(query, data)

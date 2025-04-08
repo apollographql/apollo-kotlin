@@ -43,6 +43,7 @@ public final class com/apollographql/apollo/ApolloClient : com/apollographql/apo
 	public fun close ()V
 	public final fun dispose ()V
 	public final fun executeAsFlow (Lcom/apollographql/apollo/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
+	public final fun getCacheInterceptor ()Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public final fun getCustomScalarAdapters ()Lcom/apollographql/apollo/api/CustomScalarAdapters;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;

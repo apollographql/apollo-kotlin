@@ -163,7 +163,7 @@ internal class CacheInterceptor(val store: ApolloStore): ApolloInterceptor {
 
 
 fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
-  return addInterceptor(CacheInterceptor(store))
+  return cacheInterceptor(CacheInterceptor(store))
       .writeToCacheAsynchronously(writeToCacheAsynchronously)
       .addExecutionContext(CacheDumpProviderContext(store.cacheDumpProvider()))
 }
@@ -259,9 +259,7 @@ internal fun <D : Query.Data> ApolloCall<D>.watchInternal(data: D?): Flow<Apollo
 
 val ApolloClient.apolloStore: ApolloStore
   get() {
-    return interceptors.firstOrNull { it is CacheInterceptor }?.let {
-      (it as CacheInterceptor).store
-    } ?: error("no cache configured")
+    return (cacheInterceptor as? CacheInterceptor ?: error("no cache configured")).store
   }
 
 /**

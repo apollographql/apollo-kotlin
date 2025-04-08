@@ -82,7 +82,7 @@ private constructor(
   val subscriptionNetworkTransport: NetworkTransport
   val interceptors: List<ApolloInterceptor> = builder.interceptors
   val customScalarAdapters: CustomScalarAdapters = builder.customScalarAdapters
-  private val cacheInterceptor: ApolloInterceptor? = builder.cacheInterceptor
+  val cacheInterceptor: ApolloInterceptor? = builder.cacheInterceptor
   private val autoPersistedQueryInterceptor: ApolloInterceptor? = builder.autoPersistedQueryInterceptor
   private val retryOnError: ((ApolloRequest<*>) -> Boolean)? = builder.retryOnError
   private val retryOnErrorInterceptor: ApolloInterceptor? = builder.retryOnErrorInterceptor
