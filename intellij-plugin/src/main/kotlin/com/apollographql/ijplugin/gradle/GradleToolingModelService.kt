@@ -9,7 +9,6 @@ import com.apollographql.ijplugin.settings.ProjectSettingsState
 import com.apollographql.ijplugin.settings.projectSettingsState
 import com.apollographql.ijplugin.telemetry.telemetryService
 import com.apollographql.ijplugin.util.dispose
-import com.apollographql.ijplugin.util.executeOnPooledThread
 import com.apollographql.ijplugin.util.isNotDisposed
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
@@ -25,6 +24,8 @@ import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.CheckedDisposable
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFileManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.gradle.tooling.CancellationTokenSource
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.model.GradleProject
@@ -36,6 +37,7 @@ import java.io.File
 @Service(Service.Level.PROJECT)
 class GradleToolingModelService(
     private val project: Project,
+    private val coroutineScope: CoroutineScope,
 ) : Disposable {
   private var gradleHasSyncedDisposable: CheckedDisposable? = null
 
@@ -141,7 +143,7 @@ class GradleToolingModelService(
       return
     }
 
-    fetchToolingModelsTask = FetchToolingModelsTask().also { executeOnPooledThread { it.run() } }
+    fetchToolingModelsTask = FetchToolingModelsTask().also { coroutineScope.launch { it.run() } }
   }
 
   private inner class FetchToolingModelsTask : Runnable {
