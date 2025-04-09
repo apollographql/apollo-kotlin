@@ -21,6 +21,7 @@ apollo-normalizedcache-incubating = "0.0.8"
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-published = "4.0.1"
 atomicfu = "0.26.0"
+compat-patrouille = "0.0.0"
 compose = "1.5.1"
 guava = "31.1-jre"
 javaPoet = "1.13.0"
@@ -89,6 +90,7 @@ atomicfu-library = { group = "org.jetbrains.kotlinx", name = "atomicfu", version
 atomicfu-plugin = { group = "org.jetbrains.kotlinx", name = "atomicfu-gradle-plugin", version.ref = "atomicfu" }
 
 benmanes-versions = { group = "com.github.ben-manes", name = "gradle-versions-plugin", version = "0.33.0" }
+compat-patrouille = { module = "com.gradleup.compat.patrouille:compat-patrouille-gradle-plugin", version.ref = "compat-patrouille" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 dokka = "org.jetbrains.dokka:dokka-gradle-plugin:2.0.0"
@@ -195,7 +197,9 @@ licensee = "app.cash.licensee:licensee-gradle-plugin:1.12.0"
 [plugins]
 apollo = { id = "com.apollographql.apollo", version.ref = "apollo" }
 apollo-published = { id = "com.apollographql.apollo", version.ref = "apollo-published" }
+compat-patrouille = { id = "com.gradleup.compat.patrouille", version.ref = "compat-patrouille" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin" }
+kotlin-sam = { id = "org.jetbrains.kotlin.plugin.sam.with.receiver", version.ref = "kotlin-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin" }
 kotlin-android-min = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin-min" }
 kotlin-android-max = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin-max" }
