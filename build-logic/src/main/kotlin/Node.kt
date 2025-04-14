@@ -1,10 +1,7 @@
 import org.gradle.api.Project
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
 import org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask
-import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
-import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 
 fun Project.configureNode() {
   check(this == rootProject) {
@@ -33,12 +30,5 @@ fun Project.configureNode() {
             "network"
         )
     )
-  }
-
-  plugins.withType(YarnPlugin::class.java).configureEach {
-    project.extensions.getByType(YarnRootExtension::class.java).apply {
-      // Drop the patch version because there shouldn't be any dependency change
-      lockFileDirectory = projectDir.resolve("kotlin-js-store-${project.getKotlinPluginVersion().substringBeforeLast(".")}")
-    }
   }
 }
