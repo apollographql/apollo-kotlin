@@ -129,8 +129,10 @@ class ExecutableSchema(
     }
 
     fun build(): ExecutableSchema {
-      val definitions = builtinDefinitions().filter { it !is GQLScalarTypeDefinition } + (schema?.definitions
-        ?: error("A schema is required to build an ExecutableSchema"))
+      check(schema != null) {
+        "A schema is required to build an ExecutableSchema"
+      }
+      val definitions = builtinDefinitions().filter { it !is GQLScalarTypeDefinition } + schema!!.definitions
       val schema = GQLDocument(definitions, null).toSchema()
 
       return ExecutableSchema(
