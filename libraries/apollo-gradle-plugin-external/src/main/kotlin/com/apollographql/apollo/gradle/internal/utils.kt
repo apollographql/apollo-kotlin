@@ -3,7 +3,6 @@ package com.apollographql.apollo.gradle.internal
 import com.apollographql.apollo.compiler.InputFile
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.file.FileCollection
-import java.io.File
 import java.lang.reflect.InvocationTargetException
 
 

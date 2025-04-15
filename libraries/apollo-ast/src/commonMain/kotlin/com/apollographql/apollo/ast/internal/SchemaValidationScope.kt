@@ -78,6 +78,9 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
    */
   val fullDefinitions = definitions.withBuiltinDefinitions()
 
+  /**
+   * TODO: this should probably be done after merging so that we can handle @link on the schema definition itself.
+   */
   val linkedSchemas = definitions.filterIsInstance<GQLSchemaExtension>().getLinkedSchemas(issues, options.foreignSchemas).toMutableList()
 
   if (options.addKotlinLabsDefinitions && linkedSchemas.none { it.foreignSchema.name == "kotlin_labs" }) {
@@ -287,15 +290,17 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
       }
 
   /**
-   * I'm not 100% clear on the order of validations, here I'm merging the extensions first thing
+   * I'm not 100% clear on the order of validations, here I'm merging the extensions first thing.
    *
-   * Most of the validations that we do later on do not require merging the definitions though.
-   * If we were one day to validate that objects implement all interfaces fields for an example, this would have to be
-   * done post merging (because extensions may add fields to interfaces). As it is now, we could probably
-   * move validation of the directives before merging.
+   * It seems more natural. Two examples:
+   * - If we were one day to validate that objects implement all interfaces fields for an example, this would have to be
+   * done post merging (because extensions may add fields to interfaces).
+   * - Same for validated repeated directives.
+   *
+   * Moving forward, extensions merging should probably be done first thing as a separate step, before any validation and/or linking of foreign schemas.
    */
   val dedupedDefinitions = listOfNotNull(schemaDefinition) + directiveDefinitions.values + typeDefinitions.values
-  val mergedDefinitions = ExtensionsMerger(dedupedDefinitions + typeSystemExtensions, MergeOptions(true)).merge().getOrThrow()
+  val mergedDefinitions = ExtensionsMerger(dedupedDefinitions + typeSystemExtensions, MergeOptions(false, true)).merge().getOrThrow()
 
   val mergedScope = DefaultValidationScope(
       typeDefinitions = mergedDefinitions.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
