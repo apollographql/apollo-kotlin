@@ -133,6 +133,13 @@ public final class com/apollographql/apollo/execution/IntCoercing : com/apollogr
 	public synthetic fun serialize (Ljava/lang/Object;)Ljava/lang/Object;
 }
 
+public final class com/apollographql/apollo/execution/JsonCoercing : com/apollographql/apollo/execution/Coercing {
+	public static final field INSTANCE Lcom/apollographql/apollo/execution/JsonCoercing;
+	public fun deserialize (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun parseLiteral (Lcom/apollographql/apollo/ast/GQLValue;)Ljava/lang/Object;
+	public fun serialize (Ljava/lang/Object;)Ljava/lang/Object;
+}
+
 public abstract interface class com/apollographql/apollo/execution/OperationCallback {
 	public abstract fun onOperationCompleted (Lcom/apollographql/apollo/execution/GraphQLResponse;)Lcom/apollographql/apollo/execution/GraphQLResponse;
 }

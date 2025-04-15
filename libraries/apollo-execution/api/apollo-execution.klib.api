@@ -236,6 +236,12 @@ final object com.apollographql.apollo.execution/IntCoercing : com.apollographql.
     final fun serialize(kotlin/Int): kotlin/Any? // com.apollographql.apollo.execution/IntCoercing.serialize|serialize(kotlin.Int){}[0]
 }
 
+final object com.apollographql.apollo.execution/JsonCoercing : com.apollographql.apollo.execution/Coercing<kotlin/Any?> { // com.apollographql.apollo.execution/JsonCoercing|null[0]
+    final fun deserialize(kotlin/Any?): kotlin/Any? // com.apollographql.apollo.execution/JsonCoercing.deserialize|deserialize(kotlin.Any?){}[0]
+    final fun parseLiteral(com.apollographql.apollo.ast/GQLValue): kotlin/Any? // com.apollographql.apollo.execution/JsonCoercing.parseLiteral|parseLiteral(com.apollographql.apollo.ast.GQLValue){}[0]
+    final fun serialize(kotlin/Any?): kotlin/Any? // com.apollographql.apollo.execution/JsonCoercing.serialize|serialize(kotlin.Any?){}[0]
+}
+
 final object com.apollographql.apollo.execution/StringCoercing : com.apollographql.apollo.execution/Coercing<kotlin/String> { // com.apollographql.apollo.execution/StringCoercing|null[0]
     final fun deserialize(kotlin/Any?): kotlin/String // com.apollographql.apollo.execution/StringCoercing.deserialize|deserialize(kotlin.Any?){}[0]
     final fun parseLiteral(com.apollographql.apollo.ast/GQLValue): kotlin/String // com.apollographql.apollo.execution/StringCoercing.parseLiteral|parseLiteral(com.apollographql.apollo.ast.GQLValue){}[0]
