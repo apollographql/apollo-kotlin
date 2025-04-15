@@ -43,19 +43,27 @@ interface Coercing<T> {
 internal fun leafCoercingSerialize(value: InternalValue, coercings: Map<String, Coercing<*>>, typedefinition: GQLTypeDefinition): ExternalValue {
   return when (typedefinition.name) {
     "Int" -> {
-      check(value is Int)
+      check(value is Int) {
+        "'$value' is not an Int"
+      }
       value
     }
     "Float" -> {
-      check(value is Double)
+      check(value is Double) {
+        "'$value' is not a Double"
+      }
       value
     }
     "String" -> {
-      check(value is String)
+      check(value is String) {
+        "'$value' is not a String"
+      }
       value
     }
     "Boolean" -> {
-      check(value is Boolean)
+      check(value is Boolean) {
+        "'$value' is not a Boolean"
+      }
       value
     }
     "ID" -> {
@@ -72,7 +80,9 @@ internal fun leafCoercingSerialize(value: InternalValue, coercings: Map<String, 
       val coercing = coercings.get(typedefinition.name) as Coercing<ExternalValue>?
       if (coercing == null) {
         if (typedefinition is GQLEnumTypeDefinition) {
-          check(value is String)
+          check(value is String) {
+            "'$value' is not an enum String"
+          }
           value
         } else {
           error("Cannot get coercing for '${typedefinition.name}'")
@@ -85,11 +95,11 @@ internal fun leafCoercingSerialize(value: InternalValue, coercings: Map<String, 
 }
 
 object IntCoercing: Coercing<Int> {
-  override fun serialize(internalValue: Int): ExternalValue {
+  override fun serialize(internalValue: Int): ApolloJsonElement {
     return internalValue
   }
 
-  override fun deserialize(value: ExternalValue): Int {
+  override fun deserialize(value: ApolloJsonElement): Int {
     check(value is Number)
     return value.toInt()
   }
@@ -101,11 +111,11 @@ object IntCoercing: Coercing<Int> {
 }
 
 object FloatCoercing: Coercing<Double> {
-  override fun serialize(internalValue: Double): ExternalValue {
+  override fun serialize(internalValue: Double): ApolloJsonElement {
     return internalValue
   }
 
-  override fun deserialize(value: ExternalValue): Double {
+  override fun deserialize(value: ApolloJsonElement): Double {
     check(value is Number)
     return value.toDouble()
   }
@@ -120,11 +130,11 @@ object FloatCoercing: Coercing<Double> {
 }
 
 object BooleanCoercing: Coercing<Boolean> {
-  override fun serialize(internalValue: Boolean): ExternalValue {
+  override fun serialize(internalValue: Boolean): ApolloJsonElement {
     return internalValue
   }
 
-  override fun deserialize(value: ExternalValue): Boolean {
+  override fun deserialize(value: ApolloJsonElement): Boolean {
     check(value is Boolean)
     return value
   }
@@ -136,11 +146,11 @@ object BooleanCoercing: Coercing<Boolean> {
 }
 
 object StringCoercing: Coercing<String> {
-  override fun serialize(internalValue: String): ExternalValue {
+  override fun serialize(internalValue: String): ApolloJsonElement {
     return internalValue
   }
 
-  override fun deserialize(value: ExternalValue): String {
+  override fun deserialize(value: ApolloJsonElement): String {
     check(value is String)
     return value
   }
@@ -148,6 +158,34 @@ object StringCoercing: Coercing<String> {
   override fun parseLiteral(value: GQLValue): String {
     check(value is GQLStringValue)
     return value.value
+  }
+}
+
+object JsonCoercing: Coercing<Any?> {
+  override fun serialize(internalValue: Any?): ApolloJsonElement {
+    return internalValue
+  }
+
+  override fun deserialize(value: ApolloJsonElement): Any? {
+    return value
+  }
+
+  override fun parseLiteral(value: GQLValue): Any? {
+    return value.toAny()
+  }
+
+  private fun GQLValue.toAny(): Any? {
+    return when(this) {
+      is GQLBooleanValue -> value
+      is GQLEnumValue -> value
+      is GQLFloatValue -> value.toDouble()
+      is GQLIntValue -> value.toInt()
+      is GQLListValue -> values.map { it.toAny() }
+      is GQLNullValue -> null
+      is GQLObjectValue -> fields.associate { it.name to it.value.toAny() }
+      is GQLStringValue -> value
+      is GQLVariableValue -> TODO()
+    }
   }
 }
 
