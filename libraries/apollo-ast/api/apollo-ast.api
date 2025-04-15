@@ -953,7 +953,8 @@ public final class com/apollographql/apollo/ast/IssueKt {
 
 public final class com/apollographql/apollo/ast/MergeOptions {
 	public static final field Companion Lcom/apollographql/apollo/ast/MergeOptions$Companion;
-	public fun <init> (Z)V
+	public fun <init> (ZZ)V
+	public final fun getAllowAddingDirectivesToExistingFieldDefinitions ()Z
 	public final fun getAllowFieldNullabilityModification ()Z
 }
 
