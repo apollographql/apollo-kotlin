@@ -33,7 +33,7 @@ typealias InternalValue = Any?
  * - an opaque value for composite types (doesn't have to be a map)
  * - a [List] for list types
  */
-internal typealias ResolverValue = Any?
+typealias ResolverValue = Any?
 
 /**
  * Any of [ResolverValue] or [Error]
