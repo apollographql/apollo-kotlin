@@ -96,6 +96,7 @@ private constructor(
   override val sendDocument: Boolean? = builder.sendDocument
   override val enableAutoPersistedQueries: Boolean? = builder.enableAutoPersistedQueries
   override val canBeBatched: Boolean? = builder.canBeBatched
+  override val ignoreUnknownKeys: Boolean? = builder.ignoreUnknownKeys
 
   init {
     networkTransport = if (builder.networkTransport != null) {
@@ -313,6 +314,8 @@ private constructor(
 
       retryOnError(retryOnError ?: apolloClient.retryOnError?.invoke(apolloRequest))
       failFastIfOffline(failFastIfOffline ?: apolloClient.failFastIfOffline)
+
+      ignoreUnknownKeys(ignoreUnknownKeys ?: apolloClient.ignoreUnknownKeys)
     }.build()
 
     val allInterceptors = buildList {
@@ -377,6 +380,8 @@ private constructor(
     override var enableAutoPersistedQueries: Boolean? = null
       private set
     override var canBeBatched: Boolean? = null
+      private set
+    override var ignoreUnknownKeys: Boolean? = null
       private set
     var networkTransport: NetworkTransport? = null
       private set
@@ -587,6 +592,13 @@ private constructor(
      */
     override fun canBeBatched(canBeBatched: Boolean?): Builder = apply {
       this.canBeBatched = canBeBatched
+    }
+
+    /**
+     * Sets whether to ignore the unknown keys in the JSON response.
+     */
+    override fun ignoreUnknownKeys(ignoreUnknownKeys: Boolean?): Builder = apply {
+      this.ignoreUnknownKeys = ignoreUnknownKeys
     }
 
     /**
@@ -978,6 +990,7 @@ private constructor(
           .sendDocument(sendDocument)
           .enableAutoPersistedQueries(enableAutoPersistedQueries)
           .canBeBatched(canBeBatched)
+          .ignoreUnknownKeys(ignoreUnknownKeys)
           .networkTransport(networkTransport)
           .subscriptionNetworkTransport(subscriptionNetworkTransport)
           .webSocketServerUrl(webSocketServerUrl)

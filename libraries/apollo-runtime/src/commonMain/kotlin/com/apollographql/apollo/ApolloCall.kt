@@ -52,7 +52,10 @@ class ApolloCall<D : Operation.Data> internal constructor(
   override val enableAutoPersistedQueries: Boolean? get() = requestBuilder.enableAutoPersistedQueries
   override val canBeBatched: Boolean? get() = requestBuilder.canBeBatched
   override val httpHeaders: List<HttpHeader>? get() = requestBuilder.httpHeaders
+  override val ignoreUnknownKeys: Boolean? get() = requestBuilder.ignoreUnknownKeys
+
   val ignoreApolloClientHttpHeaders: Boolean? get() = requestBuilder.ignoreApolloClientHttpHeaders
+
   @ApolloExperimental
   val retryOnError: Boolean? get() = requestBuilder.retryOnError
   @ApolloExperimental
@@ -92,6 +95,10 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   override fun canBeBatched(canBeBatched: Boolean?) = apply {
     requestBuilder.canBeBatched(canBeBatched)
+  }
+
+  override fun ignoreUnknownKeys(ignoreUnknownKeys: Boolean?) = apply {
+    requestBuilder.ignoreUnknownKeys(ignoreUnknownKeys)
   }
 
   @ApolloExperimental

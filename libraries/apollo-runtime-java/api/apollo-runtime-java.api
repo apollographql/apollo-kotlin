@@ -45,6 +45,7 @@ public class com/apollographql/apollo/runtime/java/ApolloClient$Builder : com/ap
 	public fun getExecutionContext ()Lcom/apollographql/apollo/api/ExecutionContext;
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo/api/http/HttpMethod;
+	public fun getIgnoreUnknownKeys ()Ljava/lang/Boolean;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
 	public fun httpBatching (JIZ)Lcom/apollographql/apollo/runtime/java/ApolloClient$Builder;
@@ -56,6 +57,8 @@ public class com/apollographql/apollo/runtime/java/ApolloClient$Builder : com/ap
 	public fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/runtime/java/ApolloClient$Builder;
 	public synthetic fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Ljava/lang/Object;
 	public fun httpServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo/runtime/java/ApolloClient$Builder;
+	public fun ignoreUnknownKeys (Ljava/lang/Boolean;)Lcom/apollographql/apollo/runtime/java/ApolloClient$Builder;
+	public synthetic fun ignoreUnknownKeys (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo/runtime/java/ApolloClient$Builder;
 	public fun networkTransport (Lcom/apollographql/apollo/runtime/java/network/NetworkTransport;)Lcom/apollographql/apollo/runtime/java/ApolloClient$Builder;
 	public fun okHttpClient (Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo/runtime/java/ApolloClient$Builder;

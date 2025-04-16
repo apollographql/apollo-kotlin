@@ -34,6 +34,7 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
+    override val ignoreUnknownKeys: Boolean?,
     val ignoreApolloClientHttpHeaders: Boolean?,
     @ApolloExperimental
     val retryOnError: Boolean?,
@@ -57,6 +58,7 @@ private constructor(
         .retryOnError(retryOnError)
         .failFastIfOffline(failFastIfOffline)
         .ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders)
+        .ignoreUnknownKeys(ignoreUnknownKeys)
   }
 
   class Builder<D : Operation.Data>(
@@ -77,6 +79,8 @@ private constructor(
     override var sendDocument: Boolean? = null
       private set
     override var canBeBatched: Boolean? = null
+      private set
+    override var ignoreUnknownKeys: Boolean? = null
       private set
     var ignoreApolloClientHttpHeaders: Boolean? = null
       private set
@@ -132,6 +136,10 @@ private constructor(
       this.canBeBatched = canBeBatched
     }
 
+    override fun ignoreUnknownKeys(ignoreUnknownKeys: Boolean?): Builder<D> = apply {
+      this.ignoreUnknownKeys = ignoreUnknownKeys
+    }
+
     @ApolloExperimental
     fun retryOnError(retryOnError: Boolean?): Builder<D> = apply {
       this.retryOnError = retryOnError
@@ -156,6 +164,7 @@ private constructor(
           ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders,
           retryOnError = retryOnError,
           failFastIfOffline = failFastIfOffline,
+          ignoreUnknownKeys = ignoreUnknownKeys
       )
     }
   }

@@ -35,6 +35,7 @@ import okio.EOFException
 class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader {
   private val buffer: Buffer = source.buffer
   private var peeked = PEEKED_NONE
+  private var ignoreUnknownKeys = true
 
   /**
    * A peeked value that was composed entirely of digits with an optional leading dash. Positive values may not have a leading 0.
@@ -734,10 +735,21 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
           }
         }
 
+        if (!ignoreUnknownKeys) {
+          throw JsonDataException("Unknown key '$name' found at path: '${getPathAsString()}'")
+        }
         skipValue()
       }
     }
     return -1
+  }
+
+  override fun ignoreUnknownKeys(): Boolean {
+    return ignoreUnknownKeys
+  }
+
+  override fun ignoreUnknownKeys(ignoreUnknownKeys: Boolean) {
+    this.ignoreUnknownKeys = ignoreUnknownKeys
   }
 
   private fun push(newTop: Int) {
