@@ -1093,8 +1093,10 @@ final class com.apollographql.apollo.ast/InvalidDeferLabel : com.apollographql.a
 }
 
 final class com.apollographql.apollo.ast/MergeOptions { // com.apollographql.apollo.ast/MergeOptions|null[0]
-    constructor <init>(kotlin/Boolean) // com.apollographql.apollo.ast/MergeOptions.<init>|<init>(kotlin.Boolean){}[0]
+    constructor <init>(kotlin/Boolean, kotlin/Boolean) // com.apollographql.apollo.ast/MergeOptions.<init>|<init>(kotlin.Boolean;kotlin.Boolean){}[0]
 
+    final val allowAddingDirectivesToExistingFieldDefinitions // com.apollographql.apollo.ast/MergeOptions.allowAddingDirectivesToExistingFieldDefinitions|{}allowAddingDirectivesToExistingFieldDefinitions[0]
+        final fun <get-allowAddingDirectivesToExistingFieldDefinitions>(): kotlin/Boolean // com.apollographql.apollo.ast/MergeOptions.allowAddingDirectivesToExistingFieldDefinitions.<get-allowAddingDirectivesToExistingFieldDefinitions>|<get-allowAddingDirectivesToExistingFieldDefinitions>(){}[0]
     final val allowFieldNullabilityModification // com.apollographql.apollo.ast/MergeOptions.allowFieldNullabilityModification|{}allowFieldNullabilityModification[0]
         final fun <get-allowFieldNullabilityModification>(): kotlin/Boolean // com.apollographql.apollo.ast/MergeOptions.allowFieldNullabilityModification.<get-allowFieldNullabilityModification>|<get-allowFieldNullabilityModification>(){}[0]
 

@@ -30,7 +30,7 @@ class TypeExtensionsMergeTest {
       }
     """.trimIndent()
 
-    val result = sdl.toGQLDocument().toMergedGQLDocument(MergeOptions(true))
+    val result = sdl.toGQLDocument().toMergedGQLDocument(MergeOptions(false, true))
         .definitions
         .single() as GQLObjectTypeDefinition
 
@@ -60,7 +60,7 @@ class TypeExtensionsMergeTest {
       }
     """.trimIndent()
 
-    val issues = sdl.toGQLDocument().mergeExtensions(MergeOptions(true)).issues
+    val issues = sdl.toGQLDocument().mergeExtensions(MergeOptions(false, true)).issues
 
     assertEquals(3, issues.size)
     assertTrue(issues[0].message.contains("its type is not compatible with the original type"))
