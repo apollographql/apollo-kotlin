@@ -56,7 +56,7 @@ private constructor(
     return execute(request, httpRequest, customScalarAdapters)
   }
 
-  fun <D : Operation.Data> execute(
+  internal fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
       httpRequest: HttpRequest,
       customScalarAdapters: CustomScalarAdapters,
@@ -96,11 +96,11 @@ private constructor(
         // When using @defer, the response contains multiple parts, using the multipart content type.
         // See https://github.com/graphql/graphql-over-http/blob/main/rfcs/IncrementalDelivery.md
         httpResponse.isMultipart -> {
-          multipleResponses(request.operation, customScalarAdapters, httpResponse)
+          multipleResponses(request, customScalarAdapters, httpResponse)
         }
 
         else -> {
-          singleResponse(request.operation, customScalarAdapters, httpResponse)
+          singleResponse(request, customScalarAdapters, httpResponse)
         }
       }
 
@@ -148,11 +148,15 @@ private constructor(
   }
 
   private fun <D : Operation.Data> singleResponse(
-      operation: Operation<D>,
+      request: ApolloRequest<D>,
       customScalarAdapters: CustomScalarAdapters,
       httpResponse: HttpResponse,
   ): Flow<ApolloResponse<D>> {
-    val response = httpResponse.body!!.jsonReader().toApolloResponse(
+    val operation = request.operation
+
+    val response = httpResponse.body!!.jsonReader()
+        .apply { ignoreUnknownKeys(request.ignoreUnknownKeys ?: true) }
+        .toApolloResponse(
         operation,
         customScalarAdapters = customScalarAdapters,
         deferredFragmentIdentifiers = null,
@@ -162,16 +166,17 @@ private constructor(
   }
 
   private fun <D : Operation.Data> multipleResponses(
-      operation: Operation<D>,
+      request: ApolloRequest<D>,
       customScalarAdapters: CustomScalarAdapters,
       httpResponse: HttpResponse,
   ): Flow<ApolloResponse<D>> {
     var jsonMerger: DeferredJsonMerger? = null
+    val operation = request.operation
 
     return multipartBodyFlow(httpResponse)
         .mapNotNull { part ->
           if (operation is Subscription) {
-            val reader = part.jsonReader()
+            val reader = part.jsonReader().apply { ignoreUnknownKeys(request.ignoreUnknownKeys ?: true) }
             var payloadResponse: ApolloResponse<D>? = null
             var errors: List<Error>? = null
             reader.beginObject()
@@ -376,15 +381,6 @@ private constructor(
         chain: HttpInterceptorChain,
     ): HttpResponse {
       return chain.proceed(request.newBuilder().addHeaders(headers).build())
-    }
-  }
-
-
-  private companion object {
-    enum class Kind {
-      EMPTY,
-      PAYLOAD,
-      OTHER,
     }
   }
 }

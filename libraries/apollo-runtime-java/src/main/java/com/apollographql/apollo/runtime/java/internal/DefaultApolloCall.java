@@ -26,6 +26,7 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
   private Boolean enableAutoPersistedQueries;
   private Boolean canBeBatched;
   private Boolean retryOnError;
+  private Boolean ignoreUnknownKeys;
 
   public DefaultApolloCall(ApolloClient apolloClient, Operation<D> operation) {
     this.apolloClient = apolloClient;
@@ -42,6 +43,7 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
         .retryOnError(retryOnError)
+        .ignoreUnknownKeys(ignoreUnknownKeys)
         .build();
 
     return apolloClient.execute(apolloRequest, callback);
@@ -73,6 +75,10 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
 
   @Nullable @Override public Boolean getCanBeBatched() {
     return canBeBatched;
+  }
+
+  @Nullable @Override public Boolean getIgnoreUnknownKeys() {
+    return ignoreUnknownKeys;
   }
 
   @Nullable public Boolean getRetryOnError() {
@@ -119,6 +125,11 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
 
   @Override public ApolloCall<D> canBeBatched(@Nullable Boolean canBeBatched) {
     this.canBeBatched = canBeBatched;
+    return this;
+  }
+
+  @Override public ApolloCall<D> ignoreUnknownKeys(@Nullable Boolean ignoreUnknownKeys) {
+    this.ignoreUnknownKeys = ignoreUnknownKeys;
     return this;
   }
 

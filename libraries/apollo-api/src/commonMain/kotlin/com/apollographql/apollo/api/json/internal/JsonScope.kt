@@ -42,7 +42,7 @@ internal object JsonScope {
    *  - [pathNames] contains the name at this scope.
    *
    * Where it contains an array (EMPTY_ARRAY, NONEMPTY_ARRAY) [pathIndices] contains the current index
-   * in that array. Otherwise the value is undefined, and we take advantage of that by incrementing
+   * in that array. Otherwise, the value is undefined, and we take advantage of that by incrementing
    * pathIndices when doing so isn't useful.
    */
   fun getPath(stackSize: Int, stack: IntArray, pathNames: Array<String?>, pathIndices: IntArray): List<Any> {

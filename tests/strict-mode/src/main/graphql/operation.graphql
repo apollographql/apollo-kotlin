@@ -1,0 +1,6 @@
+query Foo {
+  foo
+  user {
+    name
+  }
+}

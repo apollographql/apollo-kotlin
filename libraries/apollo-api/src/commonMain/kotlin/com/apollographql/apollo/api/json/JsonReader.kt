@@ -178,6 +178,16 @@ interface JsonReader : Closeable {
   fun getPath(): List<Any>
 
   /**
+   * Sets whether to ignore unknown keys.
+   */
+  fun ignoreUnknownKeys(ignoreUnknownKeys: Boolean) {}
+
+  /**
+   * Whether to ignore unknown keys.
+   */
+  fun ignoreUnknownKeys(): Boolean = true
+
+  /**
    * A structure, name, or value type in a JSON-encoded string.
    */
   enum class Token {
