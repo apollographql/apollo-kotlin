@@ -3,6 +3,7 @@
 package com.apollographql.apollo.api
 
 import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.internal.ResponseParser
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
@@ -230,4 +231,3 @@ fun <D : Operation.Data> JsonReader.parseResponse(
         .build()
   }
 }
-

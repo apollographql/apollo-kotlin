@@ -18,6 +18,7 @@ public final class com/apollographql/apollo/ApolloCall : com/apollographql/apoll
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo/api/http/HttpMethod;
 	public final fun getIgnoreApolloClientHttpHeaders ()Ljava/lang/Boolean;
+	public fun getIgnoreUnknownKeys ()Ljava/lang/Boolean;
 	public final fun getOperation ()Lcom/apollographql/apollo/api/Operation;
 	public final fun getRetryOnError ()Ljava/lang/Boolean;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
@@ -27,6 +28,8 @@ public final class com/apollographql/apollo/ApolloCall : com/apollographql/apoll
 	public fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/ApolloCall;
 	public synthetic fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Ljava/lang/Object;
 	public final fun ignoreApolloClientHttpHeaders (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
+	public fun ignoreUnknownKeys (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
+	public synthetic fun ignoreUnknownKeys (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun retryOnError (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
@@ -50,6 +53,7 @@ public final class com/apollographql/apollo/ApolloClient : com/apollographql/apo
 	public fun getExecutionContext ()Lcom/apollographql/apollo/api/ExecutionContext;
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo/api/http/HttpMethod;
+	public fun getIgnoreUnknownKeys ()Ljava/lang/Boolean;
 	public final fun getInterceptors ()Ljava/util/List;
 	public final fun getNetworkTransport ()Lcom/apollographql/apollo/network/NetworkTransport;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
@@ -103,6 +107,7 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public final fun getHttpInterceptors ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo/api/http/HttpMethod;
 	public final fun getHttpServerUrl ()Ljava/lang/String;
+	public fun getIgnoreUnknownKeys ()Ljava/lang/Boolean;
 	public final fun getInterceptors ()Ljava/util/List;
 	public final fun getNetworkTransport ()Lcom/apollographql/apollo/network/NetworkTransport;
 	public final fun getRetryOnError ()Lkotlin/jvm/functions/Function1;
@@ -129,6 +134,8 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public synthetic fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Ljava/lang/Object;
 	public final fun httpServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public fun ignoreUnknownKeys (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public synthetic fun ignoreUnknownKeys (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun listeners (Ljava/util/List;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun networkTransport (Lcom/apollographql/apollo/network/NetworkTransport;)Lcom/apollographql/apollo/ApolloClient$Builder;
@@ -361,7 +368,6 @@ public final class com/apollographql/apollo/network/http/HttpNetworkTransport : 
 	public synthetic fun <init> (Lcom/apollographql/apollo/api/http/HttpRequestComposer;Lcom/apollographql/apollo/network/http/HttpEngine;Ljava/util/List;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun dispose ()V
 	public fun execute (Lcom/apollographql/apollo/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
-	public final fun execute (Lcom/apollographql/apollo/api/ApolloRequest;Lcom/apollographql/apollo/api/http/HttpRequest;Lcom/apollographql/apollo/api/CustomScalarAdapters;)Lkotlinx/coroutines/flow/Flow;
 	public final fun getInterceptors ()Ljava/util/List;
 	public final fun newBuilder ()Lcom/apollographql/apollo/network/http/HttpNetworkTransport$Builder;
 }

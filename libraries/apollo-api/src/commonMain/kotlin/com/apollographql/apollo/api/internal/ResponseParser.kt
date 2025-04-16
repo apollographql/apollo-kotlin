@@ -11,6 +11,7 @@ import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.MapJsonReader
 import com.apollographql.apollo.api.json.readAny
 import com.apollographql.apollo.api.parseData
+import com.apollographql.apollo.exception.JsonDataException
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 
@@ -32,14 +33,19 @@ internal object ResponseParser {
     var extensions: Map<String, Any?>? = null
     while (jsonReader.hasNext()) {
       @Suppress("UNCHECKED_CAST")
-      when (jsonReader.nextName()) {
+      when (val name = jsonReader.nextName()) {
         "data" -> {
           val falseVariables = operation.falseVariables(customScalarAdapters)
           data = operation.parseData(jsonReader, customScalarAdapters, falseVariables, deferredFragmentIds, errors)
         }
         "errors" -> errors = jsonReader.readErrors()
         "extensions" -> extensions = jsonReader.readAny() as? Map<String, Any?>
-        else -> jsonReader.skipValue()
+        else -> {
+          if (!jsonReader.ignoreUnknownKeys()) {
+            throw JsonDataException("Unknown key '$name' found at path: '${jsonReader.getPath().joinToString(".")}'")
+          }
+          jsonReader.skipValue()
+        }
       }
     }
 
@@ -81,6 +87,10 @@ private fun JsonReader.readError(): Error {
       }
 
       else -> {
+        if (!ignoreUnknownKeys()) {
+          throw JsonDataException("Unknown key '$name' found at path: '${getPath().joinToString(".")}'")
+        }
+
         if (nonStandardFields == null) nonStandardFields = mutableMapOf()
         nonStandardFields[name] = readAny()
       }

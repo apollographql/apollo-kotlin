@@ -49,6 +49,8 @@ constructor(
 
   private var stackSize = 0
 
+  private var ignoreUnknownKeys = true
+
   init {
     peekedToken = anyToToken(root)
     peekedData = root
@@ -356,7 +358,10 @@ constructor(
         return index
       }
 
-      // A name was present in the json but not in the expected list
+      if (!ignoreUnknownKeys) {
+        throw JsonDataException("Unknown key '$name' found at path: '${getPathAsString()}'")
+      }
+
       skipValue()
     }
 
@@ -383,6 +388,14 @@ constructor(
     return result
   }
 
+  override fun ignoreUnknownKeys(): Boolean {
+    return ignoreUnknownKeys
+  }
+
+  override fun ignoreUnknownKeys(ignoreUnknownKeys: Boolean) {
+    this.ignoreUnknownKeys = ignoreUnknownKeys
+  }
+
   private fun getPathAsString() = getPath().joinToString(".")
 
   companion object {
@@ -404,7 +417,7 @@ constructor(
 
       @Suppress("UNCHECKED_CAST")
       val data = this.readAny() as Map<String, Any?>
-      return MapJsonReader(root = data, pathRoot = pathRoot)
+      return MapJsonReader(root = data, pathRoot = pathRoot).apply { ignoreUnknownKeys(ignoreUnknownKeys()) }
     }
   }
 }

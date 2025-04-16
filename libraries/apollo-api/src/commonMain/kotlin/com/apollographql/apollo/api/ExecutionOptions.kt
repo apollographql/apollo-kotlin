@@ -48,6 +48,11 @@ interface ExecutionOptions {
    */
   val canBeBatched: Boolean?
 
+  /**
+   * Whether to ignore the unknown keys in the JSON response.
+   */
+  val ignoreUnknownKeys: Boolean?
+
   companion object {
     /**
      * Used by [com.apollographql.apollo.network.http.BatchingHttpInterceptor]
@@ -85,4 +90,9 @@ interface MutableExecutionOptions<T> : ExecutionOptions {
   fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): T
 
   fun canBeBatched(canBeBatched: Boolean?): T
+
+  /**
+   * Sets whether to ignore the unknown keys in the JSON response.
+   */
+  fun ignoreUnknownKeys(ignoreUnknownKeys: Boolean?): T
 }

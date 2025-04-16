@@ -1,0 +1,8 @@
+type Query {
+  foo: Int!
+  user: User!
+}
+
+type User {
+  name: String!
+}
