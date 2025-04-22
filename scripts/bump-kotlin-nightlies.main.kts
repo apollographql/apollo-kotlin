@@ -1,5 +1,8 @@
 #!/usr/bin/env kotlin
 
+@file:DependsOn("com.github.zafarkhaja:java-semver:0.10.2")
+
+import com.github.zafarkhaja.semver.Version
 import java.io.File
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
@@ -8,9 +11,18 @@ val BRANCH_NAME = "kotlin-nightlies"
 
 fun bumpVersions() {
   val kotlinVersion =
-    getLatestVersion("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/org/jetbrains/kotlin/kotlin-stdlib/maven-metadata.xml", prefix = "2.1")
-  val kspVersion =
-    getLatestVersion("https://oss.sonatype.org/content/repositories/snapshots/com/google/devtools/ksp/com.google.devtools.ksp.gradle.plugin/maven-metadata.xml")
+    getLatestVersion("https://redirector.kotlinlang.org/maven/dev/org/jetbrains/kotlin/kotlin-stdlib/maven-metadata.xml", prefix = "2.2.0")
+
+  val useKspSnapshots = false
+  val kspVersion = getLatestVersion(
+      if (useKspSnapshots) {
+        "https://oss.sonatype.org/content/repositories/snapshots/com/google/devtools/ksp/com.google.devtools.ksp.gradle.plugin/maven-metadata.xml"
+      } else {
+        "https://repo1.maven.org/maven2/com/google/devtools/ksp/com.google.devtools.ksp.gradle.plugin/maven-metadata.xml"
+      },
+      prefix = "2.2.0"
+  )
+
   File("gradle/libraries.toml").let { file ->
     file.writeText(
         file.readText()
@@ -40,7 +52,13 @@ fun getLatestVersion(url: String, prefix: String? = null): String {
           (0 until it.length)
               .map { i -> it.item(i).textContent }
               .filter { it.startsWith(prefix) }
-              .first() // Assumes they are sorted by most recent first, which is true on Kotlin's repo, false on Sonatype
+              .sortedBy {
+                Version.parse(
+                    // Make it SemVer comparable
+                    it.replace("-dev-", "-dev.")
+                )
+              }
+              .last()
         }
   } else {
     document
