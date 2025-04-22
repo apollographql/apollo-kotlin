@@ -1,14 +1,11 @@
+
 import com.android.build.gradle.BaseExtension
 import compat.patrouille.configureJavaCompatibility
 import compat.patrouille.configureKotlinCompatibility
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPluginExtension
-import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinCommonCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompilerOptions
@@ -27,6 +24,9 @@ fun KotlinCommonCompilerOptions.configure(
     optIns: List<String>
 ) {
   freeCompilerArgs.add("-Xexpect-actual-classes")
+
+  // Suppress "Language version 1.9 is deprecated and its support will be removed in a future version of Kotlin"
+  freeCompilerArgs.add("-Xsuppress-version-warnings")
 
   optIns.forEach {
     freeCompilerArgs.add("-opt-in=$it")
