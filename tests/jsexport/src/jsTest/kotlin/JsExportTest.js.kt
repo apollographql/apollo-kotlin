@@ -23,9 +23,9 @@ actual val parserFactory: SubscriptionParserFactory?
 object JsSubscriptionParserFactory : SubscriptionParserFactory {
   override fun <D : Operation.Data> createParser(request: ApolloRequest<D>): SubscriptionParser<D> {
     return object : SubscriptionParser<D> {
-      override fun parse(payload: ApolloJsonElement): ApolloResponse<D> {
+      override fun parse(response: ApolloJsonElement): ApolloResponse<D> {
         return ApolloResponse.Builder(request.operation, request.requestUuid)
-            .data(payload.asDynamic().data.unsafeCast<D>())
+            .data(response.asDynamic().data.unsafeCast<D>())
             .errors(null) // TODO: Error doesn't use @JsExport
             .build()
       }
