@@ -51,5 +51,8 @@ tasks.withType(KotlinCompilationTask::class.java).configureEach {
   compilerOptions {
     apiVersion.set(KotlinVersion.KOTLIN_1_9)
     languageVersion.set(KotlinVersion.KOTLIN_1_9)
+
+    // Suppress "Language version 1.9 is deprecated and its support will be removed in a future version of Kotlin"
+    freeCompilerArgs.add("-Xsuppress-version-warnings")
   }
 }
