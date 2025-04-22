@@ -7,12 +7,11 @@ import platform.Network.nw_path_monitor_set_queue
 import platform.Network.nw_path_monitor_set_update_handler
 import platform.Network.nw_path_monitor_start
 import platform.Network.nw_path_monitor_t
-import platform.Network.nw_path_monitor_update_handler_t
 import platform.Network.nw_path_status_satisfied
 import platform.Network.nw_path_t
 import platform.darwin.dispatch_queue_create
 
-internal class AppleNetworkObserver: NetworkObserver, nw_path_monitor_update_handler_t {
+internal class AppleNetworkObserver: NetworkObserver, ((nw_path_t) -> Unit) {
   var monitor: nw_path_monitor_t = null
   var listener: NetworkObserver.Listener? = null
 
