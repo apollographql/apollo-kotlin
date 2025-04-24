@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2025-04-03**
+**Last updated: 2025-04-24**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -17,21 +17,25 @@ For up to date release notes, refer to the project [Changelog](https://github.co
 
 The declarative cache makes working with the cache and defining unique object ids easier.  We also want to include helpers to handle with common cases like pagination, garbage collection and eviction. Follow [#2331](https://github.com/apollographql/apollo-kotlin/issues/2331) for a high level overview.  
 
-* Cache control is now available ([doc](https://apollographql.github.io/apollo-kotlin-normalized-cache-incubating/cache-control.html)) 🎉.  
-* A [first implementation of garbage collection](https://github.com/apollographql/apollo-kotlin-normalized-cache-incubating/pull/69) is also available ([doc](https://apollographql.github.io/apollo-kotlin-normalized-cache-incubating/garbage-collection.html)).
-* [Partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache-incubating/issues/57) is also available.
+* Cache control is now available ([doc](https://apollographql.github.io/apollo-kotlin-normalized-cache/cache-control.html)) 🎉.  
+* A [first implementation of garbage collection](https://github.com/apollographql/apollo-kotlin-normalized-cache/pull/69) is also available ([doc](https://apollographql.github.io/apollo-kotlin-normalized-cache/garbage-collection.html)).
+* [Partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache/issues/57) is also available.
 
-Using the incubating cache, early results show a speed improvement.  We're currently working on confirming those numbers and improving performance overall.  As always, your feedback is greatly appreciated and helps us moving the artifact out of experimental state faster.
+Using the new cache, early results show a speed improvement.  We're currently working on confirming those numbers and improving performance overall.  As always, your feedback is greatly appreciated and helps us improve faster.
 
-## [Testing utilities](https://github.com/apollographql/apollo-kotlin/issues/6076)
+## [Apollo Kotlin Faker](https://github.com/apollographql/apollo-kotlin-faker)
 
-The community has given some consistent feedback around testing and data builders in particular.  Currently working on using apollo-execution algorithms to provide and easier and more consistent way to fake a GraphQL schema.
+The community has given some consistent feedback around testing and data builders in particular.  [Apollo Kotlin Faker](https://github.com/apollographql/apollo-kotlin-faker) is now available for rapid schema-driven testing, a pattern that we have seen used with success in other Apollo projects.  This library is now available in a v0 form - your feedback will be extremely valuable in shaping the API.
+
+Data builders are still available, but the `FakeResolver` API will eventually be replaced by the analogous functionality in Apollo Kotlin Faker.
 
 ## Jetpack Compose extensions
 
-_This is currently available as an experimental feature.  We will release a stable version after getting sufficient user feedback_
+_This is currently available as an experimental feature.  We will release a stable version after getting sufficient user feedback._
 
 [Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin.  We are experimenting with a few different approaches for supporting Compose in the Apollo Kotlin library.  Our 3.8.0 release introduced an experimental API for use with Compose, please do try it out and give us feedback!
+
+We are currently in the very early stages of exploring a potential API for encouraging fragment colocation as part of our Jetpack Compose extensions.  This pattern is encouraged by [Relay](https://relay.dev/docs/tutorial/fragments-1/) and [Apollo Client (TypeScript)](https://www.apollographql.com/blog/optimizing-data-fetching-with-apollo-client-leveraging-usefragment-and-colocated-fragments) and may prove to be valuable to developers using Compose.
 
 ## Future feature releases
 
