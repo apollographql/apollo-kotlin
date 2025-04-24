@@ -25,7 +25,7 @@ Using the new cache, early results show a speed improvement.  We're currently wo
 
 ## [Apollo Kotlin Faker](https://github.com/apollographql/apollo-kotlin-faker)
 
-The community has given some consistent feedback around testing and data builders in particular.  [Apollo Kotlin Faker](https://github.com/apollographql/apollo-kotlin-faker) is now available for rapid schema-driven testing, a pattern that we have seen used with success in other Apollo projects.  This library is now available in a v0 form - your feedback will be extremely valuable in shaping the API.
+The community has given some consistent feedback around testing and data builders in particular.  [Apollo Kotlin Faker](https://github.com/apollographql/apollo-kotlin-faker) is now available for rapid schema-driven testing, a pattern that we have seen used with success in other Apollo projects.  This library is released in a v0 form - your feedback will be extremely valuable in shaping the API.
 
 Data builders are still available, but the `FakeResolver` API will eventually be replaced by the analogous functionality in Apollo Kotlin Faker.
 
