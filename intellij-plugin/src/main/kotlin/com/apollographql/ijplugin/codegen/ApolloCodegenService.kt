@@ -33,17 +33,19 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.util.CheckedDisposable
 import com.intellij.openapi.vfs.VfsUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.gradle.tooling.CancellationTokenSource
 import org.gradle.tooling.GradleConnector
 import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import java.io.File
-import java.util.concurrent.Executors
 
 @Service(Service.Level.PROJECT)
 class ApolloCodegenService(
     private val project: Project,
+    private val coroutineScope: CoroutineScope,
 ) : Disposable {
   private var documentChangesDisposable: CheckedDisposable? = null
   private var fileEditorChangesDisposable: CheckedDisposable? = null
@@ -52,8 +54,6 @@ class ApolloCodegenService(
   private var dirtyGqlDocument: Document? = null
 
   private var gradleCodegenCancellation: CancellationTokenSource? = null
-
-  private val gradleExecutorService = Executors.newSingleThreadExecutor()
 
   init {
     logd("project=${project.name}")
@@ -181,10 +181,9 @@ class ApolloCodegenService(
 
     val modules = ModuleManager.getInstance(project).modules
     val rootProjectPath = project.getGradleRootPath() ?: return
-    val executionSettings =
-      ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
-
-    gradleExecutorService.submit {
+    coroutineScope.launch {
+      val executionSettings =
+        ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
       val gradleExecutionHelper = GradleExecutionHelper()
       gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
         gradleCodegenCancellation = GradleConnector.newCancellationTokenSource()
@@ -257,6 +256,5 @@ class ApolloCodegenService(
   override fun dispose() {
     logd("project=${project.name}")
     stopContinuousGradleCodegen()
-    gradleExecutorService.shutdown()
   }
 }
