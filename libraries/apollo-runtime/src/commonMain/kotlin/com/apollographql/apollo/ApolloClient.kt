@@ -920,7 +920,8 @@ private constructor(
         httpMethodForDocumentQueries: HttpMethod = HttpMethod.Post,
         enableByDefault: Boolean = true,
     ) = apply {
-      autoPersistedQueriesInterceptor(
+      _interceptors.removeAll { it is AutoPersistedQueryInterceptor }
+      addInterceptor(
           AutoPersistedQueryInterceptor(
               httpMethodForHashedQueries,
               httpMethodForDocumentQueries
