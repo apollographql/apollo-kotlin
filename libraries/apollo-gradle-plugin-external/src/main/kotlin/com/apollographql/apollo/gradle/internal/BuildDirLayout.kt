@@ -67,6 +67,13 @@ object BuildDirLayout {
     )
   }
 
+  internal fun dataBuildersOutputDir(project: Project, service: Service): Provider<Directory> {
+    return project.layout.buildDirectory.dir(
+        "generated/dataBuildersSource/apollo/${service.name}"
+    )
+  }
+
+
   internal fun kspProcessorJar(project: Project, serviceName: String): Provider<RegularFile> {
     return project.layout.buildDirectory.file(
         "generated/jar/apollo/${serviceName}Processor.jar"

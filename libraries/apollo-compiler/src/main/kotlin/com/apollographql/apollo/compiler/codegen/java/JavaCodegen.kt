@@ -1,13 +1,15 @@
+@file:Suppress("KotlinUnreachableCode")
+
 package com.apollographql.apollo.compiler.codegen.java
 
 import com.apollographql.apollo.compiler.APOLLO_VERSION
+import com.apollographql.apollo.compiler.CODEGEN_METADATA_VERSION
 import com.apollographql.apollo.compiler.CodegenMetadata
-import com.apollographql.apollo.compiler.CodegenSchema
+import com.apollographql.apollo.compiler.CodegenOptions
 import com.apollographql.apollo.compiler.JavaNullable
 import com.apollographql.apollo.compiler.JavaOperationsCodegenOptions
 import com.apollographql.apollo.compiler.JavaSchemaCodegenOptions
 import com.apollographql.apollo.compiler.MODELS_OPERATION_BASED
-import com.apollographql.apollo.compiler.CODEGEN_METADATA_VERSION
 import com.apollographql.apollo.compiler.TargetLanguage
 import com.apollographql.apollo.compiler.Transform
 import com.apollographql.apollo.compiler.codegen.OperationsLayout
@@ -16,6 +18,9 @@ import com.apollographql.apollo.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo.compiler.codegen.SchemaLayout
 import com.apollographql.apollo.compiler.codegen.java.adapters.JavaOptionalAdapterBuilder
 import com.apollographql.apollo.compiler.codegen.java.adapters.JavaOptionalAdaptersBuilder
+import com.apollographql.apollo.compiler.codegen.java.builders.DataBuilderBuilder
+import com.apollographql.apollo.compiler.codegen.java.builders.DataInterfaceBuilder
+import com.apollographql.apollo.compiler.codegen.java.builders.DataMapBuilder
 import com.apollographql.apollo.compiler.codegen.java.operations.FragmentBuilder
 import com.apollographql.apollo.compiler.codegen.java.operations.FragmentDataAdapterBuilder
 import com.apollographql.apollo.compiler.codegen.java.operations.FragmentModelsBuilder
@@ -25,25 +30,18 @@ import com.apollographql.apollo.compiler.codegen.java.operations.OperationBuilde
 import com.apollographql.apollo.compiler.codegen.java.operations.OperationResponseAdapterBuilder
 import com.apollographql.apollo.compiler.codegen.java.operations.OperationSelectionsBuilder
 import com.apollographql.apollo.compiler.codegen.java.operations.OperationVariablesAdapterBuilder
-import com.apollographql.apollo.compiler.codegen.java.schema.BuilderFactoryBuilder
+import com.apollographql.apollo.compiler.codegen.java.builders.DataBuildersBuilder
+import com.apollographql.apollo.compiler.codegen.java.builders.ResolverBuilder
 import com.apollographql.apollo.compiler.codegen.java.schema.EnumAsClassBuilder
 import com.apollographql.apollo.compiler.codegen.java.schema.EnumAsEnumBuilder
 import com.apollographql.apollo.compiler.codegen.java.schema.EnumResponseAdapterBuilder
 import com.apollographql.apollo.compiler.codegen.java.schema.InputObjectAdapterBuilder
 import com.apollographql.apollo.compiler.codegen.java.schema.InputObjectBuilder
 import com.apollographql.apollo.compiler.codegen.java.schema.InterfaceBuilder
-import com.apollographql.apollo.compiler.codegen.java.schema.InterfaceBuilderBuilder
-import com.apollographql.apollo.compiler.codegen.java.schema.InterfaceMapBuilder
-import com.apollographql.apollo.compiler.codegen.java.schema.InterfaceUnknownMapBuilder
 import com.apollographql.apollo.compiler.codegen.java.schema.ObjectBuilder
-import com.apollographql.apollo.compiler.codegen.java.schema.ObjectBuilderBuilder
-import com.apollographql.apollo.compiler.codegen.java.schema.ObjectMapBuilder
 import com.apollographql.apollo.compiler.codegen.java.schema.ScalarBuilder
 import com.apollographql.apollo.compiler.codegen.java.schema.SchemaBuilder
 import com.apollographql.apollo.compiler.codegen.java.schema.UnionBuilder
-import com.apollographql.apollo.compiler.codegen.java.schema.UnionBuilderBuilder
-import com.apollographql.apollo.compiler.codegen.java.schema.UnionMapBuilder
-import com.apollographql.apollo.compiler.codegen.java.schema.UnionUnknownMapBuilder
 import com.apollographql.apollo.compiler.codegen.java.schema.UtilAssertionsBuilder
 import com.apollographql.apollo.compiler.defaultClassesForEnumsMatching
 import com.apollographql.apollo.compiler.defaultGenerateFragmentImplementations
@@ -53,7 +51,9 @@ import com.apollographql.apollo.compiler.defaultGenerateQueryDocument
 import com.apollographql.apollo.compiler.defaultGenerateSchema
 import com.apollographql.apollo.compiler.defaultNullableFieldStyle
 import com.apollographql.apollo.compiler.generateMethodsJava
+import com.apollographql.apollo.compiler.ir.DefaultIrDataBuilders
 import com.apollographql.apollo.compiler.ir.DefaultIrSchema
+import com.apollographql.apollo.compiler.ir.IrDataBuilders
 import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.IrSchema
 import com.apollographql.apollo.compiler.maybeTransform
@@ -123,7 +123,6 @@ private fun buildOutput(
 
 internal object JavaCodegen {
   fun buildSchemaSources(
-      codegenSchema: CodegenSchema,
       irSchema: IrSchema,
       codegenOptions: JavaSchemaCodegenOptions,
       layout: SchemaLayout,
@@ -131,10 +130,8 @@ internal object JavaCodegen {
   ): JavaOutput {
     check(irSchema is DefaultIrSchema)
 
-    val generateDataBuilders = codegenSchema.generateDataBuilders
-
     val generateMethods = generateMethodsJava(codegenOptions.generateMethods)
-    val generateSchema = codegenOptions.generateSchema ?: defaultGenerateSchema || generateDataBuilders
+    val generateSchema = codegenOptions.generateSchema ?: defaultGenerateSchema
 
     val classesForEnumsMatching = codegenOptions.classesForEnumsMatching ?: defaultClassesForEnumsMatching
     val generateModelBuilders = codegenOptions.generateModelBuilders ?: defaultGenerateModelBuilders
@@ -181,38 +178,20 @@ internal object JavaCodegen {
       }
       irSchema.irUnions.forEach { irUnion ->
         builders.add(UnionBuilder(context, irUnion))
-        if (generateDataBuilders) {
-          builders.add(UnionBuilderBuilder(context, irUnion))
-          builders.add(UnionUnknownMapBuilder(context, irUnion))
-          builders.add(UnionMapBuilder(context, irUnion))
-        }
       }
       irSchema.irInterfaces.forEach { irInterface ->
         builders.add(InterfaceBuilder(context, irInterface))
-        if (generateDataBuilders) {
-          builders.add(InterfaceBuilderBuilder(context, irInterface))
-          builders.add(InterfaceUnknownMapBuilder(context, irInterface))
-          builders.add(InterfaceMapBuilder(context, irInterface))
-        }
       }
       irSchema.irObjects.forEach { irObject ->
         builders.add(ObjectBuilder(context, irObject))
-        if (generateDataBuilders) {
-          builders.add(ObjectBuilderBuilder(context, irObject))
-          builders.add(ObjectMapBuilder(context, irObject))
-        }
       }
       if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
         builders.add(SchemaBuilder(context, irSchema.irScalars, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
-      }
-      if (generateDataBuilders) {
-        builders.add(BuilderFactoryBuilder(context, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions))
       }
     }
   }
 
   fun buildOperationsSources(
-      codegenSchema: CodegenSchema,
       irOperations: IrOperations,
       operationOutput: OperationOutput,
       upstreamCodegenMetadatas: List<CodegenMetadata>,
@@ -229,7 +208,6 @@ internal object JavaCodegen {
     }
 
     val flatten = irOperations.flattenModels
-    val generateDataBuilders = codegenSchema.generateDataBuilders
 
     val generateFragmentImplementations = codegenOptions.generateFragmentImplementations ?: defaultGenerateFragmentImplementations
     val generateMethods = generateMethodsJava(codegenOptions.generateMethods)
@@ -301,10 +279,49 @@ internal object JavaCodegen {
                     generateQueryDocument = generateQueryDocument,
                     operation = operation,
                     flatten = flatten,
-                    generateDataBuilders = generateDataBuilders
                 )
             )
           }
+    }
+  }
+
+  fun buildDataBuilders(
+      dataBuilders: IrDataBuilders,
+      layout: SchemaLayout,
+      codegenOptions: CodegenOptions,
+      upstreamCodegenMetadata: List<CodegenMetadata>
+  ): JavaOutput {
+    check(dataBuilders is DefaultIrDataBuilders)
+
+    val generatePrimitiveTypes = codegenOptions.generatePrimitiveTypes ?: defaultGeneratePrimitiveTypes
+    val nullableFieldStyle = codegenOptions.nullableFieldStyle ?: defaultNullableFieldStyle
+    val generateMethods = generateMethodsJava(codegenOptions.generateMethods)
+    val generateModelBuilders = codegenOptions.generateModelBuilders ?: defaultGenerateModelBuilders
+
+    return buildOutput(
+        upstreamCodegenMetadatas = upstreamCodegenMetadata,
+        generatePrimitiveTypes = generatePrimitiveTypes,
+        nullableFieldStyle = nullableFieldStyle,
+        javaOutputTransform = null
+    ) { resolver ->
+
+      val context = JavaDataBuilderContext(
+          layout = layout,
+          resolver = resolver,
+          generateMethods = generateMethodsJava(generateMethods),
+          generateModelBuilders = generateModelBuilders,
+          nullableFieldStyle = nullableFieldStyle,
+      )
+
+      dataBuilders.dataBuilders.forEach {
+        builders.add(DataBuilderBuilder(context, it))
+        builders.add(DataMapBuilder(context, it))
+        if (it.isAbstract) {
+          builders.add(DataInterfaceBuilder(context, it))
+        }
+        builders.add(DataBuildersBuilder(context, dataBuilders.dataBuilders))
+        builders.add(ResolverBuilder(context, dataBuilders.possibleTypes))
+      }
     }
   }
 }

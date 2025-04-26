@@ -1,20 +1,22 @@
 package test
 
 import com.apollographql.apollo.exception.NullOrMissingField
+import data.builders.builder.CatBuilder
+import data.builders.builder.Data
+import data.builders.builder.OtherAnimalBuilder
+import data.builders.builder.buildLion
+import data.builders.builder.resolver.DefaultFakeResolver
 import data.builders.fragment.AnimalDetailsImpl
 import data.builders.fragment.CatDetailsImpl
 import data.builders.fragment.TrivialFragmentImpl
-import data.builders.type.Animal
-import data.builders.type.buildLion
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
 
 class FragmentTest {
   @Test
   fun monomorphicFragment() {
-    val data = CatDetailsImpl.Data {
+    val data = CatDetailsImpl.Data(DefaultFakeResolver()) {
       species = "cat"
       mustaches = 42
       bestFriend = buildLion {
@@ -30,12 +32,22 @@ class FragmentTest {
 
   @Test
   fun polymorphicFragment() {
-    val data = AnimalDetailsImpl.Data(Animal) {
+    val data = AnimalDetailsImpl.Data(OtherAnimalBuilder, DefaultFakeResolver()) {
       __typename = "Brontaroc"
       species = "alien"
     }
     assertEquals("alien", data.species)
   }
+
+  @Test
+  fun polymorphicFragment2() {
+    val data = AnimalDetailsImpl.Data(CatBuilder, DefaultFakeResolver()) {
+      species = "Maine Coon"
+      mustaches = 42
+    }
+    assertEquals("Maine Coon", data.species)
+  }
+
 
   @Test
   fun polymorphicFragmentMissingFields() {
@@ -44,20 +56,9 @@ class FragmentTest {
     // XXX: we could be smarter about this (the parsers are
     // data.builders.fragment.AnimalDetailsImpl_ResponseAdapter$OnAnimal.fromJson(AnimalDetailsImpl_ResponseAdapter.kt:85)
     assertFailsWith(NullOrMissingField::class) {
-      TrivialFragmentImpl.Data(Animal) {
+      TrivialFragmentImpl.Data(OtherAnimalBuilder, DefaultFakeResolver()) {
         __typename = "Brontaroc"
         species = "alien"
-      }
-    }
-  }
-
-
-
-  @Test
-  fun polymorphicFragmentNoTypename() {
-    assertFails {
-      AnimalDetailsImpl.Data(Animal) {
-        species = ""
       }
     }
   }

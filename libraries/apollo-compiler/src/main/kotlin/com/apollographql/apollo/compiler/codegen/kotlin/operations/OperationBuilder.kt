@@ -9,20 +9,20 @@ import com.apollographql.apollo.compiler.codegen.kotlin.CgImport
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.builderTypeSpec
-import com.apollographql.apollo.compiler.codegen.kotlin.helpers.dataBuilderCtor
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.makeClassFromParameters
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.maybeAddJsExport
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.toParameterSpec
 import com.apollographql.apollo.compiler.codegen.kotlin.operations.util.adapterFunSpec
+import com.apollographql.apollo.compiler.codegen.kotlin.operations.util.executableCompanion
 import com.apollographql.apollo.compiler.codegen.kotlin.operations.util.maybeAddFilterNotNull
 import com.apollographql.apollo.compiler.codegen.kotlin.operations.util.rootFieldFunSpec
 import com.apollographql.apollo.compiler.codegen.kotlin.operations.util.serializeVariablesFunSpec
 import com.apollographql.apollo.compiler.codegen.maybeFlatten
 import com.apollographql.apollo.compiler.codegen.operationName
 import com.apollographql.apollo.compiler.internal.applyIf
-import com.apollographql.apollo.compiler.ir.IrOperation
+import com.apollographql.apollo.compiler.ir.IrOperationDefinition
 import com.apollographql.apollo.compiler.ir.IrOperationType
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
@@ -37,11 +37,10 @@ internal class OperationBuilder(
     private val generateFilterNotNull: Boolean,
     private val operationId: String,
     private val generateQueryDocument: Boolean,
-    private val operation: IrOperation,
+    private val operation: IrOperationDefinition,
     flatten: Boolean,
     private val addJvmOverloads: Boolean,
-    val generateDataBuilders: Boolean,
-    val generateInputBuilders: Boolean
+    val generateInputBuilders: Boolean,
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.executableDocumentPackageName(operation.normalizedFilePath)
@@ -167,6 +166,7 @@ internal class OperationBuilder(
 
   private fun companionTypeSpec(): TypeSpec {
     return TypeSpec.companionObjectBuilder()
+        .executableCompanion(context, operation)
         .addProperty(PropertySpec.builder(Identifier.OPERATION_ID, KotlinSymbols.String)
             .addModifiers(KModifier.CONST)
             .initializer("%S", operationId)
@@ -188,17 +188,6 @@ internal class OperationBuilder(
               .build()
           )
         }
-        .applyIf(generateDataBuilders) {
-          addFunction(
-              dataBuilderCtor(
-                  context = context,
-                  modelId = operation.dataModelGroup.baseModelId,
-                  selectionsClassName = context.resolver.resolveOperationSelections(operation.name),
-                  typename = operation.operationType.typeName,
-                  builderFactoryParameterRequired = false
-              )
-          )
-        }
         .addProperty(PropertySpec.builder(Identifier.OPERATION_NAME, KotlinSymbols.String)
             .addModifiers(KModifier.CONST)
             .initializer("%S", operation.name)
@@ -215,13 +204,5 @@ internal class OperationBuilder(
    */
   private fun String.asKotlinCodeBlock(): String {
     return "```\n$this\n```\n"
-  }
-
-  private fun rootFieldFunSpec(): FunSpec {
-    return rootFieldFunSpec(
-        context,
-        operation.typeCondition,
-        context.resolver.resolveOperationSelections(operation.name)
-    )
   }
 }

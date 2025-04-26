@@ -1,8 +1,10 @@
 package test
 
 import codegen.models.HeroHumanOrDroidQuery
-import codegen.models.type.buildDroid
-import codegen.models.type.buildHuman
+import codegen.models.builder.Data
+import codegen.models.builder.buildDroid
+import codegen.models.builder.buildHuman
+import codegen.models.builder.resolver.DefaultFakeResolver
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -10,12 +12,12 @@ class WhenTest {
   @Test
   fun exhaustiveWhen() {
     test(
-        HeroHumanOrDroidQuery.Data {
+        HeroHumanOrDroidQuery.Data(DefaultFakeResolver()) {
           hero = buildHuman {  }
         }
     )
     test(
-        HeroHumanOrDroidQuery.Data {
+        HeroHumanOrDroidQuery.Data(DefaultFakeResolver()) {
           hero = buildDroid {  }
         }
     )

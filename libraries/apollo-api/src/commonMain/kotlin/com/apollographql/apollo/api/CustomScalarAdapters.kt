@@ -1,5 +1,6 @@
 package com.apollographql.apollo.api
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import kotlin.jvm.JvmField
 
@@ -27,9 +28,7 @@ class CustomScalarAdapters private constructor(
      */
     @JvmField
     val errors: List<Error>?,
-
-    private val unsafe: Boolean,
-) : ExecutionContext.Element {
+  ) : ExecutionContext.Element {
 
   private val adaptersMap: Map<String, Adapter<*>> = customScalarAdapters
 
@@ -79,7 +78,6 @@ class CustomScalarAdapters private constructor(
         AnyAdapter
       }
 
-      unsafe -> PassThroughAdapter()
       else -> error("Can't map GraphQL type: `${customScalar.name}` to: `${customScalar.className}`. Did you forget to add a scalar Adapter?")
     } as Adapter<T>
   }
@@ -98,9 +96,10 @@ class CustomScalarAdapters private constructor(
      * Unsafe [CustomScalarAdapters]. They can only be used with `MapJsonReader` and `MapJsonWriter`. It will passthrough the values using
      * `MapJsonReader.nextValue` and `MapJsonWriter.value()`
      */
-    @JvmField
-    @ApolloExperimental
-    val PassThrough = Builder().unsafe(true).build()
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+    @Deprecated("PassThrough was only used internally by data builders and is removed in v5")
+    val PassThrough: CustomScalarAdapters
+      get() = error("GlobalBuilder removed in v5. Use BuilderScope(CustomScalarAdapters).")
   }
 
   @ApolloExperimental
@@ -131,7 +130,6 @@ class CustomScalarAdapters private constructor(
 
   class Builder {
     private val adaptersMap: MutableMap<String, Adapter<*>> = mutableMapOf()
-    private var unsafe = false
     private var falseVariables: Set<String>? = null
     private var deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null
     private var errors: List<Error>? = null
@@ -167,11 +165,6 @@ class CustomScalarAdapters private constructor(
       this.adaptersMap.putAll(customScalarAdapters.adaptersMap)
     }
 
-    @ApolloExperimental
-    fun unsafe(unsafe: Boolean) = apply {
-      this.unsafe = unsafe
-    }
-
     fun clear() {
       adaptersMap.clear()
     }
@@ -182,7 +175,6 @@ class CustomScalarAdapters private constructor(
           falseVariables,
           deferredFragmentIdentifiers,
           errors,
-          unsafe,
       )
     }
   }

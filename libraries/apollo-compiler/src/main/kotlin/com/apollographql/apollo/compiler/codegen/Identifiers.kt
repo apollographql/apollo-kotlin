@@ -51,6 +51,8 @@ internal object Identifier {
   const val OPERATION_NAME = "OPERATION_NAME"
   const val OPERATION_ID = "OPERATION_ID"
   const val RESPONSE_NAMES = "RESPONSE_NAMES"
+  const val ADAPTER = "ADAPTER"
+  const val ROOT_FIELD = "ROOT_FIELD"
 
   const val Empty = "Empty"
 

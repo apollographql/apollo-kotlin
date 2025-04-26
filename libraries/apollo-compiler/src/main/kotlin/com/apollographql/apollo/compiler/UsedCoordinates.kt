@@ -55,6 +55,10 @@ class UsedCoordinates {
     return typeToFieldsToArguments[type].orEmpty()
   }
 
+  fun hasType(type: String): Boolean {
+    return typeToFieldsToArguments[type] != null
+  }
+
   fun hasField(type: String, field: String): Boolean {
     return typeToFieldsToArguments[type]?.containsKey(field) ?: false
   }

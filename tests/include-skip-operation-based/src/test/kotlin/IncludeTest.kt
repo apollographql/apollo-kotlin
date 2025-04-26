@@ -1,7 +1,9 @@
 
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.GlobalBuilder
+import com.apollographql.apollo.api.DataBuilderScope
+import com.example.builder.Data
+
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Optional
 import com.apollographql.apollo.api.json.MapJsonReader
@@ -16,9 +18,10 @@ import com.example.GetDogSkipFalseQuery
 import com.example.GetDogSkipTrueQuery
 import com.example.GetDogSkipVariableQuery
 import com.example.SkipFragmentWithDefaultToFalseQuery
-import com.example.type.buildCat
-import com.example.type.buildDog
-import com.example.type.buildQuery
+import com.example.builder.buildCat
+import com.example.builder.buildDog
+import com.example.builder.buildQuery
+import com.example.builder.resolver.DefaultFakeResolver
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -35,7 +38,7 @@ class IncludeTest {
   fun includeVariableTrue() = runBlocking {
     val operation = GetCatIncludeVariableQuery(withCat = true)
 
-    val data = GlobalBuilder.buildQuery {
+    val data = DataBuilderScope().buildQuery {
       animal = buildCat {
         meow = "meeoooowwwww"
       }
@@ -50,7 +53,7 @@ class IncludeTest {
   fun includeVariableFalse() = runBlocking {
     val operation = GetCatIncludeVariableQuery(withCat = false)
 
-    val data = GlobalBuilder.buildQuery {
+    val data = DataBuilderScope().buildQuery {
       animal = buildCat {
         meow = "meeoooowwwww"
       }
@@ -65,7 +68,7 @@ class IncludeTest {
   fun includeHardcodedTrue() = runBlocking {
     val operation = GetCatIncludeTrueQuery()
 
-    val data = GlobalBuilder.buildQuery {
+    val data = DataBuilderScope().buildQuery {
       animal = buildCat {
         meow = "meeoooowwwww"
       }
@@ -80,7 +83,7 @@ class IncludeTest {
   fun includeHardcodedFalse() = runBlocking {
     val operation = GetCatIncludeFalseQuery()
 
-    val data = GlobalBuilder.buildQuery {
+    val data = DataBuilderScope().buildQuery {
       animal = buildCat {
         meow = "meeoooowwwww"
       }
@@ -95,7 +98,7 @@ class IncludeTest {
   fun skipVariableTrue() = runBlocking {
     val operation = GetDogSkipVariableQuery(withoutDog = true)
 
-    val data = GlobalBuilder.buildQuery {
+    val data = DataBuilderScope().buildQuery {
       animal = buildDog {
         barf = "ouaf"
       }
@@ -110,7 +113,7 @@ class IncludeTest {
   fun skipVariableFalse() = runBlocking {
     val operation = GetDogSkipVariableQuery(withoutDog = false)
 
-    val data = GlobalBuilder.buildQuery {
+    val data = DataBuilderScope().buildQuery {
       animal = buildDog {
         barf = "ouaf"
       }
@@ -125,7 +128,7 @@ class IncludeTest {
   fun skipHardcodedTrue() = runBlocking {
     val operation = GetDogSkipTrueQuery()
 
-    val data = GlobalBuilder.buildQuery {
+    val data = DataBuilderScope().buildQuery {
       animal = buildDog {
         barf = "ouaf"
       }
@@ -140,7 +143,7 @@ class IncludeTest {
   fun skipHardcodedFalse() = runBlocking {
     val operation = GetDogSkipFalseQuery()
 
-    val data = GlobalBuilder.buildQuery {
+    val data = DataBuilderScope().buildQuery {
       animal = buildDog {
         barf = "ouaf"
       }
@@ -155,7 +158,7 @@ class IncludeTest {
   fun getCatIncludeVariableWithDefaultQuery(): Unit = runBlocking {
     val operation = GetCatIncludeVariableWithDefaultQuery()
 
-    val data = GetCatIncludeVariableWithDefaultQuery.Data {
+    val data = GetCatIncludeVariableWithDefaultQuery.Data(DefaultFakeResolver()) {
       animal = buildCat {
         this["species"] = Optional.Absent
       }
@@ -169,7 +172,7 @@ class IncludeTest {
   fun getCatIncludeVariableWithDefaultQuery2() = runBlocking {
     val operation = GetCatIncludeVariableWithDefaultQuery()
 
-    val data = GlobalBuilder.buildQuery {
+    val data = DataBuilderScope().buildQuery {
       animal = buildCat {
       }
     }
@@ -183,7 +186,7 @@ class IncludeTest {
   fun skipFragmentWithDefaultToFalseQuery(): Unit = runBlocking {
     val operation = SkipFragmentWithDefaultToFalseQuery()
 
-    val data = GlobalBuilder.buildQuery {
+    val data = DataBuilderScope().buildQuery {
       animal = buildDog {
         barf = "ouaf"
       }

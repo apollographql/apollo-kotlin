@@ -10,6 +10,7 @@ import com.apollographql.apollo.compiler.codegen.java.helpers.makeClassFromParam
 import com.apollographql.apollo.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo.compiler.codegen.java.helpers.toParameterSpec
+import com.apollographql.apollo.compiler.codegen.kotlin.operations.util.executableCompanion
 import com.apollographql.apollo.compiler.codegen.maybeFlatten
 import com.apollographql.apollo.compiler.ir.IrFragmentDefinition
 import com.squareup.javapoet.ClassName

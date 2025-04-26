@@ -4,6 +4,7 @@ import com.apollographql.apollo.compiler.codegen.ClassNames
 import com.apollographql.apollo.compiler.codegen.ClassNames.apolloApiJsonPackageName
 import com.apollographql.apollo.compiler.codegen.ClassNames.apolloApiPackageName
 import com.apollographql.apollo.compiler.codegen.ResolverClassName
+import com.apollographql.apollo.compiler.codegen.kotlin.toKotlinPoetClassName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.ParameterizedTypeName
 
@@ -52,7 +53,8 @@ internal object JavaClassNames {
   val CompiledFragmentBuilder = ClassNames.CompiledFragmentBuilder.toJavaPoetClassName()
   val FakeResolver = ClassNames.FakeResolver.toJavaPoetClassName()
   val FakeResolverKt = ClassName.get(apolloApiPackageName, "FakeResolverKt")
-  val DefaultFakeResolver = ClassNames.DefaultFakeResolver.toJavaPoetClassName()
+  val DefaultFakeResolver = ClassNames.BaseFakeResolver.toJavaPoetClassName()
+  val BaseFakeResolver = ClassNames.BaseFakeResolver.toJavaPoetClassName()
 
   val Builder = ClassName.get("", "Builder")
 
@@ -111,8 +113,8 @@ internal object JavaClassNames {
   val JavaOptional = ClassName.get("java.util", "Optional")
   val Objects = ClassName.get("java.util", "Objects")
 
-  val ObjectBuilderKt = ClassName.get(apolloApiPackageName, "ObjectBuilderKt")
-  val ObjectMap = ClassName.get(apolloApiPackageName, "ObjectMap")
+  val ObjectBuilderKt = ClassName.get(apolloApiPackageName, "DataBuilderKt")
+  val ObjectMap = ClassName.get(apolloApiPackageName, "DataMap")
 
   val JetBrainsNullable = ClassNames.JetBrainsNullable.toJavaPoetClassName()
   val JetBrainsNonNull = ClassNames.JetBrainsNonNull.toJavaPoetClassName()
@@ -122,4 +124,6 @@ internal object JavaClassNames {
   val Jsr305NonNull = ClassName.get("javax.annotation", "Nonnull")
 
   val GuavaOptional = ClassName.get("com.google.common.base", "Optional")
+
+  val ExecutableDefinition = ClassNames.ExecutableDefinition.toJavaPoetClassName()
 }

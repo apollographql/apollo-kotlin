@@ -65,7 +65,6 @@ internal class IrOperationsBuilder(
     private val flattenModels: Boolean,
     private val decapitalizeFields: Boolean,
     private val alwaysGenerateTypesMatching: Set<String>,
-    private val generateDataBuilders: Boolean,
     private val fragmentVariableUsages: Map<String, List<VariableUsage>>,
 ) : FieldMerger {
   private val usedCoordinates = UsedCoordinates()
@@ -115,24 +114,6 @@ internal class IrOperationsBuilder(
 
       when (val typeDefinition = schema.typeDefinition(name)) {
         is GQLObjectTypeDefinition -> {
-          if (generateDataBuilders) {
-            /**
-             * DataBuilder maps reference all their super types, including unions
-             *
-             * internal class DroidMap(
-             *   __fields: Map<String, Any?>,
-             * ) : CharacterMap, SearchResultMap, Map<String, Any?> by __fields
-             */
-            schema.typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().filter {
-              it.memberTypes.any {
-                it.name == typeDefinition.name
-              }
-            }.forEach {
-              typesToVisit.add(it.name)
-              usedCoordinates.putType(it.name)
-            }
-          }
-
           /**
            * Object classes reference their super interfaces, generate them:
            *
@@ -152,28 +133,6 @@ internal class IrOperationsBuilder(
         }
 
         is GQLInterfaceTypeDefinition -> {
-          if (generateDataBuilders) {
-            /**
-             * Add all possible types because the user might want to use any of them
-             * GetHeroQuery.Data {
-             *   hero = buildHuman {}  // or buildDroid {}
-             * }
-             */
-            schema.typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>()
-                .filter {
-                  it.implementsInterfaces.contains(typeDefinition.name)
-                }
-                .forEach {
-                  /**
-                   * Add all the fields of the interface to the implementing objects
-                   *
-                   * This is suboptimal. We should traverse from the bottom most types
-                   * and collect used fields as we go up the type hierarchy
-                   */
-                  usedCoordinates.putAllFields(type = it.name, fields = usedCoordinates.getFields(name))
-                  typesToVisit.add(it.name)
-                }
-          }
           /**
            * Interface classes reference their super interfaces, generate them:
            *
@@ -203,11 +162,7 @@ internal class IrOperationsBuilder(
            * ```
            */
           typeDefinition.memberTypes.forEach {
-            if (generateDataBuilders) {
-              usedCoordinates.putAllFields(type = it.name, fields = usedCoordinates.getFields(name))
-            } else {
-              usedCoordinates.putType(it.name)
-            }
+            usedCoordinates.putType(it.name)
             typesToVisit.add(it.name)
           }
         }
@@ -269,7 +224,7 @@ internal class IrOperationsBuilder(
     }!!.toUtf8()
   }
 
-  private fun GQLOperationDefinition.toIr(): IrOperation {
+  private fun GQLOperationDefinition.toIr(): IrOperationDefinition {
     val typeDefinition = this.rootTypeDefinition(schema)
         ?: throw IllegalStateException("ApolloGraphql: cannot find root type for '$operationType'")
 
@@ -300,7 +255,7 @@ internal class IrOperationsBuilder(
     // Add the root type to use from the selections
     usedCoordinates.putType(typeDefinition.name)
 
-    return IrOperation(
+    return IrOperationDefinition(
         name = name!!,
         description = description,
         operationType = operationType.toIrOperationType(schema.rootTypeNameFor(operationType)),
@@ -436,11 +391,11 @@ internal class IrOperationsBuilder(
 
       else -> {
         // The variable is nullable. By the GraphQL spec, it means it's also optional
-        // In practice though, we often want it non-optional, because if the user added tha variable in
+        // In practice, though, we often want it non-optional, because if the user added the variable in
         // the first place, there is a high change they're going to use it.
         //
         // One counter example is bidirectional pagination where 'before' or 'after' could be
-        // left Absent
+        // left Absent.
         //
         // We default to add the [Optional] wrapper, but this can be overridden by the user globally or individually
         // with the @optional directive.
@@ -556,40 +511,6 @@ internal class IrOperationsBuilder(
         it.forceOptional
       }
 
-      if (generateDataBuilders) {
-        /**
-         * Keep track of used fields.
-         *
-         * Note1: we don't want to track this if generateDataBuilders is false:
-         *
-         * ```graphql
-         * {
-         *   animal {
-         *     ... on Cat {
-         *        meow # We don't need to track Cat.meow here as Cat is not used unless data builders are enabled
-         *     }
-         *   }
-         * }
-         * ```
-         *
-         * Note2: that this over-generates a bit in cases where fragments conditions are always true and parentType is an interface:
-         *
-         * ```graphql
-         * {
-         *   cat {
-         *     ... on Animal {
-         *       species
-         *     }
-         *   }
-         * }
-         * ```
-         *
-         * In the above case, there's no reason a data builder would need to create a fallback animal
-         * yet `buildOtherAnimal` will be generated
-         */
-        usedCoordinates.putField(first.parentType, first.name)
-      }
-
       /**
        * We track field usages, but we also need to track the type itself because it might be that there is only fragments
        * node {
@@ -601,8 +522,14 @@ internal class IrOperationsBuilder(
        */
       usedCoordinates.putType(first.type.rawType().name)
 
-      // Track argument usage
+      /**
+       * Track field and arguments usage.
+       * The field usage is only useful for data builders.
+       */
       fields.map { it.parentType }.distinct().forEach { parentType ->
+        if (schema.generateDataBuilders) {
+          usedCoordinates.putField(parentType, first.name)
+        }
         for (usedArgument in first.usedArguments) {
           usedCoordinates.putArgument(parentType, first.name, usedArgument)
         }
@@ -759,7 +686,7 @@ internal class IrOperationsBuilder(
         val gqlTypeDefinition = schema.typeDefinition(type)
         gqlTypeDefinition.fieldDefinitions(schema).forEach { gqlFieldDefinition ->
           if (regexes.any { it.matches("${gqlTypeDefinition.name}.${gqlFieldDefinition.name}") }) {
-            usedCoordinates.putField(gqlTypeDefinition.name, gqlFieldDefinition.name)
+            usedCoordinates.run { putField(gqlTypeDefinition.name, gqlFieldDefinition.name) }
             // Recursively add types used by this field
             typesToVisit.add(gqlFieldDefinition.type.rawType().name)
           }

@@ -22,36 +22,25 @@ internal object IrSchemaBuilder {
     val irInterfaces = mutableListOf<IrInterface>()
     val irObjects = mutableListOf<IrObject>()
 
-    /**
-     * Always generate the types for builtin scalars.
-     * Not 100% sure why. This has always been the case and too afraid to touch it now.
-     *
-     * Warning: this modifies some mutable state
+    /*
+     * Add scalar types with runtime adapters.
+     * This is so that the user can register them in a typesafe way.
+     * Note that in most of the cases, the scalar type should be added already as it is most likely used in an operation.
      */
-    listOf(
-        "String",
-        "Int",
-        "Boolean",
-        "Float",
-        "ID",
-    ).forEach {
-      usedCoordinates.putType(it)
-    }
-
-    /**
-     * Always generate the types for scalars that contain a mapping.
-     * Not 100% sure why. This has always been the case and too afraid to touch it now.
-     *
-     * Warning: this modifies some mutable state
-     */
+    val scalarUsedCoordinates = UsedCoordinates()
     schema.typeDefinitions.values.forEach {
-      if (it is GQLScalarTypeDefinition && (it.findMapTo(schema) != null || it.directives.findMapToBuiltin(schema) != null)) {
-        usedCoordinates.putType(it.name)
+      if (it !is GQLScalarTypeDefinition) return@forEach
+
+      val mapTo = it.findMapTo(schema)
+      if (mapTo != null && mapTo.adapter == null) {
+        scalarUsedCoordinates.putType(it.name)
       }
     }
 
+    val mergedUsedCoordinates = usedCoordinates.mergeWith(scalarUsedCoordinates)
+
     val visitedTypes = mutableSetOf<String>()
-    val typesStack = usedCoordinates.getTypes().toMutableList()
+    val typesStack = mergedUsedCoordinates.getTypes().toMutableList()
 
     while (typesStack.isNotEmpty()) {
       val name = typesStack.removeFirst()
@@ -64,7 +53,7 @@ internal object IrSchemaBuilder {
 
       when {
         typeDefinition is GQLScalarTypeDefinition -> {
-          irScalars.add(typeDefinition.toIr(schema, usedCoordinates))
+          irScalars.add(typeDefinition.toIr(schema, mergedUsedCoordinates))
         }
         typeDefinition is GQLEnumTypeDefinition -> {
           irEnums.add(typeDefinition.toIr(schema))
@@ -76,10 +65,10 @@ internal object IrSchemaBuilder {
           irUnions.add(typeDefinition.toIr())
         }
         typeDefinition is GQLInterfaceTypeDefinition -> {
-          irInterfaces.add(typeDefinition.toIr(schema, usedCoordinates))
+          irInterfaces.add(typeDefinition.toIr(schema, mergedUsedCoordinates))
         }
         typeDefinition is GQLObjectTypeDefinition -> {
-          irObjects.add(typeDefinition.toIr(schema, usedCoordinates))
+          irObjects.add(typeDefinition.toIr(schema, mergedUsedCoordinates))
         }
       }
     }

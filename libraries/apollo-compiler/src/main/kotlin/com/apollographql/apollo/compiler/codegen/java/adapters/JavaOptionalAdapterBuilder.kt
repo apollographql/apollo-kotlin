@@ -27,7 +27,7 @@ internal class JavaOptionalAdapterBuilder(
     private val nullableFieldStyle: JavaNullable,
 ) : JavaClassBuilder {
   private val packageName = context.layout.typeAdapterPackageName()
-  private val simpleName = context.layout.javaOptionalAdapterClassName()
+  private val simpleName = javaOptionalAdapterClassName()
 
   override fun prepare() {
     context.resolver.registerJavaOptionalAdapter(ClassName.get(packageName, simpleName))

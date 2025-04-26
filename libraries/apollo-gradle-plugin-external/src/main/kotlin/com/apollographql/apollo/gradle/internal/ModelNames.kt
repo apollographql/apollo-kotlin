@@ -18,6 +18,7 @@ internal object ModelNames {
   // Task names
   fun generateApolloSources() = "generateApolloSources"
   fun generateApolloSources(service: Service) = camelCase("generate", service.name, "ApolloSources")
+  fun generateDataBuildersApolloSources(service: Service) = camelCase("generate", service.name, "DataBuildersApolloSources")
   fun generateApolloCodegenSchema(service: Service) = camelCase("generate", service.name, "ApolloCodegenSchema")
   fun generateApolloIrOperations(service: Service) = camelCase("generate", service.name, "ApolloIrOperations")
   fun generateApolloOptions(service: Service) = camelCase("generate", service.name, "ApolloOptions")

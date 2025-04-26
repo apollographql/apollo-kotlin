@@ -450,6 +450,7 @@ abstract class DefaultApolloExtension(
     service.graphqlSourceDirectorySet.exclude(service.excludes.getOrElse(emptyList()))
 
     val sourcesBaseTaskProvider: TaskProvider<*>
+    val dataBuildersSourcesBaseTaskProvider: TaskProvider<*>?
 
     val upstreamScope = project.configurations.create(ModelNames.scopeConfiguration(service.name, ApolloDirection.Upstream)) {
       it.isCanBeConsumed = false
@@ -490,6 +491,12 @@ abstract class DefaultApolloExtension(
     val optionsTaskProvider = registerOptionsTask(project, service, otherOptions.resolvable)
     if (!service.isMultiModule()) {
       sourcesBaseTaskProvider = registerSourcesTask(project, optionsTaskProvider, service, classpathOptions)
+      dataBuildersSourcesBaseTaskProvider = if (service.generateDataBuilders.orElse(false).get()) {
+        // Only register the wiring if we actually generate data builders
+        sourcesBaseTaskProvider
+      } else {
+        null
+      }
     } else {
       val codegenSchema = createConfigurations(
           serviceName = service.name,
@@ -564,6 +571,29 @@ abstract class DefaultApolloExtension(
       )
 
       sourcesBaseTaskProvider = sourcesFromIrTaskProvider
+
+      val upstreamAndSelfCodegenMetadata = project.files().apply {
+        from(codegenMetadata.resolvable)
+        from(sourcesFromIrTaskProvider.flatMap { it.metadataOutputFile })
+      }
+      val downstreamAndSelfIrOperations = project.files().apply {
+        from(downstreamIr.resolvable)
+        from(irOperationsTaskProvider.flatMap { it.irOperationsFile })
+      }
+      dataBuildersSourcesBaseTaskProvider = if (service.generateDataBuilders.orElse(false).get()) {
+        registerDataBuilderSourcesTask(
+            project = project,
+            service = service,
+            schemaConsumerConfiguration = codegenSchema.resolvable,
+            generateOptionsTaskProvider = optionsTaskProvider,
+            codegenSchemaTaskProvider = codegenSchemaTaskProvider,
+            downstreamAndSelfIrOperations = downstreamAndSelfIrOperations,
+            upstreamAndSelfCodegenMetadata = upstreamAndSelfCodegenMetadata,
+            classpathOptions = classpathOptions,
+        )
+      } else {
+        null
+      }
 
       project.artifacts {
         if (codegenSchemaTaskProvider != null) {
@@ -665,6 +695,27 @@ abstract class DefaultApolloExtension(
     directoryConnection.task.configure {
       it.dependsOn(checkVersionsTask)
     }
+
+    if (dataBuildersSourcesBaseTaskProvider != null) {
+      val dataBuildersDirectoryConnection = DefaultDirectoryConnection(
+          project = project,
+          task = dataBuildersSourcesBaseTaskProvider,
+          outputDir = dataBuildersSourcesBaseTaskProvider.flatMap {
+            it as ApolloGenerateDataBuildersSourcesBaseTask
+            it.dataBuildersOutputDir
+          },
+          hardCodedOutputDir = BuildDirLayout.dataBuildersOutputDir(project, service)
+      )
+
+      if (service.dataBuildersOutputDirAction == null) {
+        service.dataBuildersOutputDirAction = defaultDataBuildersOutputDirAction
+      }
+      service.dataBuildersOutputDirAction!!.execute(dataBuildersDirectoryConnection)
+      generateApolloSources.configure {
+        it.dependsOn(dataBuildersDirectoryConnection.task)
+      }
+    }
+
     generateApolloSources.configure {
       it.dependsOn(directoryConnection.task)
     }
@@ -701,12 +752,49 @@ abstract class DefaultApolloExtension(
       task.downstreamUsedCoordinates.set(downstreamIrOperations.elements.map {
         it.map { it.asFile.toIrOperations() }.fold(UsedCoordinates()) { acc, element ->
           acc.mergeWith(element.usedCoordinates)
-        }
-            .asMap()
+        }.asMap()
       })
       task.downstreamUsedCoordinates.finalizeValueOnRead()
 
       task.metadataOutputFile.set(BuildDirLayout.metadata(project, service))
+    }
+  }
+
+  private fun registerDataBuilderSourcesTask(
+      project: Project,
+      service: DefaultService,
+      schemaConsumerConfiguration: Configuration,
+      codegenSchemaTaskProvider: TaskProvider<ApolloGenerateCodegenSchemaTask>?,
+      generateOptionsTaskProvider: TaskProvider<ApolloGenerateOptionsTask>,
+      downstreamAndSelfIrOperations: FileCollection,
+      upstreamAndSelfCodegenMetadata: FileCollection,
+      classpathOptions: ApolloTaskWithClasspath.Options,
+  ): TaskProvider<ApolloGenerateDataBuildersSourcesTask> {
+    return project.tasks.register(ModelNames.generateDataBuildersApolloSources(service), ApolloGenerateDataBuildersSourcesTask::class.java) { task ->
+      task.group = TASK_GROUP
+      task.description = "Generate Apollo data builders for service '${service.name}'"
+
+      configureTaskWithClassPath(task, classpathOptions)
+
+      task.codegenOptionsFile.set(generateOptionsTaskProvider.flatMap { it.codegenOptions })
+
+      task.packageNameGenerator = service.packageNameGenerator.orNull
+      service.packageNameGenerator.disallowChanges()
+
+      task.dataBuildersOutputDir.set(service.dataBuildersOutputDir.orElse(BuildDirLayout.dataBuildersOutputDir(project, service)))
+
+      task.codegenSchemas.from(schemaConsumerConfiguration)
+      if (codegenSchemaTaskProvider != null) {
+        task.codegenSchemas.from(codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile })
+      }
+      task.upstreamMetadata.from(upstreamAndSelfCodegenMetadata)
+      task.downstreamUsedCoordinates.set(downstreamAndSelfIrOperations.elements.map {
+        it.map { it.asFile.toIrOperations() }.fold(UsedCoordinates()) { acc, element ->
+          acc.mergeWith(element.usedCoordinates)
+        }
+            .asMap()
+      })
+      task.downstreamUsedCoordinates.finalizeValueOnRead()
     }
   }
 
@@ -889,6 +977,28 @@ abstract class DefaultApolloExtension(
     }
   }
 
+  private val defaultDataBuildersOutputDirAction = Action<Service.DirectoryConnection> { connection ->
+    when {
+      project.kotlinMultiplatformExtension != null -> {
+        connection.connectToKotlinSourceSet("commonTest")
+      }
+
+      project.androidExtension != null -> {
+        connectToAllAndroidTestVariants(project, connection.outputDir, connection.task)
+      }
+
+      project.kotlinProjectExtension != null -> {
+        connection.connectToKotlinSourceSet("test")
+      }
+
+      project.javaExtension != null -> {
+        connection.connectToJavaSourceSet("test")
+      }
+
+      else -> throw IllegalStateException("Cannot find a Java/Kotlin extension, please apply the kotlin or java plugin")
+    }
+  }
+
   private fun configureTaskWithClassPath(
       task: ApolloTaskWithClasspath,
       classpathOptions: ApolloTaskWithClasspath.Options
@@ -918,9 +1028,25 @@ abstract class DefaultApolloExtension(
     task.operationOutputGenerator = service.operationOutputGenerator.orElse(service.operationIdGenerator.map { OperationOutputGenerator.Default(it) }).orNull
     service.operationOutputGenerator.disallowChanges()
 
-
     task.outputDir.set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)))
     task.operationManifestFile.set(service.operationManifestFile())
+  }
+
+  private fun configureDataBuildersTask(
+      project: Project,
+      task: ApolloGenerateSourcesBaseTask,
+      generateOptionsTask: TaskProvider<ApolloGenerateOptionsTask>,
+      service: DefaultService,
+      classpathOptions: ApolloTaskWithClasspath.Options,
+  ) {
+    configureTaskWithClassPath(task, classpathOptions)
+
+    task.codegenOptionsFile.set(generateOptionsTask.flatMap { it.codegenOptions })
+
+    task.packageNameGenerator = service.packageNameGenerator.orNull
+    service.packageNameGenerator.disallowChanges()
+
+    task.outputDir.set(service.dataBuildersOutputDir.orElse(BuildDirLayout.dataBuildersOutputDir(project, service)))
   }
 
   private fun registerSourcesTask(
@@ -940,6 +1066,7 @@ abstract class DefaultApolloExtension(
       task.fallbackSchemaFiles.from(service.fallbackSchemaFiles(project))
       task.codegenSchemaOptionsFile.set(optionsTaskProvider.map { it.codegenSchemaOptionsFile.get() })
       task.irOptionsFile.set(optionsTaskProvider.map { it.irOptionsFile.get() })
+      task.dataBuildersOutputDir.set(service.dataBuildersOutputDir.orElse(BuildDirLayout.dataBuildersOutputDir(project, service)))
     }
   }
 

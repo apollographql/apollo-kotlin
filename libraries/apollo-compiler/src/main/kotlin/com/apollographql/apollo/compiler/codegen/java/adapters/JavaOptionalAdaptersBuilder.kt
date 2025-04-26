@@ -15,7 +15,7 @@ import javax.lang.model.element.Modifier
 
 internal class JavaOptionalAdaptersBuilder(private val context: JavaSchemaContext) : JavaClassBuilder {
   private val packageName = context.layout.typeAdapterPackageName()
-  private val simpleName = context.layout.javaOptionalAdaptersClassName()
+  private val simpleName = javaOptionalAdaptersClassName()
 
   override fun prepare() {
     context.resolver.registerJavaOptionalAdapters(ClassName.get(packageName, simpleName))

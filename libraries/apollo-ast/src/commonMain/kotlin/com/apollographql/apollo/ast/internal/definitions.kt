@@ -177,9 +177,8 @@ on OBJECT
     | SCALAR
     | INPUT_OBJECT
 """.trimIndent()
-
 /**
- * These definitions are publicly part of `kotlin_labs` but in order to avoid conflicting with user imports
+ * These definitions are publicly part of `kotlin_labs` but to avoid conflicting with user imports
  * they are imported under a different foreign schema name by the Apollo compiler.
  *
  * Ideally, we move all configuration to `.graphqls` files and we can remove that.
@@ -238,7 +237,13 @@ directive @mapTo(
 ) on SCALAR
 """
 
-internal val kotlinLabsDefinitions_0_5 = kotlinLabsDefinitions_0_4 + compilerOptions_0_0
+
+internal val compilerOptions_0_1_additions = """
+  ""${'"'}
+  Tells the Apollo compiler to generate Data Builders
+  ""${'"'}
+  directive @generateDataBuilders on SCHEMA
+""".trimIndent()
 
 /**
  * Built in scalar and introspection types from the Draft

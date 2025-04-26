@@ -22,6 +22,7 @@ import httpcache.GetRandom2Query
 import httpcache.GetRandomQuery
 import httpcache.RandomSubscription
 import httpcache.SetRandomMutation
+import httpcache.builder.Data
 import junit.framework.TestCase.assertFalse
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking

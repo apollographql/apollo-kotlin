@@ -217,6 +217,8 @@ val AnyAdapter = object : Adapter<Any> {
   }
 }
 
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+@Deprecated("PassThrough was only used internally by data builders and is removed in v5")
 internal class PassThroughAdapter<T> : Adapter<T> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
     check(reader is MapJsonReader) {

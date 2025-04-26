@@ -47,6 +47,30 @@ private fun Project.getMainVariants(): NamedDomainObjectContainer<BaseVariant> {
   return container
 }
 
+private fun Project.getTestVariants(): NamedDomainObjectContainer<BaseVariant> {
+  val container = project.container(BaseVariant::class.java)
+
+  val extension: BaseExtension = project.androidExtensionOrThrow
+  when (extension) {
+    is LibraryExtension -> {
+      extension.testVariants.configureEach { variant ->
+        container.add(variant)
+      }
+    }
+
+    is AppExtension -> {
+      extension.testVariants.configureEach { variant ->
+        container.add(variant)
+      }
+    }
+
+    else -> error("Unsupported extension: $extension")
+  }
+
+  return container
+}
+
+
 fun connectToAndroidSourceSet(
     project: Project,
     sourceSetName: String,
@@ -83,6 +107,12 @@ fun connectToAndroidVariant(variant: Any, outputDir: Provider<Directory>, taskPr
 
 fun connectToAllAndroidVariants(project: Project, outputDir: Provider<Directory>, taskProvider: TaskProvider<out Task>) {
   project.getMainVariants().configureEach {
+    connectToAndroidVariant(it, outputDir, taskProvider)
+  }
+}
+
+fun connectToAllAndroidTestVariants(project: Project, outputDir: Provider<Directory>, taskProvider: TaskProvider<out Task>) {
+  project.getTestVariants().configureEach {
     connectToAndroidVariant(it, outputDir, taskProvider)
   }
 }

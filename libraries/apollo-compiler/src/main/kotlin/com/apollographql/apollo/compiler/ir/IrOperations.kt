@@ -32,7 +32,7 @@ import kotlinx.serialization.json.Json
 @Serializable
 @ApolloExperimental
 data class IrOperations(
-    val operations: List<IrOperation>,
+    val operations: List<IrOperationDefinition>,
     val fragments: List<IrFragmentDefinition>,
     val usedCoordinates: UsedCoordinates,
 
@@ -45,10 +45,10 @@ data class IrOperations(
 
 @Serializable
 @ApolloExperimental
-data class IrOperation(
+data class IrOperationDefinition(
     val name: String,
     val operationType: IrOperationType,
-    val typeCondition: String,
+    override val typeCondition: String,
     val variables: List<IrVariable>,
     val description: String?,
     val selectionSets: List<IrSelectionSet>,
@@ -57,9 +57,9 @@ data class IrOperation(
      */
     val sourceWithFragments: String,
     val normalizedFilePath: String,
-    val dataProperty: IrProperty,
-    val dataModelGroup: IrModelGroup,
-)
+    override val dataProperty: IrProperty,
+    override val dataModelGroup: IrModelGroup,
+): IrExecutable
 
 @Serializable
 @ApolloExperimental
@@ -148,19 +148,24 @@ data class IrFragmentDefinition(
      * Default values will always be null for those
      */
     val variables: List<IrVariable>,
-    val typeCondition: String,
+    override val typeCondition: String,
     val selectionSets: List<IrSelectionSet>,
     val interfaceModelGroup: IrModelGroup?,
-    val dataProperty: IrProperty,
-    val dataModelGroup: IrModelGroup,
+    override val dataProperty: IrProperty,
+    override val dataModelGroup: IrModelGroup,
     val source: String,
     /**
      * Whether the type condition is an interface or an enum.
      * In that case, the data builder need to require __typename
      */
     val isTypeConditionAbstract: Boolean
-)
+): IrExecutable
 
+sealed interface IrExecutable {
+  val typeCondition: String
+  val dataProperty: IrProperty
+  val dataModelGroup: IrModelGroup
+}
 @Serializable
 @ApolloExperimental
 sealed interface IrOperationType {

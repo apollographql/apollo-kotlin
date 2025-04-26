@@ -8,12 +8,12 @@ import com.apollographql.apollo.compiler.codegen.maybeFlatten
 import com.apollographql.apollo.compiler.codegen.operationAdapterPackageName
 import com.apollographql.apollo.compiler.codegen.operationName
 import com.apollographql.apollo.compiler.codegen.responseAdapter
-import com.apollographql.apollo.compiler.ir.IrOperation
+import com.apollographql.apollo.compiler.ir.IrOperationDefinition
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class OperationResponseAdapterBuilder(
     val context: KotlinOperationsContext,
-    val operation: IrOperation,
+    val operation: IrOperationDefinition,
     val flatten: Boolean,
 ) : CgFileBuilder {
   private val packageName = context.layout.operationAdapterPackageName(operation.normalizedFilePath)

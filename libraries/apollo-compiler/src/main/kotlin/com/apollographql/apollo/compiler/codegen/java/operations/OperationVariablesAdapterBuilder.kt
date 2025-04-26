@@ -7,13 +7,13 @@ import com.apollographql.apollo.compiler.codegen.java.operations.util.variableAd
 import com.apollographql.apollo.compiler.codegen.operationAdapterPackageName
 import com.apollographql.apollo.compiler.codegen.operationName
 import com.apollographql.apollo.compiler.codegen.variablesAdapter
-import com.apollographql.apollo.compiler.ir.IrOperation
+import com.apollographql.apollo.compiler.ir.IrOperationDefinition
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
 
 internal class OperationVariablesAdapterBuilder(
     val context: JavaOperationsContext,
-    val operation: IrOperation,
+    val operation: IrOperationDefinition,
 ) : JavaClassBuilder {
   val packageName = context.layout.operationAdapterPackageName(operation.normalizedFilePath)
   val simpleName = context.layout.operationName(operation).variablesAdapter()

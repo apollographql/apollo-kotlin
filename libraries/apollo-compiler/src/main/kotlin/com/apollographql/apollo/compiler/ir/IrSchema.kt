@@ -64,15 +64,10 @@ internal data class IrInputObject(
 internal data class IrObject(
     override val name: String,
     val implements: List<String>,
-    /**
-     * contrary to [implements], [superTypes] also includes unions
-     */
-    val superTypes: List<String>,
     val keyFields: List<String>,
     val description: String?,
     val deprecationReason: String?,
     val embeddedFields: List<String>,
-    val mapProperties: List<IrMapProperty>,
     val fieldDefinitions: List<IrFieldDefinition>,
 ) : IrSchemaType
 
@@ -85,7 +80,6 @@ internal data class IrInterface(
     val description: String?,
     val deprecationReason: String?,
     val embeddedFields: List<String>,
-    val mapProperties: List<IrMapProperty>,
     val fieldDefinitions: List<IrFieldDefinition>,
 ) : IrSchemaType
 
@@ -108,28 +102,6 @@ internal data class IrScalar(
   val type = IrScalarType(name, nullable = true)
 }
 
-/**
- * This is a separate type from [IrType] because [IrType] is quite big already. We might
- * want to refactor our type handling at some point
- */
-@Serializable
-internal sealed interface IrType2
-
-@Serializable
-internal class IrNonNullType2(val ofType: IrType2) : IrType2
-
-@Serializable
-internal class IrListType2(val ofType: IrType2) : IrType2
-
-@Serializable
-internal class IrScalarType2(val name: String) : IrType2
-
-@Serializable
-internal class IrEnumType2(val name: String) : IrType2
-
-@Serializable
-internal class IrCompositeType2(val name: String) : IrType2
-
 @Serializable
 internal data class IrArgumentDefinition(
     val id: String,
@@ -144,16 +116,12 @@ internal data class IrArgumentDefinition(
   }
 }
 
-@Serializable
-internal data class IrMapProperty(
-    val name: String,
-    val type: IrType2,
-)
-
+/**
+ * We're not using the field name and type in the codegen.
+ * The field names are directly used in keyFields
+ */
 @Serializable
 internal data class IrFieldDefinition(
-    val name: String,
-    val type: IrType2,
     val argumentDefinitions: List<IrArgumentDefinition>,
 )
 
@@ -350,11 +318,6 @@ internal fun GQLInterfaceTypeDefinition.toIr(schema: Schema, usedCoordinates: Us
       embeddedFields = directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toEmbeddedFields() +
           directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields() +
           connectionTypeEmbeddedFields(name, schema),
-      mapProperties = this.fields.filter {
-        usedCoordinates.hasField(type = name, field = it.name)
-      }.map {
-        it.toIrMapProperty(schema)
-      },
       fieldDefinitions = this.fieldDefinitions(schema).filter {
         usedCoordinates.hasField(type = name, field = it.name)
       }.mapNotNull {
@@ -389,11 +352,6 @@ internal fun GQLObjectTypeDefinition.toIr(schema: Schema, usedCoordinates: UsedC
       embeddedFields = directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toEmbeddedFields() +
           directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields() +
           connectionTypeEmbeddedFields(name, schema),
-      mapProperties = this.fields.filter {
-        usedCoordinates.hasField(type = name, field = it.name)
-      }.map {
-        it.toIrMapProperty(schema)
-      },
       fieldDefinitions = this.fieldDefinitions(schema).filter {
         usedCoordinates.hasField(type = name, field = it.name)
       }.mapNotNull {
@@ -401,14 +359,6 @@ internal fun GQLObjectTypeDefinition.toIr(schema: Schema, usedCoordinates: UsedC
             // Only include fields that have arguments used in operations
             .takeIf { it.argumentDefinitions.isNotEmpty() }
       },
-      superTypes = schema.superTypes(this).toList()
-  )
-}
-
-private fun GQLFieldDefinition.toIrMapProperty(schema: Schema): IrMapProperty {
-  return IrMapProperty(
-      name,
-      type.toIrType2(schema)
   )
 }
 
@@ -421,8 +371,6 @@ private fun GQLFieldDefinition.toIrFieldDefinition(
   val keyArgs = typeDefinition.keyArgs(name, schema)
   val paginationArgs = typeDefinition.paginationArgs(name, schema)
   return IrFieldDefinition(
-      name = name,
-      type = type.toIrType2(schema),
       argumentDefinitions = arguments.mapNotNull {
         // We only include arguments that are used in operations
         if (!usedCoordinates.hasArgument(type = parentType, field = name, argument = it.name)) {
@@ -439,25 +387,6 @@ private fun GQLFieldDefinition.toIrFieldDefinition(
       }
   )
 }
-
-private fun GQLType.toIrType2(schema: Schema): IrType2 {
-  return when (this) {
-    is GQLNonNullType -> IrNonNullType2(type.toIrType2(schema))
-    is GQLListType -> IrListType2(type.toIrType2(schema))
-    is GQLNamedType -> {
-      when (schema.typeDefinition(name)) {
-        is GQLScalarTypeDefinition -> return IrScalarType2(name)
-        is GQLEnumTypeDefinition -> return IrEnumType2(name)
-        is GQLInputObjectTypeDefinition -> error("Input objects are not supported in data builders")
-        is GQLInterfaceTypeDefinition,
-        is GQLObjectTypeDefinition,
-        is GQLUnionTypeDefinition,
-        -> IrCompositeType2(name)
-      }
-    }
-  }
-}
-
 
 /**
  * This is not named `toIr` as [GQLInputValueDefinition] also maps to variables and arguments

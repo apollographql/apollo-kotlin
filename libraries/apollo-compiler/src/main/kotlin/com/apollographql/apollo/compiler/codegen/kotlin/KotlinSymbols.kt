@@ -15,21 +15,19 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
  * Symbols can be [ClassName] or [MemberName]
  */
 internal object KotlinSymbols {
-  val ExecutableSchemaBuilder = ClassName(ClassNames.apolloExecutionPackageName, "ExecutableSchema", "Builder")
-  val Resolver = ClassName(ClassNames.apolloExecutionPackageName, "Resolver")
-  val ResolveInfo = ClassName(ClassNames.apolloExecutionPackageName, "ResolveInfo")
-  val Roots = ClassName(ClassNames.apolloExecutionPackageName, "Roots")
   val Schema = ClassName(ClassNames.apolloAstPackageName, "Schema")
   val ObjectType = ClassNames.ObjectType.toKotlinPoetClassName()
   val ObjectTypeBuilder = ClassNames.ObjectTypeBuilder.toKotlinPoetClassName()
   val InterfaceType = ClassNames.InterfaceType.toKotlinPoetClassName()
   val InterfaceTypeBuilder = ClassNames.InterfaceTypeBuilder.toKotlinPoetClassName()
-  val ObjectBuilder = ClassNames.ObjectBuilder.toKotlinPoetClassName()
+  val ObjectBuilder = ClassNames.DataBuilder.toKotlinPoetClassName()
   val BuilderProperty = ClassNames.BuilderProperty.toKotlinPoetClassName()
   val FakeResolver = ClassNames.FakeResolver.toKotlinPoetClassName()
+  val FakeResolverContext = ClassNames.FakeResolverContext.toKotlinPoetClassName()
   val JsonReader = ClassNames.JsonReader.toKotlinPoetClassName()
   val JsonWriter = ClassNames.JsonWriter.toKotlinPoetClassName()
   val CustomScalarAdapters = ClassNames.CustomScalarAdapters.toKotlinPoetClassName()
+  val CustomScalarAdaptersEmpty = ClassNames.CustomScalarAdaptersEmpty.toKotlinPoetClassName()
   val CustomScalarAdaptersBuilder = ClassNames.CustomScalarAdaptersBuilder.toKotlinPoetClassName()
   val Optional = ClassNames.Optional.toKotlinPoetClassName()
   val Absent = ClassNames.Absent.toKotlinPoetClassName()
@@ -61,7 +59,10 @@ internal object KotlinSymbols {
   val CompiledFieldBuilder = ClassNames.CompiledFieldBuilder.toKotlinPoetClassName()
   val CompiledFragment = ClassNames.CompiledFragment.toKotlinPoetClassName()
   val CompiledFragmentBuilder = ClassNames.CompiledFragmentBuilder.toKotlinPoetClassName()
-  val DefaultFakeResolver = ClassNames.DefaultFakeResolver.toKotlinPoetClassName()
+  val BaseFakeResolver = ClassNames.BaseFakeResolver.toKotlinPoetClassName()
+  val DataMap = ClassName(apolloApiPackageName, "DataMap")
+  val DataBuilder = ClassName(apolloApiPackageName, "DataBuilder")
+
   val Builder = ClassName("", "Builder")
 
   /**
@@ -106,21 +107,24 @@ internal object KotlinSymbols {
   val NullableStringAdapter = MemberName(apolloApiPackageName, "NullableStringAdapter")
 
 
-  val BuilderScope = ClassName(apolloApiPackageName, "BuilderScope")
-  val BuilderFactory = ClassName(apolloApiPackageName, "BuilderFactory")
+  val DataBuilderScope = ClassName(apolloApiPackageName, "DataBuilderScope")
+  val DataBuilderFactory = ClassName(apolloApiPackageName, "DataBuilderFactory")
 
   val ApolloAdaptableWith = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloAdaptableWith")
   val ApolloExperimental = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloExperimental")
 
   val JsExport = ClassName("kotlin.js", "JsExport")
+  val ExecutableDefinition = ClassNames.ExecutableDefinition.toKotlinPoetClassName()
+  val DataBuildersDsl = ClassName(apolloApiPackageName, "DataBuilderDsl")
+  val MapJsonReader = ClassName(apolloApiJsonPackageName, "MapJsonReader")
+  val MapJsonWriter = ClassName(apolloApiJsonPackageName, "MapJsonWriter")
 
+  val buildData = MemberName(apolloApiPackageName, "buildData")
   val obj = MemberName(apolloApiPackageName, "obj")
   val catchToResult = MemberName(apolloApiPackageName, "catchToResult")
   val catchToNull = MemberName(apolloApiPackageName, "catchToNull")
   val errorAware = MemberName(apolloApiPackageName, "errorAware")
   val readTypename = MemberName(apolloApiJsonPackageName, "readTypename")
-  val buildData = MemberName(apolloApiPackageName, "buildData")
-  val GlobalBuilder = MemberName(apolloApiPackageName, "GlobalBuilder")
   val assertOneOf = MemberName(apolloApiPackageName, "assertOneOf")
   val missingField = MemberName(apolloApiPackageName, "missingField")
   val FieldResult = ClassNames.FieldResult.toKotlinPoetClassName()

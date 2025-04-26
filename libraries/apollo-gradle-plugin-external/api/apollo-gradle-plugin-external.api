@@ -117,6 +117,7 @@ public final class com/apollographql/apollo/gradle/api/SchemaConnection {
 }
 
 public abstract interface class com/apollographql/apollo/gradle/api/Service {
+	public abstract fun dataBuildersOutputDirConnection (Lorg/gradle/api/Action;)V
 	public abstract fun dependsOn (Ljava/lang/Object;)V
 	public abstract fun dependsOn (Ljava/lang/Object;Z)V
 	public abstract fun getAddJvmOverloads ()Lorg/gradle/api/provider/Property;
@@ -124,6 +125,7 @@ public abstract interface class com/apollographql/apollo/gradle/api/Service {
 	public abstract fun getAlwaysGenerateTypesMatching ()Lorg/gradle/api/provider/SetProperty;
 	public abstract fun getClassesForEnumsMatching ()Lorg/gradle/api/provider/ListProperty;
 	public abstract fun getCodegenModels ()Lorg/gradle/api/provider/Property;
+	public abstract fun getDataBuildersOutputDir ()Lorg/gradle/api/file/DirectoryProperty;
 	public abstract fun getDebugDir ()Lorg/gradle/api/file/DirectoryProperty;
 	public abstract fun getDecapitalizeFields ()Lorg/gradle/api/provider/Property;
 	public abstract fun getExcludes ()Lorg/gradle/api/provider/ListProperty;

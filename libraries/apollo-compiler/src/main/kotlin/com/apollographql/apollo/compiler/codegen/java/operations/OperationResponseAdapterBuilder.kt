@@ -8,13 +8,13 @@ import com.apollographql.apollo.compiler.codegen.maybeFlatten
 import com.apollographql.apollo.compiler.codegen.operationAdapterPackageName
 import com.apollographql.apollo.compiler.codegen.operationName
 import com.apollographql.apollo.compiler.codegen.responseAdapter
-import com.apollographql.apollo.compiler.ir.IrOperation
+import com.apollographql.apollo.compiler.ir.IrOperationDefinition
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class OperationResponseAdapterBuilder(
     val context: JavaOperationsContext,
-    val operation: IrOperation,
+    val operation: IrOperationDefinition,
     val flatten: Boolean,
 ) : JavaClassBuilder {
   private val packageName = context.layout.operationAdapterPackageName(operation.normalizedFilePath)

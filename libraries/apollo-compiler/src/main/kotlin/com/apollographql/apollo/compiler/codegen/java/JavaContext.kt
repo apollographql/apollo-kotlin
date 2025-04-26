@@ -23,6 +23,14 @@ internal class JavaSchemaContext(
     override val nullableFieldStyle: JavaNullable,
 ): JavaContext
 
+internal class JavaDataBuilderContext(
+    override val layout: SchemaLayout,
+    override val resolver: JavaResolver,
+    override val generateMethods: List<GeneratedMethod>,
+    override val generateModelBuilders: Boolean,
+    override val nullableFieldStyle: JavaNullable,
+): JavaContext
+
 internal class JavaOperationsContext(
     override val layout: OperationsLayout,
     override val resolver: JavaResolver,

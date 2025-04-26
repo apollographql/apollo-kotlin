@@ -8,6 +8,10 @@
 // - Show declarations: true
 
 // Library unique name: <com.apollographql.apollo:apollo-api>
+open annotation class com.apollographql.apollo.api/DataBuilderDsl : kotlin/Annotation { // com.apollographql.apollo.api/DataBuilderDsl|null[0]
+    constructor <init>() // com.apollographql.apollo.api/DataBuilderDsl.<init>|<init>(){}[0]
+}
+
 final enum class com.apollographql.apollo.api.http/HttpMethod : kotlin/Enum<com.apollographql.apollo.api.http/HttpMethod> { // com.apollographql.apollo.api.http/HttpMethod|null[0]
     enum entry Get // com.apollographql.apollo.api.http/HttpMethod.Get|null[0]
     enum entry Post // com.apollographql.apollo.api.http/HttpMethod.Post|null[0]
@@ -32,6 +36,13 @@ abstract interface <#A: com.apollographql.apollo.api/Executable.Data> com.apollo
         final val valueMap // com.apollographql.apollo.api/Executable.Variables.valueMap|{}valueMap[0]
             final fun <get-valueMap>(): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.api/Executable.Variables.valueMap.<get-valueMap>|<get-valueMap>(){}[0]
     }
+}
+
+abstract interface <#A: com.apollographql.apollo.api/Executable.Data> com.apollographql.apollo.api/ExecutableDefinition { // com.apollographql.apollo.api/ExecutableDefinition|null[0]
+    abstract val ADAPTER // com.apollographql.apollo.api/ExecutableDefinition.ADAPTER|{}ADAPTER[0]
+        abstract fun <get-ADAPTER>(): com.apollographql.apollo.api/Adapter<#A> // com.apollographql.apollo.api/ExecutableDefinition.ADAPTER.<get-ADAPTER>|<get-ADAPTER>(){}[0]
+    abstract val ROOT_FIELD // com.apollographql.apollo.api/ExecutableDefinition.ROOT_FIELD|{}ROOT_FIELD[0]
+        abstract fun <get-ROOT_FIELD>(): com.apollographql.apollo.api/CompiledField // com.apollographql.apollo.api/ExecutableDefinition.ROOT_FIELD.<get-ROOT_FIELD>|<get-ROOT_FIELD>(){}[0]
 }
 
 abstract interface <#A: com.apollographql.apollo.api/Fragment.Data> com.apollographql.apollo.api/Fragment : com.apollographql.apollo.api/Executable<#A> { // com.apollographql.apollo.api/Fragment|null[0]
@@ -77,8 +88,8 @@ abstract interface <#A: kotlin/Any?> com.apollographql.apollo.api/MutableExecuti
     abstract fun sendDocument(kotlin/Boolean?): #A // com.apollographql.apollo.api/MutableExecutionOptions.sendDocument|sendDocument(kotlin.Boolean?){}[0]
 }
 
-abstract interface <#A: out kotlin/Any?> com.apollographql.apollo.api/BuilderFactory { // com.apollographql.apollo.api/BuilderFactory|null[0]
-    abstract fun newBuilder(com.apollographql.apollo.api/CustomScalarAdapters): #A // com.apollographql.apollo.api/BuilderFactory.newBuilder|newBuilder(com.apollographql.apollo.api.CustomScalarAdapters){}[0]
+abstract interface <#A: out com.apollographql.apollo.api/DataBuilder<*>> com.apollographql.apollo.api/DataBuilderFactory { // com.apollographql.apollo.api/DataBuilderFactory|null[0]
+    abstract fun newBuilder(com.apollographql.apollo.api/CustomScalarAdapters): #A // com.apollographql.apollo.api/DataBuilderFactory.newBuilder|newBuilder(com.apollographql.apollo.api.CustomScalarAdapters){}[0]
 }
 
 abstract interface com.apollographql.apollo.api.http/HttpBody { // com.apollographql.apollo.api.http/HttpBody|null[0]
@@ -162,9 +173,9 @@ abstract interface com.apollographql.apollo.api.json/JsonWriter : okio/Closeable
     abstract fun value(kotlin/String): com.apollographql.apollo.api.json/JsonWriter // com.apollographql.apollo.api.json/JsonWriter.value|value(kotlin.String){}[0]
 }
 
-abstract interface com.apollographql.apollo.api/BuilderScope { // com.apollographql.apollo.api/BuilderScope|null[0]
-    abstract val customScalarAdapters // com.apollographql.apollo.api/BuilderScope.customScalarAdapters|{}customScalarAdapters[0]
-        abstract fun <get-customScalarAdapters>(): com.apollographql.apollo.api/CustomScalarAdapters // com.apollographql.apollo.api/BuilderScope.customScalarAdapters.<get-customScalarAdapters>|<get-customScalarAdapters>(){}[0]
+abstract interface com.apollographql.apollo.api/DataBuilderScope { // com.apollographql.apollo.api/DataBuilderScope|null[0]
+    abstract val customScalarAdapters // com.apollographql.apollo.api/DataBuilderScope.customScalarAdapters|{}customScalarAdapters[0]
+        abstract fun <get-customScalarAdapters>(): com.apollographql.apollo.api/CustomScalarAdapters // com.apollographql.apollo.api/DataBuilderScope.customScalarAdapters.<get-customScalarAdapters>|<get-customScalarAdapters>(){}[0]
 }
 
 abstract interface com.apollographql.apollo.api/ExecutionContext { // com.apollographql.apollo.api/ExecutionContext|null[0]
@@ -249,41 +260,41 @@ sealed interface <#A: out kotlin/Any?> com.apollographql.apollo.api/FieldResult 
     }
 }
 
-abstract class <#A: out kotlin.collections/Map<kotlin/String, kotlin/Any?>> com.apollographql.apollo.api/ObjectBuilder : com.apollographql.apollo.api/BuilderScope { // com.apollographql.apollo.api/ObjectBuilder|null[0]
-    constructor <init>(com.apollographql.apollo.api/CustomScalarAdapters) // com.apollographql.apollo.api/ObjectBuilder.<init>|<init>(com.apollographql.apollo.api.CustomScalarAdapters){}[0]
+abstract class <#A: out com.apollographql.apollo.api/DataMap> com.apollographql.apollo.api/DataBuilder : com.apollographql.apollo.api/DataBuilderScope { // com.apollographql.apollo.api/DataBuilder|null[0]
+    constructor <init>(com.apollographql.apollo.api/CustomScalarAdapters) // com.apollographql.apollo.api/DataBuilder.<init>|<init>(com.apollographql.apollo.api.CustomScalarAdapters){}[0]
 
-    final val __fields // com.apollographql.apollo.api/ObjectBuilder.__fields|{}__fields[0]
-        final fun <get-__fields>(): kotlin.collections/MutableMap<kotlin/String, kotlin/Any?> // com.apollographql.apollo.api/ObjectBuilder.__fields.<get-__fields>|<get-__fields>(){}[0]
-    open val customScalarAdapters // com.apollographql.apollo.api/ObjectBuilder.customScalarAdapters|{}customScalarAdapters[0]
-        open fun <get-customScalarAdapters>(): com.apollographql.apollo.api/CustomScalarAdapters // com.apollographql.apollo.api/ObjectBuilder.customScalarAdapters.<get-customScalarAdapters>|<get-customScalarAdapters>(){}[0]
+    final val __fields // com.apollographql.apollo.api/DataBuilder.__fields|{}__fields[0]
+        final fun <get-__fields>(): kotlin.collections/MutableMap<kotlin/String, kotlin/Any?> // com.apollographql.apollo.api/DataBuilder.__fields.<get-__fields>|<get-__fields>(){}[0]
+    open val customScalarAdapters // com.apollographql.apollo.api/DataBuilder.customScalarAdapters|{}customScalarAdapters[0]
+        open fun <get-customScalarAdapters>(): com.apollographql.apollo.api/CustomScalarAdapters // com.apollographql.apollo.api/DataBuilder.customScalarAdapters.<get-customScalarAdapters>|<get-customScalarAdapters>(){}[0]
 
-    final var __typename // com.apollographql.apollo.api/ObjectBuilder.__typename|{}__typename[0]
-        final fun <get-__typename>(): kotlin/String // com.apollographql.apollo.api/ObjectBuilder.__typename.<get-__typename>|<get-__typename>(){}[0]
-        final fun <set-__typename>(kotlin/String) // com.apollographql.apollo.api/ObjectBuilder.__typename.<set-__typename>|<set-__typename>(kotlin.String){}[0]
+    final var __typename // com.apollographql.apollo.api/DataBuilder.__typename|{}__typename[0]
+        final fun <get-__typename>(): kotlin/String // com.apollographql.apollo.api/DataBuilder.__typename.<get-__typename>|<get-__typename>(){}[0]
+        final fun <set-__typename>(kotlin/String) // com.apollographql.apollo.api/DataBuilder.__typename.<set-__typename>|<set-__typename>(kotlin.String){}[0]
 
-    abstract fun build(): #A // com.apollographql.apollo.api/ObjectBuilder.build|build(){}[0]
-    final fun set(kotlin/String, kotlin/Any?) // com.apollographql.apollo.api/ObjectBuilder.set|set(kotlin.String;kotlin.Any?){}[0]
+    abstract fun build(): #A // com.apollographql.apollo.api/DataBuilder.build|build(){}[0]
+    final fun set(kotlin/String, kotlin/Any?) // com.apollographql.apollo.api/DataBuilder.set|set(kotlin.String;kotlin.Any?){}[0]
 }
 
-abstract class com.apollographql.apollo.api/ObjectMap : kotlin.collections/Map<kotlin/String, kotlin/Any?> { // com.apollographql.apollo.api/ObjectMap|null[0]
-    constructor <init>(kotlin.collections/Map<kotlin/String, kotlin/Any?>) // com.apollographql.apollo.api/ObjectMap.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.Any?>){}[0]
+abstract class com.apollographql.apollo.api/DataMap : kotlin.collections/Map<kotlin/String, kotlin/Any?> { // com.apollographql.apollo.api/DataMap|null[0]
+    constructor <init>(kotlin.collections/Map<kotlin/String, kotlin/Any?>) // com.apollographql.apollo.api/DataMap.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.Any?>){}[0]
 
-    open val entries // com.apollographql.apollo.api/ObjectMap.entries|{}entries[0]
-        open fun <get-entries>(): kotlin.collections/Set<kotlin.collections/Map.Entry<kotlin/String, kotlin/Any?>> // com.apollographql.apollo.api/ObjectMap.entries.<get-entries>|<get-entries>(){}[0]
-    open val keys // com.apollographql.apollo.api/ObjectMap.keys|{}keys[0]
-        open fun <get-keys>(): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.api/ObjectMap.keys.<get-keys>|<get-keys>(){}[0]
-    open val size // com.apollographql.apollo.api/ObjectMap.size|{}size[0]
-        open fun <get-size>(): kotlin/Int // com.apollographql.apollo.api/ObjectMap.size.<get-size>|<get-size>(){}[0]
-    open val values // com.apollographql.apollo.api/ObjectMap.values|{}values[0]
-        open fun <get-values>(): kotlin.collections/Collection<kotlin/Any?> // com.apollographql.apollo.api/ObjectMap.values.<get-values>|<get-values>(){}[0]
+    open val entries // com.apollographql.apollo.api/DataMap.entries|{}entries[0]
+        open fun <get-entries>(): kotlin.collections/Set<kotlin.collections/Map.Entry<kotlin/String, kotlin/Any?>> // com.apollographql.apollo.api/DataMap.entries.<get-entries>|<get-entries>(){}[0]
+    open val keys // com.apollographql.apollo.api/DataMap.keys|{}keys[0]
+        open fun <get-keys>(): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.api/DataMap.keys.<get-keys>|<get-keys>(){}[0]
+    open val size // com.apollographql.apollo.api/DataMap.size|{}size[0]
+        open fun <get-size>(): kotlin/Int // com.apollographql.apollo.api/DataMap.size.<get-size>|<get-size>(){}[0]
+    open val values // com.apollographql.apollo.api/DataMap.values|{}values[0]
+        open fun <get-values>(): kotlin.collections/Collection<kotlin/Any?> // com.apollographql.apollo.api/DataMap.values.<get-values>|<get-values>(){}[0]
 
-    open fun containsKey(kotlin/String): kotlin/Boolean // com.apollographql.apollo.api/ObjectMap.containsKey|containsKey(kotlin.String){}[0]
-    open fun containsValue(kotlin/Any?): kotlin/Boolean // com.apollographql.apollo.api/ObjectMap.containsValue|containsValue(kotlin.Any?){}[0]
-    open fun get(kotlin/String): kotlin/Any? // com.apollographql.apollo.api/ObjectMap.get|get(kotlin.String){}[0]
-    open fun isEmpty(): kotlin/Boolean // com.apollographql.apollo.api/ObjectMap.isEmpty|isEmpty(){}[0]
+    open fun containsKey(kotlin/String): kotlin/Boolean // com.apollographql.apollo.api/DataMap.containsKey|containsKey(kotlin.String){}[0]
+    open fun containsValue(kotlin/Any?): kotlin/Boolean // com.apollographql.apollo.api/DataMap.containsValue|containsValue(kotlin.Any?){}[0]
+    open fun get(kotlin/String): kotlin/Any? // com.apollographql.apollo.api/DataMap.get|get(kotlin.String){}[0]
+    open fun isEmpty(): kotlin/Boolean // com.apollographql.apollo.api/DataMap.isEmpty|isEmpty(){}[0]
 
     // Targets: [js]
-    open fun asJsReadonlyMapView(): kotlin.js.collections/JsReadonlyMap<kotlin/String, kotlin/Any?> // com.apollographql.apollo.api/ObjectMap.asJsReadonlyMapView|asJsReadonlyMapView(){}[0]
+    open fun asJsReadonlyMapView(): kotlin.js.collections/JsReadonlyMap<kotlin/String, kotlin/Any?> // com.apollographql.apollo.api/DataMap.asJsReadonlyMapView|asJsReadonlyMapView(){}[0]
 }
 
 final class <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.apollo.api/ApolloRequest : com.apollographql.apollo.api/ExecutionOptions { // com.apollographql.apollo.api/ApolloRequest|null[0]
@@ -433,8 +444,8 @@ final class <#A: kotlin/Any?> com.apollographql.apollo.api/BuilderProperty { // 
     final val adapter // com.apollographql.apollo.api/BuilderProperty.adapter|{}adapter[0]
         final fun <get-adapter>(): com.apollographql.apollo.api/Adapter<#A> // com.apollographql.apollo.api/BuilderProperty.adapter.<get-adapter>|<get-adapter>(){}[0]
 
-    final fun getValue(com.apollographql.apollo.api/ObjectBuilder<*>, kotlin.reflect/KProperty<*>): #A // com.apollographql.apollo.api/BuilderProperty.getValue|getValue(com.apollographql.apollo.api.ObjectBuilder<*>;kotlin.reflect.KProperty<*>){}[0]
-    final fun setValue(com.apollographql.apollo.api/ObjectBuilder<*>, kotlin.reflect/KProperty<*>, #A) // com.apollographql.apollo.api/BuilderProperty.setValue|setValue(com.apollographql.apollo.api.ObjectBuilder<*>;kotlin.reflect.KProperty<*>;1:0){}[0]
+    final fun getValue(com.apollographql.apollo.api/DataBuilder<*>, kotlin.reflect/KProperty<*>): #A // com.apollographql.apollo.api/BuilderProperty.getValue|getValue(com.apollographql.apollo.api.DataBuilder<*>;kotlin.reflect.KProperty<*>){}[0]
+    final fun setValue(com.apollographql.apollo.api/DataBuilder<*>, kotlin.reflect/KProperty<*>, #A) // com.apollographql.apollo.api/BuilderProperty.setValue|setValue(com.apollographql.apollo.api.DataBuilder<*>;kotlin.reflect.KProperty<*>;1:0){}[0]
 }
 
 final class <#A: kotlin/Any?> com.apollographql.apollo.api/ListAdapter : com.apollographql.apollo.api/Adapter<kotlin.collections/List<#A>> { // com.apollographql.apollo.api/ListAdapter|null[0]
@@ -927,7 +938,6 @@ final class com.apollographql.apollo.api/CustomScalarAdapters : com.apollographq
         final fun deferredFragmentIdentifiers(kotlin.collections/Set<com.apollographql.apollo.api/DeferredFragmentIdentifier>?): com.apollographql.apollo.api/CustomScalarAdapters.Builder // com.apollographql.apollo.api/CustomScalarAdapters.Builder.deferredFragmentIdentifiers|deferredFragmentIdentifiers(kotlin.collections.Set<com.apollographql.apollo.api.DeferredFragmentIdentifier>?){}[0]
         final fun errors(kotlin.collections/List<com.apollographql.apollo.api/Error>?): com.apollographql.apollo.api/CustomScalarAdapters.Builder // com.apollographql.apollo.api/CustomScalarAdapters.Builder.errors|errors(kotlin.collections.List<com.apollographql.apollo.api.Error>?){}[0]
         final fun falseVariables(kotlin.collections/Set<kotlin/String>?): com.apollographql.apollo.api/CustomScalarAdapters.Builder // com.apollographql.apollo.api/CustomScalarAdapters.Builder.falseVariables|falseVariables(kotlin.collections.Set<kotlin.String>?){}[0]
-        final fun unsafe(kotlin/Boolean): com.apollographql.apollo.api/CustomScalarAdapters.Builder // com.apollographql.apollo.api/CustomScalarAdapters.Builder.unsafe|unsafe(kotlin.Boolean){}[0]
     }
 
     final object Key : com.apollographql.apollo.api/ExecutionContext.Key<com.apollographql.apollo.api/CustomScalarAdapters> { // com.apollographql.apollo.api/CustomScalarAdapters.Key|null[0]
@@ -1043,6 +1053,8 @@ final class com.apollographql.apollo.api/Error { // com.apollographql.apollo.api
 }
 
 final class com.apollographql.apollo.api/FakeResolverContext { // com.apollographql.apollo.api/FakeResolverContext|null[0]
+    final val customScalarAdapters // com.apollographql.apollo.api/FakeResolverContext.customScalarAdapters|{}customScalarAdapters[0]
+        final fun <get-customScalarAdapters>(): com.apollographql.apollo.api/CustomScalarAdapters // com.apollographql.apollo.api/FakeResolverContext.customScalarAdapters.<get-customScalarAdapters>|<get-customScalarAdapters>(){}[0]
     final val id // com.apollographql.apollo.api/FakeResolverContext.id|{}id[0]
         final fun <get-id>(): kotlin/String // com.apollographql.apollo.api/FakeResolverContext.id.<get-id>|<get-id>(){}[0]
     final val mergedField // com.apollographql.apollo.api/FakeResolverContext.mergedField|{}mergedField[0]
@@ -1095,10 +1107,6 @@ final class com.apollographql.apollo.api/ObjectType : com.apollographql.apollo.a
         final fun interfaces(kotlin.collections/List<com.apollographql.apollo.api/InterfaceType>): com.apollographql.apollo.api/ObjectType.Builder // com.apollographql.apollo.api/ObjectType.Builder.interfaces|interfaces(kotlin.collections.List<com.apollographql.apollo.api.InterfaceType>){}[0]
         final fun keyFields(kotlin.collections/List<kotlin/String>): com.apollographql.apollo.api/ObjectType.Builder // com.apollographql.apollo.api/ObjectType.Builder.keyFields|keyFields(kotlin.collections.List<kotlin.String>){}[0]
     }
-}
-
-final class com.apollographql.apollo.api/ScalarType : com.apollographql.apollo.api/CompiledNamedType { // com.apollographql.apollo.api/ScalarType|null[0]
-    constructor <init>(kotlin/String) // com.apollographql.apollo.api/ScalarType.<init>|<init>(kotlin.String){}[0]
 }
 
 final class com.apollographql.apollo.api/UnionType : com.apollographql.apollo.api/CompiledNamedType { // com.apollographql.apollo.api/UnionType|null[0]
@@ -1221,14 +1229,14 @@ final class com.apollographql.apollo.exception/SubscriptionOperationException : 
         final fun <get-payload>(): kotlin/Any? // com.apollographql.apollo.exception/SubscriptionOperationException.payload.<get-payload>|<get-payload>(){}[0]
 }
 
-open class com.apollographql.apollo.api/DefaultFakeResolver : com.apollographql.apollo.api/FakeResolver { // com.apollographql.apollo.api/DefaultFakeResolver|null[0]
-    constructor <init>(kotlin.collections/List<com.apollographql.apollo.api/CompiledNamedType>) // com.apollographql.apollo.api/DefaultFakeResolver.<init>|<init>(kotlin.collections.List<com.apollographql.apollo.api.CompiledNamedType>){}[0]
+open class com.apollographql.apollo.api/BaseFakeResolver : com.apollographql.apollo.api/FakeResolver { // com.apollographql.apollo.api/BaseFakeResolver|null[0]
+    constructor <init>(kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>>) // com.apollographql.apollo.api/BaseFakeResolver.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.collections.List<kotlin.String>>){}[0]
 
-    open fun resolveLeaf(com.apollographql.apollo.api/FakeResolverContext): kotlin/Any // com.apollographql.apollo.api/DefaultFakeResolver.resolveLeaf|resolveLeaf(com.apollographql.apollo.api.FakeResolverContext){}[0]
-    open fun resolveListSize(com.apollographql.apollo.api/FakeResolverContext): kotlin/Int // com.apollographql.apollo.api/DefaultFakeResolver.resolveListSize|resolveListSize(com.apollographql.apollo.api.FakeResolverContext){}[0]
-    open fun resolveMaybeNull(com.apollographql.apollo.api/FakeResolverContext): kotlin/Boolean // com.apollographql.apollo.api/DefaultFakeResolver.resolveMaybeNull|resolveMaybeNull(com.apollographql.apollo.api.FakeResolverContext){}[0]
-    open fun resolveTypename(com.apollographql.apollo.api/FakeResolverContext): kotlin/String // com.apollographql.apollo.api/DefaultFakeResolver.resolveTypename|resolveTypename(com.apollographql.apollo.api.FakeResolverContext){}[0]
-    open fun stableIdForObject(kotlin.collections/Map<kotlin/String, kotlin/Any?>, com.apollographql.apollo.api/CompiledField): kotlin/String? // com.apollographql.apollo.api/DefaultFakeResolver.stableIdForObject|stableIdForObject(kotlin.collections.Map<kotlin.String,kotlin.Any?>;com.apollographql.apollo.api.CompiledField){}[0]
+    open fun resolveLeaf(com.apollographql.apollo.api/FakeResolverContext): kotlin/Any // com.apollographql.apollo.api/BaseFakeResolver.resolveLeaf|resolveLeaf(com.apollographql.apollo.api.FakeResolverContext){}[0]
+    open fun resolveListSize(com.apollographql.apollo.api/FakeResolverContext): kotlin/Int // com.apollographql.apollo.api/BaseFakeResolver.resolveListSize|resolveListSize(com.apollographql.apollo.api.FakeResolverContext){}[0]
+    open fun resolveMaybeNull(com.apollographql.apollo.api/FakeResolverContext): kotlin/Boolean // com.apollographql.apollo.api/BaseFakeResolver.resolveMaybeNull|resolveMaybeNull(com.apollographql.apollo.api.FakeResolverContext){}[0]
+    open fun resolveTypename(com.apollographql.apollo.api/FakeResolverContext): kotlin/String // com.apollographql.apollo.api/BaseFakeResolver.resolveTypename|resolveTypename(com.apollographql.apollo.api.FakeResolverContext){}[0]
+    open fun stableIdForObject(kotlin.collections/Map<kotlin/String, kotlin/Any?>, com.apollographql.apollo.api/CompiledField): kotlin/String? // com.apollographql.apollo.api/BaseFakeResolver.stableIdForObject|stableIdForObject(kotlin.collections.Map<kotlin.String,kotlin.Any?>;com.apollographql.apollo.api.CompiledField){}[0]
 }
 
 sealed class <#A: out kotlin/Any> com.apollographql.apollo.api/BooleanExpression { // com.apollographql.apollo.api/BooleanExpression|null[0]
@@ -1389,7 +1397,7 @@ final val com.apollographql.apollo.api/DoubleAdapter // com.apollographql.apollo
 final val com.apollographql.apollo.api/FloatAdapter // com.apollographql.apollo.api/FloatAdapter|{}FloatAdapter[0]
     final fun <get-FloatAdapter>(): com.apollographql.apollo.api/Adapter<kotlin/Float> // com.apollographql.apollo.api/FloatAdapter.<get-FloatAdapter>|<get-FloatAdapter>(){}[0]
 final val com.apollographql.apollo.api/GlobalBuilder // com.apollographql.apollo.api/GlobalBuilder|{}GlobalBuilder[0]
-    final fun <get-GlobalBuilder>(): com.apollographql.apollo.api/BuilderScope // com.apollographql.apollo.api/GlobalBuilder.<get-GlobalBuilder>|<get-GlobalBuilder>(){}[0]
+    final fun <get-GlobalBuilder>(): com.apollographql.apollo.api/DataBuilderScope // com.apollographql.apollo.api/GlobalBuilder.<get-GlobalBuilder>|<get-GlobalBuilder>(){}[0]
 final val com.apollographql.apollo.api/IntAdapter // com.apollographql.apollo.api/IntAdapter|{}IntAdapter[0]
     final fun <get-IntAdapter>(): com.apollographql.apollo.api/Adapter<kotlin/Int> // com.apollographql.apollo.api/IntAdapter.<get-IntAdapter>|<get-IntAdapter>(){}[0]
 final val com.apollographql.apollo.api/LongAdapter // com.apollographql.apollo.api/LongAdapter|{}LongAdapter[0]
@@ -1455,7 +1463,6 @@ final fun <#A: kotlin/Any> (com.apollographql.apollo.api/BooleanExpression<#A>).
 final fun <#A: kotlin/Any> com.apollographql.apollo.api/and(kotlin/Array<out com.apollographql.apollo.api/BooleanExpression<#A>>...): com.apollographql.apollo.api/BooleanExpression<#A> // com.apollographql.apollo.api/and|and(kotlin.Array<out|com.apollographql.apollo.api.BooleanExpression<0:0>>...){0§<kotlin.Any>}[0]
 final fun <#A: kotlin/Any> com.apollographql.apollo.api/not(com.apollographql.apollo.api/BooleanExpression<#A>): com.apollographql.apollo.api/BooleanExpression<#A> // com.apollographql.apollo.api/not|not(com.apollographql.apollo.api.BooleanExpression<0:0>){0§<kotlin.Any>}[0]
 final fun <#A: kotlin/Any> com.apollographql.apollo.api/or(kotlin/Array<out com.apollographql.apollo.api/BooleanExpression<#A>>...): com.apollographql.apollo.api/BooleanExpression<#A> // com.apollographql.apollo.api/or|or(kotlin.Array<out|com.apollographql.apollo.api.BooleanExpression<0:0>>...){0§<kotlin.Any>}[0]
-final fun <#A: kotlin/Any?, #B: com.apollographql.apollo.api/ObjectBuilder<*>> com.apollographql.apollo.api/buildData(com.apollographql.apollo.api/BuilderFactory<#B>, kotlin/Function1<#B, kotlin/Unit>, com.apollographql.apollo.api/Adapter<#A>, kotlin.collections/List<com.apollographql.apollo.api/CompiledSelection>, kotlin/String, com.apollographql.apollo.api/FakeResolver, com.apollographql.apollo.api/CustomScalarAdapters): #A // com.apollographql.apollo.api/buildData|buildData(com.apollographql.apollo.api.BuilderFactory<0:1>;kotlin.Function1<0:1,kotlin.Unit>;com.apollographql.apollo.api.Adapter<0:0>;kotlin.collections.List<com.apollographql.apollo.api.CompiledSelection>;kotlin.String;com.apollographql.apollo.api.FakeResolver;com.apollographql.apollo.api.CustomScalarAdapters){0§<kotlin.Any?>;1§<com.apollographql.apollo.api.ObjectBuilder<*>>}[0]
 final fun <#A: kotlin/Any?, #B: kotlin/Any?> (com.apollographql.apollo.api/Optional.Present<#A>).com.apollographql.apollo.api/map(kotlin/Function1<#A, #B>): com.apollographql.apollo.api/Optional.Present<#B> // com.apollographql.apollo.api/map|map@com.apollographql.apollo.api.Optional.Present<0:0>(kotlin.Function1<0:0,0:1>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
 final fun <#A: kotlin/Any?, #B: kotlin/Any?> (com.apollographql.apollo.api/Optional<#A>).com.apollographql.apollo.api/map(kotlin/Function1<#A, #B>): com.apollographql.apollo.api/Optional<#B> // com.apollographql.apollo.api/map|map@com.apollographql.apollo.api.Optional<0:0>(kotlin.Function1<0:0,0:1>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
 final fun <#A: kotlin/Any?> (com.apollographql.apollo.api/Adapter<#A>).com.apollographql.apollo.api/catchToNull(): com.apollographql.apollo.api/Adapter<#A?> // com.apollographql.apollo.api/catchToNull|catchToNull@com.apollographql.apollo.api.Adapter<0:0>(){0§<kotlin.Any?>}[0]
@@ -1473,8 +1480,9 @@ final fun <#A: kotlin/Any?> (com.apollographql.apollo.api/FieldResult<#A>).com.a
 final fun <#A: kotlin/Any?> (com.apollographql.apollo.api/FieldResult<#A>).com.apollographql.apollo.api/graphQLErrorOrNull(): com.apollographql.apollo.api/Error? // com.apollographql.apollo.api/graphQLErrorOrNull|graphQLErrorOrNull@com.apollographql.apollo.api.FieldResult<0:0>(){0§<kotlin.Any?>}[0]
 final fun <#A: kotlin/Any?> (com.apollographql.apollo.api/Optional<#A>).com.apollographql.apollo.api/getOrElse(#A): #A // com.apollographql.apollo.api/getOrElse|getOrElse@com.apollographql.apollo.api.Optional<0:0>(0:0){0§<kotlin.Any?>}[0]
 final fun <#A: kotlin/Any?> com.apollographql.apollo.api/adaptValue(com.apollographql.apollo.api/Adapter<#A>, #A): kotlin/Any? // com.apollographql.apollo.api/adaptValue|adaptValue(com.apollographql.apollo.api.Adapter<0:0>;0:0){0§<kotlin.Any?>}[0]
-final fun <#A: kotlin/Any?> com.apollographql.apollo.api/buildData(com.apollographql.apollo.api/Adapter<#A>, kotlin.collections/List<com.apollographql.apollo.api/CompiledSelection>, kotlin/String, kotlin.collections/Map<kotlin/String, kotlin/Any?>, com.apollographql.apollo.api/FakeResolver, com.apollographql.apollo.api/CustomScalarAdapters): #A // com.apollographql.apollo.api/buildData|buildData(com.apollographql.apollo.api.Adapter<0:0>;kotlin.collections.List<com.apollographql.apollo.api.CompiledSelection>;kotlin.String;kotlin.collections.Map<kotlin.String,kotlin.Any?>;com.apollographql.apollo.api.FakeResolver;com.apollographql.apollo.api.CustomScalarAdapters){0§<kotlin.Any?>}[0]
-final fun com.apollographql.apollo.api/Builder(com.apollographql.apollo.api/CustomScalarAdapters): com.apollographql.apollo.api/BuilderScope // com.apollographql.apollo.api/Builder|Builder(com.apollographql.apollo.api.CustomScalarAdapters){}[0]
+final fun <#A: kotlin/Any?> com.apollographql.apollo.api/buildData(com.apollographql.apollo.api/Adapter<#A>, com.apollographql.apollo.api/CustomScalarAdapters, kotlin.collections/Map<kotlin/String, kotlin/Any?>): #A // com.apollographql.apollo.api/buildData|buildData(com.apollographql.apollo.api.Adapter<0:0>;com.apollographql.apollo.api.CustomScalarAdapters;kotlin.collections.Map<kotlin.String,kotlin.Any?>){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> com.apollographql.apollo.api/buildData(com.apollographql.apollo.api/Adapter<#A>, com.apollographql.apollo.api/CustomScalarAdapters, kotlin.collections/Map<kotlin/String, kotlin/Any?>, kotlin.collections/List<com.apollographql.apollo.api/CompiledSelection>, kotlin/String, com.apollographql.apollo.api/FakeResolver): #A // com.apollographql.apollo.api/buildData|buildData(com.apollographql.apollo.api.Adapter<0:0>;com.apollographql.apollo.api.CustomScalarAdapters;kotlin.collections.Map<kotlin.String,kotlin.Any?>;kotlin.collections.List<com.apollographql.apollo.api.CompiledSelection>;kotlin.String;com.apollographql.apollo.api.FakeResolver){0§<kotlin.Any?>}[0]
+final fun com.apollographql.apollo.api/DataBuilderScope(com.apollographql.apollo.api/CustomScalarAdapters = ...): com.apollographql.apollo.api/DataBuilderScope // com.apollographql.apollo.api/DataBuilderScope|DataBuilderScope(com.apollographql.apollo.api.CustomScalarAdapters){}[0]
 final fun com.apollographql.apollo.api/assertOneOf(kotlin/Array<out com.apollographql.apollo.api/Optional<*>>...) // com.apollographql.apollo.api/assertOneOf|assertOneOf(kotlin.Array<out|com.apollographql.apollo.api.Optional<*>>...){}[0]
 final fun com.apollographql.apollo.api/checkFieldNotMissing(kotlin/Any?, kotlin/String) // com.apollographql.apollo.api/checkFieldNotMissing|checkFieldNotMissing(kotlin.Any?;kotlin.String){}[0]
 final fun com.apollographql.apollo.api/label(kotlin/String? = ...): com.apollographql.apollo.api/BooleanExpression<com.apollographql.apollo.api/BLabel> // com.apollographql.apollo.api/label|label(kotlin.String?){}[0]

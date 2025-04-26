@@ -242,7 +242,7 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
     CodegenSchemaOptions(
         scalarTypeMapping = scalarTypeMapping.getOrElse(emptyMap()),
         scalarAdapterMapping = scalarAdapterMapping.getOrElse(emptyMap()),
-        generateDataBuilders = generateDataBuilders.orNull,
+        generateDataBuilders = generateDataBuilders.getOrElse(false),
     ).writeTo(codegenSchemaOptionsFile.get().asFile)
 
     IrOptions(

@@ -33,3 +33,11 @@ internal class KotlinOperationsContext(
     override val resolver: KotlinResolver,
     override val targetLanguage: TargetLanguage,
 ): KotlinContext
+
+internal class KotlinDataBuilderContext(
+    override val layout: SchemaLayout,
+    override val generateMethods: List<GeneratedMethod>,
+    override val jsExport: Boolean,
+    override val resolver: KotlinResolver,
+    override val targetLanguage: TargetLanguage,
+): KotlinContext

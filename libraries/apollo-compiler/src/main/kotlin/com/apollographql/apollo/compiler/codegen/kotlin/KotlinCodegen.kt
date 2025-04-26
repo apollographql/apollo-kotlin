@@ -1,17 +1,21 @@
 package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.compiler.APOLLO_VERSION
+import com.apollographql.apollo.compiler.CODEGEN_METADATA_VERSION
 import com.apollographql.apollo.compiler.CodegenMetadata
-import com.apollographql.apollo.compiler.CodegenSchema
+import com.apollographql.apollo.compiler.CodegenOptions
 import com.apollographql.apollo.compiler.KotlinOperationsCodegenOptions
 import com.apollographql.apollo.compiler.KotlinSchemaCodegenOptions
-import com.apollographql.apollo.compiler.CODEGEN_METADATA_VERSION
 import com.apollographql.apollo.compiler.TargetLanguage
 import com.apollographql.apollo.compiler.Transform
 import com.apollographql.apollo.compiler.codegen.OperationsLayout
 import com.apollographql.apollo.compiler.codegen.ResolverKey
 import com.apollographql.apollo.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo.compiler.codegen.SchemaLayout
+import com.apollographql.apollo.compiler.codegen.kotlin.builders.AdaptBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.builders.DataBuilderBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.builders.DataMapBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.builders.ResolverBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.addInternal
 import com.apollographql.apollo.compiler.codegen.kotlin.operations.FragmentBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.operations.FragmentModelsBuilder
@@ -26,13 +30,13 @@ import com.apollographql.apollo.compiler.codegen.kotlin.schema.CustomScalarAdapt
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumAsEnumBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumAsSealedBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumResponseAdapterBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.schema.InlineClassBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.InputObjectAdapterBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.InputObjectBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.InterfaceBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.ObjectBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.PaginationBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.ScalarBuilder
-import com.apollographql.apollo.compiler.codegen.kotlin.schema.InlineClassBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.SchemaBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.UnionBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.asTargetClassName
@@ -49,7 +53,9 @@ import com.apollographql.apollo.compiler.defaultJsExport
 import com.apollographql.apollo.compiler.defaultRequiresOptInAnnotation
 import com.apollographql.apollo.compiler.defaultSealedClassesForEnumsMatching
 import com.apollographql.apollo.compiler.generateMethodsKotlin
+import com.apollographql.apollo.compiler.ir.DefaultIrDataBuilders
 import com.apollographql.apollo.compiler.ir.DefaultIrSchema
+import com.apollographql.apollo.compiler.ir.IrDataBuilders
 import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.IrSchema
 import com.apollographql.apollo.compiler.maybeTransform
@@ -139,7 +145,6 @@ private fun buildOutput(
 
 internal object KotlinCodegen {
   fun buildSchemaSources(
-      codegenSchema: CodegenSchema,
       targetLanguage: TargetLanguage,
       irSchema: IrSchema?,
       codegenOptions: KotlinSchemaCodegenOptions,
@@ -148,9 +153,8 @@ internal object KotlinCodegen {
   ): KotlinOutput {
     check(irSchema is DefaultIrSchema)
 
-    val generateDataBuilders = codegenSchema.generateDataBuilders
     val generateMethods = generateMethodsKotlin(codegenOptions.generateMethods)
-    val generateSchema = codegenOptions.generateSchema ?: defaultGenerateSchema || generateDataBuilders
+    val generateSchema = codegenOptions.generateSchema ?: defaultGenerateSchema
 
     val generateAsInternal = codegenOptions.generateAsInternal ?: defaultGenerateAsInternal
     val generateInputBuilders = codegenOptions.generateInputBuilders ?: defaultGenerateInputBuilders
@@ -197,13 +201,13 @@ internal object KotlinCodegen {
         builders.add(InputObjectAdapterBuilder(context, irInputObject))
       }
       irSchema.irUnions.forEach { irUnion ->
-        builders.add(UnionBuilder(context, irUnion, generateDataBuilders))
+        builders.add(UnionBuilder(context, irUnion))
       }
       irSchema.irInterfaces.forEach { irInterface ->
-        builders.add(InterfaceBuilder(context, irInterface, generateDataBuilders))
+        builders.add(InterfaceBuilder(context, irInterface))
       }
       irSchema.irObjects.forEach { irObject ->
-        builders.add(ObjectBuilder(context, irObject, generateDataBuilders))
+        builders.add(ObjectBuilder(context, irObject))
       }
       if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
         builders.add(SchemaBuilder(context, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
@@ -217,7 +221,6 @@ internal object KotlinCodegen {
   }
 
   fun buildOperationSources(
-      codegenSchema: CodegenSchema,
       targetLanguage: TargetLanguage,
       irOperations: IrOperations,
       operationOutput: OperationOutput,
@@ -226,7 +229,6 @@ internal object KotlinCodegen {
       layout: OperationsLayout,
       kotlinOutputTransform: Transform<KotlinOutput>?,
   ): KotlinOutput {
-    val generateDataBuilders = codegenSchema.generateDataBuilders
     val flatten = irOperations.flattenModels
 
     val generateFragmentImplementations = codegenOptions.generateFragmentImplementations ?: defaultGenerateFragmentImplementations
@@ -281,7 +283,6 @@ internal object KotlinCodegen {
                       fragment,
                       flatten,
                       addJvmOverloads,
-                      generateDataBuilders,
                       generateInputBuilders,
                   )
               )
@@ -309,11 +310,51 @@ internal object KotlinCodegen {
                     operation,
                     flatten,
                     addJvmOverloads,
-                    generateDataBuilders,
                     generateInputBuilders
                 )
             )
           }
+    }
+  }
+
+  fun buildDataBuilders(
+      dataBuilders: IrDataBuilders,
+      layout: SchemaLayout,
+      codegenOptions: CodegenOptions,
+      upstreamCodegenMetadata: List<CodegenMetadata>,
+      targetLanguage: TargetLanguage,
+  ): KotlinOutput {
+    check(dataBuilders is DefaultIrDataBuilders)
+
+    val generateMethods = generateMethodsKotlin(codegenOptions.generateMethods)
+    val generateAsInternal = codegenOptions.generateAsInternal ?: defaultGenerateAsInternal
+    val jsExport = codegenOptions.jsExport ?: defaultJsExport
+    val requiresOptInAnnotation = codegenOptions.requiresOptInAnnotation ?: defaultRequiresOptInAnnotation
+
+    return buildOutput(
+        upstreamCodegenMetadatas = upstreamCodegenMetadata,
+        requiresOptInAnnotation = requiresOptInAnnotation,
+        targetLanguage = targetLanguage,
+        kotlinOutputTransform = null,
+        generateAsInternal = generateAsInternal
+    ) { resolver ->
+      val context = KotlinDataBuilderContext(
+          generateMethods = generateMethods,
+          jsExport = jsExport,
+          layout = layout,
+          resolver = resolver,
+          targetLanguage = targetLanguage,
+      )
+
+      dataBuilders.dataBuilders.forEach {
+        builders.add(DataBuilderBuilder(context, it))
+        builders.add(DataMapBuilder(context, it, withFields = true))
+        if (it.isAbstract) {
+          builders.add(DataMapBuilder(context, it, withFields = false))
+        }
+        builders.add(ResolverBuilder(context, dataBuilders.possibleTypes))
+        builders.add(AdaptBuilder(context, dataBuilders.scalars))
+      }
     }
   }
 }

@@ -1,8 +1,13 @@
 package test;
 
+import com.apollographql.apollo.api.BaseFakeResolver;
 import com.apollographql.apollo.api.CompiledField;
+import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.FakeResolver;
 import com.apollographql.apollo.api.FakeResolverContext;
+import com.apollographql.apollo.api.FakeResolverKt;
+import com.apollographql.apollo.api.Query;
 import data.builders.GetAliasesQuery;
 import data.builders.GetAnimalQuery;
 import data.builders.GetCustomScalarQuery;
@@ -13,26 +18,38 @@ import data.builders.GetIntQuery;
 import data.builders.GetPartialQuery;
 import data.builders.MyLong;
 import data.builders.PutIntMutation;
+import data.builders.builder.MutationRootBuilder;
+import data.builders.builder.QueryBuilder;
+import data.builders.builder.QueryMap;
+import data.builders.builder.resolver.DefaultFakeResolver;
 import data.builders.type.Direction;
-import data.builders.type.builder.BuilderFactory;
+import data.builders.builder.DataBuilders;
+import data.builders.type.MutationRoot;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class DataBuilderTest {
-  private BuilderFactory factory = BuilderFactory.DEFAULT;
+  private CustomScalarAdapters customScalarAdapters = new CustomScalarAdapters.Builder()
+      .add("Long2", new MyLong.MyLongAdapter())
+      .build();
+  private DataBuilders dataBuilders = new DataBuilders(customScalarAdapters);
 
   @Test
   public void nullabilityTest() {
-    GetIntQuery.Data data = GetIntQuery.buildData(
-        factory.buildQuery()
+    GetIntQuery.Data data = QueryBuilder.buildData(
+        GetIntQuery.definition,
+        CustomScalarAdapters.Empty,
+        dataBuilders.query()
             .nullableInt(null)
             .nonNullableInt(42)
             .build()
@@ -44,13 +61,15 @@ public class DataBuilderTest {
 
   @Test
   public void aliasTest() {
-    GetAliasesQuery.Data data = GetAliasesQuery.buildData(
-        factory.buildQuery()
-            .cat(factory.buildCat().species("Cat").build())
+    GetAliasesQuery.Data data = QueryBuilder.buildData(
+        GetAliasesQuery.definition,
+        CustomScalarAdapters.Empty,
+        dataBuilders.query()
+            .cat(dataBuilders.cat().species("Cat").build())
             .alias("aliasedNullableInt", 50)
             .alias(
                 "aliasedCat",
-                factory.buildCat().species("AliasedCat").build()
+                dataBuilders.cat().species("AliasedCat").build()
             )
             .build()
     );
@@ -62,8 +81,10 @@ public class DataBuilderTest {
 
   @Test
   public void mutationTest() {
-    PutIntMutation.Data data = PutIntMutation.buildData(
-        factory.buildMutationRoot()
+    PutIntMutation.Data data = MutationRootBuilder.buildData(
+        PutIntMutation.definition,
+        CustomScalarAdapters.Empty,
+        dataBuilders.mutationRoot()
             .nullableInt(null)
             .build()
     );
@@ -73,10 +94,12 @@ public class DataBuilderTest {
 
   @Test
   public void interfaceTest() {
-    GetAnimalQuery.Data data = GetAnimalQuery.buildData(
-        factory.buildQuery()
+    GetAnimalQuery.Data data = QueryBuilder.buildData(
+        GetAnimalQuery.definition,
+        CustomScalarAdapters.Empty,
+        dataBuilders.query()
             .animal(
-                factory.buildLion()
+                dataBuilders.lion()
                     .species("LionSpecies")
                     .roar("Rooooaaarr")
                     .build()
@@ -91,10 +114,13 @@ public class DataBuilderTest {
 
   @Test
   public void otherInterfaceImplementationTest() {
-    GetAnimalQuery.Data data = GetAnimalQuery.buildData(
-        factory.buildQuery()
+    GetAnimalQuery.Data data = QueryBuilder.buildData(
+        GetAnimalQuery.definition,
+        CustomScalarAdapters.Empty,
+        dataBuilders.query()
             .animal(
-                factory.buildOtherAnimal("Gazelle")
+                dataBuilders.otherAnimal()
+                    .__typename("Gazelle")
                     .species("GazelleSpecies")
                     .build()
             )
@@ -108,10 +134,12 @@ public class DataBuilderTest {
 
   @Test
   public void unionTest1() {
-    GetFelineQuery.Data data = GetFelineQuery.buildData(
-        factory.buildQuery()
+    GetFelineQuery.Data data = QueryBuilder.buildData(
+        GetFelineQuery.definition,
+        CustomScalarAdapters.Empty,
+        dataBuilders.query()
             .feline(
-                factory.buildLion()
+                dataBuilders.lion()
                     .species("LionSpecies")
                     .roar("Rooooaaarr")
                     .build()
@@ -125,10 +153,12 @@ public class DataBuilderTest {
 
   @Test
   public void unionTest2() {
-    GetFelineQuery.Data data = GetFelineQuery.buildData(
-        factory.buildQuery()
+    GetFelineQuery.Data data = QueryBuilder.buildData(
+        GetFelineQuery.definition,
+        CustomScalarAdapters.Empty,
+        dataBuilders.query()
             .feline(
-                factory.buildCat()
+                dataBuilders.cat()
                     .species("CatSpecies")
                     .mustaches(5)
                     .build()
@@ -142,10 +172,13 @@ public class DataBuilderTest {
 
   @Test
   public void otherUnionMemberTest() {
-    GetFelineQuery.Data data = GetFelineQuery.buildData(
-        factory.buildQuery()
+    GetFelineQuery.Data data = QueryBuilder.buildData(
+        GetFelineQuery.definition,
+        CustomScalarAdapters.Empty,
+        dataBuilders.query()
             .feline(
-                factory.buildOtherFeline("Tiger")
+                dataBuilders.otherFeline()
+                    .__typename("Tiger")
                     .build()
             )
             .build()
@@ -157,8 +190,10 @@ public class DataBuilderTest {
 
   @Test
   public void enumTest() {
-    GetDirectionQuery.Data data = GetDirectionQuery.buildData(
-        factory.buildQuery()
+    GetDirectionQuery.Data data = QueryBuilder.buildData(
+        GetDirectionQuery.definition,
+        CustomScalarAdapters.Empty,
+        dataBuilders.query()
             .direction(Direction.NORTH)
             .build()
     );
@@ -167,8 +202,10 @@ public class DataBuilderTest {
 
   @Test
   public void customScalarTest() {
-    GetCustomScalarQuery.Data data = GetCustomScalarQuery.buildData(
-        factory.buildQuery()
+    GetCustomScalarQuery.Data data = QueryBuilder.buildData(
+        GetCustomScalarQuery.definition,
+        customScalarAdapters,
+        dataBuilders.query()
             .long1(new MyLong(42L))
             .long2(new MyLong(43L))
             .long3(44)
@@ -184,7 +221,12 @@ public class DataBuilderTest {
 
   @Test
   public void fakeValues() {
-    GetEverythingQuery.Data data = GetEverythingQuery.buildData(factory.buildQuery().build());
+    GetEverythingQuery.Data data = QueryBuilder.buildData(
+        new DefaultFakeResolver(),
+        GetEverythingQuery.definition,
+        customScalarAdapters,
+        dataBuilders.query().build()
+    );
 
     assertEquals(Direction.NORTH, data.direction);
     assertEquals(Integer.valueOf(-34), data.nullableInt);
@@ -201,12 +243,15 @@ public class DataBuilderTest {
 
   @Test
   public void partialFakeValues() {
-    GetPartialQuery.Data data = GetPartialQuery.buildData(
-        factory.buildQuery()
+    GetPartialQuery.Data data = QueryBuilder.buildData(
+        new DefaultFakeResolver(),
+        GetPartialQuery.definition,
+        customScalarAdapters,
+        dataBuilders.query()
             .listOfListOfAnimal(
                 Collections.singletonList(
                     Collections.singletonList(
-                        factory.buildLion()
+                        dataBuilders.lion()
                             .species("FooSpecies")
                             .build()
                     )
@@ -236,11 +281,11 @@ public class DataBuilderTest {
       Object ret = null;
       switch (name) {
         case "Long1": {
-          ret = new MyLong(45L);
+          ret = "45";
           break;
         }
         case "Long2": {
-          ret = new MyLong(46L);
+          ret = "46";
           break;
         }
         case "Long3": {
@@ -271,7 +316,12 @@ public class DataBuilderTest {
 
   @Test
   public void customScalarFakeValues() {
-    GetCustomScalarQuery.Data data = GetCustomScalarQuery.buildData(factory.buildQuery().build(), new MyFakeResolver());
+    GetCustomScalarQuery.Data data = QueryBuilder.buildData(
+        new MyFakeResolver(),
+        GetCustomScalarQuery.definition,
+        customScalarAdapters,
+        dataBuilders.query().build()
+    );
 
     assertEquals(Long.valueOf(45L), data.long1.value);
     assertEquals(Long.valueOf(46L), data.long2.value);

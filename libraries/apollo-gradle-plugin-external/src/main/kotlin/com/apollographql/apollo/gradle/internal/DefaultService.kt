@@ -149,12 +149,22 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   var outputDirAction: Action<in Service.DirectoryConnection>? = null
 
+  var dataBuildersOutputDirAction: Action<in Service.DirectoryConnection>? = null
+
   override fun outputDirConnection(action: Action<in Service.DirectoryConnection>) {
     check(!registered) {
       "Apollo: outputDirConnection {} cannot be configured outside of a service {} block"
     }
 
     this.outputDirAction = action
+  }
+
+  override fun dataBuildersOutputDirConnection(action: Action<in Service.DirectoryConnection>) {
+    check(!registered) {
+      "Apollo: dataBuildersOutputDirConnection {} cannot be configured outside of a service {} block"
+    }
+
+    this.dataBuildersOutputDirAction = action
   }
 
   override fun packageNamesFromFilePaths(rootPackageName: String?) {

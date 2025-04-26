@@ -265,7 +265,9 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
       oneOfDefinitionsStr,
       deferDefinitionsStr,
       nonNullDefinitionStr,
-      kotlinLabsDefinitions_0_5,
+      kotlinLabsDefinitions_0_4,
+      compilerOptions_0_0,
+      compilerOptions_0_1_additions,
       nullabilityDefinitionsStr,
       disableErrorPropagationStr
   ).flatMap {
