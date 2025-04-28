@@ -5,12 +5,15 @@
 //
 package com.example.arguments_hardcoded.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 /**
  * Represents a review for a movie
  */
 public class Review {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Review").build()
   }

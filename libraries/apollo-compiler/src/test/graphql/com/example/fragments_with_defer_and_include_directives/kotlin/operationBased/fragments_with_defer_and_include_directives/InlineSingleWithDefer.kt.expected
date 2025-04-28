@@ -9,6 +9,7 @@ import com.apollographql.apollo.annotations.ApolloAdaptableWith
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -39,14 +40,9 @@ public class InlineSingleWithDefer() : Query<InlineSingleWithDefer.Data> {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = InlineSingleWithDefer_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = CompiledQuery.type
-  )
-  .selections(selections = InlineSingleWithDeferSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   @ApolloAdaptableWith(InlineSingleWithDefer_ResponseAdapter.Data::class)
   public data class Data(
@@ -68,7 +64,16 @@ public class InlineSingleWithDefer() : Query<InlineSingleWithDefer.Data> {
     }
   }
 
-  public companion object {
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = InlineSingleWithDefer_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = CompiledQuery.type
+        )
+        .selections(selections = InlineSingleWithDeferSelections.__root)
+        .build()
+
     public const val OPERATION_ID: String =
         "70222802c9192f810f19a54d31e039ce0fc3b8baac231841f0a0e8b4200c312b"
 

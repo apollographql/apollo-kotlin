@@ -8,6 +8,7 @@ package com.example.fragments_with_defer_and_include_directives;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
@@ -21,6 +22,8 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public class SpreadMultipleWithDefer implements Query<SpreadMultipleWithDefer.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "7cd4d1b6a14f96cff4bbbdbd3b3ab1aa365ffc65e1515ff6e22935010543ad71";
 
   /**
@@ -130,6 +133,23 @@ public class SpreadMultipleWithDefer implements Query<SpreadMultipleWithDefer.Da
 
     public SpreadMultipleWithDefer build() {
       return new SpreadMultipleWithDefer();
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(SpreadMultipleWithDefer_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.fragments_with_defer_and_include_directives.type.Query.type
+      )
+      .selections(SpreadMultipleWithDeferSelections.__root)
+      .build();
     }
   }
 

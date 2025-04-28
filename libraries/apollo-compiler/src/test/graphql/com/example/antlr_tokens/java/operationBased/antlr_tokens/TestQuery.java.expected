@@ -8,6 +8,7 @@ package com.example.antlr_tokens;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Optional;
 import com.apollographql.apollo.api.Query;
@@ -22,6 +23,8 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public class TestQuery implements Query<TestQuery.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "197e186cfb461d1c38c0be4da7b182eff42e304043973b994c8c2de3535daea6";
 
   /**
@@ -140,6 +143,23 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public TestQuery build() {
       return new TestQuery(operation);
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.antlr_tokens.type.Query.type
+      )
+      .selections(TestQuerySelections.__root)
+      .build();
     }
   }
 

@@ -9,25 +9,19 @@ import com.apollographql.apollo.annotations.ApolloAdaptableWith
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.DefaultFakeResolver
-import com.apollographql.apollo.api.FakeResolver
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.buildData
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
 import com.example.mutation_create_review.adapter.CreateReviewForEpisode_ResponseAdapter
 import com.example.mutation_create_review.adapter.CreateReviewForEpisode_VariablesAdapter
-import com.example.mutation_create_review.schema.__Schema
 import com.example.mutation_create_review.selections.CreateReviewForEpisodeSelections
 import com.example.mutation_create_review.type.Episode
-import com.example.mutation_create_review.type.MutationBuilder
 import com.example.mutation_create_review.type.ReviewInput
-import com.example.mutation_create_review.type.__CustomScalarAdapters
 import java.util.Date
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 import kotlin.collections.List
 import com.example.mutation_create_review.type.Mutation as CompiledMutation
 
@@ -49,14 +43,9 @@ internal data class CreateReviewForEpisode(
     CreateReviewForEpisode_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
-  override fun adapter(): Adapter<Data> = CreateReviewForEpisode_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = CompiledMutation.type
-  )
-  .selections(selections = CreateReviewForEpisodeSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   @ApolloAdaptableWith(CreateReviewForEpisode_ResponseAdapter.Data::class)
   public data class Data(
@@ -97,7 +86,16 @@ internal data class CreateReviewForEpisode(
     }
   }
 
-  public companion object {
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = CreateReviewForEpisode_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = CompiledMutation.type
+        )
+        .selections(selections = CreateReviewForEpisodeSelections.__root)
+        .build()
+
     public const val OPERATION_ID: String =
         "b333ec8237cdc346478f07c98169eeb782c4afac1a0a8b94c62dfbcb27275b21"
 
@@ -124,15 +122,5 @@ internal data class CreateReviewForEpisode(
       get() = "mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) { createReview(episode: ${'$'}ep, review: ${'$'}review) { stars commentary listOfListOfString listOfListOfEnum listOfListOfCustom listOfListOfObject { name } } }"
 
     public const val OPERATION_NAME: String = "CreateReviewForEpisode"
-
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: MutationBuilder.() -> Unit = {}): Data = buildData(
-      CompiledMutation,
-      block,
-      CreateReviewForEpisode_ResponseAdapter.Data,
-      CreateReviewForEpisodeSelections.__root,
-      "Mutation",
-      resolver,
-      __CustomScalarAdapters,
-    )
   }
 }

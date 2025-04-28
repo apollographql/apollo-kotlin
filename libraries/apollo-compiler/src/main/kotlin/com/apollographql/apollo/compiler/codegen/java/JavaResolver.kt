@@ -53,6 +53,7 @@ internal class JavaResolver(
   private val scalarAdapters = mutableMapOf<String, String>()
   private val scalarTargets = mutableMapOf<String, String>()
   private val scalarIsUserDefined = mutableMapOf<String, Boolean>()
+  private val mapTypes = mutableMapOf<String, ClassName>()
 
   private val optionalClassName: ClassName = when (nullableFieldStyle) {
     JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptional
@@ -355,10 +356,14 @@ internal class JavaResolver(
     return when (type) {
       is IrNonNullType2 -> resolveIrType2(type.ofType)
       is IrListType2 -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType2(type.ofType))
-      is IrCompositeType2 -> resolveAndAssert(ResolverKeyKind.MapType, type.name)
+      is IrCompositeType2 -> mapTypes.get(type.name) ?: error("Cannot find map type for ${type.name}")
       is IrEnumType2 -> resolveIrType(IrEnumType(type.name, nullable = true))
       is IrScalarType2 -> resolveIrType(IrScalarType(type.name, nullable = true))
     }
+  }
+
+  internal fun registerMapType(name: String, className: ClassName) {
+    mapTypes.put(name, className)
   }
 
   internal fun adapterInitializer2(type: IrType2): CodeBlock? {
@@ -367,9 +372,6 @@ internal class JavaResolver(
     }
     return nonNullableAdapterInitializer2(type.ofType)
   }
-
-  fun registerMapType(name: String, className: ClassName) = register(ResolverKeyKind.MapType, name, className)
-  fun resolveMapType(name: String): ClassName = resolveAndAssert(ResolverKeyKind.MapType, name)
 
   private fun nonNullableAdapterInitializer2(type: IrType2): CodeBlock? {
     return when (type) {

@@ -8,22 +8,16 @@ package com.example.simple_fragment.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.DefaultFakeResolver
-import com.apollographql.apollo.api.FakeResolver
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
-import com.apollographql.apollo.api.buildData
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
 import com.example.simple_fragment.fragment.selections.HumanDetailsSelections
-import com.example.simple_fragment.schema.__Schema
 import com.example.simple_fragment.type.Human
-import com.example.simple_fragment.type.HumanBuilder
-import com.example.simple_fragment.type.__CustomScalarAdapters
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 
 /**
  * Fragment with Java / Kotlin docs generation
@@ -41,14 +35,9 @@ internal class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = HumanDetailsImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Human.type
-  )
-  .selections(selections = HumanDetailsSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   public data class Data(
     override val __typename: String,
@@ -57,17 +46,16 @@ internal class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
      */
     override val name: String,
   ) : HumanDetails,
-      Fragment.Data
+      Human.Data
 
-  public companion object {
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: HumanBuilder.() -> Unit = {}): Data = buildData(
-      Human,
-      block,
-      HumanDetailsImpl_ResponseAdapter.Data,
-      HumanDetailsSelections.__root,
-      "Human",
-      resolver,
-      __CustomScalarAdapters,
-    )
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = HumanDetailsImpl_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Human.type
+        )
+        .selections(selections = HumanDetailsSelections.__root)
+        .build()
   }
 }

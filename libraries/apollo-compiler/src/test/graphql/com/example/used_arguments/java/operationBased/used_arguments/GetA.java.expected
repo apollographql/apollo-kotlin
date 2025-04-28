@@ -8,6 +8,7 @@ package com.example.used_arguments;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
@@ -21,6 +22,8 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public class GetA implements Query<GetA.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "9ea4fe0d8d5f625417b080b65cba65b994059847d59fac8d092ffd51eb6cd39e";
 
   /**
@@ -130,6 +133,23 @@ public class GetA implements Query<GetA.Data> {
 
     public GetA build() {
       return new GetA();
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(GetA_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.used_arguments.type.Query.type
+      )
+      .selections(GetASelections.__root)
+      .build();
     }
   }
 

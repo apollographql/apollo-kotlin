@@ -8,21 +8,15 @@ package com.example.data_builders.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.DefaultFakeResolver
-import com.apollographql.apollo.api.FakeResolver
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
-import com.apollographql.apollo.api.buildData
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
 import com.example.data_builders.fragment.selections.HumanFragmentSelections
-import com.example.data_builders.schema.__Schema
 import com.example.data_builders.type.Human
-import com.example.data_builders.type.HumanBuilder
-import com.example.data_builders.type.__CustomScalarAdapters
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
-import kotlin.Unit
 
 public class HumanFragmentImpl() : Fragment<HumanFragment> {
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
@@ -37,24 +31,19 @@ public class HumanFragmentImpl() : Fragment<HumanFragment> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<HumanFragment> = HumanFragmentImpl_ResponseAdapter.HumanFragment.obj()
+  override fun adapter(): Adapter<HumanFragment> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Human.type
-  )
-  .selections(selections = HumanFragmentSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
-  public companion object {
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: HumanBuilder.() -> Unit = {}): HumanFragment = buildData(
-      Human,
-      block,
-      HumanFragmentImpl_ResponseAdapter.HumanFragment,
-      HumanFragmentSelections.__root,
-      "Human",
-      resolver,
-      __CustomScalarAdapters,
-    )
+  public companion object : ExecutableDefinition<HumanFragment> {
+    override val ADAPTER: Adapter<HumanFragment> =
+        HumanFragmentImpl_ResponseAdapter.HumanFragment.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Human.type
+        )
+        .selections(selections = HumanFragmentSelections.__root)
+        .build()
   }
 }

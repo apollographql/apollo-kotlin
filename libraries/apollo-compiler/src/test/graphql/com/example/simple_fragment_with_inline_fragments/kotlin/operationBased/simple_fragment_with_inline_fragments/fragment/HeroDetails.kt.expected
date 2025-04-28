@@ -5,7 +5,7 @@
 //
 package com.example.simple_fragment_with_inline_fragments.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.simple_fragment_with_inline_fragments.type.Character
 import kotlin.Double
 import kotlin.String
 import kotlin.collections.List
@@ -19,7 +19,7 @@ public data class HeroDetails(
    * The friends of the character, or an empty list if they have none
    */
   public val friends: List<Friend?>?,
-) : Fragment.Data {
+) : Character.Data {
   public data class Friend(
     public val __typename: String,
     /**

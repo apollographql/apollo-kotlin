@@ -8,18 +8,14 @@ package com.example.simple_fragment;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
-import com.apollographql.apollo.api.DefaultFakeResolver;
-import com.apollographql.apollo.api.FakeResolver;
-import com.apollographql.apollo.api.FakeResolverKt;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.simple_fragment.adapter.TestQuery_ResponseAdapter;
 import com.example.simple_fragment.fragment.HeroDetails;
 import com.example.simple_fragment.fragment.HumanDetails;
-import com.example.simple_fragment.schema.__Schema;
 import com.example.simple_fragment.selections.TestQuerySelections;
-import com.example.simple_fragment.type.builder.QueryMap;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
@@ -31,6 +27,8 @@ import java.lang.SuppressWarnings;
  * for both query and fragments
  */
 public class TestQuery implements Query<TestQuery.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "590d21282ab1a5387ee626ec6ab47a1ba5fb1c93f8370ede7594be52e5d0f28f";
 
   /**
@@ -139,21 +137,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     .build();
   }
 
-  public static Data buildData(QueryMap map, FakeResolver resolver) {
-    return FakeResolverKt.buildData(
-      com.example.simple_fragment.adapter.TestQuery_ResponseAdapter.Data.INSTANCE,
-      TestQuerySelections.__root,
-      "Query",
-      map,
-      resolver,
-      __Schema.customScalarAdapters
-    );
-  }
-
-  public static Data buildData(QueryMap map) {
-    return buildData(map, new DefaultFakeResolver(__Schema.types));
-  }
-
   @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
@@ -161,6 +144,23 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public TestQuery build() {
       return new TestQuery();
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.simple_fragment.type.Query.type
+      )
+      .selections(TestQuerySelections.__root)
+      .build();
     }
   }
 

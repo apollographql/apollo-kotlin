@@ -5,12 +5,15 @@
 //
 package com.example.inline_fragment_merge_fields.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 /**
  * An edge object for a character's friends
  */
 public class FriendsEdge {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "FriendsEdge").build()
   }

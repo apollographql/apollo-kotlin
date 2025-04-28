@@ -5,12 +5,15 @@
 //
 package com.example.fragment_used_twice.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 /**
  * The query type, represents all of the entry points into our object graph
  */
 public class Query {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()
   }

@@ -9,6 +9,7 @@ import com.apollographql.apollo.annotations.ApolloAdaptableWith
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -40,14 +41,9 @@ public data class CreateReviewForEpisodeMutation(
     CreateReviewForEpisodeMutation_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
-  override fun adapter(): Adapter<Data> = CreateReviewForEpisodeMutation_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = CompiledMutation.type
-  )
-  .selections(selections = CreateReviewForEpisodeMutationSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   @ApolloAdaptableWith(CreateReviewForEpisodeMutation_ResponseAdapter.Data::class)
   public data class Data(
@@ -65,7 +61,16 @@ public data class CreateReviewForEpisodeMutation(
     )
   }
 
-  public companion object {
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = CreateReviewForEpisodeMutation_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = CompiledMutation.type
+        )
+        .selections(selections = CreateReviewForEpisodeMutationSelections.__root)
+        .build()
+
     public const val OPERATION_ID: String =
         "0af665fbb1ccec4fbec377a80b620cb423b737162848a7b16b842c2fa382b54c"
 

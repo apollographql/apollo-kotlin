@@ -8,6 +8,7 @@ package com.example.hero_details_semantic_naming;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
@@ -22,6 +23,8 @@ import java.lang.SuppressWarnings;
 import java.util.List;
 
 public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "5e11892e17cceb600c00f4565a27951dce5e8aadd95b64b8d13a835ed8fb11e1";
 
   /**
@@ -133,6 +136,23 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
 
     public HeroDetailsQuery build() {
       return new HeroDetailsQuery();
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(HeroDetailsQuery_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.hero_details_semantic_naming.type.Query.type
+      )
+      .selections(HeroDetailsQuerySelections.__root)
+      .build();
     }
   }
 

@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_without_implementation.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.named_fragment_without_implementation.type.Human
 import kotlin.Double
 
 public data class HumanDetails(
@@ -13,4 +13,4 @@ public data class HumanDetails(
    * Height in the preferred unit, default is meters
    */
   public val height: Double?,
-) : Fragment.Data
+) : Human.Data

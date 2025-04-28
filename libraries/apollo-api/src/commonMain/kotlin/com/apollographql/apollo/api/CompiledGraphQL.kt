@@ -383,12 +383,7 @@ class EnumType(
     val values: List<String>,
 ) : CompiledNamedType(name)
 
-/**
- * TODO v4: remove (see also [CustomScalarType] above
- */
-class ScalarType(
-    name: String,
-) : CompiledNamedType(name)
+
 
 
 @JvmName("-notNull")

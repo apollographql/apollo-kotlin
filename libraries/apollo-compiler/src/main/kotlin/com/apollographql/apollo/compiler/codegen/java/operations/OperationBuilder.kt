@@ -5,11 +5,9 @@ import com.apollographql.apollo.compiler.codegen.Identifier
 import com.apollographql.apollo.compiler.codegen.Identifier.OPERATION_DOCUMENT
 import com.apollographql.apollo.compiler.codegen.Identifier.OPERATION_ID
 import com.apollographql.apollo.compiler.codegen.Identifier.OPERATION_NAME
-import com.apollographql.apollo.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo.compiler.codegen.Identifier.document
 import com.apollographql.apollo.compiler.codegen.Identifier.id
 import com.apollographql.apollo.compiler.codegen.Identifier.name
-import com.apollographql.apollo.compiler.codegen.Identifier.root
 import com.apollographql.apollo.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
@@ -26,7 +24,7 @@ import com.apollographql.apollo.compiler.codegen.java.javaPropertyName
 import com.apollographql.apollo.compiler.codegen.maybeFlatten
 import com.apollographql.apollo.compiler.codegen.operationName
 import com.apollographql.apollo.compiler.internal.applyIf
-import com.apollographql.apollo.compiler.ir.IrOperation
+import com.apollographql.apollo.compiler.ir.IrOperationDefinition
 import com.apollographql.apollo.compiler.ir.IrOperationType
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -41,13 +39,16 @@ internal class OperationBuilder(
     private val context: JavaOperationsContext,
     private val operationId: String,
     private val generateQueryDocument: Boolean,
-    private val operation: IrOperation,
-    private val generateDataBuilders: Boolean,
+    private val operation: IrOperationDefinition,
     flatten: Boolean,
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.executableDocumentPackageName(operation.normalizedFilePath)
   private val simpleName = layout.operationName(operation)
+  private fun definitionTypeName(): ParameterizedTypeName? {
+    return ParameterizedTypeName.get(JavaClassNames.ExecutableDefinition, context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
+  }
+
 
   private val dataSuperClassName = when (operation.operationType) {
     is IrOperationType.Query -> JavaClassNames.QueryData
@@ -95,16 +96,14 @@ internal class OperationBuilder(
             className = context.resolver.resolveOperation(operation.name)
         )
         .addBuilder(context)
+        .addType(executableDefinitionTypeSpec())
+        .addField(executableDefinitionFieldSpec())
         .addMethod(operationIdMethodSpec())
         .addMethod(queryDocumentMethodSpec(generateQueryDocument))
         .addMethod(nameMethodSpec())
         .addMethod(serializeVariablesMethodSpec())
         .addMethod(adapterMethodSpec(context.resolver, operation.dataProperty))
         .addMethod(rootFieldMethodSpec())
-        .applyIf(generateDataBuilders) {
-          addMethod(buildDataMethod())
-          addMethod(buildDataOverloadMethod())
-        }
         .addTypes(dataTypeSpecs())
         .addField(
             FieldSpec.builder(JavaClassNames.String, OPERATION_ID)
@@ -141,56 +140,6 @@ internal class OperationBuilder(
         .build()
   }
 
-  //  public static Data buildData(QueryMap queryMap, FakeResolver resolver) {
-//    return FakeResolverKt.buildData(
-//        GetIntQuery_ResponseAdapter.Data.INSTANCE,
-//        GetIntQuerySelections.__root,
-//        "Query",
-//        queryMap,
-//        resolver
-//    );
-//  }
-//
-//  public static Data buildData(QueryMap queryMap) {
-//    return buildData(queryMap, new DefaultFakeResolver(__Schema.types));
-//  }
-  private fun buildDataMethod(): MethodSpec {
-    return MethodSpec.methodBuilder(Identifier.buildData)
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addParameter(context.resolver.resolveMapType(operation.operationType.typeName), Identifier.map)
-        .addParameter(JavaClassNames.FakeResolver, Identifier.resolver)
-        .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
-        .addCode(
-            CodeBlock.builder()
-                .add("return $T.buildData(\n", JavaClassNames.FakeResolverKt)
-                .indent()
-                .add("$L.INSTANCE,\n", context.resolver.resolveModelAdapter(operation.dataModelGroup.baseModelId))
-                .add("$T.$root,\n", context.resolver.resolveOperationSelections(operation.name))
-                .add("$S,\n", operation.operationType.typeName)
-                .add("${Identifier.map},\n")
-                .add("${Identifier.resolver},\n")
-                .add("$T.$customScalarAdapters\n", context.resolver.resolveSchema())
-                .unindent()
-                .add(");")
-                .build()
-        )
-        .build()
-  }
-
-  private fun buildDataOverloadMethod(): MethodSpec {
-    return MethodSpec.methodBuilder(Identifier.buildData)
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addParameter(context.resolver.resolveMapType(operation.operationType.typeName), Identifier.map)
-        .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
-        .addStatement(
-            "return buildData(${Identifier.map}, new $T($T.types))",
-            JavaClassNames.DefaultFakeResolver,
-            context.resolver.resolveSchema()
-        )
-        .build()
-  }
-
-
   private fun serializeVariablesMethodSpec(): MethodSpec = serializeVariablesMethodSpec(
       adapterClassName = context.resolver.resolveOperationVariablesAdapter(operation.name),
       emptyMessage = "This operation doesn't have any variable"
@@ -201,6 +150,56 @@ internal class OperationBuilder(
       it.build()
     }
   }
+
+  private fun executableDefinitionFieldSpec(): FieldSpec {
+    return FieldSpec.builder(
+        definitionTypeName(),
+        "definition"
+    ).addModifiers(Modifier.STATIC, Modifier.PUBLIC)
+        .initializer("new Definition()")
+        .build()
+  }
+
+  private fun executableDefinitionTypeSpec(): TypeSpec {
+    val adaptedTypeName = context.resolver.resolveModel(operation.dataModelGroup.baseModelId)
+    return TypeSpec.classBuilder("Definition")
+        .addModifiers(Modifier.STATIC, Modifier.PRIVATE)
+        .addSuperinterface(definitionTypeName())
+        .addMethod(
+            MethodSpec.methodBuilder("getADAPTER")
+                .addAnnotation(JavaClassNames.Override)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(ParameterizedTypeName.get(JavaClassNames.Adapter, adaptedTypeName))
+                .addCode(
+                    "return $L;\n",
+                    context.resolver.adapterInitializer(operation.dataProperty.info.type, operation.dataProperty.requiresBuffering)
+                )
+                .build()
+
+        )
+        .addMethod(
+            MethodSpec.methodBuilder("getROOT_FIELD")
+                .addAnnotation(JavaClassNames.Override)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(JavaClassNames.CompiledField)
+                .addCode(
+                    CodeBlock.builder()
+                        .add("return new $T(\n", JavaClassNames.CompiledFieldBuilder)
+                        .indent()
+                        .add("$S,\n", Identifier.data)
+                        .add("$L\n", context.resolver.resolveCompiledType(operation.typeCondition))
+                        .unindent()
+                        .add(")\n")
+                        .add(".${Identifier.selections}($T.${Identifier.root})\n", context.resolver.resolveOperationSelections(operation.name))
+                        .add(".build();\n")
+                        .build()
+                )
+                .build()
+
+        )
+        .build()
+  }
+
 
   private fun superInterfaceType(): TypeName {
     return when (operation.operationType) {

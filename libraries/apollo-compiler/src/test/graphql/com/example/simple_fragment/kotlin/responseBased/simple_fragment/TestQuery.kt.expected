@@ -9,26 +9,20 @@ import com.apollographql.apollo.annotations.ApolloAdaptableWith
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.DefaultFakeResolver
-import com.apollographql.apollo.api.FakeResolver
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.buildData
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
 import com.example.simple_fragment.adapter.TestQuery_ResponseAdapter
 import com.example.simple_fragment.fragment.HeroDetails
 import com.example.simple_fragment.fragment.HumanDetails
 import com.example.simple_fragment.fragment.HumanHeroDetails
-import com.example.simple_fragment.schema.__Schema
 import com.example.simple_fragment.selections.TestQuerySelections
-import com.example.simple_fragment.type.QueryBuilder
-import com.example.simple_fragment.type.__CustomScalarAdapters
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import com.example.simple_fragment.type.Query as CompiledQuery
 
 /**
@@ -54,14 +48,9 @@ internal class TestQuery() : Query<TestQuery.Data> {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = CompiledQuery.type
-  )
-  .selections(selections = TestQuerySelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   @ApolloAdaptableWith(TestQuery_ResponseAdapter.Data::class)
   public data class Data(
@@ -98,7 +87,16 @@ internal class TestQuery() : Query<TestQuery.Data> {
         HeroDetails
   }
 
-  public companion object {
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = CompiledQuery.type
+        )
+        .selections(selections = TestQuerySelections.__root)
+        .build()
+
     public const val OPERATION_ID: String =
         "590d21282ab1a5387ee626ec6ab47a1ba5fb1c93f8370ede7594be52e5d0f28f"
 
@@ -130,15 +128,5 @@ internal class TestQuery() : Query<TestQuery.Data> {
       get() = "query TestQuery { hero { __typename ...HeroDetails ...HumanDetails } }  fragment HumanDetails on Human { __typename name }  fragment HeroDetails on Character { __typename ...HumanDetails }"
 
     public const val OPERATION_NAME: String = "TestQuery"
-
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: QueryBuilder.() -> Unit = {}): Data = buildData(
-      CompiledQuery,
-      block,
-      TestQuery_ResponseAdapter.Data,
-      TestQuerySelections.__root,
-      "Query",
-      resolver,
-      __CustomScalarAdapters,
-    )
   }
 }

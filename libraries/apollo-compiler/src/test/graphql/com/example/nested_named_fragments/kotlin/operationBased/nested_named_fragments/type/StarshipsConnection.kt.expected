@@ -5,12 +5,15 @@
 //
 package com.example.nested_named_fragments.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 /**
  * A connection to a list of items.
  */
 public class StarshipsConnection {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "StarshipsConnection").build()
   }

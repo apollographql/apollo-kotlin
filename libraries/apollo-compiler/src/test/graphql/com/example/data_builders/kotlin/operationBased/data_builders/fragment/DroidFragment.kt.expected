@@ -5,9 +5,9 @@
 //
 package com.example.data_builders.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.data_builders.type.Droid
 import kotlin.String
 
 public data class DroidFragment(
   public val primaryFunction: String,
-) : Fragment.Data
+) : Droid.Data

@@ -1,10 +1,8 @@
 
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.GlobalBuilder
+import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo.testing.internal.runTest
-import ios.test.type.buildQuery
 import kotlin.test.Test
 
 class iOSTest {
@@ -14,7 +12,7 @@ class iOSTest {
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
 
     // What is passed does not matter
-    mockServer.enqueueString(GlobalBuilder.buildQuery { random = 42 }.toString())
+    mockServer.enqueueString("foo")
 
     apolloClient.close()
     mockServer.close()

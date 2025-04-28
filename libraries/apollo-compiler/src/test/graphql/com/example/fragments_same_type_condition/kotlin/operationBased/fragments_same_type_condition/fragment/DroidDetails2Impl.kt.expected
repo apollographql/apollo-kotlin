@@ -8,6 +8,7 @@ package com.example.fragments_same_type_condition.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -30,12 +31,19 @@ public class DroidDetails2Impl() : Fragment<DroidDetails2> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<DroidDetails2> = DroidDetails2Impl_ResponseAdapter.DroidDetails2.obj()
+  override fun adapter(): Adapter<DroidDetails2> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Droid.type
-  )
-  .selections(selections = DroidDetails2Selections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
+
+  public companion object : ExecutableDefinition<DroidDetails2> {
+    override val ADAPTER: Adapter<DroidDetails2> =
+        DroidDetails2Impl_ResponseAdapter.DroidDetails2.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Droid.type
+        )
+        .selections(selections = DroidDetails2Selections.__root)
+        .build()
+  }
 }

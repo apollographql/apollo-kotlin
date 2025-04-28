@@ -5,7 +5,7 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.fragment_spread_with_include_directive.type.Droid
 import kotlin.String
 
 public data class OtherDroidDetails(
@@ -13,4 +13,4 @@ public data class OtherDroidDetails(
    * The ID of the droid
    */
   public val id: String,
-) : Fragment.Data
+) : Droid.Data

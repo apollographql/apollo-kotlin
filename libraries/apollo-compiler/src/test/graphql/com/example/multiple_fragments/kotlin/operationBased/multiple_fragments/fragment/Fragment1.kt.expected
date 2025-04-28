@@ -5,9 +5,9 @@
 //
 package com.example.multiple_fragments.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.multiple_fragments.type.ANode
 import kotlin.String
 
 public data class Fragment1(
   public val field1: String?,
-) : Fragment.Data
+) : ANode.Data

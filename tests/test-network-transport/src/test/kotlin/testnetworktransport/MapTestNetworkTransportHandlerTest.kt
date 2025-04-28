@@ -9,7 +9,9 @@ import com.apollographql.apollo.testing.registerTestResponse
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.toList
-import testnetworktransport.type.buildDroid
+import testnetworktransport.builder.Data
+import testnetworktransport.builder.buildDroid
+import testnetworktransport.builder.resolver.DefaultFakeResolver
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -99,7 +101,7 @@ class MapTestNetworkTransportHandlerTest {
   @Test
   fun registerDataTestBuilder() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
-    val testData = GetHeroQuery.Data {
+    val testData = GetHeroQuery.Data(DefaultFakeResolver()) {
       hero = buildDroid {
         name = "R2D2"
       }

@@ -6,12 +6,12 @@ import com.apollographql.apollo.compiler.codegen.java.JavaOperationsContext
 import com.apollographql.apollo.compiler.codegen.operationName
 import com.apollographql.apollo.compiler.codegen.operationResponseFieldsPackageName
 import com.apollographql.apollo.compiler.codegen.selections
-import com.apollographql.apollo.compiler.ir.IrOperation
+import com.apollographql.apollo.compiler.ir.IrOperationDefinition
 import com.squareup.javapoet.ClassName
 
 internal class OperationSelectionsBuilder(
     val context: JavaOperationsContext,
-    val operation: IrOperation,
+    val operation: IrOperationDefinition,
 ) : JavaClassBuilder {
   private val packageName = context.layout.operationResponseFieldsPackageName(operation.normalizedFilePath)
   private val simpleName = context.layout.operationName(operation).selections()

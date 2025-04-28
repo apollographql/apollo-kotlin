@@ -5,9 +5,12 @@
 //
 package com.example.inline_fragment_intersection.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 public class Human {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: ObjectType =
         ObjectType.Builder(name = "Human").interfaces(listOf(Being.type, Character.type)).build()

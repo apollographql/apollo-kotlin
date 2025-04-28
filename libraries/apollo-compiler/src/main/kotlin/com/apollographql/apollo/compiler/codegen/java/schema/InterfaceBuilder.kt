@@ -41,7 +41,7 @@ internal class InterfaceBuilder(
         .addModifiers(Modifier.PUBLIC)
         .maybeAddDescription(description)
         .maybeAddDeprecation(deprecationReason)
-        .addFields(fieldDefinitions.fieldSpecs())
+        .addFields(fieldDefinitions.argumentsFieldSpecs())
         .addField(typeFieldSpec(context.resolver))
         .build()
   }

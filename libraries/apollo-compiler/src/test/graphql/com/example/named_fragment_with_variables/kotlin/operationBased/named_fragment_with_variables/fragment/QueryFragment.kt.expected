@@ -5,13 +5,13 @@
 //
 package com.example.named_fragment_with_variables.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.named_fragment_with_variables.type.Query
 import kotlin.String
 import kotlin.collections.List
 
 public data class QueryFragment(
   public val organization: Organization?,
-) : Fragment.Data {
+) : Query.Data {
   public data class Organization(
     public val id: String,
     public val user: List<User>,

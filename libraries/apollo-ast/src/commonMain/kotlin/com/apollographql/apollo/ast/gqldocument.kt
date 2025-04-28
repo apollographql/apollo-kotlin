@@ -6,9 +6,9 @@ import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.internal.ExtensionsMerger
 import com.apollographql.apollo.ast.internal.builtinsDefinitionsStr
 import com.apollographql.apollo.ast.internal.compilerOptions_0_0
+import com.apollographql.apollo.ast.internal.compilerOptions_0_1_additions
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_3
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_4
-import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_5
 import com.apollographql.apollo.ast.internal.linkDefinitionsStr
 import com.apollographql.apollo.ast.internal.nullabilityDefinitionsStr
 import okio.Buffer
@@ -131,7 +131,9 @@ fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
     // v0.4 doesn't have `@nonnull`
     "v0.4" -> kotlinLabsDefinitions_0_4
     // v0.5 adds `@map` and `@mapTo`
-    "v0.5" -> kotlinLabsDefinitions_0_5
+    "v0.5" -> kotlinLabsDefinitions_0_4 + compilerOptions_0_0
+    // v0.6 adds `@generateDataBuilders`
+    "v0.6" -> kotlinLabsDefinitions_0_4 + compilerOptions_0_0 + compilerOptions_0_1_additions
     else -> error("kotlin_labs/$version definitions are not supported, please use $AUTO_IMPORTED_KOTLIN_LABS_VERSION")
   })
 }
@@ -149,8 +151,9 @@ fun builtinForeignSchemas(): List<ForeignSchema> {
       autoLinkedKotlinLabsForeignSchema,
       ForeignSchema("kotlin_labs", "v0.4", kotlinLabsDefinitions("v0.4"), listOf("optional")),
       ForeignSchema("kotlin_labs", "v0.5", kotlinLabsDefinitions("v0.5"), listOf("optional")),
+      ForeignSchema("kotlin_labs", "v0.6", kotlinLabsDefinitions("v0.6"), listOf("optional")),
       ForeignSchema("nullability", "v0.4", nullabilityDefinitions("v0.4"), listOf("catch")),
-      ForeignSchema("kotlin_compiler_options", "v0.0", definitionsFromString(compilerOptions_0_0), emptyList())
+      ForeignSchema("kotlin_compiler_options", "v0.1", definitionsFromString(compilerOptions_0_0 + compilerOptions_0_1_additions), emptyList())
   )
 }
 

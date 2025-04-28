@@ -8,6 +8,7 @@ package com.example.root_query_fragment_with_nested_fragments.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -32,14 +33,9 @@ public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = QueryFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Query.type
-  )
-  .selections(selections = QueryFragmentSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   public data class Data(
     override val __typename: String,
@@ -47,7 +43,7 @@ public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
     override val droid: Droid?,
     override val human: Human?,
   ) : QueryFragment,
-      Fragment.Data {
+      Query.Data {
     public data class Hero(
       override val __typename: String,
       /**
@@ -91,5 +87,16 @@ public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
        */
       override val homePlanet: String?,
     ) : QueryFragment.Human
+  }
+
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = QueryFragmentImpl_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Query.type
+        )
+        .selections(selections = QueryFragmentSelections.__root)
+        .build()
   }
 }

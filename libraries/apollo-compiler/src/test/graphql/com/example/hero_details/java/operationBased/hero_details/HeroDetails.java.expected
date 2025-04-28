@@ -8,6 +8,7 @@ package com.example.hero_details;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
@@ -23,6 +24,8 @@ import java.lang.SuppressWarnings;
 import java.util.List;
 
 public class HeroDetails implements Query<HeroDetails.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "8f6f2c3852a89d45ea7eaa08a249906a1fb8f1733c4f2326d0fb8fb75c4af1e3";
 
   /**
@@ -135,6 +138,23 @@ public class HeroDetails implements Query<HeroDetails.Data> {
 
     public HeroDetails build() {
       return new HeroDetails();
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(HeroDetails_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.hero_details.type.Query.type
+      )
+      .selections(HeroDetailsSelections.__root)
+      .build();
     }
   }
 

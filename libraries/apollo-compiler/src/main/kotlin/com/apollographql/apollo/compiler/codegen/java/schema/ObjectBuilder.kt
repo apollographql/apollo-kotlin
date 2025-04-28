@@ -48,13 +48,13 @@ internal class ObjectBuilder(
         .addModifiers(Modifier.PUBLIC)
         .maybeAddDescription(description)
         .maybeAddDeprecation(deprecationReason)
-        .addFields(fieldDefinitions.fieldSpecs())
+        .addFields(fieldDefinitions.argumentsFieldSpecs())
         .addField(typeFieldSpec(context.resolver))
         .build()
   }
 }
 
-internal fun List<IrFieldDefinition>.fieldSpecs(): List<FieldSpec> {
+internal fun List<IrFieldDefinition>.argumentsFieldSpecs(): List<FieldSpec> {
   return flatMap { fieldDefinition ->
     fieldDefinition.argumentDefinitions.map { argumentDefinition ->
       FieldSpec.builder(

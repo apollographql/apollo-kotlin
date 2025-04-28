@@ -5,7 +5,7 @@
 //
 package com.example.fragment_with_multiple_fieldsets.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.fragment_with_multiple_fieldsets.type.I
 import kotlin.String
 
 public data class IFragment(
@@ -14,7 +14,7 @@ public data class IFragment(
    * Synthetic field for inline fragment on A
    */
   public val onA: OnA?,
-) : Fragment.Data {
+) : I.Data {
   public data class OnA(
     public val fieldA: String?,
   )

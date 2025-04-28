@@ -8,6 +8,7 @@ package com.example.root_query_fragment_with_nested_fragments.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -30,12 +31,19 @@ public class HeroFragmentImpl() : Fragment<HeroFragment> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<HeroFragment> = HeroFragmentImpl_ResponseAdapter.HeroFragment.obj()
+  override fun adapter(): Adapter<HeroFragment> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Character.type
-  )
-  .selections(selections = HeroFragmentSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
+
+  public companion object : ExecutableDefinition<HeroFragment> {
+    override val ADAPTER: Adapter<HeroFragment> =
+        HeroFragmentImpl_ResponseAdapter.HeroFragment.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Character.type
+        )
+        .selections(selections = HeroFragmentSelections.__root)
+        .build()
+  }
 }

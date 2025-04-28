@@ -6,9 +6,12 @@
 package com.example.java8annotation.type
 
 import com.apollographql.apollo.api.CompiledArgumentDefinition
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 public class Mutation {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val __login_input: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("input").build()

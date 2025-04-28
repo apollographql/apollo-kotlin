@@ -8,13 +8,15 @@ import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo.testing.internal.runTest
 import com.example.GetRandomQuery
+import com.example.builder.Data
+import com.example.builder.resolver.DefaultFakeResolver
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class HeadersTest {
 
   private val operation = GetRandomQuery()
-  private val data = GetRandomQuery.Data { }
+  private val data = GetRandomQuery.Data(DefaultFakeResolver()) { }
 
   @Test
   fun addHeaderUsingAddHttpHeader() = runTest {

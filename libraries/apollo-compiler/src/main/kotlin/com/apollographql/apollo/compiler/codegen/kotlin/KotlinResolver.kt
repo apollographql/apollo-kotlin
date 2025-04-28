@@ -57,7 +57,7 @@ internal class KotlinResolver(
   private val scalarTargets = mutableMapOf<String, String>()
   private val inlineProperties = mutableMapOf<String, String>()
   private val scalarIsUserDefined = mutableMapOf<String, Boolean>()
-
+  private val mapTypes = mutableMapOf<String, ClassName>()
   private fun ResolverClassName.toKotlinPoetClassName() = ClassName(packageName, simpleNames)
 
   private fun resolve(kind: ResolverKeyKind, id: String) = resolve(ResolverKey(kind, id))
@@ -69,12 +69,6 @@ internal class KotlinResolver(
           "Have you set up an 'opposite link' on the downstream project to the schema module as a isADependencyOf(..)?"
     }
     return result
-  }
-
-  private fun resolveMemberNameAndAssert(kind: ResolverKeyKind, id: String): MemberName {
-    val className = resolveAndAssert(kind, id)
-
-    return MemberName(className.packageName, className.simpleName)
   }
 
   internal fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
@@ -141,7 +135,7 @@ internal class KotlinResolver(
     return when (type) {
       is IrNonNullType2 -> resolveIrType2(type.ofType).copy(nullable = false)
       is IrListType2 -> KotlinSymbols.List.parameterizedBy(resolveIrType2(type.ofType)).copy(nullable = true)
-      is IrCompositeType2 -> resolveAndAssert(ResolverKeyKind.MapType, type.name).copy(nullable = true)
+      is IrCompositeType2 -> mapTypes.get(type.name) ?: error("Cannot find map type for ${type.name}")
       is IrEnumType2 -> resolveIrType(IrEnumType(type.name, nullable = true), false).copy(nullable = true)
       is IrScalarType2 -> resolveIrType(IrScalarType(type.name, nullable = true), false).copy(nullable = true)
     }
@@ -152,6 +146,7 @@ internal class KotlinResolver(
     return CodeBlock.of("%L.%M()", this, nullableFun)
   }
 
+  internal fun registerMapType(name: String, className: ClassName) = mapTypes.put(name, className)
 
   private fun CodeBlock.list(jsExport: Boolean): CodeBlock {
     val listFun = if (jsExport) {
@@ -388,16 +383,8 @@ internal class KotlinResolver(
 
   fun resolveSchemaType(name: String) = resolveAndAssert(ResolverKeyKind.SchemaType, name)
   fun registerSchemaType(name: String, className: ClassName) = register(ResolverKeyKind.SchemaType, name, className)
-  fun registerMapType(name: String, className: ClassName) = register(ResolverKeyKind.MapType, name, className)
-  fun resolveMapType(name: String) = resolveAndAssert(ResolverKeyKind.MapType, name)
 
   fun registerModel(path: String, className: ClassName) = register(ResolverKeyKind.Model, path, className)
-
-  fun registerBuilderType(name: String, className: ClassName) = register(ResolverKeyKind.BuilderType, name, className)
-  fun resolveBuilderType(name: String) = resolveAndAssert(ResolverKeyKind.BuilderType, name)
-
-  fun registerBuilderFun(name: String, memberName: MemberName) = register(ResolverKeyKind.BuilderFun, name, memberName)
-  fun resolveBuilderFun(name: String) = resolveMemberNameAndAssert(ResolverKeyKind.BuilderFun, name)
 
   fun resolveRequiresOptInAnnotation(): ClassName? {
     if (requiresOptInAnnotation == "none") {
@@ -410,13 +397,9 @@ internal class KotlinResolver(
     register(ResolverKeyKind.Schema, "", className)
   }
 
-  fun resolveSchema(): ClassName = resolveAndAssert(ResolverKeyKind.Schema, "")
-
   fun registerCustomScalarAdapters(className: ClassName) {
     register(ResolverKeyKind.CustomScalarAdapters, "", className)
   }
-
-  fun resolveCustomScalarAdapters(): ClassName = resolveAndAssert(ResolverKeyKind.CustomScalarAdapters, "")
 
   fun registerArgumentDefinition(id: String, className: ClassName) = register(ResolverKeyKind.ArgumentDefinition, id, className)
   fun resolveArgumentDefinition(id: String) = resolveAndAssert(ResolverKeyKind.ArgumentDefinition, id)

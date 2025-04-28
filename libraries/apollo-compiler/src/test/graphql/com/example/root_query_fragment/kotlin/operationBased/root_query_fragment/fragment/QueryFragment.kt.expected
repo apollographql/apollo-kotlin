@@ -5,13 +5,13 @@
 //
 package com.example.root_query_fragment.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.root_query_fragment.type.Query
 import kotlin.String
 
 public data class QueryFragment(
   public val __typename: String,
   public val hero: Hero?,
-) : Fragment.Data {
+) : Query.Data {
   public data class Hero(
     /**
      * The name of the character

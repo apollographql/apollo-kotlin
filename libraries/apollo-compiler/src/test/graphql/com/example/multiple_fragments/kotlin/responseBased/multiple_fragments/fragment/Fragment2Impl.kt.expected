@@ -8,6 +8,7 @@ package com.example.multiple_fragments.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -31,17 +32,23 @@ public class Fragment2Impl() : Fragment<Fragment2Impl.Data> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = Fragment2Impl_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = ANode.type
-  )
-  .selections(selections = Fragment2Selections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   public data class Data(
     override val field2: String?,
   ) : Fragment2,
-      Fragment.Data
+      ANode.Data
+
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = Fragment2Impl_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = ANode.type
+        )
+        .selections(selections = Fragment2Selections.__root)
+        .build()
+  }
 }

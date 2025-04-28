@@ -5,7 +5,7 @@
 //
 package com.example.fragments_with_defer_and_include_directives.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.fragments_with_defer_and_include_directives.type.Droid
 import kotlin.String
 
 public data class CharacterDetails(
@@ -13,4 +13,4 @@ public data class CharacterDetails(
    * What others call this droid
    */
   public val name: String,
-) : Fragment.Data
+) : Droid.Data

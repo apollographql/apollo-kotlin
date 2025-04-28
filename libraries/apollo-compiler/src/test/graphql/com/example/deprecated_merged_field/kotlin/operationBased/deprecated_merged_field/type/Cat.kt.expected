@@ -5,9 +5,12 @@
 //
 package com.example.deprecated_merged_field.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 public class Cat {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Cat").build()
   }

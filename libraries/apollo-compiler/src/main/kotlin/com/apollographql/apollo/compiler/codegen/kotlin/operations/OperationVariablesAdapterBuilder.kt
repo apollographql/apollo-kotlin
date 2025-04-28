@@ -7,13 +7,13 @@ import com.apollographql.apollo.compiler.codegen.kotlin.operations.util.variable
 import com.apollographql.apollo.compiler.codegen.operationAdapterPackageName
 import com.apollographql.apollo.compiler.codegen.operationName
 import com.apollographql.apollo.compiler.codegen.variablesAdapter
-import com.apollographql.apollo.compiler.ir.IrOperation
+import com.apollographql.apollo.compiler.ir.IrOperationDefinition
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class OperationVariablesAdapterBuilder(
     val context: KotlinOperationsContext,
-    val operation: IrOperation,
+    val operation: IrOperationDefinition,
 ) : CgFileBuilder {
   val packageName = context.layout.operationAdapterPackageName(operation.normalizedFilePath)
   val simpleName = context.layout.operationName(operation).variablesAdapter()

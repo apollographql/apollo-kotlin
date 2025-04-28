@@ -47,9 +47,11 @@ import com.apollographql.apollo.compiler.internal.checkKeyFields
 import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.IrOperationsBuilder
 import com.apollographql.apollo.compiler.ir.IrSchemaBuilder
+import com.apollographql.apollo.compiler.ir.buildIrDataBuilders
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.pqm.toPersistedQueryManifest
 import java.io.File
+import kotlin.collections.plus
 
 object ApolloCompiler {
   interface Logger {
@@ -105,8 +107,11 @@ object ApolloCompiler {
     val schemaDefinitions = (listOf(mainSchemaDocument) + otherSchemaDocumentSorted).flatMap { it.definitions }
 
     val sdl = buildString {
+      var hasLink = false
       if (codegenSchemaOptions.scalarTypeMapping.isNotEmpty()) {
-        appendLine("extend schema @link(url: \"https://specs.apollo.dev/kotlin_compiler_options/v0.0/\")")
+        appendLine("extend schema @link(url: \"https://specs.apollo.dev/kotlin_compiler_options/v0.1/\")")
+        hasLink = true
+
         codegenSchemaOptions.scalarTypeMapping.forEach {
           append("extend scalar ${it.key} @kotlin_compiler_options__map(to: \"${it.value}\"")
           val adapterInitializer = codegenSchemaOptions.scalarAdapterMapping.get(it.key)
@@ -115,6 +120,12 @@ object ApolloCompiler {
           }
           append(")\n")
         }
+      }
+      if (codegenSchemaOptions.generateDataBuilders) {
+        if (!hasLink) {
+          appendLine("extend schema @link(url: \"https://specs.apollo.dev/kotlin_compiler_options/v0.1/\")")
+        }
+        append("extend schema @kotlin_compiler_options__generateDataBuilders")
       }
     }
     val scalarExtensions = sdl.toGQLDocument().definitions
@@ -151,7 +162,6 @@ object ApolloCompiler {
     return CodegenSchema(
         schema = schema,
         normalizedPath = mainSchemaNormalizedPath ?: "",
-        generateDataBuilders = codegenSchemaOptions.generateDataBuilders ?: defaultGenerateDataBuilders
     )
   }
 
@@ -283,7 +293,8 @@ object ApolloCompiler {
         operation = documentTransform.transform(schema, it)
       }
       if (schema.directiveDefinitions.containsKey(Schema.DISABLE_ERROR_PROPAGATION)
-          && schema.schemaDefinition?.directives?.any { schema.originalDirectiveName(it.name) == Schema.CATCH_BY_DEFAULT } == true) {
+          && schema.schemaDefinition?.directives?.any { schema.originalDirectiveName(it.name) == Schema.CATCH_BY_DEFAULT } == true
+      ) {
         operation = operation.copy(
             directives = operation.directives + GQLDirective(null, Schema.DISABLE_ERROR_PROPAGATION, emptyList())
         )
@@ -320,7 +331,6 @@ object ApolloCompiler {
         flattenModels = flattenModels,
         decapitalizeFields = decapitalizeFields,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-        generateDataBuilders = codegenSchema.generateDataBuilders,
         fragmentVariableUsages = validationResult.fragmentVariableUsages
     ).build()
   }
@@ -352,7 +362,6 @@ object ApolloCompiler {
 
     return if (targetLanguage == TargetLanguage.JAVA) {
       JavaCodegen.buildSchemaSources(
-          codegenSchema = codegenSchema,
           irSchema = irSchema,
           codegenOptions = codegenOptions,
           layout = layout,
@@ -360,7 +369,6 @@ object ApolloCompiler {
       ).toSourceOutput()
     } else {
       KotlinCodegen.buildSchemaSources(
-          codegenSchema = codegenSchema,
           targetLanguage = targetLanguage,
           irSchema = irSchema,
           codegenOptions = codegenOptions,
@@ -430,7 +438,7 @@ object ApolloCompiler {
 
     var sourceOutput: SourceOutput? = null
     if (upstreamCodegenMetadata.isEmpty()) {
-      sourceOutput = sourceOutput plus buildSchemaSources(
+      sourceOutput = buildSchemaSources(
           codegenSchema = codegenSchema,
           usedCoordinates = downstreamUsedCoordinates.mergeWith(irOperations.usedCoordinates),
           codegenOptions = codegenOptions,
@@ -441,7 +449,6 @@ object ApolloCompiler {
     }
     if (targetLanguage == TargetLanguage.JAVA) {
       sourceOutput = sourceOutput plus JavaCodegen.buildOperationsSources(
-          codegenSchema = codegenSchema,
           irOperations = irOperations,
           operationOutput = operationOutput,
           upstreamCodegenMetadatas = upstreamCodegenMetadata + listOfNotNull(sourceOutput?.codegenMetadata),
@@ -451,7 +458,6 @@ object ApolloCompiler {
       ).toSourceOutput()
     } else {
       sourceOutput = sourceOutput plus KotlinCodegen.buildOperationSources(
-          codegenSchema = codegenSchema,
           targetLanguage = targetLanguage,
           irOperations = irOperations,
           operationOutput = operationOutput,
@@ -508,7 +514,6 @@ object ApolloCompiler {
     )
   }
 
-
   /**
    * Compiles a set of files without serializing the intermediate results
    */
@@ -551,6 +556,44 @@ object ApolloCompiler {
     )
 
     return sourceOutput
+  }
+
+  fun buildDataBuilders(
+      codegenSchema: CodegenSchema,
+      usedCoordinates: UsedCoordinates,
+      codegenOptions: CodegenOptions,
+      layout: SchemaLayout?,
+      upstreamCodegenMetadata: List<CodegenMetadata>,
+  ): SourceOutput {
+    val irDataBuilders = buildIrDataBuilders(codegenSchema, usedCoordinates)
+
+    @Suppress("NAME_SHADOWING")
+    val layout = layout ?: SchemaAndOperationsLayout(
+        codegenSchema = codegenSchema,
+        packageName = codegenOptions.packageName,
+        rootPackageName = codegenOptions.rootPackageName,
+        useSemanticNaming = codegenOptions.useSemanticNaming,
+        decapitalizeFields = codegenOptions.decapitalizeFields,
+        generatedSchemaName = codegenOptions.generatedSchemaName,
+    )
+
+    val targetLanguage = codegenOptions.targetLanguage ?: defaultTargetLanguage(codegenOptions.targetLanguage, upstreamCodegenMetadata)
+    return if (targetLanguage == TargetLanguage.JAVA) {
+      JavaCodegen.buildDataBuilders(
+          dataBuilders = irDataBuilders,
+          layout = layout,
+          codegenOptions = codegenOptions,
+          upstreamCodegenMetadata = upstreamCodegenMetadata,
+      ).toSourceOutput()
+    } else {
+      KotlinCodegen.buildDataBuilders(
+          dataBuilders = irDataBuilders,
+          layout = layout,
+          codegenOptions = codegenOptions,
+          upstreamCodegenMetadata = upstreamCodegenMetadata,
+          targetLanguage = targetLanguage,
+      ).toSourceOutput()
+    }
   }
 }
 

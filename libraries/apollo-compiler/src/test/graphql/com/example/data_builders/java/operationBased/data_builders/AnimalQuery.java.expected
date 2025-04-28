@@ -8,18 +8,14 @@ package com.example.data_builders;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
-import com.apollographql.apollo.api.DefaultFakeResolver;
-import com.apollographql.apollo.api.FakeResolver;
-import com.apollographql.apollo.api.FakeResolverKt;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.data_builders.adapter.AnimalQuery_ResponseAdapter;
 import com.example.data_builders.fragment.CatFragment;
 import com.example.data_builders.fragment.DogFragment;
-import com.example.data_builders.schema.__Schema;
 import com.example.data_builders.selections.AnimalQuerySelections;
-import com.example.data_builders.type.builder.QueryMap;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
@@ -27,6 +23,8 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public class AnimalQuery implements Query<AnimalQuery.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "0a4d6f7c4de2a81e6247e9f2205b24b2b42e03c1f25fe7267e13fe1342d905d7";
 
   /**
@@ -133,21 +131,6 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
     .build();
   }
 
-  public static Data buildData(QueryMap map, FakeResolver resolver) {
-    return FakeResolverKt.buildData(
-      com.example.data_builders.adapter.AnimalQuery_ResponseAdapter.Data.INSTANCE,
-      AnimalQuerySelections.__root,
-      "Query",
-      map,
-      resolver,
-      __Schema.customScalarAdapters
-    );
-  }
-
-  public static Data buildData(QueryMap map) {
-    return buildData(map, new DefaultFakeResolver(__Schema.types));
-  }
-
   @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
@@ -155,6 +138,23 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
 
     public AnimalQuery build() {
       return new AnimalQuery();
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(AnimalQuery_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.data_builders.type.Query.type
+      )
+      .selections(AnimalQuerySelections.__root)
+      .build();
     }
   }
 

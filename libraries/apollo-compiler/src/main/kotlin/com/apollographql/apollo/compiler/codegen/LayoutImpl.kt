@@ -14,7 +14,7 @@ import com.apollographql.apollo.compiler.defaultUseSemanticNaming
 import com.apollographql.apollo.compiler.internal.singularize
 import com.apollographql.apollo.compiler.ir.IrFieldInfo
 import com.apollographql.apollo.compiler.ir.IrListType
-import com.apollographql.apollo.compiler.ir.IrOperation
+import com.apollographql.apollo.compiler.ir.IrOperationDefinition
 import com.apollographql.apollo.compiler.ir.IrType
 import com.apollographql.apollo.compiler.ir.TypeSet
 import com.apollographql.apollo.compiler.maybeAddSuffix
@@ -153,7 +153,9 @@ internal fun modelName(info: IrFieldInfo): String {
 
 
 internal fun SchemaLayout.typePackageName() = "${schemaPackageName()}.type"
-internal fun SchemaLayout.typeBuilderPackageName() = "${schemaPackageName()}.type.builder"
+internal fun SchemaLayout.builderPackageName() = "${schemaPackageName()}.builder"
+internal fun SchemaLayout.builderResolverPackageName() = "${schemaPackageName()}.builder.resolver"
+internal fun SchemaLayout.builderFragmentPackageName() = "${schemaPackageName()}.builder.resolver"
 internal fun SchemaLayout.typeAdapterPackageName() = "${schemaPackageName()}.type.adapter"
 internal fun SchemaLayout.typeUtilPackageName() = "${schemaPackageName()}.type.util"
 internal fun SchemaLayout.typeScalarPackageName() = "${schemaPackageName()}.type.scalar"
@@ -161,8 +163,8 @@ internal fun SchemaLayout.typeScalarPackageName() = "${schemaPackageName()}.type
 internal fun SchemaLayout.paginationPackageName() = "${schemaPackageName()}.pagination"
 internal fun SchemaLayout.schemaSubPackageName() = "${schemaPackageName()}.schema"
 
-internal fun SchemaLayout.javaOptionalAdapterClassName() = "OptionalAdapter"
-internal fun SchemaLayout.javaOptionalAdaptersClassName() = "OptionalAdapters"
+internal fun javaOptionalAdapterClassName() = "OptionalAdapter"
+internal fun javaOptionalAdaptersClassName() = "OptionalAdapters"
 
 internal fun OperationsLayout.operationAdapterPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.adapter"
 internal fun OperationsLayout.operationResponseFieldsPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.selections"
@@ -171,7 +173,7 @@ internal fun OperationsLayout.fragmentPackageName(filePath: String) = "${executa
 internal fun OperationsLayout.fragmentAdapterPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment.adapter"
 internal fun OperationsLayout.fragmentResponseFieldsPackageName(filePath: String) = "${executableDocumentPackageName(filePath)}.fragment.selections"
 
-internal fun OperationsLayout.operationName(operation: IrOperation) = operationName(operation.name, operation.operationType.name)
+internal fun OperationsLayout.operationName(operation: IrOperationDefinition) = operationName(operation.name, operation.operationType.name)
 
 internal fun String.responseAdapter(): String = "${this}_ResponseAdapter"
 internal fun String.inputAdapter(): String = "${this}_InputAdapter"

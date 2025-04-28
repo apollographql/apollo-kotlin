@@ -8,6 +8,7 @@ package com.example.fragments_with_defer_and_include_directives;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
@@ -20,6 +21,8 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "70222802c9192f810f19a54d31e039ce0fc3b8baac231841f0a0e8b4200c312b";
 
   /**
@@ -126,6 +129,23 @@ public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> 
 
     public InlineSingleWithDefer build() {
       return new InlineSingleWithDefer();
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(InlineSingleWithDefer_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.fragments_with_defer_and_include_directives.type.Query.type
+      )
+      .selections(InlineSingleWithDeferSelections.__root)
+      .build();
     }
   }
 

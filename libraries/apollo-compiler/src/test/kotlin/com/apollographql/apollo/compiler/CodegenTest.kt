@@ -116,9 +116,9 @@ class CodegenTest {
      */
     val compileDuration = measureTime {
       if (parameters.generateKotlinModels) {
-        KotlinCompiler.assertCompiles(actualFiles.toSet())
+        KotlinCompiler.assertCompiles(actualFiles.filter { it.extension == "java" }.toSet())
       } else {
-        JavaCompiler.assertCompiles(actualFiles.toSet())
+        JavaCompiler.assertCompiles(actualFiles.filter { it.extension == "kt" }.toSet())
       }
     }
 
@@ -396,7 +396,7 @@ class CodegenTest {
           codegenSchemaOptions = CodegenSchemaOptions(
               scalarTypeMapping = emptyMap(),
               scalarAdapterMapping = emptyMap(),
-              generateDataBuilders = generateDataBuilders
+              generateDataBuilders = generateDataBuilders,
           ),
           irOptions = buildIrOptions(
               codegenModels = codegenModels,
@@ -411,6 +411,7 @@ class CodegenTest {
           irOperationsTransform = null,
           javaOutputTransform = null,
           kotlinOutputTransform = null,
+          generateDataBuilders = generateDataBuilders
       )
 
       sourceOutput.writeTo(outputDir, true, null)
@@ -449,6 +450,7 @@ private fun ApolloCompiler.buildSchemaAndOperationsSourcesAndReturnIrOperations(
     kotlinOutputTransform: Transform<KotlinOutput>?,
     logger: Logger?,
     operationManifestFile: File?,
+    generateDataBuilders: Boolean,
 ): Pair<IrOperations, SourceOutput> {
   val codegenSchema = buildCodegenSchema(
       schemaFiles = schemaFiles,
@@ -468,7 +470,7 @@ private fun ApolloCompiler.buildSchemaAndOperationsSourcesAndReturnIrOperations(
       logger = logger
   )
 
-  val sourceOutput = buildSchemaAndOperationsSourcesFromIr(
+  var sourceOutput = buildSchemaAndOperationsSourcesFromIr(
       codegenSchema = codegenSchema,
       irOperations = irOperations,
       downstreamUsedCoordinates = UsedCoordinates(),
@@ -481,6 +483,16 @@ private fun ApolloCompiler.buildSchemaAndOperationsSourcesAndReturnIrOperations(
       operationManifestFile = operationManifestFile,
       operationOutputGenerator = operationOutputGenerator,
   )
+
+  if (generateDataBuilders) {
+    sourceOutput = sourceOutput + buildDataBuilders(
+        codegenSchema = codegenSchema,
+        usedCoordinates = irOperations.usedCoordinates,
+        codegenOptions = codegenOptions,
+        layout = layoutFactory?.create(codegenSchema),
+        upstreamCodegenMetadata = listOf(sourceOutput.codegenMetadata),
+    )
+  }
 
   return irOperations to sourceOutput
 }

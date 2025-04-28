@@ -5,7 +5,7 @@
 //
 package com.example.fragment_with_inline_fragment.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.fragment_with_inline_fragment.type.Droid
 import kotlin.String
 
 public data class DroidDetails(
@@ -17,4 +17,4 @@ public data class DroidDetails(
    * This droid's primary function
    */
   public val primaryFunction: String?,
-) : Fragment.Data
+) : Droid.Data

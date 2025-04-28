@@ -41,6 +41,17 @@ fun GQLTypeDefinition.isAbstract(): Boolean {
     else -> false
   }
 }
+
+fun GQLTypeDefinition.isComposite(): Boolean {
+  return when (this) {
+    is GQLObjectTypeDefinition,
+    is GQLUnionTypeDefinition,
+    is GQLInterfaceTypeDefinition,
+      -> true
+    else -> false
+  }
+}
+
 fun GQLTypeDefinition.implementsAbstractType(schema: Schema): Boolean {
   return schema.implementedTypes(name).any {
     schema.typeDefinition(it).isAbstract()

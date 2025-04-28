@@ -8,6 +8,7 @@ package com.example.fragment_used_twice.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -30,12 +31,19 @@ public class CharacterDetailsImpl() : Fragment<CharacterDetails> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<CharacterDetails> = CharacterDetailsImpl_ResponseAdapter.CharacterDetails.obj()
+  override fun adapter(): Adapter<CharacterDetails> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Character.type
-  )
-  .selections(selections = CharacterDetailsSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
+
+  public companion object : ExecutableDefinition<CharacterDetails> {
+    override val ADAPTER: Adapter<CharacterDetails> =
+        CharacterDetailsImpl_ResponseAdapter.CharacterDetails.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Character.type
+        )
+        .selections(selections = CharacterDetailsSelections.__root)
+        .build()
+  }
 }

@@ -532,18 +532,24 @@ interface Service {
 
   /**
    * Whether to flatten the models. File paths are limited on MacOSX to 256 chars and flattening can help keeping the path length manageable
-   * The drawback is that some classes may nameclash in which case they will be suffixed with a number
+   * The drawback is that some classes may nameclash in which case they are suffixed with a number
    *
    * Default value: false for "responseBased", true else
    */
   val flattenModels: Property<Boolean>
 
   /**
-   * The directory where the generated models will be written. It's called [outputDir] but this an "input" parameter for the compiler
+   * The directory where the generated models are written. It's called [outputDir] but this an "input" parameter for the compiler
    * If you want a [DirectoryProperty] that carries the task dependency, use [outputDirConnection]
    */
   val outputDir: DirectoryProperty
-  
+
+  /**
+   * The directory where the generated data builders are written. It's called [dataBuildersOutputDir] but this an "input" parameter for the compiler
+   * If you want a [DirectoryProperty] that carries the task dependency, use [dataBuildersOutputDirConnection]
+   */
+  val dataBuildersOutputDir: DirectoryProperty
+
   /**
    * Whether to generate the operationOutput.json
    *
@@ -839,6 +845,17 @@ interface Service {
    * - main sourceSet for Android projects
    */
   fun outputDirConnection(action: Action<in DirectoryConnection>)
+
+  /**
+   * Overrides the way the generated data builders are connected.
+   * Use this if you want to connect the generated models to another task than the default destination.
+   *
+   * By default, the generated sources are connected to:
+   * - main sourceSet for Kotlin projects
+   * - commonMain sourceSet for Kotlin multiplatform projects
+   * - main sourceSet for Android projects
+   */
+  fun dataBuildersOutputDirConnection(action: Action<in DirectoryConnection>)
 
   /**
    * A [DirectoryConnection] defines how the generated sources are connected to the rest of the

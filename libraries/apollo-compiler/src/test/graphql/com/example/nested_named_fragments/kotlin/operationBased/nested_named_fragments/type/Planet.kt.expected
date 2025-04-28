@@ -5,6 +5,7 @@
 //
 package com.example.nested_named_fragments.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 /**
@@ -12,6 +13,8 @@ import com.apollographql.apollo.api.ObjectType
  * 0 ABY.
  */
 public class Planet {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: ObjectType =
         ObjectType.Builder(name = "Planet").interfaces(listOf(Node.type)).build()

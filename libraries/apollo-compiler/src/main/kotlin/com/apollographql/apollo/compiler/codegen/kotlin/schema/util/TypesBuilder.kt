@@ -21,6 +21,7 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun IrScalar.typePropertySpec(target: TypeName): PropertySpec {
@@ -75,14 +76,6 @@ internal fun IrObject.typePropertySpec(resolver: KotlinResolver): PropertySpec {
       .build()
 }
 
-internal fun newBuilderFunSpec(returnedClassName: ClassName): FunSpec {
-  return FunSpec.builder(newBuilder)
-      .returns(returnedClassName)
-      .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec.builder(customScalarAdapters, KotlinSymbols.CustomScalarAdapters).build())
-      .addCode("return %T($customScalarAdapters)", returnedClassName)
-      .build()
-}
 internal fun IrInterface.typePropertySpec(resolver: KotlinResolver): PropertySpec {
   val builder = CodeBlock.builder()
   builder.add("%T(name = %S)", KotlinSymbols.InterfaceTypeBuilder, name)
@@ -115,5 +108,11 @@ internal fun IrUnion.typePropertySpec(resolver: KotlinResolver): PropertySpec {
       .maybeAddDescription(description)
       .maybeAddDeprecation(deprecationReason)
       .initializer("%T(%S, %L)", KotlinSymbols.UnionType, name, builder.build())
+      .build()
+}
+
+internal fun dataTypeSpec(): TypeSpec {
+  return TypeSpec.interfaceBuilder(Identifier.Data)
+      .addSuperinterface(KotlinSymbols.FragmentData)
       .build()
 }

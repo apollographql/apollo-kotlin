@@ -138,7 +138,7 @@ enum class GeneratedMethod {
 class CodegenSchemaOptions(
     val scalarTypeMapping: Map<String, String>,
     val scalarAdapterMapping: Map<String, String>,
-    val generateDataBuilders: Boolean?,
+    val generateDataBuilders: Boolean,
 ) {
   constructor(): this(emptyMap(), emptyMap(), false)
 }

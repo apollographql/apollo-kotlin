@@ -5,7 +5,7 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.fragment_spread_with_include_directive.type.Human
 import kotlin.String
 
 public data class HumanDetails(
@@ -13,4 +13,4 @@ public data class HumanDetails(
    * The home planet of the human, or null if unknown
    */
   public val homePlanet: String?,
-) : Fragment.Data
+) : Human.Data

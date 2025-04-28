@@ -895,6 +895,7 @@ public final class com/apollographql/apollo/ast/GqltypedefinitionKt {
 	public static final fun canHaveKeyFields (Lcom/apollographql/apollo/ast/GQLTypeDefinition;)Z
 	public static final fun implementsAbstractType (Lcom/apollographql/apollo/ast/GQLTypeDefinition;Lcom/apollographql/apollo/ast/Schema;)Z
 	public static final fun isAbstract (Lcom/apollographql/apollo/ast/GQLTypeDefinition;)Z
+	public static final fun isComposite (Lcom/apollographql/apollo/ast/GQLTypeDefinition;)Z
 	public static final fun isFieldNonNull (Lcom/apollographql/apollo/ast/GQLTypeDefinition;Ljava/lang/String;Lcom/apollographql/apollo/ast/Schema;)Z
 	public static synthetic fun isFieldNonNull$default (Lcom/apollographql/apollo/ast/GQLTypeDefinition;Ljava/lang/String;Lcom/apollographql/apollo/ast/Schema;ILjava/lang/Object;)Z
 	public static final fun possibleTypes (Lcom/apollographql/apollo/ast/GQLTypeDefinition;Lcom/apollographql/apollo/ast/Schema;)Ljava/util/Set;
@@ -1058,6 +1059,7 @@ public final class com/apollographql/apollo/ast/Schema {
 	public final fun getDirectiveDefinitions ()Ljava/util/Map;
 	public final fun getErrorAware ()Z
 	public final fun getForeignNames ()Ljava/util/Map;
+	public final fun getGenerateDataBuilders ()Z
 	public final fun getMutationTypeDefinition ()Lcom/apollographql/apollo/ast/GQLTypeDefinition;
 	public final fun getQueryTypeDefinition ()Lcom/apollographql/apollo/ast/GQLTypeDefinition;
 	public final fun getSchemaDefinition ()Lcom/apollographql/apollo/ast/GQLSchemaDefinition;
@@ -1075,7 +1077,7 @@ public final class com/apollographql/apollo/ast/Schema {
 	public final fun rootTypeNameFor (Ljava/lang/String;)Ljava/lang/String;
 	public final fun rootTypeNameOrNullFor (Ljava/lang/String;)Ljava/lang/String;
 	public final fun shouldStrip (Ljava/lang/String;)Z
-	public final fun superTypes (Lcom/apollographql/apollo/ast/GQLObjectTypeDefinition;)Ljava/util/Set;
+	public final fun superTypes (Lcom/apollographql/apollo/ast/GQLTypeDefinition;)Ljava/util/Set;
 	public final fun toGQLDocument ()Lcom/apollographql/apollo/ast/GQLDocument;
 	public final fun toMap ()Ljava/util/Map;
 	public final fun typeDefinition (Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLTypeDefinition;

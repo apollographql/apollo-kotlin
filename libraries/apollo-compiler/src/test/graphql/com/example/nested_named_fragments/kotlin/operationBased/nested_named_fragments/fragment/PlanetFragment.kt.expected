@@ -5,7 +5,7 @@
 //
 package com.example.nested_named_fragments.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.nested_named_fragments.type.Planet
 import kotlin.String
 
 public data class PlanetFragment(
@@ -13,4 +13,4 @@ public data class PlanetFragment(
    * The name of this planet.
    */
   public val name: String?,
-) : Fragment.Data
+) : Planet.Data

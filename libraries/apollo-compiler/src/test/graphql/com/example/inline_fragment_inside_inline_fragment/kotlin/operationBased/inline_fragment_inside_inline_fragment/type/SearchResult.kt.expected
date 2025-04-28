@@ -5,9 +5,12 @@
 //
 package com.example.inline_fragment_inside_inline_fragment.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.UnionType
 
 public class SearchResult {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: UnionType = UnionType("SearchResult", Human.type, Droid.type, Starship.type)
   }

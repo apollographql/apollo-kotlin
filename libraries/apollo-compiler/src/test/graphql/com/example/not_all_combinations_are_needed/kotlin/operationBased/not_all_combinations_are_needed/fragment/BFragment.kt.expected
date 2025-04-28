@@ -5,9 +5,9 @@
 //
 package com.example.not_all_combinations_are_needed.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.not_all_combinations_are_needed.type.B
 import kotlin.String
 
 public data class BFragment(
   public val fieldB1: String?,
-) : Fragment.Data
+) : B.Data

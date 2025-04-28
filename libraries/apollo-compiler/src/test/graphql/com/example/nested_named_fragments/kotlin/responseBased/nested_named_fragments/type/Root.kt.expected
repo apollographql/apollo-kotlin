@@ -6,9 +6,12 @@
 package com.example.nested_named_fragments.type
 
 import com.apollographql.apollo.api.CompiledArgumentDefinition
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 public class Root {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val __allStarships_first: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("first").build()

@@ -163,13 +163,19 @@ class Schema internal constructor(
   }
 
   /**
-   * List all direct super types (interfaces, unions) implemented by a given object type
+   * List all direct super types (interfaces, unions) implemented by a given object or interface type
    */
-  fun superTypes(objectTypeDefinition: GQLObjectTypeDefinition): Set<String> {
+  fun superTypes(typeDefinition: GQLTypeDefinition): Set<String> {
+    val implementsInterfaces = when(typeDefinition) {
+      is GQLObjectTypeDefinition -> typeDefinition.implementsInterfaces
+      is GQLInterfaceTypeDefinition -> typeDefinition.implementsInterfaces
+      is GQLUnionTypeDefinition -> emptyList()
+      else -> error("Type '${typeDefinition.name}' cannot have a super type.")
+    }
     val unions = typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().filter {
-      it.memberTypes.map { it.name }.toSet().contains(objectTypeDefinition.name)
+      it.memberTypes.map { it.name }.toSet().contains(typeDefinition.name)
     }.map { it.name }
-    return (objectTypeDefinition.implementsInterfaces + unions).toSet()
+    return (implementsInterfaces + unions).toSet()
   }
 
   /**
@@ -197,6 +203,12 @@ class Schema internal constructor(
   fun shouldStrip(name: String): Boolean {
     return directivesToStrip.contains(name)
   }
+
+  @ApolloInternal
+  val generateDataBuilders: Boolean
+    get() {
+      return schemaDefinition?.directives?.any { originalDirectiveName(it.name) == GENERATE_DATA_BUILDERS } ?: false
+    }
 
   companion object {
     @ApolloExperimental
@@ -236,6 +248,8 @@ class Schema internal constructor(
 
     @ApolloExperimental
     const val MAP_TO = "mapTo"
+
+    private val GENERATE_DATA_BUILDERS = "generateDataBuilders"
 
     /**
      * Parses the given [map] and creates a new [Schema].

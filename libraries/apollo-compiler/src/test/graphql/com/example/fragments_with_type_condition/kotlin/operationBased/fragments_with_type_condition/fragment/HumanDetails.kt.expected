@@ -5,7 +5,7 @@
 //
 package com.example.fragments_with_type_condition.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.fragments_with_type_condition.type.Human
 import kotlin.Double
 import kotlin.String
 
@@ -18,4 +18,4 @@ public data class HumanDetails(
    * Height in the preferred unit, default is meters
    */
   public val height: Double?,
-) : Fragment.Data
+) : Human.Data

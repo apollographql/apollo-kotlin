@@ -5,9 +5,9 @@
 //
 package com.example.used_arguments.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.used_arguments.type.A
 import kotlin.Int
 
 public data class ADetails(
   public val `field`: Int?,
-) : Fragment.Data
+) : A.Data

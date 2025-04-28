@@ -5,7 +5,7 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.fragment_spread_with_include_directive.type.Character
 import kotlin.String
 
 public data class HeroDetails(
@@ -13,4 +13,4 @@ public data class HeroDetails(
    * The name of the character
    */
   public val name: String,
-) : Fragment.Data
+) : Character.Data

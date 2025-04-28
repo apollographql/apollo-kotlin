@@ -1,5 +1,6 @@
 package benchmarks
 
+import benchmarks.builder.Data
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.toResponseJson
 import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory

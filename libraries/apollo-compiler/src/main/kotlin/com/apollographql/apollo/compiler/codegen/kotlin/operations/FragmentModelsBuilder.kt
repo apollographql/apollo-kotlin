@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.codegen.kotlin.operations
 
+import com.apollographql.apollo.compiler.codegen.Identifier
 import com.apollographql.apollo.compiler.codegen.fragmentPackageName
 import com.apollographql.apollo.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo.compiler.codegen.kotlin.CgFileBuilder
@@ -19,7 +20,6 @@ internal class FragmentModelsBuilder(
 
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
 
-
   /**
    * For experimental_operationBasedWithInterfaces, fragments may have interfaces that are
    * only used locally. In that case, we can generate them as sealed interfaces
@@ -33,7 +33,11 @@ internal class FragmentModelsBuilder(
         ModelBuilder(
             context = context,
             model = model,
-            superClassName = if (addSuperInterface && model.id == fragment.dataModelGroup.baseModelId) KotlinSymbols.FragmentData else null,
+            superClassName = if (addSuperInterface && model.id == fragment.dataModelGroup.baseModelId) {
+              context.resolver.resolveSchemaType(fragment.typeCondition).nestedClass(Identifier.Data)
+            } else {
+              null
+            },
             path = listOf(packageName),
             hasSubclassesInSamePackage = localInheritance,
             adaptableWith = null,

@@ -8,6 +8,7 @@ package com.example.operationbased2_ex8.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -32,20 +33,15 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = AnimalFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Animal.type
-  )
-  .selections(selections = AnimalFragmentSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   public data class Data(
     override val species: String,
     override val parent: Parent,
   ) : AnimalFragment,
-      Fragment.Data {
+      Animal.Data {
     public sealed interface Parent : AnimalFragment.Parent {
       override val __typename: String
 
@@ -79,5 +75,16 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
       override val species: String,
     ) : Parent,
         AnimalFragment.Parent
+  }
+
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = AnimalFragmentImpl_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Animal.type
+        )
+        .selections(selections = AnimalFragmentSelections.__root)
+        .build()
   }
 }

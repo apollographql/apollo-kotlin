@@ -5,9 +5,12 @@
 //
 package com.example.test_inline.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.InterfaceType
 
 public class Item {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: InterfaceType = InterfaceType.Builder(name = "Item").build()
   }

@@ -8,6 +8,7 @@ package com.example.suppressed_warnings;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Optional;
 import com.apollographql.apollo.api.Query;
@@ -25,6 +26,8 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public class CatQuery implements Query<CatQuery.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "a9164e713b135ac6a07ce03604974a833b919eb0ff9099665d8e7ff076c2e2c5";
 
   /**
@@ -142,6 +145,23 @@ public class CatQuery implements Query<CatQuery.Data> {
 
     public CatQuery build() {
       return new CatQuery(filter);
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(CatQuery_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.suppressed_warnings.type.Query.type
+      )
+      .selections(CatQuerySelections.__root)
+      .build();
     }
   }
 

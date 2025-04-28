@@ -5,40 +5,16 @@
 //
 package com.example.simple_fragment.type
 
-import com.apollographql.apollo.api.BuilderFactory
-import com.apollographql.apollo.api.BuilderScope
-import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.ObjectBuilder
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
-import kotlin.Any
-import kotlin.String
-import kotlin.Unit
-import kotlin.collections.Map
 
 /**
  * The query type, represents all of the entry points into our object graph
  */
 internal class Query {
-  public companion object : BuilderFactory<QueryBuilder> {
-    public val type: ObjectType = ObjectType.Builder(name = "Query").build()
+  public interface Data : Fragment.Data
 
-    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): QueryBuilder = QueryBuilder(customScalarAdapters)
+  public companion object {
+    public val type: ObjectType = ObjectType.Builder(name = "Query").build()
   }
 }
-
-internal class QueryBuilder(
-  customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder<QueryMap>(customScalarAdapters) {
-  public var hero: CharacterMap? by __fields
-
-  init {
-    __typename = "Query"}
-
-  override fun build(): QueryMap = QueryMap(__fields)
-}
-
-internal class QueryMap(
-  __fields: Map<String, Any?>,
-) : Map<String, Any?> by __fields
-
-internal fun BuilderScope.buildQuery(block: QueryBuilder.() -> Unit): QueryMap = QueryBuilder(customScalarAdapters).apply(block).build()

@@ -6,9 +6,12 @@
 package com.example.java_java_optionals.type
 
 import com.apollographql.apollo.api.CompiledArgumentDefinition
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 public class Query {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val __nullableInt_nullableInt: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("nullableInt").build()

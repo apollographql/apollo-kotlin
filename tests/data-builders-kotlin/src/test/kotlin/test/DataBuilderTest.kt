@@ -1,10 +1,12 @@
 package test
 
-import com.apollographql.apollo.api.Builder
-import com.apollographql.apollo.api.DefaultFakeResolver
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.DataBuilderScope
 import com.apollographql.apollo.api.FakeResolverContext
+import com.apollographql.apollo.api.LongAdapter
 import com.apollographql.apollo.api.Optional
 import com.example.MyLong
+import com.example.MyLongAdapter
 import data.builders.GetAliasesQuery
 import data.builders.GetAnimalQuery
 import data.builders.GetCatAnimalQuery
@@ -19,25 +21,31 @@ import data.builders.GetPartialQuery
 import data.builders.GetProductQuery
 import data.builders.PutIntMutation
 import data.builders.SkipQuery
-import data.builders.schema.__Schema
-import data.builders.type.CatBuilder
 import data.builders.type.Direction
-import data.builders.type.__CustomScalarAdapters
-import data.builders.type.buildCat
-import data.builders.type.buildLion
-import data.builders.type.buildOtherAnimal
-import data.builders.type.buildOtherFeline
-import data.builders.type.buildProduct
-import data.builders.type.buildPromo
+import data.builders.builder.CatBuilder
+import data.builders.builder.Data
+import data.builders.builder.buildCat
+import data.builders.builder.buildLion
+import data.builders.builder.buildOtherAnimal
+import data.builders.builder.buildOtherFeline
+import data.builders.builder.buildProduct
+import data.builders.builder.buildPromo
+import data.builders.builder.resolver.DefaultFakeResolver
+import data.builders.builder.resolver.adaptToJson
+import data.builders.type.Long2
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class DataBuilderTest {
+  private val customScalarAdapters = CustomScalarAdapters.Builder()
+      .add(Long2.type.name, MyLongAdapter)
+      .build()
+  
   @Test
   fun nullabilityTest() {
-    val data = GetIntQuery.Data {
+    val data = GetIntQuery.Data(DefaultFakeResolver(), customScalarAdapters) {
       nullableInt = null
       nonNullableInt = 42
     }
@@ -48,7 +56,7 @@ class DataBuilderTest {
 
   @Test
   fun aliasTest() {
-    val data = GetAliasesQuery.Data {
+    val data = GetAliasesQuery.Data(DefaultFakeResolver(), customScalarAdapters) {
       this["aliasedNullableInt"] = 50
       cat = buildCat {
         species = "Cat"
@@ -65,7 +73,7 @@ class DataBuilderTest {
 
   @Test
   fun mutationTest() {
-    val data = PutIntMutation.Data {
+    val data = PutIntMutation.Data(DefaultFakeResolver(), customScalarAdapters) {
       nullableInt = null
     }
 
@@ -74,7 +82,7 @@ class DataBuilderTest {
 
   @Test
   fun interfaceTest() {
-    val data = GetAnimalQuery.Data {
+    val data = GetAnimalQuery.Data(DefaultFakeResolver(), customScalarAdapters) {
       animal = buildLion {
         species = "LionSpecies"
         roar = "Rooooaaarr"
@@ -88,7 +96,7 @@ class DataBuilderTest {
 
   @Test
   fun otherInterfaceImplementationTest() {
-    val data = GetAnimalQuery.Data {
+    val data = GetAnimalQuery.Data(DefaultFakeResolver(), customScalarAdapters) {
       animal = buildOtherAnimal("Gazelle") {
         species = "GazelleSpecies"
       }
@@ -112,7 +120,7 @@ class DataBuilderTest {
 
   @Test
   fun fieldsOnInterfacesAreGeneratedInObjectBuilders() {
-    val data = GetNodeQuery.Data {
+    val data = GetNodeQuery.Data(DefaultFakeResolver(), customScalarAdapters) {
       node = buildCat {
         id = "42"
       }
@@ -131,7 +139,7 @@ class DataBuilderTest {
 
   @Test
   fun unionTest1() {
-    val data = GetFelineQuery.Data {
+    val data = GetFelineQuery.Data(DefaultFakeResolver(), customScalarAdapters) {
       feline = buildLion {
         species = "LionSpecies"
         roar = "Rooooaaarr"
@@ -144,7 +152,7 @@ class DataBuilderTest {
 
   @Test
   fun unionTest2() {
-    val data = GetFelineQuery.Data {
+    val data = GetFelineQuery.Data(DefaultFakeResolver(), customScalarAdapters) {
       feline = buildCat {
         species = "CatSpecies"
         mustaches = 5
@@ -157,7 +165,7 @@ class DataBuilderTest {
 
   @Test
   fun otherUnionMemberTest() {
-    val data = GetFelineQuery.Data {
+    val data = GetFelineQuery.Data(DefaultFakeResolver(), customScalarAdapters) {
       feline = buildOtherFeline("Tiger") {
       }
     }
@@ -169,7 +177,7 @@ class DataBuilderTest {
 
   @Test
   fun enumTest() {
-    val data = GetDirectionQuery.Data {
+    val data = GetDirectionQuery.Data(DefaultFakeResolver(), customScalarAdapters) {
       direction = Direction.NORTH
     }
 
@@ -178,7 +186,7 @@ class DataBuilderTest {
 
   @Test
   fun customScalarTest() {
-    val data = GetCustomScalarQuery.Data {
+    val data = GetCustomScalarQuery.Data(DefaultFakeResolver(), customScalarAdapters) {
       long1 = MyLong(42)
       long2 = MyLong(43)
       long3 = 44
@@ -192,7 +200,7 @@ class DataBuilderTest {
 
   @Test
   fun fakeValues() {
-    val data = GetEverythingQuery.Data()
+    val data = GetEverythingQuery.Data(DefaultFakeResolver(), customScalarAdapters)
 
     assertEquals(Direction.NORTH, data.direction)
     assertEquals(-34, data.nullableInt)
@@ -209,7 +217,7 @@ class DataBuilderTest {
 
   @Test
   fun partialFakeValues() {
-    val data = GetPartialQuery.Data {
+    val data = GetPartialQuery.Data(DefaultFakeResolver(), customScalarAdapters) {
       listOfListOfAnimal = listOf(
           listOf(
               buildLion {
@@ -236,20 +244,21 @@ class DataBuilderTest {
     )
   }
 
-  class MyFakeResolver : DefaultFakeResolver(__Schema.all) {
+  class MyFakeResolver : DefaultFakeResolver() {
     override fun resolveLeaf(context: FakeResolverContext): Any {
-      return when (context.mergedField.type.rawType().name) {
+     val fake = when (context.mergedField.type.rawType().name) {
         "Long1" -> MyLong(45) // build-time
         "Long2" -> MyLong(46) // run-time
         "Long3" -> 47L // mapped to Any
-        else -> super.resolveLeaf(context)
+        else -> return super.resolveLeaf(context)
       }
+      return context.adaptToJson(fake)
     }
   }
 
   @Test
   fun customScalarFakeValues() {
-    val data = GetCustomScalarQuery.Data(MyFakeResolver())
+    val data = GetCustomScalarQuery.Data(MyFakeResolver(), customScalarAdapters)
 
     assertEquals(45L, data.long1?.value)
     assertEquals(46L, data.long2?.value)
@@ -258,7 +267,7 @@ class DataBuilderTest {
 
   @Test
   fun fakeValuesCanBeReused() {
-    val cat = Builder(__CustomScalarAdapters).buildCat {
+    val cat = DataBuilderScope().buildCat {
       id = "42"
       bestFriend = buildCat {
         id = "42"
@@ -266,10 +275,10 @@ class DataBuilderTest {
     }
     val resolver = MyFakeResolver()
 
-    val data = GetEgotisticalCatQuery.Data(resolver) {
+    val data = GetEgotisticalCatQuery.Data(resolver, customScalarAdapters) {
       this.cat = cat
     }
-    val data2 = GetCatAnimalQuery.Data(resolver) {
+    val data2 = GetCatAnimalQuery.Data(resolver, customScalarAdapters) {
       this.animal = cat
     }
 
@@ -285,11 +294,11 @@ class DataBuilderTest {
 
   @Test
   fun using__stableId() {
-    val productData = Builder(__CustomScalarAdapters).buildProduct {
+    val productData = DataBuilderScope().buildProduct {
       this["__stableId"] = "42"
     }
 
-    val data = GetProductQuery.Data {
+    val data = GetProductQuery.Data(DefaultFakeResolver(), customScalarAdapters) {
       product = productData
       promo = buildPromo {
         product = productData
@@ -302,7 +311,7 @@ class DataBuilderTest {
 
   @Test
   fun skip() {
-    val data = SkipQuery.Data {
+    val data = SkipQuery.Data(DefaultFakeResolver(), customScalarAdapters) {
       this["nonNullableInt"] = Optional.Absent
     }
 

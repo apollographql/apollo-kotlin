@@ -5,41 +5,14 @@
 //
 package com.example.data_builders.type
 
-import com.apollographql.apollo.api.BuilderFactory
-import com.apollographql.apollo.api.BuilderScope
-import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.ObjectBuilder
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
-import kotlin.Any
-import kotlin.String
-import kotlin.Unit
-import kotlin.collections.Map
 
 public class Droid {
-  public companion object : BuilderFactory<DroidBuilder> {
+  public interface Data : Fragment.Data
+
+  public companion object {
     public val type: ObjectType =
         ObjectType.Builder(name = "Droid").interfaces(listOf(Character.type)).build()
-
-    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): DroidBuilder = DroidBuilder(customScalarAdapters)
   }
 }
-
-public class DroidBuilder(
-  customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder<DroidMap>(customScalarAdapters) {
-  public var name: String by __fields
-
-  public var primaryFunction: String by __fields
-
-  init {
-    __typename = "Droid"}
-
-  override fun build(): DroidMap = DroidMap(__fields)
-}
-
-public class DroidMap(
-  __fields: Map<String, Any?>,
-) : CharacterMap,
-    Map<String, Any?> by __fields
-
-public fun BuilderScope.buildDroid(block: DroidBuilder.() -> Unit): DroidMap = DroidBuilder(customScalarAdapters).apply(block).build()

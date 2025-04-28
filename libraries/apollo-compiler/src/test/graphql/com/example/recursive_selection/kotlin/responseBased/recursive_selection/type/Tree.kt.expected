@@ -5,12 +5,15 @@
 //
 package com.example.recursive_selection.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 /**
  * To test recursive structures
  */
 public class Tree {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Tree").build()
   }
