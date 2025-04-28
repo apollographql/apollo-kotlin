@@ -11,7 +11,7 @@ env:
 
 jobs:
   deploy:
-    runs-on: macos-14
+    runs-on: macos-15
     if: github.repository == 'apollographql/apollo-kotlin'
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #v4.1.7
