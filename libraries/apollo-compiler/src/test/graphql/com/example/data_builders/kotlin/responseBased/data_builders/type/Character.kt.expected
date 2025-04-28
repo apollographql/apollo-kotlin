@@ -8,6 +8,7 @@ package com.example.data_builders.type
 import com.apollographql.apollo.api.BuilderFactory
 import com.apollographql.apollo.api.BuilderScope
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.DataBuilderDsl
 import com.apollographql.apollo.api.InterfaceType
 import com.apollographql.apollo.api.ObjectBuilder
 import kotlin.Any
@@ -26,6 +27,7 @@ public class Character {
 
 public interface CharacterMap : NodeMap, Map<String, Any?>
 
+@DataBuilderDsl
 public class OtherCharacterBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : ObjectBuilder<OtherCharacterMap>(customScalarAdapters) {

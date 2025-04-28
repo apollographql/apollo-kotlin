@@ -8,6 +8,7 @@ package com.example.data_builders.type
 import com.apollographql.apollo.api.BuilderFactory
 import com.apollographql.apollo.api.BuilderScope
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.DataBuilderDsl
 import com.apollographql.apollo.api.ObjectBuilder
 import com.apollographql.apollo.api.UnionType
 import kotlin.Any
@@ -25,6 +26,7 @@ public class Animal {
 
 public interface AnimalMap : Map<String, Any?>
 
+@DataBuilderDsl
 public class OtherAnimalBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : ObjectBuilder<OtherAnimalMap>(customScalarAdapters) {

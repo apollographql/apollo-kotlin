@@ -8,6 +8,7 @@ package com.example.data_builders.type
 import com.apollographql.apollo.api.BuilderFactory
 import com.apollographql.apollo.api.BuilderScope
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.DataBuilderDsl
 import com.apollographql.apollo.api.InterfaceType
 import com.apollographql.apollo.api.ObjectBuilder
 import kotlin.Any
@@ -25,6 +26,7 @@ public class Node {
 
 public interface NodeMap : Map<String, Any?>
 
+@DataBuilderDsl
 public class OtherNodeBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : ObjectBuilder<OtherNodeMap>(customScalarAdapters) {

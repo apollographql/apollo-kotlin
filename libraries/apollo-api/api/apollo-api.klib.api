@@ -8,6 +8,10 @@
 // - Show declarations: true
 
 // Library unique name: <com.apollographql.apollo:apollo-api>
+open annotation class com.apollographql.apollo.api/DataBuilderDsl : kotlin/Annotation { // com.apollographql.apollo.api/DataBuilderDsl|null[0]
+    constructor <init>() // com.apollographql.apollo.api/DataBuilderDsl.<init>|<init>(){}[0]
+}
+
 final enum class com.apollographql.apollo.api.http/HttpMethod : kotlin/Enum<com.apollographql.apollo.api.http/HttpMethod> { // com.apollographql.apollo.api.http/HttpMethod|null[0]
     enum entry Get // com.apollographql.apollo.api.http/HttpMethod.Get|null[0]
     enum entry Post // com.apollographql.apollo.api.http/HttpMethod.Post|null[0]

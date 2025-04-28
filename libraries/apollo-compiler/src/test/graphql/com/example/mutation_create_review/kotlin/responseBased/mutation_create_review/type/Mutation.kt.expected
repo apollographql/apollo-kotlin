@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.BuilderFactory
 import com.apollographql.apollo.api.BuilderScope
 import com.apollographql.apollo.api.CompiledArgumentDefinition
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.DataBuilderDsl
 import com.apollographql.apollo.api.ObjectBuilder
 import com.apollographql.apollo.api.ObjectType
 import kotlin.Any
@@ -33,6 +34,7 @@ internal class Mutation {
   }
 }
 
+@DataBuilderDsl
 internal class MutationBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : ObjectBuilder<MutationMap>(customScalarAdapters) {

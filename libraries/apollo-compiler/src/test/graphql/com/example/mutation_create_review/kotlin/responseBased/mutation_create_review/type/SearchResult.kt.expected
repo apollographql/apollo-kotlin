@@ -8,6 +8,7 @@ package com.example.mutation_create_review.type
 import com.apollographql.apollo.api.BuilderFactory
 import com.apollographql.apollo.api.BuilderScope
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.DataBuilderDsl
 import com.apollographql.apollo.api.ObjectBuilder
 import com.apollographql.apollo.api.UnionType
 import kotlin.Any
@@ -25,6 +26,7 @@ internal class SearchResult {
 
 internal interface SearchResultMap : Map<String, Any?>
 
+@DataBuilderDsl
 internal class OtherSearchResultBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : ObjectBuilder<OtherSearchResultMap>(customScalarAdapters) {
