@@ -5,35 +5,13 @@
 //
 package com.example.data_builders.type
 
-import com.apollographql.apollo.api.BuilderFactory
-import com.apollographql.apollo.api.BuilderScope
-import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.ObjectBuilder
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.UnionType
-import kotlin.Any
-import kotlin.String
-import kotlin.Unit
-import kotlin.collections.Map
 
 public class Animal {
-  public companion object : BuilderFactory<OtherAnimalBuilder> {
-    public val type: UnionType = UnionType("Animal", Cat.type, Dog.type)
+  public interface Data : Fragment.Data
 
-    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): OtherAnimalBuilder = OtherAnimalBuilder(customScalarAdapters)
+  public companion object {
+    public val type: UnionType = UnionType("Animal", Cat.type, Dog.type)
   }
 }
-
-public interface AnimalMap : Map<String, Any?>
-
-public class OtherAnimalBuilder(
-  customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder<OtherAnimalMap>(customScalarAdapters) {
-  override fun build(): OtherAnimalMap = OtherAnimalMap(__fields)
-}
-
-public class OtherAnimalMap(
-  __fields: Map<String, Any?>,
-) : AnimalMap,
-    Map<String, Any?> by __fields
-
-public fun BuilderScope.buildOtherAnimal(typename: String, block: OtherAnimalBuilder.() -> Unit): OtherAnimalMap = OtherAnimalBuilder(customScalarAdapters).apply(block).apply { __typename = typename }.build()

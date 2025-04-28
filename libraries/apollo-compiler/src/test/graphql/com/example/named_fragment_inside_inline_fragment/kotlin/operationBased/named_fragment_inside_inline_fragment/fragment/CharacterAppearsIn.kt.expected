@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.named_fragment_inside_inline_fragment.type.Character
 import com.example.named_fragment_inside_inline_fragment.type.Episode
 import kotlin.collections.List
 
@@ -14,4 +14,4 @@ public data class CharacterAppearsIn(
    * The movies this character appears in
    */
   public val appearsIn: List<Episode?>,
-) : Fragment.Data
+) : Character.Data

@@ -8,6 +8,7 @@ package com.example.simple_union.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -30,12 +31,18 @@ public class CatFragmentImpl() : Fragment<CatFragment> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<CatFragment> = CatFragmentImpl_ResponseAdapter.CatFragment.obj()
+  override fun adapter(): Adapter<CatFragment> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Cat.type
-  )
-  .selections(selections = CatFragmentSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
+
+  public companion object : ExecutableDefinition<CatFragment> {
+    override val ADAPTER: Adapter<CatFragment> = CatFragmentImpl_ResponseAdapter.CatFragment.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Cat.type
+        )
+        .selections(selections = CatFragmentSelections.__root)
+        .build()
+  }
 }

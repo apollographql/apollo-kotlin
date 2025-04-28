@@ -9,25 +9,19 @@ import com.apollographql.apollo.annotations.ApolloAdaptableWith
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.DefaultFakeResolver
-import com.apollographql.apollo.api.FakeResolver
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.buildData
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
 import com.example.data_builders.adapter.AnimalQuery_ResponseAdapter
 import com.example.data_builders.fragment.CatFragment
 import com.example.data_builders.fragment.DogFragment
-import com.example.data_builders.schema.__Schema
 import com.example.data_builders.selections.AnimalQuerySelections
-import com.example.data_builders.type.QueryBuilder
-import com.example.data_builders.type.__CustomScalarAdapters
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import com.example.data_builders.type.Query as CompiledQuery
 
 public class AnimalQuery() : Query<AnimalQuery.Data> {
@@ -49,14 +43,9 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = AnimalQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = CompiledQuery.type
-  )
-  .selections(selections = AnimalQuerySelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   @ApolloAdaptableWith(AnimalQuery_ResponseAdapter.Data::class)
   public data class Data(
@@ -97,7 +86,16 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
     ) : Animal
   }
 
-  public companion object {
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = AnimalQuery_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = CompiledQuery.type
+        )
+        .selections(selections = AnimalQuerySelections.__root)
+        .build()
+
     public const val OPERATION_ID: String =
         "0a4d6f7c4de2a81e6247e9f2205b24b2b42e03c1f25fe7267e13fe1342d905d7"
 
@@ -127,15 +125,5 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
       get() = "query AnimalQuery { animal { __typename ...CatFragment ...DogFragment } }  fragment CatFragment on Cat { meow }  fragment DogFragment on Dog { woof }"
 
     public const val OPERATION_NAME: String = "AnimalQuery"
-
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: QueryBuilder.() -> Unit = {}): Data = buildData(
-      CompiledQuery,
-      block,
-      AnimalQuery_ResponseAdapter.Data,
-      AnimalQuerySelections.__root,
-      "Query",
-      resolver,
-      __CustomScalarAdapters,
-    )
   }
 }

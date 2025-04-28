@@ -5,9 +5,12 @@
 //
 package com.example.inline_fragment_intersection.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 public class Droid {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: ObjectType =
         ObjectType.Builder(name = "Droid").interfaces(listOf(Character.type, Thing.type)).build()

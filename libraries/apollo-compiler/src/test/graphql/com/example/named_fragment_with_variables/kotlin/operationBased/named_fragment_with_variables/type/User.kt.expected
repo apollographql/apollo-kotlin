@@ -6,9 +6,12 @@
 package com.example.named_fragment_with_variables.type
 
 import com.apollographql.apollo.api.CompiledArgumentDefinition
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 public class User {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val __avatar_size: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("size").build()

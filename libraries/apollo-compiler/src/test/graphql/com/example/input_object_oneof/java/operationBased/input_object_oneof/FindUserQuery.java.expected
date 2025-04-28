@@ -8,6 +8,7 @@ package com.example.input_object_oneof;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
@@ -22,6 +23,8 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public class FindUserQuery implements Query<FindUserQuery.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "da63c6a7bf79d238f2d6fffd77742ac92c08bd4229714f24a726f773f7567fcc";
 
   /**
@@ -138,6 +141,23 @@ public class FindUserQuery implements Query<FindUserQuery.Data> {
 
     public FindUserQuery build() {
       return new FindUserQuery(findUserInput);
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(FindUserQuery_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.input_object_oneof.type.Query.type
+      )
+      .selections(FindUserQuerySelections.__root)
+      .build();
     }
   }
 

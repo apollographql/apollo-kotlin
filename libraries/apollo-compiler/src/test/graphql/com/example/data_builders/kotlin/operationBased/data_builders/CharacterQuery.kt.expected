@@ -9,24 +9,18 @@ import com.apollographql.apollo.annotations.ApolloAdaptableWith
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.DefaultFakeResolver
-import com.apollographql.apollo.api.FakeResolver
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.buildData
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
 import com.example.data_builders.adapter.CharacterQuery_ResponseAdapter
 import com.example.data_builders.fragment.DroidFragment
 import com.example.data_builders.fragment.HumanFragment
-import com.example.data_builders.schema.__Schema
 import com.example.data_builders.selections.CharacterQuerySelections
-import com.example.data_builders.type.QueryBuilder
-import com.example.data_builders.type.__CustomScalarAdapters
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 import com.example.data_builders.type.Query as CompiledQuery
 
 public class CharacterQuery() : Query<CharacterQuery.Data> {
@@ -48,14 +42,9 @@ public class CharacterQuery() : Query<CharacterQuery.Data> {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = CharacterQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = CompiledQuery.type
-  )
-  .selections(selections = CharacterQuerySelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   @ApolloAdaptableWith(CharacterQuery_ResponseAdapter.Data::class)
   public data class Data(
@@ -76,7 +65,16 @@ public class CharacterQuery() : Query<CharacterQuery.Data> {
     )
   }
 
-  public companion object {
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = CharacterQuery_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = CompiledQuery.type
+        )
+        .selections(selections = CharacterQuerySelections.__root)
+        .build()
+
     public const val OPERATION_ID: String =
         "f4b46cb156d293f68b745d169b5089b3e082087d36dea649b06aa4c6a7821e46"
 
@@ -108,15 +106,5 @@ public class CharacterQuery() : Query<CharacterQuery.Data> {
       get() = "query CharacterQuery { character { __typename id name ...HumanFragment ...DroidFragment } }  fragment HumanFragment on Human { homePlanet }  fragment DroidFragment on Droid { primaryFunction }"
 
     public const val OPERATION_NAME: String = "CharacterQuery"
-
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: QueryBuilder.() -> Unit = {}): Data = buildData(
-      CompiledQuery,
-      block,
-      CharacterQuery_ResponseAdapter.Data,
-      CharacterQuerySelections.__root,
-      "Query",
-      resolver,
-      __CustomScalarAdapters,
-    )
   }
 }

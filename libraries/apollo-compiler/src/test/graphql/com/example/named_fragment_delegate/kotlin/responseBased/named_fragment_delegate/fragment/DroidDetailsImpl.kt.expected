@@ -8,6 +8,7 @@ package com.example.named_fragment_delegate.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -32,14 +33,9 @@ public class DroidDetailsImpl() : Fragment<DroidDetailsImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = DroidDetailsImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Droid.type
-  )
-  .selections(selections = DroidDetailsSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   public data class Data(
     /**
@@ -55,7 +51,7 @@ public class DroidDetailsImpl() : Fragment<DroidDetailsImpl.Data> {
      */
     override val friends: List<Friend?>?,
   ) : DroidDetails,
-      Fragment.Data {
+      Droid.Data {
     public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
     public data class Friend(
@@ -64,5 +60,16 @@ public class DroidDetailsImpl() : Fragment<DroidDetailsImpl.Data> {
        */
       override val name: String,
     ) : DroidDetails.Friend
+  }
+
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = DroidDetailsImpl_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Droid.type
+        )
+        .selections(selections = DroidDetailsSelections.__root)
+        .build()
   }
 }

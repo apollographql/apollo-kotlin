@@ -6,9 +6,12 @@
 package com.example.deprecation.type
 
 import com.apollographql.apollo.api.CompiledArgumentDefinition
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 public class Query {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val __hero_episode: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("episode").build()

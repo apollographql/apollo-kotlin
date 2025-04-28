@@ -1,11 +1,11 @@
 {
     "typeToFieldsToArguments": {
-        "Query": {
-            "hero": [
-            ]
-        },
         "Character": {
             "__typename": [
+            ]
+        },
+        "Query": {
+            "hero": [
             ]
         },
         "String": {
@@ -15,14 +15,6 @@
             ],
             "name": [
             ]
-        },
-        "Droid": {
-            "__typename": [
-            ]
-        },
-        "SearchResult": {
-        },
-        "Starship": {
         }
     }
 }

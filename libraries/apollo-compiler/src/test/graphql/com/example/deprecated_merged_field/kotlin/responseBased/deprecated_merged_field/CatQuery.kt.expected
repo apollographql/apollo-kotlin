@@ -9,6 +9,7 @@ import com.apollographql.apollo.annotations.ApolloAdaptableWith
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -44,14 +45,9 @@ public class CatQuery() : Query<CatQuery.Data> {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = CatQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = CompiledQuery.type
-  )
-  .selections(selections = CatQuerySelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   @ApolloAdaptableWith(CatQuery_ResponseAdapter.Data::class)
   public data class Data(
@@ -96,7 +92,16 @@ public class CatQuery() : Query<CatQuery.Data> {
         CatAnimalFragment
   }
 
-  public companion object {
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = CatQuery_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = CompiledQuery.type
+        )
+        .selections(selections = CatQuerySelections.__root)
+        .build()
+
     public const val OPERATION_ID: String =
         "1339b44a5c30437b050faa2883275f02a22fffe77aa08983f50bccdab674d7ed"
 

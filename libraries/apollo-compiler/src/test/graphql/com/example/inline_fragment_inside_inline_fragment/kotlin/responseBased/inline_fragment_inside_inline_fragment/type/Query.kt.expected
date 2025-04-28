@@ -6,12 +6,15 @@
 package com.example.inline_fragment_inside_inline_fragment.type
 
 import com.apollographql.apollo.api.CompiledArgumentDefinition
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 /**
  * The query type, represents all of the entry points into our object graph
  */
 public class Query {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val __search_text: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("text").build()

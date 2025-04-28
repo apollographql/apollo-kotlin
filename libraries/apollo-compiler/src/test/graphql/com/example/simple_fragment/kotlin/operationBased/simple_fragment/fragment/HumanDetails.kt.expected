@@ -5,7 +5,7 @@
 //
 package com.example.simple_fragment.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.simple_fragment.type.Human
 import kotlin.String
 
 internal data class HumanDetails(
@@ -14,4 +14,4 @@ internal data class HumanDetails(
    * What this human calls themselves
    */
   public val name: String,
-) : Fragment.Data
+) : Human.Data

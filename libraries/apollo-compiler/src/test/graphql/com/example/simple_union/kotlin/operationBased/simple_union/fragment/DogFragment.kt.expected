@@ -5,9 +5,9 @@
 //
 package com.example.simple_union.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.simple_union.type.Dog
 import kotlin.String
 
 public data class DogFragment(
   public val woof: String,
-) : Fragment.Data
+) : Dog.Data

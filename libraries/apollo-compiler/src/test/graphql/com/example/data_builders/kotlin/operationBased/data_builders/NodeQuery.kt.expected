@@ -9,24 +9,18 @@ import com.apollographql.apollo.annotations.ApolloAdaptableWith
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.DefaultFakeResolver
-import com.apollographql.apollo.api.FakeResolver
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.buildData
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
 import com.example.data_builders.adapter.NodeQuery_ResponseAdapter
 import com.example.data_builders.fragment.DroidFragment
 import com.example.data_builders.fragment.HumanFragment
-import com.example.data_builders.schema.__Schema
 import com.example.data_builders.selections.NodeQuerySelections
-import com.example.data_builders.type.QueryBuilder
-import com.example.data_builders.type.__CustomScalarAdapters
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 import com.example.data_builders.type.Query as CompiledQuery
 
 public class NodeQuery() : Query<NodeQuery.Data> {
@@ -48,14 +42,9 @@ public class NodeQuery() : Query<NodeQuery.Data> {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = NodeQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = CompiledQuery.type
-  )
-  .selections(selections = NodeQuerySelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   @ApolloAdaptableWith(NodeQuery_ResponseAdapter.Data::class)
   public data class Data(
@@ -75,7 +64,16 @@ public class NodeQuery() : Query<NodeQuery.Data> {
     )
   }
 
-  public companion object {
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = NodeQuery_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = CompiledQuery.type
+        )
+        .selections(selections = NodeQuerySelections.__root)
+        .build()
+
     public const val OPERATION_ID: String =
         "c91df108c7e22d226afdf25226288d452aad34224a2d09fc3b98e495f4903c4c"
 
@@ -106,15 +104,5 @@ public class NodeQuery() : Query<NodeQuery.Data> {
       get() = "query NodeQuery { node { __typename id ...HumanFragment ...DroidFragment } }  fragment HumanFragment on Human { homePlanet }  fragment DroidFragment on Droid { primaryFunction }"
 
     public const val OPERATION_NAME: String = "NodeQuery"
-
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: QueryBuilder.() -> Unit = {}): Data = buildData(
-      CompiledQuery,
-      block,
-      NodeQuery_ResponseAdapter.Data,
-      NodeQuerySelections.__root,
-      "Query",
-      resolver,
-      __CustomScalarAdapters,
-    )
   }
 }

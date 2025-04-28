@@ -6,27 +6,19 @@
 package com.example.simple_fragment.fragment
 
 import com.apollographql.apollo.api.Adapter
-import com.apollographql.apollo.api.BuilderFactory
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.DefaultFakeResolver
-import com.apollographql.apollo.api.FakeResolver
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
-import com.apollographql.apollo.api.ObjectBuilder
-import com.apollographql.apollo.api.buildData
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
 import com.example.simple_fragment.fragment.selections.HeroDetailsSelections
-import com.example.simple_fragment.schema.__Schema
 import com.example.simple_fragment.type.Character
-import com.example.simple_fragment.type.CharacterMap
-import com.example.simple_fragment.type.__CustomScalarAdapters
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 
 /**
  * Fragment with Java / Kotlin docs generation
@@ -45,16 +37,11 @@ internal class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = HeroDetailsImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Character.type
-  )
-  .selections(selections = HeroDetailsSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
-  public sealed interface Data : HeroDetails, Fragment.Data {
+  public sealed interface Data : HeroDetails, Character.Data {
     override val __typename: String
 
     public companion object {
@@ -81,19 +68,14 @@ internal class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
   ) : Data,
       HeroDetails
 
-  public companion object {
-    public fun <M : CharacterMap, Builder : ObjectBuilder<M>> Data(
-      factory: BuilderFactory<Builder>,
-      resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-      block: Builder.() -> Unit = {},
-    ): Data = buildData(
-      factory,
-      block,
-      HeroDetailsImpl_ResponseAdapter.Data,
-      HeroDetailsSelections.__root,
-      "Character",
-      resolver,
-      __CustomScalarAdapters,
-    )
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = HeroDetailsImpl_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Character.type
+        )
+        .selections(selections = HeroDetailsSelections.__root)
+        .build()
   }
 }

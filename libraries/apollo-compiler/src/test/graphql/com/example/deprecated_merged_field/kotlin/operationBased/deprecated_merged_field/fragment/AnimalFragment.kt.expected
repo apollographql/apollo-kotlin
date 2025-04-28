@@ -5,7 +5,7 @@
 //
 package com.example.deprecated_merged_field.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.deprecated_merged_field.type.Animal
 import kotlin.Deprecated
 import kotlin.String
 
@@ -19,7 +19,7 @@ public data class AnimalFragment(
    * Synthetic field for inline fragment on Dog
    */
   public val onDog: OnDog?,
-) : Fragment.Data {
+) : Animal.Data {
   public data class OnCat(
     public val name: String,
   )

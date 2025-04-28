@@ -5,12 +5,15 @@
 //
 package com.example.subscriptions.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 /**
  * A comment about an entry, submitted by a user
  */
 public class Comment {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Comment").build()
   }

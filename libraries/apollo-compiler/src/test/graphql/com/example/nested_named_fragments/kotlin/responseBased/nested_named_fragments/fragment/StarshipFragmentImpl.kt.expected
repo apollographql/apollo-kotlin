@@ -8,6 +8,7 @@ package com.example.nested_named_fragments.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -33,14 +34,9 @@ public class StarshipFragmentImpl() : Fragment<StarshipFragmentImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = StarshipFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Starship.type
-  )
-  .selections(selections = StarshipFragmentSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   public data class Data(
     /**
@@ -53,7 +49,7 @@ public class StarshipFragmentImpl() : Fragment<StarshipFragmentImpl.Data> {
     override val name: String?,
     override val pilotConnection: PilotConnection?,
   ) : StarshipFragment,
-      Fragment.Data {
+      Starship.Data {
     public data class PilotConnection(
       /**
        * A list of edges.
@@ -102,5 +98,16 @@ public class StarshipFragmentImpl() : Fragment<StarshipFragmentImpl.Data> {
         }
       }
     }
+  }
+
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = StarshipFragmentImpl_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Starship.type
+        )
+        .selections(selections = StarshipFragmentSelections.__root)
+        .build()
   }
 }

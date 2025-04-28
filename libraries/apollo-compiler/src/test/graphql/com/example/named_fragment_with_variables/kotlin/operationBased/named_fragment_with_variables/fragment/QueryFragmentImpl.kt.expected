@@ -8,6 +8,7 @@ package com.example.named_fragment_with_variables.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -32,12 +33,19 @@ public data class QueryFragmentImpl(
     QueryFragmentImpl_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
-  override fun adapter(): Adapter<QueryFragment> = QueryFragmentImpl_ResponseAdapter.QueryFragment.obj()
+  override fun adapter(): Adapter<QueryFragment> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Query.type
-  )
-  .selections(selections = QueryFragmentSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
+
+  public companion object : ExecutableDefinition<QueryFragment> {
+    override val ADAPTER: Adapter<QueryFragment> =
+        QueryFragmentImpl_ResponseAdapter.QueryFragment.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Query.type
+        )
+        .selections(selections = QueryFragmentSelections.__root)
+        .build()
+  }
 }

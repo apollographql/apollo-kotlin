@@ -5,38 +5,16 @@
 //
 package com.example.simple_fragment.type
 
-import com.apollographql.apollo.api.BuilderFactory
-import com.apollographql.apollo.api.BuilderScope
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.InterfaceType
-import com.apollographql.apollo.api.ObjectBuilder
-import kotlin.Any
-import kotlin.String
-import kotlin.Unit
-import kotlin.collections.Map
 
 /**
  * A character from the Star Wars universe
  */
 internal class Character {
-  public companion object : BuilderFactory<OtherCharacterBuilder> {
-    public val type: InterfaceType = InterfaceType.Builder(name = "Character").build()
+  public interface Data : Fragment.Data
 
-    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): OtherCharacterBuilder = OtherCharacterBuilder(customScalarAdapters)
+  public companion object {
+    public val type: InterfaceType = InterfaceType.Builder(name = "Character").build()
   }
 }
-
-internal interface CharacterMap : Map<String, Any?>
-
-internal class OtherCharacterBuilder(
-  customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder<OtherCharacterMap>(customScalarAdapters) {
-  override fun build(): OtherCharacterMap = OtherCharacterMap(__fields)
-}
-
-internal class OtherCharacterMap(
-  __fields: Map<String, Any?>,
-) : CharacterMap,
-    Map<String, Any?> by __fields
-
-internal fun BuilderScope.buildOtherCharacter(typename: String, block: OtherCharacterBuilder.() -> Unit): OtherCharacterMap = OtherCharacterBuilder(customScalarAdapters).apply(block).apply { __typename = typename }.build()

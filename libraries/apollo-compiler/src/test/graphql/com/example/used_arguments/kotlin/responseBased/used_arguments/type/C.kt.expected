@@ -6,9 +6,12 @@
 package com.example.used_arguments.type
 
 import com.apollographql.apollo.api.CompiledArgumentDefinition
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 public class C {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val __field_arg: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("arg").build()

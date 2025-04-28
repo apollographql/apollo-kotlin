@@ -5,12 +5,12 @@
 //
 package com.example.decapitalized_fields.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.decapitalized_fields.type.Horse
 import kotlin.String
 
 public data class HorseFragment(
   public val cow: Cow?,
-) : Fragment.Data {
+) : Horse.Data {
   public data class Cow(
     public val moo: String?,
   )

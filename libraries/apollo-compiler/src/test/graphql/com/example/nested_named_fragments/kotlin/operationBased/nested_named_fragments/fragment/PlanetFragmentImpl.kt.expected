@@ -8,6 +8,7 @@ package com.example.nested_named_fragments.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -30,12 +31,19 @@ public class PlanetFragmentImpl() : Fragment<PlanetFragment> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<PlanetFragment> = PlanetFragmentImpl_ResponseAdapter.PlanetFragment.obj()
+  override fun adapter(): Adapter<PlanetFragment> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Planet.type
-  )
-  .selections(selections = PlanetFragmentSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
+
+  public companion object : ExecutableDefinition<PlanetFragment> {
+    override val ADAPTER: Adapter<PlanetFragment> =
+        PlanetFragmentImpl_ResponseAdapter.PlanetFragment.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Planet.type
+        )
+        .selections(selections = PlanetFragmentSelections.__root)
+        .build()
+  }
 }

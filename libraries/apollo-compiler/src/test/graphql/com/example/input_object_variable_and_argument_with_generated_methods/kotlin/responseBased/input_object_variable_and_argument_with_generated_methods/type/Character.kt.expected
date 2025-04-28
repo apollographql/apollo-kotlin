@@ -5,12 +5,15 @@
 //
 package com.example.input_object_variable_and_argument_with_generated_methods.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.InterfaceType
 
 /**
  * A character from the Star Wars universe
  */
 public class Character {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: InterfaceType = InterfaceType.Builder(name = "Character").build()
   }

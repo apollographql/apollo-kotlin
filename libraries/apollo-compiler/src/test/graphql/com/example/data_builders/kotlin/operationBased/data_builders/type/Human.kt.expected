@@ -5,43 +5,14 @@
 //
 package com.example.data_builders.type
 
-import com.apollographql.apollo.api.BuilderFactory
-import com.apollographql.apollo.api.BuilderScope
-import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.ObjectBuilder
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
-import kotlin.Any
-import kotlin.String
-import kotlin.Unit
-import kotlin.collections.Map
 
 public class Human {
-  public companion object : BuilderFactory<HumanBuilder> {
+  public interface Data : Fragment.Data
+
+  public companion object {
     public val type: ObjectType =
         ObjectType.Builder(name = "Human").interfaces(listOf(Character.type)).build()
-
-    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): HumanBuilder = HumanBuilder(customScalarAdapters)
   }
 }
-
-public class HumanBuilder(
-  customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder<HumanMap>(customScalarAdapters) {
-  public var id: String by __fields
-
-  public var name: String by __fields
-
-  public var homePlanet: String by __fields
-
-  init {
-    __typename = "Human"}
-
-  override fun build(): HumanMap = HumanMap(__fields)
-}
-
-public class HumanMap(
-  __fields: Map<String, Any?>,
-) : CharacterMap,
-    Map<String, Any?> by __fields
-
-public fun BuilderScope.buildHuman(block: HumanBuilder.() -> Unit): HumanMap = HumanBuilder(customScalarAdapters).apply(block).build()

@@ -5,12 +5,15 @@
 //
 package com.example.two_heroes_with_friends.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 /**
  * A connection object for a character's friends
  */
 public class FriendsConnection {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "FriendsConnection").build()
   }

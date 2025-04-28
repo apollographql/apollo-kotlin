@@ -8,22 +8,16 @@ package com.example.data_builders.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.DefaultFakeResolver
-import com.apollographql.apollo.api.FakeResolver
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
-import com.apollographql.apollo.api.buildData
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
 import com.example.data_builders.fragment.selections.DroidFragmentSelections
-import com.example.data_builders.schema.__Schema
 import com.example.data_builders.type.Droid
-import com.example.data_builders.type.DroidBuilder
-import com.example.data_builders.type.__CustomScalarAdapters
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Unit
 
 public class DroidFragmentImpl() : Fragment<DroidFragmentImpl.Data> {
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
@@ -38,29 +32,23 @@ public class DroidFragmentImpl() : Fragment<DroidFragmentImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = DroidFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Droid.type
-  )
-  .selections(selections = DroidFragmentSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   public data class Data(
     override val primaryFunction: String,
   ) : DroidFragment,
-      Fragment.Data
+      Droid.Data
 
-  public companion object {
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: DroidBuilder.() -> Unit = {}): Data = buildData(
-      Droid,
-      block,
-      DroidFragmentImpl_ResponseAdapter.Data,
-      DroidFragmentSelections.__root,
-      "Droid",
-      resolver,
-      __CustomScalarAdapters,
-    )
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = DroidFragmentImpl_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Droid.type
+        )
+        .selections(selections = DroidFragmentSelections.__root)
+        .build()
   }
 }

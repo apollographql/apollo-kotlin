@@ -5,12 +5,15 @@
 //
 package com.example.union_inline_fragments.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 /**
  * A humanoid creature from the Star Wars universe
  */
 public class Human {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: ObjectType =
         ObjectType.Builder(name = "Human").interfaces(listOf(Character.type)).build()

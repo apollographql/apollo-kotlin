@@ -1,11 +1,5 @@
 {
     "typeToFieldsToArguments": {
-        "Mutation": {
-            "createReview": [
-                "episode",
-                "review"
-            ]
-        },
         "Review": {
             "stars": [
             ],
@@ -18,6 +12,12 @@
             "listOfListOfCustom": [
             ],
             "listOfListOfObject": [
+            ]
+        },
+        "Mutation": {
+            "createReview": [
+                "episode",
+                "review"
             ]
         },
         "Int": {
@@ -34,25 +34,13 @@
         },
         "ReviewInput": {
         },
-        "Droid": {
-            "name": [
-            ]
-        },
-        "Human": {
-            "name": [
-            ]
-        },
         "colorInput": {
         },
         "Boolean": {
         },
-        "SearchResult": {
-        },
         "Float": {
         },
         "ReviewRefInput": {
-        },
-        "Starship": {
         }
     }
 }

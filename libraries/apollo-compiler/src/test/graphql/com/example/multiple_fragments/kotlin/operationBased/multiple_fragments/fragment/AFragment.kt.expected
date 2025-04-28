@@ -5,12 +5,12 @@
 //
 package com.example.multiple_fragments.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.multiple_fragments.type.A
 import kotlin.String
 
 public data class AFragment(
   public val node: Node?,
-) : Fragment.Data {
+) : A.Data {
   public data class Node(
     public val __typename: String,
     /**

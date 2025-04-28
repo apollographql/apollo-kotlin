@@ -5,7 +5,7 @@
 //
 package com.example.nested_named_fragments.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.nested_named_fragments.type.Person
 import kotlin.String
 
 public data class PilotFragment(
@@ -17,7 +17,7 @@ public data class PilotFragment(
    * A planet that this person was born on or inhabits.
    */
   public val homeworld: Homeworld?,
-) : Fragment.Data {
+) : Person.Data {
   public data class Homeworld(
     public val __typename: String,
     /**

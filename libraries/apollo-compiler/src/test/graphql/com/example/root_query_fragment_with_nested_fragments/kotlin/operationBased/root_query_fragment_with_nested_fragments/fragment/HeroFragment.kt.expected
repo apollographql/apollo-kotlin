@@ -5,7 +5,7 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.root_query_fragment_with_nested_fragments.type.Character
 import kotlin.String
 
 public data class HeroFragment(
@@ -13,4 +13,4 @@ public data class HeroFragment(
    * The name of the character
    */
   public val name: String,
-) : Fragment.Data
+) : Character.Data

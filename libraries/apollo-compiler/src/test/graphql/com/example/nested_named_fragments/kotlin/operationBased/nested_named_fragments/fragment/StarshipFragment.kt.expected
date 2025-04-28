@@ -5,7 +5,7 @@
 //
 package com.example.nested_named_fragments.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.nested_named_fragments.type.Starship
 import kotlin.String
 import kotlin.collections.List
 
@@ -19,7 +19,7 @@ public data class StarshipFragment(
    */
   public val name: String?,
   public val pilotConnection: PilotConnection?,
-) : Fragment.Data {
+) : Starship.Data {
   public data class PilotConnection(
     /**
      * A list of edges.
