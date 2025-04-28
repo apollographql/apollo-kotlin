@@ -3,8 +3,67 @@ Change Log
 
 # Next version
 
-* Downloading or converting a SDL schema from introspection now includes scalar definitions. This is required for clients to get a [full view of the schema](https://github.com/graphql/graphql-wg/blob/main/rfcs/FullSchemas.md). 
-* The cache and auto persisted queries interceptors are now always added after all users interceptor. If you relied on some interceptors being called **after** `normalizedCache()` or `persistedQueries()`, you might have to update your code. One example is if you need to change cache flags based on the GraphQL response. In those cases, we recommend you use a custom `NetworkTransport` instead (See [this commit](https://github.com/apollographql/apollo-kotlin/pull/6455/commits/a53a44e5e506af7b0f6f495eed1a9d477e18bf73) for an example). 
+# Version 4.2.0
+
+_2025-04-28_
+
+## Scalar mapping in the schema and wrapper generation (#6404)
+
+It is now possible to configure the adapters to use with [scalars](https://www.apollographql.com/docs/kotlin/essentials/custom-scalars) with schema extensions:
+```graphql
+extend scalar Date @map(to: "kotlinx.datetime.Instant", with: "com.apollographql.adapters.InstantAdapter")
+```
+
+If a scalar can be represented as a built-in Kotlin type (String, Boolean, Int, Long, Float, Double), you can use `@mapTo`:
+```graphql
+extend scalar Length @mapTo(builtIn: Long)
+```
+This will also generate an inline class wrapper for the scalar (use `inline: false` to use the built-in type directly instead).
+
+## Scalar definitions in schemas downloaded from introspection (#6389)
+
+Downloading or converting an SDL schema from introspection now includes scalar definitions.
+This is required for clients to get a [full view of the schema](https://github.com/graphql/graphql-wg/blob/main/rfcs/FullSchemas.md).
+
+## Contributors 💜
+Many thanks to @bobbysothebys, @jvanderwee, @dhritzkiv, @lwasyl and @rohandhruva for all the contributions and help in this release 💜 
+
+## 👷‍♂️ All changes
+
+* [intellij-plugin] Fix MemoryCache package name (6383)
+* [intellij-plugin] Rover: always pass path to supergraph.yaml if present (6384)
+* [intellij-plugin] Make 'Download Schema action' consider deep subprojects (6394)
+* [intellij-plugin] Fix a crash when invoking the 'missing `@link`' quickfix (6402)
+* [intellij-plugin] Use configured Gradle JVM when executing tasks (6425)
+* [intellij-plugin] Fix pulling normalized cache for recent AS (6437)
+* [intellij-plugin] Use a coroutines to prevent an IllegalStateException (#6460, #6487)
+* [intellij-plugin] Use coroutines in ApolloCodegenService (#6477, #6487)
+* [intellij-plugin]Use incubating cache 0.0.8 and show errors in cache viewer (6439)
+* [runtime] Use ephemeral NSURLSessionConfiguration by default (6376)
+* [runtime] Add toString() method to ApolloResponse (6409)
+* [runtime] Better error messages for ApolloClient.Builder() (6424)
+* [runtime] Add Swift interceptor iOS test and allow `HttpInterceptor.intercept()` to throw `Throwable` (6403)
+* [runtime] Add cacheInterceptor() and autoPersistedQueriesInterceptor() (6456)
+* [runtime] Revert behaviour change (6482)
+* [runtime] Introduce `@DataBuilderDsl` (6484)
+* [ast] Simplify semanticEquals (6388)
+* [ast] Remove `withBuiltInDefinitions()` and add flag to dump scalar definitions in SDL (6389)
+* [ast] Refactor schema validation (6396)
+* [ast] Better @link handling (6417)
+* [ast] Add support for @disableErrorPropagation (6414)
+* [compiler] Add `@map` and `@mapTo` (6404)
+* [compiler] Inline classes, fix using inline classes in input positions (6427)
+* [compiler] Java Codegen: add some @SuppressWarnings("unchecked") (6434)
+* [gradle-plugin] Make logLevel property internal to not take it into account when caching (6399)
+* [gradle-plugin] expose regular configurations for multi-module projects (6408)
+* [gradle-plugin] Keep the @RequiresOptIn annotation in the Gradle plugin (6406)
+* [gradle-plugin] Remove possible eager task creation (6442)
+* [infra] Track `@ApolloInternal` in public ABI (6407)
+* [infra] Track `@ApolloExperimental` symbols in public API (6416)
+* [infra] Cache: add a 'large list' benchmark (6432)
+* [infra] Remove a bunch of warnings (6441)
+* [all] Bump Kotlin to 2.1.10 (6370)
+* [all] Bump Kotlin to 2.1.20 (6431)
 
 # Version 4.1.1
 
@@ -79,9 +138,9 @@ You can read more details in the [pull request](https://github.com/apollographql
 
 ### New media type: `application/graphql-response+json`
 
-`application/graphql-response+json` is a new media type being introduced by the [GraphQL over HTTP draft](https://graphql.github.io/graphql-over-http/draft/). It allows differentiating a valid GraphQL response from an error JSON response that could be transmitted by a cache or proxy in the HTTP chain. 
+`application/graphql-response+json` is a new media type being introduced by the [GraphQL over HTTP draft](https://graphql.github.io/graphql-over-http/draft/). It allows differentiating a valid GraphQL response from an error JSON response that could be transmitted by a cache or proxy in the HTTP chain.
 
-If your server uses `application/graphql-response+json` and returns non-2xx response, Apollo Kotlin will now parse those responses and expose `data` and `errors` instead of returning an `ApolloHttpException` before. 
+If your server uses `application/graphql-response+json` and returns non-2xx response, Apollo Kotlin will now parse those responses and expose `data` and `errors` instead of returning an `ApolloHttpException` before.
 
 If you need to access the status code, you can do so using `executionContext[HttpInfo]`. For an example, you can restore the throwing behaviour with the following interceptor:
 
@@ -130,14 +189,14 @@ The IntelliJ plugin is now compatible with K2 (#6150)
 
 _2024-10-01_
 
-This release contains a handful of bug fixes and improvements. 
+This release contains a handful of bug fixes and improvements.
 
 ## ⚙️ Add `ApolloCompilerPlugin.schemaListener()`
 
 The [compiler plugins](https://www.apollographql.com/docs/kotlin/advanced/compiler-plugins) API has been extended to allow listening to schema changes.\
 This can be used to have plugins generate code based on the schema. To do this, implement the [`schemaListener`](https://www.apollographql.com/docs/kotlin/kdoc/apollo-compiler/com.apollographql.apollo.compiler/-apollo-compiler-plugin/schema-listener.html)
 function on your plugin:
-    
+
 ```kotlin
 class MyCompilerPlugin() : ApolloCompilerPlugin {
   @ApolloExperimental
@@ -153,7 +212,7 @@ class MyCompilerPlugin() : ApolloCompilerPlugin {
 
 ## 🚀 Allow mapping scalars to simple generic types
 
-Previously, to [map a scalar](https://www.apollographql.com/docs/kotlin/essentials/custom-scalars) to a generic type, you had to use a `typealias`. 
+Previously, to [map a scalar](https://www.apollographql.com/docs/kotlin/essentials/custom-scalars) to a generic type, you had to use a `typealias`.
 Now, simple generic types are accepted, and common types like `List` and `String` don't need to be fully qualified:
 
 ```kotlin
@@ -482,7 +541,7 @@ _2024-06-05_
 
 ## ApolloCompilerPluginProvider
 
-#5865: `ApolloCompilerPluginProvider` is introduced to allow passing arguments to compiler plugins. See the [compiler plugins documentation](https://go.apollo.dev/ak-compiler-plugins) for more details. 
+#5865: `ApolloCompilerPluginProvider` is introduced to allow passing arguments to compiler plugins. See the [compiler plugins documentation](https://go.apollo.dev/ak-compiler-plugins) for more details.
 
 ## 👷‍ All changes
 * [testing] Use com.apollographql.mockserver.MockServer (#5939)
@@ -546,7 +605,7 @@ androidx.startup was introduced in beta.5 but is problematic for unit tests and 
 
 ##  WasmJS support for apollo-adapter
 
-You can see Wasm in action at https://wasm.confetti-app.dev/ 
+You can see Wasm in action at https://wasm.confetti-app.dev/
 
 ##  Threading changes
 
@@ -617,7 +676,7 @@ _2024-03-12_
 Main changes:
 
 * **Apollo compiler plugins**: The GraphQL compiler now has APIs that you can use to customize the generated code. This can be used for changing visibility of some symbols, renaming them or more generally customizing the output for any advanced use cases. Moving forward, Apollo compiler plugins are the preferred way to customize operation IDs as well as package names and both `PackageNameGenerator` and `OperationOutputGenerator` are deprecated. See the [documentation page about Apollo compiler plugins](https://www.apollographql.com/docs/kotlin/v4/advanced/compiler-plugins) for more details.
-* **Reduced lock contention in apollo-normalized-cache-incubating**: the incubating normalized cache now uses lock-free memory structures inspired by guava and [MobileNativeFoundation/Store](https://github.com/MobileNativeFoundation/Store/). We have seen improvements by up to 20% in some scenarios. Please share your numbers if you notice any positive (or negative) change. 
+* **Reduced lock contention in apollo-normalized-cache-incubating**: the incubating normalized cache now uses lock-free memory structures inspired by guava and [MobileNativeFoundation/Store](https://github.com/MobileNativeFoundation/Store/). We have seen improvements by up to 20% in some scenarios. Please share your numbers if you notice any positive (or negative) change.
 * **Nullability directives**: The version of the supported nullability directives was bumped from 0.1 to 0.3 (See [apollographql/specs#42](https://github.com/apollographql/specs/pull/42) and [apollographql/specs#48](https://github.com/apollographql/specs/pull/48)). If you are using `@semanticNonNull` or `@catch` you should bump your `@link` directives to use `0.3`. See the [nullability documentation page](https://www.apollographql.com/docs/kotlin/v4/advanced/nullability) for more details.
 * **New snapshot repository for the IntelliJ/Android Studio plugin**: The repository to use for the weekly snapshots has changed. You can now use `https://go.apollo.dev/ij-plugin-snapshots` to get the latest weekly snapshots. ([#5600](https://github.com/apollographql/apollo-kotlin/pull/5600))
 * **Multi-version KDoc**: The [published KDoc](https://www.apollographql.com/docs/kotlin/kdoc/index.html) now includes both v3 and v4 versions.
@@ -786,7 +845,7 @@ type Mutation {
 }
 ```
 
-With `@oneOf`, only one of `cat`, `dog` or `fish` can be set. 
+With `@oneOf`, only one of `cat`, `dog` or `fish` can be set.
 
 `@oneOf` support is automatically enabled if your schema has the `@oneOf` directive definition.
 
@@ -890,11 +949,11 @@ While there still may be a few API changes before the stable release, we are get
 
 ## 💙️ External contributors
 
-Many thanks to @baconz and @hbmartin for their awesome contributions to this release! 
+Many thanks to @baconz and @hbmartin for their awesome contributions to this release!
 
 ## ❗️ Schema Nullability Extensions (#5191)
 
-The GraphQL community [is working hard at making it easier to work with nullability in GraphQL](https://github.com/graphql/client-controlled-nullability-wg/). 
+The GraphQL community [is working hard at making it easier to work with nullability in GraphQL](https://github.com/graphql/client-controlled-nullability-wg/).
 
 In Apollo Kotlin, it is now possible to change the nullability of fields _and_ list elements at the schema level using schema extensions. This is useful if you believe the schema made a field nullable for error reasons only and you don't want to handle those errors. In these cases, the whole query will return as an error.
 
@@ -956,7 +1015,7 @@ apollo {
 * You can now suppress reported unused fields, by adding a comment on the field, or by configuring a regex in the settings (#5195, #5197)
 * Opening an operation in Sandbox now includes all referenced fragments (#5236)
 
-## 🪲 Bug fixes 
+## 🪲 Bug fixes
 
 * Detect cyclic fragment references (#5229)
 * Fix `Optional<V>.getOrThrow()` when V is nullable (#5192)
@@ -1020,7 +1079,7 @@ A lot of additions to the [IntelliJ plugin](https://www.apollographql.com/docs/k
 
 Apollo Kotlin wouldn't be where it is today without the awesome feedback, discussions and contributions from community members. Specifically in this release, we want to give a huge THANK YOU to: @Emplexx, @sonatard, @yt8492, @mayakoneval, @Meschreiber, @pcarrier and @ashare80
 
-## 🧩 IntelliJ plugin 
+## 🧩 IntelliJ plugin
 
 ### 👓 Unused field inspection (#5069)
 
@@ -1044,14 +1103,14 @@ If you configured introspection, you can now download your schema directly from 
 
 ### 📖 documentation
 
-The IntelliJ plugin now has its [own dedicated documentation page](https://www.apollographql.com/docs/kotlin/v4/testing/android-studio-plugin). 
+The IntelliJ plugin now has its [own dedicated documentation page](https://www.apollographql.com/docs/kotlin/v4/testing/android-studio-plugin).
 
 Consult it to find out everything you can do with the plugin as well as installation instructions.
 
 
 ## 🌳 Multiplatform Apollo AST (#5047)
 
-Apollo AST, the GraphQL parser powering Apollo Kotlin is now a manually written recursive descent parser, compared to an automatically generated [Antlr](https://www.antlr.org/) parser before. 
+Apollo AST, the GraphQL parser powering Apollo Kotlin is now a manually written recursive descent parser, compared to an automatically generated [Antlr](https://www.antlr.org/) parser before.
 [Benchmarks](https://github.com/apollographql/apollo-kotlin/pull/5047) show a x2 to x3 speed improvement and the parser also now supports all platforms Apollo Kotlin supports.
 
 ## ❗❓ Initial Client Controlled Nullability (CCN) support (#5118)
@@ -1279,7 +1338,7 @@ Huge THANK YOU to @baconz, @AlexHartford, @Oleur for the love they put in WebSoc
 
 _2023-05-16_
 
-This release is the first alpha of the next major version of Apollo Kotlin: 4.0.0. 
+This release is the first alpha of the next major version of Apollo Kotlin: 4.0.0.
 
 This version is under development, but we want to give you a preview of what's coming, and get your early feedback. Please see the [roadmap](https://github.com/apollographql/apollo-kotlin/blob/main/ROADMAP.md) for more details about the release plan.
 
@@ -1347,16 +1406,16 @@ Then you can use the `ApolloClient` class from Java:
 
 ```java
 ApolloClient apolloClient = new ApolloClient.Builder()
-  .serverUrl("https://...")
-  .build();
+    .serverUrl("https://...")
+    .build();
 
 apolloClient
-  .query(MyQuery.builder().build())
-  .enqueue(new ApolloCallback<MyQuery.Data>() {
-      @Override public void onResponse(@NotNull ApolloResponse<MyQuery.Data> response) {
-        System.out.prinitln(response.getData());
-      }
-  });
+    .query(MyQuery.builder().build())
+    .enqueue(new ApolloCallback<MyQuery.Data>() {
+  @Override public void onResponse(@NotNull ApolloResponse<MyQuery.Data> response) {
+    System.out.prinitln(response.getData());
+  }
+});
 ```
 
 A few examples can be found in the [tests](https://github.com/apollographql/apollo-kotlin/tree/main/tests/java-client/src/test/java/test).
@@ -1394,9 +1453,9 @@ apollo {
 apollo {
   service("service") {
     packageName.set("feature1")
-    
+
     // Get the generated schema types (and fragments) from the upstream schema module 
-    dependsOn(project(":schema")) 
+    dependsOn(project(":schema"))
   }
 }
 ```
@@ -1424,7 +1483,7 @@ Many thanks to @slinstacart and @hbmartin for their contributions to this releas
 
 ## ✨ [New] Jetpack compose extension (#4802)
 
-You can now use the `apollo-compose-support` artifact: 
+You can now use the `apollo-compose-support` artifact:
 
 ```kotlin
 // build.gradle.kts
@@ -1442,14 +1501,14 @@ This artifact contains the `toState()` and `watchAsState()` extensions:
 @OptIn(ApolloExperimental::class)
 @Composable
 fun LaunchDetails(launchId: String) {
-    val response by apolloClient.query(LaunchDetailsQuery(launchId)).toState()
-    val r = response
-    when {
-        r == null -> Loading() // no response yet
-        r.exception != null -> ErrorMessage("Oh no... A network error happened: ${r.exception!!.message}")
-        r.hasErrors() -> ErrorMessage("Oh no... A GraphQL error happened ${r.errors[0].message}.")
-        else -> LaunchDetails(r.data!!, navigateToLogin)
-    }
+  val response by apolloClient.query(LaunchDetailsQuery(launchId)).toState()
+  val r = response
+  when {
+    r == null -> Loading() // no response yet
+    r.exception != null -> ErrorMessage("Oh no... A network error happened: ${r.exception!!.message}")
+    r.hasErrors() -> ErrorMessage("Oh no... A GraphQL error happened ${r.errors[0].message}.")
+    else -> LaunchDetails(r.data!!, navigateToLogin)
+  }
 }
 
 /**
@@ -1457,7 +1516,7 @@ fun LaunchDetails(launchId: String) {
  */
 @Composable
 private fun LaunchDetails(
-        data: LaunchDetailsQuery.Data,
+    data: LaunchDetailsQuery.Data,
 ) {
   // Your UI code goes here
 }
@@ -1479,31 +1538,31 @@ This artifact contains a helper function to create `androidx.pagin.Pager` instan
 @Composable
 fun LaunchList(onLaunchClick: (launchId: String) -> Unit) {
   val lazyPagingItems = rememberAndCollectPager<LaunchListQuery.Data, LaunchListQuery.Launch>(
-          config = PagingConfig(pageSize = 10),
-          appendCall = { response, loadSize ->
-            if (response?.data?.launches?.hasMore == false) {
-              // No more pages
-              null
-            } else {
-              // Compute the next call from the current response
-              apolloClient.query(
-                      LaunchListQuery(
-                              cursor = Optional.present(response?.data?.launches?.cursor),
-                              pageSize = Optional.present(loadSize)
-                      )
+      config = PagingConfig(pageSize = 10),
+      appendCall = { response, loadSize ->
+        if (response?.data?.launches?.hasMore == false) {
+          // No more pages
+          null
+        } else {
+          // Compute the next call from the current response
+          apolloClient.query(
+              LaunchListQuery(
+                  cursor = Optional.present(response?.data?.launches?.cursor),
+                  pageSize = Optional.present(loadSize)
               )
-            }
-          },
-          getItems = { response ->
-            // Compute the items to be added to the page from the current response
-            if (response.hasErrors()) {
-              Result.failure(ApolloException(response.errors!![0].message))
-            } else {
-              Result.success(response.data!!.launches.launches.filterNotNull())
-            }
-          },
+          )
+        }
+      },
+      getItems = { response ->
+        // Compute the items to be added to the page from the current response
+        if (response.hasErrors()) {
+          Result.failure(ApolloException(response.errors!![0].message))
+        } else {
+          Result.success(response.data!!.launches.launches.filterNotNull())
+        }
+      },
   )
-  
+
   // Use your paging items:
   if (lazyPagingItems.loadState.refresh is LoadState.Loading) {
     Loading()
@@ -1515,7 +1574,7 @@ fun LaunchList(onLaunchClick: (launchId: String) -> Unit) {
       item {
         when (val append = lazyPagingItems.loadState.append) {
           is LoadState.Error -> // Add error indicator here 
-          LoadState.Loading -> // Add loading indicator here
+            LoadState.Loading -> // Add loading indicator here
         }
       }
     }
@@ -1612,7 +1671,7 @@ This release contains a handful of bug fixes and improvements.
 
 _2022-12-20_
 
-This release contains a handful of bug fixes and improvements, and also discontinues the legacy JS artifacts. 
+This release contains a handful of bug fixes and improvements, and also discontinues the legacy JS artifacts.
 
 Many thanks to @StefanChmielewski and @chao2zhang for contributing to the project! 🧡
 
@@ -1685,7 +1744,7 @@ A patch release with a few fixes.
 * Introduce HttpFetchPolicyContext (#4509)
 * Fix usedCoordinates on interfaces (#4506)
 
-Many thanks to @Holoceo, @juliagarrigos, @davidshepherd7 and @eduardb for the feedbacks 💙 
+Many thanks to @Holoceo, @juliagarrigos, @davidshepherd7 and @eduardb for the feedbacks 💙
 
 # Version 2.5.14
 
@@ -1701,7 +1760,7 @@ A patch release to fix an issue where the ApolloCall could end up in a bad state
 
 _2022-11-08_
 
-This version adds multiple new low level features. These new features expose a lot of API surface, and they will probably stay experimental until 4.0. Feedback is always very welcome.    
+This version adds multiple new low level features. These new features expose a lot of API surface, and they will probably stay experimental until 4.0. Feedback is always very welcome.
 
 ## ✨️ [new & experimental] compiler hooks API (#4474, #4026)
 
@@ -1761,7 +1820,7 @@ if (animal.onWarmBlooded != null) {
   println(animal.onWarmBlooded!!.temperature)
 }
 if (animal.onPet != null) {
-  println(animal.onPet!!.name) 
+  println(animal.onPet!!.name)
 }
 if (animal.onCat != null) {
   println(animal.onCat!!.mustaches)
@@ -1880,7 +1939,7 @@ A patch version to fix compatibility with Kotlin 1.7.20 and another fix when cal
 
 * Add support for KGP 1.7.20 (#4439)
 * Fix SQLNormalizedCache.dump() (#4437)
- 
+
 # Version 3.6.1
 
 _2022-10-03_
@@ -1907,7 +1966,7 @@ Starting with this release, Apollo Kotlin is built with Kotlin 1.7.10. This does
 
 ## ✨️ [new] `@defer` support
 
-`@defer` support is experimental in the Kotlin Client and currently a [Stage 2 GraphQL specification draft](https://github.com/graphql/graphql-spec/blob/main/CONTRIBUTING.md#stage-2-draft) to allow incremental delivery of response payloads. 
+`@defer` support is experimental in the Kotlin Client and currently a [Stage 2 GraphQL specification draft](https://github.com/graphql/graphql-spec/blob/main/CONTRIBUTING.md#stage-2-draft) to allow incremental delivery of response payloads.
 
 `@defer` allows you to specify a fragment as deferrable, meaning it can be omitted in the initial response and delivered as a subsequent payload. This improves latency for all fields that are not in that fragment. You can read more about `@defer` in the [RFC](https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md) and contribute/ask question in the [`@defer` working group](https://github.com/robrichard/defer-stream-wg).
 
@@ -1993,7 +2052,7 @@ invite [here](https://slack.kotl.in/)).
 
 ## ✨️ [new] Data Builders (#4321)
 
-Apollo Kotlin 3.0 introduced [test builders](https://www.apollographql.com/docs/kotlin/testing/test-builders/). While they are working, they have several limitations. The main one was that being [response based](https://www.apollographql.com/docs/kotlin/advanced/response-based-codegen#the-responsebased-codegen), they could generate a lot of code. Also, they required passing custom scalars using their Json encoding, which is cumbersome. 
+Apollo Kotlin 3.0 introduced [test builders](https://www.apollographql.com/docs/kotlin/testing/test-builders/). While they are working, they have several limitations. The main one was that being [response based](https://www.apollographql.com/docs/kotlin/advanced/response-based-codegen#the-responsebased-codegen), they could generate a lot of code. Also, they required passing custom scalars using their Json encoding, which is cumbersome.
 
 The [data builders](https://www.apollographql.com/docs/kotlin/testing/data-builders/) are a simpler version of the test builders that generate builders based on schema types. This means most of the generated code is shared between all your implementations except for a top level `Data {}` function in each of your operation:
 
@@ -2025,11 +2084,11 @@ val data = GetHeroQuery.Data {
 * Update Kotlin dependency to 1.7.10 (#4314)
 * Remove schema and AST from the IR (#4303)
 
-# Version 3.5.0 
+# Version 3.5.0
 
 _2022-08-01_
 
-With this release, Apollo Kotlin now uses Kotlin Native's new memory model. It also contains a number of other improvements and bug fixes. 
+With this release, Apollo Kotlin now uses Kotlin Native's new memory model. It also contains a number of other improvements and bug fixes.
 
 ## 💙️ External contributors
 
@@ -2057,7 +2116,7 @@ plugins {
   dependencies {
     // Replace this
     // implementation("com.apollographql.apollo3:apollo-runtime:3.5.0")
-    
+
     // with
     implementation("com.apollographql.apollo3:apollo-runtime")
   }
