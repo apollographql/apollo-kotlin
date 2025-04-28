@@ -1,10 +1,12 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
 }
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.mpp",
-    withLinux = false
+    kotlinCompilerOptions = KotlinCompilerOptions(version = KotlinVersion.KOTLIN_2_1)
 )
 
 kotlin {

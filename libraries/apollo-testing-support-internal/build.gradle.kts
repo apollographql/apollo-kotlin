@@ -4,7 +4,6 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.testing.internal",
-    withLinux = false,
     publish = false
 )
 
