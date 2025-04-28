@@ -15,6 +15,19 @@ It is now possible to configure the adapters to use with [scalars](https://www.a
 extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.5/", import: ["@mapTo", "@map"])
 
 extend scalar Date @map(to: "kotlinx.datetime.Instant", with: "com.apollographql.adapters.InstantAdapter")
+```
+
+If the `to` parameter is an [inline value class](https://kotlinlang.org/docs/inline-classes.html), use the `inlineProperty` parameter to have the generated code box/unbox the value. In that case, `with` needs to point to an adapter of the underlying type:
+
+```graphql
+extend scalar Timestamp @map(to: "com.example.Timestamp", with: "com.apollographql.apollo.api.LongAdapter", inlineProperty: "ts")
+```
+
+For the common cases where the scalar can be represented as a built-in Kotlin type (String, Boolean, Int, Long, Float, Double), you can use [`@mapTo`](https://specs.apollo.dev/kotlin_labs/v0.5/#@mapTo) and the compiler infers the adapter and generates an inline value class automatically:
+
+```graphql
+extend scalar Length @mapTo(builtIn: Long)
+```
 
 ## Scalar definitions in schemas downloaded from introspection (#6389)
 
@@ -22,6 +35,7 @@ Downloading or converting an SDL schema from introspection now includes scalar d
 This is required for clients to get a [full view of the schema](https://github.com/graphql/graphql-wg/blob/main/rfcs/FullSchemas.md).
 
 ## Contributors 💜
+
 Many thanks to @bobbysothebys, @jvanderwee, @dhritzkiv, @lwasyl and @rohandhruva for all the contributions and help in this release 💜 
 
 ## 👷‍♂️ All changes
