@@ -7,18 +7,14 @@ Change Log
 
 _2025-04-28_
 
-## Scalar mapping in the schema and wrapper generation (#6404)
+## Generate custom scalars as inline classes with `@map` and `@mapTo` (#6404)
 
-It is now possible to configure the adapters to use with [scalars](https://www.apollographql.com/docs/kotlin/essentials/custom-scalars) with schema extensions:
+It is now possible to configure the adapters to use with [scalars](https://www.apollographql.com/docs/kotlin/essentials/custom-scalars) by using the [`@map` directive](https://specs.apollo.dev/kotlin_labs/v0.5/#@map):
+
 ```graphql
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.5/", import: ["@mapTo", "@map"])
+
 extend scalar Date @map(to: "kotlinx.datetime.Instant", with: "com.apollographql.adapters.InstantAdapter")
-```
-
-If a scalar can be represented as a built-in Kotlin type (String, Boolean, Int, Long, Float, Double), you can use `@mapTo`:
-```graphql
-extend scalar Length @mapTo(builtIn: Long)
-```
-This will also generate an inline class wrapper for the scalar (use `inline: false` to use the built-in type directly instead).
 
 ## Scalar definitions in schemas downloaded from introspection (#6389)
 
