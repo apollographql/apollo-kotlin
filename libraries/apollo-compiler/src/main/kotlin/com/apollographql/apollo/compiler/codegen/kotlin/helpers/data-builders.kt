@@ -7,6 +7,7 @@ import com.apollographql.apollo.compiler.codegen.Identifier.block
 import com.apollographql.apollo.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo.compiler.codegen.Identifier.factory
 import com.apollographql.apollo.compiler.codegen.Identifier.typename
+import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
@@ -203,6 +204,7 @@ internal fun concreteBuilderTypeSpec(
 ): TypeSpec {
   return TypeSpec
       .classBuilder(builderName)
+      .addAnnotation(KotlinSymbols.DataBuilderDsl)
       .superclass(KotlinSymbols.ObjectBuilder.parameterizedBy(ClassName(packageName, mapName)))
       .addSuperclassConstructorParameter(CodeBlock.of(customScalarAdapters))
       .primaryConstructor(
