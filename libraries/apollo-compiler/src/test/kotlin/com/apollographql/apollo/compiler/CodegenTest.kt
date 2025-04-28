@@ -19,6 +19,7 @@ import com.apollographql.apollo.compiler.codegen.java.JavaOutput
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo.compiler.codegen.writeTo
 import com.apollographql.apollo.compiler.ir.IrOperations
+import com.apollographql.apollo.compiler.operationoutput.OperationId
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.AfterClass
@@ -255,16 +256,14 @@ class CodegenTest {
         "mutation_create_review", "simple_fragment", "data_builders" -> true
         else -> false
       }
-      val operationIdGenerator = when (folder.name) {
-        "operation_id_generator" -> object : OperationIdGenerator {
-          override fun apply(operationDocument: String, operationName: String): String {
-            return "hash"
+      val operationOutputGenerator = if (folder.name == "operation_id_generator") {
+        OperationIdsGenerator {
+          it.map { value ->
+            OperationId("hash", value.name)
           }
-
-          override val version: String = "1"
         }
-
-        else -> OperationIdGenerator.Sha256
+      } else {
+        null
       }
 
       val generateFragmentImplementations = when (folder.name) {
@@ -282,7 +281,6 @@ class CodegenTest {
 
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
 
-      val operationOutputGenerator = OperationOutputGenerator.Default(operationIdGenerator)
 
       val targetLanguage = if (generateKotlinModels) {
         if (folder.name == "enum_field") KOTLIN_1_9 else KOTLIN_1_5
@@ -404,7 +402,7 @@ class CodegenTest {
               decapitalizeFields = decapitalizeFields,
           ),
           codegenOptions = codegenOptions,
-          operationOutputGenerator = operationOutputGenerator,
+          operationIdsGenerator = operationOutputGenerator,
           logger = null,
           layoutFactory = null,
           operationManifestFile = null,
@@ -444,7 +442,7 @@ private fun ApolloCompiler.buildSchemaAndOperationsSourcesAndReturnIrOperations(
     irOptions: IrOptions,
     codegenOptions: CodegenOptions,
     layoutFactory: LayoutFactory?,
-    @Suppress("DEPRECATION") operationOutputGenerator: OperationOutputGenerator?,
+    operationIdsGenerator: OperationIdsGenerator?,
     irOperationsTransform: Transform<IrOperations>?,
     javaOutputTransform: Transform<JavaOutput>?,
     kotlinOutputTransform: Transform<KotlinOutput>?,
@@ -481,7 +479,7 @@ private fun ApolloCompiler.buildSchemaAndOperationsSourcesAndReturnIrOperations(
       javaOutputTransform = javaOutputTransform,
       kotlinOutputTransform = kotlinOutputTransform,
       operationManifestFile = operationManifestFile,
-      operationOutputGenerator = operationOutputGenerator,
+      operationIdsGenerator = operationIdsGenerator,
   )
 
   if (generateDataBuilders) {

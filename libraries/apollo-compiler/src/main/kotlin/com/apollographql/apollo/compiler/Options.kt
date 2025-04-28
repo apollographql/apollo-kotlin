@@ -2,8 +2,13 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo.compiler.operationoutput.OperationId
+import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 
 const val MODELS_RESPONSE_BASED = "responseBased"
 const val MODELS_OPERATION_BASED = "operationBased"
@@ -268,7 +273,7 @@ interface CommonCodegenOpt {
   /**
    * The format to output for the operation manifest. Valid values are:
    *
-   * - "operationOutput": a manifest that matches the format used by [OperationOutputGenerator]
+   * - "operationOutput": a manifest that matches the format used by [OperationOutput]
    * - "persistedQueryManifest": a manifest format for an upcoming GraphOS feature
    * - nothing (Default): by default no manifest is generated
    *
@@ -644,8 +649,21 @@ private val NoOpLogger = object : ApolloCompiler.Logger {
 
 internal val defaultAlwaysGenerateTypesMatching = emptySet<String>()
 
-@Suppress("DEPRECATION")
-internal val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
+internal val defaultOperationOutputGenerator = object : OperationIdsGenerator {
+  private fun String.sha256(): String {
+    val bytes = toByteArray(charset = StandardCharsets.UTF_8)
+    val md = MessageDigest.getInstance("SHA-256")
+    val digest = md.digest(bytes)
+    return digest.fold("") { str, it -> str + "%02x".format(it) }
+  }
+
+  override fun generate(operationDescriptorList: Collection<OperationDescriptor>): List<OperationId> {
+    return operationDescriptorList.map {
+      OperationId(it.source.sha256(), it.name)
+    }
+  }
+}
+
 internal val defaultLogger = NoOpLogger
 internal const val defaultUseSemanticNaming = true
 internal const val defaultWarnOnDeprecatedUsages = true

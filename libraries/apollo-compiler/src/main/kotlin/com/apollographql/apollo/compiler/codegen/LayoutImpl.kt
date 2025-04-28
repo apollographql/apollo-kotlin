@@ -4,7 +4,7 @@ package com.apollographql.apollo.compiler.codegen
 
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.compiler.CodegenSchema
-import com.apollographql.apollo.compiler.PackageNameGenerator
+import com.apollographql.apollo.compiler.PackageNameFactory
 import com.apollographql.apollo.compiler.allTypes
 import com.apollographql.apollo.compiler.capitalizeFirstLetter
 import com.apollographql.apollo.compiler.decapitalizeFirstLetter
@@ -29,7 +29,7 @@ import com.apollographql.apollo.compiler.withUnderscorePrefix
  */
 internal class LayoutImpl(
     codegenSchema: CodegenSchema,
-    private val packageNameGenerator: PackageNameGenerator,
+    private val packageNameFactory: PackageNameFactory,
     useSemanticNaming: Boolean?,
     decapitalizeFields: Boolean?,
     generatedSchemaName: String?
@@ -71,7 +71,7 @@ internal class LayoutImpl(
 
   override fun schemaPackageName(): String = schemaPackageName
 
-  override fun executableDocumentPackageName(filePath: String?): String = packageNameGenerator.packageName(filePath ?: "")
+  override fun executableDocumentPackageName(filePath: String?): String = packageNameFactory.packageName(filePath ?: "")
 
   override fun schemaTypeName(schemaTypeName: String): String {
     return schemaTypeToClassName[schemaTypeName]?.let {
@@ -155,7 +155,6 @@ internal fun modelName(info: IrFieldInfo): String {
 internal fun SchemaLayout.typePackageName() = "${schemaPackageName()}.type"
 internal fun SchemaLayout.builderPackageName() = "${schemaPackageName()}.builder"
 internal fun SchemaLayout.builderResolverPackageName() = "${schemaPackageName()}.builder.resolver"
-internal fun SchemaLayout.builderFragmentPackageName() = "${schemaPackageName()}.builder.resolver"
 internal fun SchemaLayout.typeAdapterPackageName() = "${schemaPackageName()}.type.adapter"
 internal fun SchemaLayout.typeUtilPackageName() = "${schemaPackageName()}.type.util"
 internal fun SchemaLayout.typeScalarPackageName() = "${schemaPackageName()}.type.scalar"
@@ -193,22 +192,11 @@ fun SchemaAndOperationsLayout(
     decapitalizeFields: Boolean?,
     generatedSchemaName: String?,
 ): SchemaAndOperationsLayout {
-  val packageNameGenerator = when {
-    packageName != null -> PackageNameGenerator.Flat(packageName)
-    rootPackageName != null -> PackageNameGenerator.NormalizedPathAware(rootPackageName)
+  val packageNameFactory = when {
+    packageName != null -> PackageNameFactory.Flat(packageName)
+    rootPackageName != null -> PackageNameFactory.NormalizedPathAware(rootPackageName)
     else -> error("One of packageName or rootPackageName is required")
   }
-  return LayoutImpl(codegenSchema, packageNameGenerator, useSemanticNaming, decapitalizeFields, generatedSchemaName)
-}
-
-@ApolloInternal
-fun SchemaAndOperationsLayout(
-    codegenSchema: CodegenSchema,
-    packageNameGenerator: PackageNameGenerator,
-    useSemanticNaming: Boolean?,
-    decapitalizeFields: Boolean?,
-    generatedSchemaName: String?,
-): SchemaAndOperationsLayout {
-  return LayoutImpl(codegenSchema, packageNameGenerator, useSemanticNaming, decapitalizeFields, generatedSchemaName )
+  return LayoutImpl(codegenSchema, packageNameFactory, useSemanticNaming, decapitalizeFields, generatedSchemaName)
 }
 

@@ -1,11 +1,8 @@
-@file:Suppress("DEPRECATION")
-
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.compiler.APOLLO_VERSION
 import com.apollographql.apollo.compiler.GeneratedMethod
 import com.apollographql.apollo.compiler.JavaNullable
-import com.apollographql.apollo.compiler.OperationOutputGenerator
 import com.apollographql.apollo.compiler.UsedCoordinates
 import com.apollographql.apollo.compiler.capitalizeFirstLetter
 import com.apollographql.apollo.compiler.toIrOperations
@@ -119,9 +116,6 @@ abstract class DefaultApolloExtension(
           } else if (service.scalarTypeMapping.isNotEmpty()) {
             add("mapScalar")
           }
-          if (service.operationIdGenerator.isPresent) add("operationIdGenerator")
-          if (service.operationOutputGenerator.isPresent) add("operationOutputGenerator")
-          if (service.packageNameGenerator.isPresent) add("packageNameGenerator")
           if (service.operationManifest.isPresent) add("operationManifest")
           if (service.generatedSchemaName.isPresent) add("generatedSchemaName")
           if (service.debugDir.isPresent) add("debugDir")
@@ -186,6 +180,7 @@ abstract class DefaultApolloExtension(
       task.projectRootDir = project.rootDir.absolutePath
     }
 
+    @Suppress("DEPRECATION")
     apolloMetadataConfiguration = project.configurations.create(ModelNames.metadataConfiguration()) {
       it.isCanBeConsumed = false
       it.isCanBeResolved = false
@@ -194,7 +189,6 @@ abstract class DefaultApolloExtension(
     apolloBuildServiceProvider = project.gradle.sharedServices.registerIfAbsent("apollo", ApolloBuildService::class.java) {}
 
     project.afterEvaluate {
-      @Suppress("DEPRECATION")
       val hasApolloBlock = !defaultService.graphqlSourceDirectorySet.isEmpty
           || defaultService.schemaFile.isPresent
           || !defaultService.schemaFiles.isEmpty
@@ -211,7 +205,6 @@ abstract class DefaultApolloExtension(
           || defaultService.generateFragmentImplementations.isPresent
           || defaultService.requiresOptInAnnotation.isPresent
           || defaultService.packageName.isPresent
-          || defaultService.packageNameGenerator.isPresent
 
       if (hasApolloBlock) {
         val packageNameLine = if (defaultService.packageName.isPresent) {
@@ -778,9 +771,6 @@ abstract class DefaultApolloExtension(
 
       task.codegenOptionsFile.set(generateOptionsTaskProvider.flatMap { it.codegenOptions })
 
-      task.packageNameGenerator = service.packageNameGenerator.orNull
-      service.packageNameGenerator.disallowChanges()
-
       task.dataBuildersOutputDir.set(service.dataBuildersOutputDir.orElse(BuildDirLayout.dataBuildersOutputDir(project, service)))
 
       task.codegenSchemas.from(schemaConsumerConfiguration)
@@ -881,8 +871,6 @@ abstract class DefaultApolloExtension(
       task.generateAllTypes = service.isSchemaModule() && service.isMultiModule() && service.downstreamDependencies.isEmpty()
 
       task.otherOptions.set(BuildDirLayout.otherOptions(project, service))
-
-      task.hasPackageNameGenerator = service.packageNameGenerator.isPresent
     }
   }
 
@@ -1022,31 +1010,8 @@ abstract class DefaultApolloExtension(
 
     task.codegenOptionsFile.set(generateOptionsTask.flatMap { it.codegenOptions })
 
-    task.packageNameGenerator = service.packageNameGenerator.orNull
-    service.packageNameGenerator.disallowChanges()
-
-    task.operationOutputGenerator = service.operationOutputGenerator.orElse(service.operationIdGenerator.map { OperationOutputGenerator.Default(it) }).orNull
-    service.operationOutputGenerator.disallowChanges()
-
     task.outputDir.set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)))
     task.operationManifestFile.set(service.operationManifestFile())
-  }
-
-  private fun configureDataBuildersTask(
-      project: Project,
-      task: ApolloGenerateSourcesBaseTask,
-      generateOptionsTask: TaskProvider<ApolloGenerateOptionsTask>,
-      service: DefaultService,
-      classpathOptions: ApolloTaskWithClasspath.Options,
-  ) {
-    configureTaskWithClassPath(task, classpathOptions)
-
-    task.codegenOptionsFile.set(generateOptionsTask.flatMap { it.codegenOptions })
-
-    task.packageNameGenerator = service.packageNameGenerator.orNull
-    service.packageNameGenerator.disallowChanges()
-
-    task.outputDir.set(service.dataBuildersOutputDir.orElse(BuildDirLayout.dataBuildersOutputDir(project, service)))
   }
 
   private fun registerSourcesTask(

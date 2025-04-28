@@ -49,6 +49,8 @@ import com.apollographql.apollo.compiler.ir.IrOperationsBuilder
 import com.apollographql.apollo.compiler.ir.IrSchemaBuilder
 import com.apollographql.apollo.compiler.ir.buildIrDataBuilders
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo.compiler.operationoutput.OperationId
+import com.apollographql.apollo.compiler.operationoutput.toOperationOutput
 import com.apollographql.apollo.compiler.pqm.toPersistedQueryManifest
 import java.io.File
 import kotlin.collections.plus
@@ -385,7 +387,7 @@ object ApolloCompiler {
       upstreamCodegenMetadata: List<CodegenMetadata>,
       codegenOptions: CodegenOptions,
       layout: SchemaAndOperationsLayout?,
-      @Suppress("DEPRECATION") operationOutputGenerator: OperationOutputGenerator?,
+      operationIdsGenerator: OperationIdsGenerator?,
       irOperationsTransform: Transform<IrOperations>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
@@ -397,15 +399,17 @@ object ApolloCompiler {
     val targetLanguage = defaultTargetLanguage(codegenOptions.targetLanguage, upstreamCodegenMetadata)
     codegenOptions.validate()
 
-    val operationOutput = irOperations.operations.map {
+    val descriptors = irOperations.operations.map {
       OperationDescriptor(
           name = it.name,
           source = QueryDocumentMinifier.minify(it.sourceWithFragments),
           type = it.operationType.name.lowercase()
       )
-    }.let {
-      (operationOutputGenerator ?: defaultOperationOutputGenerator).generate(it)
     }
+
+    val operationOutput = descriptors.toOperationOutput(
+        (operationIdsGenerator ?: defaultOperationOutputGenerator).generate(descriptors)
+    )
 
     check(operationOutput.size == irOperations.operations.size) {
       """The number of operation IDs (${operationOutput.size}) should match the number of operations (${irOperations.operations.size}).
@@ -481,7 +485,7 @@ object ApolloCompiler {
       irOptions: IrOptions,
       codegenOptions: CodegenOptions,
       layoutFactory: LayoutFactory?,
-      @Suppress("DEPRECATION") operationOutputGenerator: OperationOutputGenerator?,
+      operationIdsGenerator: OperationIdsGenerator?,
       irOperationsTransform: Transform<IrOperations>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
@@ -504,7 +508,7 @@ object ApolloCompiler {
         irOptions,
         codegenOptions,
         layoutFactory,
-        operationOutputGenerator,
+        operationIdsGenerator,
         irOperationsTransform,
         javaOutputTransform,
         kotlinOutputTransform,
@@ -523,7 +527,7 @@ object ApolloCompiler {
       irOptions: IrOptions,
       codegenOptions: CodegenOptions,
       layoutFactory: LayoutFactory?,
-      @Suppress("DEPRECATION") operationOutputGenerator: OperationOutputGenerator?,
+      operationIdsGenerator: OperationIdsGenerator?,
       irOperationsTransform: Transform<IrOperations>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
@@ -552,7 +556,7 @@ object ApolloCompiler {
         javaOutputTransform = javaOutputTransform,
         kotlinOutputTransform = kotlinOutputTransform,
         operationManifestFile = operationManifestFile,
-        operationOutputGenerator = operationOutputGenerator,
+        operationIdsGenerator = operationIdsGenerator,
     )
 
     return sourceOutput
@@ -651,4 +655,8 @@ internal fun <T> T.maybeTransform(transform: Transform<T>?) = transform?.transfo
 
 interface LayoutFactory {
   fun create(codegenSchema: CodegenSchema): SchemaAndOperationsLayout?
+}
+
+fun interface OperationIdsGenerator {
+  fun generate(operationDescriptorList: Collection<OperationDescriptor>): List<OperationId>
 }
