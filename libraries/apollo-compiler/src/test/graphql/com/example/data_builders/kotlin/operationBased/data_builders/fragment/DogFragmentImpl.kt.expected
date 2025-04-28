@@ -8,21 +8,15 @@ package com.example.data_builders.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.DefaultFakeResolver
-import com.apollographql.apollo.api.FakeResolver
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
-import com.apollographql.apollo.api.buildData
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
 import com.example.data_builders.fragment.selections.DogFragmentSelections
-import com.example.data_builders.schema.__Schema
 import com.example.data_builders.type.Dog
-import com.example.data_builders.type.DogBuilder
-import com.example.data_builders.type.__CustomScalarAdapters
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
-import kotlin.Unit
 
 public class DogFragmentImpl() : Fragment<DogFragment> {
   override fun equals(other: Any?): Boolean = other != null && other::class == this::class
@@ -37,24 +31,18 @@ public class DogFragmentImpl() : Fragment<DogFragment> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<DogFragment> = DogFragmentImpl_ResponseAdapter.DogFragment.obj()
+  override fun adapter(): Adapter<DogFragment> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Dog.type
-  )
-  .selections(selections = DogFragmentSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
-  public companion object {
-    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all), block: DogBuilder.() -> Unit = {}): DogFragment = buildData(
-      Dog,
-      block,
-      DogFragmentImpl_ResponseAdapter.DogFragment,
-      DogFragmentSelections.__root,
-      "Dog",
-      resolver,
-      __CustomScalarAdapters,
-    )
+  public companion object : ExecutableDefinition<DogFragment> {
+    override val ADAPTER: Adapter<DogFragment> = DogFragmentImpl_ResponseAdapter.DogFragment.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Dog.type
+        )
+        .selections(selections = DogFragmentSelections.__root)
+        .build()
   }
 }

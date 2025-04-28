@@ -5,7 +5,7 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.root_query_fragment_with_nested_fragments.type.Droid
 import kotlin.String
 
 public data class DroidFragment(
@@ -17,4 +17,4 @@ public data class DroidFragment(
    * This droid's primary function
    */
   public val primaryFunction: String?,
-) : Fragment.Data
+) : Droid.Data

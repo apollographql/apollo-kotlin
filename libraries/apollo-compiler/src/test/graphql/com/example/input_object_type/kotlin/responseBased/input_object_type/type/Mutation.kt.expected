@@ -6,12 +6,15 @@
 package com.example.input_object_type.type
 
 import com.apollographql.apollo.api.CompiledArgumentDefinition
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 /**
  * The mutation type, represents all updates we can make to our data
  */
 public class Mutation {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val __createReview_episode: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("episode").build()

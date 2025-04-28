@@ -9,6 +9,7 @@ import com.apollographql.apollo.annotations.ApolloAdaptableWith
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -41,14 +42,9 @@ public data class GetUser(
     GetUser_VariablesAdapter.serializeVariables(writer, this, customScalarAdapters, withDefaultValues)
   }
 
-  override fun adapter(): Adapter<Data> = GetUser_ResponseAdapter.Data.obj(true)
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = CompiledQuery.type
-  )
-  .selections(selections = GetUserSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   @ApolloAdaptableWith(GetUser_ResponseAdapter.Data::class)
   public data class Data(
@@ -59,7 +55,16 @@ public data class GetUser(
     public val queryFragment: QueryFragment,
   ) : Query.Data
 
-  public companion object {
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = GetUser_ResponseAdapter.Data.obj(true)
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = CompiledQuery.type
+        )
+        .selections(selections = GetUserSelections.__root)
+        .build()
+
     public const val OPERATION_ID: String =
         "1314916fa3163a17df2b7a0173e55fef34621507824242308b3006e9ab4740b4"
 

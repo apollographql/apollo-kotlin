@@ -5,12 +5,15 @@
 //
 package com.example.fragment_spread_with_include_directive.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 /**
  * An autonomous mechanical character in the Star Wars universe
  */
 public class Droid {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: ObjectType =
         ObjectType.Builder(name = "Droid").interfaces(listOf(Character.type)).build()

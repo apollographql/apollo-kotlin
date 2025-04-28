@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_delegate.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.named_fragment_delegate.type.Human
 import kotlin.Any
 import kotlin.String
 import kotlin.collections.List
@@ -23,7 +23,7 @@ public data class HumanDetails(
    * The friends of the human exposed as a connection with edges
    */
   public val friendsConnection: FriendsConnection,
-) : Fragment.Data {
+) : Human.Data {
   public data class FriendsConnection(
     /**
      * The edges for each of the character's friends.

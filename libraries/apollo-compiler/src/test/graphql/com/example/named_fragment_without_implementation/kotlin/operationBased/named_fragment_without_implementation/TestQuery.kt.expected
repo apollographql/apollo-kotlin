@@ -9,6 +9,7 @@ import com.apollographql.apollo.annotations.ApolloAdaptableWith
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -41,14 +42,9 @@ public class TestQuery() : Query<TestQuery.Data> {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = CompiledQuery.type
-  )
-  .selections(selections = TestQuerySelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   @ApolloAdaptableWith(TestQuery_ResponseAdapter.Data::class)
   public data class Data(
@@ -71,7 +67,16 @@ public class TestQuery() : Query<TestQuery.Data> {
     )
   }
 
-  public companion object {
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = CompiledQuery.type
+        )
+        .selections(selections = TestQuerySelections.__root)
+        .build()
+
     public const val OPERATION_ID: String =
         "bd506c9c818f2163b34753c735df7794c16d135e4a8e6d24e2930e63eacf01df"
 

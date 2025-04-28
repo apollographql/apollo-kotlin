@@ -6,9 +6,12 @@
 package com.example.suppressed_warnings.type
 
 import com.apollographql.apollo.api.CompiledArgumentDefinition
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 public class Query {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val __search_filter: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("filter").build()

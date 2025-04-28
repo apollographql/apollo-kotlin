@@ -8,18 +8,14 @@ package com.example.data_builders;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
-import com.apollographql.apollo.api.DefaultFakeResolver;
-import com.apollographql.apollo.api.FakeResolver;
-import com.apollographql.apollo.api.FakeResolverKt;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.data_builders.adapter.CharacterQuery_ResponseAdapter;
 import com.example.data_builders.fragment.DroidFragment;
 import com.example.data_builders.fragment.HumanFragment;
-import com.example.data_builders.schema.__Schema;
 import com.example.data_builders.selections.CharacterQuerySelections;
-import com.example.data_builders.type.builder.QueryMap;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
@@ -27,6 +23,8 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public class CharacterQuery implements Query<CharacterQuery.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "f4b46cb156d293f68b745d169b5089b3e082087d36dea649b06aa4c6a7821e46";
 
   /**
@@ -135,21 +133,6 @@ public class CharacterQuery implements Query<CharacterQuery.Data> {
     .build();
   }
 
-  public static Data buildData(QueryMap map, FakeResolver resolver) {
-    return FakeResolverKt.buildData(
-      com.example.data_builders.adapter.CharacterQuery_ResponseAdapter.Data.INSTANCE,
-      CharacterQuerySelections.__root,
-      "Query",
-      map,
-      resolver,
-      __Schema.customScalarAdapters
-    );
-  }
-
-  public static Data buildData(QueryMap map) {
-    return buildData(map, new DefaultFakeResolver(__Schema.types));
-  }
-
   @SuppressWarnings("unchecked")
   public static final class Builder {
     Builder() {
@@ -157,6 +140,23 @@ public class CharacterQuery implements Query<CharacterQuery.Data> {
 
     public CharacterQuery build() {
       return new CharacterQuery();
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(CharacterQuery_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.data_builders.type.Query.type
+      )
+      .selections(CharacterQuerySelections.__root)
+      .build();
     }
   }
 

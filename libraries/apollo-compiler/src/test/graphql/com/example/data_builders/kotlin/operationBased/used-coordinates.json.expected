@@ -1,15 +1,15 @@
 {
     "typeToFieldsToArguments": {
+        "Animal": {
+            "__typename": [
+            ]
+        },
         "Query": {
             "animal": [
             ],
             "character": [
             ],
             "node": [
-            ]
-        },
-        "Animal": {
-            "__typename": [
             ]
         },
         "String": {
@@ -32,38 +32,18 @@
         },
         "Cat": {
             "meow": [
-            ],
-            "__typename": [
-            ],
-            "id": [
             ]
         },
         "Dog": {
             "woof": [
-            ],
-            "__typename": [
-            ],
-            "id": [
             ]
         },
         "Human": {
             "homePlanet": [
-            ],
-            "__typename": [
-            ],
-            "id": [
-            ],
-            "name": [
             ]
         },
         "Droid": {
             "primaryFunction": [
-            ],
-            "__typename": [
-            ],
-            "id": [
-            ],
-            "name": [
             ]
         }
     }

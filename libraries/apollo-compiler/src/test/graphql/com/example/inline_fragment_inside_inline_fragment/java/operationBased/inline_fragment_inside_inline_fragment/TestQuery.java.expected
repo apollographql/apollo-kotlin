@@ -8,6 +8,7 @@ package com.example.inline_fragment_inside_inline_fragment;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
@@ -21,6 +22,8 @@ import java.lang.SuppressWarnings;
 import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "4f32ea4bdd2a95a29bde61273602c22c698cd333f1701001d1a339fb276c6438";
 
   /**
@@ -134,6 +137,23 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public TestQuery build() {
       return new TestQuery();
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.inline_fragment_inside_inline_fragment.type.Query.type
+      )
+      .selections(TestQuerySelections.__root)
+      .build();
     }
   }
 

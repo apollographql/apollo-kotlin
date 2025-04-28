@@ -1,5 +1,13 @@
 {
     "typeToFieldsToArguments": {
+        "Animal": {
+            "__typename": [
+            ],
+            "meow": [
+            ],
+            "woof": [
+            ]
+        },
         "Query": {
             "animal": [
             ],
@@ -8,26 +16,18 @@
             "node": [
             ]
         },
-        "Animal": {
-            "__typename": [
-            ]
+        "String": {
         },
         "Cat": {
             "meow": [
             ],
             "__typename": [
-            ],
-            "id": [
             ]
-        },
-        "String": {
         },
         "Dog": {
             "woof": [
             ],
             "__typename": [
-            ],
-            "id": [
             ]
         },
         "Character": {
@@ -36,6 +36,10 @@
             "id": [
             ],
             "name": [
+            ],
+            "homePlanet": [
+            ],
+            "primaryFunction": [
             ]
         },
         "Human": {
@@ -64,6 +68,10 @@
             "__typename": [
             ],
             "id": [
+            ],
+            "homePlanet": [
+            ],
+            "primaryFunction": [
             ]
         }
     }

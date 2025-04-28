@@ -8,6 +8,7 @@ package com.example.deprecated_merged_field.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -30,12 +31,19 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragment> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<AnimalFragment> = AnimalFragmentImpl_ResponseAdapter.AnimalFragment.obj(true)
+  override fun adapter(): Adapter<AnimalFragment> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Animal.type
-  )
-  .selections(selections = AnimalFragmentSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
+
+  public companion object : ExecutableDefinition<AnimalFragment> {
+    override val ADAPTER: Adapter<AnimalFragment> =
+        AnimalFragmentImpl_ResponseAdapter.AnimalFragment.obj(true)
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Animal.type
+        )
+        .selections(selections = AnimalFragmentSelections.__root)
+        .build()
+  }
 }

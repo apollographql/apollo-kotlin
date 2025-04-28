@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.named_fragment_inside_inline_fragment.type.Character
 import kotlin.String
 
 public data class CharacterName(
@@ -13,4 +13,4 @@ public data class CharacterName(
    * The name of the character
    */
   public val name: String,
-) : Fragment.Data
+) : Character.Data

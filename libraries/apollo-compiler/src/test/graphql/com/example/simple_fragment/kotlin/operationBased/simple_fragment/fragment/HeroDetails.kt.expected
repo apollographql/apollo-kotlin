@@ -5,7 +5,7 @@
 //
 package com.example.simple_fragment.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.simple_fragment.type.Character
 import kotlin.String
 
 internal data class HeroDetails(
@@ -14,4 +14,4 @@ internal data class HeroDetails(
    * Synthetic field for 'HumanDetails'
    */
   public val humanDetails: HumanDetails?,
-) : Fragment.Data
+) : Character.Data

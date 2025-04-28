@@ -5,9 +5,12 @@
 //
 package com.example.target_name.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.UnionType
 
 public class RenamedUnion {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: UnionType = UnionType("ReservedUnion", RenamedObject.type)
   }

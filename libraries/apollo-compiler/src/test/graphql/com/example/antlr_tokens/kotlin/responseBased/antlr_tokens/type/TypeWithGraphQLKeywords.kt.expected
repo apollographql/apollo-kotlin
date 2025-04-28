@@ -6,9 +6,12 @@
 package com.example.antlr_tokens.type
 
 import com.apollographql.apollo.api.CompiledArgumentDefinition
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 public class TypeWithGraphQLKeywords {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val __null_fragment: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("fragment").build()

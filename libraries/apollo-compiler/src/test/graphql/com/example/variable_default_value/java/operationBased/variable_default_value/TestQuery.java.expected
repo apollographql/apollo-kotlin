@@ -8,6 +8,7 @@ package com.example.variable_default_value;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Optional;
 import com.apollographql.apollo.api.Query;
@@ -23,6 +24,8 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public class TestQuery implements Query<TestQuery.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "7bba59b12a0090dd1fbc4c409ea7e72bd6885a6b31d442bfeb86f4a67e5b62d9";
 
   /**
@@ -139,6 +142,23 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public TestQuery build() {
       return new TestQuery(episode);
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.variable_default_value.type.Query.type
+      )
+      .selections(TestQuerySelections.__root)
+      .build();
     }
   }
 

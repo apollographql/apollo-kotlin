@@ -5,14 +5,14 @@
 //
 package com.example.operationbased2_ex8.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.operationbased2_ex8.type.Animal
 import kotlin.Int
 import kotlin.String
 
 public data class AnimalFragment(
   public val species: String,
   public val parent: Parent,
-) : Fragment.Data {
+) : Animal.Data {
   public data class Parent(
     public val __typename: String,
     public val species: String,

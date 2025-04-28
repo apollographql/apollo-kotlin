@@ -5,42 +5,14 @@
 //
 package com.example.data_builders.type
 
-import com.apollographql.apollo.api.BuilderFactory
-import com.apollographql.apollo.api.BuilderScope
-import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.ObjectBuilder
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
-import kotlin.Any
-import kotlin.String
-import kotlin.Unit
-import kotlin.collections.Map
 
 public class Cat {
-  public companion object : BuilderFactory<CatBuilder> {
+  public interface Data : Fragment.Data
+
+  public companion object {
     public val type: ObjectType =
         ObjectType.Builder(name = "Cat").interfaces(listOf(Node.type)).build()
-
-    override fun newBuilder(customScalarAdapters: CustomScalarAdapters): CatBuilder = CatBuilder(customScalarAdapters)
   }
 }
-
-public class CatBuilder(
-  customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder<CatMap>(customScalarAdapters) {
-  public var id: String by __fields
-
-  public var meow: String by __fields
-
-  init {
-    __typename = "Cat"}
-
-  override fun build(): CatMap = CatMap(__fields)
-}
-
-public class CatMap(
-  __fields: Map<String, Any?>,
-) : NodeMap,
-    AnimalMap,
-    Map<String, Any?> by __fields
-
-public fun BuilderScope.buildCat(block: CatBuilder.() -> Unit): CatMap = CatBuilder(customScalarAdapters).apply(block).build()

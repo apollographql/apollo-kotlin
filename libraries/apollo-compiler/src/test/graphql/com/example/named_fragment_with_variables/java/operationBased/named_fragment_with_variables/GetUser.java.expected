@@ -8,6 +8,7 @@ package com.example.named_fragment_with_variables;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
@@ -24,6 +25,8 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public class GetUser implements Query<GetUser.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "1314916fa3163a17df2b7a0173e55fef34621507824242308b3006e9ab4740b4";
 
   /**
@@ -183,6 +186,23 @@ public class GetUser implements Query<GetUser.Data> {
 
     public GetUser build() {
       return new GetUser(organizationId, query, size);
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(GetUser_ResponseAdapter.Data.INSTANCE, true);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.named_fragment_with_variables.type.Query.type
+      )
+      .selections(GetUserSelections.__root)
+      .build();
     }
   }
 

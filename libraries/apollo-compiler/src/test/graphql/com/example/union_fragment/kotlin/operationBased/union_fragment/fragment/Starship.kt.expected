@@ -5,7 +5,7 @@
 //
 package com.example.union_fragment.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.union_fragment.type.Starship
 import kotlin.String
 
 public data class Starship(
@@ -13,4 +13,4 @@ public data class Starship(
    * The name of the starship
    */
   public val name: String,
-) : Fragment.Data
+) : Starship.Data

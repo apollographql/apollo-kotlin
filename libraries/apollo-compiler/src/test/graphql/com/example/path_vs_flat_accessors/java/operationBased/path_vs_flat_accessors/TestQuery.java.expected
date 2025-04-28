@@ -8,6 +8,7 @@ package com.example.path_vs_flat_accessors;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
@@ -20,6 +21,8 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public class TestQuery implements Query<TestQuery.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "3b184fcb2cc03c785d68f3c22a4b89ef1a8240023d73c5dbd5f28223aee7d042";
 
   /**
@@ -132,6 +135,23 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public TestQuery build() {
       return new TestQuery();
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.path_vs_flat_accessors.type.Query.type
+      )
+      .selections(TestQuerySelections.__root)
+      .build();
     }
   }
 

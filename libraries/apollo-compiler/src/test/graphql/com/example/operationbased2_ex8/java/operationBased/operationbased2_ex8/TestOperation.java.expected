@@ -8,6 +8,7 @@ package com.example.operationbased2_ex8;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
@@ -21,6 +22,8 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public class TestOperation implements Query<TestOperation.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "76f3639043a382e1d3caf22f8e89b4062473f12ffdda9067b6cc46c54259e2e2";
 
   /**
@@ -139,6 +142,23 @@ public class TestOperation implements Query<TestOperation.Data> {
 
     public TestOperation build() {
       return new TestOperation();
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(TestOperation_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.operationbased2_ex8.type.Query.type
+      )
+      .selections(TestOperationSelections.__root)
+      .build();
     }
   }
 

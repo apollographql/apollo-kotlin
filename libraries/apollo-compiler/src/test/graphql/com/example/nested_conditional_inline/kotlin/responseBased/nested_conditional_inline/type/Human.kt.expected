@@ -6,12 +6,15 @@
 package com.example.nested_conditional_inline.type
 
 import com.apollographql.apollo.api.CompiledArgumentDefinition
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 /**
  * A humanoid creature from the Star Wars universe
  */
 public class Human {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val __height_unit: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("unit").build()

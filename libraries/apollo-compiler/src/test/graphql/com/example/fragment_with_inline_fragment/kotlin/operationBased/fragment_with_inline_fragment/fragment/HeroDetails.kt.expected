@@ -5,7 +5,7 @@
 //
 package com.example.fragment_with_inline_fragment.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.fragment_with_inline_fragment.type.Character
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
@@ -28,7 +28,7 @@ public data class HeroDetails(
    * Synthetic field for 'HumanDetails'
    */
   public val humanDetails: HumanDetails?,
-) : Fragment.Data {
+) : Character.Data {
   public data class FriendsConnection(
     /**
      * The total number of friends

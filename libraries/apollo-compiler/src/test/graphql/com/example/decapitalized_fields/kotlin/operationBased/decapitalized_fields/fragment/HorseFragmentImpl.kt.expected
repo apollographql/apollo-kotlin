@@ -8,6 +8,7 @@ package com.example.decapitalized_fields.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -30,12 +31,19 @@ public class HorseFragmentImpl() : Fragment<HorseFragment> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<HorseFragment> = HorseFragmentImpl_ResponseAdapter.HorseFragment.obj()
+  override fun adapter(): Adapter<HorseFragment> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = Horse.type
-  )
-  .selections(selections = HorseFragmentSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
+
+  public companion object : ExecutableDefinition<HorseFragment> {
+    override val ADAPTER: Adapter<HorseFragment> =
+        HorseFragmentImpl_ResponseAdapter.HorseFragment.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = Horse.type
+        )
+        .selections(selections = HorseFragmentSelections.__root)
+        .build()
+  }
 }

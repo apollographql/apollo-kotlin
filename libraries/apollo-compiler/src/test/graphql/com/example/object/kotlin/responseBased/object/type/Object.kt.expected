@@ -5,9 +5,12 @@
 //
 package com.example.`object`.type
 
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 public class Object {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Object").build()
   }

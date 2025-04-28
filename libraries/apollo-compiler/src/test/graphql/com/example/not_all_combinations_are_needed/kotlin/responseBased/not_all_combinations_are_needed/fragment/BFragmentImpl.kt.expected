@@ -8,6 +8,7 @@ package com.example.not_all_combinations_are_needed.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -31,17 +32,23 @@ public class BFragmentImpl() : Fragment<BFragmentImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = BFragmentImpl_ResponseAdapter.Data.obj()
+  override fun adapter(): Adapter<Data> = ADAPTER
 
-  override fun rootField(): CompiledField = CompiledField.Builder(
-    name = "data",
-    type = B.type
-  )
-  .selections(selections = BFragmentSelections.__root)
-  .build()
+  override fun rootField(): CompiledField = ROOT_FIELD
 
   public data class Data(
     override val fieldB1: String?,
   ) : BFragment,
-      Fragment.Data
+      B.Data
+
+  public companion object : ExecutableDefinition<Data> {
+    override val ADAPTER: Adapter<Data> = BFragmentImpl_ResponseAdapter.Data.obj()
+
+    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
+          name = "data",
+          type = B.type
+        )
+        .selections(selections = BFragmentSelections.__root)
+        .build()
+  }
 }

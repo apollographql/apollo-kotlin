@@ -6,9 +6,12 @@
 package com.example.target_name.type
 
 import com.apollographql.apollo.api.CompiledArgumentDefinition
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.ObjectType
 
 public class Query {
+  public interface Data : Fragment.Data
+
   public companion object {
     public val __object_input: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("input").build()

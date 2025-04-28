@@ -5,11 +5,11 @@
 //
 package com.example.named_fragment_with_variables.fragment
 
-import com.apollographql.apollo.api.Fragment
+import com.example.named_fragment_with_variables.type.User
 import kotlin.String
 
 public data class UserFragment(
   public val firstName: String,
   public val lastName: String,
   public val avatar: String,
-) : Fragment.Data
+) : User.Data

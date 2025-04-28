@@ -8,6 +8,7 @@ package com.example.custom_scalar_type;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
@@ -21,6 +22,8 @@ import java.lang.SuppressWarnings;
 import java.util.List;
 
 public class ScalarWithGenericType implements Query<ScalarWithGenericType.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "a4310c5c764fd8691ab97d3c217eae966f34ceaf5184630463fcfe5756fc9c6c";
 
   /**
@@ -122,6 +125,23 @@ public class ScalarWithGenericType implements Query<ScalarWithGenericType.Data> 
 
     public ScalarWithGenericType build() {
       return new ScalarWithGenericType();
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(ScalarWithGenericType_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.custom_scalar_type.type.Query.type
+      )
+      .selections(ScalarWithGenericTypeSelections.__root)
+      .build();
     }
   }
 

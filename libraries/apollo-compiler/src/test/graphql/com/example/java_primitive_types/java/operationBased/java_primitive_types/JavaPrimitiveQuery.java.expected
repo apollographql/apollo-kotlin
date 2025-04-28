@@ -8,6 +8,7 @@ package com.example.java_primitive_types;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Optional;
 import com.apollographql.apollo.api.Query;
@@ -24,6 +25,8 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "955e634c34cd7cd1d999806876aec12f800dbb9d36cc914e313b7a0050342605";
 
   /**
@@ -222,6 +225,23 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
     public JavaPrimitiveQuery build() {
       return new JavaPrimitiveQuery(nullableInt, nonNullableInt, nonNullableIntWithDefault, nullableInput, nonNullableInput, nonNullableInputWithDefault);
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(JavaPrimitiveQuery_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.java_primitive_types.type.Query.type
+      )
+      .selections(JavaPrimitiveQuerySelections.__root)
+      .build();
     }
   }
 

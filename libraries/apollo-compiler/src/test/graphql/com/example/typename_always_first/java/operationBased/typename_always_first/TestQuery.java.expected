@@ -8,6 +8,7 @@ package com.example.typename_always_first;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.CompiledField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
+import com.apollographql.apollo.api.ExecutableDefinition;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.json.JsonWriter;
@@ -21,6 +22,8 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 
 public class TestQuery implements Query<TestQuery.Data> {
+  public static ExecutableDefinition<Data> definition = new Definition();
+
   public static final String OPERATION_ID = "5351cc2f9dea89f8d8d9513a08a18eee20324eaba674211bf21f9c01cba9fdea";
 
   /**
@@ -134,6 +137,23 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public TestQuery build() {
       return new TestQuery();
+    }
+  }
+
+  private static class Definition implements ExecutableDefinition<Data> {
+    @Override
+    public Adapter<Data> getADAPTER() {
+      return new ObjectAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, false);
+    }
+
+    @Override
+    public CompiledField getROOT_FIELD() {
+      return new CompiledField.Builder(
+        "data",
+        com.example.typename_always_first.type.Query.type
+      )
+      .selections(TestQuerySelections.__root)
+      .build();
     }
   }
 
