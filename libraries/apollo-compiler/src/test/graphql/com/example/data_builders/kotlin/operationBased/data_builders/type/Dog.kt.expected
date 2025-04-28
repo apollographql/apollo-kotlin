@@ -8,6 +8,7 @@ package com.example.data_builders.type
 import com.apollographql.apollo.api.BuilderFactory
 import com.apollographql.apollo.api.BuilderScope
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.DataBuilderDsl
 import com.apollographql.apollo.api.ObjectBuilder
 import com.apollographql.apollo.api.ObjectType
 import kotlin.Any
@@ -24,6 +25,7 @@ public class Dog {
   }
 }
 
+@DataBuilderDsl
 public class DogBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : ObjectBuilder<DogMap>(customScalarAdapters) {
