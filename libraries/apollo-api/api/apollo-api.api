@@ -450,6 +450,9 @@ public final class com/apollographql/apollo/api/CustomScalarType : com/apollogra
 public abstract interface class com/apollographql/apollo/api/CustomTypeAdapter {
 }
 
+public abstract interface annotation class com/apollographql/apollo/api/DataBuilderDsl : java/lang/annotation/Annotation {
+}
+
 public class com/apollographql/apollo/api/DefaultFakeResolver : com/apollographql/apollo/api/FakeResolver {
 	public fun <init> (Ljava/util/List;)V
 	public fun resolveLeaf (Lcom/apollographql/apollo/api/FakeResolverContext;)Ljava/lang/Object;
