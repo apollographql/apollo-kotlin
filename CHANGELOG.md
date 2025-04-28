@@ -34,6 +34,12 @@ extend scalar Length @mapTo(builtIn: Long)
 Downloading or converting an SDL schema from introspection now includes scalar definitions.
 This is required for clients to get a [full view of the schema](https://github.com/graphql/graphql-wg/blob/main/rfcs/FullSchemas.md).
 
+## Support for `@disableErrorPropagation`
+
+Apollo Kotlin now automatically adds [`@disableErrorPropagation`](https://github.com/graphql/nullability-wg/discussions/85) if your server supports it and you opted in `@catchByDefault` in your schema extensions. This allows to use non-null types more liberally and still get support for partial data.
+
+See https://github.com/graphql/graphql-js/pull/4348 and https://github.com/graphql-java/graphql-java/pull/3772
+
 ## Contributors 💜
 
 Many thanks to @bobbysothebys, @jvanderwee, @dhritzkiv, @lwasyl and @rohandhruva for all the contributions and help in this release 💜 
