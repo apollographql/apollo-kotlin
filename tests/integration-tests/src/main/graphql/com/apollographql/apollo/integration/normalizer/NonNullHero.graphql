@@ -1,5 +1,0 @@
-query NonNullHero {
-    hero @nonnull {
-        name
-    }
-}
