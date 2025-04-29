@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
 }
