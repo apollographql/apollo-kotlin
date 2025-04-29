@@ -10,6 +10,7 @@ import com.apollographql.apollo.network.http.HttpInterceptorChain
 import com.apollographql.apollo.testing.internal.runTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okio.Buffer
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -30,11 +31,11 @@ class AuthorizationInterceptorTest {
 
                 delay(delayMillis)
 
-                @Suppress("DEPRECATION")
                 return HttpResponse.Builder(
                     statusCode = statusCode
                 ).body(
-                    bodyString = request.headers.value("Authorization").toString().encodeUtf8()
+                    Buffer().write(byteString = request.headers.value("Authorization").toString().encodeUtf8()
+                    )
                 ).build()
               }
             }
