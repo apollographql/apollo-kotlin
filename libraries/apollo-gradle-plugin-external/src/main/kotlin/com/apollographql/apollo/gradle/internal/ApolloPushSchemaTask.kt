@@ -8,8 +8,10 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
+import org.gradle.work.DisableCachingByDefault
 import java.io.File
 
+@DisableCachingByDefault(because = "This uploads a file to the internet and we cannot track the internet.")
 abstract class ApolloPushSchemaTask : DefaultTask() {
   @get:Input
   @get:Optional

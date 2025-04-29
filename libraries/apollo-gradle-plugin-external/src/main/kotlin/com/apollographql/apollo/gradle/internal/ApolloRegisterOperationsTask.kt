@@ -17,10 +17,15 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 
+@DisableCachingByDefault(because = "This uploads a file to the internet and we cannot track the internet.")
 abstract class ApolloRegisterOperationsTask: DefaultTask() {
   @get:InputFile
+  @get:PathSensitive(PathSensitivity.RELATIVE)
   @get:Optional
   abstract val operationOutput: RegularFileProperty
 
