@@ -182,7 +182,6 @@ internal object FetchPolicyRouterInterceptor : ApolloInterceptor, ApolloStoreInt
             ApolloResponse.Builder(request.operation, request.requestUuid)
                 .exception(exception)
                 .build()
-
         )
       }
     }
