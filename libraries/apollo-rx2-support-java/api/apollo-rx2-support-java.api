@@ -1,8 +1,0 @@
-public class com/apollographql/apollo/rx2/java/Rx2Apollo {
-	public fun <init> ()V
-	public static fun flowable (Lcom/apollographql/apollo/runtime/java/ApolloCall;)Lio/reactivex/Flowable;
-	public static fun flowable (Lcom/apollographql/apollo/runtime/java/ApolloCall;Lio/reactivex/BackpressureStrategy;)Lio/reactivex/Flowable;
-	public static fun single (Lcom/apollographql/apollo/runtime/java/ApolloCall;)Lio/reactivex/Single;
-	public static fun single (Lcom/apollographql/apollo/runtime/java/ApolloCall;Lio/reactivex/BackpressureStrategy;)Lio/reactivex/Single;
-}
-

@@ -24,7 +24,7 @@ class GQLResult<out V : Any>(
     }
   }
 
-  @Deprecated("Use getOrThrow instead", replaceWith = ReplaceWith("getOrThrow()"))
+  @Deprecated("Use getOrThrow instead", replaceWith = ReplaceWith("getOrThrow()"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   fun valueAssertNoErrors(): V {
     return getOrThrow()

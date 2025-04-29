@@ -159,7 +159,7 @@ private constructor(
         requestUuid: Uuid,
     ): this(operation, requestUuid, null, null, null, null)
 
-    @Deprecated("Use 2 params constructor instead", ReplaceWith("Builder(operation = operation, requestUuid = requestUuid).data(data = data)"))
+    @Deprecated("Use 2 params constructor instead", ReplaceWith("Builder(operation = operation, requestUuid = requestUuid).data(data = data)"), level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     constructor(
         operation: Operation<D>,

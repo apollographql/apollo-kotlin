@@ -20,7 +20,7 @@ import com.apollographql.apollo.api.Operation
  *
  * This is provided for migration purposes only and will be removed in a future version.
  */
-@Deprecated("Handle each ApolloResponse.exception instead")
+@Deprecated("Handle each ApolloResponse.exception instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 @ApolloInternal
 fun <T> MutableExecutionOptions<T>.conflateFetchPolicyInterceptorResponses(conflateResponses: Boolean) = addExecutionContext(

@@ -1,7 +1,5 @@
 package com.apollographql.apollo.network.http
 
-import com.apollographql.apollo.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo.annotations.ApolloDeprecatedSince.Version.v4_0_0
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.http.HttpBody
 import com.apollographql.apollo.api.http.HttpHeader
@@ -13,7 +11,7 @@ import kotlinx.coroutines.CancellationException
 import okio.Closeable
 
 /**
- * A wrapper around platform specific engines
+ * A wrapper around platform-specific engines
  */
 interface HttpEngine : Closeable {
 
@@ -27,18 +25,12 @@ interface HttpEngine : Closeable {
   @Throws(ApolloNetworkException::class, CancellationException::class)
   suspend fun execute(request: HttpRequest): HttpResponse
 
-  @ApolloDeprecatedSince(v4_0_0)
-  @Deprecated("Use close", ReplaceWith("close()"), level = DeprecationLevel.ERROR)
-  fun dispose() {
-  }
-
   /**
    * Disposes any resources used by the [HttpEngine]
    *
-   * Use this to dispose a connection pool for an example. Must be idemptotent
+   * Use this to dispose of a connection pool, for an example. Must be idemptotent
    */
-  @Suppress("DEPRECATION_ERROR")
-  override fun close() = dispose()
+  override fun close() {  }
 }
 
 /**

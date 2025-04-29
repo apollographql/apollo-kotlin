@@ -14,20 +14,23 @@ import java.io.File
 /**
  * Resolves the operation manifest and formats.
  */
-@Suppress("DEPRECATION")
 private fun DefaultService.resolveOperationManifest(): Pair<String, File?> {
+  @Suppress("DEPRECATION_ERROR")
   generateOperationOutput.disallowChanges()
+  @Suppress("DEPRECATION_ERROR")
   operationOutputFile.disallowChanges()
   operationManifest.disallowChanges()
   operationManifestFormat.disallowChanges()
 
   var format = operationManifestFormat.orNull
   if (format == null) {
+    @Suppress("DEPRECATION_ERROR")
     if (generateOperationOutput.orElse(false).get()) {
       println("Apollo: using 'generateOperationOutput' is deprecated, please use 'operationManifestFormat.set(\"$MANIFEST_PERSISTED_QUERY\")' instead")
       format = MANIFEST_OPERATION_OUTPUT
     }
   } else {
+    @Suppress("DEPRECATION_ERROR")
     when (format) {
       MANIFEST_NONE,
       MANIFEST_PERSISTED_QUERY,
@@ -40,14 +43,17 @@ private fun DefaultService.resolveOperationManifest(): Pair<String, File?> {
         error("Apollo: unknown operation manifest format: $format")
       }
     }
+    @Suppress("DEPRECATION_ERROR")
     check(!generateOperationOutput.isPresent) {
       "Apollo: it is an error to set both `generateOperationOutput` and `operationManifestFormat`. Remove `generateOperationOutput`"
     }
   }
   var userFile = operationManifest.orNull?.asFile
   if (userFile == null) {
+    @Suppress("DEPRECATION_ERROR")
     userFile = operationOutputFile.orNull?.asFile
   } else {
+    @Suppress("DEPRECATION_ERROR")
     check(!operationOutputFile.isPresent) {
       "Apollo: it is an error to set both `operationManifest` and `operationOutputFile`. Remove `operationOutputFile`"
     }
@@ -55,6 +61,7 @@ private fun DefaultService.resolveOperationManifest(): Pair<String, File?> {
 
   if (userFile != null) {
     if (format == null) {
+      @Suppress("DEPRECATION_ERROR")
       format = MANIFEST_OPERATION_OUTPUT
     }
   } else {

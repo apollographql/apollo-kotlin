@@ -422,7 +422,7 @@ object ApolloCompiler {
       check(operationManifestFile != null) {
         "Apollo: no operationManifestFile set to output '$operationManifestFormat' operation manifest"
       }
-      @Suppress("DEPRECATION")
+      @Suppress("DEPRECATION_ERROR")
       when (operationManifestFormat) {
         MANIFEST_OPERATION_OUTPUT -> operationOutput.writeTo(operationManifestFile)
         MANIFEST_PERSISTED_QUERY -> operationOutput.toPersistedQueryManifest().writeTo(operationManifestFile)

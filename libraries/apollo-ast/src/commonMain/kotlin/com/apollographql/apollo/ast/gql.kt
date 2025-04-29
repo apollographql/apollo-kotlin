@@ -167,8 +167,8 @@ class GQLOperationDefinition(
     val selections: List<GQLSelection>,
     override val description: String?, // spec extension
 ) : GQLExecutableDefinition, GQLDescribed, GQLHasDirectives {
-  @Suppress("DEPRECATION")
-  @Deprecated("Use selections directly")
+  @Suppress("DEPRECATION_ERROR")
+  @Deprecated("Use selections directly", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val selectionSet: GQLSelectionSet
     get() {
@@ -238,8 +238,8 @@ class GQLFragmentDefinition(
     val selections: List<GQLSelection>,
     override val description: String?, // spec extension
 ) : GQLExecutableDefinition, GQLNamed, GQLDescribed, GQLHasDirectives {
-  @Suppress("DEPRECATION")
-  @Deprecated("Use selections directly")
+  @Suppress("DEPRECATION_ERROR")
+  @Deprecated("Use selections directly", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val selectionSet: GQLSelectionSet
     get() {
@@ -1418,7 +1418,7 @@ class GQLArgument(
   }
 }
 
-@Deprecated("For brevity, GQLSelectionSet has been removed. Use `selections` directly")
+@Deprecated("For brevity, GQLSelectionSet has been removed. Use `selections` directly", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 class GQLSelectionSet(
     val selections: List<GQLSelection>,
@@ -1430,7 +1430,7 @@ class GQLSelectionSet(
     selections.writeSelections(writer)
   }
 
-  @Suppress("DEPRECATION")
+  @Suppress("DEPRECATION_ERROR")
   fun copy(
       selections: List<GQLSelection> = this.selections,
       sourceLocation: SourceLocation? = this.sourceLocation,
@@ -1448,7 +1448,7 @@ class GQLSelectionSet(
   }
 }
 
-@Deprecated("For brevity, GQLArguments has been removed. Use `arguments` directly")
+@Deprecated("For brevity, GQLArguments has been removed. Use `arguments` directly", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 class GQLArguments(
     val arguments: List<GQLArgument>,
@@ -1460,7 +1460,7 @@ class GQLArguments(
     arguments.join(writer, prefix = "(", separator = ", ", postfix = ")")
   }
 
-  @Suppress("DEPRECATION")
+  @Suppress("DEPRECATION_ERROR")
   fun copy(
       arguments: List<GQLArgument> = this.arguments,
       sourceLocation: SourceLocation? = this.sourceLocation,
@@ -1506,8 +1506,8 @@ class GQLField @ApolloExperimental constructor(
     override val directives: List<GQLDirective>,
     val selections: List<GQLSelection>,
 ) : GQLSelection(), GQLNamed, GQLHasDirectives {
-  @Suppress("DEPRECATION")
-  @Deprecated("Use selections directly")
+  @Suppress("DEPRECATION_ERROR")
+  @Deprecated("Use selections directly", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val selectionSet: GQLSelectionSet
     get() {
@@ -1572,8 +1572,8 @@ class GQLInlineFragment(
     override val directives: List<GQLDirective>,
     val selections: List<GQLSelection>,
 ) : GQLSelection(), GQLHasDirectives {
-  @Suppress("DEPRECATION")
-  @Deprecated("Use selections directly")
+  @Suppress("DEPRECATION_ERROR")
+  @Deprecated("Use selections directly", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val selectionSet: GQLSelectionSet
     get() {
@@ -1783,7 +1783,7 @@ class GQLIntValue(
 
   override fun writeInternal(writer: SDLWriter) {
     with(writer) {
-      write(value.toString())
+      write(value)
     }
   }
 

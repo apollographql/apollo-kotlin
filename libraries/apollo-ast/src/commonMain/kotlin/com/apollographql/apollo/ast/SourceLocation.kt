@@ -25,11 +25,6 @@ class SourceLocation(
     val column: Int,
     val filePath: String?
 ) {
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-  @Deprecated("Use column instead", ReplaceWith("column - 1"), DeprecationLevel.ERROR)
-  val position: Int
-    get() = column - 1
-
   override fun toString(): String {
     return pretty()
   }
@@ -37,10 +32,6 @@ class SourceLocation(
   fun pretty(): String = "$filePath: ($line, $column)"
 
   companion object {
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-    @Deprecated("SourceLocation is now nullable and this is replaced by null", ReplaceWith("null"), level = DeprecationLevel.ERROR)
-    val UNKNOWN = SourceLocation.forPath(null)
-
     /**
      * Constructs a [SourceLocation] that only contains a filePath for the moments when we're constructing nodes programmatically
      * but still want to carry around the path of the original nodes for debugging purposes.

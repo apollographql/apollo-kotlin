@@ -45,14 +45,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     graphqlSourceDirectorySet.srcDir(directory)
   }
 
-  @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-  override fun usedCoordinates(file: File) = TODO()
-
-  @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-  override fun usedCoordinates(file: String) = TODO()
-
   var introspection: DefaultIntrospection? = null
 
   override fun introspection(configure: Action<in Introspection>) {
@@ -121,7 +113,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   var operationManifestAction: Action<in Service.OperationManifestConnection>? = null
   var outgoingVariantsConnection: Action<in Service.OutgoingVariantsConnection>? = null
 
-  @Deprecated("Use operationManifestConnection", replaceWith = ReplaceWith("operationManifestConnection"))
+  @Deprecated("Use operationManifestConnection", replaceWith = ReplaceWith("operationManifestConnection"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   override fun operationOutputConnection(action: Action<in Service.OperationOutputConnection>) {
     check(!registered) {

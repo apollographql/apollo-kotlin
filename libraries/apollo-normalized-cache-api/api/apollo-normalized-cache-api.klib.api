@@ -113,8 +113,6 @@ final class com.apollographql.apollo.cache.normalized.api/CacheKey { // com.apol
     final object Companion { // com.apollographql.apollo.cache.normalized.api/CacheKey.Companion|null[0]
         final fun canDeserialize(kotlin/String): kotlin/Boolean // com.apollographql.apollo.cache.normalized.api/CacheKey.Companion.canDeserialize|canDeserialize(kotlin.String){}[0]
         final fun deserialize(kotlin/String): com.apollographql.apollo.cache.normalized.api/CacheKey // com.apollographql.apollo.cache.normalized.api/CacheKey.Companion.deserialize|deserialize(kotlin.String){}[0]
-        final fun from(kotlin/String, kotlin.collections/List<kotlin/String>): com.apollographql.apollo.cache.normalized.api/CacheKey // com.apollographql.apollo.cache.normalized.api/CacheKey.Companion.from|from(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
-        final fun from(kotlin/String, kotlin/Array<out kotlin/String>...): com.apollographql.apollo.cache.normalized.api/CacheKey // com.apollographql.apollo.cache.normalized.api/CacheKey.Companion.from|from(kotlin.String;kotlin.Array<out|kotlin.String>...){}[0]
         final fun rootKey(): com.apollographql.apollo.cache.normalized.api/CacheKey // com.apollographql.apollo.cache.normalized.api/CacheKey.Companion.rootKey|rootKey(){}[0]
     }
 }

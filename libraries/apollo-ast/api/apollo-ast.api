@@ -1109,14 +1109,12 @@ public final class com/apollographql/apollo/ast/SourceLocation {
 	public final fun getEnd ()I
 	public final fun getFilePath ()Ljava/lang/String;
 	public final fun getLine ()I
-	public final fun getPosition ()I
 	public final fun getStart ()I
 	public final fun pretty ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo/ast/SourceLocation$Companion {
-	public final fun getUNKNOWN ()Lcom/apollographql/apollo/ast/SourceLocation;
 }
 
 public final class com/apollographql/apollo/ast/SourceLocationKt {

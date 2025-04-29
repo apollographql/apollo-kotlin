@@ -52,7 +52,7 @@ interface Service {
    *
    * For more control, see [srcDir]
    */
-  @Deprecated("Replace with srcDir(\"src/[main|commonMain]/graphql/\$sourceFolder\")")
+  @Deprecated("Replace with srcDir(\"src/[main|commonMain]/graphql/\$sourceFolder\")", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val sourceFolder: Property<String>
 
@@ -472,7 +472,7 @@ interface Service {
    *
    * Defaults value: false
    */
-  @Deprecated("Use operationManifestFormat", ReplaceWith("operationManifestFormat.set(\"$MANIFEST_PERSISTED_QUERY\")"))
+  @Deprecated("Use operationManifestFormat", ReplaceWith("operationManifestFormat.set(\"$MANIFEST_PERSISTED_QUERY\")"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val generateOperationOutput: Property<Boolean>
 
@@ -532,7 +532,7 @@ interface Service {
    * The file where the operation output will be written. It's called [operationOutputFile] but this an "input" parameter for the compiler
    * If you want a [RegularFileProperty] that carries the task dependency, use [operationManifestConnection]
    */
-  @Deprecated("Use operationManifest", ReplaceWith("operationManifest"))
+  @Deprecated("Use operationManifest", ReplaceWith("operationManifest"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   val operationOutputFile: RegularFileProperty
 
@@ -651,13 +651,6 @@ interface Service {
    */
   val decapitalizeFields: Property<Boolean>
 
-  @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-  fun usedCoordinates(file: File)
-  @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-  fun usedCoordinates(file: String)
-
   /**
    * Configures [Introspection] to download an introspection Json schema
    */
@@ -680,7 +673,7 @@ interface Service {
    *
    * By default, operationOutput is not connected
    */
-  @Deprecated("Use operationManifestConnection", ReplaceWith("operationManifestConnection"))
+  @Deprecated("Use operationManifestConnection", ReplaceWith("operationManifestConnection"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   fun operationOutputConnection(action: Action<in OperationOutputConnection>)
 
@@ -689,7 +682,7 @@ interface Service {
    * Use this if you want to connect the generated operation manifest. For an example
    * you can use this to send the modified queries to your backend for whitelisting
    *
-   * By default, operation manifest is not connected
+   * By default, the operation manifest is not connected
    */
   fun operationManifestConnection(action: Action<in OperationManifestConnection>)
 

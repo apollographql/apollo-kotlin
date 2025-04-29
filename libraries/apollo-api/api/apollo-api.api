@@ -189,7 +189,6 @@ public class com/apollographql/apollo/api/BaseFakeResolver : com/apollographql/a
 }
 
 public abstract class com/apollographql/apollo/api/BooleanExpression {
-	public abstract fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression;
 }
 
 public final class com/apollographql/apollo/api/BooleanExpression$And : com/apollographql/apollo/api/BooleanExpression {
@@ -201,7 +200,6 @@ public final class com/apollographql/apollo/api/BooleanExpression$And : com/apol
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getOperands ()Ljava/util/Set;
 	public fun hashCode ()I
-	public fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -213,15 +211,11 @@ public final class com/apollographql/apollo/api/BooleanExpression$Element : com/
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getValue ()Ljava/lang/Object;
 	public fun hashCode ()I
-	public fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression$Element;
-	public synthetic fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression;
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo/api/BooleanExpression$False : com/apollographql/apollo/api/BooleanExpression {
 	public static final field INSTANCE Lcom/apollographql/apollo/api/BooleanExpression$False;
-	public fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression$False;
-	public synthetic fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression;
 }
 
 public final class com/apollographql/apollo/api/BooleanExpression$Not : com/apollographql/apollo/api/BooleanExpression {
@@ -232,7 +226,6 @@ public final class com/apollographql/apollo/api/BooleanExpression$Not : com/apol
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getOperand ()Lcom/apollographql/apollo/api/BooleanExpression;
 	public fun hashCode ()I
-	public fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -245,27 +238,19 @@ public final class com/apollographql/apollo/api/BooleanExpression$Or : com/apoll
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getOperands ()Ljava/util/Set;
 	public fun hashCode ()I
-	public fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression;
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo/api/BooleanExpression$True : com/apollographql/apollo/api/BooleanExpression {
 	public static final field INSTANCE Lcom/apollographql/apollo/api/BooleanExpression$True;
-	public fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression$True;
-	public synthetic fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression;
 }
 
 public final class com/apollographql/apollo/api/BooleanExpressions {
-	public static final fun and (Lcom/apollographql/apollo/api/BooleanExpression;[Lcom/apollographql/apollo/api/BooleanExpression;)Lcom/apollographql/apollo/api/BooleanExpression;
 	public static final fun and ([Lcom/apollographql/apollo/api/BooleanExpression;)Lcom/apollographql/apollo/api/BooleanExpression;
-	public static final fun containsPossibleTypes (Lcom/apollographql/apollo/api/BooleanExpression;)Z
 	public static final fun evaluate (Lcom/apollographql/apollo/api/BooleanExpression;Ljava/util/Set;Ljava/lang/String;Ljava/util/Set;Ljava/util/List;)Z
-	public static final fun evaluate (Lcom/apollographql/apollo/api/BooleanExpression;Lkotlin/jvm/functions/Function1;)Z
-	public static final fun firstElementOfType (Lcom/apollographql/apollo/api/BooleanExpression;Lkotlin/reflect/KClass;)Ljava/lang/Object;
 	public static final fun label (Ljava/lang/String;)Lcom/apollographql/apollo/api/BooleanExpression;
 	public static synthetic fun label$default (Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/api/BooleanExpression;
 	public static final fun not (Lcom/apollographql/apollo/api/BooleanExpression;)Lcom/apollographql/apollo/api/BooleanExpression;
-	public static final fun or (Lcom/apollographql/apollo/api/BooleanExpression;[Lcom/apollographql/apollo/api/BooleanExpression;)Lcom/apollographql/apollo/api/BooleanExpression;
 	public static final fun or ([Lcom/apollographql/apollo/api/BooleanExpression;)Lcom/apollographql/apollo/api/BooleanExpression;
 	public static final fun possibleTypes ([Ljava/lang/String;)Lcom/apollographql/apollo/api/BooleanExpression;
 	public static final fun variable (Ljava/lang/String;)Lcom/apollographql/apollo/api/BooleanExpression;
@@ -370,12 +355,6 @@ public final class com/apollographql/apollo/api/CompiledFragment$Builder {
 }
 
 public final class com/apollographql/apollo/api/CompiledGraphQL {
-	public static final field CompiledDirectiveType Lcom/apollographql/apollo/api/ObjectType;
-	public static final field CompiledEnumValueType Lcom/apollographql/apollo/api/ObjectType;
-	public static final field CompiledFieldType Lcom/apollographql/apollo/api/ObjectType;
-	public static final field CompiledInputValueType Lcom/apollographql/apollo/api/ObjectType;
-	public static final field CompiledSchemaType Lcom/apollographql/apollo/api/ObjectType;
-	public static final field CompiledTypeType Lcom/apollographql/apollo/api/ObjectType;
 	public static final fun -list (Lcom/apollographql/apollo/api/CompiledType;)Lcom/apollographql/apollo/api/CompiledListType;
 	public static final fun -notNull (Lcom/apollographql/apollo/api/CompiledType;)Lcom/apollographql/apollo/api/CompiledNotNullType;
 	public static final fun isComposite (Lcom/apollographql/apollo/api/CompiledNamedType;)Z
@@ -449,9 +428,6 @@ public final class com/apollographql/apollo/api/CustomScalarAdapters$Key : com/a
 public final class com/apollographql/apollo/api/CustomScalarType : com/apollographql/apollo/api/CompiledNamedType {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun getClassName ()Ljava/lang/String;
-}
-
-public abstract interface class com/apollographql/apollo/api/CustomTypeAdapter {
 }
 
 public abstract class com/apollographql/apollo/api/DataBuilder : com/apollographql/apollo/api/DataBuilderScope {
@@ -577,14 +553,19 @@ public final class com/apollographql/apollo/api/Error {
 public final class com/apollographql/apollo/api/Error$Builder {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun build ()Lcom/apollographql/apollo/api/Error;
+	public final fun extensions (Ljava/util/Map;)Lcom/apollographql/apollo/api/Error$Builder;
 	public final fun getExtensions ()Ljava/util/Map;
 	public final fun getLocations ()Ljava/util/List;
 	public final fun getMessage ()Ljava/lang/String;
+	public final fun getNonStandardFields ()Ljava/util/Map;
 	public final fun getPath ()Ljava/util/List;
 	public final fun locations (Ljava/util/List;)Lcom/apollographql/apollo/api/Error$Builder;
+	public final fun nonStandardFields (Ljava/util/Map;)Lcom/apollographql/apollo/api/Error$Builder;
 	public final fun path (Ljava/util/List;)Lcom/apollographql/apollo/api/Error$Builder;
 	public final fun putExtension (Ljava/lang/String;Ljava/lang/Object;)Lcom/apollographql/apollo/api/Error$Builder;
+	public final fun setExtensions (Ljava/util/Map;)V
 	public final fun setLocations (Ljava/util/List;)V
+	public final fun setNonStandardFields (Ljava/util/Map;)V
 	public final fun setPath (Ljava/util/List;)V
 }
 
@@ -949,8 +930,6 @@ public final class com/apollographql/apollo/api/http/DefaultHttpRequestComposer$
 	public final fun getHEADER_ACCEPT_NAME ()Ljava/lang/String;
 	public final fun getHEADER_ACCEPT_VALUE_DEFER ()Ljava/lang/String;
 	public final fun getHEADER_ACCEPT_VALUE_MULTIPART ()Ljava/lang/String;
-	public final fun getHEADER_APOLLO_OPERATION_ID ()Ljava/lang/String;
-	public final fun getHEADER_APOLLO_OPERATION_NAME ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo/api/http/DefaultWebSocketPayloadComposer : com/apollographql/apollo/api/http/WebSocketPayloadComposer {

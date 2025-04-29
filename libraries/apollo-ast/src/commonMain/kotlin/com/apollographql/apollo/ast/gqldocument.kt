@@ -23,10 +23,9 @@ import okio.Buffer
  * Scalars: https://spec.graphql.org/draft/#sel-GAHXJHABAB_D4G
  * Directives: https://spec.graphql.org/draft/#sel-FAHnBPLCAACCcooU
  */
-@Deprecated("use toFullSchemaGQLDocument instead", ReplaceWith("toFullSchemaGQLDocument()"))
+@Deprecated("use toFullSchemaGQLDocument instead", ReplaceWith("toFullSchemaGQLDocument()"), level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_1_2)
 fun GQLDocument.withBuiltinDefinitions(): GQLDocument {
-
   return copy(
       definitions = definitions.withBuiltinDefinitions()
   )
@@ -55,7 +54,7 @@ internal fun List<GQLDefinition>.withBuiltinDefinitions(): List<GQLDefinition> {
  */
 @ApolloExperimental
 fun GQLDocument.toFullSchemaGQLDocument(): GQLDocument {
-  @Suppress("DEPRECATION")
+  @Suppress("DEPRECATION_ERROR")
   return withBuiltinDefinitions()
 }
 
@@ -85,7 +84,7 @@ fun GQLDocument.mergeExtensions(mergeOptions: MergeOptions = MergeOptions.Defaul
   )
 }
 
-@Deprecated("Use GQLDocument.toSDL() to write a GQLDocument")
+@Deprecated("Use GQLDocument.toSDL() to write a GQLDocument", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun GQLDocument.withoutBuiltinDefinitions(): GQLDocument {
   return withoutDefinitions(builtinDefinitions())

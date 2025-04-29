@@ -7,7 +7,7 @@ import com.apollographql.apollo.annotations.ApolloDeprecatedSince
  * See https://spec.graphql.org/draft/#sec-Errors.Error-result-format
  */
 class Error
-@Deprecated("Use Error.Builder instead", ReplaceWith("Builder(message = message).locations(locations).path(path).extensions(extensions)"))
+@Deprecated("Use Error.Builder instead", ReplaceWith("Error.Builder(message = message).locations(locations).path(path).extensions(extensions).build()"), level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 constructor(
     /**
@@ -41,28 +41,41 @@ constructor(
   class Builder(val message: String) {
     var locations: List<Location>? = null
     var path: List<Any>? = null
-    val extensions = mutableMapOf<String, Any?>()
+    var nonStandardFields: Map<String, Any?>? = null
+    var extensions: Map<String, Any?>? = null
 
-    fun locations(locations: List<Location>) = apply {
+    fun locations(locations: List<Location>?) = apply {
       this.locations = locations
     }
 
-    fun path(path: List<Any>) = apply {
+    fun path(path: List<Any>?) = apply {
       this.path = path
     }
 
+    @Deprecated("Use extensions() instead", ReplaceWith("extensions(mapOf(name to value))"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     fun putExtension(name: String, value: Any?) = apply {
-      this.extensions.put(name, value)
+      this.extensions = extensions.orEmpty().toMutableMap().apply {
+        put(name, value)
+      }
+    }
+
+    fun extensions(extensions: Map<String, Any?>?) = apply {
+      this.extensions = extensions
+    }
+
+    fun nonStandardFields(nonStandardFields: Map<String, Any?>?) = apply {
+      this.nonStandardFields = nonStandardFields
     }
 
     fun build(): Error {
-      @Suppress("DEPRECATION")
+      @Suppress("DEPRECATION_ERROR")
       return Error(
           message = message,
           locations = locations,
           path = path,
           extensions = extensions,
-          nonStandardFields = null
+          nonStandardFields = nonStandardFields
       )
     }
   }

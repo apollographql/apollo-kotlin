@@ -165,21 +165,6 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
       .addExecutionContext(CacheDumpProviderContext(store.cacheDumpProvider()))
 }
 
-@Deprecated(level = DeprecationLevel.ERROR, message = "Exceptions no longer throw", replaceWith = ReplaceWith("watch()"))
-@ApolloDeprecatedSince(v4_0_0)
-@Suppress("UNUSED_PARAMETER")
-fun <D : Query.Data> ApolloCall<D>.watch(
-    fetchThrows: Boolean,
-    refetchThrows: Boolean,
-): Flow<ApolloResponse<D>> = throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
-
-@Deprecated(level = DeprecationLevel.ERROR, message = "Exceptions no longer throw", replaceWith = ReplaceWith("watch()"))
-@ApolloDeprecatedSince(v4_0_0)
-@Suppress("UNUSED_PARAMETER")
-fun <D : Query.Data> ApolloCall<D>.watch(
-    fetchThrows: Boolean,
-): Flow<ApolloResponse<D>> = throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
-
 /**
  * Gets initial response(s) then observes the cache for any changes.
  *
@@ -315,7 +300,7 @@ fun <T> MutableExecutionOptions<T>.memoryCacheOnly(memoryOnly: Boolean) = addExe
     MemoryCacheOnlyContext(memoryOnly)
 )
 
-@Deprecated("Emitting cache misses is now the default behavior, this method is a no-op", replaceWith = ReplaceWith(""))
+@Deprecated("Emitting cache misses is now the default behavior, this method is a no-op", replaceWith = ReplaceWith(""), level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v4_0_0)
 @Suppress("UNUSED_PARAMETER")
 fun <T> MutableExecutionOptions<T>.emitCacheMisses(emitCacheMisses: Boolean) = this
@@ -696,13 +681,3 @@ fun <D : Operation.Data> ApolloResponse.Builder<D>.cacheHeaders(cacheHeaders: Ca
 
 val <D : Operation.Data> ApolloResponse<D>.cacheHeaders
   get() = executionContext[CacheHeadersContext]?.value ?: CacheHeaders.NONE
-
-/**
- * Gets the result from the cache first and always fetch from the network. Use this to get an early
- * cached result while also updating the network values.
- *
- * Any [FetchPolicy] previously set will be ignored
- */
-@Deprecated("Use fetchPolicy(FetchPolicy.CacheAndNetwork) instead", ReplaceWith("fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow()"), level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_7_5)
-fun <D : Query.Data> ApolloCall<D>.executeCacheAndNetwork(): Flow<ApolloResponse<D>> = TODO()

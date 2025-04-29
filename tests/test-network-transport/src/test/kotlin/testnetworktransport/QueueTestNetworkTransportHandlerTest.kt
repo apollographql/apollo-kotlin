@@ -92,7 +92,7 @@ class QueueTestNetworkTransportHandlerTest {
             Error.Builder(message = "There was an error")
                 .locations(listOf(Error.Location(line = 1, column = 2)))
                 .path(listOf("hero", "name"))
-                .putExtension("myExtension", true)
+                .extensions(mapOf<String, Any?>("myExtension" to true))
                 .build()
         )
     )
