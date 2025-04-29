@@ -1,7 +1,6 @@
 package apollo.plugin
 
 import com.apollographql.apollo.annotations.ApolloExperimental
-import com.apollographql.apollo.compiler.OperationOutputGenerator
 import com.apollographql.apollo.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo.compiler.ApolloCompilerPluginEnvironment
 import com.apollographql.apollo.compiler.ApolloCompilerPluginProvider

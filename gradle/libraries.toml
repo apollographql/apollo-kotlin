@@ -52,7 +52,6 @@ androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
 androidx-activity = "androidx.activity:activity-ktx:1.7.2"
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version = "1.7.1" }
 androidx-core = "androidx.core:core-ktx:1.12.0"
-androidx-espresso-idlingresource = { group = "androidx.test.espresso", name = "espresso-idling-resource", version = "3.5.1" }
 androidx-lint-rules = "androidx.lint:lint-gradle:1.0.0-alpha01"
 androidx-lint-gradle-plugin = { module = "com.android.lint:com.android.lint.gradle.plugin", version.ref = "android-plugin" }
 androidx-profileinstaller = "androidx.profileinstaller:profileinstaller:1.3.1"
@@ -62,7 +61,6 @@ androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime
 apollo-api = { group = "com.apollographql.apollo", name = "apollo-api", version.ref = "apollo" }
 apollo-api-java = { group = "com.apollographql.apollo", name = "apollo-api-java", version.ref = "apollo" }
 apollo-httpCache = { group = "com.apollographql.apollo", name = "apollo-http-cache", version.ref = "apollo" }
-apollo-idlingresource = { group = "com.apollographql.apollo", name = "apollo-idling-resource", version.ref = "apollo" }
 apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-mockserver", version = "0.1.1" }
 apollo-mpputils = { group = "com.apollographql.apollo", name = "apollo-mpp-utils", version.ref = "apollo" }
 apollo-normalizedcache = { group = "com.apollographql.apollo", name = "apollo-normalized-cache", version.ref = "apollo" }

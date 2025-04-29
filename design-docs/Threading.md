@@ -41,5 +41,3 @@ nothing so a coroutine is way more efficient there.
 ## Current state
 
 The dispatcher is changed very early in the chain. On the JVM, everything runs synchronously from that dispatcher.
-
-The only thing happening before the dispatcher change is notification of the ApolloIdlingResources that need to happen from the same call stack. ApolloIdlingResource is deprecated and that should be removed when ApolloIdlingResource goes away. 

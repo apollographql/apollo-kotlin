@@ -1,13 +1,5 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.compiler.ApolloCompiler
-import com.apollographql.apollo.compiler.codegen.writeTo
-import com.apollographql.apollo.compiler.findCodegenSchemaFile
-import com.apollographql.apollo.compiler.toCodegenMetadata
-import com.apollographql.apollo.compiler.toCodegenOptions
-import com.apollographql.apollo.compiler.toCodegenSchema
-import com.apollographql.apollo.compiler.toIrOperations
-import com.apollographql.apollo.compiler.toUsedCoordinates
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
@@ -49,23 +41,6 @@ abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBaseTask()
 
   @TaskAction
   fun taskAction() {
-    if (requiresBuildscriptClasspath()) {
-      val codegenSchemaFile = codegenSchemas.files.findCodegenSchemaFile()
-
-      ApolloCompiler.buildSchemaAndOperationsSourcesFromIr(
-          codegenSchema = codegenSchemaFile.toCodegenSchema(),
-          irOperations = irOperations.get().asFile.toIrOperations(),
-          downstreamUsedCoordinates = downstreamUsedCoordinates.get().toUsedCoordinates(),
-          upstreamCodegenMetadata = upstreamMetadata.files.map { it.toCodegenMetadata() },
-          codegenOptions = codegenOptionsFile.get().asFile.toCodegenOptions(),
-          layout = layout().create(codegenSchemaFile.toCodegenSchema()),
-          irOperationsTransform = null,
-          javaOutputTransform = null,
-          kotlinOutputTransform = null,
-          operationManifestFile = operationManifestFile.orNull?.asFile,
-          operationOutputGenerator = operationOutputGenerator
-      ).writeTo(outputDir.get().asFile, true, metadataOutputFile.orNull?.asFile)
-    } else {
       val workQueue = getWorkQueue()
 
       workQueue.submit(GenerateSourcesFromIr::class.java) {
@@ -83,7 +58,6 @@ abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBaseTask()
         it.apolloBuildService.set(apolloBuildService)
         it.classpath = classpath
       }
-    }
   }
 }
 

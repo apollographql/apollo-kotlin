@@ -151,14 +151,11 @@ public abstract interface class com/apollographql/apollo/gradle/api/Service {
 	public abstract fun getLanguageVersion ()Lorg/gradle/api/provider/Property;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getNullableFieldStyle ()Lorg/gradle/api/provider/Property;
-	public abstract fun getOperationIdGenerator ()Lorg/gradle/api/provider/Property;
 	public abstract fun getOperationManifest ()Lorg/gradle/api/file/RegularFileProperty;
 	public abstract fun getOperationManifestFormat ()Lorg/gradle/api/provider/Property;
 	public abstract fun getOperationOutputFile ()Lorg/gradle/api/file/RegularFileProperty;
-	public abstract fun getOperationOutputGenerator ()Lorg/gradle/api/provider/Property;
 	public abstract fun getOutputDir ()Lorg/gradle/api/file/DirectoryProperty;
 	public abstract fun getPackageName ()Lorg/gradle/api/provider/Property;
-	public abstract fun getPackageNameGenerator ()Lorg/gradle/api/provider/Property;
 	public abstract fun getRequiresOptInAnnotation ()Lorg/gradle/api/provider/Property;
 	public abstract fun getSchemaFile ()Lorg/gradle/api/file/RegularFileProperty;
 	public abstract fun getSchemaFiles ()Lorg/gradle/api/file/ConfigurableFileCollection;

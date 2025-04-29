@@ -23,7 +23,6 @@ import com.apollographql.apollo.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo.interceptor.NetworkInterceptor
 import com.apollographql.apollo.interceptor.RetryOnErrorInterceptor
-import com.apollographql.apollo.internal.ApolloClientListener
 import com.apollographql.apollo.internal.defaultDispatcher
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.network.http.BatchingHttpInterceptor
@@ -87,7 +86,6 @@ private constructor(
   private val retryOnError: ((ApolloRequest<*>) -> Boolean)? = builder.retryOnError
   private val retryOnErrorInterceptor: ApolloInterceptor? = builder.retryOnErrorInterceptor
   private val failFastIfOffline = builder.failFastIfOffline
-  private val listeners = builder.listeners
 
   override val executionContext: ExecutionContext = builder.executionContext
   override val httpMethod: HttpMethod? = builder.httpMethod
@@ -254,35 +252,17 @@ private constructor(
       throwing: Boolean,
   ): Flow<ApolloResponse<D>> {
     val flow = channelFlow {
-      listeners.forEach {
-        it.requestStarted(apolloRequest)
-      }
-
-      try {
-        withContext(concurrencyInfo.dispatcher) {
-          apolloResponses(apolloRequest, throwing).collect {
-            send(it)
-          }
-        }
-      } finally {
-        listeners.forEach {
-          it.requestCompleted(apolloRequest)
+      withContext(concurrencyInfo.dispatcher) {
+        apolloResponses(apolloRequest, throwing).collect {
+          send(it)
         }
       }
     }
 
-    return flow
-        /**
-         * The `Unconfined` dispatcher is needed to let the IdlingResource monitor collection synchronously. Without this, `channelFlow` dispatches and the current stack frame terminates with the IdlingResource still being idle.
-         *
-         * See [idlingResourceSingleQuery](https://github.com/apollographql/apollo-kotlin/blob/215a845f38bcdfc9c72ffc7c58d077ac54e297bb/tests/idling-resource/src/test/java/IdlingResourceTest.kt#L33).
-         * See https://slack-chats.kotlinlang.org/t/16714036/can-i-have-a-channelflow-that-does-not-dispatch-until-after-#d48ebff5-676e-4109-8dd5-b2320245faa3.
-         */
-        .flowOn(Dispatchers.Unconfined)
-        /**
-         * Default to [Channel.UNLIMITED] so as not to lose any item. If a consumer is very slow, the channel may grow boundless. The caller should call [buffer] and change the default in those cases.
-         */
-        .buffer(Channel.UNLIMITED)
+    /**
+     * Default to [Channel.UNLIMITED] so as not to lose any item. If a consumer is very slow, the channel may grow boundless. The caller should call [buffer] and change the default in those cases.
+     */
+    return flow.buffer(Channel.UNLIMITED)
   }
 
   internal fun <D : Operation.Data> apolloResponses(
@@ -363,9 +343,6 @@ private constructor(
 
     private val _httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
     val httpInterceptors: List<HttpInterceptor> = _httpInterceptors
-
-    private val _listeners: MutableList<ApolloClientListener> = mutableListOf()
-    internal val listeners: List<ApolloClientListener> = _listeners
 
     override var executionContext: ExecutionContext = ExecutionContext.Empty
       private set
@@ -817,17 +794,6 @@ private constructor(
       _customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter)
     }
 
-    @ApolloInternal
-    fun addListener(listener: ApolloClientListener) = apply {
-      _listeners.add(listener)
-    }
-
-    @ApolloInternal
-    fun listeners(listeners: List<ApolloClientListener>) = apply {
-      _listeners.clear()
-      _listeners.addAll(listeners)
-    }
-
     /**
      * Adds an [ApolloInterceptor] to this [ApolloClient].
      *
@@ -1003,7 +969,6 @@ private constructor(
           .cacheInterceptor(cacheInterceptor)
           .autoPersistedQueriesInterceptor(autoPersistedQueryInterceptor)
           .failFastIfOffline(failFastIfOffline)
-          .listeners(listeners)
     }
   }
 

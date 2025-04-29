@@ -75,7 +75,6 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public final fun addHttpInterceptor (Lcom/apollographql/apollo/network/http/HttpInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun addInterceptor (Lcom/apollographql/apollo/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo/ApolloClient$Builder;
-	public final fun addListener (Lcom/apollographql/apollo/internal/ApolloClientListener;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun autoPersistedQueries ()Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun autoPersistedQueries (Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun autoPersistedQueries (Lcom/apollographql/apollo/api/http/HttpMethod;Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/ApolloClient$Builder;
@@ -137,7 +136,6 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public fun ignoreUnknownKeys (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public synthetic fun ignoreUnknownKeys (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo/ApolloClient$Builder;
-	public final fun listeners (Ljava/util/List;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun networkTransport (Lcom/apollographql/apollo/network/NetworkTransport;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun removeHttpInterceptor (Lcom/apollographql/apollo/network/http/HttpInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun removeInterceptor (Lcom/apollographql/apollo/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
@@ -222,11 +220,6 @@ public final class com/apollographql/apollo/interceptor/AutoPersistedQueryInterc
 
 public final class com/apollographql/apollo/interceptor/RetryOnErrorInterceptorKt {
 	public static final fun RetryOnErrorInterceptor (Lcom/apollographql/apollo/network/NetworkMonitor;)Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
-}
-
-public abstract interface class com/apollographql/apollo/internal/ApolloClientListener {
-	public abstract fun requestCompleted (Lcom/apollographql/apollo/api/ApolloRequest;)V
-	public abstract fun requestStarted (Lcom/apollographql/apollo/api/ApolloRequest;)V
 }
 
 public final class com/apollographql/apollo/internal/DeferredJsonMerger {

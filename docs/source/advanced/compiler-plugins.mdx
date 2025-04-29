@@ -142,13 +142,6 @@ class MyPluginProvider: ApolloCompilerPluginProvider {
 
 Arguments must be serializable and be instances of classes accessible from the bootstrap classloader. In practice, built-in types and collections are supported.
 
-## Limitations 
-
-Because codegen is run in a separate classloader when using compiler plugins, it's not possible to use `packageNameGenerator`, `operationIdGenerator` or `operationOutputGenerator` at the same time as compiler plugins. If you want to use them, you'll have to:
-
-* use `ApolloCompilerPlugin.layout()` instead of `packageNameGenerator`
-* use `ApolloCompilerPlugin.operationIds()` instead of `operationIdGenerator` and `operationOutputGenerator`
-
 ## Other references
 
 For other plugin APIs like layout, IR, JavaPoet and KotlinPoet transforms, check out the [ApolloCompilerPlugin API docs](https://www.apollographql.com/docs/kotlin/kdoc/apollo-compiler/com.apollographql.apollo.compiler/-apollo-compiler-plugin/index.html)
