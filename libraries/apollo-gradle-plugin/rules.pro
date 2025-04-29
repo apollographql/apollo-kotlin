@@ -28,7 +28,7 @@
 # Keep the plugin API as it's used from build scripts
 -keep class com.apollographql.apollo.gradle.api.** { *; }
 -keep interface com.apollographql.apollo.gradle.api.** { *; }
-# And also the compiler API as it's used transitively for things like OperationOutputGenerator
+# And also the compiler API as it's used transitively for things like MANIFEST_PERSISTED_QUERY and other constants
 -keep class com.apollographql.apollo.compiler.** { *; }
 -keep interface com.apollographql.apollo.compiler.** { *; }
 -keep enum com.apollographql.apollo.compiler.** { *; }

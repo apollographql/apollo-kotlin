@@ -23,7 +23,6 @@ import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
@@ -209,16 +208,13 @@ abstract class ApolloGenerateOptionsTask : DefaultTask() {
   @get:Input
   abstract var generateAllTypes: Boolean
 
-  @get:Internal
-  var hasPackageNameGenerator: Boolean = false
-
   @get:OutputFile
   abstract val otherOptions: RegularFileProperty
 
   @TaskAction
   fun taskAction() {
     check(
-        packageName.isPresent || rootPackageName.isPresent || hasPackageNameGenerator
+        packageName.isPresent || rootPackageName.isPresent
     ) {
       """
             |Apollo: specify 'packageName':

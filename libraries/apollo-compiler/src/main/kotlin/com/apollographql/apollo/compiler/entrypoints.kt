@@ -7,8 +7,9 @@ import com.apollographql.apollo.compiler.codegen.writeTo
 import com.apollographql.apollo.compiler.internal.GradleCompilerPluginLogger
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.OperationId
-import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import java.io.File
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 import java.util.ServiceLoader
 import java.util.function.Consumer
 
@@ -59,7 +60,7 @@ class EntryPoints {
     val plugin = apolloCompilerPlugin(arguments, logLevel)
 
     val upstream = upstreamIrOperations.toInputFiles().map { it.file.toIrOperations() }
-    ApolloCompiler.buildIrOperations(
+    buildIrOperations(
         executableFiles = graphqlFiles.toInputFiles(),
         codegenSchema = codegenSchemaFiles.toInputFiles().map { it.file }.findCodegenSchemaFile().toCodegenSchema(),
         upstreamCodegenModels = upstream.map { it.codegenModels },
@@ -92,7 +93,7 @@ class EntryPoints {
     val codegenSchema = codegenSchemaFile.toCodegenSchema()
 
     val upstreamCodegenMetadata = upstreamMetadata.toInputFiles().map { it.file.toCodegenMetadata() }
-    ApolloCompiler.buildSchemaAndOperationsSourcesFromIr(
+    buildSchemaAndOperationsSourcesFromIr(
         codegenSchema = codegenSchema,
         irOperations = irOperations.toIrOperations(),
         downstreamUsedCoordinates = downstreamUsedCoordinates.toUsedCoordinates(),
@@ -103,7 +104,7 @@ class EntryPoints {
         javaOutputTransform = plugin?.javaOutputTransform(),
         kotlinOutputTransform = plugin?.kotlinOutputTransform(),
         operationManifestFile = operationManifestFile,
-        operationOutputGenerator = plugin?.toOperationOutputGenerator(),
+        operationIdsGenerator = plugin?.toOperationIdsGenerator(),
     ).writeTo(outputDir, true, metadataOutputFile)
 
     if (upstreamCodegenMetadata.isEmpty()) {
@@ -163,7 +164,7 @@ class EntryPoints {
         javaOutputTransform = plugin?.javaOutputTransform(),
         kotlinOutputTransform = plugin?.kotlinOutputTransform(),
         operationManifestFile = operationManifestFile,
-        operationOutputGenerator = plugin?.toOperationOutputGenerator(),
+        operationIdsGenerator = plugin?.toOperationIdsGenerator(),
     )
 
     if (codegenSchema.schema.generateDataBuilders) {
@@ -210,17 +211,24 @@ class EntryPoints {
   }
 }
 
-@Suppress("DEPRECATION")
-internal fun ApolloCompilerPlugin.toOperationOutputGenerator(): OperationOutputGenerator {
-  return object : OperationOutputGenerator {
-    override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
-      var operationIds = operationIds(operationDescriptorList.toList())
-      if (operationIds == null) {
-        operationIds = operationDescriptorList.map { OperationId(OperationIdGenerator.Sha256.apply(it.source, it.name), it.name) }
-      }
-      return operationDescriptorList.associateBy { descriptor ->
-        val operationId = operationIds.firstOrNull { it.name == descriptor.name } ?: error("No id found for operation ${descriptor.name}")
-        operationId.id
+internal fun ApolloCompilerPlugin.toOperationIdsGenerator(): OperationIdsGenerator {
+
+  return object : OperationIdsGenerator {
+    private fun String.sha256(): String {
+      val bytes = toByteArray(charset = StandardCharsets.UTF_8)
+      val md = MessageDigest.getInstance("SHA-256")
+      val digest = md.digest(bytes)
+      return digest.fold("") { str, it -> str + "%02x".format(it) }
+    }
+
+    override fun generate(operationDescriptorList: Collection<OperationDescriptor>): List<OperationId> {
+      val operationIds = operationIds(operationDescriptorList.toList())
+      return if (operationIds == null) {
+        operationDescriptorList.map {
+          OperationId(it.source.sha256(), it.name)
+        }
+      } else {
+        operationIds
       }
     }
   }

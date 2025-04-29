@@ -9,6 +9,13 @@ import kotlinx.serialization.Serializable
  */
 typealias OperationOutput = Map<String, OperationDescriptor>
 
+internal fun List<OperationDescriptor>.toOperationOutput(operationIds: List<OperationId>): OperationOutput {
+  return associateBy { descriptor ->
+    val operationId = operationIds.firstOrNull { it.name == descriptor.name } ?: error("No id found for operation ${descriptor.name}")
+    operationId.id
+  }
+}
+
 /**
  * A description of an operation to compute an id from
  */
