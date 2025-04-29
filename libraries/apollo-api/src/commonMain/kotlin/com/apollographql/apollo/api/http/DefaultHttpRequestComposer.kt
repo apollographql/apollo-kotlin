@@ -243,7 +243,7 @@ class DefaultHttpRequestComposer(
         autoPersistQueries: Boolean,
         query: String?,
     ): HttpBody {
-      error("Use buildPostBody(operation, customScalarAdapters, query, extensionsWriter) instead")
+      return buildPostBody(operation, customScalarAdapters, query, apqExtensionsWriter(operation.id(), autoPersistQueries))
     }
 
     fun <D : Operation.Data> buildPostBody(

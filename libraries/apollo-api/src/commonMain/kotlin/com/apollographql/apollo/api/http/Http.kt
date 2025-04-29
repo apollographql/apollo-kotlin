@@ -165,7 +165,10 @@ private constructor(
      */
     @Deprecated("Use body(BufferedSource) instead", ReplaceWith("body(Buffer().write(bodyString))", "okio.Buffer"), DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_4_1)
-    fun body(bodyString: ByteString): Builder = error("Use body(BufferedSource) instead")
+    fun body(bodyString: ByteString) = apply {
+      check(!hasBody) { "body() can only be called once" }
+      this.bodyString = bodyString
+    }
 
     fun addHeader(name: String, value: String) = apply {
       headers += HttpHeader(name, value)
