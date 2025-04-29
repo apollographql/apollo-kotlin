@@ -90,7 +90,6 @@ kotlin {
 
     findByName("linuxMain")?.apply {
       dependencies {
-        implementation(libs.kotlinx.io.okio)
         implementation(libs.ktor.client.curl)
       }
     }

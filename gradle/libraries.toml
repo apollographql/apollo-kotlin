@@ -32,7 +32,6 @@ kotlin-plugin = "2.1.20"
 kotlin-plugin-max = "2.1.20"
 kotlinx-coroutines = "1.9.0"
 kotlinx-datetime = "0.5.0"
-kotlinx-io = "0.7.0"
 kotlinx-serialization-runtime = "1.6.2"
 ksp = "2.1.20-1.0.31"
 ktor = "3.1.2"
@@ -148,7 +147,6 @@ kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coro
 kotlinx-coroutines-rx3 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx3", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
-kotlinx-io-okio = { group = "org.jetbrains.kotlinx", name = "kotlinx-io-okio", version.ref = "kotlinx-io" }
 kotlin-node = "org.jetbrains.kotlin-wrappers:kotlin-node:18.16.12-pre.634"
 kotlinx-serialization-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-plugin" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-runtime" }

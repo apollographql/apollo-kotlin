@@ -6,7 +6,6 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.mpp",
-    kotlinCompilerOptions = KotlinCompilerOptions(version = KotlinVersion.KOTLIN_2_1)
 )
 
 kotlin {
