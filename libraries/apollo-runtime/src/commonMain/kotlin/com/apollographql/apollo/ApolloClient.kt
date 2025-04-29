@@ -207,12 +207,6 @@ private constructor(
     return ApolloCall(this, subscription)
   }
 
-  @Deprecated("Use close() instead", ReplaceWith("close()"), level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-  fun dispose() {
-    close()
-  }
-
   /**
    * Disposes resources held by this [ApolloClient]. On JVM platforms, resources are ultimately garbage collected but calling [close] is necessary
    * on other platform or to reclaim those resources earlier.
@@ -837,7 +831,7 @@ private constructor(
      * **The order is important**. The [ApolloInterceptor]s are executed in the order they are added. Because cache and APQs also
      * use interceptors, the order of the cache/APQs configuration also influences the final interceptor list.
      */
-    @Deprecated("Use addInterceptor() or interceptors()")
+    @Deprecated("Use addInterceptor() or interceptors()", level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     fun addInterceptors(interceptors: List<ApolloInterceptor>) = apply {
       this._interceptors += interceptors
@@ -970,12 +964,5 @@ private constructor(
           .autoPersistedQueriesInterceptor(autoPersistedQueryInterceptor)
           .failFastIfOffline(failFastIfOffline)
     }
-  }
-
-  companion object {
-    @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("ApolloClient.Builder()"), level = DeprecationLevel.ERROR)
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_0_0)
-    @JvmStatic
-    fun builder() = Builder()
   }
 }

@@ -9,7 +9,6 @@ public final class com/apollographql/apollo/ApolloCall : com/apollographql/apoll
 	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
 	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun executeV3 (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun failFastIfOffline (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
@@ -36,15 +35,11 @@ public final class com/apollographql/apollo/ApolloCall : com/apollographql/apoll
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
 	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun toFlow ()Lkotlinx/coroutines/flow/Flow;
-	public final fun toFlowV3 ()Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class com/apollographql/apollo/ApolloClient : com/apollographql/apollo/api/ExecutionOptions, java/io/Closeable {
-	public static final field Companion Lcom/apollographql/apollo/ApolloClient$Companion;
 	public synthetic fun <init> (Lcom/apollographql/apollo/ApolloClient$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public static final fun builder ()Lcom/apollographql/apollo/ApolloClient$Builder;
 	public fun close ()V
-	public final fun dispose ()V
 	public final fun executeAsFlow (Lcom/apollographql/apollo/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 	public final fun getCacheInterceptor ()Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
@@ -153,10 +148,6 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public final fun webSocketServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun webSocketServerUrl (Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun wsProtocol (Lcom/apollographql/apollo/network/ws/WsProtocol$Factory;)Lcom/apollographql/apollo/ApolloClient$Builder;
-}
-
-public final class com/apollographql/apollo/ApolloClient$Companion {
-	public final fun builder ()Lcom/apollographql/apollo/ApolloClient$Builder;
 }
 
 public final class com/apollographql/apollo/AutoPersistedQueryInfo : com/apollographql/apollo/api/ExecutionContext$Element {
@@ -324,7 +315,6 @@ public final class com/apollographql/apollo/network/http/HttpCall {
 
 public abstract interface class com/apollographql/apollo/network/http/HttpEngine : java/io/Closeable {
 	public fun close ()V
-	public fun dispose ()V
 	public abstract fun execute (Lcom/apollographql/apollo/api/http/HttpRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

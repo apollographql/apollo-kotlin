@@ -79,7 +79,7 @@ abstract class ApolloRegisterOperationsTask: DefaultTask() {
       }
     } else {
       logger.warn("Apollo: registering operations without a listId is deprecated")
-      @Suppress("DEPRECATION")
+      @Suppress("DEPRECATION_ERROR")
       check(operationManifestFormat.get() == MANIFEST_OPERATION_OUTPUT) {
         """Apollo: registering legacy operations requires operationManifestFormat = "$MANIFEST_OPERATION_OUTPUT":
           |apollo {

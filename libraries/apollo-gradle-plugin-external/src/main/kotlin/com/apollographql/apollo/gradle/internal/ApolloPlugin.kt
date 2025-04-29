@@ -14,8 +14,7 @@ open class ApolloPlugin
 @Inject
 constructor(private val toolingModelRegistry: ToolingModelBuilderRegistry) : Plugin<Project> {
   override fun apply(project: Project) {
-    val defaultService = project.objects.newInstance(DefaultService::class.java, project, "service")
-    val apolloExtension: DefaultApolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project, defaultService) as DefaultApolloExtension
+    val apolloExtension: DefaultApolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project) as DefaultApolloExtension
 
     project.configureDefaultVersionsResolutionStrategy()
     toolingModelRegistry.register(

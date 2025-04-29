@@ -148,34 +148,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
   }
 
   /**
-   * A version of [execute] that restores 3.x behaviour:
-   * - throw on fetch errors.
-   * - make `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies ignore fetch errors.
-   * - throw ApolloComposite exception if needed.
-   */
-  @Deprecated("Use toFlow() and handle ApolloResponse.exception instead")
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-  fun toFlowV3(): Flow<ApolloResponse<D>> {
-    @Suppress("DEPRECATION")
-    return conflateFetchPolicyInterceptorResponses(true)
-        .apolloClient
-        .executeAsFlowInternal(requestBuilder.build(), true)
-  }
-
-  /**
-   * A version of [execute] that restores 3.x behaviour:
-   * - throw on fetch errors.
-   * - make `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies ignore fetch errors.
-   * - throw ApolloComposite exception if needed.
-   */
-  @Deprecated("Use execute() and handle ApolloResponse.exception instead")
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-  suspend fun executeV3(): ApolloResponse<D> {
-    @Suppress("DEPRECATION")
-    return singleSuccessOrException(toFlowV3())
-  }
-
-  /**
    * Retrieves a single [ApolloResponse] from this [ApolloCall].
    *
    * [execute] calls [toFlow] and filters out cache or network errors to return a single success [ApolloResponse].

@@ -19,7 +19,7 @@ const val ADD_TYPENAME_IF_POLYMORPHIC = "ifPolymorphic"
 const val ADD_TYPENAME_IF_ABSTRACT = "ifAbstract"
 const val ADD_TYPENAME_ALWAYS = "always"
 
-@Deprecated("Use $MANIFEST_PERSISTED_QUERY instead")
+@Deprecated("Use $MANIFEST_PERSISTED_QUERY instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_1)
 const val MANIFEST_OPERATION_OUTPUT = "operationOutput"
 const val MANIFEST_PERSISTED_QUERY = "persistedQueryManifest"
@@ -32,7 +32,7 @@ enum class TargetLanguage {
   /**
    * Base language version.
    */
-  @Deprecated("Use KOTLIN_1_9 instead", ReplaceWith("KOTLIN_1_9"))
+  @Deprecated("Use KOTLIN_1_9 instead", ReplaceWith("KOTLIN_1_9"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_2)
   KOTLIN_1_5,
 

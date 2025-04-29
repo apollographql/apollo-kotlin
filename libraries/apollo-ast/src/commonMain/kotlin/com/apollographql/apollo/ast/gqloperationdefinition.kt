@@ -9,7 +9,7 @@ fun GQLOperationDefinition.rootTypeDefinition(schema: Schema) = when (operationT
   else -> null
 }
 
-@Deprecated("Use GQLDocument.validate() instead")
+@Deprecated("Use GQLDocument.validate() instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 fun GQLOperationDefinition.validate(
     schema: Schema,

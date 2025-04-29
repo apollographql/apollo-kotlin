@@ -30,7 +30,7 @@ class GraphQLWsProtocol internal constructor(
     private val webSocketPayloadComposer: WebSocketPayloadComposer,
 ) : WsProtocol(webSocketConnection, listener) {
 
-  @Deprecated("Use GraphQLWsProtocol.Factory instead")
+  @Deprecated("Use GraphQLWsProtocol.Factory instead", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v3_7_2)
   constructor(
       connectionPayload: suspend () -> Map<String, Any?>? = { null },

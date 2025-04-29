@@ -87,7 +87,7 @@ class MapTestNetworkTransportHandlerTest {
         errors = listOf(Error.Builder(message = "There was an error")
             .locations(listOf(Error.Location(line = 1, column = 2)))
             .path(listOf("hero", "name"))
-            .putExtension("myExtension", true)
+            .extensions(mapOf("myExtension" to true))
             .build()
         )
     )

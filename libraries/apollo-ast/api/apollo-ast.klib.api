@@ -1279,18 +1279,13 @@ final class com.apollographql.apollo.ast/SourceLocation { // com.apollographql.a
         final fun <get-filePath>(): kotlin/String? // com.apollographql.apollo.ast/SourceLocation.filePath.<get-filePath>|<get-filePath>(){}[0]
     final val line // com.apollographql.apollo.ast/SourceLocation.line|{}line[0]
         final fun <get-line>(): kotlin/Int // com.apollographql.apollo.ast/SourceLocation.line.<get-line>|<get-line>(){}[0]
-    final val position // com.apollographql.apollo.ast/SourceLocation.position|{}position[0]
-        final fun <get-position>(): kotlin/Int // com.apollographql.apollo.ast/SourceLocation.position.<get-position>|<get-position>(){}[0]
     final val start // com.apollographql.apollo.ast/SourceLocation.start|{}start[0]
         final fun <get-start>(): kotlin/Int // com.apollographql.apollo.ast/SourceLocation.start.<get-start>|<get-start>(){}[0]
 
     final fun pretty(): kotlin/String // com.apollographql.apollo.ast/SourceLocation.pretty|pretty(){}[0]
     final fun toString(): kotlin/String // com.apollographql.apollo.ast/SourceLocation.toString|toString(){}[0]
 
-    final object Companion { // com.apollographql.apollo.ast/SourceLocation.Companion|null[0]
-        final val UNKNOWN // com.apollographql.apollo.ast/SourceLocation.Companion.UNKNOWN|{}UNKNOWN[0]
-            final fun <get-UNKNOWN>(): com.apollographql.apollo.ast/SourceLocation // com.apollographql.apollo.ast/SourceLocation.Companion.UNKNOWN.<get-UNKNOWN>|<get-UNKNOWN>(){}[0]
-    }
+    final object Companion // com.apollographql.apollo.ast/SourceLocation.Companion|null[0]
 }
 
 final class com.apollographql.apollo.ast/UnknownDirective : com.apollographql.apollo.ast/GraphQLValidationIssue { // com.apollographql.apollo.ast/UnknownDirective|null[0]

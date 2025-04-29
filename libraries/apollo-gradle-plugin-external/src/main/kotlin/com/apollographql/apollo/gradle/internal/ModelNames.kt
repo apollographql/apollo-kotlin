@@ -30,11 +30,6 @@ internal object ModelNames {
   fun checkApolloVersions() = "checkApolloVersions"
   fun convertApolloSchema() = "convertApolloSchema"
 
-  // Configuration names
-  @Deprecated("Unused. Use dependsOn() instead.")
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-  fun metadataConfiguration() = "apolloMetadata"
-
   fun scopeConfiguration(
       serviceName: String,
       apolloDirection: ApolloDirection,

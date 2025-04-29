@@ -38,8 +38,7 @@ import javax.inject.Inject
 
 abstract class DefaultApolloExtension(
     private val project: Project,
-    private val defaultService: DefaultService,
-) : ApolloExtension, Service by defaultService {
+) : ApolloExtension {
 
   private var codegenOnGradleSyncConfigured: Boolean = false
   private val services = mutableListOf<DefaultService>()
@@ -51,7 +50,6 @@ abstract class DefaultApolloExtension(
       project.components.add(it)
     }
   }
-  private val apolloMetadataConfiguration: Configuration
   private var apolloBuildServiceProvider: Provider<ApolloBuildService>
 
   internal fun getServiceInfos(project: Project): List<ApolloGradleToolingModel.ServiceInfo> = services.map { service ->
@@ -107,8 +105,6 @@ abstract class DefaultApolloExtension(
         usedOptions = mutableSetOf<String>().apply {
           if (service.includes.isPresent) add("includes")
           if (service.excludes.isPresent) add("excludes")
-          @Suppress("DEPRECATION")
-          if (service.sourceFolder.isPresent) add("excludes")
           if (service.schemaFile.isPresent) add("schemaFile")
           if (!service.schemaFiles.isEmpty) add("schemaFiles")
           if (service.scalarAdapterMapping.isNotEmpty()) {
@@ -180,76 +176,11 @@ abstract class DefaultApolloExtension(
       task.projectRootDir = project.rootDir.absolutePath
     }
 
-    @Suppress("DEPRECATION")
-    apolloMetadataConfiguration = project.configurations.create(ModelNames.metadataConfiguration()) {
-      it.isCanBeConsumed = false
-      it.isCanBeResolved = false
-    }
-
     apolloBuildServiceProvider = project.gradle.sharedServices.registerIfAbsent("apollo", ApolloBuildService::class.java) {}
 
     project.afterEvaluate {
-      val hasApolloBlock = !defaultService.graphqlSourceDirectorySet.isEmpty
-          || defaultService.schemaFile.isPresent
-          || !defaultService.schemaFiles.isEmpty
-          || defaultService.alwaysGenerateTypesMatching.isPresent
-          || defaultService.scalarTypeMapping.isNotEmpty()
-          || defaultService.scalarAdapterMapping.isNotEmpty()
-          || defaultService.excludes.isPresent
-          || defaultService.includes.isPresent
-          || defaultService.failOnWarnings.isPresent
-          || defaultService.generateApolloMetadata.isPresent
-          || defaultService.generateAsInternal.isPresent
-          || defaultService.codegenModels.isPresent
-          || defaultService.addTypename.isPresent
-          || defaultService.generateFragmentImplementations.isPresent
-          || defaultService.requiresOptInAnnotation.isPresent
-          || defaultService.packageName.isPresent
-
-      if (hasApolloBlock) {
-        val packageNameLine = if (defaultService.packageName.isPresent) {
-          "packageName.set(\"${defaultService.packageName.get()}\")"
-        } else {
-          "packageNamesFromFilePaths()"
-        }
-        error("""
-            Apollo: using the default service is not supported anymore. Please define your service explicitly:
-            
-            apollo {
-              service("service") {
-                $packageNameLine
-              }
-            }
-          """.trimIndent())
-      }
-
       maybeLinkSqlite()
       checkForLegacyJsTarget()
-      checkApolloMetadataIsEmpty()
-
-    }
-  }
-
-  private fun checkApolloMetadataIsEmpty() {
-    check(apolloMetadataConfiguration.dependencies.isEmpty()) {
-      val projectLines = apolloMetadataConfiguration.dependencies.map {
-        when (it) {
-          is ProjectDependency -> "project(\"${it.getPathCompat()}\")"
-          is ExternalModuleDependency -> "\"group:artifact:version\""
-          else -> "project(\":foo\")"
-
-        }
-      }.joinToString("\n") { "    dependsOn($it)" }
-
-      """
-        Apollo: using apolloMetadata is not supported anymore. Please use `dependsOn`:
-         
-        apollo {
-          service("service") {
-        $projectLines
-          }
-        }
-      """.trimIndent()
     }
   }
 
@@ -301,8 +232,16 @@ abstract class DefaultApolloExtension(
     action.execute(service)
 
     registerService(service)
+    sanityChecks(service)
 
     maybeConfigureCodegenOnGradleSync()
+  }
+
+  private fun sanityChecks(service: DefaultService) {
+    @Suppress("DEPRECATION_ERROR")
+    check (!service.sourceFolder.isPresent) {
+      error("Apollo: using 'sourceFolder' is deprecated, replace with 'srcDir(\"src/${project.mainSourceSet()}/graphql/${service.sourceFolder.get()}\")'")
+    }
   }
 
   // See https://twitter.com/Sellmair/status/1619308362881187840
@@ -430,13 +369,7 @@ abstract class DefaultApolloExtension(
     services.add(service)
 
     if (service.graphqlSourceDirectorySet.isReallyEmpty) {
-      @Suppress("DEPRECATION")
-      val sourceFolder = service.sourceFolder.getOrElse("")
-      if (sourceFolder.isNotEmpty()) {
-        project.logger.lifecycle("Apollo: using 'sourceFolder' is deprecated, please replace with 'srcDir(\"src/${project.mainSourceSet()}/graphql/$sourceFolder\")'")
-      }
-      val dir = File(project.projectDir, "src/${project.mainSourceSet()}/graphql/$sourceFolder")
-
+      val dir = File(project.projectDir, "src/${project.mainSourceSet()}/graphql/")
       service.graphqlSourceDirectorySet.srcDir(dir)
     }
     service.graphqlSourceDirectorySet.include(service.includes.getOrElse(listOf("**/*.graphql", "**/*.gql")))
@@ -1097,10 +1030,6 @@ abstract class DefaultApolloExtension(
       service(name) { service ->
         action.execute(service)
 
-        @Suppress("DEPRECATION")
-        check(!service.sourceFolder.isPresent) {
-          "Apollo: service.sourceFolder is not used when calling createAllAndroidVariantServices. Use the parameter instead"
-        }
         variant.sourceSets.forEach { sourceProvider ->
           service.srcDir("src/${sourceProvider.name}/graphql/$sourceFolder")
         }

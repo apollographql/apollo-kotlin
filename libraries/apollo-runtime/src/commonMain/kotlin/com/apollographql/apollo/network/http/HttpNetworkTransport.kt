@@ -324,13 +324,13 @@ private constructor(
       this.exposeErrorBody = exposeErrorBody
     }
 
-    @Deprecated("Use ApolloClient.Builder.addHttpHeader() instead")
+    @Deprecated("Use ApolloClient.Builder.addHttpHeader() instead", level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     fun addHttpHeader(name: String, value: String) = apply {
       headers.add(HttpHeader(name, value))
     }
 
-    @Deprecated("Use ApolloClient.Builder.httpHeader() instead")
+    @Deprecated("Use ApolloClient.Builder.httpHeader() instead", level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     fun httpHeaders(headers: List<HttpHeader>) = apply {
       // In case this builder comes from newBuilder(), remove any existing interceptor

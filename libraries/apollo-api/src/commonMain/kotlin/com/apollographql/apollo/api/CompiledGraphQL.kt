@@ -34,7 +34,7 @@ class CompiledField internal constructor(
    * @return [Optional.Absent] if no runtime value is present for this argument else returns the argument
    * value with variables substituted for their values.
    */
-  @Deprecated("This function does not distinguish between null and absent arguments. Use argumentValue instead", ReplaceWith("argumentValue(name = name, variables = variables)"))
+  @Deprecated("This function does not distinguish between null and absent arguments. Use argumentValue instead", ReplaceWith("argumentValue(name = name, variables = variables)"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v4_0_0)
   fun resolveArgument(
       name: String,
@@ -454,11 +454,11 @@ class CompiledArgument private constructor(
      */
     val value: Optional<CompiledValue>,
 ) {
-  @Deprecated("Use definition.name instead", ReplaceWith("definition.name"))
+  @Deprecated("Use definition.name instead", ReplaceWith("definition.name"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v4_0_0)
   val name get() = definition.name
 
-  @Deprecated("Use definition.isKey instead", ReplaceWith("definition.isKey"))
+  @Deprecated("Use definition.isKey instead", ReplaceWith("definition.isKey"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v4_0_0)
   val isKey get() = definition.isKey
 
@@ -532,36 +532,6 @@ private fun resolveVariables(value: ApolloJsonElement, variables: Executable.Var
     else -> value
   }
 }
-
-@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v4_0_0)
-@JvmField
-val CompiledSchemaType = ObjectType.Builder("__Schema").build()
-
-@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v4_0_0)
-@JvmField
-val CompiledTypeType = ObjectType.Builder("__Type").build()
-
-@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v4_0_0)
-@JvmField
-val CompiledFieldType = ObjectType.Builder("__Field").build()
-
-@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v4_0_0)
-@JvmField
-val CompiledInputValueType = ObjectType.Builder("__InputValue").build()
-
-@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v4_0_0)
-@JvmField
-val CompiledEnumValueType = ObjectType.Builder("__EnumValue").build()
-
-@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v4_0_0)
-@JvmField
-val CompiledDirectiveType = ObjectType.Builder("__Directive").build()
 
 fun CompiledNamedType.isComposite(): Boolean {
   return when (this) {

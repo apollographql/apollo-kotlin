@@ -193,8 +193,6 @@ public abstract interface class com/apollographql/apollo/gradle/api/Service {
 	public abstract fun registerOperations (Lorg/gradle/api/Action;)V
 	public abstract fun registry (Lorg/gradle/api/Action;)V
 	public abstract fun srcDir (Ljava/lang/Object;)V
-	public abstract fun usedCoordinates (Ljava/io/File;)V
-	public abstract fun usedCoordinates (Ljava/lang/String;)V
 }
 
 public abstract interface class com/apollographql/apollo/gradle/api/Service$DirectoryConnection {

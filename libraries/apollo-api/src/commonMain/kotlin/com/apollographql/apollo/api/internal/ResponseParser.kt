@@ -100,7 +100,7 @@ private fun JsonReader.readError(): Error {
 
 
   @Suppress("DEPRECATION")
-  return Error(message, locations, path, extensions, nonStandardFields)
+  return Error.Builder(message = message).locations(locations).path(path).extensions(extensions).nonStandardFields(nonStandardFields).build()
 }
 
 private fun JsonReader.readPath(): List<Any>? {

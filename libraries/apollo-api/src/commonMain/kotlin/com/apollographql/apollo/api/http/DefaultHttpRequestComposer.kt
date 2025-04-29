@@ -62,8 +62,7 @@ class DefaultHttpRequestComposer(
 
       HttpMethod.Post -> {
         val query = if (sendDocument) operation.document() else null
-        @Suppress("DEPRECATION")
-        val body = buildPostBody(operation, customScalarAdapters, sendApqExtensions, query)
+        val body = buildPostBody(operation, customScalarAdapters, query, apqExtensionsWriter(operation.id(), sendApqExtensions))
         HttpRequest.Builder(
             method = HttpMethod.Post,
             url = serverUrl,
@@ -85,14 +84,6 @@ class DefaultHttpRequestComposer(
   }
 
   companion object {
-    @Deprecated("If needed, add this header with ApolloCall.addHttpHeader() instead", level = DeprecationLevel.ERROR)
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-    val HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID"
-
-    @Deprecated("If needed, add this header with ApolloCall.addHttpHeader() instead", level = DeprecationLevel.ERROR)
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
-    val HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME"
-
     // Note: Apollo Server's CSRF prevention feature (introduced in AS3.7 and intended to be
     // the default in AS4) includes this in the set of headers that indicate
     // that a GET request couldn't have been a non-preflighted simple request
@@ -244,7 +235,7 @@ class DefaultHttpRequestComposer(
       }
     }
 
-    @Deprecated("Use buildPostBody(operation, customScalarADapters, query, extensionsWriter) instead")
+    @Deprecated("Use buildPostBody(operation, customScalarAdapters, query, extensionsWriter) instead", level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     fun <D : Operation.Data> buildPostBody(
         operation: Operation<D>,

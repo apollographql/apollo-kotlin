@@ -15,7 +15,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
  * exception is thrown
  */
 fun getKotlinTargetLanguage(kgpVersion: String, userSpecified: String?): TargetLanguage {
-  @Suppress("DEPRECATION")
+  @Suppress("DEPRECATION_ERROR")
   return when (userSpecified) {
     "1.5" -> TargetLanguage.KOTLIN_1_5
     "1.9" -> TargetLanguage.KOTLIN_1_9
@@ -86,10 +86,6 @@ fun createAllKotlinSourceSetServices(
 
     apolloExtension.service(name) { service ->
       action.execute(service)
-      @Suppress("DEPRECATION")
-      check(!service.sourceFolder.isPresent) {
-        "Apollo: service.sourceFolder is not used when calling createAllKotlinJvmSourceSetServices. Use the parameter instead"
-      }
       service.srcDir("src/${kotlinSourceSet.name}/graphql/$sourceFolder")
       (service as DefaultService).outputDirAction = Action<Service.DirectoryConnection> { connection ->
         kotlinSourceSet.kotlin.srcDir(connection.outputDir)

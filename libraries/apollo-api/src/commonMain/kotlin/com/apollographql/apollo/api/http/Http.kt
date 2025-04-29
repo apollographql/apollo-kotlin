@@ -138,8 +138,7 @@ private constructor(
       statusCode = statusCode,
   ).apply {
     if (bodySource != null) body(bodySource)
-    @Suppress("DEPRECATION")
-    if (bodyString != null) body(bodyString)
+    if (bodyString != null) body(Buffer().write(bodyString))
     addHeaders(headers)
   }
 
@@ -164,7 +163,7 @@ private constructor(
      * An immutable body.
      * Prefer [bodySource] so that the response can be streamed.
      */
-    @Deprecated("Use body(BufferedSource) instead", ReplaceWith("Buffer().write(bodyString)", "okio.Buffer"))
+    @Deprecated("Use body(BufferedSource) instead", ReplaceWith("body(Buffer().write(bodyString))", "okio.Buffer"), DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_4_1)
     fun body(bodyString: ByteString) = apply {
       check(!hasBody) { "body() can only be called once" }
