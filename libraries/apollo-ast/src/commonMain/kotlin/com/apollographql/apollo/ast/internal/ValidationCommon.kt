@@ -29,6 +29,7 @@ import com.apollographql.apollo.ast.GQLTypeDefinition
 import com.apollographql.apollo.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo.ast.GQLVariableDefinition
 import com.apollographql.apollo.ast.Issue
+import com.apollographql.apollo.ast.NonNullUsage
 import com.apollographql.apollo.ast.OtherValidationIssue
 import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.Schema.Companion.TYPE_POLICY
@@ -200,7 +201,7 @@ internal fun ValidationScope.validateDirectives(
  */
 internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirective, directiveContext: GQLNode) {
   issues.add(
-      DeprecatedUsage(message = "Using `@nonnull` is deprecated. Use `@semanticNonNull` and/or `@catch` instead. See https://go.apollo.dev/ak-nullability.", directive.sourceLocation)
+      NonNullUsage(message = "Using `@nonnull` is deprecated. Use `@semanticNonNull` and/or `@catch` instead. See https://go.apollo.dev/ak-nullability.", directive.sourceLocation)
   )
   if (directiveContext is GQLField && directive.arguments.isNotEmpty()) {
     registerIssue(
