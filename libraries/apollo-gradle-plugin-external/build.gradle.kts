@@ -29,6 +29,10 @@ dependencies {
   lintChecks(libs.androidx.lint.rules)
 }
 
+tasks.withType(ValidatePlugins::class.java).configureEach {
+  enableStricterValidation.set(true)
+}
+
 gradlePlugin {
   website.set("https://github.com/apollographql/apollo-kotlin")
   vcsUrl.set("https://github.com/apollographql/apollo-kotlin")

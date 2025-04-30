@@ -10,6 +10,7 @@ import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
+import org.gradle.work.DisableCachingByDefault
 import java.io.File
 
 /**
@@ -17,6 +18,7 @@ import java.io.File
  *
  * This task can either be configured from the command line or from the gradle scripts
  */
+@DisableCachingByDefault(because = "This downloads a file from the internet and we cannot track the internet.")
 abstract class ApolloDownloadSchemaTask : DefaultTask() {
   @get:Optional
   @get:Input

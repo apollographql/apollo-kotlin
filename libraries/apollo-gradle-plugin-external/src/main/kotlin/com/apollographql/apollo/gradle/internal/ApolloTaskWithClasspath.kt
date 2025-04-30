@@ -7,6 +7,7 @@ import org.gradle.api.logging.LogLevel
 import org.gradle.api.logging.Logging
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
@@ -15,6 +16,7 @@ import org.gradle.workers.WorkerExecutor
 import java.util.function.Consumer
 import javax.inject.Inject
 
+@CacheableTask
 abstract class ApolloTaskWithClasspath: DefaultTask() {
   @get:Classpath
   abstract val classpath: ConfigurableFileCollection
