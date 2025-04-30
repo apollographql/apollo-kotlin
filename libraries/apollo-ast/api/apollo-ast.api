@@ -980,6 +980,12 @@ public abstract interface class com/apollographql/apollo/ast/NodeTransformer {
 	public abstract fun transform (Lcom/apollographql/apollo/ast/GQLNode;)Lcom/apollographql/apollo/ast/TransformResult;
 }
 
+public final class com/apollographql/apollo/ast/NonNullUsage : com/apollographql/apollo/ast/ApolloIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+}
+
 public final class com/apollographql/apollo/ast/OtherValidationIssue : com/apollographql/apollo/ast/GraphQLValidationIssue {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo/ast/SourceLocation;)V
 	public fun getMessage ()Ljava/lang/String;

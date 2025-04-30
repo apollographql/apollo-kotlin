@@ -1,5 +1,5 @@
-DeprecatedUsage (13:37)
+NonNullUsage (13:37)
 Using `@nonnull` is deprecated. Use `@semanticNonNull` and/or `@catch` instead. See https://go.apollo.dev/ak-nullability.
 ------------
-DeprecatedUsage (12:42)
+NonNullUsage (12:42)
 Using `@nonnull` is deprecated. Use `@semanticNonNull` and/or `@catch` instead. See https://go.apollo.dev/ak-nullability.

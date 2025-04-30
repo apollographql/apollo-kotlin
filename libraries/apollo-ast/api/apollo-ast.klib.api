@@ -1127,6 +1127,15 @@ final class com.apollographql.apollo.ast/NodeContainer { // com.apollographql.ap
     final inline fun <#A1: reified com.apollographql.apollo.ast/GQLNode> takeSingle(): #A1? // com.apollographql.apollo.ast/NodeContainer.takeSingle|takeSingle(){0§<com.apollographql.apollo.ast.GQLNode>}[0]
 }
 
+final class com.apollographql.apollo.ast/NonNullUsage : com.apollographql.apollo.ast/ApolloIssue { // com.apollographql.apollo.ast/NonNullUsage|null[0]
+    constructor <init>(kotlin/String, com.apollographql.apollo.ast/SourceLocation?) // com.apollographql.apollo.ast/NonNullUsage.<init>|<init>(kotlin.String;com.apollographql.apollo.ast.SourceLocation?){}[0]
+
+    final val message // com.apollographql.apollo.ast/NonNullUsage.message|{}message[0]
+        final fun <get-message>(): kotlin/String // com.apollographql.apollo.ast/NonNullUsage.message.<get-message>|<get-message>(){}[0]
+    final val sourceLocation // com.apollographql.apollo.ast/NonNullUsage.sourceLocation|{}sourceLocation[0]
+        final fun <get-sourceLocation>(): com.apollographql.apollo.ast/SourceLocation? // com.apollographql.apollo.ast/NonNullUsage.sourceLocation.<get-sourceLocation>|<get-sourceLocation>(){}[0]
+}
+
 final class com.apollographql.apollo.ast/OtherValidationIssue : com.apollographql.apollo.ast/GraphQLValidationIssue { // com.apollographql.apollo.ast/OtherValidationIssue|null[0]
     constructor <init>(kotlin/String, com.apollographql.apollo.ast/SourceLocation?) // com.apollographql.apollo.ast/OtherValidationIssue.<init>|<init>(kotlin.String;com.apollographql.apollo.ast.SourceLocation?){}[0]
 

@@ -95,6 +95,10 @@ class OtherValidationIssue(override val message: String, override val sourceLoca
 class DeprecatedUsage(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
 
 /**
+ * @nonnull is used
+ */
+class NonNullUsage(override val message: String, override val sourceLocation: SourceLocation?): ApolloIssue
+/**
  * A variable is unused
  */
 class UnusedVariable(override val message: String, override val sourceLocation: SourceLocation?) : ApolloIssue
