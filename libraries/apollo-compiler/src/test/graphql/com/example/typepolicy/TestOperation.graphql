@@ -1,0 +1,15 @@
+query GetA {
+  a {
+    ...AFragment1
+  }
+}
+
+fragment AFragment1 on A {
+  foo
+  ...AFragment2
+}
+
+fragment AFragment2 on A {
+  bar
+  myId: id
+}
