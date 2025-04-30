@@ -1,8 +1,6 @@
 switcher:
   heading: "Apollo Kotlin"
   versions:
-    - label: v5
-      href: ./v5
     - label: v4
       latest: true
       href: ./
