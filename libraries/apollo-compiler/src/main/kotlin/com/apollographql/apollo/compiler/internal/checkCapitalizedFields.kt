@@ -35,6 +35,10 @@ private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection
   selections.forEach {
     when (it) {
       is GQLField -> {
+        if (it.selections.isEmpty()) {
+          // A clash can only occur if a model is generated
+          return@forEach
+        }
         val alias = it.alias
         if (alias != null) {
           if (isFirstLetterUpperCase(alias)) {
