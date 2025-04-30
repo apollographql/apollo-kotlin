@@ -10,11 +10,11 @@ switcher:
       href: ./
     - label: v4
       latest: true
-      href: ./v4
+      href: ../v4
     - label: v3
-      href: ./v3
+      href: ../v3
     - label: v2
-      href: ./v2
+      href: ../v2
 items:
   - label: Get Started
     href: "."
