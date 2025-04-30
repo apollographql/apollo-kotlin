@@ -7,7 +7,6 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.runtime",
-    withLinux = false,
     androidOptions = AndroidOptions(withCompose = false)
 )
 
@@ -86,6 +85,12 @@ kotlin {
 
     findByName("appleMain")?.apply {
       dependencies {
+      }
+    }
+
+    findByName("linuxMain")?.apply {
+      dependencies {
+        implementation(libs.ktor.client.curl)
       }
     }
 
