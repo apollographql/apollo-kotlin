@@ -1,5 +1,2 @@
 UpperCaseField (15:3)
 Capitalized field 'Cow' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' or 'decapitalizeFields' compiler option.
-------------
-UpperCaseField (16:5)
-Capitalized field 'Moo' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' or 'decapitalizeFields' compiler option.
