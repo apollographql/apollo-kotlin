@@ -97,6 +97,7 @@ fun Project.configureDokka() {
 
 private class MavenCoordinates(val module: String, val version: String)
 
+
 fun Project.configureDokkaAggregate() {
   val dokka = configureDokkaCommon()
 
@@ -114,7 +115,11 @@ fun Project.configureDokkaAggregate() {
   )
 
 
-  val olderVersionsCoordinates = listOf(MavenCoordinates("com.apollographql.apollo3:apollo-kdoc", "3.8.2"))
+  val olderVersionsCoordinates = listOf(
+      MavenCoordinates("com.apollographql.apollo:apollo-kdoc", "4.2.0"),
+      MavenCoordinates("com.apollographql.apollo3:apollo-kdoc", "3.8.2"),
+  )
+  
   val kdocVersionTasks = olderVersionsCoordinates.map { coordinate ->
     val versionString = coordinate.version.replace(".", "_").replace("-", "_")
     val configuration = configurations.create("apolloKdocVersion_$versionString") {
