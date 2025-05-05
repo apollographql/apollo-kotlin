@@ -1,0 +1,409 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>All modules</title>
+    <link href="images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="scripts/sourceset_dependencies.js" async></script>
+<link href="styles/style.css" rel="Stylesheet">
+<link href="styles/main.css" rel="Stylesheet">
+<link href="styles/prism.css" rel="Stylesheet">
+<link href="styles/logo-styles.css" rel="Stylesheet">
+<link href="styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="scripts/clipboard.js" async></script>
+<script type="text/javascript" src="scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="scripts/main.js" defer></script>
+<script type="text/javascript" src="scripts/prism.js" async></script>
+<script type="text/javascript" src="ui-kit/ui-kit.min.js" defer></script>
+<script type="text/javascript" src="scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="styles/multimodule.css" rel="Stylesheet">
+<link href="images/apollo.svg">
+<link href="styles/style.css" rel="Stylesheet">
+<link href="styles/prism.css" rel="Stylesheet">
+<link href="styles/logo-styles.css" rel="Stylesheet">
+</head>
+<body>
+    <div class="root">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
+            <a class="library-name--link" href="index.html">
+                    apollo-kdoc
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
+  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">4.2.0</div>
+  <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
+    <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
+    <div><a href="../../index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">5.0.0-SNAPSHOT</a></div>
+    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">4.2.0</a></div>
+    <div><a href="../3.8.2/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.8.2</a></div>
+  </div>
+  <div class="dropdown--overlay"></div>
+</div>
+</dokka-template-command>        </div>
+        <div class="navigation-controls">
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    apollo-kdoc
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
+            </div>
+            <div id="main">
+<div class="main-content" id="content" pageids="apollo-kdoc::.ext/allModules///PointingToDeclaration//0">
+  <div class="breadcrumbs"></div>
+  <div class="cover ">
+    <h2 class="">All modules:</h2>
+    <div class="table"><a data-name="-2074206837%2FMain%2F0" anchor-label="apollo-adapters" id="-2074206837%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-adapters/index.html">apollo-adapters</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2074206837%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-adapters</code> contains adapters for common date and big decimal GraphQL scalars. </p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="-752757521%2FMain%2F0" anchor-label="apollo-annotations" id="-752757521%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-annotations/index.html">apollo-annotations</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-752757521%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-annotations</code> is a very small module that contains <code class="lang-kotlin">@ApolloExperimental</code> and other annotations mainly useful for handling API lifecycle.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="887486649%2FMain%2F0" anchor-label="apollo-api" id="887486649%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-api/index.html">apollo-api</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="887486649%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-api</code> contains the bare minimum symbols to compile the generated code and parse responses.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="-1001401414%2FMain%2F0" anchor-label="apollo-api-java" id="-1001401414%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-api-java/index.html">apollo-api-java</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1001401414%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-api-java</code> contains the symbols needed to compile the Java models.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="-181420719%2FMain%2F0" anchor-label="apollo-ast" id="-181420719%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-ast/index.html">apollo-ast</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-181420719%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-ast</code> contains code to parse GraphQL documents and manipulate their Abstract Syntax Tree.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="962260048%2FMain%2F0" anchor-label="apollo-compiler" id="962260048%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-compiler/index.html">apollo-compiler</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="962260048%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-compiler</code> is the low level compiler API used by apollo-gradle-plugin. </p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="107597746%2FMain%2F0" anchor-label="apollo-debug-server" id="107597746%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-debug-server/index.html">apollo-debug-server</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="107597746%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-debug-server</code> is a server that serves your normalized cache to the IntelliJ/Android Studio plugin.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="1426862841%2FMain%2F0" anchor-label="apollo-engine-tests" id="1426862841%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-engine-tests/index.html">apollo-engine-tests</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1426862841%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph">apollo-engine-tests contains a list of tests for implementations of <code class="lang-kotlin">HttpEngine</code> and <code class="lang-kotlin">WebSocketEngine</code>.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="-480817157%2FMain%2F0" anchor-label="apollo-execution" id="-480817157%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-execution/index.html">apollo-execution</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-480817157%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-execution</code> contains code to execute GraphQL documents. <code class="lang-kotlin">apollo-execution</code> requires coroutines and <code class="lang-kotlin">apollo-api</code>.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="-133108528%2FMain%2F0" anchor-label="apollo-gradle-plugin-external" id="-133108528%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-gradle-plugin-external/index.html">apollo-gradle-plugin-external</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-133108528%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-gradle-plugin-external</code> contains the Apollo Gradle plugin.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="433797426%2FMain%2F0" anchor-label="apollo-http-cache" id="433797426%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-http-cache/index.html">apollo-http-cache</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="433797426%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph">apollo-http-cache is a HTTP cache for your GraphQL operations. Compared to a regular HTTP cache, it also caches POST requests.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="-1411678430%2FMain%2F0" anchor-label="apollo-mpp-utils" id="-1411678430%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-mpp-utils/index.html">apollo-mpp-utils</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1411678430%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-mpp-utils</code> contains a few utilities for working with multiplatform projects. </p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="640643683%2FMain%2F0" anchor-label="apollo-normalized-cache" id="640643683%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-normalized-cache/index.html">apollo-normalized-cache</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="640643683%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-normalized-cache</code> contains <code class="lang-kotlin">ApolloStore</code> and <code class="lang-kotlin">ApolloCacheInterceptor</code>. It bridges <code class="lang-kotlin">ApolloClient</code> and <code class="lang-kotlin">ApolloNormalizedCache</code>.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="1624992566%2FMain%2F0" anchor-label="apollo-normalized-cache-api" id="1624992566%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-normalized-cache-api/index.html">apollo-normalized-cache-api</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1624992566%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-normalized-cache-api</code> is the low-level cache. It knows nothing about coroutines and/or <code class="lang-kotlin">apollo-runtime</code> and contains a memory implementation of <code class="lang-kotlin">NormalizedCache</code>.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="1226259814%2FMain%2F0" anchor-label="apollo-normalized-cache-sqlite" id="1226259814%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-normalized-cache-sqlite/index.html">apollo-normalized-cache-sqlite</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1226259814%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-normalized-cache-sqlite</code> contains an implementation of <code class="lang-kotlin">NormalizedCache</code> that uses SQLite to persist the data across app restarts.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="1225946043%2FMain%2F0" anchor-label="apollo-runtime" id="1225946043%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-runtime/index.html">apollo-runtime</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1225946043%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-runtime</code> contains <code class="lang-kotlin">ApolloClient</code>, networking code to execute your queries and subscriptions. This is the main entry point.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="1394731512%2FMain%2F0" anchor-label="apollo-runtime-java" id="1394731512%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-runtime-java/index.html">apollo-runtime-java</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1394731512%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-runtime-java</code> is an implementation of <code class="lang-kotlin">ApolloClient</code> that doesn't use coroutines and more generally is more friendly for Java callers.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="-363516507%2FMain%2F0" anchor-label="apollo-rx2-support" id="-363516507%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-rx2-support/index.html">apollo-rx2-support</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-363516507%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-rx2-support</code> provides thin wrappers around <a href="https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx2"><code class="lang-kotlin">kotlinx-coroutines-rx2</code></a>.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="1794691662%2FMain%2F0" anchor-label="apollo-rx2-support-java" id="1794691662%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-rx2-support-java/index.html">apollo-rx2-support-java</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1794691662%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-rx2-support-java</code> provides adapter from <code class="lang-kotlin">ApolloCall</code> to their RxJava2 equivalent.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="661975492%2FMain%2F0" anchor-label="apollo-rx3-support" id="661975492%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-rx3-support/index.html">apollo-rx3-support</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="661975492%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-rx3-support</code> provides thin wrappers around <a href="https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive/kotlinx-coroutines-rx3"><code class="lang-kotlin">kotlinx-coroutines-rx3</code></a>.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="872008079%2FMain%2F0" anchor-label="apollo-rx3-support-java" id="872008079%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-rx3-support-java/index.html">apollo-rx3-support-java</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="872008079%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-rx3-support-java</code> provides adapter from <code class="lang-kotlin">ApolloCall</code> to their RxJava3 equivalent.</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="891007425%2FMain%2F0" anchor-label="apollo-testing-support" id="891007425%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-testing-support/index.html">apollo-testing-support</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="891007425%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-testing-support</code> contains:</p>
+            </span></div>
+        </div>
+      </div>
+<a data-name="-818970487%2FMain%2F0" anchor-label="apollo-tooling" id="-818970487%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="apollo-tooling/index.html">apollo-tooling</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-818970487%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment">
+              <p class="paragraph"><code class="lang-kotlin">apollo-tooling</code> contains APIs to work with GraphQL schemas and operations as well as the GraphOS API. It is used from the CLI and Gradle plugin</p>
+            </span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

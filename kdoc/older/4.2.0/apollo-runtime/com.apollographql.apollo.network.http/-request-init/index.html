@@ -1,0 +1,361 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>RequestInit</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../images/apollo.svg">
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
+<a class="library-name--link" href="../../../index.html">
+                    apollo-kdoc
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.network.http/-request-init/index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
+  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">4.2.0</div>
+  <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
+    <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
+    <div><a href="../../../../../apollo-runtime/com.apollographql.apollo.network.http/-request-init/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">5.0.0-SNAPSHOT</a></div>
+    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">4.2.0</a></div>
+    <div><a href="../../../../../not-found-version.html?v=3.8.2" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.8.2</a></div>
+  </div>
+  <div class="dropdown--overlay"></div>
+</div>
+</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector wasm-like" data-active="" data-filter=":apollo-runtime/wasmJsMain">wasmJs</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option wasm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":apollo-runtime/wasmJsMain" data-filter=":apollo-runtime/wasmJsMain">
+                                <span class="checkbox--icon"></span>
+                                wasmJs
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </div>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    apollo-kdoc
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-runtime::com.apollographql.apollo.network.http/RequestInit///PointingToDeclaration//-1120700340">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-runtime</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.network.http</a><span class="delimiter">/</span><span class="current">RequestInit</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Request</span><wbr><span><span>Init</span></span></h1>
+    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-active="" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">external </span><span class="token keyword">interface </span><a href="index.html">RequestInit</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.js/-js-any/index.html">JsAny</a></div></div>    </div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="639355330%2FProperties%2F-1120700340" anchor-label="body" id="639355330%2FProperties%2F-1120700340" data-filterable-set=":apollo-runtime/wasmJsMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="body.html"><span><span>body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="639355330%2FProperties%2F-1120700340"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-active="" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="body.html">body</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.js/-js-any/index.html">JsAny</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-537849356%2FProperties%2F-1120700340" anchor-label="cache" id="-537849356%2FProperties%2F-1120700340" data-filterable-set=":apollo-runtime/wasmJsMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="cache.html"><span><span>cache</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-537849356%2FProperties%2F-1120700340"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-active="" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="cache.html">cache</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.js/-js-any/index.html">JsAny</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1232231674%2FProperties%2F-1120700340" anchor-label="credentials" id="1232231674%2FProperties%2F-1120700340" data-filterable-set=":apollo-runtime/wasmJsMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="credentials.html"><span><span>credentials</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1232231674%2FProperties%2F-1120700340"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-active="" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="credentials.html">credentials</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.js/-js-any/index.html">JsAny</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1879286832%2FProperties%2F-1120700340" anchor-label="headers" id="1879286832%2FProperties%2F-1120700340" data-filterable-set=":apollo-runtime/wasmJsMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="headers.html"><span><span>headers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1879286832%2FProperties%2F-1120700340"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-active="" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="headers.html">headers</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.js/-js-any/index.html">JsAny</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-522508279%2FProperties%2F-1120700340" anchor-label="integrity" id="-522508279%2FProperties%2F-1120700340" data-filterable-set=":apollo-runtime/wasmJsMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="integrity.html"><span><span>integrity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-522508279%2FProperties%2F-1120700340"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-active="" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="integrity.html">integrity</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="728642382%2FProperties%2F-1120700340" anchor-label="keepalive" id="728642382%2FProperties%2F-1120700340" data-filterable-set=":apollo-runtime/wasmJsMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="keepalive.html"><span><span>keepalive</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="728642382%2FProperties%2F-1120700340"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-active="" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="keepalive.html">keepalive</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="789825955%2FProperties%2F-1120700340" anchor-label="method" id="789825955%2FProperties%2F-1120700340" data-filterable-set=":apollo-runtime/wasmJsMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="method.html"><span><span>method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="789825955%2FProperties%2F-1120700340"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-active="" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="method.html">method</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-946856735%2FProperties%2F-1120700340" anchor-label="mode" id="-946856735%2FProperties%2F-1120700340" data-filterable-set=":apollo-runtime/wasmJsMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="mode.html"><span><span>mode</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-946856735%2FProperties%2F-1120700340"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-active="" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="mode.html">mode</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.js/-js-any/index.html">JsAny</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1703712072%2FProperties%2F-1120700340" anchor-label="redirect" id="1703712072%2FProperties%2F-1120700340" data-filterable-set=":apollo-runtime/wasmJsMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="redirect.html"><span><span>redirect</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1703712072%2FProperties%2F-1120700340"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-active="" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="redirect.html">redirect</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.js/-js-any/index.html">JsAny</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="909660773%2FProperties%2F-1120700340" anchor-label="referrer" id="909660773%2FProperties%2F-1120700340" data-filterable-set=":apollo-runtime/wasmJsMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="referrer.html"><span><span>referrer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="909660773%2FProperties%2F-1120700340"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-active="" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="referrer.html">referrer</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1296833709%2FProperties%2F-1120700340" anchor-label="referrerPolicy" id="-1296833709%2FProperties%2F-1120700340" data-filterable-set=":apollo-runtime/wasmJsMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="referrer-policy.html"><span>referrer</span><wbr><span><span>Policy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1296833709%2FProperties%2F-1120700340"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-active="" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="referrer-policy.html">referrerPolicy</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.js/-js-any/index.html">JsAny</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="661547452%2FProperties%2F-1120700340" anchor-label="signal" id="661547452%2FProperties%2F-1120700340" data-filterable-set=":apollo-runtime/wasmJsMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="signal.html"><span><span>signal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="661547452%2FProperties%2F-1120700340"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-active="" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="signal.html">signal</a><span class="token operator">: </span><a href="../-abort-signal/index.html">AbortSignal</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1792802164%2FProperties%2F-1120700340" anchor-label="window" id="1792802164%2FProperties%2F-1120700340" data-filterable-set=":apollo-runtime/wasmJsMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="window.html"><span><span>window</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1792802164%2FProperties%2F-1120700340"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime/wasmJsMain" data-filterable-set=":apollo-runtime/wasmJsMain" data-active="" data-toggle=":apollo-runtime/wasmJsMain">wasmJs</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/wasmJsMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="window.html">window</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.js/-js-any/index.html">JsAny</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,521 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Schema</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../images/apollo.svg">
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
+<a class="library-name--link" href="../../../index.html">
+                    apollo-kdoc
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.ast/-schema/index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
+  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">4.2.0</div>
+  <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
+    <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
+    <div><a href="../../../../../apollo-ast/com.apollographql.apollo.ast/-schema/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">5.0.0-SNAPSHOT</a></div>
+    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">4.2.0</a></div>
+    <div><a href="../../../../../not-found-version.html?v=3.8.2" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.8.2</a></div>
+  </div>
+  <div class="dropdown--overlay"></div>
+</div>
+</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-ast/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":apollo-ast/commonMain" data-filter=":apollo-ast/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </div>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    apollo-kdoc
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-ast::com.apollographql.apollo.ast/Schema///PointingToDeclaration//-1528585073">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-ast</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.ast</a><span class="delimiter">/</span><span class="current">Schema</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Schema</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">Schema</a></div><p class="paragraph">A wrapper around a schema <a href="../-g-q-l-document/index.html">GQLDocument</a> that ensures the <a href="../-g-q-l-document/index.html">GQLDocument</a> is valid and caches some extra information. In particular, <a href="index.html">Schema</a>:</p><ul><li><p class="paragraph">always contain builtin definitions (SDL can omit them)</p></li><li><p class="paragraph">always has a schema definition for easier lookup of root operation types</p></li><li><p class="paragraph">has all type system extensions merged</p></li><li><p class="paragraph">has some helper functions to retrieve a type by name and/or possible types</p></li><li><p class="paragraph">caches <a href="../../../apollo-ast/com.apollographql.apollo.ast/-schema/--root--.html">keyFields</a> for easier lookup during codegen</p></li><li><p class="paragraph">remembers <a href="../../../apollo-ast/com.apollographql.apollo.ast/-schema/--root--.html">foreignNames</a> to keep track of renamed definitions</p></li><li><p class="paragraph">remembers <a href="../../../apollo-ast/com.apollographql.apollo.ast/-schema/--root--.html">directivesToStrip</a> to keep track of client-only directives</p></li></ul><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>definitions</span></span></u></div></span></div><div><div class="title"><p class="paragraph">a list of validated and merged definitions</p></div></div></div></div><div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>key</span><wbr><span><span>Fields</span></span></u></div></span></div><div><div class="title"><p class="paragraph">a Map containing the key fields for each type</p></div></div></div></div><div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>foreign</span><wbr><span><span>Names</span></span></u></div></span></div><div><div class="title"><p class="paragraph">a Map from a type system name -&gt; its original name in the foreign schema. To distinguish between directives and types, directive names must be prefixed by '@' Example: "@kotlin_labs_nonnull" -&gt; "@nonnull"</p></div></div></div></div><div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>directives</span><wbr><span>To</span><wbr><span><span>Strip</span></span></u></div></span></div><div><div class="title"><p class="paragraph">directives to strip because they are coming from a foreign schema Example: "kotlin_labs_nonnull"</p></div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-724170073%2FClasslikes%2F-1528585073" anchor-label="Companion" id="-724170073%2FClasslikes%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-724170073%2FClasslikes%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-94808251%2FProperties%2F-1528585073" anchor-label="connectionTypes" id="-94808251%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="connection-types.html"><span>connection</span><wbr><span><span>Types</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-94808251%2FProperties%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="connection-types.html">connectionTypes</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1025755735%2FProperties%2F-1528585073" anchor-label="directiveDefinitions" id="-1025755735%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="directive-definitions.html"><span>directive</span><wbr><span><span>Definitions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1025755735%2FProperties%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="directive-definitions.html">directiveDefinitions</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="../-g-q-l-directive-definition/index.html">GQLDirectiveDefinition</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-639750652%2FProperties%2F-1528585073" anchor-label="errorAware" id="-639750652%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="error-aware.html"><span>error</span><wbr><span><span>Aware</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-639750652%2FProperties%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="error-aware.html">errorAware</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2122624282%2FProperties%2F-1528585073" anchor-label="foreignNames" id="-2122624282%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="foreign-names.html"><span>foreign</span><wbr><span><span>Names</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2122624282%2FProperties%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="foreign-names.html">foreignNames</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2130187396%2FProperties%2F-1528585073" anchor-label="mutationTypeDefinition" id="2130187396%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="mutation-type-definition.html"><span>mutation</span><wbr><span>Type</span><wbr><span><span>Definition</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2130187396%2FProperties%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="mutation-type-definition.html">mutationTypeDefinition</a><span class="token operator">: </span><a href="../-g-q-l-type-definition/index.html">GQLTypeDefinition</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1857014741%2FProperties%2F-1528585073" anchor-label="queryTypeDefinition" id="-1857014741%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="query-type-definition.html"><span>query</span><wbr><span>Type</span><wbr><span><span>Definition</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1857014741%2FProperties%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="query-type-definition.html">queryTypeDefinition</a><span class="token operator">: </span><a href="../-g-q-l-type-definition/index.html">GQLTypeDefinition</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="835421542%2FProperties%2F-1528585073" anchor-label="schemaDefinition" id="835421542%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="schema-definition.html"><span>schema</span><wbr><span><span>Definition</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="835421542%2FProperties%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="schema-definition.html">schemaDefinition</a><span class="token operator">: </span><a href="../-g-q-l-schema-definition/index.html">GQLSchemaDefinition</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1729704688%2FProperties%2F-1528585073" anchor-label="subscriptionTypeDefinition" id="-1729704688%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="subscription-type-definition.html"><span>subscription</span><wbr><span>Type</span><wbr><span><span>Definition</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1729704688%2FProperties%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="subscription-type-definition.html">subscriptionTypeDefinition</a><span class="token operator">: </span><a href="../-g-q-l-type-definition/index.html">GQLTypeDefinition</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-875504646%2FProperties%2F-1528585073" anchor-label="typeDefinitions" id="-875504646%2FProperties%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="type-definitions.html"><span>type</span><wbr><span><span>Definitions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-875504646%2FProperties%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="type-definitions.html">typeDefinitions</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="../-g-q-l-type-definition/index.html">GQLTypeDefinition</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1450378470%2FFunctions%2F-1528585073" anchor-label="hasTypeWithTypePolicy" id="-1450378470%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-type-with-type-policy.html"><span>has</span><wbr><span>Type</span><wbr><span>With</span><wbr><span>Type</span><wbr><span><span>Policy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1450378470%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="has-type-with-type-policy.html"><span class="token function">hasTypeWithTypePolicy</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Returns whether the <code class="lang-kotlin">typePolicy</code> directive is present on at least one object in the schema</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1186266655%2FFunctions%2F-1528585073" anchor-label="implementedTypes" id="-1186266655%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="implemented-types.html"><span>implemented</span><wbr><span><span>Types</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1186266655%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="implemented-types.html"><span class="token function">implementedTypes</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">List all types (types, interfaces, unions) implemented by a given type (including itself)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2109255613%2FFunctions%2F-1528585073" anchor-label="isTypeASubTypeOf" id="-2109255613%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-type-a-sub-type-of.html"><span>is</span><wbr><span>Type</span><wbr><span>ASub</span><wbr><span>Type</span><wbr><span><span>Of</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2109255613%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="is-type-a-sub-type-of.html"><span class="token function">isTypeASubTypeOf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">superType<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1358536642%2FFunctions%2F-1528585073" anchor-label="isTypeASuperTypeOf" id="-1358536642%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-type-a-super-type-of.html"><span>is</span><wbr><span>Type</span><wbr><span>ASuper</span><wbr><span>Type</span><wbr><span><span>Of</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1358536642%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="is-type-a-super-type-of.html"><span class="token function">isTypeASuperTypeOf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">subType<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="985948060%2FFunctions%2F-1528585073" anchor-label="keyFields" id="985948060%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="key-fields.html"><span>key</span><wbr><span><span>Fields</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="985948060%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="key-fields.html"><span class="token function">keyFields</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Get the key fields for an object, interface or union type.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1179708787%2FFunctions%2F-1528585073" anchor-label="originalDirectiveName" id="-1179708787%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="original-directive-name.html"><span>original</span><wbr><span>Directive</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1179708787%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="original-directive-name.html"><span class="token function">originalDirectiveName</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-83010592%2FFunctions%2F-1528585073" anchor-label="originalTypeName" id="-83010592%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="original-type-name.html"><span>original</span><wbr><span>Type</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-83010592%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="original-type-name.html"><span class="token function">originalTypeName</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="951981957%2FFunctions%2F-1528585073" anchor-label="possibleTypes" id="951981957%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="possible-types.html"><span>possible</span><wbr><span><span>Types</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="951981957%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="possible-types.html"><span class="token function">possibleTypes</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">typeDefinition<span class="token operator">: </span><a href="../-g-q-l-type-definition/index.html">GQLTypeDefinition</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">returns all possible types:</p></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="possible-types.html"><span class="token function">possibleTypes</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="868834246%2FFunctions%2F-1528585073" anchor-label="rootTypeNameFor" id="868834246%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="root-type-name-for.html"><span>root</span><wbr><span>Type</span><wbr><span>Name</span><wbr><span><span>For</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="868834246%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="root-type-name-for.html"><span class="token function">rootTypeNameFor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">operationType<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1909696420%2FFunctions%2F-1528585073" anchor-label="rootTypeNameOrNullFor" id="-1909696420%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="root-type-name-or-null-for.html"><span>root</span><wbr><span>Type</span><wbr><span>Name</span><wbr><span>Or</span><wbr><span>Null</span><wbr><span><span>For</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1909696420%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="root-type-name-or-null-for.html"><span class="token function">rootTypeNameOrNullFor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">operationType<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1641625143%2FFunctions%2F-1528585073" anchor-label="shouldStrip" id="-1641625143%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="should-strip.html"><span>should</span><wbr><span><span>Strip</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1641625143%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="should-strip.html"><span class="token function">shouldStrip</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">return whether the given directive should be removed from operation documents before being sent to the server</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-565200264%2FFunctions%2F-1528585073" anchor-label="superTypes" id="-565200264%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="super-types.html"><span>super</span><wbr><span><span>Types</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-565200264%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="super-types.html"><span class="token function">superTypes</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">objectTypeDefinition<span class="token operator">: </span><a href="../-g-q-l-object-type-definition/index.html">GQLObjectTypeDefinition</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">List all direct super types (interfaces, unions) implemented by a given object type</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-583829602%2FFunctions%2F-1528585073" anchor-label="toGQLDocument" id="-583829602%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-g-q-l-document.html"><span>to</span><wbr><span><span>GQLDocument</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-583829602%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="to-g-q-l-document.html"><span class="token function">toGQLDocument</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-g-q-l-document/index.html">GQLDocument</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1996507423%2FFunctions%2F-1528585073" anchor-label="toMap" id="1996507423%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-map.html"><span>to</span><wbr><span><span>Map</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1996507423%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="to-map.html"><span class="token function">toMap</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Returns the <a href="index.html">Schema</a> as a <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a> that can be easily serialized to Json</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="633639351%2FFunctions%2F-1528585073" anchor-label="typeDefinition" id="633639351%2FFunctions%2F-1528585073" data-filterable-set=":apollo-ast/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-ast/commonMain" data-filterable-set=":apollo-ast/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="type-definition.html"><span>type</span><wbr><span><span>Definition</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="633639351%2FFunctions%2F-1528585073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-ast/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="type-definition.html"><span class="token function">typeDefinition</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-g-q-l-type-definition/index.html">GQLTypeDefinition</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

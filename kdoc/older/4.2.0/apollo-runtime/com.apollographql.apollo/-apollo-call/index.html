@@ -1,0 +1,562 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ApolloCall</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../images/apollo.svg">
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
+<a class="library-name--link" href="../../../index.html">
+                    apollo-kdoc
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo/-apollo-call/index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
+  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">4.2.0</div>
+  <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
+    <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
+    <div><a href="../../../../../apollo-runtime/com.apollographql.apollo/-apollo-call/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">5.0.0-SNAPSHOT</a></div>
+    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">4.2.0</a></div>
+    <div><a href="../../../../../not-found-version.html?v=3.8.2" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.8.2</a></div>
+  </div>
+  <div class="dropdown--overlay"></div>
+</div>
+</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-runtime/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":apollo-runtime/commonMain" data-filter=":apollo-runtime/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </div>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    apollo-kdoc
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-runtime::com.apollographql.apollo/ApolloCall///PointingToDeclaration//981543781">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-runtime</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo</a><span class="delimiter">/</span><span class="current">ApolloCall</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Apollo</span><wbr><span><span>Call</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">ApolloCall</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator"> : </span><a href="../../../apollo-api/com.apollographql.apollo.api/-operation/-data/index.html">Operation.Data</a><span class="token operator">&gt;</span> : <a href="../../../apollo-api/com.apollographql.apollo.api/-mutable-execution-options/index.html">MutableExecutionOptions</a><span class="token operator">&lt;</span><a href="index.html">ApolloCall</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><p class="paragraph">An <a href="index.html">ApolloCall</a> is a thin class that binds an <a href="../../../apollo-api/com.apollographql.apollo.api/-apollo-request/index.html">ApolloRequest</a> with its <a href="../-apollo-client/index.html">ApolloClient</a>. It offers a fluent way to configure the <a href="../../../apollo-api/com.apollographql.apollo.api/-apollo-request/index.html">ApolloRequest</a>.</p><p class="paragraph">Contrary to an <a href="../../../apollo-api/com.apollographql.apollo.api/-apollo-request/index.html">ApolloRequest</a>, an <a href="index.html">ApolloCall</a> doesn't have a request id and a new request id is allocated every time <a href="execute.html">execute</a> or <a href="to-flow.html">toFlow</a> is called.</p><ul><li><p class="paragraph">call <a href="execute.html">execute</a> for simple cases that expect a single response:</p></li></ul><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">val response = apolloClient.query(myQuery).fetchPolicy(CacheOnly).execute()</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><ul><li><p class="paragraph">call <a href="to-flow.html">toFlow</a> for other cases that expect multiple <a href="../../../apollo-api/com.apollographql.apollo.api/-apollo-response/index.html">ApolloResponse</a> like subscriptions and <code class="lang-kotlin">@defer</code>:</p></li></ul><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">apolloClient.subscription(mySubscription).toFlow().collect { response -&gt;<br>  println(response.data)<br>}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="execute.html"><span>ApolloCall.</span><wbr><span>execute</span></a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="to-flow.html"><span>ApolloCall.</span><wbr><span>toFlow</span></a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1229729044%2FProperties%2F981543781" anchor-label="canBeBatched" id="1229729044%2FProperties%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="can-be-batched.html"><span>can</span><wbr><span>Be</span><wbr><span><span>Batched</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1229729044%2FProperties%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="can-be-batched.html">canBeBatched</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1423818869%2FProperties%2F981543781" anchor-label="enableAutoPersistedQueries" id="1423818869%2FProperties%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="enable-auto-persisted-queries.html"><span>enable</span><wbr><span>Auto</span><wbr><span>Persisted</span><wbr><span><span>Queries</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1423818869%2FProperties%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="enable-auto-persisted-queries.html">enableAutoPersistedQueries</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1518132707%2FProperties%2F981543781" anchor-label="executionContext" id="1518132707%2FProperties%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="execution-context.html"><span>execution</span><wbr><span><span>Context</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1518132707%2FProperties%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="execution-context.html">executionContext</a><span class="token operator">: </span><a href="../../../apollo-api/com.apollographql.apollo.api/-execution-context/index.html">ExecutionContext</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1721832300%2FProperties%2F981543781" anchor-label="failFastIfOffline" id="-1721832300%2FProperties%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="fail-fast-if-offline.html"><span>fail</span><wbr><span>Fast</span><wbr><span>If</span><wbr><span><span>Offline</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1721832300%2FProperties%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">val </span><a href="fail-fast-if-offline.html">failFastIfOffline</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-745221182%2FProperties%2F981543781" anchor-label="httpHeaders" id="-745221182%2FProperties%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="http-headers.html"><span>http</span><wbr><span><span>Headers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-745221182%2FProperties%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="http-headers.html">httpHeaders</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../../apollo-api/com.apollographql.apollo.api.http/-http-header/index.html">HttpHeader</a><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-541761583%2FProperties%2F981543781" anchor-label="httpMethod" id="-541761583%2FProperties%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="http-method.html"><span>http</span><wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-541761583%2FProperties%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="http-method.html">httpMethod</a><span class="token operator">: </span><a href="../../../apollo-api/com.apollographql.apollo.api.http/-http-method/index.html">HttpMethod</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1305396110%2FProperties%2F981543781" anchor-label="ignoreApolloClientHttpHeaders" id="1305396110%2FProperties%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="ignore-apollo-client-http-headers.html"><span>ignore</span><wbr><span>Apollo</span><wbr><span>Client</span><wbr><span>Http</span><wbr><span><span>Headers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1305396110%2FProperties%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="ignore-apollo-client-http-headers.html">ignoreApolloClientHttpHeaders</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-634004199%2FProperties%2F981543781" anchor-label="operation" id="-634004199%2FProperties%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="operation.html"><span><span>operation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-634004199%2FProperties%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="operation.html">operation</a><span class="token operator">: </span><a href="../../../apollo-api/com.apollographql.apollo.api/-operation/index.html">Operation</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-92655751%2FProperties%2F981543781" anchor-label="retryOnError" id="-92655751%2FProperties%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="retry-on-error.html"><span>retry</span><wbr><span>On</span><wbr><span><span>Error</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-92655751%2FProperties%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">val </span><a href="retry-on-error.html">retryOnError</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-819281870%2FProperties%2F981543781" anchor-label="sendApqExtensions" id="-819281870%2FProperties%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="send-apq-extensions.html"><span>send</span><wbr><span>Apq</span><wbr><span><span>Extensions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-819281870%2FProperties%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="send-apq-extensions.html">sendApqExtensions</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1094921367%2FProperties%2F981543781" anchor-label="sendDocument" id="1094921367%2FProperties%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="send-document.html"><span>send</span><wbr><span><span>Document</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1094921367%2FProperties%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="send-document.html">sendDocument</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1344921841%2FFunctions%2F981543781" anchor-label="addExecutionContext" id="1344921841%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-execution-context.html"><span>add</span><wbr><span>Execution</span><wbr><span><span>Context</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1344921841%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="add-execution-context.html"><span class="token function">addExecutionContext</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">executionContext<span class="token operator">: </span><a href="../../../apollo-api/com.apollographql.apollo.api/-execution-context/index.html">ExecutionContext</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloCall</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="398242175%2FFunctions%2F981543781" anchor-label="addHttpHeader" id="398242175%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-http-header.html"><span>add</span><wbr><span>Http</span><wbr><span><span>Header</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="398242175%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="add-http-header.html"><span class="token function">addHttpHeader</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloCall</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-810311510%2FFunctions%2F981543781" anchor-label="canBeBatched" id="-810311510%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="can-be-batched.html"><span>can</span><wbr><span>Be</span><wbr><span><span>Batched</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-810311510%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="can-be-batched.html"><span class="token function">canBeBatched</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">canBeBatched<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloCall</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2012564061%2FFunctions%2F981543781" anchor-label="conflateFetchPolicyInterceptorResponses" id="2012564061%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../conflate-fetch-policy-interceptor-responses.html"><span>conflate</span><wbr><span>Fetch</span><wbr><span>Policy</span><wbr><span>Interceptor</span><wbr><span><span>Responses</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2012564061%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../conflate-fetch-policy-interceptor-responses.html">T</a><span class="token operator">&gt; </span><a href="../../../apollo-api/com.apollographql.apollo.api/-mutable-execution-options/index.html">MutableExecutionOptions</a><span class="token operator">&lt;</span><a href="../conflate-fetch-policy-interceptor-responses.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../conflate-fetch-policy-interceptor-responses.html"><span class="token function"><strike>conflateFetchPolicyInterceptorResponses</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">conflateResponses<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../conflate-fetch-policy-interceptor-responses.html">T</a></div><div class="brief "><p class="paragraph">When <a href="../conflate-fetch-policy-interceptor-responses.html">conflateResponses</a> is true, the fetch policy interceptors emit a single response and ignores the first cache or network error if a successful response is ultimately fetched. If no successful response can be emitted, a <a href="../../../apollo-api/com.apollographql.apollo.exception/-apollo-composite-exception/index.html">com.apollographql.apollo.exception.ApolloCompositeException</a> error response is emitted.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1520964389%2FFunctions%2F981543781" anchor-label="copy" id="1520964389%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="copy.html"><span><span>copy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1520964389%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="copy.html"><span class="token function">copy</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloCall</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1252966185%2FFunctions%2F981543781" anchor-label="enableAutoPersistedQueries" id="1252966185%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="enable-auto-persisted-queries.html"><span>enable</span><wbr><span>Auto</span><wbr><span>Persisted</span><wbr><span><span>Queries</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1252966185%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="enable-auto-persisted-queries.html"><span class="token function">enableAutoPersistedQueries</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">enableAutoPersistedQueries<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloCall</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="619996043%2FFunctions%2F981543781" anchor-label="execute" id="619996043%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="execute.html"><span><span>execute</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="619996043%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="execute.html"><span class="token function">execute</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../apollo-api/com.apollographql.apollo.api/-apollo-response/index.html">ApolloResponse</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Retrieves a single <a href="../../../apollo-api/com.apollographql.apollo.api/-apollo-response/index.html">ApolloResponse</a> from this <a href="index.html">ApolloCall</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1883953166%2FFunctions%2F981543781" anchor-label="executeV3" id="1883953166%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="execute-v3.html"><span>execute</span><wbr><span><span>V3</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1883953166%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="execute-v3.html"><span class="token function"><strike>executeV3</strike></span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../apollo-api/com.apollographql.apollo.api/-apollo-response/index.html">ApolloResponse</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A version of <a href="execute.html">execute</a> that restores 3.x behaviour:</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1227230934%2FFunctions%2F981543781" anchor-label="failFastIfOffline" id="-1227230934%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="fail-fast-if-offline.html"><span>fail</span><wbr><span>Fast</span><wbr><span>If</span><wbr><span><span>Offline</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1227230934%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="fail-fast-if-offline.html"><span class="token function">failFastIfOffline</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">failFastIfOffline<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloCall</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1381105312%2FFunctions%2F981543781" anchor-label="httpHeaders" id="1381105312%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="http-headers.html"><span>http</span><wbr><span><span>Headers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1381105312%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="http-headers.html"><span class="token function">httpHeaders</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">httpHeaders<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../../apollo-api/com.apollographql.apollo.api.http/-http-header/index.html">HttpHeader</a><span class="token operator">&gt;</span><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloCall</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-120816753%2FFunctions%2F981543781" anchor-label="httpMethod" id="-120816753%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="http-method.html"><span>http</span><wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-120816753%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="http-method.html"><span class="token function">httpMethod</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">httpMethod<span class="token operator">: </span><a href="../../../apollo-api/com.apollographql.apollo.api.http/-http-method/index.html">HttpMethod</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloCall</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-294254864%2FFunctions%2F981543781" anchor-label="ignoreApolloClientHttpHeaders" id="-294254864%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="ignore-apollo-client-http-headers.html"><span>ignore</span><wbr><span>Apollo</span><wbr><span>Client</span><wbr><span>Http</span><wbr><span><span>Headers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-294254864%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="ignore-apollo-client-http-headers.html"><span class="token function">ignoreApolloClientHttpHeaders</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ignoreApolloClientHttpHeaders<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloCall</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-15865947%2FFunctions%2F981543781" anchor-label="retryOnError" id="-15865947%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="retry-on-error.html"><span>retry</span><wbr><span>On</span><wbr><span><span>Error</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-15865947%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">fun </span><a href="retry-on-error.html"><span class="token function">retryOnError</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">retryOnError<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloCall</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1133817292%2FFunctions%2F981543781" anchor-label="sendApqExtensions" id="1133817292%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="send-apq-extensions.html"><span>send</span><wbr><span>Apq</span><wbr><span><span>Extensions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1133817292%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="send-apq-extensions.html"><span class="token function">sendApqExtensions</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sendApqExtensions<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloCall</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-425506105%2FFunctions%2F981543781" anchor-label="sendDocument" id="-425506105%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="send-document.html"><span>send</span><wbr><span><span>Document</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-425506105%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="send-document.html"><span class="token function">sendDocument</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sendDocument<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloCall</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2144194671%2FFunctions%2F981543781" anchor-label="toFlow" id="-2144194671%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-flow.html"><span>to</span><wbr><span><span>Flow</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2144194671%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="to-flow.html"><span class="token function">toFlow</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/Flow///PointingToDeclaration/">Flow</span><span class="token operator">&lt;</span><a href="../../../apollo-api/com.apollographql.apollo.api/-apollo-response/index.html">ApolloResponse</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Returns a cold Flow that produces <a href="../../../apollo-api/com.apollographql.apollo.api/-apollo-response/index.html">ApolloResponse</a>s from this <a href="index.html">ApolloCall</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-213534060%2FFunctions%2F981543781" anchor-label="toFlowV3" id="-213534060%2FFunctions%2F981543781" data-filterable-set=":apollo-runtime/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime/commonMain" data-filterable-set=":apollo-runtime/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-flow-v3.html"><span>to</span><wbr><span>Flow</span><wbr><span><span>V3</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-213534060%2FFunctions%2F981543781"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_0_0/index.html">ApolloDeprecatedSince.Version.v4_0_0</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><a href="to-flow-v3.html"><span class="token function"><strike>toFlowV3</strike></span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/Flow///PointingToDeclaration/">Flow</span><span class="token operator">&lt;</span><a href="../../../apollo-api/com.apollographql.apollo.api/-apollo-response/index.html">ApolloResponse</a><span class="token operator">&lt;</span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A version of <a href="execute.html">execute</a> that restores 3.x behaviour:</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

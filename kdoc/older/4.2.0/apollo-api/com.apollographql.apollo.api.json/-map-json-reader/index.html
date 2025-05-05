@@ -1,0 +1,585 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>MapJsonReader</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../images/apollo.svg">
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
+<a class="library-name--link" href="../../../index.html">
+                    apollo-kdoc
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.api.json/-map-json-reader/index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
+  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">4.2.0</div>
+  <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
+    <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
+    <div><a href="../../../../../apollo-api/com.apollographql.apollo.api.json/-map-json-reader/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">5.0.0-SNAPSHOT</a></div>
+    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">4.2.0</a></div>
+    <div><a href="../../../../../not-found-version.html?v=3.8.2" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.8.2</a></div>
+  </div>
+  <div class="dropdown--overlay"></div>
+</div>
+</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-api/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":apollo-api/commonMain" data-filter=":apollo-api/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </div>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    apollo-kdoc
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-api::com.apollographql.apollo.api.json/MapJsonReader///PointingToDeclaration//-745234393">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-api</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.api.json</a><span class="delimiter">/</span><span class="current">MapJsonReader</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Map</span><wbr><span>Json</span><wbr><span><span>Reader</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">MapJsonReader</a>&nbsp;<span><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation builtin">JvmOverloads</span></a>&nbsp;</span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>root<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">pathRoot<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()</span></span><span class="token punctuation">)</span> : <a href="../-json-reader/index.html">JsonReader</a></div><p class="paragraph">A <a href="../-json-reader/index.html">JsonReader</a> that can consumes <a href="../-apollo-json-element/index.html">ApolloJsonElement</a> values as Json</p><p class="paragraph">To read from a <span data-unresolved-link="okio/BufferedSource///PointingToDeclaration/">okio.BufferedSource</span>, see also <a href="../-buffered-source-json-reader/index.html">BufferedSourceJsonReader</a></p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>root</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the root object to read from</p></div></div></div></div><div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>path</span><wbr><span><span>Root</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the path root to be prefixed to the returned path when calling <a href="get-path.html">getPath</a>. Useful for <a href="-companion/buffer.html">buffer</a>.</p></div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="1864733963%2FConstructors%2F-745234393" anchor-label="MapJsonReader" id="1864733963%2FConstructors%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-map-json-reader.html"><span>Map</span><wbr><span>Json</span><wbr><span><span>Reader</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1864733963%2FConstructors%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation builtin">JvmOverloads</span></a></div></div><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">root<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">pathRoot<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-1036771775%2FClasslikes%2F-745234393" anchor-label="Companion" id="-1036771775%2FClasslikes%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1036771775%2FClasslikes%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1429321282%2FProperties%2F-745234393" anchor-label="root" id="-1429321282%2FProperties%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="root.html"><span><span>root</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1429321282%2FProperties%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="root.html">root</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-503575312%2FFunctions%2F-745234393" anchor-label="beginArray" id="-503575312%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="begin-array.html"><span>begin</span><wbr><span><span>Array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-503575312%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="begin-array.html"><span class="token function">beginArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">MapJsonReader</a></div><div class="brief "><p class="paragraph">Consumes the next token from the JSON stream and asserts that it is the beginning of a new array.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1652018546%2FFunctions%2F-745234393" anchor-label="beginObject" id="1652018546%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="begin-object.html"><span>begin</span><wbr><span><span>Object</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1652018546%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="begin-object.html"><span class="token function">beginObject</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">MapJsonReader</a></div><div class="brief "><p class="paragraph">Consumes the next token from the JSON stream and asserts that it is the beginning of a new object.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1198098333%2FFunctions%2F-745234393" anchor-label="buffer" id="1198098333%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-companion/buffer.html"><span><span>buffer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1198098333%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-json-reader/index.html">JsonReader</a><span class="token punctuation">.</span><a href="-companion/buffer.html"><span class="token function">buffer</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">MapJsonReader</a></div><div class="brief "><p class="paragraph">buffers the next Object. Has to be called in <code class="lang-kotlin">BEGIN_OBJECT</code> position. The returned <a href="index.html">MapJsonReader</a> can use <a href="rewind.html">MapJsonReader.rewind</a> to read fields multiple times</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="856996994%2FFunctions%2F-745234393" anchor-label="close" id="856996994%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="close.html"><span><span>close</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="856996994%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="close.html"><span class="token function">close</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1465485726%2FFunctions%2F-745234393" anchor-label="endArray" id="-1465485726%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="end-array.html"><span>end</span><wbr><span><span>Array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1465485726%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="end-array.html"><span class="token function">endArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">MapJsonReader</a></div><div class="brief "><p class="paragraph">Consumes the next token from the JSON stream and asserts that it is the end of the current array.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1897566784%2FFunctions%2F-745234393" anchor-label="endObject" id="1897566784%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="end-object.html"><span>end</span><wbr><span><span>Object</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1897566784%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="end-object.html"><span class="token function">endObject</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">MapJsonReader</a></div><div class="brief "><p class="paragraph">Consumes the next token from the JSON stream and asserts that it is the end of the current object.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1177976833%2FFunctions%2F-745234393" anchor-label="getPath" id="-1177976833%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-path.html"><span>get</span><wbr><span><span>Path</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1177976833%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get-path.html"><span class="token function">getPath</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Returns the current path of the JSON being read, as a List. The elements can either be Strings (names) or Integers (array indices).</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1505914925%2FFunctions%2F-745234393" anchor-label="hasNext" id="1505914925%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-next.html"><span>has</span><wbr><span><span>Next</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1505914925%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="has-next.html"><span class="token function">hasNext</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Returns true if the current array or object has another element.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1598555557%2FFunctions%2F-745234393" anchor-label="nextBoolean" id="1598555557%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="next-boolean.html"><span>next</span><wbr><span><span>Boolean</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1598555557%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-boolean.html"><span class="token function">nextBoolean</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Returns the <a href="../-json-reader/-token/-b-o-o-l-e-a-n/index.html">Token.BOOLEAN</a> value of the next token, consuming it.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1522643452%2FFunctions%2F-745234393" anchor-label="nextDouble" id="1522643452%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="next-double.html"><span>next</span><wbr><span><span>Double</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1522643452%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-double.html"><span class="token function">nextDouble</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-double/index.html">Double</a></div><div class="brief "><p class="paragraph">Returns the <a href="../-json-reader/-token/-n-u-m-b-e-r/index.html">Token.NUMBER</a> value of the next token, consuming it.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1874517950%2FFunctions%2F-745234393" anchor-label="nextInt" id="1874517950%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="next-int.html"><span>next</span><wbr><span><span>Int</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1874517950%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-int.html"><span class="token function">nextInt</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">Returns the <a href="../-json-reader/-token/-n-u-m-b-e-r/index.html">Token.NUMBER</a> value of the next token, consuming it.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-475616847%2FFunctions%2F-745234393" anchor-label="nextLong" id="-475616847%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="next-long.html"><span>next</span><wbr><span><span>Long</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-475616847%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-long.html"><span class="token function">nextLong</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a></div><div class="brief "><p class="paragraph">Returns the <a href="../-json-reader/-token/-n-u-m-b-e-r/index.html">Token.NUMBER</a> value of the next token, consuming it.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-841722750%2FFunctions%2F-745234393" anchor-label="nextName" id="-841722750%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="next-name.html"><span>next</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-841722750%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-name.html"><span class="token function">nextName</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Returns the next token <a href="../-json-reader/-token/-n-a-m-e/index.html">Token.NAME</a>, and consumes it.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1909005574%2FFunctions%2F-745234393" anchor-label="nextNull" id="1909005574%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="next-null.html"><span>next</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1909005574%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-null.html"><span class="token function">nextNull</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-nothing/index.html">Nothing</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Consumes the next token from the JSON stream and asserts that it is a literal null. Returns null.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1815619972%2FFunctions%2F-745234393" anchor-label="nextNumber" id="1815619972%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="next-number.html"><span>next</span><wbr><span><span>Number</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1815619972%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-number.html"><span class="token function">nextNumber</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-json-number/index.html">JsonNumber</a></div><div class="brief "><p class="paragraph">Returns the <a href="../-json-reader/-token/-n-u-m-b-e-r/index.html">Token.NUMBER</a> value of the next token, consuming it.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="669062588%2FFunctions%2F-745234393" anchor-label="nextString" id="669062588%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="next-string.html"><span>next</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="669062588%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="next-string.html"><span class="token function">nextString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Returns the <a href="../-json-reader/-token/-s-t-r-i-n-g/index.html">Token.STRING</a> value of the next token, consuming it.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-640403332%2FFunctions%2F-745234393" anchor-label="nextValue" id="-640403332%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="next-value.html"><span>next</span><wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-640403332%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="next-value.html"><span class="token function">nextValue</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1556650263%2FFunctions%2F-745234393" anchor-label="parseResponse" id="1556650263%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.api/parse-response.html"><span>parse</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1556650263%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../com.apollographql.apollo.api/parse-response.html">D</a><span class="token operator"> : </span><a href="../../com.apollographql.apollo.api/-operation/-data/index.html">Operation.Data</a><span class="token operator">&gt; </span><a href="../-json-reader/index.html">JsonReader</a><span class="token punctuation">.</span><a href="../../com.apollographql.apollo.api/parse-response.html"><span class="token function">parseResponse</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">operation<span class="token operator">: </span><a href="../../com.apollographql.apollo.api/-operation/index.html">Operation</a><span class="token operator">&lt;</span><a href="../../com.apollographql.apollo.api/parse-response.html">D</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">requestUuid<span class="token operator">: </span><span data-unresolved-link="com.benasher44.uuid/Uuid///PointingToDeclaration/">Uuid</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">customScalarAdapters<span class="token operator">: </span><a href="../../com.apollographql.apollo.api/-custom-scalar-adapters/index.html">CustomScalarAdapters</a><span class="token operator"> = </span>CustomScalarAdapters.Empty<span class="token punctuation">, </span></span><span class="parameter ">deferredFragmentIdentifiers<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><a href="../../com.apollographql.apollo.api/-deferred-fragment-identifier/index.html">DeferredFragmentIdentifier</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.apollographql.apollo.api/-apollo-response/index.html">ApolloResponse</a><span class="token operator">&lt;</span><a href="../../com.apollographql.apollo.api/parse-response.html">D</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Reads a <a href="../../com.apollographql.apollo.api/-apollo-response/index.html">ApolloResponse</a> from <a href="../-json-reader/index.html">this</a>. The caller is responsible for closing <a href="../-json-reader/index.html">this</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1573543067%2FFunctions%2F-745234393" anchor-label="peek" id="-1573543067%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="peek.html"><span><span>peek</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1573543067%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="peek.html"><span class="token function">peek</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-json-reader/-token/index.html">JsonReader.Token</a></div><div class="brief "><p class="paragraph">Returns the type of the next token without consuming it.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1112205248%2FFunctions%2F-745234393" anchor-label="readAny" id="-1112205248%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../read-any.html"><span>read</span><wbr><span><span>Any</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1112205248%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-json-reader/index.html">JsonReader</a><span class="token punctuation">.</span><a href="../read-any.html"><span class="token function">readAny</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-apollo-json-element/index.html">ApolloJsonElement</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Returns the Kotlin representation of the given <a href="../-json-reader/index.html">JsonReader</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-332102260%2FFunctions%2F-745234393" anchor-label="readErrors" id="-332102260%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.api.internal/read-errors.html"><span>read</span><wbr><span><span>Errors</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-332102260%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-json-reader/index.html">JsonReader</a><span class="token punctuation">.</span><a href="../../com.apollographql.apollo.api.internal/read-errors.html"><span class="token function">readErrors</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../com.apollographql.apollo.api/-error/index.html">Error</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1492033369%2FFunctions%2F-745234393" anchor-label="readTypename" id="-1492033369%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../read-typename.html"><span>read</span><wbr><span><span>Typename</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1492033369%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-json-reader/index.html">JsonReader</a><span class="token punctuation">.</span><a href="../read-typename.html"><span class="token function">readTypename</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1942251707%2FFunctions%2F-745234393" anchor-label="rewind" id="-1942251707%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="rewind.html"><span><span>rewind</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1942251707%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="rewind.html"><span class="token function">rewind</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Rewinds to the beginning of the current object.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-963221661%2FFunctions%2F-745234393" anchor-label="selectName" id="-963221661%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="select-name.html"><span>select</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-963221661%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="select-name.html"><span class="token function">selectName</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">names<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">An optimized way to retrieve the nextName when the candidates and their order is known. <a href="../-json-reader/select-name.html">selectName</a> maintains the current index in the list and saves having to string compare <a href="../-json-reader/next-name.html">nextName</a> to every candidate.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1341483512%2FFunctions%2F-745234393" anchor-label="skipValue" id="-1341483512%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="skip-value.html"><span>skip</span><wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1341483512%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="skip-value.html"><span class="token function">skipValue</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Skips the next value recursively. If it is an object or array, all nested elements are skipped.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1249197240%2FFunctions%2F-745234393" anchor-label="toApolloResponse" id="-1249197240%2FFunctions%2F-745234393" data-filterable-set=":apollo-api/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-api/commonMain" data-filterable-set=":apollo-api/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.apollographql.apollo.api/to-apollo-response.html"><span>to</span><wbr><span>Apollo</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1249197240%2FFunctions%2F-745234393"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-api/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../com.apollographql.apollo.api/to-apollo-response.html">D</a><span class="token operator"> : </span><a href="../../com.apollographql.apollo.api/-operation/-data/index.html">Operation.Data</a><span class="token operator">&gt; </span><a href="../-json-reader/index.html">JsonReader</a><span class="token punctuation">.</span><a href="../../com.apollographql.apollo.api/to-apollo-response.html"><span class="token function">toApolloResponse</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">operation<span class="token operator">: </span><a href="../../com.apollographql.apollo.api/-operation/index.html">Operation</a><span class="token operator">&lt;</span><a href="../../com.apollographql.apollo.api/to-apollo-response.html">D</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">requestUuid<span class="token operator">: </span><span data-unresolved-link="com.benasher44.uuid/Uuid///PointingToDeclaration/">Uuid</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">customScalarAdapters<span class="token operator">: </span><a href="../../com.apollographql.apollo.api/-custom-scalar-adapters/index.html">CustomScalarAdapters</a><span class="token operator"> = </span>CustomScalarAdapters.Empty<span class="token punctuation">, </span></span><span class="parameter ">deferredFragmentIdentifiers<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><a href="../../com.apollographql.apollo.api/-deferred-fragment-identifier/index.html">DeferredFragmentIdentifier</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.apollographql.apollo.api/-apollo-response/index.html">ApolloResponse</a><span class="token operator">&lt;</span><a href="../../com.apollographql.apollo.api/to-apollo-response.html">D</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Reads a single <a href="../../com.apollographql.apollo.api/-apollo-response/index.html">ApolloResponse</a> from <a href="../-json-reader/index.html">this</a>. Returns an error response if <a href="../-json-reader/index.html">this</a> contains more than one JSON response or trailing tokens. <a href="../../com.apollographql.apollo.api/to-apollo-response.html">toApolloResponse</a> takes ownership and closes <a href="../-json-reader/index.html">this</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

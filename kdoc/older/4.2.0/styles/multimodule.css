@@ -1,0 +1,25 @@
+/*
+ * Copyright 2014-2024 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+.versions-dropdown {
+  white-space: nowrap;
+}
+
+@media (width < 900px) {
+  .versions-dropdown {
+    height: 52px;
+    margin-left: -8px;
+  }
+}
+
+@media (width >= 900px) {
+  .versions-dropdown .dropdown--list {
+    min-width: 60px;
+    top: 44px;
+  }
+}
+
+.no-js .versions-dropdown:hover .dropdown--list {
+  display: block;
+}
