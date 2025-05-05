@@ -22,7 +22,7 @@ items:
   - label: Tutorial
     href: https://www.apollographql.com/tutorials/apollo-kotlin-android-part1
   - label: Kdoc
-    href: https://apollographql.github.io/apollo-kotlin/kdoc/
+    href: https://apollographql.github.io/apollo-kotlin/kdoc/older/4.2.0/
   - label: Changelog
     href: https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md
   - label: Configuration
