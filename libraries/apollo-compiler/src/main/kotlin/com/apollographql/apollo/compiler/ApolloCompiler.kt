@@ -16,7 +16,6 @@ import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.QueryDocumentMinifier
 import com.apollographql.apollo.ast.Schema
-import com.apollographql.apollo.ast.UnknownDirective
 import com.apollographql.apollo.ast.UnusedFragment
 import com.apollographql.apollo.ast.UnusedVariable
 import com.apollographql.apollo.ast.builtinForeignSchemas
@@ -275,7 +274,7 @@ object ApolloCompiler {
     val operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
       var operation = addRequiredFields(it, addTypename, schema, fragmentDefinitions)
       if (documentTransform != null) {
-        operation = documentTransform.transform(schema, it)
+        operation = documentTransform.transform(schema, operation)
       }
       if (schema.directiveDefinitions.containsKey(Schema.DISABLE_ERROR_PROPAGATION)
           && schema.schemaDefinition?.directives?.any { schema.originalDirectiveName(it.name) == Schema.CATCH_BY_DEFAULT } == true) {
