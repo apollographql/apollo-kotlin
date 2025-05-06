@@ -10,6 +10,7 @@ import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.definitionFromScope
 import com.apollographql.apollo.ast.isAbstract
 import com.apollographql.apollo.ast.rawType
+import com.apollographql.apollo.ast.responseName
 import com.apollographql.apollo.ast.rootTypeDefinition
 import com.apollographql.apollo.compiler.ADD_TYPENAME_ALWAYS
 import com.apollographql.apollo.compiler.ADD_TYPENAME_IF_ABSTRACT
@@ -94,7 +95,7 @@ private fun List<GQLSelection>.addRequiredFields(
     requiredFieldNames.add("__typename")
   }
 
-  val fieldNames = parentFields + selectionSet.filterIsInstance<GQLField>().map { it.name }.toSet()
+  val fieldNames = parentFields + selectionSet.filterIsInstance<GQLField>().map { it.responseName() }.toSet()
 
   var newSelections = selectionSet.map {
     when (it) {
