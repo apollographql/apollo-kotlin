@@ -119,29 +119,27 @@ interface SchemaTransform {
 }
 
 /**
- * A [DocumentTransform] transforms operations and fragments at build time. [DocumentTransform] can add or remove fields automatically for an example.
+ * A [DocumentTransform] transforms operations and fragments at build time. [DocumentTransform] can add or remove fields automatically, for an example.
  */
 @ApolloExperimental
 interface DocumentTransform {
   /**
-   * Transforms the given operation.
+   * Transforms the given document.
    *
+   * [transform] is called before any validation. Implementation must be robust to invalid fragments, operations and non-executable definitions.
    * [transform] is called after any processing done by the Apollo compiler such as adding `__typename`.
-   */
-  fun transform(schema: Schema, operation: GQLOperationDefinition): GQLOperationDefinition
-
-  /**
-   * Transforms the given fragment.
    *
-   * [transform] is called after any processing done by the Apollo compiler such as adding `__typename`.
+   * @param schema the schema
+   * @param document the document containing all the operations and fragments defined in this compilation unit.
+   * @param extraFragmentDefinitions extra fragment definitions from other compilation units.
    */
-  fun transform(schema: Schema, fragment: GQLFragmentDefinition): GQLFragmentDefinition
+  fun transform(schema: Schema, document: GQLDocument, extraFragmentDefinitions: List<GQLFragmentDefinition>): GQLDocument
 }
 
 /**
  * Transforms a type
  *
- * This is not a kotlin function type because this might be used in environment where those types are
+ * This is not a kotlin function type because this might be used in environments where those types are
  * relocated and might fail to load at runtime. For an example, in a Gradle plugin.
  */
 interface Transform<T> {

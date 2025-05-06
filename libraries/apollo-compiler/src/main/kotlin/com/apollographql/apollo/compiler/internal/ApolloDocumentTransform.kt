@@ -1,5 +1,7 @@
 package com.apollographql.apollo.compiler.internal
 
+import com.apollographql.apollo.ast.GQLDirective
+import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLField
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLFragmentSpread
@@ -16,6 +18,7 @@ import com.apollographql.apollo.compiler.ADD_TYPENAME_ALWAYS
 import com.apollographql.apollo.compiler.ADD_TYPENAME_IF_ABSTRACT
 import com.apollographql.apollo.compiler.ADD_TYPENAME_IF_FRAGMENTS
 import com.apollographql.apollo.compiler.ADD_TYPENAME_IF_POLYMORPHIC
+import com.apollographql.apollo.compiler.DocumentTransform
 
 internal fun addRequiredFields(
     operation: GQLOperationDefinition,
@@ -172,4 +175,43 @@ private fun buildField(name: String): GQLField {
       directives = emptyList(),
       alias = null,
   )
+}
+
+internal class ApolloDocumentTransform(private val addTypename: String) : DocumentTransform {
+  override fun transform(
+      schema: Schema,
+      document: GQLDocument,
+      extraFragmentDefinitions: List<GQLFragmentDefinition>,
+  ): GQLDocument {
+    val userFragments = mutableListOf<GQLFragmentDefinition>()
+    val userOperations = mutableListOf<GQLOperationDefinition>()
+
+    document.definitions.forEach {
+      when (it) {
+        is GQLFragmentDefinition -> userFragments.add(it)
+        is GQLOperationDefinition -> userOperations.add(it)
+        else -> Unit
+      }
+    }
+    val fragmentDefinitions = (userFragments + extraFragmentDefinitions).associateBy { it.name }
+    val fragments = userFragments.map {
+      addRequiredFields(it, addTypename, schema, fragmentDefinitions)
+    }
+
+    val usesDisableErrorPropagation = schema.directiveDefinitions.containsKey(Schema.DISABLE_ERROR_PROPAGATION)
+        && schema.schemaDefinition?.directives?.any { schema.originalDirectiveName(it.name) == Schema.CATCH_BY_DEFAULT } == true
+    val operations = userOperations.map {
+      var operation = addRequiredFields(it, addTypename, schema, fragmentDefinitions)
+      if (usesDisableErrorPropagation) {
+        operation = operation.copy(
+            directives = operation.directives + GQLDirective(null, Schema.DISABLE_ERROR_PROPAGATION, emptyList())
+        )
+      }
+      operation
+    }
+
+    return document.copy(
+        definitions = operations + fragments
+    )
+  }
 }
