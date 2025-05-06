@@ -1,5 +1,6 @@
 package hooks
 
+import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLField
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLFragmentSpread
@@ -25,15 +26,27 @@ class TestPluginProvider: ApolloCompilerPluginProvider {
 class TestPlugin : ApolloCompilerPlugin {
   override fun documentTransform(): DocumentTransform {
     return object : DocumentTransform {
-      override fun transform(schema: Schema, operation: GQLOperationDefinition): GQLOperationDefinition {
-        return operation.copy(
-            selections = operation.selections.alwaysGreet(schema, operation.rootTypeDefinition(schema)!!.name)
-        )
-      }
-
-      override fun transform(schema: Schema, fragment: GQLFragmentDefinition): GQLFragmentDefinition {
-        return fragment.copy(
-            selections = fragment.selections.alwaysGreet(schema, fragment.typeCondition.name)
+      override fun transform(
+          schema: Schema,
+          document: GQLDocument,
+          extraFragmentDefinitions: List<GQLFragmentDefinition>,
+      ): GQLDocument {
+        return document.copy(
+            definitions = document.definitions.map {
+              when (it) {
+                is GQLOperationDefinition -> {
+                  it.copy(
+                      selections = it.selections.alwaysGreet(schema, it.rootTypeDefinition(schema)!!.name)
+                  )
+                }
+                is GQLFragmentDefinition -> {
+                  it.copy(
+                      selections = it.selections.alwaysGreet(schema, it.typeCondition.name)
+                  )
+                }
+                else -> it
+              }
+            }
         )
       }
     }
