@@ -39,7 +39,11 @@ internal fun checkKeyFields(
     schema: Schema,
     allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
 ) {
-  CheckKeyFieldsScope(schema, allFragmentDefinitions).checkField("Fragment(${fragmentDefinition.name})", fragmentDefinition.selections, fragmentDefinition.typeCondition.name)
+  CheckKeyFieldsScope(schema, allFragmentDefinitions).checkField(
+      "Fragment(${fragmentDefinition.name})",
+      fragmentDefinition.selections,
+      fragmentDefinition.typeCondition.name
+  )
 }
 
 private fun CheckKeyFieldsScope.checkField(
@@ -61,9 +65,9 @@ private fun CheckKeyFieldsScope.checkFieldSet(path: String, selections: List<GQL
 
   if (implementedTypes.contains(parentType)) {
     // only check types that are actually possible
-    val fieldNames = mergedFields.map { it.first().field }
-        .filter { it.alias == null }
-        .map { it.name }.toSet()
+    val fieldNames = mergedFields
+        .flatMap { it.filter { it.field.alias == null }.map { it.field.name } }
+        .toSet()
     val keyFieldNames = keyFields(possibleType)
 
     val missingFieldNames = keyFieldNames.subtract(fieldNames)
@@ -101,6 +105,7 @@ private fun CheckKeyFieldsScope.collectFields(
 
         listOf(FieldWithParent(it, parentType))
       }
+
       is GQLInlineFragment -> {
         if (it.directives.hasCondition()) {
           return@flatMap emptyList()
@@ -108,6 +113,7 @@ private fun CheckKeyFieldsScope.collectFields(
 
         collectFields(it.selections, it.typeCondition?.name ?: parentType, implementedTypes)
       }
+
       is GQLFragmentSpread -> {
         if (it.directives.hasCondition()) {
           return@flatMap emptyList()
