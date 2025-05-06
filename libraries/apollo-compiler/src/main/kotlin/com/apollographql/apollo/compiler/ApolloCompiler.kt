@@ -275,7 +275,7 @@ object ApolloCompiler {
     val operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
       var operation = addRequiredFields(it, addTypename, schema, fragmentDefinitions)
       if (documentTransform != null) {
-        operation = documentTransform.transform(schema, it)
+        operation = documentTransform.transform(schema, operation)
       }
       if (schema.directiveDefinitions.containsKey(Schema.DISABLE_ERROR_PROPAGATION)
           && schema.schemaDefinition?.directives?.any { schema.originalDirectiveName(it.name) == Schema.CATCH_BY_DEFAULT } == true) {
