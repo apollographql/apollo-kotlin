@@ -16,6 +16,7 @@ import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.QueryDocumentMinifier
 import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.UnknownDirective
 import com.apollographql.apollo.ast.UnusedFragment
 import com.apollographql.apollo.ast.UnusedVariable
 import com.apollographql.apollo.ast.builtinForeignSchemas
