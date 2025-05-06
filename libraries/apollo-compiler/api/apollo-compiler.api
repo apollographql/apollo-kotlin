@@ -183,8 +183,7 @@ public abstract interface class com/apollographql/apollo/compiler/CommonCodegenO
 }
 
 public abstract interface class com/apollographql/apollo/compiler/DocumentTransform {
-	public abstract fun transform (Lcom/apollographql/apollo/ast/Schema;Lcom/apollographql/apollo/ast/GQLFragmentDefinition;)Lcom/apollographql/apollo/ast/GQLFragmentDefinition;
-	public abstract fun transform (Lcom/apollographql/apollo/ast/Schema;Lcom/apollographql/apollo/ast/GQLOperationDefinition;)Lcom/apollographql/apollo/ast/GQLOperationDefinition;
+	public abstract fun transform (Lcom/apollographql/apollo/ast/Schema;Lcom/apollographql/apollo/ast/GQLDocument;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLDocument;
 }
 
 public final class com/apollographql/apollo/compiler/EntryPoints {

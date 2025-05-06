@@ -177,7 +177,7 @@ private fun buildField(name: String): GQLField {
   )
 }
 
-class ApolloDocumentTransform(private val addTypename: String) : DocumentTransform {
+internal class ApolloDocumentTransform(private val addTypename: String) : DocumentTransform {
   override fun transform(
       schema: Schema,
       document: GQLDocument,
