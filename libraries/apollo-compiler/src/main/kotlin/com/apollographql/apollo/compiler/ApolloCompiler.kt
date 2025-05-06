@@ -36,6 +36,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodegen
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo.compiler.codegen.kotlin.toSourceOutput
 import com.apollographql.apollo.compiler.codegen.plus
+import com.apollographql.apollo.compiler.internal.ApolloDocumentTransform
 import com.apollographql.apollo.compiler.internal.addRequiredFields
 import com.apollographql.apollo.compiler.internal.checkApolloInlineFragmentsHaveTypeCondition
 import com.apollographql.apollo.compiler.internal.checkApolloReservedEnumValueNames
@@ -198,16 +199,19 @@ object ApolloCompiler {
   ): IrOperations {
     val schema = codegenSchema.schema
 
+    /**
+     * Remember the normalized path of each operation for the package name
+     */
     val operationNameToNormalizedPath = mutableMapOf<String, String>()
     val fragmentNameToNormalizedPath = mutableMapOf<String, String>()
 
     /**
      * Step 1: parse the documents
      */
-    val definitions = mutableListOf<GQLDefinition>()
+    val userDefinitions = mutableListOf<GQLDefinition>()
     /**
      * Sort the input files.
-     * The generated Kotlin code does not depend on the order of the inputs but in case we're serializing the
+     * The generated Kotlin code does not depend on the order of the inputs, but in case we're serializing the
      * intermediate usedCoordinates, their order depends on the order of the input files.
      *
      * See https://github.com/gradle/gradle/issues/29321
@@ -216,10 +220,14 @@ object ApolloCompiler {
     executableFiles.sortedBy { it.normalizedPath }.forEach { normalizedFile ->
       val fileDefinitions = normalizedFile.file.definitions()
 
-      definitions.addAll(fileDefinitions)
+      userDefinitions.addAll(fileDefinitions)
       fileDefinitions.forEach {
         when (it) {
-          is GQLOperationDefinition -> operationNameToNormalizedPath[it.name ?: ""] = normalizedFile.normalizedPath
+          is GQLOperationDefinition -> {
+            // Anonymous operations trigger an error during validation, so it's fine to fall back to the empty string here.
+            val name = it.name ?: ""
+            operationNameToNormalizedPath[name] = normalizedFile.normalizedPath
+          }
           is GQLFragmentDefinition -> fragmentNameToNormalizedPath[it.name] = normalizedFile.normalizedPath
           else -> Unit
         }
@@ -227,10 +235,22 @@ object ApolloCompiler {
     }
 
     /**
-     * Step 2, GraphQL validation
+     * Step 2, Modify the AST to add typename, key fields and call any user-provided transform.
+     */
+    var document = ApolloDocumentTransform(options.addTypename ?: defaultAddTypename).transform(
+        schema = schema,
+        document = GQLDocument(userDefinitions, sourceLocation = null),
+        upstreamFragmentDefinitions
+    )
+    if (documentTransform != null) {
+      document = documentTransform.transform(schema, document, upstreamFragmentDefinitions)
+    }
+
+    /**
+     * Step 3, GraphQL validation
      */
     val validationResult = GQLDocument(
-        definitions = definitions + upstreamFragmentDefinitions,
+        definitions = document.definitions + upstreamFragmentDefinitions,
         sourceLocation = null
     ).validateAsExecutable(schema)
 
@@ -239,25 +259,24 @@ object ApolloCompiler {
 
     val codegenModels = defaultCodegenModels(options.codegenModels, upstreamCodegenModels)
     if (codegenModels == MODELS_RESPONSE_BASED || codegenModels == MODELS_OPERATION_BASED_WITH_INTERFACES) {
-      allIssues.addAll(checkConditionalFragments(definitions))
+      allIssues.addAll(checkConditionalFragments(userDefinitions))
     }
 
     allIssues.addAll(checkApolloReservedEnumValueNames(schema))
     allIssues.addAll(checkApolloTargetNameClashes(schema))
-    allIssues.addAll(checkApolloInlineFragmentsHaveTypeCondition(definitions))
+    allIssues.addAll(checkApolloInlineFragmentsHaveTypeCondition(userDefinitions))
 
     val flattenModels = options.flattenModels ?: flattenModels(codegenModels)
     val decapitalizeFields = options.decapitalizeFields ?: defaultDecapitalizeFields
     val warnOnDeprecatedUsages = options.warnOnDeprecatedUsages ?: defaultWarnOnDeprecatedUsages
     val failOnWarnings = options.failOnWarnings ?: defaultFailOnWarnings
     val fieldsOnDisjointTypesMustMerge = options.fieldsOnDisjointTypesMustMerge ?: defaultFieldsOnDisjointTypesMustMerge
-    val addTypename = options.addTypename ?: defaultAddTypename
     val generateOptionalOperationVariables = options.generateOptionalOperationVariables ?: defaultGenerateOptionalOperationVariables
     val alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching ?: defaultAlwaysGenerateTypesMatching
 
     if (!decapitalizeFields) {
       // When flattenModels is true, we still must check capitalized fields inside fragment spreads
-      allIssues.addAll(checkCapitalizedFields(definitions, checkFragmentsOnly = flattenModels))
+      allIssues.addAll(checkCapitalizedFields(userDefinitions, checkFragmentsOnly = flattenModels))
     }
 
     val issueGroup = allIssues.group(
@@ -277,29 +296,16 @@ object ApolloCompiler {
     }
 
     /**
-     * Step 3, Modify the AST to add typename and key fields
+     * Step 4 Build the IR
      */
-    val fragmentDefinitions = (definitions.filterIsInstance<GQLFragmentDefinition>() + upstreamFragmentDefinitions).associateBy { it.name }
-    val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
-      addRequiredFields(it, addTypename, schema, fragmentDefinitions).let {
-        documentTransform?.transform(schema, it) ?: it
+    val operations = mutableListOf<GQLOperationDefinition>()
+    val fragments = mutableListOf<GQLFragmentDefinition>()
+    document.definitions.forEach {
+      when(it) {
+        is GQLOperationDefinition -> operations.add(it)
+        is GQLFragmentDefinition -> fragments.add(it)
+        else -> Unit
       }
-    }
-
-
-    val operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
-      var operation = addRequiredFields(it, addTypename, schema, fragmentDefinitions)
-      if (documentTransform != null) {
-        operation = documentTransform.transform(schema, operation)
-      }
-      if (schema.directiveDefinitions.containsKey(Schema.DISABLE_ERROR_PROPAGATION)
-          && schema.schemaDefinition?.directives?.any { schema.originalDirectiveName(it.name) == Schema.CATCH_BY_DEFAULT } == true
-      ) {
-        operation = operation.copy(
-            directives = operation.directives + GQLDirective(null, Schema.DISABLE_ERROR_PROPAGATION, emptyList())
-        )
-      }
-      operation
     }
 
     // Remember the fragments with the possibly updated fragments
@@ -307,6 +313,7 @@ object ApolloCompiler {
 
     // Check if all the key fields are present in operations and fragments
     // (do this only if there are key fields as it may be costly)
+    // TODO: Remove this
     if (schema.hasTypeWithTypePolicy()) {
       operations.forEach {
         checkKeyFields(it, schema, allFragmentDefinitions)
@@ -316,9 +323,6 @@ object ApolloCompiler {
       }
     }
 
-    /**
-     * Build the IR
-     */
     return IrOperationsBuilder(
         schema = schema,
         operationDefinitions = operations,
