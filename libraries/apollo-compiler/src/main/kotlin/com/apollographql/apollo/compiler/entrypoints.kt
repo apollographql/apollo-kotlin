@@ -257,18 +257,7 @@ internal fun apolloCompilerPlugin(
     logLevel: Int,
     warnIfNotFound: Boolean = false,
 ): ApolloCompilerPlugin? {
-  val plugins = ServiceLoader.load(ApolloCompilerPlugin::class.java, ApolloCompilerPlugin::class.java.classLoader).toList()
-
-  if (plugins.size > 1) {
-    error("Apollo: only a single compiler plugin is allowed")
-  }
-
-  val plugin = plugins.singleOrNull()
-  if (plugin != null) {
-    error("Apollo: use ApolloCompilerPluginProvider instead of ApolloCompilerPlugin directly. ApolloCompilerPluginProvider allows arguments and logging")
-  }
-
-  val pluginProviders = ServiceLoader.load(ApolloCompilerPluginProvider::class.java, ApolloCompilerPlugin::class.java.classLoader).toList()
+  val pluginProviders = ServiceLoader.load(ApolloCompilerPluginProvider::class.java, ApolloCompilerPluginProvider::class.java.classLoader).toList()
 
   if (pluginProviders.size > 1) {
     error("Apollo: only a single compiler plugin provider is allowed")
@@ -288,7 +277,7 @@ internal fun apolloCompilerPlugin(
     )
   }
 
-  return plugins.singleOrNull()
+  return null
 }
 
 
