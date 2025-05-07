@@ -37,7 +37,6 @@ internal fun addRequiredFields(
           fragments = fragments,
           parentType = parentType,
           parentFields = emptySet(),
-          parentAddedFragmentTypeConditions = emptySet(),
           isRoot = false,
       )
   )
@@ -55,7 +54,6 @@ internal fun addRequiredFields(
       fragments = fragments,
       parentType = fragmentDefinition.typeCondition.name,
       parentFields = emptySet(),
-      parentAddedFragmentTypeConditions = emptySet(),
       isRoot = true,
   )
 
@@ -95,7 +93,6 @@ private fun List<GQLSelection>.addRequiredFields(
     fragments: Map<String, GQLFragmentDefinition>,
     parentType: String,
     parentFields: Set<String>,
-    parentAddedFragmentTypeConditions: Set<String>,
     isRoot: Boolean,
 ): List<GQLSelection> {
   if (isEmpty()) {
@@ -123,27 +120,29 @@ private fun List<GQLSelection>.addRequiredFields(
   val fieldNames = parentFields + selectionSet.filterIsInstance<GQLField>().map { it.responseName() }.toSet()
 
   // Interfaces and unions: add key fields of all possible types in inline fragments
-  val parentTypeDefinition = schema.typeDefinition(parentType)
-  val possibleTypes = if (parentTypeDefinition is GQLInterfaceTypeDefinition || parentTypeDefinition is GQLUnionTypeDefinition) {
-    schema.possibleTypes(parentTypeDefinition)
+  val inlineFragmentsToAdd = if (isRoot) {
+    val parentTypeDefinition = schema.typeDefinition(parentType)
+    val possibleTypes = if (parentTypeDefinition is GQLInterfaceTypeDefinition || parentTypeDefinition is GQLUnionTypeDefinition) {
+      schema.possibleTypes(parentTypeDefinition)
+    } else {
+      emptySet()
+    }
+    possibleTypes.associateWith { schema.keyFields(it) }.mapNotNull { (possibleType, keyFields) ->
+      val fieldNamesToAddInInlineFragment = keyFields - fieldNames
+      if (fieldNamesToAddInInlineFragment.isNotEmpty()) {
+        GQLInlineFragment(
+            typeCondition = GQLNamedType(null, possibleType),
+            selections = fieldNamesToAddInInlineFragment.map { buildField(it) },
+            directives = emptyList(),
+            sourceLocation = null,
+        )
+      } else {
+        null
+      }
+    }
   } else {
     emptySet()
-  } - parentAddedFragmentTypeConditions
-  val possibleTypeKeyFields = possibleTypes.associateWith { schema.keyFields(it) }
-  val inlineFragmentsToAdd = possibleTypeKeyFields.mapNotNull { (possibleType, keyFields) ->
-    val fieldNamesToAddInInlineFragment = keyFields - fieldNames
-    if (fieldNamesToAddInInlineFragment.isNotEmpty()) {
-      GQLInlineFragment(
-          typeCondition = GQLNamedType(null, possibleType),
-          selections = fieldNamesToAddInInlineFragment.map { buildField(it) },
-          directives = emptyList(),
-          sourceLocation = null,
-      )
-    } else {
-      null
-    }
   }
-  val addedFragmentTypeConditions = inlineFragmentsToAdd.map { it.typeCondition!!.name }.toSet()
 
   var newSelections = selectionSet.map {
     when (it) {
@@ -155,7 +154,6 @@ private fun List<GQLSelection>.addRequiredFields(
                 fragments = fragments,
                 parentType = it.typeCondition?.name ?: parentType,
                 parentFields = fieldNames + requiredFieldNames,
-                parentAddedFragmentTypeConditions = addedFragmentTypeConditions,
                 isRoot = false
             )
         )
@@ -211,7 +209,6 @@ private fun GQLField.addRequiredFields(
       fragments = fragments,
       parentType = typeDefinition.type.rawType().name,
       parentFields = emptySet(),
-      parentAddedFragmentTypeConditions = emptySet(),
       isRoot = true
   )
 
