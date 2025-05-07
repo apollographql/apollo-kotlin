@@ -3,7 +3,6 @@ package test
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.DataBuilderScope
 import com.apollographql.apollo.api.FakeResolverContext
-import com.apollographql.apollo.api.LongAdapter
 import com.apollographql.apollo.api.Optional
 import com.example.MyLong
 import com.example.MyLongAdapter
@@ -21,7 +20,6 @@ import data.builders.GetPartialQuery
 import data.builders.GetProductQuery
 import data.builders.PutIntMutation
 import data.builders.SkipQuery
-import data.builders.type.Direction
 import data.builders.builder.CatBuilder
 import data.builders.builder.Data
 import data.builders.builder.buildCat
@@ -32,6 +30,7 @@ import data.builders.builder.buildProduct
 import data.builders.builder.buildPromo
 import data.builders.builder.resolver.DefaultFakeResolver
 import data.builders.builder.resolver.adaptToJson
+import data.builders.type.Direction
 import data.builders.type.Long2
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -235,7 +234,8 @@ class DataBuilderTest {
                         __typename = "Lion",
                         id = "574122978",
                         species = "FooSpecies",
-                        onLion = GetPartialQuery.OnLion("roar")
+                        onLion = GetPartialQuery.OnLion("roar", id = "574122978"),
+                        onCat = null
                     )
                 )
             ),
