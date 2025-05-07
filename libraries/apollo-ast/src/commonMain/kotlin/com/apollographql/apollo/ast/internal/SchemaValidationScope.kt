@@ -739,6 +739,7 @@ private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition)
     return
   }
 }
+
 private fun ValidationScope.validateDirectiveDefinitions() {
   directiveDefinitions.values.forEach {
     it.arguments.forEach {
@@ -858,16 +859,18 @@ private fun ValidationScope.validateInputFieldCycles(inputObjectTypeDefinition: 
 
   state.fieldPathIndexByTypeName.remove(inputObjectTypeDefinition.name)
 }
+
 private fun ValidationScope.validateInputObjectDefaultValue(
     inputObjectTypeDefinition: GQLInputObjectTypeDefinition,
-    state: DefaultValueTraversalState
+    state: DefaultValueTraversalState,
 ) {
-  validateInputObjectDefaultValue(inputObjectTypeDefinition, GQLObjectValue(null,emptyList()), state)
+  validateInputObjectDefaultValue(inputObjectTypeDefinition, GQLObjectValue(null, emptyList()), state)
 }
+
 private fun ValidationScope.validateInputObjectDefaultValue(
     inputObjectTypeDefinition: GQLInputObjectTypeDefinition,
     defaultValue: GQLValue,
-    state: DefaultValueTraversalState
+    state: DefaultValueTraversalState,
 ) {
   if (defaultValue is GQLListValue) {
     defaultValue.values.forEach {
@@ -880,7 +883,7 @@ private fun ValidationScope.validateInputObjectDefaultValue(
       if (typeDefinition !is GQLInputObjectTypeDefinition) {
         return
       }
-      val fieldDefaultValue = defaultValue.fields.firstOrNull { it.name == inputField.name}
+      val fieldDefaultValue = defaultValue.fields.firstOrNull { it.name == inputField.name }
       if (fieldDefaultValue != null) {
         validateInputObjectDefaultValue(typeDefinition, fieldDefaultValue.value, state)
       } else {
@@ -895,7 +898,7 @@ private fun ValidationScope.validateInputFieldDefaultValue(
     fieldStr: String,
     defaultValue: GQLObjectValue,
     typeDefinition: GQLInputObjectTypeDefinition,
-    state: DefaultValueTraversalState
+    state: DefaultValueTraversalState,
 ) {
   val fieldDefaultValue = inputFieldDefinition.defaultValue
   if (fieldDefaultValue == null) {
@@ -956,8 +959,7 @@ private fun ValidationScope.keyFields(
   val (directives, interfaces) = when (typeDefinition) {
     is GQLObjectTypeDefinition -> typeDefinition.directives to typeDefinition.implementsInterfaces
     is GQLInterfaceTypeDefinition -> typeDefinition.directives to typeDefinition.implementsInterfaces
-    is GQLUnionTypeDefinition -> typeDefinition.directives to emptyList()
-    else -> error("Cannot get directives for $typeDefinition")
+    else -> error("Unexpected type definition $typeDefinition")
   }
 
   val interfacesKeyFields = interfaces.map { keyFields(typeDefinitions[it]!!, keyFieldsCache) }

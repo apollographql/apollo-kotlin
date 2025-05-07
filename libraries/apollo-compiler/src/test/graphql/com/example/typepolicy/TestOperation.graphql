@@ -13,3 +13,20 @@ fragment AFragment2 on A {
   bar
   myId: id
 }
+
+
+query GetInterfaceA {
+  interfaceA {
+    ... on InterfaceA {
+      interfaceAField
+    }
+  }
+}
+
+query GetUnionA {
+  unionA {
+    ... on UnionA {
+      __typename
+    }
+  }
+}

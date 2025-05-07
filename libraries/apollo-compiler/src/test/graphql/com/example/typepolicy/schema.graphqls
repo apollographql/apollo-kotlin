@@ -12,4 +12,22 @@ type A @typePolicy(keyFields: "id") {
 
 type Query {
   a: A
+  interfaceA: InterfaceA
+  unionA: UnionA
 }
+
+interface InterfaceA {
+  interfaceAField: String
+}
+
+type B implements InterfaceA @typePolicy(keyFields: "idB") {
+  interfaceAField: String
+  idB: String
+}
+
+type C implements InterfaceA @typePolicy(keyFields: "idC") {
+  interfaceAField: String
+  idC: String
+}
+
+union UnionA = A | B | C

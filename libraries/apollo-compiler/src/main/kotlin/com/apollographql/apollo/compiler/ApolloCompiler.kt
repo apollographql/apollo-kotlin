@@ -5,7 +5,6 @@ import com.apollographql.apollo.ast.DifferentShape
 import com.apollographql.apollo.ast.DirectiveRedefinition
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.GQLDefinition
-import com.apollographql.apollo.ast.GQLDirective
 import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLOperationDefinition
@@ -15,7 +14,6 @@ import com.apollographql.apollo.ast.IncompatibleDefinition
 import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.QueryDocumentMinifier
-import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.UnusedFragment
 import com.apollographql.apollo.ast.UnusedVariable
 import com.apollographql.apollo.ast.builtinForeignSchemas
@@ -37,13 +35,11 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo.compiler.codegen.kotlin.toSourceOutput
 import com.apollographql.apollo.compiler.codegen.plus
 import com.apollographql.apollo.compiler.internal.ApolloDocumentTransform
-import com.apollographql.apollo.compiler.internal.addRequiredFields
 import com.apollographql.apollo.compiler.internal.checkApolloInlineFragmentsHaveTypeCondition
 import com.apollographql.apollo.compiler.internal.checkApolloReservedEnumValueNames
 import com.apollographql.apollo.compiler.internal.checkApolloTargetNameClashes
 import com.apollographql.apollo.compiler.internal.checkCapitalizedFields
 import com.apollographql.apollo.compiler.internal.checkConditionalFragments
-import com.apollographql.apollo.compiler.internal.checkKeyFields
 import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.IrOperationsBuilder
 import com.apollographql.apollo.compiler.ir.IrSchemaBuilder
@@ -310,18 +306,6 @@ object ApolloCompiler {
 
     // Remember the fragments with the possibly updated fragments
     val allFragmentDefinitions = (fragments + upstreamFragmentDefinitions).associateBy { it.name }
-
-    // Check if all the key fields are present in operations and fragments
-    // (do this only if there are key fields as it may be costly)
-    // TODO: Remove this
-    if (schema.hasTypeWithTypePolicy()) {
-      operations.forEach {
-        checkKeyFields(it, schema, allFragmentDefinitions)
-      }
-      fragments.forEach {
-        checkKeyFields(it, schema, allFragmentDefinitions)
-      }
-    }
 
     return IrOperationsBuilder(
         schema = schema,

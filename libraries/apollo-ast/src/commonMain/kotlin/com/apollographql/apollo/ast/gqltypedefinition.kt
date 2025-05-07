@@ -37,7 +37,8 @@ fun GQLTypeDefinition.isAbstract(): Boolean {
   return when (this) {
     is GQLUnionTypeDefinition,
     is GQLInterfaceTypeDefinition,
-    -> true
+      -> true
+
     else -> false
   }
 }
@@ -48,6 +49,7 @@ fun GQLTypeDefinition.isComposite(): Boolean {
     is GQLUnionTypeDefinition,
     is GQLInterfaceTypeDefinition,
       -> true
+
     else -> false
   }
 }
@@ -62,8 +64,8 @@ fun GQLTypeDefinition.canHaveKeyFields(): Boolean {
   return when (this) {
     is GQLObjectTypeDefinition,
     is GQLInterfaceTypeDefinition,
-    is GQLUnionTypeDefinition
-    -> true
+      -> true
+
     else -> false
   }
 }
