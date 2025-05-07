@@ -6,8 +6,11 @@ import com.apollographql.apollo.ast.GQLField
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLFragmentSpread
 import com.apollographql.apollo.ast.GQLInlineFragment
+import com.apollographql.apollo.ast.GQLInterfaceTypeDefinition
+import com.apollographql.apollo.ast.GQLNamedType
 import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.GQLSelection
+import com.apollographql.apollo.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.definitionFromScope
 import com.apollographql.apollo.ast.isAbstract
@@ -28,7 +31,15 @@ internal fun addRequiredFields(
 ): GQLOperationDefinition {
   val parentType = operation.rootTypeDefinition(schema)!!.name
   return operation.copy(
-      selections = operation.selections.addRequiredFields(schema, addTypename, fragments, parentType, emptySet(), false)
+      selections = operation.selections.addRequiredFields(
+          schema = schema,
+          addTypename = addTypename,
+          fragments = fragments,
+          parentType = parentType,
+          parentFields = emptySet(),
+          parentAddedFragmentTypeConditions = emptySet(),
+          isRoot = false,
+      )
   )
 }
 
@@ -38,7 +49,15 @@ internal fun addRequiredFields(
     schema: Schema,
     fragments: Map<String, GQLFragmentDefinition>,
 ): GQLFragmentDefinition {
-  val newSelectionSet = fragmentDefinition.selections.addRequiredFields(schema, addTypename, fragments, fragmentDefinition.typeCondition.name, emptySet(), true)
+  val newSelectionSet = fragmentDefinition.selections.addRequiredFields(
+      schema = schema,
+      addTypename = addTypename,
+      fragments = fragments,
+      parentType = fragmentDefinition.typeCondition.name,
+      parentFields = emptySet(),
+      parentAddedFragmentTypeConditions = emptySet(),
+      isRoot = true,
+  )
 
   return fragmentDefinition.copy(
       selections = newSelectionSet,
@@ -53,6 +72,7 @@ private fun List<GQLSelection>.isPolymorphic(schema: Schema, fragments: Map<Stri
         val tc = it.typeCondition?.name ?: rootType
         !schema.isTypeASuperTypeOf(tc, rootType) || it.selections.isPolymorphic(schema, fragments, rootType)
       }
+
       is GQLFragmentSpread -> {
         val fragmentDefinition = fragments[it.name] ?: error("cannot find fragment ${it.name}")
         /**
@@ -75,6 +95,7 @@ private fun List<GQLSelection>.addRequiredFields(
     fragments: Map<String, GQLFragmentDefinition>,
     parentType: String,
     parentFields: Set<String>,
+    parentAddedFragmentTypeConditions: Set<String>,
     isRoot: Boolean,
 ): List<GQLSelection> {
   if (isEmpty()) {
@@ -83,11 +104,12 @@ private fun List<GQLSelection>.addRequiredFields(
 
   val selectionSet = this
 
-  val requiresTypename = when(addTypename) {
+  val requiresTypename = when (addTypename) {
     ADD_TYPENAME_IF_POLYMORPHIC -> isRoot && isPolymorphic(schema, fragments, parentType)
     ADD_TYPENAME_IF_FRAGMENTS -> {
       selectionSet.any { it is GQLFragmentSpread || it is GQLInlineFragment }
     }
+
     ADD_TYPENAME_IF_ABSTRACT -> isRoot && schema.typeDefinition(parentType).isAbstract()
     ADD_TYPENAME_ALWAYS -> isRoot
     else -> error("Unknown addTypename option: $addTypename")
@@ -100,20 +122,45 @@ private fun List<GQLSelection>.addRequiredFields(
 
   val fieldNames = parentFields + selectionSet.filterIsInstance<GQLField>().map { it.responseName() }.toSet()
 
+  // Interfaces and unions: add key fields of all possible types in inline fragments
+  val parentTypeDefinition = schema.typeDefinition(parentType)
+  val possibleTypes = if (parentTypeDefinition is GQLInterfaceTypeDefinition || parentTypeDefinition is GQLUnionTypeDefinition) {
+    schema.possibleTypes(parentTypeDefinition)
+  } else {
+    emptySet()
+  } - parentAddedFragmentTypeConditions
+  val possibleTypeKeyFields = possibleTypes.associateWith { schema.keyFields(it) }
+  val inlineFragmentsToAdd = possibleTypeKeyFields.mapNotNull { (possibleType, keyFields) ->
+    val fieldNamesToAddInInlineFragment = keyFields - fieldNames
+    if (fieldNamesToAddInInlineFragment.isNotEmpty()) {
+      GQLInlineFragment(
+          typeCondition = GQLNamedType(null, possibleType),
+          selections = fieldNamesToAddInInlineFragment.map { buildField(it) },
+          directives = emptyList(),
+          sourceLocation = null,
+      )
+    } else {
+      null
+    }
+  }
+  val addedFragmentTypeConditions = inlineFragmentsToAdd.map { it.typeCondition!!.name }.toSet()
+
   var newSelections = selectionSet.map {
     when (it) {
       is GQLInlineFragment -> {
         it.copy(
             selections = it.selections.addRequiredFields(
-                schema,
-                addTypename,
-                fragments,
-                it.typeCondition?.name ?: parentType,
-                fieldNames + requiredFieldNames,
-                false
+                schema = schema,
+                addTypename = addTypename,
+                fragments = fragments,
+                parentType = it.typeCondition?.name ?: parentType,
+                parentFields = fieldNames + requiredFieldNames,
+                parentAddedFragmentTypeConditions = addedFragmentTypeConditions,
+                isRoot = false
             )
         )
       }
+
       is GQLFragmentSpread -> it
       is GQLField -> it.addRequiredFields(schema, addTypename, fragments, parentType)
     }
@@ -136,7 +183,8 @@ private fun List<GQLSelection>.addRequiredFields(
       "Field ${it.alias}: ${it.name} in $parentType conflicts with key fields"
     }
   }
-  newSelections = newSelections + fieldNamesToAdd.map { buildField(it) }
+
+  newSelections = newSelections + fieldNamesToAdd.map { buildField(it) } + inlineFragmentsToAdd
 
   newSelections = if (requiresTypename) {
     // remove the __typename if it exists
@@ -150,15 +198,21 @@ private fun List<GQLSelection>.addRequiredFields(
   return newSelections
 }
 
-private fun GQLField.addRequiredFields(schema: Schema, addTypename: String, fragments: Map<String, GQLFragmentDefinition>, parentType: String): GQLField {
+private fun GQLField.addRequiredFields(
+    schema: Schema,
+    addTypename: String,
+    fragments: Map<String, GQLFragmentDefinition>,
+    parentType: String,
+): GQLField {
   val typeDefinition = definitionFromScope(schema, parentType)!!
   val newSelectionSet = selections.addRequiredFields(
-      schema,
-      addTypename,
-      fragments,
-      typeDefinition.type.rawType().name,
-      emptySet(),
-      true
+      schema = schema,
+      addTypename = addTypename,
+      fragments = fragments,
+      parentType = typeDefinition.type.rawType().name,
+      parentFields = emptySet(),
+      parentAddedFragmentTypeConditions = emptySet(),
+      isRoot = true
   )
 
   return copy(
