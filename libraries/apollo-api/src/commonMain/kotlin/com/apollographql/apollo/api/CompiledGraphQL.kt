@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.json.ApolloJsonElement
 import com.apollographql.apollo.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo.api.json.writeAny
 import okio.Buffer
-import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 
 sealed class CompiledSelection
@@ -279,13 +278,10 @@ class CustomScalarType(
 
 class ObjectType internal constructor(
     name: String,
-    keyFields: List<String>,
-    implements: List<InterfaceType>,
-    embeddedFields: List<String>,
+    val keyFields: List<String>,
+    val implements: List<InterfaceType>,
+    val embeddedFields: List<String>,
 ) : CompiledNamedType(name) {
-  val keyFields = keyFields
-  val implements = implements
-  val embeddedFields = embeddedFields
 
   fun newBuilder(): Builder = Builder(this)
 
@@ -325,24 +321,24 @@ class ObjectType internal constructor(
 
 class InterfaceType internal constructor(
     name: String,
-    keyFields: List<String>,
-    implements: List<InterfaceType>,
-    embeddedFields: List<String>,
+    val keyFields: List<String>,
+    val implements: List<InterfaceType>,
+    val possibleTypes: List<CompiledNamedType>,
+    val embeddedFields: List<String>,
 ) : CompiledNamedType(name) {
-  val keyFields = keyFields
-  val implements = implements
-  val embeddedFields = embeddedFields
 
   fun newBuilder(): Builder = Builder(this)
 
   class Builder(internal val name: String) {
     private var keyFields: List<String> = emptyList()
     private var implements: List<InterfaceType> = emptyList()
+    private var possibleTypes: List<CompiledNamedType> = emptyList()
     private var embeddedFields: List<String> = emptyList()
 
     constructor(interfaceType: InterfaceType) : this(interfaceType.name) {
       this.keyFields = interfaceType.keyFields
       this.implements = interfaceType.implements
+      this.possibleTypes = interfaceType.possibleTypes
       this.embeddedFields = interfaceType.embeddedFields
     }
 
@@ -355,6 +351,10 @@ class InterfaceType internal constructor(
       this.implements = implements
     }
 
+    fun possibleTypes(possibleTypes: List<CompiledNamedType>) = apply {
+      this.possibleTypes = possibleTypes
+    }
+
     fun embeddedFields(embeddedFields: List<String>) = apply {
       this.embeddedFields = embeddedFields
     }
@@ -364,7 +364,8 @@ class InterfaceType internal constructor(
         name = name,
         keyFields = keyFields,
         implements = implements,
-        embeddedFields = embeddedFields
+        possibleTypes = possibleTypes,
+        embeddedFields = embeddedFields,
     )
   }
 }
@@ -382,8 +383,6 @@ class EnumType(
     name: String,
     val values: List<String>,
 ) : CompiledNamedType(name)
-
-
 
 
 @JvmName("-notNull")
@@ -538,10 +537,10 @@ fun CompiledNamedType.isComposite(): Boolean {
     is UnionType,
     is InterfaceType,
     is ObjectType,
-    -> true
+      -> true
 
     else
-    -> false
+      -> false
   }
 }
 
@@ -550,6 +549,14 @@ fun CompiledNamedType.keyFields(): List<String> {
   return when (this) {
     is InterfaceType -> keyFields
     is ObjectType -> keyFields
+    else -> emptyList()
+  }
+}
+
+fun CompiledNamedType.possibleTypes(): List<CompiledNamedType> {
+  return when (this) {
+    is InterfaceType -> possibleTypes
+    is UnionType -> members.toList()
     else -> emptyList()
   }
 }

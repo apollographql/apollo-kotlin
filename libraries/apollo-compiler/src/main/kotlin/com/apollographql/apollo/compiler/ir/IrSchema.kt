@@ -11,14 +11,11 @@ import com.apollographql.apollo.ast.GQLFieldDefinition
 import com.apollographql.apollo.ast.GQLInputObjectTypeDefinition
 import com.apollographql.apollo.ast.GQLInputValueDefinition
 import com.apollographql.apollo.ast.GQLInterfaceTypeDefinition
-import com.apollographql.apollo.ast.GQLListType
-import com.apollographql.apollo.ast.GQLNamedType
 import com.apollographql.apollo.ast.GQLNonNullType
 import com.apollographql.apollo.ast.GQLNullValue
 import com.apollographql.apollo.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo.ast.GQLStringValue
-import com.apollographql.apollo.ast.GQLType
 import com.apollographql.apollo.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.Schema.Companion.TYPE_POLICY
@@ -76,6 +73,7 @@ internal data class IrObject(
 internal data class IrInterface(
     override val name: String,
     val implements: List<String>,
+    val possibleTypes: List<String>,
     val keyFields: List<String>,
     val description: String?,
     val deprecationReason: String?,
@@ -190,7 +188,7 @@ internal fun GQLUnionTypeDefinition.toIr(): IrUnion {
 
 internal fun GQLScalarTypeDefinition.toIr(schema: Schema, usedCoordinates: UsedCoordinates): IrScalar {
   val mapTo = findMapTo(schema = schema)
-  if(mapTo != null) {
+  if (mapTo != null) {
     /**
      * Always generate the types for the custom scalars with a mapping, so that users can use `Foo.type` when registering them.
      */
@@ -211,7 +209,7 @@ internal fun GQLScalarTypeDefinition.toIr(schema: Schema, usedCoordinates: UsedC
 internal class MapTo(
     val name: String,
     val adapter: String?,
-    val inlineProperty: String?
+    val inlineProperty: String?,
 )
 
 @Serializable
@@ -235,9 +233,11 @@ internal fun List<GQLDirective>.findMapToBuiltin(schema: Schema): MapToBuiltIn? 
   val builtInValue = directive.arguments.firstOrNull { it.name == "builtIn" }?.value
   val inlineValue = directive.arguments.firstOrNull { it.name == "inline" }?.value ?: GQLBooleanValue(null, true)
 
-  val builtIn = when(builtInValue) {
-    is GQLEnumValue -> BuiltInType.entries.firstOrNull { it.name == builtInValue.value } ?: throw ConversionException("Apollo: unknown builtin type '${builtInValue.value}'")
-    else ->  {
+  val builtIn = when (builtInValue) {
+    is GQLEnumValue -> BuiltInType.entries.firstOrNull { it.name == builtInValue.value }
+        ?: throw ConversionException("Apollo: unknown builtin type '${builtInValue.value}'")
+
+    else -> {
       throw ConversionException("Apollo: 'as' must be an enum (found '${builtInValue}')")
     }
   }
@@ -265,9 +265,9 @@ internal fun GQLScalarTypeDefinition.findMapTo(schema: Schema): MapTo? {
   val with = directive.arguments.firstOrNull { it.name == "with" }?.value ?: GQLNullValue()
   val inlineProperty = directive.arguments.firstOrNull { it.name == "inlineProperty" }?.value ?: GQLNullValue()
 
-  val name = when(to) {
+  val name = when (to) {
     is GQLStringValue -> to.value
-    else ->  {
+    else -> {
       throw ConversionException("Apollo: 'to' must be a string (found '${to}')")
     }
   }
@@ -280,10 +280,10 @@ internal fun GQLScalarTypeDefinition.findMapTo(schema: Schema): MapTo? {
     }
   }
 
-  val property = when(inlineProperty) {
+  val property = when (inlineProperty) {
     is GQLStringValue -> inlineProperty.value
     is GQLNullValue -> null
-    else ->  {
+    else -> {
       throw ConversionException("Apollo: 'inlineProperty' must be a string (found '${inlineProperty}')")
     }
   }
@@ -310,6 +310,7 @@ internal fun GQLInterfaceTypeDefinition.toIr(schema: Schema, usedCoordinates: Us
   return IrInterface(
       name = name,
       implements = implementsInterfaces,
+      possibleTypes = schema.possibleTypes(name).toList(),
       keyFields = schema.keyFields(name).toList(),
       description = description,
       // XXX: this is not spec-compliant. Deprecation directives cannot be on interfaces

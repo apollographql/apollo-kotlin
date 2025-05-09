@@ -3,6 +3,7 @@ package com.apollographql.apollo.cache.normalized.api
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.Executable
 import com.apollographql.apollo.api.keyFields
+import com.apollographql.apollo.api.possibleTypes
 
 /**
  * An [CacheKeyGenerator] is responsible for finding an id for a given object
@@ -49,8 +50,12 @@ class CacheKeyGeneratorContext(
  */
 object TypePolicyCacheKeyGenerator : CacheKeyGenerator {
   override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
-    val keyFields = context.field.type.rawType().keyFields()
-
+    val rawType = context.field.type.rawType()
+    val typeName = obj["__typename"].toString()
+    val keyFields = rawType.keyFields().ifEmpty {
+      // Interfaces and unions: try the concrete type
+      rawType.possibleTypes().firstOrNull { it.name == typeName }?.keyFields().orEmpty()
+    }
     return if (keyFields.isNotEmpty()) {
       CacheKey(obj["__typename"].toString(), keyFields.map { obj[it].toString() })
     } else {

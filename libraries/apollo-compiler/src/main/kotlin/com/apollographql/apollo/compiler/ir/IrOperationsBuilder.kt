@@ -134,7 +134,7 @@ internal class IrOperationsBuilder(
 
         is GQLInterfaceTypeDefinition -> {
           /**
-           * Interface classes reference their super interfaces, generate them:
+           * Interface classes reference their super interfaces, and their possible types, generate them:
            *
            * public class Character {
            *   public companion object {
@@ -144,6 +144,10 @@ internal class IrOperationsBuilder(
            * also Make sure data builders generate the map interface
            */
           typeDefinition.implementsInterfaces.forEach {
+            usedCoordinates.putType(it)
+            typesToVisit.add(it)
+          }
+          schema.possibleTypes(typeDefinition.name).forEach {
             usedCoordinates.putType(it)
             typesToVisit.add(it)
           }

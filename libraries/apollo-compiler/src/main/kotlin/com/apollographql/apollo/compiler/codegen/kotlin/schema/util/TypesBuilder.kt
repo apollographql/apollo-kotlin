@@ -1,8 +1,6 @@
 package com.apollographql.apollo.compiler.codegen.kotlin.schema.util
 
 import com.apollographql.apollo.compiler.codegen.Identifier
-import com.apollographql.apollo.compiler.codegen.Identifier.customScalarAdapters
-import com.apollographql.apollo.compiler.codegen.Identifier.newBuilder
 import com.apollographql.apollo.compiler.codegen.Identifier.type
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
@@ -14,11 +12,7 @@ import com.apollographql.apollo.compiler.ir.IrInterface
 import com.apollographql.apollo.compiler.ir.IrObject
 import com.apollographql.apollo.compiler.ir.IrScalar
 import com.apollographql.apollo.compiler.ir.IrUnion
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
@@ -46,7 +40,7 @@ private fun List<String>.toCode(): CodeBlock {
   return builder.build()
 }
 
-private fun List<String>.implementsToCode(resolver: KotlinResolver): CodeBlock {
+private fun List<String>.typesToCode(resolver: KotlinResolver): CodeBlock {
   val builder = CodeBlock.builder()
   builder.add("listOf(")
   builder.add("%L", sorted().map {
@@ -63,7 +57,7 @@ internal fun IrObject.typePropertySpec(resolver: KotlinResolver): PropertySpec {
     builder.add(".keyFields(%L)", keyFields.toCode())
   }
   if (implements.isNotEmpty()) {
-    builder.add(".interfaces(%L)", implements.implementsToCode(resolver))
+    builder.add(".interfaces(%L)", implements.typesToCode(resolver))
   }
   if (embeddedFields.isNotEmpty()) {
     builder.add(".embeddedFields(%L)", embeddedFields.toCode())
@@ -83,7 +77,10 @@ internal fun IrInterface.typePropertySpec(resolver: KotlinResolver): PropertySpe
     builder.add(".keyFields(%L)", keyFields.toCode())
   }
   if (implements.isNotEmpty()) {
-    builder.add(".interfaces(%L)", implements.implementsToCode(resolver))
+    builder.add(".interfaces(%L)", implements.typesToCode(resolver))
+  }
+  if (possibleTypes.isNotEmpty()) {
+    builder.add(".possibleTypes(%L)", possibleTypes.typesToCode(resolver))
   }
   if (embeddedFields.isNotEmpty()) {
     builder.add(".embeddedFields(%L)", embeddedFields.toCode())
