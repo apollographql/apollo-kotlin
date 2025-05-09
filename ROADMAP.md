@@ -29,7 +29,7 @@ We are planning to remove some of the limitations of the current plugin in order
 
 ## [Cache improvements](https://github.com/apollographql/apollo-kotlin/issues/2331) (on pause, feedback needed 🙏)
 
-`apollo-normalized-cache:1.0.0-alpha` [are available now](https://github.com/apollographql/apollo-kotlin-normalized-cache/releases) and contains lots of new features like [Cache Control](https://apollographql.github.io/apollo-kotlin-normalized-cache/cache-control.html), [garbage collection](https://apollographql.github.io/apollo-kotlin-normalized-cache/garbage-collection.html), TTL, [partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache/issues/57), better performance and more...
+Apollo Normalized Cache v1 alphas [are available now](https://github.com/apollographql/apollo-kotlin-normalized-cache/releases) and contain lots of new features like [Cache Control](https://apollographql.github.io/apollo-kotlin-normalized-cache/cache-control.html), [garbage collection](https://apollographql.github.io/apollo-kotlin-normalized-cache/garbage-collection.html), TTL, [partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache/issues/57), better performance and more...
 
 We encourage you to try it out with the (important) caveat that the binary format might still change (your persistent cache might be lost when upgrading to a newer alpha versions, memory cache isn't impacted).  Your feedback is greatly appreciated and helps us ship a stable version faster.
 
