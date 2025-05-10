@@ -36,6 +36,11 @@ enum class HttpFetchPolicy {
    * Only try network
    */
   NetworkOnly,
+
+  /**
+   * Try the cache, then also the network
+   * */
+  CacheAndNetwork,
 }
 
 internal class HttpFetchPolicyContext(val httpFetchPolicy: HttpFetchPolicy) : ExecutionContext.Element {
@@ -83,6 +88,12 @@ fun ApolloClient.Builder.httpCache(
         }
       }
       .addInterceptor(HttpCacheApolloInterceptor(apolloRequestToCacheKey, cachingHttpInterceptor))
+      .apply {
+        interceptors.firstOrNull { it is CacheAndNetworkApolloInterceptor }?.let {
+          removeInterceptor(it)
+        }
+      }
+      .addInterceptor(CacheAndNetworkApolloInterceptor())
 }
 
 

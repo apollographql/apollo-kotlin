@@ -28,6 +28,7 @@ internal class HttpCacheApolloInterceptor(
       HttpFetchPolicy.CacheOnly -> CachingHttpInterceptor.CACHE_ONLY
       HttpFetchPolicy.NetworkFirst -> CachingHttpInterceptor.NETWORK_FIRST
       HttpFetchPolicy.NetworkOnly -> CachingHttpInterceptor.NETWORK_ONLY
+      HttpFetchPolicy.CacheAndNetwork -> CachingHttpInterceptor.CACHE_AND_NETWORK
     }
 
     return chain.proceed(
