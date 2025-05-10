@@ -463,7 +463,7 @@ private fun ApolloCompiler.buildSchemaAndOperationsSourcesAndReturnIrOperations(
       executableFiles = executableFiles,
       upstreamCodegenModels = emptyList(),
       upstreamFragmentDefinitions = emptyList(),
-      documentTransform = null,
+      operationsTransform = null,
       options = irOptions,
       logger = logger
   )
