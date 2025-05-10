@@ -5,6 +5,11 @@ public abstract interface class com/apollographql/apollo/cache/http/ApolloHttpCa
 	public abstract fun write (Lcom/apollographql/apollo/api/http/HttpResponse;Ljava/lang/String;)Lcom/apollographql/apollo/api/http/HttpResponse;
 }
 
+public final class com/apollographql/apollo/cache/http/CacheAndNetworkApolloInterceptor : com/apollographql/apollo/interceptor/ApolloInterceptor {
+	public fun <init> ()V
+	public fun intercept (Lcom/apollographql/apollo/api/ApolloRequest;Lcom/apollographql/apollo/interceptor/ApolloInterceptorChain;)Lkotlinx/coroutines/flow/Flow;
+}
+
 public final class com/apollographql/apollo/cache/http/CachingHttpInterceptor : com/apollographql/apollo/network/http/HttpInterceptor {
 	public static final field Companion Lcom/apollographql/apollo/cache/http/CachingHttpInterceptor$Companion;
 	public fun <init> (Ljava/io/File;JLokio/FileSystem;)V
@@ -41,6 +46,7 @@ public final class com/apollographql/apollo/cache/http/HttpCache {
 }
 
 public final class com/apollographql/apollo/cache/http/HttpFetchPolicy : java/lang/Enum {
+	public static final field CacheAndNetwork Lcom/apollographql/apollo/cache/http/HttpFetchPolicy;
 	public static final field CacheFirst Lcom/apollographql/apollo/cache/http/HttpFetchPolicy;
 	public static final field CacheOnly Lcom/apollographql/apollo/cache/http/HttpFetchPolicy;
 	public static final field NetworkFirst Lcom/apollographql/apollo/cache/http/HttpFetchPolicy;

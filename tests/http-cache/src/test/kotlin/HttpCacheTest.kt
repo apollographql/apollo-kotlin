@@ -25,6 +25,7 @@ import httpcache.SetRandomMutation
 import httpcache.builder.Data
 import junit.framework.TestCase.assertFalse
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -92,6 +93,55 @@ class HttpCacheTest {
           .execute()
       assertEquals(42, response.data?.random)
       assertEquals(true, response.isFromHttpCache)
+    }
+  }
+
+  @Test
+  fun CacheAndnetwork() = runTest(before = { before() }, after = { tearDown() }) {
+    mockServer.enqueueString(data.toResponseJson())
+    mockServer.enqueueString(data.toResponseJson())
+
+    runBlocking {
+      var response = apolloClient.query(GetRandomQuery()).execute()
+      assertEquals(42, response.data?.random)
+      assertEquals(false, response.isFromHttpCache)
+
+      val flowResponse = apolloClient.query(GetRandomQuery())
+          .httpFetchPolicy(HttpFetchPolicy.CacheAndNetwork)
+          .toFlow()
+          .toList()
+
+      assertEquals(2, flowResponse.size)
+
+      val cacheResponse = flowResponse[0]
+      val networkResponse = flowResponse[1]
+
+      assertEquals(42, cacheResponse.data?.random)
+      assertEquals(true, cacheResponse.isFromHttpCache)
+
+      assertEquals(42, networkResponse.data?.random)
+      assertEquals(false, networkResponse.isFromHttpCache)
+    }
+  }
+
+  @Test
+  fun CacheAndnetworkExceptions() = runTest(before = { before() }, after = { tearDown() }) {
+    mockServer.enqueueError(statusCode = 500)
+
+    runBlocking {
+      val flowResponse = apolloClient.query(GetRandomQuery())
+          .httpFetchPolicy(HttpFetchPolicy.CacheAndNetwork)
+          .toFlow()
+          .toList()
+
+      assertEquals(2, flowResponse.size)
+
+      val cacheResponse = flowResponse[0]
+      val networkResponse = flowResponse[1]
+
+
+      assertIs<HttpCacheMissException>(cacheResponse.exception)
+      assertNotNull(networkResponse.exception)
     }
   }
 

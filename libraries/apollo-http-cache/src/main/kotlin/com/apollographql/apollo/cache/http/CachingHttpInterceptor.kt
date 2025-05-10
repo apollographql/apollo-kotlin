@@ -202,6 +202,7 @@ class CachingHttpInterceptor internal constructor(
     internal const val NETWORK_ONLY = "NETWORK_ONLY"
     internal const val CACHE_FIRST = "CACHE_FIRST"
     internal const val NETWORK_FIRST = "NETWORK_FIRST"
+    internal const val CACHE_AND_NETWORK = "CACHE_AND_NETWORK"
 
     /**
      * Request served Date/time http header
