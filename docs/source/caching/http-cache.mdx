@@ -64,6 +64,9 @@ val response = apolloClient.query(query)
 
   // Don't use the cache
   .httpFetchPolicy(HttpFetchPolicy.NetworkOnly)
+
+  // Try the cache, then also try the network
+  .httpFetchPolicy(HttpFetchPolicy.CacheAndNetwork)
   
   // Finally, execute your query
   .execute()
@@ -71,6 +74,8 @@ val response = apolloClient.query(query)
 Note: mutations and subscriptions don't go through the cache.
 
 If the query is present in cache, it will be used to return `response.data`. If not, a `HttpCacheMissException` will be thrown.
+
+`CacheAndNetwork` will always emit two values, you should use `.toFlow()` when using that policy.
 
 You can also set an expiration time either globally or for specific queries. The entries will automatically be removed from the cache after the expiration time:
 
