@@ -78,24 +78,24 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
 
   override fun registerSchemaTransform(
       id: String,
-      transform: SchemaTransform,
       vararg orders: Order,
+      transform: SchemaTransform,
   ) {
     schemaTransforms.add(Registration(id, transform, orders))
   }
 
   override fun registerOperationsTransform(
       id: String,
-      transform: OperationsTransform,
       vararg orders: Order,
+      transform: OperationsTransform,
   ) {
     operationsTransforms.add(Registration(id, transform, orders))
   }
 
   override fun registerIrTransform(
       id: String,
-      transform: Transform<IrOperations>,
       vararg orders: Order,
+      transform: Transform<IrOperations>,
   ) {
     irTransforms.add(Registration(id, transform, orders))
   }
@@ -110,16 +110,16 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
 
   override fun registerJavaOutputTransform(
       id: String,
-      transform: Transform<JavaOutput>,
       vararg orders: Order,
+      transform: Transform<JavaOutput>,
   ) {
     javaOutputTransforms.add(Registration(id, transform, orders))
   }
 
   override fun registerKotlinOutputTransform(
       id: String,
-      transform: Transform<KotlinOutput>,
       vararg orders: Order,
+      transform: Transform<KotlinOutput>,
   ) {
     kotlinOutputTransforms.add(Registration(id, transform, orders))
   }

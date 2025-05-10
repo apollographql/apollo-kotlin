@@ -10,13 +10,9 @@ import com.apollographql.apollo.ast.toUtf8
 import com.apollographql.apollo.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo.compiler.ApolloCompilerPluginEnvironment
 import com.apollographql.apollo.compiler.ApolloCompilerPluginProvider
+import com.apollographql.apollo.compiler.ApolloCompilerRegistry
 import com.apollographql.apollo.compiler.SchemaTransform
 
-class TestPluginProvider : ApolloCompilerPluginProvider {
-  override fun create(environment: ApolloCompilerPluginEnvironment): ApolloCompilerPlugin {
-    return TestPlugin()
-  }
-}
 
 private class TraversalState(
     val originalInterfaces: Map<String, GQLInterfaceTypeDefinition>,
@@ -96,17 +92,18 @@ private fun List<GQLFieldDefinition>.patch(superFields: Map<String, GQLFieldDefi
 }
 
 class TestPlugin : ApolloCompilerPlugin {
-  override fun schemaTransform(): SchemaTransform? {
-    return object : SchemaTransform {
-      override fun transform(schemaDocument: GQLDocument): GQLDocument {
-        val state = TraversalState(schemaDocument.definitions.filterIsInstance<GQLInterfaceTypeDefinition>().associateBy { it.name })
+  override fun beforeCompilationStep(
+      environment: ApolloCompilerPluginEnvironment,
+      registry: ApolloCompilerRegistry,
+  ) {
+    registry.registerSchemaTransform("test") {schemaDocument ->
+      val state = TraversalState(schemaDocument.definitions.filterIsInstance<GQLInterfaceTypeDefinition>().associateBy { it.name })
 
-        schemaDocument.definitions.forEach {
-          traverse(it, state)
-        }
-
-        return GQLDocument(state.definitions, null)
+      schemaDocument.definitions.forEach {
+        traverse(it, state)
       }
+
+      GQLDocument(state.definitions, null)
     }
   }
 }

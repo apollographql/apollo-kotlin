@@ -73,20 +73,20 @@ class After(val id: String): Order
 interface ApolloCompilerRegistry {
   fun registerForeignSchemas(schemas: List<ForeignSchema>)
   @ApolloExperimental
-  fun registerSchemaTransform(id: String, transform: SchemaTransform, vararg orders: Order)
+  fun registerSchemaTransform(id: String, vararg orders: Order, transform: SchemaTransform)
 
   @ApolloExperimental
-  fun registerOperationsTransform(id: String, transform: OperationsTransform, vararg orders: Order)
+  fun registerOperationsTransform(id: String, vararg orders: Order, transform: OperationsTransform)
   @ApolloExperimental
-  fun registerIrTransform(id: String, transform: Transform<IrOperations>, vararg orders: Order)
+  fun registerIrTransform(id: String, vararg orders: Order, transform: Transform<IrOperations>)
 
   @ApolloExperimental
   fun registerLayout(factory: LayoutFactory)
   fun registerOperationIdsGenerator(generator: OperationIdsGenerator)
   @ApolloExperimental
-  fun registerJavaOutputTransform(id: String, transform: Transform<JavaOutput>, vararg orders: Order)
+  fun registerJavaOutputTransform(id: String, vararg orders: Order, transform: Transform<JavaOutput>)
   @ApolloExperimental
-  fun registerKotlinOutputTransform(id: String, transform: Transform<KotlinOutput>, vararg orders: Order)
+  fun registerKotlinOutputTransform(id: String, vararg orders: Order, transform: Transform<KotlinOutput>)
   @ApolloExperimental
   fun registerExtraCodeGenerator(codeGenerator: CodeGenerator)
 }

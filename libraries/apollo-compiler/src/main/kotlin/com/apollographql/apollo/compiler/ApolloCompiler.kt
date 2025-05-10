@@ -638,7 +638,7 @@ fun Collection<File>.toInputFiles(): List<InputFile> = map { InputFile(it, "") }
 
 internal fun <T> T.maybeTransform(transform: Transform<T>?) = transform?.transform(this) ?: this
 
-interface LayoutFactory {
+fun interface LayoutFactory {
   fun create(codegenSchema: CodegenSchema): SchemaAndOperationsLayout?
 }
 

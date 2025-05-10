@@ -129,7 +129,7 @@ class EntryPoints {
         arguments,
         logLevel,
         warnIfNotFound,
-        null
+        outputDir
     )
 
     val codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions()
@@ -196,7 +196,7 @@ class EntryPoints {
         arguments,
         logLevel,
         warnIfNotFound,
-        null
+        outputDir
     )
     val codegenSchemaFile = codegenSchemaFiles.toInputFiles().map { it.file }.findCodegenSchemaFile()
     val codegenSchema = codegenSchemaFile.toCodegenSchema()
