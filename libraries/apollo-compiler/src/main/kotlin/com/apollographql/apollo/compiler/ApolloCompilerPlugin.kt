@@ -1,10 +1,10 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLFragmentDefinition
-import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo.compiler.codegen.java.JavaOutput
@@ -15,101 +15,83 @@ import com.apollographql.apollo.compiler.operationoutput.OperationId
 import java.io.File
 
 /**
- * [ApolloCompilerPlugin] allows to customize the behaviour of the Apollo Compiler.
+ * [ApolloCompilerPlugin] allows to customize the behavior of the Apollo Compiler.
  *
- * [ApolloCompilerPlugin] may be instantiated several times in a codegen run. Each instance is create in a
+ * [ApolloCompilerPlugin] may be instantiated several times in a codegen run. Each instance is created in a
  * separate classloader.
  * The classloaders contains `apollo-compiler` classes and the runtime classpath of the [ApolloCompilerPlugin].
  * You may throw from [ApolloCompilerPlugin] methods to fail the build.
  */
 interface ApolloCompilerPlugin {
   /**
-   * @return the layout or null to use the default layout
-   * @param codegenSchema the codegenSchema
+   * This is called before each compilation step. A typical compilation involves different steps:
+   * - generating the schema
+   * - generating the IR
+   * - generating the source code (codegen)
+   *
+   * @param environment options and environment for the plugin.
+   * @param registry the registry where to register transformations.
    */
-  fun layout(codegenSchema: CodegenSchema): SchemaAndOperationsLayout? {
-    return null
-  }
+  fun beforeCompilationStep(environment: ApolloCompilerPluginEnvironment, registry: ApolloCompilerRegistry)
 
   /**
    * Computes operation ids for persisted queries.
    *
    * @return a list of [OperationId] matching an operation name to its id or null to use the SHA256 default
    */
+  @Deprecated("Call `registry.registerOperationIdsGenerator()` from beforeCompilationStep() instead.")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
   fun operationIds(descriptors: List<OperationDescriptor>): List<OperationId>? {
     return null
   }
-
-  /**
-   * @return the [Transform] to be applied to [JavaOutput] or null to use the default [Transform]
-   */
-  fun javaOutputTransform(): Transform<JavaOutput>? {
-    return null
-  }
-
-  /**
-   * @return the [Transform] to be applied to [KotlinOutput] or null to use the default [Transform]
-   */
-  fun kotlinOutputTransform(): Transform<KotlinOutput>? {
-    return null
-  }
-
-  /**
-   * @return a [DocumentTransform] to transform operations and/or fragments
-   */
-  @ApolloExperimental
-  fun documentTransform(): DocumentTransform? {
-    return null
-  }
-
-  /**
-   * @return a [SchemaTransform] to transform the schema
-   */
-  @ApolloExperimental
-  fun schemaTransform(): SchemaTransform? {
-    return null
-  }
-
-
-  /**
-   * @return the [Transform] to be applied to [IrOperations] or null to use the default [Transform]
-   */
-  @ApolloExperimental
-  fun irOperationsTransform(): Transform<IrOperations>? {
-    return null
-  }
-
-  /**
-   * @return A list of [ForeignSchema] supported by this plugin
-   */
-  @ApolloExperimental
-  fun foreignSchemas(): List<ForeignSchema> {
-    return emptyList()
-  }
-
-  /**
-   * @return A [SchemaListener] called whenever the schema changed
-   */
-  @ApolloExperimental
-  fun schemaListener(): SchemaListener? {
-    return null
-  }
 }
 
-@ApolloExperimental
-interface SchemaListener {
-  /**
-   * Called when the schema changed and codegen needs to be updated
-   *
-   * @param schema the validated schema.
-   * @param outputDirectory the compiler output directory. This directory is shared with the compiler, make sure to use a specific
-   * package name to avoid clobbering other files.
-   */
-  fun onSchema(schema: Schema, outputDirectory: File)
+/**
+ * [ApolloCompilerPluginEnvironment] contains the environment where the Apollo compiler is run.
+ */
+class ApolloCompilerPluginEnvironment(
+    /**
+     * @see [ApolloCompilerPluginValue]
+     */
+    val arguments: Map<String, ApolloCompilerPluginValue>,
+    /**
+     * A logger that can be used by the plugin.
+     */
+    val logger: ApolloCompilerPluginLogger,
+    /**
+     * The compiler output directory.
+     * May be null if the plugin is called from a non-codegen step like building the schema and/or the IR.
+     */
+    val outputDirectory: File?,
+)
+
+sealed interface Order
+
+class Before(val id: String): Order
+class After(val id: String): Order
+
+interface ApolloCompilerRegistry {
+  fun registerForeignSchemas(schemas: List<ForeignSchema>)
+  @ApolloExperimental
+  fun registerSchemaTransform(id: String, vararg orders: Order, transform: SchemaTransform)
+
+  @ApolloExperimental
+  fun registerOperationsTransform(id: String, vararg orders: Order, transform: OperationsTransform)
+  @ApolloExperimental
+  fun registerIrTransform(id: String, vararg orders: Order, transform: Transform<IrOperations>)
+
+  @ApolloExperimental
+  fun registerLayout(factory: LayoutFactory)
+  fun registerOperationIdsGenerator(generator: OperationIdsGenerator)
+  @ApolloExperimental
+  fun registerJavaOutputTransform(id: String, vararg orders: Order, transform: Transform<JavaOutput>)
+  @ApolloExperimental
+  fun registerKotlinOutputTransform(id: String, vararg orders: Order, transform: Transform<KotlinOutput>)
+  @ApolloExperimental
+  fun registerExtraCodeGenerator(codeGenerator: CodeGenerator)
 }
 
-@ApolloExperimental
-interface SchemaTransform {
+fun interface SchemaTransform {
   /**
    * Transforms the given schema document.
    *
@@ -118,11 +100,11 @@ interface SchemaTransform {
   fun transform(schemaDocument: GQLDocument): GQLDocument
 }
 
+
 /**
- * A [DocumentTransform] transforms operations and fragments at build time. [DocumentTransform] can add or remove fields automatically, for an example.
+ * A [OperationsTransform] transforms operations and fragments at build time. [OperationsTransform] can add or remove fields automatically, for an example.
  */
-@ApolloExperimental
-interface DocumentTransform {
+fun interface OperationsTransform {
   /**
    * Transforms the given document.
    *
@@ -142,9 +124,52 @@ interface DocumentTransform {
  * This is not a kotlin function type because this might be used in environments where those types are
  * relocated and might fail to load at runtime. For an example, in a Gradle plugin.
  */
-interface Transform<T> {
+fun interface Transform<T> {
   /**
    * Transforms the given input into an output of the same type
    */
   fun transform(input: T): T
 }
+
+/**
+ * A code generator that may write code in [ApolloCompilerPluginEnvironment.outputDirectory]
+ *
+ * This is not a kotlin function type because this might be used in environments where those types are
+ * relocated and might fail to load at runtime. For an example, in a Gradle plugin.
+ */
+fun interface CodeGenerator {
+  /**
+   * Transforms the given input into an output of the same type
+   */
+  fun generate(schema: GQLDocument)
+}
+
+
+@Deprecated("Use `CodeGenerator` instead.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+interface SchemaListener {
+  /**
+   * Called when the schema changed and codegen needs to be updated
+   *
+   * @param schema the validated schema.
+   * @param outputDirectory the compiler output directory. This directory is shared with the compiler, make sure to use a specific
+   * package name to avoid clobbering other files.
+   */
+  fun onSchema(schema: Schema, outputDirectory: File)
+}
+
+/**
+ * An argument value for the plugin.
+ *
+ * In a Gradle context, these values are used as task inputs as well as passed around classloader.
+ *
+ * Prefer using simple classes from the bootstrap classloader:
+ * - [String]
+ * - [Int]
+ * - [Double]
+ * - [Boolean]
+ * - [List]
+ * - [Map]
+ */
+@ApolloExperimental
+typealias ApolloCompilerPluginValue = Any?

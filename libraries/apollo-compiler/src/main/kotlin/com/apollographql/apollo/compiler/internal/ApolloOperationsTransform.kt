@@ -21,7 +21,7 @@ import com.apollographql.apollo.compiler.ADD_TYPENAME_ALWAYS
 import com.apollographql.apollo.compiler.ADD_TYPENAME_IF_ABSTRACT
 import com.apollographql.apollo.compiler.ADD_TYPENAME_IF_FRAGMENTS
 import com.apollographql.apollo.compiler.ADD_TYPENAME_IF_POLYMORPHIC
-import com.apollographql.apollo.compiler.DocumentTransform
+import com.apollographql.apollo.compiler.OperationsTransform
 
 internal fun addRequiredFields(
     operation: GQLOperationDefinition,
@@ -228,7 +228,7 @@ private fun buildField(name: String): GQLField {
   )
 }
 
-internal class ApolloDocumentTransform(private val addTypename: String) : DocumentTransform {
+internal class ApolloOperationsTransform(private val addTypename: String) : OperationsTransform {
   override fun transform(
       schema: Schema,
       document: GQLDocument,

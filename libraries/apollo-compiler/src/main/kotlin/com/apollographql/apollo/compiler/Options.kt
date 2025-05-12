@@ -2,13 +2,13 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.compiler.internal.sha256
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.OperationId
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
 
 const val MODELS_RESPONSE_BASED = "responseBased"
 const val MODELS_OPERATION_BASED = "operationBased"
@@ -650,12 +650,6 @@ private val NoOpLogger = object : ApolloCompiler.Logger {
 internal val defaultAlwaysGenerateTypesMatching = emptySet<String>()
 
 internal val defaultOperationOutputGenerator = object : OperationIdsGenerator {
-  private fun String.sha256(): String {
-    val bytes = toByteArray(charset = StandardCharsets.UTF_8)
-    val md = MessageDigest.getInstance("SHA-256")
-    val digest = md.digest(bytes)
-    return digest.fold("") { str, it -> str + "%02x".format(it) }
-  }
 
   override fun generate(operationDescriptorList: Collection<OperationDescriptor>): List<OperationId> {
     return operationDescriptorList.map {
