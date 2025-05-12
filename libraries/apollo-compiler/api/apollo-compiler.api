@@ -32,15 +32,7 @@ public final class com/apollographql/apollo/compiler/ApolloCompilerKt {
 
 public abstract interface class com/apollographql/apollo/compiler/ApolloCompilerPlugin {
 	public abstract fun beforeCompilationStep (Lcom/apollographql/apollo/compiler/ApolloCompilerPluginEnvironment;Lcom/apollographql/apollo/compiler/ApolloCompilerRegistry;)V
-	public fun documentTransform ()Lcom/apollographql/apollo/compiler/OperationsTransform;
-	public fun foreignSchemas ()Ljava/util/List;
-	public fun irOperationsTransform ()Lcom/apollographql/apollo/compiler/Transform;
-	public fun javaOutputTransform ()Lcom/apollographql/apollo/compiler/Transform;
-	public fun kotlinOutputTransform ()Lcom/apollographql/apollo/compiler/Transform;
-	public fun layout (Lcom/apollographql/apollo/compiler/CodegenSchema;)Lcom/apollographql/apollo/compiler/codegen/SchemaAndOperationsLayout;
 	public fun operationIds (Ljava/util/List;)Ljava/util/List;
-	public fun schemaListener ()Lcom/apollographql/apollo/compiler/SchemaListener;
-	public fun schemaTransform ()Lcom/apollographql/apollo/compiler/SchemaTransform;
 }
 
 public final class com/apollographql/apollo/compiler/ApolloCompilerPluginEnvironment {
@@ -64,13 +56,13 @@ public abstract interface class com/apollographql/apollo/compiler/ApolloCompiler
 public abstract interface class com/apollographql/apollo/compiler/ApolloCompilerRegistry {
 	public abstract fun registerExtraCodeGenerator (Lcom/apollographql/apollo/compiler/CodeGenerator;)V
 	public abstract fun registerForeignSchemas (Ljava/util/List;)V
-	public abstract fun registerIrTransform (Ljava/lang/String;Lcom/apollographql/apollo/compiler/Transform;[Lcom/apollographql/apollo/compiler/Order;)V
-	public abstract fun registerJavaOutputTransform (Ljava/lang/String;Lcom/apollographql/apollo/compiler/Transform;[Lcom/apollographql/apollo/compiler/Order;)V
-	public abstract fun registerKotlinOutputTransform (Ljava/lang/String;Lcom/apollographql/apollo/compiler/Transform;[Lcom/apollographql/apollo/compiler/Order;)V
+	public abstract fun registerIrTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/Transform;)V
+	public abstract fun registerJavaOutputTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/Transform;)V
+	public abstract fun registerKotlinOutputTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/Transform;)V
 	public abstract fun registerLayout (Lcom/apollographql/apollo/compiler/LayoutFactory;)V
 	public abstract fun registerOperationIdsGenerator (Lcom/apollographql/apollo/compiler/OperationIdsGenerator;)V
-	public abstract fun registerOperationsTransform (Ljava/lang/String;Lcom/apollographql/apollo/compiler/OperationsTransform;[Lcom/apollographql/apollo/compiler/Order;)V
-	public abstract fun registerSchemaTransform (Ljava/lang/String;Lcom/apollographql/apollo/compiler/SchemaTransform;[Lcom/apollographql/apollo/compiler/Order;)V
+	public abstract fun registerOperationsTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/OperationsTransform;)V
+	public abstract fun registerSchemaTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/SchemaTransform;)V
 }
 
 public final class com/apollographql/apollo/compiler/Before : com/apollographql/apollo/compiler/Order {
