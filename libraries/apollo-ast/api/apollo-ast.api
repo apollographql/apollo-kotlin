@@ -1066,6 +1066,7 @@ public final class com/apollographql/apollo/ast/Schema {
 	public final fun getErrorAware ()Z
 	public final fun getForeignNames ()Ljava/util/Map;
 	public final fun getGenerateDataBuilders ()Z
+	public final fun getKeyFields ()Ljava/util/Map;
 	public final fun getMutationTypeDefinition ()Lcom/apollographql/apollo/ast/GQLTypeDefinition;
 	public final fun getQueryTypeDefinition ()Lcom/apollographql/apollo/ast/GQLTypeDefinition;
 	public final fun getSchemaDefinition ()Lcom/apollographql/apollo/ast/GQLSchemaDefinition;

@@ -24,7 +24,7 @@ import com.apollographql.apollo.annotations.ApolloInternal
  */
 class Schema internal constructor(
     private val definitions: List<GQLDefinition>,
-    private val keyFields: Map<String, Set<String>>,
+    val keyFields: Map<String, Set<String>>,
     val foreignNames: Map<String, String>,
     private val directivesToStrip: List<String>,
     @ApolloInternal
@@ -189,9 +189,8 @@ class Schema internal constructor(
   }
 
   /**
-   *  Get the key fields for an object, interface or union type.
+   *  Get the key fields for an object or interface type.
    */
-  @ApolloInternal
   fun keyFields(name: String): Set<String> {
     return keyFields[name] ?: emptySet()
   }

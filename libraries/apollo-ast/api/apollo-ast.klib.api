@@ -1201,6 +1201,8 @@ final class com.apollographql.apollo.ast/Schema { // com.apollographql.apollo.as
         final fun <get-foreignNames>(): kotlin.collections/Map<kotlin/String, kotlin/String> // com.apollographql.apollo.ast/Schema.foreignNames.<get-foreignNames>|<get-foreignNames>(){}[0]
     final val generateDataBuilders // com.apollographql.apollo.ast/Schema.generateDataBuilders|{}generateDataBuilders[0]
         final fun <get-generateDataBuilders>(): kotlin/Boolean // com.apollographql.apollo.ast/Schema.generateDataBuilders.<get-generateDataBuilders>|<get-generateDataBuilders>(){}[0]
+    final val keyFields // com.apollographql.apollo.ast/Schema.keyFields|{}keyFields[0]
+        final fun <get-keyFields>(): kotlin.collections/Map<kotlin/String, kotlin.collections/Set<kotlin/String>> // com.apollographql.apollo.ast/Schema.keyFields.<get-keyFields>|<get-keyFields>(){}[0]
     final val mutationTypeDefinition // com.apollographql.apollo.ast/Schema.mutationTypeDefinition|{}mutationTypeDefinition[0]
         final fun <get-mutationTypeDefinition>(): com.apollographql.apollo.ast/GQLTypeDefinition? // com.apollographql.apollo.ast/Schema.mutationTypeDefinition.<get-mutationTypeDefinition>|<get-mutationTypeDefinition>(){}[0]
     final val queryTypeDefinition // com.apollographql.apollo.ast/Schema.queryTypeDefinition|{}queryTypeDefinition[0]

@@ -1035,7 +1035,7 @@ internal fun ValidationScope.validateAndComputeKeyFields(): Map<String, Set<Stri
   typeDefinitions.values.filter { it.canHaveKeyFields() }.forEach {
     keyFields(it, keyFieldsCache)
   }
-  return keyFieldsCache
+  return keyFieldsCache.filterValues { it.isNotEmpty() }
 }
 
 internal fun ValidationScope.computeConnectionTypes(): Set<String> {
