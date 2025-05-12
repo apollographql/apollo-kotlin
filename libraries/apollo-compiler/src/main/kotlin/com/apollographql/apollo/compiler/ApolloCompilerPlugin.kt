@@ -157,3 +157,19 @@ interface SchemaListener {
    */
   fun onSchema(schema: Schema, outputDirectory: File)
 }
+
+/**
+ * An argument value for the plugin.
+ *
+ * In a Gradle context, these values are used as task inputs as well as passed around classloader.
+ *
+ * Prefer using simple classes from the bootstrap classloader:
+ * - [String]
+ * - [Int]
+ * - [Double]
+ * - [Boolean]
+ * - [List]
+ * - [Map]
+ */
+@ApolloExperimental
+typealias ApolloCompilerPluginValue = Any?
