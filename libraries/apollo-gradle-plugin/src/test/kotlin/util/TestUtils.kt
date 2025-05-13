@@ -2,6 +2,7 @@ package util
 
 
 import com.google.common.truth.Truth
+import gratatouille.capitalizeFirstLetter
 import okio.blackholeSink
 import okio.buffer
 import org.gradle.testkit.runner.BuildResult
@@ -198,7 +199,7 @@ object TestUtils {
   }
 
   fun assertFileContains(projectDir: File, path: String, content: String) {
-    val text = projectDir.generatedChild(path).readText()
+    val text = projectDir.generatedSource(path).readText()
     Truth.assertThat(text).contains(content)
   }
 
@@ -210,7 +211,8 @@ object TestUtils {
   }
 }
 
-fun File.generatedChild(path: String) = File(this, "build/generated/source/apollo/$path")
+fun File.generateSourcesOutputDirectory(serviceName: String = "service") = File(this, "build/gtask/generate${serviceName.capitalizeFirstLetter()}ApolloSources/")
+fun File.generatedSource(path: String, serviceName: String = "service") = generateSourcesOutputDirectory(serviceName).resolve("outputDirectory").resolve(path)
 
 fun File.replaceInText(oldValue: String, newValue: String) {
   val text = readText()

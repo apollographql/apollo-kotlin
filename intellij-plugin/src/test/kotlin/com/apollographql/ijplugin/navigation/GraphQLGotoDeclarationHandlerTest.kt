@@ -60,7 +60,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
   fun goToOperationClass() = testNavigation(
       fromFile = "src/main/graphql/AnimalsQuery.graphql",
       fromElement = { elementAt<PsiElement>("animals")!! },
-      toFile = "build/generated/source/apollo/main/com/example/generated/AnimalsQuery.kt",
+      toFile = "build/gtask/generateMainApolloSources/outputDirectory/com/example/generated/AnimalsQuery.kt",
       toElement = { elementAt<KtClass>("class AnimalsQuery")!! },
       navigateEvenWithAdvancedSettingChecked = true,
   )
@@ -69,7 +69,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
   fun goToFragmentClass() = testNavigation(
       fromFile = "src/main/graphql/fragments/ComputerFields.graphql",
       fromElement = { elementAt<PsiElement>("computerFields")!! },
-      toFile = "build/generated/source/apollo/main/com/example/generated/fragment/ComputerFields.kt",
+      toFile = "build/gtask/generateMainApolloSources/outputDirectory/com/example/generated/fragment/ComputerFields.kt",
       toElement = { elementAt<KtClass>("class ComputerFields")!! },
       navigateEvenWithAdvancedSettingChecked = true,
       multipleTarget = true
@@ -79,7 +79,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
   fun goToField() = testNavigation(
       fromFile = "src/main/graphql/fragments/ComputerFields.graphql",
       fromElement = { elementAt<PsiElement>("resolution")!! },
-      toFile = "build/generated/source/apollo/main/com/example/generated/fragment/ComputerFields.kt",
+      toFile = "build/gtask/generateMainApolloSources/outputDirectory/com/example/generated/fragment/ComputerFields.kt",
       toElement = { elementAt<KtParameter>("resolution")!! },
       multipleTarget = true
   )
@@ -88,7 +88,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
   fun goToEnumType() = testNavigation(
       fromFile = "src/main/graphql/schema.graphqls",
       fromElement = { elementAt<PsiElement>("myEnum", afterText = "enum myEnum {")!! },
-      toFile = "build/generated/source/apollo/main/com/example/generated/type/MyEnum.kt",
+      toFile = "build/gtask/generateMainApolloSources/outputDirectory/com/example/generated/type/MyEnum.kt",
       toElement = { elementAt<KtClass>("class MyEnum")!! },
   )
 
@@ -96,7 +96,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
   fun goToEnumValue() = testNavigation(
       fromFile = "src/main/graphql/schema.graphqls",
       fromElement = { elementAt<PsiElement>("VALUE_D", afterText = "enum myEnum {")!! },
-      toFile = "build/generated/source/apollo/main/com/example/generated/type/MyEnum.kt",
+      toFile = "build/gtask/generateMainApolloSources/outputDirectory/com/example/generated/type/MyEnum.kt",
       toElement = { elementAt<KtEnumEntry>("VALUE_D")!! },
   )
 
@@ -104,7 +104,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
   fun goToInputType() = testNavigation(
       fromFile = "src/main/graphql/schema.graphqls",
       fromElement = { elementAt<PsiElement>("personInput", afterText = "input personInput {")!! },
-      toFile = "build/generated/source/apollo/main/com/example/generated/type/PersonInput.kt",
+      toFile = "build/gtask/generateMainApolloSources/outputDirectory/com/example/generated/type/PersonInput.kt",
       toElement = { elementAt<KtClass>("class PersonInput")!! },
   )
 
@@ -112,7 +112,7 @@ class GraphQLGotoDeclarationHandlerTest : ApolloTestCase() {
   fun goToInputField() = testNavigation(
       fromFile = "src/main/graphql/schema.graphqls",
       fromElement = { elementAt<PsiElement>("lastName", afterText = "input personInput {")!! },
-      toFile = "build/generated/source/apollo/main/com/example/generated/type/PersonInput.kt",
+      toFile = "build/gtask/generateMainApolloSources/outputDirectory/com/example/generated/type/PersonInput.kt",
       toElement = { elementAt<KtParameter>("lastName: String?")!! },
       // We have 2 targets because of builders
       multipleTarget = true,

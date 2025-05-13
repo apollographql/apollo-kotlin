@@ -1,5 +1,3 @@
-import com.apollographql.apollo.compiler.MANIFEST_PERSISTED_QUERY
-
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
   id("com.apollographql.apollo")
@@ -54,7 +52,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
           service("${it.name}-$extra") {
             when (it.name) {
               "httpcache" -> {
-                operationManifestFormat.set(MANIFEST_PERSISTED_QUERY)
+                operationManifestFormat.set("persistedQueryManifest")
                 if (generateKotlinModels) {
                   mapScalarToKotlinString("Date")
                 } else {
@@ -135,7 +133,7 @@ if (System.getProperty("idea.sync.active") == null) {
 
 val checkPersistedQueryManifest = tasks.register("checkPersistedQueryManifest") {
   dependsOn("generateApolloSources")
-  val buildFile = file("build/generated/manifest/apollo/upload-kotlin/persistedQueryManifest.json")
+  val buildFile = file("build/gtask/generateUpload-kotlinApolloSources/operationManifest.json")
   val fixtureFile = file("testFixtures/manifest.json")
   doLast {
     check(

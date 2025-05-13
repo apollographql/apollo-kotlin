@@ -96,14 +96,6 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptio
   allWarningsAsErrors(true)
 }
 
-fun setTestToolchain(project: Project, test: Test, javaVersion: Int) {
-  val javaToolchains = project.extensions.getByName("javaToolchains") as JavaToolchainService
-  test.javaLauncher.set(javaToolchains.launcherFor {
-    languageVersion.set(JavaLanguageVersion.of(javaVersion))
-  })
-
-}
-
 fun Project.allWarningsAsErrors(allWarningsAsErrors: Boolean) {
   kotlinExtensionOrNull?.forEachCompilerOptions {
     this.allWarningsAsErrors.set(allWarningsAsErrors)

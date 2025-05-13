@@ -238,12 +238,6 @@ private fun Project.configurePublishingInternal() {
           }
         }
 
-        plugins.hasPlugin("com.gradle.plugin-publish") -> {
-          /**
-           * com.gradle.plugin-publish creates all publications
-           */
-        }
-
         plugins.hasPlugin("java-gradle-plugin") -> {
           /**
            * java-gradle-plugin creates 2 publications (one marker and one regular) but without source/javadoc.

@@ -56,5 +56,5 @@ fun Module.apolloGeneratedSourcesRoots(): List<VirtualFile> {
 }
 
 fun VirtualFile.isApolloGenerated(): Boolean {
-  return path.contains("generated/source/apollo")
+  return path.matches(Regex(".*gtask/generate[^/]*ApolloSources/outputDirectory.*")) || path.contains("generated/source/apollo")
 }
