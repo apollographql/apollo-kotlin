@@ -18,10 +18,6 @@ import okio.source
 class TestPlugin(
     logger: ApolloCompiler.Logger,
 ) : ApolloCompilerPlugin {
-  init {
-    logger.info("TestPlugin")
-  }
-
   override fun beforeCompilationStep(
       environment: ApolloCompilerPluginEnvironment,
       registry: ApolloCompilerRegistry,
