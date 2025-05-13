@@ -589,7 +589,7 @@ fun CodegenOptions.validate() {
     if (generateFilterNotNull != null) {
       error("Apollo: generateFilterNotNull is not used in Java")
     }
-    if (sealedClassesForEnumsMatching != null) {
+    if (sealedClassesForEnumsMatching.orEmpty().isNotEmpty()) {
       error("Apollo: sealedClassesForEnumsMatching is not used in Java")
     }
     if (addJvmOverloads != null) {
@@ -611,7 +611,7 @@ fun CodegenOptions.validate() {
     if (generateModelBuilders != null) {
       error("Apollo: generateModelBuilders is not used in Kotlin")
     }
-    if (classesForEnumsMatching != null) {
+    if (classesForEnumsMatching.orEmpty().isNotEmpty()) {
       error("Apollo: classesForEnumsMatching is not used in Kotlin")
     }
     if (generatePrimitiveTypes != null) {
@@ -643,7 +643,13 @@ class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
 object RuntimeAdapterInitializer : AdapterInitializer
 
 private val NoOpLogger = object : ApolloCompiler.Logger {
-  override fun warning(message: String) {
+  override fun debug(message: String) {
+  }
+
+  override fun info(message: String) {
+  }
+
+  override fun warn(message: String) {
   }
 }
 

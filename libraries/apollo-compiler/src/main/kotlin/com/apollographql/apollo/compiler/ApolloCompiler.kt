@@ -52,7 +52,9 @@ import java.io.File
 
 object ApolloCompiler {
   interface Logger {
-    fun warning(message: String)
+    fun debug(message: String)
+    fun info(message: String)
+    fun warn(message: String)
   }
 
   fun buildCodegenSchema(
@@ -151,7 +153,7 @@ object ApolloCompiler {
     issueGroup.errors.checkEmpty()
     issueGroup.warnings.forEach {
       // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
-      (logger ?: defaultLogger).warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
+      (logger ?: defaultLogger).warn("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
     }
 
     val schema = result.value!!
@@ -284,7 +286,7 @@ object ApolloCompiler {
 
     issueGroup.warnings.forEach {
       // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
-      (logger ?: defaultLogger).warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
+      (logger ?: defaultLogger).warn("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
     }
 
     if (failOnWarnings && issueGroup.warnings.isNotEmpty()) {
@@ -369,7 +371,7 @@ object ApolloCompiler {
   fun buildSchemaAndOperationsSourcesFromIr(
       codegenSchema: CodegenSchema,
       irOperations: IrOperations,
-      downstreamUsedCoordinates: UsedCoordinates,
+      downStreamUsedCoordinates: UsedCoordinates,
       upstreamCodegenMetadata: List<CodegenMetadata>,
       codegenOptions: CodegenOptions,
       layout: SchemaAndOperationsLayout?,
@@ -403,18 +405,15 @@ object ApolloCompiler {
       """.trimMargin()
     }
 
-    val operationManifestFormat = codegenOptions.operationManifestFormat
-    if ((operationManifestFormat ?: defaultOperationManifestFormat) != MANIFEST_NONE) {
-      check(operationManifestFile != null) {
-        "Apollo: no operationManifestFile set to output '$operationManifestFormat' operation manifest"
-      }
+    if (operationManifestFile != null) {
+      val operationManifestFormat = codegenOptions.operationManifestFormat
       @Suppress("DEPRECATION_ERROR")
       when (operationManifestFormat) {
+        MANIFEST_NONE -> operationManifestFile.writeText("Use operationManifestFormat to generate the operation manifest.")
         MANIFEST_OPERATION_OUTPUT -> operationOutput.writeTo(operationManifestFile)
         MANIFEST_PERSISTED_QUERY -> operationOutput.toPersistedQueryManifest().writeTo(operationManifestFile)
       }
     }
-
 
     @Suppress("NAME_SHADOWING")
     val layout = layout ?: SchemaAndOperationsLayout(
@@ -430,7 +429,7 @@ object ApolloCompiler {
     if (upstreamCodegenMetadata.isEmpty()) {
       sourceOutput = buildSchemaSources(
           codegenSchema = codegenSchema,
-          usedCoordinates = downstreamUsedCoordinates.mergeWith(irOperations.usedCoordinates),
+          usedCoordinates = downStreamUsedCoordinates.mergeWith(irOperations.usedCoordinates),
           codegenOptions = codegenOptions,
           schemaLayout = layout,
           javaOutputTransform = javaOutputTransform,
@@ -534,7 +533,7 @@ object ApolloCompiler {
     val sourceOutput = buildSchemaAndOperationsSourcesFromIr(
         codegenSchema = codegenSchema,
         irOperations = irOperations,
-        downstreamUsedCoordinates = UsedCoordinates(),
+        downStreamUsedCoordinates = UsedCoordinates(),
         upstreamCodegenMetadata = emptyList(),
         codegenOptions = codegenOptions,
         layout = layoutFactory?.create(codegenSchema),

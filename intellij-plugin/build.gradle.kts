@@ -31,6 +31,7 @@ repositories {
   // maven("https://redirector.kotlinlang.org/maven/dev/")
   // Uncomment this one to use the Sonatype OSSRH snapshots repository
   // maven("https://oss.sonatype.org/content/repositories/snapshots/")
+  maven("https://storage.googleapis.com/gradleup/m2")
   mavenCentral()
 
   intellijPlatform {
@@ -146,7 +147,7 @@ apollo {
   }
 }
 
-// We're using project(":apollo-gradle-plugin-external") and the published "apollo-runtime" which do not have the same version
+// We're using project(":apollo-gradle-plugin") and the published "apollo-runtime" which do not have the same version
 tasks.configureEach {
   if (name == "checkApolloVersions") {
     enabled = false
@@ -173,7 +174,7 @@ dependencies {
 
   // Coroutines must be excluded to avoid a conflict with the version bundled with the IDE
   // See https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#coroutinesLibraries
-  implementation(project(":apollo-gradle-plugin-external")) {
+  implementation(project(":apollo-gradle-plugin-tasks")) {
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
   }
   implementation(project(":apollo-ast"))

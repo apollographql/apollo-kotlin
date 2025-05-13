@@ -38,4 +38,3 @@ dependencyResolutionManagement {
 
 apply(from = "./gradle/repositories.gradle.kts")
 apply(from = "./gradle/ge.gradle")
-

@@ -57,7 +57,7 @@ class ApolloCompilerPluginEnvironment(
     /**
      * A logger that can be used by the plugin.
      */
-    val logger: ApolloCompilerPluginLogger,
+    val logger: ApolloCompiler.Logger,
     /**
      * The compiler output directory.
      * May be null if the plugin is called from a non-codegen step like building the schema and/or the IR.
