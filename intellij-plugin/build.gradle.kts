@@ -172,11 +172,7 @@ dependencies {
     zipSigner()
   }
 
-  // Coroutines must be excluded to avoid a conflict with the version bundled with the IDE
-  // See https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#coroutinesLibraries
-  implementation(project(":apollo-gradle-plugin-tasks")) {
-    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
-  }
+  implementation(project(":apollo-gradle-plugin"))
   implementation(project(":apollo-ast"))
   implementation(project(":apollo-tooling")) {
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
