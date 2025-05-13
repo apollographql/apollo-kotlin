@@ -133,7 +133,7 @@ if (System.getProperty("idea.sync.active") == null) {
 
 val checkPersistedQueryManifest = tasks.register("checkPersistedQueryManifest") {
   dependsOn("generateApolloSources")
-  val buildFile = file("build/generated/manifest/apollo/upload-kotlin/persistedQueryManifest.json")
+  val buildFile = file("build/gtask/generateUpload-kotlinApolloSources/operationManifest.json")
   val fixtureFile = file("testFixtures/manifest.json")
   doLast {
     check(
