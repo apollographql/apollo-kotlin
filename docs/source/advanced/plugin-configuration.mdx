@@ -70,10 +70,8 @@ apollo {
     mapScalarToJavaObject("MyObject")
 
 
-    // The format to output for the operation manifest. One of "operationOutput", "persistedQueryManifest"
+    // The format to output for the operation manifest. One of "none" (default) or "persistedQueryManifest"
     operationManifestFormat.set("persistedQueryManifest")
-    // The file where to write the operation manifest
-    operationManifest.set(file("build/generated/persistedQueryManifest.json"))
 
     // Whether to generate Kotlin or Java models
     generateKotlinModels.set(true)
@@ -123,11 +121,7 @@ apollo {
     classesForEnumsMatching.set(listOf(".*"))
     // Whether fields with different shape are disallowed to be merged in disjoint types.
     fieldsOnDisjointTypesMustMerge.set(false)
-
-
-    // The directory where the generated models are written.
-    outputDir.set(file("build/generated/apollo"))
-
+    
     // Whether to generate Apollo metadata. Apollo metadata is used for multi-module support.
     generateApolloMetadata.set(true)
     // list of [Regex] patterns matching for types and fields that should be generated whether they are used by queries/fragments in this module or not.
