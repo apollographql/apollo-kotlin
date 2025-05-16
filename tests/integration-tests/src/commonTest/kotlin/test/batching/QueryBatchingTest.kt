@@ -308,6 +308,7 @@ class QueryBatchingTest {
 
   @Test
   fun batchSizeIsHonoredWithConcurrency() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.close()
     mockServer = MockServer.Builder().handler(object : MockServerHandler {
       override fun handle(request: MockRequestBase): MockResponse {
         val jsonReader = Buffer().write((request as MockRequest).body).jsonReader()
