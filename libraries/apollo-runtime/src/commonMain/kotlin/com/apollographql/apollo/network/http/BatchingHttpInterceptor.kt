@@ -103,22 +103,31 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     val sendNow = mutex.withLock {
       // if there was an error, the previous job was already canceled, ignore that error
       pendingRequests.add(pendingRequest)
-      pendingRequests.size >= maxBatchSize
+      val batchFull = pendingRequests.size >= maxBatchSize
+      if (batchFull) {
+        executePendingRequests(needLock = false)
+      }
+      batchFull
     }
-    if (sendNow) {
-      executePendingRequests()
-    } else {
+
+    if (!sendNow) {
       scope.launch {
         delay(batchIntervalMillis - (startMark.elapsedNow().inWholeMilliseconds % batchIntervalMillis) - 1)
-        executePendingRequests()
+        executePendingRequests(needLock = true)
       }
     }
 
     return pendingRequest.deferred.await()
   }
 
-  private suspend fun executePendingRequests() {
-    val pending = mutex.withLock {
+  private suspend fun executePendingRequests(needLock: Boolean) {
+    val pending = if (needLock) {
+      mutex.withLock {
+        val copy = pendingRequests.toList()
+        pendingRequests.clear()
+        copy
+      }
+    } else {
       val copy = pendingRequests.toList()
       pendingRequests.clear()
       copy
