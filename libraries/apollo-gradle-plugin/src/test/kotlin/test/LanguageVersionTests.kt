@@ -19,7 +19,7 @@ class LanguageVersionTests {
 
   @Test
   fun `compiling with 1_5 features with Kotlin 1_5 is working`() {
-    withProject(kotlinLanguageVersion = "1.5", apolloLanguageVersion = "1.5") { dir ->
+    withProject(kotlinLanguageVersion = "org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_5", apolloLanguageVersion = "1.5") { dir ->
       TestUtils.executeGradleWithVersion(dir, gradleVersion, ":assemble").apply {
         assertEquals(TaskOutcome.SUCCESS, task(":assemble")!!.outcome)
       }
@@ -28,7 +28,7 @@ class LanguageVersionTests {
 
   @Test
   fun `compiling with 1_5 features with Kotlin 1_4 is not working`() {
-    withProject(kotlinLanguageVersion = "1.4", apolloLanguageVersion = "1.5") { dir ->
+    withProject(kotlinLanguageVersion = "org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_4", apolloLanguageVersion = "1.5") { dir ->
       try {
         TestUtils.executeGradleWithVersion(dir, gradleVersion, ":assemble")
         Assert.fail("Compiling with incompatible languageVersion should fail")
@@ -40,7 +40,7 @@ class LanguageVersionTests {
 
   @Test
   fun `using bogus languageVersion fails`() {
-    withProject(kotlinLanguageVersion = "1.5", apolloLanguageVersion = "3.14") { dir ->
+    withProject(kotlinLanguageVersion = "org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_5", apolloLanguageVersion = "3.14") { dir ->
       try {
         TestUtils.executeGradleWithVersion(dir, gradleVersion, ":assemble")
         Assert.fail("Compiling with incompatible languageVersion should fail")
@@ -102,9 +102,9 @@ class LanguageVersionTests {
   ): String {
     val kotlinConfiguration = """
       tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        kotlinOptions {
-          ${if (kotlinLanguageVersion == null) "" else "languageVersion = \"$kotlinLanguageVersion\""}
-          ${if (kotlinApiVersion == null) "" else "apiVersion = \"$kotlinApiVersion\""}
+        compilerOptions {
+          ${if (kotlinLanguageVersion == null) "" else "languageVersion.set($kotlinLanguageVersion)"}
+          ${if (kotlinApiVersion == null) "" else "apiVersion.set(\"$kotlinApiVersion\")"}
         }
       }      
       """.trimIndent()
