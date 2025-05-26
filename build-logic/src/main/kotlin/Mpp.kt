@@ -71,7 +71,7 @@ fun defaultTargets(
 
     if (withAndroid) {
       androidTarget {
-        publishAllLibraryVariants()
+        publishLibraryVariants("release")
       }
     }
 
