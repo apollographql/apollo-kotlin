@@ -6,6 +6,8 @@ buildscript {
       url = uri("../../../../build/localMaven")
     }
     mavenCentral()
+    maven("https://storage.googleapis.com/gradleup/m2")
+
   }
   dependencies {
     classpath("com.apollographql.apollo:apollo-gradle-plugin:APOLLO_VERSION")
@@ -22,6 +24,8 @@ repositories {
     url = uri("../../../../build/localMaven")
   }
   mavenCentral()
+  maven("https://storage.googleapis.com/gradleup/m2")
+
   // Uncomment this one to use the Kotlin "dev" repository
   // maven("https://redirector.kotlinlang.org/maven/dev/")
 }

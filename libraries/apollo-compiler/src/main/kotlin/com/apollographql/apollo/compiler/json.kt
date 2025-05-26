@@ -69,6 +69,10 @@ fun File.toIrOperations(): IrOperations = parseFromJson<IrOperations>()
 @JvmName("readIrSchema")
 fun File.toIrSchema(): IrSchema = parseFromJson<DefaultIrSchema>()
 
+fun File.toUsedCoordinates(): UsedCoordinates {
+  return parseFromJson()
+}
+
 /**
  * A minimal class that is only used to read a version
  */
@@ -118,4 +122,4 @@ fun PersistedQueryManifest.writeTo(file: File) = encodeToJson(file)
 @JvmName("writeOperationOutput")
 fun OperationOutput.writeTo(file: File) = this.encodeToJson(file)
 
-internal fun UsedCoordinates.writeTo(file: File) = file.writeText(prettyPrintJson.encodeToString(this))
+fun UsedCoordinates.writeTo(file: File) = file.writeText(prettyPrintJson.encodeToString(this))

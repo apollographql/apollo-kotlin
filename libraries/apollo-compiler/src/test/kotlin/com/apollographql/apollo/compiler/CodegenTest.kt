@@ -471,7 +471,7 @@ private fun ApolloCompiler.buildSchemaAndOperationsSourcesAndReturnIrOperations(
   var sourceOutput = buildSchemaAndOperationsSourcesFromIr(
       codegenSchema = codegenSchema,
       irOperations = irOperations,
-      downstreamUsedCoordinates = UsedCoordinates(),
+      downStreamUsedCoordinates = UsedCoordinates(),
       upstreamCodegenMetadata = emptyList(),
       codegenOptions = codegenOptions,
       layout = layoutFactory?.create(codegenSchema),

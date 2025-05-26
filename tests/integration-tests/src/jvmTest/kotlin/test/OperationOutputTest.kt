@@ -14,9 +14,9 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 /**
- * These tests read the operationOutput.json generated during compilation and compare it to the generated models
+ * These tests read the operationManifest.json generated during compilation and compare it to the generated models
  *
- * This makes sure minification is the same between operationOutput.json and the models
+ * This makes sure minification is the same between operationManifest.json and the models
  *
  * This is a JVM only test because we need to assume "http-kotlin" for the service name
  * where the file will be generated. Apple code shouldn't be much different in all cases
@@ -24,7 +24,7 @@ import kotlin.test.assertEquals
 class OperationOutputTest {
   @Test
   fun operationOutputMatchesTheModels() {
-    @Suppress("DEPRECATION") val operationOutput = pathToUtf8("integration-tests/build/generated/manifest/apollo/httpcache-kotlin/persistedQueryManifest.json")
+    @Suppress("DEPRECATION") val operationOutput = pathToUtf8("integration-tests/build/gtask/generateHttpcache-kotlinApolloSources/operationManifest.json")
     val source = Json.parseToJsonElement(operationOutput).jsonObject
         .getValue("operations")
         .jsonArray

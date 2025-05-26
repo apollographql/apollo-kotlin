@@ -11,9 +11,10 @@ dependencies {
 apollo {
   service("service") {
     packageName.set("com.example")
-    operationManifestFormat.set("operationOutput")
+    operationManifestFormat.set("persistedQueryManifest")
     registerOperations {
       key.set("unused")
+      listId.set("unused")
       graph.set("unused")
       graphVariant.set("current")
     }

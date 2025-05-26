@@ -5,7 +5,7 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
     // Uncomment this one to use the Sonatype OSSRH snapshots repository
     // maven("https://oss.sonatype.org/content/repositories/snapshots/")
     // Uncomment this one to use the GradleUp repository
-    // maven("https://storage.googleapis.com/gradleup/m2")
+    maven("https://storage.googleapis.com/gradleup/m2")
 
     mavenCentral()
     exclusiveContent {
