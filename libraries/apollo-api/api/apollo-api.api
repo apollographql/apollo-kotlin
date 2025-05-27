@@ -37,6 +37,10 @@ public final class com/apollographql/apollo/api/Adapters {
 	public static synthetic fun -toJson$default (Lcom/apollographql/apollo/api/Adapter;Ljava/lang/Object;Lcom/apollographql/apollo/api/CustomScalarAdapters;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo/api/ApolloApiVersionKt {
+	public static final field apolloApiVersion Ljava/lang/String;
+}
+
 public final class com/apollographql/apollo/api/ApolloOptionalAdapter : com/apollographql/apollo/api/Adapter {
 	public fun <init> (Lcom/apollographql/apollo/api/Adapter;)V
 	public fun fromJson (Lcom/apollographql/apollo/api/json/JsonReader;Lcom/apollographql/apollo/api/CustomScalarAdapters;)Lcom/apollographql/apollo/api/Optional;
