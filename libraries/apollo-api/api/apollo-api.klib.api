@@ -1356,6 +1356,9 @@ final object com.apollographql.apollo.exception/OfflineException : okio/IOExcept
     final fun toString(): kotlin/String // com.apollographql.apollo.exception/OfflineException.toString|toString(){}[0]
 }
 
+final const val com.apollographql.apollo.api/apolloApiVersion // com.apollographql.apollo.api/apolloApiVersion|{}apolloApiVersion[0]
+    final fun <get-apolloApiVersion>(): kotlin/String // com.apollographql.apollo.api/apolloApiVersion.<get-apolloApiVersion>|<get-apolloApiVersion>(){}[0]
+
 final val com.apollographql.apollo.api/AnyAdapter // com.apollographql.apollo.api/AnyAdapter|{}AnyAdapter[0]
     final fun <get-AnyAdapter>(): com.apollographql.apollo.api/Adapter<kotlin/Any> // com.apollographql.apollo.api/AnyAdapter.<get-AnyAdapter>|<get-AnyAdapter>(){}[0]
 final val com.apollographql.apollo.api/ApolloOptionalAnyAdapter // com.apollographql.apollo.api/ApolloOptionalAnyAdapter|{}ApolloOptionalAnyAdapter[0]
