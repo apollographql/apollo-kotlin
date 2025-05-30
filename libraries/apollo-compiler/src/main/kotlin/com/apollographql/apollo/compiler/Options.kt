@@ -647,8 +647,8 @@ private val NoOpLogger = object : ApolloCompiler.Logger {
 
 internal val defaultAlwaysGenerateTypesMatching = emptySet<String>()
 
-internal val defaultOperationIdsGenerator = OperationIdsGenerator { operationDescriptorList ->
-  operationDescriptorList.map {
+internal val defaultOperationIdsGenerator = OperationIdsGenerator { operationDescriptors ->
+  operationDescriptors.map {
     OperationId(it.source.sha256(), it.name)
   }
 }

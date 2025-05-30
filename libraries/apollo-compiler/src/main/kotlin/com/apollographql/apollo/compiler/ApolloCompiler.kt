@@ -45,7 +45,6 @@ import com.apollographql.apollo.compiler.ir.IrOperationsBuilder
 import com.apollographql.apollo.compiler.ir.IrSchemaBuilder
 import com.apollographql.apollo.compiler.ir.buildIrDataBuilders
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo.compiler.operationoutput.OperationId
 import com.apollographql.apollo.compiler.operationoutput.toOperationOutput
 import com.apollographql.apollo.compiler.pqm.toPersistedQueryManifest
 import java.io.File
@@ -60,7 +59,7 @@ object ApolloCompiler {
       logger: Logger?,
       codegenSchemaOptions: CodegenSchemaOptions,
       foreignSchemas: List<ForeignSchema>,
-      schemaTransform: SchemaTransform?,
+      schemaTransform: SchemaDocumentTransform?,
   ): CodegenSchema {
     val schemaDocuments = schemaFiles.map {
       it.normalizedPath to it.file.toGQLDocument(allowJson = true)
@@ -190,7 +189,7 @@ object ApolloCompiler {
       upstreamCodegenModels: List<String>,
       upstreamFragmentDefinitions: List<GQLFragmentDefinition>,
       options: IrOptions,
-      executableDocumentTransform: ExecutableDocumentTransform?,
+      documentTransform: ExecutableDocumentTransform?,
       logger: Logger?,
   ): IrOperations {
     val schema = codegenSchema.schema
@@ -232,14 +231,24 @@ object ApolloCompiler {
 
     /**
      * Step 2, Modify the AST to add typename, key fields and call any user-provided transform.
+     * If we detect that the cache compiler plugin is present, we skip adding the keyfields because it will do it.
+     * TODO: deprecate `addTypename`
      */
-    var document = ApolloExecutableDocumentTransform(options.addTypename ?: defaultAddTypename).transform(
-        schema = schema,
-        document = GQLDocument(userDefinitions, sourceLocation = null),
-        upstreamFragmentDefinitions
+    val hasCacheCompilerPlugin = try {
+      Class.forName("com.apollographql.cache.apollocompilerplugin.internal.ApolloCacheCompilerPlugin")
+      true
+    } catch (_: ClassNotFoundException) {
+      false
+    }
+
+    var document = ApolloExecutableDocumentTransform(options.addTypename ?: defaultAddTypename, !hasCacheCompilerPlugin).transform(
+      schema = schema,
+      document = GQLDocument(userDefinitions, sourceLocation = null),
+      upstreamFragmentDefinitions
     )
-    if (executableDocumentTransform != null) {
-      document = executableDocumentTransform.transform(schema, document, upstreamFragmentDefinitions)
+
+    if (documentTransform != null) {
+      document = documentTransform.transform(schema, document, upstreamFragmentDefinitions)
     }
 
     /**
@@ -475,8 +484,8 @@ object ApolloCompiler {
       irOperationsTransform: Transform<IrOperations>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
-      executableDocumentTransform: ExecutableDocumentTransform?,
-      schemaTransform: SchemaTransform?,
+      documentTransform: ExecutableDocumentTransform?,
+      schemaDocumentTransform: SchemaDocumentTransform?,
       logger: Logger?,
       operationManifestFile: File?,
   ): SourceOutput {
@@ -485,7 +494,7 @@ object ApolloCompiler {
         logger = logger,
         codegenSchemaOptions = codegenSchemaOptions,
         foreignSchemas = emptyList(),
-        schemaTransform = schemaTransform
+        schemaTransform = schemaDocumentTransform
     )
 
     return buildSchemaAndOperationsSources(
@@ -498,7 +507,7 @@ object ApolloCompiler {
         irOperationsTransform,
         javaOutputTransform,
         kotlinOutputTransform,
-        executableDocumentTransform,
+        documentTransform,
         logger,
         operationManifestFile
     )
@@ -517,7 +526,7 @@ object ApolloCompiler {
       irOperationsTransform: Transform<IrOperations>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
-      executableDocumentTransform: ExecutableDocumentTransform?,
+      documentTransform: ExecutableDocumentTransform?,
       logger: Logger?,
       operationManifestFile: File?,
   ): SourceOutput {
@@ -526,7 +535,7 @@ object ApolloCompiler {
         executableFiles = executableFiles,
         upstreamCodegenModels = emptyList(),
         upstreamFragmentDefinitions = emptyList(),
-        executableDocumentTransform = executableDocumentTransform,
+        documentTransform = documentTransform,
         options = irOptions,
         logger = logger
     )
@@ -642,6 +651,3 @@ fun interface LayoutFactory {
   fun create(codegenSchema: CodegenSchema): SchemaAndOperationsLayout?
 }
 
-fun interface OperationIdsGenerator {
-  fun generate(operationDescriptorList: Collection<OperationDescriptor>): List<OperationId>
-}

@@ -1,10 +1,11 @@
+@file:Suppress("DEPRECATION")
+
 package hooks
 
 import com.apollographql.apollo.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo.compiler.ApolloCompilerPluginEnvironment
 import com.apollographql.apollo.compiler.ApolloCompilerPluginProvider
 import com.apollographql.apollo.compiler.ApolloCompilerRegistry
-import com.apollographql.apollo.compiler.Transform
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.KModifier

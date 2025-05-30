@@ -32,7 +32,7 @@ class EntryPoints {
     val registry = apolloCompilerRegistry(
         arguments,
         logLevel,
-        warnIfNotFound
+        warnIfNotFound,
     )
 
     ApolloCompiler.buildCodegenSchema(
@@ -40,7 +40,7 @@ class EntryPoints {
         logger = warning.toLogger(),
         codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions(),
         foreignSchemas = registry.foreignSchemas(),
-        schemaTransform = registry.schemaTransform()
+        schemaTransform = registry.schemaDocumentTransform()
     ).writeTo(codegenSchemaFile)
   }
 
@@ -54,15 +54,15 @@ class EntryPoints {
       warning: Consumer<String>,
       irOperationsFile: File,
   ) {
-    val registry = apolloCompilerRegistry(arguments, logLevel)
+    val registry = apolloCompilerRegistry(arguments, logLevel, false)
 
     val upstream = upstreamIrOperations.toInputFiles().map { it.file.toIrOperations() }
-    buildIrOperations(
+    ApolloCompiler.buildIrOperations(
         executableFiles = graphqlFiles.toInputFiles(),
         codegenSchema = codegenSchemaFiles.toInputFiles().map { it.file }.findCodegenSchemaFile().toCodegenSchema(),
         upstreamCodegenModels = upstream.map { it.codegenModels },
         upstreamFragmentDefinitions = upstream.flatMap { it.fragmentDefinitions },
-        executableDocumentTransform = registry.operationsTransform(),
+        documentTransform = registry.executableDocumentTransform(),
         options = irOptionsFile.toIrOptions(),
         logger = warning.toLogger(),
     ).writeTo(irOperationsFile)
@@ -87,10 +87,11 @@ class EntryPoints {
         warnIfNotFound
     )
     val codegenSchemaFile = codegenSchemaFiles.toInputFiles().map { it.file }.findCodegenSchemaFile()
+
     val codegenSchema = codegenSchemaFile.toCodegenSchema()
 
     val upstreamCodegenMetadata = upstreamMetadata.toInputFiles().map { it.file.toCodegenMetadata() }
-    buildSchemaAndOperationsSourcesFromIr(
+    ApolloCompiler.buildSchemaAndOperationsSourcesFromIr(
         codegenSchema = codegenSchema,
         irOperations = irOperations.toIrOperations(),
         downstreamUsedCoordinates = downstreamUsedCoordinates.toUsedCoordinates(),
@@ -105,7 +106,7 @@ class EntryPoints {
     ).writeTo(outputDir, true, metadataOutputFile)
 
     if (upstreamCodegenMetadata.isEmpty()) {
-      registry.extraCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
+      registry.schemaCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
     }
   }
 
@@ -115,8 +116,8 @@ class EntryPoints {
       warnIfNotFound: Boolean,
       schemaFiles: List<Any>,
       graphqlFiles: List<Any>,
-      codegenSchemaOptionsFile: File,
-      codegenOptionsFile: File,
+      codegenSchemaOptions: File,
+      codegenOptions: File,
       irOptions: File,
       warning: Consumer<String>,
       operationManifestFile: File?,
@@ -129,13 +130,12 @@ class EntryPoints {
         warnIfNotFound
     )
 
-    val codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions()
     val codegenSchema = ApolloCompiler.buildCodegenSchema(
         schemaFiles = schemaFiles.toInputFiles(),
-        codegenSchemaOptions = codegenSchemaOptions,
+        codegenSchemaOptions = codegenSchemaOptions.toCodegenSchemaOptions(),
         foreignSchemas = registry.foreignSchemas(),
         logger = warning.toLogger(),
-        schemaTransform = registry.schemaTransform()
+        schemaTransform = registry.schemaDocumentTransform()
     )
 
     val irOperations = buildIrOperations(
@@ -143,12 +143,13 @@ class EntryPoints {
         executableFiles = graphqlFiles.toInputFiles(),
         upstreamCodegenModels = emptyList(),
         upstreamFragmentDefinitions = emptyList(),
-        executableDocumentTransform = registry.operationsTransform(),
+        documentTransform = registry.executableDocumentTransform(),
         options = irOptions.toIrOptions(),
         logger = warning.toLogger(),
     )
 
-    val codegenOptions = codegenOptionsFile.toCodegenOptions()
+    @Suppress("NAME_SHADOWING")
+    val codegenOptions = codegenOptions.toCodegenOptions()
     val layout = registry.layout(codegenSchema)
     val sourceOutput = buildSchemaAndOperationsSourcesFromIr(
         codegenSchema = codegenSchema,
@@ -176,7 +177,7 @@ class EntryPoints {
 
     sourceOutput.writeTo(outputDir, true, null)
 
-    registry.extraCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
+    registry.schemaCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
   }
 
   fun buildDataBuilders(
@@ -192,7 +193,7 @@ class EntryPoints {
     val registry = apolloCompilerRegistry(
         arguments,
         logLevel,
-        warnIfNotFound
+        warnIfNotFound,
     )
     val codegenSchemaFile = codegenSchemaFiles.toInputFiles().map { it.file }.findCodegenSchemaFile()
     val codegenSchema = codegenSchemaFile.toCodegenSchema()
@@ -226,6 +227,8 @@ fun Iterable<File>.findCodegenSchemaFile(): File {
   } ?: error("Cannot find CodegenSchema in $this")
 }
 
+
+
 internal fun apolloCompilerRegistry(
     arguments: Map<String, Any?>,
     logLevel: Int,
@@ -244,9 +247,13 @@ internal fun apolloCompilerRegistry(
     registry.registerPlugin(it)
   }
 
+  @Suppress("DEPRECATION")
   val pluginProviders = ServiceLoader.load(ApolloCompilerPluginProvider::class.java, ApolloCompilerPluginProvider::class.java.classLoader).toList()
   pluginProviders.forEach {
-    println("Apollo: using ApolloCompilerPluginProvider is deprecated. Please use ApolloCompilerPlugin directly.")
+    // we make an exception for our own cache plugin because we want to display a nice error message to users before 4.3
+    if (it.javaClass.name != "com.apollographql.cache.apollocompilerplugin.ApolloCacheCompilerPluginProvider") {
+      println("Apollo: using ApolloCompilerPluginProvider is deprecated. Please use ApolloCompilerPlugin directly.")
+    }
     hasPlugin = true
     val plugin = it.create(environment)
     plugin.beforeCompilationStep(environment, registry)
@@ -259,7 +266,6 @@ internal fun apolloCompilerRegistry(
 
   return registry
 }
-
 
 internal fun List<Any>.toInputFiles(): List<InputFile> = buildList {
   val iterator = this@toInputFiles.iterator()
