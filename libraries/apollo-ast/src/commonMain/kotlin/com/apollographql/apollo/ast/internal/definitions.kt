@@ -1,7 +1,5 @@
 package com.apollographql.apollo.ast.internal
 
-import com.apollographql.apollo.annotations.ApolloInternal
-
 /**
  * This file contains several groups of GraphQL definitions we use during codegen:
  *
@@ -39,6 +37,7 @@ internal val kotlinLabsDefinitions_0_3 = """
       Nested selection sets are currently not supported. Order is important. 
       
       Key fields can be defined on interfaces. In that case, the key fields apply to all sub-types. Sub-types are not allowed to define their own key fields.
+      If a type implements multiple interfaces with keyfields, the keyfields must match across all interfaces with keyfields.
       
       The key fields are automatically added to the operations by the compiler.
       Aliased key fields are not recognized and the compiler adds a non-aliased version of the field if that happens.
