@@ -181,7 +181,7 @@ interface ApolloCompilerRegistry {
   fun registerForeignSchemas(schemas: List<ForeignSchema>)
 
   @ApolloExperimental
-  fun registerOperationsTransform(id: String, vararg orders: Order, transform: ExecutableDocumentTransform)
+  fun registerExecutableDocumentTransform(id: String, vararg orders: Order, transform: ExecutableDocumentTransform)
   @ApolloExperimental
   fun registerIrTransform(id: String, vararg orders: Order, transform: Transform<IrOperations>)
 

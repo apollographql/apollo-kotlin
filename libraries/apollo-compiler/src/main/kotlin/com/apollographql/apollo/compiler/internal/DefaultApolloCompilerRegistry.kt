@@ -86,38 +86,32 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
 
     val javaOutputTransform = plugin.javaOutputTransform()
     if (javaOutputTransform != null) {
-      println("Apollo: using ApolloCompilerPlugin.javaOutputTransform() is deprecated. Please use registry.registerJavaOutputTransform() from beforeCompilationStep() instead.")
-      registerJavaOutputTransform(id = "${plugin.javaClass.name}.javaOutputTransform", transform = javaOutputTransform)
+      error("Apollo: using ApolloCompilerPlugin.javaOutputTransform() is deprecated. Please use registry.registerJavaOutputTransform() from beforeCompilationStep() instead.")
     }
 
     val kotlinOutputTransform = plugin.kotlinOutputTransform()
     if (kotlinOutputTransform != null) {
-      println("Apollo: using ApolloCompilerPlugin.kotlinOutputTransform() is deprecated. Please use registry.registerKotlinOutputTransform() from beforeCompilationStep() instead.")
-      registerKotlinOutputTransform(id = "${plugin.javaClass.name}.kotlinOutputTransform", transform = kotlinOutputTransform)
+      error("Apollo: using ApolloCompilerPlugin.kotlinOutputTransform() is deprecated. Please use registry.registerKotlinOutputTransform() from beforeCompilationStep() instead.")
     }
 
     val documentTransform = plugin.documentTransform()
     if (documentTransform != null) {
-      println("Apollo: using ApolloCompilerPlugin.documentTransform() is deprecated. Please use registry.registerOperationsTransform() from beforeCompilationStep() instead.")
-      registerOperationsTransform(id = "${plugin.javaClass.name}.documentTransform", transform = LegacyExecutableDocumentTransform(documentTransform))
+      error("Apollo: using ApolloCompilerPlugin.documentTransform() is deprecated. Please use registry.registerOperationsTransform() from beforeCompilationStep() instead.")
     }
 
     val irOperationsTransform = plugin.irOperationsTransform()
     if (irOperationsTransform != null) {
-      println("Apollo: using ApolloCompilerPlugin.irOperationsTransform() is deprecated. Please use registry.registerIrTransform() from beforeCompilationStep() instead.")
-      registerIrTransform(id = "${plugin.javaClass.name}.irOperationsTransform", transform = irOperationsTransform)
+      error("Apollo: using ApolloCompilerPlugin.irOperationsTransform() is deprecated. Please use registry.registerIrTransform() from beforeCompilationStep() instead.")
     }
 
     val foreignSchemas = plugin.foreignSchemas()
     if (foreignSchemas.isNotEmpty()) {
-      println("Apollo: using ApolloCompilerPlugin.foreignSchemas() is deprecated. Please use registry.registerForeignSchemas() from beforeCompilationStep() instead.")
-      registerForeignSchemas(foreignSchemas)
+      error("Apollo: using ApolloCompilerPlugin.foreignSchemas() is deprecated. Please use registry.registerForeignSchemas() from beforeCompilationStep() instead.")
     }
 
     val schemaListener = plugin.schemaListener()
     if (schemaListener != null) {
-      println("Apollo: using ApolloCompilerPlugin.schemaListener() is deprecated. Please use registry.registerExtraCodeGenerator() from beforeCompilationStep() instead.")
-      registerExtraCodeGenerator(LegacyExtraCodeGenerator(schemaListener))
+      error("Apollo: using ApolloCompilerPlugin.schemaListener() is deprecated. Please use registry.registerExtraCodeGenerator() from beforeCompilationStep() instead.")
     }
   }
 
@@ -125,7 +119,7 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
     foreignSchemas.addAll(schemas)
   }
 
-  override fun registerOperationsTransform(
+  override fun registerExecutableDocumentTransform(
       id: String,
       vararg orders: Order,
       transform: ExecutableDocumentTransform,
@@ -181,13 +175,11 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
   }
 
   fun layout(codegenSchema: CodegenSchema): SchemaAndOperationsLayout? {
-    if (layoutFactories.isEmpty()) {
-      return null
-    }
-    if (layoutFactories.size > 1) {
+    val candidates = layoutFactories.mapNotNull { it.create(codegenSchema) }
+    if (candidates.size > 1) {
       error("Apollo: multiple layouts registered. Check your compiler plugins.")
     }
-    return layoutFactories.single().create(codegenSchema)
+    return candidates.singleOrNull()
   }
 
   fun irOperationsTransform(): Transform<IrOperations> {
