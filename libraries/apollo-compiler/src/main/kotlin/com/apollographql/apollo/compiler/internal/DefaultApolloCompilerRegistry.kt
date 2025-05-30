@@ -257,25 +257,26 @@ internal fun String.sha256(): String {
 }
 
 private fun <T> Collection<Node<T>>.sort(): List<Node<T>> {
-  val visited = mutableSetOf<Node<T>>()
+  val visited = mutableListOf<Node<T>>()
   val result = mutableListOf<Node<T>>()
-  val visiting = mutableSetOf<Node<T>>()
 
   fun visit(node: Node<T>) {
-    if (node in visiting) {
-      throw kotlin.IllegalArgumentException("Apollo: circular dependency detected on transform '${node.id}'")
-    }
-    if (node in visited) {
-      return
-    }
-
-    visiting.add(node)
-    node.dependencies.forEach { visit(it) }
-    visiting.remove(node)
     visited.add(node)
+    node.dependencies.forEach {
+      if (!visited.contains(it)) {
+        visit(it)
+      } else if (!result.contains(it)){
+        throw IllegalArgumentException("Apollo: circular dependency detected on transform '${node.id}': ${visited.map { it.id } + node.id}")
+      }
+    }
     result.add(node)
   }
 
-  forEach { visit(it) }
-  return result.reversed() // Topological sort results in reverse order
+  forEach {
+    if (!visited.contains(it)) {
+      visit(it)
+    }
+  }
+  return result
 }
+
