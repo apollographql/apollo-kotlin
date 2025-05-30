@@ -24,6 +24,7 @@ listOf(
     "compiler-plugins/prefix-names",
     "compiler-plugins/schema-codegen",
     "compiler-plugins/typename-interface",
+    "compiler-plugins/multiple",
     "data-builders-java",
     "data-builders-kotlin",
     "defer",

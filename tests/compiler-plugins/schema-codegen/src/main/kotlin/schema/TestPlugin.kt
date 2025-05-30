@@ -36,7 +36,7 @@ class TestPlugin(
         )
     ))
 
-    registry.registerExtraCodeGenerator { schema ->
+    registry.registerExtraCodeGenerator { schema, outputDirectory ->
       val maxAge = schema.definitions.filterIsInstance<GQLTypeDefinition>()
           .first { it.name == "Menu" }
           .directives
@@ -51,16 +51,14 @@ class TestPlugin(
           .let { it as GQLIntValue }
           .value
 
-      if (environment.outputDirectory != null) {
-        FileSpec.builder("hooks.generated", "cache")
-            .addProperty(
-                PropertySpec.builder("menuMaxAge", ClassName("kotlin", "String"))
-                    .initializer("%S", maxAge)
-                    .build()
-            )
-            .build()
-            .writeTo(environment.outputDirectory!!)
-      }
+      FileSpec.builder("hooks.generated", "cache")
+          .addProperty(
+              PropertySpec.builder("menuMaxAge", ClassName("kotlin", "String"))
+                  .initializer("%S", maxAge)
+                  .build()
+          )
+          .build()
+          .writeTo(outputDirectory)
     }
   }
 }

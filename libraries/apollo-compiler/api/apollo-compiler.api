@@ -15,9 +15,9 @@ public final class com/apollographql/apollo/compiler/ApolloCompiler {
 	public static final field INSTANCE Lcom/apollographql/apollo/compiler/ApolloCompiler;
 	public final fun buildCodegenSchema (Ljava/util/List;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Lcom/apollographql/apollo/compiler/CodegenSchemaOptions;Ljava/util/List;Lcom/apollographql/apollo/compiler/SchemaTransform;)Lcom/apollographql/apollo/compiler/CodegenSchema;
 	public final fun buildDataBuilders (Lcom/apollographql/apollo/compiler/CodegenSchema;Lcom/apollographql/apollo/compiler/UsedCoordinates;Lcom/apollographql/apollo/compiler/CodegenOptions;Lcom/apollographql/apollo/compiler/codegen/SchemaLayout;Ljava/util/List;)Lcom/apollographql/apollo/compiler/codegen/SourceOutput;
-	public final fun buildIrOperations (Lcom/apollographql/apollo/compiler/CodegenSchema;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo/compiler/IrOptions;Lcom/apollographql/apollo/compiler/OperationsTransform;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;)Lcom/apollographql/apollo/compiler/ir/IrOperations;
-	public final fun buildSchemaAndOperationsSources (Lcom/apollographql/apollo/compiler/CodegenSchema;Ljava/util/List;Lcom/apollographql/apollo/compiler/IrOptions;Lcom/apollographql/apollo/compiler/CodegenOptions;Lcom/apollographql/apollo/compiler/LayoutFactory;Lcom/apollographql/apollo/compiler/OperationIdsGenerator;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/OperationsTransform;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/io/File;)Lcom/apollographql/apollo/compiler/codegen/SourceOutput;
-	public final fun buildSchemaAndOperationsSources (Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo/compiler/CodegenSchemaOptions;Lcom/apollographql/apollo/compiler/IrOptions;Lcom/apollographql/apollo/compiler/CodegenOptions;Lcom/apollographql/apollo/compiler/LayoutFactory;Lcom/apollographql/apollo/compiler/OperationIdsGenerator;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/OperationsTransform;Lcom/apollographql/apollo/compiler/SchemaTransform;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/io/File;)Lcom/apollographql/apollo/compiler/codegen/SourceOutput;
+	public final fun buildIrOperations (Lcom/apollographql/apollo/compiler/CodegenSchema;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo/compiler/IrOptions;Lcom/apollographql/apollo/compiler/ExecutableDocumentTransform;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;)Lcom/apollographql/apollo/compiler/ir/IrOperations;
+	public final fun buildSchemaAndOperationsSources (Lcom/apollographql/apollo/compiler/CodegenSchema;Ljava/util/List;Lcom/apollographql/apollo/compiler/IrOptions;Lcom/apollographql/apollo/compiler/CodegenOptions;Lcom/apollographql/apollo/compiler/LayoutFactory;Lcom/apollographql/apollo/compiler/OperationIdsGenerator;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/ExecutableDocumentTransform;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/io/File;)Lcom/apollographql/apollo/compiler/codegen/SourceOutput;
+	public final fun buildSchemaAndOperationsSources (Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo/compiler/CodegenSchemaOptions;Lcom/apollographql/apollo/compiler/IrOptions;Lcom/apollographql/apollo/compiler/CodegenOptions;Lcom/apollographql/apollo/compiler/LayoutFactory;Lcom/apollographql/apollo/compiler/OperationIdsGenerator;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/ExecutableDocumentTransform;Lcom/apollographql/apollo/compiler/SchemaTransform;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/io/File;)Lcom/apollographql/apollo/compiler/codegen/SourceOutput;
 	public final fun buildSchemaAndOperationsSourcesFromIr (Lcom/apollographql/apollo/compiler/CodegenSchema;Lcom/apollographql/apollo/compiler/ir/IrOperations;Lcom/apollographql/apollo/compiler/UsedCoordinates;Ljava/util/List;Lcom/apollographql/apollo/compiler/CodegenOptions;Lcom/apollographql/apollo/compiler/codegen/SchemaAndOperationsLayout;Lcom/apollographql/apollo/compiler/OperationIdsGenerator;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;Ljava/io/File;)Lcom/apollographql/apollo/compiler/codegen/SourceOutput;
 	public final fun buildSchemaSources (Lcom/apollographql/apollo/compiler/CodegenSchema;Lcom/apollographql/apollo/compiler/UsedCoordinates;Lcom/apollographql/apollo/compiler/CodegenOptions;Lcom/apollographql/apollo/compiler/codegen/SchemaLayout;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;)Lcom/apollographql/apollo/compiler/codegen/SourceOutput;
 }
@@ -31,15 +31,14 @@ public final class com/apollographql/apollo/compiler/ApolloCompilerKt {
 }
 
 public abstract interface class com/apollographql/apollo/compiler/ApolloCompilerPlugin {
-	public abstract fun beforeCompilationStep (Lcom/apollographql/apollo/compiler/ApolloCompilerPluginEnvironment;Lcom/apollographql/apollo/compiler/ApolloCompilerRegistry;)V
+	public fun beforeCompilationStep (Lcom/apollographql/apollo/compiler/ApolloCompilerPluginEnvironment;Lcom/apollographql/apollo/compiler/ApolloCompilerRegistry;)V
 	public fun operationIds (Ljava/util/List;)Ljava/util/List;
 }
 
 public final class com/apollographql/apollo/compiler/ApolloCompilerPluginEnvironment {
-	public fun <init> (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompilerPluginLogger;Ljava/io/File;)V
+	public fun <init> (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompilerPluginLogger;)V
 	public final fun getArguments ()Ljava/util/Map;
 	public final fun getLogger ()Lcom/apollographql/apollo/compiler/ApolloCompilerPluginLogger;
-	public final fun getOutputDirectory ()Ljava/io/File;
 }
 
 public abstract interface class com/apollographql/apollo/compiler/ApolloCompilerPluginLogger {
@@ -54,6 +53,7 @@ public abstract interface class com/apollographql/apollo/compiler/ApolloCompiler
 }
 
 public abstract interface class com/apollographql/apollo/compiler/ApolloCompilerRegistry {
+	public abstract fun registerExecutableDocumentTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/ExecutableDocumentTransform;)V
 	public abstract fun registerExtraCodeGenerator (Lcom/apollographql/apollo/compiler/CodeGenerator;)V
 	public abstract fun registerForeignSchemas (Ljava/util/List;)V
 	public abstract fun registerIrTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/Transform;)V
@@ -61,7 +61,6 @@ public abstract interface class com/apollographql/apollo/compiler/ApolloCompiler
 	public abstract fun registerKotlinOutputTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/Transform;)V
 	public abstract fun registerLayout (Lcom/apollographql/apollo/compiler/LayoutFactory;)V
 	public abstract fun registerOperationIdsGenerator (Lcom/apollographql/apollo/compiler/OperationIdsGenerator;)V
-	public abstract fun registerOperationsTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/OperationsTransform;)V
 	public abstract fun registerSchemaTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/SchemaTransform;)V
 }
 
@@ -71,7 +70,7 @@ public final class com/apollographql/apollo/compiler/Before : com/apollographql/
 }
 
 public abstract interface class com/apollographql/apollo/compiler/CodeGenerator {
-	public abstract fun generate (Lcom/apollographql/apollo/ast/GQLDocument;)V
+	public abstract fun generate (Lcom/apollographql/apollo/ast/GQLDocument;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/compiler/CodegenMetadata {
@@ -213,6 +212,10 @@ public final class com/apollographql/apollo/compiler/EntryPoints {
 
 public final class com/apollographql/apollo/compiler/EntrypointsKt {
 	public static final fun findCodegenSchemaFile (Ljava/lang/Iterable;)Ljava/io/File;
+}
+
+public abstract interface class com/apollographql/apollo/compiler/ExecutableDocumentTransform {
+	public abstract fun transform (Lcom/apollographql/apollo/ast/Schema;Lcom/apollographql/apollo/ast/GQLDocument;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLDocument;
 }
 
 public final class com/apollographql/apollo/compiler/ExpressionAdapterInitializer : com/apollographql/apollo/compiler/AdapterInitializer {
@@ -370,10 +373,6 @@ public abstract interface class com/apollographql/apollo/compiler/OperationsCode
 }
 
 public abstract interface class com/apollographql/apollo/compiler/OperationsCodegenOptions : com/apollographql/apollo/compiler/JavaOperationsCodegenOptions, com/apollographql/apollo/compiler/KotlinOperationsCodegenOptions {
-}
-
-public abstract interface class com/apollographql/apollo/compiler/OperationsTransform {
-	public abstract fun transform (Lcom/apollographql/apollo/ast/Schema;Lcom/apollographql/apollo/ast/GQLDocument;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLDocument;
 }
 
 public final class com/apollographql/apollo/compiler/OptionsKt {

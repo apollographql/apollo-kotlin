@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler.internal
 
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.compiler.After
+import com.apollographql.apollo.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo.compiler.ApolloCompilerRegistry
 import com.apollographql.apollo.compiler.Before
 import com.apollographql.apollo.compiler.CodeGenerator
@@ -9,7 +10,7 @@ import com.apollographql.apollo.compiler.CodegenSchema
 import com.apollographql.apollo.compiler.LayoutFactory
 import com.apollographql.apollo.compiler.LegacyOperationIdsGenerator
 import com.apollographql.apollo.compiler.OperationIdsGenerator
-import com.apollographql.apollo.compiler.OperationsTransform
+import com.apollographql.apollo.compiler.ExecutableDocumentTransform
 import com.apollographql.apollo.compiler.Order
 import com.apollographql.apollo.compiler.SchemaTransform
 import com.apollographql.apollo.compiler.Transform
@@ -64,13 +65,19 @@ private class Node<T>(val id: String, val transform: T) {
 internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
   private val foreignSchemas = mutableListOf<ForeignSchema>()
   private val schemaTransforms = mutableListOf<Registration<SchemaTransform>>()
-  private val operationsTransforms = mutableListOf<Registration<OperationsTransform>>()
+  private val executableDocumentTransforms = mutableListOf<Registration<ExecutableDocumentTransform>>()
   private val irTransforms = mutableListOf<Registration<Transform<IrOperations>>>()
   private val layoutFactories = mutableListOf<LayoutFactory>()
   private val operationIdsGenerators = mutableListOf<OperationIdsGenerator>()
   private val javaOutputTransforms = mutableListOf<Registration<Transform<JavaOutput>>>()
   private val kotlinOutputTransforms = mutableListOf<Registration<Transform<KotlinOutput>>>()
   private val extraCodeGenerators = mutableListOf<CodeGenerator>()
+
+  @Suppress("DEPRECATION")
+  fun registerPlugin(plugin: ApolloCompilerPlugin) {
+    val operationIdsGenerator = LegacyOperationIdsGenerator(plugin)
+    registerOperationIdsGenerator(operationIdsGenerator)
+  }
 
   override fun registerForeignSchemas(schemas: List<ForeignSchema>) {
     foreignSchemas.addAll(schemas)
@@ -84,12 +91,12 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
     schemaTransforms.add(Registration(id, transform, orders))
   }
 
-  override fun registerOperationsTransform(
+  override fun registerExecutableDocumentTransform(
       id: String,
       vararg orders: Order,
-      transform: OperationsTransform,
+      transform: ExecutableDocumentTransform,
   ) {
-    operationsTransforms.add(Registration(id, transform, orders))
+    executableDocumentTransforms.add(Registration(id, transform, orders))
   }
 
   override fun registerIrTransform(
@@ -139,9 +146,9 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
     }
   }
 
-  fun operationsTransform(): OperationsTransform {
-    val nodes = operationsTransforms.toNodes().sort()
-    return OperationsTransform { schema, document, fragmentDefinitions ->
+  fun operationsTransform(): ExecutableDocumentTransform {
+    val nodes = executableDocumentTransforms.toNodes().sort()
+    return ExecutableDocumentTransform { schema, document, fragmentDefinitions ->
       nodes.fold(document) { acc, node ->
         node.transform.transform(schema, acc, fragmentDefinitions)
       }
@@ -206,9 +213,9 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
   }
 
   fun extraCodeGenerator(): CodeGenerator {
-    return CodeGenerator { document ->
+    return CodeGenerator { document, outputDirectory ->
       extraCodeGenerators.forEach {
-        it.generate(document)
+        it.generate(document, outputDirectory)
       }
     }
   }
@@ -222,25 +229,25 @@ internal fun String.sha256(): String {
 }
 
 private fun <T> Collection<Node<T>>.sort(): List<Node<T>> {
-  val visited = mutableSetOf<Node<T>>()
+  val visited = mutableListOf<Node<T>>()
   val result = mutableListOf<Node<T>>()
-  val visiting = mutableSetOf<Node<T>>()
 
   fun visit(node: Node<T>) {
-    if (node in visiting) {
-      throw IllegalArgumentException("Apollo: circular dependency detected on transform '${node.id}'")
-    }
-    if (node in visited) {
-      return
-    }
-
-    visiting.add(node)
-    node.dependencies.forEach { visit(it) }
-    visiting.remove(node)
     visited.add(node)
+    node.dependencies.forEach {
+      if (!visited.contains(it)) {
+        visit(it)
+      } else if (!result.contains(it)){
+        throw IllegalArgumentException("Apollo: circular dependency detected on transform '${node.id}': ${visited.map { it.id } + node.id}")
+      }
+    }
     result.add(node)
   }
 
-  forEach { visit(it) }
-  return result.reversed() // Topological sort results in reverse order
+  forEach {
+    if (!visited.contains(it)) {
+      visit(it)
+    }
+  }
+  return result
 }

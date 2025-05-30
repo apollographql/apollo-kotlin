@@ -8,7 +8,7 @@ internal class LegacyOperationIdsGenerator(private val plugin: ApolloCompilerPlu
     @Suppress("DEPRECATION")
     val operationIds = plugin.operationIds(operationDescriptorList.toList())
     if (operationIds != null) {
-      println("Apollo: using ApolloCompiler.operationIds() is deprecated. Please use registry.registerOperationIdsGenerator() instead.")
+      println("Apollo: using ApolloCompilerPlugin.operationIds() is deprecated. Please use registry.registerOperationIdsGenerator() instead.")
       return operationIds
     }
     return NoList

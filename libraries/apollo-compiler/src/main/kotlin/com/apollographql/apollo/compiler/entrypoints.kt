@@ -32,8 +32,7 @@ class EntryPoints {
     val registry = apolloCompilerRegistry(
         arguments,
         logLevel,
-        warnIfNotFound,
-        null
+        warnIfNotFound
     )
 
     ApolloCompiler.buildCodegenSchema(
@@ -55,7 +54,7 @@ class EntryPoints {
       warning: Consumer<String>,
       irOperationsFile: File,
   ) {
-    val registry = apolloCompilerRegistry(arguments, logLevel, outputDirectory = null)
+    val registry = apolloCompilerRegistry(arguments, logLevel)
 
     val upstream = upstreamIrOperations.toInputFiles().map { it.file.toIrOperations() }
     buildIrOperations(
@@ -63,7 +62,7 @@ class EntryPoints {
         codegenSchema = codegenSchemaFiles.toInputFiles().map { it.file }.findCodegenSchemaFile().toCodegenSchema(),
         upstreamCodegenModels = upstream.map { it.codegenModels },
         upstreamFragmentDefinitions = upstream.flatMap { it.fragmentDefinitions },
-        operationsTransform = registry.operationsTransform(),
+        executableDocumentTransform = registry.operationsTransform(),
         options = irOptionsFile.toIrOptions(),
         logger = warning.toLogger(),
     ).writeTo(irOperationsFile)
@@ -85,8 +84,7 @@ class EntryPoints {
     val registry = apolloCompilerRegistry(
         arguments,
         logLevel,
-        warnIfNotFound,
-        outputDir
+        warnIfNotFound
     )
     val codegenSchemaFile = codegenSchemaFiles.toInputFiles().map { it.file }.findCodegenSchemaFile()
     val codegenSchema = codegenSchemaFile.toCodegenSchema()
@@ -107,7 +105,7 @@ class EntryPoints {
     ).writeTo(outputDir, true, metadataOutputFile)
 
     if (upstreamCodegenMetadata.isEmpty()) {
-      registry.extraCodeGenerator().generate(codegenSchema.schema.toGQLDocument())
+      registry.extraCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
     }
   }
 
@@ -128,8 +126,7 @@ class EntryPoints {
     val registry = apolloCompilerRegistry(
         arguments,
         logLevel,
-        warnIfNotFound,
-        outputDir
+        warnIfNotFound
     )
 
     val codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions()
@@ -146,7 +143,7 @@ class EntryPoints {
         executableFiles = graphqlFiles.toInputFiles(),
         upstreamCodegenModels = emptyList(),
         upstreamFragmentDefinitions = emptyList(),
-        operationsTransform = registry.operationsTransform(),
+        executableDocumentTransform = registry.operationsTransform(),
         options = irOptions.toIrOptions(),
         logger = warning.toLogger(),
     )
@@ -179,7 +176,7 @@ class EntryPoints {
 
     sourceOutput.writeTo(outputDir, true, null)
 
-    registry.extraCodeGenerator().generate(codegenSchema.schema.toGQLDocument())
+    registry.extraCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
   }
 
   fun buildDataBuilders(
@@ -195,8 +192,7 @@ class EntryPoints {
     val registry = apolloCompilerRegistry(
         arguments,
         logLevel,
-        warnIfNotFound,
-        outputDir
+        warnIfNotFound
     )
     val codegenSchemaFile = codegenSchemaFiles.toInputFiles().map { it.file }.findCodegenSchemaFile()
     val codegenSchema = codegenSchemaFile.toCodegenSchema()
@@ -233,32 +229,28 @@ fun Iterable<File>.findCodegenSchemaFile(): File {
 internal fun apolloCompilerRegistry(
     arguments: Map<String, Any?>,
     logLevel: Int,
-    warnIfNotFound: Boolean = false,
-    outputDirectory: File?
+    warnIfNotFound: Boolean = false
 ): DefaultApolloCompilerRegistry {
   val registry = DefaultApolloCompilerRegistry()
   val environment = ApolloCompilerPluginEnvironment(
       arguments,
       GradleCompilerPluginLogger(logLevel),
-      outputDirectory
   )
   var hasPlugin = false
   val plugins = ServiceLoader.load(ApolloCompilerPlugin::class.java, ApolloCompilerPlugin::class.java.classLoader).toList()
   plugins.forEach {
     hasPlugin = true
     it.beforeCompilationStep(environment, registry)
+    registry.registerPlugin(it)
   }
 
   val pluginProviders = ServiceLoader.load(ApolloCompilerPluginProvider::class.java, ApolloCompilerPluginProvider::class.java.classLoader).toList()
   pluginProviders.forEach {
-    if (hasPlugin)  {
-      error("Apollo: exposing both an ApolloCompilerPluginProvider and an ApolloCompilerPlugin is deprecated. Please use ApolloCompilerPlugin directly.")
-    }
     println("Apollo: using ApolloCompilerPluginProvider is deprecated. Please use ApolloCompilerPlugin directly.")
     hasPlugin = true
     val plugin = it.create(environment)
     plugin.beforeCompilationStep(environment, registry)
-    registry.registerOperationIdsGenerator(LegacyOperationIdsGenerator(plugin))
+    registry.registerPlugin(plugin)
   }
 
   if (!hasPlugin && warnIfNotFound) {
