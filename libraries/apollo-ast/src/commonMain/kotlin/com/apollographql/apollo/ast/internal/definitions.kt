@@ -36,7 +36,7 @@ internal val kotlinLabsDefinitions_0_3 = """
       A selection set containing fields used to compute the cache key of an object. 
       Nested selection sets are currently not supported. Order is important. 
       
-      Key fields can be defined on interfaces. In that case, the key fields apply to all sub-types. Sub-types are not allowed to define their own key fields.
+      Key fields can be defined on interfaces. In that case, the key fields apply to all sub-types and sub-types are not allowed to define their own key fields.
       If a type implements multiple interfaces with keyfields, the keyfields must match across all interfaces with keyfields.
       
       The key fields are automatically added to the operations by the compiler.
