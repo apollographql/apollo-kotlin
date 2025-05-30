@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  204064
-aggregate-kotlin-responseBased                                                                  65403
-aggregate-kotlin-operationBased                                                                 41356
+aggregate-all                                                                                  206516
+aggregate-kotlin-responseBased                                                                  66142
+aggregate-kotlin-operationBased                                                                 42037
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   97305
+aggregate-java-operationBased                                                                   98337
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5624
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3369
@@ -69,6 +69,7 @@ kotlin-responseBased-named_fragment_with_variables                              
 java-operationBased-inline_fragments_with_friends                                                1048
 java-operationBased-operationbased2_ex8                                                          1046
 kotlin-responseBased-simple_fragment_with_inline_fragments                                       1042
+java-operationBased-typepolicy                                                                   1032
 kotlin-operationBased-root_query_fragment_with_nested_fragments                                  1028
 java-operationBased-custom_scalar_type                                                           1022
 kotlin-operationBased-simple_fragment                                                            1021
@@ -119,6 +120,7 @@ kotlin-responseBased-root_query_inline_fragment                                 
 kotlin-responseBased-simple_union                                                                 762
 java-operationBased-typename_always_first                                                         758
 java-operationBased-interface_on_interface                                                        740
+kotlin-responseBased-typepolicy                                                                   739
 kotlin-responseBased-fragments_same_type_condition                                                731
 kotlin-operationBased-inline_fragments_with_friends                                               726
 java-operationBased-input_object_variable_and_argument                                            724
@@ -129,6 +131,7 @@ kotlin-operationBased-simple_fragment_with_inline_fragments                     
 java-operationBased-interface_always_nested                                                       687
 kotlin-operationBased-fragment_spread_with_nested_fields                                          686
 kotlin-responseBased-input_object_variable_and_argument_with_generated_methods                    686
+kotlin-operationBased-typepolicy                                                                  681
 kotlin-responseBased-used_arguments                                                               673
 kotlin-responseBased-union_fragment                                                               671
 java-operationBased-capitalized_fields                                                            670

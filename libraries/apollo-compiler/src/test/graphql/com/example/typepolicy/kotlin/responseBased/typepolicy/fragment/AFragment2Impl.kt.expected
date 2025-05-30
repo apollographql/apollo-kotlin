@@ -8,7 +8,6 @@ package com.example.typepolicy.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.ExecutableDefinition
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.obj
@@ -32,9 +31,14 @@ public class AFragment2Impl() : Fragment<AFragment2Impl.Data> {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> = ADAPTER
+  override fun adapter(): Adapter<Data> = AFragment2Impl_ResponseAdapter.Data.obj()
 
-  override fun rootField(): CompiledField = ROOT_FIELD
+  override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = A.type
+  )
+  .selections(selections = AFragment2Selections.__root)
+  .build()
 
   public data class Data(
     override val bar: String?,
@@ -42,16 +46,5 @@ public class AFragment2Impl() : Fragment<AFragment2Impl.Data> {
     override val id: String,
     override val __typename: String,
   ) : AFragment2,
-      A.Data
-
-  public companion object : ExecutableDefinition<Data> {
-    override val ADAPTER: Adapter<Data> = AFragment2Impl_ResponseAdapter.Data.obj()
-
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = A.type
-        )
-        .selections(selections = AFragment2Selections.__root)
-        .build()
-  }
+      Fragment.Data
 }

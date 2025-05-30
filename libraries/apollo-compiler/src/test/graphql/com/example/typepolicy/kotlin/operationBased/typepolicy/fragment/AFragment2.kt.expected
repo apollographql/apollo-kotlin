@@ -5,7 +5,7 @@
 //
 package com.example.typepolicy.fragment
 
-import com.example.typepolicy.type.A
+import com.apollographql.apollo.api.Fragment
 import kotlin.String
 
 public data class AFragment2(
@@ -13,4 +13,4 @@ public data class AFragment2(
   public val myId: String,
   public val id: String,
   public val __typename: String,
-) : A.Data
+) : Fragment.Data
