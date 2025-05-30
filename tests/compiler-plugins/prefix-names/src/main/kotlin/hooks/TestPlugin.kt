@@ -15,6 +15,7 @@ class TestPlugin(
     logger.info("TestPlugin.prefix=$prefix")
   }
 
+  @Deprecated("deprecated")
   override fun layout(codegenSchema: CodegenSchema): SchemaAndOperationsLayout {
     val delegate = SchemaAndOperationsLayout(
         codegenSchema = codegenSchema,

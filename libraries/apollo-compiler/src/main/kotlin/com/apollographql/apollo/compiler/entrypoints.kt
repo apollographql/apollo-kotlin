@@ -3,7 +3,9 @@ package com.apollographql.apollo.compiler
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo.compiler.codegen.writeTo
+import com.apollographql.apollo.compiler.internal.DefaultApolloCompilerRegistry
 import com.apollographql.apollo.compiler.internal.GradleCompilerPluginLogger
+import com.apollographql.apollo.compiler.internal.LegacyOperationIdsGenerator
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.OperationId
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
@@ -30,17 +32,17 @@ class EntryPoints {
       codegenSchemaOptionsFile: File,
       codegenSchemaFile: File,
   ) {
-    val plugin = apolloCompilerPlugin(
+    val registry = apolloCompilerRegistry(
         arguments,
         logLevel,
-        warnIfNotFound
+        warnIfNotFound,
     )
 
     ApolloCompiler.buildCodegenSchema(
         schemaFiles = normalizedSchemaFiles.toInputFiles(),
         logger = warning.toLogger(),
         codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions(),
-        foreignSchemas = plugin?.foreignSchemas().orEmpty()
+        foreignSchemas = registry.foreignSchemas()
     ).writeTo(codegenSchemaFile)
   }
 
@@ -54,7 +56,7 @@ class EntryPoints {
       warning: Consumer<String>,
       irOperationsFile: File,
   ) {
-    val plugin = apolloCompilerPlugin(arguments, logLevel)
+    val registry = apolloCompilerRegistry(arguments, logLevel, false)
 
     val upstream = upstreamIrOperations.toInputFiles().map { it.file.toIrOperations() }
     ApolloCompiler.buildIrOperations(
@@ -62,7 +64,7 @@ class EntryPoints {
         codegenSchema = codegenSchemaFiles.toInputFiles().map { it.file }.findCodegenSchemaFile().toCodegenSchema(),
         upstreamCodegenModels = upstream.map { it.codegenModels },
         upstreamFragmentDefinitions = upstream.flatMap { it.fragmentDefinitions },
-        documentTransform = plugin?.documentTransform(),
+        documentTransform = registry.executableDocumentTransform(),
         options = irOptionsFile.toIrOptions(),
         logger = warning.toLogger(),
     ).writeTo(irOperationsFile)
@@ -81,7 +83,7 @@ class EntryPoints {
       outputDir: File,
       metadataOutputFile: File?
   ) {
-    val plugin = apolloCompilerPlugin(
+    val registry = apolloCompilerRegistry(
         arguments,
         logLevel,
         warnIfNotFound
@@ -97,16 +99,16 @@ class EntryPoints {
         downstreamUsedCoordinates = downstreamUsedCoordinates.toUsedCoordinates(),
         upstreamCodegenMetadata = upstreamCodegenMetadata,
         codegenOptions = codegenOptions.toCodegenOptions(),
-        layout = plugin?.layout(codegenSchema),
-        irOperationsTransform = plugin?.irOperationsTransform(),
-        javaOutputTransform = plugin?.javaOutputTransform(),
-        kotlinOutputTransform = plugin?.kotlinOutputTransform(),
+        layout = registry.layout(codegenSchema),
+        irOperationsTransform = registry.irOperationsTransform(),
+        javaOutputTransform = registry.javaOutputTransform(),
+        kotlinOutputTransform = registry.kotlinOutputTransform(),
         operationManifestFile = operationManifestFile,
-        operationOutputGenerator = plugin?.toOperationOutputGenerator(),
+        operationOutputGenerator = registry.toOperationOutputGenerator(),
     ).writeTo(outputDir, true, metadataOutputFile)
 
     if (upstreamCodegenMetadata.isEmpty()) {
-      plugin?.schemaListener()?.onSchema(codegenSchema.schema, outputDir)
+      registry.extraCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
     }
   }
 
@@ -123,7 +125,7 @@ class EntryPoints {
       operationManifestFile: File?,
       outputDir: File
   ) {
-    val plugin = apolloCompilerPlugin(
+    val registry = apolloCompilerRegistry(
         arguments,
         logLevel,
         warnIfNotFound
@@ -132,7 +134,7 @@ class EntryPoints {
     val codegenSchema = ApolloCompiler.buildCodegenSchema(
         schemaFiles = schemaFiles.toInputFiles(),
         codegenSchemaOptions = codegenSchemaOptions.toCodegenSchemaOptions(),
-        foreignSchemas = plugin?.foreignSchemas().orEmpty(),
+        foreignSchemas = registry.foreignSchemas(),
         logger = warning.toLogger()
     )
 
@@ -144,18 +146,18 @@ class EntryPoints {
         logger = warning.toLogger(),
         layoutFactory = object : LayoutFactory {
           override fun create(codegenSchema: CodegenSchema): SchemaAndOperationsLayout? {
-            return plugin?.layout(codegenSchema)
+            return registry.layout(codegenSchema)
           }
         },
-        operationOutputGenerator = plugin?.toOperationOutputGenerator(),
-        irOperationsTransform = plugin?.irOperationsTransform(),
-        javaOutputTransform = plugin?.javaOutputTransform(),
-        kotlinOutputTransform = plugin?.kotlinOutputTransform(),
-        documentTransform = plugin?.documentTransform(),
+        operationOutputGenerator = registry.toOperationOutputGenerator(),
+        irOperationsTransform = registry.irOperationsTransform(),
+        javaOutputTransform = registry.javaOutputTransform(),
+        kotlinOutputTransform = registry.kotlinOutputTransform(),
+        documentTransform = registry.executableDocumentTransform(),
         operationManifestFile = operationManifestFile,
     ).writeTo(outputDir, true, null)
 
-    plugin?.schemaListener()?.onSchema(codegenSchema.schema, outputDir)
+    registry.extraCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
   }
 }
 
@@ -193,45 +195,41 @@ fun Iterable<File>.findCodegenSchemaFile(): File {
   } ?: error("Cannot find CodegenSchema in $this")
 }
 
-internal fun apolloCompilerPlugin(
+
+
+internal fun apolloCompilerRegistry(
     arguments: Map<String, Any?>,
     logLevel: Int,
-    warnIfNotFound: Boolean = false,
-): ApolloCompilerPlugin? {
+    warnIfNotFound: Boolean = false
+): DefaultApolloCompilerRegistry {
+  val registry = DefaultApolloCompilerRegistry()
+  val environment = ApolloCompilerPluginEnvironment(
+      arguments,
+      GradleCompilerPluginLogger(logLevel),
+  )
+  var hasPlugin = false
   val plugins = ServiceLoader.load(ApolloCompilerPlugin::class.java, ApolloCompilerPlugin::class.java.classLoader).toList()
-
-  if (plugins.size > 1) {
-    error("Apollo: only a single compiler plugin is allowed")
+  plugins.forEach {
+    hasPlugin = true
+    it.beforeCompilationStep(environment, registry)
+    registry.registerPlugin(it)
   }
 
-  val plugin = plugins.singleOrNull()
-  if (plugin != null) {
-    error("Apollo: use ApolloCompilerPluginProvider instead of ApolloCompilerPlugin directly. ApolloCompilerPluginProvider allows arguments and logging")
+  val pluginProviders = ServiceLoader.load(ApolloCompilerPluginProvider::class.java, ApolloCompilerPluginProvider::class.java.classLoader).toList()
+  pluginProviders.forEach {
+    println("Apollo: using ApolloCompilerPluginProvider is deprecated. Please use ApolloCompilerPlugin directly.")
+    hasPlugin = true
+    val plugin = it.create(environment)
+    plugin.beforeCompilationStep(environment, registry)
+    registry.registerPlugin(plugin)
   }
 
-  val pluginProviders = ServiceLoader.load(ApolloCompilerPluginProvider::class.java, ApolloCompilerPlugin::class.java.classLoader).toList()
-
-  if (pluginProviders.size > 1) {
-    error("Apollo: only a single compiler plugin provider is allowed")
+  if (!hasPlugin && warnIfNotFound) {
+    println("Apollo: a compiler plugin was added with `Service.plugin()` but no plugin was loaded by the ServiceLoader. Check your META-INF/services/com.apollographql.apollo.compiler.ApolloCompilerPlugin file.")
   }
 
-  if (pluginProviders.isEmpty() && warnIfNotFound) {
-    println("Apollo: a compiler plugin was added with `Service.plugin()` but could not be loaded by the ServiceLoader. Check your META-INF/services/com.apollographql.apollo.compiler.ApolloCompilerPluginProvider file.")
-  }
-
-  val provider = pluginProviders.singleOrNull()
-  if (provider != null) {
-    return provider.create(
-        ApolloCompilerPluginEnvironment(
-            arguments,
-            GradleCompilerPluginLogger(logLevel)
-        )
-    )
-  }
-
-  return plugins.singleOrNull()
+  return registry
 }
-
 
 internal fun List<Any>.toInputFiles(): List<InputFile> = buildList {
   val iterator = this@toInputFiles.iterator()
