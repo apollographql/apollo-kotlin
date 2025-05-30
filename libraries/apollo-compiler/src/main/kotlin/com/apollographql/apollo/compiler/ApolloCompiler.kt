@@ -232,12 +232,22 @@ object ApolloCompiler {
 
     /**
      * Step 2, Modify the AST to add typename, key fields and call any user-provided transform.
+     * If we detect that the cache compiler plugin is present, we skip adding the keyfields because it will do it.
+     * TODO: deprecate `addTypename`
      */
-    var document = ApolloOperationsTransform(options.addTypename ?: defaultAddTypename).transform(
-        schema = schema,
-        document = GQLDocument(userDefinitions, sourceLocation = null),
-        upstreamFragmentDefinitions
+    val hasCacheCompilerPlugin = try {
+      Class.forName("com.apollographql.cache.apollocompilerplugin.internal.ApolloCacheCompilerPlugin")
+      true
+    } catch (_: ClassNotFoundException) {
+      false
+    }
+
+    var document = ApolloOperationsTransform(options.addTypename ?: defaultAddTypename, !hasCacheCompilerPlugin).transform(
+      schema = schema,
+      document = GQLDocument(userDefinitions, sourceLocation = null),
+      upstreamFragmentDefinitions
     )
+
     if (operationsTransform != null) {
       document = operationsTransform.transform(schema, document, upstreamFragmentDefinitions)
     }
