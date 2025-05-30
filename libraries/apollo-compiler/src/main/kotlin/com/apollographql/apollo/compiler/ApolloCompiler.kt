@@ -34,7 +34,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodegen
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo.compiler.codegen.kotlin.toSourceOutput
 import com.apollographql.apollo.compiler.codegen.plus
-import com.apollographql.apollo.compiler.internal.ApolloOperationsTransform
+import com.apollographql.apollo.compiler.internal.ApolloExecutableDocumentTransform
 import com.apollographql.apollo.compiler.internal.checkApolloInlineFragmentsHaveTypeCondition
 import com.apollographql.apollo.compiler.internal.checkApolloReservedEnumValueNames
 import com.apollographql.apollo.compiler.internal.checkApolloTargetNameClashes
@@ -190,7 +190,7 @@ object ApolloCompiler {
       upstreamCodegenModels: List<String>,
       upstreamFragmentDefinitions: List<GQLFragmentDefinition>,
       options: IrOptions,
-      operationsTransform: OperationsTransform?,
+      executableDocumentTransform: ExecutableDocumentTransform?,
       logger: Logger?,
   ): IrOperations {
     val schema = codegenSchema.schema
@@ -233,13 +233,13 @@ object ApolloCompiler {
     /**
      * Step 2, Modify the AST to add typename, key fields and call any user-provided transform.
      */
-    var document = ApolloOperationsTransform(options.addTypename ?: defaultAddTypename).transform(
+    var document = ApolloExecutableDocumentTransform(options.addTypename ?: defaultAddTypename).transform(
         schema = schema,
         document = GQLDocument(userDefinitions, sourceLocation = null),
         upstreamFragmentDefinitions
     )
-    if (operationsTransform != null) {
-      document = operationsTransform.transform(schema, document, upstreamFragmentDefinitions)
+    if (executableDocumentTransform != null) {
+      document = executableDocumentTransform.transform(schema, document, upstreamFragmentDefinitions)
     }
 
     /**
@@ -394,7 +394,7 @@ object ApolloCompiler {
     }
 
     val operationOutput = descriptors.toOperationOutput(
-        (operationIdsGenerator ?: defaultOperationOutputGenerator).generate(descriptors)
+        (operationIdsGenerator ?: defaultOperationIdsGenerator).generate(descriptors)
     )
 
     check(operationOutput.size == irOperations.operations.size) {
@@ -475,7 +475,7 @@ object ApolloCompiler {
       irOperationsTransform: Transform<IrOperations>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
-      operationsTransform: OperationsTransform?,
+      executableDocumentTransform: ExecutableDocumentTransform?,
       schemaTransform: SchemaTransform?,
       logger: Logger?,
       operationManifestFile: File?,
@@ -498,7 +498,7 @@ object ApolloCompiler {
         irOperationsTransform,
         javaOutputTransform,
         kotlinOutputTransform,
-        operationsTransform,
+        executableDocumentTransform,
         logger,
         operationManifestFile
     )
@@ -517,7 +517,7 @@ object ApolloCompiler {
       irOperationsTransform: Transform<IrOperations>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
-      operationsTransform: OperationsTransform?,
+      executableDocumentTransform: ExecutableDocumentTransform?,
       logger: Logger?,
       operationManifestFile: File?,
   ): SourceOutput {
@@ -526,7 +526,7 @@ object ApolloCompiler {
         executableFiles = executableFiles,
         upstreamCodegenModels = emptyList(),
         upstreamFragmentDefinitions = emptyList(),
-        operationsTransform = operationsTransform,
+        executableDocumentTransform = executableDocumentTransform,
         options = irOptions,
         logger = logger
     )
