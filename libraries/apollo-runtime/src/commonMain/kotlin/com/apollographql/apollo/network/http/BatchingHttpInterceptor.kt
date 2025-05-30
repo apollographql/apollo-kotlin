@@ -238,6 +238,10 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         pending[index].deferred.complete(
             HttpResponse.Builder(statusCode = 200)
                 .body(Buffer().write(byteString))
+                /*
+                 * Return the global batch headers to individual responses.
+                 * This is useful for things like cache-control that rely on HTTP headers.
+                 */
                 .headers(responseHeader)
                 .build()
         )
