@@ -1,0 +1,15 @@
+extend schema
+@link(
+  url: "https://specs.apollo.dev/kotlin_labs/v0.3",
+  import: ["@typePolicy"]
+)
+
+type A @typePolicy(keyFields: "id") {
+  id: ID!
+  foo: String
+  bar: String
+}
+
+type Query {
+  a: A
+}
