@@ -3,6 +3,7 @@ package hooks
 import com.apollographql.apollo.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo.compiler.ApolloCompilerPluginEnvironment
 import com.apollographql.apollo.compiler.ApolloCompilerPluginProvider
+import com.apollographql.apollo.compiler.ApolloCompilerRegistry
 import com.apollographql.apollo.compiler.Transform
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
 import com.squareup.kotlinpoet.ClassName
@@ -18,8 +19,11 @@ class TestPluginProvider: ApolloCompilerPluginProvider {
 class TestPlugin : ApolloCompilerPlugin {
   private val interfaceName = "hooks.typenameinterface.HasTypeName"
 
-  override fun kotlinOutputTransform(): Transform<KotlinOutput> {
-    return object : Transform<KotlinOutput> {
+  override fun beforeCompilationStep(
+      environment: ApolloCompilerPluginEnvironment,
+      registry: ApolloCompilerRegistry,
+  ) {
+    registry.registerKotlinOutputTransform("test", transform = object : Transform<KotlinOutput> {
       override fun transform(input: KotlinOutput): KotlinOutput {
         return KotlinOutput(
             fileSpecs = input.fileSpecs.map {
@@ -38,7 +42,7 @@ class TestPlugin : ApolloCompilerPlugin {
             codegenMetadata = input.codegenMetadata
         )
       }
-    }
+    })
   }
 
   private fun TypeSpec.addSuperInterfaceOnType(): TypeSpec {

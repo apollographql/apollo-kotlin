@@ -49,3 +49,10 @@ internal fun OperationOutput.findOperationId(name: String): String {
   return id
 }
 
+internal fun List<OperationDescriptor>.toOperationOutput(operationIds: List<OperationId>): OperationOutput {
+  return associateBy { descriptor ->
+    val operationId = operationIds.firstOrNull { it.name == descriptor.name } ?: error("No id found for operation ${descriptor.name}")
+    operationId.id
+  }
+}
+
