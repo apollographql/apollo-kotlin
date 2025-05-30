@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.ExecutionOptions
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.http.HttpBody
+import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.api.http.HttpMethod
 import com.apollographql.apollo.api.http.HttpRequest
 import com.apollographql.apollo.api.http.HttpResponse
@@ -176,6 +177,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         .build()
 
     var exception: ApolloException? = null
+    var responseHeader = emptyList<HttpHeader>()
     val result = try {
       val response = interceptorChain!!.proceed(request)
       if (response.statusCode !in 200..299) {
@@ -193,6 +195,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         )
       }
       val responseBody = response.body ?: throw DefaultApolloException("null body when executing batched query")
+      responseHeader = response.headers
 
       val list = BufferedSourceJsonReader(responseBody).use { jsonReader ->
         // TODO: this is most likely going to transform BigNumbers into strings, not sure how much of an issue that is
@@ -235,6 +238,11 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         pending[index].deferred.complete(
             HttpResponse.Builder(statusCode = 200)
                 .body(Buffer().write(byteString))
+                /*
+                 * Return the global batch headers to individual responses.
+                 * This is useful for things like cache-control that rely on HTTP headers.
+                 */
+                .headers(responseHeader)
                 .build()
         )
       }
