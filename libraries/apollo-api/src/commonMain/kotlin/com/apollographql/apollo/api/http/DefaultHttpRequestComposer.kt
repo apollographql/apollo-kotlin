@@ -180,7 +180,7 @@ class DefaultHttpRequestComposer(
             name("clientLibrary")
             writeObject {
               name("name").value("apollo-kotlin")
-              name("version").value(0)
+              name("version").value(com.apollographql.apollo.api.apolloApiVersion)
             }
           }
         }
