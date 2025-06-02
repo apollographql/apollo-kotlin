@@ -3,6 +3,7 @@ package hooks
 import com.apollographql.apollo.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo.compiler.ApolloCompilerPluginEnvironment
 import com.apollographql.apollo.compiler.ApolloCompilerPluginProvider
+import com.apollographql.apollo.compiler.ApolloCompilerRegistry
 import com.apollographql.apollo.compiler.Transform
 import com.apollographql.apollo.compiler.capitalizeFirstLetter
 import com.apollographql.apollo.compiler.codegen.java.JavaOutput
@@ -15,9 +16,13 @@ class TestPluginProvider: ApolloCompilerPluginProvider {
     return TestPlugin()
   }
 }
+
 class TestPlugin : ApolloCompilerPlugin {
-  override fun javaOutputTransform(): Transform<JavaOutput> {
-    return object : Transform<JavaOutput> {
+  override fun beforeCompilationStep(
+      environment: ApolloCompilerPluginEnvironment,
+      registry: ApolloCompilerRegistry,
+  ) {
+    registry.registerJavaOutputTransform("test", transform = object : Transform<JavaOutput> {
       override fun transform(input: JavaOutput): JavaOutput {
         return JavaOutput(
             javaFiles = input.javaFiles.map { javaFile ->
@@ -66,6 +71,7 @@ class TestPlugin : ApolloCompilerPlugin {
             codegenMetadata = input.codegenMetadata
         )
       }
-    }
+
+    })
   }
 }

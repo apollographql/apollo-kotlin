@@ -178,7 +178,7 @@ object ApolloCompiler {
       upstreamCodegenModels: List<String>,
       upstreamFragmentDefinitions: List<GQLFragmentDefinition>,
       options: IrOptions,
-      documentTransform: DocumentTransform?,
+      documentTransform: ExecutableDocumentTransform?,
       logger: Logger?,
   ): IrOperations {
     val schema = codegenSchema.schema
@@ -265,18 +265,12 @@ object ApolloCompiler {
      * Step 3, Modify the AST to add typename and key fields
      */
     val fragmentDefinitions = (definitions.filterIsInstance<GQLFragmentDefinition>() + upstreamFragmentDefinitions).associateBy { it.name }
-    val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
-      addRequiredFields(it, addTypename, schema, fragmentDefinitions).let {
-        documentTransform?.transform(schema, it) ?: it
-      }
+    var fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
+      addRequiredFields(it, addTypename, schema, fragmentDefinitions)
     }
 
-
-    val operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
+    var operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
       var operation = addRequiredFields(it, addTypename, schema, fragmentDefinitions)
-      if (documentTransform != null) {
-        operation = documentTransform.transform(schema, operation)
-      }
       if (schema.directiveDefinitions.containsKey(Schema.DISABLE_ERROR_PROPAGATION)
           && schema.schemaDefinition?.directives?.any { schema.originalDirectiveName(it.name) == Schema.CATCH_BY_DEFAULT } == true) {
         operation = operation.copy(
@@ -284,6 +278,12 @@ object ApolloCompiler {
         )
       }
       operation
+    }
+
+    if (documentTransform != null) {
+      val transformedDocument = documentTransform.transform(schema, GQLDocument(sourceLocation = null, definitions = fragments + operations), upstreamFragmentDefinitions)
+      fragments = transformedDocument.definitions.filterIsInstance<GQLFragmentDefinition>()
+      operations = transformedDocument.definitions.filterIsInstance<GQLOperationDefinition>()
     }
 
     // Remember the fragments with the possibly updated fragments
@@ -474,7 +474,7 @@ object ApolloCompiler {
       irOperationsTransform: Transform<IrOperations>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
-      documentTransform: DocumentTransform?,
+      documentTransform: ExecutableDocumentTransform?,
       logger: Logger?,
       operationManifestFile: File?,
   ): SourceOutput {
@@ -515,7 +515,7 @@ object ApolloCompiler {
       irOperationsTransform: Transform<IrOperations>?,
       javaOutputTransform: Transform<JavaOutput>?,
       kotlinOutputTransform: Transform<KotlinOutput>?,
-      documentTransform: DocumentTransform?,
+      documentTransform: ExecutableDocumentTransform?,
       logger: Logger?,
       operationManifestFile: File?,
   ): SourceOutput {
