@@ -226,13 +226,11 @@ class DefaultHttpRequestComposer(
         }
 
         if (sendEnhancedClientAwareness) {
-          val extensions = buildJsonString {
+          writeObject {
+            name("clientLibrary")
             writeObject {
-              name("clientLibrary")
-              writeObject {
-                name("name").value("apollo-kotlin")
-                name("version").value(0)
-              }
+              name("name").value("apollo-kotlin")
+              name("version").value(0)
             }
           }
         }
