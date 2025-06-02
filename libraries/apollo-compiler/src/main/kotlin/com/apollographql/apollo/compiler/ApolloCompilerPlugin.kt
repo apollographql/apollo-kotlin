@@ -6,7 +6,6 @@ import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.Schema
-import com.apollographql.apollo.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo.compiler.codegen.java.JavaOutput
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo.compiler.ir.IrOperations
@@ -32,7 +31,9 @@ interface ApolloCompilerPlugin {
    * @param environment options and environment for the plugin.
    * @param registry the registry where to register transformations.
    */
-  fun beforeCompilationStep(environment: ApolloCompilerPluginEnvironment, registry: ApolloCompilerRegistry)
+  fun beforeCompilationStep(environment: ApolloCompilerPluginEnvironment, registry: ApolloCompilerRegistry) {
+
+  }
 
   /**
    * Computes operation ids for persisted queries.
@@ -58,11 +59,6 @@ class ApolloCompilerPluginEnvironment(
      * A logger that can be used by the plugin.
      */
     val logger: ApolloCompilerPluginLogger,
-    /**
-     * The compiler output directory.
-     * May be null if the plugin is called from a non-codegen step like building the schema and/or the IR.
-     */
-    val outputDirectory: File?,
 )
 
 sealed interface Order
@@ -76,7 +72,7 @@ interface ApolloCompilerRegistry {
   fun registerSchemaTransform(id: String, vararg orders: Order, transform: SchemaTransform)
 
   @ApolloExperimental
-  fun registerOperationsTransform(id: String, vararg orders: Order, transform: OperationsTransform)
+  fun registerExecutableDocumentTransform(id: String, vararg orders: Order, transform: ExecutableDocumentTransform)
   @ApolloExperimental
   fun registerIrTransform(id: String, vararg orders: Order, transform: Transform<IrOperations>)
 
@@ -102,9 +98,9 @@ fun interface SchemaTransform {
 
 
 /**
- * A [OperationsTransform] transforms operations and fragments at build time. [OperationsTransform] can add or remove fields automatically, for an example.
+ * A [ExecutableDocumentTransform] transforms operations and fragments at build time. [ExecutableDocumentTransform] can add or remove fields automatically, for an example.
  */
-fun interface OperationsTransform {
+fun interface ExecutableDocumentTransform {
   /**
    * Transforms the given document.
    *
@@ -141,7 +137,7 @@ fun interface CodeGenerator {
   /**
    * Transforms the given input into an output of the same type
    */
-  fun generate(schema: GQLDocument)
+  fun generate(schema: GQLDocument, outputDirectory: File)
 }
 
 

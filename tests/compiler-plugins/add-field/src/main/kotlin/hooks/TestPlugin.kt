@@ -41,7 +41,7 @@ class TestPlugin : ApolloCompilerPlugin {
       environment: ApolloCompilerPluginEnvironment,
       registry: ApolloCompilerRegistry,
   ) {
-    registry.registerOperationsTransform("test"){ schema, document, fragments ->
+    registry.registerExecutableDocumentTransform("test"){ schema, document, fragments ->
          document.copy(
             definitions = document.definitions.map {
               when (it) {
