@@ -23,3 +23,7 @@ apollo {
 dependencies {
   add("apolloMultimodule2UsedCoordinates", project(":multi-module-2-child"))
 }
+
+tasks.withType(Test::class.java).configureEach {
+  failOnNoDiscoveredTests.set(false)
+}

@@ -1,4 +1,4 @@
-package com.apollographql.apollo.gradle.test
+package test
 
 
 import util.TestUtils
@@ -7,8 +7,6 @@ import util.TestUtils.withProject
 import util.generatedChild
 import com.google.common.truth.Truth.assertThat
 import org.gradle.testkit.runner.UnexpectedBuildFailure
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test

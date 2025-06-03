@@ -45,3 +45,7 @@ apollo {
     }
   }
 }
+
+tasks.withType(Test::class.java) {
+  failOnNoDiscoveredTests = false
+}

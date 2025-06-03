@@ -1,4 +1,4 @@
-package com.apollographql.apollo.gradle.test
+package test
 
 import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
 import org.gradle.tooling.GradleConnector

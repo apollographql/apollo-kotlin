@@ -1,4 +1,4 @@
-package com.apollographql.apollo.gradle.test
+package test
 
 import util.TestUtils
 import util.generatedChild
@@ -24,7 +24,7 @@ class KotlinDSLTests {
         TestUtils.executeGradle(dir)
       } catch (e: UnexpectedBuildFailure) {
         exception = e
-        Truth.assertThat(e.message).contains("Unresolved reference: services")
+        Truth.assertThat(e.message).contains("Unresolved reference 'services'.")
       }
       Assert.assertNotNull(exception)
     }

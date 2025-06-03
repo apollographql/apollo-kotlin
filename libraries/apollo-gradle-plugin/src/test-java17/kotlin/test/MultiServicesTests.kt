@@ -1,11 +1,9 @@
-package com.apollographql.apollo.gradle.test
+package test
 
 
 import util.TestUtils
 import util.TestUtils.withProject
 import util.generatedChild
-import com.google.common.truth.Truth
-import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.MatcherAssert

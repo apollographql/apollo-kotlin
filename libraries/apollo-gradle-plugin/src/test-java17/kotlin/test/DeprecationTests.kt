@@ -1,4 +1,4 @@
-package com.apollographql.apollo.gradle.test
+package test
 
 import util.TestUtils
 import util.replaceInText

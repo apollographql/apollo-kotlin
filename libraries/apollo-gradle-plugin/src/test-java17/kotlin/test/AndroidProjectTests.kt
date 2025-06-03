@@ -1,5 +1,6 @@
 package test
 
+import com.apollographql.apollo.gradle.internal.DefaultApolloExtension.Companion.MIN_GRADLE_VERSION
 import com.google.common.truth.Truth
 import util.TestUtils
 import util.TestUtils.executeTaskAndAssertSuccess
@@ -95,7 +96,15 @@ class AndroidProjectTests {
   fun `kotlin Android min version succeeds`() {
     withTestProject("kotlin-android-plugin-version") { dir ->
       dir.disableIsolatedProjects()
-      val result = TestUtils.executeTask("build", dir)
+      /**
+       * Use "8.10" because older KGP are not compatible with Gradle 9:
+       *
+       * ```
+       * java.lang.NoClassDefFoundError: org/gradle/api/internal/HasConvention
+       * 	at org.jetbrains.kotlin.gradle.plugin.internal.CompatibilityConventionRegistrarG81.addConvention(CompatibilityConventionRegistrarG81.kt:14)
+       * ```
+       */
+      val result = TestUtils.executeGradleWithVersion(dir, "8.10", "build")
 
       Truth.assertThat(result.task(":build")!!.outcome).isEqualTo(TaskOutcome.SUCCESS)
     }

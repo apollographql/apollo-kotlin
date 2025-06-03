@@ -1,19 +1,23 @@
-package com.apollographql.apollo.gradle.test
+package test
 
 import com.google.common.truth.Truth
+import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.junit.Assert
 import org.junit.Test
 import util.TestUtils
 import util.disableIsolatedProjects
 import java.io.File
+import kotlin.test.assertEquals
 
 class LanguageVersionTests {
   @Test
   fun `compiling with 1_5 features with Kotlin 1_5 is working`() {
     withProject(kotlinLanguageVersion = "1.5", apolloLanguageVersion = "1.5") { dir ->
       dir.disableIsolatedProjects() // old KGP versions do not support isolated projects
-      TestUtils.executeTaskAndAssertSuccess(":assemble", dir)
+      TestUtils.executeGradleWithVersion(dir, "8.10", ":assemble").apply {
+        assertEquals(TaskOutcome.SUCCESS, task(":assemble")!!.outcome)
+      }
     }
   }
 
@@ -21,7 +25,7 @@ class LanguageVersionTests {
   fun `compiling with 1_5 features with Kotlin 1_4 is not working`() {
     withProject(kotlinLanguageVersion = "1.4", apolloLanguageVersion = "1.5") { dir ->
       try {
-        TestUtils.executeTask(":assemble", dir)
+        TestUtils.executeGradleWithVersion(dir, "8.10", ":assemble")
         Assert.fail("Compiling with incompatible languageVersion should fail")
       } catch (e: UnexpectedBuildFailure) {
         Truth.assertThat(e.message).contains("The feature \"sealed interfaces\" is only available since language version 1.5")
@@ -33,7 +37,7 @@ class LanguageVersionTests {
   fun `using bogus languageVersion fails`() {
     withProject(kotlinLanguageVersion = "1.5", apolloLanguageVersion = "3.14") { dir ->
       try {
-        TestUtils.executeTask(":assemble", dir)
+        TestUtils.executeGradleWithVersion(dir, "8.10", ":assemble")
         Assert.fail("Compiling with incompatible languageVersion should fail")
       } catch (e: UnexpectedBuildFailure) {
         Truth.assertThat(e.message).contains("languageVersion '3.14' is not supported")
@@ -44,7 +48,9 @@ class LanguageVersionTests {
   @Test
   fun `compiling with 1_9 features generates entries in enums`() {
     withProject(apolloLanguageVersion = "1.9", graphqlPath = "githunt") { dir ->
-      TestUtils.executeTaskAndAssertSuccess(":generateApolloSources", dir)
+      TestUtils.executeGradleWithVersion(dir, "8.10", ":generateApolloSources").apply {
+        assertEquals(TaskOutcome.SUCCESS, task(":generateApolloSources")!!.outcome)
+      }
       Assert.assertTrue(File(dir, "build/generated/source/apollo/service/com/example/type/FeedType.kt").readText().contains("entries.find"))
     }
   }
@@ -52,7 +58,9 @@ class LanguageVersionTests {
   @Test
   fun `compiling with 1_5 features generates values in enums`() {
     withProject(apolloLanguageVersion = "1.5", graphqlPath = "githunt") { dir ->
-      TestUtils.executeTaskAndAssertSuccess(":generateApolloSources", dir)
+      TestUtils.executeGradleWithVersion(dir, "8.10", ":generateApolloSources").apply {
+        assertEquals(TaskOutcome.SUCCESS, task(":generateApolloSources")!!.outcome)
+      }
       Assert.assertTrue(File(dir, "build/generated/source/apollo/service/com/example/type/FeedType.kt").readText().contains("values().find"))
     }
   }
