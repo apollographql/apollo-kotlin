@@ -32,61 +32,36 @@ plugins {
 }
 
 dependencies {
-  // Add apollo-compiler as a dependency
-  implementation("com.apollographql.apollo:apollo-compiler:4.2.0")  
+  // Add apollo-compiler as a compileOnly dependency
+  compileOnly("com.apollographql.apollo:apollo-compiler:4.3.0")  
 }
 ```
 
 Next create your plugin in a `src/main/kotlin/mypackage/MyPlugin` file:
 
 ```kotlin
-package mypackage
-
-import com.apollographql.apollo.compiler.OperationOutputGenerator
-import com.apollographql.apollo.compiler.ApolloCompilerPlugin
-import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo.compiler.operationoutput.OperationId
-
 class MyPlugin: ApolloCompilerPlugin {
-  override fun operationIds(descriptors: List<OperationDescriptor>): List<OperationId> {
-    // This assumes the returned ids are in the same order as the descriptors
-    return registerOperations(descriptors).withIndex().map { OperationId(it.value, descriptors[it.index].name) }
-  }
-
-  /**
-   * Send operations to a remote server and return the server persisted ids 
-   */
-  fun registerOperations(descriptors: List<OperationDescriptor>): List<String> {
-    // ...
+  override fun beforeCompilationStep(
+      environment: ApolloCompilerPluginEnvironment,
+      registry: ApolloCompilerRegistry,
+  ) {
+    // add your custom code here
   }
 }
 ```
 
-Next, create an `ApolloCompilerPluginProvider`. This is the entry point of compiler plugins. It is loaded using the [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) API.
 
-```kotlin
-class MyPluginProvider: ApolloCompilerPluginProvider {
-  override fun create(environment: ApolloCompilerPluginEnvironment): ApolloCompilerPlugin {
-    return MyPlugin()
-  }
-}
-```
-
-Make your plugin discoverable by [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) by adding a resource in `src/main/resources/META-INF/services/com.apollographql.apollo.compiler.ApolloCompilerPluginProvider`. This file contains the fully qualified name of your plugin: 
+Make your plugin discoverable by [ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) by adding a resource in `src/main/resources/META-INF/services/com.apollographql.apollo.compiler.ApolloCompilerPlugin`. This file contains the fully qualified name of your plugin: 
 
 ```
-mypackage.MyPluginProvider
+mypackage.MyPlugin
 ```
 
 <Note>
 
-The name of the resource file is important. It must be `com.apollographql.apollo.compiler.ApolloCompilerPluginProvider` and be in the `META-INF/services` folder. This is how `ServiceLoader` looks up plugins at runtime.
+The name of the resource file is important. It must be `com.apollographql.apollo.compiler.ApolloCompilerPlugin` and be in the `META-INF/services` folder. This is how `ServiceLoader` looks up plugins at runtime.
 </Note>
 
-<Note>
-
-Only a single plugin is supported at this time. If you need more, you can usually have a single wrapper plugin that calls your different implementations in the required order. 
-</Note>
 
 ## Adding a plugin to the Apollo compiler classpath
 
@@ -133,9 +108,14 @@ apollo {
 The arguments are available in `ApolloCompilerPluginEnvironment.arguments`:
 
 ```kotlin
-class MyPluginProvider: ApolloCompilerPluginProvider {
-  override fun create(environment: ApolloCompilerPluginEnvironment): ApolloCompilerPlugin {
-    return MyPlugin(environment.arguments.get("token") as String)
+class MyPlugin: ApolloCompilerPlugin {
+  override fun beforeCompilationStep(
+      environment: ApolloCompilerPluginEnvironment,
+      registry: ApolloCompilerRegistry,
+  ) {
+    val token = environment.arguments.get("token") as String
+    
+    // add your custom code here
   }
 }
 ```
@@ -146,8 +126,8 @@ Arguments must be serializable and be instances of classes accessible from the b
 
 Because codegen is run in a separate classloader when using compiler plugins, it's not possible to use `packageNameGenerator`, `operationIdGenerator` or `operationOutputGenerator` at the same time as compiler plugins. If you want to use them, you'll have to:
 
-* use `ApolloCompilerPlugin.layout()` instead of `packageNameGenerator`
-* use `ApolloCompilerPlugin.operationIds()` instead of `operationIdGenerator` and `operationOutputGenerator`
+* use `ApolloCompilerRegistry.registerLayout()` instead of `packageNameGenerator`
+* use `ApolloCompilerRegistry.registerOperationIdsGenerator()` instead of `operationIdGenerator` and `operationOutputGenerator`
 
 ## Other references
 
