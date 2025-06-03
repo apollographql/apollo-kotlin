@@ -22,3 +22,7 @@ apollo {
     plugin(project(":schema-transform-plugin")) {}
   }
 }
+
+tasks.withType(Test::class.java).configureEach {
+  failOnNoDiscoveredTests.set(false)
+}

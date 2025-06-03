@@ -16,3 +16,7 @@ apollo {
     packageName.set("reserved")
   }
 }
+
+tasks.withType(Test::class.java).configureEach {
+  failOnNoDiscoveredTests.set(false)
+}

@@ -1,4 +1,4 @@
-package com.apollographql.apollo.gradle.test
+package test
 
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert
