@@ -262,7 +262,10 @@ object ApolloCompiler {
      * Step 3, Modify the AST to add typename and key fields
      */
     val hasCacheCompilerPlugin = try {
-      Class.forName("com.apollographql.cache.apollocompilerplugin.internal.ApolloCacheCompilerPlugin")
+      /**
+       * We have the cache compiler plugin in the class path. Do not do the work twice
+       */
+      Class.forName("com.apollographql.cache.apollocompilerplugin.ApolloCacheCompilerPlugin")
       true
     } catch (_: ClassNotFoundException) {
       false
