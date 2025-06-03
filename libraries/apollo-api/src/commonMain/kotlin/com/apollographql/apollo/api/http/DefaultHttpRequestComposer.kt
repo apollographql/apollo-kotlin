@@ -312,6 +312,19 @@ class DefaultHttpRequestComposer(
       }
     }
 
+    @Deprecated("Use new function with additional parameters instead.", ReplaceWith("buildParamsMap(operation = operation, customScalarAdapters = customScalarAdapters, autoPersistQueries = autoPersistQueries, sendDocument = sendDocument, sendEnhancedClientAwarenessExtensions = true)"))
+    fun <D : Operation.Data> buildParamsMap(
+        operation: Operation<D>,
+        customScalarAdapters: CustomScalarAdapters,
+        autoPersistQueries: Boolean,
+        sendDocument: Boolean,
+    ): ByteString {
+      return buildJsonByteString {
+        val query = if (sendDocument) operation.document() else null
+        composePostParams(this, operation, customScalarAdapters, autoPersistQueries, true, query)
+      }
+    }
+
     fun <D : Operation.Data> buildParamsMap(
         operation: Operation<D>,
         customScalarAdapters: CustomScalarAdapters,
