@@ -39,7 +39,7 @@ class TestPlugin(
         )
     ))
 
-    registry.registerExtraCodeGenerator { schema, outputDirectory ->
+    registry.registerSchemaCodeGenerator { schema, outputDirectory ->
       val maxAge = schema.definitions.filterIsInstance<GQLTypeDefinition>()
           .first { it.name == "Menu" }
           .directives

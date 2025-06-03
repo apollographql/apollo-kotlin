@@ -5,7 +5,6 @@ import com.apollographql.apollo.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo.compiler.codegen.writeTo
 import com.apollographql.apollo.compiler.internal.DefaultApolloCompilerRegistry
 import com.apollographql.apollo.compiler.internal.GradleCompilerPluginLogger
-import com.apollographql.apollo.compiler.internal.LegacyOperationIdsGenerator
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.OperationId
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
@@ -215,6 +214,7 @@ internal fun apolloCompilerRegistry(
     registry.registerPlugin(it)
   }
 
+  @Suppress("DEPRECATION")
   val pluginProviders = ServiceLoader.load(ApolloCompilerPluginProvider::class.java, ApolloCompilerPluginProvider::class.java.classLoader).toList()
   pluginProviders.forEach {
     println("Apollo: using ApolloCompilerPluginProvider is deprecated. Please use ApolloCompilerPlugin directly.")

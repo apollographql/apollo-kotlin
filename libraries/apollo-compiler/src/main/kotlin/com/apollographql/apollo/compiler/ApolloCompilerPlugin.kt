@@ -19,10 +19,11 @@ import kotlin.jvm.Throws
 /**
  * [ApolloCompilerPlugin] allows to customize the behavior of the Apollo Compiler.
  *
- * [ApolloCompilerPlugin] may be instantiated several times in a codegen run. Each instance is create in a
- * separate classloader.
- * The classloaders contains `apollo-compiler` classes and the runtime classpath of the [ApolloCompilerPlugin].
- * You may throw from [ApolloCompilerPlugin] methods to fail the build.
+ * [ApolloCompilerPlugin] instances are created by [java.util.ServiceLoader] and may be instantiated several times in a codegen run.
+ * Each instance is created in a separate classloader and contains the `apollo-compiler` version loaded by your build tool.
+ *
+ * You may check [com.apollographql.apollo.compiler.APOLLO_VERSION] to check for compatibility of your
+ * plugin with the version of `apollo-compiler` available at runtime.
  */
 interface ApolloCompilerPlugin {
   /**
@@ -79,7 +80,8 @@ interface ApolloCompilerPlugin {
   /**
    * @return a [DocumentTransform] to transform operations and/or fragments
    */
-  @Deprecated("Call `registry.registerJavaOutputTransform()` from beforeCompilationStep() instead.")
+  @Suppress("DEPRECATION")
+  @Deprecated("Call `registry.registerExecutableDocumentTransform()` from beforeCompilationStep() instead.")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_2_1)
   fun documentTransform(): DocumentTransform? {
     return null
@@ -102,21 +104,23 @@ interface ApolloCompilerPlugin {
    */
   @Deprecated("Call `registry.registerForeignSchemas()` from beforeCompilationStep() instead.")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_2_1)
-  fun registerForeignSchemas(): List<ForeignSchema> {
+  fun foreignSchemas(): List<ForeignSchema> {
     return emptyList()
   }
 
   /**
    * @return A [SchemaListener] called whenever the schema changed
    */
-  @Deprecated("Call `registry.registerExtraCodeGenerator()` from beforeCompilationStep() instead.")
+  @Suppress("DEPRECATION")
+  @Deprecated("Call `registry.registerSchemaCodeGenerator()` from beforeCompilationStep() instead.")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_2_1)
   fun schemaListener(): SchemaListener? {
     return null
   }
 }
 
-@ApolloExperimental
+@Deprecated("Use CodeGenerator instead.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_2_1)
 interface SchemaListener {
   /**
    * Called when the schema changed and codegen needs to be updated
@@ -132,7 +136,8 @@ interface SchemaListener {
 /**
  * A [DocumentTransform] transforms operations and fragments at build time. [DocumentTransform] can add or remove fields automatically for an example.
  */
-@ApolloExperimental
+@Deprecated("Use ExecutableDocumentTransform instead.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_2_1)
 interface DocumentTransform {
   /**
    * Transforms the given operation.
@@ -165,6 +170,7 @@ interface Transform<T> {
 /**
  * A [ExecutableDocumentTransform] transforms operations and fragments at build time. [ExecutableDocumentTransform] can add or remove fields automatically, for an example.
  */
+@ApolloExperimental
 fun interface ExecutableDocumentTransform {
   /**
    * Transforms the given document.
@@ -184,6 +190,7 @@ fun interface ExecutableDocumentTransform {
  *
  * This is used for [persisted queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries).
  */
+@ApolloExperimental
 fun interface OperationIdsGenerator {
   /**
    * Generate the [OperationId]s from [operationDescriptors].
@@ -193,10 +200,26 @@ fun interface OperationIdsGenerator {
   fun generate(operationDescriptors: List<OperationDescriptor>): List<OperationId>
 }
 
+@ApolloExperimental
 sealed interface Order
 
+@ApolloExperimental
 class Before(val id: String): Order
+
+@ApolloExperimental
 class After(val id: String): Order
+
+/**
+ * A code generator that may write extra schema code in addition to what the Apollo Kotlin compiler is generating.
+ */
+@ApolloExperimental
+fun interface SchemaCodeGenerator {
+  /**
+   * @param schema a [GQLDocument] representing the current schema.
+   * @param outputDirectory the directory where to write source files.
+   */
+  fun generate(schema: GQLDocument, outputDirectory: File)
+}
 
 interface ApolloCompilerRegistry {
   /**
@@ -225,18 +248,5 @@ interface ApolloCompilerRegistry {
   fun registerKotlinOutputTransform(id: String, vararg orders: Order, transform: Transform<KotlinOutput>)
 
   @ApolloExperimental
-  fun registerExtraCodeGenerator(codeGenerator: CodeGenerator)
-}
-
-/**
- * A code generator that may write code in [ApolloCompilerPluginEnvironment.outputDirectory]
- *
- * This is not a kotlin function type because this might be used in environments where those types are
- * relocated and might fail to load at runtime. For an example, in a Gradle plugin.
- */
-fun interface CodeGenerator {
-  /**
-   * Transforms the given input into an output of the same type
-   */
-  fun generate(schema: GQLDocument, outputDirectory: File)
+  fun registerSchemaCodeGenerator(schemaCodeGenerator: SchemaCodeGenerator)
 }
