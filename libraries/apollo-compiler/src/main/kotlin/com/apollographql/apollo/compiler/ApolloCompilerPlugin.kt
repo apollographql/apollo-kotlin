@@ -14,6 +14,7 @@ import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.OperationId
 import java.io.File
+import kotlin.jvm.Throws
 
 /**
  * [ApolloCompilerPlugin] allows to customize the behavior of the Apollo Compiler.
@@ -34,7 +35,6 @@ interface ApolloCompilerPlugin {
    * @param registry the registry where to register transformations.
    */
   fun beforeCompilationStep(environment: ApolloCompilerPluginEnvironment, registry: ApolloCompilerRegistry) {
-
   }
 
   /**
@@ -61,6 +61,8 @@ interface ApolloCompilerPlugin {
   /**
    * @return the [Transform] to be applied to [JavaOutput] or null to use the default [Transform]
    */
+  @Deprecated("Call `registry.registerJavaOutputTransform()` from beforeCompilationStep() instead.")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_2_1)
   fun javaOutputTransform(): Transform<JavaOutput>? {
     return null
   }
@@ -68,6 +70,8 @@ interface ApolloCompilerPlugin {
   /**
    * @return the [Transform] to be applied to [KotlinOutput] or null to use the default [Transform]
    */
+  @Deprecated("Call `registry.registerKotlinOutputTransform()` from beforeCompilationStep() instead.")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_2_1)
   fun kotlinOutputTransform(): Transform<KotlinOutput>? {
     return null
   }
@@ -75,7 +79,8 @@ interface ApolloCompilerPlugin {
   /**
    * @return a [DocumentTransform] to transform operations and/or fragments
    */
-  @ApolloExperimental
+  @Deprecated("Call `registry.registerJavaOutputTransform()` from beforeCompilationStep() instead.")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_2_1)
   fun documentTransform(): DocumentTransform? {
     return null
   }
@@ -83,7 +88,11 @@ interface ApolloCompilerPlugin {
   /**
    * @return the [Transform] to be applied to [IrOperations] or null to use the default [Transform]
    */
-  @ApolloExperimental
+  /**
+   * @return a [DocumentTransform] to transform operations and/or fragments
+   */
+  @Deprecated("Call `registry.registerIrTransform()` from beforeCompilationStep() instead.")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_2_1)
   fun irOperationsTransform(): Transform<IrOperations>? {
     return null
   }
@@ -91,15 +100,17 @@ interface ApolloCompilerPlugin {
   /**
    * @return A list of [ForeignSchema] supported by this plugin
    */
-  @ApolloExperimental
-  fun foreignSchemas(): List<ForeignSchema> {
+  @Deprecated("Call `registry.registerForeignSchemas()` from beforeCompilationStep() instead.")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_2_1)
+  fun registerForeignSchemas(): List<ForeignSchema> {
     return emptyList()
   }
 
   /**
    * @return A [SchemaListener] called whenever the schema changed
    */
-  @ApolloExperimental
+  @Deprecated("Call `registry.registerExtraCodeGenerator()` from beforeCompilationStep() instead.")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_2_1)
   fun schemaListener(): SchemaListener? {
     return null
   }
@@ -168,8 +179,18 @@ fun interface ExecutableDocumentTransform {
   fun transform(schema: Schema, document: GQLDocument, extraFragmentDefinitions: List<GQLFragmentDefinition>): GQLDocument
 }
 
+/**
+ * An [OperationIdsGenerator] is responsible for computing [OperationId] from [OperationDescriptor].
+ *
+ * This is used for [persisted queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries).
+ */
 fun interface OperationIdsGenerator {
-  fun generate(operationDescriptorList: Collection<OperationDescriptor>): List<OperationId>
+  /**
+   * Generate the [OperationId]s from [operationDescriptors].
+   * Implementations my throw to fail the build.
+   */
+  @Throws
+  fun generate(operationDescriptors: List<OperationDescriptor>): List<OperationId>
 }
 
 sealed interface Order
@@ -178,20 +199,31 @@ class Before(val id: String): Order
 class After(val id: String): Order
 
 interface ApolloCompilerRegistry {
+  /**
+   * Registers an [OperationIdsGenerator].
+   *
+   * Use this function implement [persisted queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries).
+   */
+  fun registerOperationIdsGenerator(generator: OperationIdsGenerator)
+
+  @ApolloExperimental
   fun registerForeignSchemas(schemas: List<ForeignSchema>)
 
   @ApolloExperimental
   fun registerExecutableDocumentTransform(id: String, vararg orders: Order, transform: ExecutableDocumentTransform)
+
   @ApolloExperimental
   fun registerIrTransform(id: String, vararg orders: Order, transform: Transform<IrOperations>)
 
   @ApolloExperimental
   fun registerLayout(factory: LayoutFactory)
-  fun registerOperationIdsGenerator(generator: OperationIdsGenerator)
+
   @ApolloExperimental
   fun registerJavaOutputTransform(id: String, vararg orders: Order, transform: Transform<JavaOutput>)
+
   @ApolloExperimental
   fun registerKotlinOutputTransform(id: String, vararg orders: Order, transform: Transform<KotlinOutput>)
+
   @ApolloExperimental
   fun registerExtraCodeGenerator(codeGenerator: CodeGenerator)
 }
