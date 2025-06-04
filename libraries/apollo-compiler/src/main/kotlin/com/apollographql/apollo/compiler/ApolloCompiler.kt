@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.ast.DeprecatedUsage
 import com.apollographql.apollo.ast.DifferentShape
 import com.apollographql.apollo.ast.DirectiveRedefinition
@@ -605,6 +606,7 @@ fun Collection<File>.toInputFiles(): List<InputFile> = map { InputFile(it, "") }
 
 internal fun <T> T.maybeTransform(transform: Transform<T>?) = transform?.transform(this) ?: this
 
+@ApolloExperimental
 interface LayoutFactory {
   fun create(codegenSchema: CodegenSchema): SchemaAndOperationsLayout?
 }

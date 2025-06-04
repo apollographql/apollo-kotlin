@@ -240,7 +240,7 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
     }
   }
 
-  fun extraCodeGenerator(): SchemaCodeGenerator {
+  fun schemaCodeGenerator(): SchemaCodeGenerator {
     return SchemaCodeGenerator { document, outputDirectory ->
       extraSchemaCodeGenerators.forEach {
         it.generate(document, outputDirectory)

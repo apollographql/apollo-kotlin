@@ -160,6 +160,7 @@ interface DocumentTransform {
  * This is not a kotlin function type because this might be used in environment where those types are
  * relocated and might fail to load at runtime. For an example, in a Gradle plugin.
  */
+@ApolloExperimental
 interface Transform<T> {
   /**
    * Transforms the given input into an output of the same type

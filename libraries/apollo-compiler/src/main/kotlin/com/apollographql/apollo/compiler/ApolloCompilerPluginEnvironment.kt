@@ -1,11 +1,8 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.annotations.ApolloExperimental
-
 /**
  * [ApolloCompilerPluginEnvironment] contains the environment where the Apollo compiler is run.
  */
-@ApolloExperimental
 class ApolloCompilerPluginEnvironment(
     /**
      * @see [ApolloCompilerPluginValue]
@@ -30,5 +27,4 @@ class ApolloCompilerPluginEnvironment(
  * - [List]
  * - [Map]
  */
-@ApolloExperimental
 typealias ApolloCompilerPluginValue = Any?

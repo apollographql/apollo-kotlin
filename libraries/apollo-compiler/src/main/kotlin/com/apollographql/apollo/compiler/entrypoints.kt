@@ -107,7 +107,7 @@ class EntryPoints {
     ).writeTo(outputDir, true, metadataOutputFile)
 
     if (upstreamCodegenMetadata.isEmpty()) {
-      registry.extraCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
+      registry.schemaCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
     }
   }
 
@@ -156,7 +156,7 @@ class EntryPoints {
         operationManifestFile = operationManifestFile,
     ).writeTo(outputDir, true, null)
 
-    registry.extraCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
+    registry.schemaCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
   }
 }
 
