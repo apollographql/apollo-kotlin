@@ -55,6 +55,7 @@ abstract class GeneratePluginVersion : DefaultTask() {
     versionFile.parentFile.mkdirs()
     versionFile.writeText("""// Generated file. Do not edit!
 package com.apollographql.apollo.compiler
+@JvmField
 val APOLLO_VERSION = "${version.get()}"
 """)
   }
