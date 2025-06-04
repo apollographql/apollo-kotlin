@@ -4,6 +4,7 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.adapter",
+    withLinux = false,
 )
 
 kotlin {
