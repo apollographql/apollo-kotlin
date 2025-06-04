@@ -2,16 +2,49 @@ package com.apollographql.apollo.compiler.keyfields
 
 import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLExecutableDefinition
+import com.apollographql.apollo.ast.GQLFragmentDefinition
+import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.ast.validateAsSchemaAndAddApolloDefinition
+import com.apollographql.apollo.compiler.internal.ApolloExecutableDocumentTransform
+import com.apollographql.apollo.compiler.internal.checkKeyFields
 import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class KeyFieldsTest {
+  @Test
+  fun testAddRequiredFields() {
+    val schema = "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/schema.graphqls"
+        .toPath()
+        .toGQLDocument()
+        .validateAsSchemaAndAddApolloDefinition()
+        .getOrThrow()
+
+    val document = "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/operations.graphql".toPath()
+        .toGQLDocument()
+    val definitions = document.definitions
+
+    val operation = definitions
+        .filterIsInstance<GQLOperationDefinition>()
+        .first()
+
+    try {
+      checkKeyFields(operation, schema, emptyMap())
+      fail("an exception was expected")
+    } catch (e: Exception) {
+      assertTrue(e.message?.contains("are not queried") == true)
+    }
+
+    // The document contains a single operation
+    val operationWithKeyFields = ApolloExecutableDocumentTransform("ifFragments", true).transform(schema, document, emptyList()).definitions.single() as GQLOperationDefinition
+    checkKeyFields(operationWithKeyFields, schema, emptyMap())
+  }
+
   @Test
   fun testExtendInterfaceTypePolicyDirective() {
     val schema = "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/extendsSchema.graphqls"
