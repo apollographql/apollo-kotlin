@@ -5,7 +5,6 @@ import com.apollographql.apollo.ast.DifferentShape
 import com.apollographql.apollo.ast.DirectiveRedefinition
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.GQLDefinition
-import com.apollographql.apollo.ast.GQLDirective
 import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLOperationDefinition
@@ -15,7 +14,6 @@ import com.apollographql.apollo.ast.IncompatibleDefinition
 import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.QueryDocumentMinifier
-import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.UnknownDirective
 import com.apollographql.apollo.ast.UnusedFragment
 import com.apollographql.apollo.ast.UnusedVariable
@@ -37,7 +35,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodegen
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo.compiler.codegen.kotlin.toSourceOutput
 import com.apollographql.apollo.compiler.codegen.plus
-import com.apollographql.apollo.compiler.internal.addRequiredFields
+import com.apollographql.apollo.compiler.internal.ApolloExecutableDocumentTransform
 import com.apollographql.apollo.compiler.internal.checkApolloInlineFragmentsHaveTypeCondition
 import com.apollographql.apollo.compiler.internal.checkApolloReservedEnumValueNames
 import com.apollographql.apollo.compiler.internal.checkApolloTargetNameClashes
@@ -236,7 +234,6 @@ object ApolloCompiler {
     val warnOnDeprecatedUsages = options.warnOnDeprecatedUsages ?: defaultWarnOnDeprecatedUsages
     val failOnWarnings = options.failOnWarnings ?: defaultFailOnWarnings
     val fieldsOnDisjointTypesMustMerge = options.fieldsOnDisjointTypesMustMerge ?: defaultFieldsOnDisjointTypesMustMerge
-    val addTypename = options.addTypename ?: defaultAddTypename
     val generateOptionalOperationVariables = options.generateOptionalOperationVariables ?: defaultGenerateOptionalOperationVariables
     val alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching ?: defaultAlwaysGenerateTypesMatching
 
@@ -264,45 +261,54 @@ object ApolloCompiler {
     /**
      * Step 3, Modify the AST to add typename and key fields
      */
-    val fragmentDefinitions = (definitions.filterIsInstance<GQLFragmentDefinition>() + upstreamFragmentDefinitions).associateBy { it.name }
-    var fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
-      addRequiredFields(it, addTypename, schema, fragmentDefinitions)
+    val hasCacheCompilerPlugin = try {
+      /**
+       * We have the cache compiler plugin in the class path. Do not do the work twice
+       */
+      Class.forName("com.apollographql.cache.apollocompilerplugin.ApolloCacheCompilerPlugin")
+      true
+    } catch (_: ClassNotFoundException) {
+      false
     }
 
-    var operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
-      var operation = addRequiredFields(it, addTypename, schema, fragmentDefinitions)
-      if (schema.directiveDefinitions.containsKey(Schema.DISABLE_ERROR_PROPAGATION)
-          && schema.schemaDefinition?.directives?.any { schema.originalDirectiveName(it.name) == Schema.CATCH_BY_DEFAULT } == true) {
-        operation = operation.copy(
-            directives = operation.directives + GQLDirective(null, Schema.DISABLE_ERROR_PROPAGATION, emptyList())
-        )
-      }
-      operation
-    }
+    var document = ApolloExecutableDocumentTransform(options.addTypename ?: defaultAddTypename, !hasCacheCompilerPlugin).transform(
+        schema = schema,
+        document = GQLDocument(definitions, sourceLocation = null),
+        upstreamFragmentDefinitions
+    )
 
     if (documentTransform != null) {
-      val transformedDocument = documentTransform.transform(schema, GQLDocument(sourceLocation = null, definitions = fragments + operations), upstreamFragmentDefinitions)
-      fragments = transformedDocument.definitions.filterIsInstance<GQLFragmentDefinition>()
-      operations = transformedDocument.definitions.filterIsInstance<GQLOperationDefinition>()
+      document = documentTransform.transform(schema, document, upstreamFragmentDefinitions)
     }
 
     // Remember the fragments with the possibly updated fragments
-    val allFragmentDefinitions = (fragments + upstreamFragmentDefinitions).associateBy { it.name }
+    val allFragmentDefinitions = (document.definitions.filterIsInstance<GQLFragmentDefinition>() + upstreamFragmentDefinitions).associateBy { it.name }
 
     // Check if all the key fields are present in operations and fragments
     // (do this only if there are key fields as it may be costly)
     if (schema.hasTypeWithTypePolicy()) {
-      operations.forEach {
-        checkKeyFields(it, schema, allFragmentDefinitions)
-      }
-      fragments.forEach {
-        checkKeyFields(it, schema, allFragmentDefinitions)
+      document.definitions.forEach {
+        when(it) {
+          is GQLOperationDefinition -> checkKeyFields(it, schema, allFragmentDefinitions)
+          is GQLFragmentDefinition -> checkKeyFields(it, schema, allFragmentDefinitions)
+          else -> Unit
+        }
       }
     }
 
     /**
      * Build the IR
      */
+    val operations = mutableListOf<GQLOperationDefinition>()
+    val fragments = mutableListOf<GQLFragmentDefinition>()
+    document.definitions.forEach {
+      when(it) {
+        is GQLOperationDefinition -> operations.add(it)
+        is GQLFragmentDefinition -> fragments.add(it)
+        else -> Unit
+      }
+    }
+
     return IrOperationsBuilder(
         schema = schema,
         operationDefinitions = operations,
