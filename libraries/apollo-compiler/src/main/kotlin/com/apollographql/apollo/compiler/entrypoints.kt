@@ -217,7 +217,10 @@ internal fun apolloCompilerRegistry(
   @Suppress("DEPRECATION")
   val pluginProviders = ServiceLoader.load(ApolloCompilerPluginProvider::class.java, ApolloCompilerPluginProvider::class.java.classLoader).toList()
   pluginProviders.forEach {
-    println("Apollo: using ApolloCompilerPluginProvider is deprecated. Please use ApolloCompilerPlugin directly.")
+    // we make an exception for our own cache plugin because we want to display a nice error message to users before 4.3
+    if (it.javaClass.name != "com.apollographql.cache.apollocompilerplugin.ApolloCacheCompilerPluginProvider") {
+      println("Apollo: using ApolloCompilerPluginProvider is deprecated. Please use ApolloCompilerPlugin directly.")
+    }
     hasPlugin = true
     val plugin = it.create(environment)
     plugin.beforeCompilationStep(environment, registry)
