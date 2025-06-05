@@ -3,7 +3,6 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
-import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.INTERNAL_API_USAGES
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.INVALID_PLUGIN
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel.PLUGIN_STRUCTURE_WARNINGS
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
@@ -252,7 +251,11 @@ intellijPlatform {
             // Temporarily disabled due to https://platform.jetbrains.com/t/plugin-verifier-fails-with-plugin-com-intellij-modules-json-not-declared-as-a-plugin-dependency/580
             // TODO: Uncomment when https://youtrack.jetbrains.com/issue/MP-7366 is fixed
             // COMPATIBILITY_PROBLEMS,
-            INTERNAL_API_USAGES,
+
+            // Temporarily disabled due to https://youtrack.jetbrains.com/issue/MP-7439/
+            // TODO: Uncomment when it is fixed
+            // INTERNAL_API_USAGES,
+
             INVALID_PLUGIN,
             PLUGIN_STRUCTURE_WARNINGS,
         )
