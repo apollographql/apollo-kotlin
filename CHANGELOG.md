@@ -15,13 +15,13 @@ Many thanks to @gnehz972 and @mengdd for their fixes about HTTP batching 💜
 
 ## 👷‍♂️ All changes
 
-Fix losing response headers when using batch request (#6538)
-fix the batch size not respected issue (#6528)
-prepare compiler plugins for 4.3 (#6549)
-Allow to register multiple compiler plugins (#6546)
-Add key fields to selections even when they're already selected with an alias (#6503) (#6544)
-Ignore scalars/enums in checkCapitalizedFields (#6502) (#6543)
-Call DocumentTransform.transform after processing (#6510) (#6512)
+* Fix losing response headers when using batch request (#6538)
+* fix the batch size not respected issue (#6528)
+* prepare compiler plugins for 4.3 (#6549)
+* Allow to register multiple compiler plugins (#6546)
+* Add key fields to selections even when they're already selected with an alias (#6503) (#6544)
+* Ignore scalars/enums in checkCapitalizedFields (#6502) (#6543)
+* Call DocumentTransform.transform after processing (#6510) (#6512)
 
 # Version 4.2.0
 
