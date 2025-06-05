@@ -322,6 +322,8 @@ final class <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.
         final fun <get-sendApqExtensions>(): kotlin/Boolean? // com.apollographql.apollo.api/ApolloRequest.sendApqExtensions.<get-sendApqExtensions>|<get-sendApqExtensions>(){}[0]
     final val sendDocument // com.apollographql.apollo.api/ApolloRequest.sendDocument|{}sendDocument[0]
         final fun <get-sendDocument>(): kotlin/Boolean? // com.apollographql.apollo.api/ApolloRequest.sendDocument.<get-sendDocument>|<get-sendDocument>(){}[0]
+    final val sendEnhancedClientAwareness // com.apollographql.apollo.api/ApolloRequest.sendEnhancedClientAwareness|{}sendEnhancedClientAwareness[0]
+        final fun <get-sendEnhancedClientAwareness>(): kotlin/Boolean // com.apollographql.apollo.api/ApolloRequest.sendEnhancedClientAwareness.<get-sendEnhancedClientAwareness>|<get-sendEnhancedClientAwareness>(){}[0]
 
     final fun <#A1: com.apollographql.apollo.api/Operation.Data> newBuilder(com.apollographql.apollo.api/Operation<#A1>): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.newBuilder|newBuilder(com.apollographql.apollo.api.Operation<0:0>){0§<com.apollographql.apollo.api.Operation.Data>}[0]
     final fun newBuilder(): com.apollographql.apollo.api/ApolloRequest.Builder<#A> // com.apollographql.apollo.api/ApolloRequest.newBuilder|newBuilder(){}[0]
@@ -356,6 +358,8 @@ final class <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.
             final fun <get-sendApqExtensions>(): kotlin/Boolean? // com.apollographql.apollo.api/ApolloRequest.Builder.sendApqExtensions.<get-sendApqExtensions>|<get-sendApqExtensions>(){}[0]
         final var sendDocument // com.apollographql.apollo.api/ApolloRequest.Builder.sendDocument|{}sendDocument[0]
             final fun <get-sendDocument>(): kotlin/Boolean? // com.apollographql.apollo.api/ApolloRequest.Builder.sendDocument.<get-sendDocument>|<get-sendDocument>(){}[0]
+        final var sendEnhancedClientAwareness // com.apollographql.apollo.api/ApolloRequest.Builder.sendEnhancedClientAwareness|{}sendEnhancedClientAwareness[0]
+            final fun <get-sendEnhancedClientAwareness>(): kotlin/Boolean // com.apollographql.apollo.api/ApolloRequest.Builder.sendEnhancedClientAwareness.<get-sendEnhancedClientAwareness>|<get-sendEnhancedClientAwareness>(){}[0]
 
         final fun addExecutionContext(com.apollographql.apollo.api/ExecutionContext): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.addExecutionContext|addExecutionContext(com.apollographql.apollo.api.ExecutionContext){}[0]
         final fun addHttpHeader(kotlin/String, kotlin/String): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.addHttpHeader|addHttpHeader(kotlin.String;kotlin.String){}[0]
@@ -372,6 +376,7 @@ final class <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.
         final fun retryOnError(kotlin/Boolean?): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.retryOnError|retryOnError(kotlin.Boolean?){}[0]
         final fun sendApqExtensions(kotlin/Boolean?): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.sendApqExtensions|sendApqExtensions(kotlin.Boolean?){}[0]
         final fun sendDocument(kotlin/Boolean?): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.sendDocument|sendDocument(kotlin.Boolean?){}[0]
+        final fun sendEnhancedClientAwareness(kotlin/Boolean): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.sendEnhancedClientAwareness|sendEnhancedClientAwareness(kotlin.Boolean){}[0]
     }
 }
 
