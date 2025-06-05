@@ -5,15 +5,12 @@ import com.apollographql.apollo.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo.compiler.codegen.writeTo
 import com.apollographql.apollo.compiler.internal.DefaultApolloCompilerRegistry
 import com.apollographql.apollo.compiler.internal.GradleCompilerPluginLogger
-import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo.compiler.operationoutput.OperationId
-import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import java.io.File
 import java.util.ServiceLoader
 import java.util.function.Consumer
 
 /**
- * EntryPoints contains code that is called using reflection from the Gradle plugin.
+ * EntryPoints contains code called using reflection from the Gradle plugin.
  * This is so that the classloader can be isolated, and we can use our preferred version of
  * Kotlin and other dependencies without risking conflicts.
  *
@@ -157,22 +154,6 @@ class EntryPoints {
     ).writeTo(outputDir, true, null)
 
     registry.schemaCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
-  }
-}
-
-@Suppress("DEPRECATION")
-internal fun ApolloCompilerPlugin.toOperationOutputGenerator(): OperationOutputGenerator {
-  return object : OperationOutputGenerator {
-    override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
-      var operationIds = operationIds(operationDescriptorList.toList())
-      if (operationIds == null) {
-        operationIds = operationDescriptorList.map { OperationId(OperationIdGenerator.Sha256.apply(it.source, it.name), it.name) }
-      }
-      return operationDescriptorList.associateBy { descriptor ->
-        val operationId = operationIds.firstOrNull { it.name == descriptor.name } ?: error("No id found for operation ${descriptor.name}")
-        operationId.id
-      }
-    }
   }
 }
 
