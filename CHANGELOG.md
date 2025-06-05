@@ -5,7 +5,7 @@ Change Log
 
 # Version 4.3.0
 
-Version 4.3.0 allows adding multiple compiler plugins and stabilizes `ApolloCompilerPlugin.beforeCompilationStep()` as the main entry point for compiler plugins. You can read more in the [compiler plugins documentation page]().
+Version 4.3.0 allows adding multiple compiler plugins and stabilizes `ApolloCompilerPlugin.beforeCompilationStep()` as the main entry point for compiler plugins. You can read more in the [compiler plugins documentation page](https://www.apollographql.com/docs/kotlin/advanced/compiler-plugins).
 
 Moving forward, `ApolloCompilerPlugin.beforeCompilationStep()` and `ApolloCompilerRegistry.registerOperationIdsGenerator()` are considered stable because they play an important part in setting up [persisted queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries). Other APIs are considered more advanced and will most likely stay unstable for the foreseeable future. 
 
