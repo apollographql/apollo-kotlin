@@ -108,10 +108,16 @@ The `Plugin` interface has an `operationIds()` method that you can override to c
 Example Md5 hash generator:
 
 ```kotlin
-class MyPlugin: Plugin {
-  override fun operationIds(descriptors: List<OperationDescriptor>): List<OperationId> {
-    return descriptors.map { OperationId(it.source.md5(), it.name) }
+class MyPlugin : ApolloCompilerPlugin {
+  override fun beforeCompilationStep(
+      environment: ApolloCompilerPluginEnvironment,
+      registry: ApolloCompilerRegistry,
+  ) {
+    registry.registerOperationIdsGenerator {
+      it.map { OperationId(it.source.md5(), it.name) }
+    }
   }
 }
+
 ```
 
