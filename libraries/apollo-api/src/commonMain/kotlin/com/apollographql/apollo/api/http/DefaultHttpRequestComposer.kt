@@ -50,7 +50,7 @@ class DefaultHttpRequestComposer(
     }
 
     val sendApqExtensions = apolloRequest.sendApqExtensions ?: false
-    val sendEnhancedClientAwarenessExtensions = true
+    val sendEnhancedClientAwarenessExtensions = apolloRequest.sendEnhancedClientAwareness
     val sendDocument = apolloRequest.sendDocument ?: true
 
     val httpRequestBuilder = when (apolloRequest.httpMethod ?: HttpMethod.Post) {
