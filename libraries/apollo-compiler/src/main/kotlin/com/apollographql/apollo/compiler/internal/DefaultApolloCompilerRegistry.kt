@@ -7,7 +7,7 @@ import com.apollographql.apollo.compiler.After
 import com.apollographql.apollo.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo.compiler.ApolloCompilerRegistry
 import com.apollographql.apollo.compiler.Before
-import com.apollographql.apollo.compiler.CodeGenerator
+import com.apollographql.apollo.compiler.SchemaCodeGenerator
 import com.apollographql.apollo.compiler.CodegenSchema
 import com.apollographql.apollo.compiler.LayoutFactory
 import com.apollographql.apollo.compiler.OperationIdsGenerator
@@ -74,7 +74,7 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
   private val operationIdsGenerators = mutableListOf<OperationIdsGenerator>()
   private val javaOutputTransforms = mutableListOf<Registration<Transform<JavaOutput>>>()
   private val kotlinOutputTransforms = mutableListOf<Registration<Transform<KotlinOutput>>>()
-  private val extraCodeGenerators = mutableListOf<CodeGenerator>()
+  private val extraSchemaCodeGenerators = mutableListOf<SchemaCodeGenerator>()
 
   @Suppress("DEPRECATION")
   fun registerPlugin(plugin: ApolloCompilerPlugin) {
@@ -111,7 +111,7 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
 
     val schemaListener = plugin.schemaListener()
     if (schemaListener != null) {
-      error("Apollo: using ApolloCompilerPlugin.schemaListener() is deprecated. Please use registry.registerExtraCodeGenerator() from beforeCompilationStep() instead.")
+      error("Apollo: using ApolloCompilerPlugin.schemaListener() is deprecated. Please use registry.registerSchemaCodeGenerator() from beforeCompilationStep() instead.")
     }
   }
 
@@ -159,8 +159,8 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
     kotlinOutputTransforms.add(Registration(id, transform, orders))
   }
 
-  override fun registerExtraCodeGenerator(codeGenerator: CodeGenerator) {
-    extraCodeGenerators.add(codeGenerator)
+  override fun registerSchemaCodeGenerator(schemaCodeGenerator: SchemaCodeGenerator) {
+    extraSchemaCodeGenerators.add(schemaCodeGenerator)
   }
 
   fun foreignSchemas() = foreignSchemas
@@ -220,7 +220,7 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
     return object : OperationOutputGenerator {
       override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
         val candidates = operationIdsGenerators.mapNotNull {
-          when (val operationIds = it.generate(operationDescriptorList)) {
+          when (val operationIds = it.generate(operationDescriptorList.toList())) {
             LegacyOperationIdsGenerator.NoList -> null
             else -> operationIds
           }
@@ -240,9 +240,9 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
     }
   }
 
-  fun extraCodeGenerator(): CodeGenerator {
-    return CodeGenerator { document, outputDirectory ->
-      extraCodeGenerators.forEach {
+  fun schemaCodeGenerator(): SchemaCodeGenerator {
+    return SchemaCodeGenerator { document, outputDirectory ->
+      extraSchemaCodeGenerators.forEach {
         it.generate(document, outputDirectory)
       }
     }

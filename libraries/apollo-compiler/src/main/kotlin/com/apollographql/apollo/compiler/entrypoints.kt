@@ -5,16 +5,12 @@ import com.apollographql.apollo.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo.compiler.codegen.writeTo
 import com.apollographql.apollo.compiler.internal.DefaultApolloCompilerRegistry
 import com.apollographql.apollo.compiler.internal.GradleCompilerPluginLogger
-import com.apollographql.apollo.compiler.internal.LegacyOperationIdsGenerator
-import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo.compiler.operationoutput.OperationId
-import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import java.io.File
 import java.util.ServiceLoader
 import java.util.function.Consumer
 
 /**
- * EntryPoints contains code that is called using reflection from the Gradle plugin.
+ * EntryPoints contains code called using reflection from the Gradle plugin.
  * This is so that the classloader can be isolated, and we can use our preferred version of
  * Kotlin and other dependencies without risking conflicts.
  *
@@ -108,7 +104,7 @@ class EntryPoints {
     ).writeTo(outputDir, true, metadataOutputFile)
 
     if (upstreamCodegenMetadata.isEmpty()) {
-      registry.extraCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
+      registry.schemaCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
     }
   }
 
@@ -157,23 +153,7 @@ class EntryPoints {
         operationManifestFile = operationManifestFile,
     ).writeTo(outputDir, true, null)
 
-    registry.extraCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
-  }
-}
-
-@Suppress("DEPRECATION")
-internal fun ApolloCompilerPlugin.toOperationOutputGenerator(): OperationOutputGenerator {
-  return object : OperationOutputGenerator {
-    override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
-      var operationIds = operationIds(operationDescriptorList.toList())
-      if (operationIds == null) {
-        operationIds = operationDescriptorList.map { OperationId(OperationIdGenerator.Sha256.apply(it.source, it.name), it.name) }
-      }
-      return operationDescriptorList.associateBy { descriptor ->
-        val operationId = operationIds.firstOrNull { it.name == descriptor.name } ?: error("No id found for operation ${descriptor.name}")
-        operationId.id
-      }
-    }
+    registry.schemaCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
   }
 }
 
@@ -215,9 +195,13 @@ internal fun apolloCompilerRegistry(
     registry.registerPlugin(it)
   }
 
+  @Suppress("DEPRECATION")
   val pluginProviders = ServiceLoader.load(ApolloCompilerPluginProvider::class.java, ApolloCompilerPluginProvider::class.java.classLoader).toList()
   pluginProviders.forEach {
-    println("Apollo: using ApolloCompilerPluginProvider is deprecated. Please use ApolloCompilerPlugin directly.")
+    // we make an exception for our own cache plugin because we want to display a nice error message to users before 4.3
+    if (it.javaClass.name != "com.apollographql.cache.apollocompilerplugin.ApolloCacheCompilerPluginProvider") {
+      println("Apollo: using ApolloCompilerPluginProvider is deprecated. Please use ApolloCompilerPlugin directly.")
+    }
     hasPlugin = true
     val plugin = it.create(environment)
     plugin.beforeCompilationStep(environment, registry)

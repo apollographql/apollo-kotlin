@@ -7,7 +7,7 @@ import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.ast.validateAsSchemaAndAddApolloDefinition
-import com.apollographql.apollo.compiler.internal.addRequiredFields
+import com.apollographql.apollo.compiler.internal.ApolloExecutableDocumentTransform
 import com.apollographql.apollo.compiler.internal.checkKeyFields
 import okio.Path.Companion.toPath
 import kotlin.test.Test
@@ -25,11 +25,9 @@ class KeyFieldsTest {
         .validateAsSchemaAndAddApolloDefinition()
         .getOrThrow()
 
-    val definitions = "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/operations.graphql".toPath()
+    val document = "src/test/kotlin/com/apollographql/apollo/compiler/keyfields/operations.graphql".toPath()
         .toGQLDocument()
-        .definitions
-
-    val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
+    val definitions = document.definitions
 
     val operation = definitions
         .filterIsInstance<GQLOperationDefinition>()
@@ -42,7 +40,8 @@ class KeyFieldsTest {
       assertTrue(e.message?.contains("are not queried") == true)
     }
 
-    val operationWithKeyFields = addRequiredFields(operation, "ifFragments", schema, fragments)
+    // The document contains a single operation
+    val operationWithKeyFields = ApolloExecutableDocumentTransform("ifFragments", true).transform(schema, document, emptyList()).definitions.single() as GQLOperationDefinition
     checkKeyFields(operationWithKeyFields, schema, emptyMap())
   }
 

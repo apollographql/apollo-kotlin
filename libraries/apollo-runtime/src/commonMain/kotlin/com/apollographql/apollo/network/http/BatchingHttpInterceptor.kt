@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.ExecutionOptions
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.http.HttpBody
+import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.api.http.HttpMethod
 import com.apollographql.apollo.api.http.HttpRequest
 import com.apollographql.apollo.api.http.HttpResponse
@@ -103,22 +104,31 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     val sendNow = mutex.withLock {
       // if there was an error, the previous job was already canceled, ignore that error
       pendingRequests.add(pendingRequest)
-      pendingRequests.size >= maxBatchSize
+      val batchFull = pendingRequests.size >= maxBatchSize
+      if (batchFull) {
+        executePendingRequests(needLock = false)
+      }
+      batchFull
     }
-    if (sendNow) {
-      executePendingRequests()
-    } else {
+
+    if (!sendNow) {
       scope.launch {
         delay(batchIntervalMillis - (startMark.elapsedNow().inWholeMilliseconds % batchIntervalMillis) - 1)
-        executePendingRequests()
+        executePendingRequests(needLock = true)
       }
     }
 
     return pendingRequest.deferred.await()
   }
 
-  private suspend fun executePendingRequests() {
-    val pending = mutex.withLock {
+  private suspend fun executePendingRequests(needLock: Boolean) {
+    val pending = if (needLock) {
+      mutex.withLock {
+        val copy = pendingRequests.toList()
+        pendingRequests.clear()
+        copy
+      }
+    } else {
       val copy = pendingRequests.toList()
       pendingRequests.clear()
       copy
@@ -167,6 +177,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         .build()
 
     var exception: ApolloException? = null
+    var responseHeader = emptyList<HttpHeader>()
     val result = try {
       val response = interceptorChain!!.proceed(request)
       if (response.statusCode !in 200..299) {
@@ -184,6 +195,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         )
       }
       val responseBody = response.body ?: throw DefaultApolloException("null body when executing batched query")
+      responseHeader = response.headers
 
       val list = BufferedSourceJsonReader(responseBody).use { jsonReader ->
         // TODO: this is most likely going to transform BigNumbers into strings, not sure how much of an issue that is
@@ -227,6 +239,11 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         pending[index].deferred.complete(
             HttpResponse.Builder(statusCode = 200)
                 .body(byteString)
+                /*
+                 * Return the global batch headers to individual responses.
+                 * This is useful for things like cache-control that rely on HTTP headers.
+                 */
+                .headers(responseHeader)
                 .build()
         )
       }

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package hooks
 
 import com.apollographql.apollo.compiler.ApolloCompilerPlugin

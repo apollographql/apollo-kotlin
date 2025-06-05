@@ -1,14 +1,10 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.ast.GQLDocument
-import com.apollographql.apollo.ast.GQLFragmentDefinition
-import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.toExecutableDocument
 import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.ast.toSchema
 import com.apollographql.apollo.ast.toUtf8
-import com.apollographql.apollo.ast.validateAsSchema
-import com.apollographql.apollo.compiler.internal.addRequiredFields
+import com.apollographql.apollo.compiler.internal.ApolloExecutableDocumentTransform
 import com.google.common.truth.Truth.assertThat
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
@@ -28,19 +24,9 @@ class TypenameTest(
     val schemaFile = File("src/test/graphql/schema.graphqls")
     val schema = schemaFile.toGQLDocument().toSchema()
 
-    val definitions = graphQLFile.source().buffer().toExecutableDocument(schema).definitions
+    val document = graphQLFile.source().buffer().toExecutableDocument(schema)
 
-    val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
-    val documentWithTypename = GQLDocument(
-        definitions = definitions.map {
-          when (it) {
-            is GQLOperationDefinition -> addRequiredFields(it, addTypename, schema, fragments)
-            is GQLFragmentDefinition -> addRequiredFields(it, addTypename, schema, fragments)
-            else -> it
-          }
-        },
-        sourceLocation = null
-    ).toUtf8()
+    val documentWithTypename = ApolloExecutableDocumentTransform(addTypename, false).transform(schema, document, emptyList()).toUtf8()
 
     val extra = when(addTypename) {
       "ifFragments" -> "" // for backward compat
