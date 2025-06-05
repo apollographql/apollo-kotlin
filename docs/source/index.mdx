@@ -40,7 +40,7 @@ Add the plugin to your `build.gradle.kts`:
 
 ```kotlin
 plugins {
-  id("com.apollographql.apollo") version "4.2.0"
+  id("com.apollographql.apollo") version "4.3.0"
 }
 ```
 
@@ -48,7 +48,7 @@ Add the runtime dependency:
 
 ```kotlin
 dependencies {
-  implementation("com.apollographql.apollo:apollo-runtime:4.2.0")
+  implementation("com.apollographql.apollo:apollo-runtime:4.3.0")
 }
 ```
 
@@ -165,7 +165,7 @@ Installation instructions and more information can be found [here](/kotlin/testi
 
 ## Releases
 
-The latest version is `4.2.0`.
+The latest version is `4.3.0`.
 
 Check the [changelog](https://github.com/apollographql/apollo-kotlin/releases) for the release history.
 
@@ -173,7 +173,7 @@ Releases are hosted on [Maven Central](https://repo1.maven.org/maven2/com/apollo
 
 ```kotlin
 plugins {
-  id("com.apollographql.apollo") version "4.2.0"
+  id("com.apollographql.apollo") version "4.3.0"
 }
 
 repositories {
@@ -181,13 +181,13 @@ repositories {
 }
 
 dependencies {
-  implementation("com.apollographql.apollo:apollo-runtime:4.2.0")
+  implementation("com.apollographql.apollo:apollo-runtime:4.3.0")
 
   // Optional: if you want to use the normalized cache
-  implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:4.2.0")
+  implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:4.3.0")
   // Optional: if you just want the generated models and parsers and write your own HTTP code/cache code, you can remove apollo-runtime
   // and use apollo-api instead
-  implementation("com.apollographql.apollo:apollo-api:4.2.0")
+  implementation("com.apollographql.apollo:apollo-api:4.3.0")
 }
 ```
 
