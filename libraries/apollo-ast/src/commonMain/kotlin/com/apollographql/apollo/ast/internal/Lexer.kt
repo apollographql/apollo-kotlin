@@ -107,7 +107,9 @@ internal class Lexer(val src: String) {
         '(' -> return Token.LeftParenthesis(start, line, column(start))
         ')' -> return Token.RightParenthesis(start, line, column(start))
         '.' -> {
-          if (pos + 1 < len && src[pos] == '.' && src[pos + 1] == '.') {
+          if (pos == len || src[pos] != '.') {
+            return Token.Dot(start, line, column(start))
+          } else if (pos + 1 < len && src[pos] == '.' && src[pos + 1] == '.') {
             pos += 2
             return Token.Spread(start, line, column(start))
           } else {

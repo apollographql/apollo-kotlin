@@ -2026,6 +2026,155 @@ enum class GQLDirectiveLocation {
   INPUT_FIELD_DEFINITION,
 }
 
+sealed interface GQLSchemaCoordinate
+
+class GQLTypeCoordinate(
+    override val sourceLocation: SourceLocation?,
+    val name: String,
+): GQLNode, GQLSchemaCoordinate {
+  override val children: List<GQLNode> = emptyList()
+
+  override fun writeInternal(writer: SDLWriter) {
+    writer.write(name)
+  }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      name: String = this.name
+  ): GQLTypeCoordinate {
+    return GQLTypeCoordinate(
+        sourceLocation,
+        name
+    )
+  }
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return copy()
+  }
+}
+
+class GQLDirectiveCoordinate(
+    override val sourceLocation: SourceLocation?,
+    val name: String,
+): GQLNode, GQLSchemaCoordinate {
+  override val children: List<GQLNode> = emptyList()
+
+  override fun writeInternal(writer: SDLWriter) {
+    writer.write("@")
+    writer.write(name)
+  }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      name: String = this.name
+  ): GQLDirectiveCoordinate {
+    return GQLDirectiveCoordinate(
+        sourceLocation,
+        name
+    )
+  }
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return copy()
+  }
+}
+
+class GQLMemberCoordinate(
+    override val sourceLocation: SourceLocation?,
+    val type: String,
+    val member: String
+): GQLNode, GQLSchemaCoordinate {
+  override val children: List<GQLNode> = emptyList()
+
+  override fun writeInternal(writer: SDLWriter) {
+    writer.write(type)
+    writer.write(".")
+    writer.write(member)
+  }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      type: String = this.type,
+      name: String = this.member
+  ): GQLMemberCoordinate {
+    return GQLMemberCoordinate(
+        sourceLocation,
+        type,
+        name
+    )
+  }
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return copy()
+  }
+}
+
+class GQLArgumentCoordinate(
+    override val sourceLocation: SourceLocation?,
+    val type: String,
+    val field: String,
+    val argument: String,
+): GQLNode, GQLSchemaCoordinate {
+  override val children: List<GQLNode> = emptyList()
+
+  override fun writeInternal(writer: SDLWriter) {
+    writer.write(type)
+    writer.write(".")
+    writer.write(field)
+    writer.write("(")
+    writer.write(argument)
+    writer.write(":)")
+  }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      type: String = this.type,
+      name: String = this.field,
+      argument: String = this.argument
+  ): GQLArgumentCoordinate {
+    return GQLArgumentCoordinate(
+        sourceLocation,
+        type,
+        name,
+        argument
+    )
+  }
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return copy()
+  }
+}
+
+class GQLDirectiveArgumentCoordinate(
+    override val sourceLocation: SourceLocation?,
+    val name: String,
+    val argument: String,
+): GQLNode, GQLSchemaCoordinate {
+  override val children: List<GQLNode> = emptyList()
+
+  override fun writeInternal(writer: SDLWriter) {
+    writer.write("@")
+    writer.write(name)
+    writer.write("(")
+    writer.write(argument)
+    writer.write(":)")
+  }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      name: String = this.name,
+      argument: String = this.argument
+  ): GQLDirectiveArgumentCoordinate {
+    return GQLDirectiveArgumentCoordinate(
+        sourceLocation,
+        name,
+        argument
+    )
+  }
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return copy()
+  }
+}
+
 
 @Suppress("UNCHECKED_CAST")
 class NodeContainer(nodes: List<GQLNode>) {
