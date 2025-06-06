@@ -4,7 +4,7 @@
   </div>
   <h1 align="center">Apollo Kotlin</h1>
  
-**The industry-leading GraphQL client in Kotlin, made for Android, Kotlin Multiplatform, and more.** Apollo Kotlin delivers powerful caching, code generation, intuitive APIs, and comprehensive developer tools to accelerate your app development.
+**The industry-leading GraphQL client for Kotlin**. Run on Android and all the Kotlin multiplatform targets. Apollo Kotlin delivers powerful caching, code generation, intuitive APIs, and comprehensive developer tools to accelerate your app development.
 
 ➡️ [**Get Started with Apollo Kotlin →**](https://www.apollographql.com/docs/kotlin?utm_source=github&utm_medium=apollographql_apollo-kotlin&utm_campaign=readme)
 
