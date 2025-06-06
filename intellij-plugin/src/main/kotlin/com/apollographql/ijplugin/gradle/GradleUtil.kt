@@ -4,7 +4,13 @@ import com.apollographql.ijplugin.util.logw
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import org.gradle.tooling.BuildLauncher
+import org.gradle.tooling.GradleConnector
+import org.gradle.tooling.ModelBuilder
 import org.gradle.tooling.model.GradleProject
+import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
+import org.jetbrains.plugins.gradle.util.GradleConstants
+import java.io.File
 
 const val CODEGEN_GRADLE_TASK_NAME = "generateApolloSources"
 
@@ -18,4 +24,40 @@ fun Project.getGradleRootPath(): String? {
 
 fun GradleProject.allChildrenRecursively(): List<GradleProject> {
   return listOf(this) + children.flatMap { it.allChildrenRecursively() }
+}
+
+fun runGradleBuild(project: Project, gradleProjectPath: String, configureBuildLauncher: (BuildLauncher) -> BuildLauncher) {
+  val executionSettings =
+    ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, gradleProjectPath, GradleConstants.SYSTEM_ID)
+
+  val connection = GradleConnector.newConnector()
+      .forProjectDirectory(File(gradleProjectPath))
+      .connect()
+  val buildLauncher = configureBuildLauncher(
+      connection.newBuild()
+          .setJavaHome(executionSettings.javaHome?.let { File(it) })
+  )
+  try {
+    buildLauncher.run()
+  } finally {
+    connection.close()
+  }
+}
+
+fun <T> getGradleModel(project: Project, gradleProjectPath: String, modelClass: Class<T>, configureModelBuilder: (ModelBuilder<T>) -> ModelBuilder<T>): T? {
+  val executionSettings =
+    ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, gradleProjectPath, GradleConstants.SYSTEM_ID)
+
+  val connection = GradleConnector.newConnector()
+      .forProjectDirectory(File(gradleProjectPath))
+      .connect()
+  val buildLauncher = configureModelBuilder(
+      connection.model(modelClass)
+          .setJavaHome(executionSettings.javaHome?.let { File(it) })
+  )
+  try {
+    return buildLauncher.get()
+  } finally {
+    connection.close()
+  }
 }

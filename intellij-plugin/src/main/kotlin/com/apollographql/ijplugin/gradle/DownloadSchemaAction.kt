@@ -13,16 +13,11 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import org.gradle.tooling.Failure
 import org.gradle.tooling.model.GradleProject
-import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
-import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
-import org.jetbrains.plugins.gradle.util.GradleConstants
-import java.io.File
 
 class DownloadSchemaAction : AnAction() {
   override fun actionPerformed(e: AnActionEvent) {
@@ -49,20 +44,13 @@ private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
     false,
 ) {
   override fun run(indicator: ProgressIndicator) {
-    val rootProjectPath = project.getGradleRootPath() ?: return
-    val gradleExecutionHelper = GradleExecutionHelper()
-    val executionSettings =
-      ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
-    val rootGradleProject = gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
-      logd("Fetch Gradle project model")
-      return@execute try {
-        connection.model<GradleProject>(GradleProject::class.java)
-            .setJavaHome(executionSettings.javaHome?.let { File(it) })
-            .get()
-      } catch (t: Throwable) {
-        logw(t, "Couldn't fetch Gradle project model")
-        null
-      }
+    val gradleProjectPath = project.getGradleRootPath() ?: return
+
+    val rootGradleProject = try {
+      getGradleModel(project, gradleProjectPath, GradleProject::class.java) { it }
+    } catch (t: Throwable) {
+      logw(t, "Couldn't fetch Gradle project model")
+      null
     } ?: return
 
     val allDownloadSchemaTasks: List<String> = rootGradleProject.allChildrenRecursively()
@@ -83,11 +71,9 @@ private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
       return
     }
 
-    gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
-      try {
-        connection.newBuild()
-            .setJavaHome(executionSettings.javaHome?.let { File(it) })
-            .forTasks(*allDownloadSchemaTasks.toTypedArray())
+    try {
+      runGradleBuild(project, gradleProjectPath) {
+        it.forTasks(*allDownloadSchemaTasks.toTypedArray())
             .addProgressListener(object : SimpleProgressListener() {
               override fun onFailure(failures: List<Failure>) {
                 super.onFailure(failures)
@@ -112,11 +98,10 @@ private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
                 )
               }
             })
-            .run()
-        logd("Gradle execution finished")
-      } catch (t: Throwable) {
-        logd(t, "Gradle execution failed")
       }
+      logd("Gradle execution finished")
+    } catch (t: Throwable) {
+      logd(t, "Gradle execution failed")
     }
   }
 }
