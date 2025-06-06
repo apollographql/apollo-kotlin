@@ -34,6 +34,7 @@ annotation class ApolloDeprecatedSince(val version: Version) {
     v4_0_1,
     v4_0_2,
     v4_1_2, // All symbols above are ERRORs in 5.0.0 except a few ones that are perpetual soft deprecations like SubscriptionWsProtocol (https://youtrack.jetbrains.com/issue/KT-54106)
+    v4_2_1,
     v5_0_0
   }
 }

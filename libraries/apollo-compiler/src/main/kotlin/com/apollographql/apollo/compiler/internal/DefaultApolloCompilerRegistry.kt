@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.compiler.internal
 
 import com.apollographql.apollo.ast.ForeignSchema
@@ -5,14 +7,13 @@ import com.apollographql.apollo.compiler.After
 import com.apollographql.apollo.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo.compiler.ApolloCompilerRegistry
 import com.apollographql.apollo.compiler.Before
-import com.apollographql.apollo.compiler.CodeGenerator
 import com.apollographql.apollo.compiler.CodegenSchema
-import com.apollographql.apollo.compiler.LayoutFactory
-import com.apollographql.apollo.compiler.LegacyOperationIdsGenerator
-import com.apollographql.apollo.compiler.OperationIdsGenerator
 import com.apollographql.apollo.compiler.ExecutableDocumentTransform
+import com.apollographql.apollo.compiler.LayoutFactory
+import com.apollographql.apollo.compiler.OperationIdsGenerator
 import com.apollographql.apollo.compiler.Order
-import com.apollographql.apollo.compiler.SchemaTransform
+import com.apollographql.apollo.compiler.SchemaCodeGenerator
+import com.apollographql.apollo.compiler.SchemaDocumentTransform
 import com.apollographql.apollo.compiler.Transform
 import com.apollographql.apollo.compiler.codegen.SchemaAndOperationsLayout
 import com.apollographql.apollo.compiler.codegen.java.JavaOutput
@@ -64,14 +65,14 @@ private class Node<T>(val id: String, val transform: T) {
 
 internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
   private val foreignSchemas = mutableListOf<ForeignSchema>()
-  private val schemaTransforms = mutableListOf<Registration<SchemaTransform>>()
+  private val schemaTransforms = mutableListOf<Registration<SchemaDocumentTransform>>()
   private val executableDocumentTransforms = mutableListOf<Registration<ExecutableDocumentTransform>>()
   private val irTransforms = mutableListOf<Registration<Transform<IrOperations>>>()
   private val layoutFactories = mutableListOf<LayoutFactory>()
   private val operationIdsGenerators = mutableListOf<OperationIdsGenerator>()
   private val javaOutputTransforms = mutableListOf<Registration<Transform<JavaOutput>>>()
   private val kotlinOutputTransforms = mutableListOf<Registration<Transform<KotlinOutput>>>()
-  private val extraCodeGenerators = mutableListOf<CodeGenerator>()
+  private val schemaCodeGenerators = mutableListOf<SchemaCodeGenerator>()
 
   @Suppress("DEPRECATION")
   fun registerPlugin(plugin: ApolloCompilerPlugin) {
@@ -86,7 +87,7 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
   override fun registerSchemaTransform(
       id: String,
       vararg orders: Order,
-      transform: SchemaTransform,
+      transform: SchemaDocumentTransform,
   ) {
     schemaTransforms.add(Registration(id, transform, orders))
   }
@@ -131,22 +132,22 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
     kotlinOutputTransforms.add(Registration(id, transform, orders))
   }
 
-  override fun registerExtraCodeGenerator(codeGenerator: CodeGenerator) {
-    extraCodeGenerators.add(codeGenerator)
+  override fun registerSchemaCodeGenerator(schemaCodeGenerator: SchemaCodeGenerator) {
+    schemaCodeGenerators.add(schemaCodeGenerator)
   }
 
   fun foreignSchemas() = foreignSchemas
 
-  fun schemaTransform(): SchemaTransform {
+  fun schemaDocumentTransform(): SchemaDocumentTransform {
     val nodes = schemaTransforms.toNodes().sort()
-    return SchemaTransform {
+    return SchemaDocumentTransform {
       nodes.fold(it) { acc, node ->
         node.transform.transform(acc)
       }
     }
   }
 
-  fun operationsTransform(): ExecutableDocumentTransform {
+  fun executableDocumentTransform(): ExecutableDocumentTransform {
     val nodes = executableDocumentTransforms.toNodes().sort()
     return ExecutableDocumentTransform { schema, document, fragmentDefinitions ->
       nodes.fold(document) { acc, node ->
@@ -156,65 +157,69 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
   }
 
   fun layout(codegenSchema: CodegenSchema): SchemaAndOperationsLayout? {
-    if (layoutFactories.isEmpty()) {
-      return null
-    }
-    if (layoutFactories.size > 1) {
+    val candidates = layoutFactories.mapNotNull { it.create(codegenSchema) }
+    if (candidates.size > 1) {
       error("Apollo: multiple layouts registered. Check your compiler plugins.")
     }
-    return layoutFactories.single().create(codegenSchema)
+    return candidates.singleOrNull()
   }
 
   fun irOperationsTransform(): Transform<IrOperations> {
     val nodes = irTransforms.toNodes().sort()
-    return Transform {
-      nodes.fold(it) { acc, node ->
-        node.transform.transform(acc)
+    return object : Transform<IrOperations> {
+      override fun transform(input: IrOperations): IrOperations {
+        return nodes.fold(input) { acc, node ->
+          node.transform.transform(acc)
+        }
       }
     }
   }
 
   fun javaOutputTransform(): Transform<JavaOutput> {
     val nodes = javaOutputTransforms.toNodes().sort()
-    return Transform {
-      nodes.fold(it) { acc, node ->
-        node.transform.transform(acc)
+    return object : Transform<JavaOutput> {
+      override fun transform(input: JavaOutput): JavaOutput {
+        return nodes.fold(input) { acc, node ->
+          node.transform.transform(acc)
+        }
       }
     }
   }
 
   fun kotlinOutputTransform(): Transform<KotlinOutput> {
     val nodes = kotlinOutputTransforms.toNodes().sort()
-    return Transform {
-      nodes.fold(it) { acc, node ->
-        node.transform.transform(acc)
+    return object : Transform<KotlinOutput> {
+      override fun transform(input: KotlinOutput): KotlinOutput {
+        return nodes.fold(input) { acc, node ->
+          node.transform.transform(acc)
+        }
       }
     }
   }
 
   fun toOperationIdsGenerator(): OperationIdsGenerator {
     return OperationIdsGenerator { descriptors ->
-      val candidates = operationIdsGenerators.mapNotNull {
+      val candidateIds = operationIdsGenerators.mapNotNull {
         when (val operationIds = it.generate(descriptors)) {
           LegacyOperationIdsGenerator.NoList -> null
           else -> operationIds
         }
       }
-      return@OperationIdsGenerator if (candidates.isEmpty()) {
+      return@OperationIdsGenerator if (candidateIds.isEmpty()) {
         descriptors.map {
           OperationId(it.source.sha256(), it.name)
         }
-      } else if (candidates.size == 1) {
-        candidates.single()
+      } else if (candidateIds.size == 1) {
+        candidateIds.single()
       } else {
         error("Apollo: multiple operationIdGenerators are registered, please check your compiler plugins.")
       }
     }
   }
 
-  fun extraCodeGenerator(): CodeGenerator {
-    return CodeGenerator { document, outputDirectory ->
-      extraCodeGenerators.forEach {
+  fun schemaCodeGenerator(): SchemaCodeGenerator {
+    return SchemaCodeGenerator { document, outputDirectory ->
+      schemaCodeGenerators.forEach {
         it.generate(document, outputDirectory)
       }
     }
@@ -251,3 +256,4 @@ private fun <T> Collection<Node<T>>.sort(): List<Node<T>> {
   }
   return result
 }
+

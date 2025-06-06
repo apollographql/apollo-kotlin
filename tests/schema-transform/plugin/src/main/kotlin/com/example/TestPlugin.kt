@@ -9,9 +9,7 @@ import com.apollographql.apollo.ast.SourceAwareException
 import com.apollographql.apollo.ast.toUtf8
 import com.apollographql.apollo.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo.compiler.ApolloCompilerPluginEnvironment
-import com.apollographql.apollo.compiler.ApolloCompilerPluginProvider
 import com.apollographql.apollo.compiler.ApolloCompilerRegistry
-import com.apollographql.apollo.compiler.SchemaTransform
 
 
 private class TraversalState(
