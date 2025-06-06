@@ -26,7 +26,11 @@ fun GradleProject.allChildrenRecursively(): List<GradleProject> {
   return listOf(this) + children.flatMap { it.allChildrenRecursively() }
 }
 
-fun runGradleBuild(project: Project, gradleProjectPath: String, configureBuildLauncher: (BuildLauncher) -> BuildLauncher) {
+fun runGradleBuild(
+    project: Project,
+    gradleProjectPath: String,
+    configureBuildLauncher: (BuildLauncher) -> BuildLauncher,
+) {
   val executionSettings =
     ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, gradleProjectPath, GradleConstants.SYSTEM_ID)
 
@@ -44,7 +48,11 @@ fun runGradleBuild(project: Project, gradleProjectPath: String, configureBuildLa
   }
 }
 
-fun <T> getGradleModel(project: Project, gradleProjectPath: String, modelClass: Class<T>, configureModelBuilder: (ModelBuilder<T>) -> ModelBuilder<T>): T? {
+inline fun <reified T> getGradleModel(
+    project: Project,
+    gradleProjectPath: String,
+    configureModelBuilder: (ModelBuilder<T>) -> ModelBuilder<T>,
+): T? {
   val executionSettings =
     ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, gradleProjectPath, GradleConstants.SYSTEM_ID)
 
@@ -52,7 +60,7 @@ fun <T> getGradleModel(project: Project, gradleProjectPath: String, modelClass: 
       .forProjectDirectory(File(gradleProjectPath))
       .connect()
   val buildLauncher = configureModelBuilder(
-      connection.model(modelClass)
+      connection.model(T::class.java)
           .setJavaHome(executionSettings.javaHome?.let { File(it) })
   )
   try {

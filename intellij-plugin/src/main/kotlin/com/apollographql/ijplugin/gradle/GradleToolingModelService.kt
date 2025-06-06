@@ -163,8 +163,8 @@ class GradleToolingModelService(
         logw("Could not get Gradle root project path")
         return
       }
-      val rootGradleProject = try {
-        getGradleModel(project, gradleProjectPath, GradleProject::class.java) {
+      val rootGradleProject: GradleProject = try {
+        getGradleModel(project, gradleProjectPath) {
           it.withCancellationToken(gradleCancellation!!.token())
         }
       } catch (t: Throwable) {
@@ -187,7 +187,7 @@ class GradleToolingModelService(
         gradleCancellation = GradleConnector.newCancellationTokenSource()
         logd("Fetch tooling model for ${gradleProject.path}")
         try {
-          getGradleModel(project, gradleProject.projectDirectory.canonicalPath, ApolloGradleToolingModel::class.java) {
+          getGradleModel<ApolloGradleToolingModel>(project, gradleProject.projectDirectory.canonicalPath ) {
             it.withCancellationToken(gradleCancellation!!.token())
           }
               ?.takeIf {

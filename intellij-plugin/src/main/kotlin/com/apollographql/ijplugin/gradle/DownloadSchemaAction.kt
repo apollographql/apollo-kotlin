@@ -46,8 +46,8 @@ private class DownloadSchemaTask(project: Project) : Task.Backgroundable(
   override fun run(indicator: ProgressIndicator) {
     val gradleProjectPath = project.getGradleRootPath() ?: return
 
-    val rootGradleProject = try {
-      getGradleModel(project, gradleProjectPath, GradleProject::class.java) { it }
+    val rootGradleProject: GradleProject = try {
+      getGradleModel(project, gradleProjectPath) { it }
     } catch (t: Throwable) {
       logw(t, "Couldn't fetch Gradle project model")
       null
