@@ -16,7 +16,6 @@ import com.apollographql.ijplugin.util.newDisposable
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
@@ -29,9 +28,6 @@ import kotlinx.coroutines.launch
 import org.gradle.tooling.CancellationTokenSource
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.model.GradleProject
-import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
-import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
-import org.jetbrains.plugins.gradle.util.GradleConstants
 import java.io.File
 
 @Service(Service.Level.PROJECT)
@@ -160,24 +156,22 @@ class GradleToolingModelService(
 
     private fun doRun() {
       logd()
-      val rootProjectPath = project.getGradleRootPath() ?: return
-      val gradleExecutionHelper = GradleExecutionHelper()
-      val executionSettings =
-        ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
-      val rootGradleProject = gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
-        gradleCancellation = GradleConnector.newCancellationTokenSource()
-        logd("Fetch Gradle project model")
-        return@execute try {
-          connection.model<GradleProject>(GradleProject::class.java)
-              .setJavaHome(executionSettings.javaHome?.let { File(it) })
-              .withCancellationToken(gradleCancellation!!.token())
-              .get()
-        } catch (t: Throwable) {
-          logw(t, "Couldn't fetch Gradle project model")
-          null
-        } finally {
-          gradleCancellation = null
+      gradleCancellation = GradleConnector.newCancellationTokenSource()
+      logd("Fetch Gradle project model")
+      val gradleProjectPath = project.getGradleRootPath()
+      if (gradleProjectPath == null) {
+        logw("Could not get Gradle root project path")
+        return
+      }
+      val rootGradleProject: GradleProject = try {
+        getGradleModel(project, gradleProjectPath) {
+          it.withCancellationToken(gradleCancellation!!.token())
         }
+      } catch (t: Throwable) {
+        logw(t, "Couldn't fetch Gradle project model")
+        null
+      } finally {
+        gradleCancellation = null
       } ?: return
       project.telemetryService.gradleModuleCount = rootGradleProject.children.size + 1
 
@@ -189,27 +183,25 @@ class GradleToolingModelService(
 
       val allToolingModels = allApolloGradleProjects.mapIndexedNotNull { index, gradleProject ->
         if (isAbortRequested()) return@doRun
-        gradleExecutionHelper.execute(gradleProject.projectDirectory.canonicalPath, executionSettings) { connection ->
-          gradleCancellation = GradleConnector.newCancellationTokenSource()
-          logd("Fetch tooling model for ${gradleProject.path}")
-          return@execute try {
-            connection.model<ApolloGradleToolingModel>(ApolloGradleToolingModel::class.java)
-                .setJavaHome(executionSettings.javaHome?.let { File(it) })
-                .withCancellationToken(gradleCancellation!!.token())
-                .get()
-                .takeIf {
-                  val isCompatibleVersion = it.versionMajor == ApolloGradleToolingModel.VERSION_MAJOR
-                  if (!isCompatibleVersion) {
-                    logw("Incompatible version of Apollo Gradle plugin in module ${gradleProject.path}: ${it.versionMajor} != ${ApolloGradleToolingModel.VERSION_MAJOR}, ignoring")
-                  }
-                  isCompatibleVersion
-                }
-          } catch (t: Throwable) {
-            logw(t, "Couldn't fetch tooling model for ${gradleProject.path}")
-            null
-          } finally {
-            gradleCancellation = null
+
+        gradleCancellation = GradleConnector.newCancellationTokenSource()
+        logd("Fetch tooling model for ${gradleProject.path}")
+        try {
+          getGradleModel<ApolloGradleToolingModel>(project, gradleProject.projectDirectory.canonicalPath ) {
+            it.withCancellationToken(gradleCancellation!!.token())
           }
+              ?.takeIf {
+                val isCompatibleVersion = it.versionMajor == ApolloGradleToolingModel.VERSION_MAJOR
+                if (!isCompatibleVersion) {
+                  logw("Incompatible version of Apollo Gradle plugin in module ${gradleProject.path}: ${it.versionMajor} != ${ApolloGradleToolingModel.VERSION_MAJOR}, ignoring")
+                }
+                isCompatibleVersion
+              }
+        } catch (t: Throwable) {
+          logw(t, "Couldn't fetch tooling model for ${gradleProject.path}")
+          null
+        } finally {
+          gradleCancellation = null
         }
       }
 
@@ -226,7 +218,7 @@ class GradleToolingModelService(
       }
       try {
         ProgressManager.checkCanceled()
-      } catch (e: ProcessCanceledException) {
+      } catch (@Suppress("IncorrectCancellationExceptionHandling") _: ProcessCanceledException) {
         logd("Canceled by user")
         return true
       }
