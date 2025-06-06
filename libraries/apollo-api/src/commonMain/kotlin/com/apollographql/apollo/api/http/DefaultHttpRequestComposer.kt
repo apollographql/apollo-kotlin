@@ -50,19 +50,21 @@ class DefaultHttpRequestComposer(
     }
 
     val sendApqExtensions = apolloRequest.sendApqExtensions ?: false
+    val sendEnhancedClientAwarenessExtensions = apolloRequest.sendEnhancedClientAwareness
     val sendDocument = apolloRequest.sendDocument ?: true
 
     val httpRequestBuilder = when (apolloRequest.httpMethod ?: HttpMethod.Post) {
       HttpMethod.Get -> {
         HttpRequest.Builder(
             method = HttpMethod.Get,
-            url = buildGetUrl(serverUrl, operation, customScalarAdapters, sendApqExtensions, sendDocument),
+            url = buildGetUrl(serverUrl, operation, customScalarAdapters, sendApqExtensions, sendDocument, sendEnhancedClientAwarenessExtensions),
         ).addHeader(HEADER_APOLLO_REQUIRE_PREFLIGHT, "true")
       }
 
       HttpMethod.Post -> {
         val query = if (sendDocument) operation.document() else null
-        val body = buildPostBody(operation, customScalarAdapters, query, apqExtensionsWriter(operation.id(), sendApqExtensions))
+        val body =
+          buildPostBody(operation, customScalarAdapters, query, extensionsWriter(operation.id(), sendApqExtensions, sendEnhancedClientAwarenessExtensions))
         HttpRequest.Builder(
             method = HttpMethod.Post,
             url = serverUrl,
@@ -106,9 +108,10 @@ class DefaultHttpRequestComposer(
         customScalarAdapters: CustomScalarAdapters,
         sendApqExtensions: Boolean,
         sendDocument: Boolean,
+        sendEnhancedClientAwarenessExtensions: Boolean,
     ): String {
       return serverUrl.appendQueryParameters(
-          composeGetParams(operation, customScalarAdapters, sendApqExtensions, sendDocument)
+          composeGetParams(operation, customScalarAdapters, sendApqExtensions, sendDocument, sendEnhancedClientAwarenessExtensions)
       )
     }
 
@@ -147,22 +150,37 @@ class DefaultHttpRequestComposer(
         operation: Operation<D>,
         customScalarAdapters: CustomScalarAdapters,
         sendApqExtensions: Boolean,
+        sendEnhancedClientAwarenessExtensions: Boolean,
         query: String?,
     ): Map<String, Upload> {
       return composePostParams(
-          writer, operation, customScalarAdapters, query, apqExtensionsWriter(operation.id(), sendApqExtensions)
+          writer, operation, customScalarAdapters, query, extensionsWriter(operation.id(), sendApqExtensions, sendEnhancedClientAwarenessExtensions)
       )
     }
 
-    private fun apqExtensionsWriter(id: String, sendApqExtensions: Boolean): JsonWriter.() -> Unit {
+    private fun extensionsWriter(
+        apqId: String,
+        sendApqExtensions: Boolean,
+        sendEnhancedClientAwarenessExtensions: Boolean,
+    ): JsonWriter.() -> Unit {
+      if (!sendApqExtensions && !sendEnhancedClientAwarenessExtensions) return { }
+
       return {
-        if (sendApqExtensions) {
-          name("extensions")
-          writeObject {
+        name("extensions")
+        writeObject {
+          if (sendApqExtensions) {
             name("persistedQuery")
             writeObject {
               name("version").value(1)
-              name("sha256Hash").value(id)
+              name("sha256Hash").value(apqId)
+            }
+          }
+
+          if (sendEnhancedClientAwarenessExtensions) {
+            name("clientLibrary")
+            writeObject {
+              name("name").value("apollo-kotlin")
+              name("version").value(com.apollographql.apollo.api.apolloApiVersion)
             }
           }
         }
@@ -179,6 +197,7 @@ class DefaultHttpRequestComposer(
         customScalarAdapters: CustomScalarAdapters,
         autoPersistQueries: Boolean,
         sendDocument: Boolean,
+        sendEnhancedClientAwareness: Boolean,
     ): Map<String, String> {
       val queryParams = mutableMapOf<String, String>()
 
@@ -200,18 +219,29 @@ class DefaultHttpRequestComposer(
         queryParams.put("query", operation.document())
       }
 
-      if (autoPersistQueries) {
-        val extensions = buildJsonString {
-          writeObject {
+      val extensions = buildJsonString {
+        writeObject {
+          if (autoPersistQueries) {
             name("persistedQuery")
             writeObject {
               name("version").value(1)
               name("sha256Hash").value(operation.id())
             }
           }
+          if (sendEnhancedClientAwareness) {
+            name("clientLibrary")
+            writeObject {
+              name("name").value("apollo-kotlin")
+              name("version").value(com.apollographql.apollo.api.apolloApiVersion)
+            }
+          }
         }
+      }
+
+      if (!extensions.isEmpty()) {
         queryParams.put("extensions", extensions)
       }
+
       return queryParams
     }
 
@@ -241,9 +271,10 @@ class DefaultHttpRequestComposer(
         operation: Operation<D>,
         customScalarAdapters: CustomScalarAdapters,
         autoPersistQueries: Boolean,
+        sendEnhancedClientAwarenessExtensions: Boolean,
         query: String?,
     ): HttpBody {
-      return buildPostBody(operation, customScalarAdapters, query, apqExtensionsWriter(operation.id(), autoPersistQueries))
+      return buildPostBody(operation, customScalarAdapters, query, extensionsWriter(operation.id(), autoPersistQueries, sendEnhancedClientAwarenessExtensions))
     }
 
     fun <D : Operation.Data> buildPostBody(
@@ -278,6 +309,7 @@ class DefaultHttpRequestComposer(
       }
     }
 
+    @Deprecated("Use new function with additional parameters instead.", ReplaceWith("buildParamsMap(operation = operation, customScalarAdapters = customScalarAdapters, autoPersistQueries = autoPersistQueries, sendDocument = sendDocument, sendEnhancedClientAwarenessExtensions = true)"))
     fun <D : Operation.Data> buildParamsMap(
         operation: Operation<D>,
         customScalarAdapters: CustomScalarAdapters,
@@ -286,7 +318,20 @@ class DefaultHttpRequestComposer(
     ): ByteString {
       return buildJsonByteString {
         val query = if (sendDocument) operation.document() else null
-        composePostParams(this, operation, customScalarAdapters, autoPersistQueries, query)
+        composePostParams(this, operation, customScalarAdapters, autoPersistQueries, true, query)
+      }
+    }
+
+    fun <D : Operation.Data> buildParamsMap(
+        operation: Operation<D>,
+        customScalarAdapters: CustomScalarAdapters,
+        autoPersistQueries: Boolean,
+        sendDocument: Boolean,
+        sendEnhancedClientAwarenessExtensions: Boolean,
+    ): ByteString {
+      return buildJsonByteString {
+        val query = if (sendDocument) operation.document() else null
+        composePostParams(this, operation, customScalarAdapters, autoPersistQueries, sendEnhancedClientAwarenessExtensions, query)
       }
     }
 
@@ -296,12 +341,13 @@ class DefaultHttpRequestComposer(
     ): Map<String, Any?> {
       val operation = apolloRequest.operation
       val sendApqExtensions = apolloRequest.sendApqExtensions ?: false
+      val sendEnhancedClientAwarenessExtensions = apolloRequest.sendEnhancedClientAwareness
       val sendDocument = apolloRequest.sendDocument ?: true
       val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
       val query = if (sendDocument) operation.document() else null
       return buildJsonMap {
-        composePostParams(this, operation, customScalarAdapters, sendApqExtensions, query)
+        composePostParams(this, operation, customScalarAdapters, sendApqExtensions, sendEnhancedClientAwarenessExtensions, query)
       } as Map<String, Any?>
     }
   }

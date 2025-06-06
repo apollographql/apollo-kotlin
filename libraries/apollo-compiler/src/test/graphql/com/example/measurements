@@ -2,16 +2,17 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  195528
-aggregate-kotlin-responseBased                                                                  61630
-aggregate-kotlin-operationBased                                                                 39804
+aggregate-all                                                                                  201251
+aggregate-kotlin-responseBased                                                                  63247
+aggregate-kotlin-operationBased                                                                 41359
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   94094
+aggregate-java-operationBased                                                                   96645
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5754
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3416
 java-operationBased-data_builders                                                                3013
 kotlin-responseBased-data_builders                                                               2626
+java-operationBased-typepolicy                                                                   2551
 java-operationBased-mutation_create_review                                                       2419
 kotlin-responseBased-fragment_with_inline_fragment                                               2407
 java-operationBased-fragment_with_inline_fragment                                                2237
@@ -24,8 +25,10 @@ kotlin-responseBased-mutation_create_review                                     
 java-operationBased-mutation_create_review_semantic_naming                                       1629
 java-operationBased-unique_type_name                                                             1627
 java-operationBased-inline_fragment_intersection                                                 1623
+kotlin-responseBased-typepolicy                                                                  1617
 kotlin-responseBased-nested_named_fragments                                                      1610
 java-operationBased-root_query_fragment_with_nested_fragments                                    1569
+kotlin-operationBased-typepolicy                                                                 1555
 java-operationBased-named_fragment_delegate                                                      1457
 java-operationBased-simple_fragment                                                              1438
 java-operationBased-named_fragment_with_variables                                                1398

@@ -86,6 +86,7 @@ private constructor(
   private val retryOnError: ((ApolloRequest<*>) -> Boolean)? = builder.retryOnError
   private val retryOnErrorInterceptor: ApolloInterceptor? = builder.retryOnErrorInterceptor
   private val failFastIfOffline = builder.failFastIfOffline
+  private val sendEnhancedClientAwareness = builder.sendEnhancedClientAwareness
 
   override val executionContext: ExecutionContext = builder.executionContext
   override val httpMethod: HttpMethod? = builder.httpMethod
@@ -288,8 +289,8 @@ private constructor(
 
       retryOnError(retryOnError ?: apolloClient.retryOnError?.invoke(apolloRequest))
       failFastIfOffline(failFastIfOffline ?: apolloClient.failFastIfOffline)
-
       ignoreUnknownKeys(ignoreUnknownKeys ?: apolloClient.ignoreUnknownKeys)
+      sendEnhancedClientAwareness(apolloClient.sendEnhancedClientAwareness)
     }.build()
 
     val allInterceptors = buildList {
@@ -396,6 +397,18 @@ private constructor(
 
     var autoPersistedQueryInterceptor: ApolloInterceptor? = null
       private set
+
+    var sendEnhancedClientAwareness: Boolean = true
+      private set
+
+    /**
+     * Configures whether client library metadata is sent in each request `extensions` key.
+     * Client library metadata is the Apollo Kotlin library name and version.
+     *
+     */
+    fun sendEnhancedClientAwareness(sendEnhancedClientAwareness: Boolean): Builder = apply {
+      this.sendEnhancedClientAwareness = sendEnhancedClientAwareness
+    }
 
     /**
      * Whether to fail fast if the device is offline.
@@ -963,6 +976,7 @@ private constructor(
           .cacheInterceptor(cacheInterceptor)
           .autoPersistedQueriesInterceptor(autoPersistedQueryInterceptor)
           .failFastIfOffline(failFastIfOffline)
+          .sendEnhancedClientAwareness(sendEnhancedClientAwareness)
     }
   }
 }
