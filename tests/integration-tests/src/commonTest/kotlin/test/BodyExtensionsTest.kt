@@ -71,4 +71,60 @@ class BodyExtensionsTest {
     apolloClient.close()
     mockServer.close()
   }
+
+  @Suppress("UNCHECKED_CAST")
+  @Test
+  fun enhancedClientAwarenessExtensionsIncludedByDefault() = runTest {
+    val mockServer = MockServer()
+
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport.Builder()
+                .httpRequestComposer(DefaultHttpRequestComposer(mockServer.url()))
+                .build()
+        )
+        .build()
+
+    mockServer.enqueueError(statusCode = 500)
+    apolloClient.query(LaunchDetailsQuery("42")).execute()
+
+    val request = mockServer.awaitRequest()
+
+    @Suppress("UNCHECKED_CAST")
+    val asMap = Buffer().write(request.body).jsonReader().readAny() as Map<String, Any>
+    val expected: Map<String, Any> = mapOf("name" to "apollo-kotlin", "version" to com.apollographql.apollo.api.apolloApiVersion)
+
+    assertEquals(expected, (asMap["extensions"] as Map<String, Any>).get("clientLibrary"))
+
+    apolloClient.close()
+    mockServer.close()
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  @Test
+  fun enhancedClientAwarenessExtensionsExcludedWhenDisabled() = runTest {
+    val mockServer = MockServer()
+
+    val apolloClient = ApolloClient.Builder()
+        .sendEnhancedClientAwareness(false)
+        .networkTransport(
+            HttpNetworkTransport.Builder()
+                .httpRequestComposer(DefaultHttpRequestComposer(mockServer.url()))
+                .build()
+        )
+        .build()
+
+    mockServer.enqueueError(statusCode = 500)
+    apolloClient.query(LaunchDetailsQuery("42")).execute()
+
+    val request = mockServer.awaitRequest()
+
+    @Suppress("UNCHECKED_CAST")
+    val asMap = Buffer().write(request.body).jsonReader().readAny() as Map<String, Any>
+
+    assertEquals(null, (asMap["extensions"] as Map<String, Any>).get("clientLibrary"))
+
+    apolloClient.close()
+    mockServer.close()
+  }
 }
