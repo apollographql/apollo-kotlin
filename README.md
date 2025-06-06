@@ -103,9 +103,9 @@ We regularly update our [public roadmap](https://github.com/apollographql/apollo
 
 ## 📣 Tell us what you think
 
-| ☑️  Apollo Client User Survey |
+| ☑️  Apollo Kotlin User Survey |
 | :----- |
-| What do you like best about Apollo Client? What needs to be improved? Please tell us by taking a [one-minute survey](https://docs.google.com/forms/d/e/1FAIpQLSczNDXfJne3ZUOXjk9Ursm9JYvhTh1_nFTDfdq3XBAFWCzplQ/viewform?usp=pp_url&entry.1170701325=Apollo+Kotlin&entry.204965213=Readme). Your responses will help us understand Apollo Client usage and allow us to serve you better. |
+| What do you like best about Apollo Kotlin? What needs to be improved? Please tell us by taking a [one-minute survey](https://docs.google.com/forms/d/e/1FAIpQLSczNDXfJne3ZUOXjk9Ursm9JYvhTh1_nFTDfdq3XBAFWCzplQ/viewform?usp=pp_url&entry.1170701325=Apollo+Kotlin&entry.204965213=Readme). Your responses will help us understand Apollo Kotlin usage and allow us to serve you better. |
 
 ## 🗓️ Events
 
@@ -123,7 +123,7 @@ Join these live events to meet other GraphQL users and learn more:
 
 ## 🏆 Contributing
 
-Thank you for your interest in submitting a Pull Request to Apollo Client!  Read our [guidelines](https://github.com/apollographql/apollo-kotlin/blob/main/CONTRIBUTING.md) first, and don't hesitate to get in touch.
+Thank you for your interest in submitting a Pull Request to Apollo Kotlin!  Read our [guidelines](https://github.com/apollographql/apollo-kotlin/blob/main/CONTRIBUTING.md) first, and don't hesitate to get in touch.
 
 **New to open source?** Check out our [**Good First Issues**](https://github.com/apollographql/apollo-kotlin/issues?q=is%3Aopen%20label%3A%22%3Abooks%3A%20good-first-issue%22) to get started.
 
