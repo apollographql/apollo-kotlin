@@ -31,9 +31,11 @@ fun runGradleBuild(
     gradleProjectPath: String,
     configureBuildLauncher: (BuildLauncher) -> BuildLauncher,
 ) {
-  val executionSettings =
-    ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, gradleProjectPath, GradleConstants.SYSTEM_ID)
-
+  val executionSettings = ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(
+      project,
+      gradleProjectPath,
+      GradleConstants.SYSTEM_ID
+  )
   val connection = GradleConnector.newConnector()
       .forProjectDirectory(File(gradleProjectPath))
       .connect()
@@ -53,18 +55,20 @@ inline fun <reified T> getGradleModel(
     gradleProjectPath: String,
     configureModelBuilder: (ModelBuilder<T>) -> ModelBuilder<T>,
 ): T? {
-  val executionSettings =
-    ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, gradleProjectPath, GradleConstants.SYSTEM_ID)
-
+  val executionSettings = ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(
+      project,
+      gradleProjectPath,
+      GradleConstants.SYSTEM_ID
+  )
   val connection = GradleConnector.newConnector()
       .forProjectDirectory(File(gradleProjectPath))
       .connect()
-  val buildLauncher = configureModelBuilder(
+  val modelBuilder = configureModelBuilder(
       connection.model(T::class.java)
           .setJavaHome(executionSettings.javaHome?.let { File(it) })
   )
   try {
-    return buildLauncher.get()
+    return modelBuilder.get()
   } finally {
     connection.close()
   }
