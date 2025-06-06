@@ -2,7 +2,7 @@
 <html class="no-js">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>SchemaTransform</title>
+    <title>transform</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
     <script>document.documentElement.classList.replace("no-js","js");</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
@@ -46,12 +46,12 @@
         </button>
         <div class="navigation-controls--break ui-kit_mobile-only"></div>
         <div class="library-version" id="library-version">
-<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.compiler/-schema-transform/index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.compiler/-document-transform/transform.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
   <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">5.0.0-SNAPSHOT</div>
   <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
     <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
-    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">5.0.0-SNAPSHOT</a></div>
-    <div><a href="../../../not-found-version.html?v=4.2.0" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">4.2.0</a></div>
+    <div><a href="transform.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">5.0.0-SNAPSHOT</a></div>
+    <div><a href="../../../older/4.2.0/apollo-compiler/com.apollographql.apollo.compiler/-document-transform/transform.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">4.2.0</a></div>
     <div><a href="../../../not-found-version.html?v=3.8.2" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.8.2</a></div>
   </div>
   <div class="dropdown--overlay"></div>
@@ -104,36 +104,12 @@
                 </div>
             </div>
             <div id="main">
-<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-compiler::com.apollographql.apollo.compiler/SchemaTransform///PointingToDeclaration//431625483">
-  <div class="breadcrumbs"><a href="../../index.html">apollo-compiler</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.compiler</a><span class="delimiter">/</span><span class="current">SchemaTransform</span></div>
+<div class="main-content" data-page-type="member" id="content" pageids="apollo-compiler::com.apollographql.apollo.compiler/DocumentTransform/transform/#com.apollographql.apollo.ast.Schema#com.apollographql.apollo.ast.GQLOperationDefinition/PointingToDeclaration//431625483">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-compiler</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.compiler</a><span class="delimiter">/</span><a href="index.html">DocumentTransform</a><span class="delimiter">/</span><span class="current">transform</span></div>
   <div class="cover ">
-    <h1 class="cover"><span>Schema</span><wbr><span><span>Transform</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="index.html">SchemaTransform</a></div></div></div>
+    <h1 class="cover"><span><span>transform</span></span></h1>
   </div>
-  <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
-    <div class="tabs-section-body">
-      <div data-togglable="FUNCTION">
-        <h2 class="">Functions</h2>
-        <div class="table"><a data-name="-450690476%2FFunctions%2F431625483" anchor-label="transform" id="-450690476%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
-          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="transform.html"><span><span>transform</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-450690476%2FFunctions%2F431625483"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="transform.html"><span class="token function">transform</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">schemaDocument<span class="token operator">: </span><a href="../../../apollo-ast/com.apollographql.apollo.ast/-g-q-l-document/index.html">GQLDocument</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../apollo-ast/com.apollographql.apollo.ast/-g-q-l-document/index.html">GQLDocument</a></div><div class="brief "><p class="paragraph">Transforms the given schema document.</p></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="transform.html"><span class="token function">transform</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">schema<span class="token operator">: </span><a href="../../../apollo-ast/com.apollographql.apollo.ast/-schema/index.html">Schema</a><span class="token punctuation">, </span></span><span class="parameter ">operation<span class="token operator">: </span><a href="../../../apollo-ast/com.apollographql.apollo.ast/-g-q-l-operation-definition/index.html">GQLOperationDefinition</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../apollo-ast/com.apollographql.apollo.ast/-g-q-l-operation-definition/index.html">GQLOperationDefinition</a></div><p class="paragraph">Transforms the given operation.</p><p class="paragraph"><a href="transform.html">transform</a> is called after any processing done by the Apollo compiler such as adding <code class="lang-kotlin">__typename</code>.</p><hr><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="transform.html"><span class="token function">transform</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">schema<span class="token operator">: </span><a href="../../../apollo-ast/com.apollographql.apollo.ast/-schema/index.html">Schema</a><span class="token punctuation">, </span></span><span class="parameter ">fragment<span class="token operator">: </span><a href="../../../apollo-ast/com.apollographql.apollo.ast/-g-q-l-fragment-definition/index.html">GQLFragmentDefinition</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../apollo-ast/com.apollographql.apollo.ast/-g-q-l-fragment-definition/index.html">GQLFragmentDefinition</a></div><p class="paragraph">Transforms the given fragment.</p><p class="paragraph"><a href="transform.html">transform</a> is called after any processing done by the Apollo compiler such as adding <code class="lang-kotlin">__typename</code>.</p></div></div>
 </div>
     <div class="footer">
         <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
