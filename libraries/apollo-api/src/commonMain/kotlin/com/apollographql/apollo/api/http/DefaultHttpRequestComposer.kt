@@ -341,7 +341,7 @@ class DefaultHttpRequestComposer(
     ): Map<String, Any?> {
       val operation = apolloRequest.operation
       val sendApqExtensions = apolloRequest.sendApqExtensions ?: false
-      val sendEnhancedClientAwarenessExtensions = true
+      val sendEnhancedClientAwarenessExtensions = apolloRequest.sendEnhancedClientAwareness
       val sendDocument = apolloRequest.sendDocument ?: true
       val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 

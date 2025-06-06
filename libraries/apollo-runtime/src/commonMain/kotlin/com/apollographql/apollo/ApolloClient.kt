@@ -289,8 +289,8 @@ private constructor(
 
       retryOnError(retryOnError ?: apolloClient.retryOnError?.invoke(apolloRequest))
       failFastIfOffline(failFastIfOffline ?: apolloClient.failFastIfOffline)
-
       ignoreUnknownKeys(ignoreUnknownKeys ?: apolloClient.ignoreUnknownKeys)
+      sendEnhancedClientAwareness(apolloClient.sendEnhancedClientAwareness)
     }.build()
 
     val allInterceptors = buildList {
