@@ -14,15 +14,15 @@ import kotlin.test.assertIs
 class LexerTest {
   private fun lexFirst(string: String): Token {
     return Lexer(string).run {
-      nextToken()
+      nextToken() // Beginning of file
       nextToken()
     }
   }
 
   private fun lexSecond(string: String): Token {
     return Lexer(string).run {
-      nextToken()
-      nextToken()
+      nextToken() // Beginning of file
+      nextToken() // First token (ignored)
       nextToken()
     }
   }
@@ -108,6 +108,28 @@ class LexerTest {
 
     lexFirst(",,,foo,,,").apply {
       assertName("foo")
+    }
+  }
+
+  @Test
+  fun lexesSpreads() {
+    expectLexerException(".. on Foo") {
+      assertEquals("Unexpected '..', did you mean '...'?", message)
+    }
+
+    Lexer("... on Foo").apply {
+      nextToken()
+      nextToken().apply {
+        assertIs<Token.Spread>(this)
+      }
+      nextToken().apply {
+        assertIs<Token.Name>(this)
+        assertEquals("on", value)
+      }
+      nextToken().apply {
+        assertIs<Token.Name>(this)
+        assertEquals("Foo", value)
+      }
     }
   }
 
@@ -559,7 +581,7 @@ class LexerTest {
       assertEquals(3, column)
     }
     expectLexerException(".123") {
-      assertEquals("Unterminated spread operator", message)
+      assertEquals("Invalid number, expected digit before '.', did you mean '0.123'", message)
       assertEquals(1, line)
       assertEquals(1, column)
     }

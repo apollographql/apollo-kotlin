@@ -107,11 +107,26 @@ internal class Lexer(val src: String) {
         '(' -> return Token.LeftParenthesis(start, line, column(start))
         ')' -> return Token.RightParenthesis(start, line, column(start))
         '.' -> {
-          if (pos + 1 < len && src[pos] == '.' && src[pos + 1] == '.') {
+          val nextChar = if (pos < len) {
+            src[pos]
+          } else {
+            null
+          }
+          if (nextChar != '.') {
+            if (nextChar?.isDigit() == true) {
+              val digitStart = pos
+              pos++
+              while (pos < len && src[pos].isDigit()) {
+                pos++
+              }
+              throw LexerException("Invalid number, expected digit before '.', did you mean '0.${src.substring(digitStart, pos)}'", start, line, column(start), null)
+            }
+            return Token.Dot(start, line, column(start))
+          } else if (pos + 1 < len && src[pos + 1] == '.') {
             pos += 2
             return Token.Spread(start, line, column(start))
           } else {
-            throw LexerException("Unterminated spread operator", start, line, column(start), null)
+            throw LexerException("Unexpected '..', did you mean '...'?", start, line, column(start), null)
           }
         }
 

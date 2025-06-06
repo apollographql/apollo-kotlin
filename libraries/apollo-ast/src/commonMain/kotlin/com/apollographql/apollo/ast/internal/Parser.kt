@@ -1,9 +1,12 @@
 package com.apollographql.apollo.ast.internal
 
 import com.apollographql.apollo.ast.GQLArgument
+import com.apollographql.apollo.ast.GQLArgumentCoordinate
 import com.apollographql.apollo.ast.GQLBooleanValue
 import com.apollographql.apollo.ast.GQLDefinition
 import com.apollographql.apollo.ast.GQLDirective
+import com.apollographql.apollo.ast.GQLDirectiveArgumentCoordinate
+import com.apollographql.apollo.ast.GQLDirectiveCoordinate
 import com.apollographql.apollo.ast.GQLDirectiveDefinition
 import com.apollographql.apollo.ast.GQLDirectiveLocation
 import com.apollographql.apollo.ast.GQLDocument
@@ -25,6 +28,7 @@ import com.apollographql.apollo.ast.GQLInterfaceTypeDefinition
 import com.apollographql.apollo.ast.GQLInterfaceTypeExtension
 import com.apollographql.apollo.ast.GQLListType
 import com.apollographql.apollo.ast.GQLListValue
+import com.apollographql.apollo.ast.GQLMemberCoordinate
 import com.apollographql.apollo.ast.GQLNamedType
 import com.apollographql.apollo.ast.GQLNonNullType
 import com.apollographql.apollo.ast.GQLNullValue
@@ -36,11 +40,13 @@ import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.GQLOperationTypeDefinition
 import com.apollographql.apollo.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo.ast.GQLScalarTypeExtension
+import com.apollographql.apollo.ast.GQLSchemaCoordinate
 import com.apollographql.apollo.ast.GQLSchemaDefinition
 import com.apollographql.apollo.ast.GQLSchemaExtension
 import com.apollographql.apollo.ast.GQLSelection
 import com.apollographql.apollo.ast.GQLStringValue
 import com.apollographql.apollo.ast.GQLType
+import com.apollographql.apollo.ast.GQLTypeCoordinate
 import com.apollographql.apollo.ast.GQLTypeDefinition
 import com.apollographql.apollo.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo.ast.GQLUnionTypeExtension
@@ -49,6 +55,7 @@ import com.apollographql.apollo.ast.GQLVariableDefinition
 import com.apollographql.apollo.ast.GQLVariableValue
 import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.SourceLocation
+import kotlin.math.exp
 
 internal class Parser(
     src: String,
@@ -87,6 +94,10 @@ internal class Parser(
 
   fun parseType(): GQLType {
     return parseTopLevel(::parseTypeInternal)
+  }
+
+  fun parseSchemaCoordinate(): GQLSchemaCoordinate {
+    return parseTopLevel(::parseSchemaCoordinateInternal)
   }
 
   private fun advance() {
@@ -980,6 +991,39 @@ internal class Parser(
     )
   }
 
+  private fun parseSchemaCoordinateInternal(): GQLSchemaCoordinate {
+    val sourceLocation = sourceLocation()
+    return if (token is Token.At) {
+      advance()
+      val name = expectToken<Token.Name>().value
+      if (token is Token.LeftParenthesis) {
+        advance()
+        val argument = expectToken<Token.Name>().value
+        expectToken<Token.Colon>()
+        expectToken<Token.RightParenthesis>()
+        GQLDirectiveArgumentCoordinate(sourceLocation, name, argument)
+      } else {
+        GQLDirectiveCoordinate(sourceLocation, name)
+      }
+    } else {
+      val name = expectToken<Token.Name>().value
+      if (token is Token.Dot) {
+        advance()
+        val member = expectToken<Token.Name>().value
+        if (token is Token.LeftParenthesis) {
+          advance()
+          val argument = expectToken<Token.Name>().value
+          expectToken<Token.Colon>()
+          expectToken<Token.RightParenthesis>()
+          GQLArgumentCoordinate(sourceLocation, name, member, argument)
+        } else {
+          GQLMemberCoordinate(sourceLocation, name, member)
+        }
+      } else {
+        GQLTypeCoordinate(sourceLocation, name)
+      }
+    }
+  }
   private fun parseTypeInternal(): GQLType {
     val start = token
 
