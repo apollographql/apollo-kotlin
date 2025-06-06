@@ -4,6 +4,7 @@ import com.apollographql.ijplugin.gradle.CODEGEN_GRADLE_TASK_NAME
 import com.apollographql.ijplugin.gradle.GradleHasSyncedListener
 import com.apollographql.ijplugin.gradle.SimpleProgressListener
 import com.apollographql.ijplugin.gradle.getGradleRootPath
+import com.apollographql.ijplugin.gradle.runGradleBuild
 import com.apollographql.ijplugin.project.ApolloProjectListener
 import com.apollographql.ijplugin.project.ApolloProjectService
 import com.apollographql.ijplugin.project.apolloProjectService
@@ -24,7 +25,6 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
-import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
@@ -37,10 +37,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.gradle.tooling.CancellationTokenSource
 import org.gradle.tooling.GradleConnector
-import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
-import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
-import org.jetbrains.plugins.gradle.util.GradleConstants
-import java.io.File
 
 @Service(Service.Level.PROJECT)
 class ApolloCodegenService(
@@ -180,19 +176,18 @@ class ApolloCodegenService(
     }
 
     val modules = ModuleManager.getInstance(project).modules
-    val rootProjectPath = project.getGradleRootPath() ?: return
     coroutineScope.launch {
-      val executionSettings =
-        ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
-      val gradleExecutionHelper = GradleExecutionHelper()
-      gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
-        gradleCodegenCancellation = GradleConnector.newCancellationTokenSource()
-        logd("Start Gradle")
-        try {
-          val cancellationToken = gradleCodegenCancellation!!.token()
-          connection.newBuild()
-              .setJavaHome(executionSettings.javaHome?.let { File(it) })
-              .forTasks(CODEGEN_GRADLE_TASK_NAME)
+      gradleCodegenCancellation = GradleConnector.newCancellationTokenSource()
+      logd("Start Gradle")
+      try {
+        val cancellationToken = gradleCodegenCancellation!!.token()
+        val gradleProjectPath = project.getGradleRootPath()
+        if (gradleProjectPath == null) {
+          logw("Could not get Gradle root project path")
+          return@launch
+        }
+        runGradleBuild(project, gradleProjectPath) {
+          it.forTasks(CODEGEN_GRADLE_TASK_NAME)
               .withCancellationToken(cancellationToken)
               .addArguments("--continuous")
               .let {
@@ -211,13 +206,12 @@ class ApolloCodegenService(
                   VfsUtil.markDirtyAndRefresh(true, true, true, *generatedSourceRoots.toTypedArray())
                 }
               })
-              .run()
-          logd("Gradle execution finished")
-        } catch (t: Throwable) {
-          logd(t, "Gradle execution failed")
-        } finally {
-          gradleCodegenCancellation = null
         }
+        logd("Gradle execution finished")
+      } catch (t: Throwable) {
+        logd(t, "Gradle execution failed")
+      } finally {
+        gradleCodegenCancellation = null
       }
     }
   }
