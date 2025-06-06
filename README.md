@@ -27,6 +27,7 @@
 
 ## ❓ Why Choose Apollo Kotlin?
 
+ ✅ 100% type safety, from your server to your app, using code generation.
  ✅ Intuitive, powerful caching - intelligent in-memory or SQLite caching out of the box<br>
  ✅ Excellent support for modern Android and Kotlin Multiplatform apps<br>
  ✅ Always up-to-date - we prioritize support for the latest versions of GraphQL, Kotlin, Gradle, and more<br>
