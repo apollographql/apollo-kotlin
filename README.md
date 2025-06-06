@@ -38,6 +38,8 @@
  
 If you are new to GraphQL, check out [the tutorial](https://www.apollographql.com/tutorials/apollo-kotlin-android-part1) that will guide you through building an Android app using Apollo.
 
+For more in-depth documentation, head to the [official documentation site](https://www.apollographql.com/docs/kotlin?utm_source=github&utm_medium=apollographql_apollo-kotlin&utm_campaign=readme).
+
 If you'd like to add Apollo Kotlin to an existing project, follow the steps below:
 
 Add the plugin to your `build.gradle.kts`:
