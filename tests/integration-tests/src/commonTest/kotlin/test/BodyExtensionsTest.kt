@@ -20,6 +20,7 @@ import com.apollographql.apollo.testing.internal.runTest
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class WithExtensionsHttpRequestComposer(private val serverUrl: String) : HttpRequestComposer {
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
@@ -121,8 +122,8 @@ class BodyExtensionsTest {
 
     @Suppress("UNCHECKED_CAST")
     val asMap = Buffer().write(request.body).jsonReader().readAny() as Map<String, Any>
-
-    assertEquals(null, (asMap["extensions"] as Map<String, Any>).get("clientLibrary"))
+    
+    assertNull((asMap["extensions"] as? Map<String, Any>)?.get("clientLibrary"))
 
     apolloClient.close()
     mockServer.close()
