@@ -220,22 +220,19 @@ class DefaultHttpRequestComposer(
       }
 
       val extensions = buildJsonString {
-        if (autoPersistQueries) {
-          writeObject {
+        writeObject {
+          if (autoPersistQueries) {
             name("persistedQuery")
             writeObject {
               name("version").value(1)
               name("sha256Hash").value(operation.id())
             }
           }
-        }
-
-        if (sendEnhancedClientAwareness) {
-          writeObject {
+          if (sendEnhancedClientAwareness) {
             name("clientLibrary")
             writeObject {
               name("name").value("apollo-kotlin")
-              name("version").value(0)
+              name("version").value(com.apollographql.apollo.api.apolloApiVersion)
             }
           }
         }
