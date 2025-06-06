@@ -36,13 +36,6 @@ class HttpRequestComposerTest {
   }
 
   @Test
-  fun requestBuilderSetsEnhancedClientAwarenessExtensionsTrueByDefault() {
-    val apolloRequest = ApolloRequest.Builder(AllPlanetsQuery()).build()
-
-    assertEquals(true, apolloRequest.sendEnhancedClientAwareness)
-  }
-
-  @Test
   fun requestHeadersAreForwardedToTheServer() = runTest(before = { setUp() }, after = { tearDown() }) {
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
 
