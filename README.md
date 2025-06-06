@@ -29,7 +29,7 @@
 
  ✅ Intuitive, powerful caching - intelligent in-memory or SQLite caching out of the box<br>
  ✅ Excellent support for modern Android and Kotlin Multiplatform apps<br>
- ✅ Always up-to-date - we prioritize support for the latest versions of Kotlin, Gradle, and more<br>
+ ✅ Always up-to-date - we prioritize support for the latest versions of GraphQL, Kotlin, Gradle, and more<br>
  ✅ GraphOS ready - turnkey support for Persisted Queries, and `@defer`<br>
  ✅ Production-tested - Powers countless apps worldwide that serve millions of end users<br>
 
