@@ -106,3 +106,15 @@ val PsiClass.ktClassOrObject: KtClassOrObject?
 
 val PsiClass.ktClass: KtClass?
   get() = navigationElement as? KtClass
+
+fun KtClass.allSuperTypes(): List<KtClass> {
+  val superTypes = mutableListOf<KtClass>()
+  for (superType in superTypeListEntries) {
+    val superTypeClass = superType.typeAsUserType?.referenceExpression?.resolveKtName()?.asKtClass()
+    if (superTypeClass != null) {
+      superTypes.add(superTypeClass)
+      superTypes.addAll(superTypeClass.allSuperTypes())
+    }
+  }
+  return superTypes
+}

@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.navigation
 
+import com.apollographql.ijplugin.util.allSuperTypes
 import com.apollographql.ijplugin.util.apollo3
 import com.apollographql.ijplugin.util.apollo4
 import com.apollographql.ijplugin.util.asKtClass
@@ -86,9 +87,8 @@ fun KtClass.isApolloOperation(): Boolean {
 }
 
 fun KtClass.isApolloFragment(): Boolean {
-  return superTypeListEntries.any {
-    val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.kotlinFqName
-    superType in APOLLO_FRAGMENT_TYPE
+  return allSuperTypes().any {
+    it.fqName in APOLLO_FRAGMENT_TYPE
   } ||
       // Fallback for fragments in responseBased codegen: they are interfaces generated in a .fragment package.
       // This can lead to false positives, but consequences are not dire.
@@ -96,9 +96,8 @@ fun KtClass.isApolloFragment(): Boolean {
 }
 
 fun KtClass.isApolloOperationOrFragment(): Boolean {
-  return superTypeListEntries.any {
-    val superType = it.typeAsUserType?.referenceExpression?.resolveKtName()?.kotlinFqName
-    superType in APOLLO_OPERATION_TYPES || superType in APOLLO_FRAGMENT_TYPE
+  return allSuperTypes().any {
+    it.fqName in APOLLO_OPERATION_TYPES || it.fqName in APOLLO_FRAGMENT_TYPE
   } ||
       // Fallback for fragments in responseBased codegen: they are interfaces generated in a .fragment package.
       // This can lead to false positives, but consequences are not dire.

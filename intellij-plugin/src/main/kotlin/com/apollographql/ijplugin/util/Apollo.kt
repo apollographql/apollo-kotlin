@@ -11,6 +11,7 @@ import com.intellij.openapi.vfs.VirtualFile
 const val apollo2 = "com.apollographql.apollo"
 const val apollo3 = "com.apollographql.apollo3"
 const val apollo4 = "com.apollographql.apollo"
+const val apollo5 = "com.apollographql.apollo"
 
 fun Project.getApolloVersion(): ApolloVersion {
   var foundVersion = ApolloVersion.NONE
@@ -18,7 +19,7 @@ fun Project.getApolloVersion(): ApolloVersion {
     val mavenCoordinates = library.toMavenCoordinates() ?: return@forEachLibrary true
     @Suppress("DUPLICATE_LABEL_IN_WHEN")
     when (mavenCoordinates.group) {
-      apollo2, apollo4 -> {
+      apollo2, apollo4, apollo5 -> {
         when {
           mavenCoordinates.version.startsWith("2.") -> {
             foundVersion = ApolloVersion.V2
@@ -30,25 +31,18 @@ fun Project.getApolloVersion(): ApolloVersion {
             false
           }
 
+          mavenCoordinates.version.startsWith("5.") -> {
+            foundVersion = ApolloVersion.V5
+            false
+          }
+
           else -> true
         }
       }
 
       apollo3 -> {
-        when {
-          mavenCoordinates.version.startsWith("3.") -> {
-            foundVersion = ApolloVersion.V3
-            false
-          }
-
-          // TODO Needed in tests until 4.0 with groupId com.apollographql.apollo is published
-          mavenCoordinates.version.startsWith("4.") -> {
-            foundVersion = ApolloVersion.V4
-            false
-          }
-
-          else -> true
-        }
+        foundVersion = ApolloVersion.V3
+        false
       }
 
       else -> true
