@@ -2,7 +2,6 @@
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
@@ -75,7 +74,6 @@ fun Project.configureMpp(
       }
     }
     if (withWasm) {
-      @OptIn(ExperimentalWasmDsl::class)
       wasmJs {
         nodejs()
       }
