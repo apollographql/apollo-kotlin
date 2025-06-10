@@ -50,7 +50,7 @@ public final class com/apollographql/apollo/api/ApolloOptionalAdapter : com/apol
 }
 
 public final class com/apollographql/apollo/api/ApolloRequest : com/apollographql/apollo/api/ExecutionOptions {
-	public synthetic fun <init> (Lcom/apollographql/apollo/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo/api/ExecutionContext;Lcom/apollographql/apollo/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo/api/ExecutionContext;Lcom/apollographql/apollo/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo/api/ExecutionContext;
@@ -64,6 +64,7 @@ public final class com/apollographql/apollo/api/ApolloRequest : com/apollographq
 	public final fun getRetryOnError ()Ljava/lang/Boolean;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
+	public final fun getSendEnhancedClientAwareness ()Z
 	public final fun newBuilder ()Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public final fun newBuilder (Lcom/apollographql/apollo/api/Operation;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 }
@@ -94,6 +95,7 @@ public final class com/apollographql/apollo/api/ApolloRequest$Builder : com/apol
 	public final fun getRetryOnError ()Ljava/lang/Boolean;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
+	public final fun getSendEnhancedClientAwareness ()Z
 	public fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public synthetic fun httpHeaders (Ljava/util/List;)Ljava/lang/Object;
 	public fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
@@ -107,6 +109,7 @@ public final class com/apollographql/apollo/api/ApolloRequest$Builder : com/apol
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public final fun sendEnhancedClientAwareness (Z)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 }
 
 public final class com/apollographql/apollo/api/ApolloResponse {
@@ -928,8 +931,9 @@ public final class com/apollographql/apollo/api/http/DefaultHttpRequestComposer 
 public final class com/apollographql/apollo/api/http/DefaultHttpRequestComposer$Companion {
 	public final fun appendQueryParameters (Ljava/lang/String;Ljava/util/Map;)Ljava/lang/String;
 	public final fun buildParamsMap (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/CustomScalarAdapters;ZZ)Lokio/ByteString;
+	public final fun buildParamsMap (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/CustomScalarAdapters;ZZZ)Lokio/ByteString;
 	public final fun buildPostBody (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/CustomScalarAdapters;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo/api/http/HttpBody;
-	public final fun buildPostBody (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/CustomScalarAdapters;ZLjava/lang/String;)Lcom/apollographql/apollo/api/http/HttpBody;
+	public final fun buildPostBody (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/CustomScalarAdapters;ZZLjava/lang/String;)Lcom/apollographql/apollo/api/http/HttpBody;
 	public final fun composePayload (Lcom/apollographql/apollo/api/ApolloRequest;)Ljava/util/Map;
 	public final fun getHEADER_ACCEPT_NAME ()Ljava/lang/String;
 	public final fun getHEADER_ACCEPT_VALUE_DEFER ()Ljava/lang/String;

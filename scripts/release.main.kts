@@ -72,6 +72,7 @@ println("Tag pushed.")
 val bumpVersionBranchName = "release-$versionToRelease-bump-snapshot"
 runCommand("git", "checkout", "-b", bumpVersionBranchName)
 setCurrentVersion(nextSnapshot)
+setVersionInFixtures(nextSnapshot)
 runCommand("git", "commit", "-a", "-m", "version is now $nextSnapshot")
 runCommand("git", "push", "origin", bumpVersionBranchName)
 runCommand("gh", "pr", "create", "--base", startBranch, "--fill")
@@ -242,6 +243,18 @@ fun setVersionInIntelliJPlugin(version: String) {
     )
   }
 }
+
+fun setVersionInFixtures(nextSnapshot: String) {
+  for (file in File("tests/integration-tests/testFixtures").walk()) {
+    if (file.isDirectory || !file.name.endsWith(".json")) continue
+    val content = file.readText()
+        .replace(Regex("""\{"name":"apollo-kotlin","version":"(.+)"\}""")) {
+          """{"name":"apollo-kotlin","version":"$nextSnapshot"}"""
+        }
+    file.writeText(content)
+  }
+}
+
 
 fun mergeAndWait(branchName: String) {
   runCommand("gh", "pr", "merge", branchName, "--squash", "--auto", "--delete-branch")

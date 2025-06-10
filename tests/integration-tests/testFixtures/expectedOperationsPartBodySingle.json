@@ -1,1 +1,1 @@
-{"operationName":"SingleUpload","variables":{"file":null},"query":"mutation SingleUpload($file: Upload!) { singleUpload(file: $file) { id path filename mimetype } }"}
+{"operationName":"SingleUpload","variables":{"file":null},"query":"mutation SingleUpload($file: Upload!) { singleUpload(file: $file) { id path filename mimetype } }","extensions":{"clientLibrary":{"name":"apollo-kotlin","version":"5.0.0-SNAPSHOT"}}}
