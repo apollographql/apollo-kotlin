@@ -5,39 +5,32 @@ import com.apollographql.apollo.compiler.ApolloCompiler.buildIrOperations
 import com.apollographql.apollo.compiler.ApolloCompiler.buildSchemaAndOperationsSourcesFromIr
 import com.apollographql.apollo.compiler.codegen.writeTo
 import com.apollographql.apollo.compiler.internal.DefaultApolloCompilerRegistry
-import com.apollographql.apollo.compiler.internal.GradleCompilerPluginLogger
 import java.io.File
 import java.util.ServiceLoader
-import java.util.function.Consumer
 
 /**
- * EntryPoints contains code called using reflection from the Gradle plugin.
- * This is so that the classloader can be isolated, and we can use our preferred version of
- * Kotlin and other dependencies without risking conflicts.
- *
- * It is a version of [ApolloCompiler] that takes plain [File]s and other classes available to the bootstrap classloader only.
+ * EntryPoints is a higher level API compared to [ApolloCompiler].
+ * It deals with compiler plugins and serializing/deserializing files.
  */
-@Suppress("UNUSED") // Used from reflection
 @ApolloInternal
-class EntryPoints {
+object EntryPoints {
   fun buildCodegenSchema(
       arguments: Map<String, Any?>,
-      logLevel: Int,
+      logger: ApolloCompiler.Logger,
       warnIfNotFound: Boolean,
-      normalizedSchemaFiles: List<Any>,
-      warning: Consumer<String>,
+      normalizedSchemaFiles: List<InputFile>,
       codegenSchemaOptionsFile: File,
       codegenSchemaFile: File,
   ) {
     val registry = apolloCompilerRegistry(
-        arguments,
-        logLevel,
-        warnIfNotFound,
+        arguments = arguments,
+        logger = logger,
+        warnIfNotFound = warnIfNotFound,
     )
 
     ApolloCompiler.buildCodegenSchema(
-        schemaFiles = normalizedSchemaFiles.toInputFiles(),
-        logger = warning.toLogger(),
+        schemaFiles = normalizedSchemaFiles,
+        logger = logger,
         codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions(),
         foreignSchemas = registry.foreignSchemas(),
         schemaTransform = registry.schemaDocumentTransform()
@@ -46,106 +39,106 @@ class EntryPoints {
 
   fun buildIr(
       arguments: Map<String, Any?>,
-      logLevel: Int,
-      graphqlFiles: List<Any>,
-      codegenSchemaFiles: List<Any>,
-      upstreamIrOperations: List<Any>,
+      logger: ApolloCompiler.Logger,
+      warnIfNotFound: Boolean,
+      graphqlFiles: List<InputFile>,
+      codegenSchemaFiles: List<InputFile>,
+      upstreamIrOperations: List<InputFile>,
       irOptionsFile: File,
-      warning: Consumer<String>,
       irOperationsFile: File,
   ) {
-    val registry = apolloCompilerRegistry(arguments, logLevel, false)
+    val registry = apolloCompilerRegistry(arguments, logger, warnIfNotFound)
 
-    val upstream = upstreamIrOperations.toInputFiles().map { it.file.toIrOperations() }
-    ApolloCompiler.buildIrOperations(
-        executableFiles = graphqlFiles.toInputFiles(),
-        codegenSchema = codegenSchemaFiles.toInputFiles().map { it.file }.findCodegenSchemaFile().toCodegenSchema(),
+    val upstream = upstreamIrOperations.map { it.file.toIrOperations() }
+    buildIrOperations(
+        executableFiles = graphqlFiles,
+        codegenSchema = codegenSchemaFiles.map { it.file }.findCodegenSchemaFile().toCodegenSchema(),
         upstreamCodegenModels = upstream.map { it.codegenModels },
         upstreamFragmentDefinitions = upstream.flatMap { it.fragmentDefinitions },
         documentTransform = registry.executableDocumentTransform(),
         options = irOptionsFile.toIrOptions(),
-        logger = warning.toLogger(),
+        logger = logger,
     ).writeTo(irOperationsFile)
   }
 
   fun buildSourcesFromIr(
       arguments: Map<String, Any?>,
-      logLevel: Int,
+      logger: ApolloCompiler.Logger,
       warnIfNotFound: Boolean,
-      codegenSchemaFiles: List<Any>,
-      upstreamMetadata: List<Any>,
+      codegenSchemas: List<InputFile>,
+      upstreamMetadata: List<InputFile>,
       irOperations: File,
-      downstreamUsedCoordinates: Map<String, Map<String, Set<String>>>,
+      usedCoordinates: File,
       codegenOptions: File,
-      operationManifestFile: File?,
-      outputDir: File,
-      metadataOutputFile: File?
+      operationManifest: File?,
+      outputDirectory: File,
+      metadataOutput: File?
   ) {
     val registry = apolloCompilerRegistry(
         arguments,
-        logLevel,
-        warnIfNotFound
+        logger,
+        warnIfNotFound,
     )
-    val codegenSchemaFile = codegenSchemaFiles.toInputFiles().map { it.file }.findCodegenSchemaFile()
-
+    val codegenSchemaFile = codegenSchemas.map { it.file }.findCodegenSchemaFile()
     val codegenSchema = codegenSchemaFile.toCodegenSchema()
 
-    val upstreamCodegenMetadata = upstreamMetadata.toInputFiles().map { it.file.toCodegenMetadata() }
-    ApolloCompiler.buildSchemaAndOperationsSourcesFromIr(
+    val upstreamCodegenMetadata = upstreamMetadata.map { it.file.toCodegenMetadata() }
+    buildSchemaAndOperationsSourcesFromIr(
         codegenSchema = codegenSchema,
         irOperations = irOperations.toIrOperations(),
-        downstreamUsedCoordinates = downstreamUsedCoordinates.toUsedCoordinates(),
+        downstreamUsedCoordinates = usedCoordinates.toUsedCoordinates(),
         upstreamCodegenMetadata = upstreamCodegenMetadata,
         codegenOptions = codegenOptions.toCodegenOptions(),
         layout = registry.layout(codegenSchema),
         irOperationsTransform = registry.irOperationsTransform(),
         javaOutputTransform = registry.javaOutputTransform(),
         kotlinOutputTransform = registry.kotlinOutputTransform(),
-        operationManifestFile = operationManifestFile,
+        operationManifestFile = operationManifest,
         operationIdsGenerator = registry.toOperationIdsGenerator(),
-    ).writeTo(outputDir, true, metadataOutputFile)
+    ).writeTo(outputDirectory, true, metadataOutput)
 
     if (upstreamCodegenMetadata.isEmpty()) {
-      registry.schemaCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
+      registry.schemaCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDirectory)
     }
   }
 
   fun buildSources(
       arguments: Map<String, Any?>,
-      logLevel: Int,
+      logger: ApolloCompiler.Logger,
       warnIfNotFound: Boolean,
-      schemaFiles: List<Any>,
-      graphqlFiles: List<Any>,
+      schemas: List<InputFile>,
+      executableDocuments: List<InputFile>,
       codegenSchemaOptions: File,
       codegenOptions: File,
       irOptions: File,
-      warning: Consumer<String>,
-      operationManifestFile: File?,
-      outputDir: File,
-      dataBuildersOutputDir: File,
+      operationManifest: File?,
+      outputDirectory: File,
+      dataBuildersOutputDirectory: File,
   ) {
     val registry = apolloCompilerRegistry(
         arguments,
-        logLevel,
-        warnIfNotFound
+        logger,
+        warnIfNotFound,
     )
 
+    @Suppress("NAME_SHADOWING")
+    val codegenSchemaOptions = codegenSchemaOptions.toCodegenSchemaOptions()
     val codegenSchema = ApolloCompiler.buildCodegenSchema(
-        schemaFiles = schemaFiles.toInputFiles(),
-        codegenSchemaOptions = codegenSchemaOptions.toCodegenSchemaOptions(),
+        schemaFiles = schemas,
+        codegenSchemaOptions = codegenSchemaOptions,
         foreignSchemas = registry.foreignSchemas(),
-        logger = warning.toLogger(),
+        logger = logger,
         schemaTransform = registry.schemaDocumentTransform()
     )
 
     val irOperations = buildIrOperations(
         codegenSchema = codegenSchema,
-        executableFiles = graphqlFiles.toInputFiles(),
+        executableFiles = executableDocuments,
         upstreamCodegenModels = emptyList(),
         upstreamFragmentDefinitions = emptyList(),
         documentTransform = registry.executableDocumentTransform(),
         options = irOptions.toIrOptions(),
-        logger = warning.toLogger(),
+        logger = logger,
     )
 
     @Suppress("NAME_SHADOWING")
@@ -161,7 +154,7 @@ class EntryPoints {
         irOperationsTransform = registry.irOperationsTransform(),
         javaOutputTransform = registry.javaOutputTransform(),
         kotlinOutputTransform = registry.kotlinOutputTransform(),
-        operationManifestFile = operationManifestFile,
+        operationManifestFile = operationManifest,
         operationIdsGenerator = registry.toOperationIdsGenerator(),
     )
 
@@ -172,32 +165,32 @@ class EntryPoints {
           codegenOptions,
           layout,
           listOf(sourceOutput.codegenMetadata)
-      ).writeTo(dataBuildersOutputDir, true, null)
+      ).writeTo(dataBuildersOutputDirectory, true, null)
     }
 
-    sourceOutput.writeTo(outputDir, true, null)
+    sourceOutput.writeTo(outputDirectory, true, null)
 
-    registry.schemaCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDir)
+    registry.schemaCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDirectory)
   }
 
   fun buildDataBuilders(
       arguments: Map<String, Any?>,
-      logLevel: Int,
+      logger: ApolloCompiler.Logger,
       warnIfNotFound: Boolean,
-      codegenSchemaFiles: List<Any>,
-      upstreamMetadata: List<Any>,
-      downstreamUsedCoordinates: Map<String, Map<String, Set<String>>>,
+      codegenSchemas: List<InputFile>,
+      upstreamMetadatas: List<InputFile>,
+      downstreamUsedCoordinates: File,
       codegenOptions: File,
-      outputDir: File
+      outputDirectory: File
   ) {
     val registry = apolloCompilerRegistry(
         arguments,
-        logLevel,
+        logger,
         warnIfNotFound,
     )
-    val codegenSchemaFile = codegenSchemaFiles.toInputFiles().map { it.file }.findCodegenSchemaFile()
+    val codegenSchemaFile = codegenSchemas.map { it.file }.findCodegenSchemaFile()
     val codegenSchema = codegenSchemaFile.toCodegenSchema()
-    val upstreamCodegenMetadata = upstreamMetadata.toInputFiles().map { it.file.toCodegenMetadata() }
+    val upstreamCodegenMetadata = upstreamMetadatas.map { it.file.toCodegenMetadata() }
 
     ApolloCompiler.buildDataBuilders(
         codegenSchema = codegenSchema,
@@ -205,15 +198,7 @@ class EntryPoints {
         codegenOptions = codegenOptions.toCodegenOptions(),
         layout = registry.layout(codegenSchema),
         upstreamCodegenMetadata = upstreamCodegenMetadata,
-    ).writeTo(outputDir, true, null)
-  }
-}
-
-internal fun Consumer<String>.toLogger(): ApolloCompiler.Logger {
-  return object : ApolloCompiler.Logger {
-    override fun warning(message: String) {
-      accept(message)
-    }
+    ).writeTo(outputDirectory, true, null)
   }
 }
 
@@ -231,13 +216,13 @@ fun Iterable<File>.findCodegenSchemaFile(): File {
 
 internal fun apolloCompilerRegistry(
     arguments: Map<String, Any?>,
-    logLevel: Int,
-    warnIfNotFound: Boolean = false
+    logger: ApolloCompiler.Logger,
+    warnIfNotFound: Boolean = false,
 ): DefaultApolloCompilerRegistry {
   val registry = DefaultApolloCompilerRegistry()
   val environment = ApolloCompilerPluginEnvironment(
       arguments,
-      GradleCompilerPluginLogger(logLevel),
+      logger,
   )
   var hasPlugin = false
   val plugins = ServiceLoader.load(ApolloCompilerPlugin::class.java, ApolloCompilerPlugin::class.java.classLoader).toList()
@@ -265,11 +250,4 @@ internal fun apolloCompilerRegistry(
   }
 
   return registry
-}
-
-internal fun List<Any>.toInputFiles(): List<InputFile> = buildList {
-  val iterator = this@toInputFiles.iterator()
-  while (iterator.hasNext()) {
-    add(InputFile(normalizedPath = iterator.next() as String, file = iterator.next() as File))
-  }
 }

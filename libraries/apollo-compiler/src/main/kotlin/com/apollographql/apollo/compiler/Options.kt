@@ -8,20 +8,30 @@ import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-const val MODELS_RESPONSE_BASED = "responseBased"
-const val MODELS_OPERATION_BASED = "operationBased"
-const val MODELS_OPERATION_BASED_WITH_INTERFACES = "experimental_operationBasedWithInterfaces"
+@JvmField
+val MODELS_RESPONSE_BASED = "responseBased"
+@JvmField
+val MODELS_OPERATION_BASED = "operationBased"
+@JvmField
+val MODELS_OPERATION_BASED_WITH_INTERFACES = "experimental_operationBasedWithInterfaces"
 
-const val ADD_TYPENAME_IF_FRAGMENTS = "ifFragments"
-const val ADD_TYPENAME_IF_POLYMORPHIC = "ifPolymorphic"
-const val ADD_TYPENAME_IF_ABSTRACT = "ifAbstract"
-const val ADD_TYPENAME_ALWAYS = "always"
+@JvmField
+val ADD_TYPENAME_IF_FRAGMENTS = "ifFragments"
+@JvmField
+val ADD_TYPENAME_IF_POLYMORPHIC = "ifPolymorphic"
+@JvmField
+val ADD_TYPENAME_IF_ABSTRACT = "ifAbstract"
+@JvmField
+val ADD_TYPENAME_ALWAYS = "always"
 
-@Deprecated("Use $MANIFEST_PERSISTED_QUERY instead", level = DeprecationLevel.ERROR)
+@Deprecated("Use persistedQueryManifest instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_1)
-const val MANIFEST_OPERATION_OUTPUT = "operationOutput"
-const val MANIFEST_PERSISTED_QUERY = "persistedQueryManifest"
-const val MANIFEST_NONE = "none"
+@JvmField
+val MANIFEST_OPERATION_OUTPUT = "operationOutput"
+@JvmField
+val MANIFEST_PERSISTED_QUERY = "persistedQueryManifest"
+@JvmField
+val MANIFEST_NONE = "none"
 
 enum class TargetLanguage {
   // The order is important. See [isTargetLanguageVersionAtLeast]
@@ -587,7 +597,7 @@ fun CodegenOptions.validate() {
     if (generateFilterNotNull != null) {
       error("Apollo: generateFilterNotNull is not used in Java")
     }
-    if (sealedClassesForEnumsMatching != null) {
+    if (sealedClassesForEnumsMatching.orEmpty().isNotEmpty()) {
       error("Apollo: sealedClassesForEnumsMatching is not used in Java")
     }
     if (addJvmOverloads != null) {
@@ -609,7 +619,7 @@ fun CodegenOptions.validate() {
     if (generateModelBuilders != null) {
       error("Apollo: generateModelBuilders is not used in Kotlin")
     }
-    if (classesForEnumsMatching != null) {
+    if (classesForEnumsMatching.orEmpty().isNotEmpty()) {
       error("Apollo: classesForEnumsMatching is not used in Kotlin")
     }
     if (generatePrimitiveTypes != null) {
@@ -641,7 +651,16 @@ class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
 object RuntimeAdapterInitializer : AdapterInitializer
 
 private val NoOpLogger = object : ApolloCompiler.Logger {
+  override fun debug(message: String) {
+  }
+
+  override fun info(message: String) {
+  }
+
   override fun warning(message: String) {
+  }
+
+  override fun error(message: String) {
   }
 }
 
@@ -662,7 +681,7 @@ internal const val defaultGenerateFilterNotNull = false
 internal const val defaultGenerateFragmentImplementations = false
 internal const val defaultGenerateResponseFields = true
 internal const val defaultGenerateQueryDocument = true
-internal const val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
+internal val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
 internal const val defaultRequiresOptInAnnotation = "none"
 internal const val defaultFlattenModels = true
 internal const val defaultGenerateSchema = false

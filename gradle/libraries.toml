@@ -24,6 +24,7 @@ atomicfu = "0.26.0"
 compat-patrouille = "0.0.0"
 compose = "1.5.1"
 guava = "31.1-jre"
+gratatouille = "0.0.10"
 javaPoet = "1.13.0"
 jetbrains-annotations = "24.0.1"
 junit = "4.13.2"
@@ -97,7 +98,8 @@ dgp = "com.gradle:develocity-gradle-plugin:4.0.2" # // sync with settings.gradle
 # annotation @org.jetbrains.annotations.Nullable not applicable in this type context
 google-testing-compile = { group = "com.google.testing.compile", name = "compile-testing", version = "0.19" }
 google-testparameterinjector = { group = "com.google.testparameterinjector", name = "test-parameter-injector", version = "1.11" }
-gr8 = { group = "com.gradleup", name = "gr8-plugin", version = "0.11.1" }
+gratatouille = { group = "com.gradleup.gratatouille", name = "gratatouille-gradle-plugin", version.ref = "gratatouille" }
+
 #
 # See https://github.com/gradle/gradle/issues/1835
 # We use the Nokee[redistributed artifacts](https://docs.nokee.dev/manual/gradle-plugin-development.html#sec:gradle-dev-redistributed-gradle-api)

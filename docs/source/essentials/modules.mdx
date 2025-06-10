@@ -48,21 +48,13 @@ See ["Apollo Compiler plugins"](https://www.apollographql.com/docs/kotlin/advanc
 
 `apollo-gradle-plugin` contains the Apollo Gradle plugin.
 
-This module shadows and relocates its runtime dependencies to avoid classpath issues. This can make debugging harder in some cases.
-
-See `apollo-gradle-plugin-external` for a version of `apollo-gradle-plugin` that does not shadow its dependencies.
-
 See ["Gradle Plugin Configuration"](https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration/) for how to use the Gradle plugin.
 
-### apollo-gradle-plugin-external
+### apollo-gradle-plugin-tasks
 
-`apollo-gradle-plugin-external` contains the Apollo Gradle plugin.
+`apollo-gradle-plugin-tasks` contains the task implementations for the Apollo Gradle plugin.
 
-This module does not shadow its runtime dependencies, making it more prone to Gradle classpath issues.
-
-See `apollo-gradle-plugin` for a version of `apollo-gradle-plugin-external` that shadow its dependencies.
-
-See ["Gradle Plugin Configuration"](https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration/) for how to use the Gradle plugin.
+This module is loaded in a separate classloader to allow compiler plugins and avoid polluting the main build script classpath. This module is an implementation detail of `apollo-gradle-plugin` and should not be depended on directly.
 
 ### apollo-http-cache
 

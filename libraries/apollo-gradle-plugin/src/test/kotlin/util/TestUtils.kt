@@ -198,7 +198,7 @@ object TestUtils {
   }
 
   fun assertFileContains(projectDir: File, path: String, content: String) {
-    val text = projectDir.generatedChild(path).readText()
+    val text = projectDir.generatedSource(path).readText()
     Truth.assertThat(text).contains(content)
   }
 
@@ -210,7 +210,7 @@ object TestUtils {
   }
 }
 
-fun File.generatedChild(path: String) = File(this, "build/generated/source/apollo/$path")
+fun File.generatedSource(path: String, serviceName: String = "service") = File(this, "build/generated/source/apollo/${serviceName}").resolve(path)
 
 fun File.replaceInText(oldValue: String, newValue: String) {
   val text = readText()

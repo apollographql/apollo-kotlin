@@ -11,7 +11,7 @@ class ApolloCompilerPluginEnvironment(
     /**
      * A logger that can be used by the plugin.
      */
-    val logger: ApolloCompilerPluginLogger,
+    val logger: ApolloCompiler.Logger,
 )
 
 /**
