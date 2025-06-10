@@ -114,6 +114,11 @@ fun String.parseAsGQLValue(options: ParserOptions = ParserOptions.Default): GQLR
   return parseInternal(null, options) { parseValue() }
 }
 
+@ApolloExperimental
+fun String.parseAsGQLSchemaCoordinate(options: ParserOptions = ParserOptions.Default): GQLResult<GQLSchemaCoordinate> {
+  return parseInternal(null, options) { parseSchemaCoordinate() }
+}
+
 fun String.toGQLValue(options: ParserOptions = ParserOptions.Default): GQLValue {
   return parseAsGQLValue(options).getOrThrow()
 }
