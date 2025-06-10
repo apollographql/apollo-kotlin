@@ -2,6 +2,7 @@ package com.apollographql.ijplugin.settings
 
 import com.apollographql.ijplugin.gradle.ApolloKotlinService
 import com.apollographql.ijplugin.util.executeOnPooledThread
+import com.apollographql.ijplugin.util.logw
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.generateServiceName
 import com.intellij.ide.passwordSafe.PasswordSafe
@@ -182,10 +183,22 @@ data class ApolloKotlinServiceConfiguration(
   // API key is not stored as an attribute, but via PasswordSafe
   var graphOsApiKey: String?
     @Transient
-    get() = PasswordSafe.instance.getPassword(credentialAttributesForService(id))
+    get() = runCatching { PasswordSafe.instance.getPassword(credentialAttributesForService(id)) }
+        .onFailure { t ->
+          // We've seen crashes here when calling the OS password manager.
+          // There's not much we can do about it, but at lest don't crash the IDE.
+          // See https://github.com/apollographql/apollo-kotlin/issues/6469
+          logw(t, "Could not get password")
+        }
+        .getOrNull()
     @Transient
     set(value) {
-      PasswordSafe.instance.setPassword(credentialAttributesForService(id), value)
+      runCatching {
+        PasswordSafe.instance.setPassword(credentialAttributesForService(id), value)
+      }
+          .onFailure { t ->
+            logw(t, "Could not save password")
+          }
     }
 
   val apolloKotlinServiceId: ApolloKotlinService.Id
