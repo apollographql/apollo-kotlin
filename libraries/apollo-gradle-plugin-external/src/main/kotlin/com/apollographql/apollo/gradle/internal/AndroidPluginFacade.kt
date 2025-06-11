@@ -53,22 +53,9 @@ fun connectToAndroidSourceSet(
     outputDir: Provider<Directory>,
     taskProvider: TaskProvider<out Task>,
 ) {
-  val kotlinSourceSet = project.kotlinProjectExtension?.sourceSets?.getByName(sourceSetName)?.kotlin
-  if (kotlinSourceSet != null) {
-    kotlinSourceSet.srcDir(outputDir)
-  }
-
   project.getMainVariants().configureEach {
     if (it.sourceSets.any { it.name == sourceSetName }) {
-      if (kotlinSourceSet == null) {
-        it.registerJavaGeneratingTask(taskProvider, outputDir.get().asFile)
-      } else {
-        // The kotlinSourceSet carries task dependencies, calling srcDir() above is enough
-        // to setup task dependencies
-        // addJavaSourceFoldersToModel is still required for AS to see the sources
-        // See https://github.com/apollographql/apollo-kotlin/issues/3351
-        it.addJavaSourceFoldersToModel(outputDir.get().asFile)
-      }
+      it.registerJavaGeneratingTask(taskProvider, outputDir.get().asFile)
     }
   }
 }
