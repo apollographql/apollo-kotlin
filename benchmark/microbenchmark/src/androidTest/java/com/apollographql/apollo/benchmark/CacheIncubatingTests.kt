@@ -13,7 +13,7 @@ import com.apollographql.apollo.benchmark.Utils.registerCacheSize
 import com.apollographql.apollo.benchmark.Utils.resource
 import com.apollographql.apollo.benchmark.Utils.responseBasedQuery
 import com.apollographql.apollo.benchmark.test.R
-import com.apollographql.cache.normalized.ApolloStore
+import com.apollographql.cache.normalized.CacheManager
 import com.apollographql.cache.normalized.memory.MemoryCacheFactory
 import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
 import kotlinx.coroutines.runBlocking
@@ -55,7 +55,7 @@ class CacheIncubatingTests {
   }
 
   private fun <D : Query.Data> readFromCache(testName: String, query: Query<D>, jsonResponseResId: Int, sql: Boolean, check: (D) -> Unit) {
-    val store = ApolloStore(
+    val cacheManager = CacheManager(
         if (sql) {
           dbFile.delete()
           SqlNormalizedCacheFactory(name = dbName)
@@ -66,14 +66,14 @@ class CacheIncubatingTests {
 
     val data = query.parseJsonResponse(resource(jsonResponseResId).jsonReader()).data!!
     runBlocking {
-      store.writeOperation(query, data)
+      cacheManager.writeOperation(query, data)
     }
 
     if (sql) {
       registerCacheSize("CacheIncubatingTests", testName, dbFile.length())
     }
     benchmarkRule.measureRepeated {
-      val data2 = store.readOperation(query).data!!
+      val data2 = cacheManager.readOperation(query).data!!
       check(data2)
     }
   }
