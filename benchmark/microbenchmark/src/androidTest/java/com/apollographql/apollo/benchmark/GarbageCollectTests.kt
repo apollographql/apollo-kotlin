@@ -6,6 +6,7 @@ import com.apollographql.apollo.benchmark.Utils.dbFile
 import com.apollographql.apollo.benchmark.Utils.dbName
 import com.apollographql.apollo.conferences.cache.Cache
 import com.apollographql.cache.normalized.ApolloStore
+import com.apollographql.cache.normalized.CacheManager
 import com.apollographql.cache.normalized.api.SchemaCoordinatesMaxAgeProvider
 import com.apollographql.cache.normalized.garbageCollect
 import com.apollographql.cache.normalized.memory.MemoryCacheFactory
@@ -20,39 +21,45 @@ class GarbageCollectTests {
 
   @Test
   fun garbageCollectMemory() {
-    lateinit var store: ApolloStore
+    lateinit var cacheManager: CacheManager
     benchmarkRule.measureRepeated {
       runWithTimingDisabled {
-        store = ApolloStore(MemoryCacheFactory())
-        primeCache(store)
+        cacheManager = CacheManager(MemoryCacheFactory())
+        primeCache(cacheManager)
       }
-      store.garbageCollect(maxAgeProvider)
+      cacheManager.accessCache {
+        it.garbageCollect(maxAgeProvider)
+      }
     }
   }
 
   @Test
   fun garbageCollectSql() {
-    lateinit var store: ApolloStore
+    lateinit var cacheManager: CacheManager
     benchmarkRule.measureRepeated {
       runWithTimingDisabled {
         dbFile.delete()
-        store = ApolloStore(SqlNormalizedCacheFactory(dbName))
-        primeCache(store)
+        cacheManager = CacheManager(SqlNormalizedCacheFactory(dbName))
+        primeCache(cacheManager)
       }
-      store.garbageCollect(maxAgeProvider)
+      cacheManager.accessCache {
+        it.garbageCollect(maxAgeProvider)
+      }
     }
   }
 
   @Test
   fun garbageCollectMemoryThenSql() {
-    lateinit var store: ApolloStore
+    lateinit var cacheManager: CacheManager
     benchmarkRule.measureRepeated {
       runWithTimingDisabled {
         dbFile.delete()
-        store = ApolloStore(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(dbName)))
-        primeCache(store)
+        cacheManager = CacheManager(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(dbName)))
+        primeCache(cacheManager)
       }
-      store.garbageCollect(maxAgeProvider)
+      cacheManager.accessCache {
+        it.garbageCollect(maxAgeProvider)
+      }
     }
   }
 }
