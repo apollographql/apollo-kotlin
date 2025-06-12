@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2025-06-02**
+**Last updated: 2025-06-12**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -16,6 +16,17 @@ For up to date release notes, refer to the project [Changelog](https://github.co
 ## `main` is now v5
 
 All active feature development is now being done for `5.x` releases on the `main` branch.  Critical bugfixes and security patches will land in version 4 on the `release-4.x` branch.
+
+v5 focuses on removing deprecated symbols to keep the codebase clean as well as incremental additions:
+* GraphQL spec tracking: support for [default values coercion](https://github.com/graphql/graphql-spec/pull/793/), [schema coordinates](https://github.com/graphql/graphql-spec/pull/794/), [fragment arguments](https://github.com/graphql/graphql-spec/pull/1081), [`@stream`](https://github.com/graphql/graphql-spec/pull/742), ...
+* Testing improvements: [data builders in the test source set](https://github.com/apollographql/apollo-kotlin/issues/5257), [strict mode](https://github.com/apollographql/apollo-kotlin/issues/3344), ...
+* More KMP targets: linux, wasm
+* ...
+
+The scope will be refined as the release date approaches. There should overall be no big bang. We aim for ABI compatibility for all symbols except those that were deprecated in v4 (and have been removed), `@ApolloExperimental` symbols and artifacts used at build time (`apollo-gradle-plugin`, `apollo-compiler`, `apollo-tooling`).
+
+With `apollo-kotlin` being more and more stable, most of the work is now happening in [Apollo Galaxy repos](https://www.apollographql.com/docs/kotlin/advanced/galaxy), most notably the [normalized cache](https://github.com/apollographql/apollo-kotlin-normalized-cache). 
+
 
 ## Jetpack Compose extensions 
 
