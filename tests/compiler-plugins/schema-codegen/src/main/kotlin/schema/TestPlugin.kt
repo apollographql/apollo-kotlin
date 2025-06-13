@@ -6,9 +6,9 @@ import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.GQLIntValue
 import com.apollographql.apollo.ast.GQLTypeDefinition
 import com.apollographql.apollo.ast.parseAsGQLDocument
+import com.apollographql.apollo.compiler.ApolloCompiler
 import com.apollographql.apollo.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo.compiler.ApolloCompilerPluginEnvironment
-import com.apollographql.apollo.compiler.ApolloCompilerPluginLogger
 import com.apollographql.apollo.compiler.ApolloCompilerPluginProvider
 import com.apollographql.apollo.compiler.ApolloCompilerRegistry
 import com.squareup.kotlinpoet.ClassName
@@ -18,12 +18,8 @@ import okio.buffer
 import okio.source
 
 class TestPlugin(
-    logger: ApolloCompilerPluginLogger,
+    logger: ApolloCompiler.Logger,
 ) : ApolloCompilerPlugin {
-  init {
-    logger.info("TestPlugin")
-  }
-
   override fun beforeCompilationStep(
       environment: ApolloCompilerPluginEnvironment,
       registry: ApolloCompilerRegistry,

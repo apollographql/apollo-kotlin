@@ -51,7 +51,10 @@ import java.io.File
 
 object ApolloCompiler {
   interface Logger {
+    fun debug(message: String)
+    fun info(message: String)
     fun warning(message: String)
+    fun error(message: String)
   }
 
   fun buildCodegenSchema(
@@ -412,18 +415,15 @@ object ApolloCompiler {
       """.trimMargin()
     }
 
-    val operationManifestFormat = codegenOptions.operationManifestFormat
-    if ((operationManifestFormat ?: defaultOperationManifestFormat) != MANIFEST_NONE) {
-      check(operationManifestFile != null) {
-        "Apollo: no operationManifestFile set to output '$operationManifestFormat' operation manifest"
-      }
+    if (operationManifestFile != null) {
+      val operationManifestFormat = codegenOptions.operationManifestFormat
       @Suppress("DEPRECATION_ERROR")
       when (operationManifestFormat) {
+        MANIFEST_NONE -> operationManifestFile.writeText("Use operationManifestFormat to generate the operation manifest.")
         MANIFEST_OPERATION_OUTPUT -> operationOutput.writeTo(operationManifestFile)
         MANIFEST_PERSISTED_QUERY -> operationOutput.toPersistedQueryManifest().writeTo(operationManifestFile)
       }
     }
-
 
     @Suppress("NAME_SHADOWING")
     val layout = layout ?: SchemaAndOperationsLayout(

@@ -1,7 +1,6 @@
 @file:OptIn(ApolloExperimental::class)
 
 import com.apollographql.apollo.annotations.ApolloExperimental
-import com.apollographql.apollo.compiler.MODELS_RESPONSE_BASED
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
@@ -45,7 +44,7 @@ apollo {
               srcDir("src/main/graphql/default")
             }
             "customflatten" -> {
-              codegenModels.set(MODELS_RESPONSE_BASED)
+              codegenModels.set("responseBased")
               srcDir(dir.resolve("src/main/graphql"))
             }
             else -> {

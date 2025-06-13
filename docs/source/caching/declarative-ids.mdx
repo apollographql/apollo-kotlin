@@ -79,7 +79,7 @@ extend interface Node @typePolicy(keyFields: "id")
 
 ## Adding `__typename` to your operations
 
-In addition to the key fields, the declarative cache requires the `__typename` of each object by default. These typenames are not included by default as they make query larger for non-cache users. To avoid cache misses, add `__typename` to every selection using [addTypename](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo.gradle.api/-service/add-typename.html):
+In addition to the key fields, the declarative cache requires the `__typename` of each object by default. These typenames are not included by default because they make the queries larger for users not using the cache. To avoid cache misses, add `__typename` to every selection using [addTypename](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin/com.apollographql.apollo.gradle.api/-service/add-typename.html):
 
 ```kotlin
 apollo {

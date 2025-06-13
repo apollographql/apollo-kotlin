@@ -23,6 +23,9 @@ public final class com/apollographql/apollo/compiler/ApolloCompiler {
 }
 
 public abstract interface class com/apollographql/apollo/compiler/ApolloCompiler$Logger {
+	public abstract fun debug (Ljava/lang/String;)V
+	public abstract fun error (Ljava/lang/String;)V
+	public abstract fun info (Ljava/lang/String;)V
 	public abstract fun warning (Ljava/lang/String;)V
 }
 
@@ -36,9 +39,9 @@ public abstract interface class com/apollographql/apollo/compiler/ApolloCompiler
 }
 
 public final class com/apollographql/apollo/compiler/ApolloCompilerPluginEnvironment {
-	public fun <init> (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompilerPluginLogger;)V
+	public fun <init> (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;)V
 	public final fun getArguments ()Ljava/util/Map;
-	public final fun getLogger ()Lcom/apollographql/apollo/compiler/ApolloCompilerPluginLogger;
+	public final fun getLogger ()Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;
 }
 
 public abstract interface class com/apollographql/apollo/compiler/ApolloCompilerPluginLogger {
@@ -203,12 +206,12 @@ public abstract interface class com/apollographql/apollo/compiler/DocumentTransf
 }
 
 public final class com/apollographql/apollo/compiler/EntryPoints {
-	public fun <init> ()V
-	public final fun buildCodegenSchema (Ljava/util/Map;IZLjava/util/List;Ljava/util/function/Consumer;Ljava/io/File;Ljava/io/File;)V
-	public final fun buildDataBuilders (Ljava/util/Map;IZLjava/util/List;Ljava/util/List;Ljava/util/Map;Ljava/io/File;Ljava/io/File;)V
-	public final fun buildIr (Ljava/util/Map;ILjava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/util/function/Consumer;Ljava/io/File;)V
-	public final fun buildSources (Ljava/util/Map;IZLjava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/util/function/Consumer;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
-	public final fun buildSourcesFromIr (Ljava/util/Map;IZLjava/util/List;Ljava/util/List;Ljava/io/File;Ljava/util/Map;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+	public static final field INSTANCE Lcom/apollographql/apollo/compiler/EntryPoints;
+	public final fun buildCodegenSchema (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;ZLjava/util/List;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildDataBuilders (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;ZLjava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildIr (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;ZLjava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildSources (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;ZLjava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildSourcesFromIr (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;ZLjava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/compiler/EntrypointsKt {
@@ -250,6 +253,7 @@ public final class com/apollographql/apollo/compiler/FileUtils {
 	public static final fun readIrSchema (Ljava/io/File;)Lcom/apollographql/apollo/compiler/ir/IrSchema;
 	public static final fun readOperationOutput (Ljava/io/File;)Ljava/util/Map;
 	public static final fun readPersistedQueryManifest (Ljava/io/File;)Lcom/apollographql/apollo/compiler/pqm/PersistedQueryManifest;
+	public static final fun toUsedCoordinates (Ljava/io/File;)Lcom/apollographql/apollo/compiler/UsedCoordinates;
 	public static final fun writeCodegenMetadata (Lcom/apollographql/apollo/compiler/CodegenMetadata;Ljava/io/File;)V
 	public static final fun writeCodegenOptions (Lcom/apollographql/apollo/compiler/CodegenOptions;Ljava/io/File;)V
 	public static final fun writeCodegenSchema (Lcom/apollographql/apollo/compiler/CodegenSchema;Ljava/io/File;)V
@@ -259,6 +263,7 @@ public final class com/apollographql/apollo/compiler/FileUtils {
 	public static final fun writeIrSchema (Lcom/apollographql/apollo/compiler/ir/IrSchema;Ljava/io/File;)V
 	public static final fun writeOperationOutput (Ljava/util/Map;Ljava/io/File;)V
 	public static final fun writePersistedQueryManifest (Lcom/apollographql/apollo/compiler/pqm/PersistedQueryManifest;Ljava/io/File;)V
+	public static final fun writeTo (Lcom/apollographql/apollo/compiler/UsedCoordinates;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/compiler/GeneratedMethod : java/lang/Enum {
@@ -664,23 +669,6 @@ public final class com/apollographql/apollo/compiler/codegen/kotlin/KotlinOutput
 
 public final class com/apollographql/apollo/compiler/codegen/kotlin/helpers/Add_internalKt {
 	public static final fun addInternal (Lcom/squareup/kotlinpoet/FileSpec$Builder;Ljava/util/List;)Lcom/squareup/kotlinpoet/FileSpec$Builder;
-}
-
-public final class com/apollographql/apollo/compiler/internal/GradleCompilerPluginLogger : com/apollographql/apollo/compiler/ApolloCompilerPluginLogger {
-	public static final field Companion Lcom/apollographql/apollo/compiler/internal/GradleCompilerPluginLogger$Companion;
-	public static final field LOGGING_LEVEL_ERROR I
-	public static final field LOGGING_LEVEL_INFO I
-	public static final field LOGGING_LEVEL_LOGGING I
-	public static final field LOGGING_LEVEL_WARN I
-	public fun <init> (I)V
-	public fun error (Ljava/lang/String;)V
-	public final fun getLoglevel ()I
-	public fun info (Ljava/lang/String;)V
-	public fun logging (Ljava/lang/String;)V
-	public fun warn (Ljava/lang/String;)V
-}
-
-public final class com/apollographql/apollo/compiler/internal/GradleCompilerPluginLogger$Companion {
 }
 
 public final class com/apollographql/apollo/compiler/ir/BLabel : com/apollographql/apollo/compiler/ir/BTerm {

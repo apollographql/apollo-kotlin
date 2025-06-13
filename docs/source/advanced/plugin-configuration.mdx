@@ -22,7 +22,7 @@ apollo {
 
 For more advanced usages, below are all Apollo Gradle Plugin options in a single code block. You can also take a look at the [Gradle Plugin recipes](../advanced/plugin-recipes).
 
-Please refer to the [ApolloExtension](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo.gradle.api/-apollo-extension/index.html) and [Service](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin-external/com.apollographql.apollo.gradle.api/-service/index.html) API reference for details about a specific API.
+Refer to the [ApolloExtension](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin/com.apollographql.apollo.gradle.api/-apollo-extension/index.html) and [Service](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin/com.apollographql.apollo.gradle.api/-service/index.html) API reference for details about each API.
 
 ```kotlin
 apollo {
@@ -70,10 +70,8 @@ apollo {
     mapScalarToJavaObject("MyObject")
 
 
-    // The format to output for the operation manifest. One of "operationOutput", "persistedQueryManifest"
+    // The format to output for the operation manifest. One of "none" (default) or "persistedQueryManifest"
     operationManifestFormat.set("persistedQueryManifest")
-    // The file where to write the operation manifest
-    operationManifest.set(file("build/generated/persistedQueryManifest.json"))
 
     // Whether to generate Kotlin or Java models
     generateKotlinModels.set(true)
@@ -123,11 +121,7 @@ apollo {
     classesForEnumsMatching.set(listOf(".*"))
     // Whether fields with different shape are disallowed to be merged in disjoint types.
     fieldsOnDisjointTypesMustMerge.set(false)
-
-
-    // The directory where the generated models are written.
-    outputDir.set(file("build/generated/apollo"))
-
+    
     // Whether to generate Apollo metadata. Apollo metadata is used for multi-module support.
     generateApolloMetadata.set(true)
     // list of [Regex] patterns matching for types and fields that should be generated whether they are used by queries/fragments in this module or not.

@@ -53,7 +53,7 @@ dependencies {
   runtimeOnly(libs.sqldelight.plugin)
   runtimeOnly(libs.gradle.publish.plugin)
   runtimeOnly(libs.benmanes.versions)
-  runtimeOnly(libs.gr8)
+  runtimeOnly(libs.gratatouille)
   runtimeOnly(libs.kotlinx.binarycompatibilityvalidator)
 }
 
