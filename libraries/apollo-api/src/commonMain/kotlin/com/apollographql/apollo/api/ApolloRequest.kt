@@ -39,6 +39,7 @@ private constructor(
     val retryOnError: Boolean?,
     @ApolloExperimental
     val failFastIfOffline: Boolean?,
+    val sendEnhancedClientAwareness: Boolean,
 ) : ExecutionOptions {
 
   fun newBuilder(): Builder<D> = newBuilder(operation)
@@ -57,6 +58,7 @@ private constructor(
         .retryOnError(retryOnError)
         .failFastIfOffline(failFastIfOffline)
         .ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders)
+        .sendEnhancedClientAwareness(sendEnhancedClientAwareness)
   }
 
   class Builder<D : Operation.Data>(
@@ -86,7 +88,8 @@ private constructor(
     @ApolloExperimental
     var failFastIfOffline: Boolean? = null
       private set
-
+    var sendEnhancedClientAwareness: Boolean = true
+      private set
 
     fun requestUuid(requestUuid: Uuid) = apply {
       this.requestUuid = requestUuid
@@ -142,6 +145,10 @@ private constructor(
       this.failFastIfOffline = failFastIfOffline
     }
 
+    fun sendEnhancedClientAwareness(sendEnhancedClientAwareness: Boolean): Builder<D> = apply {
+      this.sendEnhancedClientAwareness = sendEnhancedClientAwareness
+    }
+
     fun build(): ApolloRequest<D> {
       return ApolloRequest(
           operation = operation,
@@ -156,6 +163,7 @@ private constructor(
           ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders,
           retryOnError = retryOnError,
           failFastIfOffline = failFastIfOffline,
+          sendEnhancedClientAwareness = sendEnhancedClientAwareness,
       )
     }
   }

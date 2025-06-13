@@ -314,6 +314,7 @@ private constructor(
 
       retryOnError(retryOnError ?: apolloClient.retryOnError?.invoke(apolloRequest))
       failFastIfOffline(failFastIfOffline ?: apolloClient.failFastIfOffline)
+      sendEnhancedClientAwareness(apolloClient.sendEnhancedClientAwareness)
     }.build()
 
     val allInterceptors = buildList {
