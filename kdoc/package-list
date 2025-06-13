@@ -24,7 +24,6 @@ com.apollographql.apollo.compiler.codegen.java
 com.apollographql.apollo.compiler.codegen.java.helpers
 com.apollographql.apollo.compiler.codegen.kotlin
 com.apollographql.apollo.compiler.codegen.kotlin.helpers
-com.apollographql.apollo.compiler.internal
 com.apollographql.apollo.compiler.ir
 com.apollographql.apollo.compiler.operationoutput
 com.apollographql.apollo.compiler.pqm
@@ -35,9 +34,13 @@ module:apollo-engine-tests
 com.apollographql.apollo.engine.tests
 module:apollo-execution
 com.apollographql.apollo.execution
-module:apollo-gradle-plugin-external
+module:apollo-gradle-plugin
+com.apollographql.apollo.compiler
+com.apollographql.apollo.gradle
 com.apollographql.apollo.gradle.api
 com.apollographql.apollo.gradle.internal
+module:apollo-gradle-plugin-tasks
+com.apollographql.apollo.gradle.task
 module:apollo-http-cache
 com.apollographql.apollo.cache.http
 module:apollo-mpp-utils
