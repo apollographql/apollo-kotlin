@@ -82,9 +82,11 @@ private constructor(
       private set
     var ignoreApolloClientHttpHeaders: Boolean? = null
       private set
+
     @ApolloExperimental
     var retryOnError: Boolean? = null
       private set
+
     @ApolloExperimental
     var failFastIfOffline: Boolean? = null
       private set

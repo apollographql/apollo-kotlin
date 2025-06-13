@@ -63,6 +63,7 @@ class DefaultHttpRequestComposer(
 
       HttpMethod.Post -> {
         val query = if (sendDocument) operation.document() else null
+
         @Suppress("DEPRECATION")
         val body =
           buildPostBody(operation, customScalarAdapters, query, extensionsWriter(operation.id(), sendApqExtensions, sendEnhancedClientAwarenessExtensions))
@@ -167,7 +168,11 @@ class DefaultHttpRequestComposer(
       )
     }
 
-    private fun extensionsWriter(apqId: String, sendApqExtensions: Boolean, sendEnhancedClientAwarenessExtensions: Boolean): JsonWriter.() -> Unit {
+    private fun extensionsWriter(
+        apqId: String,
+        sendApqExtensions: Boolean,
+        sendEnhancedClientAwarenessExtensions: Boolean,
+    ): JsonWriter.() -> Unit {
       if (!sendApqExtensions && !sendEnhancedClientAwarenessExtensions) return { }
 
       return {
