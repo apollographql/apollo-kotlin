@@ -142,7 +142,7 @@ class LoggingInterceptorTest {
       Post http://0.0.0.0/
       accept: multipart/mixed;deferspec=20220824, application/graphql-response+json, application/json
       [end of headers]
-      {"operationName":"HeroName","variables":{},"query":"query HeroName { hero { name } },"extensions":{"clientlibrary":{"name":"apollo-kotlin","version":"4.3.1-SNAPSHOT"}}"}
+      {"operationName":"HeroName","variables":{},"query":"query HeroName { hero { name } }","extensions":{"clientlibrary":{"name":"apollo-kotlin","version":"4.3.1-SNAPSHOT"}}}
 
       HTTP: 200
       Content-Type: text/plain
@@ -183,7 +183,7 @@ class LoggingInterceptorTest {
       Post http://0.0.0.0/
       accept: multipart/mixed;deferspec=20220824, application/graphql-response+json, application/json
       [end of headers]
-      {"operationName":"HeroName","variables":{},"query":"query HeroName { hero { name } },"extensions":{"clientlibrary":{"name":"apollo-kotlin","version":"4.3.1-SNAPSHOT"}}"}
+      {"operationName":"HeroName","variables":{},"query":"query HeroName { hero { name } }","extensions":{"clientlibrary":{"name":"apollo-kotlin","version":"4.3.1-SNAPSHOT"}}}
 
       HTTP: 200
       Content-Type: text/plain
