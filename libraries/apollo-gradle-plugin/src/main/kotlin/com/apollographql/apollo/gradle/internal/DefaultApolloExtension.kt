@@ -43,7 +43,6 @@ import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
 import java.io.File
-import java.util.concurrent.Callable
 import javax.inject.Inject
 
 abstract class DefaultApolloExtension(
@@ -52,7 +51,6 @@ abstract class DefaultApolloExtension(
 
   private var codegenOnGradleSyncConfigured: Boolean = false
   private val services = mutableListOf<DefaultService>()
-  private val checkVersionsTask: TaskProvider<Task>
   private val generateApolloSources: TaskProvider<Task>
   private var hasExplicitService = false
   private val adhocComponentWithVariants: AdhocComponentWithVariants by lazy {
@@ -149,8 +147,6 @@ abstract class DefaultApolloExtension(
     require(GradleVersion.current() >= GradleVersion.version(MIN_GRADLE_VERSION)) {
       "apollo-kotlin requires Gradle version $MIN_GRADLE_VERSION or greater"
     }
-
-    checkVersionsTask = registerCheckVersionsTask()
 
     /**
      * An aggregate task to easily generate all models
@@ -267,72 +263,6 @@ abstract class DefaultApolloExtension(
     codegenOnGradleSyncConfigured = true
     if (this.generateSourcesDuringGradleSync.getOrElse(false)) {
       project.tasks.maybeCreate("prepareKotlinIdeaImport").dependsOn(generateApolloSources)
-    }
-  }
-
-  /**
-   * Registers the `checkVersions` task.
-   *
-   * `checkVersions` ensures that all declared versions in a build are the same (plugins, direct dependencies but not transitive dependencies).
-   * The main goal is to make sure that the generated code matches the `apollo-api` version as we historically do not provide compatibility guarantees.
-   *
-   * This code has some shortcomings:
-   * 1. it is too restrictive. Most of the time, codegen x is compatible with runtime y as long as y >= x and the same major version.
-   * 2. it doesn't work with transitive dependencies. This is fine because Gradle by default uses the greatest version and because of 1. it works most of the time.
-   * 3. it's a global check and there _could_ be scenarios where this is not desirable.
-   *
-   * All of this makes this check ill-defined, but it hasn't been too much of an issue so far, and it's a net gain to catch the plugin/runtime discrepancies that have happened in the past.
-   *
-   * If you're reading this because there has been an issue, there are several mitigations:
-   *
-   * ## Disabling the task
-   *
-   * This is the most immediate and easy solution:
-   *
-   * ```kotlin
-   * tasks.named("checkApolloVersions").configure {enabled = false}
-   * ```
-   * ## runtime check
-   *
-   * More involved but more correct, check at runtime that the versions match. Requires adding the codegen version in generated sources:
-   *
-   * - a new field in [com.apollographql.apollo.api.Operation].
-   * - or binding an [com.apollographql.apollo.ApolloClient] to a given schema (could be useful for other purposes as well such as schema testing).
-   *
-   * ## automatically add the `apollo-api` dependency
-   *
-   * That would have the effect of making sure a compatible `apollo-api` is in the classpath. But won't help if `apollo-runtime` is wrong.
-   *
-   * All in all, the current solution works but if it becomes an issue, do not hesitate to revisit it.
-   */
-  // Gradle will consider the task never UP-TO-DATE if we pass a lambda to doLast()
-  @Suppress("ObjectLiteralToLambda")
-  private fun registerCheckVersionsTask(): TaskProvider<Task> {
-    return project.tasks.register(ModelNames.checkApolloVersions()) {
-      val outputFile = BuildDirLayout.versionCheck(project)
-
-      it.inputs.property("allVersions", Callable {
-        val allDeps = (
-            getDeps(project.buildscript.configurations) +
-                getDeps(project.configurations)
-            )
-        allDeps.distinct().sorted()
-      })
-      it.outputs.file(outputFile)
-
-      it.doLast(object : Action<Task> {
-        override fun execute(t: Task) {
-          val allVersions = it.inputs.properties["allVersions"] as List<*>
-
-          check(allVersions.size <= 1) {
-            "Apollo: All apollo versions should be the same. Found:\n$allVersions"
-          }
-
-          val version = allVersions.firstOrNull()
-
-          outputFile.get().asFile.writeText("All versions are consistent: $version")
-        }
-      })
     }
   }
 
@@ -755,10 +685,6 @@ abstract class DefaultApolloExtension(
     }
     service.outputDirAction!!.execute(directoryConnection)
 
-    directoryConnection.task.configure {
-      it.dependsOn(checkVersionsTask)
-    }
-
     if (dataBuildersSourcesBaseTaskProvider != null) {
       val dataBuildersDirectoryConnection = DefaultDirectoryConnection(
           project = project,
@@ -936,31 +862,6 @@ abstract class DefaultApolloExtension(
 
     // Keep in sync gradle-api-min
     const val MIN_GRADLE_VERSION = "8.0"
-
-    private fun getDeps(configurations: ConfigurationContainer): List<String> {
-      // See https://github.com/apollographql/apollo-kotlin/pull/5657
-      val currentConfigurations = configurations.toList()
-      return currentConfigurations.flatMap { configuration ->
-        configuration.dependencies
-            .filter {
-              /**
-               * When using plugins {}, the group is the plugin id, not the maven group
-               *
-               * the "_" check is for refreshVersions,
-               * see https://github.com/jmfayard/refreshVersions/issues/507
-               *
-               * Note: we only check external dependencies as reading the group of project dependencies
-               * is not compatible with isolated projects
-               *
-               */
-              it is ExternalModuleDependency
-                  && it.group in listOf("com.apollographql.apollo", "com.apollographql.apollo.external")
-                  && it.version != "_"
-            }.mapNotNull { dependency ->
-              dependency.version
-            }
-      }
-    }
 
     // Don't use `graphqlSourceDirectorySet.isEmpty` here, it doesn't work for some reason
     private val SourceDirectorySet.isReallyEmpty

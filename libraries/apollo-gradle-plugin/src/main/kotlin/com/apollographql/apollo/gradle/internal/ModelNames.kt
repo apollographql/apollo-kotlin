@@ -27,7 +27,6 @@ internal object ModelNames {
   fun downloadApolloSchemaRegistry(service: Service) = camelCase("download", service.name, "ApolloSchemaFromRegistry")
   fun registerApolloOperations(service: Service) = camelCase("register", service.name, "ApolloOperations")
   fun pushApolloSchema() = camelCase("pushApolloSchema")
-  fun checkApolloVersions() = "checkApolloVersions"
   fun convertApolloSchema() = "convertApolloSchema"
 
   fun scopeConfiguration(
