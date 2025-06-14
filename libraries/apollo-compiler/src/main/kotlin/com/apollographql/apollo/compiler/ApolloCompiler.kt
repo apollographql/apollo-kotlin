@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.ast.DeprecatedUsage
 import com.apollographql.apollo.ast.DifferentShape
 import com.apollographql.apollo.ast.DirectiveRedefinition
@@ -54,6 +55,11 @@ object ApolloCompiler {
     fun debug(message: String)
     fun info(message: String)
     fun warning(message: String)
+    @Deprecated("use warning instead", replaceWith = ReplaceWith("warning(message)"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+    fun warn(message: String) {
+      warning(message)
+    }
     fun error(message: String)
   }
 
