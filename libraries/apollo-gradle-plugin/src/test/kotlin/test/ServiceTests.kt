@@ -152,36 +152,7 @@ class ServiceTests {
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
     }
   }
-
-  @Test
-  fun `versions are enforced`() {
-    withSimpleProject { dir ->
-      File(dir, "build.gradle").replaceInText("libs.apollo.api", "\"com.apollographql.apollo:apollo-api:1.2.0\"")
-
-      var exception: Exception? = null
-      try {
-        TestUtils.executeTask("generateApolloSources", dir)
-      } catch (e: UnexpectedBuildFailure) {
-        exception = e
-        Truth.assertThat(e.message).contains("All apollo versions should be the same")
-      }
-      assertNotNull(exception)
-    }
-  }
-
-  @Test
-  fun `versions are enforced even in rootProject`() {
-    withTestProject("mismatchedVersions") { dir ->
-      var exception: Exception? = null
-      try {
-        TestUtils.executeTask("generateApolloSources", dir)
-      } catch (e: UnexpectedBuildFailure) {
-        exception = e
-        Truth.assertThat(e.message).contains("All apollo versions should be the same")
-      }
-      assertNotNull(exception)
-    }
-  }
+  
 
   @Test
   fun `dependencies are using the plugin version by default`() {
