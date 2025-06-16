@@ -858,7 +858,7 @@ abstract class DefaultApolloExtension(
     val registry = service.registry
     if (registry != null) {
       taskProvider = project.registerApolloDownloadSchemaTask(
-          taskName = ModelNames.downloadApolloSchemaIntrospection(service),
+          taskName = ModelNames.downloadApolloSchemaRegistry(service),
           taskGroup = TASK_GROUP,
           schema = project.provider { service.guessSchemaFile(project, registry.schemaFile) },
           endpoint = project.provider { null },
