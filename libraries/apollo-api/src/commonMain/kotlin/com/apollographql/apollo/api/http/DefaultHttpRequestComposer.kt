@@ -275,16 +275,15 @@ class DefaultHttpRequestComposer(
       }
     }
 
-    @Deprecated("Use buildPostBody(operation, customScalarADapters, query, extensionsWriter) instead")
+    @Deprecated("Use buildPostBody(operation, customScalarAdapters, query, extensionsWriter) instead")
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     fun <D : Operation.Data> buildPostBody(
         operation: Operation<D>,
         customScalarAdapters: CustomScalarAdapters,
         autoPersistQueries: Boolean,
-        sendEnhancedClientAwarenessExtensions: Boolean,
         query: String?,
     ): HttpBody {
-      return buildPostBody(operation, customScalarAdapters, query, extensionsWriter(operation.id(), autoPersistQueries, sendEnhancedClientAwarenessExtensions))
+      return buildPostBody(operation, customScalarAdapters, query, extensionsWriter(operation.id(), autoPersistQueries, false))
     }
 
     fun <D : Operation.Data> buildPostBody(
