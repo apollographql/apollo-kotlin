@@ -39,7 +39,6 @@ listOf(
     "include-skip-operation-based",
     "input",
     "integration-tests",
-    "intellij-plugin-test-project",
     "ios-test",
     "java-nullability",
     "js",
