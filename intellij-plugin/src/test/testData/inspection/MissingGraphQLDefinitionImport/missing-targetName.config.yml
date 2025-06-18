@@ -1,4 +1,0 @@
-schema:
-  - missing-targetName.graphqls
-  - extra.graphqls
-documents: '**/*.graphql'
