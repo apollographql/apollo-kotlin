@@ -1,1 +1,1 @@
-{"operationName":"MultipleUpload","variables":{"files":[null,null]},"query":"mutation MultipleUpload($files: [Upload!]!) { multipleUpload(files: $files) { id path filename mimetype } }"}
+{"operationName":"MultipleUpload","variables":{"files":[null,null]},"query":"mutation MultipleUpload($files: [Upload!]!) { multipleUpload(files: $files) { id path filename mimetype } }","extensions":{"clientLibrary":{"name":"apollo-kotlin","version":"4.3.1-SNAPSHOT"}}}
