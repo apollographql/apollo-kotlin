@@ -34,7 +34,7 @@ import com.intellij.openapi.project.Project
  */
 class ApolloV3ToV4MigrationProcessor(project: Project) : ApolloMigrationRefactoringProcessor(project) {
   companion object {
-    const val apollo4LatestVersion = "4.3.0"
+    const val apollo4LatestVersion = "4.3.1"
   }
 
   override val refactoringName = ApolloBundle.message("ApolloV3ToV4MigrationProcessor.title")
