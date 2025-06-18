@@ -46,7 +46,3 @@ package-lock.json
 
 # Local Netlify folder
 .netlify
-
-# IntelliJ plugin
-intellij-plugin/mockJDK
-.intellijPlatform

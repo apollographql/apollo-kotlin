@@ -1,3 +1,0 @@
-apollo {
-  // Other stuff
-}
