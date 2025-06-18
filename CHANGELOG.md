@@ -3,7 +3,29 @@ Change Log
 
 # Next version
 
+# Version 4.3.1
+
+_2025-06-18_
+
+This is maintenance release that fixes an issue with Gradle task dependencies when using `connectToAndroidSourceSet()`.
+
+This release also introduces an Enhanced Client Awareness feature that adds the version of the library to
+requests in the `extensions` object. This is useful for server-side analytics and debugging. This is enabled by default,
+and can be disabled by calling `sendEnhancedClientAwareness(false)` on your `ApolloClient.Builder`.
+
+## 💜 Contributors
+
+Many thanks to @calvincestari for the client awareness contribution 💜
+
+## 👷‍♂️ All changes
+
+* Backport IJ plugin changes from main (#6559)
+* simplify task wiring and fix propagating task dependencies when using connectToAndroidSourceSet() (#6564)
+* feature: Enhanced Client Awareness (#6567)
+
 # Version 4.3.0
+
+_2025-06-05_
 
 Version 4.3.0 allows adding multiple compiler plugins and stabilizes `ApolloCompilerPlugin.beforeCompilationStep()` as the main entry point for compiler plugins. Read more in the [compiler plugins documentation page](https://www.apollographql.com/docs/kotlin/advanced/compiler-plugins).
 
