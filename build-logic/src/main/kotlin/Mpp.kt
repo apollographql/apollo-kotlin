@@ -87,7 +87,7 @@ fun Project.configureMpp(
 
     if (withAndroid) {
       androidTarget {
-        publishAllLibraryVariants()
+        publishLibraryVariants("release")
       }
     }
 
