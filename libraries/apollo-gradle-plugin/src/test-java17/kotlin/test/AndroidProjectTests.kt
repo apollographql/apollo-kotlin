@@ -121,4 +121,12 @@ class AndroidProjectTests {
       Truth.assertThat(result.task(":build")!!.outcome).isEqualTo(TaskOutcome.SUCCESS)
     }
   }
+
+  @Test
+  fun `connectToAndroidSourceSet carries task dependencies`() {
+    withTestProject("android-connect-source-set") { dir ->
+      val result = TestUtils.executeTask("build", dir)
+      Truth.assertThat(result.task(":build")!!.outcome).isEqualTo(TaskOutcome.SUCCESS)
+    }
+  }
 }
