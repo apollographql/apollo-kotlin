@@ -28,9 +28,7 @@ jobs:
           git clone --depth 1 --single-branch --branch ${{ inputs.branch }} https://github.com/$GITHUB_REPOSITORY
           cd apollo-kotlin
           sed -i .old 's/VERSION_NAME=\([\.0-9]*\).*/VERSION_NAME=\1-${{ inputs.prerelease }}/g' gradle.properties
-          export GOOGLE_APPLICATION_CREDENTIALS=google-services.json
-          echo ${GOOGLE_SERVICES_JSON} > $GOOGLE_APPLICATION_CREDENTIALS
-          ./gradlew publishAllPublicationsToApolloPreviewsRepository
+          ./gradlew librarianPublishToGcs
         env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          LIBRARIAN_GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
           GITHUB_TOKEN: ${{ github.token }}

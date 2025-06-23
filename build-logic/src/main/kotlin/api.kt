@@ -1,5 +1,7 @@
 import app.cash.licensee.LicenseeExtension
 import app.cash.licensee.UnusedAction
+import com.gradleup.librarian.gradle.Librarian
+import nmcp.NmcpAggregationExtension
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskProvider
@@ -131,5 +133,27 @@ fun Project.apolloTest(
 fun Project.apolloRoot(ciBuild: TaskProvider<Task>) {
   configureNode()
   rootSetup(ciBuild)
+
+  pluginManager.apply("com.gradleup.nmcp.aggregation")
+  val nmcpAggregation = extensions.getByType(NmcpAggregationExtension::class.java)
+  nmcpAggregation.apply {
+    centralPortal {
+      username.set(System.getenv("LIBRARIAN_SONATYPE_USERNAME"))
+      password.set(System.getenv("LIBRARIAN_SONATYPE_PASSWORD"))
+      publishingType.set("USER_MANAGED")
+    }
+  }
+
+  Librarian.registerGcsTask(
+      this,
+      provider { "apollo-previews" },
+      provider { "m2" },
+      provider { System.getenv("LIBRARIAN_GOOGLE_SERVICES_JSON") },
+      nmcpAggregation.allFiles
+  )
+
+  subprojects.forEach {
+    configurations.getByName("nmcpAggregation").dependencies.add(dependencies.create(it))
+  }
 }
 
