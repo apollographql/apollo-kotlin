@@ -1,8 +1,0 @@
-query MyQuery {
-  person {
-    identity {
-      first<caret>Name
-      lastName
-    }
-  }
-}

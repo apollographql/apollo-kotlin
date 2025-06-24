@@ -245,8 +245,8 @@ fun setVersionInIntelliJPlugin(version: String) {
 }
 
 fun setVersionInFixtures(nextSnapshot: String) {
-  for (file in File("tests/integration-tests/testFixtures").walk()) {
-    if (file.isDirectory || !file.name.endsWith(".json")) continue
+  for (file in File("tests/integration-tests").walk()) {
+    if (file.isDirectory || !file.name.endsWith(".json") && !file.name.endsWith(".kt")) continue
     val content = file.readText()
         .replace(Regex("""\{"name":"apollo-kotlin","version":"(.+)"\}""")) {
           """{"name":"apollo-kotlin","version":"$nextSnapshot"}"""
