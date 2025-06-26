@@ -26,8 +26,6 @@ rootProject.projectDir
       project(":${it.name}").projectDir = it
     }
 
-include(":intellij-plugin")
-
 dependencyResolutionManagement {
   versionCatalogs {
     create("libs") {
