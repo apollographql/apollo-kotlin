@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2025-06-12**
+**Last updated: 2025-06-26**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -27,7 +27,6 @@ The scope will be refined as the release date approaches. There should overall b
 
 With `apollo-kotlin` being more and more stable, most of the work is now happening in [Apollo Galaxy repos](https://www.apollographql.com/docs/kotlin/advanced/galaxy), most notably the [normalized cache](https://github.com/apollographql/apollo-kotlin-normalized-cache). 
 
-
 ## Jetpack Compose extensions 
 
 [Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin.  We are experimenting with a few different approaches for supporting Compose in the Apollo Kotlin library.  Our 3.8.0 release introduced an experimental API for use with Compose but gathered little feedback. We're planning to revisit this with more ambitious goals in terms of fragments colocation, error boundaries and more generally integration with the UI framework.
@@ -38,6 +37,10 @@ This pattern is encouraged by [Relay](https://relay.dev/docs/tutorial/fragments-
 
 We are planning to remove some of the limitations of the current plugin in order to make it easier to work with (by simplifying configuration, especially for server vs client use cases) as well as consume less resources (by skipping the Gradle daemon). This work is exploratory and will also unlock future improvements for the plugin such as adopting new GraphQL features and directives faster.
 
+## Incremental delivery: protocol updates and `@stream` support
+
+The incremental delivery portion of the GraphQL specification has been unchanged since 2023 and will be merged into the draft specification soon.  Currently, Apollo Kotlin supports the `@defer` directive using an older (but still functional) implementation of the incremental delivery protocol.  Soon, we will release support for the current version of the protocol, along with support for the `@stream` directive for streaming elements in lists.  We will also keep supporting the old format as well.  For more information, see the RFC here: https://github.com/graphql/graphql-spec/pull/1110
+
 ## [Cache improvements](https://github.com/apollographql/apollo-kotlin/issues/2331) (on pause, feedback needed 🙏)
 
 Apollo Normalized Cache v1 alphas [are available now](https://github.com/apollographql/apollo-kotlin-normalized-cache/releases) and contain lots of new features like [Cache Control](https://apollographql.github.io/apollo-kotlin-normalized-cache/cache-control.html), [garbage collection](https://apollographql.github.io/apollo-kotlin-normalized-cache/garbage-collection.html), TTL, [partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache/issues/57), better performance and more...
@@ -47,4 +50,3 @@ We encourage you to try it out with the (important) caveat that the binary forma
 ## [Apollo Kotlin Faker](https://github.com/apollographql/apollo-kotlin-faker) (on pause, feedback needed 🙏)
 
 Apollo Kotlin Faker [is now available](https://github.com/apollographql/apollo-kotlin-faker/releases) for rapid schema-driven testing, a pattern that we have seen used with success in other Apollo projects.  We encourage you to try it out.  Your feedback is greatly appreciated and helps us ship a stable version faster.
-
