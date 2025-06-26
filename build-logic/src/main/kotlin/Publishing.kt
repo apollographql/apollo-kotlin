@@ -342,7 +342,12 @@ private fun Project.configureModulePublishingInternal() {
  */
 private fun Project.setDefaultPomFields(mavenPublication: MavenPublication) {
   mavenPublication.groupId = findProperty("GROUP") as String?
-  mavenPublication.version = findProperty("VERSION_NAME") as String?
+  var version = (findProperty("VERSION_NAME") as String?) ?: error("cannot find property 'VERSION_NAME'")
+  if (System.getenv("LIBRARIAN_RELEASE") == "true") {
+    // This is a release, drop the -SNAPSHOT
+    version = version.replace("-SNAPSHOT", "")
+  }
+  mavenPublication.version = version
 
   mavenPublication.pom {
     name.set(findProperty("POM_NAME") as String?)
