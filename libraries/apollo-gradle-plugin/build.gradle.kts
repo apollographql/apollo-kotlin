@@ -94,7 +94,11 @@ gradlePlugin {
     create("apolloGradlePlugin") {
       id = "com.apollographql.apollo"
       displayName = "Apollo Kotlin GraphQL client plugin."
-      description = "Automatically generates typesafe java and kotlin models from your GraphQL files."
+      description = """
+        ℹ️ Newer versions of the Apollo Kotlin Gradle Plugin (v5+) are only published on Maven Central.
+         
+        See https://github.com/gradle/plugin-portal-requests/issues/225 for more details and https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration for documentation about the Gradle plugin.
+        """.trimIndent()
       implementationClass = "com.apollographql.apollo.gradle.internal.ApolloPlugin"
       tags.set(listOf("graphql", "apollo"))
     }
