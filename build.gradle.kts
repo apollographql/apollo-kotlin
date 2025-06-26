@@ -30,32 +30,6 @@ fun shouldPublishSnapshots(): Boolean {
   return eventName == "push" && (ref == "refs/heads/main")
 }
 
-tasks.register("ciPublishSnapshot") {
-  description = "Publishes a SNAPSHOT"
-
-  if (shouldPublishSnapshots()) {
-    dependsOn(subprojectTasks("publishAllPublicationsToOssSnapshotsRepository"))
-  } else {
-    doFirst {
-      error("We are not on a branch, fail snapshots publishing")
-    }
-  }
-}
-
-tasks.register("ciPublishRelease") {
-  description = "Publishes all artifacts to OSSRH and the Gradle Plugin Portal"
-
-  if (isTag()) {
-    dependsOn(subprojectTasks("publishAllPublicationsToOssStagingRepository"))
-    // Only publish plugins to the Gradle portal if everything else succeeded
-    finalizedBy(":apollo-gradle-plugin:publishPlugins")
-  } else {
-    doFirst {
-      error("We are not on a tag, fail release publishing")
-    }
-  }
-
-}
 
 tasks.register("ciTestsGradle") {
   description = "Execute the Gradle tests (slow)"
@@ -71,7 +45,7 @@ tasks.register("ciTestsNoGradle") {
 
 
   subprojects {
-    if (name !in setOf("apollo-gradle-plugin", "intellij-plugin")) {
+    if (name !in setOf("apollo-gradle-plugin")) {
       dependsOn(tasks.matching { it.name == "test" })
     }
     dependsOn(tasks.matching { it.name == "jvmTest" })
@@ -136,8 +110,6 @@ configure<kotlinx.validation.ApiValidationExtension> {
           "com.apollographql.apollo.runtime.java.network.http.internal",
       )
   )
-
-  ignoredProjects.add("intellij-plugin")
   ignoredProjects.add("apollo-testing-support-internal")
 }
 

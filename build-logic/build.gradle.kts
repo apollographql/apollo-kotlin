@@ -31,7 +31,7 @@ dependencies {
   // See https://github.com/gradle/gradle/issues/4741
   implementation(libs.android.plugin)
   implementation(libs.gradle.japicmp.plugin)
-  implementation(libs.vespene)
+  implementation(libs.librarian)
   implementation(libs.kotlinx.serialization.json)
   implementation(libs.poet.java)
   implementation(libs.poet.kotlin)
@@ -49,7 +49,6 @@ dependencies {
   runtimeOnly(libs.atomicfu.plugin)
 
   runtimeOnly(libs.sqldelight.plugin)
-  runtimeOnly(libs.gradle.publish.plugin)
   runtimeOnly(libs.benmanes.versions)
   runtimeOnly(libs.gratatouille)
   runtimeOnly(libs.kotlinx.binarycompatibilityvalidator)
