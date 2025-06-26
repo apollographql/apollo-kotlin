@@ -24,7 +24,7 @@ jobs:
       #--no-configuration-cache for https://youtrack.jetbrains.com/issue/KT-65879
       - name: Publish to Maven Central
         run: |
-          ./gradlew nmcpPublishAggregationToCentralPortal
+          LIBRARIAN_RELEASE=true ./gradlew nmcpPublishAggregationToCentralPortal
         env:
           LIBRARIAN_SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           LIBRARIAN_SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}

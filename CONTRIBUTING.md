@@ -4,8 +4,8 @@ The Apollo team welcomes contributions of all kinds, including bug reports, docu
 features.
 
 If you want to discuss the project or just say hi, stop
-by [the kotlinlang Slack channel](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your
-invite [here](https://slack.kotl.in/))
+by [the kotlinlang Slack channel](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ) (get your
+invite [here](https://slack.kotl.in/)).
 
 ## Project Setup
 
@@ -198,27 +198,23 @@ features of Kotlin/Coroutines/etc. and therefore may break in certain situations
 
 ## Releasing
 
-Releasing is done using Github Actions. The CI contains credentials to upload artifacts to Sonatype and the Gradle
-Plugin Portal.
+Releasing is done using Github Actions. 
+The CI contains credentials to upload artifacts to Maven Central, snapshots and Google Cloud preview repos.
 
-Snapshots are published automatically.  
-Releases are published when a tag is pushed.
+The version in source control always ends with `-SNAPSHOT`. When a tag is built, the `-SNAPSHOT` suffix is dropped.
 
-Here are the steps to do a new release:
-
-* `git checkout main && git pull`
-* `scripts/release.main.kts <version-name>`
-* while it compiles, prepare the changelog, open a PR to `CHANGELOG.md` (see below)
-* wait for the CI to finish compiling
-* go to https://s01.oss.sonatype.org/, and release the artifacts manually. This step is called "close, release and drop"
-  in the Sonatype ecosystem.
-* wait for it to be visible on [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo/) (this usually
-  takes a few minutes). If you're on MacOS, you can
-  use [dependency-watch](https://github.com/JakeWharton/dependency-watch): `dependency-watch await 'com.apollographql.apollo:apollo-runtime:$version' && osascript -e 'display notification "Release is ready 🚀"'`
-* merge pending documentation/tutorial updates. Make sure the tutorial compiles and runs well.
-* paste the changelog in a new release on [GitHub](https://github.com/apollographql/apollo-kotlin/releases)
+To create a version:
+* Go to https://github.com/apollographql/apollo-kotlin/releases/new
+* Enter the new tag name in the "Choose a tag" dropdown. That tag name must match the current version without `-SNAPSHOT` and be prefixed by `v`: `vX.Y.Z`.
+* Enter the changelog.
+* Hit "publish release".
+* The release job will be triggered and the artifacts will be uploaded to Maven Central when done (might take several minutes to a couple of hours).
+* Update docs and prepare next release by calling `./scripts/update-repo --prepare-next-version`
 * if it's a significant release, tweet about it 🐦
 * relax 🍹
+
+If you need to bump the version more than one minor:
+* call `./scripts/update-repo --set-version x.y.z-SNAPSHOT`. This makes sure that the version is updated everywhere it needs be but doesn't change the docs. The version must always end with `-SNAPSHOT`.
 
 ### Changelog file
 * Add a section with the version, date, and a quick summary of what the release contains.
@@ -226,24 +222,6 @@ Here are the steps to do a new release:
 * No need to highlight deprecations, as warnings in the code are enough.
 * Mention and thank external contributors if any.
 * Add an "All changes" section that should list all commits since last release (can use `git log --pretty=oneline <previous-tag>..main`). Commits on the documentation can be omitted.
-
-## Debugging minimized Gradle Plugin stacktraces
-
-Because the Gradle plugin uses [R8](https://r8.googlesource.com/r8) to relocate dependencies, the stacktraces do not
-match the source code by default. It is possible to retrace them using the mapping file and R8.
-
-Indicative steps (replace values accordingly below):
-
-```
-git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-export PATH=/path/to/depot_tools:$PATH
-git clone https://r8.googlesource.com/r8
-cd r8 
-./tools/gradle.py d8 r8
-wget https://repo.maven.apache.org/maven2/com/apollographql/apollo3/apollo-gradle-plugin/3.3.1/apollo-gradle-plugin-3.3.1-mapping.txt
-java -cp build/libs/r8_with_deps.jar com.android.tools.r8.retrace.Retrace apollo-gradle-plugin-3.3.1-mapping.txt
-[copy paste your stacktrace and press Crtl-D to launch the retracing]
-```
 
 ## Tests
 
@@ -260,50 +238,3 @@ where:
 * We need to test a specific version of Gradle and/or KGP, AGP or another buildscript dependency.
 * We need to tweak the Gradle environment, for an example, a server needs to run in the background.
 * We need to test up-to-date checks, build cache or other things that require instrumenting the build outcome.
-
-## Overview of the CI
-
-The project uses [GitHub Actions](https://docs.github.com/en/actions) to automate the build process.
-
-We have [3 workflows](https://github.com/apollographql/apollo-kotlin/tree/main/.github/workflows), triggered by the
-following events:
-
-### On PRs
-
-**Workflow:** [`pr.yml`](https://github.com/apollographql/apollo-kotlin/blob/main/.github/workflows/pr.yml)
-
-**Jobs (run in parallel):**
-
-- `tests-gradle`
-    - Slow gradle tests
-- `tests-no-gradle`
-    - All root tests but not the Gradle ones and not the "exotic" apple ones (tvos, watchos)
-    - All apiCheck
-- `tests-integration`
-    - All integration tests (except Java 9+ ones)
-- `intellij-plugin`
-    - IntelliJ plugin build and tests
-
-### On pushes to `main` branch
-
-**Workflow:** [`push.yml`](https://github.com/apollographql/apollo-kotlin/blob/main/.github/workflows/push.yml)
-
-**Job:**
-
-- `deploy`
-    - Runs on macOS
-    - Slow
-    - Run all tests
-    - Publish Snapshot to Sonatype
-    - Publish KDoc
-
-### On new tags
-
-**Workflow:** [`tag.yml`](https://github.com/apollographql/apollo-kotlin/blob/main/.github/workflows/tag.yml)
-
-**Job:**
-
-- `publish-libraries`
-    - Publish libraries to Maven Central
-- `publish-intellij-plugin`
-    - Publish IntelliJ plugin to Jetbrains Marketplace

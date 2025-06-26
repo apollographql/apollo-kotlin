@@ -24,6 +24,7 @@ jobs:
           gradle-home-cache-cleanup: true
       - name: Build with Gradle
         run: |
+          ./gradlew :apollo-kdoc:dokkaGeneratePublicationHtml
           ./gradlew nmcpPublishAggregationToCentralPortalSnapshots
         env:
           LIBRARIAN_SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
