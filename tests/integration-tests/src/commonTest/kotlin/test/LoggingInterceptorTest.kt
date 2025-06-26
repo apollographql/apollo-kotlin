@@ -2,6 +2,7 @@ package test
 
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Upload
+import com.apollographql.apollo.api.apolloApiVersion
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo.integration.upload.SingleUploadMutation
 import com.apollographql.mockserver.MockServer
@@ -142,8 +143,8 @@ class LoggingInterceptorTest {
       Post http://0.0.0.0/
       accept: multipart/mixed;deferspec=20220824, application/graphql-response+json, application/json
       [end of headers]
-      {"operationName":"HeroName","variables":{},"query":"query HeroName { hero { name } }","extensions":{"clientlibrary":{"name":"apollo-kotlin","version":"5.0.0-snapshot"}}}
-
+      {"operationName":"HeroName","variables":{},"query":"query HeroName { hero { name } }","extensions":{"clientlibrary":{"name":"apollo-kotlin","version":"$apolloApiVersion"}}}
+  
       HTTP: 200
       Content-Type: text/plain
       Content-Length: 322
@@ -183,7 +184,7 @@ class LoggingInterceptorTest {
       Post http://0.0.0.0/
       accept: multipart/mixed;deferspec=20220824, application/graphql-response+json, application/json
       [end of headers]
-      {"operationName":"HeroName","variables":{},"query":"query HeroName { hero { name } }","extensions":{"clientlibrary":{"name":"apollo-kotlin","version":"5.0.0-snapshot"}}}
+      {"operationName":"HeroName","variables":{},"query":"query HeroName { hero { name } }","extensions":{"clientlibrary":{"name":"apollo-kotlin","version":"$apolloApiVersion"}}}
 
       HTTP: 200
       Content-Type: text/plain
