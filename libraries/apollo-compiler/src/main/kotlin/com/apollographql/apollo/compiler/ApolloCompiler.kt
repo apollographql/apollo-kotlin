@@ -627,7 +627,7 @@ internal fun List<Issue>.group(
       is DeprecatedUsage -> if (warnOnDeprecatedUsages) Severity.Warning else Severity.None
       is DifferentShape -> if (fieldsOnDisjointTypesMustMerge) Severity.Error else Severity.Warning
       is UnusedVariable -> Severity.Warning
-      is UnusedFragment -> Severity.None
+      is UnusedFragment -> Severity.Warning
       is IncompatibleDefinition -> Severity.Warning // This should probably be an error
       is DirectiveRedefinition -> Severity.Warning
       else -> Severity.Error
