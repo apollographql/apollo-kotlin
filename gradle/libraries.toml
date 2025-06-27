@@ -15,7 +15,7 @@ android-sdkversion-benchmark-min = "24"
 android-sdkversion-target = "30"
 androidx-sqlite = "2.3.1"
 # This is used by the gradle integration tests to get the artifacts locally
-apollo = "5.0.0-alpha.0-SNAPSHOT"
+apollo = "5.0.0-alpha.1-SNAPSHOT"
 apollo-execution = "0.1.0"
 apollo-normalizedcache-incubating = "1.0.0-alpha.3"
 # Used by the apollo-tooling project which uses a published version of Apollo
@@ -188,6 +188,7 @@ truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.1.0" }
 uuid = { group = "com.benasher44", name = "uuid", version = "0.8.2" }
 librarian = "com.gradleup.librarian:librarian-gradle-plugin:0.0.8-SNAPSHOT-30f5819e9747430b54e96ebb8d680e0fbe30f563"
+nmcp = "com.gradleup.nmcp:nmcp:0.2.2-SNAPSHOT-7db79adb17a2c6ae61fc00c89f6a6518ff458ed7"
 slf4j-simple = "org.slf4j:slf4j-simple:2.0.13"
 slf4j-nop = "org.slf4j:slf4j-nop:2.0.13"
 licensee = "app.cash.licensee:licensee-gradle-plugin:1.12.0"

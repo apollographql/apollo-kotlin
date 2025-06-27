@@ -31,7 +31,7 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         includeModuleByRegex("androidx\\..*", ".*")
       }
     }
-
+    
     exclusiveContent {
       forRepository { maven("https://storage.googleapis.com/gradleup/m2") }
       filter {
