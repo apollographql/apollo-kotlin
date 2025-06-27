@@ -187,8 +187,7 @@ androidx-test-runner = "androidx.test:runner:1.6.2"
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.1.0" }
 uuid = { group = "com.benasher44", name = "uuid", version = "0.8.2" }
-librarian = "com.gradleup.librarian:librarian-gradle-plugin:0.0.8-SNAPSHOT-30f5819e9747430b54e96ebb8d680e0fbe30f563"
-nmcp = "com.gradleup.nmcp:nmcp:0.2.2-SNAPSHOT-7db79adb17a2c6ae61fc00c89f6a6518ff458ed7"
+librarian = "com.gradleup.librarian:librarian-gradle-plugin:0.0.10-SNAPSHOT-ffba1a28eef796c5c91a33f609761618b0ef2e5e"
 slf4j-simple = "org.slf4j:slf4j-simple:2.0.13"
 slf4j-nop = "org.slf4j:slf4j-nop:2.0.13"
 licensee = "app.cash.licensee:licensee-gradle-plugin:1.12.0"

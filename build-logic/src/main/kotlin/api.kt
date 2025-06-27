@@ -20,6 +20,10 @@ class KotlinCompilerOptions(
     val version: KotlinVersion = KotlinVersion.KOTLIN_2_0,
 )
 
+fun Project.version(): String {
+  return Librarian.version(property("VERSION_NAME")!!.toString())
+}
+
 fun Project.apolloLibrary(
     namespace: String,
     jvmTarget: Int? = null,
@@ -33,7 +37,7 @@ fun Project.apolloLibrary(
     kotlinCompilerOptions: KotlinCompilerOptions = KotlinCompilerOptions(),
 ) {
   group = property("GROUP")!!
-  version = property("VERSION_NAME")!!
+  version = version()
 
   if (androidOptions != null) {
     configureAndroid(namespace, androidOptions)

@@ -151,7 +151,7 @@ fun Project.configureDokkaAggregate() {
 
   dokka.pluginsConfiguration.getByName("versioning") {
     this as DokkaVersioningPluginParameters
-    val currentVersion = findProperty("VERSION_NAME") as String
+    val currentVersion = version()
     version.set(currentVersion)
     olderVersionsDir.fileProvider(downloadKDocVersions.map { it.outputs.files.singleFile })
   }
@@ -184,15 +184,6 @@ private fun Project.configureModulePublishingInternal() {
         )
     ) {
       rename { "readme.txt" }
-    }
-  }
-
-  tasks.withType(Jar::class.java) {
-    manifest {
-      attributes["Built-By"] = findProperty("POM_DEVELOPER_ID") as String?
-      attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
-      attributes["Implementation-Title"] = findProperty("POM_NAME") as String?
-      attributes["Implementation-Version"] = findProperty("VERSION_NAME") as String?
     }
   }
 
@@ -342,12 +333,7 @@ private fun Project.configureModulePublishingInternal() {
  */
 private fun Project.setDefaultPomFields(mavenPublication: MavenPublication) {
   mavenPublication.groupId = findProperty("GROUP") as String?
-  var version = (findProperty("VERSION_NAME") as String?) ?: error("cannot find property 'VERSION_NAME'")
-  if (System.getenv("LIBRARIAN_RELEASE") == "true") {
-    // This is a release, drop the -SNAPSHOT
-    version = version.replace("-SNAPSHOT", "")
-  }
-  mavenPublication.version = version
+  mavenPublication.version = version()
 
   mavenPublication.pom {
     name.set(findProperty("POM_NAME") as String?)
