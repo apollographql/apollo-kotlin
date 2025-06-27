@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinBaseExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import kotlin.jvm.java
 
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
