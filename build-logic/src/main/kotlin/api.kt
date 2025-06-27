@@ -8,6 +8,9 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
 class AndroidOptions(
     val withCompose: Boolean,
@@ -141,6 +144,8 @@ fun Project.apolloRoot(ciBuild: TaskProvider<Task>) {
       username.set(System.getenv("LIBRARIAN_SONATYPE_USERNAME"))
       password.set(System.getenv("LIBRARIAN_SONATYPE_PASSWORD"))
       publishingType.set("USER_MANAGED")
+      validationTimeout.set(30.minutes.toJavaDuration())
+      publishingTimeout.set(1.hours.toJavaDuration())
     }
   }
 
