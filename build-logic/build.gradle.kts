@@ -30,7 +30,6 @@ dependencies {
   // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution
   // See https://github.com/gradle/gradle/issues/4741
   implementation(libs.android.plugin)
-  implementation(libs.gradle.japicmp.plugin)
   implementation(libs.librarian)
   implementation(libs.kotlinx.serialization.json)
   implementation(libs.poet.java)

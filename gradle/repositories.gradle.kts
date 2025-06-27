@@ -42,7 +42,6 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
     exclusiveContent {
       forRepository(::gradlePluginPortal)
       filter {
-        includeModule("me.champeau.gradle", "japicmp-gradle-plugin")
         includeModule("org.jetbrains.kotlinx", "kotlinx-benchmark-plugin")
         includeModule("com.github.ben-manes", "gradle-versions-plugin")
         includeModule("com.gradle", "develocity-gradle-plugin")

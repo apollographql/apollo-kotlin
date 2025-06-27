@@ -1,4 +1,3 @@
-import JapiCmp.configureJapiCmp
 import kotlinx.validation.ExperimentalBCVApi
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeHostTest
 
@@ -88,8 +87,6 @@ tasks.named("dependencyUpdates").configure {
     listOf("alpha", "beta", "rc").any { candidate.version.lowercase().contains(it) }
   }
 }
-
-rootProject.configureJapiCmp()
 
 configure<kotlinx.validation.ApiValidationExtension> {
   @OptIn(ExperimentalBCVApi::class)

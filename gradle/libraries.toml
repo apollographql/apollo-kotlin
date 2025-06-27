@@ -107,7 +107,6 @@ gratatouille = { group = "com.gradleup.gratatouille", name = "gratatouille-gradl
 #
 # Keep in sync with MIN_GRADLE_VERSION
 gradle-api-min = { group = "dev.gradleplugins", name = "gradle-api", version = "8.0" }
-gradle-japicmp-plugin = { group = "me.champeau.gradle", name = "japicmp-gradle-plugin", version = "0.2.8" }
 guava-jre = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 http4k-bom = "org.http4k:http4k-bom:5.8.0.0"
 http4k-core = { module = "org.http4k:http4k-core" }
