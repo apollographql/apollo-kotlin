@@ -30,5 +30,4 @@ jobs:
           sed -i .old 's/VERSION_NAME=\([\.0-9]*\).*/VERSION_NAME=\1-${{ inputs.prerelease }}/g' gradle.properties
           ./gradlew librarianPublishToGcs
         env:
-          LIBRARIAN_GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-          GITHUB_TOKEN: ${{ github.token }}
+          LIBRARIAN_GOOGLE_SERVICES_JSON: ${{ secrets.APOLLO_KOTLIN_GOOGLE_SERVICES_JSON }}
