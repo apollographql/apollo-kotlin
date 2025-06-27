@@ -1,3 +1,5 @@
+import org.gradle.api.internal.artifacts.dsl.DefaultArtifactHandler
+
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("com.gradleup.gratatouille.tasks")
@@ -20,6 +22,20 @@ dependencies {
 
 gratatouille {
   codeGeneration {
+    /**
+     * Workaround for https://github.com/GradleUp/gratatouille/pull/52
+     */
+    configurations.configureEach {
+      if (name == "gratatouilleApiElements") {
+        artifacts.configureEach {
+          this as ConfigurablePublishArtifact
+          if (extension.isNullOrEmpty()) {
+            extension = "zip"
+          }
+        }
+      }
+    }
     classLoaderIsolation()
   }
 }
+
