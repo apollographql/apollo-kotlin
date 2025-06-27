@@ -28,5 +28,5 @@ jobs:
         env:
           LIBRARIAN_SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           LIBRARIAN_SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PRIVATE_KEY_PASSWORD: ${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}
+          GPG_PRIVATE_KEY: ${{ secrets.SONATYPE_GPG_KEY }}
+          GPG_PRIVATE_KEY_PASSWORD: ${{ secrets.SONATYPE_GPG_KEY_PASSWORD }}
