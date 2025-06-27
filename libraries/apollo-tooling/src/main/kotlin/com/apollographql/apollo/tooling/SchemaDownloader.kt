@@ -69,7 +69,7 @@ object SchemaDownloader {
           introspectionSchema = try {
             introspectionDataJson.toIntrospectionSchema()
           } catch (e: Exception) {
-            throw Exception("Introspection response from $endpoint can not be parsed", e)
+            throw Exception("Introspection response from $endpoint can not be parsed (see `cause` for more details)", e)
           }
         } catch (e: Exception) {
           // 2-step introspection didn't work: fallback to no pre-introspection query and minimal introspection query
@@ -82,7 +82,7 @@ object SchemaDownloader {
           introspectionSchema = try {
             introspectionDataJson.toIntrospectionSchema()
           } catch (e: Exception) {
-            throw Exception("Introspection response from $endpoint can not be parsed", e)
+            throw Exception("Introspection response from $endpoint can not be parsed (see `cause` for more details)", e)
           }
         }
       }
