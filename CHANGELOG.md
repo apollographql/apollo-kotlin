@@ -2,6 +2,54 @@ Change Log
 ==========
 
 # Next version
+# Version 5.0.0-alpha.0
+
+This is the first alpha release of version 5.0.0. Previous `DeprecationLevel.WARNING` are turned into `DeprecationLevel.ERROR`. Previous `DeprecationLevel.ERROR` are removed.
+
+For details about how to migrate, read the [migration guide draft](https://www.apollographql.com/docs/kotlin/v5/migration/5.0). This migration guide is still work in progress. Feedbacks are welcome as you try the new version! 
+
+**Infrastructure**:
+
+* [breaking] Remove ApolloIdlingResource ([#6492](https://github.com/apollographql/apollo-kotlin/pull/6492))
+* [breaking] Remove PackageNameGenerator and OperationOutputGenerator, replaced by compiler plugins ([#6494](https://github.com/apollographql/apollo-kotlin/pull/6494))
+* [breaking] Move internal testing code to an unpublished module ([#6449](https://github.com/apollographql/apollo-kotlin/pull/6449))
+* [upgrade] Bump ktor to 3.1.2 ([#6465](https://github.com/apollographql/apollo-kotlin/pull/6465))
+* [breaking] Update deprecations for v5 ([#6496](https://github.com/apollographql/apollo-kotlin/pull/6496))
+* [new] Move IJ plugin to its own repository ([#6574](https://github.com/apollographql/apollo-kotlin/pull/6574))
+* [new] Switch publication to the central portal ([#6581](https://github.com/apollographql/apollo-kotlin/pull/6581))
+
+Gradle
+* [fix] Do not generate the version as const ([#6563](https://github.com/apollographql/apollo-kotlin/pull/6563))
+* [new] Switch the gradle plugin to gratatouille ([#6524](https://github.com/apollographql/apollo-kotlin/pull/6524))
+* [fix] Remove checkApolloVersion ([#6569](https://github.com/apollographql/apollo-kotlin/pull/6569))
+* [new] Introspection: add a hint that more details are available in the exception cause. ([#6590](https://github.com/apollographql/apollo-kotlin/pull/6590))
+
+**Compiler**:
+
+* [new] Add schema-transform API ([#6450](https://github.com/apollographql/apollo-kotlin/pull/6450))
+* [new] Allow to generate Data Builders outside the main source set ([#6485](https://github.com/apollographql/apollo-kotlin/pull/6485))
+* [breaking] Using @nonnull is now an error ([#6499](https://github.com/apollographql/apollo-kotlin/pull/6499))
+* [fix] Ignore scalars/enums in checkCapitalizedFields ([#6502](https://github.com/apollographql/apollo-kotlin/pull/6502))
+* [fix] Call DocumentTransform.transform after adding required fields ([#6510](https://github.com/apollographql/apollo-kotlin/pull/6510))
+* [fix] Add key fields to selections even when they're already selected with an alias ([#6503](https://github.com/apollographql/apollo-kotlin/pull/6503))
+* [fix] Transform the GraphQL documents before running validation ([#6511](https://github.com/apollographql/apollo-kotlin/pull/6511))
+* [new] Add key fields of possible types of interfaces and fragments ([#6515](https://github.com/apollographql/apollo-kotlin/pull/6515))
+* [new] Allow to register multiple Apollo Compiler plugins ([#6523](https://github.com/apollographql/apollo-kotlin/pull/6523))
+
+**Runtime**:
+
+* [new] Add cacheInterceptor() and autoPersistedQueriesInterceptor()  ([#6455](https://github.com/apollographql/apollo-kotlin/pull/6455))
+* [new] Add `ApolloCall.ignoreUnknownKeys` and `ApolloClient.Builder.ignoreUnknownKeys` ([#6473](https://github.com/apollographql/apollo-kotlin/pull/6473))
+* [fix] fix the batch size not respected issue ([#6528](https://github.com/apollographql/apollo-kotlin/pull/6528))
+* [fix] Fix losing response headers when using batch request ([#6538](https://github.com/apollographql/apollo-kotlin/pull/6538))
+
+**AST**:
+* [new] Add allowAddingDirectivesToExistingFieldDefinitions ([#6470](https://github.com/apollographql/apollo-kotlin/pull/6470))
+* [new] Implement schema coordinates ([#6560](https://github.com/apollographql/apollo-kotlin/pull/6560))
+
+**Execution**
+* [fix] Implement defaultValues coercion ([#6440](https://github.com/apollographql/apollo-kotlin/pull/6440))
+* [new] Add `JsonCoercing` ([#6471](https://github.com/apollographql/apollo-kotlin/pull/6471))
 
 # Version 4.3.1
 
@@ -828,10 +876,10 @@ release (#5449) and is now fixed.
 
 * [compiler] validate operation directives & enforce presence of the nullability directive definitions by @martinbonnin
   in https://github.com/apollographql/apollo-kotlin/pull/5443
-* [build] Bump okio version by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/5447
-* [build] Bump uuid version by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/5448
-* Fix 2nd step introspection by @BoD in https://github.com/apollographql/apollo-kotlin/pull/5451
-* Add wasmJs target by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/5458
+* [build] Bump okio version https://github.com/apollographql/apollo-kotlin/pull/5447
+* [build] Bump uuid version https://github.com/apollographql/apollo-kotlin/pull/5448
+* Fix 2nd step introspection https://github.com/apollographql/apollo-kotlin/pull/5451
+* Add wasmJs target https://github.com/apollographql/apollo-kotlin/pull/5458
 * Add validation to check schema definitions are compatible with the bundled ones by @BoD
   in https://github.com/apollographql/apollo-kotlin/pull/5444
 
