@@ -16,7 +16,7 @@ kotlin {
         api(project(":apollo-api"))
         api(project(":apollo-mpp-utils"))
         implementation(libs.atomicfu.library) // https://github.com/Kotlin/kotlinx.coroutines/issues/3968
-        api(libs.okio)
+        api("com.squareup.okio:okio:3.14.0")
         api(libs.uuid)
         api(libs.kotlinx.coroutines)
       }
