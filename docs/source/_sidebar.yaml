@@ -18,8 +18,8 @@ switcher:
 items:
   - label: Get Started
     href: "."
-  - label: Migrating to v4
-    href: ./migration/4.0
+  - label: Migrating to v5
+    href: ./migration/5.0
   - label: Modules
     href: ./essentials/modules
   - label: Evolution policy
