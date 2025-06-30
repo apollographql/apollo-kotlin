@@ -4,15 +4,82 @@ subtitle: Step-by-step guide on migrating from Apollo Kotlin 4
 description: Learn how to migrate from version 4 with key changes, new features, and tools designed for improved stability and maintainability. Follow step-by-step guidance and make a seamless transition
 ---
 
-⚠️ This is a work in progress ⚠️
+Apollo Kotlin 5 is mostly binary compatible with Apollo Kotlin 4 with a few exceptions:
 
-Behaviour changes:
+- Symbols that were `DeprecationLevel.ERROR` in v4 are now removed.
+- `apollo-compiler` has breaking changes and is generally still considered unstable with the exception of persisted queries compiler plugins:
+  - `ApolloCompilerPlugin.beforeCompilationStep()`, `ApolloCompilerRegistry.registerOperationIdsGenerator()` and dependent symbols are stable and will go through the usual deprecation cycle if they ever need to change.  
+- The APIs used by the data builders generated sources (`buildData`, `ObjectBuilder`, `CustomScalarAdapters.PASSTHROUGH`...) have changed. This is not an issue unless you called those APIs directly or distributed data builders code in a library. In that last case, your consumers will have to update to Apollo Kotlin 5.  
+- A few symbols were not supposed to be exposed and have been removed:
+  - `BooleanExpression.simplify()` 
+  - `DefaultHttpRequestComposer.HEADER_APOLLO_OPERATION_ID`
+  - ...
 
-* [ ] https://github.com/apollographql/apollo-kotlin/pull/6455
-* [ ] https://github.com/apollographql/apollo-kotlin/pull/6485
+We tried hard to minimize the impact of the binary changes so that running code compiled for v4 will run with v5. But the occasional incompatibility may happen. In that case, the incompatible libraries will need to compile against v5 and make a new release.   
 
-Removed APIs
+## Removed `Service.operationOutputGenerator` and `Service.operationIdGenerator`
 
-* [ ] https://github.com/apollographql/apollo-kotlin/pull/6494
-* [ ] https://github.com/apollographql/apollo-kotlin/pull/6492
-* [ ] #6496 
+While running your `OperationOutputGenerator` directly in your build script classpath was convenient, it required the compiler code to run completely in the global buildscript classpath. This created numerous issues such as incompatible dependencies and/or unneeded build invalidations.
+
+To mitigate the impact of incompatible dependencies, Apollo Kotlin 4 used to shadow and relocate all its dependencies, which came with additional issues: increased build times, weird stack traces and larger plugin size.
+
+Apollo Kotlin v5 instead runs its compiler in isolated classloaders, meaning generating the ids now needs to happen in that same classloader. 
+
+To do so, use `ApolloCompilerPlugin`:
+
+```kotlin
+class MyPlugin : ApolloCompilerPlugin {
+  override fun beforeCompilationStep(
+      environment: ApolloCompilerPluginEnvironment,
+      registry: ApolloCompilerRegistry,
+  ) {
+    registry.registerOperationIdsGenerator {
+      it.map { OperationId(it.source.md5(), it.name) }
+    }
+  }
+}
+```
+
+Read more in the [persisted queries](https://www.apollographql.com/docs/kotlin/v5/advanced/persisted-queries) and [compiler plugins](https://www.apollographql.com/docs/kotlin/v5/advanced/compiler-plugins) pages.
+
+
+
+## Removed ApolloIdlingResource
+
+Apollo Kotlin 5 removes `ApolloIdlingResource`. `IdlingResource` usage has been slowly decreasing and there are now better alternatives to do your testing.
+
+For a good overview of alternative solutions, we recommend [this article from Jose Alcérreca](https://medium.com/androiddevelopers/alternatives-to-idling-resources-in-compose-tests-8ae71f9fc473).
+
+## Using `@nonnull` is now an error
+
+Apollo Kotlin 4 had a `@nonnull` client directive to force generating fields as non-null.
+
+Since `@nonnull`, we've worked hard with the [nullability working group](https://github.com/graphql/nullability-wg/) to improve the handling of null types in GraphQL.
+
+As part of this effort, it was recognized that the nullability information belongs to the schema. Fields that are only nullable for error reasons can now be marked with `@semanticNonNull`:
+
+```graphql
+type User {
+  email: String @semanticNonNull
+}
+
+# or if you don't own the schema, use extensions
+extend type User @semanticNonNullField(name: String)
+```
+
+The client can then decide how to handle errors with `@catch`:
+
+```graphql
+query GetUser {
+  user {
+    # generated as `String?` (current default)
+    email @catch(to: NULL)
+    # generated as `Result<String, Error>`
+    email @catch(to: RESULT)
+    # generated as `String`, throws if there is an error
+    email @catch(to: NULL)
+  }
+}
+```
+
+You can read more in the ["handling nullability" page](https://www.apollographql.com/docs/kotlin/advanced/nullability).
