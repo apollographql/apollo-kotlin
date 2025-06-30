@@ -2,6 +2,12 @@ Change Log
 ==========
 
 # Next version
+# Version 5.0.0-alpha.1
+
+* [fix] Fix `can't resolve apollo-gradle-plugin-tasks` ([#6603](https://github.com/apollographql/apollo-kotlin/pull/6603))
+* [new] Warn on unused fragments ([#6601](https://github.com/apollographql/apollo-kotlin/pull/6601))
+
+
 # Version 5.0.0-alpha.0
 
 This is the first alpha release of version 5.0.0. Previous `DeprecationLevel.WARNING` are turned into `DeprecationLevel.ERROR`. Previous `DeprecationLevel.ERROR` are removed.
