@@ -147,7 +147,6 @@ fun Project.apolloRoot(ciBuild: TaskProvider<Task>) {
     centralPortal {
       username.set(System.getenv("LIBRARIAN_SONATYPE_USERNAME"))
       password.set(System.getenv("LIBRARIAN_SONATYPE_PASSWORD"))
-      publishingType.set("USER_MANAGED")
       validationTimeout.set(30.minutes.toJavaDuration())
       publishingTimeout.set(1.hours.toJavaDuration())
     }
