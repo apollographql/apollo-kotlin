@@ -10,7 +10,7 @@ Apollo Kotlin 5 is mostly binary compatible with Apollo Kotlin 4 with a few exce
 - `apollo-compiler` has breaking changes and is generally still considered unstable with the exception of persisted queries compiler plugins:
   - `ApolloCompilerPlugin.beforeCompilationStep()`, `ApolloCompilerRegistry.registerOperationIdsGenerator()` and dependent symbols are stable and will go through the usual deprecation cycle if they ever need to change.  
 - The APIs used by the data builders generated sources (`buildData`, `ObjectBuilder`, `CustomScalarAdapters.PASSTHROUGH`...) have changed. This is not an issue unless you called those APIs directly or distributed data builders code in a library. In that last case, your consumers will have to update to Apollo Kotlin 5.  
-- A few symbols were not supposed to be exposed and have been removed:
+- A few symbols were not supposed to be exposed and have been hidden:
   - `BooleanExpression.simplify()` 
   - `DefaultHttpRequestComposer.HEADER_APOLLO_OPERATION_ID`
   - ...
