@@ -2,13 +2,7 @@
   <div align="center">
     <a href="https://www.apollographql.com?utm_medium=github&utm_source=apollographql_apollo-kotlin&utm_campaign=readme"><img src="https://raw.githubusercontent.com/apollographql/apollo-client-devtools/main/assets/apollo-wordmark.svg" height="100" alt="Apollo Logo"></a>
   </div>
-  <h1 align="center">Apollo Kotlin</h1>
- 
-**The industry-leading GraphQL client for Kotlin**. Run on Android and all the Kotlin multiplatform targets. Apollo Kotlin delivers powerful caching, code generation, intuitive APIs, and comprehensive developer tools to accelerate your app development.
-
-➡️ [**Get Started with Apollo Kotlin →**](https://www.apollographql.com/docs/kotlin?utm_source=github&utm_medium=apollographql_apollo-kotlin&utm_campaign=readme)
-
-  <div align="center">
+    <div align="center">
 
 [![Discourse](https://img.shields.io/discourse/topics?label=Discourse&server=https%3A%2F%2Fcommunity.apollographql.com&logo=discourse&color=467B95&style=flat-square)](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client)
 [![Slack](https://img.shields.io/static/v1?label=kotlinlang&message=apollo-kotlin&color=A97BFF&logo=slack&style=flat-square)](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)
@@ -22,6 +16,9 @@
 [![Revved up by Develocity](https://img.shields.io/badge/Revved%20up%20by-Develocity-06A0CE?logo=Gradle&labelColor=02303A&style=flat-square)](https://ge.apollographql.com/scans)
 
   </div>
+  <h1 align="center">Apollo Kotlin</h1>
+ 
+**The industry-leading GraphQL client for Kotlin**. Run on Android and all the Kotlin multiplatform targets. Apollo Kotlin delivers powerful caching, code generation, intuitive APIs, and comprehensive developer tools to accelerate your app development.
 </header>
 
 
@@ -40,33 +37,7 @@ If you are new to GraphQL, check out [the tutorial](https://www.apollographql.co
 
 For more in-depth documentation, head to the [official documentation site](https://www.apollographql.com/docs/kotlin?utm_source=github&utm_medium=apollographql_apollo-kotlin&utm_campaign=readme).
 
-If you'd like to add Apollo Kotlin to an existing project, follow the steps below:
-
-Add the plugin to your `build.gradle.kts`:
-
-```kotlin
-plugins {
-  id("com.apollographql.apollo") version "x.x.x" // set to your current version
-}
-```
-
-Add the runtime dependency:
-
-```kotlin
-dependencies {
-  implementation("com.apollographql.apollo:apollo-runtime:x.x.x") // set to your current version
-}
-```
-
-Set the package name to use for the generated models:
-
-```kotlin
-apollo {
-  service("service") {
-    packageName.set("com.example")
-  }
-}
-```
+For a detailed "Get Started" guide, check out our [docs](https://www.apollographql.com/docs/kotlin?utm_source=github&utm_medium=apollographql_apollo-kotlin&utm_campaign=readme).
 
 ## 💡 Resources
 
