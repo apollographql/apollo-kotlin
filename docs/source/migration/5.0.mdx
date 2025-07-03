@@ -64,7 +64,7 @@ type User {
 }
 
 # or if you don't own the schema, use extensions
-extend type User @semanticNonNullField(name: String)
+extend type User @semanticNonNullField(name: "email")
 ```
 
 The client can then decide how to handle errors with `@catch`:
@@ -77,7 +77,7 @@ query GetUser {
     # generated as `Result<String, Error>`
     email @catch(to: RESULT)
     # generated as `String`, throws if there is an error
-    email @catch(to: NULL)
+    email @catch(to: THROW)
   }
 }
 ```
