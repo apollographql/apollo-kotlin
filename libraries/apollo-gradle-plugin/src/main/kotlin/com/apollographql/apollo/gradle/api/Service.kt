@@ -510,16 +510,14 @@ interface Service {
   val debugDir: DirectoryProperty
 
   /**
-   * A list of [Regex] patterns for GraphQL enums that should be generated as a Kotlin sealed interface.
+   * A list of [Regex] patterns for GraphQL enums that should be generated as Kotlin sealed classes instead of the default Kotlin enums.
    *
-   * This provides several benefits over the default of mapping GraphQL enums to Kotlin enums:
-   * - the client can access the string value of unknown values (enum values added on the server after the client has been compiled).
-   * - it introduces an intermediate `KNOWN__` type that does not contain the unknown value for the cases where you want to map all unknown values to a known one.
-   * - it's harder to create instances of `UNKNOWN__` values, making it more explicit that those values are dangerous to be used as input.
+   * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
+   * the client was compiled against an older schema that doesn't have knowledge of the new enums.
    *
-   * Only valid when [generateKotlinModels] is `true`.
+   * Only valid when [generateKotlinModels] is `true`
    *
-   * Default: `emptyList()`
+   * Default: emptyList()
    */
   val sealedClassesForEnumsMatching: ListProperty<String>
 
