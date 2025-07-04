@@ -5,6 +5,7 @@ type Query {
   fooSealed: FooSealed
   fooClass: FooClass
   fooEnum: FooEnum
+  color: Color!
 }
 
 enum Direction {
@@ -63,4 +64,11 @@ enum FooSealed {
 enum FooClass {
   # not renamed in extra.graphqls, will be renamed automatically
   type,
+}
+
+#See https://github.com/apollographql/apollo-kotlin/issues/6243
+enum Color {
+  BLUEBERRY,
+  CHERRY
+  CANDY
 }

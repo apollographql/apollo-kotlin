@@ -53,6 +53,7 @@ internal fun apolloGenerateOptions(
     classesForEnumsMatching: List<String>?,
     // KotlinCodegenOptions
     sealedClassesForEnumsMatching: List<String>?,
+    generateApolloEnums: Boolean?,
     generateAsInternal: Boolean?,
     generateInputBuilders: Boolean?,
     addJvmOverloads: Boolean?,
@@ -136,6 +137,7 @@ internal fun apolloGenerateOptions(
       decapitalizeFields = decapitalizeFields,
       addDefaultArgumentForInputObjects = true,
       addUnknownForEnums = true,
+      generateApolloEnums = generateApolloEnums,
       packageName = packageName,
       rootPackageName = rootPackageName
   ).writeTo(codegenOptions)
