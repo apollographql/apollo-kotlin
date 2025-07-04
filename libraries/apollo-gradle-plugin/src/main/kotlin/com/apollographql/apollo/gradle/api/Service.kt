@@ -524,6 +524,14 @@ interface Service {
   val sealedClassesForEnumsMatching: ListProperty<String>
 
   /**
+   * Whether to generate enums as ApolloEnum<E>.
+   *
+   * Experimental, see https://github.com/apollographql/apollo-kotlin/issues/6243.
+   */
+  @ApolloExperimental
+  val generateApolloEnums: Property<Boolean>
+
+  /**
    * A list of [Regex] patterns for GraphQL enums that should be generated as Java classes.
    *
    * Only valid when [generateKotlinModels] is `false`.

@@ -22,7 +22,7 @@ apollo {
 
   service("kotlin19") {
     packageName.set("enums.kotlin19")
-    sealedClassesForEnumsMatching.set(listOf(".*avity", "FooSealed", "Color"))
+    sealedClassesForEnumsMatching.set(listOf(".*avity", "FooSealed"))
   }
 
   service("java") {
@@ -32,6 +32,10 @@ apollo {
     outputDirConnection {
       connectToJavaSourceSet("main")
     }
+  }
+  service("apollo") {
+    packageName.set("enums.apollo")
+    generateApolloEnums.set(true)
   }
 }
 

@@ -405,6 +405,7 @@ abstract class DefaultApolloExtension(
          * KotlinCodegenOptions
          */
         sealedClassesForEnumsMatching = service.sealedClassesForEnumsMatching,
+        generateApolloEnums = service.generateApolloEnums,
         generateAsInternal = service.generateAsInternal,
         generateInputBuilders = service.generateInputBuilders,
         addJvmOverloads = service.addJvmOverloads,

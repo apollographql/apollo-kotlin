@@ -27,6 +27,8 @@ import com.apollographql.apollo.compiler.codegen.kotlin.operations.OperationResp
 import com.apollographql.apollo.compiler.codegen.kotlin.operations.OperationSelectionsBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.operations.OperationVariablesAdapterBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.CustomScalarAdaptersBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumAsApolloEnumBuilder
+import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumAsApolloEnumSupportBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumAsEnumBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumAsSealedInterfaceBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.EnumResponseAdapterBuilder
@@ -43,6 +45,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.schema.asTargetClassName
 import com.apollographql.apollo.compiler.defaultAddDefaultArgumentForInputObjects
 import com.apollographql.apollo.compiler.defaultAddJvmOverloads
 import com.apollographql.apollo.compiler.defaultAddUnkownForEnums
+import com.apollographql.apollo.compiler.defaultGenerateApolloEnums
 import com.apollographql.apollo.compiler.defaultGenerateAsInternal
 import com.apollographql.apollo.compiler.defaultGenerateFilterNotNull
 import com.apollographql.apollo.compiler.defaultGenerateFragmentImplementations
@@ -161,6 +164,7 @@ internal object KotlinCodegen {
     val jsExport = codegenOptions.jsExport ?: defaultJsExport
     val requiresOptInAnnotation = codegenOptions.requiresOptInAnnotation ?: defaultRequiresOptInAnnotation
     val sealedClassesForEnumsMatching = codegenOptions.sealedClassesForEnumsMatching ?: defaultSealedClassesForEnumsMatching
+    val generateApolloEnums = codegenOptions.generateApolloEnums ?: defaultGenerateApolloEnums
     val addUnknownForEnums = codegenOptions.addUnknownForEnums ?: defaultAddUnkownForEnums
     val addDefaultArgumentForInputObjects = codegenOptions.addDefaultArgumentForInputObjects
         ?: defaultAddDefaultArgumentForInputObjects
@@ -188,8 +192,13 @@ internal object KotlinCodegen {
         }
         builders.add(ScalarBuilder(context, irScalar, inlineClassBuilder?.className))
       }
+      if (generateApolloEnums) {
+        builders.add(EnumAsApolloEnumSupportBuilder(context))
+      }
       irSchema.irEnums.forEach { irEnum ->
-        if (sealedClassesForEnumsMatching.any { Regex(it).matches(irEnum.name) }) {
+        if(generateApolloEnums) {
+          builders.add(EnumAsApolloEnumBuilder(context, irEnum))
+        } else if (sealedClassesForEnumsMatching.any { Regex(it).matches(irEnum.name) }) {
           builders.add(EnumAsSealedInterfaceBuilder(context, irEnum))
         } else {
           builders.add(EnumAsEnumBuilder(context, irEnum, addUnknownForEnums))

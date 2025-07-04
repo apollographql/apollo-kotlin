@@ -69,6 +69,8 @@ internal object Identifier {
    */
   const val UNKNOWN__ = "UNKNOWN__"
   const val KNOWN__ = "KNOWN__"
+  const val __Unknown = "__Unknown"
+  const val __Known = "__Known"
   const val rawValue = "rawValue"
   const val types = "types"
   const val block = "block"
