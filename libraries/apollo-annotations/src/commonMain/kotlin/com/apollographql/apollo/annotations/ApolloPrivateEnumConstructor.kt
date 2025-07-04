@@ -6,7 +6,7 @@ package com.apollographql.apollo.annotations
  */
 @RequiresOptIn(
     level = RequiresOptIn.Level.ERROR,
-    message = "The `__UNKNOWN` constructor is public for technical reasons only. Use `${'$'}YourEnum.safeValueOf(String)` instead."
+    message = "The `__Unknown` constructor is public for technical reasons only. Use `${'$'}YourEnum.safeValueOf(String)` instead."
 )
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CONSTRUCTOR)
