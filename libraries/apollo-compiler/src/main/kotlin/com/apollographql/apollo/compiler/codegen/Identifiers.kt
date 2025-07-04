@@ -62,7 +62,7 @@ internal object Identifier {
   const val knownEntries = "knownEntries"
 
   /**
-   * UNKNOWN__should probably have been __UNKNOWN because GraphQL reserves the leading __ but it's too late now.
+   * UNKNOWN__ should probably have been __UNKNOWN because GraphQL reserves the leading __ but it's too late now.
    *
    * All in all it's not too bad because typing 'U', 'N', ... is usually more intuitive and in the very unlikely event that
    * there is a name clash, it can always be resolved with `@targetName`
