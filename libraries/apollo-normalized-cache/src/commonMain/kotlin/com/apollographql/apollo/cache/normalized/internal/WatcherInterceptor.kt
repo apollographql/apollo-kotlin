@@ -6,7 +6,6 @@ import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.cache.normalized.ApolloStoreInterceptor
 import com.apollographql.apollo.cache.normalized.api.dependentKeys
 import com.apollographql.apollo.cache.normalized.watchContext
 import com.apollographql.apollo.exception.DefaultApolloException
@@ -24,7 +23,7 @@ import kotlinx.coroutines.flow.onSubscription
 
 internal val WatcherSentinel = DefaultApolloException("The watcher has started")
 
-internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor, ApolloStoreInterceptor {
+internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     val watchContext = request.watchContext ?: return chain.proceed(request)
 

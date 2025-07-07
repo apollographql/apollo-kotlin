@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.cache.normalized.ApolloStoreInterceptor
 import com.apollographql.apollo.cache.normalized.CacheInfo
 import com.apollographql.apollo.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo.cache.normalized.api.CacheHeaders
@@ -38,7 +37,7 @@ import kotlinx.coroutines.launch
 
 internal class ApolloCacheInterceptor(
     val store: ApolloStore,
-) : ApolloInterceptor, ApolloStoreInterceptor {
+) : ApolloInterceptor {
   private suspend fun <D : Operation.Data> maybeAsync(request: ApolloRequest<D>, block: suspend () -> Unit) {
     if (request.writeToCacheAsynchronously) {
       val scope = request.executionContext[ConcurrencyInfo]!!.coroutineScope
