@@ -193,13 +193,13 @@ dependencies {
 
 ## Snapshots
 
-Latest development changes are available in Sonatype's snapshots repository:
+Latest development changes are available in Maven Central's snapshots repository:
 
 ```kotlin
 // build.gradle.kts
 repositories {
   maven {
-    url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    url = uri("https://central.sonatype.com/repository/maven-snapshots/")
   }
   mavenCentral()
   // other repositories...
@@ -209,7 +209,7 @@ repositories {
 pluginManagement {
   repositories {
     maven {
-      url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+      url = uri("https://central.sonatype.com/repository/maven-snapshots/")
     }
     mavenCentral()
     // other repositories...

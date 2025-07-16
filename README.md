@@ -7,8 +7,7 @@
 [![Discourse](https://img.shields.io/discourse/topics?label=Discourse&server=https%3A%2F%2Fcommunity.apollographql.com&logo=discourse&color=467B95&style=flat-square)](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client)
 [![Slack](https://img.shields.io/static/v1?label=kotlinlang&message=apollo-kotlin&color=A97BFF&logo=slack&style=flat-square)](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)
 
-[![OSS Snapshots](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fs01.oss.sonatype.org%2Fcontent%2Frepositories%2Fsnapshots%2Fcom%2Fapollographql%2Fapollo%2Fapollo-api-jvm%2Fmaven-metadata.xml&style=flat-square&label=oss-snapshots&color=%2315252D
-)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo/)
+[![Snapshots](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fcom%2Fapollographql%2Fapollo%2Fapollo-api-jvm%2Fmaven-metadata.xml&style=flat-square&label=snapshots&color=%2315252D&strategy=latestProperty)](https://central.sonatype.com/repository/maven-snapshots/com/apollographql/apollo/)
 [![Apollo Preview](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fstorage.googleapis.com%2Fapollo-previews%2Fm2%2Fcom%2Fapollographql%2Fapollo%2Fapollo-api-jvm%2Fmaven-metadata.xml&style=flat-square&label=apollo-previews&color=%23365E72)](https://storage.googleapis.com/apollo-previews/)
 [![Maven Central](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fcom%2Fapollographql%2Fapollo%2Fapollo-api-jvm%2Fmaven-metadata.xml&style=flat-square&label=maven-central&color=%235C96B2
 )](https://central.sonatype.com/namespace/com.apollographql.apollo)
