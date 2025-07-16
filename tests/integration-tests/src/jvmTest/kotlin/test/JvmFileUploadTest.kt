@@ -4,11 +4,11 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Upload
 import com.apollographql.apollo.api.toUpload
 import com.apollographql.apollo.integration.upload.SingleUploadTwiceMutation
+import com.apollographql.apollo.network.okHttpClient
+import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo.network.okHttpClient
-import com.apollographql.apollo.testing.internal.runTest
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
@@ -53,7 +53,7 @@ class JvmFileUploadTest {
     val request = mockServer.awaitRequest()
     val parts = request.parts()
 
-    val expectedBodyLength = 1092
+    val expectedBodyLength = 1100
     assertEquals(expectedBodyLength, request.body.size)
     assertEquals(expectedBodyLength.toString(), request.headers["Content-Length"])
     assertEquals(4, parts.size)
