@@ -53,8 +53,9 @@ internal object SchemaHelper {
       headers: Map<String, String>,
       insecure: Boolean,
   ): String {
+    val defaultHeaders = listOf(HttpHeader("Accept", "application/graphql-response+json, application/json"))
     val httpRequest = HttpRequest.Builder(HttpMethod.Post, endpoint)
-        .headers(headers.map { HttpHeader(it.key, it.value) })
+        .headers(defaultHeaders + headers.map { HttpHeader(it.key, it.value) })
         .body(httpBody)
         .build()
     val httpEngine = DefaultHttpEngine(newOkHttpClient(insecure))
