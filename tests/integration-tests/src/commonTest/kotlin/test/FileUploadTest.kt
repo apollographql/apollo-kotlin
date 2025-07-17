@@ -83,7 +83,10 @@ class FileUploadTest {
       }
     """.trimIndent())
 
-    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
+    apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .sendEnhancedClientAwareness(false)
+        .build()
   }
 
   private fun tearDown() {
