@@ -802,7 +802,7 @@ interface Service {
 
   fun plugin(dependencyNotation: Any)
 
-  @Deprecated("Use both plugin() and pluginsArguments")
+  @Deprecated("Use both plugin() and pluginArgument()")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
   fun plugin(dependencyNotation: Any, block: Action<CompilerPlugin>)
 

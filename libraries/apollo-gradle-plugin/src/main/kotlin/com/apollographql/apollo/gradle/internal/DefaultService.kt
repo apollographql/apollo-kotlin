@@ -244,7 +244,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     hasPlugin = true
   }
 
-  @Deprecated("Use both plugin() and pluginsArguments", level = DeprecationLevel.ERROR)
+  @Deprecated("Use both plugin() and pluginArgument()", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
   @Suppress("DEPRECATION")
   override fun plugin(dependencyNotation: Any, block: Action<CompilerPlugin>) {

@@ -2,7 +2,7 @@ package com.apollographql.apollo.gradle.api
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 
-@Deprecated("Use Service.pluginsArguments instead")
+@Deprecated("Use Service.pluginArgument() instead")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 interface CompilerPlugin {
   /**
@@ -16,6 +16,6 @@ interface CompilerPlugin {
    *
    * @see com.apollographql.apollo.compiler.ApolloCompilerPluginValue
    */
-  @Deprecated("Use Service.pluginsArguments instead")
+  @Deprecated("Use Service.pluginArgument() instead")
   fun argument(name: String, value: Any?)
 }
