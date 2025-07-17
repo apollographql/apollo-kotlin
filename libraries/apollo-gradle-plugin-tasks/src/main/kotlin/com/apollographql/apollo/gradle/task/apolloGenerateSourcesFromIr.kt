@@ -14,7 +14,7 @@ import gratatouille.tasks.GTask
 @GTask
 internal fun apolloGenerateSourcesFromIr(
     logger: GLogger,
-    arguments: Map<String, GAny>,
+    arguments: Map<String, GAny?>,
     warnIfNotFound: Boolean,
     codegenSchemas: GInputFiles,
     irOperations: GInputFile,

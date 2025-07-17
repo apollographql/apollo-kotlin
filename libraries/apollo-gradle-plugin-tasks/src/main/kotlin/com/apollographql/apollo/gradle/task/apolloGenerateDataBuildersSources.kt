@@ -12,7 +12,7 @@ import gratatouille.tasks.GTask
 @GTask
 internal fun apolloGenerateDataBuildersSources(
     logger: GLogger,
-    arguments: Map<String, GAny>,
+    arguments: Map<String, GAny?>,
     warnIfNotFound: Boolean,
     codegenSchemas: GInputFiles,
     downstreamUsedCoordinates: GInputFile,

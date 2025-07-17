@@ -340,7 +340,10 @@ abstract class DefaultApolloExtension(
     )
 
     val warnIfNoPluginFound = service.hasPlugin
-    val pluginArguments = service.pluginsArguments
+    val pluginArguments = project.provider {
+      @Suppress("USELESS_CAST")
+      service.pluginsArguments as Map<String, Any?>
+    }
 
     if (service.languageVersion.orNull == "1.5") {
       project.logger.lifecycle("Apollo: languageVersion 1.5 is deprecated, please use 1.9 or leave empty")

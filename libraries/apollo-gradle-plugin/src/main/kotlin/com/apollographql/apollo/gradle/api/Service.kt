@@ -802,9 +802,8 @@ interface Service {
 
   fun plugin(dependencyNotation: Any)
 
-  @Deprecated("Use both plugin() and pluginsArguments", level = DeprecationLevel.ERROR)
+  @Deprecated("Use both plugin() and pluginsArguments")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
-  @Suppress("DEPRECATION_ERROR")
   fun plugin(dependencyNotation: Any, block: Action<CompilerPlugin>)
 
   /**
@@ -822,8 +821,11 @@ interface Service {
    * - Map
    *
    * @see com.apollographql.apollo.compiler.ApolloCompilerPluginValue
+   *
+   * @param name the name of the argument
+   * @param value the value for this argument
    */
-  val pluginsArguments: MapProperty<String, Any>
+  fun pluginArgument(name: String, value: Any?)
 
   /**
    * Overrides the way the outgoing variants are connected.

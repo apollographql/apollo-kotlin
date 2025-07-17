@@ -11,7 +11,7 @@ import gratatouille.tasks.GTask
 @GTask
 internal fun apolloGenerateCodegenSchema(
     logger: GLogger,
-    arguments: Map<String, GAny>,
+    arguments: Map<String, GAny?>,
     warnIfNotFound: Boolean,
     schemaFiles: GInputFiles,
     fallbackSchemaFiles: GInputFiles,
