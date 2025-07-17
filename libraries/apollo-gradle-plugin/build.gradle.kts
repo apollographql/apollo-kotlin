@@ -1,7 +1,5 @@
-import org.gradle.kotlin.dsl.javaToolchains
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import kotlin.jvm.java
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
@@ -49,21 +47,31 @@ dependencies {
   lintChecks(libs.androidx.lint.rules)
 }
 
-tasks.register("cleanStaleTestProjects") {
-  /**
-   * Remove stale testProject directories
-   */
-  val buildFiles = layout.buildDirectory.asFile.get().listFiles()
-  doFirst {
-    buildFiles?.forEach {
-      if (it.isDirectory && it.name.startsWith("testProject")) {
-        it.deleteRecursively()
-      }
+/**
+ * A task that removes the stale test projects from the build directory.
+ * We don't want to remove them at the end of the build because it's sometimes useful to have
+ * the project stick around for inspection/debugging.
+ *
+ * Instead, this task is run as a prerequisite to the tests. It is never up to date and will
+ * always scan the contents of the `build` directory.
+ */
+abstract class CleanStaleTestProjects : DefaultTask() {
+  @get:Internal
+  abstract var directory: File
+
+  @TaskAction
+  fun taskAction() {
+    directory.listFiles { it.isDirectory && it.name.startsWith("testProject") }!!.forEach {
+      it.deleteRecursively()
     }
   }
 }
 
-tasks.register("publishDependencies") {
+val cleanStaleTestProjects = tasks.register("cleanStaleTestProjects", CleanStaleTestProjects::class.java) {
+  directory = layout.buildDirectory.asFile.get()
+}
+
+val publishDependencies = tasks.register("publishDependencies") {
   dependsOn("publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-annotations:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
@@ -76,8 +84,8 @@ tasks.register("publishDependencies") {
 }
 
 tasks.withType<Test> {
-  dependsOn("publishDependencies")
-  dependsOn("cleanStaleTestProjects")
+  dependsOn(publishDependencies)
+  dependsOn(cleanStaleTestProjects)
 
   addRelativeInput("testFiles", "testFiles")
   addRelativeInput("testProjects", "testProjects")
