@@ -2,7 +2,6 @@ package com.apollographql.apollo
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
-import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
@@ -34,18 +33,15 @@ import com.apollographql.apollo.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo.network.ws.WsProtocol
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import okio.Closeable
 import kotlin.jvm.JvmOverloads
-import kotlin.jvm.JvmStatic
 
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
@@ -649,9 +645,13 @@ private constructor(
     }
 
     /**
-     * Adds [httpInterceptor] to the list of HTTP interceptors
+     * Adds [httpInterceptor] to the list of HTTP interceptors.
      *
      * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
+     *
+     * **The order is important**. The [HttpInterceptor]s are executed in the order they are added.
+     *
+     * See also [addInterceptor] for interceptors at the GraphQL level.
      *
      * @see networkTransport
      */
@@ -808,8 +808,8 @@ private constructor(
      * such as normalized cache and auto persisted queries. [ApolloClient] also inserts a terminating [ApolloInterceptor] that
      * executes the request.
      *
-     * **The order is important**. The [ApolloInterceptor]s are added in the order they are added and always added before
-     * the built-in intercepted:
+     * **The order is important**. The [ApolloInterceptor]s are executed in the order they are added and are always added before
+     * the built-in interceptors:
      *
      * - user interceptors
      * - cacheInterceptor
