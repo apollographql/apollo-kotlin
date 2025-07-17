@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import kotlin.io.deleteRecursively
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
