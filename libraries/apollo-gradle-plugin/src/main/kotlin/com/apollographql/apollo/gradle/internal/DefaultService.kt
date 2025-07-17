@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION")
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
@@ -21,8 +22,13 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   internal val upstreamDependencies = mutableListOf<Dependency>()
   internal val downstreamDependencies = mutableListOf<Dependency>()
-  internal var pluginDependency: Dependency? = null
-  internal var compilerPlugin: CompilerPlugin? = null
+  internal val pluginsArguments = mutableMapOf<String, Any?>()
+  internal var hasPlugin: Boolean = false
+
+  val compilerConfiguration = project.configurations.create(ModelNames.compilerConfiguration(this)) {
+    it.isCanBeConsumed = false
+    it.isCanBeResolved = true
+  }
 
   private val objects = project.objects
   internal var registered = false
@@ -234,17 +240,26 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   internal fun isSchemaModule(): Boolean = upstreamDependencies.isEmpty()
 
   override fun plugin(dependencyNotation: Any) {
-    plugin(dependencyNotation) {}
+    compilerConfiguration.dependencies.add(project.dependencies.create(dependencyNotation))
+    hasPlugin = true
   }
 
+  @Deprecated("Use both plugin() and pluginArgument()", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+  @Suppress("DEPRECATION")
   override fun plugin(dependencyNotation: Any, block: Action<CompilerPlugin>) {
-    require(compilerPlugin == null) {
-      "Apollo: only one Apollo Compiler Plugin is allowed."
+    val plugin = object: CompilerPlugin {
+      @Suppress("OVERRIDE_DEPRECATION")
+      override fun argument(name: String, value: Any?) {
+        pluginArgument(name, value)
+      }
     }
-    compilerPlugin = DefaultCompilerPlugin()
-    block.execute(compilerPlugin!!)
+    block.execute(plugin)
+    plugin(dependencyNotation)
+  }
 
-    pluginDependency = project.dependencies.create(dependencyNotation)
+  override fun pluginArgument(name: String, value: Any?) {
+    pluginsArguments.put(name, value)
   }
 }
 

@@ -14,6 +14,7 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
@@ -801,8 +802,30 @@ interface Service {
 
   fun plugin(dependencyNotation: Any)
 
-  @ApolloExperimental
+  @Deprecated("Use both plugin() and pluginArgument()")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
   fun plugin(dependencyNotation: Any, block: Action<CompilerPlugin>)
+
+  /**
+   * The compiler plugins arguments.
+   * Arguments are shared between all compiler plugins. Using the package name of your plugin is recommended
+   * to avoid name clashes.
+   *
+   * Argument values are added as input to the codegen task and must be simple Kotlin types:
+   * - String
+   * - Int
+   * - Double
+   * - Float
+   * - Boolean
+   * - List
+   * - Map
+   *
+   * @see com.apollographql.apollo.compiler.ApolloCompilerPluginValue
+   *
+   * @param name the name of the argument
+   * @param value the value for this argument
+   */
+  fun pluginArgument(name: String, value: Any?)
 
   /**
    * Overrides the way the outgoing variants are connected.

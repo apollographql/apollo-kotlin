@@ -18,7 +18,7 @@ dependencies {
 apollo {
   service("service") {
     packageName.set("com.example")
-    plugin(project(":schema-transform-plugin")) {}
+    plugin(project(":schema-transform-plugin"))
   }
 }
 

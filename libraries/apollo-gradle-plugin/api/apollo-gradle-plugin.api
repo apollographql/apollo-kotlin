@@ -204,6 +204,7 @@ public abstract interface class com/apollographql/apollo/gradle/api/Service {
 	public static synthetic fun packageNamesFromFilePaths$default (Lcom/apollographql/apollo/gradle/api/Service;Ljava/lang/String;ILjava/lang/Object;)V
 	public abstract fun plugin (Ljava/lang/Object;)V
 	public abstract fun plugin (Ljava/lang/Object;Lorg/gradle/api/Action;)V
+	public abstract fun pluginArgument (Ljava/lang/String;Ljava/lang/Object;)V
 	public abstract fun registerOperations (Lorg/gradle/api/Action;)V
 	public abstract fun registry (Lorg/gradle/api/Action;)V
 	public abstract fun srcDir (Ljava/lang/Object;)V

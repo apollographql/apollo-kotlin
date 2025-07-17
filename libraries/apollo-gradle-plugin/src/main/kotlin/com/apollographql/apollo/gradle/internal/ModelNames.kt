@@ -55,7 +55,7 @@ internal object ModelNames {
     )
   }
 
-  fun compilerConfiguration(service: Service) = camelCase("apollo", service.name, "Compiler")
+  fun compilerConfiguration(service: Service) = camelCase("apollo", service.name, "CompilerPlugins")
 }
 
 
