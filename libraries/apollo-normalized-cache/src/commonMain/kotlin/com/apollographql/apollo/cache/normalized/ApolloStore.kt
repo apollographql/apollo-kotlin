@@ -4,6 +4,7 @@ import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.json.JsonNumber
+import com.apollographql.apollo.cache.normalized.ApolloStore.Companion.ALL_KEYS
 import com.apollographql.apollo.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo.cache.normalized.api.CacheKey
 import com.apollographql.apollo.cache.normalized.api.CacheKeyGenerator
@@ -14,7 +15,6 @@ import com.apollographql.apollo.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo.cache.normalized.api.Record
 import com.apollographql.apollo.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo.cache.normalized.internal.DefaultApolloStore
-import com.apollographql.apollo.interceptor.ApolloInterceptor
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
 import kotlin.reflect.KClass
@@ -280,11 +280,6 @@ fun ApolloStore(
     cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,
     cacheResolver: CacheResolver = FieldPolicyCacheResolver,
 ): ApolloStore = DefaultApolloStore(normalizedCacheFactory, cacheKeyGenerator, cacheResolver)
-
-/**
- * Interface that marks all interceptors added when configuring a `store()` on ApolloClient.Builder.
- */
-internal interface ApolloStoreInterceptor : ApolloInterceptor
 
 internal fun ApolloStore.cacheDumpProvider(): () -> Map<String, Map<String, Pair<Int, Map<String, Any?>>>> {
   return {
