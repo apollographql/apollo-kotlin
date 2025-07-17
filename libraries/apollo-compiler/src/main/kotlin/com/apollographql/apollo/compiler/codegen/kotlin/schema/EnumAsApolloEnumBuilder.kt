@@ -95,6 +95,7 @@ internal class EnumAsApolloEnumBuilder(
 
   private fun IrEnum.Value.toObjectTypeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(targetName.escapeKotlinReservedWordInSealedClass())
+        .addModifiers(KModifier.DATA)
         .maybeAddDeprecation(deprecationReason)
         .maybeAddDescription(description)
         .maybeAddRequiresOptIn(context.resolver, optInFeature)
