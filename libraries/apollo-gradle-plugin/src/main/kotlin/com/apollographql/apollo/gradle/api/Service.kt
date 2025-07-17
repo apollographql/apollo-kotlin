@@ -523,6 +523,14 @@ interface Service {
   val sealedClassesForEnumsMatching: ListProperty<String>
 
   /**
+   * Whether to generate enums as ApolloEnum<E>.
+   *
+   * Experimental, see https://github.com/apollographql/apollo-kotlin/issues/6243.
+   */
+  @ApolloExperimental
+  val generateApolloEnums: Property<Boolean>
+
+  /**
    * A list of [Regex] patterns for GraphQL enums that should be generated as Java classes.
    *
    * Only valid when [generateKotlinModels] is `false`.
@@ -530,7 +538,7 @@ interface Service {
    * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
    * the client was compiled against an older schema that doesn't have knowledge of the new enums.
    *
-   * Default: listOf(".*")
+   * Default: `listOf(".*")`
    */
   val classesForEnumsMatching: ListProperty<String>
 
@@ -543,8 +551,8 @@ interface Service {
    *
    * You can pass the special value "none" to disable adding an annotation.
    * If you're using a custom annotation, it must be able to target:
-   * - AnnotationTarget.PROPERTY
-   * - AnnotationTarget.CLASS
+   * - [AnnotationTarget.PROPERTY]
+   * - [AnnotationTarget.CLASS]
    *
    * Default: "none"
    */

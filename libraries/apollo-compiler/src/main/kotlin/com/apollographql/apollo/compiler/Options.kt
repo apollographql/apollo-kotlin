@@ -449,6 +449,14 @@ interface KotlinCodegenOpt {
   val addUnknownForEnums: Boolean?
 
   /**
+   * Whether to generate enums as ApolloEnum<E>.
+   *
+   * Experimental, see https://github.com/apollographql/apollo-kotlin/issues/6243.
+   */
+  @ApolloExperimental
+  val generateApolloEnums: Boolean?
+
+  /**
    * Whether to add default arguments for input objects.
    */
   val addDefaultArgumentForInputObjects: Boolean?
@@ -521,6 +529,7 @@ class CodegenOptions(
     override val generateSchema: Boolean?,
     override val generatedSchemaName: String?,
     override val sealedClassesForEnumsMatching: List<String>?,
+    override val generateApolloEnums: Boolean?,
     override val generateAsInternal: Boolean?,
     override val addUnknownForEnums: Boolean?,
     override val addDefaultArgumentForInputObjects: Boolean?,
@@ -548,6 +557,7 @@ fun buildCodegenOptions(
     sealedClassesForEnumsMatching: List<String>? = null,
     generateAsInternal: Boolean? = null,
     addUnknownForEnums: Boolean? = null,
+    generateApolloEnums: Boolean? = null,
     addDefaultArgumentForInputObjects: Boolean? = null,
     generateFilterNotNull: Boolean? = null,
     generateInputBuilders: Boolean? = null,
@@ -573,6 +583,7 @@ fun buildCodegenOptions(
     sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
     generateAsInternal = generateAsInternal,
     addUnknownForEnums = addUnknownForEnums,
+    generateApolloEnums = generateApolloEnums,
     addDefaultArgumentForInputObjects = addDefaultArgumentForInputObjects,
     generateFilterNotNull = generateFilterNotNull,
     generateInputBuilders = generateInputBuilders,
@@ -703,6 +714,7 @@ internal val defaultAddUnkownForEnums = true
 internal val defaultAddDefaultArgumentForInputObjects = true
 internal val defaultCodegenModels = "operationBased"
 internal val defaultTargetLanguage = TargetLanguage.KOTLIN_1_9
+internal val defaultGenerateApolloEnums = false
 
 internal fun defaultTargetLanguage(targetLanguage: TargetLanguage?, upstreamCodegenMetadata: List<CodegenMetadata>): TargetLanguage {
   val upstreamTargetLanguage = upstreamCodegenMetadata.map { it.targetLanguage }.distinct().run {

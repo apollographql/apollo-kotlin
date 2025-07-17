@@ -25,7 +25,7 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
-internal class EnumAsSealedBuilder(
+internal class EnumAsSealedInterfaceBuilder(
     private val context: KotlinSchemaContext,
     private val enum: IrEnum,
 ) : CgFileBuilder {
