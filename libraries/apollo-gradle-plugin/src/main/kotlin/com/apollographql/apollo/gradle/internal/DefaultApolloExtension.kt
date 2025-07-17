@@ -25,7 +25,6 @@ import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.attributes.HasConfigurableAttributes
@@ -340,17 +339,8 @@ abstract class DefaultApolloExtension(
         extendsFrom = upstreamScope
     )
 
-    val compilerConfiguration = project.configurations.create(ModelNames.compilerConfiguration(service)) {
-      it.isCanBeConsumed = false
-      it.isCanBeResolved = true
-    }
-
-    service.pluginDependency?.let {
-      compilerConfiguration.dependencies.add(it)
-    }
-
-    val warnIfNoPluginFound = service.pluginDependency != null
-    val pluginArguments = (service.compilerPlugin as DefaultCompilerPlugin?)?.arguments.orEmpty()
+    val warnIfNoPluginFound = service.hasPlugin
+    val pluginArguments = service.pluginsArguments
 
     if (service.languageVersion.orNull == "1.5") {
       project.logger.lifecycle("Apollo: languageVersion 1.5 is deprecated, please use 1.9 or leave empty")
@@ -427,8 +417,8 @@ abstract class DefaultApolloExtension(
           taskName = ModelNames.generateApolloSources(service),
           taskGroup = TASK_GROUP,
           taskDescription = "Generate Apollo models for service '${service.name}'",
-          extraClasspath = compilerConfiguration,
-          arguments = project.provider { pluginArguments },
+          extraClasspath = service.compilerConfiguration,
+          arguments = pluginArguments,
           warnIfNotFound = project.provider { warnIfNoPluginFound },
           schemas = service.schemaFiles(project),
           fallbackSchemas = service.fallbackSchemaFiles(project),
@@ -487,8 +477,8 @@ abstract class DefaultApolloExtension(
             fallbackSchemaFiles = service.fallbackSchemaFiles(project),
             upstreamSchemaFiles = codegenSchema.resolvable,
             codegenSchemaOptionsFile = optionsTaskProvider.flatMap { it.codegenSchemaOptionsFile },
-            arguments = project.provider { pluginArguments },
-            extraClasspath = compilerConfiguration,
+            arguments = pluginArguments,
+            extraClasspath = service.compilerConfiguration,
             warnIfNotFound = project.provider { warnIfNoPluginFound },
         )
       } else {
@@ -512,8 +502,8 @@ abstract class DefaultApolloExtension(
           taskName = ModelNames.generateApolloIrOperations(service),
           taskGroup = TASK_GROUP,
           taskDescription = "Generate Apollo IR operations for service '${service.name}'",
-          extraClasspath = compilerConfiguration,
-          arguments = project.provider { pluginArguments },
+          extraClasspath = service.compilerConfiguration,
+          arguments = pluginArguments,
           warnIfNotFound = project.provider { warnIfNoPluginFound },
           upstreamIrFiles = upstreamIr.resolvable,
           codegenSchemas = upstreamAndSelfCodegenSchemas,
@@ -530,8 +520,8 @@ abstract class DefaultApolloExtension(
           taskName = ModelNames.generateApolloSources(service),
           taskGroup = TASK_GROUP,
           taskDescription = "Generate Apollo models for service '${service.name}'",
-          extraClasspath = compilerConfiguration,
-          arguments = project.provider { pluginArguments },
+          extraClasspath = service.compilerConfiguration,
+          arguments = pluginArguments,
           warnIfNotFound = project.provider { warnIfNoPluginFound },
           codegenSchemas = upstreamAndSelfCodegenSchemas,
           usedCoordinates = computeUsedCoordinatesTask.flatMap { it.outputFile },
@@ -554,8 +544,8 @@ abstract class DefaultApolloExtension(
             taskName = ModelNames.generateDataBuildersApolloSources(service),
             taskGroup = TASK_GROUP,
             taskDescription = "Generate Apollo data builders for service '${service.name}'",
-            extraClasspath = compilerConfiguration,
-            arguments = project.provider { pluginArguments },
+            extraClasspath = service.compilerConfiguration,
+            arguments = pluginArguments,
             warnIfNotFound = project.provider { warnIfNoPluginFound },
             codegenSchemas = upstreamAndSelfCodegenSchemas,
             downstreamUsedCoordinates = computeUsedCoordinatesTask.flatMap { it.outputFile },

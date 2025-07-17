@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION_ERROR")
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
@@ -21,8 +22,12 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   internal val upstreamDependencies = mutableListOf<Dependency>()
   internal val downstreamDependencies = mutableListOf<Dependency>()
-  internal var pluginDependency: Dependency? = null
-  internal var compilerPlugin: CompilerPlugin? = null
+  internal var hasPlugin: Boolean = false
+
+  val compilerConfiguration = project.configurations.create(ModelNames.compilerConfiguration(this)) {
+    it.isCanBeConsumed = false
+    it.isCanBeResolved = true
+  }
 
   private val objects = project.objects
   internal var registered = false
@@ -234,17 +239,15 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   internal fun isSchemaModule(): Boolean = upstreamDependencies.isEmpty()
 
   override fun plugin(dependencyNotation: Any) {
-    plugin(dependencyNotation) {}
+    compilerConfiguration.dependencies.add(project.dependencies.create(dependencyNotation))
+    hasPlugin = true
   }
 
+  @Deprecated("Use both plugin() and pluginsArguments", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+  @Suppress("DEPRECATION_ERROR")
   override fun plugin(dependencyNotation: Any, block: Action<CompilerPlugin>) {
-    require(compilerPlugin == null) {
-      "Apollo: only one Apollo Compiler Plugin is allowed."
-    }
-    compilerPlugin = DefaultCompilerPlugin()
-    block.execute(compilerPlugin!!)
-
-    pluginDependency = project.dependencies.create(dependencyNotation)
+    error("Apollo: plugin(dependencyNotation) { } is now an error, use plugin() and pluginsArguments.put(key, value) if you need arguments.")
   }
 }
 

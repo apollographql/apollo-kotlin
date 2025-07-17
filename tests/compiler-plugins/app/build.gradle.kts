@@ -24,12 +24,11 @@ apollo {
         val name = dir.name.replace("-", "")
         service(name) {
           packageName.set("hooks.$name")
-          plugin(project(":compiler-plugins-${dir.name}")) {
+          plugin(project(":compiler-plugins-${dir.name}"))
             when(name) {
               "prefixnames" -> {
-                argument("prefix", "GQL")
+                pluginsArguments.put("prefix", "GQL")
               }
-            }
           }
 
           when (name) {
