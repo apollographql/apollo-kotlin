@@ -38,7 +38,10 @@ class JvmFileUploadTest {
       }
     """.trimIndent())
 
-    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
+    apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .sendEnhancedClientAwareness(false)
+        .build()
   }
 
   private suspend fun tearDown() {
@@ -53,7 +56,7 @@ class JvmFileUploadTest {
     val request = mockServer.awaitRequest()
     val parts = request.parts()
 
-    val expectedBodyLength = 1100
+    val expectedBodyLength = 1009
     assertEquals(expectedBodyLength, request.body.size)
     assertEquals(expectedBodyLength.toString(), request.headers["Content-Length"])
     assertEquals(4, parts.size)
