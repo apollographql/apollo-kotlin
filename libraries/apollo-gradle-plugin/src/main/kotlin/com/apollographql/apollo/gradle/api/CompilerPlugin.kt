@@ -16,6 +16,6 @@ interface CompilerPlugin {
    *
    * @see com.apollographql.apollo.compiler.ApolloCompilerPluginValue
    */
-  @Deprecated("Use CompilerPluginArguments.argument", level = DeprecationLevel.ERROR)
+  @Deprecated("Use Service.pluginsArguments instead", level = DeprecationLevel.ERROR)
   fun argument(name: String, value: Any?)
 }
