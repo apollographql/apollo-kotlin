@@ -10,8 +10,8 @@ import com.apollographql.apollo.api.toApolloResponse
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.SubscriptionOperationException
-import com.apollographql.apollo.internal.DeferredJsonMerger
-import com.apollographql.apollo.internal.isDeferred
+import com.apollographql.apollo.internal.IncrementalResultsMerger
+import com.apollographql.apollo.internal.isIncremental
 import com.apollographql.apollo.internal.transformWhile
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.network.ws.internal.Command
@@ -262,7 +262,7 @@ private constructor(
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
-    val deferredJsonMerger = DeferredJsonMerger()
+    val incrementalResultsMerger = IncrementalResultsMerger()
 
     return events.onSubscription {
       messages.send(StartOperation(request))
@@ -302,8 +302,8 @@ private constructor(
         is OperationResponse -> {
           val responsePayload = response.payload
           val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters]!!
-          val (payload, mergedFragmentIds) = if (responsePayload.isDeferred()) {
-            deferredJsonMerger.merge(responsePayload) to deferredJsonMerger.pendingFragmentIds
+          val (payload, mergedFragmentIds) = if (responsePayload.isIncremental()) {
+            incrementalResultsMerger.merge(responsePayload) to incrementalResultsMerger.pendingResultIds
           } else {
             responsePayload to null
           }
@@ -314,9 +314,9 @@ private constructor(
               deferredFragmentIdentifiers = mergedFragmentIds
           )
 
-          if (!deferredJsonMerger.hasNext) {
-            // Last deferred payload: reset the deferredJsonMerger for potential subsequent responses
-            deferredJsonMerger.reset()
+          if (!incrementalResultsMerger.hasNext) {
+            // Last incremental result: reset the incrementalResultsMerger for potential subsequent responses
+            incrementalResultsMerger.reset()
           }
           apolloResponse
         }
@@ -328,7 +328,7 @@ private constructor(
         is ConnectionReEstablished, is OperationComplete, is GeneralError -> error("Unexpected event $response")
       }
     }.filterNot {
-      deferredJsonMerger.isEmptyPayload
+      incrementalResultsMerger.isEmptyResponse
     }.onCompletion {
       messages.send(StopOperation(request))
     }

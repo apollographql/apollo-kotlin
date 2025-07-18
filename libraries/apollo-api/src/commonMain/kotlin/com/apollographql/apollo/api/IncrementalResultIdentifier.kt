@@ -7,3 +7,9 @@ data class DeferredFragmentIdentifier(
     val path: List<Any>,
     val label: String?,
 )
+
+/**
+ * Identifies an incremental result.
+ * [DeferredFragmentIdentifier] is kept to not break the API/ABI, but this alias is more descriptive of its purpose.
+ */
+typealias IncrementalResultIdentifier = DeferredFragmentIdentifier

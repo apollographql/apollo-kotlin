@@ -19,10 +19,10 @@ class CustomScalarAdapters private constructor(
     @JvmField
     val falseVariables: Set<String>?,
     /**
-     * Defer identifiers used to determine whether the parser must parse @defer fragments
+     * Pending incremental result identifiers used to determine whether the parser must parse deferred fragments
      */
     @JvmField
-    val deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?,
+    val deferredFragmentIdentifiers: Set<IncrementalResultIdentifier>?,
     /**
      * Errors to use with @catch
      */
@@ -125,21 +125,26 @@ class CustomScalarAdapters private constructor(
   fun newBuilder(): Builder {
     return Builder().addAll(this)
         .falseVariables(falseVariables)
-        .deferredFragmentIdentifiers(deferredFragmentIdentifiers)
+        .pendingResultIds(deferredFragmentIdentifiers)
   }
 
   class Builder {
     private val adaptersMap: MutableMap<String, Adapter<*>> = mutableMapOf()
     private var falseVariables: Set<String>? = null
-    private var deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null
+    private var pendingResultIds: Set<IncrementalResultIdentifier>? = null
     private var errors: List<Error>? = null
 
     fun falseVariables(falseVariables: Set<String>?) = apply {
       this.falseVariables = falseVariables
     }
 
-    fun deferredFragmentIdentifiers(deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?) = apply {
-      this.deferredFragmentIdentifiers = deferredFragmentIdentifiers
+    @Deprecated("Use pendingResultIds instead", ReplaceWith("pendingResultIds(pendingResultIds = deferredFragmentIdentifiers)"))
+    fun deferredFragmentIdentifiers(deferredFragmentIdentifiers: Set<IncrementalResultIdentifier>?) = apply {
+      this.pendingResultIds = deferredFragmentIdentifiers
+    }
+
+    fun pendingResultIds(pendingResultIds: Set<IncrementalResultIdentifier>?) = apply {
+      this.pendingResultIds = pendingResultIds
     }
 
     fun errors(errors: List<Error>?) = apply {
@@ -173,7 +178,7 @@ class CustomScalarAdapters private constructor(
       return CustomScalarAdapters(
           adaptersMap,
           falseVariables,
-          deferredFragmentIdentifiers,
+          pendingResultIds,
           errors,
       )
     }

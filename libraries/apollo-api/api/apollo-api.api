@@ -426,6 +426,7 @@ public final class com/apollographql/apollo/api/CustomScalarAdapters$Builder {
 	public final fun deferredFragmentIdentifiers (Ljava/util/Set;)Lcom/apollographql/apollo/api/CustomScalarAdapters$Builder;
 	public final fun errors (Ljava/util/List;)Lcom/apollographql/apollo/api/CustomScalarAdapters$Builder;
 	public final fun falseVariables (Ljava/util/Set;)Lcom/apollographql/apollo/api/CustomScalarAdapters$Builder;
+	public final fun pendingResultIds (Ljava/util/Set;)Lcom/apollographql/apollo/api/CustomScalarAdapters$Builder;
 }
 
 public final class com/apollographql/apollo/api/CustomScalarAdapters$Key : com/apollographql/apollo/api/ExecutionContext$Key {

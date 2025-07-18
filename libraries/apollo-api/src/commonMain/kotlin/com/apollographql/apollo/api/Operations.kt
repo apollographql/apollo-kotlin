@@ -70,7 +70,7 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
 fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     jsonReader: JsonReader,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null,
+    deferredFragmentIdentifiers: Set<IncrementalResultIdentifier>? = null,
 ): ApolloResponse<D> {
   return jsonReader.use {
     ResponseParser.parse(
@@ -103,7 +103,7 @@ fun <D : Operation.Data> Operation<D>.parseResponse(
     jsonReader: JsonReader,
     requestUuid: Uuid? = null,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null,
+    deferredFragmentIdentifiers: Set<IncrementalResultIdentifier>? = null,
 ): ApolloResponse<D> {
   return try {
     ResponseParser.parse(
@@ -177,7 +177,7 @@ fun <D : Operation.Data> JsonReader.toApolloResponse(
     operation: Operation<D>,
     requestUuid: Uuid? = null,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null,
+    deferredFragmentIdentifiers: Set<IncrementalResultIdentifier>? = null,
 ): ApolloResponse<D> {
   return use {
     try {
@@ -213,7 +213,7 @@ fun <D : Operation.Data> JsonReader.parseResponse(
     operation: Operation<D>,
     requestUuid: Uuid? = null,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null,
+    deferredFragmentIdentifiers: Set<IncrementalResultIdentifier>? = null,
 ): ApolloResponse<D> {
   return try {
     ResponseParser.parse(
