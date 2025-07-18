@@ -50,7 +50,8 @@ fun <T : Any> and(vararg other: BooleanExpression<T>): BooleanExpression<T> = Bo
 fun <T : Any> not(other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.Not(other)
 fun variable(name: String): BooleanExpression<BVariable> = BooleanExpression.Element(BVariable(name))
 fun label(label: String? = null): BooleanExpression<BLabel> = BooleanExpression.Element(BLabel(label))
-fun possibleTypes(vararg typenames: String): BooleanExpression<BPossibleTypes> = BooleanExpression.Element(BPossibleTypes(typenames.toSet()))
+fun possibleTypes(vararg typenames: String): BooleanExpression<BPossibleTypes> =
+  BooleanExpression.Element(BPossibleTypes(typenames.toSet()))
 
 internal fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
   return when (this) {
@@ -66,7 +67,7 @@ internal fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boo
 fun BooleanExpression<BTerm>.evaluate(
     variables: Set<String>?,
     typename: String?,
-    deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?,
+    pendingResultIds: Set<IncrementalResultIdentifier>?,
     path: List<Any>?,
 ): Boolean {
   // Remove "data" from the path
@@ -74,22 +75,22 @@ fun BooleanExpression<BTerm>.evaluate(
   return evaluate {
     when (it) {
       is BVariable -> !(variables?.contains(it.name) ?: false)
-      is BLabel -> !isDeferredFragmentPending(deferredFragmentIdentifiers, croppedPath!!, it.label)
+      is BLabel -> !isDeferredFragmentPending(pendingResultIds, croppedPath!!, it.label)
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }
   }
 }
 
 private fun isDeferredFragmentPending(
-    deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?,
+    pendingResultIds: Set<IncrementalResultIdentifier>?,
     path: List<Any>,
     label: String?,
 ): Boolean {
-  if (deferredFragmentIdentifiers == null) {
+  if (pendingResultIds == null) {
     // By default, parse all deferred fragments - this is the case when parsing from the normalized cache.
     return false
   }
-  return deferredFragmentIdentifiers.contains(DeferredFragmentIdentifier(path, label))
+  return pendingResultIds.contains(IncrementalResultIdentifier(path, label))
 }
 
 /**

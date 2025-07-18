@@ -12,7 +12,7 @@ import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloWebSocketForceCloseException
 import com.apollographql.apollo.exception.DefaultApolloException
 import com.apollographql.apollo.exception.SubscriptionOperationException
-import com.apollographql.apollo.internal.DeferredJsonMerger
+import com.apollographql.apollo.internal.IncrementalResultsMerger
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.network.websocket.internal.OperationListener
 import com.apollographql.apollo.network.websocket.internal.WebSocketPool
@@ -202,7 +202,7 @@ private object DefaultSubscriptionParserFactory: SubscriptionParserFactory {
 }
 
 private class DefaultSubscriptionParser<D : Operation.Data>(private val request: ApolloRequest<D>) : SubscriptionParser<D> {
-  private var deferredJsonMerger: DeferredJsonMerger = DeferredJsonMerger()
+  private var incrementalResultsMerger: IncrementalResultsMerger = IncrementalResultsMerger()
   private val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
   @Suppress("NAME_SHADOWING")
@@ -215,7 +215,7 @@ private class DefaultSubscriptionParser<D : Operation.Data>(private val request:
     }
 
     val (payload, mergedFragmentIds) = if (responseMap.isDeferred()) {
-      deferredJsonMerger.merge(responseMap) to deferredJsonMerger.pendingFragmentIds
+      incrementalResultsMerger.merge(responseMap) to incrementalResultsMerger.pendingResultIds
     } else {
       responseMap to null
     }
@@ -226,12 +226,12 @@ private class DefaultSubscriptionParser<D : Operation.Data>(private val request:
         deferredFragmentIdentifiers = mergedFragmentIds
     )
 
-    if (!deferredJsonMerger.hasNext) {
-      // Last deferred payload: reset the deferredJsonMerger for potential subsequent responses
-      deferredJsonMerger.reset()
+    if (!incrementalResultsMerger.hasNext) {
+      // Last incremental result: reset the incrementalResultsMerger for potential subsequent responses
+      incrementalResultsMerger.reset()
     }
 
-    return if (deferredJsonMerger.isEmptyPayload) {
+    return if (incrementalResultsMerger.isEmptyResponse) {
       null
     } else {
       apolloResponse

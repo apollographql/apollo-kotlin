@@ -21,7 +21,7 @@ import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.RouterError
-import com.apollographql.apollo.internal.DeferredJsonMerger
+import com.apollographql.apollo.internal.IncrementalResultsMerger
 import com.apollographql.apollo.internal.isGraphQLResponse
 import com.apollographql.apollo.internal.isMultipart
 import com.apollographql.apollo.internal.multipartBodyFlow
@@ -170,7 +170,7 @@ private constructor(
       customScalarAdapters: CustomScalarAdapters,
       httpResponse: HttpResponse,
   ): Flow<ApolloResponse<D>> {
-    var jsonMerger: DeferredJsonMerger? = null
+    var incrementalResultsMerger: IncrementalResultsMerger? = null
     val operation = request.operation
 
     return multipartBodyFlow(httpResponse)
@@ -218,21 +218,20 @@ private constructor(
               else -> null
             }
           } else {
-            if (jsonMerger == null) {
-              jsonMerger = DeferredJsonMerger()
+            if (incrementalResultsMerger == null) {
+              incrementalResultsMerger = IncrementalResultsMerger()
             }
-            val merged = jsonMerger.merge(part)
-            val deferredFragmentIds = jsonMerger.pendingFragmentIds
-            val isLast = !jsonMerger.hasNext
+            val merged = incrementalResultsMerger.merge(part)
+            val pendingResultIds = incrementalResultsMerger.pendingResultIds
+            val isLast = !incrementalResultsMerger.hasNext
 
-            if (jsonMerger.isEmptyPayload) {
+            if (incrementalResultsMerger.isEmptyResponse) {
               null
             } else {
-              @Suppress("DEPRECATION")
               merged.jsonReader().toApolloResponse(
                   operation = operation,
                   customScalarAdapters = customScalarAdapters,
-                  deferredFragmentIdentifiers = deferredFragmentIds
+                  deferredFragmentIdentifiers = pendingResultIds
               ).newBuilder().isLast(isLast).build()
             }
           }

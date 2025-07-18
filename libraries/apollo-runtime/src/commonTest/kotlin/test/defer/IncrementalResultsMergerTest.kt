@@ -3,10 +3,10 @@
 package test.defer
 
 import com.apollographql.apollo.annotations.ApolloInternal
-import com.apollographql.apollo.api.DeferredFragmentIdentifier
+import com.apollographql.apollo.api.IncrementalResultIdentifier
 import com.apollographql.apollo.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.json.readAny
-import com.apollographql.apollo.internal.DeferredJsonMerger
+import com.apollographql.apollo.internal.IncrementalResultsMerger
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,10 +18,10 @@ private fun String.buffer() = Buffer().writeUtf8(this)
 @Suppress("UNCHECKED_CAST")
 private fun jsonToMap(json: String): Map<String, Any?> = BufferedSourceJsonReader(json.buffer()).readAny() as Map<String, Any?>
 
-class DeferredJsonMergerTest {
+class IncrementalResultsMergerTest {
   @Test
   fun mergeJsonSingleIncrementalItem() {
-    val deferredJsonMerger = DeferredJsonMerger()
+    val incrementalResultsMerger = IncrementalResultsMerger()
 
     //language=JSON
     val payload1 = """
@@ -76,13 +76,13 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload1.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
       assertEquals(
           setOf(
-              DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0")
+              IncrementalResultIdentifier(path = listOf("computers", 0), label = "query:Query1:0")
           ),
-          deferredJsonMerger.pendingFragmentIds
+          incrementalResultsMerger.pendingResultIds
       )
 
     //language=JSON
@@ -154,13 +154,13 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload2.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0")
+            IncrementalResultIdentifier(path = listOf("computers", 1), label = "query:Query1:0")
         ),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
 
     //language=JSON
@@ -236,13 +236,13 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload3.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+            IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
 
     //language=JSON
@@ -334,14 +334,14 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload4.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2_3_4), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload4.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3_4), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
-            DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
+            IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+            IncrementalResultIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
 
     //language=JSON
@@ -442,19 +442,19 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload5.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload5.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+            IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
   }
 
   @Test
   fun mergeJsonMultipleIncrementalItems() {
-    val deferredJsonMerger = DeferredJsonMerger()
+    val incrementalResultsMerger = IncrementalResultsMerger()
 
     //language=JSON
     val payload1 = """
@@ -517,14 +517,14 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload1.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
       assertEquals(
           setOf(
-              DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-              DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+              IncrementalResultIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+              IncrementalResultIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
           ),
-          deferredJsonMerger.pendingFragmentIds
+          incrementalResultsMerger.pendingResultIds
       )
 
     //language=JSON
@@ -622,14 +622,14 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload2_3.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload2_3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
-            DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
+            IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+            IncrementalResultIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
 
     //language=JSON
@@ -750,19 +750,19 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload4_5.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload4_5.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+            IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
   }
 
   @Test
   fun emptyPayloads() {
-    val deferredJsonMerger = DeferredJsonMerger()
+    val incrementalResultsMerger = IncrementalResultsMerger()
 
     //language=JSON
     val payload1 = """
@@ -804,8 +804,8 @@ class DeferredJsonMergerTest {
       "hasNext": true
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload1.buffer())
-    assertFalse(deferredJsonMerger.isEmptyPayload)
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertFalse(incrementalResultsMerger.isEmptyResponse)
 
     //language=JSON
     val payload2 = """
@@ -813,8 +813,8 @@ class DeferredJsonMergerTest {
       "hasNext": true
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload2.buffer())
-    assertTrue(deferredJsonMerger.isEmptyPayload)
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertTrue(incrementalResultsMerger.isEmptyResponse)
     //language=JSON
     val payload3 = """
     {
@@ -833,8 +833,8 @@ class DeferredJsonMergerTest {
       "hasNext": true
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload3.buffer())
-    assertFalse(deferredJsonMerger.isEmptyPayload)
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertFalse(incrementalResultsMerger.isEmptyResponse)
 
     //language=JSON
     val payload4 = """
@@ -842,8 +842,8 @@ class DeferredJsonMergerTest {
       "hasNext": false
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload4.buffer())
-    assertTrue(deferredJsonMerger.isEmptyPayload)
+    incrementalResultsMerger.merge(payload4.buffer())
+    assertTrue(incrementalResultsMerger.isEmptyResponse)
   }
 
   /**
@@ -851,7 +851,7 @@ class DeferredJsonMergerTest {
    */
   @Test
   fun june2023ExampleA() {
-    val deferredJsonMerger = DeferredJsonMerger()
+    val incrementalResultsMerger = IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -897,13 +897,13 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload1.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
       assertEquals(
           setOf(
-              DeferredFragmentIdentifier(path = listOf(), label = null),
+              IncrementalResultIdentifier(path = listOf(), label = null),
           ),
-          deferredJsonMerger.pendingFragmentIds
+          incrementalResultsMerger.pendingResultIds
       )
 
     //language=JSON
@@ -957,11 +957,11 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload2.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
   }
 
@@ -970,7 +970,7 @@ class DeferredJsonMergerTest {
    */
   @Test
   fun june2023ExampleA2() {
-    val deferredJsonMerger = DeferredJsonMerger()
+    val incrementalResultsMerger = IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -1017,13 +1017,13 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload1.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
       assertEquals(
           setOf(
-              DeferredFragmentIdentifier(path = listOf(), label = "D1"),
+              IncrementalResultIdentifier(path = listOf(), label = "D1"),
           ),
-          deferredJsonMerger.pendingFragmentIds
+          incrementalResultsMerger.pendingResultIds
       )
 
     //language=JSON
@@ -1083,13 +1083,13 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload2.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("f2", "c", "f"), label = "D2"),
+            IncrementalResultIdentifier(path = listOf("f2", "c", "f"), label = "D2"),
         ),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
 
     //language=JSON
@@ -1136,11 +1136,11 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload3.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
   }
 
@@ -1149,7 +1149,7 @@ class DeferredJsonMergerTest {
    */
   @Test
   fun june2023ExampleB1() {
-    val deferredJsonMerger = DeferredJsonMerger()
+    val incrementalResultsMerger = IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -1195,14 +1195,14 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload1.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
       assertEquals(
           setOf(
-              DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
-              DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
+              IncrementalResultIdentifier(path = listOf(), label = "Blue"),
+              IncrementalResultIdentifier(path = listOf("a", "b"), label = "Red"),
           ),
-          deferredJsonMerger.pendingFragmentIds
+          incrementalResultsMerger.pendingResultIds
       )
 
     //language=JSON
@@ -1250,13 +1250,13 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload2.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
+            IncrementalResultIdentifier(path = listOf(), label = "Blue"),
         ),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
 
     //language=JSON
@@ -1303,11 +1303,11 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload3.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
   }
 
@@ -1316,7 +1316,7 @@ class DeferredJsonMergerTest {
    */
   @Test
   fun june2023ExampleB2() {
-    val deferredJsonMerger = DeferredJsonMerger()
+    val incrementalResultsMerger = IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -1362,14 +1362,14 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload1.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
       assertEquals(
           setOf(
-              DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
-              DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
+              IncrementalResultIdentifier(path = listOf(), label = "Blue"),
+              IncrementalResultIdentifier(path = listOf("a", "b"), label = "Red"),
           ),
-          deferredJsonMerger.pendingFragmentIds
+          incrementalResultsMerger.pendingResultIds
       )
 
     //language=JSON
@@ -1423,13 +1423,13 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload2.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
+            IncrementalResultIdentifier(path = listOf("a", "b"), label = "Red"),
         ),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
 
     //language=JSON
@@ -1472,11 +1472,11 @@ class DeferredJsonMergerTest {
         }
       }
     """
-    deferredJsonMerger.merge(payload3.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
   }
 
@@ -1485,7 +1485,7 @@ class DeferredJsonMergerTest {
    */
   @Test
   fun june2023ExampleD() {
-    val deferredJsonMerger = DeferredJsonMerger()
+    val incrementalResultsMerger = IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -1515,14 +1515,14 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload1.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
       assertEquals(
           setOf(
-              DeferredFragmentIdentifier(path = listOf(), label = null),
-              DeferredFragmentIdentifier(path = listOf("me"), label = null),
+              IncrementalResultIdentifier(path = listOf(), label = null),
+              IncrementalResultIdentifier(path = listOf("me"), label = null),
           ),
-          deferredJsonMerger.pendingFragmentIds
+          incrementalResultsMerger.pendingResultIds
       )
 
     //language=JSON
@@ -1613,13 +1613,13 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload2.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf(), label = null),
+            IncrementalResultIdentifier(path = listOf(), label = null),
         ),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
 
     //language=JSON
@@ -1700,11 +1700,11 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-    deferredJsonMerger.merge(payload3.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        deferredJsonMerger.pendingFragmentIds
+        incrementalResultsMerger.pendingResultIds
     )
   }
 
@@ -1713,7 +1713,7 @@ class DeferredJsonMergerTest {
      */
     @Test
     fun june2023ExampleF() {
-        val deferredJsonMerger = DeferredJsonMerger()
+      val incrementalResultsMerger = IncrementalResultsMerger()
         //language=JSON
         val payload1 = """
     {
@@ -1740,13 +1740,13 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-        deferredJsonMerger.merge(payload1.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload1.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
         assertEquals(
         setOf(
-            DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
+            IncrementalResultIdentifier(path = listOf("me"), label = "B"),
         ),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
         )
 
         //language=JSON
@@ -1780,11 +1780,11 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-        deferredJsonMerger.merge(payload2.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload2.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
         assertEquals(
             setOf(),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
     )
   }
 
@@ -1793,7 +1793,7 @@ class DeferredJsonMergerTest {
      */
     @Test
     fun june2023ExampleG() {
-        val deferredJsonMerger = DeferredJsonMerger()
+      val incrementalResultsMerger = IncrementalResultsMerger()
         //language=JSON
         val payload1 = """
     {
@@ -1843,14 +1843,14 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-        deferredJsonMerger.merge(payload1.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload1.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
         assertEquals(
             setOf(
-                DeferredFragmentIdentifier(path = listOf("me"), label = "Billing"),
-                DeferredFragmentIdentifier(path = listOf("me"), label = "Prev"),
+                IncrementalResultIdentifier(path = listOf("me"), label = "Billing"),
+                IncrementalResultIdentifier(path = listOf("me"), label = "Prev"),
             ),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
         )
 
         //language=JSON
@@ -1893,13 +1893,13 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-        deferredJsonMerger.merge(payload2.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload2.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
         assertEquals(
             setOf(
-                DeferredFragmentIdentifier(path = listOf("me"), label = "Prev"),
+                IncrementalResultIdentifier(path = listOf("me"), label = "Prev"),
             ),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
         )
 
         //language=JSON
@@ -1949,11 +1949,11 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-        deferredJsonMerger.merge(payload3.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload3.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
         assertEquals(
             setOf(),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
         )
     }
 
@@ -1962,7 +1962,7 @@ class DeferredJsonMergerTest {
      */
     @Test
     fun june2023ExampleH() {
-        val deferredJsonMerger = DeferredJsonMerger()
+      val incrementalResultsMerger = IncrementalResultsMerger()
         //language=JSON
         val payload1 = """
     {
@@ -1994,14 +1994,14 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-        deferredJsonMerger.merge(payload1.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload1.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
         assertEquals(
             setOf(
-                DeferredFragmentIdentifier(path = listOf(), label = "A"),
-                DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
+                IncrementalResultIdentifier(path = listOf(), label = "A"),
+                IncrementalResultIdentifier(path = listOf("me"), label = "B"),
             ),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
         )
 
         //language=JSON
@@ -2053,13 +2053,13 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-        deferredJsonMerger.merge(payload2.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload2.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
         assertEquals(
             setOf(
-                DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
+                IncrementalResultIdentifier(path = listOf("me"), label = "B"),
             ),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
         )
 
         //language=JSON
@@ -2119,13 +2119,13 @@ class DeferredJsonMergerTest {
       ]
     }
     """.trimIndent()
-        deferredJsonMerger.merge(payload3.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload3.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
         assertEquals(
             setOf(
-                DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
+                IncrementalResultIdentifier(path = listOf("me"), label = "B"),
             ),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
         )
     }
 
@@ -2134,7 +2134,7 @@ class DeferredJsonMergerTest {
      */
     @Test
     fun july2025ExampleI() {
-        val deferredJsonMerger = DeferredJsonMerger()
+      val incrementalResultsMerger = IncrementalResultsMerger()
         //language=JSON
         val payload1 = """
     {
@@ -2189,14 +2189,14 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-        deferredJsonMerger.merge(payload1.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload1.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
         assertEquals(
             setOf(
-                DeferredFragmentIdentifier(path = listOf("person"), label = "homeWorldDefer"),
-                DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+                IncrementalResultIdentifier(path = listOf("person"), label = "homeWorldDefer"),
+                IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
             ),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
         )
 
         //language=JSON
@@ -2236,14 +2236,14 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-        deferredJsonMerger.merge(payload2.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload2.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
         assertEquals(
             setOf(
-                DeferredFragmentIdentifier(path = listOf("person"), label = "homeWorldDefer"),
-                DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+                IncrementalResultIdentifier(path = listOf("person"), label = "homeWorldDefer"),
+                IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
             ),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
         )
 
         //language=JSON
@@ -2279,13 +2279,13 @@ class DeferredJsonMergerTest {
     }
     """.trimIndent()
 
-        deferredJsonMerger.merge(payload3.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload3.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
         assertEquals(
             setOf(
-                DeferredFragmentIdentifier(path = listOf("person"), label = "homeWorldDefer"),
+                IncrementalResultIdentifier(path = listOf("person"), label = "homeWorldDefer"),
             ),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
         )
 
         //language=JSON
@@ -2334,11 +2334,11 @@ class DeferredJsonMergerTest {
     }
     """.trimIndent()
 
-        deferredJsonMerger.merge(payload4.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1_2_3_4), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload4.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1_2_3_4), incrementalResultsMerger.merged)
         assertEquals(
             setOf(),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
         )
     }
 
@@ -2347,7 +2347,7 @@ class DeferredJsonMergerTest {
      */
     @Test
     fun july2025ExampleJ() {
-        val deferredJsonMerger = DeferredJsonMerger()
+      val incrementalResultsMerger = IncrementalResultsMerger()
         //language=JSON
         val payload1 = """
     {
@@ -2387,13 +2387,13 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-        deferredJsonMerger.merge(payload1.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload1.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
         assertEquals(
             setOf(
-                DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+                IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
             ),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
         )
 
         //language=JSON
@@ -2429,13 +2429,13 @@ class DeferredJsonMergerTest {
       }
     }
     """.trimIndent()
-        deferredJsonMerger.merge(payload2.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload2.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
         assertEquals(
             setOf(
-                DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+                IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
             ),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
         )
 
         //language=JSON
@@ -2497,13 +2497,13 @@ class DeferredJsonMergerTest {
     }
     """.trimIndent()
 
-        deferredJsonMerger.merge(payload3.buffer())
-        assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+      incrementalResultsMerger.merge(payload3.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
         assertEquals(
             setOf(
-                DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+                IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
             ),
-            deferredJsonMerger.pendingFragmentIds
+            incrementalResultsMerger.pendingResultIds
         )
     }
 }
