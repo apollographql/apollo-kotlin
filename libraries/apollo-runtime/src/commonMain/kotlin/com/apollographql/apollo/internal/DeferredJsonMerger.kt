@@ -114,27 +114,44 @@ class DeferredJsonMerger {
   }
 
   private fun mergeIncrementalData(incrementalItem: JsonMap) {
-    val id = incrementalItem["id"] as String? ?: error("No id found in incremental item")
-    val data = incrementalItem["data"] as JsonMap? ?: error("No data found in incremental item")
+    val id = incrementalItem["id"] as String? ?: error("No id found in incremental result")
+    val data = incrementalItem["data"] as JsonMap?
+    val items = incrementalItem["items"] as List<Any>?
     val subPath = incrementalItem["subPath"] as List<Any>? ?: emptyList()
     val path = (_pendingFragmentIds[id]?.path ?: error("Id '$id' not found in pending results")) + subPath
     val mergedData = merged["data"] as JsonMap
-    val nodeToMergeInto = nodeAtPath(mergedData, path) as MutableJsonMap
-    deepMerge(nodeToMergeInto, data)
+    val nodeToMergeInto = nodeAtPath(mergedData, path)
+    when {
+      data != null -> {
+        deepMergeObject(nodeToMergeInto as MutableJsonMap, data)
+      }
+
+      items != null -> {
+        mergeList(nodeToMergeInto as MutableList<Any>, items)
+      }
+
+      else -> {
+        error("Neither data nor items found in incremental result")
+      }
+    }
   }
 
-  private fun deepMerge(destination: MutableJsonMap, map: JsonMap) {
-    for ((key, value) in map) {
+  private fun deepMergeObject(destination: MutableJsonMap, obj: JsonMap) {
+    for ((key, value) in obj) {
       if (destination.containsKey(key) && destination[key] is MutableMap<*, *>) {
         // Objects: merge recursively
         val fieldDestination = destination[key] as MutableJsonMap
         val fieldMap = value as? JsonMap ?: error("'$key' is an object in destination but not in map")
-        deepMerge(destination = fieldDestination, map = fieldMap)
+        deepMergeObject(destination = fieldDestination, obj = fieldMap)
       } else {
         // Other types: add / overwrite
         destination[key] = value
       }
     }
+  }
+
+  private fun mergeList(destination: MutableList<Any>, items: List<Any>) {
+    destination.addAll(items)
   }
 
   private fun jsonToMap(json: BufferedSource): JsonMap = BufferedSourceJsonReader(json).readAny() as JsonMap

@@ -211,3 +211,16 @@ query SubPathQuery {
     }
   }
 }
+
+query SimpleStreamQuery($initialCount: Int!) {
+  computers @stream(initialCount: $initialCount) {
+    id
+  }
+}
+
+query NestedStreamQuery($initialCount: Int!) {
+  computers @stream(initialCount: $initialCount) {
+    id
+    peripherals @stream(initialCount: $initialCount)
+  }
+}

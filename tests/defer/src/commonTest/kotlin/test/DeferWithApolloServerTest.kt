@@ -14,8 +14,10 @@ import defer.DoesNotDisableDeferWithNullIfArgumentQuery
 import defer.HandlesErrorsThrownInDeferredFragmentsQuery
 import defer.HandlesNonNullableErrorsThrownInDeferredFragmentsQuery
 import defer.HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery
+import defer.NestedStreamQuery
 import defer.Overlapping2Query
 import defer.OverlappingQuery
+import defer.SimpleStreamQuery
 import defer.SubPathQuery
 import defer.WithFragmentSpreadsMutation
 import defer.WithFragmentSpreadsQuery
@@ -532,5 +534,119 @@ class DeferWithApolloServerTest {
     assertResponseListEquals(expectedDataList, actualResponseList)
   }
 
+  @Test
+  fun simpleStream0Initial() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{"computers":[]},"pending":[{"id":"0","path":["computers"]}],"hasNext":true}
+    // {"hasNext":false,"incremental":[{"id":"0","items":[{"id":"Computer1"},{"id":"Computer2"}]}],"completed":[{"id":"0"}]}
+    val query = SimpleStreamQuery(0)
+    val uuid = uuid4()
 
+    val expectedDataList = listOf(
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            SimpleStreamQuery.Data(
+                listOf()
+            )
+        )
+            .build(),
+
+
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            SimpleStreamQuery.Data(
+                listOf(
+                    SimpleStreamQuery.Computer("Computer1"),
+                    SimpleStreamQuery.Computer("Computer2"),
+                )
+            )
+        )
+            .build()
+    )
+
+    val actualResponseList = apolloClient.query(query).toFlow().toList()
+    assertResponseListEquals(expectedDataList, actualResponseList)
+  }
+
+  @Test
+  fun simpleStream1Initial() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{"computers":[{"id":"Computer1"}]},"pending":[{"id":"0","path":["computers"]}],"hasNext":true}
+    // {"hasNext":false,"incremental":[{"id":"0","items":[{"id":"Computer2"}]}],"completed":[{"id":"0"}]}
+    val query = SimpleStreamQuery(1)
+    val uuid = uuid4()
+
+    val expectedDataList = listOf(
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            SimpleStreamQuery.Data(
+                listOf(
+                    SimpleStreamQuery.Computer("Computer1"),
+                )
+            )
+        )
+            .build(),
+
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            SimpleStreamQuery.Data(
+                listOf(
+                    SimpleStreamQuery.Computer("Computer1"),
+                    SimpleStreamQuery.Computer("Computer2"),
+                )
+            )
+        )
+            .build()
+    )
+
+    val actualResponseList = apolloClient.query(query).toFlow().toList()
+    assertResponseListEquals(expectedDataList, actualResponseList)
+  }
+
+  @Test
+  fun nestedStream() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{"computers":[{"id":"Computer1","peripherals":["Keyboard"]}]},"pending":[{"id":"0","path":["computers",0,"peripherals"]},{"id":"1","path":["computers"]}],"hasNext":true}
+    // {"hasNext":false,"pending":[{"id":"2","path":["computers",1,"peripherals"]}],"incremental":[{"id":"0","items":["Mouse","Printer"]},{"id":"1","items":[{"id":"Computer2","peripherals":["Keyboard"]}]},{"id":"2","items":["Mouse","Printer","Scanner"]}],"completed":[{"id":"0"},{"id":"1"},{"id":"2"}]}
+    val query = NestedStreamQuery(1)
+    val uuid = uuid4()
+
+    val expectedDataList = listOf(
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            NestedStreamQuery.Data(
+                listOf(
+                    NestedStreamQuery.Computer("Computer1", listOf("Keyboard"))
+                )
+            )
+        )
+            .build(),
+
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            NestedStreamQuery.Data(
+                listOf(
+                    NestedStreamQuery.Computer("Computer1", listOf("Keyboard", "Mouse", "Printer")),
+                    NestedStreamQuery.Computer("Computer2", listOf("Keyboard", "Mouse", "Printer", "Scanner"))
+                )
+            )
+        )
+            .build()
+    )
+
+    val actualResponseList = apolloClient.query(query).toFlow().toList()
+    assertResponseListEquals(expectedDataList, actualResponseList)
+  }
 }

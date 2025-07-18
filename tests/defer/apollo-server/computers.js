@@ -5,8 +5,20 @@ import {readFileSync} from 'fs';
 const port = process.env.APOLLO_PORT || 4000;
 
 const computers = [
-    {id: 'Computer1', cpu: "386", year: 1993, screen: {resolution: "640x480", isColor: false}},
-    {id: 'Computer2', cpu: "486", year: 1996, screen: {resolution: "800x600", isColor: true}},
+    {
+        id: 'Computer1',
+        cpu: "386",
+        year: 1993,
+        screen: {resolution: "640x480", isColor: false},
+        peripherals: ["Keyboard", "Mouse", "Printer"],
+    },
+    {
+        id: 'Computer2',
+        cpu: "486",
+        year: 1996,
+        screen: {resolution: "800x600", isColor: true},
+        peripherals: ["Keyboard", "Mouse", "Printer", "Scanner"],
+    },
 ]
 
 const typeDefs = readFileSync('./computers.graphqls', {encoding: 'utf-8'});

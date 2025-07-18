@@ -23,9 +23,16 @@ type Computer {
   screen: Screen!
   errorField: String
   nonNullErrorField: String!
+  peripherals: [String!]!
 }
 
 type Screen {
   resolution: String!
   isColor: Boolean!
 }
+
+directive @stream(
+  label: String
+  if: Boolean! = true
+  initialCount: Int = 0
+) on FIELD
