@@ -14,6 +14,7 @@ type Computer {
   screen: Screen!
   errorField: String
   nonNullErrorField: String!
+  peripherals: [String!]!
 }
 
 type Screen {
@@ -25,3 +26,9 @@ directive @defer(
   if: Boolean! = true
   label: String
 ) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+directive @stream(
+  label: String
+  if: Boolean! = true
+  initialCount: Int = 0
+) on FIELD
