@@ -77,7 +77,7 @@ fun com.apollographql.apollo.gradle.api.Service.configureConnection(generateKotl
 tasks.withType(AbstractTestTask::class.java) {
   // Run the defer with Router and defer with Apollo Server tests only from a specific CI job
   val runDeferWithRouterTests = System.getenv("DEFER_WITH_ROUTER_TESTS").toBoolean()
-  val runDeferWithApolloServerTests = true
+  val runDeferWithApolloServerTests = System.getenv("DEFER_WITH_APOLLO_SERVER_TESTS").toBoolean()
   filter.setIncludePatterns(*buildList {
     if (runDeferWithRouterTests) add("test.DeferWithRouterTest")
     if (runDeferWithApolloServerTests) add("test.DeferWithApolloServerTest")
