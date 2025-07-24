@@ -17,45 +17,6 @@ fun subprojectTasks(name: String): List<Task> {
   }
 }
 
-fun isTag(): Boolean {
-  val ref = System.getenv("GITHUB_REF")
-
-  return ref?.startsWith("refs/tags/") == true
-}
-
-fun shouldPublishSnapshots(): Boolean {
-  val eventName = System.getenv("GITHUB_EVENT_NAME")
-  val ref = System.getenv("GITHUB_REF")
-
-  return eventName == "push" && (ref == "refs/heads/main")
-}
-
-tasks.register("ciPublishSnapshot") {
-  description = "Publishes a SNAPSHOT"
-
-  if (shouldPublishSnapshots()) {
-    dependsOn(subprojectTasks("publishAllPublicationsToOssSnapshotsRepository"))
-  } else {
-    doFirst {
-      error("We are not on a branch, fail snapshots publishing")
-    }
-  }
-}
-
-tasks.register("ciPublishRelease") {
-  description = "Publishes all artifacts to OSSRH and the Gradle Plugin Portal"
-
-  if (isTag()) {
-    dependsOn(subprojectTasks("publishAllPublicationsToOssStagingRepository"))
-    // Only publish plugins to the Gradle portal if everything else succeeded
-    finalizedBy(":apollo-gradle-plugin:publishPlugins")
-  } else {
-    doFirst {
-      error("We are not on a tag, fail release publishing")
-    }
-  }
-
-}
 
 tasks.register("ciTestsGradle") {
   description = "Execute the Gradle tests (slow)"

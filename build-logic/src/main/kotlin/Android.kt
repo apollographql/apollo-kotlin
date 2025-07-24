@@ -11,7 +11,7 @@ fun Project.configureAndroid(
   plugins.apply("com.android.library")
 
   extensions.findByName("android")?.apply {
-    this as CommonExtension<*, *, *, *, *>
+    this as CommonExtension<*, *, *, *, *, *>
 
     compileSdk = getCatalogVersion("android.sdkversion.compile").toInt()
     this.namespace = namespace

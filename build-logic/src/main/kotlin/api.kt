@@ -1,11 +1,16 @@
 import app.cash.licensee.LicenseeExtension
 import app.cash.licensee.UnusedAction
+import com.gradleup.librarian.gradle.Librarian
+import nmcp.NmcpAggregationExtension
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
 class AndroidOptions(
     val withCompose: Boolean,
@@ -14,6 +19,10 @@ class AndroidOptions(
 class KotlinCompilerOptions(
     val version: KotlinVersion = KotlinVersion.KOTLIN_2_0,
 )
+
+fun Project.version(): String {
+  return Librarian.version(property("VERSION_NAME")!!.toString())
+}
 
 fun Project.apolloLibrary(
     namespace: String,
@@ -28,7 +37,7 @@ fun Project.apolloLibrary(
     kotlinCompilerOptions: KotlinCompilerOptions = KotlinCompilerOptions(),
 ) {
   group = property("GROUP")!!
-  version = property("VERSION_NAME")!!
+  version = version()
 
   if (androidOptions != null) {
     configureAndroid(namespace, androidOptions)
@@ -131,5 +140,28 @@ fun Project.apolloTest(
 fun Project.apolloRoot(ciBuild: TaskProvider<Task>) {
   configureNode()
   rootSetup(ciBuild)
+
+  pluginManager.apply("com.gradleup.nmcp.aggregation")
+  val nmcpAggregation = extensions.getByType(NmcpAggregationExtension::class.java)
+  nmcpAggregation.apply {
+    centralPortal {
+      username.set(System.getenv("LIBRARIAN_SONATYPE_USERNAME"))
+      password.set(System.getenv("LIBRARIAN_SONATYPE_PASSWORD"))
+      validationTimeout.set(30.minutes.toJavaDuration())
+      publishingTimeout.set(1.hours.toJavaDuration())
+    }
+  }
+
+  Librarian.registerGcsTask(
+      this,
+      provider { "apollo-previews" },
+      provider { "m2" },
+      provider { System.getenv("LIBRARIAN_GOOGLE_SERVICES_JSON") },
+      nmcpAggregation.allFiles
+  )
+
+  subprojects.forEach {
+    configurations.getByName("nmcpAggregation").dependencies.add(dependencies.create(it))
+  }
 }
 

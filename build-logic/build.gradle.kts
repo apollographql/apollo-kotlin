@@ -30,7 +30,8 @@ dependencies {
   // See https://github.com/gradle/gradle/issues/4741
   implementation(libs.android.plugin)
   implementation(libs.gradle.japicmp.plugin)
-  implementation(libs.vespene)
+  implementation(libs.librarian)
+  implementation(libs.nmcp)
   implementation(libs.kotlinx.serialization.json)
   implementation(libs.poet.java)
   implementation(libs.poet.kotlin)
