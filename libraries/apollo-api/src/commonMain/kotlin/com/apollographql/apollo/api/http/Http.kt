@@ -119,6 +119,13 @@ private constructor(
 class HttpResponse
 private constructor(
     val statusCode: Int,
+    /**
+     * The response headers.
+     *
+     * Note that browsers have limitations and may not expose all headers:
+     * - headers must be exposed through [Access-Control-Expose-Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Expose-Headers)
+     * - `Set-Cookie` is [never exposed](https://fetch.spec.whatwg.org/#forbidden-response-header-name).
+     */
     val headers: List<HttpHeader>,
     /**
      * A streamable body.
