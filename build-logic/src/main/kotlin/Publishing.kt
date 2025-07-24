@@ -1,11 +1,8 @@
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BaseExtension
-import kotlinx.coroutines.runBlocking
-import net.mbonnin.vespene.lib.NexusStagingClient
 import org.gradle.api.Project
 import org.gradle.api.attributes.Usage
 import org.gradle.api.internal.file.FileOperations
-import org.gradle.api.plugins.ExtraPropertiesExtension
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
@@ -44,7 +41,7 @@ fun Project.configurePublishing(isAggregateKdoc: Boolean = false) {
   if (isAggregateKdoc) {
     configureDokkaAggregate()
   }
-  configurePublishingInternal()
+  configureModulePublishingInternal()
 }
 
 fun Project.configureDokkaCommon(): DokkaExtension {
@@ -97,6 +94,7 @@ fun Project.configureDokka() {
 
 private class MavenCoordinates(val module: String, val version: String)
 
+
 fun Project.configureDokkaAggregate() {
   val dokka = configureDokkaCommon()
 
@@ -114,7 +112,11 @@ fun Project.configureDokkaAggregate() {
   )
 
 
-  val olderVersionsCoordinates = listOf(MavenCoordinates("com.apollographql.apollo3:apollo-kdoc", "3.8.2"))
+  val olderVersionsCoordinates = listOf(
+      MavenCoordinates("com.apollographql.apollo:apollo-kdoc", "4.2.0"),
+      MavenCoordinates("com.apollographql.apollo3:apollo-kdoc", "3.8.2"),
+  )
+
   val kdocVersionTasks = olderVersionsCoordinates.map { coordinate ->
     val versionString = coordinate.version.replace(".", "_").replace("-", "_")
     val configuration = configurations.create("apolloKdocVersion_$versionString") {
@@ -149,7 +151,7 @@ fun Project.configureDokkaAggregate() {
 
   dokka.pluginsConfiguration.getByName("versioning") {
     this as DokkaVersioningPluginParameters
-    val currentVersion = findProperty("VERSION_NAME") as String
+    val currentVersion = version()
     version.set(currentVersion)
     olderVersionsDir.fileProvider(downloadKDocVersions.map { it.outputs.files.singleFile })
   }
@@ -166,33 +168,7 @@ fun Project.configureDokkaAggregate() {
 
 private abstract class FileOperationsHolder @Inject constructor(val fileOperations: FileOperations)
 
-private fun Project.getOssStagingUrl(): String {
-  val url = try {
-    this.extensions.extraProperties["ossStagingUrl"] as String?
-  } catch (e: ExtraPropertiesExtension.UnknownPropertyException) {
-    null
-  }
-  if (url != null) {
-    return url
-  }
-  val baseUrl = "https://s01.oss.sonatype.org/service/local/"
-  val client = NexusStagingClient(
-      baseUrl = baseUrl,
-      username = System.getenv("SONATYPE_NEXUS_USERNAME"),
-      password = System.getenv("SONATYPE_NEXUS_PASSWORD"),
-  )
-  val repositoryId = runBlocking {
-    client.createRepository(
-        profileId = System.getenv("COM_APOLLOGRAPHQL_PROFILE_ID"),
-        description = "apollo-kotlin $version"
-    )
-  }
-  return "${baseUrl}staging/deployByRepositoryId/${repositoryId}/".also {
-    this.extensions.extraProperties["ossStagingUrl"] = it
-  }
-}
-
-private fun Project.configurePublishingInternal() {
+private fun Project.configureModulePublishingInternal() {
   val emptyJavadocJar = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
     archiveClassifier.set("javadoc")
 
@@ -208,15 +184,6 @@ private fun Project.configurePublishingInternal() {
         )
     ) {
       rename { "readme.txt" }
-    }
-  }
-
-  tasks.withType(Jar::class.java) {
-    manifest {
-      attributes["Built-By"] = findProperty("POM_DEVELOPER_ID") as String?
-      attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
-      attributes["Implementation-Title"] = findProperty("POM_NAME") as String?
-      attributes["Implementation-Version"] = findProperty("VERSION_NAME") as String?
     }
   }
 
@@ -326,33 +293,10 @@ private fun Project.configurePublishingInternal() {
         name = "pluginTest"
         url = uri(rootProject.layout.buildDirectory.dir("localMaven"))
       }
-
-      maven {
-        name = "ossSnapshots"
-        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-        credentials {
-          username = System.getenv("SONATYPE_NEXUS_USERNAME")
-          password = System.getenv("SONATYPE_NEXUS_PASSWORD")
-        }
-      }
-
-      maven {
-        name = "ossStaging"
-        setUrl {
-          uri(rootProject.getOssStagingUrl())
-        }
-        credentials {
-          username = System.getenv("SONATYPE_NEXUS_USERNAME")
-          password = System.getenv("SONATYPE_NEXUS_PASSWORD")
-        }
-      }
-
-      maven {
-        name = "apolloPreviews"
-        setUrl("gcs://apollo-previews/m2")
-      }
     }
   }
+
+  pluginManager.apply("com.gradleup.nmcp")
 
   // See https://youtrack.jetbrains.com/issue/KT-46466/Kotlin-MPP-publishing-Gradle-7-disables-optimizations-because-of-task-dependencies#focus=Comments-27-7102038.0-0
   val signingTasks = tasks.withType(Sign::class.java)
@@ -371,7 +315,7 @@ private fun Project.configurePublishingInternal() {
     isEnabled = !System.getenv("GPG_PRIVATE_KEY").isNullOrBlank()
   }
 
-  // https://github.com/gradle/gradle/issues/26132
+  // https://github.com/gradle/gradle/issues/26091
   afterEvaluate {
     tasks.all {
       if (name.startsWith("compileTestKotlin")) {
@@ -395,7 +339,7 @@ private fun Project.configurePublishingInternal() {
  */
 private fun Project.setDefaultPomFields(mavenPublication: MavenPublication) {
   mavenPublication.groupId = findProperty("GROUP") as String?
-  mavenPublication.version = findProperty("VERSION_NAME") as String?
+  mavenPublication.version = version()
 
   mavenPublication.pom {
     name.set(findProperty("POM_NAME") as String?)

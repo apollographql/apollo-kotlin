@@ -2,7 +2,7 @@
 # The version we use by default in tests and benchmarks
 # Can be as high as IJ supports
 # Consult https://kotlinlang.org/docs/multiplatform-compatibility-guide.html#version-compatibility for compatibility with KGP
-android-plugin = "8.2.2"
+android-plugin = "8.7.2"
 # The version we compile against
 android-plugin-min = "8.0.0"
 # The version used by the 'android-plugin-max' test
@@ -184,7 +184,8 @@ androidx-test-runner = "androidx.test:runner:1.6.2"
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.1.0" }
 uuid = { group = "com.benasher44", name = "uuid", version = "0.8.2" }
-vespene = { group = "net.mbonnin.vespene", name = "vespene-lib", version = "0.5" }
+librarian = "com.gradleup.librarian:librarian-gradle-plugin:0.0.10-SNAPSHOT-ffba1a28eef796c5c91a33f609761618b0ef2e5e"
+nmcp = "com.gradleup.nmcp:nmcp:1.0.1"
 slf4j-simple = "org.slf4j:slf4j-simple:2.0.13"
 slf4j-nop = "org.slf4j:slf4j-nop:2.0.13"
 licensee = "app.cash.licensee:licensee-gradle-plugin:1.12.0"
