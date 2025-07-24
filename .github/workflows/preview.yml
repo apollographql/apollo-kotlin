@@ -27,6 +27,6 @@ jobs:
       - run: |
           git clone --depth 1 --single-branch --branch ${{ inputs.branch }} https://github.com/$GITHUB_REPOSITORY
           cd apollo-kotlin
-          LIBRARIAN_NIGHTLY ./gradlew librarianPublishToGcs
+          LIBRARIAN_NIGHTLY=true ./gradlew librarianPublishToGcs
         env:
           LIBRARIAN_GOOGLE_SERVICES_JSON: ${{ secrets.APOLLO_KOTLIN_GOOGLE_SERVICES_JSON }}
