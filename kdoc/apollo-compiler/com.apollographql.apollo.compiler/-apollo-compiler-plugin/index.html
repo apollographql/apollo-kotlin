@@ -47,10 +47,10 @@
         <div class="navigation-controls--break ui-kit_mobile-only"></div>
         <div class="library-version" id="library-version">
 <dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.compiler/-apollo-compiler-plugin/index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
-  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">5.0.0-alpha.2-SNAPSHOT</div>
+  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">4.3.2-SNAPSHOT</div>
   <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
     <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
-    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">5.0.0-alpha.2-SNAPSHOT</a></div>
+    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">4.3.2-SNAPSHOT</a></div>
     <div><a href="../../../older/4.2.0/apollo-compiler/com.apollographql.apollo.compiler/-apollo-compiler-plugin/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">4.2.0</a></div>
     <div><a href="../../../not-found-version.html?v=3.8.2" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.8.2</a></div>
   </div>
@@ -108,7 +108,7 @@
   <div class="breadcrumbs"><a href="../../index.html">apollo-compiler</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo.compiler</a><span class="delimiter">/</span><span class="current">ApolloCompilerPlugin</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Apollo</span><wbr><span>Compiler</span><wbr><span><span>Plugin</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">ApolloCompilerPlugin</a></div><p class="paragraph"><a href="index.html">ApolloCompilerPlugin</a> allows to customize the behavior of the Apollo Compiler.</p><p class="paragraph"><a href="index.html">ApolloCompilerPlugin</a> instances are created by <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/ServiceLoader.html">java.util.ServiceLoader</a> and may be instantiated several times in a codegen run. Each instance is created in a separate classloader and contains the <code class="lang-kotlin">apollo-compiler</code> version loaded by your build tool.</p><p class="paragraph">You may check <a href="../-a-p-o-l-l-o_-v-e-r-s-i-o-n.html">com.apollographql.apollo.compiler.APOLLO_VERSION</a> to check for compatibility of your plugin with the version of <code class="lang-kotlin">apollo-compiler</code> available at runtime.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">ApolloCompilerPlugin</a></div><p class="paragraph"><a href="index.html">ApolloCompilerPlugin</a> allows to customize the behavior of the Apollo Compiler.</p><p class="paragraph"><a href="index.html">ApolloCompilerPlugin</a> instances are created by <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/ServiceLoader.html">java.util.ServiceLoader</a> and may be instantiated several times in a codegen run. Each instance is created in a separate classloader and contains the <code class="lang-kotlin">apollo-compiler</code> version loaded by your build tool.</p><p class="paragraph">You may check <a href="../-a-p-o-l-l-o_-v-e-r-s-i-o-n.html">com.apollographql.apollo.compiler.APOLLO_VERSION</a> to check for compatibility of your plugin with the version of <code class="lang-kotlin">apollo-compiler</code> available at runtime.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
@@ -130,6 +130,96 @@
               </div>
             </div>
           </div>
+<a data-name="751726344%2FFunctions%2F431625483" anchor-label="documentTransform" id="751726344%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="document-transform.html"><span>document</span><wbr><span><span>Transform</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="751726344%2FFunctions%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_2_1/index.html">ApolloDeprecatedSince.Version.v4_2_1</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">fun </span><a href="document-transform.html"><span class="token function"><strike>documentTransform</strike></span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-document-transform/index.html">DocumentTransform</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="384764099%2FFunctions%2F431625483" anchor-label="foreignSchemas" id="384764099%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="foreign-schemas.html"><span>foreign</span><wbr><span><span>Schemas</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="384764099%2FFunctions%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_2_1/index.html">ApolloDeprecatedSince.Version.v4_2_1</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">fun </span><a href="foreign-schemas.html"><span class="token function"><strike>foreignSchemas</strike></span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../../apollo-ast/com.apollographql.apollo.ast/-foreign-schema/index.html">ForeignSchema</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1058976926%2FFunctions%2F431625483" anchor-label="irOperationsTransform" id="-1058976926%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="ir-operations-transform.html"><span>ir</span><wbr><span>Operations</span><wbr><span><span>Transform</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1058976926%2FFunctions%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_2_1/index.html">ApolloDeprecatedSince.Version.v4_2_1</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">fun </span><a href="ir-operations-transform.html"><span class="token function"><strike>irOperationsTransform</strike></span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-transform/index.html">Transform</a><span class="token operator">&lt;</span><a href="../../com.apollographql.apollo.compiler.ir/-ir-operations/index.html">IrOperations</a><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="886031024%2FFunctions%2F431625483" anchor-label="javaOutputTransform" id="886031024%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="java-output-transform.html"><span>java</span><wbr><span>Output</span><wbr><span><span>Transform</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="886031024%2FFunctions%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_2_1/index.html">ApolloDeprecatedSince.Version.v4_2_1</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">fun </span><a href="java-output-transform.html"><span class="token function"><strike>javaOutputTransform</strike></span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-transform/index.html">Transform</a><span class="token operator">&lt;</span><a href="../../com.apollographql.apollo.compiler.codegen.java/-java-output/index.html">JavaOutput</a><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1708500879%2FFunctions%2F431625483" anchor-label="kotlinOutputTransform" id="1708500879%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="kotlin-output-transform.html"><span>kotlin</span><wbr><span>Output</span><wbr><span><span>Transform</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1708500879%2FFunctions%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_2_1/index.html">ApolloDeprecatedSince.Version.v4_2_1</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">fun </span><a href="kotlin-output-transform.html"><span class="token function"><strike>kotlinOutputTransform</strike></span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-transform/index.html">Transform</a><span class="token operator">&lt;</span><a href="../../com.apollographql.apollo.compiler.codegen.kotlin/-kotlin-output/index.html">KotlinOutput</a><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1045527672%2FFunctions%2F431625483" anchor-label="layout" id="1045527672%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="layout.html"><span><span>layout</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1045527672%2FFunctions%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_2_1/index.html">ApolloDeprecatedSince.Version.v4_2_1</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">fun </span><a href="layout.html"><span class="token function"><strike>layout</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">codegenSchema<span class="token operator">: </span><a href="../-codegen-schema/index.html">CodegenSchema</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.apollographql.apollo.compiler.codegen/-schema-and-operations-layout/index.html">SchemaAndOperationsLayout</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="69675579%2FFunctions%2F431625483" anchor-label="operationIds" id="69675579%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
           <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
             <div class="main-subrow keyValue ">
@@ -141,6 +231,21 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_2_1/index.html">ApolloDeprecatedSince.Version.v4_2_1</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">fun </span><a href="operation-ids.html"><span class="token function"><strike>operationIds</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">descriptors<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../com.apollographql.apollo.compiler.operationoutput/-operation-descriptor/index.html">OperationDescriptor</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../com.apollographql.apollo.compiler.operationoutput/-operation-id/index.html">OperationId</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Computes operation ids for persisted queries.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1284599468%2FFunctions%2F431625483" anchor-label="schemaListener" id="1284599468%2FFunctions%2F431625483" data-filterable-set=":apollo-compiler/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler/main" data-filterable-set=":apollo-compiler/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="schema-listener.html"><span>schema</span><wbr><span><span>Listener</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1284599468%2FFunctions%2F431625483"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/index.html"><span class="token annotation builtin">ApolloDeprecatedSince</span></a><span class="token punctuation">(</span><span>version<span class="token operator"> = </span><a href="../../../apollo-annotations/com.apollographql.apollo.annotations/-apollo-deprecated-since/-version/v4_2_1/index.html">ApolloDeprecatedSince.Version.v4_2_1</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">fun </span><a href="schema-listener.html"><span class="token function"><strike>schemaListener</strike></span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-schema-listener/index.html">SchemaListener</a><span class="token operator">?</span></div></div></div>
                 </div>
               </div>
             </div>
