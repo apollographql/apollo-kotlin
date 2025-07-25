@@ -1,6 +1,7 @@
 package com.apollographql.apollo.network.ws
 
 import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.exception.DefaultApolloException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.ByteString
@@ -9,6 +10,20 @@ import org.w3c.dom.WebSocket
 import org.w3c.dom.events.Event
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+
+/**
+ * WebSocket implementation for wasmJs platform using the newer WebSocketEngine API.
+ * 
+ * This implementation has several limitations due to wasmJs platform constraints:
+ * - Only browser WebSocket API is supported (no Node.js)
+ * - Custom HTTP headers are not supported (browser WebSocket API limitation)
+ * - Binary data is converted to base64 strings with a data URI prefix
+ * - Multiple protocols are simplified to use only the first one
+ * - Complex js() function calls are split into simple helper functions
+ * - Uses coroutines and channels for async communication
+ * 
+ * For authentication, use connectionPayload or URL-based authentication instead of headers.
+ */
 
 // Top-level helper functions for wasmJs js() call restrictions
 private fun createWebSocketSimple(url: String): WebSocket = js("new WebSocket(url)")
@@ -35,7 +50,7 @@ actual class DefaultWebSocketEngine actual constructor() : WebSocketEngine {
     // Check for non-protocol headers (not supported in browser WebSocket API)
     val nonProtocolHeaders = headers.filter { !it.name.equals("sec-websocket-protocol", ignoreCase = true) }
     if (nonProtocolHeaders.isNotEmpty()) {
-      throw IllegalArgumentException("Apollo: the WebSocket browser API doesn't allow passing headers. Use connectionPayload or other mechanisms.")
+      throw DefaultApolloException("Apollo: the WebSocket browser API doesn't allow passing headers. Use connectionPayload or other mechanisms.")
     }
     
     val socket = createWebSocket(wsUrl, protocols).awaitConnection()
@@ -61,7 +76,8 @@ actual class DefaultWebSocketEngine actual constructor() : WebSocketEngine {
 
       override fun send(data: ByteString) {
         // For wasmJs, convert binary data to base64 string as a workaround
-        // This is a limitation of wasmJs WebSocket implementation
+        // This is a limitation of wasmJs WebSocket implementation - binary data support is restricted
+        // The receiving end should handle the "data:application/octet-stream;base64," prefix
         val base64String = data.base64()
         socket.send("data:application/octet-stream;base64,$base64String")
       }
@@ -105,7 +121,7 @@ actual class DefaultWebSocketEngine actual constructor() : WebSocketEngine {
             removeEventListeners()
           }
           "error" -> {
-            continuation.resumeWithException(IllegalStateException("Apollo: WebSocket connection failed"))
+            continuation.resumeWithException(DefaultApolloException("Apollo: WebSocket connection failed"))
           }
         }
       }

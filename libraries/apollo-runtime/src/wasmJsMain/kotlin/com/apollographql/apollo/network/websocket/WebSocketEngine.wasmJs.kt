@@ -4,9 +4,22 @@ import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.exception.DefaultApolloException
 import org.w3c.dom.WebSocket as PlatformWebSocket
 
+/**
+ * WebSocket implementation for wasmJs platform.
+ * 
+ * This implementation has several limitations due to wasmJs platform constraints:
+ * - Only browser WebSocket API is supported (no Node.js)
+ * - Custom HTTP headers are not supported (browser WebSocket API limitation)
+ * - Binary data is converted to UTF-8 strings with a data URI prefix
+ * - Multiple protocols are simplified to use only the first one
+ * - Complex js() function calls are split into simple helper functions
+ * 
+ * For authentication, use connectionPayload or URL-based authentication instead of headers.
+ */
+
 // Top-level helper functions for wasmJs js() call restrictions
-private fun createWebSocketSimpleWs(url: String): PlatformWebSocket = js("new WebSocket(url)")
-private fun createWebSocketWithProtocolWs(url: String, protocol: String): PlatformWebSocket = js("new WebSocket(url, protocol)")
+private fun createWebSocketSimple(url: String): PlatformWebSocket = js("new WebSocket(url)")
+private fun createWebSocketWithProtocol(url: String, protocol: String): PlatformWebSocket = js("new WebSocket(url, protocol)")
 
 internal class WasmJsWebSocketEngine: WebSocketEngine {
   override fun newWebSocket(url: String, headers: List<HttpHeader>, listener: WebSocketListener): WebSocket {
@@ -71,8 +84,9 @@ internal class WasmJsWebSocket(
           listener.onError(DefaultApolloException("Apollo: Too much data queued"))
         }
       }
-      // For wasmJs, convert binary data to string as a workaround
-      // This is a limitation of wasmJs WebSocket implementation
+      // For wasmJs, convert binary data to UTF-8 string as a workaround
+      // This is a limitation of wasmJs WebSocket implementation - binary data support is restricted
+      // The receiving end should handle the "data:application/octet-stream;charset=utf-8," prefix
       val dataString = data.decodeToString()
       socket.send("data:application/octet-stream;charset=utf-8,$dataString")
     }
@@ -110,17 +124,17 @@ private fun createWebSocket(url: String, headers: List<HttpHeader>, listener: We
   val protocols = protocolHeaders.map { it.value }.toTypedArray()
   
   // For wasmJs, we only support browser environment (no Node.js)
-  if(otherHeaders.isNotEmpty()) {
+  if (otherHeaders.isNotEmpty()) {
     // Immediately call error callback - headers not supported in browser WebSocket API
     listener.onError(DefaultApolloException("Apollo: the WebSocket browser API doesn't allow passing headers. Use connectionPayload or other mechanisms."))
     return null
   } else {
     return when {
-      protocols.isEmpty() -> createWebSocketSimpleWs(url)
-      protocols.size == 1 -> createWebSocketWithProtocolWs(url, protocols[0])
+      protocols.isEmpty() -> createWebSocketSimple(url)
+      protocols.size == 1 -> createWebSocketWithProtocol(url, protocols[0])
       else -> {
         // For multiple protocols, just use the first one as wasmJs has limitations
-        createWebSocketWithProtocolWs(url, protocols[0])
+        createWebSocketWithProtocol(url, protocols[0])
       }
     }
   }
