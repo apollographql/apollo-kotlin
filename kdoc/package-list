@@ -1,18 +1,6 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
-$dokka.location:com.apollographql.apollo.adapter/BigDecimal/equals/#kotlin.Any?/PointingToDeclaration/apollo-adapters/com.apollographql.apollo.adapter/-big-decimal/[wasm-js]equals.html
-$dokka.location:com.apollographql.apollo.adapter/BigDecimal/hashCode/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo.adapter/-big-decimal/[wasm-js]hash-code.html
-$dokka.location:com.apollographql.apollo.adapter/BigDecimal/toByte/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo.adapter/-big-decimal/[wasm-js]to-byte.html
-$dokka.location:com.apollographql.apollo.adapter/BigDecimal/toChar/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo.adapter/-big-decimal/[wasm-js]to-char.html
-$dokka.location:com.apollographql.apollo.adapter/BigDecimal/toDouble/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo.adapter/-big-decimal/[wasm-js]to-double.html
-$dokka.location:com.apollographql.apollo.adapter/BigDecimal/toFloat/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo.adapter/-big-decimal/[wasm-js]to-float.html
-$dokka.location:com.apollographql.apollo.adapter/BigDecimal/toInt/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo.adapter/-big-decimal/[wasm-js]to-int.html
-$dokka.location:com.apollographql.apollo.adapter/BigDecimal/toLong/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo.adapter/-big-decimal/[wasm-js]to-long.html
-$dokka.location:com.apollographql.apollo.adapter/BigDecimal/toShort/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo.adapter/-big-decimal/[wasm-js]to-short.html
-$dokka.location:com.apollographql.apollo.adapter/BigDecimal/toString/#/PointingToDeclaration/apollo-adapters/com.apollographql.apollo.adapter/-big-decimal/[wasm-js]to-string.html
 $dokka.location:com.apollographql.apollo.network.http//DefaultHttpEngine/#kotlin.Long#kotlin.Long/PointingToDeclaration/apollo-runtime/com.apollographql.apollo.network.http/[jvm-common]-default-http-engine.html
-module:apollo-adapters
-com.apollographql.apollo.adapter
 module:apollo-annotations
 com.apollographql.apollo.annotations
 module:apollo-api
@@ -36,7 +24,6 @@ com.apollographql.apollo.compiler.codegen.java
 com.apollographql.apollo.compiler.codegen.java.helpers
 com.apollographql.apollo.compiler.codegen.kotlin
 com.apollographql.apollo.compiler.codegen.kotlin.helpers
-com.apollographql.apollo.compiler.internal
 com.apollographql.apollo.compiler.ir
 com.apollographql.apollo.compiler.operationoutput
 com.apollographql.apollo.compiler.pqm
@@ -47,9 +34,13 @@ module:apollo-engine-tests
 com.apollographql.apollo.engine.tests
 module:apollo-execution
 com.apollographql.apollo.execution
-module:apollo-gradle-plugin-external
+module:apollo-gradle-plugin
+com.apollographql.apollo.compiler
+com.apollographql.apollo.gradle
 com.apollographql.apollo.gradle.api
 com.apollographql.apollo.gradle.internal
+module:apollo-gradle-plugin-tasks
+com.apollographql.apollo.gradle.task
 module:apollo-http-cache
 com.apollographql.apollo.cache.http
 module:apollo-mpp-utils
@@ -70,27 +61,8 @@ com.apollographql.apollo.network
 com.apollographql.apollo.network.http
 com.apollographql.apollo.network.websocket
 com.apollographql.apollo.network.ws
-module:apollo-runtime-java
-com.apollographql.apollo.runtime.java
-com.apollographql.apollo.runtime.java.interceptor
-com.apollographql.apollo.runtime.java.interceptor.internal
-com.apollographql.apollo.runtime.java.internal
-com.apollographql.apollo.runtime.java.network
-com.apollographql.apollo.runtime.java.network.http
-com.apollographql.apollo.runtime.java.network.http.internal
-com.apollographql.apollo.runtime.java.network.ws
-com.apollographql.apollo.runtime.java.network.ws.protocol
-module:apollo-rx2-support
-com.apollographql.apollo.rx2
-module:apollo-rx2-support-java
-com.apollographql.apollo.rx2.java
-module:apollo-rx3-support
-com.apollographql.apollo.rx3
-module:apollo-rx3-support-java
-com.apollographql.apollo.rx3.java
 module:apollo-testing-support
 com.apollographql.apollo.mockserver
 com.apollographql.apollo.testing
-com.apollographql.apollo.testing.internal
 module:apollo-tooling
 com.apollographql.apollo.tooling

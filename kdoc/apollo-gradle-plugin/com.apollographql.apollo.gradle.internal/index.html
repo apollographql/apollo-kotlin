@@ -1,0 +1,365 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>com.apollographql.apollo.gradle.internal</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../images/apollo.svg">
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
+<a class="library-name--link" href="../../index.html">
+                    apollo-kdoc
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.apollographql.apollo.gradle.internal/index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
+  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">5.0.0-alpha.2-SNAPSHOT</div>
+  <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
+    <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
+    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">5.0.0-alpha.2-SNAPSHOT</a></div>
+    <div><a href="../../not-found-version.html?v=4.2.0" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">4.2.0</a></div>
+    <div><a href="../../not-found-version.html?v=3.8.2" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.8.2</a></div>
+  </div>
+  <div class="dropdown--overlay"></div>
+</div>
+</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-gradle-plugin/main">jvm</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":apollo-gradle-plugin/main" data-filter=":apollo-gradle-plugin/main">
+                                <span class="checkbox--icon"></span>
+                                jvm
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </div>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    apollo-kdoc
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageids="apollo-gradle-plugin::com.apollographql.apollo.gradle.internal////PointingToDeclaration//44562171">
+  <div class="breadcrumbs"><a href="../index.html">apollo-gradle-plugin</a><span class="delimiter">/</span><span class="current">com.apollographql.apollo.gradle.internal</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button><button class="section-tab" data-togglable="FUNCTION,EXTENSION_FUNCTION">Functions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="878301702%2FClasslikes%2F44562171" anchor-label="ApolloPlugin" id="878301702%2FClasslikes%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-apollo-plugin/index.html"><span>Apollo</span><wbr><span><span>Plugin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="878301702%2FClasslikes%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-apollo-plugin/index.html">ApolloPlugin</a> : <span data-unresolved-link="org.gradle.api/Plugin///PointingToDeclaration/">Plugin</span><span class="token operator">&lt;</span><span data-unresolved-link="org.gradle.api/Project///PointingToDeclaration/">Project</span><span class="token operator">&gt; </span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1053706305%2FClasslikes%2F44562171" anchor-label="BuildDirLayout" id="-1053706305%2FClasslikes%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-build-dir-layout/index.html"><span>Build</span><wbr><span>Dir</span><wbr><span><span>Layout</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1053706305%2FClasslikes%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="-build-dir-layout/index.html">BuildDirLayout</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1755200281%2FClasslikes%2F44562171" anchor-label="DefaultApolloExtension" id="1755200281%2FClasslikes%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-default-apollo-extension/index.html"><span>Default</span><wbr><span>Apollo</span><wbr><span><span>Extension</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1755200281%2FClasslikes%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-default-apollo-extension/index.html">DefaultApolloExtension</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">project<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Project///PointingToDeclaration/">Project</span></span></span><span class="token punctuation">)</span> : <a href="../com.apollographql.apollo.gradle.api/-apollo-extension/index.html">ApolloExtension</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2142653458%2FClasslikes%2F44562171" anchor-label="DefaultIntrospection" id="-2142653458%2FClasslikes%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-default-introspection/index.html"><span>Default</span><wbr><span><span>Introspection</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2142653458%2FClasslikes%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-default-introspection/index.html">DefaultIntrospection</a> : <a href="../com.apollographql.apollo.gradle.api/-introspection/index.html">Introspection</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-524995544%2FClasslikes%2F44562171" anchor-label="DefaultRegisterOperationsConfig" id="-524995544%2FClasslikes%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-default-register-operations-config/index.html"><span>Default</span><wbr><span>Register</span><wbr><span>Operations</span><wbr><span><span>Config</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-524995544%2FClasslikes%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-default-register-operations-config/index.html">DefaultRegisterOperationsConfig</a> : <a href="../com.apollographql.apollo.gradle.api/-register-operations-config/index.html">RegisterOperationsConfig</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1038692476%2FClasslikes%2F44562171" anchor-label="DefaultRegistry" id="1038692476%2FClasslikes%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-default-registry/index.html"><span>Default</span><wbr><span><span>Registry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1038692476%2FClasslikes%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-default-registry/index.html">DefaultRegistry</a> : <a href="../com.apollographql.apollo.gradle.api/-registry/index.html">Registry</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="571587636%2FClasslikes%2F44562171" anchor-label="DefaultService" id="571587636%2FClasslikes%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-default-service/index.html"><span>Default</span><wbr><span><span>Service</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="571587636%2FClasslikes%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-default-service/index.html">DefaultService</a>&nbsp;<span><span class="token annotation builtin">@</span><span data-unresolved-link="javax.inject/Inject///PointingToDeclaration/"><span class="token annotation builtin">Inject</span></span>&nbsp;</span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>project<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Project///PointingToDeclaration/">Project</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="../com.apollographql.apollo.gradle.api/-service/index.html">Service</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1106783100%2FClasslikes%2F44562171" anchor-label="ToolingRegistryRef" id="1106783100%2FClasslikes%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-tooling-registry-ref/index.html"><span>Tooling</span><wbr><span>Registry</span><wbr><span><span>Ref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1106783100%2FClasslikes%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-tooling-registry-ref/index.html">ToolingRegistryRef</a>&nbsp;<span><span class="token annotation builtin">@</span><span data-unresolved-link="javax.inject/Inject///PointingToDeclaration/"><span class="token annotation builtin">Inject</span></span>&nbsp;</span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>toolingModelRegistry<span class="token operator">: </span><span data-unresolved-link="org.gradle.tooling.provider.model/ToolingModelBuilderRegistry///PointingToDeclaration/">ToolingModelBuilderRegistry</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-259567870%2FFunctions%2F44562171" anchor-label="apolloGetKotlinPluginVersion" id="-259567870%2FFunctions%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="apollo-get-kotlin-plugin-version.html"><span>apollo</span><wbr><span>Get</span><wbr><span>Kotlin</span><wbr><span>Plugin</span><wbr><span><span>Version</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-259567870%2FFunctions%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">fun </span><span data-unresolved-link="org.gradle.api/Project///PointingToDeclaration/">Project</span><span class="token punctuation">.</span><a href="apollo-get-kotlin-plugin-version.html"><span class="token function">apolloGetKotlinPluginVersion</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">A class that hides all references to the Kotlin plugin from the caller. For a non-Kotlin project, this class will never be loaded so that no runtime exception is thrown</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-916459699%2FFunctions%2F44562171" anchor-label="apolloPlugin" id="-916459699%2FFunctions%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="apollo-plugin.html"><span>apollo</span><wbr><span><span>Plugin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-916459699%2FFunctions%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="apollo-plugin.html"><span class="token function">apolloPlugin</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">project<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Project///PointingToDeclaration/">Project</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1235116920%2FFunctions%2F44562171" anchor-label="connectToAllAndroidTestVariants" id="-1235116920%2FFunctions%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="connect-to-all-android-test-variants.html"><span>connect</span><wbr><span>To</span><wbr><span>All</span><wbr><span>Android</span><wbr><span>Test</span><wbr><span><span>Variants</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1235116920%2FFunctions%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="connect-to-all-android-test-variants.html"><span class="token function">connectToAllAndroidTestVariants</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">project<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Project///PointingToDeclaration/">Project</span><span class="token punctuation">, </span></span><span class="parameter ">outputDir<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Provider///PointingToDeclaration/">Provider</span><span class="token operator">&lt;</span><span data-unresolved-link="org.gradle.api.file/Directory///PointingToDeclaration/">Directory</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">taskProvider<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.tasks/TaskProvider///PointingToDeclaration/">TaskProvider</span><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="org.gradle.api/Task///PointingToDeclaration/">Task</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1922763222%2FFunctions%2F44562171" anchor-label="connectToAllAndroidVariants" id="1922763222%2FFunctions%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="connect-to-all-android-variants.html"><span>connect</span><wbr><span>To</span><wbr><span>All</span><wbr><span>Android</span><wbr><span><span>Variants</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1922763222%2FFunctions%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="connect-to-all-android-variants.html"><span class="token function">connectToAllAndroidVariants</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">project<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Project///PointingToDeclaration/">Project</span><span class="token punctuation">, </span></span><span class="parameter ">outputDir<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Provider///PointingToDeclaration/">Provider</span><span class="token operator">&lt;</span><span data-unresolved-link="org.gradle.api.file/Directory///PointingToDeclaration/">Directory</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">taskProvider<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.tasks/TaskProvider///PointingToDeclaration/">TaskProvider</span><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="org.gradle.api/Task///PointingToDeclaration/">Task</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-783324435%2FFunctions%2F44562171" anchor-label="connectToAndroidSourceSet" id="-783324435%2FFunctions%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="connect-to-android-source-set.html"><span>connect</span><wbr><span>To</span><wbr><span>Android</span><wbr><span>Source</span><wbr><span><span>Set</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-783324435%2FFunctions%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="connect-to-android-source-set.html"><span class="token function">connectToAndroidSourceSet</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">project<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Project///PointingToDeclaration/">Project</span><span class="token punctuation">, </span></span><span class="parameter ">sourceSetName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">outputDir<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Provider///PointingToDeclaration/">Provider</span><span class="token operator">&lt;</span><span data-unresolved-link="org.gradle.api.file/Directory///PointingToDeclaration/">Directory</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">taskProvider<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.tasks/TaskProvider///PointingToDeclaration/">TaskProvider</span><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="org.gradle.api/Task///PointingToDeclaration/">Task</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1965008377%2FFunctions%2F44562171" anchor-label="connectToAndroidVariant" id="-1965008377%2FFunctions%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="connect-to-android-variant.html"><span>connect</span><wbr><span>To</span><wbr><span>Android</span><wbr><span><span>Variant</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1965008377%2FFunctions%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="connect-to-android-variant.html"><span class="token function">connectToAndroidVariant</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">variant<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span></span><span class="parameter ">outputDir<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Provider///PointingToDeclaration/">Provider</span><span class="token operator">&lt;</span><span data-unresolved-link="org.gradle.api.file/Directory///PointingToDeclaration/">Directory</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">taskProvider<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.tasks/TaskProvider///PointingToDeclaration/">TaskProvider</span><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="org.gradle.api/Task///PointingToDeclaration/">Task</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1712737608%2FFunctions%2F44562171" anchor-label="createAllKotlinSourceSetServices" id="-1712737608%2FFunctions%2F44562171" data-filterable-set=":apollo-gradle-plugin/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin/main" data-filterable-set=":apollo-gradle-plugin/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-all-kotlin-source-set-services.html"><span>create</span><wbr><span>All</span><wbr><span>Kotlin</span><wbr><span>Source</span><wbr><span>Set</span><wbr><span><span>Services</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1712737608%2FFunctions%2F44562171"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="create-all-kotlin-source-set-services.html"><span class="token function">createAllKotlinSourceSetServices</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">apolloExtension<span class="token operator">: </span><a href="-default-apollo-extension/index.html">DefaultApolloExtension</a><span class="token punctuation">, </span></span><span class="parameter ">project<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Project///PointingToDeclaration/">Project</span><span class="token punctuation">, </span></span><span class="parameter ">sourceFolder<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">nameSuffix<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">action<span class="token operator">: </span><span data-unresolved-link="org.gradle.api/Action///PointingToDeclaration/">Action</span><span class="token operator">&lt;</span><a href="../com.apollographql.apollo.gradle.api/-service/index.html">Service</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

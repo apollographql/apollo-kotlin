@@ -47,10 +47,10 @@
         <div class="navigation-controls--break ui-kit_mobile-only"></div>
         <div class="library-version" id="library-version">
 <dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
-  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">4.3.2-SNAPSHOT</div>
+  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">5.0.0-alpha.2-SNAPSHOT</div>
   <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
     <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
-    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">4.3.2-SNAPSHOT</a></div>
+    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">5.0.0-alpha.2-SNAPSHOT</a></div>
     <div><a href="../older/4.2.0/apollo-testing-support/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">4.2.0</a></div>
     <div><a href="../older/3.8.2/apollo-testing-support/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.8.2</a></div>
   </div>
@@ -59,14 +59,7 @@
 </dokka-template-command>        </div>
         <div class="navigation-controls">
         <div class="filter-section filter-section_loading" id="filter-section">
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-testing-support/appleMain">apple</button>
                 <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-testing-support/commonMain">common</button>
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-testing-support/concurrentMain">concurrent</button>
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-testing-support/jsCommonMain">jsCommon</button>
-                <button class="platform-tag platform-selector js-like" data-active="" data-filter=":apollo-testing-support/jsMain">js</button>
-                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-testing-support/jvmCommonMain">jvmCommon</button>
-                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-testing-support/jvmMain">jvm</button>
-                <button class="platform-tag platform-selector wasm-like" data-active="" data-filter=":apollo-testing-support/wasmJsMain">wasmJs</button>
             <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
                 <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
                 <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
@@ -77,58 +70,9 @@
                     </div>
                         <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
                             <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":apollo-testing-support/appleMain" data-filter=":apollo-testing-support/appleMain">
-                                <span class="checkbox--icon"></span>
-                                apple
-                            </label>
-                        </li>
-                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
-                            <label class="checkbox">
                                 <input type="checkbox" class="checkbox--input" id=":apollo-testing-support/commonMain" data-filter=":apollo-testing-support/commonMain">
                                 <span class="checkbox--icon"></span>
                                 common
-                            </label>
-                        </li>
-                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
-                            <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":apollo-testing-support/concurrentMain" data-filter=":apollo-testing-support/concurrentMain">
-                                <span class="checkbox--icon"></span>
-                                concurrent
-                            </label>
-                        </li>
-                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
-                            <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":apollo-testing-support/jsCommonMain" data-filter=":apollo-testing-support/jsCommonMain">
-                                <span class="checkbox--icon"></span>
-                                jsCommon
-                            </label>
-                        </li>
-                        <li role="option" class="dropdown--option platform-selector-option js-like" tabindex="0">
-                            <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":apollo-testing-support/jsMain" data-filter=":apollo-testing-support/jsMain">
-                                <span class="checkbox--icon"></span>
-                                js
-                            </label>
-                        </li>
-                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
-                            <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":apollo-testing-support/jvmCommonMain" data-filter=":apollo-testing-support/jvmCommonMain">
-                                <span class="checkbox--icon"></span>
-                                jvmCommon
-                            </label>
-                        </li>
-                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
-                            <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":apollo-testing-support/jvmMain" data-filter=":apollo-testing-support/jvmMain">
-                                <span class="checkbox--icon"></span>
-                                jvm
-                            </label>
-                        </li>
-                        <li role="option" class="dropdown--option platform-selector-option wasm-like" tabindex="0">
-                            <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":apollo-testing-support/wasmJsMain" data-filter=":apollo-testing-support/wasmJsMain">
-                                <span class="checkbox--icon"></span>
-                                wasmJs
                             </label>
                         </li>
                 </ul>
@@ -160,13 +104,11 @@
                 </div>
             </div>
             <div id="main">
-<div class="main-content" id="content" pageids="apollo-testing-support::////PointingToDeclaration//1930397983">
+<div class="main-content" id="content" pageids="apollo-testing-support::////PointingToDeclaration//-873568609">
   <div class="breadcrumbs"></div>
   <div class="cover ">
     <h1 class="cover"><span><span>apollo-testing-support</span></span></h1>
-    <div class="platform-hinted UnderCoverText with-platform-tabs" data-platform-hinted="data-platform-hinted">
-      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-testing-support/appleMain" data-filterable-set=":apollo-testing-support/appleMain" data-active="" data-toggle=":apollo-testing-support/appleMain">apple</button><button class="platform-bookmark" data-filterable-current=":apollo-testing-support/commonMain" data-filterable-set=":apollo-testing-support/commonMain" data-toggle=":apollo-testing-support/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":apollo-testing-support/concurrentMain" data-filterable-set=":apollo-testing-support/concurrentMain" data-toggle=":apollo-testing-support/concurrentMain">concurrent</button><button class="platform-bookmark" data-filterable-current=":apollo-testing-support/jsCommonMain" data-filterable-set=":apollo-testing-support/jsCommonMain" data-toggle=":apollo-testing-support/jsCommonMain">jsCommon</button><button class="platform-bookmark" data-filterable-current=":apollo-testing-support/jsMain" data-filterable-set=":apollo-testing-support/jsMain" data-toggle=":apollo-testing-support/jsMain">js</button><button class="platform-bookmark" data-filterable-current=":apollo-testing-support/jvmCommonMain" data-filterable-set=":apollo-testing-support/jvmCommonMain" data-toggle=":apollo-testing-support/jvmCommonMain">jvmCommon</button><button class="platform-bookmark" data-filterable-current=":apollo-testing-support/jvmMain" data-filterable-set=":apollo-testing-support/jvmMain" data-toggle=":apollo-testing-support/jvmMain">jvm</button><button class="platform-bookmark" data-filterable-current=":apollo-testing-support/wasmJsMain" data-filterable-set=":apollo-testing-support/wasmJsMain" data-toggle=":apollo-testing-support/wasmJsMain">wasmJs</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-testing-support/appleMain"><p class="paragraph"><code class="lang-kotlin">apollo-testing-support</code> contains:</p><ul><li><p class="paragraph"><code class="lang-kotlin">QueueTestNetworkTransport</code> and <code class="lang-kotlin">MapTestNetworkTransport</code> for testing without a mock server.</p></li><li><p class="paragraph">a set of helper functions used for Apollo tests. They were never really intended to become public and will be removed in a future version. These symbols are marked as deprecated. If you are using them, copy paste them in your project.</p></li></ul><p class="paragraph">See <a href="https://www.apollographql.com/docs/kotlin/testing/mocking-graphql-responses">"Mocking GraphQL responses"</a> for how to use test network transports.</p></div><div class="content sourceset-dependent-content" data-togglable=":apollo-testing-support/commonMain"><p class="paragraph"><code class="lang-kotlin">apollo-testing-support</code> contains:</p><ul><li><p class="paragraph"><code class="lang-kotlin">QueueTestNetworkTransport</code> and <code class="lang-kotlin">MapTestNetworkTransport</code> for testing without a mock server.</p></li><li><p class="paragraph">a set of helper functions used for Apollo tests. They were never really intended to become public and will be removed in a future version. These symbols are marked as deprecated. If you are using them, copy paste them in your project.</p></li></ul><p class="paragraph">See <a href="https://www.apollographql.com/docs/kotlin/testing/mocking-graphql-responses">"Mocking GraphQL responses"</a> for how to use test network transports.</p></div><div class="content sourceset-dependent-content" data-togglable=":apollo-testing-support/concurrentMain"><p class="paragraph"><code class="lang-kotlin">apollo-testing-support</code> contains:</p><ul><li><p class="paragraph"><code class="lang-kotlin">QueueTestNetworkTransport</code> and <code class="lang-kotlin">MapTestNetworkTransport</code> for testing without a mock server.</p></li><li><p class="paragraph">a set of helper functions used for Apollo tests. They were never really intended to become public and will be removed in a future version. These symbols are marked as deprecated. If you are using them, copy paste them in your project.</p></li></ul><p class="paragraph">See <a href="https://www.apollographql.com/docs/kotlin/testing/mocking-graphql-responses">"Mocking GraphQL responses"</a> for how to use test network transports.</p></div><div class="content sourceset-dependent-content" data-togglable=":apollo-testing-support/jsCommonMain"><p class="paragraph"><code class="lang-kotlin">apollo-testing-support</code> contains:</p><ul><li><p class="paragraph"><code class="lang-kotlin">QueueTestNetworkTransport</code> and <code class="lang-kotlin">MapTestNetworkTransport</code> for testing without a mock server.</p></li><li><p class="paragraph">a set of helper functions used for Apollo tests. They were never really intended to become public and will be removed in a future version. These symbols are marked as deprecated. If you are using them, copy paste them in your project.</p></li></ul><p class="paragraph">See <a href="https://www.apollographql.com/docs/kotlin/testing/mocking-graphql-responses">"Mocking GraphQL responses"</a> for how to use test network transports.</p></div><div class="content sourceset-dependent-content" data-togglable=":apollo-testing-support/jsMain"><p class="paragraph"><code class="lang-kotlin">apollo-testing-support</code> contains:</p><ul><li><p class="paragraph"><code class="lang-kotlin">QueueTestNetworkTransport</code> and <code class="lang-kotlin">MapTestNetworkTransport</code> for testing without a mock server.</p></li><li><p class="paragraph">a set of helper functions used for Apollo tests. They were never really intended to become public and will be removed in a future version. These symbols are marked as deprecated. If you are using them, copy paste them in your project.</p></li></ul><p class="paragraph">See <a href="https://www.apollographql.com/docs/kotlin/testing/mocking-graphql-responses">"Mocking GraphQL responses"</a> for how to use test network transports.</p></div><div class="content sourceset-dependent-content" data-togglable=":apollo-testing-support/jvmCommonMain"><p class="paragraph"><code class="lang-kotlin">apollo-testing-support</code> contains:</p><ul><li><p class="paragraph"><code class="lang-kotlin">QueueTestNetworkTransport</code> and <code class="lang-kotlin">MapTestNetworkTransport</code> for testing without a mock server.</p></li><li><p class="paragraph">a set of helper functions used for Apollo tests. They were never really intended to become public and will be removed in a future version. These symbols are marked as deprecated. If you are using them, copy paste them in your project.</p></li></ul><p class="paragraph">See <a href="https://www.apollographql.com/docs/kotlin/testing/mocking-graphql-responses">"Mocking GraphQL responses"</a> for how to use test network transports.</p></div><div class="content sourceset-dependent-content" data-togglable=":apollo-testing-support/jvmMain"><p class="paragraph"><code class="lang-kotlin">apollo-testing-support</code> contains:</p><ul><li><p class="paragraph"><code class="lang-kotlin">QueueTestNetworkTransport</code> and <code class="lang-kotlin">MapTestNetworkTransport</code> for testing without a mock server.</p></li><li><p class="paragraph">a set of helper functions used for Apollo tests. They were never really intended to become public and will be removed in a future version. These symbols are marked as deprecated. If you are using them, copy paste them in your project.</p></li></ul><p class="paragraph">See <a href="https://www.apollographql.com/docs/kotlin/testing/mocking-graphql-responses">"Mocking GraphQL responses"</a> for how to use test network transports.</p></div><div class="content sourceset-dependent-content" data-togglable=":apollo-testing-support/wasmJsMain"><p class="paragraph"><code class="lang-kotlin">apollo-testing-support</code> contains:</p><ul><li><p class="paragraph"><code class="lang-kotlin">QueueTestNetworkTransport</code> and <code class="lang-kotlin">MapTestNetworkTransport</code> for testing without a mock server.</p></li><li><p class="paragraph">a set of helper functions used for Apollo tests. They were never really intended to become public and will be removed in a future version. These symbols are marked as deprecated. If you are using them, copy paste them in your project.</p></li></ul><p class="paragraph">See <a href="https://www.apollographql.com/docs/kotlin/testing/mocking-graphql-responses">"Mocking GraphQL responses"</a> for how to use test network transports.</p></div>    </div>
+    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-testing-support/commonMain"><p class="paragraph"><code class="lang-kotlin">apollo-testing-support</code> contains <code class="lang-kotlin">QueueTestNetworkTransport</code> and <code class="lang-kotlin">MapTestNetworkTransport</code> for testing without a mock server.</p><p class="paragraph">See <a href="https://www.apollographql.com/docs/kotlin/testing/mocking-graphql-responses">"Mocking GraphQL responses"</a> for how to use test network transports.</p></div></div>
   </div>
   <h2 class="">Packages</h2>
   <div class="table"><a data-name="-1772467251%2FPackages%2F-873568609" anchor-label="com.apollographql.apollo.mockserver" id="-1772467251%2FPackages%2F-873568609" data-filterable-set=":apollo-testing-support/commonMain"></a>
@@ -187,38 +129,13 @@
         <div></div>
       </div>
     </div>
-<a data-name="1399538644%2FPackages%2F1930397983" anchor-label="com.apollographql.apollo.testing" id="1399538644%2FPackages%2F1930397983" data-filterable-set=":apollo-testing-support/appleMain,:apollo-testing-support/commonMain,:apollo-testing-support/concurrentMain,:apollo-testing-support/jsCommonMain,:apollo-testing-support/jsMain,:apollo-testing-support/jvmCommonMain,:apollo-testing-support/jvmMain,:apollo-testing-support/wasmJsMain"></a>
-    <div class="table-row" data-filterable-current=":apollo-testing-support/appleMain,:apollo-testing-support/commonMain,:apollo-testing-support/concurrentMain,:apollo-testing-support/jsCommonMain,:apollo-testing-support/jsMain,:apollo-testing-support/jvmCommonMain,:apollo-testing-support/jvmMain,:apollo-testing-support/wasmJsMain" data-filterable-set=":apollo-testing-support/appleMain,:apollo-testing-support/commonMain,:apollo-testing-support/concurrentMain,:apollo-testing-support/jsCommonMain,:apollo-testing-support/jsMain,:apollo-testing-support/jvmCommonMain,:apollo-testing-support/jvmMain,:apollo-testing-support/wasmJsMain">
-      <div>
-        <div class="main-subrow ">
-          <div class=""><span class="inline-flex">
-              <div><a href="com.apollographql.apollo.testing/index.html">com.apollographql.apollo.testing</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1399538644%2FPackages%2F1930397983"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div class="pull-right">
-            <div class="platform-tags no-gutters">
-              <div class="platform-tag common-like">apple</div>
-              <div class="platform-tag common-like">common</div>
-              <div class="platform-tag common-like">concurrent</div>
-              <div class="platform-tag js-like">js</div>
-              <div class="platform-tag common-like">jsCommon</div>
-              <div class="platform-tag jvm-like">jvm</div>
-              <div class="platform-tag jvm-like">jvmCommon</div>
-              <div class="platform-tag wasm-like">wasmJs</div>
-            </div>
-          </div>
-        </div>
-        <div></div>
-      </div>
-    </div>
-<a data-name="-838715557%2FPackages%2F-873568609" anchor-label="com.apollographql.apollo.testing.internal" id="-838715557%2FPackages%2F-873568609" data-filterable-set=":apollo-testing-support/commonMain"></a>
+<a data-name="1399538644%2FPackages%2F-873568609" anchor-label="com.apollographql.apollo.testing" id="1399538644%2FPackages%2F-873568609" data-filterable-set=":apollo-testing-support/commonMain"></a>
     <div class="table-row" data-filterable-current=":apollo-testing-support/commonMain" data-filterable-set=":apollo-testing-support/commonMain">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="com.apollographql.apollo.testing.internal/index.html">com.apollographql.apollo.testing.internal</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-838715557%2FPackages%2F-873568609"></span>
+              <div><a href="com.apollographql.apollo.testing/index.html">com.apollographql.apollo.testing</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1399538644%2FPackages%2F-873568609"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right">
