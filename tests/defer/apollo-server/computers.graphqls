@@ -7,15 +7,6 @@ type Mutation {
   computers: [Computer!]!
 }
 
-type Subscription {
-  count(to: Int!): Counter!
-}
-
-type Counter {
-  value: Int!
-  valueTimesTwo: Int!
-}
-
 type Computer {
   id: ID!
   cpu: String!
@@ -30,6 +21,11 @@ type Screen {
   resolution: String!
   isColor: Boolean!
 }
+
+directive @defer(
+  if: Boolean! = true
+  label: String
+) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
 directive @stream(
   label: String

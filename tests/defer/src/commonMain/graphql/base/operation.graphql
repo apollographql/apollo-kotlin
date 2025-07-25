@@ -109,7 +109,25 @@ query CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery {
   }
 }
 
+query DeferFragmentThatIsAlsoNotDeferredIsSkipped1Query {
+  computer(id: "Computer1") {
+    screen {
+      ...ScreenFields @defer
+      ...ScreenFields
+    }
+  }
+}
+
 query CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery {
+  computer(id: "Computer1") {
+    screen {
+      ...ScreenFields
+      ...ScreenFields @defer
+    }
+  }
+}
+
+query DeferFragmentThatIsAlsoNotDeferredIsSkipped2Query {
   computer(id: "Computer1") {
     screen {
       ...ScreenFields
@@ -149,4 +167,60 @@ query HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery {
 
 fragment ComputerIdField on Computer {
   id
+}
+
+query OverlappingQuery {
+  computer(id: "Computer1") {
+    id
+    ... on Computer @defer(label: "a") {
+      id
+      ... on Computer @defer(label: "b") {
+        id
+        cpu
+        year
+      }
+    }
+  }
+}
+
+query Overlapping2Query {
+  computer(id: "Computer1") {
+    id
+    ... on Computer @defer(label: "a") {
+      id
+    }
+    ... on Computer @defer(label: "b") {
+      id
+      cpu
+      year
+    }
+  }
+}
+
+query SubPathQuery {
+  computer(id: "Computer1") {
+    id
+  }
+  ... on Query @defer(label: "a") {
+    MyFragment: __typename
+    computer(id: "Computer1") {
+      id
+      screen {
+        isColor
+      }
+    }
+  }
+}
+
+query SimpleStreamQuery($initialCount: Int!) {
+  computers @stream(initialCount: $initialCount) {
+    id
+  }
+}
+
+query NestedStreamQuery($initialCount: Int!) {
+  computers @stream(initialCount: $initialCount) {
+    id
+    peripherals @stream(initialCount: $initialCount)
+  }
 }
