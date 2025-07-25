@@ -2,11 +2,31 @@ Change Log
 ==========
 
 # Next version
+
+# Version 4.3.2
+_2025-07-25_
+
+Maintainance release to [fix](https://github.com/apollographql/apollo-kotlin/pull/6619) the `Accept:` header during introspection. Many thanks @pedromfmachado for diving into this!
+
+This release also contains infrastructure work:
+* the IJ plugin is now released separately from a [dedicated repository](https://github.com/apollographql/apollo-intellij-plugin).
+* the 5.x Gradle plugins will **not** be deployed to the [Gradle plugin portal](https://plugins.gradle.org/plugin/com.apollographql.apollo) and a disclaimer has been added.
+* the publishing code has been updated to the new [Central Portal API](https://central.sonatype.org/publish/publish-portal-api/).
+
+## What's Changed
+* [4.x] Remove IJ plugin by @BoD in https://github.com/apollographql/apollo-kotlin/pull/6578
+* [4.x] Make tests more robust to version changes by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6582
+* [4.x] Add a disclaimer to the Gradle Plugin Portal by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6584
+* [4.x] Added default Accept header to introspection query by @pedromfmachado in https://github.com/apollographql/apollo-kotlin/pull/6619
+* [4.x] Build: switch publication to the central portal by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6629
+* [4.x] Also publish 4.x snapshots by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6631
+* [4.x] Bump nmcp & librarian by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6632
+* [4.x] Do not deploy kdoc from release-4.x by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6633
+
 # Version 5.0.0-alpha.1
 
 * [fix] Fix `can't resolve apollo-gradle-plugin-tasks` ([#6603](https://github.com/apollographql/apollo-kotlin/pull/6603))
 * [new] Warn on unused fragments ([#6601](https://github.com/apollographql/apollo-kotlin/pull/6601))
-
 
 # Version 5.0.0-alpha.0
 
