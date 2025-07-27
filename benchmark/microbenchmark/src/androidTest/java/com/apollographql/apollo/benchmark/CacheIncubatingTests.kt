@@ -73,8 +73,10 @@ class CacheIncubatingTests {
       registerCacheSize("CacheIncubatingTests", testName, dbFile.length())
     }
     benchmarkRule.measureRepeated {
-      val data2 = cacheManager.readOperation(query).data!!
-      check(data2)
+      runBlocking {
+        val data2 = cacheManager.readOperation(query).data!!
+        check(data2)
+      }
     }
   }
 }

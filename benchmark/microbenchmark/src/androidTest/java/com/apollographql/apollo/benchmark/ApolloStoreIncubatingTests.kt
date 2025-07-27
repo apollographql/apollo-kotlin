@@ -12,6 +12,7 @@ import com.apollographql.cache.normalized.CacheManager
 import com.apollographql.cache.normalized.memory.MemoryCacheFactory
 import com.apollographql.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -50,9 +51,11 @@ class ApolloStoreIncubatingTests {
         threadPool.submit {
           // Let each thread execute a few writes/reads
           repeat(WORK_LOAD) {
-            apolloStore.writeOperation(query, data)
-            val data2 = apolloStore.readOperation(query).data
-            Assert.assertEquals(data, data2)
+            runBlocking {
+              apolloStore.writeOperation(query, data)
+              val data2 = apolloStore.readOperation(query).data
+              Assert.assertEquals(data, data2)
+            }
           }
         }
       }
