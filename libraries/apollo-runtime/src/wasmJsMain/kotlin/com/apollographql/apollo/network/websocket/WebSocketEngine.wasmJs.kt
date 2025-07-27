@@ -2,6 +2,7 @@ package com.apollographql.apollo.network.websocket
 
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.exception.DefaultApolloException
+import com.apollographql.apollo.network.internal.toWebSocketUrl
 import org.w3c.dom.WebSocket as PlatformWebSocket
 import org.khronos.webgl.ArrayBufferView
 
@@ -81,11 +82,7 @@ internal class WasmJsWebSocket(
   private val platformWebSocket: PlatformWebSocket?
   private var disposed = false
 
-  private val actualUrl = when {
-    url.startsWith("http://") -> "ws://${url.substring(7)}"
-    url.startsWith("https://") -> "wss://${url.substring(8)}"
-    else -> url
-  }
+  private val actualUrl = url.toWebSocketUrl()
 
   init {
     platformWebSocket = createWebSocket(actualUrl, headers, listener)
