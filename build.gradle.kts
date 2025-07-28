@@ -2,7 +2,13 @@ import kotlinx.validation.ExperimentalBCVApi
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeHostTest
 
 plugins {
-  id("build.logic") apply false
+  id("base")
+}
+
+buildscript {
+  dependencies {
+    classpath("com.apollographql.apollo:build-logic")
+  }
 }
 
 apply(plugin = "com.github.ben-manes.versions")
@@ -15,20 +21,6 @@ fun subprojectTasks(name: String): List<Task> {
     subproject.tasks.matching { it.name == name }
   }
 }
-
-fun isTag(): Boolean {
-  val ref = System.getenv("GITHUB_REF")
-
-  return ref?.startsWith("refs/tags/") == true
-}
-
-fun shouldPublishSnapshots(): Boolean {
-  val eventName = System.getenv("GITHUB_EVENT_NAME")
-  val ref = System.getenv("GITHUB_REF")
-
-  return eventName == "push" && (ref == "refs/heads/main")
-}
-
 
 tasks.register("ciTestsGradle") {
   description = "Execute the Gradle tests (slow)"
@@ -76,11 +68,6 @@ tasks.register("ctg") {
   dependsOn("ciTestsGradle")
 }
 
-val ciBuild = tasks.register("ciBuild") {
-  description = "Execute the 'build' task in each subproject"
-  dependsOn(subprojectTasks("build"))
-}
-
 tasks.named("dependencyUpdates").configure {
   (this as com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask)
   rejectVersionIf {
@@ -125,4 +112,4 @@ tasks.register("rmbuild") {
   }
 }
 
-apolloRoot(ciBuild)
+apolloRoot()
