@@ -1,4 +1,10 @@
 plugins {
-  id("apollo.benchmark").apply(false)
-  alias(libs.plugins.apollo).apply(false)
+  id("base")
+}
+
+buildscript {
+  dependencies {
+    classpath("com.apollographql.apollo:apollo-gradle-plugin")
+    classpath("benchmark:build-logic")
+  }
 }

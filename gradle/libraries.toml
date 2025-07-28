@@ -17,7 +17,7 @@ androidx-sqlite = "2.3.1"
 # This is used by the gradle integration tests to get the artifacts locally
 apollo = "5.0.0-alpha.2-SNAPSHOT"
 apollo-execution = "0.1.0"
-apollo-normalizedcache-incubating = "1.0.0-alpha.3"
+apollo-normalizedcache-incubating = "1.0.0-alpha.4"
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-published = "4.0.1"
 atomicfu = "0.26.0"
@@ -126,8 +126,6 @@ kotlin-plugin-max = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plug
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" } # use same version as apiVersion
 kotlin-stdlib-common = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-common" } # use same version as apiVersion
 kotlin-stdlib-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib" } # use same version as apiVersion
-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" } # use same version as apiVersion
-kotlin-test-js = { group = "org.jetbrains.kotlin", name = "kotlin-test-js" } # use same version as apiVersion
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit" } # use same version as apiVersion
 # Kotlin/JS has no apiVersion:
 # The Kotlin/JS standard library has an older version (2.0.20-release-360) than the compiler (2.1.0). Such a configuration is not supported.
@@ -186,8 +184,8 @@ androidx-test-runner = "androidx.test:runner:1.6.2"
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.1.0" }
 uuid = { group = "com.benasher44", name = "uuid", version = "0.8.2" }
-librarian = "com.gradleup.librarian:librarian-gradle-plugin:0.0.10-SNAPSHOT-ffba1a28eef796c5c91a33f609761618b0ef2e5e"
-nmcp = "com.gradleup.nmcp:nmcp:1.0.1"
+librarian = "com.gradleup.librarian:librarian-gradle-plugin:0.0.11-SNAPSHOT-ba8b5ecfcbda070ecc3b5b95056ee359199552b4"
+nmcp = "com.gradleup.nmcp:nmcp:1.0.2"
 slf4j-simple = "org.slf4j:slf4j-simple:2.0.13"
 slf4j-nop = "org.slf4j:slf4j-nop:2.0.13"
 licensee = "app.cash.licensee:licensee-gradle-plugin:1.12.0"

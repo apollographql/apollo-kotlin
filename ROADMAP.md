@@ -1,6 +1,6 @@
-# 🔮 Apollo Kotlin Galaxy Roadmap
+# 🔮 Apollo Kotlin Ecosystem Roadmap
 
-**Last updated: 2025-06-26**
+**Last updated: 2025-07-24**
 
 For up-to-date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -41,7 +41,7 @@ The incremental delivery portion of the GraphQL specification has been unchanged
 
 ## [Cache improvements](https://github.com/apollographql/apollo-kotlin/issues/2331)
 
-Apollo Normalized Cache v1 alphas [are available now](https://github.com/apollographql/apollo-kotlin-normalized-cache/releases) and contain lots of new features like [Cache Control](https://apollographql.github.io/apollo-kotlin-normalized-cache/cache-control.html), [garbage collection](https://apollographql.github.io/apollo-kotlin-normalized-cache/garbage-collection.html), TTL, [partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache/issues/57), better performance and more...
+The new Apollo Normalized Cache v1 alphas [are available now](https://github.com/apollographql/apollo-kotlin-normalized-cache/releases) and contain lots of new features like [Cache Control](https://apollographql.github.io/apollo-kotlin-normalized-cache/cache-control.html), [garbage collection](https://apollographql.github.io/apollo-kotlin-normalized-cache/garbage-collection.html), TTL, [partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache/issues/57), better performance and more...
 
 We encourage you to try it out with the (important) caveat that the binary format might still change (your persistent cache might be lost when upgrading to a newer alpha versions, memory cache isn't impacted).  Your feedback is greatly appreciated and helps us ship a stable version faster.
 

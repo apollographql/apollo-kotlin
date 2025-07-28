@@ -8,7 +8,6 @@ apolloTest()
 dependencies {
   implementation(libs.apollo.api)
   testImplementation(libs.apollo.runtime)
-  testImplementation(libs.kotlin.test)
   testImplementation(libs.apollo.mockserver)
 }
 

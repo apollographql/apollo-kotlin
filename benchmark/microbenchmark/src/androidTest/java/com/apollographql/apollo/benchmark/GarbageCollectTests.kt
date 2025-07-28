@@ -11,6 +11,7 @@ import com.apollographql.cache.normalized.api.SchemaCoordinatesMaxAgeProvider
 import com.apollographql.cache.normalized.garbageCollect
 import com.apollographql.cache.normalized.memory.MemoryCacheFactory
 import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 import kotlin.time.Duration.Companion.days
@@ -27,8 +28,10 @@ class GarbageCollectTests {
         cacheManager = CacheManager(MemoryCacheFactory())
         primeCache(cacheManager)
       }
-      cacheManager.accessCache {
-        it.garbageCollect(maxAgeProvider)
+      runBlocking {
+        cacheManager.accessCache {
+          it.garbageCollect(maxAgeProvider)
+        }
       }
     }
   }
@@ -42,8 +45,10 @@ class GarbageCollectTests {
         cacheManager = CacheManager(SqlNormalizedCacheFactory(dbName))
         primeCache(cacheManager)
       }
-      cacheManager.accessCache {
-        it.garbageCollect(maxAgeProvider)
+      runBlocking {
+        cacheManager.accessCache {
+          it.garbageCollect(maxAgeProvider)
+        }
       }
     }
   }
@@ -57,8 +62,10 @@ class GarbageCollectTests {
         cacheManager = CacheManager(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(dbName)))
         primeCache(cacheManager)
       }
-      cacheManager.accessCache {
-        it.garbageCollect(maxAgeProvider)
+      runBlocking {
+        cacheManager.accessCache {
+          it.garbageCollect(maxAgeProvider)
+        }
       }
     }
   }
