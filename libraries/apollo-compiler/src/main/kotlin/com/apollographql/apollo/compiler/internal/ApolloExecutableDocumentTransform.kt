@@ -214,7 +214,11 @@ internal class ApolloExecutableDocumentTransform(private val addTypename: String
       fragments: Map<String, GQLFragmentDefinition>,
       parentType: String,
   ): GQLField {
-    val typeDefinition = definitionFromScope(schema, parentType)!!
+    val typeDefinition = definitionFromScope(schema, parentType)
+    if (typeDefinition == null) {
+      // This will trigger a validation error later in the build
+      return this
+    }
     val newSelectionSet = selections.addRequiredFields(
         schema = schema,
         fragments = fragments,
