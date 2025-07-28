@@ -8,10 +8,11 @@ import com.apollographql.apollo.conferences.fragment.SpeakerDetails
 import com.apollographql.cache.normalized.CacheManager
 import com.apollographql.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.cache.normalized.api.CacheHeaders
+import kotlinx.coroutines.runBlocking
 
 const val SESSION_COUNT = 100
 
-fun primeCache(cacheManager: CacheManager) {
+fun primeCache(cacheManager: CacheManager) = runBlocking {
   val query1 = GetConferenceDataQuery(Optional.present(SESSION_COUNT))
   var data: GetConferenceDataQuery.Data = GetConferenceDataQuery.Data(
       sessions = createSessions(0),
