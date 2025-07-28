@@ -240,7 +240,7 @@ internal class ApolloExecutableDocumentTransform(private val addTypename: String
   ): GQLField {
     val typeDefinition = definitionFromScope(schema, parentType)
     if (typeDefinition == null) {
-      // This will trigger a validation error alter in the build
+      // This will trigger a validation error later in the build
       return this
     }
     val newSelectionSet = selections.addRequiredFields(
