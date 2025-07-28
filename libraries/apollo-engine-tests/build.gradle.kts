@@ -12,7 +12,6 @@ kotlin {
     findByName("commonMain")?.apply {
       dependencies {
         api(project(":apollo-runtime"))
-        implementation(libs.kotlin.test)
         implementation(libs.apollo.mockserver)
       }
     }

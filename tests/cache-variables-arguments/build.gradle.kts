@@ -8,7 +8,6 @@ apolloTest()
 dependencies {
   implementation(libs.apollo.runtime)
   implementation(libs.apollo.normalizedcache)
-  testImplementation(libs.kotlin.test)
 }
 
 apollo {
