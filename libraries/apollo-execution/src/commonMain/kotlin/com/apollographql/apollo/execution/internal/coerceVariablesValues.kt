@@ -27,7 +27,7 @@ internal fun coerceVariableValues(
 
   variableDefinitions.forEach { variableDefinition ->
     val hasValue = variables.containsKey(variableDefinition.name)
-    if (hasValue) {
+    if (!hasValue) {
       val defaultValue = variableDefinition.defaultValue
       if (defaultValue != null) {
         coercedValues.put(variableDefinition.name, coerceInputLiteralToInternal(schema, defaultValue, variableDefinition.type, coercings, null))
