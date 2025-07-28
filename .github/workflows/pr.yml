@@ -79,7 +79,7 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew -p tests build 
-          ./gredlew -p tests checkGitStatus
+          ./gradlew -p tests checkGitStatus
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
