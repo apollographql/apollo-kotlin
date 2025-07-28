@@ -126,8 +126,6 @@ kotlin-plugin-max = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plug
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" } # use same version as apiVersion
 kotlin-stdlib-common = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-common" } # use same version as apiVersion
 kotlin-stdlib-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib" } # use same version as apiVersion
-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" } # use same version as apiVersion
-kotlin-test-js = { group = "org.jetbrains.kotlin", name = "kotlin-test-js" } # use same version as apiVersion
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit" } # use same version as apiVersion
 # Kotlin/JS has no apiVersion:
 # The Kotlin/JS standard library has an older version (2.0.20-release-360) than the compiler (2.1.0). Such a configuration is not supported.
