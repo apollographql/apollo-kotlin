@@ -45,3 +45,4 @@ docs.json
 
 # Local Netlify folder
 .netlify
+/ref-docs/
