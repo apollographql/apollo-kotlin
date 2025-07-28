@@ -1,3 +1,5 @@
+import com.gradleup.librarian.core.tooling.init.kotlinPluginVersion
+
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
 }
@@ -13,6 +15,7 @@ kotlin {
       dependencies {
         api(project(":apollo-runtime"))
         implementation(libs.apollo.mockserver)
+        implementation("org.jetbrains.kotlin:kotlin-test:$kotlinPluginVersion")
       }
     }
     findByName("commonTest")?.apply {
