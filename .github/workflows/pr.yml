@@ -78,7 +78,8 @@ jobs:
           gradle-home-cache-cleanup: true
       - name: Build with Gradle
         run: |
-          ./gradlew -p tests ciBuild
+          ./gradlew -p tests build 
+          ./gradlew -p tests checkGitStatus
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts

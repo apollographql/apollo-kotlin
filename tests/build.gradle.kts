@@ -1,21 +1,18 @@
 plugins {
-  id("build.logic") apply false
+  id("base")
 }
 
 buildscript {
   dependencies {
+    classpath("com.apollographql.apollo:build-logic")
     classpath("com.apollographql.apollo:apollo-gradle-plugin")
   }
 }
-val ciBuild = tasks.register("ciBuild") {
-  description = """Execute the 'build' task in subprojects and the `termination:run` task too"""
-  subprojects {
-    this@register.dependsOn(tasks.matching { it.name == "build" })
-  }
-  dependsOn(":termination:run")
+
+tasks.register("checkGitStatus") {
   doLast {
     checkGitStatus()
   }
 }
 
-apolloRoot(ciBuild)
+apolloRoot()

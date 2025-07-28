@@ -5,7 +5,6 @@ plugins {
   alias(libs.plugins.kotlin.jvm)
   alias(libs.plugins.kotlin.sam)
   alias(libs.plugins.compat.patrouille)
-  id("java-gradle-plugin")
 }
 
 plugins.apply(SamWithReceiverGradleSubplugin::class.java)
@@ -13,7 +12,7 @@ extensions.configure(SamWithReceiverExtension::class.java) {
   annotations(HasImplicitReceiver::class.qualifiedName!!)
 }
 
-group = "com.apollographql.apollo.build"
+group = "com.apollographql.apollo"
 
 dependencies {
   compileOnly(gradleApi())
@@ -54,19 +53,7 @@ dependencies {
   runtimeOnly(libs.kotlinx.binarycompatibilityvalidator)
 }
 
-
 compatPatrouille {
   java(17)
   kotlin(embeddedKotlinVersion)
-}
-
-gradlePlugin {
-  plugins {
-    register("build.logic") {
-      id = "build.logic"
-      // This plugin is only used for loading the jar using the Marker but never applied
-      // We don't need it.
-      implementationClass = "build.logic.Unused"
-    }
-  }
 }
