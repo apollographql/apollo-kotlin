@@ -3,8 +3,13 @@ package com.apollographql.apollo.network.websocket
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.exception.DefaultApolloException
 import com.apollographql.apollo.network.internal.toWebSocketUrl
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.w3c.dom.WebSocket as PlatformWebSocket
 import org.khronos.webgl.ArrayBufferView
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * WebSocket implementation for wasmJs platform.
@@ -183,10 +188,13 @@ private fun createWebSocket(url: String, headers: List<HttpHeader>, listener: We
     ))
     return null
   }
-  
+
   if (otherHeaders.isNotEmpty()) {
-    // Immediately call error callback - headers not supported in browser WebSocket API
-    listener.onError(DefaultApolloException("Apollo: the WebSocket browser API doesn't allow passing headers. Use connectionPayload or other mechanisms."))
+    @OptIn(DelicateCoroutinesApi::class)
+    GlobalScope.launch {
+      delay(10.milliseconds)
+      listener.onError(DefaultApolloException("Apollo: the WebSocket browser API doesn't allow passing headers. Use connectionPayload or other mechanisms."))
+    }
     return null
   } else {
     return when {
