@@ -2,19 +2,18 @@ package com.apollographql.apollo.network.websocket
 
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.exception.DefaultApolloException
-import com.apollographql.apollo.network.http.ArrayBuffer
 import com.apollographql.apollo.network.http.asByteArray
+import com.apollographql.apollo.network.http.asJsArray
 import com.apollographql.apollo.network.internal.toWebSocketUrl
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.w3c.dom.WebSocket as PlatformWebSocket
-import org.khronos.webgl.ArrayBufferView
 import org.khronos.webgl.Uint8Array
 import org.w3c.dom.ARRAYBUFFER
 import org.w3c.dom.BinaryType
 import kotlin.time.Duration.Companion.milliseconds
+import org.w3c.dom.WebSocket as PlatformWebSocket
 
 /**
  * WebSocket implementation for wasmJs platform.
@@ -47,33 +46,6 @@ private fun tryGetEventDataAsString(data: JsAny): String? =
 
 private fun tryGetEventDataAsArrayBuffer(data: JsAny): org.khronos.webgl.ArrayBuffer? =
   js("data instanceof ArrayBuffer ? data : null")
-
-// Helper functions for array access - following wasmJs pattern from LibEs5.kt
-private fun getUint8ArrayLength(uint8Array: JsAny): Int = js("uint8Array.length")
-private fun getUint8ArrayValue(uint8Array: JsAny, index: Int): Int = js("uint8Array[index]")
-private fun setUint8ArrayValue(uint8Array: JsAny, index: Int, value: Int): Unit = js("uint8Array[index] = value")
-private fun createUint8Array(length: Int): JsAny = js("new Uint8Array(length)")
-
-// Convert JavaScript Uint8Array to Kotlin ByteArray using wasmJs interop
-private fun uint8ArrayToByteArray(uint8Array: JsAny): ByteArray {
-  val length = getUint8ArrayLength(uint8Array)
-  val byteArray = ByteArray(length)
-  for (i in 0 until length) {
-    val intValue = getUint8ArrayValue(uint8Array, i)
-    byteArray[i] = intValue.toByte()
-  }
-  return byteArray
-}
-
-// Convert Kotlin ByteArray to JavaScript Uint8Array for sending binary data
-private fun byteArrayToUint8Array(byteArray: ByteArray): JsAny {
-  val uint8Array = createUint8Array(byteArray.size)
-  for (i in byteArray.indices) {
-    val value = byteArray[i].toInt() and 0xFF
-    setUint8ArrayValue(uint8Array, i, value)
-  }
-  return uint8Array
-}
 
 internal class WasmJsWebSocketEngine: WebSocketEngine {
   override fun newWebSocket(url: String, headers: List<HttpHeader>, listener: WebSocketListener): WebSocket {
@@ -157,8 +129,7 @@ internal class WasmJsWebSocket(
           listener.onError(DefaultApolloException("Apollo: Too much data queued"))
         }
       }
-      // Convert Kotlin ByteArray to JavaScript Uint8Array for proper binary WebSocket transmission
-      socket.send(byteArrayToUint8Array(data).unsafeCast<ArrayBufferView>())
+      socket.send(data.asJsArray().buffer)
     }
   }
 

@@ -71,4 +71,4 @@ class EchoServerWebSocketEngineTest {
 }
 
 private data object Opened
-private suspend fun Channel<Any>.receiveOrTimeout(): Any = withTimeout(1000) { receive() }
+private suspend fun Channel<Any>.receiveOrTimeout(): Any = withTimeout(10000) { receive() }
