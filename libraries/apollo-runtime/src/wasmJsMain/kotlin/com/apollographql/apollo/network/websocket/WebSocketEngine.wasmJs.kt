@@ -2,6 +2,8 @@ package com.apollographql.apollo.network.websocket
 
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.exception.DefaultApolloException
+import com.apollographql.apollo.network.http.ArrayBuffer
+import com.apollographql.apollo.network.http.asByteArray
 import com.apollographql.apollo.network.internal.toWebSocketUrl
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -9,6 +11,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.w3c.dom.WebSocket as PlatformWebSocket
 import org.khronos.webgl.ArrayBufferView
+import org.khronos.webgl.Uint8Array
+import org.w3c.dom.ARRAYBUFFER
+import org.w3c.dom.BinaryType
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -37,10 +42,11 @@ private fun isEventClean(event: JsAny): Boolean = js("event.wasClean")
 private fun getCloseCode(event: JsAny): Int? = js("event.code || null")
 private fun getCloseReason(event: JsAny): String? = js("event.reason || null")
 
-// Binary data detection and conversion helper functions
-private fun isArrayBuffer(data: JsAny): Boolean = js("data instanceof ArrayBuffer")
-private fun isUint8Array(data: JsAny): Boolean = js("data instanceof Uint8Array")
-private fun arrayBufferToUint8Array(buffer: JsAny): JsAny = js("new Uint8Array(buffer)")
+private fun tryGetEventDataAsString(data: JsAny): String? =
+  js("typeof(data) === 'string' ? data : null")
+
+private fun tryGetEventDataAsArrayBuffer(data: JsAny): org.khronos.webgl.ArrayBuffer? =
+  js("data instanceof ArrayBuffer ? data : null")
 
 // Helper functions for array access - following wasmJs pattern from LibEs5.kt
 private fun getUint8ArrayLength(uint8Array: JsAny): Int = js("uint8Array.length")
@@ -91,27 +97,33 @@ internal class WasmJsWebSocket(
 
   init {
     platformWebSocket = createWebSocket(actualUrl, headers, listener)
+    platformWebSocket?.binaryType = BinaryType.ARRAYBUFFER
     platformWebSocket?.onopen = {
       listener.onOpen()
     }
 
-    platformWebSocket?.onmessage = { event ->
+    platformWebSocket?.onmessage = onmessage@{ event ->
       val data = event.data
-      if (data != null) {
-        // Detect and handle both binary (ArrayBuffer/Uint8Array) and text data
-        // This uses wasmJs array interoperability to properly convert binary data
-        if (isArrayBuffer(data) || isUint8Array(data)) {
-          val uint8Array = if (isArrayBuffer(data)) {
-            arrayBufferToUint8Array(data)
-          } else {
-            data
-          }
-          val byteArray = uint8ArrayToByteArray(uint8Array)
-          listener.onMessage(byteArray)
-        } else {
-          val stringData = data.toString()
-          listener.onMessage(stringData)
+      if (data == null) {
+        if (!disposed) {
+          disposed = true
+          listener.onError(DefaultApolloException("Apollo: got event without data"))
         }
+        return@onmessage
+      }
+      val asString = tryGetEventDataAsString(data)
+      if (asString != null) {
+        listener.onMessage(data.toString())
+        return@onmessage
+      }
+      val asArrayBuffer = tryGetEventDataAsArrayBuffer(data)
+      if (asArrayBuffer != null) {
+        listener.onMessage(Uint8Array(asArrayBuffer).asByteArray())
+        return@onmessage
+      }
+      if (!disposed) {
+        disposed = true
+        listener.onError(DefaultApolloException("Apollo: unknown data type: $data"))
       }
     }
 

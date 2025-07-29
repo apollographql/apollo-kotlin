@@ -1,4 +1,3 @@
-
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -34,42 +33,27 @@ private val enableJs = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?: t
 private val enableApple = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?: true
 
 
-fun Project.configureMpp(
+fun defaultTargets(
     withJvm: Boolean,
     withJs: Boolean,
     withLinux: Boolean,
     withAndroid: Boolean,
     withWasm: Boolean,
     appleTargets: Collection<String>,
-    browserTest: Boolean,
-) {
-  val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
-  check(kotlinExtension != null) {
-    "No multiplatform extension found"
-  }
-  kotlinExtension.apply {
+): KotlinMultiplatformExtension.() -> Unit {
+  return {
     if (withJvm) {
       jvm()
     }
 
     if (enableJs && withJs) {
       js(IR) {
-        if (browserTest) {
-          browser {
-            testTask(Action {
-              useKarma {
-                useChromeHeadless()
-              }
-            })
-          }
-        } else {
-          nodejs {
-            testTask(Action {
-              useMocha {
-                // Override default 2s timeout
-                timeout = "120s"
-              }
-            })
+        nodejs {
+          testTask {
+            useMocha {
+              // Override default 2s timeout
+              timeout = "120s"
+            }
           }
         }
       }
@@ -108,8 +92,6 @@ fun Project.configureMpp(
         }
       }
     }
-
-    configureSourceSetGraph()
   }
 }
 
@@ -143,7 +125,7 @@ fun Project.configureMpp(
  * ```
  */
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
-private fun KotlinMultiplatformExtension.configureSourceSetGraph() {
+internal fun KotlinMultiplatformExtension.configureSourceSetGraph() {
   applyDefaultHierarchyTemplate {
     group("common") {
       group("filesystem") {
