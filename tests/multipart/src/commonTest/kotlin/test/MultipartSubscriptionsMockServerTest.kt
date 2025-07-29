@@ -264,6 +264,18 @@ class MultipartSubscriptionsMockServerTest {
   }
 
   @Test
+  fun trailingDataIsIgnored() = multipartSubsTest {
+    enqueue(
+        "\r\n--graphql\r\nContent-Type: application/json\r\n\r\n{\"payload\":{\"data\":{\"hello\":\"world\"}}}" +
+            "\r\n--graphql--foo\r\nbar"
+    )
+    apolloClient.subscription(HelloSubscription()).toFlow().test(timeout = 300.milliseconds) {
+      assertEquals("world", awaitItem().dataOrThrow().hello)
+      awaitComplete()
+    }
+  }
+
+  @Test
   fun malformedMultipartTriggersReturnsErrorResponse() = multipartSubsTest {
     // No end boundary
     enqueue("--graphql\r\n")
