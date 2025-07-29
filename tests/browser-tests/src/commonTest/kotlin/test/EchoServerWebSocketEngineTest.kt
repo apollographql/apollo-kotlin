@@ -13,6 +13,7 @@ import okio.use
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.time.Duration.Companion.seconds
 
 class EchoServerWebSocketEngineTest {
   @OptIn(ApolloExperimental::class)
@@ -71,4 +72,4 @@ class EchoServerWebSocketEngineTest {
 }
 
 private data object Opened
-private suspend fun Channel<Any>.receiveOrTimeout(): Any = withTimeout(10000) { receive() }
+private suspend fun Channel<Any>.receiveOrTimeout(): Any = withTimeout(10.seconds) { receive() }
