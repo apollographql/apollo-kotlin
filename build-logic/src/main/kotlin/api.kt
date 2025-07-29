@@ -163,9 +163,9 @@ fun Project.apolloTest(
   configureTesting()
 }
 
-fun Project.apolloRoot(ciBuild: TaskProvider<Task>) {
+fun Project.apolloRoot() {
   configureNode()
-  rootSetup(ciBuild)
+  rootSetup()
 
   pluginManager.apply("com.gradleup.nmcp.aggregation")
   val nmcpAggregation = extensions.getByType(NmcpAggregationExtension::class.java)

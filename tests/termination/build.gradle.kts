@@ -20,3 +20,7 @@ apollo {
 application {
   mainClass.set("termination.MainKt")
 }
+
+tasks.named("build").configure {
+  dependsOn("run")
+}
