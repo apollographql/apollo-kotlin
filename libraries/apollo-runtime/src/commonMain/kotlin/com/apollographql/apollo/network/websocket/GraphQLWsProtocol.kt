@@ -73,6 +73,11 @@ class GraphQLWsProtocol(
       "pong" -> PongServerMessage
       "next", "complete", "error" -> {
         val id = map["id"] as? String
+
+        /**
+         * See https://youtrack.jetbrains.com/issue/KT-79673/Kotlin-Wasm-object-WebAssembly.Exception-in-production-mode
+         * and https://github.com/apollographql/apollo-kotlin/pull/6637#discussion_r2240372931 for why this `if` block is needed.
+         */
         if (type == "next") {
           return ResponseServerMessage(id.toString(), map["payload"])
         }
