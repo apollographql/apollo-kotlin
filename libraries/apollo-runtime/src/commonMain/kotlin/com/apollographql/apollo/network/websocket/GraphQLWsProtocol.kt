@@ -73,6 +73,9 @@ class GraphQLWsProtocol(
       "pong" -> PongServerMessage
       "next", "complete", "error" -> {
         val id = map["id"] as? String
+        if (type == "next") {
+          return ResponseServerMessage(id.toString(), map["payload"])
+        }
         when {
           id == null -> ParseErrorServerMessage("No 'id' found in message: '$text'")
           type == "next" -> ResponseServerMessage(id, map["payload"])
