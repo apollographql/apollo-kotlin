@@ -2,6 +2,7 @@ package com.apollographql.apollo.graphql.ast.test
 
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.internal.SchemaValidationOptions
+import com.apollographql.apollo.ast.internal.toSemanticSdl
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.ast.toSchema
@@ -149,5 +150,28 @@ class SchemaTest {
 
     assertEquals(1, result.issues.size)
     assertEquals("Apollo: unknown definition '@unknownDirective'", result.issues.first().message)
+  }
+
+  @Test
+  fun descriptionsAndArgumentOrderDoesNotMatterForSemanticComparison() {
+    // language=graphql
+    val document1 = """
+      directive @defer(
+        "Deferred behaviour is controlled by this argument" 
+        if: Boolean! = true, 
+        "A unique label that represents the fragment being deferred" 
+        label: String
+      ) on FRAGMENT_SPREAD|INLINE_FRAGMENT
+    """.trimIndent()
+
+    // language=graphql
+    val document2 = """
+      directive @defer(
+        label: String,
+        if: Boolean! = true, 
+      ) on FRAGMENT_SPREAD|INLINE_FRAGMENT
+    """.trimIndent()
+
+    assertEquals(document1.toGQLDocument().toSemanticSdl(),document2.toGQLDocument().toSemanticSdl())
   }
 }
