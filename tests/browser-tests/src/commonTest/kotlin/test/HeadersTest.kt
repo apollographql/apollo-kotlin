@@ -28,6 +28,7 @@ class HeadersTest {
 
     client.use {
       val response = it.subscription(NothingSubscription()).toFlow().single()
+      println(response.exception?.message)
       assertTrue(response.exception?.message?.contains("Apollo: the WebSocket browser API doesn't allow passing headers") == true)
     }
   }

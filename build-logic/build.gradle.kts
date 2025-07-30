@@ -19,6 +19,9 @@ dependencies {
   compileOnly(libs.dgp)
 
   implementation(libs.okhttp)
+  implementation(libs.ktor.server.netty)
+  implementation(libs.ktor.server.cors)
+  implementation(libs.ktor.server.websockets)
 
   implementation(libs.kotlinx.benchmark)
   implementation(libs.dokka)

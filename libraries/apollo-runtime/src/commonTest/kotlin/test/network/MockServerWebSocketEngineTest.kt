@@ -89,7 +89,7 @@ private fun WebSocketMessage.pretty(): String = when (this) {
   PongFrame -> "PongFrame"
 }
 
-class WebSocketEngineTest {
+class MockServerWebSocketEngineTest {
   private class Scope(
       val clientReader: Channel<Item>,
       val clientWriter: WebSocket,
