@@ -237,7 +237,7 @@ internal fun apolloCompilerRegistry(
   pluginProviders.forEach {
     // we make an exception for our own cache plugin because we want to display a nice error message to users before 4.3
     if (it.javaClass.name != "com.apollographql.cache.apollocompilerplugin.ApolloCacheCompilerPluginProvider") {
-      println("Apollo: using ApolloCompilerPluginProvider is deprecated. Please use ApolloCompilerPlugin directly.")
+      println("Apollo: using ApolloCompilerPluginProvider is deprecated. You can use ApolloCompilerPlugin directly. See https://go.apollo.dev/ak-compiler-plugins for more details.")
     }
     hasPlugin = true
     val plugin = it.create(environment)
@@ -246,7 +246,7 @@ internal fun apolloCompilerRegistry(
   }
 
   if (!hasPlugin && warnIfNotFound) {
-    println("Apollo: a compiler plugin was added with `Service.plugin()` but no plugin was loaded by the ServiceLoader. Check your META-INF/services/com.apollographql.apollo.compiler.ApolloCompilerPlugin file.")
+    println("Apollo: a compiler plugin was added with `Service.plugin()` but no plugin was loaded by the ServiceLoader. Check your META-INF/services/com.apollographql.apollo.compiler.ApolloCompilerPlugin file. See https://go.apollo.dev/ak-compiler-plugins for more details.")
   }
 
   return registry
