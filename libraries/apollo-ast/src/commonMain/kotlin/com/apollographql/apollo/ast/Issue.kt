@@ -46,7 +46,12 @@ class UnknownDirective(
 ) : GraphQLValidationIssue
 
 /**
- * The definition is inconsistent with the expected one.
+ * The provided schema contains a definition that doesn't match the GraphQL specification.
+ *
+ * This may happen in particular for directive that are in the process of being specified like `@defer` (as of Jul 2025).
+ *
+ * Because the Apollo compiler expects a certain shape of directive and arguments, anything else may trigger
+ * a crash in the compiler. By validating explicitly, the error is more explicit.
  */
 class IncompatibleDefinition(
     name: String,
