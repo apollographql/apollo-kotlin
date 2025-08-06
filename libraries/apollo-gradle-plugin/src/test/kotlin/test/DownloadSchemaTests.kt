@@ -2,17 +2,21 @@ package test
 
 import com.apollographql.execution.ExecutableSchema
 import com.apollographql.execution.http4k.apolloHandler
+import com.google.common.truth.Truth
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.tls.HandshakeCertificates
 import okhttp3.tls.HeldCertificate
 import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.junit.Assert
 import org.junit.Test
 import util.TestUtils
 import java.io.File
+import kotlin.test.assertContains
+import kotlin.test.assertEquals
 
 class DownloadSchemaTests {
   private val mockServer = MockWebServer()
@@ -152,6 +156,17 @@ class DownloadSchemaTests {
       }
     """.trimIndent()
 
+  private val apolloConfigurationWithGradleProperty = """
+      apollo {
+        service("mock") {
+          introspection {
+            schemaFile = file("src/main/graphql/com/example/schema.json")
+            endpointUrl = providers.gradleProperty("schema-endpoint")
+          }
+        }
+      }
+    """.trimIndent()
+
   @Test
   fun `schema is downloaded correctly`() {
     TestUtils.withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
@@ -239,5 +254,38 @@ class DownloadSchemaTests {
     Assert.assertEquals(TaskOutcome.SUCCESS, buildResult.task(":downloadServiceApolloSchemaFromIntrospection")?.outcome)
 
     server.stop()
+  }
+
+  @Test
+  fun `when endpoint url property value is missing and the download task isn't executed, build succeeds`() {
+    TestUtils.withSimpleProject(apolloConfiguration = apolloConfigurationWithGradleProperty) { dir ->
+      Assert.assertEquals(TaskOutcome.SUCCESS, TestUtils.executeTask("help", dir).task(":help")?.outcome)
+    }
+  }
+
+  @Test
+  fun `when endpoint url property value is missing and the download task is executed, build fails`() {
+    TestUtils.withSimpleProject(apolloConfiguration = apolloConfigurationWithGradleProperty) { dir ->
+      try {
+        TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
+      } catch (ex: UnexpectedBuildFailure) {
+        Assert.assertEquals(TaskOutcome.FAILED, ex.buildResult.task(":downloadMockApolloSchemaFromIntrospection")?.outcome)
+        Truth.assertThat(ex.buildResult.output).contains("Apollo: either endpoint (for introspection) or key (for registry) is required")
+      }
+    }
+  }
+
+  @Test
+  fun `when endpoint url property value is present and the download task is executed, build succeeds`() {
+    TestUtils.withSimpleProject(apolloConfiguration = apolloConfigurationWithGradleProperty) { dir ->
+      mockServer.enqueue(MockResponse().setBody(preIntrospectionResponse))
+      mockServer.enqueue(MockResponse().setBody(schemaString1))
+
+      val buildResult =
+        TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir, "-Pschema-endpoint=${mockServer.url("/").toUrl()}")
+
+      Assert.assertEquals(TaskOutcome.SUCCESS, buildResult.task(":downloadMockApolloSchemaFromIntrospection")?.outcome)
+      Assert.assertEquals(schemaString1, File(dir, "src/main/graphql/com/example/schema.json").readText())
+    }
   }
 }
