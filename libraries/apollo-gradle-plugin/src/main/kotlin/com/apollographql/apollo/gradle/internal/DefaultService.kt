@@ -65,10 +65,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
     configure.execute(introspection)
 
-    if (!introspection.endpointUrl.isPresent) {
-      throw IllegalArgumentException("introspection must have a url")
-    }
-
     this.introspection = introspection
   }
 
