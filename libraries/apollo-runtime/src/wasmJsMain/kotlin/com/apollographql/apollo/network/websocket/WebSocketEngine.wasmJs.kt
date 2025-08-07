@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_USAGE")
+
 package com.apollographql.apollo.network.websocket
 
 import com.apollographql.apollo.api.http.HttpHeader
