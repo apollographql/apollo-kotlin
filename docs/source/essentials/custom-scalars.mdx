@@ -65,7 +65,7 @@ If you prefer working with `Map`s, Apollo Kotlin comes with `AnyAdapter`, which 
 ```kotlin
 val geoPointAdapter = object : Adapter<GeoPoint> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GeoPoint {
-    val map = AnyAdapter.fromJson(reader) as Map<String, Double>
+    val map = AnyAdapter.fromJson(reader, customScalarAdapters) as Map<String, Double>
     return GeoPoint(map["latitude"] as Double, map["longitude"] as Double)
   }
 
@@ -74,7 +74,7 @@ val geoPointAdapter = object : Adapter<GeoPoint> {
         "latitude" to value.latitude,
         "longitude" to value.longitude
     )
-    AnyAdapter.toJson(writer, map)
+    AnyAdapter.toJson(writer, customScalarAdapters, map)
   }
 }
 ```
