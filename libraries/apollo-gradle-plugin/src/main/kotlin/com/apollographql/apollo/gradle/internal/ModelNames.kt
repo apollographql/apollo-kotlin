@@ -22,6 +22,8 @@ internal object ModelNames {
   fun computeUsedCoordinates(service: DefaultService)= camelCase("compute", service.name, "ApolloUsedCoordinates")
   fun generateApolloIrOperations(service: Service) = camelCase("generate", service.name, "ApolloIrOperations")
   fun generateApolloOptions(service: Service) = camelCase("generate", service.name, "ApolloOptions")
+  fun generateApolloProjectIdeModel() = "generateApolloProjectIdeModel"
+  fun generateApolloServiceIdeModel(service: Service) = camelCase("generate", service.name, "ApolloServiceIdeModel")
   fun downloadApolloSchema() = camelCase("downloadApolloSchema")
   fun downloadApolloSchemaIntrospection(service: Service) = camelCase("download", service.name, "ApolloSchemaFromIntrospection")
   fun downloadApolloSchemaRegistry(service: Service) = camelCase("download", service.name, "ApolloSchemaFromRegistry")

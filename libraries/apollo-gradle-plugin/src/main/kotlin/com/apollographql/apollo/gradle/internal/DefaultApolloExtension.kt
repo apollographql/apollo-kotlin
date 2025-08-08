@@ -17,6 +17,8 @@ import com.apollographql.apollo.gradle.task.registerApolloGenerateCodegenSchemaT
 import com.apollographql.apollo.gradle.task.registerApolloGenerateDataBuildersSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateIrOperationsTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateOptionsTask
+import com.apollographql.apollo.gradle.task.registerApolloGenerateProjectIdeModelTask
+import com.apollographql.apollo.gradle.task.registerApolloGenerateServiceIdeModelTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesFromIrTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloRegisterOperationsTask
@@ -51,6 +53,7 @@ abstract class DefaultApolloExtension(
   private var codegenOnGradleSyncConfigured: Boolean = false
   private val services = mutableListOf<DefaultService>()
   private val generateApolloSources: TaskProvider<Task>
+  private val generateApolloProjectIdeModel: TaskProvider<out Task>
   private var hasExplicitService = false
   private val adhocComponentWithVariants: AdhocComponentWithVariants by lazy {
     softwareComponentFactory.adhoc("apollo").also {
@@ -184,6 +187,16 @@ abstract class DefaultApolloExtension(
         error("Apollo: using './gradlew pushApolloSchema' is deprecated. Please use rover to push schemas. See https://go.apollo.dev/rover.")
       }
     }
+
+    /**
+     * IDE model
+     */
+    generateApolloProjectIdeModel = project.registerApolloGenerateProjectIdeModelTask(
+        taskName = ModelNames.generateApolloProjectIdeModel(),
+        taskDescription = "Generate Apollo project IDE model",
+        serviceNames = project.provider { services.map { it.name }.toSet() },
+        projectIdeModelFile = project.layout.buildDirectory.file("generated/apollo/ide/project.json"),
+    )
 
     project.afterEvaluate {
       maybeLinkSqlite()
@@ -415,6 +428,33 @@ abstract class DefaultApolloExtension(
         // If there is no downstream dependency, generate everything because we don't know what types are going to be used downstream
         generateAllTypes = project.provider { service.isSchemaModule() && service.isMultiModule() && service.downstreamDependencies.isEmpty() },
     )
+    generateApolloProjectIdeModel.configure {
+      it.dependsOn(optionsTaskProvider)
+    }
+
+    val serviceIdeModelTaskProvider = project.registerApolloGenerateServiceIdeModelTask(
+        taskName = ModelNames.generateApolloServiceIdeModel(service),
+        taskDescription = "Generate Apollo service IDE model for '${service.name}'",
+
+        projectPath = project.provider { project.path },
+        serviceName = project.provider { service.name },
+        schemaFiles = project.provider { service.schemaFilesSnapshot(project).map { it.absolutePath }.toSet() },
+        graphqlSrcDirs = project.provider { service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet() },
+        upstreamProjectPaths = project.provider {
+          service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet()
+        },
+        downstreamProjectPaths = project.provider {
+          service.downstreamDependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet()
+        },
+        endpointUrl = project.provider { service.introspection?.endpointUrl?.orNull },
+        endpointHeaders = project.provider { service.introspection?.headers?.orNull },
+        useSemanticNaming = project.provider { service.useSemanticNaming.getOrElse(true) },
+
+        serviceIdeModelFile = project.layout.buildDirectory.file("generated/apollo/ide/services/${service.name}.json"),
+    )
+    generateApolloProjectIdeModel.configure {
+      it.dependsOn(serviceIdeModelTaskProvider)
+    }
 
     if (!service.isMultiModule()) {
       sourcesBaseTaskProvider = project.registerApolloGenerateSourcesTask(

@@ -62,6 +62,26 @@ public final class com/apollographql/apollo/gradle/task/ApolloGenerateOptionsKt 
 	public static final fun getKotlinTargetLanguage (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo/compiler/TargetLanguage;
 }
 
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateProjectIdeModelEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateProjectIdeModelEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/Set;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateProjectIdeModelEntryPoint$Companion {
+	public final fun run (Ljava/util/Set;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateServiceIdeModelEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateServiceIdeModelEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/lang/String;Ljava/util/Map;ZLjava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateServiceIdeModelEntryPoint$Companion {
+	public final fun run (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/lang/String;Ljava/util/Map;ZLjava/io/File;)V
+}
+
 public final class com/apollographql/apollo/gradle/task/ApolloGenerateSourcesEntryPoint {
 	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateSourcesEntryPoint$Companion;
 	public fun <init> ()V
