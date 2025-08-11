@@ -61,7 +61,7 @@ abstract class CleanStaleTestProjects : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    directory.listFiles { it.isDirectory && it.name.startsWith("testProject") }!!.forEach {
+    directory.listFiles { it: File -> it.isDirectory && it.name.startsWith("testProject") }!!.forEach {
       it.deleteRecursively()
     }
   }
