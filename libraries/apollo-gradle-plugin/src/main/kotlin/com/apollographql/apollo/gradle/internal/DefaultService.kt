@@ -236,7 +236,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   internal fun isSchemaModule(): Boolean = upstreamDependencies.isEmpty()
 
   override fun plugin(dependencyNotation: Any) {
-    compilerConfiguration.dependencies.add(project.dependencies.create(dependencyNotation))
+    project.dependencies.add(compilerConfiguration.name, dependencyNotation)
     hasPlugin = true
   }
 
