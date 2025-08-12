@@ -1,13 +1,13 @@
 package com.apollographql.apollo.gradle.task
 
-import com.apollographql.apollo.compiler.ide.ServiceIdeModel
+import com.apollographql.apollo.compiler.ide.ServiceModel
 import com.apollographql.apollo.compiler.ide.writeTo
 import gratatouille.tasks.GManuallyWired
 import gratatouille.tasks.GOutputFile
 import gratatouille.tasks.GTask
 
 @GTask
-internal fun apolloGenerateServiceIdeModel(
+internal fun apolloGenerateServiceModel(
     // Inputs
     projectPath: String,
     serviceName: String,
@@ -21,9 +21,9 @@ internal fun apolloGenerateServiceIdeModel(
 
     // Outputs
     @GManuallyWired
-    serviceIdeModelFile: GOutputFile,
+    serviceModelFile: GOutputFile,
 ) {
-  ServiceIdeModel(
+  ServiceModel(
       projectPath = projectPath,
       serviceName = serviceName,
       schemaFiles = schemaFiles,
@@ -34,6 +34,6 @@ internal fun apolloGenerateServiceIdeModel(
       endpointHeaders = endpointHeaders,
       useSemanticNaming = useSemanticNaming,
   )
-      .writeTo(serviceIdeModelFile)
+      .writeTo(serviceModelFile)
 }
 

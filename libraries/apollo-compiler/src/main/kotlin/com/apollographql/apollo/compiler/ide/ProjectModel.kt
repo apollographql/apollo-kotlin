@@ -8,16 +8,16 @@ import java.io.File
 
 @ApolloInternal
 @Serializable
-class ProjectIdeModel(
+class ProjectModel(
     val serviceNames: Set<String>,
 )
 
 @ApolloInternal
-fun ProjectIdeModel.writeTo(file: File) {
+fun ProjectModel.writeTo(file: File) {
   file.writeText(Json.encodeToString(this))
 }
 
 @ApolloInternal
-fun File.toProjectIdeModel(): ProjectIdeModel {
+fun File.toProjectModel(): ProjectModel {
   return Json.decodeFromString(readText())
 }

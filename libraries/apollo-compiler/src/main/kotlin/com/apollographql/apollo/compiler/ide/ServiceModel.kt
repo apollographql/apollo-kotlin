@@ -8,7 +8,7 @@ import java.io.File
 
 @ApolloInternal
 @Serializable
-class ServiceIdeModel(
+class ServiceModel(
     val projectPath: String,
     val serviceName: String,
     val schemaFiles: Set<String>,
@@ -21,11 +21,11 @@ class ServiceIdeModel(
 )
 
 @ApolloInternal
-fun ServiceIdeModel.writeTo(file: File) {
+fun ServiceModel.writeTo(file: File) {
   file.writeText(Json.encodeToString(this))
 }
 
 @ApolloInternal
-fun File.toServiceIdeModel(): ServiceIdeModel {
+fun File.toServiceModel(): ServiceModel {
   return Json.decodeFromString(readText())
 }

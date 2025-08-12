@@ -17,8 +17,8 @@ import com.apollographql.apollo.gradle.task.registerApolloGenerateCodegenSchemaT
 import com.apollographql.apollo.gradle.task.registerApolloGenerateDataBuildersSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateIrOperationsTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateOptionsTask
-import com.apollographql.apollo.gradle.task.registerApolloGenerateProjectIdeModelTask
-import com.apollographql.apollo.gradle.task.registerApolloGenerateServiceIdeModelTask
+import com.apollographql.apollo.gradle.task.registerApolloGenerateProjectModelTask
+import com.apollographql.apollo.gradle.task.registerApolloGenerateServiceModelTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesFromIrTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloRegisterOperationsTask
@@ -189,13 +189,13 @@ abstract class DefaultApolloExtension(
     }
 
     /**
-     * IDE model
+     * Project model for integration with other tools, e.g. IDE plugin.
      */
-    generateApolloProjectIdeModel = project.registerApolloGenerateProjectIdeModelTask(
-        taskName = ModelNames.generateApolloProjectIdeModel(),
-        taskDescription = "Generate Apollo project IDE model",
+    generateApolloProjectIdeModel = project.registerApolloGenerateProjectModelTask(
+        taskName = ModelNames.generateApolloProjectModel(),
+        taskDescription = "Generate Apollo project model",
         serviceNames = project.provider { services.map { it.name }.toSet() },
-        projectIdeModelFile = project.layout.buildDirectory.file("generated/apollo/ide/project.json"),
+        projectModelFile = project.layout.buildDirectory.file("generated/apollo/ide/project.json"),
     )
 
     project.afterEvaluate {
@@ -312,7 +312,7 @@ abstract class DefaultApolloExtension(
     )
   }
 
-  private fun <T> HasConfigurableAttributes<T>.attributes(serviceName: String, usage: ApolloUsage, direction: ApolloDirection) {
+  private fun <T : Any> HasConfigurableAttributes<T>.attributes(serviceName: String, usage: ApolloUsage, direction: ApolloDirection) {
     attributes {
       it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, usage.name))
       it.attribute(APOLLO_SERVICE_ATTRIBUTE, serviceName)
@@ -432,9 +432,9 @@ abstract class DefaultApolloExtension(
       it.dependsOn(optionsTaskProvider)
     }
 
-    val serviceIdeModelTaskProvider = project.registerApolloGenerateServiceIdeModelTask(
-        taskName = ModelNames.generateApolloServiceIdeModel(service),
-        taskDescription = "Generate Apollo service IDE model for '${service.name}'",
+    val serviceIdeModelTaskProvider = project.registerApolloGenerateServiceModelTask(
+        taskName = ModelNames.generateApolloServiceModel(service),
+        taskDescription = "Generate Apollo service model for '${service.name}'",
 
         projectPath = project.provider { project.path },
         serviceName = project.provider { service.name },
@@ -450,7 +450,7 @@ abstract class DefaultApolloExtension(
         endpointHeaders = project.provider { service.introspection?.headers?.orNull },
         useSemanticNaming = project.provider { service.useSemanticNaming.getOrElse(true) },
 
-        serviceIdeModelFile = project.layout.buildDirectory.file("generated/apollo/ide/services/${service.name}.json"),
+        serviceModelFile = project.layout.buildDirectory.file("generated/apollo/ide/services/${service.name}.json"),
     )
     generateApolloProjectIdeModel.configure {
       it.dependsOn(serviceIdeModelTaskProvider)
