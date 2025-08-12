@@ -1,38 +1,34 @@
 package com.apollographql.apollo.gradle.task
 
-import com.apollographql.apollo.compiler.ide.ServiceModel
-import com.apollographql.apollo.compiler.ide.writeTo
-import gratatouille.tasks.GManuallyWired
+import com.apollographql.apollo.compiler.model.ServiceModel
+import com.apollographql.apollo.compiler.model.writeTo
 import gratatouille.tasks.GOutputFile
 import gratatouille.tasks.GTask
 
 @GTask
 internal fun apolloGenerateServiceModel(
     // Inputs
-    projectPath: String,
+    gradleProjectPath: String,
     serviceName: String,
     schemaFiles: Set<String>,
     graphqlSrcDirs: Set<String>,
-    upstreamProjectPaths: Set<String>,
-    downstreamProjectPaths: Set<String>,
+    upstreamGradleProjectPaths: Set<String>,
+    downstreamGradleProjectPaths: Set<String>,
     endpointUrl: String?,
     endpointHeaders: Map<String, String>?,
-    useSemanticNaming: Boolean,
 
     // Outputs
-    @GManuallyWired
     serviceModelFile: GOutputFile,
 ) {
   ServiceModel(
-      projectPath = projectPath,
+      gradleProjectPath = gradleProjectPath,
       serviceName = serviceName,
       schemaFiles = schemaFiles,
       graphqlSrcDirs = graphqlSrcDirs,
-      upstreamProjectPaths = upstreamProjectPaths,
-      downstreamProjectPaths = downstreamProjectPaths,
+      upstreamGradleProjectPaths = upstreamGradleProjectPaths,
+      downstreamGradleProjectPaths = downstreamGradleProjectPaths,
       endpointUrl = endpointUrl,
       endpointHeaders = endpointHeaders,
-      useSemanticNaming = useSemanticNaming,
   )
       .writeTo(serviceModelFile)
 }

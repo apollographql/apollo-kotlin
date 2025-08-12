@@ -195,7 +195,6 @@ abstract class DefaultApolloExtension(
         taskName = ModelNames.generateApolloProjectModel(),
         taskDescription = "Generate Apollo project model",
         serviceNames = project.provider { services.map { it.name }.toSet() },
-        projectModelFile = project.layout.buildDirectory.file("generated/apollo/ide/project.json"),
     )
 
     project.afterEvaluate {
@@ -436,21 +435,18 @@ abstract class DefaultApolloExtension(
         taskName = ModelNames.generateApolloServiceModel(service),
         taskDescription = "Generate Apollo service model for '${service.name}'",
 
-        projectPath = project.provider { project.path },
+        gradleProjectPath = project.provider { project.path },
         serviceName = project.provider { service.name },
         schemaFiles = project.provider { service.schemaFilesSnapshot(project).map { it.absolutePath }.toSet() },
         graphqlSrcDirs = project.provider { service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet() },
-        upstreamProjectPaths = project.provider {
+        upstreamGradleProjectPaths = project.provider {
           service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet()
         },
-        downstreamProjectPaths = project.provider {
+        downstreamGradleProjectPaths = project.provider {
           service.downstreamDependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet()
         },
         endpointUrl = project.provider { service.introspection?.endpointUrl?.orNull },
         endpointHeaders = project.provider { service.introspection?.headers?.orNull },
-        useSemanticNaming = project.provider { service.useSemanticNaming.getOrElse(true) },
-
-        serviceModelFile = project.layout.buildDirectory.file("generated/apollo/ide/services/${service.name}.json"),
     )
     generateApolloProjectIdeModel.configure {
       it.dependsOn(serviceIdeModelTaskProvider)

@@ -1,8 +1,7 @@
 package com.apollographql.apollo.gradle.task
 
-import com.apollographql.apollo.compiler.ide.ProjectModel
-import com.apollographql.apollo.compiler.ide.writeTo
-import gratatouille.tasks.GManuallyWired
+import com.apollographql.apollo.compiler.model.ProjectModel
+import com.apollographql.apollo.compiler.model.writeTo
 import gratatouille.tasks.GOutputFile
 import gratatouille.tasks.GTask
 
@@ -12,7 +11,6 @@ internal fun apolloGenerateProjectModel(
     serviceNames: Set<String>,
 
     // Outputs
-    @GManuallyWired
     projectModelFile: GOutputFile,
 ) {
   ProjectModel(

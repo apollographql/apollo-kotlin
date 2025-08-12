@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.ide
+package com.apollographql.apollo.compiler.model
 
 import com.apollographql.apollo.annotations.ApolloInternal
 import kotlinx.serialization.Serializable
@@ -9,15 +9,25 @@ import java.io.File
 @ApolloInternal
 @Serializable
 class ServiceModel(
-    val projectPath: String,
+    /**
+     * The Gradle project path of the service, e.g. ":feature:myFeature1"
+     */
+    val gradleProjectPath: String,
     val serviceName: String,
     val schemaFiles: Set<String>,
     val graphqlSrcDirs: Set<String>,
-    val upstreamProjectPaths: Set<String>,
-    val downstreamProjectPaths: Set<String>,
+
+    /**
+     * Upstream Gradle project paths e.g. [":graphqlShared"]
+     */
+    val upstreamGradleProjectPaths: Set<String>,
+
+    /**
+     * Downstream Gradle project paths e.g. [":feature:myFeature2"]
+     */
+    val downstreamGradleProjectPaths: Set<String>,
     val endpointUrl: String?,
     val endpointHeaders: Map<String, String>?,
-    val useSemanticNaming: Boolean,
 )
 
 @ApolloInternal
