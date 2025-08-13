@@ -111,31 +111,33 @@ abstract class DefaultApolloExtension(
         generateApolloMetadata = service.generateApolloMetadata.orNull,
 
         // Options for which we don't mind the value but want to know they are used
-        usedOptions = mutableSetOf<String>().apply {
-          if (service.includes.isPresent) add("includes")
-          if (service.excludes.isPresent) add("excludes")
-          if (service.schemaFile.isPresent) add("schemaFile")
-          if (!service.schemaFiles.isEmpty) add("schemaFiles")
-          if (service.scalarAdapterMapping.isNotEmpty()) {
-            add("mapScalarAdapterExpression")
-          } else if (service.scalarTypeMapping.isNotEmpty()) {
-            add("mapScalar")
-          }
-          @Suppress("DEPRECATION_ERROR")
-          if (service.operationManifest.isPresent) add("operationManifest")
-          if (service.generatedSchemaName.isPresent) add("generatedSchemaName")
-          if (service.debugDir.isPresent) add("debugDir")
-          if (service.sealedClassesForEnumsMatching.isPresent) add("sealedClassesForEnumsMatching")
-          if (service.classesForEnumsMatching.isPresent) add("classesForEnumsMatching")
-          @Suppress("DEPRECATION_ERROR")
-          if (service.outputDir.isPresent) add("outputDir")
-          if (service.alwaysGenerateTypesMatching.isPresent) add("alwaysGenerateTypesMatching")
-          if (service.introspection != null) add("introspection")
-          if (service.registry != null) add("registry")
-          if (service.upstreamDependencies.isNotEmpty()) add("dependsOn")
-          if (service.downstreamDependencies.isNotEmpty()) add("isADependencyOf")
-        },
+        usedOptions = service.telemetryUsedOptions(),
     )
+  }
+
+  private fun DefaultService.telemetryUsedOptions(): Set<String> = mutableSetOf<String>().apply {
+    if (includes.isPresent) add("includes")
+    if (excludes.isPresent) add("excludes")
+    if (schemaFile.isPresent) add("schemaFile")
+    if (!schemaFiles.isEmpty) add("schemaFiles")
+    if (scalarAdapterMapping.isNotEmpty()) {
+      add("mapScalarAdapterExpression")
+    } else if (scalarTypeMapping.isNotEmpty()) {
+      add("mapScalar")
+    }
+    @Suppress("DEPRECATION_ERROR")
+    if (operationManifest.isPresent) add("operationManifest")
+    if (generatedSchemaName.isPresent) add("generatedSchemaName")
+    if (debugDir.isPresent) add("debugDir")
+    if (sealedClassesForEnumsMatching.isPresent) add("sealedClassesForEnumsMatching")
+    if (classesForEnumsMatching.isPresent) add("classesForEnumsMatching")
+    @Suppress("DEPRECATION_ERROR")
+    if (outputDir.isPresent) add("outputDir")
+    if (alwaysGenerateTypesMatching.isPresent) add("alwaysGenerateTypesMatching")
+    if (introspection != null) add("introspection")
+    if (registry != null) add("registry")
+    if (upstreamDependencies.isNotEmpty()) add("dependsOn")
+    if (downstreamDependencies.isNotEmpty()) add("isADependencyOf")
   }
 
   internal val serviceCount: Int
@@ -194,7 +196,17 @@ abstract class DefaultApolloExtension(
     generateApolloProjectIdeModel = project.registerApolloGenerateProjectModelTask(
         taskName = ModelNames.generateApolloProjectModel(),
         taskDescription = "Generate Apollo project model",
+
         serviceNames = project.provider { services.map { it.name }.toSet() },
+
+        // Telemetry
+        gradleVersion = project.provider { project.gradle.gradleVersion },
+        androidMinSdk = project.provider { project.androidExtension?.minSdk },
+        androidTargetSdk = project.provider { project.androidExtension?.targetSdk },
+        androidCompileSdk = project.provider { project.androidExtension?.compileSdkVersion },
+        androidAgpVersion = project.provider { project.androidExtension?.pluginVersion },
+        apolloGenerateSourcesDuringGradleSync = generateSourcesDuringGradleSync,
+        apolloLinkSqlite = linkSqlite,
     )
 
     project.afterEvaluate {
@@ -447,6 +459,7 @@ abstract class DefaultApolloExtension(
         },
         endpointUrl = project.provider { service.introspection?.endpointUrl?.orNull },
         endpointHeaders = project.provider { service.introspection?.headers?.orNull },
+        telemetryUsedOptions = project.provider { service.telemetryUsedOptions() },
     )
     generateApolloProjectIdeModel.configure {
       it.dependsOn(serviceIdeModelTaskProvider)

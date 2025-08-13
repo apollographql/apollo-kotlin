@@ -1950,7 +1950,14 @@ public final class com/apollographql/apollo/compiler/ir/IrVariable$Companion {
 
 public final class com/apollographql/apollo/compiler/model/ProjectModel {
 	public static final field Companion Lcom/apollographql/apollo/compiler/model/ProjectModel$Companion;
-	public fun <init> (Ljava/util/Set;)V
+	public fun <init> (Ljava/util/Set;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;)V
+	public final fun getAndroidAgpVersion ()Ljava/lang/String;
+	public final fun getAndroidCompileSdk ()Ljava/lang/String;
+	public final fun getAndroidMinSdk ()Ljava/lang/Integer;
+	public final fun getAndroidTargetSdk ()Ljava/lang/Integer;
+	public final fun getApolloGenerateSourcesDuringGradleSync ()Ljava/lang/Boolean;
+	public final fun getApolloLinkSqlite ()Ljava/lang/Boolean;
+	public final fun getGradleVersion ()Ljava/lang/String;
 	public final fun getServiceNames ()Ljava/util/Set;
 }
 
@@ -1976,7 +1983,7 @@ public final class com/apollographql/apollo/compiler/model/ProjectModelKt {
 
 public final class com/apollographql/apollo/compiler/model/ServiceModel {
 	public static final field Companion Lcom/apollographql/apollo/compiler/model/ServiceModel$Companion;
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/lang/String;Ljava/util/Map;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/lang/String;Ljava/util/Map;Ljava/util/Set;)V
 	public final fun getDownstreamGradleProjectPaths ()Ljava/util/Set;
 	public final fun getEndpointHeaders ()Ljava/util/Map;
 	public final fun getEndpointUrl ()Ljava/lang/String;
@@ -1984,6 +1991,7 @@ public final class com/apollographql/apollo/compiler/model/ServiceModel {
 	public final fun getGraphqlSrcDirs ()Ljava/util/Set;
 	public final fun getSchemaFiles ()Ljava/util/Set;
 	public final fun getServiceName ()Ljava/lang/String;
+	public final fun getTelemetryUsedOptions ()Ljava/util/Set;
 	public final fun getUpstreamGradleProjectPaths ()Ljava/util/Set;
 }
 

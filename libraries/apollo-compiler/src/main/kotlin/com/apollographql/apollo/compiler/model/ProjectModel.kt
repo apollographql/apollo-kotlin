@@ -10,6 +10,15 @@ import java.io.File
 @Serializable
 class ProjectModel(
     val serviceNames: Set<String>,
+
+    // Telemetry
+    val gradleVersion: String?,
+    val androidMinSdk: Int?,
+    val androidTargetSdk: Int?,
+    val androidCompileSdk: String?,
+    val androidAgpVersion: String?,
+    val apolloGenerateSourcesDuringGradleSync: Boolean?,
+    val apolloLinkSqlite: Boolean?,
 )
 
 @ApolloInternal
@@ -19,5 +28,6 @@ fun ProjectModel.writeTo(file: File) {
 
 @ApolloInternal
 fun File.toProjectModel(): ProjectModel {
-  return Json.decodeFromString(readText())
+  @Suppress("JSON_FORMAT_REDUNDANT")
+  return Json { ignoreUnknownKeys = true }.decodeFromString(readText())
 }

@@ -10,11 +10,27 @@ internal fun apolloGenerateProjectModel(
     // Inputs
     serviceNames: Set<String>,
 
+    gradleVersion: String?,
+    androidMinSdk: Int?,
+    androidTargetSdk: Int?,
+    androidCompileSdk: String?,
+    androidAgpVersion: String?,
+    apolloGenerateSourcesDuringGradleSync: Boolean?,
+    apolloLinkSqlite: Boolean?,
+
     // Outputs
     projectModelFile: GOutputFile,
 ) {
   ProjectModel(
       serviceNames = serviceNames,
+
+      gradleVersion = gradleVersion,
+      androidMinSdk = androidMinSdk,
+      androidTargetSdk = androidTargetSdk,
+      androidCompileSdk = androidCompileSdk,
+      androidAgpVersion = androidAgpVersion,
+      apolloGenerateSourcesDuringGradleSync = apolloGenerateSourcesDuringGradleSync,
+      apolloLinkSqlite = apolloLinkSqlite,
   )
       .writeTo(projectModelFile)
 }

@@ -28,6 +28,8 @@ class ServiceModel(
     val downstreamGradleProjectPaths: Set<String>,
     val endpointUrl: String?,
     val endpointHeaders: Map<String, String>?,
+
+    val telemetryUsedOptions: Set<String>,
 )
 
 @ApolloInternal
@@ -37,5 +39,6 @@ fun ServiceModel.writeTo(file: File) {
 
 @ApolloInternal
 fun File.toServiceModel(): ServiceModel {
-  return Json.decodeFromString(readText())
+  @Suppress("JSON_FORMAT_REDUNDANT")
+  return Json { ignoreUnknownKeys = true }.decodeFromString(readText())
 }
