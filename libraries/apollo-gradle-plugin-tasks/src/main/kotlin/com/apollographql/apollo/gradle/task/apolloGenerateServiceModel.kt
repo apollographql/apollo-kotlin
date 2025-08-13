@@ -1,7 +1,7 @@
 package com.apollographql.apollo.gradle.task
 
-import com.apollographql.apollo.compiler.model.ServiceModel
-import com.apollographql.apollo.compiler.model.writeTo
+import com.apollographql.apollo.tooling.model.ServiceModel
+import com.apollographql.apollo.tooling.model.writeTo
 import gratatouille.tasks.GOutputFile
 import gratatouille.tasks.GTask
 

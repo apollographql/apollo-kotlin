@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.model
+package com.apollographql.apollo.tooling.model
 
 import com.apollographql.apollo.annotations.ApolloInternal
 import kotlinx.serialization.Serializable

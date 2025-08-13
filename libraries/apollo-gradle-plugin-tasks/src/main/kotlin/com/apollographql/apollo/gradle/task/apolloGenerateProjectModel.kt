@@ -1,7 +1,7 @@
 package com.apollographql.apollo.gradle.task
 
-import com.apollographql.apollo.compiler.model.ProjectModel
-import com.apollographql.apollo.compiler.model.writeTo
+import com.apollographql.apollo.tooling.model.ProjectModel
+import com.apollographql.apollo.tooling.model.writeTo
 import gratatouille.tasks.GOutputFile
 import gratatouille.tasks.GTask
 
@@ -10,6 +10,7 @@ internal fun apolloGenerateProjectModel(
     // Inputs
     serviceNames: Set<String>,
 
+    // Telemetry data
     gradleVersion: String?,
     androidMinSdk: Int?,
     androidTargetSdk: Int?,
@@ -23,14 +24,15 @@ internal fun apolloGenerateProjectModel(
 ) {
   ProjectModel(
       serviceNames = serviceNames,
-
-      gradleVersion = gradleVersion,
-      androidMinSdk = androidMinSdk,
-      androidTargetSdk = androidTargetSdk,
-      androidCompileSdk = androidCompileSdk,
-      androidAgpVersion = androidAgpVersion,
-      apolloGenerateSourcesDuringGradleSync = apolloGenerateSourcesDuringGradleSync,
-      apolloLinkSqlite = apolloLinkSqlite,
+      telemetryData = ProjectModel.TelemetryData(
+          gradleVersion = gradleVersion,
+          androidMinSdk = androidMinSdk,
+          androidTargetSdk = androidTargetSdk,
+          androidCompileSdk = androidCompileSdk,
+          androidAgpVersion = androidAgpVersion,
+          apolloGenerateSourcesDuringGradleSync = apolloGenerateSourcesDuringGradleSync,
+          apolloLinkSqlite = apolloLinkSqlite,
+      ),
   )
       .writeTo(projectModelFile)
 }
