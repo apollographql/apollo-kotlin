@@ -232,14 +232,23 @@ private constructor(
             }
           }
         }.catch { throwable ->
-          if (throwable is ApolloException) {
-            emit(
-                ApolloResponse.Builder(operation = operation, requestUuid = uuid4())
-                    .exception(throwable)
-                    .build()
-            )
-          }
+          emit(
+              ApolloResponse.Builder(operation = operation, requestUuid = uuid4())
+                  .exception(throwable.wrapIfNeeded())
+                  .build()
+          )
         }
+  }
+
+  private fun Throwable.wrapIfNeeded(): ApolloException {
+    return if (this is ApolloException) {
+      this
+    } else {
+      ApolloNetworkException(
+        message = "Error while reading response",
+        platformCause = this
+      )
+    }
   }
 
   private fun <D : Operation.Data> ApolloResponse<D>.withHttpInfo(
