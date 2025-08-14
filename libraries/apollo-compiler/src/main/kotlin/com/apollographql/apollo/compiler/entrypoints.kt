@@ -212,12 +212,12 @@ fun Iterable<File>.findCodegenSchemaFile(): File {
   } ?: error("Cannot find CodegenSchema in $this")
 }
 
-
-
-internal fun apolloCompilerRegistry(
+@ApolloInternal
+fun apolloCompilerRegistry(
     arguments: Map<String, Any?>,
     logger: ApolloCompiler.Logger,
     warnIfNotFound: Boolean = false,
+    classLoader: ClassLoader = ApolloCompilerPlugin::class.java.classLoader,
 ): DefaultApolloCompilerRegistry {
   val registry = DefaultApolloCompilerRegistry()
   val environment = ApolloCompilerPluginEnvironment(
@@ -225,7 +225,7 @@ internal fun apolloCompilerRegistry(
       logger,
   )
   var hasPlugin = false
-  val plugins = ServiceLoader.load(ApolloCompilerPlugin::class.java, ApolloCompilerPlugin::class.java.classLoader).toList()
+  val plugins = ServiceLoader.load(ApolloCompilerPlugin::class.java, classLoader).toList()
   plugins.forEach {
     hasPlugin = true
     it.beforeCompilationStep(environment, registry)
@@ -233,7 +233,7 @@ internal fun apolloCompilerRegistry(
   }
 
   @Suppress("DEPRECATION")
-  val pluginProviders = ServiceLoader.load(ApolloCompilerPluginProvider::class.java, ApolloCompilerPluginProvider::class.java.classLoader).toList()
+  val pluginProviders = ServiceLoader.load(ApolloCompilerPluginProvider::class.java, classLoader).toList()
   pluginProviders.forEach {
     // we make an exception for our own cache plugin because we want to display a nice error message to users before 4.3
     if (it.javaClass.name != "com.apollographql.cache.apollocompilerplugin.ApolloCacheCompilerPluginProvider") {
