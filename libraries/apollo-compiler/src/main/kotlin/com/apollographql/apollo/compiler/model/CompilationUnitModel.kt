@@ -28,6 +28,11 @@ class CompilationUnitModel(
     val downstreamGradleProjectPaths: Set<String>,
     val endpointUrl: String?,
     val endpointHeaders: Map<String, String>?,
+
+    /**
+     * Absolute paths to Apollo Compiler Plugin dependencies.
+     */
+    val pluginDependencies: Set<String>,
 )
 
 @ApolloInternal

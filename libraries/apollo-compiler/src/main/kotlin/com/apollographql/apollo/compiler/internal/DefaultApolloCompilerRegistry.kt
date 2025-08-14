@@ -2,6 +2,7 @@
 
 package com.apollographql.apollo.compiler.internal
 
+import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.compiler.After
 import com.apollographql.apollo.compiler.ApolloCompilerPlugin
@@ -63,7 +64,8 @@ private class Node<T>(val id: String, val transform: T) {
   val dependencies = mutableListOf<Node<T>>()
 }
 
-internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
+@ApolloInternal
+class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
   private val foreignSchemas = mutableListOf<ForeignSchema>()
   private val schemaTransforms = mutableListOf<Registration<SchemaDocumentTransform>>()
   private val executableDocumentTransforms = mutableListOf<Registration<ExecutableDocumentTransform>>()

@@ -16,6 +16,7 @@ internal fun apolloGenerateCompilationUnitModel(
     downstreamGradleProjectPaths: Set<String>,
     endpointUrl: String?,
     endpointHeaders: Map<String, String>?,
+    pluginDependencies: Set<String>,
 
     // Outputs
     compilationUnitModel: GOutputFile,
@@ -29,7 +30,7 @@ internal fun apolloGenerateCompilationUnitModel(
       downstreamGradleProjectPaths = downstreamGradleProjectPaths,
       endpointUrl = endpointUrl,
       endpointHeaders = endpointHeaders,
+      pluginDependencies = pluginDependencies,
   )
       .writeTo(compilationUnitModel)
 }
-
