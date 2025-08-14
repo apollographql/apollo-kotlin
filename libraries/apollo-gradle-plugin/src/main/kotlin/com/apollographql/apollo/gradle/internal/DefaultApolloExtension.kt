@@ -53,7 +53,7 @@ abstract class DefaultApolloExtension(
   private var codegenOnGradleSyncConfigured: Boolean = false
   private val services = mutableListOf<DefaultService>()
   private val generateApolloSources: TaskProvider<Task>
-  private val generateApolloProjectIdeModel: TaskProvider<out Task>
+  private val generateApolloProjectModel: TaskProvider<out Task>
   private var hasExplicitService = false
   private val adhocComponentWithVariants: AdhocComponentWithVariants by lazy {
     softwareComponentFactory.adhoc("apollo").also {
@@ -193,7 +193,7 @@ abstract class DefaultApolloExtension(
     /**
      * Project model for integration with other tools, e.g. IDE plugin.
      */
-    generateApolloProjectIdeModel = project.registerApolloGenerateProjectModelTask(
+    generateApolloProjectModel = project.registerApolloGenerateProjectModelTask(
         taskName = ModelNames.generateApolloProjectModel(),
         taskDescription = "Generate Apollo project model",
 
@@ -439,11 +439,11 @@ abstract class DefaultApolloExtension(
         // If there is no downstream dependency, generate everything because we don't know what types are going to be used downstream
         generateAllTypes = project.provider { service.isSchemaModule() && service.isMultiModule() && service.downstreamDependencies.isEmpty() },
     )
-    generateApolloProjectIdeModel.configure {
+    generateApolloProjectModel.configure {
       it.dependsOn(optionsTaskProvider)
     }
 
-    val serviceIdeModelTaskProvider = project.registerApolloGenerateServiceModelTask(
+    val serviceModelTaskProvider = project.registerApolloGenerateServiceModelTask(
         taskName = ModelNames.generateApolloServiceModel(service),
         taskDescription = "Generate Apollo service model for '${service.name}'",
 
@@ -461,8 +461,8 @@ abstract class DefaultApolloExtension(
         endpointHeaders = project.provider { service.introspection?.headers?.orNull },
         telemetryUsedOptions = project.provider { service.telemetryUsedOptions() },
     )
-    generateApolloProjectIdeModel.configure {
-      it.dependsOn(serviceIdeModelTaskProvider)
+    generateApolloProjectModel.configure {
+      it.dependsOn(serviceModelTaskProvider)
     }
 
     if (!service.isMultiModule()) {
