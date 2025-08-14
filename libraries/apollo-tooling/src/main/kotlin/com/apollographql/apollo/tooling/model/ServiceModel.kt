@@ -1,12 +1,12 @@
 package com.apollographql.apollo.tooling.model
 
-import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloInternal
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 
-@ApolloExperimental
+@ApolloInternal
 @Serializable
 class ServiceModel(
     /**
@@ -32,12 +32,12 @@ class ServiceModel(
     val telemetryUsedOptions: Set<String>,
 )
 
-@ApolloExperimental
+@ApolloInternal
 fun ServiceModel.writeTo(file: File) {
   file.writeText(Json.encodeToString(this))
 }
 
-@ApolloExperimental
+@ApolloInternal
 fun File.toServiceModel(): ServiceModel {
   @Suppress("JSON_FORMAT_REDUNDANT")
   return Json { ignoreUnknownKeys = true }.decodeFromString(readText())
