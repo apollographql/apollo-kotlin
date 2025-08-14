@@ -459,6 +459,7 @@ abstract class DefaultApolloExtension(
         },
         endpointUrl = project.provider { service.introspection?.endpointUrl?.orNull },
         endpointHeaders = project.provider { service.introspection?.headers?.orNull },
+        pluginDependencies = project.provider { service.compilerConfiguration.files.map { it.absolutePath }.toSet() },
         telemetryUsedOptions = project.provider { service.telemetryUsedOptions() },
     )
     generateApolloProjectModel.configure {

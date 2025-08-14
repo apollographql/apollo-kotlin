@@ -16,6 +16,7 @@ internal fun apolloGenerateServiceModel(
     downstreamGradleProjectPaths: Set<String>,
     endpointUrl: String?,
     endpointHeaders: Map<String, String>?,
+    pluginDependencies: Set<String>,
     telemetryUsedOptions: Set<String>,
 
     // Outputs
@@ -30,6 +31,7 @@ internal fun apolloGenerateServiceModel(
       downstreamGradleProjectPaths = downstreamGradleProjectPaths,
       endpointUrl = endpointUrl,
       endpointHeaders = endpointHeaders,
+      pluginDependencies = pluginDependencies,
       telemetryUsedOptions = telemetryUsedOptions,
   )
       .writeTo(serviceModelFile)
