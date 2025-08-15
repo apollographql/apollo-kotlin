@@ -4,7 +4,6 @@ import com.apollographql.apollo.api.http.HttpMethod
 import com.apollographql.apollo.api.http.HttpRequest
 import com.apollographql.apollo.api.http.HttpResponse
 import com.apollographql.apollo.exception.ApolloNetworkException
-import com.apollographql.apollo.internal.isNode
 import kotlinx.coroutines.await
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.Buffer
@@ -35,33 +34,22 @@ private class JsHttpEngine(
 ) : HttpEngine {
   constructor(timeoutMillis: Long) : this(timeoutMillis, timeoutMillis)
 
-  private val nodeFetch: dynamic = if (isNode) requireNodeFetch() else null
-
   @Suppress("UnsafeCastFromDynamic")
   override suspend fun execute(request: HttpRequest): HttpResponse {
     val abortController = AbortController()
     val connectTimeoutId = setTimeout({ abortController.abort() }, connectTimeoutMillis)
 
     val fetchOptions = request.toFetchOptions(abortSignal = abortController.signal)
-    val responsePromise: Promise<Response> = if (isNode) {
-      nodeFetch(
-          resource = request.url,
-          options = fetchOptions
-      )
-    } else {
-      fetch(
-          resource = request.url,
-          options = fetchOptions
-      )
-    }
+    val responsePromise: Promise<Response> = fetch(
+        resource = request.url,
+        options = fetchOptions
+    )
+
     return try {
       val response = responsePromise.await()
       clearTimeout(connectTimeoutId)
-      val responseBodySource = if (isNode) {
-        readBodyNode(response.body, readTimeoutMillis, abortController)
-      } else {
-        readBodyBrowser(response.body, readTimeoutMillis, abortController)
-      }
+      val responseBodySource = readBody(response.body, readTimeoutMillis, abortController)
+
       HttpResponse.Builder(response.status.toInt())
           .body(responseBodySource)
           .apply {
@@ -135,7 +123,7 @@ private suspend fun readBodyNode(body: dynamic, readTimeoutMillis: Long, abortCo
 }
 
 @Suppress("UnsafeCastFromDynamic")
-private suspend fun readBodyBrowser(body: dynamic, readTimeoutMillis: Long, abortController: dynamic): BufferedSource {
+private suspend fun readBody(body: dynamic, readTimeoutMillis: Long, abortController: dynamic): BufferedSource {
   var readTimeoutId = setTimeout({ abortController.abort() }, readTimeoutMillis)
   val bufferedSource = Buffer()
   val stream: ReadableStream<Uint8Array> = body ?: return Buffer()

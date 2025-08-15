@@ -9,6 +9,7 @@ import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueString
+import com.apollographql.mockserver.headerValueOf
 import com.apollographql.apollo.network.http.HttpInfo
 import com.apollographql.apollo.testing.internal.runTest
 import kotlin.test.Test
@@ -42,8 +43,8 @@ class HTTPHeadersTest {
 
     val recordedRequest = mockServer.awaitRequest()
     assertEquals("POST", recordedRequest.method)
-    assertNotEquals(null, recordedRequest.headers["Content-Length"])
-    assertNotEquals("0", recordedRequest.headers["Content-Length"])
+    assertNotEquals(null, recordedRequest.headers.headerValueOf("Content-Length"))
+    assertNotEquals("0", recordedRequest.headers.headerValueOf("Content-Length"))
   }
 
   @Test
