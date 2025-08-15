@@ -64,6 +64,7 @@ kotlin {
     findByName("jsMain")?.apply {
       dependencies {
         implementation(npm("node-fetch", libs.versions.node.fetch.get()))
+        implementation(npm("whatwg-url", "9.0.0"))
         implementation(libs.ktor.client.js.get().toString()) {
           because("We use in the ktor client in DefaultWebSocketEngine")
         }
