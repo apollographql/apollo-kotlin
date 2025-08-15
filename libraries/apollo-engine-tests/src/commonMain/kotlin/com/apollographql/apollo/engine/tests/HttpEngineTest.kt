@@ -11,6 +11,7 @@ import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueString
+import com.apollographql.mockserver.headerValueOf
 import okio.use
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -68,7 +69,7 @@ suspend fun post(engine: (Long) -> HttpEngine) = MockServer().use { mockServer -
   assertEquals("body", request.body.utf8())
   // With ktor we get "text/plain; charset=UTF-8"
   assertTrue(request.headers["Content-Type"]!!.startsWith("text/plain"))
-  assertEquals("body".length.toString(), request.headers["Content-Length"])
+  assertEquals("body".length.toString(), request.headers.headerValueOf("Content-Length"))
 }
 
 @ApolloInternal
