@@ -102,27 +102,6 @@ private fun HttpRequest.toFetchOptions(abortSignal: dynamic): dynamic {
 }
 
 @Suppress("UnsafeCastFromDynamic")
-private suspend fun readBodyNode(body: dynamic, readTimeoutMillis: Long, abortController: dynamic): BufferedSource {
-  var readTimeoutId = setTimeout({ abortController.abort() }, readTimeoutMillis)
-  val bufferedSource = Buffer()
-  return suspendCancellableCoroutine { continuation ->
-    body.on("data") { chunk: ArrayBuffer ->
-      clearTimeout(readTimeoutId)
-      readTimeoutId = setTimeout({ abortController.abort() }, readTimeoutMillis)
-      val chunkBytes = Uint8Array(chunk).asByteArray()
-      bufferedSource.write(chunkBytes)
-    }
-    body.on("end") {
-      continuation.resume(bufferedSource)
-    }
-    body.on("error") { error: Throwable ->
-      continuation.resumeWithException(error)
-    }
-    Unit
-  }
-}
-
-@Suppress("UnsafeCastFromDynamic")
 private suspend fun readBody(body: dynamic, readTimeoutMillis: Long, abortController: dynamic): BufferedSource {
   var readTimeoutId = setTimeout({ abortController.abort() }, readTimeoutMillis)
   val bufferedSource = Buffer()
