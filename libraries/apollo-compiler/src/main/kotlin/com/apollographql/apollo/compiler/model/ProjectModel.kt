@@ -1,4 +1,4 @@
-package com.apollographql.apollo.tooling.model
+package com.apollographql.apollo.compiler.model
 
 import com.apollographql.apollo.annotations.ApolloInternal
 import kotlinx.serialization.Serializable
@@ -10,19 +10,7 @@ import java.io.File
 @Serializable
 class ProjectModel(
     val serviceNames: Set<String>,
-    val telemetryData: TelemetryData,
-) {
-  @Serializable
-  class TelemetryData(
-      val gradleVersion: String?,
-      val androidMinSdk: Int?,
-      val androidTargetSdk: Int?,
-      val androidCompileSdk: String?,
-      val androidAgpVersion: String?,
-      val apolloGenerateSourcesDuringGradleSync: Boolean?,
-      val apolloLinkSqlite: Boolean?,
-  )
-}
+)
 
 @ApolloInternal
 fun ProjectModel.writeTo(file: File) {

@@ -14,11 +14,11 @@ import com.apollographql.apollo.gradle.task.ApolloGenerateSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloComputeUsedCoordinatesTask
 import com.apollographql.apollo.gradle.task.registerApolloDownloadSchemaTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateCodegenSchemaTask
+import com.apollographql.apollo.gradle.task.registerApolloGenerateCompilationUnitModelTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateDataBuildersSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateIrOperationsTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateOptionsTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateProjectModelTask
-import com.apollographql.apollo.gradle.task.registerApolloGenerateServiceModelTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesFromIrTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloRegisterOperationsTask
@@ -207,6 +207,7 @@ abstract class DefaultApolloExtension(
         androidAgpVersion = project.provider { project.androidExtension?.pluginVersion },
         apolloGenerateSourcesDuringGradleSync = generateSourcesDuringGradleSync,
         apolloLinkSqlite = linkSqlite,
+        usedServiceOptions = project.provider { services.flatMap { it.telemetryUsedOptions() }.toSet() }
     )
 
     project.afterEvaluate {
@@ -443,9 +444,9 @@ abstract class DefaultApolloExtension(
       it.dependsOn(optionsTaskProvider)
     }
 
-    val serviceModelTaskProvider = project.registerApolloGenerateServiceModelTask(
-        taskName = ModelNames.generateApolloServiceModel(service),
-        taskDescription = "Generate Apollo service model for '${service.name}'",
+    val compilationUnitModelTaskProvider = project.registerApolloGenerateCompilationUnitModelTask(
+        taskName = ModelNames.generateApolloCompilationUnitModel(service),
+        taskDescription = "Generate Apollo compilation unit model for '${service.name}'",
 
         gradleProjectPath = project.provider { project.path },
         serviceName = project.provider { service.name },
@@ -459,10 +460,9 @@ abstract class DefaultApolloExtension(
         },
         endpointUrl = project.provider { service.introspection?.endpointUrl?.orNull },
         endpointHeaders = project.provider { service.introspection?.headers?.orNull },
-        telemetryUsedOptions = project.provider { service.telemetryUsedOptions() },
     )
     generateApolloProjectModel.configure {
-      it.dependsOn(serviceModelTaskProvider)
+      it.dependsOn(compilationUnitModelTaskProvider)
     }
 
     if (!service.isMultiModule()) {

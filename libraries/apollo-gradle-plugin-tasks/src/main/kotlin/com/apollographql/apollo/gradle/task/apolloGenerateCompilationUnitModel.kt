@@ -1,12 +1,12 @@
 package com.apollographql.apollo.gradle.task
 
-import com.apollographql.apollo.tooling.model.ServiceModel
-import com.apollographql.apollo.tooling.model.writeTo
+import com.apollographql.apollo.compiler.model.CompilationUnitModel
+import com.apollographql.apollo.compiler.model.writeTo
 import gratatouille.tasks.GOutputFile
 import gratatouille.tasks.GTask
 
 @GTask
-internal fun apolloGenerateServiceModel(
+internal fun apolloGenerateCompilationUnitModel(
     // Inputs
     gradleProjectPath: String,
     serviceName: String,
@@ -16,12 +16,11 @@ internal fun apolloGenerateServiceModel(
     downstreamGradleProjectPaths: Set<String>,
     endpointUrl: String?,
     endpointHeaders: Map<String, String>?,
-    telemetryUsedOptions: Set<String>,
 
     // Outputs
-    serviceModelFile: GOutputFile,
+    compilationUnitModel: GOutputFile,
 ) {
-  ServiceModel(
+  CompilationUnitModel(
       gradleProjectPath = gradleProjectPath,
       serviceName = serviceName,
       schemaFiles = schemaFiles,
@@ -30,8 +29,7 @@ internal fun apolloGenerateServiceModel(
       downstreamGradleProjectPaths = downstreamGradleProjectPaths,
       endpointUrl = endpointUrl,
       endpointHeaders = endpointHeaders,
-      telemetryUsedOptions = telemetryUsedOptions,
   )
-      .writeTo(serviceModelFile)
+      .writeTo(compilationUnitModel)
 }
 
