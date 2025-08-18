@@ -209,17 +209,16 @@ public abstract interface class com/apollographql/apollo/compiler/DocumentTransf
 
 public final class com/apollographql/apollo/compiler/EntryPoints {
 	public static final field INSTANCE Lcom/apollographql/apollo/compiler/EntryPoints;
-	public final fun buildCodegenSchema (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;ZLjava/util/List;Ljava/io/File;Ljava/io/File;)V
-	public final fun buildDataBuilders (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;ZLjava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
-	public final fun buildIr (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;ZLjava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
-	public final fun buildSources (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;ZLjava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
-	public final fun buildSourcesFromIr (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;ZLjava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildCodegenSchema (Lcom/apollographql/apollo/compiler/ApolloCompilerPluginEnvironment;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildDataBuilders (Lcom/apollographql/apollo/compiler/ApolloCompilerPluginEnvironment;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildIr (Lcom/apollographql/apollo/compiler/ApolloCompilerPluginEnvironment;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildSources (Lcom/apollographql/apollo/compiler/ApolloCompilerPluginEnvironment;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildSourcesFromIr (Lcom/apollographql/apollo/compiler/ApolloCompilerPluginEnvironment;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/compiler/EntrypointsKt {
-	public static final fun apolloCompilerRegistry (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;ZLjava/lang/ClassLoader;)Lcom/apollographql/apollo/compiler/internal/DefaultApolloCompilerRegistry;
-	public static synthetic fun apolloCompilerRegistry$default (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;ZLjava/lang/ClassLoader;ILjava/lang/Object;)Lcom/apollographql/apollo/compiler/internal/DefaultApolloCompilerRegistry;
 	public static final fun findCodegenSchemaFile (Ljava/lang/Iterable;)Ljava/io/File;
+	public static final fun loadCompilerPlugins (Lcom/apollographql/apollo/compiler/ApolloCompilerPluginEnvironment;Ljava/lang/ClassLoader;Z)Ljava/util/List;
 }
 
 public abstract interface class com/apollographql/apollo/compiler/ExecutableDocumentTransform {
