@@ -231,7 +231,7 @@ fun loadCompilerPlugins(
   return plugins
 }
 
-private fun apolloCompilerRegistry(
+internal fun apolloCompilerRegistry(
     pluginEnvironment: ApolloCompilerPluginEnvironment,
     plugins: List<ApolloCompilerPlugin>,
 ): DefaultApolloCompilerRegistry {

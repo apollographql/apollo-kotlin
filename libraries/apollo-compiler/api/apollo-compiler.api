@@ -675,29 +675,6 @@ public final class com/apollographql/apollo/compiler/codegen/kotlin/helpers/Add_
 	public static final fun addInternal (Lcom/squareup/kotlinpoet/FileSpec$Builder;Ljava/util/List;)Lcom/squareup/kotlinpoet/FileSpec$Builder;
 }
 
-public final class com/apollographql/apollo/compiler/internal/DefaultApolloCompilerRegistry : com/apollographql/apollo/compiler/ApolloCompilerRegistry {
-	public fun <init> ()V
-	public final fun executableDocumentTransform ()Lcom/apollographql/apollo/compiler/ExecutableDocumentTransform;
-	public final fun foreignSchemas ()Ljava/util/List;
-	public final fun irOperationsTransform ()Lcom/apollographql/apollo/compiler/Transform;
-	public final fun javaOutputTransform ()Lcom/apollographql/apollo/compiler/Transform;
-	public final fun kotlinOutputTransform ()Lcom/apollographql/apollo/compiler/Transform;
-	public final fun layout (Lcom/apollographql/apollo/compiler/CodegenSchema;)Lcom/apollographql/apollo/compiler/codegen/SchemaAndOperationsLayout;
-	public fun registerExecutableDocumentTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/ExecutableDocumentTransform;)V
-	public fun registerForeignSchemas (Ljava/util/List;)V
-	public fun registerIrTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/Transform;)V
-	public fun registerJavaOutputTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/Transform;)V
-	public fun registerKotlinOutputTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/Transform;)V
-	public fun registerLayout (Lcom/apollographql/apollo/compiler/LayoutFactory;)V
-	public fun registerOperationIdsGenerator (Lcom/apollographql/apollo/compiler/OperationIdsGenerator;)V
-	public final fun registerPlugin (Lcom/apollographql/apollo/compiler/ApolloCompilerPlugin;)V
-	public fun registerSchemaCodeGenerator (Lcom/apollographql/apollo/compiler/SchemaCodeGenerator;)V
-	public fun registerSchemaTransform (Ljava/lang/String;[Lcom/apollographql/apollo/compiler/Order;Lcom/apollographql/apollo/compiler/SchemaDocumentTransform;)V
-	public final fun schemaCodeGenerator ()Lcom/apollographql/apollo/compiler/SchemaCodeGenerator;
-	public final fun schemaDocumentTransform ()Lcom/apollographql/apollo/compiler/SchemaDocumentTransform;
-	public final fun toOperationIdsGenerator ()Lcom/apollographql/apollo/compiler/OperationIdsGenerator;
-}
-
 public final class com/apollographql/apollo/compiler/ir/BLabel : com/apollographql/apollo/compiler/ir/BTerm {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
