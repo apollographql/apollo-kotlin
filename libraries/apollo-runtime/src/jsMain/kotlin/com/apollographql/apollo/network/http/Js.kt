@@ -30,10 +30,6 @@ internal fun AbortController(): dynamic {
   return js("new AbortController()")
 }
 
-internal fun requireNodeFetch(): dynamic {
-  return js("eval('require')('node-fetch')")
-}
-
 internal external interface ReadableStream<R> {
   fun getReader(): ReadableStreamDefaultReader<R>
 }
