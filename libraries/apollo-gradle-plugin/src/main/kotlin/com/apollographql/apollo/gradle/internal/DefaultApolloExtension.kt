@@ -460,6 +460,8 @@ abstract class DefaultApolloExtension(
         },
         endpointUrl = project.provider { service.introspection?.endpointUrl?.orNull },
         endpointHeaders = project.provider { service.introspection?.headers?.orNull },
+        pluginDependencies = project.provider { service.compilerConfiguration.files.map { it.absolutePath }.toSet() },
+        pluginArguments = pluginArguments,
     )
     generateApolloProjectModel.configure {
       it.dependsOn(compilationUnitModelTaskProvider)

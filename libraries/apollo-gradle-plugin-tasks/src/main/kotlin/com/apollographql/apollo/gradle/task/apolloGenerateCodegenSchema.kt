@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.task
 
+import com.apollographql.apollo.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo.compiler.EntryPoints
 import gratatouille.tasks.GAny
 import gratatouille.tasks.GInputFile
@@ -29,11 +30,17 @@ internal fun apolloGenerateCodegenSchema(
     }
     return
   }
-
-  EntryPoints.buildCodegenSchema(
-      logger = logger.asLogger(),
+  val logger = logger.asLogger()
+  val plugins = loadCompilerPlugins(
       arguments = arguments,
+      logger = logger,
+      classLoader = ApolloCompilerPlugin::class.java.classLoader,
       warnIfNotFound = warnIfNotFound,
+  )
+  EntryPoints.buildCodegenSchema(
+      plugins = plugins,
+      arguments = arguments,
+      logger = logger,
       normalizedSchemaFiles = (schemaFiles.takeIf { it.isNotEmpty() } ?: fallbackSchemaFiles).toInputFiles(),
       codegenSchemaOptionsFile = codegenSchemaOptionsFile,
       codegenSchemaFile = codegenSchemaFile,

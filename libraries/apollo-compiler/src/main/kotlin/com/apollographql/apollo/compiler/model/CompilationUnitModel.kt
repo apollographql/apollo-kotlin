@@ -4,6 +4,7 @@ import com.apollographql.apollo.annotations.ApolloInternal
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import java.io.File
 
 @ApolloInternal
@@ -28,6 +29,12 @@ class CompilationUnitModel(
     val downstreamGradleProjectPaths: Set<String>,
     val endpointUrl: String?,
     val endpointHeaders: Map<String, String>?,
+
+    /**
+     * Absolute paths to Apollo Compiler Plugin dependencies.
+     */
+    val pluginDependencies: Set<String>,
+    val pluginArguments: Map<String, JsonElement>,
 )
 
 @ApolloInternal
