@@ -1,9 +1,7 @@
 package com.apollographql.apollo.gradle.task
 
 import com.apollographql.apollo.compiler.ApolloCompilerPlugin
-import com.apollographql.apollo.compiler.ApolloCompilerPluginEnvironment
 import com.apollographql.apollo.compiler.EntryPoints
-import com.apollographql.apollo.compiler.loadCompilerPlugins
 import gratatouille.tasks.GAny
 import gratatouille.tasks.GInputFile
 import gratatouille.tasks.GInputFiles
@@ -22,18 +20,17 @@ internal fun apolloGenerateIrOperations(
     irOptionsFile: GInputFile,
     irOperationsFile: GOutputFile,
 ) {
-  val pluginEnvironment = ApolloCompilerPluginEnvironment(
-      logger = logger.asLogger(),
-      arguments = arguments,
-  )
+  val logger = logger.asLogger()
   val plugins = loadCompilerPlugins(
-      pluginEnvironment = pluginEnvironment,
+      arguments = arguments,
+      logger = logger,
       classLoader = ApolloCompilerPlugin::class.java.classLoader,
       warnIfNotFound = warnIfNotFound,
   )
   EntryPoints.buildIr(
-      pluginEnvironment = pluginEnvironment,
       plugins = plugins,
+      arguments = arguments,
+      logger = logger,
       graphqlFiles = graphqlFiles.toInputFiles(),
       codegenSchemaFiles = codegenSchemas.toInputFiles(),
       upstreamIrOperations = upstreamIrFiles.toInputFiles(),
