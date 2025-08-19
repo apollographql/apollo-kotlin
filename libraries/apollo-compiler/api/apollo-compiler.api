@@ -1950,12 +1950,13 @@ public final class com/apollographql/apollo/compiler/ir/IrVariable$Companion {
 
 public final class com/apollographql/apollo/compiler/model/CompilationUnitModel {
 	public static final field Companion Lcom/apollographql/apollo/compiler/model/CompilationUnitModel$Companion;
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/lang/String;Ljava/util/Map;Ljava/util/Set;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/lang/String;Ljava/util/Map;Ljava/util/Set;Ljava/util/Map;)V
 	public final fun getDownstreamGradleProjectPaths ()Ljava/util/Set;
 	public final fun getEndpointHeaders ()Ljava/util/Map;
 	public final fun getEndpointUrl ()Ljava/lang/String;
 	public final fun getGradleProjectPath ()Ljava/lang/String;
 	public final fun getGraphqlSrcDirs ()Ljava/util/Set;
+	public final fun getPluginArguments ()Ljava/util/Map;
 	public final fun getPluginDependencies ()Ljava/util/Set;
 	public final fun getSchemaFiles ()Ljava/util/Set;
 	public final fun getServiceName ()Ljava/lang/String;

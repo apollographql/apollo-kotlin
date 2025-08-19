@@ -2,6 +2,8 @@ package com.apollographql.apollo.gradle.task
 
 import com.apollographql.apollo.compiler.model.CompilationUnitModel
 import com.apollographql.apollo.compiler.model.writeTo
+import com.apollographql.apollo.tooling.toJsonElement
+import gratatouille.tasks.GAny
 import gratatouille.tasks.GOutputFile
 import gratatouille.tasks.GTask
 
@@ -17,6 +19,7 @@ internal fun apolloGenerateCompilationUnitModel(
     endpointUrl: String?,
     endpointHeaders: Map<String, String>?,
     pluginDependencies: Set<String>,
+    pluginArguments: Map<String, GAny?>,
 
     // Outputs
     compilationUnitModel: GOutputFile,
@@ -31,6 +34,7 @@ internal fun apolloGenerateCompilationUnitModel(
       endpointUrl = endpointUrl,
       endpointHeaders = endpointHeaders,
       pluginDependencies = pluginDependencies,
+      pluginArguments = pluginArguments.mapValues { (_, v) -> v.toJsonElement() },
   )
       .writeTo(compilationUnitModel)
 }

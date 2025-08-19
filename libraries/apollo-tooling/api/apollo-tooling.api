@@ -104,6 +104,7 @@ public final class com/apollographql/apollo/tooling/SchemaUploader {
 }
 
 public final class com/apollographql/apollo/tooling/SerializationKt {
+	public static final fun toAny (Lkotlinx/serialization/json/JsonElement;)Ljava/lang/Object;
 	public static final fun toJsonElement (Ljava/lang/Object;)Lkotlinx/serialization/json/JsonElement;
 }
 
