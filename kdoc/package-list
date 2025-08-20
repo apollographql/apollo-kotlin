@@ -25,6 +25,7 @@ com.apollographql.apollo.compiler.codegen.java.helpers
 com.apollographql.apollo.compiler.codegen.kotlin
 com.apollographql.apollo.compiler.codegen.kotlin.helpers
 com.apollographql.apollo.compiler.ir
+com.apollographql.apollo.compiler.model
 com.apollographql.apollo.compiler.operationoutput
 com.apollographql.apollo.compiler.pqm
 module:apollo-debug-server
@@ -66,3 +67,4 @@ com.apollographql.apollo.mockserver
 com.apollographql.apollo.testing
 module:apollo-tooling
 com.apollographql.apollo.tooling
+com.apollographql.apollo.tooling.model
