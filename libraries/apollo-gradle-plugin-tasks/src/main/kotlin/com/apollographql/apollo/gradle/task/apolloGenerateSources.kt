@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.task
 
+import com.apollographql.apollo.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo.compiler.EntryPoints
 import gratatouille.tasks.GAny
 import gratatouille.tasks.GInputFile
@@ -28,10 +29,17 @@ internal fun apolloGenerateSources(
     @GManuallyWired
     dataBuildersOutputDirectory: GOutputDirectory,
 ) {
-  EntryPoints.buildSources(
+  val logger = logger.asLogger()
+  val plugins = loadCompilerPlugins(
       arguments = arguments,
+      logger = logger,
+      classLoader = ApolloCompilerPlugin::class.java.classLoader,
       warnIfNotFound = warnIfNotFound,
-      logger = logger.asLogger(),
+  )
+  EntryPoints.buildSources(
+      plugins = plugins,
+      arguments = arguments,
+      logger = logger,
       schemas = (schemas.takeIf { it.isNotEmpty() } ?: fallbackSchemas).toInputFiles(),
       executableDocuments = executableDocuments.toInputFiles(),
       codegenSchemaOptions = codegenSchemaOptions,

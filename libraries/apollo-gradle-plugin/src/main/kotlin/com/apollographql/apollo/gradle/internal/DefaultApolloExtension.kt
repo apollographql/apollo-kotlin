@@ -14,9 +14,11 @@ import com.apollographql.apollo.gradle.task.ApolloGenerateSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloComputeUsedCoordinatesTask
 import com.apollographql.apollo.gradle.task.registerApolloDownloadSchemaTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateCodegenSchemaTask
+import com.apollographql.apollo.gradle.task.registerApolloGenerateCompilationUnitModelTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateDataBuildersSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateIrOperationsTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateOptionsTask
+import com.apollographql.apollo.gradle.task.registerApolloGenerateProjectModelTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesFromIrTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloRegisterOperationsTask
@@ -51,6 +53,7 @@ abstract class DefaultApolloExtension(
   private var codegenOnGradleSyncConfigured: Boolean = false
   private val services = mutableListOf<DefaultService>()
   private val generateApolloSources: TaskProvider<Task>
+  private val generateApolloProjectModel: TaskProvider<out Task>
   private var hasExplicitService = false
   private val adhocComponentWithVariants: AdhocComponentWithVariants by lazy {
     softwareComponentFactory.adhoc("apollo").also {
@@ -108,31 +111,33 @@ abstract class DefaultApolloExtension(
         generateApolloMetadata = service.generateApolloMetadata.orNull,
 
         // Options for which we don't mind the value but want to know they are used
-        usedOptions = mutableSetOf<String>().apply {
-          if (service.includes.isPresent) add("includes")
-          if (service.excludes.isPresent) add("excludes")
-          if (service.schemaFile.isPresent) add("schemaFile")
-          if (!service.schemaFiles.isEmpty) add("schemaFiles")
-          if (service.scalarAdapterMapping.isNotEmpty()) {
-            add("mapScalarAdapterExpression")
-          } else if (service.scalarTypeMapping.isNotEmpty()) {
-            add("mapScalar")
-          }
-          @Suppress("DEPRECATION_ERROR")
-          if (service.operationManifest.isPresent) add("operationManifest")
-          if (service.generatedSchemaName.isPresent) add("generatedSchemaName")
-          if (service.debugDir.isPresent) add("debugDir")
-          if (service.sealedClassesForEnumsMatching.isPresent) add("sealedClassesForEnumsMatching")
-          if (service.classesForEnumsMatching.isPresent) add("classesForEnumsMatching")
-          @Suppress("DEPRECATION_ERROR")
-          if (service.outputDir.isPresent) add("outputDir")
-          if (service.alwaysGenerateTypesMatching.isPresent) add("alwaysGenerateTypesMatching")
-          if (service.introspection != null) add("introspection")
-          if (service.registry != null) add("registry")
-          if (service.upstreamDependencies.isNotEmpty()) add("dependsOn")
-          if (service.downstreamDependencies.isNotEmpty()) add("isADependencyOf")
-        },
+        usedOptions = service.telemetryUsedOptions(),
     )
+  }
+
+  private fun DefaultService.telemetryUsedOptions(): Set<String> = mutableSetOf<String>().apply {
+    if (includes.isPresent) add("includes")
+    if (excludes.isPresent) add("excludes")
+    if (schemaFile.isPresent) add("schemaFile")
+    if (!schemaFiles.isEmpty) add("schemaFiles")
+    if (scalarAdapterMapping.isNotEmpty()) {
+      add("mapScalarAdapterExpression")
+    } else if (scalarTypeMapping.isNotEmpty()) {
+      add("mapScalar")
+    }
+    @Suppress("DEPRECATION_ERROR")
+    if (operationManifest.isPresent) add("operationManifest")
+    if (generatedSchemaName.isPresent) add("generatedSchemaName")
+    if (debugDir.isPresent) add("debugDir")
+    if (sealedClassesForEnumsMatching.isPresent) add("sealedClassesForEnumsMatching")
+    if (classesForEnumsMatching.isPresent) add("classesForEnumsMatching")
+    @Suppress("DEPRECATION_ERROR")
+    if (outputDir.isPresent) add("outputDir")
+    if (alwaysGenerateTypesMatching.isPresent) add("alwaysGenerateTypesMatching")
+    if (introspection != null) add("introspection")
+    if (registry != null) add("registry")
+    if (upstreamDependencies.isNotEmpty()) add("dependsOn")
+    if (downstreamDependencies.isNotEmpty()) add("isADependencyOf")
   }
 
   internal val serviceCount: Int
@@ -184,6 +189,26 @@ abstract class DefaultApolloExtension(
         error("Apollo: using './gradlew pushApolloSchema' is deprecated. Please use rover to push schemas. See https://go.apollo.dev/rover.")
       }
     }
+
+    /**
+     * Project model for integration with other tools, e.g. IDE plugin.
+     */
+    generateApolloProjectModel = project.registerApolloGenerateProjectModelTask(
+        taskName = ModelNames.generateApolloProjectModel(),
+        taskDescription = "Generate Apollo project model",
+
+        serviceNames = project.provider { services.map { it.name }.toSet() },
+
+        // Telemetry
+        gradleVersion = project.provider { project.gradle.gradleVersion },
+        androidMinSdk = project.provider { project.androidExtension?.minSdk },
+        androidTargetSdk = project.provider { project.androidExtension?.targetSdk },
+        androidCompileSdk = project.provider { project.androidExtension?.compileSdkVersion },
+        androidAgpVersion = project.provider { project.androidExtension?.pluginVersion },
+        apolloGenerateSourcesDuringGradleSync = generateSourcesDuringGradleSync,
+        apolloLinkSqlite = linkSqlite,
+        usedServiceOptions = project.provider { services.flatMap { it.telemetryUsedOptions() }.toSet() }
+    )
 
     project.afterEvaluate {
       maybeLinkSqlite()
@@ -299,7 +324,7 @@ abstract class DefaultApolloExtension(
     )
   }
 
-  private fun <T> HasConfigurableAttributes<T>.attributes(serviceName: String, usage: ApolloUsage, direction: ApolloDirection) {
+  private fun <T : Any> HasConfigurableAttributes<T>.attributes(serviceName: String, usage: ApolloUsage, direction: ApolloDirection) {
     attributes {
       it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, usage.name))
       it.attribute(APOLLO_SERVICE_ATTRIBUTE, serviceName)
@@ -415,6 +440,32 @@ abstract class DefaultApolloExtension(
         // If there is no downstream dependency, generate everything because we don't know what types are going to be used downstream
         generateAllTypes = project.provider { service.isSchemaModule() && service.isMultiModule() && service.downstreamDependencies.isEmpty() },
     )
+    generateApolloProjectModel.configure {
+      it.dependsOn(optionsTaskProvider)
+    }
+
+    val compilationUnitModelTaskProvider = project.registerApolloGenerateCompilationUnitModelTask(
+        taskName = ModelNames.generateApolloCompilationUnitModel(service),
+        taskDescription = "Generate Apollo compilation unit model for '${service.name}'",
+
+        gradleProjectPath = project.provider { project.path },
+        serviceName = project.provider { service.name },
+        schemaFiles = project.provider { service.schemaFilesSnapshot(project).map { it.absolutePath }.toSet() },
+        graphqlSrcDirs = project.provider { service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet() },
+        upstreamGradleProjectPaths = project.provider {
+          service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet()
+        },
+        downstreamGradleProjectPaths = project.provider {
+          service.downstreamDependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet()
+        },
+        endpointUrl = project.provider { service.introspection?.endpointUrl?.orNull },
+        endpointHeaders = project.provider { service.introspection?.headers?.orNull },
+        pluginDependencies = project.provider { service.compilerConfiguration.files.map { it.absolutePath }.toSet() },
+        pluginArguments = pluginArguments,
+    )
+    generateApolloProjectModel.configure {
+      it.dependsOn(compilationUnitModelTaskProvider)
+    }
 
     if (!service.isMultiModule()) {
       sourcesBaseTaskProvider = project.registerApolloGenerateSourcesTask(
