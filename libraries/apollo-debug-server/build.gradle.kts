@@ -4,7 +4,6 @@ plugins {
   id("org.jetbrains.kotlin.multiplatform")
   alias(libs.plugins.apollo.published)
   id("com.google.devtools.ksp")
-  id("com.apollographql.execution")
 }
 
 apolloLibrary(
@@ -49,15 +48,15 @@ tasks.configureEach {
   }
 }
 
-apolloExecution {
-  service("apolloDebugServer") {
-    packageName.set("com.apollographql.apollo.debugserver.internal.graphql")
-  }
-}
-
 /**
  * apolloCheckSchema is registered as a dependent of build but the ci doesn't call the "build" task directly
  */
 tasks.named("jvmTest") {
   finalizedBy("apolloCheckSchema")
 }
+
+dependencies {
+  add("kspCommonMainMetadata", "com.apollographql.execution:apollo-execution-processor:${com.apollographql.execution.gradle.VERSION}")
+}
+ksp.arg("apolloService", "apolloDebugServer")
+ksp.arg("apolloPackageName", "com.apollographql.apollo.debugserver.internal.graphql")
