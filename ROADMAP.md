@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Ecosystem Roadmap
 
-**Last updated: 2025-08-07**
+**Last updated: 2025-08-21**
 
 For up-to-date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -20,7 +20,7 @@ For up-to-date release notes, refer to the project [Changelog](https://github.co
 
 All active feature development is now being done for `5.x` releases on the `main` branch.  Critical bugfixes and security patches will land in version 4 on the `release-4.x` branch.
 
-The scope will be refined as the release date approaches. 
+The scope will be refined as the release date approaches.
 
 We aim for ABI compatibility for all symbols except those that were deprecated in v4 (and have been removed), `@ApolloExperimental` symbols and artifacts used at build time (`apollo-gradle-plugin`, `apollo-compiler`, `apollo-tooling`).
 
@@ -30,20 +30,24 @@ The incremental delivery portion of the GraphQL specification has been unchanged
 
 ### Other GraphQL spec tracking items
 
-* [default values coercion](https://github.com/graphql/graphql-spec/pull/793/)
-* [schema coordinates](https://github.com/graphql/graphql-spec/pull/794/)
-* [fragment arguments](https://github.com/graphql/graphql-spec/pull/1081)
+We plan to implement these GraphQL specification RFCs:
+
+- [x] [default values coercion](https://github.com/graphql/graphql-spec/pull/793/)
+- [x] [schema coordinates](https://github.com/graphql/graphql-spec/pull/794/)
+- [ ] [fragment arguments](https://github.com/graphql/graphql-spec/pull/1081)
 
 ### Testing improvements:
 
-* [data builders in the test source set](https://github.com/apollographql/apollo-kotlin/issues/5257)
-* [strict mode](https://github.com/apollographql/apollo-kotlin/issues/3344)
+We have recently shipped these features, please try them out and give us feedback :)
+
+- [x] [data builders in the test source set](https://github.com/apollographql/apollo-kotlin/issues/5257)
+- [x] [strict mode](https://github.com/apollographql/apollo-kotlin/issues/3344)
 
 ## [Cache improvements](https://github.com/apollographql/apollo-kotlin/issues/2331)
 
 The new Apollo Normalized Cache v1 alphas [are available now](https://github.com/apollographql/apollo-kotlin-normalized-cache/releases) and contain lots of new features like [Cache Control](https://apollographql.github.io/apollo-kotlin-normalized-cache/cache-control.html), [garbage collection](https://apollographql.github.io/apollo-kotlin-normalized-cache/garbage-collection.html), TTL, [partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache/issues/57), better performance and more...
 
-We encourage you to try it out with the (important) caveat that the binary format might still change (your persistent cache might be lost when upgrading to a newer alpha versions, memory cache isn't impacted).  Your feedback is greatly appreciated and helps us ship a stable version faster.
+We encourage you to try it out with the (important) caveat that the binary format might still change (your persistent cache might be lost when upgrading to a newer alpha version, memory cache isn't impacted).  Your feedback is greatly appreciated and helps us ship a stable version faster.
 
 ## Apollo Kotlin Compose
 
