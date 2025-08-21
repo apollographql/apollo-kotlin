@@ -3,6 +3,37 @@ Change Log
 
 # Next version
 
+# Version 5.0.0-alpha.2
+_2025-08-21_
+
+In this new alpha of v5, here are the main highlights:
+- WasmJs target added to GraphQL subscriptions
+- a new [`generateApolloEnums` option](https://github.com/apollographql/apollo-kotlin/issues/6243) to generate enums as a sealed hierarchy distinguishing known and unknown values
+- and a handful of bug fixes and improvements.
+
+Your feedback is greatly appreciated as you try the new version!
+
+To migrate your project, please read the [migration guide](https://www.apollographql.com/docs/kotlin/v5/migration/5.0) (work in progress).
+
+## 👷‍♂️ All changes
+ 
+* [fix] Added default Accept header to introspection query (#6616)
+* [api] Introduce Service.pluginsArguments and relax the check for multiple plugins (#6622)
+* [new] Introduce `Service.generateApolloEnums` to generate enums with a `__Known` interface (#6611)
+* [fix] Fix error reporting on invalid documents (#6642)5
+* [fix] [Execution] Fix coercing variable values (#6644)
+* [new] Add GraphQL subscriptions support for wasmJs target (#6637)
+* [fix] Normalize the order of arguments of checked definitions (#6650)
+* [fix] Make sure that the introspection endpoint property value is checked at execution time (#6657)
+* [fix] Use the more lenient dependencies API (#6667)
+* [fix] Do not silently discard network exceptions (#6669)
+* [upgrade] Use built-in Node `fetch` (#6674)
+* [new] Add generateApolloProjectIdeModel task (#6666)
+
+## 💜 Contributors
+
+Many thanks to @pedromfmachado, @jvanderwee, @aryapreetam and @francescocervone for the contributions and help in this release 💜
+
 # Version 4.3.3
 _2025-08-21_
 
