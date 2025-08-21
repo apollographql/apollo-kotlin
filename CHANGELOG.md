@@ -8,7 +8,7 @@ _2025-08-21_
 
 In this new alpha of v5, here are the main highlights:
 - WasmJs target added to GraphQL subscriptions
-- a new [`generateApolloEnums` option](https://github.com/apollographql/apollo-kotlin/issues/6243) to generate enums as a sealed hierarchy distinguishing known and unknown values
+- Experimental [`generateApolloEnums` option](https://github.com/apollographql/apollo-kotlin/issues/6243) to generate enums as a sealed hierarchy distinguishing known and unknown values
 - and a handful of bug fixes and improvements.
 
 Your feedback is greatly appreciated as you try the new version!
