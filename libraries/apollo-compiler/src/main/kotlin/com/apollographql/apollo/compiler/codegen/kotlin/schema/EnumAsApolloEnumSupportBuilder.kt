@@ -38,6 +38,7 @@ internal class EnumAsApolloEnumSupportBuilder(
         fileName = simpleName,
         typeSpecs = listOf(
             TypeSpec.interfaceBuilder("ApolloEnum")
+                .addAnnotation(KotlinSymbols.ApolloExperimental)
                 .addTypeVariable(TypeVariableName("E"))
                 .addTypeVariable(TypeVariableName("K", ClassName(packageName, "KnownEnum").parameterizedBy(TypeVariableName("E"))))
                 .addProperty(PropertySpec.builder(rawValue, KotlinSymbols.String).build())
@@ -48,6 +49,7 @@ internal class EnumAsApolloEnumSupportBuilder(
         ),
         funSpecs = listOf(
             FunSpec.builder("knownOrDefault")
+                .addAnnotation(KotlinSymbols.ApolloExperimental)
                 .addModifiers(KModifier.INLINE)
                 .addTypeVariable(TypeVariableName("E", ClassName(packageName, "ApolloEnum").parameterizedBy(TypeVariableName("E"), TypeVariableName("K"))))
                 .addTypeVariable(TypeVariableName("K", ClassName(packageName, "KnownEnum").parameterizedBy(TypeVariableName("E"))).copy(reified = true))
@@ -57,6 +59,7 @@ internal class EnumAsApolloEnumSupportBuilder(
                 .addCode("return if (this is K) this else default(this)\n")
                 .build(),
             FunSpec.builder("knownOrNull")
+                .addAnnotation(KotlinSymbols.ApolloExperimental)
                 .addModifiers(KModifier.INLINE)
                 .addTypeVariable(TypeVariableName("E", ClassName(packageName, "ApolloEnum").parameterizedBy(TypeVariableName("E"), TypeVariableName("K"))))
                 .addTypeVariable(TypeVariableName("K", ClassName(packageName, "KnownEnum").parameterizedBy(TypeVariableName("E"))).copy(reified = true))
