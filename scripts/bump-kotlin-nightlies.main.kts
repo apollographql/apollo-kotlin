@@ -49,6 +49,7 @@ fun getLatestVersion(url: String, prefix: String? = null): String {
     document
         .getElementsByTagName("version")
         .let {
+          @Suppress("SimplifiableCallChain")
           (0 until it.length)
               .map { i -> it.item(i).textContent }
               .filter { it.startsWith(prefix) }
@@ -79,12 +80,17 @@ fun runCommand(vararg args: String): String {
   val builder = ProcessBuilder(*args)
       .redirectError(ProcessBuilder.Redirect.INHERIT)
   val process = builder.start()
-  val output = process.inputStream.bufferedReader().readText().trim()
+  val output = StringBuilder()
+  while (true) {
+    val line = process.inputStream.bufferedReader().readLine() ?: break
+    println("> $line")
+    output.append(line + "\n")
+  }
   val ret = process.waitFor()
   if (ret != 0) {
     throw Exception("command ${args.joinToString(" ")} failed:\n$output")
   }
-  return output
+  return output.toString().trim()
 }
 
 fun runCommand(args: String): String {
@@ -95,11 +101,19 @@ fun rebaseOnTopOfMain() {
   val firstCommitMessage = "Add Kotlin Dev and Maven Central Snapshots repositories"
   runCommand("git fetch origin main:main")
   val baseCommit = runCommand("git", "rev-parse", "HEAD^{/$firstCommitMessage}^")
+  println("Base commit: $baseCommit")
   runCommand("git rebase --rebase-merges $baseCommit --onto main")
 }
 
 fun triggerPrWorkflow() {
   runCommand("gh workflow run pr --ref $BRANCH_NAME")
+}
+
+fun updateLockFiles() {
+  File("kotlin-js-store").deleteRecursively()
+  File("tests/kotlin-js-store").deleteRecursively()
+  runCommand("./gradlew kotlinUpgradePackageLock kotlinWasmUpgradePackageLock")
+  runCommand("./gradlew -p tests kotlinUpgradePackageLock kotlinWasmUpgradePackageLock")
 }
 
 fun commitAndPush() {
@@ -119,6 +133,9 @@ fun main() {
 
   println("Bump versions in libraries.toml")
   bumpVersions()
+
+  println("Update lock files")
+  updateLockFiles()
 
   println("Commit and push")
   commitAndPush()
