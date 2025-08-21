@@ -209,7 +209,7 @@ To create a version:
 * Enter the changelog.
 * Hit "publish release".
 * The release job will be triggered and the artifacts will be uploaded to Maven Central when done (might take several minutes to a couple of hours).
-* Update docs and prepare next release by calling `./scripts/update-repo --prepare-next-version`
+* Update docs and prepare next release by calling `./scripts/update-repo.main.kts prepare-next-version`
 * if it's a significant release, tweet about it 🐦
 * relax 🍹
 
