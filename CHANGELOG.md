@@ -17,18 +17,18 @@ To migrate your project, please read the [migration guide](https://www.apollogra
 
 ## 👷‍♂️ All changes
  
-* [fix] Added default Accept header to introspection query (#6616)
-* [api] Introduce Service.pluginsArguments and relax the check for multiple plugins (#6622)
+* [new] Add GraphQL subscriptions support for wasmJs target (#6637)
 * [new] Introduce `Service.generateApolloEnums` to generate enums with a `__Known` interface (#6611)
+* [new] Add generateApolloProjectIdeModel task (#6666)
+* [new] Introduce Service.pluginsArguments and relax the check for multiple plugins (#6622)
+* [fix] Added default Accept header to introspection query (#6616)
 * [fix] Fix error reporting on invalid documents (#6642)5
 * [fix] [Execution] Fix coercing variable values (#6644)
-* [new] Add GraphQL subscriptions support for wasmJs target (#6637)
 * [fix] Normalize the order of arguments of checked definitions (#6650)
 * [fix] Make sure that the introspection endpoint property value is checked at execution time (#6657)
 * [fix] Use the more lenient dependencies API (#6667)
 * [fix] Do not silently discard network exceptions (#6669)
 * [upgrade] Use built-in Node `fetch` (#6674)
-* [new] Add generateApolloProjectIdeModel task (#6666)
 
 ## 💜 Contributors
 
