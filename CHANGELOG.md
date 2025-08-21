@@ -3,10 +3,26 @@ Change Log
 
 # Next version
 
+# Version 4.3.3
+_2025-08-21_
+
+This is maintenance release that includes a few fixes.
+
+## 👷‍♂️ All changes
+
+* Normalize the order of arguments of checked definitions (#6651)
+* Make sure that the introspection endpoint property value is checked at execution time (#6658)
+* Do not silently discard network exceptions (#6671)
+* Fix error reporting on invalid documents (#6678)
+
+## 💜 Contributors
+
+Many thanks to @francescocervone for the Gradle plugin fix 💜
+
 # Version 4.3.2
 _2025-07-25_
 
-Maintainance release to [fix](https://github.com/apollographql/apollo-kotlin/pull/6619) the `Accept:` header during introspection. Many thanks @pedromfmachado for diving into this!
+Maintenance release to [fix](https://github.com/apollographql/apollo-kotlin/pull/6619) the `Accept:` header during introspection. Many thanks @pedromfmachado for diving into this!
 
 This release also contains infrastructure work:
 * the IJ plugin is now released separately from a [dedicated repository](https://github.com/apollographql/apollo-intellij-plugin).
