@@ -10,10 +10,9 @@ This is maintenance release that includes a few fixes.
 
 ## 👷‍♂️ All changes
 
-* Normalize the order of arguments of checked definitions (#6651)
-* Make sure that the introspection endpoint property value is checked at execution time (#6658)
-* Do not silently discard network exceptions (#6671)
-* Fix error reporting on invalid documents (#6678)
+* [fix] Normalize the order of arguments of checked definitions (#6651)
+* [fix] Make sure that the introspection endpoint property value is checked at execution time (#6658)
+* [fix] Do not silently discard network exceptions (#6671)
 
 ## 💜 Contributors
 
