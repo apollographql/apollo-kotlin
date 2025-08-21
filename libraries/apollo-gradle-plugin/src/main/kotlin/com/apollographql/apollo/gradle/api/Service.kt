@@ -524,8 +524,63 @@ interface Service {
 
   /**
    * Whether to generate enums as ApolloEnum<E>.
+   * Generates GraphQL enums as a sealed interface hierarchy.
    *
-   * Experimental, see https://github.com/apollographql/apollo-kotlin/issues/6243.
+   * This GraphQL enum:
+   * ```graphql
+   * enum Color {
+   *   BLUEBERRY,
+   *   CHERRY
+   *   CANDY
+   * }
+   * ```
+   *
+   *  Generates the following simplified Kotlin code:
+   *
+   * ```kotlin
+   * public interface ApolloEnum<E, K : KnownEnum<E>> {
+   *   public val rawValue: String
+   * }
+   *
+   * public sealed interface Color : ApolloEnum<Color, Color.__Known> {
+   *   override val rawValue: String
+   *
+   *   public data object BLUEBERRY : __Known {
+   *     override val rawValue: String = "BLUEBERRY"
+   *   }
+   *
+   *   public data object CHERRY : __Known {
+   *     override val rawValue: String = "CHERRY"
+   *   }
+   *
+   *   public data object CANDY : __Known {
+   *     override val rawValue: String = "CANDY"
+   *   }
+   *
+   *   public sealed interface __Known : Color, KnownEnum<Color> {
+   *     override val rawValue: String
+   *   }
+   *
+   *   public class __Unknown(
+   *     override val rawValue: String,
+   *   ) : Color
+   * }
+   * ```
+   *
+   * Using `ApolloEnum` allows to have an intermediate type for "known" enums so you can sanitize your enums
+   * and only deal with known enums if you want to:
+   *
+   * ```kotlin
+   * // this function only wants to deal with known colors
+   * fun doSomethingWith(color: Color.__Known) {
+   *   TODO()
+   * }
+   * val known = networkEnum.knownOrDefault { Color.CHERRY }
+   *
+   * doSomethingWith(known)
+   * ```
+   *
+   * [generateApolloEnums] is experimental and only valid when [generateKotlinModels] is `true`.
    */
   @ApolloExperimental
   val generateApolloEnums: Property<Boolean>
