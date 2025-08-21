@@ -11,7 +11,7 @@ val BRANCH_NAME = "kotlin-nightlies"
 
 fun bumpVersions() {
   val kotlinVersion =
-    getLatestVersion("https://redirector.kotlinlang.org/maven/dev/org/jetbrains/kotlin/kotlin-stdlib/maven-metadata.xml", prefix = "2.2.0")
+    getLatestVersion("https://redirector.kotlinlang.org/maven/dev/org/jetbrains/kotlin/kotlin-stdlib/maven-metadata.xml", prefix = "2.2.20-RC")
 
   val useKspSnapshots = false
   val kspVersion = getLatestVersion(
@@ -20,7 +20,7 @@ fun bumpVersions() {
       } else {
         "https://repo1.maven.org/maven2/com/google/devtools/ksp/com.google.devtools.ksp.gradle.plugin/maven-metadata.xml"
       },
-      prefix = "2.2.0"
+      prefix = "2.2.20"
   )
 
   File("gradle/libraries.toml").let { file ->
@@ -55,7 +55,14 @@ fun getLatestVersion(url: String, prefix: String? = null): String {
               .sortedBy {
                 Version.parse(
                     // Make it SemVer comparable
-                    it.replace("-dev-", "-dev.")
+                    it
+                        .replace("-dev-", "-dev.")
+                        .replace("-RC-", "-RC.")
+                        .replace("-RC2-", "-RC2.")
+                        .replace("-RC3-", "-RC3.")
+                        .replace("-Beta-", "-Beta.")
+                        .replace("-Beta2-", "-Beta2.")
+                        .replace("-Beta3-", "-Beta3.")
                 )
               }
               .last()
