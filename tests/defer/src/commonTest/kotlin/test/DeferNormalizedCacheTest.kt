@@ -4,6 +4,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.Error
+import com.apollographql.apollo.api.Error.Builder
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.FetchPolicy
@@ -72,9 +73,8 @@ class DeferNormalizedCacheTest {
 
     // Fill the cache by doing a network only request
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
+        """{"hasNext":true,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"},{"id":"3","path":["computers",1,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"1"},{"data":{"isColor":false},"id":"2"},{"data":{"isColor":true},"id":"3"}],"completed":[{"id":"0"},{"id":"1"},{"id":"2"},{"id":"3"}]}""",
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     apolloClient.query(WithFragmentSpreadsQuery()).fetchPolicy(FetchPolicy.NetworkOnly).toFlow().collect()
@@ -86,9 +86,20 @@ class DeferNormalizedCacheTest {
 
     // We get the last/fully formed data
     val cacheExpected = WithFragmentSpreadsQuery.Data(
-        listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+        listOf(
+            WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
             ComputerFields.Screen("Screen", "640x480",
-                ScreenFields(false)))))
+                ScreenFields(false)
+            )
+            )
+            ),
+            WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
+                ComputerFields.Screen("Screen", "800x600",
+                    ScreenFields(true)
+                )
+            )
+            ),
+        )
     )
     assertEquals(cacheExpected, cacheActual)
   }
@@ -99,9 +110,8 @@ class DeferNormalizedCacheTest {
 
     // Fill the cache by doing a first request
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
+        """{"hasNext":true,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"},{"id":"3","path":["computers",1,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"1"},{"data":{"isColor":false},"id":"2"},{"data":{"isColor":true},"id":"3"}],"completed":[{"id":"0"},{"id":"1"},{"id":"2"},{"id":"3"}]}""",
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     apolloClient.query(WithFragmentSpreadsQuery()).fetchPolicy(FetchPolicy.NetworkOnly).toFlow().collect()
@@ -114,16 +124,26 @@ class DeferNormalizedCacheTest {
 
     val networkExpected = listOf(
         WithFragmentSpreadsQuery.Data(
-            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null))
+            listOf(
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null),
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
+            )
         ),
         WithFragmentSpreadsQuery.Data(
-            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480", null))))
-        ),
-        WithFragmentSpreadsQuery.Data(
-            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480",
-                    ScreenFields(false)))))
+            listOf(
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+                    ComputerFields.Screen("Screen", "640x480",
+                        ScreenFields(false)
+                    )
+                )
+                ),
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
+                    ComputerFields.Screen("Screen", "800x600",
+                        ScreenFields(true)
+                    )
+                )
+                ),
+            )
         ),
     )
     assertEquals(networkExpected, networkActual)
@@ -134,9 +154,8 @@ class DeferNormalizedCacheTest {
     apolloClient = apolloClient.newBuilder().fetchPolicy(FetchPolicy.CacheFirst).build()
 
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
+        """{"hasNext":true,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"},{"id":"3","path":["computers",1,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"1"},{"data":{"isColor":false},"id":"2"},{"data":{"isColor":true},"id":"3"}],"completed":[{"id":"0"},{"id":"1"},{"id":"2"},{"id":"3"}]}""",
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
 
@@ -148,16 +167,26 @@ class DeferNormalizedCacheTest {
 
     val networkExpected = listOf(
         WithFragmentSpreadsQuery.Data(
-            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null))
+            listOf(
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null),
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
+            )
         ),
         WithFragmentSpreadsQuery.Data(
-            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480", null))))
-        ),
-        WithFragmentSpreadsQuery.Data(
-            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480",
-                    ScreenFields(false)))))
+            listOf(
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+                    ComputerFields.Screen("Screen", "640x480",
+                        ScreenFields(false)
+                    )
+                )
+                ),
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
+                    ComputerFields.Screen("Screen", "800x600",
+                        ScreenFields(true)
+                    )
+                )
+                ),
+            )
         ),
     )
     assertEquals(networkExpected, networkActual)
@@ -176,9 +205,8 @@ class DeferNormalizedCacheTest {
     apolloClient = apolloClient.newBuilder().fetchPolicy(FetchPolicy.NetworkFirst).build()
 
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
+        """{"hasNext":true,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"},{"id":"3","path":["computers",1,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"1"},{"data":{"isColor":false},"id":"2"},{"data":{"isColor":true},"id":"3"}],"completed":[{"id":"0"},{"id":"1"},{"id":"2"},{"id":"3"}]}""",
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
 
@@ -188,16 +216,26 @@ class DeferNormalizedCacheTest {
 
     val networkExpected = listOf(
         WithFragmentSpreadsQuery.Data(
-            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null))
+            listOf(
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null),
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
+            )
         ),
         WithFragmentSpreadsQuery.Data(
-            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480", null))))
-        ),
-        WithFragmentSpreadsQuery.Data(
-            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480",
-                    ScreenFields(false)))))
+            listOf(
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+                    ComputerFields.Screen("Screen", "640x480",
+                        ScreenFields(false)
+                    )
+                )
+                ),
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
+                    ComputerFields.Screen("Screen", "800x600",
+                        ScreenFields(true)
+                    )
+                )
+                ),
+            )
         ),
     )
     assertEquals(networkExpected, networkActual)
@@ -216,9 +254,8 @@ class DeferNormalizedCacheTest {
     apolloClient = apolloClient.newBuilder().fetchPolicy(FetchPolicy.CacheAndNetwork).build()
 
     val jsonList1 = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"pending":[{"id":"0","path":["computers",0]}],"hasNext":true}""",
+        """{"hasNext":true,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"isColor":false},"id":"2"}],"completed":[{"id":"0"},{"id":"2"}]}""",
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList1)
 
@@ -234,10 +271,6 @@ class DeferNormalizedCacheTest {
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480", null))))
-        ),
-        WithFragmentSpreadsQuery.Data(
-            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                 ComputerFields.Screen("Screen", "640x480",
                     ScreenFields(false)))))
         ),
@@ -245,9 +278,8 @@ class DeferNormalizedCacheTest {
     assertEquals(networkExpected, networkActual)
 
     val jsonList2 = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer2"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"path":["computers",0]}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":true},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]}],"hasNext":true}""",
+        """{"hasNext":true,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"0"},{"data":{"isColor":true},"id":"2"}],"completed":[{"id":"0"},{"id":"2"}]}""",
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList2)
 
@@ -264,10 +296,6 @@ class DeferNormalizedCacheTest {
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
-                ComputerFields.Screen("Screen", "800x600", null))))
-        ),
-        WithFragmentSpreadsQuery.Data(
-            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
                 ComputerFields.Screen("Screen", "800x600",
                     ScreenFields(true)))))
         ),
@@ -281,9 +309,8 @@ class DeferNormalizedCacheTest {
     apolloClient = apolloClient.newBuilder().fetchPolicy(FetchPolicy.CacheFirst).build()
 
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
-        """{"incremental": [{"data":null,"path":["computers",0,"screen"],"label":"b","errors":[{"message":"Cannot resolve isColor","locations":[{"line":1,"column":119}],"path":["computers",0,"screen","isColor"]}]}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
+        """{"hasNext":false,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"},{"id":"3","path":["computers",1,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"1"},{"data":{"isColor":true},"id":"3"}],"completed":[{"id":"0"},{"id":"1"},{"id":"2","errors":[{"message":"Error field","locations":[{"line":3,"column":35}],"path":["computers",0,"screen","isColor"]}]},{"id":"3"}]}""",
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
 
@@ -299,36 +326,40 @@ class DeferNormalizedCacheTest {
             query,
             uuid,
         ).data(WithFragmentSpreadsQuery.Data(
-            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null))
-        )).build(),
-
-        ApolloResponse.Builder(
-            query,
-            uuid,
-        ).data(WithFragmentSpreadsQuery.Data(
-            listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480", null))))
-        )).build(),
-
-        ApolloResponse.Builder(
-            query,
-            uuid,
+            listOf(
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null),
+                WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
+            )
         )
-            .data(
-                WithFragmentSpreadsQuery.Data(
-                    listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                        ComputerFields.Screen("Screen", "640x480", null))))
-                )
-            )
-            .errors(
+        ).build(),
+
+
+        ApolloResponse.Builder(
+            query,
+            uuid,
+        ).data(
+            WithFragmentSpreadsQuery.Data(
                 listOf(
-                    Error.Builder(message = "Cannot resolve isColor")
-                        .locations(listOf(Error.Location(1, 119)))
-                        .path(listOf("computers", 0, "screen", "isColor"))
-                        .build()
+                    WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+                        ComputerFields.Screen("Screen", "640x480", null)
+                    )
+                    ),
+                    WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
+                        ComputerFields.Screen("Screen", "800x600",
+                            ScreenFields(true)
+                        )
+                    )
+                    ),
                 )
             )
-            .build(),
+        ).errors(
+            listOf(
+                Builder("Error field")
+                    .locations(listOf(Error.Location(3, 35)))
+                    .path(listOf("computers", 0, "screen", "isColor"))
+                    .build()
+            )
+        ).build()
     )
     assertResponseListEquals(networkExpected, networkActual)
 
@@ -337,7 +368,7 @@ class DeferNormalizedCacheTest {
     val exception = apolloClient.query(WithFragmentSpreadsQuery()).execute().exception
     check(exception is CacheMissException)
     assertIs<ApolloHttpException>(exception.suppressedExceptions.first())
-    assertEquals("Object 'computers.0.screen' has no field named 'isColor'", exception.message)
+    assertEquals("Object 'computers.0' has no field named 'cpu'", exception.message)
     mockServer.awaitRequest()
   }
 
@@ -404,9 +435,8 @@ class DeferNormalizedCacheTest {
   @Test
   fun mutation() = runTest(before = { setUp() }, after = { tearDown() }) {
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"label":"c"}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0],"label":"c"},{"id":"1","path":["computers",1],"label":"c"}],"hasNext":true}""",
+        """{"hasNext":false,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"},{"id":"3","path":["computers",1,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"1"},{"data":{"isColor":false},"id":"2"},{"data":{"isColor":true},"id":"3"}],"completed":[{"id":"0"},{"id":"1"},{"id":"2"},{"id":"3"}]}""",
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     val networkActual = apolloClient.mutation(WithFragmentSpreadsMutation()).toFlow().toList().map { it.dataOrThrow() }
@@ -414,16 +444,25 @@ class DeferNormalizedCacheTest {
 
     val networkExpected = listOf(
         WithFragmentSpreadsMutation.Data(
-            listOf(WithFragmentSpreadsMutation.Computer("Computer", "Computer1", null))
-        ),
-        WithFragmentSpreadsMutation.Data(
-            listOf(WithFragmentSpreadsMutation.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480", null))))
+            listOf(
+                WithFragmentSpreadsMutation.Computer("Computer", "Computer1", null),
+                WithFragmentSpreadsMutation.Computer("Computer", "Computer2", null),
+            )
         ),
         WithFragmentSpreadsMutation.Data(
             listOf(WithFragmentSpreadsMutation.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                 ComputerFields.Screen("Screen", "640x480",
-                    ScreenFields(false)))))
+                    ScreenFields(false)
+                )
+            )
+            ),
+                WithFragmentSpreadsMutation.Computer("Computer", "Computer2", ComputerFields("486", 1996,
+                    ComputerFields.Screen("Screen", "800x600",
+                        ScreenFields(true)
+                    )
+                )
+                )
+            )
         ),
     )
     assertEquals(networkExpected, networkActual)
@@ -433,9 +472,20 @@ class DeferNormalizedCacheTest {
 
     // We get the last/fully formed data
     val cacheExpected = WithFragmentSpreadsQuery.Data(
-        listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-            ComputerFields.Screen("Screen", "640x480",
-                ScreenFields(false)))))
+        listOf(
+            WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+                ComputerFields.Screen("Screen", "640x480",
+                    ScreenFields(false)
+                )
+            )
+            ),
+            WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
+                ComputerFields.Screen("Screen", "800x600",
+                    ScreenFields(true)
+                )
+            )
+            ),
+        )
     )
     assertEquals(cacheExpected, cacheActual)
   }
@@ -443,9 +493,8 @@ class DeferNormalizedCacheTest {
   @Test
   fun mutationWithOptimisticDataFails() = runTest(before = { setUp() }, after = { tearDown() }) {
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"label":"c"}],"hasNext":true}""",
-        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0],"label":"c"},{"id":"1","path":["computers",1],"label":"c"}],"hasNext":true}""",
+        """{"hasNext":false,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"},{"id":"3","path":["computers",1,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"1"},{"data":{"isColor":false},"id":"2"},{"data":{"isColor":true},"id":"3"}],"completed":[{"id":"0"},{"id":"1"},{"id":"2"},{"id":"3"}]}""",
     )
     mockServer.enqueueMultipart("application/json").enqueueStrings(jsonList)
     val responses = apolloClient.mutation(WithFragmentSpreadsMutation()).optimisticUpdates(
@@ -468,8 +517,8 @@ class DeferNormalizedCacheTest {
       return@runTest
     }
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"incremental": [{"data":{"cpu":"386"},"path":["computers",0]}],"hasNext":false}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
+        """{"hasNext":false,"incremental":[{"data":{"cpu":"386"},"id":"0"},{"data":{"cpu":"486"},"id":"1"}],"completed":[{"id":"0"},{"id":"1"}]}""",
     )
     val multipartBody = mockServer.enqueueMultipart("application/json")
     multipartBody.enqueuePart(jsonList[0].encodeUtf8(), false)
