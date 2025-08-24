@@ -17,6 +17,25 @@ Apollo Kotlin 5 is mostly binary compatible with Apollo Kotlin 4 with a few exce
 
 We tried hard to minimize the impact of the binary changes so that running code compiled for v4 will run with v5. But the occasional incompatibility may happen. In that case, the incompatible libraries will need to compile against v5 and make a new release.   
 
+## Removed `apollo-gradle-plugin-external` and `com.apollographql.apollo.external`
+
+The Apollo Gradle Plugin [now uses classloader isolation](https://github.com/apollographql/apollo-kotlin/pull/6524) and does not use R8 to relocate dependencies anymore. As a result, the `apollo-gradle-plugin-external` artifact and the `com.apollographql.apollo.external` plugins have been removed. You should use `apollo-gradle-plugin` and `com.apollographql.apollo` instead:
+
+```kotlin
+// Replace
+implementation("com.apollographql.apollo:apollo-gradle-plugin-external:4.3.3")
+// With 
+implementation("com.apollographql.apollo:apollo-gradle-plugin:4.3.3")
+
+plugins {
+  // Replace
+  id("com.apollographql.apollo.external")
+  // With 
+  id("com.apollographql.apollo")
+}
+```
+
+
 ## Removed `Service.operationOutputGenerator` and `Service.operationIdGenerator`
 
 While running your `OperationOutputGenerator` directly in your build script classpath was convenient, it required the compiler code to run completely in the global buildscript classpath. This created numerous issues such as incompatible dependencies and/or unneeded build invalidations.
