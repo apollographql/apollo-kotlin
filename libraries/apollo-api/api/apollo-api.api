@@ -831,6 +831,9 @@ public abstract class com/apollographql/apollo/api/Optional {
 
 public final class com/apollographql/apollo/api/Optional$Absent : com/apollographql/apollo/api/Optional {
 	public static final field INSTANCE Lcom/apollographql/apollo/api/Optional$Absent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo/api/Optional$Companion {
