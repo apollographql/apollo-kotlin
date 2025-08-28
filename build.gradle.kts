@@ -1,9 +1,14 @@
-import JapiCmp.configureJapiCmp
 import kotlinx.validation.ExperimentalBCVApi
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeHostTest
 
 plugins {
-  id("build.logic") apply false
+  id("base")
+}
+
+buildscript {
+  dependencies {
+    classpath("com.apollographql.apollo:build-logic")
+  }
 }
 
 apply(plugin = "com.github.ben-manes.versions")
@@ -17,50 +22,9 @@ fun subprojectTasks(name: String): List<Task> {
   }
 }
 
-fun isTag(): Boolean {
-  val ref = System.getenv("GITHUB_REF")
-
-  return ref?.startsWith("refs/tags/") == true
-}
-
-fun shouldPublishSnapshots(): Boolean {
-  val eventName = System.getenv("GITHUB_EVENT_NAME")
-  val ref = System.getenv("GITHUB_REF")
-
-  return eventName == "push" && (ref == "refs/heads/main")
-}
-
-tasks.register("ciPublishSnapshot") {
-  description = "Publishes a SNAPSHOT"
-
-  if (shouldPublishSnapshots()) {
-    dependsOn(subprojectTasks("publishAllPublicationsToOssSnapshotsRepository"))
-  } else {
-    doFirst {
-      error("We are not on a branch, fail snapshots publishing")
-    }
-  }
-}
-
-tasks.register("ciPublishRelease") {
-  description = "Publishes all artifacts to OSSRH and the Gradle Plugin Portal"
-
-  if (isTag()) {
-    dependsOn(subprojectTasks("publishAllPublicationsToOssStagingRepository"))
-    // Only publish plugins to the Gradle portal if everything else succeeded
-    finalizedBy(":apollo-gradle-plugin:publishPlugins")
-  } else {
-    doFirst {
-      error("We are not on a tag, fail release publishing")
-    }
-  }
-
-}
-
 tasks.register("ciTestsGradle") {
   description = "Execute the Gradle tests (slow)"
-  dependsOn(":apollo-gradle-plugin:allTests")
-  dependsOn(":apollo-gradle-plugin-external:validatePlugins")
+  dependsOn(":apollo-gradle-plugin:test")
 }
 
 tasks.register("ciTestsNoGradle") {
@@ -72,7 +36,7 @@ tasks.register("ciTestsNoGradle") {
 
 
   subprojects {
-    if (name !in setOf("apollo-gradle-plugin", "intellij-plugin")) {
+    if (name !in setOf("apollo-gradle-plugin")) {
       dependsOn(tasks.matching { it.name == "test" })
     }
     dependsOn(tasks.matching { it.name == "jvmTest" })
@@ -104,19 +68,12 @@ tasks.register("ctg") {
   dependsOn("ciTestsGradle")
 }
 
-val ciBuild = tasks.register("ciBuild") {
-  description = "Execute the 'build' task in each subproject"
-  dependsOn(subprojectTasks("build"))
-}
-
 tasks.named("dependencyUpdates").configure {
   (this as com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask)
   rejectVersionIf {
     listOf("alpha", "beta", "rc").any { candidate.version.lowercase().contains(it) }
   }
 }
-
-rootProject.configureJapiCmp()
 
 configure<kotlinx.validation.ApiValidationExtension> {
   @OptIn(ExperimentalBCVApi::class)
@@ -137,8 +94,6 @@ configure<kotlinx.validation.ApiValidationExtension> {
           "com.apollographql.apollo.runtime.java.network.http.internal",
       )
   )
-
-  ignoredProjects.add("intellij-plugin")
   ignoredProjects.add("apollo-testing-support-internal")
 }
 
@@ -157,4 +112,4 @@ tasks.register("rmbuild") {
   }
 }
 
-apolloRoot(ciBuild)
+apolloRoot()

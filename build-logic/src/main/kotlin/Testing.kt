@@ -7,6 +7,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 
 fun Project.configureTesting() {
   tasks.withType(Test::class.java) {
@@ -44,19 +45,19 @@ private fun Project.addTestDependencies() {
       is KotlinMultiplatformExtension -> {
         sourceSets.getByName("commonTest") {
           dependencies {
-            implementation(getCatalogLib("kotlin.test"))
+            implementation("org.jetbrains.kotlin:kotlin-test:${getKotlinPluginVersion()}")
           }
         }
         sourceSets.findByName("androidInstrumentedTest")?.apply {
           dependencies {
-            implementation(getCatalogLib("kotlin.test"))
+            implementation("org.jetbrains.kotlin:kotlin-test:${getKotlinPluginVersion()}")
             implementation(getCatalogLib("android.test.runner"))
           }
         }
       }
 
       is KotlinJvmProjectExtension -> {
-        dependencies.add("testImplementation", getCatalogLib("kotlin.test"))
+        dependencies.add("testImplementation", "org.jetbrains.kotlin:kotlin-test:${getKotlinPluginVersion()}")
       }
     }
   }

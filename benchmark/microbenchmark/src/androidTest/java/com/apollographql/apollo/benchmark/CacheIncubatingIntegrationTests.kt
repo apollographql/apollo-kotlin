@@ -19,9 +19,10 @@ import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.MockServerHandler
 import com.apollographql.apollo.testing.MapTestNetworkTransport
 import com.apollographql.apollo.testing.registerTestResponse
+import com.apollographql.cache.normalized.CacheManager
 import com.apollographql.cache.normalized.api.NormalizedCacheFactory
+import com.apollographql.cache.normalized.cacheManager
 import com.apollographql.cache.normalized.memory.MemoryCacheFactory
-import com.apollographql.cache.normalized.store
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -76,7 +77,7 @@ class CacheIncubatingIntegrationTests {
             it.networkTransport(MapTestNetworkTransport())
           }
         }
-        .store(createApolloStore(cacheFactory))
+        .cacheManager(createCacheManager(cacheFactory))
         .build()
     if (!withMockServer) {
       client.registerTestResponse(operationBasedQuery, operationBasedQuery.parseJsonResponse(resource(R.raw.calendar_response_simple).jsonReader()).data!!)
@@ -99,8 +100,8 @@ class CacheIncubatingIntegrationTests {
     }
   }
 
-  private fun createApolloStore(cacheFactory: NormalizedCacheFactory): ApolloStore {
-    return ApolloStore(cacheFactory)
+  private fun createCacheManager(cacheFactory: NormalizedCacheFactory): CacheManager {
+    return CacheManager(cacheFactory)
   }
 
 

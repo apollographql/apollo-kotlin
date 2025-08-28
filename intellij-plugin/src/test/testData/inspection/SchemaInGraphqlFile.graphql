@@ -1,3 +1,0 @@
-type SomeType {
-  someField: String
-}

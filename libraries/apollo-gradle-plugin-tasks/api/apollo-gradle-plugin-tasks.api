@@ -1,0 +1,119 @@
+public final class com/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/List;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesEntryPoint$Companion {
+	public final fun run (Ljava/util/List;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloDownloadSchemaEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloDownloadSchemaEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;Ljava/lang/Boolean;Ljava/util/Map;Ljava/util/function/BiConsumer;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloDownloadSchemaEntryPoint$Companion {
+	public final fun run (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;Ljava/lang/Boolean;Ljava/util/Map;Ljava/util/function/BiConsumer;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateCodegenSchemaEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateCodegenSchemaEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateCodegenSchemaEntryPoint$Companion {
+	public final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateCompilationUnitModelEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateCompilationUnitModelEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/lang/String;Ljava/util/Map;Ljava/util/Set;Ljava/util/Map;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateCompilationUnitModelEntryPoint$Companion {
+	public final fun run (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/lang/String;Ljava/util/Map;Ljava/util/Set;Ljava/util/Map;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateDataBuildersSourcesEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateDataBuildersSourcesEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/io/File;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateDataBuildersSourcesEntryPoint$Companion {
+	public final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/io/File;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateIrOperationsEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateIrOperationsEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateIrOperationsEntryPoint$Companion {
+	public final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateOptionsEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateOptionsEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/util/List;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;ZLjava/lang/String;ZZLjava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateOptionsEntryPoint$Companion {
+	public final fun run (Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/util/List;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;ZLjava/lang/String;ZZLjava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateOptionsKt {
+	public static final fun getKotlinTargetLanguage (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo/compiler/TargetLanguage;
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateProjectModelEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateProjectModelEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/Set;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/Set;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateProjectModelEntryPoint$Companion {
+	public final fun run (Ljava/util/Set;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/Set;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateSourcesEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateSourcesEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateSourcesEntryPoint$Companion {
+	public final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/io/File;Ljava/io/File;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrEntryPoint$Companion {
+	public final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/io/File;Ljava/io/File;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloRegisterOperationsEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloRegisterOperationsEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/io/File;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloRegisterOperationsEntryPoint$Companion {
+	public final fun run (Ljava/util/function/BiConsumer;Ljava/io/File;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/UtilsKt {
+	public static final fun asLogger (Lgratatouille/tasks/GLogger;)Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;
+	public static final fun toInputFiles (Ljava/util/List;)Ljava/util/List;
+}
+

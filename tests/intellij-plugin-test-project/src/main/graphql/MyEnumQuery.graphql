@@ -1,3 +1,0 @@
-query MyEnumQuery($inputEnum: myEnum) {
-  myEnum(inputEnum: $inputEnum)
-}

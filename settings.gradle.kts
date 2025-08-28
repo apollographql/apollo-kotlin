@@ -1,9 +1,5 @@
-pluginManagement {
-  includeBuild("build-logic")
-}
-
 plugins {
-  id("com.gradle.develocity") version "4.0.2" // sync with libraries.toml
+  id("com.gradle.develocity") version "4.1.1" // sync with libraries.toml
   id("com.gradle.common-custom-user-data-gradle-plugin") version "2.3"
   id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
@@ -26,8 +22,6 @@ rootProject.projectDir
       project(":${it.name}").projectDir = it
     }
 
-include(":intellij-plugin")
-
 dependencyResolutionManagement {
   versionCatalogs {
     create("libs") {
@@ -36,6 +30,7 @@ dependencyResolutionManagement {
   }
 }
 
+includeBuild("build-logic")
+
 apply(from = "./gradle/repositories.gradle.kts")
 apply(from = "./gradle/ge.gradle")
-

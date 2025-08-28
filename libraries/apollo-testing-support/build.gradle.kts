@@ -28,13 +28,11 @@ kotlin {
 
     findByName("jsMain")?.apply {
       dependencies {
-        implementation(libs.kotlin.test.js)
         api(libs.okio.nodefilesystem)
       }
     }
     findByName("jsTest")?.apply {
       dependencies {
-        implementation(libs.kotlin.test.js)
       }
     }
   }

@@ -1,9 +1,14 @@
 plugins {
-  `embedded-kotlin`
-  `java-gradle-plugin`
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.compat.patrouille)
 }
 
-group = "com.apollographql.apollo.benchmark"
+group = "benchmark"
+
+compatPatrouille {
+  java(17)
+  kotlin(embeddedKotlinVersion)
+}
 
 dependencies {
   compileOnly(gradleApi())
@@ -12,14 +17,4 @@ dependencies {
   implementation(libs.ksp)
   implementation(libs.android.plugin)
   implementation(libs.benchmark.gradle.plugin)
-}
-
-
-gradlePlugin {
-  plugins {
-    register("apollo.benchmark") {
-      id = "apollo.benchmark"
-      implementationClass = "BenchmarkPlugin"
-    }
-  }
 }

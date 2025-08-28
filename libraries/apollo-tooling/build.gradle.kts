@@ -1,5 +1,6 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
+  id("org.jetbrains.kotlin.plugin.serialization")
   // Depend on a published version of the plugin to avoid a "chicken and egg" problem
   alias(libs.plugins.apollo.published)
 }

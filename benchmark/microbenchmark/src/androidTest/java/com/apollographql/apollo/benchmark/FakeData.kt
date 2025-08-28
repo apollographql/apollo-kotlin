@@ -5,13 +5,14 @@ import com.apollographql.apollo.conferences.GetConferenceDataQuery
 import com.apollographql.apollo.conferences.fragment.RoomDetails
 import com.apollographql.apollo.conferences.fragment.SessionDetails
 import com.apollographql.apollo.conferences.fragment.SpeakerDetails
-import com.apollographql.cache.normalized.ApolloStore
+import com.apollographql.cache.normalized.CacheManager
 import com.apollographql.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.cache.normalized.api.CacheHeaders
+import kotlinx.coroutines.runBlocking
 
 const val SESSION_COUNT = 100
 
-fun primeCache(apolloStore: ApolloStore) {
+fun primeCache(cacheManager: CacheManager) = runBlocking {
   val query1 = GetConferenceDataQuery(Optional.present(SESSION_COUNT))
   var data: GetConferenceDataQuery.Data = GetConferenceDataQuery.Data(
       sessions = createSessions(0),
@@ -20,7 +21,7 @@ fun primeCache(apolloStore: ApolloStore) {
       config = createConfig(),
       venues = createVenues(),
   )
-  apolloStore.writeOperation(query1, data)
+  cacheManager.writeOperation(query1, data)
 
   // Sessions in the first half of the list become unreachable
   data = GetConferenceDataQuery.Data(
@@ -30,7 +31,7 @@ fun primeCache(apolloStore: ApolloStore) {
       config = createConfig(),
       venues = createVenues(),
   )
-  apolloStore.writeOperation(query1, data)
+  cacheManager.writeOperation(query1, data)
 
   // Some stale sessions
   val query2 = GetConferenceDataQuery(Optional.present(SESSION_COUNT), Optional.present((SESSION_COUNT * 2).toString()))
@@ -41,7 +42,7 @@ fun primeCache(apolloStore: ApolloStore) {
       config = createConfig(),
       venues = createVenues(),
   )
-  apolloStore.writeOperation(
+  cacheManager.writeOperation(
       query2,
       data,
       cacheHeaders = CacheHeaders.Builder()
@@ -52,6 +53,7 @@ fun primeCache(apolloStore: ApolloStore) {
 
 private fun createSessions(startingAt: Int): GetConferenceDataQuery.Sessions {
   return GetConferenceDataQuery.Sessions(
+      __typename = "SessionConnection",
       nodes = (0 + startingAt..<SESSION_COUNT + startingAt)
           .map { i ->
             GetConferenceDataQuery.Node(
@@ -78,6 +80,7 @@ private fun createSessions(startingAt: Int): GetConferenceDataQuery.Sessions {
                         ),
                     ),
                     room = SessionDetails.Room(
+                        __typename = "Room",
                         name = "Room ${i % 8}",
                     ),
                     tags = listOf("tag1", "tag2", "tag3"),
@@ -86,6 +89,7 @@ private fun createSessions(startingAt: Int): GetConferenceDataQuery.Sessions {
             )
           },
       pageInfo = GetConferenceDataQuery.PageInfo(
+          __typename = "PageInfo",
           endCursor = "endCursor",
       ),
   )
@@ -93,6 +97,7 @@ private fun createSessions(startingAt: Int): GetConferenceDataQuery.Sessions {
 
 private fun createSpeakers(startingAt: Int): GetConferenceDataQuery.Speakers {
   return GetConferenceDataQuery.Speakers(
+      __typename = "SpeakerConnection",
       nodes = (0 + startingAt * 2..<(SESSION_COUNT + startingAt) * 2)
           .map { i ->
             GetConferenceDataQuery.Node1(
@@ -124,11 +129,13 @@ private fun speakerDetails(i: Int): SpeakerDetails = SpeakerDetails(
     ),
     socials = listOf(
         SpeakerDetails.Social(
+            __typename = "Social",
             name = "Twitter",
             url = "http://twitter.com/speaker-$i",
             icon = "twitter",
         ),
         SpeakerDetails.Social(
+            __typename = "Social",
             name = "LinkedIn",
             url = "http://linkedin.com/speaker-$i",
             icon = "linkedin",
@@ -150,6 +157,7 @@ private fun createRooms(): List<GetConferenceDataQuery.Room> {
     GetConferenceDataQuery.Room(
         __typename = "Room",
         roomDetails = RoomDetails(
+            __typename = "Room",
             id = i.toString(),
             name = "Room $i",
             capacity = 100,
@@ -160,6 +168,7 @@ private fun createRooms(): List<GetConferenceDataQuery.Room> {
 
 private fun createConfig(): GetConferenceDataQuery.Config {
   return GetConferenceDataQuery.Config(
+      __typename = "Config",
       id = "Conference-0",
       name = "The Conference",
       timezone = "UTC",
@@ -171,6 +180,7 @@ private fun createConfig(): GetConferenceDataQuery.Config {
 private fun createVenues(): List<GetConferenceDataQuery.Venue> {
   return listOf(
       GetConferenceDataQuery.Venue(
+          __typename = "Venue",
           id = "Venue-0",
           name = "The Venue",
           address = "123 Main St",

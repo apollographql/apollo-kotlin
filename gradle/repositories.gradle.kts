@@ -32,30 +32,20 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
       }
     }
 
+    maven("https://storage.googleapis.com/gradleup/m2") {
+      content {
+        includeGroup("com.gradleup.librarian")
+        includeGroup("com.gradleup.nmcp")
+        includeGroup("com.gradleup.nmcp.aggregation")
+      }
+    }
+
     exclusiveContent {
       forRepository(::gradlePluginPortal)
       filter {
-        includeModule("org.gradle.kotlin.embedded-kotlin", "org.gradle.kotlin.embedded-kotlin.gradle.plugin")
-        includeModule("org.gradle.kotlin", "gradle-kotlin-dsl-plugins")
-        includeModule("me.champeau.gradle", "japicmp-gradle-plugin")
         includeModule("org.jetbrains.kotlinx", "kotlinx-benchmark-plugin")
-        includeModule("com.gradle.publish", "plugin-publish-plugin")
         includeModule("com.github.ben-manes", "gradle-versions-plugin")
         includeModule("com.gradle", "develocity-gradle-plugin")
-
-        // For org.jetbrains.intellij.platform
-        includeModule("gradle.plugin.org.jetbrains.gradle.plugin.idea-ext", "gradle-idea-ext")
-
-        // For org.jetbrains.changelog
-        includeModule("org.jetbrains.changelog", "org.jetbrains.changelog.gradle.plugin")
-        includeModule("org.jetbrains.intellij.plugins", "gradle-changelog-plugin")
-
-        // For org.jetbrains.intellij.platform
-        includeModule("org.jetbrains.intellij.platform", "intellij-platform-gradle-plugin")
-
-        // For org.jetbrains.grammarkit
-        includeModule("org.jetbrains.grammarkit", "org.jetbrains.grammarkit.gradle.plugin")
-        includeModule("org.jetbrains.intellij.plugins", "gradle-grammarkit-plugin")
       }
     }
   }

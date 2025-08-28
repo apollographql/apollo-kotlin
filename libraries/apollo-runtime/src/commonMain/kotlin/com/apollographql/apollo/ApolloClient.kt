@@ -2,7 +2,6 @@ package com.apollographql.apollo
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
-import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
@@ -34,18 +33,15 @@ import com.apollographql.apollo.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo.network.ws.WsProtocol
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import okio.Closeable
 import kotlin.jvm.JvmOverloads
-import kotlin.jvm.JvmStatic
 
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
@@ -86,6 +82,7 @@ private constructor(
   private val retryOnError: ((ApolloRequest<*>) -> Boolean)? = builder.retryOnError
   private val retryOnErrorInterceptor: ApolloInterceptor? = builder.retryOnErrorInterceptor
   private val failFastIfOffline = builder.failFastIfOffline
+  private val sendEnhancedClientAwareness = builder.sendEnhancedClientAwareness
 
   override val executionContext: ExecutionContext = builder.executionContext
   override val httpMethod: HttpMethod? = builder.httpMethod
@@ -288,8 +285,8 @@ private constructor(
 
       retryOnError(retryOnError ?: apolloClient.retryOnError?.invoke(apolloRequest))
       failFastIfOffline(failFastIfOffline ?: apolloClient.failFastIfOffline)
-
       ignoreUnknownKeys(ignoreUnknownKeys ?: apolloClient.ignoreUnknownKeys)
+      sendEnhancedClientAwareness(apolloClient.sendEnhancedClientAwareness)
     }.build()
 
     val allInterceptors = buildList {
@@ -396,6 +393,18 @@ private constructor(
 
     var autoPersistedQueryInterceptor: ApolloInterceptor? = null
       private set
+
+    var sendEnhancedClientAwareness: Boolean = true
+      private set
+
+    /**
+     * Configures whether client library metadata is sent in each request `extensions` key.
+     * Client library metadata is the Apollo Kotlin library name and version.
+     *
+     */
+    fun sendEnhancedClientAwareness(sendEnhancedClientAwareness: Boolean): Builder = apply {
+      this.sendEnhancedClientAwareness = sendEnhancedClientAwareness
+    }
 
     /**
      * Whether to fail fast if the device is offline.
@@ -636,9 +645,13 @@ private constructor(
     }
 
     /**
-     * Adds [httpInterceptor] to the list of HTTP interceptors
+     * Adds [httpInterceptor] to the list of HTTP interceptors.
      *
      * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
+     *
+     * **The order is important**. The [HttpInterceptor]s are executed in the order they are added.
+     *
+     * See also [addInterceptor] for interceptors at the GraphQL level.
      *
      * @see networkTransport
      */
@@ -795,8 +808,8 @@ private constructor(
      * such as normalized cache and auto persisted queries. [ApolloClient] also inserts a terminating [ApolloInterceptor] that
      * executes the request.
      *
-     * **The order is important**. The [ApolloInterceptor]s are added in the order they are added and always added before
-     * the built-in intercepted:
+     * **The order is important**. The [ApolloInterceptor]s are executed in the order they are added and are always added before
+     * the built-in interceptors:
      *
      * - user interceptors
      * - cacheInterceptor
@@ -963,6 +976,7 @@ private constructor(
           .cacheInterceptor(cacheInterceptor)
           .autoPersistedQueriesInterceptor(autoPersistedQueryInterceptor)
           .failFastIfOffline(failFastIfOffline)
+          .sendEnhancedClientAwareness(sendEnhancedClientAwareness)
     }
   }
 }

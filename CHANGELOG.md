@@ -3,7 +3,149 @@ Change Log
 
 # Next version
 
+# Version 5.0.0-alpha.2
+_2025-08-21_
+
+In this new alpha of v5, here are the main highlights:
+- WasmJs target added to GraphQL subscriptions
+- Experimental [`generateApolloEnums` option](https://github.com/apollographql/apollo-kotlin/issues/6243) to generate enums as a sealed hierarchy distinguishing known and unknown values
+- and a handful of bug fixes and improvements.
+
+Your feedback is greatly appreciated as you try the new version!
+
+To migrate your project, please read the [migration guide](https://www.apollographql.com/docs/kotlin/v5/migration/5.0) (work in progress).
+
+## 👷‍♂️ All changes
+ 
+* [new] Add GraphQL subscriptions support for wasmJs target (#6637)
+* [new] Introduce `Service.generateApolloEnums` to generate enums with a `__Known` interface (#6611)
+* [new] Add generateApolloProjectIdeModel task (#6666)
+* [new] Introduce Service.pluginsArguments and relax the check for multiple plugins (#6622)
+* [fix] Added default Accept header to introspection query (#6616)
+* [fix] Fix error reporting on invalid documents (#6642)5
+* [fix] [Execution] Fix coercing variable values (#6644)
+* [fix] Normalize the order of arguments of checked definitions (#6650)
+* [fix] Make sure that the introspection endpoint property value is checked at execution time (#6657)
+* [fix] Use the more lenient dependencies API (#6667)
+* [fix] Do not silently discard network exceptions (#6669)
+* [upgrade] Use built-in Node `fetch` (#6674)
+
+## 💜 Contributors
+
+Many thanks to @pedromfmachado, @jvanderwee, @aryapreetam and @francescocervone for the contributions and help in this release 💜
+
+# Version 4.3.3
+_2025-08-21_
+
+This is maintenance release that includes a few fixes.
+
+## 👷‍♂️ All changes
+
+* [fix] Normalize the order of arguments of checked definitions (#6651)
+* [fix] Make sure that the introspection endpoint property value is checked at execution time (#6658)
+* [fix] Do not silently discard network exceptions (#6671)
+
+## 💜 Contributors
+
+Many thanks to @francescocervone for the Gradle plugin fix 💜
+
+# Version 4.3.2
+_2025-07-25_
+
+Maintenance release to [fix](https://github.com/apollographql/apollo-kotlin/pull/6619) the `Accept:` header during introspection. Many thanks @pedromfmachado for diving into this!
+
+This release also contains infrastructure work:
+* the IJ plugin is now released separately from a [dedicated repository](https://github.com/apollographql/apollo-intellij-plugin).
+* the 5.x Gradle plugins will **not** be deployed to the [Gradle plugin portal](https://plugins.gradle.org/plugin/com.apollographql.apollo) and a disclaimer has been added.
+* the publishing code has been updated to the new [Central Portal API](https://central.sonatype.org/publish/publish-portal-api/).
+
+## What's Changed
+* [4.x] Remove IJ plugin by @BoD in https://github.com/apollographql/apollo-kotlin/pull/6578
+* [4.x] Make tests more robust to version changes by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6582
+* [4.x] Add a disclaimer to the Gradle Plugin Portal by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6584
+* [4.x] Added default Accept header to introspection query by @pedromfmachado in https://github.com/apollographql/apollo-kotlin/pull/6619
+* [4.x] Build: switch publication to the central portal by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6629
+* [4.x] Also publish 4.x snapshots by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6631
+* [4.x] Bump nmcp & librarian by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6632
+* [4.x] Do not deploy kdoc from release-4.x by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6633
+
+# Version 5.0.0-alpha.1
+
+* [fix] Fix `can't resolve apollo-gradle-plugin-tasks` ([#6603](https://github.com/apollographql/apollo-kotlin/pull/6603))
+* [new] Warn on unused fragments ([#6601](https://github.com/apollographql/apollo-kotlin/pull/6601))
+
+# Version 5.0.0-alpha.0
+
+This is the first alpha release of version 5.0.0. Previous `DeprecationLevel.WARNING` are turned into `DeprecationLevel.ERROR`. Previous `DeprecationLevel.ERROR` are removed.
+
+For details about how to migrate, read the [migration guide draft](https://www.apollographql.com/docs/kotlin/v5/migration/5.0). This migration guide is still work in progress. Feedbacks are welcome as you try the new version! 
+
+**Infrastructure**:
+
+* [breaking] Remove ApolloIdlingResource ([#6492](https://github.com/apollographql/apollo-kotlin/pull/6492))
+* [breaking] Remove PackageNameGenerator and OperationOutputGenerator, replaced by compiler plugins ([#6494](https://github.com/apollographql/apollo-kotlin/pull/6494))
+* [breaking] Move internal testing code to an unpublished module ([#6449](https://github.com/apollographql/apollo-kotlin/pull/6449))
+* [upgrade] Bump ktor to 3.1.2 ([#6465](https://github.com/apollographql/apollo-kotlin/pull/6465))
+* [breaking] Update deprecations for v5 ([#6496](https://github.com/apollographql/apollo-kotlin/pull/6496))
+* [new] Move IJ plugin to its own repository ([#6574](https://github.com/apollographql/apollo-kotlin/pull/6574))
+* [new] Switch publication to the central portal ([#6581](https://github.com/apollographql/apollo-kotlin/pull/6581))
+
+Gradle
+* [fix] Do not generate the version as const ([#6563](https://github.com/apollographql/apollo-kotlin/pull/6563))
+* [new] Switch the gradle plugin to gratatouille ([#6524](https://github.com/apollographql/apollo-kotlin/pull/6524))
+* [fix] Remove checkApolloVersion ([#6569](https://github.com/apollographql/apollo-kotlin/pull/6569))
+* [new] Introspection: add a hint that more details are available in the exception cause. ([#6590](https://github.com/apollographql/apollo-kotlin/pull/6590))
+
+**Compiler**:
+
+* [new] Add schema-transform API ([#6450](https://github.com/apollographql/apollo-kotlin/pull/6450))
+* [new] Allow to generate Data Builders outside the main source set ([#6485](https://github.com/apollographql/apollo-kotlin/pull/6485))
+* [breaking] Using @nonnull is now an error ([#6499](https://github.com/apollographql/apollo-kotlin/pull/6499))
+* [fix] Ignore scalars/enums in checkCapitalizedFields ([#6502](https://github.com/apollographql/apollo-kotlin/pull/6502))
+* [fix] Call DocumentTransform.transform after adding required fields ([#6510](https://github.com/apollographql/apollo-kotlin/pull/6510))
+* [fix] Add key fields to selections even when they're already selected with an alias ([#6503](https://github.com/apollographql/apollo-kotlin/pull/6503))
+* [fix] Transform the GraphQL documents before running validation ([#6511](https://github.com/apollographql/apollo-kotlin/pull/6511))
+* [new] Add key fields of possible types of interfaces and fragments ([#6515](https://github.com/apollographql/apollo-kotlin/pull/6515))
+* [new] Allow to register multiple Apollo Compiler plugins ([#6523](https://github.com/apollographql/apollo-kotlin/pull/6523))
+
+**Runtime**:
+
+* [new] Add cacheInterceptor() and autoPersistedQueriesInterceptor()  ([#6455](https://github.com/apollographql/apollo-kotlin/pull/6455))
+* [new] Add `ApolloCall.ignoreUnknownKeys` and `ApolloClient.Builder.ignoreUnknownKeys` ([#6473](https://github.com/apollographql/apollo-kotlin/pull/6473))
+* [fix] fix the batch size not respected issue ([#6528](https://github.com/apollographql/apollo-kotlin/pull/6528))
+* [fix] Fix losing response headers when using batch request ([#6538](https://github.com/apollographql/apollo-kotlin/pull/6538))
+
+**AST**:
+* [new] Add allowAddingDirectivesToExistingFieldDefinitions ([#6470](https://github.com/apollographql/apollo-kotlin/pull/6470))
+* [new] Implement schema coordinates ([#6560](https://github.com/apollographql/apollo-kotlin/pull/6560))
+
+**Execution**
+* [fix] Implement defaultValues coercion ([#6440](https://github.com/apollographql/apollo-kotlin/pull/6440))
+* [new] Add `JsonCoercing` ([#6471](https://github.com/apollographql/apollo-kotlin/pull/6471))
+
+# Version 4.3.1
+
+_2025-06-18_
+
+This is maintenance release that fixes an issue with Gradle task dependencies when using `connectToAndroidSourceSet()`.
+
+This release also introduces an Enhanced Client Awareness feature that adds the version of the library to
+requests in the `extensions` object. This is useful for server-side analytics and debugging. This is enabled by default,
+and can be disabled by calling `sendEnhancedClientAwareness(false)` on your `ApolloClient.Builder`.
+
+## 💜 Contributors
+
+Many thanks to @calvincestari for the client awareness contribution 💜
+
+## 👷‍♂️ All changes
+
+* Backport IJ plugin changes from main (#6559)
+* simplify task wiring and fix propagating task dependencies when using connectToAndroidSourceSet() (#6564)
+* feature: Enhanced Client Awareness (#6567)
+
 # Version 4.3.0
+
+_2025-06-05_
 
 Version 4.3.0 allows adding multiple compiler plugins and stabilizes `ApolloCompilerPlugin.beforeCompilationStep()` as the main entry point for compiler plugins. Read more in the [compiler plugins documentation page](https://www.apollographql.com/docs/kotlin/advanced/compiler-plugins).
 
@@ -806,10 +948,10 @@ release (#5449) and is now fixed.
 
 * [compiler] validate operation directives & enforce presence of the nullability directive definitions by @martinbonnin
   in https://github.com/apollographql/apollo-kotlin/pull/5443
-* [build] Bump okio version by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/5447
-* [build] Bump uuid version by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/5448
-* Fix 2nd step introspection by @BoD in https://github.com/apollographql/apollo-kotlin/pull/5451
-* Add wasmJs target by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/5458
+* [build] Bump okio version https://github.com/apollographql/apollo-kotlin/pull/5447
+* [build] Bump uuid version https://github.com/apollographql/apollo-kotlin/pull/5448
+* Fix 2nd step introspection https://github.com/apollographql/apollo-kotlin/pull/5451
+* Add wasmJs target https://github.com/apollographql/apollo-kotlin/pull/5458
 * Add validation to check schema definitions are compatible with the bundled ones by @BoD
   in https://github.com/apollographql/apollo-kotlin/pull/5444
 

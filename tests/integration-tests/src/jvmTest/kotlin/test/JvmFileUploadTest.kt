@@ -4,11 +4,11 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Upload
 import com.apollographql.apollo.api.toUpload
 import com.apollographql.apollo.integration.upload.SingleUploadTwiceMutation
+import com.apollographql.apollo.network.okHttpClient
+import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitRequest
 import com.apollographql.mockserver.enqueueString
-import com.apollographql.apollo.network.okHttpClient
-import com.apollographql.apollo.testing.internal.runTest
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
@@ -38,7 +38,10 @@ class JvmFileUploadTest {
       }
     """.trimIndent())
 
-    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
+    apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .sendEnhancedClientAwareness(false)
+        .build()
   }
 
   private suspend fun tearDown() {

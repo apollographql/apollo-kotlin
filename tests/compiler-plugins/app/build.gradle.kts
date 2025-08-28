@@ -1,7 +1,6 @@
 @file:OptIn(ApolloExperimental::class)
 
 import com.apollographql.apollo.annotations.ApolloExperimental
-import com.apollographql.apollo.compiler.MODELS_RESPONSE_BASED
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
@@ -12,7 +11,6 @@ apolloTest()
 
 dependencies {
   implementation(libs.apollo.runtime)
-  testImplementation(libs.kotlin.test)
   testImplementation(libs.junit)
   testImplementation(libs.kotlin.reflect)
 }
@@ -25,11 +23,10 @@ apollo {
         val name = dir.name.replace("-", "")
         service(name) {
           packageName.set("hooks.$name")
-          plugin(project(":compiler-plugins-${dir.name}")) {
-            when(name) {
-              "prefixnames" -> {
-                argument("prefix", "GQL")
-              }
+          plugin(project(":compiler-plugins-${dir.name}"))
+          when (name) {
+            "prefixnames" -> {
+              pluginArgument("prefix", "GQL")
             }
           }
 
@@ -37,6 +34,7 @@ apollo {
             "schemacodegen" -> {
               srcDir("src/main/graphql/cache")
             }
+
             "gettersandsetters" -> {
               generateKotlinModels.set(false)
               outputDirConnection {
@@ -44,10 +42,12 @@ apollo {
               }
               srcDir("src/main/graphql/default")
             }
+
             "customflatten" -> {
-              codegenModels.set(MODELS_RESPONSE_BASED)
+              codegenModels.set("responseBased")
               srcDir(dir.resolve("src/main/graphql"))
             }
+
             else -> {
               srcDir("src/main/graphql/default")
             }

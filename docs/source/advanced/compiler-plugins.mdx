@@ -33,7 +33,7 @@ plugins {
 
 dependencies {
   // Add apollo-compiler as a compileOnly dependency
-  compileOnly("com.apollographql.apollo:apollo-compiler:4.3.0")  
+  compileOnly("com.apollographql.apollo:apollo-compiler:5.0.0-alpha.2")  
 }
 ```
 
@@ -90,7 +90,7 @@ The plugin code will now be invoked the next time the compiler is invoked.
 
 Because the compiler plugin runs in an isolated classpath, you can't use classes or data from your main build logic classpath. 
 
-In order to pass build-time arguments to your Apollo compiler plugin, use the `argument()` function:
+In order to pass build-time arguments to your Apollo compiler plugin, use `pluginArgument()`:
 
 ```kotlin
 apollo {
@@ -98,12 +98,14 @@ apollo {
     packageName.set("com.example")
     
     // Add your plugin to the Apollo compiler classpath
-    plugin(project(":apollo-compiler-plugin")) {
-      argument("token", token) // highlight-line
-    }
+    plugin(project(":apollo-compiler-plugin"))
+    // Add argument
+    pluginArgument("com.example.token", token) // highlight-line
   }
 }
 ```
+
+Note that arguments are shared between all compiler plugins and using a prefix such as your plugin package name is recommended to avoid name clashes.
 
 The arguments are available in `ApolloCompilerPluginEnvironment.arguments`:
 

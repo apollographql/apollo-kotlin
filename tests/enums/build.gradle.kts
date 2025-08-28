@@ -10,7 +10,6 @@ apolloTest()
 
 dependencies {
   implementation(libs.apollo.runtime)
-  testImplementation(libs.kotlin.test)
   testImplementation(libs.junit)
 }
 
@@ -27,11 +26,15 @@ apollo {
 
   service("java") {
     packageName.set("enums.java")
-    classesForEnumsMatching.set(listOf(".*avity", "FooClass"))
+    classesForEnumsMatching.set(listOf(".*avity", "FooClass", "Color"))
     generateKotlinModels.set(false)
     outputDirConnection {
       connectToJavaSourceSet("main")
     }
+  }
+  service("apollo") {
+    packageName.set("enums.apollo")
+    generateApolloEnums.set(true)
   }
 }
 

@@ -8,10 +8,11 @@ import com.apollographql.apollo.benchmark.Utils.dbName
 import com.apollographql.apollo.benchmark.Utils.operationBasedQuery
 import com.apollographql.apollo.benchmark.Utils.resource
 import com.apollographql.apollo.benchmark.test.R
-import com.apollographql.cache.normalized.ApolloStore
+import com.apollographql.cache.normalized.CacheManager
 import com.apollographql.cache.normalized.memory.MemoryCacheFactory
 import com.apollographql.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -41,7 +42,7 @@ class ApolloStoreIncubatingTests {
   }
 
   private fun concurrentReadWrites(cacheFactory: NormalizedCacheFactory) {
-    val apolloStore = createApolloStore(cacheFactory)
+    val apolloStore = createCacheManager(cacheFactory)
     val query = operationBasedQuery
     val data = query.parseJsonResponse(resource(R.raw.calendar_response_simple).jsonReader()).data!!
     val threadPool = Executors.newFixedThreadPool(CONCURRENCY)
@@ -50,9 +51,11 @@ class ApolloStoreIncubatingTests {
         threadPool.submit {
           // Let each thread execute a few writes/reads
           repeat(WORK_LOAD) {
-            apolloStore.writeOperation(query, data)
-            val data2 = apolloStore.readOperation(query).data
-            Assert.assertEquals(data, data2)
+            runBlocking {
+              apolloStore.writeOperation(query, data)
+              val data2 = apolloStore.readOperation(query).data
+              Assert.assertEquals(data, data2)
+            }
           }
         }
       }
@@ -61,8 +64,8 @@ class ApolloStoreIncubatingTests {
     }
   }
 
-  private fun createApolloStore(cacheFactory: NormalizedCacheFactory): ApolloStore {
-    return ApolloStore(cacheFactory)
+  private fun createCacheManager(cacheFactory: NormalizedCacheFactory): CacheManager {
+    return CacheManager(cacheFactory)
   }
 
 

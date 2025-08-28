@@ -29,7 +29,6 @@ kotlin {
     getByName("jvmTest") {
       dependencies {
         implementation(libs.google.testparameterinjector)
-        implementation(libs.kotlin.test)
       }
     }
   }

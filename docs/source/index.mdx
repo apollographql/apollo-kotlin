@@ -10,7 +10,7 @@ description: Discover Apollo Kotlin, a robust GraphQL client for JVM, Android, a
 
 Apollo Kotlin executes operations against a GraphQL server and returns results as operation-specific Kotlin types. This means you don't have to deal with parsing JSON, or passing around `Map`s and making clients cast values to the right type manually. You also don't have to write model types yourself, because these are generated from the GraphQL definitions your app uses.
 
-Because generated types are operation-specific, you can only access data that you actually specify as part of an operation. If you don't ask for a particular field in an operation, you can't access the corresponding property on the returned data structure.
+Because generated types are operation-specific and validated against the schema, you can only access data that you actually specify as part of an operation. If you don't ask for a particular field in an operation, you can't access the corresponding property on the returned data structure.
 
 This library is designed with Android in mind, but you can use it in any Kotlin application, including KMP ([Kotlin Multi Platform](https://kotlinlang.org/docs/multiplatform.html)).
 
@@ -40,7 +40,7 @@ Add the plugin to your `build.gradle.kts`:
 
 ```kotlin
 plugins {
-  id("com.apollographql.apollo") version "4.1.1"
+  id("com.apollographql.apollo") version "5.0.0-alpha.2"
 }
 ```
 
@@ -48,7 +48,7 @@ Add the runtime dependency:
 
 ```kotlin
 dependencies {
-  implementation("com.apollographql.apollo:apollo-runtime:4.1.1")
+  implementation("com.apollographql.apollo:apollo-runtime:5.0.0-alpha.2")
 }
 ```
 
@@ -165,7 +165,7 @@ Installation instructions and more information can be found [here](/kotlin/testi
 
 ## Releases
 
-The latest version is `4.1.1`.
+The latest version is `5.0.0-alpha.2`.
 
 Check the [changelog](https://github.com/apollographql/apollo-kotlin/releases) for the release history.
 
@@ -173,7 +173,7 @@ Releases are hosted on [Maven Central](https://repo1.maven.org/maven2/com/apollo
 
 ```kotlin
 plugins {
-  id("com.apollographql.apollo") version "4.1.1"
+  id("com.apollographql.apollo") version "5.0.0-alpha.2"
 }
 
 repositories {
@@ -181,25 +181,25 @@ repositories {
 }
 
 dependencies {
-  implementation("com.apollographql.apollo:apollo-runtime:4.1.1")
+  implementation("com.apollographql.apollo:apollo-runtime:5.0.0-alpha.2")
 
   // Optional: if you want to use the normalized cache
-  implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:4.1.1")
+  implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:5.0.0-alpha.2")
   // Optional: if you just want the generated models and parsers and write your own HTTP code/cache code, you can remove apollo-runtime
   // and use apollo-api instead
-  implementation("com.apollographql.apollo:apollo-api:4.1.1")
+  implementation("com.apollographql.apollo:apollo-api:5.0.0-alpha.2")
 }
 ```
 
 ## Snapshots
 
-Latest development changes are available in Sonatype's snapshots repository:
+Latest development changes are available in Maven Central's snapshots repository:
 
 ```kotlin
 // build.gradle.kts
 repositories {
   maven {
-    url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    url = uri("https://central.sonatype.com/repository/maven-snapshots/")
   }
   mavenCentral()
   // other repositories...
@@ -209,7 +209,7 @@ repositories {
 pluginManagement {
   repositories {
     maven {
-      url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+      url = uri("https://central.sonatype.com/repository/maven-snapshots/")
     }
     mavenCentral()
     // other repositories...

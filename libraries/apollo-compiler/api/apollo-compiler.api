@@ -23,6 +23,10 @@ public final class com/apollographql/apollo/compiler/ApolloCompiler {
 }
 
 public abstract interface class com/apollographql/apollo/compiler/ApolloCompiler$Logger {
+	public abstract fun debug (Ljava/lang/String;)V
+	public abstract fun error (Ljava/lang/String;)V
+	public abstract fun info (Ljava/lang/String;)V
+	public fun warn (Ljava/lang/String;)V
 	public abstract fun warning (Ljava/lang/String;)V
 }
 
@@ -36,9 +40,9 @@ public abstract interface class com/apollographql/apollo/compiler/ApolloCompiler
 }
 
 public final class com/apollographql/apollo/compiler/ApolloCompilerPluginEnvironment {
-	public fun <init> (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompilerPluginLogger;)V
+	public fun <init> (Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;)V
 	public final fun getArguments ()Ljava/util/Map;
-	public final fun getLogger ()Lcom/apollographql/apollo/compiler/ApolloCompilerPluginLogger;
+	public final fun getLogger ()Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;
 }
 
 public abstract interface class com/apollographql/apollo/compiler/ApolloCompilerPluginLogger {
@@ -99,12 +103,13 @@ public final class com/apollographql/apollo/compiler/CodegenMetadata$Companion {
 
 public final class com/apollographql/apollo/compiler/CodegenOptions : com/apollographql/apollo/compiler/OperationsCodegenOptions, com/apollographql/apollo/compiler/SchemaCodegenOptions {
 	public static final field Companion Lcom/apollographql/apollo/compiler/CodegenOptions$Companion;
-	public fun <init> (Lcom/apollographql/apollo/compiler/TargetLanguage;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Lcom/apollographql/apollo/compiler/JavaNullable;Ljava/lang/Boolean;Ljava/lang/Boolean;)V
+	public fun <init> (Lcom/apollographql/apollo/compiler/TargetLanguage;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Lcom/apollographql/apollo/compiler/JavaNullable;Ljava/lang/Boolean;Ljava/lang/Boolean;)V
 	public fun getAddDefaultArgumentForInputObjects ()Ljava/lang/Boolean;
 	public fun getAddJvmOverloads ()Ljava/lang/Boolean;
 	public fun getAddUnknownForEnums ()Ljava/lang/Boolean;
 	public fun getClassesForEnumsMatching ()Ljava/util/List;
 	public fun getDecapitalizeFields ()Ljava/lang/Boolean;
+	public fun getGenerateApolloEnums ()Ljava/lang/Boolean;
 	public fun getGenerateAsInternal ()Ljava/lang/Boolean;
 	public fun getGenerateFilterNotNull ()Ljava/lang/Boolean;
 	public fun getGenerateFragmentImplementations ()Ljava/lang/Boolean;
@@ -203,12 +208,12 @@ public abstract interface class com/apollographql/apollo/compiler/DocumentTransf
 }
 
 public final class com/apollographql/apollo/compiler/EntryPoints {
-	public fun <init> ()V
-	public final fun buildCodegenSchema (Ljava/util/Map;IZLjava/util/List;Ljava/util/function/Consumer;Ljava/io/File;Ljava/io/File;)V
-	public final fun buildDataBuilders (Ljava/util/Map;IZLjava/util/List;Ljava/util/List;Ljava/util/Map;Ljava/io/File;Ljava/io/File;)V
-	public final fun buildIr (Ljava/util/Map;ILjava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/util/function/Consumer;Ljava/io/File;)V
-	public final fun buildSources (Ljava/util/Map;IZLjava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/util/function/Consumer;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
-	public final fun buildSourcesFromIr (Ljava/util/Map;IZLjava/util/List;Ljava/util/List;Ljava/io/File;Ljava/util/Map;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+	public static final field INSTANCE Lcom/apollographql/apollo/compiler/EntryPoints;
+	public final fun buildCodegenSchema (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildDataBuilders (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildIr (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildSources (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildSourcesFromIr (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/compiler/EntrypointsKt {
@@ -250,6 +255,7 @@ public final class com/apollographql/apollo/compiler/FileUtils {
 	public static final fun readIrSchema (Ljava/io/File;)Lcom/apollographql/apollo/compiler/ir/IrSchema;
 	public static final fun readOperationOutput (Ljava/io/File;)Ljava/util/Map;
 	public static final fun readPersistedQueryManifest (Ljava/io/File;)Lcom/apollographql/apollo/compiler/pqm/PersistedQueryManifest;
+	public static final fun toUsedCoordinates (Ljava/io/File;)Lcom/apollographql/apollo/compiler/UsedCoordinates;
 	public static final fun writeCodegenMetadata (Lcom/apollographql/apollo/compiler/CodegenMetadata;Ljava/io/File;)V
 	public static final fun writeCodegenOptions (Lcom/apollographql/apollo/compiler/CodegenOptions;Ljava/io/File;)V
 	public static final fun writeCodegenSchema (Lcom/apollographql/apollo/compiler/CodegenSchema;Ljava/io/File;)V
@@ -259,6 +265,7 @@ public final class com/apollographql/apollo/compiler/FileUtils {
 	public static final fun writeIrSchema (Lcom/apollographql/apollo/compiler/ir/IrSchema;Ljava/io/File;)V
 	public static final fun writeOperationOutput (Ljava/util/Map;Ljava/io/File;)V
 	public static final fun writePersistedQueryManifest (Lcom/apollographql/apollo/compiler/pqm/PersistedQueryManifest;Ljava/io/File;)V
+	public static final fun writeTo (Lcom/apollographql/apollo/compiler/UsedCoordinates;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/compiler/GeneratedMethod : java/lang/Enum {
@@ -346,6 +353,7 @@ public abstract interface class com/apollographql/apollo/compiler/KotlinCodegenO
 	public abstract fun getAddDefaultArgumentForInputObjects ()Ljava/lang/Boolean;
 	public abstract fun getAddJvmOverloads ()Ljava/lang/Boolean;
 	public abstract fun getAddUnknownForEnums ()Ljava/lang/Boolean;
+	public abstract fun getGenerateApolloEnums ()Ljava/lang/Boolean;
 	public abstract fun getGenerateAsInternal ()Ljava/lang/Boolean;
 	public abstract fun getGenerateFilterNotNull ()Ljava/lang/Boolean;
 	public abstract fun getGenerateInputBuilders ()Ljava/lang/Boolean;
@@ -387,8 +395,8 @@ public final class com/apollographql/apollo/compiler/OptionsKt {
 	public static final field MODELS_OPERATION_BASED Ljava/lang/String;
 	public static final field MODELS_OPERATION_BASED_WITH_INTERFACES Ljava/lang/String;
 	public static final field MODELS_RESPONSE_BASED Ljava/lang/String;
-	public static final fun buildCodegenOptions (Lcom/apollographql/apollo/compiler/TargetLanguage;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Lcom/apollographql/apollo/compiler/JavaNullable;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo/compiler/CodegenOptions;
-	public static synthetic fun buildCodegenOptions$default (Lcom/apollographql/apollo/compiler/TargetLanguage;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Lcom/apollographql/apollo/compiler/JavaNullable;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/compiler/CodegenOptions;
+	public static final fun buildCodegenOptions (Lcom/apollographql/apollo/compiler/TargetLanguage;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Lcom/apollographql/apollo/compiler/JavaNullable;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo/compiler/CodegenOptions;
+	public static synthetic fun buildCodegenOptions$default (Lcom/apollographql/apollo/compiler/TargetLanguage;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Lcom/apollographql/apollo/compiler/JavaNullable;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/compiler/CodegenOptions;
 	public static final fun buildIrOptions (Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/util/Set;Ljava/lang/String;)Lcom/apollographql/apollo/compiler/IrOptions;
 	public static synthetic fun buildIrOptions$default (Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/util/Set;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/compiler/IrOptions;
 	public static final fun validate (Lcom/apollographql/apollo/compiler/CodegenOptions;)V
@@ -664,23 +672,6 @@ public final class com/apollographql/apollo/compiler/codegen/kotlin/KotlinOutput
 
 public final class com/apollographql/apollo/compiler/codegen/kotlin/helpers/Add_internalKt {
 	public static final fun addInternal (Lcom/squareup/kotlinpoet/FileSpec$Builder;Ljava/util/List;)Lcom/squareup/kotlinpoet/FileSpec$Builder;
-}
-
-public final class com/apollographql/apollo/compiler/internal/GradleCompilerPluginLogger : com/apollographql/apollo/compiler/ApolloCompilerPluginLogger {
-	public static final field Companion Lcom/apollographql/apollo/compiler/internal/GradleCompilerPluginLogger$Companion;
-	public static final field LOGGING_LEVEL_ERROR I
-	public static final field LOGGING_LEVEL_INFO I
-	public static final field LOGGING_LEVEL_LOGGING I
-	public static final field LOGGING_LEVEL_WARN I
-	public fun <init> (I)V
-	public fun error (Ljava/lang/String;)V
-	public final fun getLoglevel ()I
-	public fun info (Ljava/lang/String;)V
-	public fun logging (Ljava/lang/String;)V
-	public fun warn (Ljava/lang/String;)V
-}
-
-public final class com/apollographql/apollo/compiler/internal/GradleCompilerPluginLogger$Companion {
 }
 
 public final class com/apollographql/apollo/compiler/ir/BLabel : com/apollographql/apollo/compiler/ir/BTerm {
@@ -1955,6 +1946,67 @@ public final class com/apollographql/apollo/compiler/ir/IrVariable$$serializer :
 
 public final class com/apollographql/apollo/compiler/ir/IrVariable$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo/compiler/model/CompilationUnitModel {
+	public static final field Companion Lcom/apollographql/apollo/compiler/model/CompilationUnitModel$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/util/Set;Ljava/lang/String;Ljava/util/Map;Ljava/util/Set;Ljava/util/Map;)V
+	public final fun getDownstreamGradleProjectPaths ()Ljava/util/Set;
+	public final fun getEndpointHeaders ()Ljava/util/Map;
+	public final fun getEndpointUrl ()Ljava/lang/String;
+	public final fun getGradleProjectPath ()Ljava/lang/String;
+	public final fun getGraphqlSrcDirs ()Ljava/util/Set;
+	public final fun getPluginArguments ()Ljava/util/Map;
+	public final fun getPluginDependencies ()Ljava/util/Set;
+	public final fun getSchemaFiles ()Ljava/util/Set;
+	public final fun getServiceName ()Ljava/lang/String;
+	public final fun getUpstreamGradleProjectPaths ()Ljava/util/Set;
+}
+
+public final class com/apollographql/apollo/compiler/model/CompilationUnitModel$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo/compiler/model/CompilationUnitModel$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo/compiler/model/CompilationUnitModel;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/model/CompilationUnitModel;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo/compiler/model/CompilationUnitModel$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo/compiler/model/CompilationUnitModelKt {
+	public static final fun toCompilationUnitModel (Ljava/io/File;)Lcom/apollographql/apollo/compiler/model/CompilationUnitModel;
+	public static final fun writeTo (Lcom/apollographql/apollo/compiler/model/CompilationUnitModel;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/compiler/model/ProjectModel {
+	public static final field Companion Lcom/apollographql/apollo/compiler/model/ProjectModel$Companion;
+	public fun <init> (Ljava/util/Set;)V
+	public final fun getServiceNames ()Ljava/util/Set;
+}
+
+public final class com/apollographql/apollo/compiler/model/ProjectModel$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo/compiler/model/ProjectModel$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo/compiler/model/ProjectModel;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/model/ProjectModel;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo/compiler/model/ProjectModel$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo/compiler/model/ProjectModelKt {
+	public static final fun toProjectModel (Ljava/io/File;)Lcom/apollographql/apollo/compiler/model/ProjectModel;
+	public static final fun writeTo (Lcom/apollographql/apollo/compiler/model/ProjectModel;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/compiler/operationoutput/OperationDescriptor {

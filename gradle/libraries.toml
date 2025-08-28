@@ -15,15 +15,16 @@ android-sdkversion-benchmark-min = "24"
 android-sdkversion-target = "30"
 androidx-sqlite = "2.3.1"
 # This is used by the gradle integration tests to get the artifacts locally
-apollo = "5.0.0-SNAPSHOT"
+apollo = "5.0.0-alpha.3-SNAPSHOT"
 apollo-execution = "0.1.0"
-apollo-normalizedcache-incubating = "0.0.8"
+apollo-normalizedcache-incubating = "1.0.0-alpha.4"
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-published = "4.0.1"
 atomicfu = "0.26.0"
 compat-patrouille = "0.0.0"
 compose = "1.5.1"
 guava = "31.1-jre"
+gratatouille = "0.0.10"
 javaPoet = "1.13.0"
 jetbrains-annotations = "24.0.1"
 junit = "4.13.2"
@@ -65,7 +66,7 @@ apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-moc
 apollo-mpputils = { group = "com.apollographql.apollo", name = "apollo-mpp-utils", version.ref = "apollo" }
 apollo-normalizedcache = { group = "com.apollographql.apollo", name = "apollo-normalized-cache", version.ref = "apollo" }
 apollo-normalizedcache-sqlite = { group = "com.apollographql.apollo", name = "apollo-normalized-cache-sqlite", version.ref = "apollo" }
-apollo-normalizedcache-sqlite-incubating = { group = "com.apollographql.cache", name = "normalized-cache-sqlite-incubating", version.ref = "apollo-normalizedcache-incubating" }
+apollo-normalizedcache-sqlite-incubating = { group = "com.apollographql.cache", name = "normalized-cache-sqlite", version.ref = "apollo-normalizedcache-incubating" }
 apollo-normalizedcache-apollo-compiler-plugin-incubating = { group = "com.apollographql.cache", name = "normalized-cache-apollo-compiler-plugin", version.ref = "apollo-normalizedcache-incubating" }
 apollo-plugin = { group = "com.apollographql.apollo", name = "apollo-gradle-plugin", version.ref = "apollo" }
 apollo-runtime = { group = "com.apollographql.apollo", name = "apollo-runtime", version.ref = "apollo" }
@@ -92,12 +93,13 @@ compat-patrouille = { module = "com.gradleup.compat.patrouille:compat-patrouille
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 dokka = "org.jetbrains.dokka:dokka-gradle-plugin:2.0.0"
-dgp = "com.gradle:develocity-gradle-plugin:4.0.2" # // sync with settings.gradle.kts
+dgp = "com.gradle:develocity-gradle-plugin:4.1.1" # // sync with settings.gradle.kts
 # Not updating because it fails in apollo-compiler Java tests with
 # annotation @org.jetbrains.annotations.Nullable not applicable in this type context
 google-testing-compile = { group = "com.google.testing.compile", name = "compile-testing", version = "0.19" }
 google-testparameterinjector = { group = "com.google.testparameterinjector", name = "test-parameter-injector", version = "1.11" }
-gr8 = { group = "com.gradleup", name = "gr8-plugin", version = "0.11.1" }
+gratatouille = { group = "com.gradleup.gratatouille", name = "gratatouille-gradle-plugin", version.ref = "gratatouille" }
+
 #
 # See https://github.com/gradle/gradle/issues/1835
 # We use the Nokee[redistributed artifacts](https://docs.nokee.dev/manual/gradle-plugin-development.html#sec:gradle-dev-redistributed-gradle-api)
@@ -105,14 +107,10 @@ gr8 = { group = "com.gradleup", name = "gr8-plugin", version = "0.11.1" }
 #
 # Keep in sync with MIN_GRADLE_VERSION
 gradle-api-min = { group = "dev.gradleplugins", name = "gradle-api", version = "8.0" }
-gradle-japicmp-plugin = { group = "me.champeau.gradle", name = "japicmp-gradle-plugin", version = "0.2.8" }
-gradle-publish-plugin = { group = "com.gradle.publish", name = "plugin-publish-plugin", version = "1.1.0" }
 guava-jre = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 http4k-bom = "org.http4k:http4k-bom:5.8.0.0"
 http4k-core = { module = "org.http4k:http4k-core" }
 http4k-server-jetty = { module = "org.http4k:http4k-server-jetty" }
-intellij-platform-plugin = "org.jetbrains.intellij.platform:intellij-platform-gradle-plugin:2.6.0"
-intellij-changelog = "org.jetbrains.intellij.plugins:gradle-changelog-plugin:2.0.0"
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-allopen = { group = "org.jetbrains.kotlin", name = "kotlin-allopen", version.ref = "kotlin-plugin" }
@@ -128,8 +126,6 @@ kotlin-plugin-max = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plug
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" } # use same version as apiVersion
 kotlin-stdlib-common = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-common" } # use same version as apiVersion
 kotlin-stdlib-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib" } # use same version as apiVersion
-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" } # use same version as apiVersion
-kotlin-test-js = { group = "org.jetbrains.kotlin", name = "kotlin-test-js" } # use same version as apiVersion
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit" } # use same version as apiVersion
 # Kotlin/JS has no apiVersion:
 # The Kotlin/JS standard library has an older version (2.0.20-release-360) than the compiler (2.1.0). Such a configuration is not supported.
@@ -157,7 +153,9 @@ ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.r
 ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
 ktor-client-websockets = { group = "io.ktor", name = "ktor-client-websockets", version.ref = "ktor" }
 ktor-server-core = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
+ktor-server-cors = { group = "io.ktor", name = "ktor-server-cors", version.ref = "ktor" }
 ktor-server-cio = { group = "io.ktor", name = "ktor-server-cio", version.ref = "ktor" }
+ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
 ktor-server-websockets = { group = "io.ktor", name = "ktor-server-websockets", version.ref = "ktor" }
 ktor-network = { module = "io.ktor:ktor-network", version.ref = "ktor" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
@@ -188,7 +186,8 @@ androidx-test-runner = "androidx.test:runner:1.6.2"
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.1.0" }
 uuid = { group = "com.benasher44", name = "uuid", version = "0.8.2" }
-vespene = { group = "net.mbonnin.vespene", name = "vespene-lib", version = "0.5" }
+librarian = "com.gradleup.librarian:librarian-gradle-plugin:0.0.11-SNAPSHOT-ba8b5ecfcbda070ecc3b5b95056ee359199552b4"
+nmcp = "com.gradleup.nmcp:nmcp:1.0.4-SNAPSHOT-7663b69da8628aa2a8e73334af3fb052688fbc92"
 slf4j-simple = "org.slf4j:slf4j-simple:2.0.13"
 slf4j-nop = "org.slf4j:slf4j-nop:2.0.13"
 licensee = "app.cash.licensee:licensee-gradle-plugin:1.12.0"

@@ -108,6 +108,7 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public final fun getRetryOnErrorInterceptor ()Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
+	public final fun getSendEnhancedClientAwareness ()Z
 	public final fun getSubscriptionNetworkTransport ()Lcom/apollographql/apollo/network/NetworkTransport;
 	public final fun getWebSocketEngine ()Lcom/apollographql/apollo/network/ws/WebSocketEngine;
 	public final fun getWebSocketIdleTimeoutMillis ()Ljava/lang/Long;
@@ -140,6 +141,7 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public final fun sendEnhancedClientAwareness (Z)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun subscriptionNetworkTransport (Lcom/apollographql/apollo/network/NetworkTransport;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun webSocketEngine (Lcom/apollographql/apollo/network/ws/WebSocketEngine;)Lcom/apollographql/apollo/ApolloClient$Builder;

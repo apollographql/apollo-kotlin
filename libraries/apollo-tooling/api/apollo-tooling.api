@@ -126,3 +126,36 @@ public final class com/apollographql/apollo/tooling/Telemetry$TelemetryProperty 
 	public final fun getType ()Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo/tooling/model/TelemetryData {
+	public static final field Companion Lcom/apollographql/apollo/tooling/model/TelemetryData$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/Set;)V
+	public final fun getAndroidAgpVersion ()Ljava/lang/String;
+	public final fun getAndroidCompileSdk ()Ljava/lang/String;
+	public final fun getAndroidMinSdk ()Ljava/lang/Integer;
+	public final fun getAndroidTargetSdk ()Ljava/lang/Integer;
+	public final fun getApolloGenerateSourcesDuringGradleSync ()Ljava/lang/Boolean;
+	public final fun getApolloLinkSqlite ()Ljava/lang/Boolean;
+	public final fun getGradleVersion ()Ljava/lang/String;
+	public final fun getUsedServiceOptions ()Ljava/util/Set;
+}
+
+public synthetic class com/apollographql/apollo/tooling/model/TelemetryData$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo/tooling/model/TelemetryData$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo/tooling/model/TelemetryData;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/tooling/model/TelemetryData;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo/tooling/model/TelemetryData$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo/tooling/model/TelemetryDataKt {
+	public static final fun toTelemetryData (Ljava/io/File;)Lcom/apollographql/apollo/tooling/model/TelemetryData;
+	public static final fun writeTo (Lcom/apollographql/apollo/tooling/model/TelemetryData;Ljava/io/File;)V
+}
+

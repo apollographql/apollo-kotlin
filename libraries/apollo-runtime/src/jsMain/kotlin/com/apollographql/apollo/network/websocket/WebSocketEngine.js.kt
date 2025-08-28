@@ -4,8 +4,11 @@ import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.exception.DefaultApolloException
 import com.apollographql.apollo.internal.isNode
 import com.apollographql.apollo.network.http.setTimeout
-import node.buffer.Buffer
+import org.khronos.webgl.ArrayBuffer
+import org.khronos.webgl.Int8Array
 import org.khronos.webgl.Uint8Array
+import org.w3c.dom.ARRAYBUFFER
+import org.w3c.dom.BinaryType
 import org.w3c.dom.WebSocket as PlatformWebSocket
 
 internal class JsWebSocketEngine: WebSocketEngine {
@@ -32,6 +35,7 @@ internal class JsWebSocket(
   }
   init {
     platformWebSocket = createWebSocket(actualUrl, headers, listener)
+    platformWebSocket?.binaryType = BinaryType.ARRAYBUFFER
     platformWebSocket?.onopen = {
       listener.onOpen()
     }
@@ -42,8 +46,8 @@ internal class JsWebSocket(
       @Suppress("USELESS_CAST")
       when {
         data2 is String -> listener.onMessage(data2 as String)
-        Buffer.isBuffer(data2) -> {
-          listener.onMessage((data2 as Buffer).toByteArray())
+        data2 is ArrayBuffer -> {
+          listener.onMessage(Int8Array(data2 as ArrayBuffer).unsafeCast<ByteArray>())
         }
         else -> {
           val d = JSON.stringify(data2)

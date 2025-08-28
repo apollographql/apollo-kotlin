@@ -1,5 +1,6 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsExec
+import websocket_server.configureWebSocketServer
 
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
@@ -62,7 +63,6 @@ kotlin {
 
     findByName("jsMain")?.apply {
       dependencies {
-        implementation(npm("node-fetch", libs.versions.node.fetch.get()))
         implementation(libs.ktor.client.js.get().toString()) {
           because("We use in the ktor client in DefaultWebSocketEngine")
         }

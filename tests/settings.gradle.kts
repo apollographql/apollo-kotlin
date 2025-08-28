@@ -1,9 +1,5 @@
-pluginManagement {
-  includeBuild("../build-logic")
-}
-
 plugins {
-  id("com.gradle.develocity") version "4.0.2" // sync with libraries.toml
+  id("com.gradle.develocity") version "4.1.1" // sync with libraries.toml
   id("com.gradle.common-custom-user-data-gradle-plugin") version "2.3"
   id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
@@ -39,7 +35,6 @@ listOf(
     "include-skip-operation-based",
     "input",
     "integration-tests",
-    "intellij-plugin-test-project",
     "ios-test",
     "java-nullability",
     "js",
@@ -91,6 +86,7 @@ listOf(
   project(":$project").projectDir = rootProject.projectDir.resolve(it)
 }
 
+includeBuild("../build-logic")
 includeBuild("../")
 
 dependencyResolutionManagement {

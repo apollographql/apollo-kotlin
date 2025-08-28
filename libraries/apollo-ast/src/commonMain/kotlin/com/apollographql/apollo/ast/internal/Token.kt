@@ -90,4 +90,8 @@ internal sealed class Token(val start: kotlin.Int, val end: kotlin.Int, val line
   class String(start: kotlin.Int, end: kotlin.Int, line: kotlin.Int, column: kotlin.Int, val value: kotlin.String) : Token(start, end, line, column) {
     override fun toString() = "string: \"$value\""
   }
+
+  class Dot(start: kotlin.Int, line: kotlin.Int, column: kotlin.Int) : Token(start, start + 1, line, column) {
+    override fun toString() = "."
+  }
 }

@@ -1,7 +1,6 @@
 @file:OptIn(ApolloExperimental::class)
 
 import com.apollographql.apollo.annotations.ApolloExperimental
-import com.apollographql.apollo.compiler.MODELS_RESPONSE_BASED
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
@@ -12,14 +11,13 @@ apolloTest()
 
 dependencies {
   implementation(libs.apollo.runtime)
-  testImplementation(libs.kotlin.test)
   testImplementation(libs.junit)
 }
 
 apollo {
   service("service") {
     packageName.set("com.example")
-    plugin(project(":schema-transform-plugin")) {}
+    plugin(project(":schema-transform-plugin"))
   }
 }
 

@@ -45,7 +45,4 @@ docs.json
 
 # Local Netlify folder
 .netlify
-
-# IntelliJ plugin
-intellij-plugin/mockJDK
-.intellijPlatform
+/ref-docs/

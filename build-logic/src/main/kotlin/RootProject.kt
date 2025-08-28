@@ -13,7 +13,7 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import java.io.File
 
-fun Project.rootSetup(ciBuild: TaskProvider<Task>) {
+fun Project.rootSetup() {
   val apolloTestAggregationConsumer = configurations.create("apolloTestAggregationConsumer") {
     isCanBeConsumed = false
     isCanBeResolved = true
@@ -33,7 +33,7 @@ fun Project.rootSetup(ciBuild: TaskProvider<Task>) {
     output = file("build/apolloTestAggregation.txt")
   }
 
-  ciBuild.configure {
+  tasks.named("build").configure {
     dependsOn(task)
   }
 }

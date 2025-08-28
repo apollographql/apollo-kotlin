@@ -1,8 +1,0 @@
-projects:
-  main:
-    schema: src/main/graphql/schema.graphqls
-    documents: '**/*.graphql'
-    extensions:
-      endpoints:
-        main: "https://apollo-fullstack-tutorial.herokuapp.com/graphql"
-      apollo-key: ${APOLLO_KEY}

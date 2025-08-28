@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.ast.DeprecatedUsage
 import com.apollographql.apollo.ast.DifferentShape
 import com.apollographql.apollo.ast.DirectiveRedefinition
@@ -51,7 +52,15 @@ import java.io.File
 
 object ApolloCompiler {
   interface Logger {
+    fun debug(message: String)
+    fun info(message: String)
     fun warning(message: String)
+    @Deprecated("use warning instead", replaceWith = ReplaceWith("warning(message)"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+    fun warn(message: String) {
+      warning(message)
+    }
+    fun error(message: String)
   }
 
   fun buildCodegenSchema(
@@ -412,18 +421,15 @@ object ApolloCompiler {
       """.trimMargin()
     }
 
-    val operationManifestFormat = codegenOptions.operationManifestFormat
-    if ((operationManifestFormat ?: defaultOperationManifestFormat) != MANIFEST_NONE) {
-      check(operationManifestFile != null) {
-        "Apollo: no operationManifestFile set to output '$operationManifestFormat' operation manifest"
-      }
+    if (operationManifestFile != null) {
+      val operationManifestFormat = codegenOptions.operationManifestFormat
       @Suppress("DEPRECATION_ERROR")
       when (operationManifestFormat) {
+        MANIFEST_NONE -> operationManifestFile.writeText("Use operationManifestFormat to generate the operation manifest.")
         MANIFEST_OPERATION_OUTPUT -> operationOutput.writeTo(operationManifestFile)
         MANIFEST_PERSISTED_QUERY -> operationOutput.toPersistedQueryManifest().writeTo(operationManifestFile)
       }
     }
-
 
     @Suppress("NAME_SHADOWING")
     val layout = layout ?: SchemaAndOperationsLayout(
@@ -621,7 +627,7 @@ internal fun List<Issue>.group(
       is DeprecatedUsage -> if (warnOnDeprecatedUsages) Severity.Warning else Severity.None
       is DifferentShape -> if (fieldsOnDisjointTypesMustMerge) Severity.Error else Severity.Warning
       is UnusedVariable -> Severity.Warning
-      is UnusedFragment -> Severity.None
+      is UnusedFragment -> Severity.Warning
       is IncompatibleDefinition -> Severity.Warning // This should probably be an error
       is DirectiveRedefinition -> Severity.Warning
       else -> Severity.Error

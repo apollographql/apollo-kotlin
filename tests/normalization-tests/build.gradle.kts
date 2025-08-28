@@ -10,7 +10,6 @@ dependencies {
   implementation(libs.apollo.normalizedcache)
   testImplementation(libs.apollo.testingsupport.internal)
   testImplementation(libs.apollo.mockserver)
-  testImplementation(libs.kotlin.test)
   testImplementation(libs.junit)
 }
 

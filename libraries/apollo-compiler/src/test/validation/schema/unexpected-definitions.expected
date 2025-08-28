@@ -1,8 +1,8 @@
 IncompatibleDefinition (1:1)
-Unexpected 'catch' definition. Expecting 'directive @catch (to: CatchTo! = RESULT, levels: [Int!]! = [0]) on FIELD'.
+Unexpected 'catch' definition. Expecting 'directive @catch (levels: [Int!]! = [0], to: CatchTo! = RESULT) on FIELD'.
 ------------
 IncompatibleDefinition (2:1)
-Unexpected 'CatchTo' definition. Expecting 'enum CatchTo { RESULT NULL THROW }'.
+Unexpected 'CatchTo' definition. Expecting 'enum CatchTo { NULL RESULT THROW }'.
 ------------
 OtherValidationIssue (null:null)
 Schemas that include nullability directives must opt-in a default CatchTo. Use `extend schema @catchByDefault(to: $to)`

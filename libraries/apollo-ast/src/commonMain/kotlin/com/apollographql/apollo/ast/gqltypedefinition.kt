@@ -2,6 +2,7 @@ package com.apollographql.apollo.ast
 
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.Schema.Companion.NONNULL
+import kotlin.reflect.KClass
 
 // 5.5.2.3 Fragment spread is possible
 internal fun GQLTypeDefinition.sharesPossibleTypesWith(other: GQLTypeDefinition, schema: Schema): Boolean {
@@ -67,5 +68,18 @@ fun GQLTypeDefinition.canHaveKeyFields(): Boolean {
       -> true
 
     else -> false
+  }
+}
+
+
+internal fun KClass<out GQLTypeDefinition>.prettyName(): String {
+  return when (this) {
+    GQLObjectTypeDefinition::class -> "object"
+    GQLInterfaceTypeDefinition::class -> "interface"
+    GQLUnionTypeDefinition::class -> "union"
+    GQLEnumTypeDefinition::class -> "enum"
+    GQLScalarTypeDefinition::class -> "scalar"
+    GQLInputValueDefinition::class -> "input object"
+    else -> error("")
   }
 }
