@@ -1322,7 +1322,11 @@ sealed class <#A: out kotlin/Any?> com.apollographql.apollo.api/Optional { // co
         final fun toString(): kotlin/String // com.apollographql.apollo.api/Optional.Present.toString|toString(){}[0]
     }
 
-    final object Absent : com.apollographql.apollo.api/Optional<kotlin/Nothing> // com.apollographql.apollo.api/Optional.Absent|null[0]
+    final object Absent : com.apollographql.apollo.api/Optional<kotlin/Nothing> { // com.apollographql.apollo.api/Optional.Absent|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.apollographql.apollo.api/Optional.Absent.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.apollographql.apollo.api/Optional.Absent.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.apollographql.apollo.api/Optional.Absent.toString|toString(){}[0]
+    }
 
     final object Companion { // com.apollographql.apollo.api/Optional.Companion|null[0]
         final fun <#A2: kotlin/Any> presentIfNotNull(#A2?): com.apollographql.apollo.api/Optional<#A2> // com.apollographql.apollo.api/Optional.Companion.presentIfNotNull|presentIfNotNull(0:0?){0§<kotlin.Any>}[0]

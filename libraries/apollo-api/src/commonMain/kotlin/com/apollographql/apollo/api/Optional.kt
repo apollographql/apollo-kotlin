@@ -29,7 +29,7 @@ sealed class Optional<out V> {
   }
 
   data class Present<V>(val value: V) : Optional<V>()
-  object Absent : Optional<Nothing>()
+  data object Absent : Optional<Nothing>()
 
   companion object {
     @JvmStatic
