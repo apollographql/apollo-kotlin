@@ -65,8 +65,14 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
   private var indexStackSize = 1
 
+  @Suppress("NOTHING_TO_INLINE")
+  private inline fun peekIfNone(): Int {
+    val p = peeked
+    return if (p == PEEKED_NONE) doPeek() else p
+  }
+
   override fun beginArray(): JsonReader = apply {
-    val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
+    val p = peekIfNone()
     if (p == PEEKED_BEGIN_ARRAY) {
       push(JsonScope.EMPTY_ARRAY)
       pathIndices[stackSize - 1] = 0
@@ -77,7 +83,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   override fun endArray(): JsonReader = apply {
-    val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
+    val p = peekIfNone()
     if (p == PEEKED_END_ARRAY) {
       stackSize--
       pathIndices[stackSize - 1]++
@@ -88,7 +94,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   override fun beginObject(): JsonReader = apply {
-    val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
+    val p = peekIfNone()
     if (p == PEEKED_BEGIN_OBJECT) {
       push(JsonScope.EMPTY_OBJECT)
       peeked = PEEKED_NONE
@@ -101,7 +107,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   override fun endObject(): JsonReader = apply {
-    val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
+    val p = peekIfNone()
     if (p == PEEKED_END_OBJECT) {
       stackSize--
       pathNames[stackSize] = null // Free the last path name so that it can be garbage collected!
@@ -115,12 +121,12 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   override fun hasNext(): Boolean {
-    val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
+    val p = peekIfNone()
     return p != PEEKED_END_OBJECT && p != PEEKED_END_ARRAY
   }
 
   override fun peek(): JsonReader.Token {
-    return when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
+    return when (peekIfNone()) {
       PEEKED_BEGIN_OBJECT -> JsonReader.Token.BEGIN_OBJECT
       PEEKED_END_OBJECT -> JsonReader.Token.END_OBJECT
       PEEKED_BEGIN_ARRAY -> JsonReader.Token.BEGIN_ARRAY
@@ -401,7 +407,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   override fun nextName(): String {
-    val result = when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
+    val result = when (peekIfNone()) {
       PEEKED_UNQUOTED_NAME -> nextUnquotedValue()
       PEEKED_DOUBLE_QUOTED_NAME -> nextQuotedValue(DOUBLE_QUOTE_OR_SLASH)
       PEEKED_SINGLE_QUOTED_NAME -> nextQuotedValue(SINGLE_QUOTE_OR_SLASH)
@@ -413,7 +419,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   override fun nextString(): String? {
-    val result = when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
+    val result = when (peekIfNone()) {
       PEEKED_UNQUOTED -> nextUnquotedValue()
       PEEKED_DOUBLE_QUOTED -> nextQuotedValue(DOUBLE_QUOTE_OR_SLASH)
       PEEKED_SINGLE_QUOTED -> nextQuotedValue(SINGLE_QUOTE_OR_SLASH)
@@ -428,7 +434,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   override fun nextBoolean(): Boolean {
-    return when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
+    return when (peekIfNone()) {
       PEEKED_TRUE -> {
         peeked = PEEKED_NONE
         pathIndices[stackSize - 1]++
@@ -446,7 +452,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   override fun nextNull(): Nothing? {
-    return when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
+    return when (peekIfNone()) {
       PEEKED_NULL -> {
         peeked = PEEKED_NONE
         pathIndices[stackSize - 1]++
@@ -458,7 +464,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   override fun nextDouble(): Double {
-    val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
+    val p = peekIfNone()
     when {
       p == PEEKED_LONG -> {
         peeked = PEEKED_NONE
@@ -499,7 +505,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   override fun nextLong(): Long {
-    val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
+    val p = peekIfNone()
     when {
       p == PEEKED_LONG -> {
         peeked = PEEKED_NONE
@@ -603,7 +609,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   override fun nextInt(): Int {
-    val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
+    val p = peekIfNone()
     when {
       p == PEEKED_LONG -> {
         val result = peekedLong.toInt()
@@ -663,7 +669,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   override fun skipValue() {
     var count = 0
     do {
-      when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
+      when (peekIfNone()) {
         PEEKED_BEGIN_ARRAY -> {
           push(JsonScope.EMPTY_ARRAY)
           count++
