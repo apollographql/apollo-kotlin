@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.json.ApolloJsonElement
 import com.apollographql.apollo.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo.api.json.writeAny
 import okio.Buffer
-import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 
 sealed class CompiledSelection
