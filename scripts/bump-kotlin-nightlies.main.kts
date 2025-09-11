@@ -11,7 +11,7 @@ val BRANCH_NAME = "kotlin-nightlies"
 
 fun bumpVersions() {
   val kotlinVersion =
-    getLatestVersion("https://redirector.kotlinlang.org/maven/dev/org/jetbrains/kotlin/kotlin-stdlib/maven-metadata.xml", prefix = "2.2.20-RC")
+    getLatestVersion("https://redirector.kotlinlang.org/maven/dev/org/jetbrains/kotlin/kotlin-stdlib/maven-metadata.xml", prefix = "2.3.0-dev")
 
   val useKspSnapshots = false
   val kspVersion = getLatestVersion(
@@ -19,8 +19,7 @@ fun bumpVersions() {
         "https://oss.sonatype.org/content/repositories/snapshots/com/google/devtools/ksp/com.google.devtools.ksp.gradle.plugin/maven-metadata.xml"
       } else {
         "https://repo1.maven.org/maven2/com/google/devtools/ksp/com.google.devtools.ksp.gradle.plugin/maven-metadata.xml"
-      },
-      prefix = "2.2.20"
+      }
   )
 
   File("gradle/libraries.toml").let { file ->
@@ -77,8 +76,8 @@ fun getLatestVersion(url: String, prefix: String? = null): String {
 }
 
 fun runCommand(vararg args: String): String {
-  val builder = ProcessBuilder(*args)
-      .redirectError(ProcessBuilder.Redirect.INHERIT)
+  println("Running command: '${args.joinToString(" ")}'")
+  val builder = ProcessBuilder(*args).redirectError(ProcessBuilder.Redirect.INHERIT)
   val process = builder.start()
   val output = StringBuilder()
   while (true) {
