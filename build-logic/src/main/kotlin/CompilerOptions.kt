@@ -34,7 +34,7 @@ fun KotlinCommonCompilerOptions.configure(
 
   when (this) {
     is KotlinJvmCompilerOptions -> {
-      freeCompilerArgs.add("-Xjvm-default=all")
+      freeCompilerArgs.add("-jvm-default=no-compatibility")
     }
 
     is KotlinNativeCompilerOptions -> {
