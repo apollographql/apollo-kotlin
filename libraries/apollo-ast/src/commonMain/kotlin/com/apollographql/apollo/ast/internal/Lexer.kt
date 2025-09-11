@@ -61,7 +61,7 @@ internal class Lexer(val src: String) {
     while (pos < len) {
       val c = src[pos]
 
-      // do not consume the byte just yet, names and numbers need the first by
+      // do not consume the byte just yet, names and numbers need the first byte
       if (c.isNameStart()) {
         return readName()
       }
