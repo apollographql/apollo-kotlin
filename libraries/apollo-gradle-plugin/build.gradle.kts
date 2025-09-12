@@ -1,3 +1,5 @@
+import com.google.devtools.ksp.gradle.KspAATask
+import com.google.devtools.ksp.gradle.KspTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -218,4 +220,9 @@ tasks.withType(KotlinCompile::class.java) {
 
 lint {
   baseline = file("lint-baseline.xml")
+}
+
+tasks.withType(KspAATask::class.java) {
+  dependsOn(pluginVersionTaskProvider)
+  dependsOn(tasks.named("gratatouilleUnzipPluginSources"))
 }
