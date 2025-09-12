@@ -36,10 +36,10 @@ java.toolchain {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-  kotlinOptions {
+  compilerOptions {
     // Required for Kotlin < 1.6.10
     // See https://kotlinlang.org/docs/whatsnew1620.html#compatibility-changes-in-the-xjvm-default-modes
-    freeCompilerArgs += "-Xjvm-default=all"
-    freeCompilerArgs += "-Xskip-prerelease-check"
+    freeCompilerArgs.add("-Xjvm-default=all")
+    freeCompilerArgs.add("-Xskip-prerelease-check")
   }
 }

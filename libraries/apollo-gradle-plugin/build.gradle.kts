@@ -1,3 +1,5 @@
+import com.google.devtools.ksp.gradle.KspAATask
+import com.google.devtools.ksp.gradle.KspTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -150,4 +152,9 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
 
 tasks.withType(KotlinCompile::class.java) {
   dependsOn(pluginVersionTaskProvider)
+}
+
+tasks.withType(KspAATask::class.java) {
+  dependsOn(pluginVersionTaskProvider)
+  dependsOn(tasks.named("gratatouilleUnzipPluginSources"))
 }
