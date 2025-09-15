@@ -32,7 +32,7 @@ extensions.getByType(PublishingExtension::class.java).publications.getByName("de
     distributionManagement {
       relocation {
         artifactId = "apollo-gradle-plugin"
-        message = "The Apollo Gradle Plugin now uses classloader isolation and does not use R8 to relocate dependencies anymore. As a result, the `apollo-gradle-plugin-external` artifact and the `com.apollographql.apollo.external` plugins have been removed. You should use `apollo-gradle-plugin` and `com.apollographql.apollo` instead."
+        message = "The `apollo-gradle-plugin-external` artifact and the `com.apollographql.apollo.external` plugin have been removed. The `apollo-gradle-plugin` artifact and `com.apollographql.apollo` plugin use classloader isolation and should be used instead."
       }
     }
   }
