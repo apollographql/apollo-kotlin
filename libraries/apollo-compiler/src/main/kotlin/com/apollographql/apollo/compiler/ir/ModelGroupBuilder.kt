@@ -13,6 +13,7 @@ internal interface ModelGroupBuilder {
 
   fun buildFragmentInterface(
       fragmentName: String,
+      defaultCatchTo: CatchTo?
   ): IrModelGroup?
 
   fun buildFragmentData(
