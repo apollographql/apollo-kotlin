@@ -25,23 +25,23 @@ internal class ResponseBasedModelGroupBuilder(
       operationName: String,
       defaultCatchTo: CatchTo?,
   ): Pair<IrProperty, IrModelGroup> {
-    check(defaultCatchTo == null) {
-      "Apollo: responseBased codegen does not support @catch"
-    }
 
     val field = fieldNodeBuilder.buildOperationData(
         selections,
         rawTypeName,
-        operationName
+        operationName,
+        defaultCatchTo
     )
     return field.toIrProperty() to field.toIrModelGroup()!!
   }
 
   override fun buildFragmentInterface(
       fragmentName: String,
+      defaultCatchTo: CatchTo?
   ): IrModelGroup {
     return fieldNodeBuilder.buildFragmentInterface(
-        fragmentName
+        fragmentName,
+        defaultCatchTo
     ).toIrModelGroup()!!
   }
 
@@ -49,12 +49,9 @@ internal class ResponseBasedModelGroupBuilder(
       fragmentName: String,
       defaultCatchTo: CatchTo?,
   ): Pair<IrProperty, IrModelGroup> {
-    check(defaultCatchTo == null) {
-      "Apollo: responseBased codegen does not support @catch"
-    }
-
     val field = fieldNodeBuilder.buildFragmentData(
-        fragmentName
+        fragmentName,
+        defaultCatchTo
     )
     return field.toIrProperty() to field.toIrModelGroup()!!
   }
@@ -129,6 +126,7 @@ private class FieldNodeBuilder(
       selections: List<GQLSelection>,
       rawTypeName: String,
       operationName: String,
+      defaultCatchTo: CatchTo?,
   ): ResponseField {
     val info = IrFieldInfo(
         responseName = "data",
@@ -146,11 +144,12 @@ private class FieldNodeBuilder(
         rawTypename = rawTypeName,
         condition = BooleanExpression.True,
         superResponseFields = emptyList(),
-        withImplementations = true
+        withImplementations = true,
+        defaultCatchTo = defaultCatchTo
     )
   }
 
-  fun buildFragmentInterface(name: String): ResponseField {
+  fun buildFragmentInterface(name: String, defaultCatchTo: CatchTo?): ResponseField {
     return cachedFragmentFieldNodes.getOrPut(name) {
       val fragment = allFragmentDefinitions[name] ?: error("Cannot find fragment $name")
 
@@ -166,17 +165,18 @@ private class FieldNodeBuilder(
       return buildFieldNode(
           modelPath = "${MODEL_FRAGMENT_INTERFACE}.$name",
           info = info,
+          condition = BooleanExpression.True,
           selections = fragment.selections,
           rawTypename = fragment.typeCondition.name,
-          condition = BooleanExpression.True,
           superResponseFields = emptyList(),
-          withImplementations = false
+          withImplementations = false,
+          defaultCatchTo = defaultCatchTo
       )
     }
   }
 
-  fun buildFragmentData(name: String): ResponseField {
-    val ifaceFieldNode = buildFragmentInterface(name)
+  fun buildFragmentData(name: String, defaultCatchTo: CatchTo?): ResponseField {
+    val ifaceFieldNode = buildFragmentInterface(name, defaultCatchTo)
     val fragment = allFragmentDefinitions[name] ?: error("Cannot find fragment $name")
 
     val info = IrFieldInfo(
@@ -191,11 +191,12 @@ private class FieldNodeBuilder(
     return buildFieldNode(
         modelPath = "${MODEL_FRAGMENT_DATA}.$name",
         info = info,
+        condition = BooleanExpression.True,
         selections = fragment.selections,
         rawTypename = fragment.typeCondition.name,
-        condition = BooleanExpression.True,
         superResponseFields = listOf(ifaceFieldNode),
-        withImplementations = true
+        withImplementations = true,
+        defaultCatchTo = defaultCatchTo
     )
   }
 
@@ -247,6 +248,7 @@ private class FieldNodeBuilder(
       rawTypename: String,
       superResponseFields: List<ResponseField>,
       withImplementations: Boolean,
+      defaultCatchTo: CatchTo?,
   ): ResponseField {
     if (selections.isEmpty()) {
       // fast path for non-compound types
@@ -269,7 +271,7 @@ private class FieldNodeBuilder(
      * Build the fragments
      */
     selections.collectFragments().forEach {
-      val fragmentFieldNode = buildFragmentInterface(it)
+      val fragmentFieldNode = buildFragmentInterface(it, defaultCatchTo)
       fragmentFieldNodes.add(fragmentFieldNode)
       fragmentAccessors.add(
           IrFragmentAccessor(
@@ -295,6 +297,7 @@ private class FieldNodeBuilder(
       buildFieldSetNode(
           fieldState,
           it,
+          defaultCatchTo
       )
     }.sortedWith(FieldSetNodeComparator)
 
@@ -336,6 +339,7 @@ private class FieldNodeBuilder(
   private fun buildFieldSetNode(
       state: FieldState,
       modelDescriptor: ModelDescriptor,
+      defaultCatchTo: CatchTo?
   ): ResponseFieldSet {
     val cached = state.cachedFieldSetNodes.get(modelDescriptor)
     if (cached != null) {
@@ -357,7 +361,7 @@ private class FieldNodeBuilder(
       val descriptor = state.modelDescriptors.first {
         it.shape.typeSet == superTypeSet && it.isInterface
       }
-      buildFieldSetNode(state, descriptor)
+      buildFieldSetNode(state, descriptor, defaultCatchTo)
     }
 
     val superFragmentFieldSetNodes = state.fragmentResponseFields.flatMap { fieldNode ->
@@ -376,7 +380,7 @@ private class FieldNodeBuilder(
             parentTypeDefinition = state.rawTypename,
             typeSet = typeSet,
         ),
-        null
+        defaultCatchTo
     )
 
     val path = subpath(state.path, state.info, typeSet, isOther)
@@ -393,7 +397,8 @@ private class FieldNodeBuilder(
               superResponseFields = implementedFieldSetNodes.flatMap {
                 it.responseFields.filter { it.info.responseName == mergedField.info.responseName }
               },
-              withImplementations = !isInterface
+              withImplementations = !isInterface,
+              defaultCatchTo = defaultCatchTo
           )
         },
         possibleTypes = modelDescriptor.shape.possibleTypes,
