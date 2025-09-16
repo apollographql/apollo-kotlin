@@ -222,6 +222,7 @@ lint {
   baseline = file("lint-baseline.xml")
 }
 
+// TODO: Remove when https://github.com/google/ksp/pull/2599 is available
 tasks.withType(KspAATask::class.java) {
   dependsOn(pluginVersionTaskProvider)
   dependsOn(tasks.named("gratatouilleUnzipPluginSources"))
