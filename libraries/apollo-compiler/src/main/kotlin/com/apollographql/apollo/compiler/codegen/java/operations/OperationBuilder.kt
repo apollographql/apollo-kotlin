@@ -272,6 +272,7 @@ internal class OperationBuilder(
         .map {
           val irType = context.resolver.resolveIrType(it.type)
           FieldSpec.builder(irType.withoutAnnotations(), context.layout.javaPropertyName(it.name))
+              .maybeAddDescription(it.description)
               .addAnnotations(irType.annotations)
               .build()
         }

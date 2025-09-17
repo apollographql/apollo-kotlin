@@ -22,6 +22,9 @@ import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 
+/**
+ * The test query.
+ */
 public class TestQuery implements Query<TestQuery.Data> {
   public static ExecutableDefinition<Data> definition = new Definition();
 
@@ -136,6 +139,9 @@ public class TestQuery implements Query<TestQuery.Data> {
     Builder() {
     }
 
+    /**
+     * The operation to perform.
+     */
     public Builder operation(String operation) {
       this.operation = Optional.present(operation);
       return this;

@@ -83,3 +83,12 @@ tasks.withType<Test>().configureEach {
   addRelativeInput("usedtypesDir","src/test/usedtypes")
   addRelativeInput("validationDir", "src/test/validation")
 }
+
+tasks.register("jarPaths") {
+  doLast {
+    val paths = configurations.runtimeClasspath.get().joinToString(separator = "\n") { it.absolutePath }
+    val outputFile = File(buildDir, "paths.txt")
+    outputFile.writeText(paths)
+    println("Wrote ${outputFile.absolutePath}")
+  }
+}

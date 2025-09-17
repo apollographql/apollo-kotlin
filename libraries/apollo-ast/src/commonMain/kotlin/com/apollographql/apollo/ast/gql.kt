@@ -165,7 +165,7 @@ class GQLOperationDefinition(
     val variableDefinitions: List<GQLVariableDefinition>,
     override val directives: List<GQLDirective>,
     val selections: List<GQLSelection>,
-    override val description: String?, // spec extension
+    override val description: String?,
 ) : GQLExecutableDefinition, GQLDescribed, GQLHasDirectives {
   @Suppress("DEPRECATION_ERROR")
   @Deprecated("Use selections directly", level = DeprecationLevel.ERROR)
@@ -1234,7 +1234,23 @@ class GQLVariableDefinition(
     val type: GQLType,
     val defaultValue: GQLValue?,
     override val directives: List<GQLDirective>,
-) : GQLNode, GQLNamed, GQLHasDirectives {
+    override val description: String?,
+) : GQLNode, GQLNamed, GQLDescribed, GQLHasDirectives {
+
+  constructor(
+      sourceLocation: SourceLocation? = null,
+      name: String,
+      type: GQLType,
+      defaultValue: GQLValue?,
+      directives: List<GQLDirective>,
+  ) : this(
+      sourceLocation = sourceLocation,
+      name = name,
+      type = type,
+      defaultValue = defaultValue,
+      directives = directives,
+      description = null
+  )
 
   override val children = listOfNotNull(defaultValue) + directives
 
@@ -1258,6 +1274,7 @@ class GQLVariableDefinition(
       type: GQLType = this.type,
       defaultValue: GQLValue? = this.defaultValue,
       directives: List<GQLDirective> = this.directives,
+      description: String? = this.description,
   ): GQLVariableDefinition {
     return GQLVariableDefinition(
         sourceLocation = sourceLocation,
@@ -1265,6 +1282,24 @@ class GQLVariableDefinition(
         type = type,
         defaultValue = defaultValue,
         directives = directives,
+        description = description,
+    )
+  }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      name: String = this.name,
+      type: GQLType = this.type,
+      defaultValue: GQLValue? = this.defaultValue,
+      directives: List<GQLDirective> = this.directives,
+  ): GQLVariableDefinition {
+    return copy(
+        sourceLocation = sourceLocation,
+        name = name,
+        type = type,
+        defaultValue = defaultValue,
+        directives = directives,
+        description = null,
     )
   }
 

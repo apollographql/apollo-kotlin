@@ -1919,14 +1919,16 @@ public final class com/apollographql/apollo/compiler/ir/IrValue$Companion {
 
 public final class com/apollographql/apollo/compiler/ir/IrVariable {
 	public static final field Companion Lcom/apollographql/apollo/compiler/ir/IrVariable$Companion;
-	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo/compiler/ir/IrType;Lcom/apollographql/apollo/compiler/ir/IrValue;)V
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo/compiler/ir/IrType;Ljava/lang/String;Lcom/apollographql/apollo/compiler/ir/IrValue;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Lcom/apollographql/apollo/compiler/ir/IrType;
-	public final fun component3 ()Lcom/apollographql/apollo/compiler/ir/IrValue;
-	public final fun copy (Ljava/lang/String;Lcom/apollographql/apollo/compiler/ir/IrType;Lcom/apollographql/apollo/compiler/ir/IrValue;)Lcom/apollographql/apollo/compiler/ir/IrVariable;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo/compiler/ir/IrVariable;Ljava/lang/String;Lcom/apollographql/apollo/compiler/ir/IrType;Lcom/apollographql/apollo/compiler/ir/IrValue;ILjava/lang/Object;)Lcom/apollographql/apollo/compiler/ir/IrVariable;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Lcom/apollographql/apollo/compiler/ir/IrValue;
+	public final fun copy (Ljava/lang/String;Lcom/apollographql/apollo/compiler/ir/IrType;Ljava/lang/String;Lcom/apollographql/apollo/compiler/ir/IrValue;)Lcom/apollographql/apollo/compiler/ir/IrVariable;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo/compiler/ir/IrVariable;Ljava/lang/String;Lcom/apollographql/apollo/compiler/ir/IrType;Ljava/lang/String;Lcom/apollographql/apollo/compiler/ir/IrValue;ILjava/lang/Object;)Lcom/apollographql/apollo/compiler/ir/IrVariable;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDefaultValue ()Lcom/apollographql/apollo/compiler/ir/IrValue;
+	public final fun getDescription ()Ljava/lang/String;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getType ()Lcom/apollographql/apollo/compiler/ir/IrType;
 	public fun hashCode ()I

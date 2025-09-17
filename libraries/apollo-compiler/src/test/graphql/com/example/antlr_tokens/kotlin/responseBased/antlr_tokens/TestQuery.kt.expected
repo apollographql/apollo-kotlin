@@ -21,7 +21,15 @@ import kotlin.Boolean
 import kotlin.String
 import com.example.antlr_tokens.type.Query as CompiledQuery
 
+/**
+ * The test query.
+ *
+ * @param operation The operation to perform.
+ */
 public data class TestQuery(
+  /**
+   * The operation to perform.
+   */
   public val operation: Optional<String?> = Optional.Absent,
 ) : Query<TestQuery.Data> {
   override fun id(): String = OPERATION_ID

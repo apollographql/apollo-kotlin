@@ -28,6 +28,7 @@ internal fun NamedType.toParameterSpec(context: JavaContext): ParameterSpec {
           context.layout.javaPropertyName(graphQlName),
       )
       .addAnnotations(irType.annotations)
+
       .build()
 }
 
@@ -42,7 +43,7 @@ internal fun IrInputField.toNamedType() = NamedType(
 internal fun IrVariable.toNamedType() = NamedType(
     graphQlName = name,
     type = type,
-    description = null,
+    description = description,
     deprecationReason = null,
 )
 
