@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
@@ -14,13 +13,17 @@ apolloLibrary(
 )
 
 gratatouille {
-  codeGeneration()
+  codeGeneration {
+    addDependencies.set(false)
+  }
   pluginMarker("com.apollographql.apollo.external")
 }
 
 dependencies {
   compileOnly(libs.gradle.api.min)
-  compileOnly(libs.kotlin.plugin.min)
+
+  implementation(libs.gratatouille.wiring.runtime)
+  implementation(libs.gratatouille.tasks.runtime)
 
   implementation(project(":apollo-annotations"))
   api(project(":apollo-gradle-plugin"))

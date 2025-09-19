@@ -31,21 +31,33 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         includeModuleByRegex("androidx\\..*", ".*")
       }
     }
-
+    // This is used at build time but not part of pluginManagement
     maven("https://storage.googleapis.com/gradleup/m2") {
       content {
-        includeGroup("com.gradleup.librarian")
-        includeGroup("com.gradleup.nmcp")
-        includeGroup("com.gradleup.nmcp.aggregation")
+        includeModule("com.gradleup.gratatouille", "gratatouille-processor")
       }
     }
 
-    exclusiveContent {
-      forRepository(::gradlePluginPortal)
-      filter {
-        includeModule("org.jetbrains.kotlinx", "kotlinx-benchmark-plugin")
-        includeModule("com.github.ben-manes", "gradle-versions-plugin")
-        includeModule("com.gradle", "develocity-gradle-plugin")
+    if (rootProject.name == "build-logic" || it === pluginManagement.repositories) {
+      // repositories only used at build time
+      exclusiveContent {
+        forRepository(::gradlePluginPortal)
+        filter {
+          includeModule("org.jetbrains.kotlinx", "kotlinx-benchmark-plugin")
+          includeModule("com.github.ben-manes", "gradle-versions-plugin")
+          includeModule("com.gradle", "develocity-gradle-plugin")
+        }
+      }
+
+      maven("https://storage.googleapis.com/gradleup/m2") {
+        content {
+          includeGroup("com.gradleup.librarian")
+          includeGroup("com.gradleup.nmcp")
+          includeGroup("com.gradleup.nmcp.aggregat=ion")
+          includeGroup("com.gradleup.gratatouille")
+          includeGroup("com.gradleup.gratatouille.tasks")
+          includeGroup("com.gradleup.gratatouille.wiring")
+        }
       }
     }
   }
