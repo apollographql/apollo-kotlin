@@ -75,11 +75,11 @@ public final class com/apollographql/apollo/gradle/task/ApolloGenerateOptionsKt 
 public final class com/apollographql/apollo/gradle/task/ApolloGenerateProjectModelEntryPoint {
 	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateProjectModelEntryPoint$Companion;
 	public fun <init> ()V
-	public static final fun run (Ljava/util/Set;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/Set;Ljava/io/File;Ljava/io/File;)V
+	public static final fun run (Ljava/util/Set;Ljava/util/Set;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/Set;Ljava/io/File;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/gradle/task/ApolloGenerateProjectModelEntryPoint$Companion {
-	public final fun run (Ljava/util/Set;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/Set;Ljava/io/File;Ljava/io/File;)V
+	public final fun run (Ljava/util/Set;Ljava/util/Set;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/Set;Ljava/io/File;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/gradle/task/ApolloGenerateSourcesEntryPoint {

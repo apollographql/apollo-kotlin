@@ -198,6 +198,9 @@ abstract class DefaultApolloExtension(
         taskDescription = "Generate Apollo project model",
 
         serviceNames = project.provider { services.map { it.name }.toSet() },
+        apolloTasksDependencies = project.provider {
+          project.configurations.getByName("apolloTasks").files.map { it.absolutePath }.toSet()
+        },
 
         // Telemetry
         gradleVersion = project.provider { project.gradle.gradleVersion },

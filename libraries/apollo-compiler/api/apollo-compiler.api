@@ -1987,7 +1987,8 @@ public final class com/apollographql/apollo/compiler/model/CompilationUnitModelK
 
 public final class com/apollographql/apollo/compiler/model/ProjectModel {
 	public static final field Companion Lcom/apollographql/apollo/compiler/model/ProjectModel$Companion;
-	public fun <init> (Ljava/util/Set;)V
+	public fun <init> (Ljava/util/Set;Ljava/util/Set;)V
+	public final fun getApolloTasksDependencies ()Ljava/util/Set;
 	public final fun getServiceNames ()Ljava/util/Set;
 }
 

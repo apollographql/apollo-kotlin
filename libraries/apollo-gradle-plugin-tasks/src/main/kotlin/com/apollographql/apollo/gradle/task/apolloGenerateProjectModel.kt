@@ -11,6 +11,7 @@ import gratatouille.tasks.GTask
 internal fun apolloGenerateProjectModel(
     // Inputs
     serviceNames: Set<String>,
+    apolloTasksDependencies: Set<String>,
 
     // Telemetry data
     gradleVersion: String?,
@@ -28,6 +29,7 @@ internal fun apolloGenerateProjectModel(
 ) {
   ProjectModel(
       serviceNames = serviceNames,
+      apolloTasksDependencies = apolloTasksDependencies,
   )
       .writeTo(projectModel)
 
