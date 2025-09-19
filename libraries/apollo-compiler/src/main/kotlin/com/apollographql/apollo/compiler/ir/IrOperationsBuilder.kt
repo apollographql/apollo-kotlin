@@ -374,6 +374,7 @@ internal class IrOperationsBuilder(
     return IrVariable(
         name = name,
         type = irType,
+        description = null,
         defaultValue = null
     )
   }
@@ -412,6 +413,7 @@ internal class IrOperationsBuilder(
     return IrVariable(
         name = name,
         type = irType,
+        description = description,
         defaultValue = defaultValue?.toIrValue()
     )
   }

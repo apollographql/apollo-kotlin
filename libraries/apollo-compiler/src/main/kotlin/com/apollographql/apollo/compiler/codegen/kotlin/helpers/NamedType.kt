@@ -101,7 +101,7 @@ internal fun IrInputField.toNamedType() = NamedType(
 internal fun IrVariable.toNamedType() = NamedType(
     graphQlName = name,
     type = type,
-    description = null,
+    description = description,
     deprecationReason = null,
     optInFeature = null,
 )

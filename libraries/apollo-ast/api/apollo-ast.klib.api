@@ -1098,13 +1098,16 @@ final class com.apollographql.apollo.ast/GQLUnionTypeExtension : com.apollograph
     final fun writeInternal(com.apollographql.apollo.ast/SDLWriter) // com.apollographql.apollo.ast/GQLUnionTypeExtension.writeInternal|writeInternal(com.apollographql.apollo.ast.SDLWriter){}[0]
 }
 
-final class com.apollographql.apollo.ast/GQLVariableDefinition : com.apollographql.apollo.ast/GQLHasDirectives, com.apollographql.apollo.ast/GQLNamed, com.apollographql.apollo.ast/GQLNode { // com.apollographql.apollo.ast/GQLVariableDefinition|null[0]
+final class com.apollographql.apollo.ast/GQLVariableDefinition : com.apollographql.apollo.ast/GQLDescribed, com.apollographql.apollo.ast/GQLHasDirectives, com.apollographql.apollo.ast/GQLNamed, com.apollographql.apollo.ast/GQLNode { // com.apollographql.apollo.ast/GQLVariableDefinition|null[0]
     constructor <init>(com.apollographql.apollo.ast/SourceLocation? = ..., kotlin/String, com.apollographql.apollo.ast/GQLType, com.apollographql.apollo.ast/GQLValue?, kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>) // com.apollographql.apollo.ast/GQLVariableDefinition.<init>|<init>(com.apollographql.apollo.ast.SourceLocation?;kotlin.String;com.apollographql.apollo.ast.GQLType;com.apollographql.apollo.ast.GQLValue?;kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>){}[0]
+    constructor <init>(com.apollographql.apollo.ast/SourceLocation? = ..., kotlin/String, com.apollographql.apollo.ast/GQLType, com.apollographql.apollo.ast/GQLValue?, kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>, kotlin/String?) // com.apollographql.apollo.ast/GQLVariableDefinition.<init>|<init>(com.apollographql.apollo.ast.SourceLocation?;kotlin.String;com.apollographql.apollo.ast.GQLType;com.apollographql.apollo.ast.GQLValue?;kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>;kotlin.String?){}[0]
 
     final val children // com.apollographql.apollo.ast/GQLVariableDefinition.children|{}children[0]
         final fun <get-children>(): kotlin.collections/List<com.apollographql.apollo.ast/GQLNode> // com.apollographql.apollo.ast/GQLVariableDefinition.children.<get-children>|<get-children>(){}[0]
     final val defaultValue // com.apollographql.apollo.ast/GQLVariableDefinition.defaultValue|{}defaultValue[0]
         final fun <get-defaultValue>(): com.apollographql.apollo.ast/GQLValue? // com.apollographql.apollo.ast/GQLVariableDefinition.defaultValue.<get-defaultValue>|<get-defaultValue>(){}[0]
+    final val description // com.apollographql.apollo.ast/GQLVariableDefinition.description|{}description[0]
+        final fun <get-description>(): kotlin/String? // com.apollographql.apollo.ast/GQLVariableDefinition.description.<get-description>|<get-description>(){}[0]
     final val directives // com.apollographql.apollo.ast/GQLVariableDefinition.directives|{}directives[0]
         final fun <get-directives>(): kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective> // com.apollographql.apollo.ast/GQLVariableDefinition.directives.<get-directives>|<get-directives>(){}[0]
     final val name // com.apollographql.apollo.ast/GQLVariableDefinition.name|{}name[0]
@@ -1115,6 +1118,7 @@ final class com.apollographql.apollo.ast/GQLVariableDefinition : com.apollograph
         final fun <get-type>(): com.apollographql.apollo.ast/GQLType // com.apollographql.apollo.ast/GQLVariableDefinition.type.<get-type>|<get-type>(){}[0]
 
     final fun copy(com.apollographql.apollo.ast/SourceLocation? = ..., kotlin/String = ..., com.apollographql.apollo.ast/GQLType = ..., com.apollographql.apollo.ast/GQLValue? = ..., kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective> = ...): com.apollographql.apollo.ast/GQLVariableDefinition // com.apollographql.apollo.ast/GQLVariableDefinition.copy|copy(com.apollographql.apollo.ast.SourceLocation?;kotlin.String;com.apollographql.apollo.ast.GQLType;com.apollographql.apollo.ast.GQLValue?;kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>){}[0]
+    final fun copy(com.apollographql.apollo.ast/SourceLocation? = ..., kotlin/String = ..., com.apollographql.apollo.ast/GQLType = ..., com.apollographql.apollo.ast/GQLValue? = ..., kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective> = ..., kotlin/String? = ...): com.apollographql.apollo.ast/GQLVariableDefinition // com.apollographql.apollo.ast/GQLVariableDefinition.copy|copy(com.apollographql.apollo.ast.SourceLocation?;kotlin.String;com.apollographql.apollo.ast.GQLType;com.apollographql.apollo.ast.GQLValue?;kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>;kotlin.String?){}[0]
     final fun copyWithNewChildrenInternal(com.apollographql.apollo.ast/NodeContainer): com.apollographql.apollo.ast/GQLNode // com.apollographql.apollo.ast/GQLVariableDefinition.copyWithNewChildrenInternal|copyWithNewChildrenInternal(com.apollographql.apollo.ast.NodeContainer){}[0]
     final fun writeInternal(com.apollographql.apollo.ast/SDLWriter) // com.apollographql.apollo.ast/GQLVariableDefinition.writeInternal|writeInternal(com.apollographql.apollo.ast.SDLWriter){}[0]
 }
