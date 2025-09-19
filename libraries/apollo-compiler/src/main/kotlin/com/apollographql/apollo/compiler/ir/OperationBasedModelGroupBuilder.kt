@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler.ir
 
-import com.apollographql.apollo.ast.Catch
 import com.apollographql.apollo.ast.CatchTo
 import com.apollographql.apollo.ast.GQLField
 import com.apollographql.apollo.ast.GQLFragmentDefinition
@@ -11,10 +10,10 @@ import com.apollographql.apollo.ast.GQLNonNullType
 import com.apollographql.apollo.ast.GQLSelection
 import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.compiler.capitalizeFirstLetter
-import com.apollographql.apollo.compiler.lowerCamelCaseIgnoringNonLetters
 import com.apollographql.apollo.compiler.codegen.modelName
 import com.apollographql.apollo.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo.compiler.internal.escapeKotlinReservedWord
+import com.apollographql.apollo.compiler.lowerCamelCaseIgnoringNonLetters
 
 internal class OperationBasedModelGroupBuilder(
     private val schema: Schema,
@@ -45,7 +44,7 @@ internal class OperationBasedModelGroupBuilder(
     return field.toProperty() to field.toModelGroup()!!
   }
 
-  override fun buildFragmentInterface(fragmentName: String): IrModelGroup? {
+  override fun buildFragmentInterface(fragmentName: String, defaultCatchTo: CatchTo?): IrModelGroup? {
     return null
   }
 

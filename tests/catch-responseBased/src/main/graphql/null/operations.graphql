@@ -1,0 +1,19 @@
+query ProductThrow {
+  product @catch(to: THROW) {
+    price @catch(to: THROW)
+  }
+}
+
+query NullAndNonNull {
+  nonNull
+  nullable @catch(to: THROW)
+}
+
+fragment QueryDetails on Query {
+  nonNull @catch(to: NULL)
+  nullable @catch(to: NULL)
+}
+
+query Fragments {
+  ...QueryDetails
+}

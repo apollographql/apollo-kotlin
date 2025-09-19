@@ -326,13 +326,15 @@ internal class IrOperationsBuilder(
 
     val inferredVariables = inferFragmentVariables(this)
 
+    val defaultCatchTo = findCatchByDefault(schema)
     val interfaceModelGroup = builder.buildFragmentInterface(
-        fragmentName = name
+        fragmentName = name,
+        defaultCatchTo = defaultCatchTo
     )
 
     val (dataProperty, dataModelGroup) = builder.buildFragmentData(
         fragmentName = name,
-        defaultCatchTo = findCatchByDefault(schema)
+        defaultCatchTo = defaultCatchTo
     )
 
     // Add the root type to use from the fragment selections
@@ -550,6 +552,12 @@ internal class IrOperationsBuilder(
       check(fieldsWithSameResponseName.map { it.type }.distinctBy { it.pretty() }.size == 1)
 
       val first = fieldsWithSameResponseName.first()
+      if (defaultCatchTo != null) {
+        check(fieldsWithSameResponseName.map { it.catch }.distinct().size == 1) {
+          // TODO: move to a validation rule
+          "Merged field '${first.responseName} has different `@catch` directives"
+        }
+      }
       val childSelections = fieldsWithSameResponseName.flatMap { it.selections }
 
       val forceOptional = fieldsWithSameResponseName.any {
