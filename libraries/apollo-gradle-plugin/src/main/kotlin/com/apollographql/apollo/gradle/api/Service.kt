@@ -844,7 +844,7 @@ interface Service {
     /**
      * Connects the generated sources to the given Android variant.
      */
-    @Deprecated("use connectToAndroidComponent() instead", ReplaceWith("connectToAndroidComponent(variant)"))
+    @Deprecated("use connectToAndroidComponent() instead", ReplaceWith("connectToAndroidComponent(variant, true)"))
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     fun connectToAndroidVariant(variant: Any)
 
