@@ -70,12 +70,10 @@ configurations.compileOnly.get().dependencies.removeIf {
 configurations.compileClasspath.get().resolutionStrategy {
   eachDependency {
     val kgp = libs.kgp.compile.get()
-    println("requested.group=${requested.group}, requested.name=${requested.name}")
     if (requested.group == kgp.group && requested.name == kgp.name) {
       /**
        * Use our declared KGP version
        */
-      println("use version ${kgp.version}")
       useVersion(kgp.version!!)
     }
   }
