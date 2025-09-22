@@ -17,6 +17,7 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         includeGroup("com.android.databinding")
         includeGroup("com.android.lint")
         includeGroup("com.google.testing.platform")
+        includeGroup("com.android.kotlin.multiplatform.library")
         /*
          * The com.android.tools groupId is verbose because we don't want to clash with com.android.tools:r8 in the raw repository
          */

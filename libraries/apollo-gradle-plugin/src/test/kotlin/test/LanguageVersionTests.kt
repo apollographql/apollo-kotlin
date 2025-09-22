@@ -7,17 +7,20 @@ import org.junit.Assert
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import util.TestUtils
-import util.disableIsolatedProjects
+import util.TestUtils.setVersionsUnderTest
+import util.agp8_kgp1_9
 import util.generatedSource
 import java.io.File
 import kotlin.test.assertEquals
 
 class LanguageVersionTests {
+  private val versionsUnderTest = agp8_kgp1_9
+  private val gradleVersion = versionsUnderTest.gradle
+
   @Test
   fun `compiling with 1_5 features with Kotlin 1_5 is working`() {
     withProject(kotlinLanguageVersion = "1.5", apolloLanguageVersion = "1.5") { dir ->
-      dir.disableIsolatedProjects() // old KGP versions do not support isolated projects
-      TestUtils.executeGradleWithVersion(dir, "8.10", ":assemble").apply {
+      TestUtils.executeGradleWithVersion(dir, gradleVersion, ":assemble").apply {
         assertEquals(TaskOutcome.SUCCESS, task(":assemble")!!.outcome)
       }
     }
@@ -27,7 +30,7 @@ class LanguageVersionTests {
   fun `compiling with 1_5 features with Kotlin 1_4 is not working`() {
     withProject(kotlinLanguageVersion = "1.4", apolloLanguageVersion = "1.5") { dir ->
       try {
-        TestUtils.executeGradleWithVersion(dir, "8.10", ":assemble")
+        TestUtils.executeGradleWithVersion(dir, gradleVersion, ":assemble")
         Assert.fail("Compiling with incompatible languageVersion should fail")
       } catch (e: UnexpectedBuildFailure) {
         Truth.assertThat(e.message).contains("The feature \"sealed interfaces\" is only available since language version 1.5")
@@ -39,7 +42,7 @@ class LanguageVersionTests {
   fun `using bogus languageVersion fails`() {
     withProject(kotlinLanguageVersion = "1.5", apolloLanguageVersion = "3.14") { dir ->
       try {
-        TestUtils.executeGradleWithVersion(dir, "8.10", ":assemble")
+        TestUtils.executeGradleWithVersion(dir, gradleVersion, ":assemble")
         Assert.fail("Compiling with incompatible languageVersion should fail")
       } catch (e: UnexpectedBuildFailure) {
         Truth.assertThat(e.message).contains("languageVersion '3.14' is not supported")
@@ -51,7 +54,7 @@ class LanguageVersionTests {
   fun `compiling with 1_9 features generates entries in enums`() {
     withProject(apolloLanguageVersion = "1.9", graphqlPath = "githunt") { dir ->
 
-      TestUtils.executeGradleWithVersion(dir, "8.10", ":generateApolloSources").apply {
+      TestUtils.executeGradleWithVersion(dir, gradleVersion, ":generateApolloSources").apply {
         assertEquals(TaskOutcome.SUCCESS, task(":generateApolloSources")!!.outcome)
       }
       assertTrue(dir.generatedSource("com/example/type/FeedType.kt").readText().contains("entries.find"))
@@ -62,7 +65,7 @@ class LanguageVersionTests {
   fun `compiling with 1_5 features generates values in enums`() {
     withProject(apolloLanguageVersion = "1.5", graphqlPath = "githunt") { dir ->
 
-      TestUtils.executeGradleWithVersion(dir, "8.10", ":generateApolloSources").apply {
+      TestUtils.executeGradleWithVersion(dir, gradleVersion, ":generateApolloSources").apply {
         assertEquals(TaskOutcome.SUCCESS, task(":generateApolloSources")!!.outcome)
       }
       assertTrue(dir.generatedSource("com/example/type/FeedType.kt").readText().contains("values().find"))
@@ -77,6 +80,7 @@ class LanguageVersionTests {
       block: (File) -> Unit,
   ) {
     TestUtils.withTestProject("language-version") { dir ->
+      setVersionsUnderTest(dir, versionsUnderTest)
       dir.resolve("build.gradle.kts").appendText(
           getConfiguration(
               kotlinLanguageVersion = kotlinLanguageVersion,
@@ -106,7 +110,7 @@ class LanguageVersionTests {
       """.trimIndent()
 
     val apolloConfiguration = """
-      configure<ApolloExtension> {
+      apollo {
         service("service") {
           packageNamesFromFilePaths()
           codegenModels.set("responseBased")

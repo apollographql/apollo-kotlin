@@ -7,7 +7,13 @@ import util.replaceInText
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert
 import org.junit.Test
+import util.TestUtils.setVersionsUnderTest
+import util.TestUtils.withTestProject
+import util.VersionsUnderTest
+import util.agp8_13_kgp_2_2_20
+import util.agp8_kgp1_9
 import java.io.File
+import kotlin.test.assertEquals
 
 class KotlinJVMProjectTests {
   @Test
@@ -22,34 +28,28 @@ class KotlinJVMProjectTests {
     }
   }
 
-  @Test
-  fun `non-android-kotlin builds a jar`() {
-    val apolloConfiguration = """
-      apollo {
-        service("service") {
-          packageNamesFromFilePaths()
-        }
-      }
-    """.trimIndent()
-    TestUtils.withProject(usesKotlinDsl = false,
-        apolloConfiguration = apolloConfiguration,
-        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)) { dir ->
+  fun jvmLibrary(versionsUnderTest: VersionsUnderTest?) {
+    withTestProject("jvm-library") { dir ->
+      setVersionsUnderTest(dir, versionsUnderTest)
 
-      val source = TestUtils.fixturesDirectory()
-      File(source, "kotlin").copyRecursively(File(dir, "src/main/kotlin"))
-
-      TestUtils.executeTask("build", dir)
-
-      Assert.assertTrue(File(dir, "build/classes/kotlin/main/com/example/DroidDetailsQuery.class").isFile)
-      Assert.assertTrue(File(dir, "build/classes/kotlin/main/com/example/Main.class").isFile)
-      Assert.assertTrue(dir.generatedSource("com/example/DroidDetailsQuery.kt").isFile)
-      Assert.assertTrue(File(dir, "build/libs/testProject.jar").isFile)
+      val result = TestUtils.executeGradleWithVersion(dir, versionsUnderTest?.gradle, ":build")
+      assertEquals(TaskOutcome.SUCCESS, result.task(":build")?.outcome)
+      Assert.assertTrue(dir.generatedSource("com/example/GetFooQuery.kt").isFile)
     }
   }
 
   @Test
+  fun jvmLibrary() = jvmLibrary(null)
+
+  @Test
+  fun jvmLibrary_1_9_0() = jvmLibrary(agp8_kgp1_9)
+
+  @Test
+  fun jvmLibrary_2_2_20() = jvmLibrary(agp8_13_kgp_2_2_20)
+
+  @Test
   fun `generated models can be added to all source sets`() {
-    TestUtils.withTestProject("kotlinJvmSourceSets") { dir ->
+    withTestProject("kotlinJvmSourceSets") { dir ->
       // Order is important as compileTestKotlin depends on compileKotlin
       TestUtils.executeTaskAndAssertSuccess(":compileKotlin", dir)
       TestUtils.executeTaskAndAssertSuccess(":compileTestKotlin", dir)

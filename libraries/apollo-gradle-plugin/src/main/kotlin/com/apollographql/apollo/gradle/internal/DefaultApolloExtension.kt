@@ -1,5 +1,10 @@
+// For Agp8
+@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE", "DEPRECATION")
+
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.AgpCompat
+import com.apollographql.apollo.ComponentFilter
 import com.apollographql.apollo.gradle.api.ApolloDependencies
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
@@ -22,6 +27,10 @@ import com.apollographql.apollo.gradle.task.registerApolloGenerateProjectModelTa
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesFromIrTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloRegisterOperationsTask
+import com.apollographql.com.apollographql.apollo.Agp8
+import com.apollographql.com.apollographql.apollo.Agp8Component
+import com.apollographql.com.apollographql.apollo.Agp9
+import com.apollographql.com.apollographql.apollo.Agp9Component
 import gratatouille.wiring.capitalizeFirstLetter
 import org.gradle.api.Action
 import org.gradle.api.Project
@@ -34,7 +43,7 @@ import org.gradle.api.attributes.Usage
 import org.gradle.api.component.AdhocComponentWithVariants
 import org.gradle.api.component.SoftwareComponent
 import org.gradle.api.component.SoftwareComponentFactory
-import org.gradle.api.file.Directory
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.Property
@@ -60,6 +69,30 @@ abstract class DefaultApolloExtension(
       project.components.add(it)
     }
   }
+
+  /**
+   * Needs to be lazy because we don't know the order in which the plugins are going to be applied
+   */
+  internal val agpOrNull: AgpCompat? by lazy {
+    val androidComponents = project.extensions.findByName("androidComponents")
+    if (androidComponents != null) {
+      val agpVersion = agpVersion()
+      val major = agpVersion.split('.').get(0).toIntOrNull()
+      check(major != null) {
+        "Apollo: unrecognized AGP version: $agpVersion"
+      }
+      if (major >= 9) {
+        Agp9(agpVersion, androidComponents, project.extensions.findByName("android"), project.extensions.findByName("kotlin"))
+      } else {
+        Agp8(agpVersion, project.extensions.findByName("android") ?: error("No 'android' extension found. If you're applying `com.android.kotlin.multiplatform.library`, Apollo only supports it in conjunction with AGP9."))
+      }
+    } else {
+      null
+    }
+  }
+
+  internal val agp
+    get() = agpOrNull ?: error("Apollo: androidComponents extension not found, is the Android Gradle Plugin applied?")
 
   internal fun getServiceInfos(project: Project): List<ApolloGradleToolingModel.ServiceInfo> = services.map { service ->
     DefaultServiceInfo(
@@ -201,10 +234,10 @@ abstract class DefaultApolloExtension(
 
         // Telemetry
         gradleVersion = project.provider { project.gradle.gradleVersion },
-        androidMinSdk = project.provider { project.androidExtension?.minSdk },
-        androidTargetSdk = project.provider { project.androidExtension?.targetSdk },
-        androidCompileSdk = project.provider { project.androidExtension?.compileSdkVersion },
-        androidAgpVersion = project.provider { project.androidExtension?.pluginVersion },
+        androidMinSdk = project.provider { agpOrNull?.minSdk() },
+        androidTargetSdk = project.provider { agpOrNull?.targetSdk() },
+        androidCompileSdk = project.provider { agpOrNull?.compileSdk() },
+        androidAgpVersion = project.provider { agpOrNull?.version },
         apolloGenerateSourcesDuringGradleSync = generateSourcesDuringGradleSync,
         apolloLinkSqlite = linkSqlite,
         usedServiceOptions = project.provider { services.flatMap { it.telemetryUsedOptions() }.toSet() }
@@ -218,7 +251,9 @@ abstract class DefaultApolloExtension(
 
   private fun checkForLegacyJsTarget() {
     val kotlin = project.extensions.findByName("kotlin") as? KotlinMultiplatformExtension
-    val hasLegacyJsTarget = kotlin?.targets?.any { target -> target is KotlinJsTarget && target.irTarget == null } == true
+    val hasLegacyJsTarget = kotlin?.targets?.any { target ->
+      target is KotlinJsTarget && target.irTarget == null
+    } == true
     check(!hasLegacyJsTarget) {
       "Apollo: LEGACY js target is not supported by Apollo, please use IR."
     }
@@ -683,9 +718,11 @@ abstract class DefaultApolloExtension(
     }
     val directoryConnection = DefaultDirectoryConnection(
         project = project,
+        agp = agpOrNull,
         task = sourcesBaseTaskProvider,
         outputDir = sourcesBaseTaskProvider.flatMap { it.outputDirectory() },
-        hardCodedOutputDir = outputDir(project, service)
+        hardCodedOutputDir = outputDir(project, service),
+        wiredWith = { it.outputDirectory() }
     )
 
     if (project.hasKotlinPlugin()) {
@@ -733,11 +770,13 @@ abstract class DefaultApolloExtension(
     if (dataBuildersSourcesBaseTaskProvider != null) {
       val dataBuildersDirectoryConnection = DefaultDirectoryConnection(
           project = project,
+          agp = agpOrNull,
           task = dataBuildersSourcesBaseTaskProvider,
           outputDir = dataBuildersSourcesBaseTaskProvider.flatMap {
             it.dataBuildersOutputDirectory()
           },
-          hardCodedOutputDir = dataBuildersOutputDir(project, service)
+          hardCodedOutputDir = dataBuildersOutputDir(project, service),
+          wiredWith = { it.dataBuildersOutputDirectory() }
       )
 
       if (service.dataBuildersOutputDirAction == null) {
@@ -768,8 +807,8 @@ abstract class DefaultApolloExtension(
         connection.connectToKotlinSourceSet("commonMain")
       }
 
-      project.androidExtension != null -> {
-        connection.connectToAllAndroidVariants()
+      agpOrNull != null -> {
+        connection.connectToAndroidVariants(project.extensions.findByName("kotlin") != null)
       }
 
       project.kotlinProjectExtension != null -> {
@@ -790,8 +829,8 @@ abstract class DefaultApolloExtension(
         connection.connectToKotlinSourceSet("commonTest")
       }
 
-      project.androidExtension != null -> {
-        connectToAllAndroidTestVariants(project, connection.outputDir, connection.task)
+      agpOrNull != null -> {
+        connection.connectToAndroidTestComponents(project.extensions.findByName("kotlin") != null)
       }
 
       project.kotlinProjectExtension != null -> {
@@ -872,17 +911,23 @@ abstract class DefaultApolloExtension(
           """.trimIndent()
     }
 
-    AndroidProject.onEachVariant(project, true) { variant ->
-      val name = "${variant.name}${nameSuffix.capitalizeFirstLetter()}"
+    agp.onComponent(ComponentFilter.All) { component ->
+      val name = "${component.name}${nameSuffix.capitalizeFirstLetter()}"
 
       service(name) { service ->
         action.execute(service)
 
-        variant.sourceSets.forEach { sourceProvider ->
-          service.srcDir("src/${sourceProvider.name}/graphql/$sourceFolder")
+        if (component is Agp8Component) {
+          component.sourceSets.forEach {
+            service.srcDir("src/${it}/graphql/$sourceFolder")
+          }
+        } else if (component is Agp9Component) {
+          component.graphQLDirectories.forEach {
+            service.srcDir(it)
+          }
         }
         (service as DefaultService).outputDirAction = Action<Service.DirectoryConnection> { connection ->
-          connection.connectToAndroidVariant(variant.wrapped)
+          connection.connectToAndroidComponent(component.wrappedComponent, project.extensions.findByName("kotlin") != null)
         }
       }
     }
@@ -920,7 +965,7 @@ abstract class DefaultApolloExtension(
 }
 
 
-private fun Task.outputDirectory(): Provider<Directory> {
+private fun Task.outputDirectory(): DirectoryProperty {
   return when (this) {
     is ApolloGenerateSourcesTask -> this.outputDirectory
     is ApolloGenerateSourcesFromIrTask -> this.outputDirectory
@@ -936,7 +981,7 @@ private fun Task.operationManifest(): Provider<RegularFile> {
   }
 }
 
-private fun Task.dataBuildersOutputDirectory(): Provider<Directory> {
+private fun Task.dataBuildersOutputDirectory(): DirectoryProperty {
   return when (this) {
     is ApolloGenerateSourcesTask -> this.dataBuildersOutputDirectory
     is ApolloGenerateDataBuildersSourcesTask -> this.outputDirectory

@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("com.google.devtools.ksp")
@@ -21,14 +22,78 @@ gratatouille {
   pluginMarker("com.apollographql.apollo")
 }
 
+val agpCompat = kotlin.target.compilations.create("agp-compat")
+
+mapOf(
+    "8" to setOf(libs.android.plugin8),
+    "9" to setOf(libs.android.plugin9, libs.kotlin.plugin)
+).forEach {
+  val compilation = kotlin.target.compilations.create("agp-${it.key}")
+
+  compilation.associateWith(agpCompat)
+  kotlin.target.compilations.getByName("main").associateWith(compilation)
+
+  tasks.jar {
+    from(compilation.output.classesDirs)
+  }
+  dependencies {
+    add(compilation.compileOnlyConfigurationName, project(":apollo-annotations"))
+    it.value.forEach {
+      add(compilation.compileOnlyConfigurationName, it)
+    }
+    // See https://issuetracker.google.com/issues/445209309
+    add(compilation.compileOnlyConfigurationName, libs.gradle.api.min)
+  }
+}
+
+tasks.jar.configure {
+  from(agpCompat.output.classesDirs)
+}
+
+/**
+ * associateWith() pulls the secondary compilations into the main dependencies,
+ * which we don't want.
+ *
+ * An alternative would be to not use `associateWith()` but that fails in the IDE,
+ * probably because there is no way to set `AbstractKotlinCompile.friendSourceSets`
+ * from public API.
+ */
+configurations.compileOnly.get().dependencies.removeIf {
+  when {
+    it is ExternalDependency && it.group == "com.android.tools.build" && it.name == "gradle" -> true
+    else -> false
+  }
+}
+/**
+ * Also force our own version of KGP
+ */
+configurations.compileClasspath.get().resolutionStrategy {
+  eachDependency {
+    val kgp = libs.kgp.compile.get()
+    println("requested.group=${requested.group}, requested.name=${requested.name}")
+    if (requested.group == kgp.group && requested.name == kgp.name) {
+      /**
+       * Use our declared KGP version
+       */
+      println("use version ${kgp.version}")
+      useVersion(kgp.version!!)
+    }
+  }
+}
+
+kotlin.target.compilations.get("main").apply {
+  associateWith(agpCompat)
+}
+
 dependencies {
   gratatouille(project(":apollo-gradle-plugin-tasks"))
 
-  compileOnly(libs.gradle.api.min)
-  compileOnly(libs.kotlin.plugin.min)
-  compileOnly(libs.android.plugin.min)
+  add(agpCompat.compileOnlyConfigurationName, libs.gradle.api.min)
+  add(agpCompat.compileOnlyConfigurationName, project(":apollo-annotations"))
 
   compileOnly(libs.gradle.api.min)
+  compileOnly(libs.kgp.compile)
+
   implementation(project(":apollo-annotations"))
   implementation(libs.gratatouille.wiring.runtime)
 
@@ -41,13 +106,9 @@ dependencies {
   testImplementation(libs.apollo.execution)
   testImplementation(libs.apollo.execution.http4k)
   testImplementation(gradleTestKit())
-
   testImplementation(platform(libs.http4k.bom.get()))
   testImplementation(libs.http4k.core)
   testImplementation(libs.http4k.server.jetty)
-  testImplementation(libs.slf4j.nop.get().toString()) {
-    because("jetty uses SL4F")
-  }
   lintChecks(libs.androidx.lint.rules)
 }
 
@@ -86,6 +147,7 @@ val publishDependencies = tasks.register("publishDependencies") {
   dependsOn(":apollo-gradle-plugin-tasks:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-tooling:publishAllPublicationsToPluginTestRepository")
 }
+
 
 tasks.withType<Test> {
   dependsOn(publishDependencies)
