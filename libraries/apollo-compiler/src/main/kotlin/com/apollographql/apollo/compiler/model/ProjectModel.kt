@@ -10,6 +10,10 @@ import java.io.File
 @Serializable
 class ProjectModel(
     val serviceNames: Set<String>,
+    /**
+     * Absolute paths to the Apollo Gradle task dependencies.
+     */
+    val apolloTasksDependencies: Set<String>,
 )
 
 @ApolloInternal
