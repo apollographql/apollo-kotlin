@@ -15,7 +15,9 @@ apolloLibrary(
 )
 
 gratatouille {
-  codeGeneration()
+  codeGeneration {
+    addDependencies = false
+  }
   pluginMarker("com.apollographql.apollo")
 }
 
@@ -28,6 +30,8 @@ dependencies {
 
   compileOnly(libs.gradle.api.min)
   implementation(project(":apollo-annotations"))
+  implementation(libs.gratatouille.wiring.runtime)
+
   testImplementation(project(":apollo-ast"))
   testImplementation(libs.junit)
   testImplementation(libs.truth)

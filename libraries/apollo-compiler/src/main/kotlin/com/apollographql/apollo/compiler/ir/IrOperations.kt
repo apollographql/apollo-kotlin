@@ -348,10 +348,11 @@ data class IrModelGroup(
 data class IrVariable(
     val name: String,
     val type: IrType,
+    val description: String?,
     /**
      * Used in `Operation.serializeVariables`
      */
-    val defaultValue: IrValue?
+    val defaultValue: IrValue?,
 )
 
 private val json = Json { classDiscriminator = "#class" }

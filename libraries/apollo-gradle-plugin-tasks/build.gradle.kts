@@ -16,26 +16,17 @@ dependencies {
   implementation(project(":apollo-compiler"))
   implementation(project(":apollo-tooling"))
   implementation(project(":apollo-ast"))
+  implementation(libs.gratatouille.tasks.runtime)
   implementation(libs.asm)
   implementation(libs.kotlinx.serialization.json)
 }
 
 gratatouille {
   codeGeneration {
-    /**
-     * Workaround for https://github.com/GradleUp/gratatouille/pull/52
-     */
-    configurations.configureEach {
-      if (name == "gratatouilleApiElements") {
-        artifacts.configureEach {
-          this as ConfigurablePublishArtifact
-          if (extension.isNullOrEmpty()) {
-            extension = "zip"
-          }
-        }
-      }
+    addDependencies = false
+    classLoaderIsolation {
+      configurationName = "apolloTasks"
     }
-    classLoaderIsolation()
   }
 }
 

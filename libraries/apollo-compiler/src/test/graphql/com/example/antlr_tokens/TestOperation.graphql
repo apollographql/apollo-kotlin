@@ -1,6 +1,14 @@
 # A query that contains fields named as GraphQL keywords as well as a multiline string to make sure the parser
 # handles them correctly
-query TestQuery($operation: String) {
+"""
+The test query.
+"""
+query TestQuery(
+  """
+  The operation to perform.
+  """
+  $operation: String
+) {
   typeWithGraphQLKeywords {
     on
     null(fragment: $operation)

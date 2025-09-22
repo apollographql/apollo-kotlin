@@ -55,7 +55,6 @@ import com.apollographql.apollo.ast.GQLVariableDefinition
 import com.apollographql.apollo.ast.GQLVariableValue
 import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.SourceLocation
-import kotlin.math.exp
 
 internal class Parser(
     src: String,
@@ -358,6 +357,7 @@ internal class Parser(
   }
 
   private fun parseVariableDefinition(): GQLVariableDefinition {
+    val description = expectOptionalToken<Token.String>()?.value
     val start = token
     expectToken<Token.Dollar>()
     val name = parseName()
@@ -374,7 +374,8 @@ internal class Parser(
         name = name,
         type = type,
         defaultValue = defaultValue,
-        directives = directives
+        directives = directives,
+        description = description,
     )
   }
 

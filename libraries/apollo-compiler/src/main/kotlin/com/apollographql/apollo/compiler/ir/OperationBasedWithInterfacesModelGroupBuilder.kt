@@ -59,7 +59,7 @@ internal class OperationBasedWithInterfacesModelGroupBuilder(
     return field.toProperty() to field.toModelGroup()!!
   }
 
-  override fun buildFragmentInterface(fragmentName: String): IrModelGroup? {
+  override fun buildFragmentInterface(fragmentName: String, defaultCatchTo: CatchTo?): IrModelGroup? {
     return null
   }
 

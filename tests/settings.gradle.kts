@@ -1,6 +1,6 @@
 plugins {
   id("com.gradle.develocity") version "4.2" // sync with libraries.toml
-  id("com.gradle.common-custom-user-data-gradle-plugin") version "2.3"
+  id("com.gradle.common-custom-user-data-gradle-plugin") version "2.4.0"
   id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
@@ -11,6 +11,7 @@ listOf(
     "browser-tests",
     "cache-variables-arguments",
     "catch",
+    "catch-responseBased",
     "compiler-plugins/add-field",
     "compiler-plugins/app",
     "compiler-plugins/capitalize-enum-values",
