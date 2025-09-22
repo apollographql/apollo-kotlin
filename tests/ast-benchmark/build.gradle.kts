@@ -3,7 +3,9 @@ plugins {
   id("org.jetbrains.kotlinx.benchmark")
 }
 
-apolloTest()
+apolloTest(
+    jvmTarget = 11 // for graphql-java 24
+)
 
 sourceSets.create("jmh")
 

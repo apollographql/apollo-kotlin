@@ -104,7 +104,7 @@ dependencies {
   testImplementation(libs.apollo.execution)
   testImplementation(libs.apollo.execution.http4k)
   testImplementation(gradleTestKit())
-  testImplementation(platform(libs.http4k.bom.get()))
+  testImplementation(platform(libs.http4k.bom))
   testImplementation(libs.http4k.core)
   testImplementation(libs.http4k.server.jetty)
   lintChecks(libs.androidx.lint.rules)

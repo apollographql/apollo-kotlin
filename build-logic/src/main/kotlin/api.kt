@@ -133,20 +133,23 @@ fun Project.apolloTest(
     withJvm: Boolean = true,
     appleTargets: Set<String> = setOf(hostTarget),
     kotlinCompilerOptions: KotlinCompilerOptions = KotlinCompilerOptions(),
+    jvmTarget: Int? = null
 ) {
   apolloTest(
-      kotlinCompilerOptions,
-      defaultTargets(withJvm = withJvm, withJs = withJs, withLinux = false, withAndroid = false, withWasm = false, appleTargets = appleTargets),
+      kotlinCompilerOptions = kotlinCompilerOptions,
+      jvmTarget = jvmTarget,
+      block = defaultTargets(withJvm = withJvm, withJs = withJs, withLinux = false, withAndroid = false, withWasm = false, appleTargets = appleTargets),
   )
 }
 
 fun Project.apolloTest(
     kotlinCompilerOptions: KotlinCompilerOptions = KotlinCompilerOptions(),
+    jvmTarget: Int? = null,
     block: KotlinMultiplatformExtension.() -> Unit,
 ) {
   commonSetup()
   configureJavaAndKotlinCompilers(
-      null,
+      jvmTarget,
       kotlinCompilerOptions,
       listOf(
           "kotlin.RequiresOptIn",

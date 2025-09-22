@@ -66,7 +66,6 @@ listOf(
     "outofbounds",
     "platform-api",
     "runtime",
-    "rxjava",
     "sample-server",
     "scalar-adapters",
     "schema-changes",

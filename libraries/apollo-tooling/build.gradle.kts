@@ -22,7 +22,7 @@ dependencies {
 
   implementation(project(":apollo-ast"))
 
-  apolloPublished.dependencies.add(libs.apollo.runtime.published.get())
+  add(apolloPublished.name, libs.apollo.runtime.published)
   implementation(libs.okhttp)
   implementation(libs.kotlinx.serialization.json)
 

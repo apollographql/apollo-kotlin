@@ -147,7 +147,6 @@ public synthetic class com/apollographql/apollo/tooling/model/TelemetryData$$ser
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/tooling/model/TelemetryData;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/tooling/model/TelemetryData$Companion {

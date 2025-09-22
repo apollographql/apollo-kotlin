@@ -12,6 +12,7 @@ dependencies {
   implementation(libs.guava.jre)
   implementation(libs.androidx.annotation)
   implementation(libs.jetbrains.annotations)
+  implementation(libs.jsr305)
 
   testImplementation(libs.junit)
 }

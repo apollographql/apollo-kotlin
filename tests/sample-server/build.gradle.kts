@@ -14,7 +14,7 @@ dependencies {
   implementation(libs.atomicfu.library)
   implementation(libs.apollo.execution)
 
-  implementation(platform(libs.http4k.bom.get()))
+  implementation(platform(libs.http4k.bom))
   implementation(libs.http4k.core)
   implementation(libs.http4k.server.jetty)
   implementation(libs.slf4j.nop.get().toString()) {

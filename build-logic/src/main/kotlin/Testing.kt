@@ -51,7 +51,7 @@ private fun Project.addTestDependencies() {
         sourceSets.findByName("androidInstrumentedTest")?.apply {
           dependencies {
             implementation("org.jetbrains.kotlin:kotlin-test:${getKotlinPluginVersion()}")
-            implementation(getCatalogLib("android.test.runner"))
+            implementation(getCatalogLib("androidx.test.runner"))
           }
         }
       }

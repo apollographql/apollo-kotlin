@@ -2,8 +2,8 @@ package com.apollographql.apollo.sample.server
 
 import com.apollographql.apollo.sample.server.graphql.SubscriptionRoot
 import com.apollographql.apollo.api.ExecutionContext
-import com.apollographql.execution.ExecutableSchema
-import com.apollographql.execution.parseAsGraphQLRequest
+import com.apollographql.apollo.execution.ExecutableSchema
+import com.apollographql.apollo.execution.parseAsGraphQLRequest
 import com.apollographql.execution.websocket.ConnectionInitAck
 import com.apollographql.execution.websocket.ConnectionInitError
 import com.apollographql.execution.websocket.ConnectionInitHandler
@@ -21,8 +21,8 @@ import okio.buffer
 import okio.source
 import okio.withLock
 import org.http4k.core.HttpHandler
-import org.http4k.core.MemoryBody
 import org.http4k.core.Method
+import org.http4k.core.PolyHandler
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.BAD_REQUEST
@@ -34,7 +34,6 @@ import org.http4k.routing.bind
 import org.http4k.routing.routes
 import org.http4k.routing.websockets
 import org.http4k.server.Jetty
-import org.http4k.server.PolyHandler
 import org.http4k.server.ServerConfig
 import org.http4k.server.asServer
 import org.http4k.websocket.Websocket
@@ -45,7 +44,7 @@ import org.http4k.websocket.WsStatus
 import sample.server.SampleserverExecutableSchemaBuilder
 import java.io.Closeable
 import java.time.Duration
-import org.http4k.routing.ws.bind as wsBind
+import org.http4k.routing.websocket.bind as wsBind
 
 fun ExecutableSchema(tag: String): ExecutableSchema {
   return SampleserverExecutableSchemaBuilder()
@@ -190,7 +189,7 @@ fun ApolloWebsocketHandler(executableSchema: ExecutableSchema, webSocketRegistry
 private fun WebSocketMessage.toWsMessage(): WsMessage {
   return when (this) {
     is WebSocketBinaryMessage -> {
-      WsMessage(MemoryBody(data))
+      WsMessage(data)
     }
 
     is WebSocketTextMessage -> {

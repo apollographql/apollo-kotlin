@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverExtension
 import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverGradleSubplugin
 
 plugins {
-  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.kotlin.jvm.latest)
   alias(libs.plugins.kotlin.sam)
   alias(libs.plugins.compat.patrouille)
 }
@@ -18,7 +18,13 @@ dependencies {
   compileOnly(gradleApi())
   compileOnly(libs.dgp)
 
+  // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution
+  // See https://github.com/gradle/gradle/issues/4741
   implementation(libs.okhttp)
+
+  /**
+   * Ktor for the websocket tests in integration tests
+   */
   implementation(libs.ktor.server.netty)
   implementation(libs.ktor.server.cors)
   implementation(libs.ktor.server.websockets)
@@ -29,8 +35,6 @@ dependencies {
   implementation(libs.apollo.execution.gradle.plugin)
   implementation(libs.compat.patrouille)
 
-  // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution
-  // See https://github.com/gradle/gradle/issues/4741
   implementation(libs.android.plugin)
   implementation(libs.librarian)
   implementation(libs.nmcp)
