@@ -1,29 +1,19 @@
 {
     "typeToFieldsToArguments": {
-        "StarshipsConnection": {
-        },
+        "StarshipsConnection": {},
         "Root": {
             "allStarships": [
                 "first"
             ]
         },
-        "StarshipsEdge": {
-        },
-        "Starship": {
-        },
-        "ID": {
-        },
-        "String": {
-        },
-        "StarshipPilotsConnection": {
-        },
-        "StarshipPilotsEdge": {
-        },
-        "Person": {
-        },
-        "Planet": {
-        },
-        "Node": {
-        }
+        "StarshipsEdge": {},
+        "Starship": {},
+        "ID": {},
+        "String": {},
+        "StarshipPilotsConnection": {},
+        "StarshipPilotsEdge": {},
+        "Person": {},
+        "Planet": {},
+        "Node": {}
     }
 }

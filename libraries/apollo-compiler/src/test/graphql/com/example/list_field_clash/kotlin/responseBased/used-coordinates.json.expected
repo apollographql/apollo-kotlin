@@ -1,12 +1,8 @@
 {
     "typeToFieldsToArguments": {
-        "PropertyAmenityCategory": {
-        },
-        "AmenityCategory": {
-        },
-        "String": {
-        },
-        "Query": {
-        }
+        "PropertyAmenityCategory": {},
+        "AmenityCategory": {},
+        "String": {},
+        "Query": {}
     }
 }

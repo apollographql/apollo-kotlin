@@ -1,16 +1,10 @@
 {
     "typeToFieldsToArguments": {
-        "Character": {
-        },
-        "String": {
-        },
-        "FriendsConnection": {
-        },
-        "Int": {
-        },
-        "Query": {
-        },
-        "Boolean": {
-        }
+        "Character": {},
+        "String": {},
+        "FriendsConnection": {},
+        "Int": {},
+        "Query": {},
+        "Boolean": {}
     }
 }

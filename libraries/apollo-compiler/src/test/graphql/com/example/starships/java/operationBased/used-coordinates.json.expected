@@ -1,17 +1,13 @@
 {
     "typeToFieldsToArguments": {
-        "Starship": {
-        },
+        "Starship": {},
         "Query": {
             "starship": [
                 "id"
             ]
         },
-        "ID": {
-        },
-        "String": {
-        },
-        "Float": {
-        }
+        "ID": {},
+        "String": {},
+        "Float": {}
     }
 }

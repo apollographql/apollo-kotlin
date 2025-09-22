@@ -1,15 +1,12 @@
 {
     "typeToFieldsToArguments": {
-        "User": {
-        },
+        "User": {},
         "Mutation": {
             "login": [
                 "input"
             ]
         },
-        "String": {
-        },
-        "Login": {
-        }
+        "String": {},
+        "Login": {}
     }
 }

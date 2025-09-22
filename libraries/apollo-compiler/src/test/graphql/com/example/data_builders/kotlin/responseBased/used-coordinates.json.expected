@@ -1,78 +1,49 @@
 {
     "typeToFieldsToArguments": {
         "Animal": {
-            "__typename": [
-            ],
-            "meow": [
-            ],
-            "woof": [
-            ]
+            "__typename": [],
+            "meow": [],
+            "woof": []
         },
         "Query": {
-            "animal": [
-            ],
-            "character": [
-            ],
-            "node": [
-            ]
+            "animal": [],
+            "character": [],
+            "node": []
         },
-        "String": {
-        },
+        "String": {},
         "Cat": {
-            "meow": [
-            ],
-            "__typename": [
-            ]
+            "meow": [],
+            "__typename": []
         },
         "Dog": {
-            "woof": [
-            ],
-            "__typename": [
-            ]
+            "woof": [],
+            "__typename": []
         },
         "Character": {
-            "__typename": [
-            ],
-            "id": [
-            ],
-            "name": [
-            ],
-            "homePlanet": [
-            ],
-            "primaryFunction": [
-            ]
+            "__typename": [],
+            "id": [],
+            "name": [],
+            "homePlanet": [],
+            "primaryFunction": []
         },
         "Human": {
-            "homePlanet": [
-            ],
-            "__typename": [
-            ],
-            "id": [
-            ],
-            "name": [
-            ]
+            "homePlanet": [],
+            "__typename": [],
+            "id": [],
+            "name": []
         },
         "Droid": {
-            "primaryFunction": [
-            ],
-            "__typename": [
-            ],
-            "id": [
-            ],
-            "name": [
-            ]
+            "primaryFunction": [],
+            "__typename": [],
+            "id": [],
+            "name": []
         },
-        "ID": {
-        },
+        "ID": {},
         "Node": {
-            "__typename": [
-            ],
-            "id": [
-            ],
-            "homePlanet": [
-            ],
-            "primaryFunction": [
-            ]
+            "__typename": [],
+            "id": [],
+            "homePlanet": [],
+            "primaryFunction": []
         }
     }
 }

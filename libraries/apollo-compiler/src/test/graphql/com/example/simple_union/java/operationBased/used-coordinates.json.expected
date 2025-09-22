@@ -1,14 +1,9 @@
 {
     "typeToFieldsToArguments": {
-        "Animal": {
-        },
-        "String": {
-        },
-        "Query": {
-        },
-        "Cat": {
-        },
-        "Dog": {
-        }
+        "Animal": {},
+        "String": {},
+        "Query": {},
+        "Cat": {},
+        "Dog": {}
     }
 }

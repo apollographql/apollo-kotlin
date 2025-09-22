@@ -1,18 +1,12 @@
 {
     "typeToFieldsToArguments": {
         "Review": {
-            "stars": [
-            ],
-            "commentary": [
-            ],
-            "listOfListOfString": [
-            ],
-            "listOfListOfEnum": [
-            ],
-            "listOfListOfCustom": [
-            ],
-            "listOfListOfObject": [
-            ]
+            "stars": [],
+            "commentary": [],
+            "listOfListOfString": [],
+            "listOfListOfEnum": [],
+            "listOfListOfCustom": [],
+            "listOfListOfObject": []
         },
         "Mutation": {
             "createReview": [
@@ -20,27 +14,17 @@
                 "review"
             ]
         },
-        "Int": {
-        },
-        "String": {
-        },
-        "Episode": {
-        },
-        "Date": {
-        },
+        "Int": {},
+        "String": {},
+        "Episode": {},
+        "Date": {},
         "Character": {
-            "name": [
-            ]
+            "name": []
         },
-        "ReviewInput": {
-        },
-        "colorInput": {
-        },
-        "Boolean": {
-        },
-        "Float": {
-        },
-        "ReviewRefInput": {
-        }
+        "ReviewInput": {},
+        "colorInput": {},
+        "Boolean": {},
+        "Float": {},
+        "ReviewRefInput": {}
     }
 }

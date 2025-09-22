@@ -137,7 +137,7 @@ kotlin-stdlib-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-js", 
 kotlin-stdlib-wasm-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-wasm-js", version.ref = "kotlin-plugin" }
 kotlinx-benchmark-runtime = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.14"
 kotlinx-benchmark = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin:0.4.12"
-kotlinx-browser = "org.jetbrains.kotlinx:kotlinx-browser:0.5.0"
+kotlinx-browser = "org.jetbrains.kotlinx:kotlinx-browser:0.3"
 androidx-benchmark-macro = "androidx.benchmark:benchmark-macro-junit4:1.4.1"
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }

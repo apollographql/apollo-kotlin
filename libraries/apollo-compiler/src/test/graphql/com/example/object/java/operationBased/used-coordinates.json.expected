@@ -1,10 +1,7 @@
 {
     "typeToFieldsToArguments": {
-        "Object": {
-        },
-        "Int": {
-        },
-        "Query": {
-        }
+        "Object": {},
+        "Int": {},
+        "Query": {}
     }
 }

@@ -10,16 +10,13 @@
                 "episode"
             ]
         },
-        "String": {
-        },
-        "Float": {
-        },
+        "String": {},
+        "Float": {},
         "Human": {
             "height": [
                 "unit"
             ]
         },
-        "Episode": {
-        }
+        "Episode": {}
     }
 }

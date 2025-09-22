@@ -1,22 +1,16 @@
 {
     "typeToFieldsToArguments": {
         "Character": {
-            "__typename": [
-            ],
-            "name": [
-            ]
+            "__typename": [],
+            "name": []
         },
         "Query": {
-            "hero": [
-            ]
+            "hero": []
         },
-        "String": {
-        },
+        "String": {},
         "Human": {
-            "__typename": [
-            ],
-            "name": [
-            ]
+            "__typename": [],
+            "name": []
         }
     }
 }

@@ -88,8 +88,10 @@ fun Project.apolloLibrary(
     allow("MIT")
     allow("CC0-1.0")
     allow("MIT-0")
+    // remove when https://github.com/apollographql/apollo-kotlin-execution/pull/64 is released
+    allowDependency("com.apollographql.execution", "apollo-execution-runtime", "0.1.1")
+    allowDependency("com.apollographql.execution", "apollo-execution-runtime-jvm", "0.1.1")
 
-    allowUrl("https://raw.githubusercontent.com/apollographql/apollo-kotlin-execution/main/LICENSE")
     allowUrl("https://raw.githubusercontent.com/apollographql/apollo-kotlin-mockserver/main/LICENSE")
     allowUrl("https://raw.githubusercontent.com/apollographql/apollo-kotlin/main/LICENSE")
     allowUrl("https://asm.ow2.io/license.html")

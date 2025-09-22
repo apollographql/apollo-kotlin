@@ -1,7 +1,6 @@
 {
     "typeToFieldsToArguments": {
-        "Int": {
-        },
+        "Int": {},
         "Query": {
             "nullableInt": [
                 "nullableInt",
@@ -20,11 +19,8 @@
                 "nonNullableInputWithDefault"
             ]
         },
-        "MyType": {
-        },
-        "String": {
-        },
-        "MyInput": {
-        }
+        "MyType": {},
+        "String": {},
+        "MyInput": {}
     }
 }

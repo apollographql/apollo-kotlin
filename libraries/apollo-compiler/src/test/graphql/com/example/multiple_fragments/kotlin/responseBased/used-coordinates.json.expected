@@ -1,14 +1,9 @@
 {
     "typeToFieldsToArguments": {
-        "A": {
-        },
-        "Node": {
-        },
-        "String": {
-        },
-        "Query": {
-        },
-        "ANode": {
-        }
+        "A": {},
+        "Node": {},
+        "String": {},
+        "Query": {},
+        "ANode": {}
     }
 }

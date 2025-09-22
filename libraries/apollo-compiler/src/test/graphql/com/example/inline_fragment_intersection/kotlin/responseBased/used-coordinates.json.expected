@@ -1,34 +1,19 @@
 {
     "typeToFieldsToArguments": {
-        "Anything": {
-        },
-        "String": {
-        },
-        "Being": {
-        },
-        "Float": {
-        },
-        "Boolean": {
-        },
-        "Race": {
-        },
-        "Query": {
-        },
-        "Human": {
-        },
-        "Wookie": {
-        },
-        "Droid": {
-        },
-        "Ship": {
-        },
-        "Character": {
-        },
-        "Alien": {
-        },
-        "AbstractWookie": {
-        },
-        "Thing": {
-        }
+        "Anything": {},
+        "String": {},
+        "Being": {},
+        "Float": {},
+        "Boolean": {},
+        "Race": {},
+        "Query": {},
+        "Human": {},
+        "Wookie": {},
+        "Droid": {},
+        "Ship": {},
+        "Character": {},
+        "Alien": {},
+        "AbstractWookie": {},
+        "Thing": {}
     }
 }

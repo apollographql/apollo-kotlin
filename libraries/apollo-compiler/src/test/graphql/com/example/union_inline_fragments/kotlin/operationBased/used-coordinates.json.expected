@@ -1,25 +1,17 @@
 {
     "typeToFieldsToArguments": {
-        "SearchResult": {
-        },
+        "SearchResult": {},
         "Query": {
             "search": [
                 "text"
             ]
         },
-        "ID": {
-        },
-        "String": {
-        },
-        "Character": {
-        },
-        "Episode": {
-        },
-        "Human": {
-        },
-        "Droid": {
-        },
-        "Starship": {
-        }
+        "ID": {},
+        "String": {},
+        "Character": {},
+        "Episode": {},
+        "Human": {},
+        "Droid": {},
+        "Starship": {}
     }
 }

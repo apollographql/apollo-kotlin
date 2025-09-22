@@ -8,6 +8,8 @@ import com.apollographql.apollo.compiler.internal.ApolloExecutableDocumentTransf
 import com.google.common.truth.Truth.assertThat
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
+import com.google.testing.junit.testparameterinjector.TestParameterValuesProvider
+import com.google.testing.junit.testparameterinjector.TestParameterValuesProvider.Context
 import okio.buffer
 import okio.source
 import org.junit.Test
@@ -16,7 +18,7 @@ import java.io.File
 
 @RunWith(TestParameterInjector::class)
 class TypenameTest(
-    @TestParameter(valuesProvider = GraphQLFileValuesProvider::class) private val graphQLFile: File,
+    @TestParameter(valuesProvider = ParametersProvider::class) private val graphQLFile: File,
     @TestParameter("always", "ifFragments", "ifAbstract", "ifPolymorphic") private val addTypename: String,
 ) {
   @Test
@@ -42,8 +44,8 @@ class TypenameTest(
     }
   }
 
-  class GraphQLFileValuesProvider : TestParameter.TestParameterValuesProvider {
-    override fun provideValues(): List<File> {
+  class ParametersProvider : TestParameterValuesProvider() {
+    override fun provideValues(context: Context?): List<File> {
       return File("src/test/typename/")
           .walk()
           .toList()

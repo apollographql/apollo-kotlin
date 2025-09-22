@@ -9,6 +9,8 @@ import com.apollographql.apollo.compiler.buildIrOptions
 import com.apollographql.apollo.compiler.toInputFiles
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
+import com.google.testing.junit.testparameterinjector.TestParameterValuesProvider
+import com.google.testing.junit.testparameterinjector.TestParameterValuesProvider.Context
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
@@ -18,8 +20,8 @@ import kotlin.test.assertFails
 @RunWith(TestParameterInjector::class)
 class ConditionalFragmentsTest {
 
-  class ParametersProvider : TestParameter.TestParameterValuesProvider {
-    override fun provideValues() = listOf("include.graphql", "skip.graphql", "defer.graphql")
+  class ParametersProvider : TestParameterValuesProvider() {
+    override fun provideValues(context: Context?) = listOf("include.graphql", "skip.graphql", "defer.graphql")
   }
 
   @Test

@@ -1,21 +1,15 @@
 {
     "typeToFieldsToArguments": {
-        "Character": {
-        },
-        "Boolean": {
-        },
+        "Character": {},
+        "Boolean": {},
         "Query": {
             "getBoolean": [
                 "booleanArg"
             ]
         },
-        "String": {
-        },
-        "ID": {
-        },
-        "Human": {
-        },
-        "Droid": {
-        }
+        "String": {},
+        "ID": {},
+        "Human": {},
+        "Droid": {}
     }
 }

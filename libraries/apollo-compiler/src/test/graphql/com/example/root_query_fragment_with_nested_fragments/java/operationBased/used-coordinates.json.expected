@@ -1,7 +1,6 @@
 {
     "typeToFieldsToArguments": {
-        "String": {
-        },
+        "String": {},
         "Query": {
             "droid": [
                 "id"
@@ -10,11 +9,8 @@
                 "id"
             ]
         },
-        "Character": {
-        },
-        "Droid": {
-        },
-        "Human": {
-        }
+        "Character": {},
+        "Droid": {},
+        "Human": {}
     }
 }

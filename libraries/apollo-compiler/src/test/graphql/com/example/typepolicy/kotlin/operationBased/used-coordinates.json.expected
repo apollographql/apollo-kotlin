@@ -1,20 +1,12 @@
 {
     "typeToFieldsToArguments": {
-        "A": {
-        },
-        "String": {
-        },
-        "ID": {
-        },
-        "Query": {
-        },
-        "InterfaceA": {
-        },
-        "UnionA": {
-        },
-        "B": {
-        },
-        "C": {
-        }
+        "A": {},
+        "String": {},
+        "ID": {},
+        "Query": {},
+        "InterfaceA": {},
+        "UnionA": {},
+        "B": {},
+        "C": {}
     }
 }

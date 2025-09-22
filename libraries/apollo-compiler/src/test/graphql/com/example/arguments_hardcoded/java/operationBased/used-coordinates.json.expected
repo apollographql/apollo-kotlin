@@ -1,7 +1,6 @@
 {
     "typeToFieldsToArguments": {
-        "Review": {
-        },
+        "Review": {},
         "Query": {
             "reviews": [
                 "episode",
@@ -18,9 +17,7 @@
                 "list"
             ]
         },
-        "Int": {
-        },
-        "String": {
-        }
+        "Int": {},
+        "String": {}
     }
 }
