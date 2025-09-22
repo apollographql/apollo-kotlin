@@ -13,10 +13,7 @@ import java.io.File
 object TestUtils {
   class Plugin(val artifact: String?, val id: String)
 
-  val androidApplicationPlugin = Plugin(id = "com.android.application", artifact = "libs.plugins.android.application")
-  val androidLibraryPlugin = Plugin(id = "com.android.library", artifact = "libs.plugins.android.library")
   val kotlinJvmPlugin = Plugin(id = "org.jetbrains.kotlin.jvm", artifact = "libs.plugins.kotlin.jvm")
-  val kotlinAndroidPlugin = Plugin(id = "org.jetbrains.kotlin.android", artifact = "libs.plugins.kotlin.android")
   val apolloPlugin = Plugin(id = "com.apollographql.apollo", artifact = "libs.plugins.apollo")
 
   fun <T> withDirectory(testDir: String? = null, block: (File) -> T): T {
@@ -34,7 +31,8 @@ object TestUtils {
       |org.gradle.jvmargs=-Xmx4g 
       |
       |org.gradle.unsafe.isolated-projects=true
-    """.trimMargin())
+    """.trimMargin()
+    )
 
     // dest is kept around for debug purposes. All test directories are removed
     // with the `cleanStaleTestProject` tasks before the next run
@@ -74,7 +72,8 @@ object TestUtils {
         java.toolchain {
           languageVersion.set(JavaLanguageVersion.of(11))
         }
-      """.trimIndent())
+      """.trimIndent()
+      )
 
       appendLine()
 
@@ -111,12 +110,14 @@ object TestUtils {
             |    }
             |  }
             |
-            """.trimMargin())
+            """.trimMargin()
+          )
         }
 
         append("""
             |}
-          """.trimMargin())
+          """.trimMargin()
+        )
       }
     }
 
@@ -170,26 +171,29 @@ object TestUtils {
   }
 
   fun executeGradleWithVersion(projectDir: File, gradleVersion: String?, vararg args: String): BuildResult {
-//    val output = System.out.writer()
-//    val error = System.err.writer()
-    val output = blackholeSink().buffer().outputStream().writer()
-    val error = blackholeSink().buffer().outputStream().writer()
+    val debug = false
 
     return GradleRunner.create()
-        .forwardStdOutput(output)
-        .forwardStdError(error)
-        .withProjectDir(projectDir)
-        /*
-         * Disable withDebug because it breaks with CC
-         * See https://github.com/gradle/gradle/issues/22765#issuecomment-1339427241
-         */
-        //.withDebug(true)
-        .withArguments("--stacktrace", *args)
         .apply {
+          if (debug) {
+            forwardStdOutput(System.out.writer())
+            forwardStdError(System.err.writer())
+          } else {
+            val bh = blackholeSink().buffer().outputStream().writer()
+            forwardStdOutput(bh)
+            forwardStdError(bh)
+          }
           if (gradleVersion != null) {
             withGradleVersion(gradleVersion)
           }
         }
+        .withProjectDir(projectDir)
+        /*
+         * Disable withDebug() because it breaks with CC
+         * See https://github.com/gradle/gradle/issues/22765#issuecomment-1339427241
+         */
+        //.withDebug(true)
+        .withArguments(*args)
         .build()
   }
 
@@ -208,16 +212,60 @@ object TestUtils {
     val result = executeTask(task, dir)
     Assert.assertEquals(TaskOutcome.SUCCESS, result.task(task)?.outcome)
   }
+
+  fun setVersionsUnderTest(dir: File, versionsUnderTest: VersionsUnderTest?) {
+    if (versionsUnderTest == null) {
+      return
+    }
+    dir.resolve("build.gradle.kts").apply {
+      writeText(
+          readText()
+              .replace("alias(libs.plugins.android.library)", "id(\"com.android.library\").version(\"${versionsUnderTest.agp}\")")
+              .replace("alias(libs.plugins.android.application)", "id(\"com.android.application\").version(\"${versionsUnderTest.agp}\")")
+              .replace("alias(libs.plugins.android.kmp.library)", "id(\"com.android.kotlin.multiplatform.library\").version(\"${versionsUnderTest.agp}\")")
+              .let {
+                // poor's man semver parsing because I don't want to add another dependency just for semver
+                if (versionsUnderTest.agp.startsWith("9")) {
+                  // AGP 9 wraps KGP, applying it is an error
+                  it.replace("alias(libs.plugins.kotlin.android)", "")
+                      .replace("alias(libs.plugins.kotlin.jvm)", "")
+                } else {
+                  it.replace("alias(libs.plugins.kotlin.android)", "id(\"org.jetbrains.kotlin.android\").version(\"${versionsUnderTest.kgp}\")")
+                      .replace("alias(libs.plugins.kotlin.jvm)", "id(\"org.jetbrains.kotlin.jvm\").version(\"${versionsUnderTest.kgp}\")")
+                }
+              }
+              .replace("alias(libs.plugins.kotlin.multiplatform)", "id(\"org.jetbrains.kotlin.multiplatform\").version(\"${versionsUnderTest.kgp}\")")
+      )
+    }
+    if (!versionsUnderTest.isolatedProjects) {
+      dir.disableIsolatedProjects()
+    }
+  }
+
 }
 
-fun File.generatedSource(path: String, serviceName: String = "service") = File(this, "build/generated/source/apollo/${serviceName}").resolve(path)
+/**
+ * A few versions to test with.
+ *
+ * We just can't test across all possible variations of different tools, especially
+ * because some of them have dependencies.
+ */
+val agp8_kgp1_9 = VersionsUnderTest("8.0.0", "1.9.0", "8.0", false)
+val agp8_13_0_versions = VersionsUnderTest("8.13.0", "2.1.0", "9.0.0", true)
+val agp8_13_kgp_2_2_20 = VersionsUnderTest("8.13.0", "2.2.20", "9.0.0", true)
+val agp9_versions = VersionsUnderTest("9.0.0-alpha05", "2.2.20", "9.0.0", true)
+
+class VersionsUnderTest(
+    val agp: String,
+    val kgp: String,
+    val gradle: String,
+    val isolatedProjects: Boolean
+)
+
+fun File.generatedSource(path: String, serviceName: String = "service") =
+  File(this, "build/generated/source/apollo/${serviceName}").resolve(path)
 
 fun File.replaceInText(oldValue: String, newValue: String) {
-  val text = readText()
-  writeText(text.replace(oldValue, newValue))
-}
-
-fun File.replaceInText(oldValue: Regex, newValue: String) {
   val text = readText()
   writeText(text.replace(oldValue, newValue))
 }

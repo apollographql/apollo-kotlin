@@ -2,7 +2,7 @@ import com.apollographql.apollo.gradle.api.ApolloExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  alias(libs.plugins.kotlin.jvm.min)
+  alias(libs.plugins.kotlin.jvm)
   alias(libs.plugins.apollo)
 }
 

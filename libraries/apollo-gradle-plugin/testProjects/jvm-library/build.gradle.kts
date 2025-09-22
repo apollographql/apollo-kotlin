@@ -1,8 +1,7 @@
-import com.android.build.gradle.BaseExtension
-
 plugins {
-  alias(libs.plugins.android.application)
+  alias(libs.plugins.kotlin.jvm)
   alias(libs.plugins.apollo)
+  alias(libs.plugins.compat.patrouille)
 }
 
 dependencies {
@@ -16,9 +15,7 @@ apollo {
   }
 }
 
-
-
-android {
-  compileSdk = libs.versions.android.sdkversion.compile.get().toInt()
-  namespace = "com.example"
+compatPatrouille {
+  java(17)
 }
+

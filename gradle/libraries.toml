@@ -1,12 +1,8 @@
 [versions]
 # The version we use by default to build the libs, in tests and benchmarks
-# Can be as high as IJ supports
-# Consult https://kotlinlang.org/docs/multiplatform-compatibility-guide.html#version-compatibility for compatibility with KGP
+# Can be as high as IJ supports.
+# See https://kotlinlang.org/docs/multiplatform-compatibility-guide.html#version-compatibility for compatibility with KGP
 android-plugin = "8.7.2"
-# The version we compile against
-android-plugin-min = "8.0.0"
-# The version used by the 'android-plugin-max' test
-android-plugin-max = "8.9.0"
 android-sdkversion-compile = "34"
 android-sdkversion-compilebenchmark = "34"
 android-sdkversion-min = "16"
@@ -14,7 +10,7 @@ android-sdkversion-compose-min = "21"
 android-sdkversion-benchmark-min = "24"
 android-sdkversion-target = "30"
 androidx-sqlite = "2.3.1"
-# This is used by the gradle integration tests to get the artifacts locally
+# This is used by the Gradle integration tests to get the artifacts locally
 apollo = "5.0.0-alpha.3-SNAPSHOT"
 apollo-execution = "0.1.0"
 apollo-normalizedcache-incubating = "1.0.0-alpha.4"
@@ -31,9 +27,7 @@ gratatouille-runtime = "0.1.2"
 javaPoet = "1.13.0"
 jetbrains-annotations = "24.0.1"
 junit = "4.13.2"
-kotlin-plugin-min = "1.9.0"
 kotlin-plugin = "2.1.21"
-kotlin-plugin-max = "2.1.21"
 kotlinx-coroutines = "1.9.0"
 kotlinx-datetime = "0.5.0"
 kotlinx-serialization-runtime = "1.6.2"
@@ -50,7 +44,9 @@ truth = "1.1.3"
 
 [libraries]
 android-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin" }
-android-plugin-min = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin-min" }
+android-plugin8 = { group = "com.android.tools.build", name = "gradle", version= "8.0.0" }
+android-plugin9 = { group = "com.android.tools.build", name = "gradle", version = "9.0.0-alpha05" }
+android-tools-common = { module = "com.android.tools:common", version = "31.0.0" }
 android-test-runner = { group = "androidx.test", name = "runner", version = "1.5.2" }
 androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
 androidx-activity = "androidx.activity:activity-ktx:1.7.2"
@@ -123,11 +119,8 @@ kotlin-compiletesting = { group = "dev.zacsweers.kctfork", name = "core", versio
 graphql-java = "com.graphql-java:graphql-java:20.4"
 # The main kotlin version for build-logic and Gradle tests
 kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin" }
-kotlin-plugin-annotations = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin-annotations", version.ref = "kotlin-plugin"}
+kotlin-plugin-annotations = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin-annotations", version.ref = "kotlin-plugin" }
 kotlin-plugin-compose = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin-plugin" }
-# For Gradle integration tests to make sure we stay compatible with 1.5.0
-kotlin-plugin-min = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin-min" }
-kotlin-plugin-max = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin-max" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" } # use same version as apiVersion
 kotlin-stdlib-common = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-common" } # use same version as apiVersion
 kotlin-stdlib-jvm = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib" } # use same version as apiVersion
@@ -136,7 +129,7 @@ kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit"
 # The Kotlin/JS standard library has an older version (2.0.20-release-360) than the compiler (2.1.0). Such a configuration is not supported.
 # Please, make sure that the standard library has the version in the range [2.1.0 .. 2.1.255]. Adjust your project's settings if necessary.
 kotlin-stdlib-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-js", version.ref = "kotlin-plugin" }
-kotlin-stdlib-wasm-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-wasm-js", version.ref = "kotlin-plugin"  }
+kotlin-stdlib-wasm-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-wasm-js", version.ref = "kotlin-plugin" }
 kotlinx-benchmark-runtime = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.8"
 kotlinx-benchmark = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin:0.4.12"
 kotlinx-browser = "org.jetbrains.kotlinx:kotlinx-browser:0.2"
@@ -151,7 +144,7 @@ kotlinx-serialization-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-runtime" }
 kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.16.3" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
-ktor-client-core = { group = "io.ktor", name= "ktor-client-core", version.ref = "ktor" }
+ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-curl = { group = "io.ktor", name = "ktor-client-curl", version.ref = "ktor" }
 ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
@@ -196,6 +189,7 @@ nmcp = "com.gradleup.nmcp:nmcp:1.0.4-SNAPSHOT-7663b69da8628aa2a8e73334af3fb05268
 slf4j-simple = "org.slf4j:slf4j-simple:2.0.13"
 slf4j-nop = "org.slf4j:slf4j-nop:2.0.13"
 licensee = "app.cash.licensee:licensee-gradle-plugin:1.12.0"
+kgp-compile = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
 
 [plugins]
 apollo = { id = "com.apollographql.apollo", version.ref = "apollo" }
@@ -204,12 +198,8 @@ compat-patrouille = { id = "com.gradleup.compat.patrouille", version.ref = "comp
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin" }
 kotlin-sam = { id = "org.jetbrains.kotlin.plugin.sam.with.receiver", version.ref = "kotlin-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin" }
-kotlin-android-min = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin-min" }
-kotlin-android-max = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin-max" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-plugin" }
-kotlin-jvm-min = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin-min" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-plugin" }
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
-android-application-max = { id = "com.android.application", version.ref = "android-plugin-max" }
 android-library = { id = "com.android.library", version.ref = "android-plugin" }
-grammarkit = { id = "org.jetbrains.grammarkit", version = "2022.3.2.2" }
+android-kmp-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-plugin"}

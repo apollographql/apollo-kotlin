@@ -1,133 +1,127 @@
 package test
 
-import com.apollographql.apollo.gradle.internal.DefaultApolloExtension.Companion.MIN_GRADLE_VERSION
-import com.google.common.truth.Truth
-import util.TestUtils
-import util.TestUtils.executeTaskAndAssertSuccess
-import util.TestUtils.withProject
-import util.TestUtils.withTestProject
-import util.generatedSource
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import util.disableIsolatedProjects
-import java.io.File
+import util.TestUtils
+import util.TestUtils.executeGradleWithVersion
+import util.TestUtils.executeTask
+import util.TestUtils.executeTaskAndAssertSuccess
+import util.TestUtils.setVersionsUnderTest
+import util.TestUtils.withTestProject
+import util.VersionsUnderTest
+import util.agp8_kgp1_9
+import util.agp8_13_0_versions
+import util.agp9_versions
+import util.generatedSource
 
 class AndroidProjectTests {
+  private fun androidLibrary(versionsUnderTest: VersionsUnderTest?) {
+    withTestProject("android-library") { dir ->
+      TestUtils.setVersionsUnderTest(dir, versionsUnderTest)
+      val result = executeGradleWithVersion(dir, versionsUnderTest?.gradle, "compileDebugKotlin")
+      assertEquals(TaskOutcome.SUCCESS, result.task(":compileDebugKotlin")!!.outcome)
+      assertTrue(dir.generatedSource("com/example/GetFooQuery.kt").isFile)
+    }
+  }
 
   @Test
-  fun `android library compiles`() {
-    withProject(apolloConfiguration = """
-      apollo {
-        service("service") {
-          packageNamesFromFilePaths()
+  fun androidLibrary() = androidLibrary(null)
+
+  @Test
+  fun androidLibrary_8_0_0() = androidLibrary(agp8_kgp1_9)
+
+  @Test
+  fun androidLibrary_8_13_0() = androidLibrary(agp8_13_0_versions)
+
+  @Test
+  fun androidLibrary_9_0_0() = androidLibrary(agp9_versions)
+
+  private fun androidVariants(versionsUnderTest: VersionsUnderTest?) {
+    withTestProject("android-variants") { dir ->
+      TestUtils.setVersionsUnderTest(dir, versionsUnderTest)
+      val tasks = buildList {
+        add(":compileDemoDebugKotlin")
+        add(":compileDemoReleaseKotlin")
+        add(":compileFullDebugKotlin")
+        add(":compileFullReleaseKotlin")
+        add(":compileDemoDebugUnitTestKotlin")
+        if (versionsUnderTest?.agp?.startsWith("9") != true) {
+          // AGP 9 doesn't create release unit tests?
+          add(":compileDemoReleaseUnitTestKotlin")
+          add(":compileFullReleaseUnitTestKotlin")
         }
+        add(":compileFullDebugUnitTestKotlin")
+        add(":compileDemoDebugAndroidTestKotlin")
+        add(":compileFullDebugAndroidTestKotlin")
       }
-    """.trimIndent(),
-        usesKotlinDsl = false,
-        plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin, TestUtils.kotlinAndroidPlugin)) { dir ->
-      val result = TestUtils.executeTask("build", dir)
+      val result = executeGradleWithVersion(dir, versionsUnderTest?.gradle, *tasks.toTypedArray())
 
-      assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
-
-      // Java classes generated successfully
-      assertTrue(dir.generatedSource("com/example/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedSource("com/example/FilmsQuery.kt").isFile)
-      assertTrue(dir.generatedSource("com/example/fragment/SpeciesInformation.kt").isFile)
-    }
-  }
-
-  @Test
-  fun `android application compiles and produces an apk`() {
-    withProject(apolloConfiguration = """
-      apollo {
-        service("service") {
-          packageNamesFromFilePaths()
-        }
+      tasks.forEach {
+        assertEquals(TaskOutcome.SUCCESS, result.task(it)?.outcome)
       }
-    """.trimIndent(),
-        usesKotlinDsl = false,
-        plugins = listOf(TestUtils.androidApplicationPlugin, TestUtils.apolloPlugin, TestUtils.kotlinAndroidPlugin)) { dir ->
-      val result = TestUtils.executeTask("build", dir)
+    }
+  }
 
+  @Test
+  fun androidVariants() = androidVariants(null)
+
+  @Test
+  fun androidVariants_8_0_0() = androidVariants(agp8_kgp1_9)
+
+  @Test
+  fun androidVariants_8_13_0() = androidVariants(agp8_13_0_versions)
+
+  @Test
+  fun androidVariants_9_0_0() = androidVariants(agp9_versions)
+
+  fun androidJava(versionsUnderTest: VersionsUnderTest?) {
+    withTestProject("android-java") { dir ->
+      TestUtils.setVersionsUnderTest(dir, versionsUnderTest)
+      val task = ":compileDebugJavaWithJavac"
+      val result = executeGradleWithVersion(dir, versionsUnderTest?.gradle, task)
+      assertEquals(TaskOutcome.SUCCESS, result.task(task)?.outcome)
+    }
+  }
+
+  @Test
+  fun androidJava() = androidJava(null)
+
+  @Test
+  fun androidJava_8_0_0() = androidJava(agp8_kgp1_9)
+
+  @Test
+  fun androidJava_8_13_0() = androidJava(agp8_13_0_versions)
+
+  @Test
+  fun androidJava_9_0_0() = androidJava(agp9_versions)
+
+  fun android9Kmp(versionsUnderTest: VersionsUnderTest?) {
+    withTestProject("android-9-kmp") { dir ->
+      setVersionsUnderTest(dir, versionsUnderTest)
+      val result = executeGradleWithVersion(dir, versionsUnderTest?.gradle, ":build")
       assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
-
-      // Java classes generated successfully
-      assertTrue(dir.generatedSource("com/example/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedSource("com/example/FilmsQuery.kt").isFile)
-      assertTrue(dir.generatedSource("com/example/fragment/SpeciesInformation.kt").isFile)
-      assertTrue(File(dir, "build/outputs/apk/debug/testProject-debug.apk").isFile)
     }
   }
 
   @Test
-  fun `android application compiles variants for all flavors, build types and tests`() {
-    withTestProject("androidVariants") { dir ->
-      // compile library variants
-      executeTaskAndAssertSuccess(":compileDemoDebugKotlin", dir)
-      executeTaskAndAssertSuccess(":compileDemoReleaseKotlin", dir)
-      executeTaskAndAssertSuccess(":compileFullDebugKotlin", dir)
-      executeTaskAndAssertSuccess(":compileFullReleaseKotlin", dir)
+  fun android9Kmp() = android9Kmp(agp9_versions)
 
-      // compile test variants.
-      // Unit test are compiled for debug + release, UI tests are only debug
-      executeTaskAndAssertSuccess(":compileDemoDebugUnitTestKotlin", dir)
-      executeTaskAndAssertSuccess(":compileDemoReleaseUnitTestKotlin", dir)
-      executeTaskAndAssertSuccess(":compileFullDebugUnitTestKotlin", dir)
-      executeTaskAndAssertSuccess(":compileFullReleaseUnitTestKotlin", dir)
-      executeTaskAndAssertSuccess(":compileDemoDebugAndroidTestKotlin", dir)
-      executeTaskAndAssertSuccess(":compileFullDebugAndroidTestKotlin", dir)
+  @Test
+  fun androidApplication() {
+    withTestProject("android-application") { dir ->
+      val result = executeTask("compileDebugKotlin", dir)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":compileDebugKotlin")!!.outcome)
+      assertTrue(dir.generatedSource("com/example/GetFooQuery.kt").isFile)
     }
   }
 
   @Test
-  fun `can connect outputDir to tests`() {
-    withTestProject("androidTestVariants") { dir ->
+  fun androidTestVariants() {
+    withTestProject("android-test-variants") { dir ->
       // compile library variants
       executeTaskAndAssertSuccess(":build", dir)
-    }
-  }
-
-  /**
-   * Using the minimum supported versions of Kotlin for Android should work.
-   */
-  @Test
-  fun `kotlin Android min version succeeds`() {
-    withTestProject("kotlin-android-plugin-version") { dir ->
-      dir.disableIsolatedProjects()
-      /**
-       * Use "8.10" because older KGP are not compatible with Gradle 9:
-       *
-       * ```
-       * java.lang.NoClassDefFoundError: org/gradle/api/internal/HasConvention
-       * 	at org.jetbrains.kotlin.gradle.plugin.internal.CompatibilityConventionRegistrarG81.addConvention(CompatibilityConventionRegistrarG81.kt:14)
-       * ```
-       */
-      val result = TestUtils.executeGradleWithVersion(dir, "8.10", "build")
-
-      Truth.assertThat(result.task(":build")!!.outcome).isEqualTo(TaskOutcome.SUCCESS)
-    }
-  }
-
-  @Test
-  fun `android with java`() {
-    withTestProject("android-java") { dir ->
-      executeTaskAndAssertSuccess(":assembleDebug", dir)
-    }
-  }
-
-  /**
-   * Using the maximum supported versions of Kotlin for Android should work.
-   */
-  @Test
-  fun `kotlin Android max version succeeds`() {
-    withTestProject("kotlin-android-plugin-version") { dir ->
-      val gradleScript = dir.resolve("build.gradle.kts")
-      gradleScript.writeText(gradleScript.readText().replace("libs.plugins.kotlin.android.min", "libs.plugins.kotlin.android.max"))
-      val result = TestUtils.executeTask("build", dir)
-
-      Truth.assertThat(result.task(":build")!!.outcome).isEqualTo(TaskOutcome.SUCCESS)
     }
   }
 }
