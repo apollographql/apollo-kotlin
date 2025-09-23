@@ -26,7 +26,6 @@ fun bumpVersions() {
     file.writeText(
         file.readText()
             .replaceVersion("kotlin-plugin", kotlinVersion)
-            .replaceVersion("kotlin-plugin-max", kotlinVersion)
             .replaceVersion("ksp", kspVersion)
     )
   }
