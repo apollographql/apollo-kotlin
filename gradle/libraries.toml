@@ -142,10 +142,6 @@ androidx-benchmark-macro = "androidx.benchmark:benchmark-macro-junit4:1.4.1"
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
-#breaking change from JsTuple to Tuple would require recompiling mock-server
-#breaking change: https://github.com/JetBrains/kotlin-wrappers/commit/c5393273bc7c5c818dccc33ca5067f0e084c9ae0
-#noinspection NewerVersionAvailable
-kotlin-node = "org.jetbrains.kotlin-wrappers:kotlin-node:2025.3.2-22.13.1"
 kotlinx-serialization-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-plugin" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-runtime" }
 kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.18.1" }
