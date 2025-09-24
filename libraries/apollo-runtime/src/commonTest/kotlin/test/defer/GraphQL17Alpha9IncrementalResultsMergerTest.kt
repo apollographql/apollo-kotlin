@@ -6,7 +6,8 @@ import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.IncrementalResultIdentifier
 import com.apollographql.apollo.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.json.readAny
-import com.apollographql.apollo.internal.IncrementalResultsMerger
+import com.apollographql.apollo.api.nonPending
+import com.apollographql.apollo.internal.incremental.GraphQL17Alpha9IncrementalResultsMerger
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,10 +19,10 @@ private fun String.buffer() = Buffer().writeUtf8(this)
 @Suppress("UNCHECKED_CAST")
 private fun jsonToMap(json: String): Map<String, Any?> = BufferedSourceJsonReader(json.buffer()).readAny() as Map<String, Any?>
 
-class IncrementalResultsMergerTest {
+class GraphQL17Alpha9IncrementalResultsMergerTest {
   @Test
   fun mergeJsonSingleIncrementalItem() {
-    val incrementalResultsMerger = IncrementalResultsMerger()
+    val incrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
 
     //language=JSON
     val payload1 = """
@@ -78,12 +79,12 @@ class IncrementalResultsMergerTest {
     """.trimIndent()
     incrementalResultsMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
-      assertEquals(
-          setOf(
-              IncrementalResultIdentifier(path = listOf("computers", 0), label = "query:Query1:0")
-          ),
-          incrementalResultsMerger.pendingResultIds
-      )
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf("computers", 0), label = "query:Query1:0")
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
     //language=JSON
     val payload2 = """
@@ -160,7 +161,7 @@ class IncrementalResultsMergerTest {
         setOf(
             IncrementalResultIdentifier(path = listOf("computers", 1), label = "query:Query1:0")
         ),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -242,7 +243,7 @@ class IncrementalResultsMergerTest {
         setOf(
             IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -341,7 +342,7 @@ class IncrementalResultsMergerTest {
             IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
             IncrementalResultIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -448,13 +449,13 @@ class IncrementalResultsMergerTest {
         setOf(
             IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
   }
 
   @Test
   fun mergeJsonMultipleIncrementalItems() {
-    val incrementalResultsMerger = IncrementalResultsMerger()
+    val incrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
 
     //language=JSON
     val payload1 = """
@@ -519,13 +520,13 @@ class IncrementalResultsMergerTest {
     """.trimIndent()
     incrementalResultsMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
-      assertEquals(
-          setOf(
-              IncrementalResultIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-              IncrementalResultIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
-          ),
-          incrementalResultsMerger.pendingResultIds
-      )
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+            IncrementalResultIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
     //language=JSON
     val payload2_3 = """
@@ -629,7 +630,7 @@ class IncrementalResultsMergerTest {
             IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
             IncrementalResultIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -756,13 +757,13 @@ class IncrementalResultsMergerTest {
         setOf(
             IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
   }
 
   @Test
   fun emptyPayloads() {
-    val incrementalResultsMerger = IncrementalResultsMerger()
+    val incrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
 
     //language=JSON
     val payload1 = """
@@ -851,7 +852,7 @@ class IncrementalResultsMergerTest {
    */
   @Test
   fun june2023ExampleA() {
-    val incrementalResultsMerger = IncrementalResultsMerger()
+    val incrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -899,12 +900,12 @@ class IncrementalResultsMergerTest {
     """.trimIndent()
     incrementalResultsMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
-      assertEquals(
-          setOf(
-              IncrementalResultIdentifier(path = listOf(), label = null),
-          ),
-          incrementalResultsMerger.pendingResultIds
-      )
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf(), label = null),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
     //language=JSON
     val payload2 = """
@@ -961,7 +962,7 @@ class IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
   }
 
@@ -970,7 +971,7 @@ class IncrementalResultsMergerTest {
    */
   @Test
   fun june2023ExampleA2() {
-    val incrementalResultsMerger = IncrementalResultsMerger()
+    val incrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -1019,12 +1020,12 @@ class IncrementalResultsMergerTest {
     """.trimIndent()
     incrementalResultsMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
-      assertEquals(
-          setOf(
-              IncrementalResultIdentifier(path = listOf(), label = "D1"),
-          ),
-          incrementalResultsMerger.pendingResultIds
-      )
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf(), label = "D1"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
     //language=JSON
     val payload2 = """
@@ -1089,7 +1090,7 @@ class IncrementalResultsMergerTest {
         setOf(
             IncrementalResultIdentifier(path = listOf("f2", "c", "f"), label = "D2"),
         ),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -1140,7 +1141,7 @@ class IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
   }
 
@@ -1149,7 +1150,7 @@ class IncrementalResultsMergerTest {
    */
   @Test
   fun june2023ExampleB1() {
-    val incrementalResultsMerger = IncrementalResultsMerger()
+    val incrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -1197,13 +1198,13 @@ class IncrementalResultsMergerTest {
     """.trimIndent()
     incrementalResultsMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
-      assertEquals(
-          setOf(
-              IncrementalResultIdentifier(path = listOf(), label = "Blue"),
-              IncrementalResultIdentifier(path = listOf("a", "b"), label = "Red"),
-          ),
-          incrementalResultsMerger.pendingResultIds
-      )
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf(), label = "Blue"),
+            IncrementalResultIdentifier(path = listOf("a", "b"), label = "Red"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
     //language=JSON
     val payload2 = """
@@ -1256,7 +1257,7 @@ class IncrementalResultsMergerTest {
         setOf(
             IncrementalResultIdentifier(path = listOf(), label = "Blue"),
         ),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -1307,7 +1308,7 @@ class IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
   }
 
@@ -1316,7 +1317,7 @@ class IncrementalResultsMergerTest {
    */
   @Test
   fun june2023ExampleB2() {
-    val incrementalResultsMerger = IncrementalResultsMerger()
+    val incrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -1364,13 +1365,13 @@ class IncrementalResultsMergerTest {
     """.trimIndent()
     incrementalResultsMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
-      assertEquals(
-          setOf(
-              IncrementalResultIdentifier(path = listOf(), label = "Blue"),
-              IncrementalResultIdentifier(path = listOf("a", "b"), label = "Red"),
-          ),
-          incrementalResultsMerger.pendingResultIds
-      )
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf(), label = "Blue"),
+            IncrementalResultIdentifier(path = listOf("a", "b"), label = "Red"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
     //language=JSON
     val payload2 = """
@@ -1429,54 +1430,55 @@ class IncrementalResultsMergerTest {
         setOf(
             IncrementalResultIdentifier(path = listOf("a", "b"), label = "Red"),
         ),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
 
     //language=JSON
     val payload3 = """
-      {
-        "incremental": [
-          {
-            "id": "1",
-            "data": {
-              "potentiallySlowFieldA": "potentiallySlowFieldA"
-            }
+    {
+      "incremental": [
+        {
+          "id": "1",
+          "data": {
+            "potentiallySlowFieldA": "potentiallySlowFieldA"
           }
-        ],
-        "completed": [
-          {
-            "id": "1"
-          }
-        ],
-        "hasNext": false
-      } 
-    """.trimIndent()
-    val mergedPayloads_1_2_3 = """
-      {
-        "data": {
-          "a": {
-            "b": {
-              "c": {
-                "d": "d"
-              },
-              "e": {
-                "f": "f"
-              },
-              "potentiallySlowFieldA": "potentiallySlowFieldA"
-            }
-          },
-          "g": {
-            "h": "h"
-          },
-          "potentiallySlowFieldB": "potentiallySlowFieldB"
         }
+      ],
+      "completed": [
+        {
+          "id": "1"
+        }
+      ],
+      "hasNext": false
+    } 
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
+    {
+      "data": {
+        "a": {
+          "b": {
+            "c": {
+              "d": "d"
+            },
+            "e": {
+              "f": "f"
+            },
+            "potentiallySlowFieldA": "potentiallySlowFieldA"
+          }
+        },
+        "g": {
+          "h": "h"
+        },
+        "potentiallySlowFieldB": "potentiallySlowFieldB"
       }
-    """
+    }
+    """.trimIndent()
     incrementalResultsMerger.merge(payload3.buffer())
     assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
   }
 
@@ -1485,7 +1487,7 @@ class IncrementalResultsMergerTest {
    */
   @Test
   fun june2023ExampleD() {
-    val incrementalResultsMerger = IncrementalResultsMerger()
+    val incrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -1517,13 +1519,13 @@ class IncrementalResultsMergerTest {
     """.trimIndent()
     incrementalResultsMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
-      assertEquals(
-          setOf(
-              IncrementalResultIdentifier(path = listOf(), label = null),
-              IncrementalResultIdentifier(path = listOf("me"), label = null),
-          ),
-          incrementalResultsMerger.pendingResultIds
-      )
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf(), label = null),
+            IncrementalResultIdentifier(path = listOf("me"), label = null),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
     //language=JSON
     val payload2 = """
@@ -1619,7 +1621,7 @@ class IncrementalResultsMergerTest {
         setOf(
             IncrementalResultIdentifier(path = listOf(), label = null),
         ),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -1704,18 +1706,18 @@ class IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.pendingResultIds
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
   }
 
-    /**
-     * Example F from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
-     */
-    @Test
-    fun june2023ExampleF() {
-      val incrementalResultsMerger = IncrementalResultsMerger()
-        //language=JSON
-        val payload1 = """
+  /**
+   * Example F from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
+   */
+  @Test
+  fun june2023ExampleF() {
+    val incrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
     {
       "data": {
         "me": {}
@@ -1732,25 +1734,25 @@ class IncrementalResultsMergerTest {
       "hasNext": true
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1 = """
+    //language=JSON
+    val mergedPayloads_1 = """
     {
       "data": {
         "me": {}
       }
     }
     """.trimIndent()
-      incrementalResultsMerger.merge(payload1.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
-        assertEquals(
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
         setOf(
             IncrementalResultIdentifier(path = listOf("me"), label = "B"),
         ),
-            incrementalResultsMerger.pendingResultIds
-        )
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
-        //language=JSON
-        val payload2 = """
+    //language=JSON
+    val payload2 = """
     {
       "incremental": [
         {
@@ -1769,8 +1771,8 @@ class IncrementalResultsMergerTest {
       "hasNext": false
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1_2 = """
+    //language=JSON
+    val mergedPayloads_1_2 = """
     {
       "data": {
         "me": {
@@ -1780,22 +1782,22 @@ class IncrementalResultsMergerTest {
       }
     }
     """.trimIndent()
-      incrementalResultsMerger.merge(payload2.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
-        assertEquals(
-            setOf(),
-            incrementalResultsMerger.pendingResultIds
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
     )
   }
 
-    /**
-     * Example G from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
-     */
-    @Test
-    fun june2023ExampleG() {
-      val incrementalResultsMerger = IncrementalResultsMerger()
-        //language=JSON
-        val payload1 = """
+  /**
+   * Example G from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
+   */
+  @Test
+  fun june2023ExampleG() {
+    val incrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
     {
       "data": {
         "me": {
@@ -1827,8 +1829,8 @@ class IncrementalResultsMergerTest {
       "hasNext": true
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1 = """
+    //language=JSON
+    val mergedPayloads_1 = """
     {
       "data": {
         "me": {
@@ -1843,18 +1845,18 @@ class IncrementalResultsMergerTest {
       }
     }
     """.trimIndent()
-      incrementalResultsMerger.merge(payload1.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
-        assertEquals(
-            setOf(
-                IncrementalResultIdentifier(path = listOf("me"), label = "Billing"),
-                IncrementalResultIdentifier(path = listOf("me"), label = "Prev"),
-            ),
-            incrementalResultsMerger.pendingResultIds
-        )
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf("me"), label = "Billing"),
+            IncrementalResultIdentifier(path = listOf("me"), label = "Prev"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
-        //language=JSON
-        val payload2 = """
+    //language=JSON
+    val payload2 = """
     {
       "incremental": [
         {
@@ -1874,8 +1876,8 @@ class IncrementalResultsMergerTest {
       "hasNext": true
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1_2 = """
+    //language=JSON
+    val mergedPayloads_1_2 = """
     {
       "data": {
         "me": {
@@ -1893,17 +1895,17 @@ class IncrementalResultsMergerTest {
       }
     }
     """.trimIndent()
-      incrementalResultsMerger.merge(payload2.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
-        assertEquals(
-            setOf(
-                IncrementalResultIdentifier(path = listOf("me"), label = "Prev"),
-            ),
-            incrementalResultsMerger.pendingResultIds
-        )
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf("me"), label = "Prev"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
-        //language=JSON
-        val payload3 = """
+    //language=JSON
+    val payload3 = """
     {
       "incremental": [
         {
@@ -1925,8 +1927,8 @@ class IncrementalResultsMergerTest {
       "hasNext": false
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1_2_3 = """
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
     {
       "data": {
         "me": {
@@ -1949,22 +1951,22 @@ class IncrementalResultsMergerTest {
       }
     }
     """.trimIndent()
-      incrementalResultsMerger.merge(payload3.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
-        assertEquals(
-            setOf(),
-            incrementalResultsMerger.pendingResultIds
-        )
-    }
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
+  }
 
-    /**
-     * Example H from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
-     */
-    @Test
-    fun june2023ExampleH() {
-      val incrementalResultsMerger = IncrementalResultsMerger()
-        //language=JSON
-        val payload1 = """
+  /**
+   * Example H from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
+   */
+  @Test
+  fun june2023ExampleH() {
+    val incrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
     {
       "data": {
         "me": {}
@@ -1986,26 +1988,26 @@ class IncrementalResultsMergerTest {
       "hasNext": true
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1 = """
+    //language=JSON
+    val mergedPayloads_1 = """
     {
       "data": {
         "me": {}
       }
     }
     """.trimIndent()
-      incrementalResultsMerger.merge(payload1.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
-        assertEquals(
-            setOf(
-                IncrementalResultIdentifier(path = listOf(), label = "A"),
-                IncrementalResultIdentifier(path = listOf("me"), label = "B"),
-            ),
-            incrementalResultsMerger.pendingResultIds
-        )
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf(), label = "A"),
+            IncrementalResultIdentifier(path = listOf("me"), label = "B"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
-        //language=JSON
-        val payload2 = """
+    //language=JSON
+    val payload2 = """
     {
       "incremental": [
         {
@@ -2039,8 +2041,8 @@ class IncrementalResultsMergerTest {
       "hasNext": true
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1_2 = """
+    //language=JSON
+    val mergedPayloads_1_2 = """
     {
       "data": {
         "me": {
@@ -2053,17 +2055,17 @@ class IncrementalResultsMergerTest {
       }
     }
     """.trimIndent()
-      incrementalResultsMerger.merge(payload2.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
-        assertEquals(
-            setOf(
-                IncrementalResultIdentifier(path = listOf("me"), label = "B"),
-            ),
-            incrementalResultsMerger.pendingResultIds
-        )
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf("me"), label = "B"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
-        //language=JSON
-        val payload3 = """
+    //language=JSON
+    val payload3 = """
     {
       "completed": [
         {
@@ -2089,8 +2091,8 @@ class IncrementalResultsMergerTest {
       "hasNext": false
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1_2_3 = """
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
     {
       "data": {
         "me": {
@@ -2119,24 +2121,24 @@ class IncrementalResultsMergerTest {
       ]
     }
     """.trimIndent()
-      incrementalResultsMerger.merge(payload3.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
-        assertEquals(
-            setOf(
-                IncrementalResultIdentifier(path = listOf("me"), label = "B"),
-            ),
-            incrementalResultsMerger.pendingResultIds
-        )
-    }
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf("me"), label = "B"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
+  }
 
-    /**
-     * Example I from https://github.com/graphql/defer-stream-wg/discussions/69 (Jul 18 2025 version)
-     */
-    @Test
-    fun july2025ExampleI() {
-      val incrementalResultsMerger = IncrementalResultsMerger()
-        //language=JSON
-        val payload1 = """
+  /**
+   * Example I from https://github.com/graphql/defer-stream-wg/discussions/69 (Jul 18 2025 version)
+   */
+  @Test
+  fun july2025ExampleI() {
+    val incrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
     {
       "data": {
         "person": {
@@ -2171,8 +2173,8 @@ class IncrementalResultsMergerTest {
       "hasNext": true
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1 = """
+    //language=JSON
+    val mergedPayloads_1 = """
     {
       "data": {
         "person": {
@@ -2189,18 +2191,18 @@ class IncrementalResultsMergerTest {
       }
     }
     """.trimIndent()
-      incrementalResultsMerger.merge(payload1.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
-        assertEquals(
-            setOf(
-                IncrementalResultIdentifier(path = listOf("person"), label = "homeWorldDefer"),
-                IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
-            ),
-            incrementalResultsMerger.pendingResultIds
-        )
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf("person"), label = "homeWorldDefer"),
+            IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
-        //language=JSON
-        val payload2 = """
+    //language=JSON
+    val payload2 = """
     {
       "incremental": [
         {
@@ -2215,8 +2217,8 @@ class IncrementalResultsMergerTest {
       "hasNext": true
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1_2 = """
+    //language=JSON
+    val mergedPayloads_1_2 = """
     {
       "data": {
         "person": {
@@ -2236,18 +2238,18 @@ class IncrementalResultsMergerTest {
       }
     }
     """.trimIndent()
-      incrementalResultsMerger.merge(payload2.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
-        assertEquals(
-            setOf(
-                IncrementalResultIdentifier(path = listOf("person"), label = "homeWorldDefer"),
-                IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
-            ),
-            incrementalResultsMerger.pendingResultIds
-        )
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf("person"), label = "homeWorldDefer"),
+            IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
-        //language=JSON
-        val payload3 = """
+    //language=JSON
+    val payload3 = """
     {
       "completed": [
         {
@@ -2257,8 +2259,8 @@ class IncrementalResultsMergerTest {
       "hasNext": true
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1_2_3 = """
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
     {
       "data": {
         "person": {
@@ -2279,17 +2281,17 @@ class IncrementalResultsMergerTest {
     }
     """.trimIndent()
 
-      incrementalResultsMerger.merge(payload3.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
-        assertEquals(
-            setOf(
-                IncrementalResultIdentifier(path = listOf("person"), label = "homeWorldDefer"),
-            ),
-            incrementalResultsMerger.pendingResultIds
-        )
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf("person"), label = "homeWorldDefer"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
-        //language=JSON
-        val payload4 = """
+    //language=JSON
+    val payload4 = """
     {
       "incremental": [
         {
@@ -2309,8 +2311,8 @@ class IncrementalResultsMergerTest {
       "hasNext": false
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1_2_3_4 = """
+    //language=JSON
+    val mergedPayloads_1_2_3_4 = """
     {
       "data": {
         "person": {
@@ -2334,22 +2336,22 @@ class IncrementalResultsMergerTest {
     }
     """.trimIndent()
 
-      incrementalResultsMerger.merge(payload4.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1_2_3_4), incrementalResultsMerger.merged)
-        assertEquals(
-            setOf(),
-            incrementalResultsMerger.pendingResultIds
-        )
-    }
+    incrementalResultsMerger.merge(payload4.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3_4), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
+  }
 
-    /**
-     * Example J from https://github.com/graphql/defer-stream-wg/discussions/69 (Jul 18 2025 version)
-     */
-    @Test
-    fun july2025ExampleJ() {
-      val incrementalResultsMerger = IncrementalResultsMerger()
-        //language=JSON
-        val payload1 = """
+  /**
+   * Example J from https://github.com/graphql/defer-stream-wg/discussions/69 (Jul 18 2025 version)
+   */
+  @Test
+  fun july2025ExampleJ() {
+    val incrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
     {
       "data": {
         "person": {
@@ -2373,8 +2375,8 @@ class IncrementalResultsMergerTest {
       "hasNext": true
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1 = """
+    //language=JSON
+    val mergedPayloads_1 = """
     {
       "data": {
         "person": {
@@ -2387,17 +2389,17 @@ class IncrementalResultsMergerTest {
       }
     }
     """.trimIndent()
-      incrementalResultsMerger.merge(payload1.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
-        assertEquals(
-            setOf(
-                IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
-            ),
-            incrementalResultsMerger.pendingResultIds
-        )
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
-        //language=JSON
-        val payload2 = """
+    //language=JSON
+    val payload2 = """
     {
       "incremental": [
         {
@@ -2412,8 +2414,8 @@ class IncrementalResultsMergerTest {
       "hasNext": true
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1_2 = """
+    //language=JSON
+    val mergedPayloads_1_2 = """
     {
       "data": {
         "person": {
@@ -2429,17 +2431,17 @@ class IncrementalResultsMergerTest {
       }
     }
     """.trimIndent()
-      incrementalResultsMerger.merge(payload2.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
-        assertEquals(
-            setOf(
-                IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
-            ),
-            incrementalResultsMerger.pendingResultIds
-        )
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
 
-        //language=JSON
-        val payload3 = """
+    //language=JSON
+    val payload3 = """
     {
       "completed": [
         {
@@ -2464,8 +2466,8 @@ class IncrementalResultsMergerTest {
       "hasNext": false
     }
     """.trimIndent()
-        //language=JSON
-        val mergedPayloads_1_2_3 = """
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
     {
       "data": {
         "person": {
@@ -2497,13 +2499,13 @@ class IncrementalResultsMergerTest {
     }
     """.trimIndent()
 
-      incrementalResultsMerger.merge(payload3.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
-        assertEquals(
-            setOf(
-                IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
-            ),
-            incrementalResultsMerger.pendingResultIds
-        )
-    }
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+        ),
+        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+    )
+  }
 }

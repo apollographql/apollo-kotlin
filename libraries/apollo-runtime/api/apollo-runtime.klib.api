@@ -33,6 +33,21 @@ abstract interface com.apollographql.apollo.interceptor/ApolloInterceptorChain {
     abstract fun <#A1: com.apollographql.apollo.api/Operation.Data> proceed(com.apollographql.apollo.api/ApolloRequest<#A1>): kotlinx.coroutines.flow/Flow<com.apollographql.apollo.api/ApolloResponse<#A1>> // com.apollographql.apollo.interceptor/ApolloInterceptorChain.proceed|proceed(com.apollographql.apollo.api.ApolloRequest<0:0>){0§<com.apollographql.apollo.api.Operation.Data>}[0]
 }
 
+abstract interface com.apollographql.apollo.internal.incremental/IncrementalResultsMerger { // com.apollographql.apollo.internal.incremental/IncrementalResultsMerger|null[0]
+    abstract val hasNext // com.apollographql.apollo.internal.incremental/IncrementalResultsMerger.hasNext|{}hasNext[0]
+        abstract fun <get-hasNext>(): kotlin/Boolean // com.apollographql.apollo.internal.incremental/IncrementalResultsMerger.hasNext.<get-hasNext>|<get-hasNext>(){}[0]
+    abstract val incrementalResultIdentifiers // com.apollographql.apollo.internal.incremental/IncrementalResultsMerger.incrementalResultIdentifiers|{}incrementalResultIdentifiers[0]
+        abstract fun <get-incrementalResultIdentifiers>(): kotlin.collections/Set<com.apollographql.apollo.api/DeferredFragmentIdentifier> // com.apollographql.apollo.internal.incremental/IncrementalResultsMerger.incrementalResultIdentifiers.<get-incrementalResultIdentifiers>|<get-incrementalResultIdentifiers>(){}[0]
+    abstract val isEmptyResponse // com.apollographql.apollo.internal.incremental/IncrementalResultsMerger.isEmptyResponse|{}isEmptyResponse[0]
+        abstract fun <get-isEmptyResponse>(): kotlin/Boolean // com.apollographql.apollo.internal.incremental/IncrementalResultsMerger.isEmptyResponse.<get-isEmptyResponse>|<get-isEmptyResponse>(){}[0]
+    abstract val merged // com.apollographql.apollo.internal.incremental/IncrementalResultsMerger.merged|{}merged[0]
+        abstract fun <get-merged>(): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal.incremental/IncrementalResultsMerger.merged.<get-merged>|<get-merged>(){}[0]
+
+    abstract fun merge(kotlin.collections/Map<kotlin/String, kotlin/Any?>): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal.incremental/IncrementalResultsMerger.merge|merge(kotlin.collections.Map<kotlin.String,kotlin.Any?>){}[0]
+    abstract fun merge(okio/BufferedSource): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal.incremental/IncrementalResultsMerger.merge|merge(okio.BufferedSource){}[0]
+    abstract fun reset() // com.apollographql.apollo.internal.incremental/IncrementalResultsMerger.reset|reset(){}[0]
+}
+
 abstract interface com.apollographql.apollo.network.http/HttpEngine : okio/Closeable { // com.apollographql.apollo.network.http/HttpEngine|null[0]
     abstract suspend fun execute(com.apollographql.apollo.api.http/HttpRequest): com.apollographql.apollo.api.http/HttpResponse // com.apollographql.apollo.network.http/HttpEngine.execute|execute(com.apollographql.apollo.api.http.HttpRequest){}[0]
     open fun close() // com.apollographql.apollo.network.http/HttpEngine.close|close(){}[0]
@@ -200,22 +215,40 @@ final class com.apollographql.apollo.interceptor/AutoPersistedQueryInterceptor :
     }
 }
 
-final class com.apollographql.apollo.internal/IncrementalResultsMerger { // com.apollographql.apollo.internal/IncrementalResultsMerger|null[0]
-    constructor <init>() // com.apollographql.apollo.internal/IncrementalResultsMerger.<init>|<init>(){}[0]
+final class com.apollographql.apollo.internal.incremental/Defer20220824IncrementalResultsMerger : com.apollographql.apollo.internal.incremental/IncrementalResultsMerger { // com.apollographql.apollo.internal.incremental/Defer20220824IncrementalResultsMerger|null[0]
+    constructor <init>() // com.apollographql.apollo.internal.incremental/Defer20220824IncrementalResultsMerger.<init>|<init>(){}[0]
 
-    final val merged // com.apollographql.apollo.internal/IncrementalResultsMerger.merged|{}merged[0]
-        final fun <get-merged>(): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal/IncrementalResultsMerger.merged.<get-merged>|<get-merged>(){}[0]
-    final val pendingResultIds // com.apollographql.apollo.internal/IncrementalResultsMerger.pendingResultIds|{}pendingResultIds[0]
-        final fun <get-pendingResultIds>(): kotlin.collections/Set<com.apollographql.apollo.api/DeferredFragmentIdentifier> // com.apollographql.apollo.internal/IncrementalResultsMerger.pendingResultIds.<get-pendingResultIds>|<get-pendingResultIds>(){}[0]
+    final val incrementalResultIdentifiers // com.apollographql.apollo.internal.incremental/Defer20220824IncrementalResultsMerger.incrementalResultIdentifiers|{}incrementalResultIdentifiers[0]
+        final fun <get-incrementalResultIdentifiers>(): kotlin.collections/Set<com.apollographql.apollo.api/DeferredFragmentIdentifier> // com.apollographql.apollo.internal.incremental/Defer20220824IncrementalResultsMerger.incrementalResultIdentifiers.<get-incrementalResultIdentifiers>|<get-incrementalResultIdentifiers>(){}[0]
+    final val merged // com.apollographql.apollo.internal.incremental/Defer20220824IncrementalResultsMerger.merged|{}merged[0]
+        final fun <get-merged>(): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal.incremental/Defer20220824IncrementalResultsMerger.merged.<get-merged>|<get-merged>(){}[0]
 
-    final var hasNext // com.apollographql.apollo.internal/IncrementalResultsMerger.hasNext|{}hasNext[0]
-        final fun <get-hasNext>(): kotlin/Boolean // com.apollographql.apollo.internal/IncrementalResultsMerger.hasNext.<get-hasNext>|<get-hasNext>(){}[0]
-    final var isEmptyResponse // com.apollographql.apollo.internal/IncrementalResultsMerger.isEmptyResponse|{}isEmptyResponse[0]
-        final fun <get-isEmptyResponse>(): kotlin/Boolean // com.apollographql.apollo.internal/IncrementalResultsMerger.isEmptyResponse.<get-isEmptyResponse>|<get-isEmptyResponse>(){}[0]
+    final var hasNext // com.apollographql.apollo.internal.incremental/Defer20220824IncrementalResultsMerger.hasNext|{}hasNext[0]
+        final fun <get-hasNext>(): kotlin/Boolean // com.apollographql.apollo.internal.incremental/Defer20220824IncrementalResultsMerger.hasNext.<get-hasNext>|<get-hasNext>(){}[0]
+    final var isEmptyResponse // com.apollographql.apollo.internal.incremental/Defer20220824IncrementalResultsMerger.isEmptyResponse|{}isEmptyResponse[0]
+        final fun <get-isEmptyResponse>(): kotlin/Boolean // com.apollographql.apollo.internal.incremental/Defer20220824IncrementalResultsMerger.isEmptyResponse.<get-isEmptyResponse>|<get-isEmptyResponse>(){}[0]
 
-    final fun merge(kotlin.collections/Map<kotlin/String, kotlin/Any?>): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal/IncrementalResultsMerger.merge|merge(kotlin.collections.Map<kotlin.String,kotlin.Any?>){}[0]
-    final fun merge(okio/BufferedSource): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal/IncrementalResultsMerger.merge|merge(okio.BufferedSource){}[0]
-    final fun reset() // com.apollographql.apollo.internal/IncrementalResultsMerger.reset|reset(){}[0]
+    final fun merge(kotlin.collections/Map<kotlin/String, kotlin/Any?>): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal.incremental/Defer20220824IncrementalResultsMerger.merge|merge(kotlin.collections.Map<kotlin.String,kotlin.Any?>){}[0]
+    final fun merge(okio/BufferedSource): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal.incremental/Defer20220824IncrementalResultsMerger.merge|merge(okio.BufferedSource){}[0]
+    final fun reset() // com.apollographql.apollo.internal.incremental/Defer20220824IncrementalResultsMerger.reset|reset(){}[0]
+}
+
+final class com.apollographql.apollo.internal.incremental/GraphQL17Alpha9IncrementalResultsMerger : com.apollographql.apollo.internal.incremental/IncrementalResultsMerger { // com.apollographql.apollo.internal.incremental/GraphQL17Alpha9IncrementalResultsMerger|null[0]
+    constructor <init>() // com.apollographql.apollo.internal.incremental/GraphQL17Alpha9IncrementalResultsMerger.<init>|<init>(){}[0]
+
+    final val incrementalResultIdentifiers // com.apollographql.apollo.internal.incremental/GraphQL17Alpha9IncrementalResultsMerger.incrementalResultIdentifiers|{}incrementalResultIdentifiers[0]
+        final fun <get-incrementalResultIdentifiers>(): kotlin.collections/Set<com.apollographql.apollo.api/DeferredFragmentIdentifier> // com.apollographql.apollo.internal.incremental/GraphQL17Alpha9IncrementalResultsMerger.incrementalResultIdentifiers.<get-incrementalResultIdentifiers>|<get-incrementalResultIdentifiers>(){}[0]
+    final val merged // com.apollographql.apollo.internal.incremental/GraphQL17Alpha9IncrementalResultsMerger.merged|{}merged[0]
+        final fun <get-merged>(): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal.incremental/GraphQL17Alpha9IncrementalResultsMerger.merged.<get-merged>|<get-merged>(){}[0]
+
+    final var hasNext // com.apollographql.apollo.internal.incremental/GraphQL17Alpha9IncrementalResultsMerger.hasNext|{}hasNext[0]
+        final fun <get-hasNext>(): kotlin/Boolean // com.apollographql.apollo.internal.incremental/GraphQL17Alpha9IncrementalResultsMerger.hasNext.<get-hasNext>|<get-hasNext>(){}[0]
+    final var isEmptyResponse // com.apollographql.apollo.internal.incremental/GraphQL17Alpha9IncrementalResultsMerger.isEmptyResponse|{}isEmptyResponse[0]
+        final fun <get-isEmptyResponse>(): kotlin/Boolean // com.apollographql.apollo.internal.incremental/GraphQL17Alpha9IncrementalResultsMerger.isEmptyResponse.<get-isEmptyResponse>|<get-isEmptyResponse>(){}[0]
+
+    final fun merge(kotlin.collections/Map<kotlin/String, kotlin/Any?>): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal.incremental/GraphQL17Alpha9IncrementalResultsMerger.merge|merge(kotlin.collections.Map<kotlin.String,kotlin.Any?>){}[0]
+    final fun merge(okio/BufferedSource): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal.incremental/GraphQL17Alpha9IncrementalResultsMerger.merge|merge(okio.BufferedSource){}[0]
+    final fun reset() // com.apollographql.apollo.internal.incremental/GraphQL17Alpha9IncrementalResultsMerger.reset|reset(){}[0]
 }
 
 final class com.apollographql.apollo.internal/MultipartReader : okio/Closeable { // com.apollographql.apollo.internal/MultipartReader|null[0]
@@ -312,6 +345,27 @@ final class com.apollographql.apollo.network.http/HttpNetworkTransport : com.apo
     final fun dispose() // com.apollographql.apollo.network.http/HttpNetworkTransport.dispose|dispose(){}[0]
     final fun newBuilder(): com.apollographql.apollo.network.http/HttpNetworkTransport.Builder // com.apollographql.apollo.network.http/HttpNetworkTransport.newBuilder|newBuilder(){}[0]
 
+    sealed interface IncrementalDeliveryProtocol { // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol|null[0]
+        abstract val acceptHeader // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.acceptHeader|{}acceptHeader[0]
+            abstract fun <get-acceptHeader>(): kotlin/String // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.acceptHeader.<get-acceptHeader>|<get-acceptHeader>(){}[0]
+
+        abstract fun newIncrementalResultsMerger(): com.apollographql.apollo.internal.incremental/IncrementalResultsMerger // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.newIncrementalResultsMerger|newIncrementalResultsMerger(){}[0]
+
+        final object Defer20220824 : com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol { // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.Defer20220824|null[0]
+            final val acceptHeader // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.Defer20220824.acceptHeader|{}acceptHeader[0]
+                final fun <get-acceptHeader>(): kotlin/String // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.Defer20220824.acceptHeader.<get-acceptHeader>|<get-acceptHeader>(){}[0]
+
+            final fun newIncrementalResultsMerger(): com.apollographql.apollo.internal.incremental/IncrementalResultsMerger // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.Defer20220824.newIncrementalResultsMerger|newIncrementalResultsMerger(){}[0]
+        }
+
+        final object GraphQL17Alpha9 : com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol { // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.GraphQL17Alpha9|null[0]
+            final val acceptHeader // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.GraphQL17Alpha9.acceptHeader|{}acceptHeader[0]
+                final fun <get-acceptHeader>(): kotlin/String // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.GraphQL17Alpha9.acceptHeader.<get-acceptHeader>|<get-acceptHeader>(){}[0]
+
+            final fun newIncrementalResultsMerger(): com.apollographql.apollo.internal.incremental/IncrementalResultsMerger // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.GraphQL17Alpha9.newIncrementalResultsMerger|newIncrementalResultsMerger(){}[0]
+        }
+    }
+
     final class Builder { // com.apollographql.apollo.network.http/HttpNetworkTransport.Builder|null[0]
         constructor <init>() // com.apollographql.apollo.network.http/HttpNetworkTransport.Builder.<init>|<init>(){}[0]
 
@@ -322,6 +376,7 @@ final class com.apollographql.apollo.network.http/HttpNetworkTransport : com.apo
         final fun httpEngine(com.apollographql.apollo.network.http/HttpEngine): com.apollographql.apollo.network.http/HttpNetworkTransport.Builder // com.apollographql.apollo.network.http/HttpNetworkTransport.Builder.httpEngine|httpEngine(com.apollographql.apollo.network.http.HttpEngine){}[0]
         final fun httpHeaders(kotlin.collections/List<com.apollographql.apollo.api.http/HttpHeader>): com.apollographql.apollo.network.http/HttpNetworkTransport.Builder // com.apollographql.apollo.network.http/HttpNetworkTransport.Builder.httpHeaders|httpHeaders(kotlin.collections.List<com.apollographql.apollo.api.http.HttpHeader>){}[0]
         final fun httpRequestComposer(com.apollographql.apollo.api.http/HttpRequestComposer): com.apollographql.apollo.network.http/HttpNetworkTransport.Builder // com.apollographql.apollo.network.http/HttpNetworkTransport.Builder.httpRequestComposer|httpRequestComposer(com.apollographql.apollo.api.http.HttpRequestComposer){}[0]
+        final fun incrementalDeliveryProtocol(com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol): com.apollographql.apollo.network.http/HttpNetworkTransport.Builder // com.apollographql.apollo.network.http/HttpNetworkTransport.Builder.incrementalDeliveryProtocol|incrementalDeliveryProtocol(com.apollographql.apollo.network.http.HttpNetworkTransport.IncrementalDeliveryProtocol){}[0]
         final fun interceptors(kotlin.collections/List<com.apollographql.apollo.network.http/HttpInterceptor>): com.apollographql.apollo.network.http/HttpNetworkTransport.Builder // com.apollographql.apollo.network.http/HttpNetworkTransport.Builder.interceptors|interceptors(kotlin.collections.List<com.apollographql.apollo.network.http.HttpInterceptor>){}[0]
         final fun serverUrl(kotlin/String): com.apollographql.apollo.network.http/HttpNetworkTransport.Builder // com.apollographql.apollo.network.http/HttpNetworkTransport.Builder.serverUrl|serverUrl(kotlin.String){}[0]
     }

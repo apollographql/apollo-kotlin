@@ -10,8 +10,6 @@ import com.apollographql.apollo.api.toApolloResponse
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.SubscriptionOperationException
-import com.apollographql.apollo.internal.IncrementalResultsMerger
-import com.apollographql.apollo.internal.isIncremental
 import com.apollographql.apollo.internal.transformWhile
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.network.ws.internal.Command
@@ -40,7 +38,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onSubscription
@@ -61,7 +58,7 @@ private constructor(
     private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
     private val idleTimeoutMillis: Long = 60_000,
     private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
-    private val reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)?
+    private val reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)?,
 ) : NetworkTransport {
 
   /**
@@ -262,8 +259,6 @@ private constructor(
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
-    val incrementalResultsMerger = IncrementalResultsMerger()
-
     return events.onSubscription {
       messages.send(StartOperation(request))
     }.filter {
@@ -300,24 +295,13 @@ private constructor(
     }.map { response ->
       when (response) {
         is OperationResponse -> {
-          val responsePayload = response.payload
           val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters]!!
-          val (payload, mergedFragmentIds) = if (responsePayload.isIncremental()) {
-            incrementalResultsMerger.merge(responsePayload) to incrementalResultsMerger.pendingResultIds
-          } else {
-            responsePayload to null
-          }
-          val apolloResponse: ApolloResponse<D> = payload.jsonReader().toApolloResponse(
+          val apolloResponse: ApolloResponse<D> = response.payload.jsonReader().toApolloResponse(
               operation = request.operation,
               requestUuid = request.requestUuid,
               customScalarAdapters = requestCustomScalarAdapters,
-              deferredFragmentIdentifiers = mergedFragmentIds
           )
 
-          if (!incrementalResultsMerger.hasNext) {
-            // Last incremental result: reset the incrementalResultsMerger for potential subsequent responses
-            incrementalResultsMerger.reset()
-          }
           apolloResponse
         }
 
@@ -327,8 +311,6 @@ private constructor(
         // Cannot happen as these events are filtered out upstream
         is ConnectionReEstablished, is OperationComplete, is GeneralError -> error("Unexpected event $response")
       }
-    }.filterNot {
-      incrementalResultsMerger.isEmptyResponse
     }.onCompletion {
       messages.send(StopOperation(request))
     }

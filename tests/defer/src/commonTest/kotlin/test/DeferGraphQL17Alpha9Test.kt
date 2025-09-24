@@ -6,7 +6,11 @@ import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.Error.Builder
 import com.apollographql.apollo.autoPersistedQueryInfo
 import com.apollographql.apollo.mpp.currentTimeMillis
+import com.apollographql.apollo.network.http.HttpNetworkTransport
+import com.apollographql.apollo.network.http.HttpNetworkTransport.IncrementalDeliveryProtocol
+import com.apollographql.apollo.testing.Platform
 import com.apollographql.apollo.testing.internal.runTest
+import com.apollographql.apollo.testing.platform
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueMultipart
 import com.apollographql.mockserver.enqueueString
@@ -26,14 +30,19 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class DeferTest {
+class DeferGraphQL17Alpha9Test {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
 
   private suspend fun setUp() {
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
+        .networkTransport(
+            HttpNetworkTransport.Builder()
+                .serverUrl(mockServer.url())
+                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.GraphQL17Alpha9)
+                .build()
+        )
         .build()
   }
 
@@ -174,7 +183,7 @@ class DeferTest {
   @Test
   fun payloadsAreReceivedIncrementally() = runTest(before = { setUp() }, after = { tearDown() }) {
     @Suppress("DEPRECATION")
-    if (com.apollographql.apollo.testing.platform() == com.apollographql.apollo.testing.Platform.Js) {
+    if (platform() == Platform.Js) {
       // TODO For now chunked is not supported on JS - remove this check when it is
       return@runTest
     }
@@ -244,8 +253,7 @@ class DeferTest {
 
   @Test
   fun deferWithApqFound() = runTest(before = { setUp() }, after = { tearDown() }) {
-    apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
+    apolloClient = apolloClient.newBuilder()
         .autoPersistedQueries()
         .build()
 
@@ -279,8 +287,7 @@ class DeferTest {
 
   @Test
   fun deferWithApqNotFound() = runTest(before = { setUp() }, after = { tearDown() }) {
-    apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
+    apolloClient = apolloClient.newBuilder()
         .autoPersistedQueries()
         .build()
 
