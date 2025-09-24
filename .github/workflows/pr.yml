@@ -18,13 +18,9 @@ concurrency:
 jobs:
   tests-gradle:
     if: "!startsWith(github.head_ref, 'release-')"
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #v4.1.7
-      - uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 #v4.2.1
-        with:
-          distribution: 'temurin'
-          java-version: 17
       - uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda #v3.4.2
         with:
           gradle-home-cache-cleanup: true
@@ -42,13 +38,9 @@ jobs:
 
   tests-no-gradle:
     if: "!startsWith(github.head_ref, 'release-')"
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #v4.1.7
-      - uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 #v4.2.1
-        with:
-          distribution: 'temurin'
-          java-version: 17
       - uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda #v3.4.2
         with:
           gradle-home-cache-cleanup: true
@@ -66,13 +58,9 @@ jobs:
 
   tests-integration:
     if: "!startsWith(github.head_ref, 'release-')"
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #v4.1.7
-      - uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 #v4.2.1
-        with:
-          distribution: 'temurin'
-          java-version: 17
       - uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda #v3.4.2
         with:
           gradle-home-cache-cleanup: true
@@ -90,11 +78,7 @@ jobs:
           path: diagnostics.zip
 
   ios-tests:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #v4.1.7
-      - uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 #v4.2.1
-        with:
-          distribution: 'temurin'
-          java-version: 17
       - run: /Applications/Xcode_16.2.0.app/Contents/Developer/usr/bin/xcodebuild -allowProvisioningUpdates -project tests/com.apollographql.iostest/com.apollographql.iostest.xcodeproj -configuration Debug -scheme com.apollographql.iostest -sdk iphoneos -destination name='iPhone 16' test -test-timeouts-enabled YES
