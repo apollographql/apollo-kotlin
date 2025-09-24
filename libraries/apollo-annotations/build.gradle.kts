@@ -1,6 +1,3 @@
-import com.gradleup.librarian.core.tooling.init.kotlinPluginVersion
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
-
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
 }
