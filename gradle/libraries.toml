@@ -22,7 +22,7 @@ compat-patrouille = "0.0.2"
 compose = "1.9.1"
 guava = "33.5.0-jre"
 # This is used at build time only, and it's ok to resolve SNAPSHOTS
-gratatouille = "0.1.3-SNAPSHOT-5760abde21dbc0bea26bb4a401ca5fc69067fa80"
+gratatouille = "0.1.3-SNAPSHOT-8fc7c233e6942228b019ddc698c61353e1a353c7"
 # This is a transitive dependency of apollo-gradle-plugin and therefore cannot use SNAPSHOTs
 gratatouille-runtime = "0.1.2"
 javaPoet = "1.13.0"
