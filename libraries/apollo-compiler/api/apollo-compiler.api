@@ -94,7 +94,6 @@ public final class com/apollographql/apollo/compiler/CodegenMetadata$$serializer
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/CodegenMetadata;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/CodegenMetadata$Companion {
@@ -139,7 +138,6 @@ public final class com/apollographql/apollo/compiler/CodegenOptions$$serializer 
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/CodegenOptions;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/CodegenOptions$Companion {
@@ -161,7 +159,6 @@ public final class com/apollographql/apollo/compiler/CodegenSchema$$serializer :
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/CodegenSchema;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/CodegenSchema$Companion {
@@ -185,7 +182,6 @@ public final class com/apollographql/apollo/compiler/CodegenSchemaOptions$$seria
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/CodegenSchemaOptions;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/CodegenSchemaOptions$Companion {
@@ -238,7 +234,6 @@ public final class com/apollographql/apollo/compiler/ExpressionAdapterInitialize
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ExpressionAdapterInitializer;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ExpressionAdapterInitializer$Companion {
@@ -311,7 +306,6 @@ public final class com/apollographql/apollo/compiler/IrOptions$$serializer : kot
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/IrOptions;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/IrOptions$Companion {
@@ -472,7 +466,6 @@ public final class com/apollographql/apollo/compiler/UsedCoordinates$$serializer
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/UsedCoordinates;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/UsedCoordinates$Companion {
@@ -519,7 +512,6 @@ public final class com/apollographql/apollo/compiler/codegen/ResolverClassName$$
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/codegen/ResolverClassName;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/codegen/ResolverClassName$Companion {
@@ -541,7 +533,6 @@ public final class com/apollographql/apollo/compiler/codegen/ResolverEntry$$seri
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/codegen/ResolverEntry;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/codegen/ResolverEntry$Companion {
@@ -570,7 +561,6 @@ public final class com/apollographql/apollo/compiler/codegen/ResolverKey$$serial
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/codegen/ResolverKey;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/codegen/ResolverKey$Companion {
@@ -813,7 +803,6 @@ public final class com/apollographql/apollo/compiler/ir/IrArgument$$serializer :
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrArgument;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrArgument$Companion {
@@ -840,7 +829,6 @@ public final class com/apollographql/apollo/compiler/ir/IrBooleanValue$$serializ
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrBooleanValue;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrBooleanValue$Companion {
@@ -914,7 +902,6 @@ public final class com/apollographql/apollo/compiler/ir/IrEnumType$$serializer :
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrEnumType;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrEnumType$Companion {
@@ -941,7 +928,6 @@ public final class com/apollographql/apollo/compiler/ir/IrEnumValue$$serializer 
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrEnumValue;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrEnumValue$Companion {
@@ -988,7 +974,6 @@ public final class com/apollographql/apollo/compiler/ir/IrField$$serializer : ko
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrField;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrField$Companion {
@@ -1025,7 +1010,6 @@ public final class com/apollographql/apollo/compiler/ir/IrFieldInfo$$serializer 
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrFieldInfo;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrFieldInfo$Companion {
@@ -1052,7 +1036,6 @@ public final class com/apollographql/apollo/compiler/ir/IrFloatValue$$serializer
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrFloatValue;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrFloatValue$Companion {
@@ -1087,7 +1070,6 @@ public final class com/apollographql/apollo/compiler/ir/IrFragment$$serializer :
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrFragment;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrFragment$Companion {
@@ -1134,7 +1116,6 @@ public final class com/apollographql/apollo/compiler/ir/IrFragmentDefinition$$se
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrFragmentDefinition;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrFragmentDefinition$Companion {
@@ -1180,7 +1161,6 @@ public final class com/apollographql/apollo/compiler/ir/IrInputObjectType$$seria
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrInputObjectType;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrInputObjectType$Companion {
@@ -1207,7 +1187,6 @@ public final class com/apollographql/apollo/compiler/ir/IrIntValue$$serializer :
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrIntValue;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrIntValue$Companion {
@@ -1245,7 +1224,6 @@ public final class com/apollographql/apollo/compiler/ir/IrListType$$serializer :
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrListType;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrListType$Companion {
@@ -1272,7 +1250,6 @@ public final class com/apollographql/apollo/compiler/ir/IrListTypeRef$$serialize
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrListTypeRef;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrListTypeRef$Companion {
@@ -1317,7 +1294,6 @@ public final class com/apollographql/apollo/compiler/ir/IrModel$$serializer : ko
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrModel;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrModel$Companion {
@@ -1346,7 +1322,6 @@ public final class com/apollographql/apollo/compiler/ir/IrModelGroup$$serializer
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrModelGroup;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrModelGroup$Companion {
@@ -1386,7 +1361,6 @@ public final class com/apollographql/apollo/compiler/ir/IrModelType$$serializer 
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrModelType;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrModelType$Companion {
@@ -1423,7 +1397,6 @@ public final class com/apollographql/apollo/compiler/ir/IrNamedTypeRef$$serializ
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrNamedTypeRef;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrNamedTypeRef$Companion {
@@ -1450,7 +1423,6 @@ public final class com/apollographql/apollo/compiler/ir/IrNonNullTypeRef$$serial
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrNonNullTypeRef;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrNonNullTypeRef$Companion {
@@ -1494,7 +1466,6 @@ public final class com/apollographql/apollo/compiler/ir/IrObjectType$$serializer
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrObjectType;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrObjectType$Companion {
@@ -1521,7 +1492,6 @@ public final class com/apollographql/apollo/compiler/ir/IrObjectValue$$serialize
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrObjectValue;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrObjectValue$Companion {
@@ -1550,7 +1520,6 @@ public final class com/apollographql/apollo/compiler/ir/IrObjectValue$Field$$ser
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrObjectValue$Field;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrObjectValue$Field$Companion {
@@ -1595,7 +1564,6 @@ public final class com/apollographql/apollo/compiler/ir/IrOperationDefinition$$s
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrOperationDefinition;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrOperationDefinition$Companion {
@@ -1626,7 +1594,6 @@ public final class com/apollographql/apollo/compiler/ir/IrOperationType$Mutation
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrOperationType$Mutation;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrOperationType$Mutation$Companion {
@@ -1647,7 +1614,6 @@ public final class com/apollographql/apollo/compiler/ir/IrOperationType$Query$$s
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrOperationType$Query;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrOperationType$Query$Companion {
@@ -1668,7 +1634,6 @@ public final class com/apollographql/apollo/compiler/ir/IrOperationType$Subscrip
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrOperationType$Subscription;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrOperationType$Subscription$Companion {
@@ -1707,7 +1672,6 @@ public final class com/apollographql/apollo/compiler/ir/IrOperations$$serializer
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrOperations;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrOperations$Companion {
@@ -1742,7 +1706,6 @@ public final class com/apollographql/apollo/compiler/ir/IrProperty$$serializer :
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrProperty;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrProperty$Companion {
@@ -1781,7 +1744,6 @@ public final class com/apollographql/apollo/compiler/ir/IrScalarType$$serializer
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrScalarType;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrScalarType$Companion {
@@ -1823,7 +1785,6 @@ public final class com/apollographql/apollo/compiler/ir/IrSelectionSet$$serializ
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrSelectionSet;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrSelectionSet$Companion {
@@ -1850,7 +1811,6 @@ public final class com/apollographql/apollo/compiler/ir/IrStringValue$$serialize
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrStringValue;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrStringValue$Companion {
@@ -1943,7 +1903,6 @@ public final class com/apollographql/apollo/compiler/ir/IrVariable$$serializer :
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/ir/IrVariable;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrVariable$Companion {
@@ -1973,7 +1932,6 @@ public final class com/apollographql/apollo/compiler/model/CompilationUnitModel$
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/model/CompilationUnitModel;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/model/CompilationUnitModel$Companion {
@@ -2000,7 +1958,6 @@ public final class com/apollographql/apollo/compiler/model/ProjectModel$$seriali
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/model/ProjectModel;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/model/ProjectModel$Companion {
@@ -2028,7 +1985,6 @@ public final class com/apollographql/apollo/compiler/operationoutput/OperationDe
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/operationoutput/OperationDescriptor;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/operationoutput/OperationDescriptor$Companion {
@@ -2057,7 +2013,6 @@ public final class com/apollographql/apollo/compiler/pqm/PersistedQueryManifest$
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/pqm/PersistedQueryManifest;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/pqm/PersistedQueryManifest$Companion {
@@ -2085,7 +2040,6 @@ public final class com/apollographql/apollo/compiler/pqm/PqmOperation$$serialize
 	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/pqm/PqmOperation;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo/compiler/pqm/PqmOperation$Companion {

@@ -1,12 +1,10 @@
 package test
 
-import com.apollographql.execution.ExecutableSchema
+import com.apollographql.apollo.execution.ExecutableSchema
 import com.apollographql.execution.http4k.apolloHandler
 import com.google.common.truth.Truth
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import okhttp3.tls.HandshakeCertificates
-import okhttp3.tls.HeldCertificate
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.http4k.server.Jetty
@@ -15,8 +13,6 @@ import org.junit.Assert
 import org.junit.Test
 import util.TestUtils
 import java.io.File
-import kotlin.test.assertContains
-import kotlin.test.assertEquals
 
 class DownloadSchemaTests {
   private val mockServer = MockWebServer()

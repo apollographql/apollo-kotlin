@@ -1,7 +1,6 @@
 {
     "typeToFieldsToArguments": {
-        "ReservedObject": {
-        },
+        "ReservedObject": {},
         "Query": {
             "object": [
                 "input"
@@ -13,17 +12,11 @@
                 "enum"
             ]
         },
-        "ReservedInterface": {
-        },
-        "ReservedUnion": {
-        },
-        "ReservedScalar": {
-        },
-        "ReservedEnum": {
-        },
-        "String": {
-        },
-        "ReservedInput": {
-        }
+        "ReservedInterface": {},
+        "ReservedUnion": {},
+        "ReservedScalar": {},
+        "ReservedEnum": {},
+        "String": {},
+        "ReservedInput": {}
     }
 }

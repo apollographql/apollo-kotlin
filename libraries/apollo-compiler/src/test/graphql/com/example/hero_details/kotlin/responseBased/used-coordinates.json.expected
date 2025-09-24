@@ -1,18 +1,11 @@
 {
     "typeToFieldsToArguments": {
-        "Character": {
-        },
-        "hero_type": {
-        },
-        "String": {
-        },
-        "FriendsConnection": {
-        },
-        "Int": {
-        },
-        "FriendsEdge": {
-        },
-        "Query": {
-        }
+        "Character": {},
+        "hero_type": {},
+        "String": {},
+        "FriendsConnection": {},
+        "Int": {},
+        "FriendsEdge": {},
+        "Query": {}
     }
 }

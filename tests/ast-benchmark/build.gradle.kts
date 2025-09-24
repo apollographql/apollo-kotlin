@@ -3,7 +3,9 @@ plugins {
   id("org.jetbrains.kotlinx.benchmark")
 }
 
-apolloTest()
+apolloTest(
+    jvmTarget = 11 // for graphql-java 24
+)
 
 sourceSets.create("jmh")
 
@@ -21,4 +23,3 @@ dependencies {
   add("jmhImplementation", libs.kotlinx.benchmark.runtime)
   add("jmhImplementation", sourceSets.main.get().output + sourceSets.main.get().runtimeClasspath)
 }
-

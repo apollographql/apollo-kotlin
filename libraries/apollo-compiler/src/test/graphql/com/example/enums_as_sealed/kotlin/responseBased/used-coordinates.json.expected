@@ -1,8 +1,6 @@
 {
     "typeToFieldsToArguments": {
-        "Enum": {
-        },
-        "Query": {
-        }
+        "Enum": {},
+        "Query": {}
     }
 }

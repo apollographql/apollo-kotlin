@@ -1,14 +1,9 @@
 {
     "typeToFieldsToArguments": {
-        "Character": {
-        },
-        "String": {
-        },
-        "ID": {
-        },
-        "Query": {
-        },
-        "Boolean": {
-        }
+        "Character": {},
+        "String": {},
+        "ID": {},
+        "Query": {},
+        "Boolean": {}
     }
 }

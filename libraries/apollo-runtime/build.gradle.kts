@@ -1,6 +1,4 @@
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
-import websocket_server.configureWebSocketServer
 
 plugins {
   id("org.jetbrains.kotlin.multiplatform")

@@ -1,15 +1,12 @@
 {
     "typeToFieldsToArguments": {
-        "Comment": {
-        },
+        "Comment": {},
         "Subscription": {
             "commentAdded": [
                 "repoFullName"
             ]
         },
-        "Int": {
-        },
-        "String": {
-        }
+        "Int": {},
+        "String": {}
     }
 }

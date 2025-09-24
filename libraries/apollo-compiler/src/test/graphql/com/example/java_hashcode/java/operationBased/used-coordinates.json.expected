@@ -1,8 +1,6 @@
 {
     "typeToFieldsToArguments": {
-        "Int": {
-        },
-        "Query": {
-        }
+        "Int": {},
+        "Query": {}
     }
 }

@@ -1,12 +1,8 @@
 {
     "typeToFieldsToArguments": {
-        "Character": {
-        },
-        "String": {
-        },
-        "Query": {
-        },
-        "Episode": {
-        }
+        "Character": {},
+        "String": {},
+        "Query": {},
+        "Episode": {}
     }
 }

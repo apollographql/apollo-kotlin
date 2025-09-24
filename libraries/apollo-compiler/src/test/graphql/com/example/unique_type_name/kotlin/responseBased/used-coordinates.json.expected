@@ -1,20 +1,12 @@
 {
     "typeToFieldsToArguments": {
-        "Character": {
-        },
-        "String": {
-        },
-        "Float": {
-        },
-        "Episode": {
-        },
-        "FriendsConnection": {
-        },
-        "Int": {
-        },
-        "FriendsEdge": {
-        },
-        "Query": {
-        }
+        "Character": {},
+        "String": {},
+        "Float": {},
+        "Episode": {},
+        "FriendsConnection": {},
+        "Int": {},
+        "FriendsEdge": {},
+        "Query": {}
     }
 }

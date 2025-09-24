@@ -1,16 +1,13 @@
 {
     "typeToFieldsToArguments": {
-        "String": {
-        },
+        "String": {},
         "Query": {
             "organization": [
                 "id"
             ]
         },
-        "UserQuery": {
-        },
-        "Int": {
-        },
+        "UserQuery": {},
+        "Int": {},
         "Organization": {
             "user": [
                 "query"
@@ -21,7 +18,6 @@
                 "size"
             ]
         },
-        "Boolean": {
-        }
+        "Boolean": {}
     }
 }

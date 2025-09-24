@@ -1,50 +1,35 @@
 {
     "typeToFieldsToArguments": {
         "Animal": {
-            "__typename": [
-            ]
+            "__typename": []
         },
         "Query": {
-            "animal": [
-            ],
-            "character": [
-            ],
-            "node": [
-            ]
+            "animal": [],
+            "character": [],
+            "node": []
         },
-        "String": {
-        },
+        "String": {},
         "Character": {
-            "__typename": [
-            ],
-            "id": [
-            ],
-            "name": [
-            ]
+            "__typename": [],
+            "id": [],
+            "name": []
         },
-        "ID": {
-        },
+        "ID": {},
         "Node": {
-            "__typename": [
-            ],
-            "id": [
-            ]
+            "__typename": [],
+            "id": []
         },
         "Cat": {
-            "meow": [
-            ]
+            "meow": []
         },
         "Dog": {
-            "woof": [
-            ]
+            "woof": []
         },
         "Human": {
-            "homePlanet": [
-            ]
+            "homePlanet": []
         },
         "Droid": {
-            "primaryFunction": [
-            ]
+            "primaryFunction": []
         }
     }
 }

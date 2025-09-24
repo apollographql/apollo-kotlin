@@ -1,14 +1,9 @@
 {
     "typeToFieldsToArguments": {
-        "Cat": {
-        },
-        "String": {
-        },
-        "Query": {
-        },
-        "Animal": {
-        },
-        "Node": {
-        }
+        "Cat": {},
+        "String": {},
+        "Query": {},
+        "Animal": {},
+        "Node": {}
     }
 }

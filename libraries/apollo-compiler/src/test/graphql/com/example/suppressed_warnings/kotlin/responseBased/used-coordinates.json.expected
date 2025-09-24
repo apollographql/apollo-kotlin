@@ -1,19 +1,14 @@
 {
     "typeToFieldsToArguments": {
-        "Cat": {
-        },
+        "Cat": {},
         "Query": {
             "search": [
                 "filter"
             ]
         },
-        "Direction": {
-        },
-        "Int": {
-        },
-        "Filter": {
-        },
-        "String": {
-        }
+        "Direction": {},
+        "Int": {},
+        "Filter": {},
+        "String": {}
     }
 }

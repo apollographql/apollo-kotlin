@@ -22,6 +22,8 @@ import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.operationoutput.OperationId
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
+import com.google.testing.junit.testparameterinjector.TestParameterValuesProvider
+import com.google.testing.junit.testparameterinjector.TestParameterValuesProvider.Context
 import org.junit.AfterClass
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -142,8 +144,8 @@ class CodegenTest {
     )
   }
 
-  class ParametersProvider : TestParameter.TestParameterValuesProvider {
-    override fun provideValues(): List<Parameters> {
+  class ParametersProvider : TestParameterValuesProvider() {
+    override fun provideValues(context: Context?): List<Parameters> {
       return File("src/test/graphql/com/example/")
           .listFiles()!!
           .filter { it.isDirectory }

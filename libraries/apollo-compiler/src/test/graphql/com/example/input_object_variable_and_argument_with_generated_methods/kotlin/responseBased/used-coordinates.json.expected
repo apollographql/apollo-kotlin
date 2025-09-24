@@ -12,15 +12,10 @@
                 "listOfInts"
             ]
         },
-        "String": {
-        },
-        "Float": {
-        },
-        "Episode": {
-        },
-        "Int": {
-        },
-        "Character": {
-        }
+        "String": {},
+        "Float": {},
+        "Episode": {},
+        "Int": {},
+        "Character": {}
     }
 }

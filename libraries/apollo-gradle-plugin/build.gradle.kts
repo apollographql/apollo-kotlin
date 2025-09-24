@@ -104,7 +104,7 @@ dependencies {
   testImplementation(libs.apollo.execution)
   testImplementation(libs.apollo.execution.http4k)
   testImplementation(gradleTestKit())
-  testImplementation(platform(libs.http4k.bom.get()))
+  testImplementation(platform(libs.http4k.bom))
   testImplementation(libs.http4k.core)
   testImplementation(libs.http4k.server.jetty)
   lintChecks(libs.androidx.lint.rules)
@@ -161,8 +161,8 @@ tasks.withType<Test> {
 
   val javaToolchains = project.extensions.getByName("javaToolchains") as JavaToolchainService
   javaLauncher.set(javaToolchains.launcherFor {
-    // Run all tests using java 17
-    languageVersion.set(JavaLanguageVersion.of(17))
+    // Run all tests using java 21 for HTTP4
+    languageVersion.set(JavaLanguageVersion.of(21))
   })
 }
 
@@ -214,4 +214,8 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
 
 tasks.withType(KotlinCompile::class.java) {
   dependsOn(pluginVersionTaskProvider)
+}
+
+lint {
+  baseline = file("lint-baseline.xml")
 }

@@ -2,88 +2,91 @@
 # The version we use by default to build the libs, in tests and benchmarks
 # Can be as high as IJ supports.
 # See https://kotlinlang.org/docs/multiplatform-compatibility-guide.html#version-compatibility for compatibility with KGP
-android-plugin = "8.7.2"
-android-sdkversion-compile = "34"
-android-sdkversion-compilebenchmark = "34"
+android-plugin = "8.11.2"
+android-sdkversion-compile = "36"
+android-sdkversion-compilebenchmark = "36"
 android-sdkversion-min = "16"
 android-sdkversion-compose-min = "21"
 android-sdkversion-benchmark-min = "24"
 android-sdkversion-target = "30"
-androidx-sqlite = "2.3.1"
+androidx-sqlite = "2.6.0"
 # This is used by the Gradle integration tests to get the artifacts locally
 apollo = "5.0.0-alpha.3-SNAPSHOT"
-apollo-execution = "0.1.0"
-apollo-normalizedcache-incubating = "1.0.0-alpha.4"
+apollo-execution = "0.1.1"
+apollo-normalizedcache-incubating = "1.0.0-alpha.6"
 # Used by the apollo-tooling project which uses a published version of Apollo
-apollo-published = "4.0.1"
-atomicfu = "0.26.0"
-compat-patrouille = "0.0.0"
-compose = "1.5.1"
-guava = "31.1-jre"
+apollo-published = "4.3.3"
+#noinspection NewerVersionAvailable requires KGP 2.2
+atomicfu = "0.28.0"
+compat-patrouille = "0.0.2"
+compose = "1.9.1"
+guava = "33.5.0-jre"
 # This is used at build time only, and it's ok to resolve SNAPSHOTS
 gratatouille = "0.1.3-SNAPSHOT-5760abde21dbc0bea26bb4a401ca5fc69067fa80"
 # This is a transitive dependency of apollo-gradle-plugin and therefore cannot use SNAPSHOTs
 gratatouille-runtime = "0.1.2"
 javaPoet = "1.13.0"
-jetbrains-annotations = "24.0.1"
+jetbrains-annotations = "26.0.2-1"
 junit = "4.13.2"
+#noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
 kotlin-plugin = "2.1.21"
-kotlinx-coroutines = "1.9.0"
-kotlinx-datetime = "0.5.0"
-kotlinx-serialization-runtime = "1.6.2"
+kotlinx-coroutines = "1.10.2"
+kotlinx-datetime = "0.7.1"
+#noinspection NewerVersionAvailable requires KGP 2.2
+kotlinx-serialization-runtime = "1.8.1"
+#noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
 ksp = "2.1.21-2.0.1"
-ktor = "3.1.2"
+#noinspection NewerVersionAvailable requires KGP 2.2
+ktor = "3.2.3"
 moshix = "0.14.1"
-node-fetch = "2.7.0"
-okio = "3.9.0"
+#noinspection NewerVersionAvailable requires KGP 2.2
+okio = "3.15.0"
+#noinspection NewerVersionAvailable requires KGP 2.2
 okhttp = "4.12.0"
-rx-java2 = "2.2.21"
-rx-java3 = "3.1.6"
-sqldelight = "2.0.1"
-truth = "1.1.3"
+sqldelight = "2.1.0"
+truth = "1.4.5"
 
 [libraries]
+#noinspection SimilarGradleDependency
 android-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin" }
+#noinspection AndroidGradlePluginVersion,SimilarGradleDependency,NewerVersionAvailable this is a compileOnly dependency
 android-plugin8 = { group = "com.android.tools.build", name = "gradle", version= "8.0.0" }
+#noinspection AndroidGradlePluginVersion,SimilarGradleDependency,NewerVersionAvailable this is a compileOnly dependency
 android-plugin9 = { group = "com.android.tools.build", name = "gradle", version = "9.0.0-alpha05" }
-android-tools-common = { module = "com.android.tools:common", version = "31.0.0" }
-android-test-runner = { group = "androidx.test", name = "runner", version = "1.5.2" }
-androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
-androidx-activity = "androidx.activity:activity-ktx:1.7.2"
-androidx-annotation = { group = "androidx.annotation", name = "annotation", version = "1.7.1" }
-androidx-core = "androidx.core:core-ktx:1.12.0"
-androidx-lint-rules = "androidx.lint:lint-gradle:1.0.0-alpha01"
+androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.3.0"
+androidx-activity = "androidx.activity:activity-ktx:1.11.0"
+androidx-annotation = { group = "androidx.annotation", name = "annotation", version = "1.9.1" }
+androidx-core = "androidx.core:core-ktx:1.17.0"
+androidx-lint-rules = "androidx.lint:lint-gradle:1.0.0-alpha05"
 androidx-lint-gradle-plugin = { module = "com.android.lint:com.android.lint.gradle.plugin", version.ref = "android-plugin" }
-androidx-profileinstaller = "androidx.profileinstaller:profileinstaller:1.3.1"
+androidx-profileinstaller = "androidx.profileinstaller:profileinstaller:1.4.1"
 androidx-sqlite = { group = "androidx.sqlite", name = "sqlite", version.ref = "androidx-sqlite" }
 androidx-sqlite-framework = { group = "androidx.sqlite", name = "sqlite-framework", version.ref = "androidx-sqlite" }
-androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime", version = "1.1.1" }
+androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime", version = "1.2.0" }
 apollo-api = { group = "com.apollographql.apollo", name = "apollo-api", version.ref = "apollo" }
 apollo-api-java = { group = "com.apollographql.apollo", name = "apollo-api-java", version.ref = "apollo" }
 apollo-httpCache = { group = "com.apollographql.apollo", name = "apollo-http-cache", version.ref = "apollo" }
-apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-mockserver", version = "0.1.1" }
+apollo-mockserver = { group = "com.apollographql.mockserver", name = "apollo-mockserver", version = "0.2.0" }
 apollo-mpputils = { group = "com.apollographql.apollo", name = "apollo-mpp-utils", version.ref = "apollo" }
 apollo-normalizedcache = { group = "com.apollographql.apollo", name = "apollo-normalized-cache", version.ref = "apollo" }
 apollo-normalizedcache-sqlite = { group = "com.apollographql.apollo", name = "apollo-normalized-cache-sqlite", version.ref = "apollo" }
 apollo-normalizedcache-sqlite-incubating = { group = "com.apollographql.cache", name = "normalized-cache-sqlite", version.ref = "apollo-normalizedcache-incubating" }
 apollo-normalizedcache-apollo-compiler-plugin-incubating = { group = "com.apollographql.cache", name = "normalized-cache-apollo-compiler-plugin", version.ref = "apollo-normalizedcache-incubating" }
-apollo-plugin = { group = "com.apollographql.apollo", name = "apollo-gradle-plugin", version.ref = "apollo" }
+#noinspection SimilarGradleDependency
 apollo-runtime = { group = "com.apollographql.apollo", name = "apollo-runtime", version.ref = "apollo" }
 apollo-compiler = { group = "com.apollographql.apollo", name = "apollo-compiler", version.ref = "apollo" }
 apollo-ast = { group = "com.apollographql.apollo", name = "apollo-ast", version.ref = "apollo" }
 apollo-execution = { group = "com.apollographql.execution", name = "apollo-execution-runtime", version.ref = "apollo-execution" }
-apollo-execution-ktor = { group = "com.apollographql.execution", name = "apollo-execution-ktor", version.ref = "apollo-execution" }
 apollo-execution-http4k = { group = "com.apollographql.execution", name = "apollo-execution-http4k", version.ref = "apollo-execution" }
-apollo-execution-processor = { group = "com.apollographql.execution", name = "apollo-execution-processor", version.ref = "apollo-execution" }
 apollo-execution-gradle-plugin = { group = "com.apollographql.execution", name = "apollo-execution-gradle-plugin", version.ref = "apollo-execution" }
 # Used by the apollo-tooling project which uses a published version of Apollo
+#noinspection SimilarGradleDependency
 apollo-runtime-published = { group = "com.apollographql.apollo", name = "apollo-runtime", version.ref = "apollo-published" }
 apollo-annotations = { group = "com.apollographql.apollo", name = "apollo-annotations", version.ref = "apollo" }
-apollo-engine-ktor = { group = "com.apollographql.apollo", name = "apollo-engine-ktor", version.ref = "apollo" }
 apollo-testingsupport = { group = "com.apollographql.apollo", name = "apollo-testing-support", version.ref = "apollo" }
 apollo-testingsupport-internal = { group = "com.apollographql.apollo", name = "apollo-testing-support-internal", version.ref = "apollo" }
 apollo-tooling = { group = "com.apollographql.apollo", name = "apollo-tooling", version.ref = "apollo" }
-assertj = { group = "org.assertj", name = "assertj-core", version = "3.24.2" }
+assertj = { group = "org.assertj", name = "assertj-core", version = "3.27.4" }
 atomicfu-library = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "atomicfu" }
 atomicfu-plugin = { group = "org.jetbrains.kotlinx", name = "atomicfu-gradle-plugin", version.ref = "atomicfu" }
 
@@ -95,11 +98,12 @@ dokka = "org.jetbrains.dokka:dokka-gradle-plugin:2.0.0"
 dgp = "com.gradle:develocity-gradle-plugin:4.2" # // sync with settings.gradle.kts
 # Not updating because it fails in apollo-compiler Java tests with
 # annotation @org.jetbrains.annotations.Nullable not applicable in this type context
-google-testing-compile = { group = "com.google.testing.compile", name = "compile-testing", version = "0.19" }
-google-testparameterinjector = { group = "com.google.testparameterinjector", name = "test-parameter-injector", version = "1.11" }
+google-testing-compile = { group = "com.google.testing.compile", name = "compile-testing", version = "0.23.0" }
+google-testparameterinjector = { group = "com.google.testparameterinjector", name = "test-parameter-injector", version = "1.19" }
 gratatouille = { group = "com.gradleup.gratatouille", name = "gratatouille-gradle-plugin", version.ref = "gratatouille" }
 gratatouille-wiring-runtime = { group = "com.gradleup.gratatouille", name = "gratatouille-wiring-runtime", version.ref = "gratatouille-runtime" }
 gratatouille-tasks-runtime = { group = "com.gradleup.gratatouille", name = "gratatouille-tasks-runtime", version.ref = "gratatouille-runtime" }
+jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
 
 #
 # See https://github.com/gradle/gradle/issues/1835
@@ -107,16 +111,17 @@ gratatouille-tasks-runtime = { group = "com.gradleup.gratatouille", name = "grat
 # to avoid leaking the Kotlin stdlib on the classpath
 #
 # Keep in sync with MIN_GRADLE_VERSION
+#noinspection NewerVersionAvailable this is a compileOnly dependency
 gradle-api-min = { group = "dev.gradleplugins", name = "gradle-api", version = "8.0" }
 guava-jre = { group = "com.google.guava", name = "guava", version.ref = "guava" }
-http4k-bom = "org.http4k:http4k-bom:5.8.0.0"
+http4k-bom = "org.http4k:http4k-bom:6.18.0.1"
 http4k-core = { module = "org.http4k:http4k-core" }
 http4k-server-jetty = { module = "org.http4k:http4k-server-jetty" }
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-allopen = { group = "org.jetbrains.kotlin", name = "kotlin-allopen", version.ref = "kotlin-plugin" }
-kotlin-compiletesting = { group = "dev.zacsweers.kctfork", name = "core", version = "0.6.0" }
-graphql-java = "com.graphql-java:graphql-java:20.4"
+kotlin-compiletesting = { group = "dev.zacsweers.kctfork", name = "core", version = "0.9.0" }
+graphql-java = "com.graphql-java:graphql-java:24.2"
 # The main kotlin version for build-logic and Gradle tests
 kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin" }
 kotlin-plugin-annotations = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin-annotations", version.ref = "kotlin-plugin" }
@@ -130,71 +135,70 @@ kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit"
 # Please, make sure that the standard library has the version in the range [2.1.0 .. 2.1.255]. Adjust your project's settings if necessary.
 kotlin-stdlib-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-js", version.ref = "kotlin-plugin" }
 kotlin-stdlib-wasm-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-wasm-js", version.ref = "kotlin-plugin" }
-kotlinx-benchmark-runtime = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.8"
+kotlinx-benchmark-runtime = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.14"
 kotlinx-benchmark = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin:0.4.12"
-kotlinx-browser = "org.jetbrains.kotlinx:kotlinx-browser:0.2"
-androidx-benchmark-macro = "androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha16"
+kotlinx-browser = "org.jetbrains.kotlinx:kotlinx-browser:0.3"
+androidx-benchmark-macro = "androidx.benchmark:benchmark-macro-junit4:1.4.1"
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx2", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-rx3 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx3", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
-kotlin-node = "org.jetbrains.kotlin-wrappers:kotlin-node:18.16.12-pre.634"
+#breaking change from JsTuple to Tuple would require recompiling mock-server
+#breaking change: https://github.com/JetBrains/kotlin-wrappers/commit/c5393273bc7c5c818dccc33ca5067f0e084c9ae0
+#noinspection NewerVersionAvailable
+kotlin-node = "org.jetbrains.kotlin-wrappers:kotlin-node:2025.3.2-22.13.1"
 kotlinx-serialization-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-plugin" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-runtime" }
-kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.16.3" }
+kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.18.1" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
-ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
-ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-curl = { group = "io.ktor", name = "ktor-client-curl", version.ref = "ktor" }
-ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
 ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
-ktor-client-websockets = { group = "io.ktor", name = "ktor-client-websockets", version.ref = "ktor" }
-ktor-server-core = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
 ktor-server-cors = { group = "io.ktor", name = "ktor-server-cors", version.ref = "ktor" }
-ktor-server-cio = { group = "io.ktor", name = "ktor-server-cio", version.ref = "ktor" }
 ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
 ktor-server-websockets = { group = "io.ktor", name = "ktor-server-websockets", version.ref = "ktor" }
-ktor-network = { module = "io.ktor:ktor-network", version.ref = "ktor" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
 okhttp-tls = { group = "com.squareup.okhttp3", name = "okhttp-tls", version.ref = "okhttp" }
-moshi = { group = "com.squareup.moshi", name = "moshi", version = "1.14.0" }
+moshi = { group = "com.squareup.moshi", name = "moshi", version = "1.15.2" }
 okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
 okio-nodefilesystem = { group = "com.squareup.okio", name = "okio-nodefilesystem", version.ref = "okio" }
 poet-java = { group = "com.squareup", name = "javapoet", version.ref = "javaPoet" }
 # Depend on the -jvm artifact directly to workaround https://github.com/gradle/gradle/issues/31158
-poet-kotlin = "com.squareup:kotlinpoet-jvm:2.0.0"
-rx-java2 = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rx-java2" }
-rx-java3 = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rx-java3" }
+poet-kotlin = "com.squareup:kotlinpoet-jvm:2.2.0"
 sqldelight-android = { group = "app.cash.sqldelight", name = "android-driver", version.ref = "sqldelight" }
 sqldelight-jvm = { group = "app.cash.sqldelight", name = "sqlite-driver", version.ref = "sqldelight" }
 sqldelight-native = { group = "app.cash.sqldelight", name = "native-driver", version.ref = "sqldelight" }
 sqldelight-plugin = { group = "app.cash.sqldelight", name = "gradle-plugin", version.ref = "sqldelight" }
 sqldelight-runtime = { group = "app.cash.sqldelight", name = "runtime", version.ref = "sqldelight" }
-sqlite-jdbc = "org.xerial:sqlite-jdbc:3.43.2.0"
-benchmark-gradle-plugin = "androidx.benchmark:benchmark-gradle-plugin:1.3.3"
-asm = "org.ow2.asm:asm-commons:9.5"
+benchmark-gradle-plugin = "androidx.benchmark:benchmark-gradle-plugin:1.4.1"
+asm = "org.ow2.asm:asm-commons:9.8"
 moshix-ksp = { group = "dev.zacsweers.moshix", name = "moshi-ksp", version.ref = "moshix" }
-benchmark-junit4 = "androidx.benchmark:benchmark-junit4:1.3.3"
-androidx-test-core = "androidx.test:core:1.6.1"
-androidx-test-rules = "androidx.test:rules:1.6.1"
-androidx-test-runner = "androidx.test:runner:1.6.2"
+benchmark-junit4 = "androidx.benchmark:benchmark-junit4:1.4.1"
+androidx-test-core = "androidx.test:core:1.7.0"
+androidx-test-rules = "androidx.test:rules:1.7.0"
+androidx-test-runner = "androidx.test:runner:1.7.0"
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
-turbine = { group = "app.cash.turbine", name = "turbine", version = "1.1.0" }
-uuid = { group = "com.benasher44", name = "uuid", version = "0.8.2" }
-librarian = "com.gradleup.librarian:librarian-gradle-plugin:0.0.11-SNAPSHOT-ba8b5ecfcbda070ecc3b5b95056ee359199552b4"
-nmcp = "com.gradleup.nmcp:nmcp:1.0.4-SNAPSHOT-7663b69da8628aa2a8e73334af3fb052688fbc92"
-slf4j-simple = "org.slf4j:slf4j-simple:2.0.13"
-slf4j-nop = "org.slf4j:slf4j-nop:2.0.13"
-licensee = "app.cash.licensee:licensee-gradle-plugin:1.12.0"
+turbine = { group = "app.cash.turbine", name = "turbine", version = "1.2.1" }
+uuid = { group = "com.benasher44", name = "uuid", version = "0.8.4" }
+librarian = "com.gradleup.librarian:librarian-gradle-plugin:0.1.1-SNAPSHOT-a304cd71c6b81d4cb3bba72e85b70fdb74eae70c"
+nmcp = "com.gradleup.nmcp:nmcp:1.1.0"
+slf4j-simple = "org.slf4j:slf4j-simple:2.0.17"
+slf4j-nop = "org.slf4j:slf4j-nop:2.0.17"
+licensee = "app.cash.licensee:licensee-gradle-plugin:1.13.0"
+#compileOnly dependency for the Apollo Gradle Plugin
+#noinspection SimilarGradleDependency,NewerVersionAvailable
 kgp-compile = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
 
 [plugins]
+#noinspection SimilarGradleDependency
 apollo = { id = "com.apollographql.apollo", version.ref = "apollo" }
+#noinspection SimilarGradleDependency
 apollo-published = { id = "com.apollographql.apollo", version.ref = "apollo-published" }
 compat-patrouille = { id = "com.gradleup.compat.patrouille", version.ref = "compat-patrouille" }
+# KGP that does not need to care about the native consumers (build-logic, benchmarks, etc...)
+#noinspection SimilarGradleDependency
+kotlin-jvm-latest = { id = "org.jetbrains.kotlin.jvm", version = "2.2.20" }
+#noinspection SimilarGradleDependency
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin" }
 kotlin-sam = { id = "org.jetbrains.kotlin.plugin.sam.with.receiver", version.ref = "kotlin-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin" }

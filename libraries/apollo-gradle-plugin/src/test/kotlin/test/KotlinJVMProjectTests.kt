@@ -11,7 +11,7 @@ import util.TestUtils.setVersionsUnderTest
 import util.TestUtils.withTestProject
 import util.VersionsUnderTest
 import util.agp8_13_kgp_2_2_20
-import util.agp8_kgp1_9
+import util.agp8_kgp2_0
 import java.io.File
 import kotlin.test.assertEquals
 
@@ -42,7 +42,7 @@ class KotlinJVMProjectTests {
   fun jvmLibrary() = jvmLibrary(null)
 
   @Test
-  fun jvmLibrary_1_9_0() = jvmLibrary(agp8_kgp1_9)
+  fun jvmLibrary_1_9_0() = jvmLibrary(agp8_kgp2_0)
 
   @Test
   fun jvmLibrary_2_2_20() = jvmLibrary(agp8_13_kgp_2_2_20)

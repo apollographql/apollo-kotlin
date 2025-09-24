@@ -4,6 +4,7 @@ import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
+import com.google.testing.junit.testparameterinjector.TestParameterValuesProvider
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
@@ -20,8 +21,8 @@ class ParserTest {
     }
   }
 
-  class ParametersProvider : TestParameter.TestParameterValuesProvider {
-    override fun provideValues(): List<File> {
+  class ParametersProvider : TestParameterValuesProvider() {
+    override fun provideValues(context: Context?): List<File> {
       return File("test-fixtures/parser/")
           .listFiles()!!
           .filter { it.extension == "graphql" }

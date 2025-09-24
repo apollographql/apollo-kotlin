@@ -2,17 +2,7 @@ schema {
   query: Query
 }
 
-"""
- The root query
-"""
-type Query {
-  apolloClients: [ApolloClient!]!
-
-  """
-   Returns null if an ApolloClient with the given id is not found.
-  """
-  apolloClient(id: ID!): ApolloClient
-}
+scalar Fields
 
 type ApolloClient {
   id: ID!
@@ -34,6 +24,18 @@ type NormalizedCache {
   records: [Record!]!
 }
 
+"""
+ The root query
+"""
+type Query {
+  apolloClients: [ApolloClient!]!
+
+  """
+   Returns null if an ApolloClient with the given id is not found.
+  """
+  apolloClient(id: ID!): ApolloClient
+}
+
 type Record {
   key: String!
 
@@ -41,8 +43,6 @@ type Record {
 
   sizeInBytes: Int!
 }
-
-scalar Fields
 
 type __Schema {
   description: String
@@ -192,7 +192,7 @@ directive @skip (if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
 
 directive @include (if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
 
-directive @deprecated (reason: String = "No longer supported") on FIELD_DEFINITION|ARGUMENT_DEFINITION|INPUT_FIELD_DEFINITION|ENUM_VALUE
+directive @deprecated (reason: String! = "No longer supported") on FIELD_DEFINITION|ARGUMENT_DEFINITION|INPUT_FIELD_DEFINITION|ENUM_VALUE
 
 directive @defer (label: String, if: Boolean! = true) on FRAGMENT_SPREAD|INLINE_FRAGMENT
 

@@ -1,18 +1,14 @@
 {
     "typeToFieldsToArguments": {
-        "Review": {
-        },
+        "Review": {},
         "Mutation": {
             "createReview": [
                 "episode",
                 "review"
             ]
         },
-        "Int": {
-        },
-        "String": {
-        },
-        "Episode": {
-        }
+        "Int": {},
+        "String": {},
+        "Episode": {}
     }
 }

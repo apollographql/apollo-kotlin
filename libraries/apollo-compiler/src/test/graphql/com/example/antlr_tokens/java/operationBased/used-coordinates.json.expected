@@ -5,9 +5,7 @@
                 "fragment"
             ]
         },
-        "String": {
-        },
-        "Query": {
-        }
+        "String": {},
+        "Query": {}
     }
 }
