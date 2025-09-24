@@ -45,6 +45,7 @@ import org.gradle.api.component.SoftwareComponent
 import org.gradle.api.component.SoftwareComponentFactory
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
@@ -848,6 +849,10 @@ abstract class DefaultApolloExtension(
     }
   }
 
+  private fun Project.regularFileProperty(provider : () -> File): RegularFileProperty {
+    return objects.fileProperty().fileProvider(project.provider(provider))
+  }
+
   private fun registerDownloadSchemaTasks(service: DefaultService) {
     val introspection = service.introspection
     var taskProvider: TaskProvider<ApolloDownloadSchemaTask>? = null
@@ -857,7 +862,7 @@ abstract class DefaultApolloExtension(
       taskProvider = project.registerApolloDownloadSchemaTask(
           taskName = ModelNames.downloadApolloSchemaIntrospection(service),
           taskGroup = TASK_GROUP,
-          schema = project.provider { service.guessSchemaFile(project, introspection.schemaFile) },
+          schema = project.regularFileProperty { service.guessSchemaFile(project, introspection.schemaFile) },
           endpoint = introspection.endpointUrl,
           headers = introspection.headers,
           graph = project.provider { null },
@@ -873,7 +878,7 @@ abstract class DefaultApolloExtension(
       taskProvider = project.registerApolloDownloadSchemaTask(
           taskName = ModelNames.downloadApolloSchemaRegistry(service),
           taskGroup = TASK_GROUP,
-          schema = project.provider { service.guessSchemaFile(project, registry.schemaFile) },
+          schema = project.regularFileProperty { service.guessSchemaFile(project, registry.schemaFile) },
           endpoint = project.provider { null },
           headers = project.objects.mapProperty(String::class.java, String::class.java),
           graph = registry.graph,
@@ -889,9 +894,7 @@ abstract class DefaultApolloExtension(
       connection.execute(
           SchemaConnection(
               taskProvider,
-              taskProvider.flatMap { downloadSchemaTask ->
-                project.layout.file(downloadSchemaTask.schema)
-              }
+              taskProvider.flatMap { it.schema }
           )
       )
     }

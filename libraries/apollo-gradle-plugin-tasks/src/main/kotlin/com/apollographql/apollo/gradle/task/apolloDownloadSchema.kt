@@ -2,6 +2,7 @@ package com.apollographql.apollo.gradle.task
 
 import com.apollographql.apollo.compiler.APOLLO_VERSION
 import com.apollographql.apollo.tooling.SchemaDownloader
+import gratatouille.tasks.GInputFile
 import gratatouille.tasks.GInternal
 import gratatouille.tasks.GLogger
 import gratatouille.tasks.GTask
@@ -17,7 +18,7 @@ internal fun apolloDownloadSchema(
     key: String?,
     graphVariant: String?,
     registryUrl: String?,
-    @GInternal schema: File,
+    @GInternal schema: GInputFile,
     insecure: Boolean?,
     headers: Map<String, String>,
     logger: GLogger,
