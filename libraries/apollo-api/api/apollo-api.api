@@ -426,7 +426,6 @@ public final class com/apollographql/apollo/api/CustomScalarAdapters$Builder {
 	public final fun deferredFragmentIdentifiers (Ljava/util/Set;)Lcom/apollographql/apollo/api/CustomScalarAdapters$Builder;
 	public final fun errors (Ljava/util/List;)Lcom/apollographql/apollo/api/CustomScalarAdapters$Builder;
 	public final fun falseVariables (Ljava/util/Set;)Lcom/apollographql/apollo/api/CustomScalarAdapters$Builder;
-	public final fun pendingResultIds (Ljava/util/Set;)Lcom/apollographql/apollo/api/CustomScalarAdapters$Builder;
 }
 
 public final class com/apollographql/apollo/api/CustomScalarAdapters$Key : com/apollographql/apollo/api/ExecutionContext$Key {
@@ -714,6 +713,12 @@ public final class com/apollographql/apollo/api/ImmutableMapBuilder {
 	public final fun put (Ljava/lang/Object;Ljava/lang/Object;)Lcom/apollographql/apollo/api/ImmutableMapBuilder;
 }
 
+public final class com/apollographql/apollo/api/IncrementalResultIdentifierKt {
+	public static final fun isPending (Ljava/util/Set;)Z
+	public static final fun nonPending (Ljava/util/Set;)Ljava/util/Set;
+	public static final fun pending (Ljava/util/Set;)Ljava/util/Set;
+}
+
 public final class com/apollographql/apollo/api/InputObjectType : com/apollographql/apollo/api/CompiledNamedType {
 	public fun <init> (Ljava/lang/String;)V
 }
@@ -928,7 +933,12 @@ public final class com/apollographql/apollo/api/http/ByteStringHttpBody : com/ap
 
 public final class com/apollographql/apollo/api/http/DefaultHttpRequestComposer : com/apollographql/apollo/api/http/HttpRequestComposer {
 	public static final field Companion Lcom/apollographql/apollo/api/http/DefaultHttpRequestComposer$Companion;
+	public static final field HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824 Ljava/lang/String;
+	public static final field HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20230621 Ljava/lang/String;
+	public static final field HEADER_ACCEPT_VALUE_SUBSCRIPTIONS_1_0 Ljava/lang/String;
 	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun compose (Lcom/apollographql/apollo/api/ApolloRequest;)Lcom/apollographql/apollo/api/http/HttpRequest;
 }
 
