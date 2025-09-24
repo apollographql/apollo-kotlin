@@ -161,8 +161,8 @@ tasks.withType<Test> {
 
   val javaToolchains = project.extensions.getByName("javaToolchains") as JavaToolchainService
   javaLauncher.set(javaToolchains.launcherFor {
-    // Run all tests using java 17
-    languageVersion.set(JavaLanguageVersion.of(17))
+    // Run all tests using java 21 for HTTP4
+    languageVersion.set(JavaLanguageVersion.of(21))
   })
 }
 
@@ -214,4 +214,8 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
 
 tasks.withType(KotlinCompile::class.java) {
   dependsOn(pluginVersionTaskProvider)
+}
+
+lint {
+  baseline = file("lint-baseline.xml")
 }

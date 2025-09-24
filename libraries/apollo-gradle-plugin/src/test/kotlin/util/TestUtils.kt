@@ -235,6 +235,7 @@ object TestUtils {
                 }
               }
               .replace("alias(libs.plugins.kotlin.multiplatform)", "id(\"org.jetbrains.kotlin.multiplatform\").version(\"${versionsUnderTest.kgp}\")")
+              .replace("compileSdk = libs.versions.android.sdkversion.compile.get().toInt()", "compileSdk = ${versionsUnderTest.compileSdk}")
       )
     }
     if (!versionsUnderTest.isolatedProjects) {
@@ -250,16 +251,32 @@ object TestUtils {
  * We just can't test across all possible variations of different tools, especially
  * because some of them have dependencies.
  */
-val agp8_kgp1_9 = VersionsUnderTest("8.0.0", "1.9.0", "8.0", false)
-val agp8_13_0_versions = VersionsUnderTest("8.13.0", "2.1.0", "9.0.0", true)
-val agp8_13_kgp_2_2_20 = VersionsUnderTest("8.13.0", "2.2.20", "9.0.0", true)
-val agp9_versions = VersionsUnderTest("9.0.0-alpha05", "2.2.20", "9.0.0", true)
+val agp8_kgp2_0 = VersionsUnderTest(
+    agp = "8.0.0",
+    kgp = "2.0.0",
+    compileSdk = 33,
+    gradle = "8.0",
+    isolatedProjects = false
+)
+val agp8_13_0_versions = VersionsUnderTest(
+    agp = "8.13.0",
+    kgp = "2.1.0",
+)
+val agp8_13_kgp_2_2_20 = VersionsUnderTest(
+    agp = "8.13.0",
+    kgp = "2.2.20",
+)
+val agp9_versions = VersionsUnderTest(
+    agp = "9.0.0-alpha05",
+    kgp = "2.2.20",
+)
 
 class VersionsUnderTest(
     val agp: String,
     val kgp: String,
-    val gradle: String,
-    val isolatedProjects: Boolean
+    val compileSdk: Int = 36,
+    val gradle: String = "9.0.0",
+    val isolatedProjects: Boolean = true,
 )
 
 fun File.generatedSource(path: String, serviceName: String = "service") =

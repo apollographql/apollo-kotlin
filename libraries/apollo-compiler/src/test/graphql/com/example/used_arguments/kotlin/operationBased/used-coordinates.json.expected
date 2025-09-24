@@ -5,8 +5,7 @@
                 "arg"
             ]
         },
-        "Int": {
-        },
+        "Int": {},
         "B": {
             "field": [
                 "arg"
@@ -17,9 +16,7 @@
                 "arg"
             ]
         },
-        "String": {
-        },
-        "Query": {
-        }
+        "String": {},
+        "Query": {}
     }
 }

@@ -4,6 +4,10 @@ schema {
   subscription: SubscriptionRoot
 }
 
+type MutationRoot {
+  closeAllWebSockets: String!
+}
+
 type QueryRoot {
   random: Int!
 
@@ -14,8 +18,10 @@ type QueryRoot {
   secondsSinceEpoch: Float!
 }
 
-type MutationRoot {
-  closeAllWebSockets: String!
+type State {
+  tag: String!
+
+  subscriptionId: String!
 }
 
 type SubscriptionRoot {
@@ -34,12 +40,6 @@ type SubscriptionRoot {
   state(intervalMillis: Int!): State!
 
   valueSharedWithSubscriptions: Int!
-}
-
-type State {
-  tag: String!
-
-  subscriptionId: String!
 }
 
 type __Schema {

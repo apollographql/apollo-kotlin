@@ -8,13 +8,13 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import util.TestUtils
 import util.TestUtils.setVersionsUnderTest
-import util.agp8_kgp1_9
+import util.agp8_kgp2_0
 import util.generatedSource
 import java.io.File
 import kotlin.test.assertEquals
 
 class LanguageVersionTests {
-  private val versionsUnderTest = agp8_kgp1_9
+  private val versionsUnderTest = agp8_kgp2_0
   private val gradleVersion = versionsUnderTest.gradle
 
   @Test
