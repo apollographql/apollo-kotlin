@@ -1,7 +1,32 @@
+diff --git a/node_modules/@apollo/server/dist/esm/ApolloServer.js b/node_modules/@apollo/server/dist/esm/ApolloServer.js
+index 7665490..c32a28c 100644
+--- a/node_modules/@apollo/server/dist/esm/ApolloServer.js
++++ b/node_modules/@apollo/server/dist/esm/ApolloServer.js
+@@ -631,7 +631,7 @@ export const MEDIA_TYPES = {
+     APPLICATION_JSON_GRAPHQL_CALLBACK: 'application/json; callbackSpec=1.0; charset=utf-8',
+     APPLICATION_GRAPHQL_RESPONSE_JSON: 'application/graphql-response+json; charset=utf-8',
+     MULTIPART_MIXED_NO_DEFER_SPEC: 'multipart/mixed',
+-    MULTIPART_MIXED_EXPERIMENTAL: 'multipart/mixed; deferSpec=20220824',
++    MULTIPART_MIXED_EXPERIMENTAL: 'multipart/mixed; incrementalDeliverySpec=20230621',
+     TEXT_HTML: 'text/html',
+ };
+ export function chooseContentTypeForSingleResultResponse(head) {
 diff --git a/node_modules/@apollo/server/dist/esm/runHttpQuery.js b/node_modules/@apollo/server/dist/esm/runHttpQuery.js
-index 96ef0ab..0d341fa 100644
+index 96ef0ab..d816750 100644
 --- a/node_modules/@apollo/server/dist/esm/runHttpQuery.js
 +++ b/node_modules/@apollo/server/dist/esm/runHttpQuery.js
+@@ -161,9 +161,9 @@ export async function runHttpQuery({ server, httpRequest, contextValue, schemaDe
+         throw new BadRequestError('Apollo server received an operation that uses incremental delivery ' +
+             '(@defer or @stream), but the client does not accept multipart/mixed ' +
+             'HTTP responses. To enable incremental delivery support, add the HTTP ' +
+-            "header 'Accept: multipart/mixed; deferSpec=20220824'.", { extensions: { http: { status: 406 } } });
++            "header 'Accept: multipart/mixed; incrementalDeliverySpec=20230621'.", { extensions: { http: { status: 406 } } });
+     }
+-    graphQLResponse.http.headers.set('content-type', 'multipart/mixed; boundary="-"; deferSpec=20220824');
++    graphQLResponse.http.headers.set('content-type', 'multipart/mixed; boundary="-"; incrementalDeliverySpec=20230621');
+     return {
+         ...graphQLResponse.http,
+         body: {
 @@ -187,6 +187,7 @@ function orderExecutionResultFields(result) {
  }
  function orderInitialIncrementalExecutionResultFields(result) {

@@ -1,56 +1,41 @@
-package com.apollographql.apollo.internal
+package com.apollographql.apollo.internal.incremental
 
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.IncrementalResultIdentifier
-import com.apollographql.apollo.api.json.BufferedSourceJsonReader
-import com.apollographql.apollo.api.json.readAny
+import com.apollographql.apollo.api.IncrementalResultIdentifiers
+import com.apollographql.apollo.api.pending
 import okio.BufferedSource
 
-private typealias JsonMap = Map<String, Any?>
-private typealias MutableJsonMap = MutableMap<String, Any?>
-
 /**
- * Utility class for merging GraphQL incremental results received in multiple chunks when using the `@defer` and/or `@stream` directives.
- *
- * Each call to [merge] will merge the given results into the [merged] Map, and will also update the [pendingResultIds] Set with the
- * value of their `path` and `label` fields.
- *
- * The fields in `data` are merged into the node found in [merged] at the path known by looking at the `id` field. For the first call to
- * [merge], the payload is copied to [merged] as-is.
- *
- * `errors` in incremental and completed results (if present) are merged together in an array and then set to the `errors` field of the
- * [merged] Map.
- * `extensions` in incremental results (if present) are merged together in an array and then set to the `extensions` field of the [merged]
- * Map.
+ * Merger for the [com.apollographql.apollo.network.http.HttpNetworkTransport.IncrementalDeliveryProtocol.GraphQL17Alpha9] protocol format.
  */
 @ApolloInternal
 @Suppress("UNCHECKED_CAST")
-class IncrementalResultsMerger {
+class GraphQL17Alpha9IncrementalResultsMerger : IncrementalResultsMerger {
   private val _merged: MutableJsonMap = mutableMapOf()
-  val merged: JsonMap = _merged
+  override val merged: JsonMap = _merged
 
   /**
    * Map of identifiers to their corresponding IncrementalResultIdentifier, found in `pending`.
    */
   private val _pendingResultIds = mutableMapOf<String, IncrementalResultIdentifier>()
-  val pendingResultIds: Set<IncrementalResultIdentifier> get() = _pendingResultIds.values.toSet()
-
-  var hasNext: Boolean = true
-    private set
 
   /**
-   * A response can sometimes have no `incremental` field, e.g. when the server couldn't predict if there were more data after the last
-   * emitted payload. This field allows to test for this in order to ignore such payloads.
-   * See https://github.com/apollographql/router/issues/1687.
+   * For this protocol, this represents the set of ids that are pending.
    */
-  var isEmptyResponse: Boolean = false
+  override val incrementalResultIdentifiers: IncrementalResultIdentifiers get() = _pendingResultIds.values.toSet().pending()
+
+  override var hasNext: Boolean = true
     private set
 
-  fun merge(part: BufferedSource): JsonMap {
+  override var isEmptyResponse: Boolean = false
+    private set
+
+  override fun merge(part: BufferedSource): JsonMap {
     return merge(part.toJsonMap())
   }
 
-  fun merge(part: JsonMap): JsonMap {
+  override fun merge(part: JsonMap): JsonMap {
     val completed = part["completed"] as? List<JsonMap>
     if (merged.isEmpty()) {
       // Initial part, no merging needed (strip some fields that should not appear in the final result)
@@ -135,52 +120,14 @@ class IncrementalResultsMerger {
     }
   }
 
-  private fun deepMergeObject(destination: MutableJsonMap, obj: JsonMap) {
-    for ((key, value) in obj) {
-      if (destination.containsKey(key) && destination[key] is MutableMap<*, *>) {
-        // Objects: merge recursively
-        val fieldDestination = destination[key] as MutableJsonMap
-        val fieldMap = value as? JsonMap ?: error("'$key' is an object in destination but not in map")
-        deepMergeObject(destination = fieldDestination, obj = fieldMap)
-      } else {
-        // Other types: add / overwrite
-        destination[key] = value
-      }
-    }
-  }
-
   private fun mergeList(destination: MutableList<Any>, items: List<Any>) {
     destination.addAll(items)
   }
 
-  private fun BufferedSource.toJsonMap(): JsonMap = BufferedSourceJsonReader(this).readAny() as JsonMap
-
-
-  /**
-   * Find the node in the [map] at the given [path].
-   * @param path The path to the node to find, as a list of either `String` (name of field in object) or `Int` (index of element in array).
-   */
-  private fun nodeAtPath(map: JsonMap, path: List<Any>): Any? {
-    var node: Any? = map
-    for (key in path) {
-      node = if (node is List<*>) {
-        node[key as Int]
-      } else {
-        node as JsonMap
-        node[key]
-      }
-    }
-    return node
-  }
-
-  fun reset() {
+  override fun reset() {
     _merged.clear()
     _pendingResultIds.clear()
     hasNext = true
     isEmptyResponse = false
   }
-}
-
-internal fun JsonMap.isIncremental(): Boolean {
-  return keys.contains("hasNext")
 }

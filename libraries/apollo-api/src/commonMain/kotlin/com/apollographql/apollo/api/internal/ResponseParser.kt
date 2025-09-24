@@ -4,7 +4,7 @@ import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Error
-import com.apollographql.apollo.api.IncrementalResultIdentifier
+import com.apollographql.apollo.api.IncrementalResultIdentifiers
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.falseVariables
 import com.apollographql.apollo.api.json.JsonReader
@@ -24,7 +24,7 @@ internal object ResponseParser {
       operation: Operation<D>,
       requestUuid: Uuid?,
       customScalarAdapters: CustomScalarAdapters,
-      pendingResultIds: Set<IncrementalResultIdentifier>?,
+      deferredFragmentIds: IncrementalResultIdentifiers?,
   ): ApolloResponse<D> {
     jsonReader.beginObject()
 
@@ -36,7 +36,7 @@ internal object ResponseParser {
       when (val name = jsonReader.nextName()) {
         "data" -> {
           val falseVariables = operation.falseVariables(customScalarAdapters)
-          data = operation.parseData(jsonReader, customScalarAdapters, falseVariables, pendingResultIds, errors)
+          data = operation.parseData(jsonReader, customScalarAdapters, falseVariables, deferredFragmentIds, errors)
         }
 
         "errors" -> errors = jsonReader.readErrors()

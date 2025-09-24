@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.Upload
+import com.apollographql.apollo.api.http.DefaultHttpRequestComposer.Companion.composePostParams
 import com.apollographql.apollo.api.http.internal.urlEncode
 import com.apollographql.apollo.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo.api.json.JsonWriter
@@ -38,10 +39,17 @@ import okio.buffer
  */
 class DefaultHttpRequestComposer(
     private val serverUrl: String,
-    private val enablePostCaching: Boolean
+    private val enablePostCaching: Boolean,
+    private val acceptHeaderQueriesAndMutations: String = HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824,
+    private val acceptHeaderSubscriptions: String = HEADER_ACCEPT_VALUE_SUBSCRIPTIONS_1_0,
 ) : HttpRequestComposer {
 
-  constructor(serverUrl: String): this(serverUrl, false)
+  constructor(serverUrl: String) : this(
+      serverUrl = serverUrl,
+      enablePostCaching = false,
+      acceptHeaderQueriesAndMutations = HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824,
+      acceptHeaderSubscriptions = HEADER_ACCEPT_VALUE_SUBSCRIPTIONS_1_0,
+  )
 
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
     val operation = apolloRequest.operation
@@ -49,9 +57,9 @@ class DefaultHttpRequestComposer(
 
     val requestHeaders = mutableListOf<HttpHeader>().apply {
       if (apolloRequest.operation is Subscription<*>) {
-        add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_MULTIPART))
+        add(HttpHeader(HEADER_ACCEPT_NAME, acceptHeaderSubscriptions))
       } else {
-        add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_DEFER))
+        add(HttpHeader(HEADER_ACCEPT_NAME, acceptHeaderQueriesAndMutations))
       }
       if (apolloRequest.httpHeaders != null) {
         addAll(apolloRequest.httpHeaders)
@@ -123,11 +131,21 @@ class DefaultHttpRequestComposer(
 
     val HEADER_ACCEPT_NAME = "Accept"
 
-    // TODO The deferSpec=20220824 part is a temporary measure so early backend implementations of the @defer directive
-    // can recognize early client implementations and potentially reply in a compatible way.
-    // This should be removed in later versions.
-    val HEADER_ACCEPT_VALUE_DEFER = "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
-    val HEADER_ACCEPT_VALUE_MULTIPART = "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
+    const val HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824 =
+      "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
+
+    // TODO To be agreed upon with the router and other clients
+    const val HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20230621 =
+      "multipart/mixed;incrementalDeliverySpec=20230621, application/graphql-response+json, application/json"
+
+    const val HEADER_ACCEPT_VALUE_SUBSCRIPTIONS_1_0 =
+      "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
+
+    @Deprecated("Use HEADER_ACCEPT_VALUE_SUBSCRIPTIONS_1_0 instead", ReplaceWith("HEADER_ACCEPT_VALUE_SUBSCRIPTIONS_1_0"))
+    val HEADER_ACCEPT_VALUE_MULTIPART = HEADER_ACCEPT_VALUE_SUBSCRIPTIONS_1_0
+
+    @Deprecated("Use HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824 instead", ReplaceWith("HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824"))
+    val HEADER_ACCEPT_VALUE_DEFER = HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824
 
     private fun <D : Operation.Data> buildGetUrl(
         serverUrl: String,

@@ -1,4 +1,4 @@
-name: defer-with-router-tests
+name: defer-integration-tests
 
 on:
   schedule:

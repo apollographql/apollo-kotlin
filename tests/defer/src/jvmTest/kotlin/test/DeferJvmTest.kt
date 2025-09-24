@@ -72,8 +72,11 @@ class DeferJvmTest {
     }
 
     val jsonList = listOf(
-        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"pending":[{"id":"0","path":["computers",0]},{"id":"1","path":["computers",1]}],"hasNext":true}""",
-        """{"hasNext":true,"pending":[{"id":"2","path":["computers",0,"screen"],"label":"a"},{"id":"3","path":["computers",1,"screen"],"label":"a"}],"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"id":"0"},{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"id":"1"},{"data":{"isColor":false},"id":"2"},{"data":{"isColor":true},"id":"3"}],"completed":[{"id":"0"},{"id":"1"},{"id":"2"},{"id":"3"}]}""",
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"hasNext":true}""",
+        """{"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
+        """{"incremental":[{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"path":["computers",1]}],"hasNext":true}""",
+        """{"incremental":[{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":true}""",
+        """{"incremental":[{"data":{"isColor":true},"path":["computers",1,"screen"],"label":"a"}],"hasNext":false}""",
     )
 
     for ((index, json) in jsonList.withIndex()) {
@@ -98,7 +101,9 @@ class DeferJvmTest {
             )
             ),
             WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
-                ComputerFields.Screen("Screen", "800x600", ScreenFields(true))
+                ComputerFields.Screen("Screen", "800x600",
+                    ScreenFields(true)
+                )
             )
             ),
         )
