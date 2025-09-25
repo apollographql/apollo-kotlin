@@ -295,7 +295,7 @@ final class com.apollographql.apollo.network.http/HttpNetworkTransport : com.apo
     final fun newBuilder(): com.apollographql.apollo.network.http/HttpNetworkTransport.Builder // com.apollographql.apollo.network.http/HttpNetworkTransport.newBuilder|newBuilder(){}[0]
 
     final enum class IncrementalDeliveryProtocol : kotlin/Enum<com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol> { // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol|null[0]
-        enum entry Defer20220824 // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.Defer20220824|null[0]
+        enum entry GraphQL17Alpha2 // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.GraphQL17Alpha2|null[0]
         enum entry GraphQL17Alpha9 // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.GraphQL17Alpha9|null[0]
 
         final val entries // com.apollographql.apollo.network.http/HttpNetworkTransport.IncrementalDeliveryProtocol.entries|#static{}entries[0]

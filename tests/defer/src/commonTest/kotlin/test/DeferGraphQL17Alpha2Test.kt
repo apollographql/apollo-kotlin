@@ -25,7 +25,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class Defer20220824Test {
+class DeferGraphQL17Alpha2Test {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
 

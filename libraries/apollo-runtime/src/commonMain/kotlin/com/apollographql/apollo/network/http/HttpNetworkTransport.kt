@@ -314,7 +314,7 @@ private constructor(
     private var engine: HttpEngine? = null
     private val interceptors: MutableList<HttpInterceptor> = mutableListOf()
     private var exposeErrorBody: Boolean = false
-    private var incrementalDeliveryProtocol: IncrementalDeliveryProtocol = IncrementalDeliveryProtocol.Defer20220824
+    private var incrementalDeliveryProtocol: IncrementalDeliveryProtocol = IncrementalDeliveryProtocol.GraphQL17Alpha2
     private val headers: MutableList<HttpHeader> = mutableListOf()
 
     fun httpRequestComposer(httpRequestComposer: HttpRequestComposer) = apply {
@@ -361,7 +361,7 @@ private constructor(
     /**
      * The incremental delivery protocol to use when using `@defer` and/or `@stream`.
      *
-     * Default: [IncrementalDeliveryProtocol.Defer20220824]
+     * Default: [IncrementalDeliveryProtocol.GraphQL17Alpha2]
      */
     @ApolloExperimental
     fun incrementalDeliveryProtocol(incrementalDeliveryProtocol: IncrementalDeliveryProtocol) = apply {
@@ -420,14 +420,14 @@ private constructor(
   enum class IncrementalDeliveryProtocol {
 
     /**
-     * Format specified in this historical commit:
+     * Newer format as implemented by graphql.js version `17.0.0-alpha.2` and specified in this historical commit:
      * https://github.com/graphql/graphql-spec/tree/48cf7263a71a683fab03d45d309fd42d8d9a6659/spec
      *
      * Only `@defer` is supported with this format.
      *
      * This is the default.
      */
-    Defer20220824,
+    GraphQL17Alpha2,
 
     /**
      * Newer format as implemented by graphql.js version `17.0.0-alpha.9`.

@@ -366,7 +366,7 @@ public final class com/apollographql/apollo/network/http/HttpNetworkTransport$En
 }
 
 public final class com/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol : java/lang/Enum {
-	public static final field Defer20220824 Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol;
+	public static final field GraphQL17Alpha2 Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol;
 	public static final field GraphQL17Alpha9 Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol;
