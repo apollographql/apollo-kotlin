@@ -427,7 +427,7 @@ private constructor(
      */
     object Defer20220824 : IncrementalDeliveryProtocol {
       @ApolloInternal
-      override val acceptHeader: String = DefaultHttpRequestComposer.HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824
+      override val acceptHeader: String = "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
 
       @ApolloInternal
       override fun newIncrementalResultsMerger(): IncrementalResultsMerger = Defer20220824IncrementalResultsMerger()
@@ -440,7 +440,8 @@ private constructor(
      */
     object GraphQL17Alpha9 : IncrementalDeliveryProtocol {
       @ApolloInternal
-      override val acceptHeader: String = DefaultHttpRequestComposer.HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20230621
+      // TODO To be agreed upon with the router and other clients
+      override val acceptHeader: String = "multipart/mixed;incrementalDeliverySpec=20230621, application/graphql-response+json, application/json"
 
       @ApolloInternal
       override fun newIncrementalResultsMerger(): IncrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()

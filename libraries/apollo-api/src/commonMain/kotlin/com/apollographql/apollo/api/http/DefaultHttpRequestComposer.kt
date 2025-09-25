@@ -40,15 +40,13 @@ import okio.buffer
 class DefaultHttpRequestComposer(
     private val serverUrl: String,
     private val enablePostCaching: Boolean,
-    private val acceptHeaderQueriesAndMutations: String = HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824,
-    private val acceptHeaderSubscriptions: String = HEADER_ACCEPT_VALUE_SUBSCRIPTIONS_1_0,
+    private val acceptHeaderQueriesAndMutations: String = HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS,
 ) : HttpRequestComposer {
 
   constructor(serverUrl: String) : this(
       serverUrl = serverUrl,
       enablePostCaching = false,
-      acceptHeaderQueriesAndMutations = HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824,
-      acceptHeaderSubscriptions = HEADER_ACCEPT_VALUE_SUBSCRIPTIONS_1_0,
+      acceptHeaderQueriesAndMutations = HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS,
   )
 
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
@@ -57,7 +55,7 @@ class DefaultHttpRequestComposer(
 
     val requestHeaders = mutableListOf<HttpHeader>().apply {
       if (apolloRequest.operation is Subscription<*>) {
-        add(HttpHeader(HEADER_ACCEPT_NAME, acceptHeaderSubscriptions))
+        add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_SUBSCRIPTIONS))
       } else {
         add(HttpHeader(HEADER_ACCEPT_NAME, acceptHeaderQueriesAndMutations))
       }
@@ -127,25 +125,11 @@ class DefaultHttpRequestComposer(
     // and thus is safe to execute.
     // See https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf
     // for details.
-    internal val HEADER_APOLLO_REQUIRE_PREFLIGHT = "Apollo-Require-Preflight"
+    private const val HEADER_APOLLO_REQUIRE_PREFLIGHT = "Apollo-Require-Preflight"
 
-    val HEADER_ACCEPT_NAME = "Accept"
-
-    const val HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824 =
-      "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
-
-    // TODO To be agreed upon with the router and other clients
-    const val HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20230621 =
-      "multipart/mixed;incrementalDeliverySpec=20230621, application/graphql-response+json, application/json"
-
-    const val HEADER_ACCEPT_VALUE_SUBSCRIPTIONS_1_0 =
-      "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
-
-    @Deprecated("Use HEADER_ACCEPT_VALUE_SUBSCRIPTIONS_1_0 instead", ReplaceWith("HEADER_ACCEPT_VALUE_SUBSCRIPTIONS_1_0"))
-    val HEADER_ACCEPT_VALUE_MULTIPART = HEADER_ACCEPT_VALUE_SUBSCRIPTIONS_1_0
-
-    @Deprecated("Use HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824 instead", ReplaceWith("HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824"))
-    val HEADER_ACCEPT_VALUE_DEFER = HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824
+    private const val HEADER_ACCEPT_NAME = "Accept"
+    private const val HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS = "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
+    private const val HEADER_ACCEPT_VALUE_SUBSCRIPTIONS = "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
 
     private fun <D : Operation.Data> buildGetUrl(
         serverUrl: String,
