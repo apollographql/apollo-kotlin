@@ -1,6 +1,7 @@
 package com.apollographql.apollo.network.http
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.CustomScalarAdapters
@@ -362,6 +363,7 @@ private constructor(
      *
      * Default: [IncrementalDeliveryProtocol.Defer20220824]
      */
+    @ApolloExperimental
     fun incrementalDeliveryProtocol(incrementalDeliveryProtocol: IncrementalDeliveryProtocol) = apply {
       this.incrementalDeliveryProtocol = incrementalDeliveryProtocol
     }
@@ -414,6 +416,7 @@ private constructor(
   /**
    * The protocol to use for incremental delivery (`@defer` and `@stream`).
    */
+  @ApolloExperimental
   enum class IncrementalDeliveryProtocol {
 
     /**
