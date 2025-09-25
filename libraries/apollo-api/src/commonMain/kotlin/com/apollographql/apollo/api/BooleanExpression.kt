@@ -95,7 +95,7 @@ private fun shouldParseFragment(
     // Modern protocol: parse fragments that are _not_ pending
     !deferredFragmentIdentifiers.contains(identifier)
   } else {
-    // Legacy 20220824 protocol: parse fragments that have been merged
+    // Legacy GraphQL17Alpha2 protocol: parse fragments that have been merged
     deferredFragmentIdentifiers.contains(identifier)
   }
 }

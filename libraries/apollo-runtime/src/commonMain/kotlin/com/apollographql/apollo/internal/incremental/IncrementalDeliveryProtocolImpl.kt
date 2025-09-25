@@ -18,7 +18,7 @@ internal sealed interface IncrementalDeliveryProtocolImpl {
   object Defer20220824 : IncrementalDeliveryProtocolImpl {
     override val acceptHeader: String = "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
 
-    override fun newIncrementalResultsMerger(): IncrementalResultsMerger = Defer20220824IncrementalResultsMerger()
+    override fun newIncrementalResultsMerger(): IncrementalResultsMerger = GraphQL17Alpha2IncrementalResultsMerger()
   }
 
   /**
@@ -37,6 +37,6 @@ internal sealed interface IncrementalDeliveryProtocolImpl {
 
 internal val HttpNetworkTransport.IncrementalDeliveryProtocol.impl: IncrementalDeliveryProtocolImpl
   get() = when (this) {
-    HttpNetworkTransport.IncrementalDeliveryProtocol.Defer20220824 -> IncrementalDeliveryProtocolImpl.Defer20220824
+    HttpNetworkTransport.IncrementalDeliveryProtocol.GraphQL17Alpha2 -> IncrementalDeliveryProtocolImpl.Defer20220824
     HttpNetworkTransport.IncrementalDeliveryProtocol.GraphQL17Alpha9 -> IncrementalDeliveryProtocolImpl.GraphQL17Alpha9
   }

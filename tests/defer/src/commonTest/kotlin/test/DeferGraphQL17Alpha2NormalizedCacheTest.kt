@@ -45,7 +45,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
-class Defer20220824NormalizedCacheTest {
+class DeferGraphQL17Alpha2NormalizedCacheTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
