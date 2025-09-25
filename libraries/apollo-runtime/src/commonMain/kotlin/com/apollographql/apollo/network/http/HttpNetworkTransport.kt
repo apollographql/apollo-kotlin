@@ -1,7 +1,6 @@
 package com.apollographql.apollo.network.http
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.CustomScalarAdapters
@@ -22,9 +21,9 @@ import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.RouterError
-import com.apollographql.apollo.internal.incremental.Defer20220824IncrementalResultsMerger
-import com.apollographql.apollo.internal.incremental.GraphQL17Alpha9IncrementalResultsMerger
+import com.apollographql.apollo.internal.incremental.IncrementalDeliveryProtocolImpl
 import com.apollographql.apollo.internal.incremental.IncrementalResultsMerger
+import com.apollographql.apollo.internal.incremental.impl
 import com.apollographql.apollo.internal.isGraphQLResponse
 import com.apollographql.apollo.internal.isMultipart
 import com.apollographql.apollo.internal.multipartBodyFlow
@@ -47,7 +46,7 @@ private constructor(
     private val engine: HttpEngine,
     val interceptors: List<HttpInterceptor>,
     private val exposeErrorBody: Boolean,
-    private val incrementalDeliveryProtocol: IncrementalDeliveryProtocol,
+    private val incrementalDeliveryProtocolImpl: IncrementalDeliveryProtocolImpl,
 ) : NetworkTransport {
   private val engineInterceptor = EngineInterceptor()
 
@@ -223,7 +222,7 @@ private constructor(
             }
           } else {
             if (incrementalResultsMerger == null) {
-              incrementalResultsMerger = incrementalDeliveryProtocol.newIncrementalResultsMerger()
+              incrementalResultsMerger = incrementalDeliveryProtocolImpl.newIncrementalResultsMerger()
             }
             val merged = incrementalResultsMerger.merge(part)
             val deferredFragmentIds = incrementalResultsMerger.incrementalResultIdentifiers
@@ -358,6 +357,11 @@ private constructor(
       this.engine = httpEngine
     }
 
+    /**
+     * The incremental delivery protocol to use when using `@defer` and/or `@stream`.
+     *
+     * Default: [IncrementalDeliveryProtocol.Defer20220824]
+     */
     fun incrementalDeliveryProtocol(incrementalDeliveryProtocol: IncrementalDeliveryProtocol) = apply {
       this.incrementalDeliveryProtocol = incrementalDeliveryProtocol
     }
@@ -379,7 +383,7 @@ private constructor(
           ?: serverUrl?.let {
             DefaultHttpRequestComposer(
                 serverUrl = it,
-                acceptHeaderQueriesAndMutations = incrementalDeliveryProtocol.acceptHeader,
+                acceptHeaderQueriesAndMutations = incrementalDeliveryProtocol.impl.acceptHeader,
             )
           }
           ?: error("No HttpRequestComposer found. Use 'httpRequestComposer' or 'serverUrl'")
@@ -393,7 +397,7 @@ private constructor(
           engine = engine ?: DefaultHttpEngine(),
           interceptors = interceptors,
           exposeErrorBody = exposeErrorBody,
-          incrementalDeliveryProtocol = incrementalDeliveryProtocol,
+          incrementalDeliveryProtocolImpl = incrementalDeliveryProtocol.impl,
       )
     }
   }
@@ -410,12 +414,7 @@ private constructor(
   /**
    * The protocol to use for incremental delivery (`@defer` and `@stream`).
    */
-  sealed interface IncrementalDeliveryProtocol {
-    @ApolloInternal
-    val acceptHeader: String
-
-    @ApolloInternal
-    fun newIncrementalResultsMerger(): IncrementalResultsMerger
+  enum class IncrementalDeliveryProtocol {
 
     /**
      * Format specified in this historical commit:
@@ -425,26 +424,13 @@ private constructor(
      *
      * This is the default.
      */
-    object Defer20220824 : IncrementalDeliveryProtocol {
-      @ApolloInternal
-      override val acceptHeader: String = "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
-
-      @ApolloInternal
-      override fun newIncrementalResultsMerger(): IncrementalResultsMerger = Defer20220824IncrementalResultsMerger()
-    }
+    Defer20220824,
 
     /**
      * Newer format as implemented by graphql.js version `17.0.0-alpha.9`.
      *
      * Both `@defer` and `@stream` are supported with this format.
      */
-    object GraphQL17Alpha9 : IncrementalDeliveryProtocol {
-      @ApolloInternal
-      // TODO To be agreed upon with the router and other clients
-      override val acceptHeader: String = "multipart/mixed;incrementalDeliverySpec=20230621, application/graphql-response+json, application/json"
-
-      @ApolloInternal
-      override fun newIncrementalResultsMerger(): IncrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
-    }
+    GraphQL17Alpha9
   }
 }

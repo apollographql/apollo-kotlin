@@ -1,6 +1,5 @@
 package com.apollographql.apollo.internal.incremental
 
-import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.IncrementalResultIdentifiers
 import okio.BufferedSource
 
@@ -18,8 +17,8 @@ import okio.BufferedSource
  * `extensions` in incremental results (if present) are merged together in an array and then set to the `extensions` field of the [merged]
  * Map.
  */
-@ApolloInternal
-interface IncrementalResultsMerger {
+
+internal sealed interface IncrementalResultsMerger {
   val merged: JsonMap
 
   val incrementalResultIdentifiers: IncrementalResultIdentifiers
