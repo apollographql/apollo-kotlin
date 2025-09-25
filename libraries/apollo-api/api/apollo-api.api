@@ -933,12 +933,9 @@ public final class com/apollographql/apollo/api/http/ByteStringHttpBody : com/ap
 
 public final class com/apollographql/apollo/api/http/DefaultHttpRequestComposer : com/apollographql/apollo/api/http/HttpRequestComposer {
 	public static final field Companion Lcom/apollographql/apollo/api/http/DefaultHttpRequestComposer$Companion;
-	public static final field HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20220824 Ljava/lang/String;
-	public static final field HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS_20230621 Ljava/lang/String;
-	public static final field HEADER_ACCEPT_VALUE_SUBSCRIPTIONS_1_0 Ljava/lang/String;
 	public fun <init> (Ljava/lang/String;)V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun compose (Lcom/apollographql/apollo/api/ApolloRequest;)Lcom/apollographql/apollo/api/http/HttpRequest;
 }
 
@@ -949,9 +946,6 @@ public final class com/apollographql/apollo/api/http/DefaultHttpRequestComposer$
 	public final fun buildPostBody (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/CustomScalarAdapters;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo/api/http/HttpBody;
 	public final fun buildPostBody (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/CustomScalarAdapters;ZZLjava/lang/String;)Lcom/apollographql/apollo/api/http/HttpBody;
 	public final fun composePayload (Lcom/apollographql/apollo/api/ApolloRequest;)Ljava/util/Map;
-	public final fun getHEADER_ACCEPT_NAME ()Ljava/lang/String;
-	public final fun getHEADER_ACCEPT_VALUE_DEFER ()Ljava/lang/String;
-	public final fun getHEADER_ACCEPT_VALUE_MULTIPART ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo/api/http/DefaultWebSocketPayloadComposer : com/apollographql/apollo/api/http/WebSocketPayloadComposer {

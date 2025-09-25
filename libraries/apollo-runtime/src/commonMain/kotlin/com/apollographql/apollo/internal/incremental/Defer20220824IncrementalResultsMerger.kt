@@ -1,6 +1,5 @@
 package com.apollographql.apollo.internal.incremental
 
-import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.IncrementalResultIdentifier
 import com.apollographql.apollo.api.IncrementalResultIdentifiers
 import okio.BufferedSource
@@ -8,9 +7,8 @@ import okio.BufferedSource
 /**
  * Merger for the [com.apollographql.apollo.network.http.HttpNetworkTransport.IncrementalDeliveryProtocol.Defer20220824] protocol format.
  */
-@ApolloInternal
 @Suppress("UNCHECKED_CAST")
-class Defer20220824IncrementalResultsMerger : IncrementalResultsMerger {
+internal class Defer20220824IncrementalResultsMerger : IncrementalResultsMerger {
   private val _merged: MutableJsonMap = mutableMapOf()
   override val merged: JsonMap = _merged
 

@@ -229,38 +229,6 @@ public final class com/apollographql/apollo/internal/MultipartReader$Part : java
 	public final fun getHeaders ()Ljava/util/List;
 }
 
-public final class com/apollographql/apollo/internal/incremental/Defer20220824IncrementalResultsMerger : com/apollographql/apollo/internal/incremental/IncrementalResultsMerger {
-	public fun <init> ()V
-	public fun getHasNext ()Z
-	public fun getIncrementalResultIdentifiers ()Ljava/util/Set;
-	public fun getMerged ()Ljava/util/Map;
-	public fun isEmptyResponse ()Z
-	public fun merge (Ljava/util/Map;)Ljava/util/Map;
-	public fun merge (Lokio/BufferedSource;)Ljava/util/Map;
-	public fun reset ()V
-}
-
-public final class com/apollographql/apollo/internal/incremental/GraphQL17Alpha9IncrementalResultsMerger : com/apollographql/apollo/internal/incremental/IncrementalResultsMerger {
-	public fun <init> ()V
-	public fun getHasNext ()Z
-	public fun getIncrementalResultIdentifiers ()Ljava/util/Set;
-	public fun getMerged ()Ljava/util/Map;
-	public fun isEmptyResponse ()Z
-	public fun merge (Ljava/util/Map;)Ljava/util/Map;
-	public fun merge (Lokio/BufferedSource;)Ljava/util/Map;
-	public fun reset ()V
-}
-
-public abstract interface class com/apollographql/apollo/internal/incremental/IncrementalResultsMerger {
-	public abstract fun getHasNext ()Z
-	public abstract fun getIncrementalResultIdentifiers ()Ljava/util/Set;
-	public abstract fun getMerged ()Ljava/util/Map;
-	public abstract fun isEmptyResponse ()Z
-	public abstract fun merge (Ljava/util/Map;)Ljava/util/Map;
-	public abstract fun merge (Lokio/BufferedSource;)Ljava/util/Map;
-	public abstract fun reset ()V
-}
-
 public abstract interface class com/apollographql/apollo/network/NetworkMonitor : java/io/Closeable {
 	public abstract fun isOnline ()Lkotlinx/coroutines/flow/StateFlow;
 }
@@ -367,7 +335,7 @@ public abstract interface class com/apollographql/apollo/network/http/HttpInterc
 }
 
 public final class com/apollographql/apollo/network/http/HttpNetworkTransport : com/apollographql/apollo/network/NetworkTransport {
-	public synthetic fun <init> (Lcom/apollographql/apollo/api/http/HttpRequestComposer;Lcom/apollographql/apollo/network/http/HttpEngine;Ljava/util/List;ZLcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo/api/http/HttpRequestComposer;Lcom/apollographql/apollo/network/http/HttpEngine;Ljava/util/List;ZLcom/apollographql/apollo/internal/incremental/IncrementalDeliveryProtocolImpl;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun dispose ()V
 	public fun execute (Lcom/apollographql/apollo/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 	public final fun getInterceptors ()Ljava/util/List;
@@ -393,21 +361,12 @@ public final class com/apollographql/apollo/network/http/HttpNetworkTransport$En
 	public fun intercept (Lcom/apollographql/apollo/api/http/HttpRequest;Lcom/apollographql/apollo/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class com/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol {
-	public abstract fun getAcceptHeader ()Ljava/lang/String;
-	public abstract fun newIncrementalResultsMerger ()Lcom/apollographql/apollo/internal/incremental/IncrementalResultsMerger;
-}
-
-public final class com/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol$Defer20220824 : com/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol {
-	public static final field INSTANCE Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol$Defer20220824;
-	public fun getAcceptHeader ()Ljava/lang/String;
-	public fun newIncrementalResultsMerger ()Lcom/apollographql/apollo/internal/incremental/IncrementalResultsMerger;
-}
-
-public final class com/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol$GraphQL17Alpha9 : com/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol {
-	public static final field INSTANCE Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol$GraphQL17Alpha9;
-	public fun getAcceptHeader ()Ljava/lang/String;
-	public fun newIncrementalResultsMerger ()Lcom/apollographql/apollo/internal/incremental/IncrementalResultsMerger;
+public final class com/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol : java/lang/Enum {
+	public static final field Defer20220824 Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol;
+	public static final field GraphQL17Alpha9 Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol;
+	public static fun values ()[Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol;
 }
 
 public final class com/apollographql/apollo/network/http/LoggingInterceptor : com/apollographql/apollo/network/http/HttpInterceptor {
