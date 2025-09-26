@@ -1,3 +1,5 @@
+name: publish-preview
+
 on:
   workflow_dispatch:
     inputs:

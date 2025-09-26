@@ -1,3 +1,5 @@
+name: platform-api-tests
+
 on:
   #  pull_request:
   #    branches: [ '*' ]

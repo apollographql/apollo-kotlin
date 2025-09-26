@@ -1,3 +1,5 @@
+name: build-pull-request
+
 on:
   pull_request:
     paths-ignore:

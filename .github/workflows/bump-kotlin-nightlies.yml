@@ -1,3 +1,5 @@
+name: bump-kotlin-nightlies
+
 on:
   schedule:
     - cron: '0 2 * * *'
