@@ -55,6 +55,17 @@ private constructor(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
     val customScalarAdapters = request.executionContext[CustomScalarAdapters]!!
+
+    val request = if (request.httpHeaders.orEmpty().none { it.name.lowercase() == "accept" }) {
+      val accept = if (request.operation is Subscription<*>) {
+        "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
+      } else {
+        incrementalDeliveryProtocolImpl.acceptHeader
+      }
+      request.newBuilder().addHttpHeader("accept", accept).build()
+    } else {
+      request
+    }
     val httpRequest = httpRequestComposer.compose(request)
 
     return execute(request, httpRequest, customScalarAdapters)
@@ -382,12 +393,7 @@ private constructor(
         "It is an error to set both 'httpRequestComposer' and 'serverUrl'"
       }
       val composer = httpRequestComposer
-          ?: serverUrl?.let {
-            DefaultHttpRequestComposer(
-                serverUrl = it,
-                acceptHeaderQueriesAndMutations = incrementalDeliveryProtocol.impl.acceptHeader,
-            )
-          }
+          ?: serverUrl?.let { DefaultHttpRequestComposer(it) }
           ?: error("No HttpRequestComposer found. Use 'httpRequestComposer' or 'serverUrl'")
 
       if (headers.isNotEmpty()) {
