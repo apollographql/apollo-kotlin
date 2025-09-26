@@ -19,10 +19,10 @@ class CustomScalarAdapters private constructor(
     @JvmField
     val falseVariables: Set<String>?,
     /**
-     * Incremental result identifiers used to determine whether the parser must parse deferred fragments
+     * Identifiers used to determine whether the parser must parse deferred fragments
      */
     @JvmField
-    val deferredFragmentIdentifiers: IncrementalResultIdentifiers?,
+    val deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?,
     /**
      * Errors to use with @catch
      */
@@ -131,14 +131,14 @@ class CustomScalarAdapters private constructor(
   class Builder {
     private val adaptersMap: MutableMap<String, Adapter<*>> = mutableMapOf()
     private var falseVariables: Set<String>? = null
-    private var deferredFragmentIdentifiers: IncrementalResultIdentifiers? = null
+    private var deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null
     private var errors: List<Error>? = null
 
     fun falseVariables(falseVariables: Set<String>?) = apply {
       this.falseVariables = falseVariables
     }
 
-    fun deferredFragmentIdentifiers(deferredFragmentIdentifiers: IncrementalResultIdentifiers?) = apply {
+    fun deferredFragmentIdentifiers(deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?) = apply {
       this.deferredFragmentIdentifiers = deferredFragmentIdentifiers
     }
 

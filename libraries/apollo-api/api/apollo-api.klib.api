@@ -994,6 +994,11 @@ final class com.apollographql.apollo.api/DeferredFragmentIdentifier { // com.apo
     final fun equals(kotlin/Any?): kotlin/Boolean // com.apollographql.apollo.api/DeferredFragmentIdentifier.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.apollographql.apollo.api/DeferredFragmentIdentifier.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.apollographql.apollo.api/DeferredFragmentIdentifier.toString|toString(){}[0]
+
+    final object Companion { // com.apollographql.apollo.api/DeferredFragmentIdentifier.Companion|null[0]
+        final val Pending // com.apollographql.apollo.api/DeferredFragmentIdentifier.Companion.Pending|{}Pending[0]
+            final fun <get-Pending>(): com.apollographql.apollo.api/DeferredFragmentIdentifier // com.apollographql.apollo.api/DeferredFragmentIdentifier.Companion.Pending.<get-Pending>|<get-Pending>(){}[0]
+    }
 }
 
 final class com.apollographql.apollo.api/EnumType : com.apollographql.apollo.api/CompiledNamedType { // com.apollographql.apollo.api/EnumType|null[0]
@@ -1429,9 +1434,6 @@ final fun (com.apollographql.apollo.api/Operation.Data).com.apollographql.apollo
 final fun (kotlin.collections/List<com.apollographql.apollo.api.http/HttpHeader>).com.apollographql.apollo.api.http/get(kotlin/String): kotlin/String? // com.apollographql.apollo.api.http/get|get@kotlin.collections.List<com.apollographql.apollo.api.http.HttpHeader>(kotlin.String){}[0]
 final fun (kotlin.collections/List<com.apollographql.apollo.api.http/HttpHeader>).com.apollographql.apollo.api.http/valueOf(kotlin/String): kotlin/String? // com.apollographql.apollo.api.http/valueOf|valueOf@kotlin.collections.List<com.apollographql.apollo.api.http.HttpHeader>(kotlin.String){}[0]
 final fun (kotlin.collections/Map<kotlin/String, kotlin/Any?>).com.apollographql.apollo.api.json/jsonReader(): com.apollographql.apollo.api.json/JsonReader // com.apollographql.apollo.api.json/jsonReader|jsonReader@kotlin.collections.Map<kotlin.String,kotlin.Any?>(){}[0]
-final fun (kotlin.collections/Set<com.apollographql.apollo.api/DeferredFragmentIdentifier>).com.apollographql.apollo.api/isPending(): kotlin/Boolean // com.apollographql.apollo.api/isPending|isPending@kotlin.collections.Set<com.apollographql.apollo.api.DeferredFragmentIdentifier>(){}[0]
-final fun (kotlin.collections/Set<com.apollographql.apollo.api/DeferredFragmentIdentifier>).com.apollographql.apollo.api/nonPending(): kotlin.collections/Set<com.apollographql.apollo.api/DeferredFragmentIdentifier> // com.apollographql.apollo.api/nonPending|nonPending@kotlin.collections.Set<com.apollographql.apollo.api.DeferredFragmentIdentifier>(){}[0]
-final fun (kotlin.collections/Set<com.apollographql.apollo.api/DeferredFragmentIdentifier>).com.apollographql.apollo.api/pending(): kotlin.collections/Set<com.apollographql.apollo.api/DeferredFragmentIdentifier> // com.apollographql.apollo.api/pending|pending@kotlin.collections.Set<com.apollographql.apollo.api.DeferredFragmentIdentifier>(){}[0]
 final fun (kotlin/String).com.apollographql.apollo.api.http.internal/urlDecode(): kotlin/String // com.apollographql.apollo.api.http.internal/urlDecode|urlDecode@kotlin.String(){}[0]
 final fun (kotlin/String).com.apollographql.apollo.api.http.internal/urlEncode(): kotlin/String // com.apollographql.apollo.api.http.internal/urlEncode|urlEncode@kotlin.String(){}[0]
 final fun (okio/BufferedSource).com.apollographql.apollo.api.json/jsonReader(): com.apollographql.apollo.api.json/JsonReader // com.apollographql.apollo.api.json/jsonReader|jsonReader@okio.BufferedSource(){}[0]

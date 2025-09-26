@@ -1,8 +1,6 @@
 package com.apollographql.apollo.internal.incremental
 
-import com.apollographql.apollo.api.IncrementalResultIdentifier
-import com.apollographql.apollo.api.IncrementalResultIdentifiers
-import com.apollographql.apollo.api.pending
+import com.apollographql.apollo.api.DeferredFragmentIdentifier
 import okio.BufferedSource
 
 /**
@@ -16,12 +14,12 @@ internal class GraphQL17Alpha9IncrementalResultsMerger : IncrementalResultsMerge
   /**
    * Map of identifiers to their corresponding IncrementalResultIdentifier, found in `pending`.
    */
-  private val _pendingResultIds = mutableMapOf<String, IncrementalResultIdentifier>()
+  private val _pendingResultIds = mutableMapOf<String, DeferredFragmentIdentifier>()
 
   /**
    * For this protocol, this represents the set of ids that are pending.
    */
-  override val incrementalResultIdentifiers: IncrementalResultIdentifiers get() = _pendingResultIds.values.toSet().pending()
+  override val deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier> get() = _pendingResultIds.values.toSet() + DeferredFragmentIdentifier.Pending
 
   override var hasNext: Boolean = true
     private set
@@ -74,7 +72,7 @@ internal class GraphQL17Alpha9IncrementalResultsMerger : IncrementalResultsMerge
         val id = pendingResult["id"] as String
         val path = pendingResult["path"] as List<Any>
         val label = pendingResult["label"] as String?
-        _pendingResultIds[id] = IncrementalResultIdentifier(path = path, label = label)
+        _pendingResultIds[id] = DeferredFragmentIdentifier(path = path, label = label)
       }
     }
   }

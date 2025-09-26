@@ -67,7 +67,7 @@ internal fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boo
 fun BooleanExpression<BTerm>.evaluate(
     variables: Set<String>?,
     typename: String?,
-    deferredFragmentIdentifiers: IncrementalResultIdentifiers?,
+    deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?,
     path: List<Any>?,
 ): Boolean {
   // Remove "data" from the path
@@ -75,22 +75,18 @@ fun BooleanExpression<BTerm>.evaluate(
   return evaluate {
     when (it) {
       is BVariable -> !(variables?.contains(it.name) ?: false)
-      is BLabel -> shouldParseFragment(deferredFragmentIdentifiers = deferredFragmentIdentifiers, path = croppedPath!!, label = it.label)
+      is BLabel -> shouldParseFragment(deferredFragmentIdentifiers, croppedPath!!, it.label)
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }
   }
 }
 
-private fun shouldParseFragment(
-    deferredFragmentIdentifiers: IncrementalResultIdentifiers?,
-    path: List<Any>,
-    label: String?,
-): Boolean {
+private fun shouldParseFragment(deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?, path: List<Any>, label: String?): Boolean {
   if (deferredFragmentIdentifiers == null) {
     // By default, parse all deferred fragments - this is the case when parsing from the normalized cache.
     return true
   }
-  val identifier = IncrementalResultIdentifier(path, label)
+  val identifier = DeferredFragmentIdentifier(path, label)
   return if (deferredFragmentIdentifiers.isPending()) {
     // Modern protocol: parse fragments that are _not_ pending
     !deferredFragmentIdentifiers.contains(identifier)
@@ -98,6 +94,10 @@ private fun shouldParseFragment(
     // Legacy GraphQL17Alpha2 protocol: parse fragments that have been merged
     deferredFragmentIdentifiers.contains(identifier)
   }
+}
+
+private fun Set<DeferredFragmentIdentifier>.isPending(): Boolean {
+  return any { it === DeferredFragmentIdentifier.Pending }
 }
 
 /**
