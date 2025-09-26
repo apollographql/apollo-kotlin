@@ -11,7 +11,7 @@ val BRANCH_NAME = "kotlin-nightlies"
 
 fun bumpVersions() {
   val kotlinVersion =
-    getLatestVersion("https://redirector.kotlinlang.org/maven/dev/org/jetbrains/kotlin/kotlin-stdlib/maven-metadata.xml", prefix = "2.2.0")
+    getLatestVersion("https://redirector.kotlinlang.org/maven/dev/org/jetbrains/kotlin/kotlin-stdlib/maven-metadata.xml", prefix = "2.3.0-dev")
 
   val useKspSnapshots = false
   val kspVersion = getLatestVersion(
@@ -19,15 +19,13 @@ fun bumpVersions() {
         "https://oss.sonatype.org/content/repositories/snapshots/com/google/devtools/ksp/com.google.devtools.ksp.gradle.plugin/maven-metadata.xml"
       } else {
         "https://repo1.maven.org/maven2/com/google/devtools/ksp/com.google.devtools.ksp.gradle.plugin/maven-metadata.xml"
-      },
-      prefix = "2.2.0"
+      }
   )
 
   File("gradle/libraries.toml").let { file ->
     file.writeText(
         file.readText()
             .replaceVersion("kotlin-plugin", kotlinVersion)
-            .replaceVersion("kotlin-plugin-max", kotlinVersion)
             .replaceVersion("ksp", kspVersion)
     )
   }
@@ -49,13 +47,21 @@ fun getLatestVersion(url: String, prefix: String? = null): String {
     document
         .getElementsByTagName("version")
         .let {
+          @Suppress("SimplifiableCallChain")
           (0 until it.length)
               .map { i -> it.item(i).textContent }
               .filter { it.startsWith(prefix) }
               .sortedBy {
                 Version.parse(
                     // Make it SemVer comparable
-                    it.replace("-dev-", "-dev.")
+                    it
+                        .replace("-dev-", "-dev.")
+                        .replace("-RC-", "-RC.")
+                        .replace("-RC2-", "-RC2.")
+                        .replace("-RC3-", "-RC3.")
+                        .replace("-Beta-", "-Beta.")
+                        .replace("-Beta2-", "-Beta2.")
+                        .replace("-Beta3-", "-Beta3.")
                 )
               }
               .last()
@@ -69,15 +75,20 @@ fun getLatestVersion(url: String, prefix: String? = null): String {
 }
 
 fun runCommand(vararg args: String): String {
-  val builder = ProcessBuilder(*args)
-      .redirectError(ProcessBuilder.Redirect.INHERIT)
+  println("Running command: '${args.joinToString(" ")}'")
+  val builder = ProcessBuilder(*args).redirectError(ProcessBuilder.Redirect.INHERIT)
   val process = builder.start()
-  val output = process.inputStream.bufferedReader().readText().trim()
+  val output = StringBuilder()
+  while (true) {
+    val line = process.inputStream.bufferedReader().readLine() ?: break
+    println("> $line")
+    output.append(line + "\n")
+  }
   val ret = process.waitFor()
   if (ret != 0) {
     throw Exception("command ${args.joinToString(" ")} failed:\n$output")
   }
-  return output
+  return output.toString().trim()
 }
 
 fun runCommand(args: String): String {
@@ -88,11 +99,19 @@ fun rebaseOnTopOfMain() {
   val firstCommitMessage = "Add Kotlin Dev and Maven Central Snapshots repositories"
   runCommand("git fetch origin main:main")
   val baseCommit = runCommand("git", "rev-parse", "HEAD^{/$firstCommitMessage}^")
+  println("Base commit: $baseCommit")
   runCommand("git rebase --rebase-merges $baseCommit --onto main")
 }
 
 fun triggerPrWorkflow() {
   runCommand("gh workflow run pr --ref $BRANCH_NAME")
+}
+
+fun updateLockFiles() {
+  File("kotlin-js-store").deleteRecursively()
+  File("tests/kotlin-js-store").deleteRecursively()
+  runCommand("./gradlew kotlinUpgradePackageLock kotlinWasmUpgradePackageLock")
+  runCommand("./gradlew -p tests kotlinUpgradePackageLock kotlinWasmUpgradePackageLock")
 }
 
 fun commitAndPush() {
@@ -112,6 +131,9 @@ fun main() {
 
   println("Bump versions in libraries.toml")
   bumpVersions()
+
+  println("Update lock files")
+  updateLockFiles()
 
   println("Commit and push")
   commitAndPush()
