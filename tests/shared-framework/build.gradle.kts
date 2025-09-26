@@ -6,11 +6,11 @@ plugins {
 apolloTest(withJs = false, appleTargets = setOf("iosSimulatorArm64"))
 
 kotlin {
-  iosSimulatorArm64 {
-    binaries {
+  listOf(macosArm64(), macosX64()).forEach {
+    it.binaries {
       framework {
         export(libs.apollo.api)
-        binaryOption("bundleId", "shared_framework")
+        binaryOption("bundleId", "apollo.shared")
       }
     }
   }

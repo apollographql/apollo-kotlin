@@ -7,43 +7,57 @@
 	objects = {
 
 /* Begin PBXContainerItemProxy section */
-		61452ED82D7734FE00E526F3 /* PBXContainerItemProxy */ = {
+		61846C952E86EEDD00B703A8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 61452EBF2D7734FA00E526F3 /* Project object */;
+			containerPortal = 61846C7F2E86EEDB00B703A8 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 61452EC62D7734FA00E526F3;
-			remoteInfo = com.apollographql.iostest;
+			remoteGlobalIDString = 61846C862E86EEDB00B703A8;
+			remoteInfo = "swift-tests";
+		};
+		61846C9F2E86EEDD00B703A8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 61846C7F2E86EEDB00B703A8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 61846C862E86EEDB00B703A8;
+			remoteInfo = "swift-tests";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		610F17C02E86BB440073D330 /* com.apollographql.iostest.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = com.apollographql.iostest.xctestplan; sourceTree = "<group>"; };
-		61452EC72D7734FA00E526F3 /* com.apollographql.iostest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = com.apollographql.iostest.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		61452ED72D7734FE00E526F3 /* com.apollographql.iostestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = com.apollographql.iostestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		61846C872E86EEDB00B703A8 /* swift-tests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "swift-tests.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		61846C942E86EEDD00B703A8 /* swift-testsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "swift-testsTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		61846C9E2E86EEDD00B703A8 /* swift-testsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "swift-testsUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		61452EC92D7734FA00E526F3 /* com.apollographql.iostest */ = {
+		61846C892E86EEDB00B703A8 /* swift-tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = com.apollographql.iostest;
+			path = "swift-tests";
 			sourceTree = "<group>";
 		};
-		61452EDA2D7734FE00E526F3 /* com.apollographql.iostestTests */ = {
+		61846C972E86EEDD00B703A8 /* swift-testsTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = com.apollographql.iostestTests;
+			path = "swift-testsTests";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		61452EC42D7734FA00E526F3 /* Frameworks */ = {
+		61846C842E86EEDB00B703A8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		61452ED42D7734FE00E526F3 /* Frameworks */ = {
+		61846C912E86EEDD00B703A8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61846C9B2E86EEDD00B703A8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -53,21 +67,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		61452EBE2D7734FA00E526F3 = {
+		61846C7E2E86EEDB00B703A8 = {
 			isa = PBXGroup;
 			children = (
-				610F17C02E86BB440073D330 /* com.apollographql.iostest.xctestplan */,
-				61452EC92D7734FA00E526F3 /* com.apollographql.iostest */,
-				61452EDA2D7734FE00E526F3 /* com.apollographql.iostestTests */,
-				61452EC82D7734FA00E526F3 /* Products */,
+				61846C892E86EEDB00B703A8 /* swift-tests */,
+				61846C972E86EEDD00B703A8 /* swift-testsTests */,
+				61846C882E86EEDB00B703A8 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		61452EC82D7734FA00E526F3 /* Products */ = {
+		61846C882E86EEDB00B703A8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				61452EC72D7734FA00E526F3 /* com.apollographql.iostest.app */,
-				61452ED72D7734FE00E526F3 /* com.apollographql.iostestTests.xctest */,
+				61846C872E86EEDB00B703A8 /* swift-tests.app */,
+				61846C942E86EEDD00B703A8 /* swift-testsTests.xctest */,
+				61846C9E2E86EEDD00B703A8 /* swift-testsUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -75,102 +89,132 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		61452EC62D7734FA00E526F3 /* com.apollographql.iostest */ = {
+		61846C862E86EEDB00B703A8 /* swift-tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 61452EEB2D7734FE00E526F3 /* Build configuration list for PBXNativeTarget "com.apollographql.iostest" */;
+			buildConfigurationList = 61846CA82E86EEDD00B703A8 /* Build configuration list for PBXNativeTarget "swift-tests" */;
 			buildPhases = (
-				61452EF42D7737F400E526F3 /* Compile Kotlin Framework */,
-				61452EC32D7734FA00E526F3 /* Sources */,
-				61452EC42D7734FA00E526F3 /* Frameworks */,
-				61452EC52D7734FA00E526F3 /* Resources */,
+				61846CB12E86EEE500B703A8 /* Compile Kotlin */,
+				61846C832E86EEDB00B703A8 /* Sources */,
+				61846C842E86EEDB00B703A8 /* Frameworks */,
+				61846C852E86EEDB00B703A8 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				61452EC92D7734FA00E526F3 /* com.apollographql.iostest */,
+				61846C892E86EEDB00B703A8 /* swift-tests */,
 			);
-			name = com.apollographql.iostest;
+			name = "swift-tests";
 			packageProductDependencies = (
 			);
-			productName = com.apollographql.iostest;
-			productReference = 61452EC72D7734FA00E526F3 /* com.apollographql.iostest.app */;
+			productName = "swift-tests";
+			productReference = 61846C872E86EEDB00B703A8 /* swift-tests.app */;
 			productType = "com.apple.product-type.application";
 		};
-		61452ED62D7734FE00E526F3 /* com.apollographql.iostestTests */ = {
+		61846C932E86EEDD00B703A8 /* swift-testsTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 61452EEE2D7734FE00E526F3 /* Build configuration list for PBXNativeTarget "com.apollographql.iostestTests" */;
+			buildConfigurationList = 61846CAB2E86EEDD00B703A8 /* Build configuration list for PBXNativeTarget "swift-testsTests" */;
 			buildPhases = (
-				61452ED32D7734FE00E526F3 /* Sources */,
-				61452ED42D7734FE00E526F3 /* Frameworks */,
-				61452ED52D7734FE00E526F3 /* Resources */,
+				61846C902E86EEDD00B703A8 /* Sources */,
+				61846C912E86EEDD00B703A8 /* Frameworks */,
+				61846C922E86EEDD00B703A8 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				61452ED92D7734FE00E526F3 /* PBXTargetDependency */,
+				61846C962E86EEDD00B703A8 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				61452EDA2D7734FE00E526F3 /* com.apollographql.iostestTests */,
+				61846C972E86EEDD00B703A8 /* swift-testsTests */,
 			);
-			name = com.apollographql.iostestTests;
+			name = "swift-testsTests";
 			packageProductDependencies = (
 			);
-			productName = com.apollographql.iostestTests;
-			productReference = 61452ED72D7734FE00E526F3 /* com.apollographql.iostestTests.xctest */;
+			productName = "swift-testsTests";
+			productReference = 61846C942E86EEDD00B703A8 /* swift-testsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		61846C9D2E86EEDD00B703A8 /* swift-testsUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 61846CAE2E86EEDD00B703A8 /* Build configuration list for PBXNativeTarget "swift-testsUITests" */;
+			buildPhases = (
+				61846C9A2E86EEDD00B703A8 /* Sources */,
+				61846C9B2E86EEDD00B703A8 /* Frameworks */,
+				61846C9C2E86EEDD00B703A8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				61846CA02E86EEDD00B703A8 /* PBXTargetDependency */,
+			);
+			name = "swift-testsUITests";
+			packageProductDependencies = (
+			);
+			productName = "swift-testsUITests";
+			productReference = 61846C9E2E86EEDD00B703A8 /* swift-testsUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		61452EBF2D7734FA00E526F3 /* Project object */ = {
+		61846C7F2E86EEDB00B703A8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1620;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
-					61452EC62D7734FA00E526F3 = {
-						CreatedOnToolsVersion = 16.2;
+					61846C862E86EEDB00B703A8 = {
+						CreatedOnToolsVersion = 26.0;
 					};
-					61452ED62D7734FE00E526F3 = {
-						CreatedOnToolsVersion = 16.2;
-						TestTargetID = 61452EC62D7734FA00E526F3;
+					61846C932E86EEDD00B703A8 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 61846C862E86EEDB00B703A8;
+					};
+					61846C9D2E86EEDD00B703A8 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 61846C862E86EEDB00B703A8;
 					};
 				};
 			};
-			buildConfigurationList = 61452EC22D7734FA00E526F3 /* Build configuration list for PBXProject "com.apollographql.iostest" */;
+			buildConfigurationList = 61846C822E86EEDB00B703A8 /* Build configuration list for PBXProject "swift-tests" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 61452EBE2D7734FA00E526F3;
+			mainGroup = 61846C7E2E86EEDB00B703A8;
 			minimizedProjectReferenceProxies = 1;
-			packageReferences = (
-			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 61452EC82D7734FA00E526F3 /* Products */;
+			productRefGroup = 61846C882E86EEDB00B703A8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				61452EC62D7734FA00E526F3 /* com.apollographql.iostest */,
-				61452ED62D7734FE00E526F3 /* com.apollographql.iostestTests */,
+				61846C862E86EEDB00B703A8 /* swift-tests */,
+				61846C932E86EEDD00B703A8 /* swift-testsTests */,
+				61846C9D2E86EEDD00B703A8 /* swift-testsUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		61452EC52D7734FA00E526F3 /* Resources */ = {
+		61846C852E86EEDB00B703A8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		61452ED52D7734FE00E526F3 /* Resources */ = {
+		61846C922E86EEDD00B703A8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61846C9C2E86EEDD00B703A8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -180,7 +224,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		61452EF42D7737F400E526F3 /* Compile Kotlin Framework */ = {
+		61846CB12E86EEE500B703A8 /* Compile Kotlin */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -190,26 +234,33 @@
 			);
 			inputPaths = (
 			);
-			name = "Compile Kotlin Framework";
+			name = "Compile Kotlin";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/..\"\n./gradlew :shared-framework:embedAndSignAppleFrameworkForXcode\n";
+			shellScript = "echo \"marting $SRCROOT/../tests\"\ncd \"$SRCROOT/../tests\"\n./gradlew :shared-framework:embedAndSignAppleFrameworkForXcode --no-daemon\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		61452EC32D7734FA00E526F3 /* Sources */ = {
+		61846C832E86EEDB00B703A8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		61452ED32D7734FE00E526F3 /* Sources */ = {
+		61846C902E86EEDD00B703A8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61846C9A2E86EEDD00B703A8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -219,15 +270,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		61452ED92D7734FE00E526F3 /* PBXTargetDependency */ = {
+		61846C962E86EEDD00B703A8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 61452EC62D7734FA00E526F3 /* com.apollographql.iostest */;
-			targetProxy = 61452ED82D7734FE00E526F3 /* PBXContainerItemProxy */;
+			target = 61846C862E86EEDB00B703A8 /* swift-tests */;
+			targetProxy = 61846C952E86EEDD00B703A8 /* PBXContainerItemProxy */;
+		};
+		61846CA02E86EEDD00B703A8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 61846C862E86EEDB00B703A8 /* swift-tests */;
+			targetProxy = 61846C9F2E86EEDD00B703A8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		61452EE92D7734FE00E526F3 /* Debug */ = {
+		61846CA62E86EEDD00B703A8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -279,18 +335,18 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.7;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
+				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
-		61452EEA2D7734FE00E526F3 /* Release */ = {
+		61846CA72E86EEDD00B703A8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -336,143 +392,195 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.7;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				SDKROOT = iphoneos;
+				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
-		61452EEC2D7734FE00E526F3 /* Debug */ = {
+		61846CA92E86EEDD00B703A8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"com.apollographql.iostest/Preview Content\"";
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
-					"@executable_path/Frameworks",
+					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.apollographql.com-apollographql-iostest";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.apollographql.swift-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		61452EED2D7734FE00E526F3 /* Release */ = {
+		61846CAA2E86EEDD00B703A8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"com.apollographql.iostest/Preview Content\"";
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
-					"@executable_path/Frameworks",
+					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.apollographql.com-apollographql-iostest";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.apollographql.swift-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
-		61452EEF2D7734FE00E526F3 /* Debug */ = {
+		61846CAC2E86EEDD00B703A8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.apollographql.com-apollographql-iostestTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.apollographql.swift-testsTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/com.apollographql.iostest.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/com.apollographql.iostest";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/swift-tests.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/swift-tests";
 			};
 			name = Debug;
 		};
-		61452EF02D7734FE00E526F3 /* Release */ = {
+		61846CAD2E86EEDD00B703A8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.apollographql.com-apollographql-iostestTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.apollographql.swift-testsTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/com.apollographql.iostest.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/com.apollographql.iostest";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/swift-tests.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/swift-tests";
+			};
+			name = Release;
+		};
+		61846CAF2E86EEDD00B703A8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.apollographql.swift-testsUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "swift-tests";
+			};
+			name = Debug;
+		};
+		61846CB02E86EEDD00B703A8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.apollographql.swift-testsUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "swift-tests";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		61452EC22D7734FA00E526F3 /* Build configuration list for PBXProject "com.apollographql.iostest" */ = {
+		61846C822E86EEDB00B703A8 /* Build configuration list for PBXProject "swift-tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				61452EE92D7734FE00E526F3 /* Debug */,
-				61452EEA2D7734FE00E526F3 /* Release */,
+				61846CA62E86EEDD00B703A8 /* Debug */,
+				61846CA72E86EEDD00B703A8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		61452EEB2D7734FE00E526F3 /* Build configuration list for PBXNativeTarget "com.apollographql.iostest" */ = {
+		61846CA82E86EEDD00B703A8 /* Build configuration list for PBXNativeTarget "swift-tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				61452EEC2D7734FE00E526F3 /* Debug */,
-				61452EED2D7734FE00E526F3 /* Release */,
+				61846CA92E86EEDD00B703A8 /* Debug */,
+				61846CAA2E86EEDD00B703A8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		61452EEE2D7734FE00E526F3 /* Build configuration list for PBXNativeTarget "com.apollographql.iostestTests" */ = {
+		61846CAB2E86EEDD00B703A8 /* Build configuration list for PBXNativeTarget "swift-testsTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				61452EEF2D7734FE00E526F3 /* Debug */,
-				61452EF02D7734FE00E526F3 /* Release */,
+				61846CAC2E86EEDD00B703A8 /* Debug */,
+				61846CAD2E86EEDD00B703A8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		61846CAE2E86EEDD00B703A8 /* Build configuration list for PBXNativeTarget "swift-testsUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61846CAF2E86EEDD00B703A8 /* Debug */,
+				61846CB02E86EEDD00B703A8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 61452EBF2D7734FA00E526F3 /* Project object */;
+	rootObject = 61846C7F2E86EEDB00B703A8 /* Project object */;
 }

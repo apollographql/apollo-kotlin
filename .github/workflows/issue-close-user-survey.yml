@@ -1,5 +1,3 @@
-name: Issue Close User Survey
-
 on:
   issues:
     types: [closed]
