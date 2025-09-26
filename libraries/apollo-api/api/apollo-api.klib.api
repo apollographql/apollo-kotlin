@@ -493,7 +493,6 @@ final class com.apollographql.apollo.api.http/ByteStringHttpBody : com.apollogra
 
 final class com.apollographql.apollo.api.http/DefaultHttpRequestComposer : com.apollographql.apollo.api.http/HttpRequestComposer { // com.apollographql.apollo.api.http/DefaultHttpRequestComposer|null[0]
     constructor <init>(kotlin/String) // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.<init>|<init>(kotlin.String){}[0]
-    constructor <init>(kotlin/String, kotlin/String = ...) // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.<init>|<init>(kotlin.String;kotlin.String){}[0]
 
     final fun <#A1: com.apollographql.apollo.api/Operation.Data> compose(com.apollographql.apollo.api/ApolloRequest<#A1>): com.apollographql.apollo.api.http/HttpRequest // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.compose|compose(com.apollographql.apollo.api.ApolloRequest<0:0>){0§<com.apollographql.apollo.api.Operation.Data>}[0]
 
