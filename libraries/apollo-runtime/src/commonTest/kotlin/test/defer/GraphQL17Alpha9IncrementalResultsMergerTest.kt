@@ -3,10 +3,9 @@
 package test.defer
 
 import com.apollographql.apollo.annotations.ApolloInternal
-import com.apollographql.apollo.api.IncrementalResultIdentifier
+import com.apollographql.apollo.api.DeferredFragmentIdentifier
 import com.apollographql.apollo.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.json.readAny
-import com.apollographql.apollo.api.nonPending
 import com.apollographql.apollo.internal.incremental.GraphQL17Alpha9IncrementalResultsMerger
 import okio.Buffer
 import kotlin.test.Test
@@ -81,9 +80,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("computers", 0), label = "query:Query1:0")
+            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0")
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -159,9 +158,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("computers", 1), label = "query:Query1:0")
+            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0")
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -241,9 +240,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -339,10 +338,10 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3_4), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
-            IncrementalResultIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -447,9 +446,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
   }
 
@@ -522,10 +521,10 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-            IncrementalResultIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -627,10 +626,10 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
-            IncrementalResultIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -755,9 +754,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
   }
 
@@ -902,9 +901,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf(), label = null),
+            DeferredFragmentIdentifier(path = listOf(), label = null),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -962,7 +961,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
   }
 
@@ -1022,9 +1021,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf(), label = "D1"),
+            DeferredFragmentIdentifier(path = listOf(), label = "D1"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -1088,9 +1087,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("f2", "c", "f"), label = "D2"),
+            DeferredFragmentIdentifier(path = listOf("f2", "c", "f"), label = "D2"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -1141,7 +1140,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
   }
 
@@ -1200,10 +1199,10 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf(), label = "Blue"),
-            IncrementalResultIdentifier(path = listOf("a", "b"), label = "Red"),
+            DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
+            DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -1255,9 +1254,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf(), label = "Blue"),
+            DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -1308,7 +1307,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
   }
 
@@ -1367,10 +1366,10 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf(), label = "Blue"),
-            IncrementalResultIdentifier(path = listOf("a", "b"), label = "Red"),
+            DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
+            DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -1428,9 +1427,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("a", "b"), label = "Red"),
+            DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -1478,7 +1477,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
   }
 
@@ -1521,10 +1520,10 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf(), label = null),
-            IncrementalResultIdentifier(path = listOf("me"), label = null),
+            DeferredFragmentIdentifier(path = listOf(), label = null),
+            DeferredFragmentIdentifier(path = listOf("me"), label = null),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -1619,9 +1618,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf(), label = null),
+            DeferredFragmentIdentifier(path = listOf(), label = null),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -1706,7 +1705,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
   }
 
@@ -1746,9 +1745,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("me"), label = "B"),
+            DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -1786,7 +1785,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
   }
 
@@ -1849,10 +1848,10 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("me"), label = "Billing"),
-            IncrementalResultIdentifier(path = listOf("me"), label = "Prev"),
+            DeferredFragmentIdentifier(path = listOf("me"), label = "Billing"),
+            DeferredFragmentIdentifier(path = listOf("me"), label = "Prev"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -1899,9 +1898,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("me"), label = "Prev"),
+            DeferredFragmentIdentifier(path = listOf("me"), label = "Prev"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -1955,7 +1954,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
   }
 
@@ -2000,10 +1999,10 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf(), label = "A"),
-            IncrementalResultIdentifier(path = listOf("me"), label = "B"),
+            DeferredFragmentIdentifier(path = listOf(), label = "A"),
+            DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -2059,9 +2058,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("me"), label = "B"),
+            DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -2125,9 +2124,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("me"), label = "B"),
+            DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
   }
 
@@ -2195,10 +2194,10 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("person"), label = "homeWorldDefer"),
-            IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+            DeferredFragmentIdentifier(path = listOf("person"), label = "homeWorldDefer"),
+            DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -2242,10 +2241,10 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("person"), label = "homeWorldDefer"),
-            IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+            DeferredFragmentIdentifier(path = listOf("person"), label = "homeWorldDefer"),
+            DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -2285,9 +2284,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("person"), label = "homeWorldDefer"),
+            DeferredFragmentIdentifier(path = listOf("person"), label = "homeWorldDefer"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -2340,7 +2339,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3_4), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
   }
 
@@ -2393,9 +2392,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+            DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -2435,9 +2434,9 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+            DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
 
     //language=JSON
@@ -2503,9 +2502,13 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
     assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
     assertEquals(
         setOf(
-            IncrementalResultIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+            DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers.nonPending()
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
     )
   }
+}
+
+private fun Set<DeferredFragmentIdentifier>.nonPending(): Set<DeferredFragmentIdentifier> {
+  return filter { it !== DeferredFragmentIdentifier.Pending }.toSet()
 }

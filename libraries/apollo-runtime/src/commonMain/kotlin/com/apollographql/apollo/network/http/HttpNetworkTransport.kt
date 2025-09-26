@@ -237,7 +237,7 @@ private constructor(
               incrementalResultsMerger = incrementalDeliveryProtocolImpl.newIncrementalResultsMerger()
             }
             val merged = incrementalResultsMerger.merge(part)
-            val deferredFragmentIds = incrementalResultsMerger.incrementalResultIdentifiers
+            val deferredFragmentIdentifiers = incrementalResultsMerger.deferredFragmentIdentifiers
             val isLast = !incrementalResultsMerger.hasNext
 
             if (incrementalResultsMerger.isEmptyResponse) {
@@ -246,7 +246,7 @@ private constructor(
               merged.jsonReader().toApolloResponse(
                   operation = operation,
                   customScalarAdapters = customScalarAdapters,
-                  deferredFragmentIdentifiers = deferredFragmentIds
+                  deferredFragmentIdentifiers = deferredFragmentIdentifiers
               ).newBuilder().isLast(isLast).build()
             }
           }

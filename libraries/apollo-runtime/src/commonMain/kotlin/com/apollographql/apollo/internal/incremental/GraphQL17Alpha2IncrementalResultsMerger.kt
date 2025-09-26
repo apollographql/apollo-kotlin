@@ -1,7 +1,6 @@
 package com.apollographql.apollo.internal.incremental
 
-import com.apollographql.apollo.api.IncrementalResultIdentifier
-import com.apollographql.apollo.api.IncrementalResultIdentifiers
+import com.apollographql.apollo.api.DeferredFragmentIdentifier
 import okio.BufferedSource
 
 /**
@@ -12,12 +11,12 @@ internal class GraphQL17Alpha2IncrementalResultsMerger : IncrementalResultsMerge
   private val _merged: MutableJsonMap = mutableMapOf()
   override val merged: JsonMap = _merged
 
-  private val _incrementalResultIds = mutableSetOf<IncrementalResultIdentifier>()
+  private val _deferredFragmentIdentifiers = mutableSetOf<DeferredFragmentIdentifier>()
 
   /**
    * For this protocol, this represents the set of fragment ids that are already merged.
    */
-  override val incrementalResultIdentifiers: IncrementalResultIdentifiers = _incrementalResultIds
+  override val deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier> = _deferredFragmentIdentifiers
 
   override var hasNext: Boolean = true
     private set
@@ -77,13 +76,13 @@ internal class GraphQL17Alpha2IncrementalResultsMerger : IncrementalResultsMerge
       val nodeToMergeInto = nodeAtPath(mergedData, path) as MutableJsonMap
       deepMergeObject(nodeToMergeInto, data)
 
-      _incrementalResultIds += IncrementalResultIdentifier(path = path, label = incrementalResult["label"] as String?)
+      _deferredFragmentIdentifiers += DeferredFragmentIdentifier(path = path, label = incrementalResult["label"] as String?)
     }
   }
 
   override fun reset() {
     _merged.clear()
-    _incrementalResultIds.clear()
+    _deferredFragmentIdentifiers.clear()
     hasNext = true
     isEmptyResponse = false
   }
