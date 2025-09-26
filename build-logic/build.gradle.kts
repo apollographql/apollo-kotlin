@@ -30,7 +30,6 @@ dependencies {
   implementation(libs.ktor.server.websockets)
 
   implementation(libs.kotlinx.benchmark)
-  implementation(libs.dokka)
   implementation(libs.licensee)
   implementation(libs.apollo.execution.gradle.plugin)
   implementation(libs.compat.patrouille)
