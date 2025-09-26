@@ -5,6 +5,7 @@ plugins {
 
 apolloTest(withJs = false, appleTargets = setOf("iosSimulatorArm64"))
 
+//
 kotlin {
   iosSimulatorArm64 {
     binaries {
