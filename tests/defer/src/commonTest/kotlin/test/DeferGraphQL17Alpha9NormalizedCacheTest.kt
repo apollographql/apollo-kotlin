@@ -20,7 +20,7 @@ import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.CacheMissException
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.network.http.HttpNetworkTransport
-import com.apollographql.apollo.network.http.HttpNetworkTransport.IncrementalDeliveryProtocol
+import com.apollographql.apollo.network.IncrementalDeliveryProtocol
 import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.assertNoRequest

@@ -29,6 +29,7 @@ import com.apollographql.apollo.internal.isGraphQLResponse
 import com.apollographql.apollo.internal.isMultipart
 import com.apollographql.apollo.internal.multipartBodyFlow
 import com.apollographql.apollo.mpp.currentTimeMillis
+import com.apollographql.apollo.network.IncrementalDeliveryProtocol
 import com.apollographql.apollo.network.NetworkTransport
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
@@ -417,29 +418,5 @@ private constructor(
     ): HttpResponse {
       return chain.proceed(request.newBuilder().addHeaders(headers).build())
     }
-  }
-
-  /**
-   * The protocol to use for incremental delivery (`@defer` and `@stream`).
-   */
-  @ApolloExperimental
-  enum class IncrementalDeliveryProtocol {
-
-    /**
-     * Newer format as implemented by graphql.js version `17.0.0-alpha.2` and specified in this historical commit:
-     * https://github.com/graphql/graphql-spec/tree/48cf7263a71a683fab03d45d309fd42d8d9a6659/spec
-     *
-     * Only `@defer` is supported with this format.
-     *
-     * This is the default.
-     */
-    GraphQL17Alpha2,
-
-    /**
-     * Newer format as implemented by graphql.js version `17.0.0-alpha.9`.
-     *
-     * Both `@defer` and `@stream` are supported with this format.
-     */
-    GraphQL17Alpha9
   }
 }
