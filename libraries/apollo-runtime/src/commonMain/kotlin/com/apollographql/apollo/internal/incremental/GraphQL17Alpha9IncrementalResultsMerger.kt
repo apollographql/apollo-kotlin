@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.DeferredFragmentIdentifier
 import okio.BufferedSource
 
 /**
- * Merger for the [com.apollographql.apollo.network.http.HttpNetworkTransport.IncrementalDeliveryProtocol.GraphQL17Alpha9] protocol format.
+ * Merger for the [com.apollographql.apollo.network.IncrementalDeliveryProtocol.GraphQL17Alpha9] protocol format.
  */
 @Suppress("UNCHECKED_CAST")
 internal class GraphQL17Alpha9IncrementalResultsMerger : IncrementalResultsMerger {

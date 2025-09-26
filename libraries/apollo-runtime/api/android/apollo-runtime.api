@@ -229,6 +229,14 @@ public final class com/apollographql/apollo/internal/MultipartReader$Part : java
 	public final fun getHeaders ()Ljava/util/List;
 }
 
+public final class com/apollographql/apollo/network/IncrementalDeliveryProtocol : java/lang/Enum {
+	public static final field GraphQL17Alpha2 Lcom/apollographql/apollo/network/IncrementalDeliveryProtocol;
+	public static final field GraphQL17Alpha9 Lcom/apollographql/apollo/network/IncrementalDeliveryProtocol;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo/network/IncrementalDeliveryProtocol;
+	public static fun values ()[Lcom/apollographql/apollo/network/IncrementalDeliveryProtocol;
+}
+
 public abstract interface class com/apollographql/apollo/network/NetworkMonitor : java/io/Closeable {
 	public abstract fun isOnline ()Lkotlinx/coroutines/flow/StateFlow;
 }
@@ -355,7 +363,7 @@ public final class com/apollographql/apollo/network/http/HttpNetworkTransport$Bu
 	public final fun httpEngine (Lcom/apollographql/apollo/network/http/HttpEngine;)Lcom/apollographql/apollo/network/http/HttpNetworkTransport$Builder;
 	public final fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo/network/http/HttpNetworkTransport$Builder;
 	public final fun httpRequestComposer (Lcom/apollographql/apollo/api/http/HttpRequestComposer;)Lcom/apollographql/apollo/network/http/HttpNetworkTransport$Builder;
-	public final fun incrementalDeliveryProtocol (Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol;)Lcom/apollographql/apollo/network/http/HttpNetworkTransport$Builder;
+	public final fun incrementalDeliveryProtocol (Lcom/apollographql/apollo/network/IncrementalDeliveryProtocol;)Lcom/apollographql/apollo/network/http/HttpNetworkTransport$Builder;
 	public final fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo/network/http/HttpNetworkTransport$Builder;
 	public final fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo/network/http/HttpNetworkTransport$Builder;
 }
@@ -363,14 +371,6 @@ public final class com/apollographql/apollo/network/http/HttpNetworkTransport$Bu
 public final class com/apollographql/apollo/network/http/HttpNetworkTransport$EngineInterceptor : com/apollographql/apollo/network/http/HttpInterceptor {
 	public fun <init> (Lcom/apollographql/apollo/network/http/HttpNetworkTransport;)V
 	public fun intercept (Lcom/apollographql/apollo/api/http/HttpRequest;Lcom/apollographql/apollo/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class com/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol : java/lang/Enum {
-	public static final field GraphQL17Alpha2 Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol;
-	public static final field GraphQL17Alpha9 Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol;
-	public static fun values ()[Lcom/apollographql/apollo/network/http/HttpNetworkTransport$IncrementalDeliveryProtocol;
 }
 
 public final class com/apollographql/apollo/network/http/LoggingInterceptor : com/apollographql/apollo/network/http/HttpInterceptor {
@@ -544,6 +544,7 @@ public final class com/apollographql/apollo/network/websocket/WebSocketNetworkTr
 	public final fun build ()Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport;
 	public final fun connectionAcknowledgeTimeout-BwNAW2A (Lkotlin/time/Duration;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
 	public final fun idleTimeout-BwNAW2A (Lkotlin/time/Duration;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
+	public final fun incrementalDeliveryProtocol (Lcom/apollographql/apollo/network/IncrementalDeliveryProtocol;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
 	public final fun parserFactory (Lcom/apollographql/apollo/network/websocket/SubscriptionParserFactory;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
 	public final fun pingInterval-BwNAW2A (Lkotlin/time/Duration;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
 	public final fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
@@ -672,7 +673,7 @@ public final class com/apollographql/apollo/network/ws/WebSocketEngineKt {
 }
 
 public final class com/apollographql/apollo/network/ws/WebSocketNetworkTransport : com/apollographql/apollo/network/NetworkTransport {
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;Lcom/apollographql/apollo/network/ws/WebSocketEngine;JLcom/apollographql/apollo/network/ws/WsProtocol$Factory;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;Lcom/apollographql/apollo/network/ws/WebSocketEngine;JLcom/apollographql/apollo/network/ws/WsProtocol$Factory;Lkotlin/jvm/functions/Function3;Lcom/apollographql/apollo/internal/incremental/IncrementalDeliveryProtocolImpl;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun closeConnection (Ljava/lang/Throwable;)V
 	public fun dispose ()V
 	public fun execute (Lcom/apollographql/apollo/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
@@ -686,6 +687,7 @@ public final class com/apollographql/apollo/network/ws/WebSocketNetworkTransport
 	public final fun build ()Lcom/apollographql/apollo/network/ws/WebSocketNetworkTransport;
 	public final fun headers (Ljava/util/List;)Lcom/apollographql/apollo/network/ws/WebSocketNetworkTransport$Builder;
 	public final fun idleTimeoutMillis (J)Lcom/apollographql/apollo/network/ws/WebSocketNetworkTransport$Builder;
+	public final fun incrementalDeliveryProtocol (Lcom/apollographql/apollo/network/IncrementalDeliveryProtocol;)Lcom/apollographql/apollo/network/ws/WebSocketNetworkTransport$Builder;
 	public final fun protocol (Lcom/apollographql/apollo/network/ws/WsProtocol$Factory;)Lcom/apollographql/apollo/network/ws/WebSocketNetworkTransport$Builder;
 	public final fun reopenWhen (Lkotlin/jvm/functions/Function3;)Lcom/apollographql/apollo/network/ws/WebSocketNetworkTransport$Builder;
 	public final fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo/network/ws/WebSocketNetworkTransport$Builder;
