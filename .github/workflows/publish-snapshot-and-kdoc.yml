@@ -1,3 +1,5 @@
+name: publish-snapshot-and-kdoc
+
 on:
   push:
     branches: [ main ]
