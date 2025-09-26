@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.Upload
+import com.apollographql.apollo.api.http.DefaultHttpRequestComposer.Companion.composePostParams
 import com.apollographql.apollo.api.http.internal.urlEncode
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.json.buildJsonByteString
@@ -39,13 +40,19 @@ class DefaultHttpRequestComposer(
     val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
     val requestHeaders = mutableListOf<HttpHeader>().apply {
-      if (apolloRequest.operation is Subscription<*>) {
-        add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_MULTIPART))
-      } else {
-        add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_DEFER))
-      }
       if (apolloRequest.httpHeaders != null) {
         addAll(apolloRequest.httpHeaders)
+      }
+      if (get("accept") == null) {
+        add(
+            HttpHeader("accept",
+                if (apolloRequest.operation is Subscription<*>) {
+                  "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
+                } else {
+                  "application/graphql-response+json, application/json"
+                }
+            )
+        )
       }
     }
 
@@ -92,14 +99,18 @@ class DefaultHttpRequestComposer(
     // and thus is safe to execute.
     // See https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf
     // for details.
-    internal val HEADER_APOLLO_REQUIRE_PREFLIGHT = "Apollo-Require-Preflight"
+    private const val HEADER_APOLLO_REQUIRE_PREFLIGHT = "Apollo-Require-Preflight"
 
+    @Deprecated("This was made public by mistake and will be removed in a future version, please use your own constants instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     val HEADER_ACCEPT_NAME = "Accept"
 
-    // TODO The deferSpec=20220824 part is a temporary measure so early backend implementations of the @defer directive
-    // can recognize early client implementations and potentially reply in a compatible way.
-    // This should be removed in later versions.
+    @Deprecated("This was made public by mistake and will be removed in a future version, please use your own constants instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     val HEADER_ACCEPT_VALUE_DEFER = "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
+
+    @Deprecated("This was made public by mistake and will be removed in a future version, please use your own constants instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     val HEADER_ACCEPT_VALUE_MULTIPART = "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
 
     private fun <D : Operation.Data> buildGetUrl(
