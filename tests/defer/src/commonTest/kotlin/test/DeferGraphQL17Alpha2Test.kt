@@ -60,52 +60,35 @@ class DeferGraphQL17Alpha2Test {
         WithFragmentSpreadsQuery.Data(
             listOf(
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                    ComputerFields.Screen("Screen", "640x480", null)
-                )
-                ),
+                    ComputerFields.Screen("Screen", "640x480", null))),
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
             )
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                    ComputerFields.Screen("Screen", "640x480", null)
-                )
-                ),
+                    ComputerFields.Screen("Screen", "640x480", null))),
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
-                    ComputerFields.Screen("Screen", "800x600", null)
-                )
-                ),
+                    ComputerFields.Screen("Screen", "800x600", null))),
             )
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                     ComputerFields.Screen("Screen", "640x480",
-                        ScreenFields(false)
-                    )
-                )
-                ),
+                        ScreenFields(false)))),
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
-                    ComputerFields.Screen("Screen", "800x600", null)
-                )
-                ),
+                    ComputerFields.Screen("Screen", "800x600", null))),
             )
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                     ComputerFields.Screen("Screen", "640x480",
-                        ScreenFields(false)
-                    )
-                )
-                ),
+                        ScreenFields(false)))),
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
                     ComputerFields.Screen("Screen", "800x600",
-                        ScreenFields(true)
-                    )
-                )
-                ),
+                        ScreenFields(true)))),
             )
         ),
     )
@@ -135,52 +118,35 @@ class DeferGraphQL17Alpha2Test {
         WithInlineFragmentsQuery.Data(
             listOf(
                 WithInlineFragmentsQuery.Computer("Computer", "Computer1", WithInlineFragmentsQuery.OnComputer("386", 1993,
-                    WithInlineFragmentsQuery.Screen("Screen", "640x480", null)
-                )
-                ),
+                    WithInlineFragmentsQuery.Screen("Screen", "640x480", null))),
                 WithInlineFragmentsQuery.Computer("Computer", "Computer2", null),
             )
         ),
         WithInlineFragmentsQuery.Data(
             listOf(
                 WithInlineFragmentsQuery.Computer("Computer", "Computer1", WithInlineFragmentsQuery.OnComputer("386", 1993,
-                    WithInlineFragmentsQuery.Screen("Screen", "640x480", null)
-                )
-                ),
+                    WithInlineFragmentsQuery.Screen("Screen", "640x480", null))),
                 WithInlineFragmentsQuery.Computer("Computer", "Computer2", WithInlineFragmentsQuery.OnComputer("486", 1996,
-                    WithInlineFragmentsQuery.Screen("Screen", "800x600", null)
-                )
-                ),
+                    WithInlineFragmentsQuery.Screen("Screen", "800x600", null))),
             )
         ),
         WithInlineFragmentsQuery.Data(
             listOf(
                 WithInlineFragmentsQuery.Computer("Computer", "Computer1", WithInlineFragmentsQuery.OnComputer("386", 1993,
                     WithInlineFragmentsQuery.Screen("Screen", "640x480",
-                        WithInlineFragmentsQuery.OnScreen(false)
-                    )
-                )
-                ),
+                        WithInlineFragmentsQuery.OnScreen(false)))),
                 WithInlineFragmentsQuery.Computer("Computer", "Computer2", WithInlineFragmentsQuery.OnComputer("486", 1996,
-                    WithInlineFragmentsQuery.Screen("Screen", "800x600", null)
-                )
-                ),
+                    WithInlineFragmentsQuery.Screen("Screen", "800x600", null))),
             )
         ),
         WithInlineFragmentsQuery.Data(
             listOf(
                 WithInlineFragmentsQuery.Computer("Computer", "Computer1", WithInlineFragmentsQuery.OnComputer("386", 1993,
                     WithInlineFragmentsQuery.Screen("Screen", "640x480",
-                        WithInlineFragmentsQuery.OnScreen(false)
-                    )
-                )
-                ),
+                        WithInlineFragmentsQuery.OnScreen(false)))),
                 WithInlineFragmentsQuery.Computer("Computer", "Computer2", WithInlineFragmentsQuery.OnComputer("486", 1996,
                     WithInlineFragmentsQuery.Screen("Screen", "800x600",
-                        WithInlineFragmentsQuery.OnScreen(true)
-                    )
-                )
-                ),
+                        WithInlineFragmentsQuery.OnScreen(true)))),
             )
         ),
     )
@@ -212,8 +178,7 @@ class DeferGraphQL17Alpha2Test {
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null),
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
             )
-        )
-        ).build(),
+        )).build(),
 
         ApolloResponse.Builder(
             query,
@@ -222,9 +187,7 @@ class DeferGraphQL17Alpha2Test {
             WithFragmentSpreadsQuery.Data(
                 listOf(
                     WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                        ComputerFields.Screen("Screen", "640x480", null)
-                    )
-                    ),
+                        ComputerFields.Screen("Screen", "640x480", null))),
                     WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
                 )
             )
@@ -238,9 +201,7 @@ class DeferGraphQL17Alpha2Test {
                 WithFragmentSpreadsQuery.Data(
                     listOf(
                         WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                            ComputerFields.Screen("Screen", "640x480", null)
-                        )
-                        ),
+                            ComputerFields.Screen("Screen", "640x480", null))),
                         WithFragmentSpreadsQuery.Computer("Computer", "Computer2", null),
                     )
                 )
@@ -262,13 +223,9 @@ class DeferGraphQL17Alpha2Test {
             WithFragmentSpreadsQuery.Data(
                 listOf(
                     WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                        ComputerFields.Screen("Screen", "640x480", null)
-                    )
-                    ),
+                        ComputerFields.Screen("Screen", "640x480", null))),
                     WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
-                        ComputerFields.Screen("Screen", "800x600", null)
-                    )
-                    ),
+                        ComputerFields.Screen("Screen", "800x600", null))),
                 )
             )
         ).build(),
@@ -280,15 +237,10 @@ class DeferGraphQL17Alpha2Test {
             WithFragmentSpreadsQuery.Data(
                 listOf(
                     WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                        ComputerFields.Screen("Screen", "640x480", null)
-                    )
-                    ),
+                        ComputerFields.Screen("Screen", "640x480", null))),
                     WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
                         ComputerFields.Screen("Screen", "800x600",
-                            ScreenFields(true)
-                        )
-                    )
-                    ),
+                            ScreenFields(true)))),
                 )
             )
         ).build(),
@@ -389,16 +341,10 @@ class DeferGraphQL17Alpha2Test {
             listOf(
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                     ComputerFields.Screen("Screen", "640x480",
-                        ScreenFields(false)
-                    )
-                )
-                ),
+                        ScreenFields(false)))),
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
                     ComputerFields.Screen("Screen", "800x600",
-                        ScreenFields(true)
-                    )
-                )
-                ),
+                        ScreenFields(true)))),
             )
         ),
         finalResponse.dataOrThrow()
@@ -428,16 +374,10 @@ class DeferGraphQL17Alpha2Test {
             listOf(
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                     ComputerFields.Screen("Screen", "640x480",
-                        ScreenFields(false)
-                    )
-                )
-                ),
+                        ScreenFields(false)))),
                 WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
                     ComputerFields.Screen("Screen", "800x600",
-                        ScreenFields(true)
-                    )
-                )
-                ),
+                        ScreenFields(true)))),
             )
         ),
         finalResponse.dataOrThrow()

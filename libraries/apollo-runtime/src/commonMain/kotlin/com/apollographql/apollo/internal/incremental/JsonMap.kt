@@ -9,7 +9,6 @@ import okio.BufferedSource
 internal typealias JsonMap = Map<String, Any?>
 internal typealias MutableJsonMap = MutableMap<String, Any?>
 
-
 /**
  * Find the node in the [map] at the given [path].
  * @param path The path to the node to find, as a list of either `String` (name of field in object) or `Int` (index of element in array).

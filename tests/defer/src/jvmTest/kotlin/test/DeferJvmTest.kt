@@ -96,16 +96,10 @@ class DeferJvmTest {
         listOf(
             WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                 ComputerFields.Screen("Screen", "640x480",
-                    ScreenFields(false)
-                )
-            )
-            ),
+                    ScreenFields(false)))),
             WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
                 ComputerFields.Screen("Screen", "800x600",
-                    ScreenFields(true)
-                )
-            )
-            ),
+                    ScreenFields(true)))),
         )
     )
 

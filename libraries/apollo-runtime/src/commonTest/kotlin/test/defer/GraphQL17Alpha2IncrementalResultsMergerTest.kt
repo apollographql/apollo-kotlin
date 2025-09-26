@@ -49,7 +49,7 @@ class GraphQL17Alpha2IncrementalResultsMergerTest {
     assertEquals(jsonToMap(payload1), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.incrementalResultIdentifiers
+        incrementalResultsMerger.deferredFragmentIdentifiers
     )
 
     //language=JSON
@@ -121,7 +121,7 @@ class GraphQL17Alpha2IncrementalResultsMergerTest {
         setOf(
             DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers
+        incrementalResultsMerger.deferredFragmentIdentifiers
     )
 
     //language=JSON
@@ -198,7 +198,7 @@ class GraphQL17Alpha2IncrementalResultsMergerTest {
             DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
             DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers
+        incrementalResultsMerger.deferredFragmentIdentifiers
     )
 
     //language=JSON
@@ -287,7 +287,7 @@ class GraphQL17Alpha2IncrementalResultsMergerTest {
             DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
             DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers
+        incrementalResultsMerger.deferredFragmentIdentifiers
     )
 
     //language=JSON
@@ -386,7 +386,7 @@ class GraphQL17Alpha2IncrementalResultsMergerTest {
             DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
             DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers
+        incrementalResultsMerger.deferredFragmentIdentifiers
     )
   }
 
@@ -420,7 +420,7 @@ class GraphQL17Alpha2IncrementalResultsMergerTest {
     assertEquals(jsonToMap(payload1), incrementalResultsMerger.merged)
     assertEquals(
         setOf(),
-        incrementalResultsMerger.incrementalResultIdentifiers
+        incrementalResultsMerger.deferredFragmentIdentifiers
     )
 
     //language=JSON
@@ -522,7 +522,7 @@ class GraphQL17Alpha2IncrementalResultsMergerTest {
             DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
             DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers
+        incrementalResultsMerger.deferredFragmentIdentifiers
     )
 
     //language=JSON
@@ -662,7 +662,7 @@ class GraphQL17Alpha2IncrementalResultsMergerTest {
             DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
             DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
         ),
-        incrementalResultsMerger.incrementalResultIdentifiers
+        incrementalResultsMerger.deferredFragmentIdentifiers
     )
   }
 

@@ -1,12 +1,12 @@
 package com.apollographql.apollo.internal.incremental
 
-import com.apollographql.apollo.api.IncrementalResultIdentifiers
+import com.apollographql.apollo.api.DeferredFragmentIdentifier
 import okio.BufferedSource
 
 /**
  * Utility for merging GraphQL incremental results received in multiple chunks when using the `@defer` and/or `@stream` directives.
  *
- * Each call to [merge] will merge the given results into the [merged] Map, and will also update [incrementalResultIdentifiers] with the
+ * Each call to [merge] will merge the given results into the [merged] Map, and will also update [deferredFragmentIdentifiers] with the
  * value of their `path` and `label` fields.
  *
  * The fields in `data` are merged into the node found in [merged] at the path known by looking at the `id` field. For the first call to
@@ -17,11 +17,10 @@ import okio.BufferedSource
  * `extensions` in incremental results (if present) are merged together in an array and then set to the `extensions` field of the [merged]
  * Map.
  */
-
 internal sealed interface IncrementalResultsMerger {
   val merged: JsonMap
 
-  val incrementalResultIdentifiers: IncrementalResultIdentifiers
+  val deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>
 
   val hasNext: Boolean
 

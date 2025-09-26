@@ -531,6 +531,7 @@ public final class com/apollographql/apollo/api/DefaultUploadKt {
 }
 
 public final class com/apollographql/apollo/api/DeferredFragmentIdentifier {
+	public static final field Companion Lcom/apollographql/apollo/api/DeferredFragmentIdentifier$Companion;
 	public fun <init> (Ljava/util/List;Ljava/lang/String;)V
 	public final fun component1 ()Ljava/util/List;
 	public final fun component2 ()Ljava/lang/String;
@@ -541,6 +542,10 @@ public final class com/apollographql/apollo/api/DeferredFragmentIdentifier {
 	public final fun getPath ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo/api/DeferredFragmentIdentifier$Companion {
+	public final fun getPending ()Lcom/apollographql/apollo/api/DeferredFragmentIdentifier;
 }
 
 public final class com/apollographql/apollo/api/EnumType : com/apollographql/apollo/api/CompiledNamedType {

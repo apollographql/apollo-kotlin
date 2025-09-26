@@ -88,11 +88,7 @@ class DeferGraphQL17Alpha2NormalizedCacheTest {
     val cacheExpected = WithFragmentSpreadsQuery.Data(
         listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
             ComputerFields.Screen("Screen", "640x480",
-                ScreenFields(false)
-            )
-        )
-        )
-        )
+                ScreenFields(false)))))
     )
     assertEquals(cacheExpected, cacheActual)
   }
@@ -122,19 +118,12 @@ class DeferGraphQL17Alpha2NormalizedCacheTest {
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480", null)
-            )
-            )
-            )
+                ComputerFields.Screen("Screen", "640x480", null))))
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                 ComputerFields.Screen("Screen", "640x480",
-                    ScreenFields(false)
-                )
-            )
-            )
-            )
+                    ScreenFields(false)))))
         ),
     )
     assertEquals(networkExpected, networkActual)
@@ -163,19 +152,12 @@ class DeferGraphQL17Alpha2NormalizedCacheTest {
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480", null)
-            )
-            )
-            )
+                ComputerFields.Screen("Screen", "640x480", null))))
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                 ComputerFields.Screen("Screen", "640x480",
-                    ScreenFields(false)
-                )
-            )
-            )
-            )
+                    ScreenFields(false)))))
         ),
     )
     assertEquals(networkExpected, networkActual)
@@ -210,19 +192,12 @@ class DeferGraphQL17Alpha2NormalizedCacheTest {
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480", null)
-            )
-            )
-            )
+                ComputerFields.Screen("Screen", "640x480", null))))
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                 ComputerFields.Screen("Screen", "640x480",
-                    ScreenFields(false)
-                )
-            )
-            )
-            )
+                    ScreenFields(false)))))
         ),
     )
     assertEquals(networkExpected, networkActual)
@@ -259,19 +234,12 @@ class DeferGraphQL17Alpha2NormalizedCacheTest {
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480", null)
-            )
-            )
-            )
+                ComputerFields.Screen("Screen", "640x480", null))))
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                 ComputerFields.Screen("Screen", "640x480",
-                    ScreenFields(false)
-                )
-            )
-            )
-            )
+                    ScreenFields(false)))))
         ),
     )
     assertEquals(networkExpected, networkActual)
@@ -296,19 +264,12 @@ class DeferGraphQL17Alpha2NormalizedCacheTest {
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
-                ComputerFields.Screen("Screen", "800x600", null)
-            )
-            )
-            )
+                ComputerFields.Screen("Screen", "800x600", null))))
         ),
         WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
                 ComputerFields.Screen("Screen", "800x600",
-                    ScreenFields(true)
-                )
-            )
-            )
-            )
+                    ScreenFields(true)))))
         ),
     )
 
@@ -339,20 +300,15 @@ class DeferGraphQL17Alpha2NormalizedCacheTest {
             uuid,
         ).data(WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null))
-        )
-        ).build(),
+        )).build(),
 
         ApolloResponse.Builder(
             query,
             uuid,
         ).data(WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480", null)
-            )
-            )
-            )
-        )
-        ).build(),
+                ComputerFields.Screen("Screen", "640x480", null))))
+        )).build(),
 
         ApolloResponse.Builder(
             query,
@@ -361,10 +317,7 @@ class DeferGraphQL17Alpha2NormalizedCacheTest {
             .data(
                 WithFragmentSpreadsQuery.Data(
                     listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                        ComputerFields.Screen("Screen", "640x480", null)
-                    )
-                    )
-                    )
+                        ComputerFields.Screen("Screen", "640x480", null))))
                 )
             )
             .errors(
@@ -398,20 +351,15 @@ class DeferGraphQL17Alpha2NormalizedCacheTest {
             uuid,
         ).data(WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", null))
-        )
-        ).build(),
+        )).build(),
 
         ApolloResponse.Builder(
             query,
             uuid,
         ).data(WithFragmentSpreadsQuery.Data(
             listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480", null)
-            )
-            )
-            )
-        )
-        ).build(),
+                ComputerFields.Screen("Screen", "640x480", null))))
+        )).build(),
     )
 
     apolloClient = ApolloClient.Builder()
@@ -430,8 +378,7 @@ class DeferGraphQL17Alpha2NormalizedCacheTest {
                   emit(ApolloResponse.Builder(requestUuid = uuid, operation = query)
                       .exception(ApolloNetworkException("Network error"))
                       .isLast(true)
-                      .build() as ApolloResponse<D>
-                  )
+                      .build() as ApolloResponse<D>)
                 }
               }
 
@@ -471,19 +418,12 @@ class DeferGraphQL17Alpha2NormalizedCacheTest {
         ),
         WithFragmentSpreadsMutation.Data(
             listOf(WithFragmentSpreadsMutation.Computer("Computer", "Computer1", ComputerFields("386", 1993,
-                ComputerFields.Screen("Screen", "640x480", null)
-            )
-            )
-            )
+                ComputerFields.Screen("Screen", "640x480", null))))
         ),
         WithFragmentSpreadsMutation.Data(
             listOf(WithFragmentSpreadsMutation.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                 ComputerFields.Screen("Screen", "640x480",
-                    ScreenFields(false)
-                )
-            )
-            )
-            )
+                    ScreenFields(false)))))
         ),
     )
     assertEquals(networkExpected, networkActual)
@@ -495,11 +435,7 @@ class DeferGraphQL17Alpha2NormalizedCacheTest {
     val cacheExpected = WithFragmentSpreadsQuery.Data(
         listOf(WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
             ComputerFields.Screen("Screen", "640x480",
-                ScreenFields(false)
-            )
-        )
-        )
-        )
+                ScreenFields(false)))))
     )
     assertEquals(cacheExpected, cacheActual)
   }
