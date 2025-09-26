@@ -12,6 +12,9 @@ import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloWebSocketForceCloseException
 import com.apollographql.apollo.exception.DefaultApolloException
 import com.apollographql.apollo.exception.SubscriptionOperationException
+import com.apollographql.apollo.internal.incremental.IncrementalDeliveryProtocolImpl
+import com.apollographql.apollo.internal.incremental.impl
+import com.apollographql.apollo.network.IncrementalDeliveryProtocol
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.network.websocket.internal.OperationListener
 import com.apollographql.apollo.network.websocket.internal.WebSocketPool
@@ -113,6 +116,7 @@ class WebSocketNetworkTransport private constructor(
     private var pingInterval: Duration? = null
     private var idleTimeout: Duration? = null
     private var parserFactory: SubscriptionParserFactory? = null
+    private var incrementalDeliveryProtocol: IncrementalDeliveryProtocol = IncrementalDeliveryProtocol.GraphQL17Alpha2
 
     /**
      * @param serverUrl a server url that is called every time a WebSocket
@@ -176,6 +180,15 @@ class WebSocketNetworkTransport private constructor(
       this.parserFactory = parserFactory
     }
 
+    /**
+     * The incremental delivery protocol to use when using `@defer` and/or `@stream`.
+     *
+     * Default: [IncrementalDeliveryProtocol.GraphQL17Alpha2]
+     */
+    @ApolloExperimental
+    fun incrementalDeliveryProtocol(incrementalDeliveryProtocol: IncrementalDeliveryProtocol) = apply {
+      this.incrementalDeliveryProtocol = incrementalDeliveryProtocol
+    }
 
     /**
      * Builds the [WebSocketNetworkTransport]
@@ -188,19 +201,25 @@ class WebSocketNetworkTransport private constructor(
           wsProtocol = wsProtocol ?: GraphQLWsProtocol { null },
           pingInterval = pingInterval,
           connectionAcknowledgeTimeout = connectionAcknowledgeTimeout ?: 10.seconds,
-          parserFactory = parserFactory ?: DefaultSubscriptionParserFactory
+          parserFactory = parserFactory ?: DefaultSubscriptionParserFactory(incrementalDeliveryProtocol.impl),
       )
     }
   }
 }
 
-private object DefaultSubscriptionParserFactory : SubscriptionParserFactory {
+private class DefaultSubscriptionParserFactory(
+    private val incrementalDeliveryProtocolImpl: IncrementalDeliveryProtocolImpl,
+) : SubscriptionParserFactory {
   override fun <D : Operation.Data> createParser(request: ApolloRequest<D>): SubscriptionParser<D> {
-    return DefaultSubscriptionParser(request)
+    return DefaultSubscriptionParser(incrementalDeliveryProtocolImpl, request)
   }
 }
 
-private class DefaultSubscriptionParser<D : Operation.Data>(private val request: ApolloRequest<D>) : SubscriptionParser<D> {
+private class DefaultSubscriptionParser<D : Operation.Data>(
+    incrementalDeliveryProtocolImpl: IncrementalDeliveryProtocolImpl,
+    private val request: ApolloRequest<D>,
+) : SubscriptionParser<D> {
+  private val incrementalResultsMerger = incrementalDeliveryProtocolImpl.newIncrementalResultsMerger()
   private val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
   @Suppress("NAME_SHADOWING")
@@ -212,13 +231,28 @@ private class DefaultSubscriptionParser<D : Operation.Data>(private val request:
           .exception(DefaultApolloException("Invalid payload")).build()
     }
 
-    val apolloResponse: ApolloResponse<D> = responseMap.jsonReader().toApolloResponse(
+    val (payload, deferredFragmentIdentifiers) = if (responseMap.isDeferred()) {
+      incrementalResultsMerger.merge(responseMap) to incrementalResultsMerger.deferredFragmentIdentifiers
+    } else {
+      responseMap to null
+    }
+    val apolloResponse: ApolloResponse<D> = payload.jsonReader().toApolloResponse(
         operation = request.operation,
         requestUuid = request.requestUuid,
         customScalarAdapters = requestCustomScalarAdapters,
+        deferredFragmentIdentifiers = deferredFragmentIdentifiers,
     )
 
-    return apolloResponse
+    if (!incrementalResultsMerger.hasNext) {
+      // Last deferred payload: reset the incrementalResultsMerger for potential subsequent responses
+      incrementalResultsMerger.reset()
+    }
+
+    return if (incrementalResultsMerger.isEmptyResponse) {
+      null
+    } else {
+      apolloResponse
+    }
   }
 }
 
@@ -253,6 +287,11 @@ private class DefaultOperationListener<D : Operation.Data>(
     producerScope.close()
   }
 }
+
+private fun Map<String, Any?>.isDeferred(): Boolean {
+  return keys.contains("hasNext")
+}
+
 /**
  * Closes the websocket connection if the transport is a [WebSocketNetworkTransport].
  *

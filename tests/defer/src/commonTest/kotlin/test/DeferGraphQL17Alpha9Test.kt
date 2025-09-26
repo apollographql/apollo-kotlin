@@ -7,7 +7,7 @@ import com.apollographql.apollo.api.Error.Builder
 import com.apollographql.apollo.autoPersistedQueryInfo
 import com.apollographql.apollo.mpp.currentTimeMillis
 import com.apollographql.apollo.network.http.HttpNetworkTransport
-import com.apollographql.apollo.network.http.HttpNetworkTransport.IncrementalDeliveryProtocol
+import com.apollographql.apollo.network.IncrementalDeliveryProtocol
 import com.apollographql.apollo.testing.Platform
 import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.apollo.testing.platform

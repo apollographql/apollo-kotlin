@@ -1,6 +1,6 @@
 package com.apollographql.apollo.internal.incremental
 
-import com.apollographql.apollo.network.http.HttpNetworkTransport
+import com.apollographql.apollo.network.IncrementalDeliveryProtocol
 
 internal sealed interface IncrementalDeliveryProtocolImpl {
   val acceptHeader: String
@@ -22,8 +22,8 @@ internal sealed interface IncrementalDeliveryProtocolImpl {
   }
 }
 
-internal val HttpNetworkTransport.IncrementalDeliveryProtocol.impl: IncrementalDeliveryProtocolImpl
+internal val IncrementalDeliveryProtocol.impl: IncrementalDeliveryProtocolImpl
   get() = when (this) {
-    HttpNetworkTransport.IncrementalDeliveryProtocol.GraphQL17Alpha2 -> IncrementalDeliveryProtocolImpl.GraphQL17Alpha2
-    HttpNetworkTransport.IncrementalDeliveryProtocol.GraphQL17Alpha9 -> IncrementalDeliveryProtocolImpl.GraphQL17Alpha9
+    IncrementalDeliveryProtocol.GraphQL17Alpha2 -> IncrementalDeliveryProtocolImpl.GraphQL17Alpha2
+    IncrementalDeliveryProtocol.GraphQL17Alpha9 -> IncrementalDeliveryProtocolImpl.GraphQL17Alpha9
   }
