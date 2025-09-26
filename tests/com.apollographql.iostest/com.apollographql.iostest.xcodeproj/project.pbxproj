@@ -17,6 +17,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		610F17C02E86BB440073D330 /* com.apollographql.iostest.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = com.apollographql.iostest.xctestplan; sourceTree = "<group>"; };
 		61452EC72D7734FA00E526F3 /* com.apollographql.iostest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = com.apollographql.iostest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		61452ED72D7734FE00E526F3 /* com.apollographql.iostestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = com.apollographql.iostestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -55,6 +56,7 @@
 		61452EBE2D7734FA00E526F3 = {
 			isa = PBXGroup;
 			children = (
+				610F17C02E86BB440073D330 /* com.apollographql.iostest.xctestplan */,
 				61452EC92D7734FA00E526F3 /* com.apollographql.iostest */,
 				61452EDA2D7734FE00E526F3 /* com.apollographql.iostestTests */,
 				61452EC82D7734FA00E526F3 /* Products */,
@@ -180,6 +182,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		61452EF42D7737F400E526F3 /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);

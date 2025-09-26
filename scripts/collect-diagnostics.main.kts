@@ -2,16 +2,15 @@
 
 /**
  * Copy this file to scripts/collect-diagnostics.main.kts and add the below to your
- * Github Actions workflow file:
+ * GitHub Actions workflow file:
  *
- *      - name: Collect Diagnostics
- *        if: always()
- *        run: ./scripts/collect-diagnostics.main.kts
- *      - uses: actions/upload-artifact@v3
- *        if: always()
- *        with:
- *          name: diagnostics
- *          path: diagnostics.zip
+ *       - if: always()
+ *         run: ./scripts/collect-diagnostics.main.kts
+ *       - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 #v4.3.3
+ *         if: always()
+ *         with:
+ *           name: push.zip
+ *           path: diagnostics.zip
  */
 
 import java.io.File
