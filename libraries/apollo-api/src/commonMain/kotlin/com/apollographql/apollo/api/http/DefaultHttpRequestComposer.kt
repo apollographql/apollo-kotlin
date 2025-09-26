@@ -54,11 +54,7 @@ class DefaultHttpRequestComposer(
     val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
     val requestHeaders = mutableListOf<HttpHeader>().apply {
-      if (apolloRequest.operation is Subscription<*>) {
-        add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_SUBSCRIPTIONS))
-      } else {
-        add(HttpHeader(HEADER_ACCEPT_NAME, acceptHeaderQueriesAndMutations))
-      }
+      add(HttpHeader("Accept", if (apolloRequest.operation is Subscription<*>) HEADER_ACCEPT_VALUE_SUBSCRIPTIONS else acceptHeaderQueriesAndMutations))
       if (apolloRequest.httpHeaders != null) {
         addAll(apolloRequest.httpHeaders)
       }
@@ -127,9 +123,22 @@ class DefaultHttpRequestComposer(
     // for details.
     private const val HEADER_APOLLO_REQUIRE_PREFLIGHT = "Apollo-Require-Preflight"
 
-    private const val HEADER_ACCEPT_NAME = "Accept"
-    private const val HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS = "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
-    private const val HEADER_ACCEPT_VALUE_SUBSCRIPTIONS = "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
+    @Deprecated("This was made public by mistake and will be removed in a future version, please use your own constants instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+    val HEADER_ACCEPT_NAME = "Accept"
+
+    @Deprecated("This was made public by mistake and will be removed in a future version, please use your own constants instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+    val HEADER_ACCEPT_VALUE_DEFER = "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
+
+    @Deprecated("This was made public by mistake and will be removed in a future version, please use your own constants instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+    val HEADER_ACCEPT_VALUE_MULTIPART = "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
+
+    private const val HEADER_ACCEPT_VALUE_QUERIES_AND_MUTATIONS =
+      "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
+    private const val HEADER_ACCEPT_VALUE_SUBSCRIPTIONS =
+      "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
 
     private fun <D : Operation.Data> buildGetUrl(
         serverUrl: String,
