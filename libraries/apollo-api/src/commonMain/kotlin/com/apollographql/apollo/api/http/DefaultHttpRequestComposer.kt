@@ -58,7 +58,7 @@ class DefaultHttpRequestComposer(
                 if (apolloRequest.operation is Subscription<*>) {
                   "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
                 } else {
-                  "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
+                  "application/graphql-response+json, application/json"
                 }
             )
         )
