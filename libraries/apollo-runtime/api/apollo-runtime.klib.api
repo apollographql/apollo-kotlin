@@ -21,6 +21,17 @@ final enum class com.apollographql.apollo.network.ws/WsFrameType : kotlin/Enum<c
     final fun values(): kotlin/Array<com.apollographql.apollo.network.ws/WsFrameType> // com.apollographql.apollo.network.ws/WsFrameType.values|values#static(){}[0]
 }
 
+final enum class com.apollographql.apollo.network/IncrementalDeliveryProtocol : kotlin/Enum<com.apollographql.apollo.network/IncrementalDeliveryProtocol> { // com.apollographql.apollo.network/IncrementalDeliveryProtocol|null[0]
+    enum entry GraphQL17Alpha2 // com.apollographql.apollo.network/IncrementalDeliveryProtocol.GraphQL17Alpha2|null[0]
+    enum entry GraphQL17Alpha9 // com.apollographql.apollo.network/IncrementalDeliveryProtocol.GraphQL17Alpha9|null[0]
+
+    final val entries // com.apollographql.apollo.network/IncrementalDeliveryProtocol.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.apollographql.apollo.network/IncrementalDeliveryProtocol> // com.apollographql.apollo.network/IncrementalDeliveryProtocol.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.apollographql.apollo.network/IncrementalDeliveryProtocol // com.apollographql.apollo.network/IncrementalDeliveryProtocol.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.apollographql.apollo.network/IncrementalDeliveryProtocol> // com.apollographql.apollo.network/IncrementalDeliveryProtocol.values|values#static(){}[0]
+}
+
 abstract interface <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.apollo.network.websocket/SubscriptionParser { // com.apollographql.apollo.network.websocket/SubscriptionParser|null[0]
     abstract fun parse(kotlin/Any?): com.apollographql.apollo.api/ApolloResponse<#A>? // com.apollographql.apollo.network.websocket/SubscriptionParser.parse|parse(kotlin.Any?){}[0]
 }
@@ -200,24 +211,6 @@ final class com.apollographql.apollo.interceptor/AutoPersistedQueryInterceptor :
     }
 }
 
-final class com.apollographql.apollo.internal/DeferredJsonMerger { // com.apollographql.apollo.internal/DeferredJsonMerger|null[0]
-    constructor <init>() // com.apollographql.apollo.internal/DeferredJsonMerger.<init>|<init>(){}[0]
-
-    final val merged // com.apollographql.apollo.internal/DeferredJsonMerger.merged|{}merged[0]
-        final fun <get-merged>(): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal/DeferredJsonMerger.merged.<get-merged>|<get-merged>(){}[0]
-    final val mergedFragmentIds // com.apollographql.apollo.internal/DeferredJsonMerger.mergedFragmentIds|{}mergedFragmentIds[0]
-        final fun <get-mergedFragmentIds>(): kotlin.collections/Set<com.apollographql.apollo.api/DeferredFragmentIdentifier> // com.apollographql.apollo.internal/DeferredJsonMerger.mergedFragmentIds.<get-mergedFragmentIds>|<get-mergedFragmentIds>(){}[0]
-
-    final var hasNext // com.apollographql.apollo.internal/DeferredJsonMerger.hasNext|{}hasNext[0]
-        final fun <get-hasNext>(): kotlin/Boolean // com.apollographql.apollo.internal/DeferredJsonMerger.hasNext.<get-hasNext>|<get-hasNext>(){}[0]
-    final var isEmptyPayload // com.apollographql.apollo.internal/DeferredJsonMerger.isEmptyPayload|{}isEmptyPayload[0]
-        final fun <get-isEmptyPayload>(): kotlin/Boolean // com.apollographql.apollo.internal/DeferredJsonMerger.isEmptyPayload.<get-isEmptyPayload>|<get-isEmptyPayload>(){}[0]
-
-    final fun merge(kotlin.collections/Map<kotlin/String, kotlin/Any?>): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal/DeferredJsonMerger.merge|merge(kotlin.collections.Map<kotlin.String,kotlin.Any?>){}[0]
-    final fun merge(okio/BufferedSource): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.internal/DeferredJsonMerger.merge|merge(okio.BufferedSource){}[0]
-    final fun reset() // com.apollographql.apollo.internal/DeferredJsonMerger.reset|reset(){}[0]
-}
-
 final class com.apollographql.apollo.internal/MultipartReader : okio/Closeable { // com.apollographql.apollo.internal/MultipartReader|null[0]
     constructor <init>(okio/BufferedSource, kotlin/String) // com.apollographql.apollo.internal/MultipartReader.<init>|<init>(okio.BufferedSource;kotlin.String){}[0]
 
@@ -322,6 +315,7 @@ final class com.apollographql.apollo.network.http/HttpNetworkTransport : com.apo
         final fun httpEngine(com.apollographql.apollo.network.http/HttpEngine): com.apollographql.apollo.network.http/HttpNetworkTransport.Builder // com.apollographql.apollo.network.http/HttpNetworkTransport.Builder.httpEngine|httpEngine(com.apollographql.apollo.network.http.HttpEngine){}[0]
         final fun httpHeaders(kotlin.collections/List<com.apollographql.apollo.api.http/HttpHeader>): com.apollographql.apollo.network.http/HttpNetworkTransport.Builder // com.apollographql.apollo.network.http/HttpNetworkTransport.Builder.httpHeaders|httpHeaders(kotlin.collections.List<com.apollographql.apollo.api.http.HttpHeader>){}[0]
         final fun httpRequestComposer(com.apollographql.apollo.api.http/HttpRequestComposer): com.apollographql.apollo.network.http/HttpNetworkTransport.Builder // com.apollographql.apollo.network.http/HttpNetworkTransport.Builder.httpRequestComposer|httpRequestComposer(com.apollographql.apollo.api.http.HttpRequestComposer){}[0]
+        final fun incrementalDeliveryProtocol(com.apollographql.apollo.network/IncrementalDeliveryProtocol): com.apollographql.apollo.network.http/HttpNetworkTransport.Builder // com.apollographql.apollo.network.http/HttpNetworkTransport.Builder.incrementalDeliveryProtocol|incrementalDeliveryProtocol(com.apollographql.apollo.network.IncrementalDeliveryProtocol){}[0]
         final fun interceptors(kotlin.collections/List<com.apollographql.apollo.network.http/HttpInterceptor>): com.apollographql.apollo.network.http/HttpNetworkTransport.Builder // com.apollographql.apollo.network.http/HttpNetworkTransport.Builder.interceptors|interceptors(kotlin.collections.List<com.apollographql.apollo.network.http.HttpInterceptor>){}[0]
         final fun serverUrl(kotlin/String): com.apollographql.apollo.network.http/HttpNetworkTransport.Builder // com.apollographql.apollo.network.http/HttpNetworkTransport.Builder.serverUrl|serverUrl(kotlin.String){}[0]
     }
@@ -469,6 +463,7 @@ final class com.apollographql.apollo.network.websocket/WebSocketNetworkTransport
         final fun build(): com.apollographql.apollo.network.websocket/WebSocketNetworkTransport // com.apollographql.apollo.network.websocket/WebSocketNetworkTransport.Builder.build|build(){}[0]
         final fun connectionAcknowledgeTimeout(kotlin.time/Duration?): com.apollographql.apollo.network.websocket/WebSocketNetworkTransport.Builder // com.apollographql.apollo.network.websocket/WebSocketNetworkTransport.Builder.connectionAcknowledgeTimeout|connectionAcknowledgeTimeout(kotlin.time.Duration?){}[0]
         final fun idleTimeout(kotlin.time/Duration?): com.apollographql.apollo.network.websocket/WebSocketNetworkTransport.Builder // com.apollographql.apollo.network.websocket/WebSocketNetworkTransport.Builder.idleTimeout|idleTimeout(kotlin.time.Duration?){}[0]
+        final fun incrementalDeliveryProtocol(com.apollographql.apollo.network/IncrementalDeliveryProtocol): com.apollographql.apollo.network.websocket/WebSocketNetworkTransport.Builder // com.apollographql.apollo.network.websocket/WebSocketNetworkTransport.Builder.incrementalDeliveryProtocol|incrementalDeliveryProtocol(com.apollographql.apollo.network.IncrementalDeliveryProtocol){}[0]
         final fun parserFactory(com.apollographql.apollo.network.websocket/SubscriptionParserFactory?): com.apollographql.apollo.network.websocket/WebSocketNetworkTransport.Builder // com.apollographql.apollo.network.websocket/WebSocketNetworkTransport.Builder.parserFactory|parserFactory(com.apollographql.apollo.network.websocket.SubscriptionParserFactory?){}[0]
         final fun pingInterval(kotlin.time/Duration?): com.apollographql.apollo.network.websocket/WebSocketNetworkTransport.Builder // com.apollographql.apollo.network.websocket/WebSocketNetworkTransport.Builder.pingInterval|pingInterval(kotlin.time.Duration?){}[0]
         final fun serverUrl(kotlin/String?): com.apollographql.apollo.network.websocket/WebSocketNetworkTransport.Builder // com.apollographql.apollo.network.websocket/WebSocketNetworkTransport.Builder.serverUrl|serverUrl(kotlin.String?){}[0]
@@ -571,6 +566,7 @@ final class com.apollographql.apollo.network.ws/WebSocketNetworkTransport : com.
         final fun build(): com.apollographql.apollo.network.ws/WebSocketNetworkTransport // com.apollographql.apollo.network.ws/WebSocketNetworkTransport.Builder.build|build(){}[0]
         final fun headers(kotlin.collections/List<com.apollographql.apollo.api.http/HttpHeader>): com.apollographql.apollo.network.ws/WebSocketNetworkTransport.Builder // com.apollographql.apollo.network.ws/WebSocketNetworkTransport.Builder.headers|headers(kotlin.collections.List<com.apollographql.apollo.api.http.HttpHeader>){}[0]
         final fun idleTimeoutMillis(kotlin/Long): com.apollographql.apollo.network.ws/WebSocketNetworkTransport.Builder // com.apollographql.apollo.network.ws/WebSocketNetworkTransport.Builder.idleTimeoutMillis|idleTimeoutMillis(kotlin.Long){}[0]
+        final fun incrementalDeliveryProtocol(com.apollographql.apollo.network/IncrementalDeliveryProtocol): com.apollographql.apollo.network.ws/WebSocketNetworkTransport.Builder // com.apollographql.apollo.network.ws/WebSocketNetworkTransport.Builder.incrementalDeliveryProtocol|incrementalDeliveryProtocol(com.apollographql.apollo.network.IncrementalDeliveryProtocol){}[0]
         final fun protocol(com.apollographql.apollo.network.ws/WsProtocol.Factory): com.apollographql.apollo.network.ws/WebSocketNetworkTransport.Builder // com.apollographql.apollo.network.ws/WebSocketNetworkTransport.Builder.protocol|protocol(com.apollographql.apollo.network.ws.WsProtocol.Factory){}[0]
         final fun reopenWhen(kotlin.coroutines/SuspendFunction2<kotlin/Throwable, kotlin/Long, kotlin/Boolean>?): com.apollographql.apollo.network.ws/WebSocketNetworkTransport.Builder // com.apollographql.apollo.network.ws/WebSocketNetworkTransport.Builder.reopenWhen|reopenWhen(kotlin.coroutines.SuspendFunction2<kotlin.Throwable,kotlin.Long,kotlin.Boolean>?){}[0]
         final fun serverUrl(kotlin.coroutines/SuspendFunction0<kotlin/String>?): com.apollographql.apollo.network.ws/WebSocketNetworkTransport.Builder // com.apollographql.apollo.network.ws/WebSocketNetworkTransport.Builder.serverUrl|serverUrl(kotlin.coroutines.SuspendFunction0<kotlin.String>?){}[0]
