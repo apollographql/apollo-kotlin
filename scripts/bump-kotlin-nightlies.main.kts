@@ -92,7 +92,7 @@ fun rebaseOnTopOfMain() {
 }
 
 fun triggerPrWorkflow() {
-  runCommand("gh workflow run pr --ref $BRANCH_NAME")
+  runCommand("gh workflow run build-pull-request --ref $BRANCH_NAME")
 }
 
 fun commitAndPush() {
