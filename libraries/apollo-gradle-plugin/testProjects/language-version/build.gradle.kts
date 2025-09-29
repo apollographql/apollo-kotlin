@@ -11,9 +11,9 @@ dependencies {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-  compilerOptions {
+  kotlinOptions {
     // Required for Kotlin < 1.6.10
     // See https://kotlinlang.org/docs/whatsnew1620.html#compatibility-changes-in-the-xjvm-default-modes
-    freeCompilerArgs.add("-Xjvm-default=all")
+    freeCompilerArgs += "-Xjvm-default=all"
   }
 }
