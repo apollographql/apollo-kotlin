@@ -94,7 +94,6 @@ benmanes-versions = { group = "com.github.ben-manes", name = "gradle-versions-pl
 compat-patrouille = { module = "com.gradleup.compat.patrouille:compat-patrouille-gradle-plugin", version.ref = "compat-patrouille" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
-dokka = "org.jetbrains.dokka:dokka-gradle-plugin:2.0.0"
 dgp = "com.gradle:develocity-gradle-plugin:4.2" # // sync with settings.gradle.kts
 # Not updating because it fails in apollo-compiler Java tests with
 # annotation @org.jetbrains.annotations.Nullable not applicable in this type context
@@ -104,7 +103,9 @@ gratatouille = { group = "com.gradleup.gratatouille", name = "gratatouille-gradl
 gratatouille-wiring-runtime = { group = "com.gradleup.gratatouille", name = "gratatouille-wiring-runtime", version.ref = "gratatouille-runtime" }
 gratatouille-tasks-runtime = { group = "com.gradleup.gratatouille", name = "gratatouille-tasks-runtime", version.ref = "gratatouille-runtime" }
 jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
-
+# built from https://github.com/apollographql/dokka/releases/tag/v2.1.0-beta.2
+# remove when https://github.com/Kotlin/dokka/pull/4286 is merged
+dokka = "org.jetbrains.dokka:org.jetbrains.dokka.gradle.plugin:2.1.0-beta.2"
 #
 # See https://github.com/gradle/gradle/issues/1835
 # We use the Nokee[redistributed artifacts](https://docs.nokee.dev/manual/gradle-plugin-development.html#sec:gradle-dev-redistributed-gradle-api)
@@ -176,7 +177,7 @@ androidx-test-runner = "androidx.test:runner:1.7.0"
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.2.1" }
 uuid = { group = "com.benasher44", name = "uuid", version = "0.8.4" }
-librarian = "com.gradleup.librarian:librarian-gradle-plugin:0.1.1-SNAPSHOT-a304cd71c6b81d4cb3bba72e85b70fdb74eae70c"
+librarian = "com.gradleup.librarian:librarian-gradle-plugin:0.2.0"
 nmcp = "com.gradleup.nmcp:nmcp:1.1.0"
 slf4j-simple = "org.slf4j:slf4j-simple:2.0.17"
 slf4j-nop = "org.slf4j:slf4j-nop:2.0.17"

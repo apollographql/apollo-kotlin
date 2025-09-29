@@ -70,14 +70,6 @@ fun Project.configureDokkaCommon(): DokkaExtension {
     includes.from("README.md")
   }
 
-  // Workaround for https://github.com/adamko-dev/dokkatoo/issues/165
-  configurations.configureEach {
-    if (name.lowercase().contains("dokkaHtmlPublicationPluginApiOnlyConsumable~internal".lowercase())) {
-      attributes {
-        attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage::class.java, "poison"))
-      }
-    }
-  }
   return dokka
 }
 
