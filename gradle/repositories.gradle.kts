@@ -38,6 +38,11 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         includeModule("com.gradleup.gratatouille", "gratatouille-processor")
       }
     }
+    maven("https://storage.googleapis.com/apollo-previews/m2") {
+      content {
+        includeGroup("org.jetbrains.dokka")
+      }
+    }
 
     if (rootProject.name == "build-logic" || it === pluginManagement.repositories) {
       // repositories only used at build time
