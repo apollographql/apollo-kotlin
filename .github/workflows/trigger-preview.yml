@@ -11,6 +11,6 @@ jobs:
     if: github.repository == 'apollographql/apollo-kotlin'
     steps:
       - run: |
-          GH_REPO=${GITHUB_REPOSITORY} gh workflow run preview.yml -f branch=main -f prerelease=$(date '+%Y.%m.%d')
+          GH_REPO=${GITHUB_REPOSITORY} gh workflow run publish-preview.yml -f branch=main -f prerelease=$(date '+%Y.%m.%d')
     env:
       GITHUB_TOKEN: ${{ github.token }}
