@@ -1,3 +1,5 @@
+name: issue-close-user-survey
+
 on:
   issues:
     types: [closed]

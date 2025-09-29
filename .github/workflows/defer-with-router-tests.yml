@@ -1,3 +1,5 @@
+name: defer-with-router-tests
+
 on:
   schedule:
     - cron: '0 3 * * *'

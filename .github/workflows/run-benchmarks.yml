@@ -1,3 +1,5 @@
+name: run-benchmarks
+
 on:
 #  pull_request:
 #     branches: [ '*' ]
