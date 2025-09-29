@@ -103,8 +103,9 @@ gratatouille = { group = "com.gradleup.gratatouille", name = "gratatouille-gradl
 gratatouille-wiring-runtime = { group = "com.gradleup.gratatouille", name = "gratatouille-wiring-runtime", version.ref = "gratatouille-runtime" }
 gratatouille-tasks-runtime = { group = "com.gradleup.gratatouille", name = "gratatouille-tasks-runtime", version.ref = "gratatouille-runtime" }
 jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
-# built from https://github.com/apollographql/dokka/releases/tag/v2.1.0-beta.1
-dokka = "org.jetbrains.dokka:org.jetbrains.dokka.gradle.plugin:2.1.0-beta.1"
+# built from https://github.com/apollographql/dokka/releases/tag/v2.1.0-beta.2
+# remove when https://github.com/Kotlin/dokka/pull/4286 is merged
+dokka = "org.jetbrains.dokka:org.jetbrains.dokka.gradle.plugin:2.1.0-beta.2"
 #
 # See https://github.com/gradle/gradle/issues/1835
 # We use the Nokee[redistributed artifacts](https://docs.nokee.dev/manual/gradle-plugin-development.html#sec:gradle-dev-redistributed-gradle-api)
