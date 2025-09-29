@@ -60,6 +60,11 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
           includeGroup("com.gradleup.gratatouille.wiring")
         }
       }
+      maven("https://storage.googleapis.com/apollo-previews/m2") {
+        content {
+          includeGroup("org.jetbrains.dokka")
+        }
+      }
     }
   }
 }

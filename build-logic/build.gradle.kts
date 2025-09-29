@@ -21,6 +21,7 @@ dependencies {
   // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution
   // See https://github.com/gradle/gradle/issues/4741
   implementation(libs.okhttp)
+  implementation(libs.dokka)
 
   /**
    * Ktor for the websocket tests in integration tests
