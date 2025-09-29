@@ -7,6 +7,8 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
     // Uncomment this one to use the GradleUp repository
     // maven("https://storage.googleapis.com/gradleup/m2")
 
+    maven("https://storage.googleapis.com/apollo-previews/m2")
+
     mavenCentral()
     exclusiveContent {
       forRepository(::google)

@@ -35,7 +35,7 @@ kotlinx-datetime = "0.7.1"
 #noinspection NewerVersionAvailable requires KGP 2.2
 kotlinx-serialization-runtime = "1.8.1"
 #noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
-ksp = "2.2.20-2.0.2"
+ksp = "2.2.20-2.0.4-apollo.0"
 #noinspection NewerVersionAvailable requires KGP 2.2
 ktor = "3.2.3"
 moshix = "0.14.1"
