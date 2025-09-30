@@ -3,6 +3,8 @@
  * Copyright 2014-2023 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
  */
 
+@file:Suppress("OPT_IN_USAGE")
+
 package com.apollographql.apollo.network.http
 
 import org.khronos.webgl.Uint8Array
