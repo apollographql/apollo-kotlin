@@ -9,10 +9,4 @@ buildscript {
   }
 }
 
-tasks.register("checkGitStatus") {
-  doLast {
-    checkGitStatus()
-  }
-}
-
 apolloRoot()

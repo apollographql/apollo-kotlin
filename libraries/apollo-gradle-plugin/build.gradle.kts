@@ -1,5 +1,4 @@
 import com.google.devtools.ksp.gradle.KspAATask
-import com.google.devtools.ksp.gradle.KspTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -14,7 +13,8 @@ plugins {
 apolloLibrary(
     namespace = "com.apollographql.apollo.gradle",
     jvmTarget = 11, // To compile against AGP 8.0.0
-    kotlinCompilerOptions = KotlinCompilerOptions(KotlinVersion.KOTLIN_1_9) // For better Gradle compatibility
+    kotlinCompilerOptions = KotlinCompilerOptions(KotlinVersion.KOTLIN_1_9), // For better Gradle compatibility
+    contributesCtng = false
 )
 
 gratatouille {

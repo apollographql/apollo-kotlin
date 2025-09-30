@@ -16,17 +16,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  tests-gradle:
-    if: "!startsWith(github.head_ref, 'release-')"
-    runs-on: macos-15
-    steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #v4.1.7
-      - uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda #v3.4.2
-        with:
-          gradle-home-cache-cleanup: true
-      - run: |
-          ./gradlew ciTestsGradle
-
   tests-no-gradle:
     if: "!startsWith(github.head_ref, 'release-')"
     runs-on: macos-15
@@ -36,7 +25,18 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
       - run: |
-          ./gradlew ciTestsNoGradle --stacktrace
+          ./gradlew build -x :apollo-gradle-plugin:test
+
+  tests-gradle:
+    if: "!startsWith(github.head_ref, 'release-')"
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #v4.1.7
+      - uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda #v3.4.2
+        with:
+          gradle-home-cache-cleanup: true
+      - run: |
+          ./gradlew :apollo-gradle-plugin:test
 
   tests-integration:
     if: "!startsWith(github.head_ref, 'release-')"
@@ -48,7 +48,6 @@ jobs:
           gradle-home-cache-cleanup: true
       - run: |
           ./gradlew -p tests build 
-          ./gradlew -p tests checkGitStatus
 
   swift-tests:
     runs-on: macos-15

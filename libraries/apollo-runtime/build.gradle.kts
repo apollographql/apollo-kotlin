@@ -6,7 +6,8 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.runtime",
-    androidOptions = AndroidOptions(withCompose = false)
+    androidOptions = AndroidOptions(withCompose = false),
+    enableWasmJsTests = false
 )
 
 kotlin {

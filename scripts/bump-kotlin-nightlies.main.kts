@@ -140,7 +140,7 @@ fun main() {
   println("Commit and push")
   commitAndPush()
 
-  println("Trigger 'pr' workflow")
+  println("Trigger 'build-pull-request' workflow")
   triggerPrWorkflow()
 }
 
