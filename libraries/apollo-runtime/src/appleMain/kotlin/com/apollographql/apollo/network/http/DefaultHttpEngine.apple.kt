@@ -181,6 +181,7 @@ private fun buildHttpResponse(
         HttpHeader(key.toString(), value.toString())
       }
 
+  @Suppress("REDUNDANT_CALL_OF_CONVERSION_METHOD")
   val statusCode = httpResponse.statusCode.toInt()
 
   return Result.success(
