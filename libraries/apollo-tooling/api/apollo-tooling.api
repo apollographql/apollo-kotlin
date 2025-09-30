@@ -139,7 +139,7 @@ public final class com/apollographql/apollo/tooling/model/TelemetryData {
 	public final fun getUsedServiceOptions ()Ljava/util/Set;
 }
 
-public synthetic class com/apollographql/apollo/tooling/model/TelemetryData$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class com/apollographql/apollo/tooling/model/TelemetryData$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/apollographql/apollo/tooling/model/TelemetryData$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo/tooling/model/TelemetryData;
