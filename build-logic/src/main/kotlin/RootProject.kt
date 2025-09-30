@@ -23,12 +23,13 @@ fun Project.rootSetup() {
     }
   }
 
-  allprojects.forEach {
-    dependencies.add("apolloTestAggregationConsumer", it)
+  allprojects {
+    val rootProject = this@rootSetup
+    rootProject.dependencies.add("apolloTestAggregationConsumer", rootProject.dependencies.project(mapOf("path" to path)))
   }
 
   val task = tasks.register("apolloTestAggregation", GenerateApolloTestAggregation::class.java) {
-    binaryTestResults.from(apolloTestAggregationConsumer)
+    binaryTestResults.from(apolloTestAggregationConsumer.incoming.artifactView { lenient(true) }.files)
 
     output = file("build/apolloTestAggregation.txt")
   }

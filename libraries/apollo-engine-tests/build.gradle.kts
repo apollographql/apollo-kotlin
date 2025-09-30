@@ -7,7 +7,8 @@ plugins {
 apolloLibrary(
     namespace = "com.apollographql.apollo.engine.tests",
     withLinux = false,
-    withJs = true
+    withJs = true,
+    enableWasmJsTests = false
 )
 
 kotlin {

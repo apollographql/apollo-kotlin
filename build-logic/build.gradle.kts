@@ -55,7 +55,6 @@ dependencies {
   runtimeOnly(libs.atomicfu.plugin)
 
   runtimeOnly(libs.sqldelight.plugin)
-  runtimeOnly(libs.benmanes.versions)
   runtimeOnly(libs.gratatouille)
   runtimeOnly(libs.kotlinx.binarycompatibilityvalidator)
 }

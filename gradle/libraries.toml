@@ -90,7 +90,6 @@ assertj = { group = "org.assertj", name = "assertj-core", version = "3.27.4" }
 atomicfu-library = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "atomicfu" }
 atomicfu-plugin = { group = "org.jetbrains.kotlinx", name = "atomicfu-gradle-plugin", version.ref = "atomicfu" }
 
-benmanes-versions = { group = "com.github.ben-manes", name = "gradle-versions-plugin", version = "0.33.0" }
 compat-patrouille = { module = "com.gradleup.compat.patrouille:compat-patrouille-gradle-plugin", version.ref = "compat-patrouille" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }

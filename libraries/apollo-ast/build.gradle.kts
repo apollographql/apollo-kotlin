@@ -9,6 +9,7 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.ast",
+    enableWasmJsTests = false
 )
 
 kotlin {

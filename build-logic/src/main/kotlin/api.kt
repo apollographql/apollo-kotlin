@@ -3,11 +3,16 @@ import app.cash.licensee.UnusedAction
 import com.gradleup.librarian.gradle.Librarian
 import nmcp.NmcpAggregationExtension
 import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.tasks.TaskProvider
 import org.gradle.jvm.tasks.Jar
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.plugin.ExecutionTaskHolder
+import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithTests
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeOutputKind
+import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
@@ -31,6 +36,8 @@ fun Project.apolloLibrary(
     androidOptions: AndroidOptions? = null,
     publish: Boolean = true,
     kotlinCompilerOptions: KotlinCompilerOptions = KotlinCompilerOptions(),
+    contributesCtng: Boolean = true,
+    enableWasmJsTests: Boolean = true
 ) {
   group = property("GROUP")!!
   version = version()
@@ -73,6 +80,61 @@ fun Project.apolloLibrary(
   }
 
   configureTesting()
+  project.kotlinTargets.forEach { target ->
+    /**
+     * Disable every native test except the KotlinNativeTargetWithHostTests to save some time
+     */
+    if (target is KotlinNativeTargetWithSimulatorTests || target is KotlinNativeTargetWithTests<*>) {
+      target.testRuns.configureEach {
+        this as ExecutionTaskHolder<*>
+        executionTask.configure {
+          enabled = false
+        }
+      }
+      target.binaries.configureEach {
+        if (outputKind == NativeOutputKind.TEST) {
+          linkTaskProvider.configure {
+            enabled = false
+          }
+          compilation.compileTaskProvider.configure {
+            enabled = false
+          }
+        }
+      }
+    }
+    /**
+     * Disable wasmJs tests because they are not ready yet
+     */
+    if (!enableWasmJsTests && target is KotlinJsIrTarget && target.wasmTargetType != null) {
+      target.subTargets.configureEach {
+        testRuns.configureEach {
+          executionTask.configure {
+            enabled = false
+          }
+        }
+      }
+      target.testRuns.configureEach {
+        executionTask.configure {
+          enabled = false
+        }
+      }
+      target.binaries.configureEach {
+        compilation.compileTaskProvider.configure {
+          enabled = false
+        }
+      }
+    }
+  }
+  /**
+   * `ctng` is short for CiTestNoGradle. It's a shorthand task that runs all the `build`
+   * tasks except the Gradle plugin one because it is slow.
+   * the name is for historical reasons.
+   */
+  tasks.register("ctng") {
+    if (contributesCtng) {
+      dependsOn("build")
+    }
+  }
 
   tasks.withType(Jar::class.java).configureEach {
     manifest {
@@ -98,6 +160,15 @@ fun Project.apolloLibrary(
   }
 }
 
+private val Project.kotlinTargets: Collection<KotlinTarget>
+  get() {
+    when (val kotlin = extensions.getByName("kotlin")) {
+      is KotlinJvmExtension -> return listOf(kotlin.target)
+      is KotlinMultiplatformExtension -> return kotlin.targets
+      else -> return emptyList()
+    }
+  }
+
 fun Project.apolloLibrary(
     namespace: String,
     jvmTarget: Int? = null,
@@ -109,6 +180,8 @@ fun Project.apolloLibrary(
     androidOptions: AndroidOptions? = null,
     publish: Boolean = true,
     kotlinCompilerOptions: KotlinCompilerOptions = KotlinCompilerOptions(),
+    contributesCtng: Boolean = true,
+    enableWasmJsTests: Boolean = true,
 ) {
   val defaultTargets = defaultTargets(
       withJvm = withJvm,
@@ -120,12 +193,14 @@ fun Project.apolloLibrary(
   )
 
   apolloLibrary(
-      namespace,
-      jvmTarget,
-      defaultTargets,
-      androidOptions,
-      publish,
-      kotlinCompilerOptions
+      namespace = namespace,
+      jvmTarget = jvmTarget,
+      defaultTargets = defaultTargets,
+      androidOptions = androidOptions,
+      publish = publish,
+      kotlinCompilerOptions = kotlinCompilerOptions,
+      contributesCtng = contributesCtng,
+      enableWasmJsTests = enableWasmJsTests
   )
 }
 
@@ -134,7 +209,7 @@ fun Project.apolloTest(
     withJvm: Boolean = true,
     appleTargets: Set<String> = setOf(hostTarget),
     kotlinCompilerOptions: KotlinCompilerOptions = KotlinCompilerOptions(),
-    jvmTarget: Int? = null
+    jvmTarget: Int? = null,
 ) {
   apolloTest(
       kotlinCompilerOptions = kotlinCompilerOptions,
