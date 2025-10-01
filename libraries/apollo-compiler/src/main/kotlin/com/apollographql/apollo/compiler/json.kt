@@ -117,9 +117,9 @@ fun IrSchema.writeTo(file: File) = (this as DefaultIrSchema).encodeToJson(file)
 fun CodegenMetadata.writeTo(file: File) = encodeToJson(file)
 
 @JvmName("writePersistedQueryManifest")
-fun PersistedQueryManifest.writeTo(file: File) = encodeToJson(file)
+fun PersistedQueryManifest.writeTo(file: File) = file.writeText(prettyPrintJson.encodeToString(this))
 
 @JvmName("writeOperationOutput")
-fun OperationOutput.writeTo(file: File) = this.encodeToJson(file)
+fun OperationOutput.writeTo(file: File) = file.writeText(prettyPrintJson.encodeToString(this))
 
 fun UsedCoordinates.writeTo(file: File) = file.writeText(prettyPrintJson.encodeToString(this))
