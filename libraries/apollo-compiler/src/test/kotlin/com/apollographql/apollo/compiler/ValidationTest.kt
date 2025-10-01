@@ -33,12 +33,7 @@ class ValidationTest(name: String, private val graphQLFile: File) {
             if (graphQLFile.name == "capitalized_fields_disallowed.graphql") {
               checkCapitalizedFields(parseResult.value!!.definitions, checkFragmentsOnly = false)
             } else {
-              emptyList()
-            } +
-            if (graphQLFile.name == "capitalized_fields_allowed_with_fragment_spread.graphql") {
               checkCapitalizedFields(parseResult.value!!.definitions, checkFragmentsOnly = true)
-            } else {
-              emptyList()
             }
       }
     } else {
