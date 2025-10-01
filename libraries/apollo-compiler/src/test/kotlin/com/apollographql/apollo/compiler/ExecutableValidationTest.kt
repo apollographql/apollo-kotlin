@@ -2,12 +2,9 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.validateAsExecutable
-import com.apollographql.apollo.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.apollo.compiler.TestUtils.checkExpected
 import com.apollographql.apollo.compiler.TestUtils.serialize
 import com.apollographql.apollo.compiler.TestUtils.testParametersForGraphQLFilesIn
-import com.apollographql.apollo.compiler.internal.checkApolloReservedEnumValueNames
-import com.apollographql.apollo.compiler.internal.checkApolloTargetNameClashes
 import com.apollographql.apollo.compiler.internal.checkCapitalizedFields
 import okio.buffer
 import okio.source
@@ -30,12 +27,7 @@ class ExecutableValidationTest(name: String, private val graphQLFile: File) {
           if (graphQLFile.name == "capitalized_fields_disallowed.graphql") {
             checkCapitalizedFields(parseResult.value!!.definitions, checkFragmentsOnly = false)
           } else {
-            emptyList()
-          } +
-          if (graphQLFile.name == "capitalized_fields_allowed_with_fragment_spread.graphql") {
             checkCapitalizedFields(parseResult.value!!.definitions, checkFragmentsOnly = true)
-          } else {
-            emptyList()
           }
     }
 

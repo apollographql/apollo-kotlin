@@ -20,8 +20,8 @@ internal fun checkCapitalizedFields(definitions: List<GQLDefinition>, checkFragm
 
   definitions.forEach { definition ->
     when {
-      definition is GQLOperationDefinition && !checkFragmentsOnly -> scope.checkCapitalizedFields(definition.selections)
-      definition is GQLFragmentDefinition -> scope.checkCapitalizedFields(definition.selections)
+      definition is GQLOperationDefinition && !checkFragmentsOnly -> scope.checkCapitalizedFields(definition.selections, emptyList())
+      definition is GQLFragmentDefinition -> scope.checkCapitalizedFields(definition.selections, emptyList())
     }
   }
 
@@ -31,7 +31,7 @@ internal fun checkCapitalizedFields(definitions: List<GQLDefinition>, checkFragm
 /**
  * Fields named with a capital first letter clash with the corresponding model name, unless flatten.
  */
-private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection>) {
+private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection>, checkedFragments: List<String>) {
   selections.forEach {
     when (it) {
       is GQLField -> {
@@ -42,26 +42,34 @@ private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection
         val alias = it.alias
         if (alias != null) {
           if (isFirstLetterUpperCase(alias)) {
-            issues.add(UpperCaseField(message = """
+            issues.add(
+                UpperCaseField(
+                    message = """
                       Capitalized alias '$alias' is not supported as it causes name clashes with the generated models. Use '${decapitalizeFirstLetter(alias)}' instead.
                     """.trimIndent(),
-                sourceLocation = it.sourceLocation)
+                    sourceLocation = it.sourceLocation
+                )
             )
           }
         } else if (isFirstLetterUpperCase(it.name)) {
-          issues.add(UpperCaseField(message = """
-                      Capitalized field '${it.name}' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' or 'decapitalizeFields' compiler option.
-                    """.trimIndent(),
-              sourceLocation = it.sourceLocation)
+          issues.add(
+              UpperCaseField(
+                  message = """
+                    Capitalized field '${it.name}' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' or 'decapitalizeFields' compiler option.
+                  """.trimIndent(),
+                  sourceLocation = it.sourceLocation
+              )
           )
         }
-        checkCapitalizedFields(it.selections)
+        checkCapitalizedFields(it.selections, checkedFragments)
       }
 
-      is GQLInlineFragment -> checkCapitalizedFields(it.selections)
+      is GQLInlineFragment -> checkCapitalizedFields(it.selections, checkedFragments)
       // it might be that the fragment is defined in an upstream module. In that case, it is validated
       // already, no need to check it again
-      is GQLFragmentSpread -> fragmentsByName[it.name]?.let { fragment -> checkCapitalizedFields(fragment.selections) }
+      is GQLFragmentSpread -> if (!checkedFragments.contains(it.name)) {
+        fragmentsByName[it.name]?.let { fragment -> checkCapitalizedFields(fragment.selections, checkedFragments + it.name) }
+      }
     }
   }
 }
@@ -79,12 +87,14 @@ private fun decapitalizeFirstLetter(name: String): String {
   val builder = StringBuilder(name.length)
   var isDecapitalized = false
   name.forEach {
-    builder.append(if (!isDecapitalized && it.isLetter()) {
-      isDecapitalized = true
-      it.toString().lowercase()
-    } else {
-      it.toString()
-    })
+    builder.append(
+        if (!isDecapitalized && it.isLetter()) {
+          isDecapitalized = true
+          it.toString().lowercase()
+        } else {
+          it.toString()
+        }
+    )
   }
   return builder.toString()
 }
