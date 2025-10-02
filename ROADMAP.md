@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Ecosystem Roadmap
 
-**Last updated: 2025-09-18**
+**Last updated: 2025-10-02**
 
 For up-to-date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -57,7 +57,12 @@ This pattern is encouraged by [Relay](https://relay.dev/docs/tutorial/fragments-
 
 ## [IntelliJ plugin usability](https://github.com/apollographql/apollo-intellij-plugin)
 
-We are planning to remove some of the limitations of the current plugin in order to make it easier to work with (by simplifying configuration, especially for server vs client use cases) as well as consume less resources (by skipping the Gradle daemon). This work is exploratory and will also unlock future improvements for the plugin such as adopting new GraphQL features and directives faster.
+IJ Plugin version 5.0.0 is released 🎉 
+Highlights includes:
+* Support for `@link`.
+* No-Gradle mode: if you are using Apollo 5, the IJ plugin can now invoke the Apollo compiler directly without needing a full Gradle daemon.
+
+See the [release notes](https://github.com/apollographql/apollo-intellij-plugin/releases/tag/v5.0.0) for details.
 
 ## [Apollo Kotlin Faker](https://github.com/apollographql/apollo-kotlin-faker) (on pause, feedback needed 🙏)
 
