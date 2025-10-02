@@ -4,6 +4,7 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.execution",
+    description = "GraphQL execution algorithms",
 )
 
 kotlin {

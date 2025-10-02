@@ -4,6 +4,7 @@ plugins {
 
 apolloLibrary(
   namespace = "com.apollographql.apollo.cache.normalized",
+    description = "Apollo GraphQL Normalized Cache APIs",
     withLinux = false
 )
 

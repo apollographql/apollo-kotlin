@@ -1293,17 +1293,6 @@ public final class com/apollographql/apollo/ast/VariableUsage {
 	public final fun isOneOfInputField ()Z
 }
 
-public final class com/apollographql/apollo/ast/internal/SchemaValidationOptions {
-	public fun <init> (ZLjava/util/List;)V
-	public final fun getAddKotlinLabsDefinitions ()Z
-	public final fun getForeignSchemas ()Ljava/util/List;
-}
-
-public final class com/apollographql/apollo/ast/internal/SchemaValidationScopeKt {
-	public static final fun toConnectionFields (Ljava/util/List;)Ljava/util/List;
-	public static final fun toEmbeddedFields (Ljava/util/List;)Ljava/util/List;
-}
-
 public final class com/apollographql/apollo/ast/introspection/ApolloIntrospectionSchema {
 }
 

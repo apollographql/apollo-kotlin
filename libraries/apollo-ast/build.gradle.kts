@@ -9,6 +9,7 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.ast",
+    description = "GraphQL Abstract Syntax Tree",
     enableWasmJsTests = false
 )
 

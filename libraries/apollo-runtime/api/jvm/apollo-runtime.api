@@ -215,31 +215,6 @@ public final class com/apollographql/apollo/interceptor/RetryOnErrorInterceptorK
 	public static final fun RetryOnErrorInterceptor (Lcom/apollographql/apollo/network/NetworkMonitor;)Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
 }
 
-public final class com/apollographql/apollo/internal/DeferredJsonMerger {
-	public fun <init> ()V
-	public final fun getHasNext ()Z
-	public final fun getMerged ()Ljava/util/Map;
-	public final fun getMergedFragmentIds ()Ljava/util/Set;
-	public final fun isEmptyPayload ()Z
-	public final fun merge (Ljava/util/Map;)Ljava/util/Map;
-	public final fun merge (Lokio/BufferedSource;)Ljava/util/Map;
-	public final fun reset ()V
-}
-
-public final class com/apollographql/apollo/internal/MultipartReader : java/io/Closeable {
-	public fun <init> (Lokio/BufferedSource;Ljava/lang/String;)V
-	public fun close ()V
-	public final fun getBoundary ()Ljava/lang/String;
-	public final fun nextPart ()Lcom/apollographql/apollo/internal/MultipartReader$Part;
-}
-
-public final class com/apollographql/apollo/internal/MultipartReader$Part : java/io/Closeable {
-	public fun <init> (Ljava/util/List;Lokio/BufferedSource;)V
-	public fun close ()V
-	public final fun getBody ()Lokio/BufferedSource;
-	public final fun getHeaders ()Ljava/util/List;
-}
-
 public abstract interface class com/apollographql/apollo/network/NetworkMonitor : java/io/Closeable {
 	public abstract fun isOnline ()Lkotlinx/coroutines/flow/StateFlow;
 }

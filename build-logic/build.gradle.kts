@@ -1,15 +1,7 @@
-import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverExtension
-import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverGradleSubplugin
-
 plugins {
   alias(libs.plugins.kotlin.jvm.latest)
   alias(libs.plugins.kotlin.sam)
   alias(libs.plugins.compat.patrouille)
-}
-
-plugins.apply(SamWithReceiverGradleSubplugin::class.java)
-extensions.configure(SamWithReceiverExtension::class.java) {
-  annotations(HasImplicitReceiver::class.qualifiedName!!)
 }
 
 group = "com.apollographql.apollo"
@@ -49,7 +41,7 @@ dependencies {
 
   runtimeOnly(libs.ksp)
   // XXX: This is only needed for tests. We could have different build logic for different
-  // builds but this seems just overkill for now
+  //  builds, but this seems just overkill for now
   runtimeOnly(libs.kotlin.allopen)
   runtimeOnly(libs.kotlinx.serialization.plugin)
   runtimeOnly(libs.atomicfu.plugin)

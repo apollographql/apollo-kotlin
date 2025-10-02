@@ -23,12 +23,12 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
       - run: |
-          ./gradlew :apollo-kdoc:dokkaGeneratePublicationHtml
-          ./gradlew nmcpPublishAggregationToCentralPortalSnapshots
+          ./gradlew :librarianStaticContent
+          ./gradlew :nmcpPublishAggregationToCentralPortalSnapshots
         env:
           LIBRARIAN_SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           LIBRARIAN_SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa #v3.0.1
         with:
-          path: "libraries/apollo-kdoc/build/dokka/html"
+          path: "static"
       - uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e #v4.0.5

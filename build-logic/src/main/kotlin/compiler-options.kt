@@ -1,11 +1,5 @@
 
-import com.android.build.gradle.BaseExtension
-import compat.patrouille.configureJavaCompatibility
-import compat.patrouille.configureKotlinCompatibility
 import org.gradle.api.Project
-import org.gradle.api.tasks.testing.Test
-import org.gradle.jvm.toolchain.JavaLanguageVersion
-import org.gradle.jvm.toolchain.JavaToolchainService
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinCommonCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompilerOptions
@@ -14,13 +8,10 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinNativeCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
 /**
- * @param target the JVM version we want to be compatible with (bytecode + bootstrap classpath)
  */
 fun KotlinCommonCompilerOptions.configure(
-    isAndroid: Boolean,
     optIns: List<String>
 ) {
   freeCompilerArgs.add("-Xexpect-actual-classes")
@@ -49,17 +40,16 @@ fun KotlinCommonCompilerOptions.configure(
 }
 
 
-private fun KotlinProjectExtension.forEachCompilerOptions(block: KotlinCommonCompilerOptions.(isAndroid: Boolean) -> Unit) {
+private fun KotlinProjectExtension.forEachCompilerOptions(block: (KotlinCommonCompilerOptions) -> Unit) {
   when (this) {
-    is KotlinJvmProjectExtension -> compilerOptions.block(false)
-    is KotlinAndroidProjectExtension -> compilerOptions.block(true)
+    is KotlinJvmProjectExtension -> block(compilerOptions)
+    is KotlinAndroidProjectExtension -> block(compilerOptions)
     is KotlinMultiplatformExtension -> {
       targets.all {
-        val isAndroid = platformType == KotlinPlatformType.androidJvm
-        compilations.all {
-          compileTaskProvider.configure {
-            compilerOptions {
-              block(isAndroid)
+        it.compilations.all {
+          it.compileTaskProvider.configure {
+            it.compilerOptions {
+              block(this)
             }
           }
         }
@@ -73,24 +63,12 @@ private fun KotlinProjectExtension.forEachCompilerOptions(block: KotlinCommonCom
 
 val Project.kotlinExtensionOrNull: KotlinProjectExtension?
   get() {
-    return (extensions.findByName("kotlin") as? KotlinProjectExtension)
+    return extensions.findByName("kotlin") as? KotlinProjectExtension
   }
 
-val Project.androidExtensionOrNull: BaseExtension?
-  get() {
-    return (extensions.findByName("android") as? BaseExtension)
-  }
-
-fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptions: KotlinCompilerOptions, optIns: List<String>) {
-  @Suppress("NAME_SHADOWING")
-  val jvmTarget = jvmTarget ?: 8
-
-  configureJavaCompatibility(jvmTarget)
-  if (kotlinExtensionOrNull != null) {
-    configureKotlinCompatibility(kotlinCompilerOptions.version.version + ".0")
-  }
-  kotlinExtensionOrNull?.forEachCompilerOptions { isAndroid ->
-    configure(isAndroid, optIns)
+fun Project.configureJavaAndKotlinCompilers(optIns: List<String>) {
+  kotlinExtensionOrNull?.forEachCompilerOptions {
+    it.configure(optIns)
   }
 
   allWarningsAsErrors(true)
@@ -98,6 +76,6 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptio
 
 fun Project.allWarningsAsErrors(allWarningsAsErrors: Boolean) {
   kotlinExtensionOrNull?.forEachCompilerOptions {
-    this.allWarningsAsErrors.set(allWarningsAsErrors)
+    it.allWarningsAsErrors.set(allWarningsAsErrors)
   }
 }

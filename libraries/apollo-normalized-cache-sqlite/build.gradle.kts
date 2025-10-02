@@ -6,6 +6,7 @@ apply(plugin = "app.cash.sqldelight")
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.cache.normalized.sql",
+    description = "Apollo GraphQL SQLite Cache",
     withLinux = false,
     withJs = false, // https://github.com/cashapp/sqldelight/pull/1486
     withWasm = false,

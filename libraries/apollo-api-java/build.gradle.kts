@@ -3,7 +3,8 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo.api.java"
+    namespace = "com.apollographql.apollo.api.java",
+    description = "Runtime support for generated Java models."
 )
 
 dependencies {

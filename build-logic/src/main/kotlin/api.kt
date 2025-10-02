@@ -1,21 +1,32 @@
-import app.cash.licensee.LicenseeExtension
-import app.cash.licensee.UnusedAction
+import com.gradleup.librarian.gradle.Bcv
+import com.gradleup.librarian.gradle.Coordinates
+import com.gradleup.librarian.gradle.Gcs
+import com.gradleup.librarian.gradle.Kdoc
 import com.gradleup.librarian.gradle.Librarian
-import nmcp.NmcpAggregationExtension
+import com.gradleup.librarian.gradle.PomMetadata
+import com.gradleup.librarian.gradle.Publishing
+import com.gradleup.librarian.gradle.Signing
+import com.gradleup.librarian.gradle.Sonatype
+import com.gradleup.librarian.gradle.librarianModule
+import com.gradleup.librarian.gradle.librarianRoot
+import compat.patrouille.configureJavaCompatibility
 import org.gradle.api.Project
+import org.gradle.api.publish.PublishingExtension
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.plugin.ExecutionTaskHolder
+import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationVariantSpec
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithTests
-import org.jetbrains.kotlin.gradle.plugin.mpp.NativeOutputKind
-import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
+
+private val groupId = "com.apollographql.apollo"
+private val githubUrl = "https://github.com/apollographql/apollo-kotlin/"
+private val license = "MIT"
+private val developer = "Apollo"
 
 class AndroidOptions(
     val withCompose: Boolean,
@@ -29,27 +40,81 @@ fun Project.version(): String {
   return Librarian.version(property("VERSION_NAME")!!.toString())
 }
 
+fun group(): String {
+  return groupId
+}
+
+
+private fun signing(): Signing {
+  return Signing(
+      privateKey = System.getenv("GPG_PRIVATE_KEY"),
+      privateKeyPassword = System.getenv("GPG_PRIVATE_KEY_PASSWORD")
+  )
+}
+
 fun Project.apolloLibrary(
     namespace: String,
-    jvmTarget: Int? = null,
+    jvmTarget: Int?,
     defaultTargets: (KotlinMultiplatformExtension.() -> Unit),
-    androidOptions: AndroidOptions? = null,
-    publish: Boolean = true,
-    kotlinCompilerOptions: KotlinCompilerOptions = KotlinCompilerOptions(),
-    contributesCtng: Boolean = true,
-    enableWasmJsTests: Boolean = true
+    androidOptions: AndroidOptions?,
+    kotlinCompilerOptions: KotlinCompilerOptions,
+    contributesCtng: Boolean,
+    enableWasmJsTests: Boolean,
+    versionPackageName: String?,
+    description: String?,
 ) {
-  group = property("GROUP")!!
-  version = version()
-
   if (androidOptions != null) {
     configureAndroid(namespace, androidOptions)
   }
-  commonSetup()
 
+  librarianModule(
+      group = group(),
+      version = version(),
+      jvmTarget = jvmTarget ?: 8,
+      kotlinTarget = kotlinCompilerOptions.version.version + ".0",
+      bcv = Bcv(
+          false,
+      ) {
+        it as AbiValidationVariantSpec
+        @OptIn(ExperimentalAbiValidation::class)
+        it.filters {
+          it.excluded {
+            byNames.add("**.internal.**")
+          }
+        }
+      },
+      versionPackageName = versionPackageName,
+      publishing = if (description != null) {
+        Publishing(
+            createMissingPublications = true,
+            publishPlatformArtifactsInRootModule = false,
+            pomMetadata = PomMetadata(
+                artifactId = null,
+                description = description,
+                vcsUrl = githubUrl,
+                developer = developer,
+                license = license
+            ),
+            emptyJarLink =  "https://www.apollographql.com/docs/kotlin/kdoc/index.html"
+        )
+      } else {
+        null
+      },
+      signing = signing(),
+  )
+  maybeCustomizeDokka()
+
+  if (description != null) {
+    extensions.getByType(PublishingExtension::class.java).repositories.apply {
+      maven {
+        it.name = "pluginTest"
+        it.url = uri(rootProject.layout.buildDirectory.dir("localMaven"))
+      }
+    }
+  }
+
+  configureTestAggregationProducer()
   configureJavaAndKotlinCompilers(
-      jvmTarget,
-      kotlinCompilerOptions,
       listOf(
           "kotlin.RequiresOptIn",
           "com.apollographql.apollo.annotations.ApolloInternal",
@@ -57,17 +122,13 @@ fun Project.apolloLibrary(
       )
   )
 
-  if (publish) {
-    configurePublishing()
-  }
-
   configurations.configureEach {
-    if (name == "apolloPublished" || name.matches(Regex("apollo.*Compiler"))) {
+    if (it.name == "apolloPublished" || it.name.matches(Regex("apollo.*Compiler"))) {
       // Within the 'tests' project (a composite build), dependencies are automatically substituted to use the project's one.
       // apollo-tooling depends on a published version of apollo-api which should not be substituted for both the runtime
       // and compiler classpaths.
       // See (see https://docs.gradle.org/current/userguide/composite_builds.html#deactivate_included_build_substitutions).
-      this.resolutionStrategy.useGlobalDependencySubstitutionRules.set(false)
+      it.resolutionStrategy.useGlobalDependencySubstitutionRules.set(false)
     }
   }
 
@@ -80,97 +141,40 @@ fun Project.apolloLibrary(
   }
 
   configureTesting()
-  project.kotlinTargets.forEach { target ->
-    /**
-     * Disable every native test except the KotlinNativeTargetWithHostTests to save some time
-     */
-    if (target is KotlinNativeTargetWithSimulatorTests || target is KotlinNativeTargetWithTests<*>) {
-      target.testRuns.configureEach {
-        this as ExecutionTaskHolder<*>
-        executionTask.configure {
-          enabled = false
-        }
-      }
-      target.binaries.configureEach {
-        if (outputKind == NativeOutputKind.TEST) {
-          linkTaskProvider.configure {
-            enabled = false
-          }
-          compilation.compileTaskProvider.configure {
-            enabled = false
-          }
-        }
-      }
-    }
-    /**
-     * Disable wasmJs tests because they are not ready yet
-     */
-    if (!enableWasmJsTests && target is KotlinJsIrTarget && target.wasmTargetType != null) {
-      target.subTargets.configureEach {
-        testRuns.configureEach {
-          executionTask.configure {
-            enabled = false
-          }
-        }
-      }
-      target.testRuns.configureEach {
-        executionTask.configure {
-          enabled = false
-        }
-      }
-      target.binaries.configureEach {
-        compilation.compileTaskProvider.configure {
-          enabled = false
-        }
-      }
-    }
-  }
+  disableSomeTests(enableWasmJsTests)
+
   /**
    * `ctng` is short for CiTestNoGradle. It's a shorthand task that runs all the `build`
    * tasks except the Gradle plugin one because it is slow.
-   * the name is for historical reasons.
+   * The name is for historical reasons.
    */
   tasks.register("ctng") {
     if (contributesCtng) {
-      dependsOn("build")
+      it.dependsOn("build")
     }
   }
 
   tasks.withType(Jar::class.java).configureEach {
-    manifest {
-      attributes(mapOf("Automatic-Module-Name" to namespace))
+    it.manifest {
+      it.attributes(mapOf("Automatic-Module-Name" to namespace))
     }
   }
 
-  plugins.apply("app.cash.licensee")
-  extensions.getByType(LicenseeExtension::class.java).apply {
-    unusedAction(UnusedAction.IGNORE)
-
-    allow("Apache-2.0")
-    allow("MIT")
-    allow("MIT-0")
-    allow("CC0-1.0")
-
-    // remove when https://github.com/apollographql/apollo-kotlin-execution/pull/64 is released
-    allowDependency("com.apollographql.execution", "apollo-execution-runtime", "0.1.1")
-    allowDependency("com.apollographql.execution", "apollo-execution-runtime-jvm", "0.1.1")
-
-    allowUrl("https://asm.ow2.io/license.html")
-    allowUrl("https://spdx.org/licenses/MIT.txt")
-  }
+  configureLicensee()
 }
 
-private val Project.kotlinTargets: Collection<KotlinTarget>
+internal val Project.kotlinTargets: Collection<KotlinTarget>
   get() {
-    when (val kotlin = extensions.getByName("kotlin")) {
-      is KotlinJvmExtension -> return listOf(kotlin.target)
-      is KotlinMultiplatformExtension -> return kotlin.targets
-      else -> return emptyList()
+    return when (val kotlin = extensions.getByName("kotlin")) {
+      is KotlinJvmExtension -> listOf(kotlin.target)
+      is KotlinMultiplatformExtension -> kotlin.targets
+      else -> emptyList()
     }
   }
 
 fun Project.apolloLibrary(
     namespace: String,
+    description: String?,
     jvmTarget: Int? = null,
     withJs: Boolean = true,
     withLinux: Boolean = true,
@@ -178,10 +182,10 @@ fun Project.apolloLibrary(
     withJvm: Boolean = true,
     withWasm: Boolean = true,
     androidOptions: AndroidOptions? = null,
-    publish: Boolean = true,
     kotlinCompilerOptions: KotlinCompilerOptions = KotlinCompilerOptions(),
     contributesCtng: Boolean = true,
     enableWasmJsTests: Boolean = true,
+    versionPackageName: String? = null,
 ) {
   val defaultTargets = defaultTargets(
       withJvm = withJvm,
@@ -197,10 +201,11 @@ fun Project.apolloLibrary(
       jvmTarget = jvmTarget,
       defaultTargets = defaultTargets,
       androidOptions = androidOptions,
-      publish = publish,
       kotlinCompilerOptions = kotlinCompilerOptions,
       contributesCtng = contributesCtng,
-      enableWasmJsTests = enableWasmJsTests
+      enableWasmJsTests = enableWasmJsTests,
+      versionPackageName = versionPackageName,
+      description = description
   )
 }
 
@@ -208,25 +213,21 @@ fun Project.apolloTest(
     withJs: Boolean = true,
     withJvm: Boolean = true,
     appleTargets: Set<String> = setOf(hostTarget),
-    kotlinCompilerOptions: KotlinCompilerOptions = KotlinCompilerOptions(),
     jvmTarget: Int? = null,
 ) {
   apolloTest(
-      kotlinCompilerOptions = kotlinCompilerOptions,
       jvmTarget = jvmTarget,
       block = defaultTargets(withJvm = withJvm, withJs = withJs, withLinux = false, withAndroid = false, withWasm = false, appleTargets = appleTargets),
   )
 }
 
 fun Project.apolloTest(
-    kotlinCompilerOptions: KotlinCompilerOptions = KotlinCompilerOptions(),
     jvmTarget: Int? = null,
     block: KotlinMultiplatformExtension.() -> Unit,
 ) {
-  commonSetup()
+  configureTestAggregationProducer()
+  configureJavaCompatibility(jvmTarget ?: 17)
   configureJavaAndKotlinCompilers(
-      jvmTarget,
-      kotlinCompilerOptions,
       listOf(
           "kotlin.RequiresOptIn",
           "com.apollographql.apollo.annotations.ApolloExperimental",
@@ -242,31 +243,73 @@ fun Project.apolloTest(
   configureTesting()
 }
 
-fun Project.apolloRoot() {
-  configureNode()
-  rootSetup()
+fun Project.rootCommon() {
+  version = property("VERSION_NAME")!!
 
-  pluginManager.apply("com.gradleup.nmcp.aggregation")
-  val nmcpAggregation = extensions.getByType(NmcpAggregationExtension::class.java)
-  nmcpAggregation.apply {
-    centralPortal {
-      username.set(System.getenv("LIBRARIAN_SONATYPE_USERNAME"))
-      password.set(System.getenv("LIBRARIAN_SONATYPE_PASSWORD"))
-      validationTimeout.set(30.minutes.toJavaDuration())
-      publishingTimeout.set(1.hours.toJavaDuration())
+  tasks.register("rmbuild") {
+    val root = file(".")
+    it.doLast {
+      root.walk().onEnter {
+        if (it.isDirectory && it.name == "build") {
+          println("deleting: $it")
+          it.deleteRecursively()
+          false
+        } else {
+          true
+        }
+      }.count()
     }
   }
 
-  Librarian.registerGcsTask(
-      this,
-      provider { "apollo-previews" },
-      provider { "m2" },
-      provider { System.getenv("LIBRARIAN_GOOGLE_SERVICES_JSON") },
-      nmcpAggregation.allFiles
-  )
+  configureNode()
+  configureTestAggregationConsumer()
+}
 
-  subprojects.forEach {
-    configurations.getByName("nmcpAggregation").dependencies.add(dependencies.create(it))
-  }
+fun Project.apolloTestRoot() {
+  rootCommon()
+}
+
+fun Project.apolloLibrariesRoot() {
+  rootCommon()
+
+  librarianRoot(
+      group = group(),
+      version = version(),
+      publishing = Publishing(
+          createMissingPublications = false,
+          publishPlatformArtifactsInRootModule = false,
+          pomMetadata = PomMetadata(
+              artifactId = "apollo-kdoc",
+              description = "Apollo Kotlin documentation",
+              vcsUrl = "https://github.com/apollographql/apollo-kotlin/",
+              developer = "Apollo",
+              license = "MIT",
+          ),
+          emptyJarLink = null
+      ),
+      sonatype = Sonatype(
+          username = System.getenv("LIBRARIAN_SONATYPE_USERNAME"),
+          password = System.getenv("LIBRARIAN_SONATYPE_PASSWORD"),
+          validationTimeout = 30.minutes.toJavaDuration(),
+          publishingTimeout = 1.hours.toJavaDuration(),
+          publishingType = null,
+      ),
+      signing = signing(),
+      gcs = System.getenv("LIBRARIAN_GOOGLE_SERVICES_JSON")?.let{
+        Gcs(
+            serviceAccountJson = it,
+            bucket = "apollo-previews",
+            prefix = "m2",
+        )
+      },
+      kdoc = Kdoc(
+          includeSelf = false,
+          olderVersions = listOf(
+              Coordinates("com.apollographql.apollo:apollo-kdoc:4.2.0"),
+              Coordinates("com.apollographql.apollo3:apollo-kdoc:3.8.2"),
+          )
+      )
+  )
+  maybeCustomizeDokka()
 }
 

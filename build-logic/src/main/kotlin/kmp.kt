@@ -1,4 +1,3 @@
-import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
@@ -50,7 +49,7 @@ fun defaultTargets(
       js(IR) {
         nodejs {
           testTask {
-            useMocha {
+            it.useMocha {
               // Override default 2s timeout
               timeout = "120s"
             }
@@ -175,7 +174,7 @@ fun Project.registerJavaCodegenTestTask() {
    * in the same Kotlin module
    */
   val commonJavaCodegenTest = kotlin.sourceSets.create("commonJavaCodegenTest") {
-    this.kotlin.srcDir("src/commonTest/kotlin")
+    it.kotlin.srcDir("src/commonTest/kotlin")
   }
   val javaCodegenCompilation = jvmTarget.compilations.create("javaCodegenTest")
 
@@ -183,7 +182,7 @@ fun Project.registerJavaCodegenTestTask() {
   testRun.setExecutionSourceFrom(javaCodegenCompilation)
 
   javaCodegenCompilation.compileJavaTaskProvider?.configure {
-    classpath += configurations.getByName("jvmTestCompileClasspath")
+    it.classpath += configurations.getByName("jvmTestCompileClasspath")
   }
   javaCodegenCompilation.configurations.compileDependencyConfiguration.extendsFrom(configurations.getByName("jvmTestCompileClasspath"))
   javaCodegenCompilation.configurations.runtimeDependencyConfiguration?.extendsFrom(configurations.getByName("jvmTestRuntimeClasspath"))

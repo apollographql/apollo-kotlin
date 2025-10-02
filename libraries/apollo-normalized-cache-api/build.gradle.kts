@@ -3,7 +3,8 @@ plugins {
 }
 
 apolloLibrary(
-  namespace = "com.apollographql.apollo.cache.normalized.api",
+    namespace = "com.apollographql.apollo.cache.normalized.api",
+    description = "Apollo GraphQL Normalized Cache Common APIs",
     withLinux = false
 )
 

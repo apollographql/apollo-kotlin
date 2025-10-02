@@ -1,41 +1,61 @@
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
-import org.gradle.api.Task
+import org.gradle.api.artifacts.type.ArtifactTypeDefinition
+import org.gradle.api.attributes.Usage
+import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.internal.tasks.testing.junit.result.TestClassResult
 import org.gradle.api.internal.tasks.testing.junit.result.TestResultSerializer
-import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.OutputFile
-import org.gradle.api.tasks.PathSensitive
-import org.gradle.api.tasks.PathSensitivity
-import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.*
+import org.gradle.api.tasks.testing.AbstractTestTask
 import java.io.File
 
-fun Project.rootSetup() {
-  val apolloTestAggregationConsumer = configurations.create("apolloTestAggregationConsumer") {
-    isCanBeConsumed = false
-    isCanBeResolved = true
+internal fun Project.configureTestAggregationProducer() {
+  val configuration = configurations.create("apolloTestAggregationProducer") {
+    it.isCanBeConsumed = true
+    it.isCanBeResolved = false
 
-    attributes {
-      attribute(org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE, objects.named(org.gradle.api.attributes.Usage::class.java, "apolloTestAggregation"))
+    it.attributes {
+      it.attribute(USAGE_ATTRIBUTE, objects.named(Usage::class.java, "apolloTestAggregation"))
+    }
+  }
+  // Hide this from the 'assemble' task
+  configuration.setVisible(false)
+
+  tasks.withType(AbstractTestTask::class.java).configureEach {
+    configuration.getOutgoing().artifact(
+        it.binaryResultsDirectory
+    ) {
+      it.setType(ArtifactTypeDefinition.DIRECTORY_TYPE)
+    }
+  }
+}
+
+
+fun Project.configureTestAggregationConsumer() {
+  val apolloTestAggregationConsumer = configurations.create("apolloTestAggregationConsumer") {
+    it.isCanBeConsumed = false
+    it.isCanBeResolved = true
+
+    it.attributes {
+      it.attribute(org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE, objects.named(org.gradle.api.attributes.Usage::class.java, "apolloTestAggregation"))
     }
   }
 
   allprojects {
-    val rootProject = this@rootSetup
+    val rootProject = this@configureTestAggregationConsumer
     rootProject.dependencies.add("apolloTestAggregationConsumer", rootProject.dependencies.project(mapOf("path" to path)))
   }
 
   val task = tasks.register("apolloTestAggregation", GenerateApolloTestAggregation::class.java) {
-    binaryTestResults.from(apolloTestAggregationConsumer.incoming.artifactView { lenient(true) }.files)
+    it.binaryTestResults.from(apolloTestAggregationConsumer.incoming.artifactView { it.lenient(true) }.files)
 
-    output = file("build/apolloTestAggregation.txt")
+    it.output = file("build/apolloTestAggregation.txt")
   }
 
   tasks.named("build").configure {
-    dependsOn(task)
+    it.dependsOn(task)
   }
 }
 
@@ -53,7 +73,7 @@ abstract class GenerateApolloTestAggregation : DefaultTask() {
     val result = binaryTestResults.files.map { binaryDir ->
       val classResults = mutableListOf<TestClassResult>()
       TestResultSerializer(binaryDir).read {
-        classResults.add(this)
+        classResults.add(it)
       }
 
       binaryDir.parentFile to classResults
@@ -65,7 +85,7 @@ abstract class GenerateApolloTestAggregation : DefaultTask() {
     }.sorted()
         .joinToString("\n")
 
-    output.writeText(result + "\ntotal: $count")
+    output.writeText("$result\ntotal: $count")
     println("test executed: $count")
   }
 }

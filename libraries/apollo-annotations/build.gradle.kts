@@ -3,7 +3,8 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo.annotations"
+    namespace = "com.apollographql.apollo.annotations",
+    description = "Apollo GraphQL Annotations"
 )
 
 kotlin {

@@ -4,6 +4,7 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.mpp",
+    description = "Apollo MPP Utils",
 )
 
 kotlin {

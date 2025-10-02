@@ -6,6 +6,7 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.runtime",
+    description = "ApolloClient and related networking code",
     androidOptions = AndroidOptions(withCompose = false),
     enableWasmJsTests = false
 )

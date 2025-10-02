@@ -9,4 +9,4 @@ buildscript {
   }
 }
 
-apolloRoot()
+apolloTestRoot()
