@@ -244,8 +244,6 @@ fun Project.apolloTest(
 }
 
 fun Project.rootCommon() {
-  version = property("VERSION_NAME")!!
-
   tasks.register("rmbuild") {
     val root = file(".")
     it.doLast {
