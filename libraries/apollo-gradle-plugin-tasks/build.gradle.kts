@@ -8,8 +8,9 @@ plugins {
 }
 
 apolloLibrary(
-    jvmTarget = 11, // Gratatouille requires 11
     namespace = "com.apollographql.apollo.gradle.tasks",
+    description = "Implementation of Apollo Gradle Plugin tasks.",
+    jvmTarget = 11, // Gratatouille requires 11
 )
 
 dependencies {

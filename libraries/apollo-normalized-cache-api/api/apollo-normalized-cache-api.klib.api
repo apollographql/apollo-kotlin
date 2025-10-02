@@ -59,22 +59,6 @@ abstract class com.apollographql.apollo.cache.normalized.api/NormalizedCacheFact
     final fun createChain(): com.apollographql.apollo.cache.normalized.api/NormalizedCache // com.apollographql.apollo.cache.normalized.api/NormalizedCacheFactory.createChain|createChain(){}[0]
 }
 
-final class com.apollographql.apollo.cache.normalized.api.internal/OptimisticCache : com.apollographql.apollo.cache.normalized.api/NormalizedCache { // com.apollographql.apollo.cache.normalized.api.internal/OptimisticCache|null[0]
-    constructor <init>() // com.apollographql.apollo.cache.normalized.api.internal/OptimisticCache.<init>|<init>(){}[0]
-
-    final fun addOptimisticUpdate(com.apollographql.apollo.cache.normalized.api/Record): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.cache.normalized.api.internal/OptimisticCache.addOptimisticUpdate|addOptimisticUpdate(com.apollographql.apollo.cache.normalized.api.Record){}[0]
-    final fun addOptimisticUpdates(kotlin.collections/Collection<com.apollographql.apollo.cache.normalized.api/Record>): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.cache.normalized.api.internal/OptimisticCache.addOptimisticUpdates|addOptimisticUpdates(kotlin.collections.Collection<com.apollographql.apollo.cache.normalized.api.Record>){}[0]
-    final fun clearAll() // com.apollographql.apollo.cache.normalized.api.internal/OptimisticCache.clearAll|clearAll(){}[0]
-    final fun dump(): kotlin.collections/Map<kotlin.reflect/KClass<*>, kotlin.collections/Map<kotlin/String, com.apollographql.apollo.cache.normalized.api/Record>> // com.apollographql.apollo.cache.normalized.api.internal/OptimisticCache.dump|dump(){}[0]
-    final fun loadRecord(kotlin/String, com.apollographql.apollo.cache.normalized.api/CacheHeaders): com.apollographql.apollo.cache.normalized.api/Record? // com.apollographql.apollo.cache.normalized.api.internal/OptimisticCache.loadRecord|loadRecord(kotlin.String;com.apollographql.apollo.cache.normalized.api.CacheHeaders){}[0]
-    final fun loadRecords(kotlin.collections/Collection<kotlin/String>, com.apollographql.apollo.cache.normalized.api/CacheHeaders): kotlin.collections/Collection<com.apollographql.apollo.cache.normalized.api/Record> // com.apollographql.apollo.cache.normalized.api.internal/OptimisticCache.loadRecords|loadRecords(kotlin.collections.Collection<kotlin.String>;com.apollographql.apollo.cache.normalized.api.CacheHeaders){}[0]
-    final fun merge(com.apollographql.apollo.cache.normalized.api/Record, com.apollographql.apollo.cache.normalized.api/CacheHeaders): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.cache.normalized.api.internal/OptimisticCache.merge|merge(com.apollographql.apollo.cache.normalized.api.Record;com.apollographql.apollo.cache.normalized.api.CacheHeaders){}[0]
-    final fun merge(kotlin.collections/Collection<com.apollographql.apollo.cache.normalized.api/Record>, com.apollographql.apollo.cache.normalized.api/CacheHeaders): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.cache.normalized.api.internal/OptimisticCache.merge|merge(kotlin.collections.Collection<com.apollographql.apollo.cache.normalized.api.Record>;com.apollographql.apollo.cache.normalized.api.CacheHeaders){}[0]
-    final fun remove(com.apollographql.apollo.cache.normalized.api/CacheKey, kotlin/Boolean): kotlin/Boolean // com.apollographql.apollo.cache.normalized.api.internal/OptimisticCache.remove|remove(com.apollographql.apollo.cache.normalized.api.CacheKey;kotlin.Boolean){}[0]
-    final fun remove(kotlin/String): kotlin/Int // com.apollographql.apollo.cache.normalized.api.internal/OptimisticCache.remove|remove(kotlin.String){}[0]
-    final fun removeOptimisticUpdates(com.benasher44.uuid/Uuid): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.cache.normalized.api.internal/OptimisticCache.removeOptimisticUpdates|removeOptimisticUpdates(com.benasher44.uuid.Uuid){}[0]
-}
-
 final class com.apollographql.apollo.cache.normalized.api/CacheHeaders { // com.apollographql.apollo.cache.normalized.api/CacheHeaders|null[0]
     final fun hasHeader(kotlin/String): kotlin/Boolean // com.apollographql.apollo.cache.normalized.api/CacheHeaders.hasHeader|hasHeader(kotlin.String){}[0]
     final fun headerValue(kotlin/String): kotlin/String? // com.apollographql.apollo.cache.normalized.api/CacheHeaders.headerValue|headerValue(kotlin.String){}[0]
@@ -197,16 +181,6 @@ final class com.apollographql.apollo.cache.normalized.api/Record : kotlin.collec
 
     // Targets: [js]
     final fun asJsReadonlyMapView(): kotlin.js.collections/JsReadonlyMap<kotlin/String, kotlin/Any?> // com.apollographql.apollo.cache.normalized.api/Record.asJsReadonlyMapView|asJsReadonlyMapView(){}[0]
-}
-
-final object com.apollographql.apollo.cache.normalized.api.internal/BlobRecordSerializer { // com.apollographql.apollo.cache.normalized.api.internal/BlobRecordSerializer|null[0]
-    final fun deserialize(kotlin/String, kotlin/ByteArray): com.apollographql.apollo.cache.normalized.api/Record // com.apollographql.apollo.cache.normalized.api.internal/BlobRecordSerializer.deserialize|deserialize(kotlin.String;kotlin.ByteArray){}[0]
-    final fun serialize(com.apollographql.apollo.cache.normalized.api/Record): kotlin/ByteArray // com.apollographql.apollo.cache.normalized.api.internal/BlobRecordSerializer.serialize|serialize(com.apollographql.apollo.cache.normalized.api.Record){}[0]
-}
-
-final object com.apollographql.apollo.cache.normalized.api.internal/JsonRecordSerializer { // com.apollographql.apollo.cache.normalized.api.internal/JsonRecordSerializer|null[0]
-    final fun deserialize(kotlin/String, kotlin/String): com.apollographql.apollo.cache.normalized.api/Record // com.apollographql.apollo.cache.normalized.api.internal/JsonRecordSerializer.deserialize|deserialize(kotlin.String;kotlin.String){}[0]
-    final fun serialize(com.apollographql.apollo.cache.normalized.api/Record): kotlin/String // com.apollographql.apollo.cache.normalized.api.internal/JsonRecordSerializer.serialize|serialize(com.apollographql.apollo.cache.normalized.api.Record){}[0]
 }
 
 final object com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders { // com.apollographql.apollo.cache.normalized.api/ApolloCacheHeaders|null[0]

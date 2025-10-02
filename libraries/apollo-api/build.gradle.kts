@@ -6,7 +6,8 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo.api"
+    namespace = "com.apollographql.apollo.api",
+    description = "Runtime support for generated models."
 )
 
 kotlin {

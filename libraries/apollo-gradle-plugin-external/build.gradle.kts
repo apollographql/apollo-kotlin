@@ -8,6 +8,7 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.gradle.external",
+    description = "Tombstone for apollo-gradle-plugin-external",
     jvmTarget = 11, // To compile against AGP 8.0.0
     kotlinCompilerOptions = KotlinCompilerOptions(KotlinVersion.KOTLIN_1_9) // For better Gradle compatibility
 )

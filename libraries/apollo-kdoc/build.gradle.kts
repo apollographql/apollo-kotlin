@@ -1,2 +1,0 @@
-configurePublishing(isAggregateKdoc = true)
-

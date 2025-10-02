@@ -6,6 +6,7 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.engine.tests",
+    description = "Tests for Apollo engines",
     withLinux = false,
     withJs = true,
     enableWasmJsTests = false

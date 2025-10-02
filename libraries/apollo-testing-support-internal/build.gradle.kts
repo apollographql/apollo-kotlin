@@ -4,7 +4,7 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.testing.internal",
-    publish = false
+    description = null,
 )
 
 kotlin {

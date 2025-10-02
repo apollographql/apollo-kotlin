@@ -3,7 +3,8 @@ plugins {
 }
 
 apolloLibrary(
-  namespace = "com.apollographql.apollo.cache.http"
+    namespace = "com.apollographql.apollo.cache.http",
+    description = "Apollo GraphQL http cache network transport",
 )
 
 dependencies {

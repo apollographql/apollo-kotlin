@@ -6,7 +6,8 @@ plugins {
 }
 
 apolloLibrary(
-    namespace = "com.apollographql.apollo.tooling"
+    namespace = "com.apollographql.apollo.tooling",
+    description = "Apollo Kotlin Tooling"
 )
 
 val apolloPublished = configurations.dependencyScope("apolloPublished").get()

@@ -1040,15 +1040,6 @@ public abstract interface class com/apollographql/apollo/api/http/WebSocketPaylo
 	public abstract fun compose (Lcom/apollographql/apollo/api/ApolloRequest;)Ljava/util/Map;
 }
 
-public final class com/apollographql/apollo/api/http/internal/UrlEncodeKt {
-	public static final fun urlDecode (Ljava/lang/String;)Ljava/lang/String;
-	public static final fun urlEncode (Ljava/lang/String;)Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo/api/internal/ResponseParserKt {
-	public static final fun readErrors (Lcom/apollographql/apollo/api/json/JsonReader;)Ljava/util/List;
-}
-
 public final class com/apollographql/apollo/api/json/-JsonReaders {
 	public static final fun jsonReader (Ljava/util/Map;)Lcom/apollographql/apollo/api/json/JsonReader;
 	public static final fun jsonReader (Lokio/BufferedSource;)Lcom/apollographql/apollo/api/json/JsonReader;

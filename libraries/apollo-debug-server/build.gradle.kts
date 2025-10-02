@@ -9,6 +9,7 @@ plugins {
 
 apolloLibrary(
     namespace = "com.apollographql.apollo.debugserver",
+    description = "Apollo Kotlin debug server, used by tools to inspect running applications using Apollo.",
     withLinux = false,
     withApple = false,
     withJs = false,
