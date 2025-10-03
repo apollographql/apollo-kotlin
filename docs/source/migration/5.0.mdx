@@ -4,16 +4,12 @@ subtitle: Step-by-step guide on migrating from Apollo Kotlin 4
 description: Learn how to migrate from version 4 with key changes, new features, and tools designed for improved stability and maintainability. Follow step-by-step guidance and make a seamless transition
 ---
 
-Apollo Kotlin 5 is mostly binary compatible with Apollo Kotlin 4 with a few exceptions:
+Apollo Kotlin 5 is an incremental evolution of Apollo Kotlin 4 and keeps the same package name. 
 
-- Symbols that were `DeprecationLevel.ERROR` in v4 are now removed.
-- `apollo-compiler` has breaking changes and is generally still considered unstable with the exception of persisted queries compiler plugins:
-  - `ApolloCompilerPlugin.beforeCompilationStep()`, `ApolloCompilerRegistry.registerOperationIdsGenerator()` and dependent symbols are stable and will go through the usual deprecation cycle if they ever need to change.  
-- The APIs used by the data builders generated sources (`buildData`, `ObjectBuilder`, `CustomScalarAdapters.PASSTHROUGH`...) have changed. This is not an issue unless you called those APIs directly or distributed data builders code in a library. In that last case, your consumers will have to update to Apollo Kotlin 5.  
-- A few symbols were not supposed to be exposed and have been hidden:
-  - `BooleanExpression.simplify()` 
-  - `DefaultHttpRequestComposer.HEADER_APOLLO_OPERATION_ID`
-  - ...
+In most cases, bumping the version should be transparent. The exceptions are:
+
+- Symbols that were `DeprecationLevel.ERROR` in v4 are now removed. Remove all your deprecated usages before migrating to v5.
+- `apollo-compiler` is still considered experimental. You will need to update your [Apollo Compiler Plugins](https://www.apollographql.com/docs/kotlin/advanced/compiler-plugins). 
 
 We tried hard to minimize the impact of the binary changes so that running code compiled for v4 will run with v5. But the occasional incompatibility may happen. In that case, the incompatible libraries will need to compile against v5 and make a new release.   
 
@@ -34,7 +30,6 @@ plugins {
   id("com.apollographql.apollo")
 }
 ```
-
 
 ## Removed `Service.operationOutputGenerator` and `Service.operationIdGenerator`
 
@@ -60,7 +55,6 @@ class MyPlugin : ApolloCompilerPlugin {
 ```
 
 Read more in the [persisted queries](https://www.apollographql.com/docs/kotlin/v5/advanced/persisted-queries) and [compiler plugins](https://www.apollographql.com/docs/kotlin/v5/advanced/compiler-plugins) pages.
-
 
 
 ## Removed ApolloIdlingResource
