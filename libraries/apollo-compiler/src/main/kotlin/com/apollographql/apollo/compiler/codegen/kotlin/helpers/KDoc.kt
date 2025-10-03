@@ -14,7 +14,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
 internal fun TypeSpec.Builder.maybeAddDescription(description: String?): TypeSpec.Builder {
-  if (description.isNullOrBlank()) {
+  if (description == null) {
     return this
   }
 
@@ -22,7 +22,7 @@ internal fun TypeSpec.Builder.maybeAddDescription(description: String?): TypeSpe
 }
 
 internal fun PropertySpec.Builder.maybeAddDescription(description: String?): PropertySpec.Builder {
-  if (description.isNullOrBlank()) {
+  if (description == null) {
     return this
   }
 
@@ -30,7 +30,7 @@ internal fun PropertySpec.Builder.maybeAddDescription(description: String?): Pro
 }
 
 internal fun ParameterSpec.Builder.maybeAddDescription(description: String?): ParameterSpec.Builder {
-  if (description.isNullOrBlank()) {
+  if (description == null) {
     return this
   }
 
@@ -38,7 +38,7 @@ internal fun ParameterSpec.Builder.maybeAddDescription(description: String?): Pa
 }
 
 internal fun FunSpec.Builder.maybeAddDescription(description: String?): FunSpec.Builder {
-  if (description.isNullOrBlank()) {
+  if (description == null) {
     return this
   }
 
@@ -47,7 +47,7 @@ internal fun FunSpec.Builder.maybeAddDescription(description: String?): FunSpec.
 
 
 internal fun TypeSpec.Builder.maybeAddDeprecation(deprecationReason: String?): TypeSpec.Builder {
-  if (deprecationReason.isNullOrBlank()) {
+  if (deprecationReason == null) {
     return this
   }
 
@@ -55,7 +55,7 @@ internal fun TypeSpec.Builder.maybeAddDeprecation(deprecationReason: String?): T
 }
 
 internal fun PropertySpec.Builder.maybeAddDeprecation(deprecationReason: String?): PropertySpec.Builder {
-  if (deprecationReason.isNullOrBlank()) {
+  if (deprecationReason == null) {
     return this
   }
 
@@ -63,7 +63,7 @@ internal fun PropertySpec.Builder.maybeAddDeprecation(deprecationReason: String?
 }
 
 internal fun ParameterSpec.Builder.maybeAddDeprecation(deprecationReason: String?): ParameterSpec.Builder {
-  if (deprecationReason.isNullOrBlank()) {
+  if (deprecationReason == null) {
     return this
   }
 
@@ -71,7 +71,7 @@ internal fun ParameterSpec.Builder.maybeAddDeprecation(deprecationReason: String
 }
 
 internal fun FunSpec.Builder.maybeAddDeprecation(deprecationReason: String?): FunSpec.Builder {
-  if (deprecationReason.isNullOrBlank()) {
+  if (deprecationReason == null) {
     return this
   }
 
@@ -79,7 +79,7 @@ internal fun FunSpec.Builder.maybeAddDeprecation(deprecationReason: String?): Fu
 }
 
 internal fun TypeSpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolver, optInFeature: String?): TypeSpec.Builder {
-  if (optInFeature.isNullOrBlank()) {
+  if (optInFeature == null) {
     return this
   }
 
@@ -88,7 +88,7 @@ internal fun TypeSpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolver, op
 }
 
 internal fun PropertySpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolver, optInFeature: String?): PropertySpec.Builder {
-  if (optInFeature.isNullOrBlank()) {
+  if (optInFeature == null) {
     return this
   }
 
@@ -97,7 +97,7 @@ internal fun PropertySpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolver
 }
 
 internal fun ParameterSpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolver, optInFeature: String?): ParameterSpec.Builder {
-  if (optInFeature.isNullOrBlank()) {
+  if (optInFeature == null) {
     return this
   }
 
@@ -106,7 +106,7 @@ internal fun ParameterSpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolve
 }
 
 internal fun FunSpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolver, optInFeature: String?): FunSpec.Builder {
-  if (optInFeature.isNullOrBlank()) {
+  if (optInFeature == null) {
     return this
   }
 
@@ -123,7 +123,7 @@ internal fun requiresOptInAnnotation(annotation: ClassName): AnnotationSpec {
 internal fun <T: Annotatable.Builder<*>> T.maybeAddOptIn(
     resolver: KotlinResolver,
     enumValues: List<IrEnum.Value>,
-): T = applyIf(enumValues.any { !it.optInFeature.isNullOrBlank() }) {
+): T = applyIf(enumValues.any { it.optInFeature != null }) {
   val annotation = resolver.resolveRequiresOptInAnnotation() ?: return@applyIf
   addAnnotation(requiresOptInAnnotation(annotation))
 }
