@@ -112,7 +112,6 @@ public final class com/apollographql/apollo/cache/normalized/NormalizedCache {
 	public static synthetic fun configureApolloClientBuilder$default (Lcom/apollographql/apollo/ApolloClient$Builder;Lcom/apollographql/apollo/cache/normalized/api/NormalizedCacheFactory;Lcom/apollographql/apollo/cache/normalized/api/CacheKeyGenerator;Lcom/apollographql/apollo/cache/normalized/api/CacheResolver;ZILjava/lang/Object;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public static final fun doNotStore (Lcom/apollographql/apollo/api/MutableExecutionOptions;Z)Ljava/lang/Object;
 	public static final fun emitCacheMisses (Lcom/apollographql/apollo/api/MutableExecutionOptions;Z)Lcom/apollographql/apollo/api/MutableExecutionOptions;
-	public static final fun executeCacheAndNetwork (Lcom/apollographql/apollo/ApolloCall;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun fetchPolicy (Lcom/apollographql/apollo/api/MutableExecutionOptions;Lcom/apollographql/apollo/cache/normalized/FetchPolicy;)Ljava/lang/Object;
 	public static final fun fetchPolicyInterceptor (Lcom/apollographql/apollo/api/MutableExecutionOptions;Lcom/apollographql/apollo/interceptor/ApolloInterceptor;)Ljava/lang/Object;
 	public static final fun getApolloStore (Lcom/apollographql/apollo/ApolloClient;)Lcom/apollographql/apollo/cache/normalized/ApolloStore;
@@ -131,8 +130,6 @@ public final class com/apollographql/apollo/cache/normalized/NormalizedCache {
 	public static final fun storeReceiveDate (Lcom/apollographql/apollo/api/MutableExecutionOptions;Z)Ljava/lang/Object;
 	public static final fun watch (Lcom/apollographql/apollo/ApolloCall;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun watch (Lcom/apollographql/apollo/ApolloCall;Lcom/apollographql/apollo/api/Query$Data;)Lkotlinx/coroutines/flow/Flow;
-	public static final fun watch (Lcom/apollographql/apollo/ApolloCall;Z)Lkotlinx/coroutines/flow/Flow;
-	public static final fun watch (Lcom/apollographql/apollo/ApolloCall;ZZ)Lkotlinx/coroutines/flow/Flow;
 	public static final fun writeToCacheAsynchronously (Lcom/apollographql/apollo/api/MutableExecutionOptions;Z)Ljava/lang/Object;
 }
 

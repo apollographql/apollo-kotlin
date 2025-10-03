@@ -50,7 +50,7 @@ public final class com/apollographql/apollo/api/ApolloOptionalAdapter : com/apol
 }
 
 public final class com/apollographql/apollo/api/ApolloRequest : com/apollographql/apollo/api/ExecutionOptions {
-	public synthetic fun <init> (Lcom/apollographql/apollo/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo/api/ExecutionContext;Lcom/apollographql/apollo/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo/api/ExecutionContext;Lcom/apollographql/apollo/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo/api/ExecutionContext;
@@ -58,6 +58,7 @@ public final class com/apollographql/apollo/api/ApolloRequest : com/apollographq
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo/api/http/HttpMethod;
 	public final fun getIgnoreApolloClientHttpHeaders ()Ljava/lang/Boolean;
+	public fun getIgnoreUnknownKeys ()Ljava/lang/Boolean;
 	public final fun getOperation ()Lcom/apollographql/apollo/api/Operation;
 	public final fun getRequestUuid ()Ljava/util/UUID;
 	public final fun getRetryOnError ()Ljava/lang/Boolean;
@@ -88,6 +89,7 @@ public final class com/apollographql/apollo/api/ApolloRequest$Builder : com/apol
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo/api/http/HttpMethod;
 	public final fun getIgnoreApolloClientHttpHeaders ()Ljava/lang/Boolean;
+	public fun getIgnoreUnknownKeys ()Ljava/lang/Boolean;
 	public final fun getOperation ()Lcom/apollographql/apollo/api/Operation;
 	public final fun getRequestUuid ()Ljava/util/UUID;
 	public final fun getRetryOnError ()Ljava/lang/Boolean;
@@ -99,6 +101,8 @@ public final class com/apollographql/apollo/api/ApolloRequest$Builder : com/apol
 	public fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public synthetic fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Ljava/lang/Object;
 	public final fun ignoreApolloClientHttpHeaders (Ljava/lang/Boolean;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
+	public fun ignoreUnknownKeys (Ljava/lang/Boolean;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
+	public synthetic fun ignoreUnknownKeys (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun requestUuid (Ljava/util/UUID;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public final fun retryOnError (Ljava/lang/Boolean;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
@@ -182,8 +186,16 @@ public final class com/apollographql/apollo/api/BVariable : com/apollographql/ap
 	public fun toString ()Ljava/lang/String;
 }
 
+public class com/apollographql/apollo/api/BaseFakeResolver : com/apollographql/apollo/api/FakeResolver {
+	public fun <init> (Ljava/util/Map;)V
+	public fun resolveLeaf (Lcom/apollographql/apollo/api/FakeResolverContext;)Ljava/lang/Object;
+	public fun resolveListSize (Lcom/apollographql/apollo/api/FakeResolverContext;)I
+	public fun resolveMaybeNull (Lcom/apollographql/apollo/api/FakeResolverContext;)Z
+	public fun resolveTypename (Lcom/apollographql/apollo/api/FakeResolverContext;)Ljava/lang/String;
+	public fun stableIdForObject (Ljava/util/Map;Lcom/apollographql/apollo/api/CompiledField;)Ljava/lang/String;
+}
+
 public abstract class com/apollographql/apollo/api/BooleanExpression {
-	public abstract fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression;
 }
 
 public final class com/apollographql/apollo/api/BooleanExpression$And : com/apollographql/apollo/api/BooleanExpression {
@@ -195,7 +207,6 @@ public final class com/apollographql/apollo/api/BooleanExpression$And : com/apol
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getOperands ()Ljava/util/Set;
 	public fun hashCode ()I
-	public fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -207,15 +218,11 @@ public final class com/apollographql/apollo/api/BooleanExpression$Element : com/
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getValue ()Ljava/lang/Object;
 	public fun hashCode ()I
-	public fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression$Element;
-	public synthetic fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression;
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo/api/BooleanExpression$False : com/apollographql/apollo/api/BooleanExpression {
 	public static final field INSTANCE Lcom/apollographql/apollo/api/BooleanExpression$False;
-	public fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression$False;
-	public synthetic fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression;
 }
 
 public final class com/apollographql/apollo/api/BooleanExpression$Not : com/apollographql/apollo/api/BooleanExpression {
@@ -226,7 +233,6 @@ public final class com/apollographql/apollo/api/BooleanExpression$Not : com/apol
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getOperand ()Lcom/apollographql/apollo/api/BooleanExpression;
 	public fun hashCode ()I
-	public fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -239,45 +245,29 @@ public final class com/apollographql/apollo/api/BooleanExpression$Or : com/apoll
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getOperands ()Ljava/util/Set;
 	public fun hashCode ()I
-	public fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression;
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo/api/BooleanExpression$True : com/apollographql/apollo/api/BooleanExpression {
 	public static final field INSTANCE Lcom/apollographql/apollo/api/BooleanExpression$True;
-	public fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression$True;
-	public synthetic fun simplify ()Lcom/apollographql/apollo/api/BooleanExpression;
 }
 
 public final class com/apollographql/apollo/api/BooleanExpressions {
-	public static final fun and (Lcom/apollographql/apollo/api/BooleanExpression;[Lcom/apollographql/apollo/api/BooleanExpression;)Lcom/apollographql/apollo/api/BooleanExpression;
 	public static final fun and ([Lcom/apollographql/apollo/api/BooleanExpression;)Lcom/apollographql/apollo/api/BooleanExpression;
-	public static final fun containsPossibleTypes (Lcom/apollographql/apollo/api/BooleanExpression;)Z
 	public static final fun evaluate (Lcom/apollographql/apollo/api/BooleanExpression;Ljava/util/Set;Ljava/lang/String;Ljava/util/Set;Ljava/util/List;)Z
-	public static final fun evaluate (Lcom/apollographql/apollo/api/BooleanExpression;Lkotlin/jvm/functions/Function1;)Z
-	public static final fun firstElementOfType (Lcom/apollographql/apollo/api/BooleanExpression;Lkotlin/reflect/KClass;)Ljava/lang/Object;
 	public static final fun label (Ljava/lang/String;)Lcom/apollographql/apollo/api/BooleanExpression;
 	public static synthetic fun label$default (Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/api/BooleanExpression;
 	public static final fun not (Lcom/apollographql/apollo/api/BooleanExpression;)Lcom/apollographql/apollo/api/BooleanExpression;
-	public static final fun or (Lcom/apollographql/apollo/api/BooleanExpression;[Lcom/apollographql/apollo/api/BooleanExpression;)Lcom/apollographql/apollo/api/BooleanExpression;
 	public static final fun or ([Lcom/apollographql/apollo/api/BooleanExpression;)Lcom/apollographql/apollo/api/BooleanExpression;
 	public static final fun possibleTypes ([Ljava/lang/String;)Lcom/apollographql/apollo/api/BooleanExpression;
 	public static final fun variable (Ljava/lang/String;)Lcom/apollographql/apollo/api/BooleanExpression;
 }
 
-public abstract interface class com/apollographql/apollo/api/BuilderFactory {
-	public abstract fun newBuilder (Lcom/apollographql/apollo/api/CustomScalarAdapters;)Ljava/lang/Object;
-}
-
 public final class com/apollographql/apollo/api/BuilderProperty {
 	public fun <init> (Lcom/apollographql/apollo/api/Adapter;)V
 	public final fun getAdapter ()Lcom/apollographql/apollo/api/Adapter;
-	public final fun getValue (Lcom/apollographql/apollo/api/ObjectBuilder;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
-	public final fun setValue (Lcom/apollographql/apollo/api/ObjectBuilder;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
-}
-
-public abstract interface class com/apollographql/apollo/api/BuilderScope {
-	public abstract fun getCustomScalarAdapters ()Lcom/apollographql/apollo/api/CustomScalarAdapters;
+	public final fun getValue (Lcom/apollographql/apollo/api/DataBuilder;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public final fun setValue (Lcom/apollographql/apollo/api/DataBuilder;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
 }
 
 public final class com/apollographql/apollo/api/CompiledArgument {
@@ -372,12 +362,6 @@ public final class com/apollographql/apollo/api/CompiledFragment$Builder {
 }
 
 public final class com/apollographql/apollo/api/CompiledGraphQL {
-	public static final field CompiledDirectiveType Lcom/apollographql/apollo/api/ObjectType;
-	public static final field CompiledEnumValueType Lcom/apollographql/apollo/api/ObjectType;
-	public static final field CompiledFieldType Lcom/apollographql/apollo/api/ObjectType;
-	public static final field CompiledInputValueType Lcom/apollographql/apollo/api/ObjectType;
-	public static final field CompiledSchemaType Lcom/apollographql/apollo/api/ObjectType;
-	public static final field CompiledTypeType Lcom/apollographql/apollo/api/ObjectType;
 	public static final fun -list (Lcom/apollographql/apollo/api/CompiledType;)Lcom/apollographql/apollo/api/CompiledListType;
 	public static final fun -notNull (Lcom/apollographql/apollo/api/CompiledType;)Lcom/apollographql/apollo/api/CompiledNotNullType;
 	public static final fun isComposite (Lcom/apollographql/apollo/api/CompiledNamedType;)Z
@@ -421,11 +405,10 @@ public final class com/apollographql/apollo/api/CompiledVariable {
 public final class com/apollographql/apollo/api/CustomScalarAdapters : com/apollographql/apollo/api/ExecutionContext$Element {
 	public static final field Empty Lcom/apollographql/apollo/api/CustomScalarAdapters;
 	public static final field Key Lcom/apollographql/apollo/api/CustomScalarAdapters$Key;
-	public static final field PassThrough Lcom/apollographql/apollo/api/CustomScalarAdapters;
 	public final field deferredFragmentIdentifiers Ljava/util/Set;
 	public final field errors Ljava/util/List;
 	public final field falseVariables Ljava/util/Set;
-	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Set;Ljava/util/Set;Ljava/util/List;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Set;Ljava/util/Set;Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun adapterFor (Ljava/lang/String;)Lcom/apollographql/apollo/api/Adapter;
 	public final fun firstErrorStartingWith (Ljava/util/List;)Lcom/apollographql/apollo/api/Error;
 	public fun getKey ()Lcom/apollographql/apollo/api/ExecutionContext$Key;
@@ -443,10 +426,10 @@ public final class com/apollographql/apollo/api/CustomScalarAdapters$Builder {
 	public final fun deferredFragmentIdentifiers (Ljava/util/Set;)Lcom/apollographql/apollo/api/CustomScalarAdapters$Builder;
 	public final fun errors (Ljava/util/List;)Lcom/apollographql/apollo/api/CustomScalarAdapters$Builder;
 	public final fun falseVariables (Ljava/util/Set;)Lcom/apollographql/apollo/api/CustomScalarAdapters$Builder;
-	public final fun unsafe (Z)Lcom/apollographql/apollo/api/CustomScalarAdapters$Builder;
 }
 
 public final class com/apollographql/apollo/api/CustomScalarAdapters$Key : com/apollographql/apollo/api/ExecutionContext$Key {
+	public final fun getPassThrough ()Lcom/apollographql/apollo/api/CustomScalarAdapters;
 }
 
 public final class com/apollographql/apollo/api/CustomScalarType : com/apollographql/apollo/api/CompiledNamedType {
@@ -454,19 +437,71 @@ public final class com/apollographql/apollo/api/CustomScalarType : com/apollogra
 	public final fun getClassName ()Ljava/lang/String;
 }
 
-public abstract interface class com/apollographql/apollo/api/CustomTypeAdapter {
+public abstract class com/apollographql/apollo/api/DataBuilder : com/apollographql/apollo/api/DataBuilderScope {
+	public fun <init> (Lcom/apollographql/apollo/api/CustomScalarAdapters;)V
+	public abstract fun build ()Lcom/apollographql/apollo/api/DataMap;
+	public fun getCustomScalarAdapters ()Lcom/apollographql/apollo/api/CustomScalarAdapters;
+	public final fun get__fields ()Ljava/util/Map;
+	public final fun get__typename ()Ljava/lang/String;
+	public final fun set (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun set__typename (Ljava/lang/String;)V
 }
 
 public abstract interface annotation class com/apollographql/apollo/api/DataBuilderDsl : java/lang/annotation/Annotation {
 }
 
-public class com/apollographql/apollo/api/DefaultFakeResolver : com/apollographql/apollo/api/FakeResolver {
-	public fun <init> (Ljava/util/List;)V
-	public fun resolveLeaf (Lcom/apollographql/apollo/api/FakeResolverContext;)Ljava/lang/Object;
-	public fun resolveListSize (Lcom/apollographql/apollo/api/FakeResolverContext;)I
-	public fun resolveMaybeNull (Lcom/apollographql/apollo/api/FakeResolverContext;)Z
-	public fun resolveTypename (Lcom/apollographql/apollo/api/FakeResolverContext;)Ljava/lang/String;
-	public fun stableIdForObject (Ljava/util/Map;Lcom/apollographql/apollo/api/CompiledField;)Ljava/lang/String;
+public abstract interface class com/apollographql/apollo/api/DataBuilderFactory {
+	public abstract fun newBuilder (Lcom/apollographql/apollo/api/CustomScalarAdapters;)Lcom/apollographql/apollo/api/DataBuilder;
+}
+
+public final class com/apollographql/apollo/api/DataBuilderKt {
+	public static final fun DataBuilderScope (Lcom/apollographql/apollo/api/CustomScalarAdapters;)Lcom/apollographql/apollo/api/DataBuilderScope;
+	public static synthetic fun DataBuilderScope$default (Lcom/apollographql/apollo/api/CustomScalarAdapters;ILjava/lang/Object;)Lcom/apollographql/apollo/api/DataBuilderScope;
+	public static final fun adaptValue (Lcom/apollographql/apollo/api/Adapter;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun getGlobalBuilder ()Lcom/apollographql/apollo/api/DataBuilderScope;
+}
+
+public abstract interface class com/apollographql/apollo/api/DataBuilderScope {
+	public abstract fun getCustomScalarAdapters ()Lcom/apollographql/apollo/api/CustomScalarAdapters;
+}
+
+public abstract class com/apollographql/apollo/api/DataMap : java/util/Map, kotlin/jvm/internal/markers/KMappedMarker {
+	public fun <init> (Ljava/util/Map;)V
+	public fun clear ()V
+	public synthetic fun compute (Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public fun compute (Ljava/lang/String;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public synthetic fun computeIfAbsent (Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;
+	public fun computeIfAbsent (Ljava/lang/String;Ljava/util/function/Function;)Ljava/lang/Object;
+	public synthetic fun computeIfPresent (Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public fun computeIfPresent (Ljava/lang/String;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public final fun containsKey (Ljava/lang/Object;)Z
+	public fun containsKey (Ljava/lang/String;)Z
+	public fun containsValue (Ljava/lang/Object;)Z
+	public final fun entrySet ()Ljava/util/Set;
+	public final fun get (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun get (Ljava/lang/String;)Ljava/lang/Object;
+	public fun getEntries ()Ljava/util/Set;
+	public fun getKeys ()Ljava/util/Set;
+	public fun getSize ()I
+	public fun getValues ()Ljava/util/Collection;
+	public fun isEmpty ()Z
+	public final fun keySet ()Ljava/util/Set;
+	public synthetic fun merge (Ljava/lang/Object;Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public fun merge (Ljava/lang/String;Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public synthetic fun put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun put (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun putAll (Ljava/util/Map;)V
+	public synthetic fun putIfAbsent (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun putIfAbsent (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun remove (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun remove (Ljava/lang/Object;Ljava/lang/Object;)Z
+	public synthetic fun replace (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public synthetic fun replace (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Z
+	public fun replace (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun replace (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)Z
+	public fun replaceAll (Ljava/util/function/BiFunction;)V
+	public final fun size ()I
+	public final fun values ()Ljava/util/Collection;
 }
 
 public final class com/apollographql/apollo/api/DefaultUpload : com/apollographql/apollo/api/Upload {
@@ -525,14 +560,19 @@ public final class com/apollographql/apollo/api/Error {
 public final class com/apollographql/apollo/api/Error$Builder {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun build ()Lcom/apollographql/apollo/api/Error;
+	public final fun extensions (Ljava/util/Map;)Lcom/apollographql/apollo/api/Error$Builder;
 	public final fun getExtensions ()Ljava/util/Map;
 	public final fun getLocations ()Ljava/util/List;
 	public final fun getMessage ()Ljava/lang/String;
+	public final fun getNonStandardFields ()Ljava/util/Map;
 	public final fun getPath ()Ljava/util/List;
 	public final fun locations (Ljava/util/List;)Lcom/apollographql/apollo/api/Error$Builder;
+	public final fun nonStandardFields (Ljava/util/Map;)Lcom/apollographql/apollo/api/Error$Builder;
 	public final fun path (Ljava/util/List;)Lcom/apollographql/apollo/api/Error$Builder;
 	public final fun putExtension (Ljava/lang/String;Ljava/lang/Object;)Lcom/apollographql/apollo/api/Error$Builder;
+	public final fun setExtensions (Ljava/util/Map;)V
 	public final fun setLocations (Ljava/util/List;)V
+	public final fun setNonStandardFields (Ljava/util/Map;)V
 	public final fun setPath (Ljava/util/List;)V
 }
 
@@ -555,6 +595,11 @@ public abstract interface class com/apollographql/apollo/api/Executable$Data {
 public final class com/apollographql/apollo/api/Executable$Variables {
 	public fun <init> (Ljava/util/Map;)V
 	public final fun getValueMap ()Ljava/util/Map;
+}
+
+public abstract interface class com/apollographql/apollo/api/ExecutableDefinition {
+	public abstract fun getADAPTER ()Lcom/apollographql/apollo/api/Adapter;
+	public abstract fun getROOT_FIELD ()Lcom/apollographql/apollo/api/CompiledField;
 }
 
 public final class com/apollographql/apollo/api/Executables {
@@ -601,6 +646,7 @@ public abstract interface class com/apollographql/apollo/api/ExecutionOptions {
 	public abstract fun getExecutionContext ()Lcom/apollographql/apollo/api/ExecutionContext;
 	public abstract fun getHttpHeaders ()Ljava/util/List;
 	public abstract fun getHttpMethod ()Lcom/apollographql/apollo/api/http/HttpMethod;
+	public abstract fun getIgnoreUnknownKeys ()Ljava/lang/Boolean;
 	public abstract fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public abstract fun getSendDocument ()Ljava/lang/Boolean;
 }
@@ -618,14 +664,15 @@ public abstract interface class com/apollographql/apollo/api/FakeResolver {
 }
 
 public final class com/apollographql/apollo/api/FakeResolverContext {
+	public final fun getCustomScalarAdapters ()Lcom/apollographql/apollo/api/CustomScalarAdapters;
 	public final fun getId ()Ljava/lang/String;
 	public final fun getMergedField ()Lcom/apollographql/apollo/api/CompiledField;
 	public final fun getPath ()Ljava/util/List;
 }
 
 public final class com/apollographql/apollo/api/FakeResolverKt {
-	public static final fun buildData (Lcom/apollographql/apollo/api/Adapter;Ljava/util/List;Ljava/lang/String;Ljava/util/Map;Lcom/apollographql/apollo/api/FakeResolver;Lcom/apollographql/apollo/api/CustomScalarAdapters;)Ljava/lang/Object;
-	public static final fun buildData (Lcom/apollographql/apollo/api/BuilderFactory;Lkotlin/jvm/functions/Function1;Lcom/apollographql/apollo/api/Adapter;Ljava/util/List;Ljava/lang/String;Lcom/apollographql/apollo/api/FakeResolver;Lcom/apollographql/apollo/api/CustomScalarAdapters;)Ljava/lang/Object;
+	public static final fun buildData (Lcom/apollographql/apollo/api/Adapter;Lcom/apollographql/apollo/api/CustomScalarAdapters;Ljava/util/Map;)Ljava/lang/Object;
+	public static final fun buildData (Lcom/apollographql/apollo/api/Adapter;Lcom/apollographql/apollo/api/CustomScalarAdapters;Ljava/util/Map;Ljava/util/List;Ljava/lang/String;Lcom/apollographql/apollo/api/FakeResolver;)Ljava/lang/Object;
 }
 
 public abstract interface class com/apollographql/apollo/api/FieldResult {
@@ -701,6 +748,7 @@ public abstract interface class com/apollographql/apollo/api/MutableExecutionOpt
 	public abstract fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public abstract fun httpHeaders (Ljava/util/List;)Ljava/lang/Object;
 	public abstract fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Ljava/lang/Object;
+	public abstract fun ignoreUnknownKeys (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public abstract fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public abstract fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
 }
@@ -721,61 +769,6 @@ public final class com/apollographql/apollo/api/ObjectAdapter : com/apollographq
 	public fun <init> (Lcom/apollographql/apollo/api/Adapter;Z)V
 	public fun fromJson (Lcom/apollographql/apollo/api/json/JsonReader;Lcom/apollographql/apollo/api/CustomScalarAdapters;)Ljava/lang/Object;
 	public fun toJson (Lcom/apollographql/apollo/api/json/JsonWriter;Lcom/apollographql/apollo/api/CustomScalarAdapters;Ljava/lang/Object;)V
-}
-
-public abstract class com/apollographql/apollo/api/ObjectBuilder : com/apollographql/apollo/api/BuilderScope {
-	public fun <init> (Lcom/apollographql/apollo/api/CustomScalarAdapters;)V
-	public abstract fun build ()Ljava/util/Map;
-	public fun getCustomScalarAdapters ()Lcom/apollographql/apollo/api/CustomScalarAdapters;
-	public final fun get__fields ()Ljava/util/Map;
-	public final fun get__typename ()Ljava/lang/String;
-	public final fun set (Ljava/lang/String;Ljava/lang/Object;)V
-	public final fun set__typename (Ljava/lang/String;)V
-}
-
-public final class com/apollographql/apollo/api/ObjectBuilderKt {
-	public static final fun Builder (Lcom/apollographql/apollo/api/CustomScalarAdapters;)Lcom/apollographql/apollo/api/BuilderScope;
-	public static final fun adaptValue (Lcom/apollographql/apollo/api/Adapter;Ljava/lang/Object;)Ljava/lang/Object;
-	public static final fun getGlobalBuilder ()Lcom/apollographql/apollo/api/BuilderScope;
-}
-
-public abstract class com/apollographql/apollo/api/ObjectMap : java/util/Map, kotlin/jvm/internal/markers/KMappedMarker {
-	public fun <init> (Ljava/util/Map;)V
-	public fun clear ()V
-	public synthetic fun compute (Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
-	public fun compute (Ljava/lang/String;Ljava/util/function/BiFunction;)Ljava/lang/Object;
-	public synthetic fun computeIfAbsent (Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;
-	public fun computeIfAbsent (Ljava/lang/String;Ljava/util/function/Function;)Ljava/lang/Object;
-	public synthetic fun computeIfPresent (Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
-	public fun computeIfPresent (Ljava/lang/String;Ljava/util/function/BiFunction;)Ljava/lang/Object;
-	public final fun containsKey (Ljava/lang/Object;)Z
-	public fun containsKey (Ljava/lang/String;)Z
-	public fun containsValue (Ljava/lang/Object;)Z
-	public final fun entrySet ()Ljava/util/Set;
-	public final fun get (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun get (Ljava/lang/String;)Ljava/lang/Object;
-	public fun getEntries ()Ljava/util/Set;
-	public fun getKeys ()Ljava/util/Set;
-	public fun getSize ()I
-	public fun getValues ()Ljava/util/Collection;
-	public fun isEmpty ()Z
-	public final fun keySet ()Ljava/util/Set;
-	public synthetic fun merge (Ljava/lang/Object;Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
-	public fun merge (Ljava/lang/String;Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
-	public synthetic fun put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun put (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun putAll (Ljava/util/Map;)V
-	public synthetic fun putIfAbsent (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun putIfAbsent (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun remove (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun remove (Ljava/lang/Object;Ljava/lang/Object;)Z
-	public synthetic fun replace (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public synthetic fun replace (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Z
-	public fun replace (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun replace (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)Z
-	public fun replaceAll (Ljava/util/function/BiFunction;)V
-	public final fun size ()I
-	public final fun values ()Ljava/util/Collection;
 }
 
 public final class com/apollographql/apollo/api/ObjectType : com/apollographql/apollo/api/CompiledNamedType {
@@ -838,6 +831,9 @@ public abstract class com/apollographql/apollo/api/Optional {
 
 public final class com/apollographql/apollo/api/Optional$Absent : com/apollographql/apollo/api/Optional {
 	public static final field INSTANCE Lcom/apollographql/apollo/api/Optional$Absent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo/api/Optional$Companion {
@@ -887,10 +883,6 @@ public abstract interface class com/apollographql/apollo/api/Query : com/apollog
 }
 
 public abstract interface class com/apollographql/apollo/api/Query$Data : com/apollographql/apollo/api/Operation$Data {
-}
-
-public final class com/apollographql/apollo/api/ScalarType : com/apollographql/apollo/api/CompiledNamedType {
-	public fun <init> (Ljava/lang/String;)V
 }
 
 public abstract interface class com/apollographql/apollo/api/Subscription : com/apollographql/apollo/api/Operation {
@@ -944,13 +936,11 @@ public final class com/apollographql/apollo/api/http/DefaultHttpRequestComposer$
 	public final fun buildParamsMap (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/CustomScalarAdapters;ZZ)Lokio/ByteString;
 	public final fun buildParamsMap (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/CustomScalarAdapters;ZZZ)Lokio/ByteString;
 	public final fun buildPostBody (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/CustomScalarAdapters;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo/api/http/HttpBody;
-	public final fun buildPostBody (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/CustomScalarAdapters;ZLjava/lang/String;)Lcom/apollographql/apollo/api/http/HttpBody;
+	public final fun buildPostBody (Lcom/apollographql/apollo/api/Operation;Lcom/apollographql/apollo/api/CustomScalarAdapters;ZZLjava/lang/String;)Lcom/apollographql/apollo/api/http/HttpBody;
 	public final fun composePayload (Lcom/apollographql/apollo/api/ApolloRequest;)Ljava/util/Map;
 	public final fun getHEADER_ACCEPT_NAME ()Ljava/lang/String;
 	public final fun getHEADER_ACCEPT_VALUE_DEFER ()Ljava/lang/String;
 	public final fun getHEADER_ACCEPT_VALUE_MULTIPART ()Ljava/lang/String;
-	public final fun getHEADER_APOLLO_OPERATION_ID ()Ljava/lang/String;
-	public final fun getHEADER_APOLLO_OPERATION_NAME ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo/api/http/DefaultWebSocketPayloadComposer : com/apollographql/apollo/api/http/WebSocketPayloadComposer {
@@ -1050,15 +1040,6 @@ public abstract interface class com/apollographql/apollo/api/http/WebSocketPaylo
 	public abstract fun compose (Lcom/apollographql/apollo/api/ApolloRequest;)Ljava/util/Map;
 }
 
-public final class com/apollographql/apollo/api/http/internal/UrlEncodeKt {
-	public static final fun urlDecode (Ljava/lang/String;)Ljava/lang/String;
-	public static final fun urlEncode (Ljava/lang/String;)Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo/api/internal/ResponseParserKt {
-	public static final fun readErrors (Lcom/apollographql/apollo/api/json/JsonReader;)Ljava/util/List;
-}
-
 public final class com/apollographql/apollo/api/json/-JsonReaders {
 	public static final fun jsonReader (Ljava/util/Map;)Lcom/apollographql/apollo/api/json/JsonReader;
 	public static final fun jsonReader (Lokio/BufferedSource;)Lcom/apollographql/apollo/api/json/JsonReader;
@@ -1115,6 +1096,8 @@ public final class com/apollographql/apollo/api/json/BufferedSourceJsonReader : 
 	public fun endObject ()Lcom/apollographql/apollo/api/json/JsonReader;
 	public fun getPath ()Ljava/util/List;
 	public fun hasNext ()Z
+	public fun ignoreUnknownKeys ()Z
+	public fun ignoreUnknownKeys (Z)V
 	public fun nextBoolean ()Z
 	public fun nextDouble ()D
 	public fun nextInt ()I
@@ -1145,6 +1128,8 @@ public abstract interface class com/apollographql/apollo/api/json/JsonReader : j
 	public abstract fun endObject ()Lcom/apollographql/apollo/api/json/JsonReader;
 	public abstract fun getPath ()Ljava/util/List;
 	public abstract fun hasNext ()Z
+	public fun ignoreUnknownKeys ()Z
+	public fun ignoreUnknownKeys (Z)V
 	public abstract fun nextBoolean ()Z
 	public abstract fun nextDouble ()D
 	public abstract fun nextInt ()I
@@ -1216,6 +1201,8 @@ public final class com/apollographql/apollo/api/json/MapJsonReader : com/apollog
 	public fun getPath ()Ljava/util/List;
 	public final fun getRoot ()Ljava/lang/Object;
 	public fun hasNext ()Z
+	public fun ignoreUnknownKeys ()Z
+	public fun ignoreUnknownKeys (Z)V
 	public fun nextBoolean ()Z
 	public fun nextDouble ()D
 	public fun nextInt ()I
