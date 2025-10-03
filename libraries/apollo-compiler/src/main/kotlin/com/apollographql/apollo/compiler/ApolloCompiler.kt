@@ -1,9 +1,6 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo.ast.DeprecatedUsage
-import com.apollographql.apollo.ast.DifferentShape
-import com.apollographql.apollo.ast.DirectiveRedefinition
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.GQLDefinition
 import com.apollographql.apollo.ast.GQLDocument
@@ -11,12 +8,9 @@ import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.GQLSchemaDefinition
 import com.apollographql.apollo.ast.GQLTypeDefinition
-import com.apollographql.apollo.ast.IncompatibleDefinition
 import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.QueryDocumentMinifier
-import com.apollographql.apollo.ast.UnusedFragment
-import com.apollographql.apollo.ast.UnusedVariable
 import com.apollographql.apollo.ast.builtinForeignSchemas
 import com.apollographql.apollo.ast.checkEmpty
 import com.apollographql.apollo.ast.internal.SchemaValidationOptions
@@ -55,11 +49,13 @@ object ApolloCompiler {
     fun debug(message: String)
     fun info(message: String)
     fun warning(message: String)
+
     @Deprecated("use warning instead", replaceWith = ReplaceWith("warning(message)"))
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     fun warn(message: String) {
       warning(message)
     }
+
     fun error(message: String)
   }
 
@@ -106,7 +102,7 @@ object ApolloCompiler {
     }
     val mainSchemaDocument = mainSchemaDocuments.single()
 
-    // Sort the other schema document as type extensions are order sensitive, and we want this to be under the user control
+    // Sort the other schema document as type extensions are order-sensitive, and we want this to be under the user control
     val otherSchemaDocumentSorted = otherSchemaDocuments.sortedBy { it.sourceLocation?.filePath?.substringAfterLast(File.pathSeparator) }
 
     val schemaDefinitions = (listOf(mainSchemaDocument) + otherSchemaDocumentSorted).flatMap { it.definitions }
@@ -154,7 +150,8 @@ object ApolloCompiler {
         )
     )
 
-    val issueGroup = result.issues.group(warnOnDeprecatedUsages = true, fieldsOnDisjointTypesMustMerge = true)
+    // TODO: allow the user to override the severities for schema validation
+    val issueGroup = result.issues.group(defaultIssueSeverities)
 
     issueGroup.errors.checkEmpty()
     issueGroup.warnings.forEach {
@@ -232,6 +229,7 @@ object ApolloCompiler {
             val name = it.name ?: ""
             operationNameToNormalizedPath[name] = normalizedFile.normalizedPath
           }
+
           is GQLFragmentDefinition -> fragmentNameToNormalizedPath[it.name] = normalizedFile.normalizedPath
           else -> Unit
         }
@@ -251,9 +249,9 @@ object ApolloCompiler {
     }
 
     var document = ApolloExecutableDocumentTransform(options.addTypename ?: defaultAddTypename, !hasCacheCompilerPlugin).transform(
-      schema = schema,
-      document = GQLDocument(userDefinitions, sourceLocation = null),
-      upstreamFragmentDefinitions
+        schema = schema,
+        document = GQLDocument(userDefinitions, sourceLocation = null),
+        upstreamFragmentDefinitions
     )
 
     if (documentTransform != null) {
@@ -282,9 +280,16 @@ object ApolloCompiler {
 
     val flattenModels = options.flattenModels ?: flattenModels(codegenModels)
     val decapitalizeFields = options.decapitalizeFields ?: defaultDecapitalizeFields
-    val warnOnDeprecatedUsages = options.warnOnDeprecatedUsages ?: defaultWarnOnDeprecatedUsages
+    val issueSeverities = defaultIssueSeverities.let {
+      if (options.issueSeverities != null) {
+        it.toMutableMap().apply {
+          putAll(options.issueSeverities)
+        }
+      } else {
+        it
+      }
+    }
     val failOnWarnings = options.failOnWarnings ?: defaultFailOnWarnings
-    val fieldsOnDisjointTypesMustMerge = options.fieldsOnDisjointTypesMustMerge ?: defaultFieldsOnDisjointTypesMustMerge
     val generateOptionalOperationVariables = options.generateOptionalOperationVariables ?: defaultGenerateOptionalOperationVariables
     val alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching ?: defaultAlwaysGenerateTypesMatching
 
@@ -293,10 +298,7 @@ object ApolloCompiler {
       allIssues.addAll(checkCapitalizedFields(userDefinitions, checkFragmentsOnly = flattenModels))
     }
 
-    val issueGroup = allIssues.group(
-        warnOnDeprecatedUsages,
-        fieldsOnDisjointTypesMustMerge,
-    )
+    val issueGroup = allIssues.group(issueSeverities)
 
     issueGroup.errors.checkEmpty()
 
@@ -315,7 +317,7 @@ object ApolloCompiler {
     val operations = mutableListOf<GQLOperationDefinition>()
     val fragments = mutableListOf<GQLFragmentDefinition>()
     document.definitions.forEach {
-      when(it) {
+      when (it) {
         is GQLOperationDefinition -> operations.add(it)
         is GQLFragmentDefinition -> fragments.add(it)
         else -> Unit
@@ -602,12 +604,6 @@ object ApolloCompiler {
   }
 }
 
-private enum class Severity {
-  None,
-  Warning,
-  Error
-}
-
 internal class IssueGroup(
     val ignored: List<Issue>,
     val warnings: List<Issue>,
@@ -615,28 +611,20 @@ internal class IssueGroup(
 )
 
 internal fun List<Issue>.group(
-    warnOnDeprecatedUsages: Boolean,
-    fieldsOnDisjointTypesMustMerge: Boolean,
+    issueSeverities: Map<String, IssueSeverity>,
 ): IssueGroup {
   val ignored = mutableListOf<Issue>()
   val warnings = mutableListOf<Issue>()
   val errors = mutableListOf<Issue>()
 
   forEach {
-    val severity = when (it) {
-      is DeprecatedUsage -> if (warnOnDeprecatedUsages) Severity.Warning else Severity.None
-      is DifferentShape -> if (fieldsOnDisjointTypesMustMerge) Severity.Error else Severity.Warning
-      is UnusedVariable -> Severity.Warning
-      is UnusedFragment -> Severity.Warning
-      is IncompatibleDefinition -> Severity.Warning // This should probably be an error
-      is DirectiveRedefinition -> Severity.Warning
-      else -> Severity.Error
-    }
+    val name = it.javaClass.simpleName
+    val severity = issueSeverities.get(name) ?: IssueSeverity.Error
 
     when (severity) {
-      Severity.None -> ignored.add(it)
-      Severity.Warning -> warnings.add(it)
-      Severity.Error -> errors.add(it)
+      IssueSeverity.Ignore -> ignored.add(it)
+      IssueSeverity.Warn -> warnings.add(it)
+      IssueSeverity.Error -> errors.add(it)
     }
   }
 

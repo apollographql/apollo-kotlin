@@ -48,7 +48,7 @@ internal object TestUtils {
   }
 
   /**
-   * This allows to run a specific test from the command line by using something like:
+   * This allows running a specific test from the command line by using something like:
    *
    * ./gradlew :apollo-compiler:test -testFilter="fragments_with_type_condition" --tests '*Codegen*'
    */
@@ -71,10 +71,6 @@ internal object TestUtils {
         .map { arrayOf(it.nameWithoutExtension, it) }
   }
 
-  private fun File.replaceExtension(newExtension: String): File {
-    return File(parentFile, "$nameWithoutExtension.$newExtension")
-  }
-
   fun findSchema(dir: File): Schema? {
     return listOf("graphqls", "sdl", "json").map { File(dir, "schema.$it") }
         .firstOrNull { it.exists() }
@@ -86,7 +82,7 @@ internal object TestUtils {
   /**
    * run the block and checks the result against the .expected file
    *
-   * @param block: the callback to produce the result. [checkExpected] will try to find a schema
+   * @param block the callback to produce the result. [checkExpected] will try to find a schema
    * for [graphQLFile] by either looking for a schema with the same name or testing the first
    * schema.[json|sdl|graphqls] in the hierarchy
    */
@@ -112,7 +108,7 @@ internal object TestUtils {
     val expectedFile = File(graphQLFile.parent, graphQLFile.nameWithoutExtension + ".expected")
     val expected = try {
       expectedFile.readText()
-    } catch (e: Exception) {
+    } catch (_: Exception) {
       null
     }
 
@@ -131,7 +127,7 @@ internal object TestUtils {
 internal fun String.buffer() = Buffer().writeUtf8(this)
 
 internal fun <V : Any> GQLResult<V>.apolloGetOrThrow(): V {
-  val groups = issues.group(false, true)
+  val groups = issues.group(defaultIssueSeverities)
 
   groups.errors.firstOrNull()?.let {
     throw SourceAwareException(it.message, it.sourceLocation)

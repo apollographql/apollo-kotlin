@@ -2,6 +2,11 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.ast.DeprecatedUsage
+import com.apollographql.apollo.ast.DirectiveRedefinition
+import com.apollographql.apollo.ast.IncompatibleDefinition
+import com.apollographql.apollo.ast.UnusedFragment
+import com.apollographql.apollo.ast.UnusedVariable
 import com.apollographql.apollo.compiler.internal.sha256
 import com.apollographql.apollo.compiler.operationoutput.OperationId
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
@@ -156,20 +161,14 @@ class CodegenSchemaOptions(
   constructor(): this(emptyMap(), emptyMap(), false)
 }
 
+enum class IssueSeverity {
+  Ignore,
+  Warn,
+  Error
+}
+
 @Serializable
 class IrOptions(
-    /**
-     * Whether fields with different shape are disallowed to be merged in disjoint types.
-     *
-     * Note: setting this to `false` relaxes the standard GraphQL [FieldsInSetCanMerge](https://spec.graphql.org/draft/#FieldsInSetCanMerge()) validation which may still be
-     * run on the backend.
-     *
-     * See also [issue 4320](https://github.com/apollographql/apollo-kotlin/issues/4320)
-     *
-     * Default: true.
-     */
-    val fieldsOnDisjointTypesMustMerge: Boolean?,
-
     /**
      * Whether to decapitalize field names in the generated models (for instance `FooBar` -> `fooBar`).
      *
@@ -179,7 +178,7 @@ class IrOptions(
 
     val flattenModels: Boolean?,
 
-    val warnOnDeprecatedUsages: Boolean?,
+    val issueSeverities: Map<String, IssueSeverity>?,
     val failOnWarnings: Boolean?,
     val addTypename: String?,
 
@@ -203,25 +202,23 @@ class IrOptions(
 )
 
 fun buildIrOptions(
-    fieldsOnDisjointTypesMustMerge: Boolean? = null,
     decapitalizeFields: Boolean? = null,
     flattenModels: Boolean? = null,
-    warnOnDeprecatedUsages: Boolean? = null,
     failOnWarnings: Boolean? = null,
     addTypename: String? = null,
     generateOptionalOperationVariables: Boolean? = null,
     alwaysGenerateTypesMatching: Set<String>? = null,
     codegenModels: String? = null,
+    issueSeverity: Map<String, IssueSeverity>? = null,
 ): IrOptions = IrOptions(
-    fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge,
     decapitalizeFields = decapitalizeFields,
     flattenModels = flattenModels,
-    warnOnDeprecatedUsages = warnOnDeprecatedUsages,
     failOnWarnings = failOnWarnings,
     addTypename = addTypename,
     generateOptionalOperationVariables = generateOptionalOperationVariables,
     alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
     codegenModels = codegenModels,
+    issueSeverities = issueSeverity
 )
 
 interface CommonCodegenOpt {
@@ -685,7 +682,13 @@ internal val defaultOperationIdsGenerator = OperationIdsGenerator { operationDes
 
 internal val defaultLogger = NoOpLogger
 internal const val defaultUseSemanticNaming = true
-internal const val defaultWarnOnDeprecatedUsages = true
+internal val defaultIssueSeverities = mapOf(
+    DeprecatedUsage::class.simpleName!! to IssueSeverity.Warn,
+    UnusedVariable::class.simpleName!! to IssueSeverity.Warn,
+    UnusedFragment::class.simpleName!! to IssueSeverity.Warn,
+    DirectiveRedefinition::class.simpleName!! to IssueSeverity.Warn,
+    IncompatibleDefinition::class.simpleName!! to IssueSeverity.Warn,  // This should probably be an error by default
+)
 internal const val defaultFailOnWarnings = false
 internal const val defaultGenerateAsInternal = false
 internal const val defaultGenerateFilterNotNull = false

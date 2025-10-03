@@ -1,5 +1,3 @@
-// For Agp8
-@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE", "DEPRECATION")
 
 package com.apollographql.apollo.gradle.internal
 
@@ -53,6 +51,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
+import org.jetbrains.kotlin.gradle.utils.`is`
 import java.io.File
 import javax.inject.Inject
 
@@ -119,7 +118,6 @@ abstract class DefaultApolloExtension(
   internal fun getServiceTelemetryData(): List<ApolloGradleToolingModel.TelemetryData.ServiceTelemetryData> = services.map { service ->
     DefaultServiceTelemetryData(
         codegenModels = service.codegenModels.orNull,
-        warnOnDeprecatedUsages = service.warnOnDeprecatedUsages.orNull,
         failOnWarnings = service.failOnWarnings.orNull,
         operationManifestFormat = service.operationManifestFormat.orNull,
         generateKotlinModels = service.generateKotlinModels.orNull,
@@ -141,7 +139,6 @@ abstract class DefaultApolloExtension(
         jsExport = service.jsExport.orNull,
         addTypename = service.addTypename.orNull,
         flattenModels = service.flattenModels.orNull,
-        fieldsOnDisjointTypesMustMerge = service.fieldsOnDisjointTypesMustMerge.orNull,
         generateApolloMetadata = service.generateApolloMetadata.orNull,
 
         // Options for which we don't mind the value but want to know they are used
@@ -172,6 +169,11 @@ abstract class DefaultApolloExtension(
     if (registry != null) add("registry")
     if (upstreamDependencies.isNotEmpty()) add("dependsOn")
     if (downstreamDependencies.isNotEmpty()) add("isADependencyOf")
+    @Suppress("DEPRECATION")
+    if (warnOnDeprecatedUsages.isPresent) add("warnOnDeprecatedUsages")
+    @Suppress("DEPRECATION")
+    if (fieldsOnDisjointTypesMustMerge.isPresent) add("fieldsOnDisjointTypesMustMerge")
+    if (issueSeverities.isNotEmpty()) add("issueSeverities")
   }
 
   internal val serviceCount: Int
@@ -412,6 +414,17 @@ abstract class DefaultApolloExtension(
     if (service.languageVersion.orNull == "1.5") {
       project.logger.lifecycle("Apollo: languageVersion 1.5 is deprecated, please use 1.9 or leave empty")
     }
+    @Suppress("DEPRECATION")
+    val fieldsOnDisjointTypesMustMerge = service.fieldsOnDisjointTypesMustMerge.orNull
+    if (fieldsOnDisjointTypesMustMerge != null) {
+      service.issueSeverities.put("DifferentShape", if (fieldsOnDisjointTypesMustMerge) "error" else "ignore")
+    }
+    @Suppress("DEPRECATION")
+    val warnOnDeprecatedUsages = service.warnOnDeprecatedUsages.orNull
+    if (warnOnDeprecatedUsages != null) {
+      service.issueSeverities.put("DeprecatedUsage", if (warnOnDeprecatedUsages) "warn" else "ignore")
+    }
+
     val optionsTaskProvider = project.registerApolloGenerateOptionsTask(
         taskName = ModelNames.generateApolloOptions(service),
         taskGroup = TASK_GROUP,
@@ -427,10 +440,9 @@ abstract class DefaultApolloExtension(
          */
         codegenModels = service.codegenModels,
         addTypename = service.addTypename,
-        fieldsOnDisjointTypesMustMerge = service.fieldsOnDisjointTypesMustMerge,
         decapitalizeFields = service.decapitalizeFields,
         flattenModels = service.flattenModels,
-        warnOnDeprecatedUsages = service.warnOnDeprecatedUsages,
+        severities = project.provider { service.issueSeverities },
         failOnWarnings = service.failOnWarnings,
         generateOptionalOperationVariables = service.generateOptionalOperationVariables,
         alwaysGenerateTypesMatching = service.alwaysGenerateTypesMatching,

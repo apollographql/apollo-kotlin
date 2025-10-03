@@ -50,7 +50,6 @@ interface ApolloGradleToolingModel {
 
     interface ServiceTelemetryData {
       val codegenModels: String?
-      val warnOnDeprecatedUsages: Boolean?
       val failOnWarnings: Boolean?
       val operationManifestFormat: String?
       val generateKotlinModels: Boolean?
@@ -72,7 +71,6 @@ interface ApolloGradleToolingModel {
       val jsExport: Boolean?
       val addTypename: String?
       val flattenModels: Boolean?
-      val fieldsOnDisjointTypesMustMerge: Boolean?
       val generateApolloMetadata: Boolean?
       val usedOptions: Set<String>
     }

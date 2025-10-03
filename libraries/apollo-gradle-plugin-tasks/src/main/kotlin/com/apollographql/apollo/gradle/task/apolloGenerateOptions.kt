@@ -4,6 +4,7 @@ import com.apollographql.apollo.compiler.CodegenOptions
 import com.apollographql.apollo.compiler.CodegenSchemaOptions
 import com.apollographql.apollo.compiler.GeneratedMethod
 import com.apollographql.apollo.compiler.IrOptions
+import com.apollographql.apollo.compiler.IssueSeverity
 import com.apollographql.apollo.compiler.JavaNullable
 import com.apollographql.apollo.compiler.MANIFEST_NONE
 import com.apollographql.apollo.compiler.MANIFEST_OPERATION_OUTPUT
@@ -17,7 +18,6 @@ import gratatouille.tasks.GInputFiles
 import gratatouille.tasks.GOutputFile
 import gratatouille.tasks.GTask
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 
@@ -30,10 +30,8 @@ internal fun apolloGenerateOptions(
     codegenModels: String?,
     generateDataBuilders: Boolean?,
     addTypename: String?,
-    fieldsOnDisjointTypesMustMerge: Boolean?,
     decapitalizeFields: Boolean?,
     flattenModels: Boolean?,
-    warnOnDeprecatedUsages: Boolean?,
     failOnWarnings: Boolean?,
     generateOptionalOperationVariables: Boolean?,
     alwaysGenerateTypesMatching: Set<String>?,
@@ -46,6 +44,7 @@ internal fun apolloGenerateOptions(
     generateSchema: Boolean?,
     generatedSchemaName: String?,
     operationManifestFormat: String?,
+    severities: Map<String, String>?,
     // JavaCodegenOptions
     generatePrimitiveTypes: Boolean?,
     nullableFieldStyle: String?,
@@ -105,13 +104,12 @@ internal fun apolloGenerateOptions(
   IrOptions(
       codegenModels = codegenModels,
       addTypename = addTypename,
-      fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge,
       decapitalizeFields = decapitalizeFields,
       flattenModels = flattenModels,
-      warnOnDeprecatedUsages = warnOnDeprecatedUsages,
       failOnWarnings = failOnWarnings,
       generateOptionalOperationVariables = generateOptionalOperationVariables,
-      alwaysGenerateTypesMatching = alwaysGenerateTypesMatching
+      alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
+      issueSeverities = severities?.convert(),
   ).writeTo(irOptionsFile)
 
   CodegenOptions(
@@ -165,6 +163,16 @@ private fun operationManifestFormat(format: String?): String {
   }
 }
 
+private fun Map<String, String>.convert(): Map<String, IssueSeverity> {
+  return mapValues {
+    when (it.value) {
+      "ignore" -> IssueSeverity.Ignore
+      "warn" -> IssueSeverity.Warn
+      "error" -> IssueSeverity.Error
+      else -> error("Unknown severity '${it.value}'. Expected one of: 'ignore', 'warn', 'error'")
+    }
+  }
+}
 private fun codegenModels(codegenModels: String?, upstreamCodegenModels: String?): String {
   if (codegenModels != null) {
     setOf(MODELS_OPERATION_BASED, MODELS_RESPONSE_BASED, MODELS_OPERATION_BASED_WITH_INTERFACES).apply {
