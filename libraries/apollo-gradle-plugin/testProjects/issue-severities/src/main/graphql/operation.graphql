@@ -1,0 +1,7 @@
+query GetTypename {
+    __typename
+}
+
+fragment queryDetails on Query {
+    __typename
+}
