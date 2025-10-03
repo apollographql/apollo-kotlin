@@ -9,7 +9,7 @@ import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec
 
 internal fun TypeSpec.Builder.maybeAddDescription(description: String?): TypeSpec.Builder {
-  if (description == null) {
+  if (description.isNullOrBlank()) {
     return this
   }
 
@@ -17,7 +17,7 @@ internal fun TypeSpec.Builder.maybeAddDescription(description: String?): TypeSpe
 }
 
 internal fun FieldSpec.Builder.maybeAddDescription(description: String?): FieldSpec.Builder {
-  if (description == null) {
+  if (description.isNullOrBlank()) {
     return this
   }
 

@@ -14,7 +14,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
 internal fun TypeSpec.Builder.maybeAddDescription(description: String?): TypeSpec.Builder {
-  if (description == null) {
+  if (description.isNullOrBlank()) {
     return this
   }
 
@@ -22,7 +22,7 @@ internal fun TypeSpec.Builder.maybeAddDescription(description: String?): TypeSpe
 }
 
 internal fun PropertySpec.Builder.maybeAddDescription(description: String?): PropertySpec.Builder {
-  if (description == null) {
+  if (description.isNullOrBlank()) {
     return this
   }
 
@@ -30,7 +30,7 @@ internal fun PropertySpec.Builder.maybeAddDescription(description: String?): Pro
 }
 
 internal fun ParameterSpec.Builder.maybeAddDescription(description: String?): ParameterSpec.Builder {
-  if (description == null) {
+  if (description.isNullOrBlank()) {
     return this
   }
 
@@ -38,7 +38,7 @@ internal fun ParameterSpec.Builder.maybeAddDescription(description: String?): Pa
 }
 
 internal fun FunSpec.Builder.maybeAddDescription(description: String?): FunSpec.Builder {
-  if (description == null) {
+  if (description.isNullOrBlank()) {
     return this
   }
 
