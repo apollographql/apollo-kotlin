@@ -29,7 +29,7 @@ javaPoet = "1.13.0"
 jetbrains-annotations = "26.0.2-1"
 junit = "4.13.2"
 #noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
-kotlin-plugin = "2.3.0-dev-9908"
+kotlin-plugin = "2.3.0-dev-9971"
 kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.7.1"
 #noinspection NewerVersionAvailable requires KGP 2.2
