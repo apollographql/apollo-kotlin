@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
 import java.io.File
 import java.io.Serializable
@@ -41,7 +42,6 @@ internal data class DefaultTelemetryData(
 
 internal data class DefaultServiceTelemetryData(
     override val codegenModels: String?,
-    override val warnOnDeprecatedUsages: Boolean?,
     override val failOnWarnings: Boolean?,
     override val operationManifestFormat: String?,
     override val generateKotlinModels: Boolean?,
@@ -63,7 +63,15 @@ internal data class DefaultServiceTelemetryData(
     override val jsExport: Boolean?,
     override val addTypename: String?,
     override val flattenModels: Boolean?,
-    override val fieldsOnDisjointTypesMustMerge: Boolean?,
     override val generateApolloMetadata: Boolean?,
     override val usedOptions: Set<String>,
-) : ApolloGradleToolingModel.TelemetryData.ServiceTelemetryData, Serializable
+) : ApolloGradleToolingModel.TelemetryData.ServiceTelemetryData, Serializable {
+  @Deprecated("Deprecated in favor of issueSeverities")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+  override val warnOnDeprecatedUsages: Boolean
+    get() = false
+  @Deprecated("Deprecated in favor of issueSeverities")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+  override val fieldsOnDisjointTypesMustMerge: Boolean
+    get() = false
+}

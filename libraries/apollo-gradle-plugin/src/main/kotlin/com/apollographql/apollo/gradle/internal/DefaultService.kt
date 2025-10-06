@@ -24,6 +24,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   internal val downstreamDependencies = mutableListOf<Dependency>()
   internal val pluginsArguments = mutableMapOf<String, Any?>()
   internal var hasPlugin: Boolean = false
+  internal val issueSeverities = mutableMapOf<String, String>()
 
   val compilerConfiguration = project.configurations.create(ModelNames.compilerConfiguration(this)) {
     it.isCanBeConsumed = false
@@ -217,7 +218,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       }
 
       upstreamProject.plugins.withId("com.apollographql.apollo") {
-        val apolloExtension = (upstreamProject.extensions.findByType(ApolloExtension::class.java) as? DefaultApolloExtension)
+        val apolloExtension = upstreamProject.extensions.findByType(ApolloExtension::class.java) as? DefaultApolloExtension
         check(apolloExtension != null) {
           "Cannot find 'apollo' extension in upstream project ${upstreamProject.name} (registered: ${upstreamProject.extensions})"
         }
@@ -256,6 +257,10 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   override fun pluginArgument(name: String, value: Any?) {
     pluginsArguments.put(name, value)
+  }
+
+  override fun issueSeverity(name: String, severity: String) {
+    issueSeverities.put(name, severity)
   }
 }
 

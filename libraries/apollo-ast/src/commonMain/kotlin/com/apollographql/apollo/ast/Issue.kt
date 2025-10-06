@@ -63,6 +63,8 @@ class IncompatibleDefinition(
 /**
  * Fields have different shapes and cannot be merged
  *
+ * There is a discussion about whether this can be relaxed.
+ * See https://github.com/apollographql/apollo-kotlin/issues/4320.
  */
 class DifferentShape(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLValidationIssue
 

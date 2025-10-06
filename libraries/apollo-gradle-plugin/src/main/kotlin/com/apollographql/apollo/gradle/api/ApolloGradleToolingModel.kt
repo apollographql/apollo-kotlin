@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.api
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import java.io.File
 
 interface ApolloGradleToolingModel {
@@ -50,6 +51,8 @@ interface ApolloGradleToolingModel {
 
     interface ServiceTelemetryData {
       val codegenModels: String?
+      @Deprecated("Deprecated in favor of issueSeverities")
+      @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
       val warnOnDeprecatedUsages: Boolean?
       val failOnWarnings: Boolean?
       val operationManifestFormat: String?
@@ -72,6 +75,8 @@ interface ApolloGradleToolingModel {
       val jsExport: Boolean?
       val addTypename: String?
       val flattenModels: Boolean?
+      @Deprecated("Deprecated in favor of issueSeverities")
+      @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
       val fieldsOnDisjointTypesMustMerge: Boolean?
       val generateApolloMetadata: Boolean?
       val usedOptions: Set<String>
