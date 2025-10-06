@@ -1,12 +1,9 @@
 package com.apollographql.apollo.compiler.codegen.java.helpers
 
 
-import com.apollographql.apollo.compiler.internal.applyIf
-import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo.compiler.codegen.java.L
-import com.apollographql.apollo.compiler.codegen.java.S
+import com.apollographql.apollo.compiler.internal.applyIf
 import com.apollographql.apollo.compiler.ir.IrEnum
-import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec
@@ -28,7 +25,7 @@ internal fun FieldSpec.Builder.maybeAddDescription(description: String?): FieldS
 }
 
 internal fun TypeSpec.Builder.maybeAddDeprecation(deprecationReason: String?): TypeSpec.Builder {
-  if (deprecationReason.isNullOrBlank()) {
+  if (deprecationReason == null) {
     return this
   }
 
@@ -36,13 +33,13 @@ internal fun TypeSpec.Builder.maybeAddDeprecation(deprecationReason: String?): T
 }
 
 internal fun FieldSpec.Builder.maybeAddDeprecation(deprecationReason: String?): FieldSpec.Builder {
-  if (deprecationReason.isNullOrBlank()) {
+  if (deprecationReason == null) {
     return this
   }
 
   return addJavadoc("$L\n", deprecationReason).addAnnotation(deprecatedAnnotation())
 }
 
-internal fun MethodSpec.Builder.maybeSuppressDeprecation(enumValues: List<IrEnum.Value>): MethodSpec.Builder = applyIf(enumValues.any { !it.deprecationReason.isNullOrBlank() }) {
+internal fun MethodSpec.Builder.maybeSuppressDeprecation(enumValues: List<IrEnum.Value>): MethodSpec.Builder = applyIf(enumValues.any { it.deprecationReason != null }) {
   addAnnotation(suppressDeprecatedAnnotation())
 }

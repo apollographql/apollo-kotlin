@@ -47,7 +47,7 @@ open class SDLWriter(
 }
 
 internal fun SDLWriter.writeDescription(description: String?) {
-  if (!description.isNullOrBlank()) {
+  if (description != null) {
     write("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
   }
 }
