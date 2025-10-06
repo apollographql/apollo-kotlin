@@ -54,4 +54,4 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #v4.1.7
       - run: |
-          /Applications/Xcode_26.app/Contents/Developer/usr/bin/xcodebuild -allowProvisioningUpdates -project swift-tests/swift-tests.xcodeproj -configuration Debug -scheme swift-tests  test -test-timeouts-enabled YES
+          /Applications/Xcode_26.0.1.app/Contents/Developer/usr/bin/xcodebuild -allowProvisioningUpdates -project swift-tests/swift-tests.xcodeproj -configuration Debug -scheme swift-tests  test -test-timeouts-enabled YES
