@@ -78,6 +78,7 @@ public abstract interface class com/apollographql/apollo/gradle/api/ApolloGradle
 	public abstract fun getCodegenModels ()Ljava/lang/String;
 	public abstract fun getDecapitalizeFields ()Ljava/lang/Boolean;
 	public abstract fun getFailOnWarnings ()Ljava/lang/Boolean;
+	public abstract fun getFieldsOnDisjointTypesMustMerge ()Ljava/lang/Boolean;
 	public abstract fun getFlattenModels ()Ljava/lang/Boolean;
 	public abstract fun getGenerateApolloMetadata ()Ljava/lang/Boolean;
 	public abstract fun getGenerateAsInternal ()Ljava/lang/Boolean;
@@ -97,6 +98,7 @@ public abstract interface class com/apollographql/apollo/gradle/api/ApolloGradle
 	public abstract fun getOperationManifestFormat ()Ljava/lang/String;
 	public abstract fun getUseSemanticNaming ()Ljava/lang/Boolean;
 	public abstract fun getUsedOptions ()Ljava/util/Set;
+	public abstract fun getWarnOnDeprecatedUsages ()Ljava/lang/Boolean;
 }
 
 public abstract interface class com/apollographql/apollo/gradle/api/CompilerPlugin {
