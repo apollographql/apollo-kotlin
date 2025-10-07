@@ -49,7 +49,12 @@ internal class AdaptBuilder(
                 scalars.forEach {
                   if (context.resolver.resolve(ResolverKey(ResolverKeyKind.SchemaType, it)) != null) {
                     val initializer = context.resolver.adapterInitializer(IrScalarType(it), false, jsExport = false)
-                    add("%S -> %L.toJson(writer, customScalarAdapters, value as %T)\n", it, initializer, context.resolver.resolveScalarTarget(it))
+                    val scalarTarget = context.resolver.resolveScalarTarget(it)
+                    if (scalarTarget != KotlinSymbols.Any) {
+                      add("%S -> %L.toJson(writer, customScalarAdapters, value as %T)\n", it, initializer, scalarTarget)
+                    } else {
+                      add("%S -> %L.toJson(writer, customScalarAdapters, value)\n", it, initializer)
+                    }
                   }
                 }
                 add("else -> return value\n")
