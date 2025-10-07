@@ -113,7 +113,7 @@ class NormalizationTest {
     val data = apolloStore.readOperation(Issue2818Query())
     check(data.home.sectionA?.name == "section-name")
     check(data.home.sectionFragment.sectionA?.id == "section-id")
-    check(data.home.sectionFragment.sectionA?.imageUrl == "https://...")
+    check(data.home.sectionFragment.sectionA.imageUrl == "https://...")
   }
 
   @Test
