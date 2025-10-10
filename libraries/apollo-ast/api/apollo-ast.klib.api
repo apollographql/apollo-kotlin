@@ -1322,8 +1322,6 @@ final class com.apollographql.apollo.ast/ResolvedType : com.apollographql.apollo
 }
 
 final class com.apollographql.apollo.ast/Schema { // com.apollographql.apollo.ast/Schema|null[0]
-    final val connectionTypes // com.apollographql.apollo.ast/Schema.connectionTypes|{}connectionTypes[0]
-        final fun <get-connectionTypes>(): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.ast/Schema.connectionTypes.<get-connectionTypes>|<get-connectionTypes>(){}[0]
     final val directiveDefinitions // com.apollographql.apollo.ast/Schema.directiveDefinitions|{}directiveDefinitions[0]
         final fun <get-directiveDefinitions>(): kotlin.collections/Map<kotlin/String, com.apollographql.apollo.ast/GQLDirectiveDefinition> // com.apollographql.apollo.ast/Schema.directiveDefinitions.<get-directiveDefinitions>|<get-directiveDefinitions>(){}[0]
     final val errorAware // com.apollographql.apollo.ast/Schema.errorAware|{}errorAware[0]

@@ -80,7 +80,6 @@ internal object IrSchemaBuilder {
         irUnions = irUnions,
         irInterfaces = irInterfaces,
         irObjects = irObjects,
-        connectionTypes = schema.connectionTypes.toList(),
     )
   }
 }

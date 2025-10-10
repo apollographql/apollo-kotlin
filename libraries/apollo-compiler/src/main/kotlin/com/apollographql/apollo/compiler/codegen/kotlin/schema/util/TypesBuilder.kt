@@ -1,8 +1,6 @@
 package com.apollographql.apollo.compiler.codegen.kotlin.schema.util
 
 import com.apollographql.apollo.compiler.codegen.Identifier
-import com.apollographql.apollo.compiler.codegen.Identifier.customScalarAdapters
-import com.apollographql.apollo.compiler.codegen.Identifier.newBuilder
 import com.apollographql.apollo.compiler.codegen.Identifier.type
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
@@ -14,11 +12,7 @@ import com.apollographql.apollo.compiler.ir.IrInterface
 import com.apollographql.apollo.compiler.ir.IrObject
 import com.apollographql.apollo.compiler.ir.IrScalar
 import com.apollographql.apollo.compiler.ir.IrUnion
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
@@ -65,9 +59,6 @@ internal fun IrObject.typePropertySpec(resolver: KotlinResolver): PropertySpec {
   if (implements.isNotEmpty()) {
     builder.add(".interfaces(%L)", implements.implementsToCode(resolver))
   }
-  if (embeddedFields.isNotEmpty()) {
-    builder.add(".embeddedFields(%L)", embeddedFields.toCode())
-  }
   builder.add(".build()")
 
   return PropertySpec
@@ -84,9 +75,6 @@ internal fun IrInterface.typePropertySpec(resolver: KotlinResolver): PropertySpe
   }
   if (implements.isNotEmpty()) {
     builder.add(".interfaces(%L)", implements.implementsToCode(resolver))
-  }
-  if (embeddedFields.isNotEmpty()) {
-    builder.add(".embeddedFields(%L)", embeddedFields.toCode())
   }
   builder.add(".build()")
 
