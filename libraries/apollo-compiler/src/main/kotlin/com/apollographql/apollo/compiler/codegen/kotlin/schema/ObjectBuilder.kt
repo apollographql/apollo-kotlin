@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler.codegen.kotlin.schema
 
-import com.apollographql.apollo.compiler.codegen.Identifier
 import com.apollographql.apollo.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSchemaContext
@@ -85,9 +84,6 @@ private fun IrArgumentDefinition.codeBlock(): CodeBlock {
 
   if (isKey) {
     argumentBuilder.add(".isKey(true)")
-  }
-  if (isPagination) {
-    argumentBuilder.add(".isPagination(true)")
   }
   argumentBuilder.add(".build()")
   return argumentBuilder.build()

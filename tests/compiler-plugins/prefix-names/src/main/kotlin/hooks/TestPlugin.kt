@@ -36,10 +36,6 @@ class TestPlugin() : ApolloCompilerPlugin {
           return delegate.assertionsName().prefixed()
         }
 
-        override fun paginationName(): String {
-          return delegate.paginationName().prefixed()
-        }
-
         override fun operationName(name: String, capitalizedOperationType: String): String {
           return delegate.operationName(name, capitalizedOperationType).prefixed()
         }

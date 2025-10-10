@@ -11,12 +11,11 @@ import com.apollographql.apollo.compiler.codegen.java.helpers.maybeAddDeprecatio
 import com.apollographql.apollo.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo.compiler.codegen.java.helpers.toListInitializerCodeblock
 import com.apollographql.apollo.compiler.codegen.java.joinToCode
-import com.apollographql.apollo.compiler.ir.IrScalar
 import com.apollographql.apollo.compiler.ir.IrEnum
 import com.apollographql.apollo.compiler.ir.IrInterface
 import com.apollographql.apollo.compiler.ir.IrObject
+import com.apollographql.apollo.compiler.ir.IrScalar
 import com.apollographql.apollo.compiler.ir.IrUnion
-import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.TypeName
@@ -62,9 +61,6 @@ internal fun IrObject.typeFieldSpec(resolver: JavaResolver): FieldSpec {
   if (implements.isNotEmpty()) {
     builder.add(".interfaces($L)", implements.implementsToCode(resolver))
   }
-  if (embeddedFields.isNotEmpty()) {
-    builder.add(".embeddedFields($L)", embeddedFields.toCode())
-  }
   builder.add(".build()")
 
   return FieldSpec
@@ -81,9 +77,6 @@ internal fun IrInterface.typeFieldSpec(resolver: JavaResolver): FieldSpec {
   }
   if (implements.isNotEmpty()) {
     builder.add(".interfaces($L)", implements.implementsToCode(resolver))
-  }
-  if (embeddedFields.isNotEmpty()) {
-    builder.add(".embeddedFields($L)", embeddedFields.toCode())
   }
   builder.add(".build()")
 

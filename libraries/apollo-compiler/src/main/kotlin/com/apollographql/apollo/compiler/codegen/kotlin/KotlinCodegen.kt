@@ -37,7 +37,6 @@ import com.apollographql.apollo.compiler.codegen.kotlin.schema.InputObjectAdapte
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.InputObjectBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.InterfaceBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.ObjectBuilder
-import com.apollographql.apollo.compiler.codegen.kotlin.schema.PaginationBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.ScalarBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.SchemaBuilder
 import com.apollographql.apollo.compiler.codegen.kotlin.schema.UnionBuilder
@@ -221,10 +220,6 @@ internal object KotlinCodegen {
       if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
         builders.add(SchemaBuilder(context, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
         builders.add(CustomScalarAdaptersBuilder(context, irSchema.irScalars))
-      }
-
-      if (irSchema.connectionTypes.isNotEmpty() && context.resolver.resolve(ResolverKey(ResolverKeyKind.Pagination, "")) == null) {
-        builders.add(PaginationBuilder(context, irSchema.connectionTypes))
       }
     }
   }

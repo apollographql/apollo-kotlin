@@ -80,9 +80,6 @@ private fun IrArgumentDefinition.codeBlock(): CodeBlock {
   if (isKey) {
     builder.add(".isKey(true)")
   }
-  if (isPagination) {
-    builder.add(".isPagination(true)")
-  }
   builder.add(".build()")
   return builder.build()
 }

@@ -1173,7 +1173,6 @@ public final class com/apollographql/apollo/ast/Schema {
 	public static final field SEMANTIC_NON_NULL_FIELD Ljava/lang/String;
 	public static final field TARGET_NAME Ljava/lang/String;
 	public static final field TYPE_POLICY Ljava/lang/String;
-	public final fun getConnectionTypes ()Ljava/util/Set;
 	public final fun getDirectiveDefinitions ()Ljava/util/Map;
 	public final fun getErrorAware ()Z
 	public final fun getForeignNames ()Ljava/util/Map;

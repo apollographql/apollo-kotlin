@@ -8,17 +8,17 @@ type Person {
   id: ID!
 }
 
-extend type Person @typePolicy(keyFields: "id name" connectionFields: "id foo bar" embeddedFields: "id baz")
+extend type Person @typePolicy(keyFields: "id name")
 
 interface Node {
   id: ID!
 }
 
-extend interface Node @typePolicy(keyFields: "id name" connectionFields: "id foo bar" embeddedFields: "id baz")
+extend interface Node @typePolicy(keyFields: "id name")
 
 
 union Foo = A | B
 type A { a: String }
 type B { b: String }
 
-extend union Foo @typePolicy(keyFields: "id name" connectionFields: "id foo bar" embeddedFields: "id baz")
+extend union Foo @typePolicy(keyFields: "id name")
