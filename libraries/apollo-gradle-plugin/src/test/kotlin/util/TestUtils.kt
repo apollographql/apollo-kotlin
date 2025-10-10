@@ -267,7 +267,7 @@ val agp8_13_kgp_2_2_20 = VersionsUnderTest(
     kgp = "2.2.20",
 )
 val agp9_versions = VersionsUnderTest(
-    agp = "9.0.0-alpha05",
+    agp = "9.0.0-alpha10",
     kgp = "2.2.20",
 )
 
