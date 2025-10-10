@@ -35,7 +35,7 @@ kotlinx-datetime = "0.7.1"
 #noinspection NewerVersionAvailable requires KGP 2.2
 kotlinx-serialization-runtime = "1.8.1"
 #noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
-ksp = "2.2.20-2.0.3"
+ksp = "2.2.20-2.0.4"
 #noinspection NewerVersionAvailable requires KGP 2.2
 ktor = "3.2.3"
 moshix = "0.14.1"
@@ -52,7 +52,7 @@ android-plugin = { group = "com.android.tools.build", name = "gradle", version.r
 #noinspection AndroidGradlePluginVersion,SimilarGradleDependency,NewerVersionAvailable this is a compileOnly dependency
 android-plugin8 = { group = "com.android.tools.build", name = "gradle", version= "8.0.0" }
 #noinspection AndroidGradlePluginVersion,SimilarGradleDependency,NewerVersionAvailable this is a compileOnly dependency
-android-plugin9 = { group = "com.android.tools.build", name = "gradle", version = "9.0.0-alpha06" }
+android-plugin9 = { group = "com.android.tools.build", name = "gradle", version = "9.0.0-alpha10" }
 androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.3.0"
 androidx-activity = "androidx.activity:activity-ktx:1.11.0"
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version = "1.9.1" }

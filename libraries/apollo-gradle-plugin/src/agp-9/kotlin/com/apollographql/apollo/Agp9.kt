@@ -102,8 +102,7 @@ internal class Agp9(
     }
 
     val sources = if (kotlin) {
-      // See https://issuetracker.google.com/issues/446220448
-      component.sources.java ?: error("No Java sources found")
+      component.sources.kotlin ?: error("No Kotlin sources found")
     } else {
       component.sources.java ?: error("No Java sources found")
     }
