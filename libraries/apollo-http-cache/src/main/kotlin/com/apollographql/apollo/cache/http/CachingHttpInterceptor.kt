@@ -1,5 +1,7 @@
+@file:Suppress("DEPRECATION")
 package com.apollographql.apollo.cache.http
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.api.http.HttpMethod
 import com.apollographql.apollo.api.http.HttpRequest
@@ -18,6 +20,8 @@ import java.io.IOException
 import java.time.Instant
 import java.time.format.DateTimeParseException
 
+@Deprecated("Use `CacheUrlOverrideInterceptor` and the OkHttp cache instead. See https://go.apollo.dev/ak-http-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 class CachingHttpInterceptor internal constructor(
     private val lruHttpCache: ApolloHttpCache
 ) : HttpInterceptor {

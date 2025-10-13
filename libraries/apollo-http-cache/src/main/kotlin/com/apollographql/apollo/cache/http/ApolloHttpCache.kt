@@ -1,8 +1,11 @@
 package com.apollographql.apollo.cache.http
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.http.HttpResponse
 import java.io.IOException
 
+@Deprecated("Use `CacheUrlOverrideInterceptor` and the OkHttp cache instead. See https://go.apollo.dev/ak-http-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 interface ApolloHttpCache {
   fun read(cacheKey: String): HttpResponse
 

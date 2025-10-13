@@ -1,8 +1,9 @@
 @file:JvmName("HttpCache")
-
+@file:Suppress("DEPRECATION")
 package com.apollographql.apollo.cache.http
 
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.MutableExecutionOptions
@@ -14,11 +15,13 @@ import com.apollographql.apollo.network.http.HttpNetworkTransport
 import okio.FileSystem
 import java.io.File
 
+@Deprecated("Use `CacheUrlOverrideInterceptor` and the OkHttp cache instead. See https://go.apollo.dev/ak-http-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 enum class HttpFetchPolicy {
   /**
    * Try cache first, then network
    *
-   * This is the default behaviour
+   * This is the default behavior
    */
   CacheFirst,
 
@@ -38,6 +41,8 @@ enum class HttpFetchPolicy {
   NetworkOnly,
 }
 
+@Deprecated("Use `CacheUrlOverrideInterceptor` and the OkHttp cache instead. See https://go.apollo.dev/ak-http-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 internal class HttpFetchPolicyContext(val httpFetchPolicy: HttpFetchPolicy) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
     get() = Key
@@ -54,6 +59,8 @@ internal class HttpFetchPolicyContext(val httpFetchPolicy: HttpFetchPolicy) : Ex
  * See also [ApolloClient.Builder.httpEngine] and [ApolloClient.Builder.networkTransport]
  */
 @JvmName("configureApolloClientBuilder")
+@Deprecated("Use `CacheUrlOverrideInterceptor` and the OkHttp cache instead. See https://go.apollo.dev/ak-http-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun ApolloClient.Builder.httpCache(
     directory: File,
     maxSize: Long,
@@ -62,6 +69,8 @@ fun ApolloClient.Builder.httpCache(
 }
 
 @JvmName("configureApolloClientBuilder")
+@Deprecated("Use `CacheUrlOverrideInterceptor` and the OkHttp cache instead. See https://go.apollo.dev/ak-http-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun ApolloClient.Builder.httpCache(
     apolloHttpCache: ApolloHttpCache,
 ): ApolloClient.Builder {
@@ -86,6 +95,8 @@ fun ApolloClient.Builder.httpCache(
 }
 
 
+@Deprecated("Use `CacheUrlOverrideInterceptor` and the OkHttp cache instead. See https://go.apollo.dev/ak-http-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache
   get() = executionContext[HttpInfo]?.headers?.any {
     // This will return true whatever the value in the header. We might want to fine tune this
@@ -95,6 +106,8 @@ val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache
 /**
  * Configures the [HttpFetchPolicy]
  */
+@Deprecated("Use `CacheUrlOverrideInterceptor` and the OkHttp cache instead. See https://go.apollo.dev/ak-http-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <T> MutableExecutionOptions<T>.httpFetchPolicy(httpFetchPolicy: HttpFetchPolicy): T {
   return addExecutionContext(HttpFetchPolicyContext(httpFetchPolicy))
 }
@@ -102,6 +115,8 @@ fun <T> MutableExecutionOptions<T>.httpFetchPolicy(httpFetchPolicy: HttpFetchPol
 /**
  * Configures httpExpireTimeout. Entries will be removed from the cache after this timeout.
  */
+@Deprecated("Use `CacheUrlOverrideInterceptor` and the OkHttp cache instead. See https://go.apollo.dev/ak-http-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <T> MutableExecutionOptions<T>.httpExpireTimeout(httpExpireTimeout: Long) = addHttpHeader(
     CachingHttpInterceptor.CACHE_EXPIRE_TIMEOUT_HEADER, httpExpireTimeout.toString()
 )
@@ -109,6 +124,8 @@ fun <T> MutableExecutionOptions<T>.httpExpireTimeout(httpExpireTimeout: Long) = 
 /**
  * Configures httpExpireAfterRead. Entries will be removed from the cache after read if set to true.
  */
+@Deprecated("Use `CacheUrlOverrideInterceptor` and the OkHttp cache instead. See https://go.apollo.dev/ak-http-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <T> MutableExecutionOptions<T>.httpExpireAfterRead(httpExpireAfterRead: Boolean) = addHttpHeader(
     CachingHttpInterceptor.CACHE_EXPIRE_AFTER_READ_HEADER, httpExpireAfterRead.toString()
 )
@@ -116,10 +133,14 @@ fun <T> MutableExecutionOptions<T>.httpExpireAfterRead(httpExpireAfterRead: Bool
 /**
  * Configures httpDoNotStore. Entries will never be stored if set to true.
  */
+@Deprecated("Use `CacheUrlOverrideInterceptor` and the OkHttp cache instead. See https://go.apollo.dev/ak-http-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <T> MutableExecutionOptions<T>.httpDoNotStore(httpDoNotStore: Boolean) = addHttpHeader(
     CachingHttpInterceptor.CACHE_DO_NOT_STORE, httpDoNotStore.toString()
 )
 
+@Deprecated("Use `CacheUrlOverrideInterceptor` and the OkHttp cache instead. See https://go.apollo.dev/ak-http-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 val ApolloClient.httpCache: ApolloHttpCache
   get() {
     val httpNetworkTransport = networkTransport as? HttpNetworkTransport

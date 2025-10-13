@@ -7,97 +7,78 @@ title: HTTP cache
 
 <Note>
 
-The HTTP cache is only available on Android and the JVM.
+HTTP caching is only available on Android and the JVM.
 
 </Note>
 
+Apollo leverages OkHttp's [cacheUrlOverride](https://square.github.io/okhttp/5.x/okhttp/okhttp3/-request/-builder/cache-url-override.html) to cache GraphQL POST requests when [persisted queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries) and GET requests are not an option.
+
 ## Setup
 
-To enable HTTP cache support, add the dependency to your project's `build.gradle` file:
-
-```kotlin title="build.gradle[.kts]"
-dependencies {
-  implementation("com.apollographql.apollo:apollo-http-cache:5.0.0-alpha.2")
-}
-```
-
-If you're targeting Android API level < 26, you'll need to enable [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) to support the `java.time` API:
+`OkHttpClient` comes with [built-in cache support](https://square.github.io/okhttp/features/caching/):
 
 ```kotlin
-android {
-    compileOptions {
-        // Flag to enable support for the new language APIs
-        coreLibraryDesugaringEnabled = true
-    }
-}
+  val okHttpClient = OkHttpClient.Builder()
+      .cache(Cache(
+          directory = File(application.cacheDir, "http_cache"),
+          // $0.05 worth of phone storage in 2020
+          maxSize = 50L * 1024L * 1024L // 50 MiB
+      ))
+      .build()
 ```
 
-Then configure your HTTP cache:
+Configure your `ApolloClient` to use your `okHttpClient`:
 
 ```kotlin
-apolloClient = ApolloClient.Builder()
-    .httpCache(
-      // Use a dedicated directory for the cache
-      directory = File(pathToCacheDirectory),
-      // Configure a max size of 100MB
-      maxSize = 100 * 1024 * 1024
-    )
-    .build()
+  val apolloClient = ApolloClient.Builder()
+        .serverUrl(url)
+        .okHttpClient(apolloClient) // highlight-line
+        .addInterceptor(CacheUrlOverrideInterceptor("https://example.com/graphql")) 
+        .build()
 ```
+
+`DefaultHttpEngine` comes with built-in `cacheUrlOverride` support that you can enable with `CacheUrlOverrideInterceptor`:
+
+```kotlin
+  val apolloClient = ApolloClient.Builder()
+        .serverUrl(url)
+        .okHttpClient(apolloClient) 
+        .addInterceptor(CacheUrlOverrideInterceptor(baseUrl = "https://example.com/graphql")) // highlight-line
+        .build()
+```
+
+`CacheUrlOverrideInterceptor` uses `${baseUrl}/${operation.id()}` as a cache key, allowing to cache POST requests.
 
 ## Usage
 
-The HTTP cache is a Least Recently Used (LRU) cache with a configurable max size.
-
-Once your cache setup is complete, the cache will be used by default by all your queries. By default, queries will try to find a result in the cache first and go the network if it's not there. This is the `HttpFetchPolicy.CacheFirst` policy. You can customize that behaviour with `httpFetchPolicy(HttpFetchPolicy)`:
+OkHttp leverages the [cache-control header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control):
 
 ```kotlin
-val response = apolloClient.query(query)
-  // Try the cache first - if it's a miss, try the network 
-  .httpFetchPolicy(HttpFetchPolicy.CacheFirst)
+  val successResponse = MockResponse.Builder()
+      .body(FooQuery.successResponse)
+      .addHeader("cache-control", "max-age=100")
+      .build()
+  mockServer.enqueue(successResponse)
 
-  // Only use the cache
-  .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
-
-  // Try the network first - if there's an error, try the cache 
-  .httpFetchPolicy(HttpFetchPolicy.NetworkFirst)
-
-  // Don't use the cache
-  .httpFetchPolicy(HttpFetchPolicy.NetworkOnly)
-  
-  // Finally, execute your query
-  .execute()
+  apolloClient.query(FooQuery()).execute() // cache miss
+  apolloClient.query(FooQuery()).execute() // cache hit
 ```
-Note: mutations and subscriptions don't go through the cache.
 
-If the query is present in cache, it will be used to return `response.data`. If not, a `HttpCacheMissException` will be thrown.
-
-You can also set an expiration time either globally or for specific queries. The entries will automatically be removed from the cache after the expiration time:
+You can use `ApolloResponse.isFromHttpCache` to determine if a given request comes from the cache:
 
 ```kotlin
-// Globally
-apolloClient = ApolloClient.Builder()
-    .httpCache(/*...*/)
-    // Expire after 1 hour
-    .httpExpireTimeout(60 * 60 * 1000)
-    .build()
-
-// On a specific query
-val response = apolloClient.query(query)
-    // Expire after 1 hour
-    .httpExpireTimeout(60 * 60 * 1000)
-    .execute()
+  val response = apolloClient.query(FooQuery()).execute()
+  assertEquals(false, response.isFromHttpCache)
 ```
 
-If a specific query must not be cached, you can use `httpDoNotStore()`:
+To disable caching for a particular request, use the usual HTTP headers. For an example, you may use `no-store` to disable storing a response:
 
 ```kotlin
-val response = apolloClient.query(query)
-    // Don't cache this query
-    .httpDoNotStore(httpDoNotStore = true)
-    .execute()
+  val response1 = apolloClient.query(FooQuery()) 
+      .addHttpHeader("cache-control", "no-store") // this response is not stored
+      .execute()
+  assertEquals(false, response1.isFromHttpCache)
+  val response2 = apolloClient.query(FooQuery()) // a new HTTP request is issued.
+      .execute() 
+  assertEquals(false, response2.isFromHttpCache)
 ```
-
-## Clearing the cache
-
-Call `apolloClient.httpCache.clearAll()` to clear the cache of all entries.

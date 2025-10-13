@@ -88,18 +88,21 @@ class MultiModulesTests {
       File(dir, "node1/impl/src/main/graphql/com/library/operations.graphql").replaceInText("CatFragment", "CatFragment2")
       val result = TestUtils.executeTask(":node1:impl:jar", dir)
 
-      Truth.assertThat(result.task(":node1:impl:generateServiceApolloIrOperations")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
-      Truth.assertThat(result.task(":node1:impl:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
-      Truth.assertThat(result.task(":node1:impl:compileKotlin")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+      /**
+       * TODO: we can remove the explicit type in assertThat<> when bumping the Kotlin targetLanguage to 2.1 here
+       */
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":node1:impl:generateServiceApolloIrOperations")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":node1:impl:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":node1:impl:compileKotlin")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
 
       // This is recompiled because root:generateServiceApolloSourcesFromIr needs it
-      Truth.assertThat(result.task(":node2:impl:generateServiceApolloIrOperations")?.outcome).isEqualTo(TaskOutcome.UP_TO_DATE)
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":node2:impl:generateServiceApolloIrOperations")?.outcome).isEqualTo(TaskOutcome.UP_TO_DATE)
       // But the codegen and compile kotlin are not executed
-      Truth.assertThat(result.task(":node2:impl:generateServiceApolloSources")?.outcome).isEqualTo(null)
-      Truth.assertThat(result.task(":node2:impl:compileKotlin")?.outcome).isEqualTo(null)
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":node2:impl:generateServiceApolloSources")?.outcome).isEqualTo(null)
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":node2:impl:compileKotlin")?.outcome).isEqualTo(null)
 
       // Because we didn't add any new type, this shouldn't change
-      Truth.assertThat(result.task(":root:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.UP_TO_DATE)
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":root:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.UP_TO_DATE)
     }
   }
 

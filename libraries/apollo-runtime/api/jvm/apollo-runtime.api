@@ -262,6 +262,11 @@ public final class com/apollographql/apollo/network/http/BatchingHttpInterceptor
 	public final fun getRequest ()Lcom/apollographql/apollo/api/http/HttpRequest;
 }
 
+public final class com/apollographql/apollo/network/http/CacheUrlOverrideInterceptor : com/apollographql/apollo/interceptor/ApolloInterceptor {
+	public fun <init> (Ljava/lang/String;)V
+	public fun intercept (Lcom/apollographql/apollo/api/ApolloRequest;Lcom/apollographql/apollo/interceptor/ApolloInterceptorChain;)Lkotlinx/coroutines/flow/Flow;
+}
+
 public final class com/apollographql/apollo/network/http/DefaultHttpEngine {
 	public static final fun DefaultHttpEngine (J)Lcom/apollographql/apollo/network/http/HttpEngine;
 	public static final fun DefaultHttpEngine (JJ)Lcom/apollographql/apollo/network/http/HttpEngine;
@@ -269,6 +274,7 @@ public final class com/apollographql/apollo/network/http/DefaultHttpEngine {
 	public static final fun DefaultHttpEngine (Lokhttp3/Call$Factory;)Lcom/apollographql/apollo/network/http/HttpEngine;
 	public static final fun DefaultHttpEngine (Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo/network/http/HttpEngine;
 	public static synthetic fun DefaultHttpEngine$default (JILjava/lang/Object;)Lcom/apollographql/apollo/network/http/HttpEngine;
+	public static final fun isFromHttpCache (Lcom/apollographql/apollo/api/ApolloResponse;)Z
 }
 
 public final class com/apollographql/apollo/network/http/HeadersInterceptor : com/apollographql/apollo/network/http/HttpInterceptor {

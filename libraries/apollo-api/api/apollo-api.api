@@ -1011,8 +1011,9 @@ public abstract interface class com/apollographql/apollo/api/http/HttpRequestCom
 }
 
 public final class com/apollographql/apollo/api/http/HttpResponse {
-	public synthetic fun <init> (ILjava/util/List;Lokio/BufferedSource;Lokio/ByteString;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ILjava/util/List;Lokio/BufferedSource;Lokio/ByteString;Lcom/apollographql/apollo/api/ExecutionContext;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getBody ()Lokio/BufferedSource;
+	public final fun getExecutionContext ()Lcom/apollographql/apollo/api/ExecutionContext;
 	public final fun getHeaders ()Ljava/util/List;
 	public final fun getStatusCode ()I
 	public final fun newBuilder ()Lcom/apollographql/apollo/api/http/HttpResponse$Builder;
@@ -1020,6 +1021,7 @@ public final class com/apollographql/apollo/api/http/HttpResponse {
 
 public final class com/apollographql/apollo/api/http/HttpResponse$Builder {
 	public fun <init> (I)V
+	public final fun addExecutionContext (Lcom/apollographql/apollo/api/ExecutionContext;)Lcom/apollographql/apollo/api/http/HttpResponse$Builder;
 	public final fun addHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo/api/http/HttpResponse$Builder;
 	public final fun addHeaders (Ljava/util/List;)Lcom/apollographql/apollo/api/http/HttpResponse$Builder;
 	public final fun body (Lokio/BufferedSource;)Lcom/apollographql/apollo/api/http/HttpResponse$Builder;

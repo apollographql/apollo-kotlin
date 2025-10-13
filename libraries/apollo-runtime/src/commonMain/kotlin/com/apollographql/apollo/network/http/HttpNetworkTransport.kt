@@ -157,10 +157,10 @@ private constructor(
     val response = httpResponse.body!!.jsonReader()
         .apply { ignoreUnknownKeys(request.ignoreUnknownKeys ?: true) }
         .toApolloResponse(
-        operation,
-        customScalarAdapters = customScalarAdapters,
-        deferredFragmentIdentifiers = null,
-    )
+            operation,
+            customScalarAdapters = customScalarAdapters,
+            deferredFragmentIdentifiers = null,
+        ).newBuilder().addExecutionContext(httpResponse.executionContext).build()
 
     return flowOf(response.newBuilder().isLast(true).build())
   }
@@ -250,8 +250,8 @@ private constructor(
       this
     } else {
       ApolloNetworkException(
-        message = "Error while reading response",
-        platformCause = this
+          message = "Error while reading response",
+          platformCause = this
       )
     }
   }

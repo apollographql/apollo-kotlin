@@ -564,6 +564,8 @@ final class com.apollographql.apollo.api.http/HttpRequest { // com.apollographql
 final class com.apollographql.apollo.api.http/HttpResponse { // com.apollographql.apollo.api.http/HttpResponse|null[0]
     final val body // com.apollographql.apollo.api.http/HttpResponse.body|{}body[0]
         final fun <get-body>(): okio/BufferedSource? // com.apollographql.apollo.api.http/HttpResponse.body.<get-body>|<get-body>(){}[0]
+    final val executionContext // com.apollographql.apollo.api.http/HttpResponse.executionContext|{}executionContext[0]
+        final fun <get-executionContext>(): com.apollographql.apollo.api/ExecutionContext // com.apollographql.apollo.api.http/HttpResponse.executionContext.<get-executionContext>|<get-executionContext>(){}[0]
     final val headers // com.apollographql.apollo.api.http/HttpResponse.headers|{}headers[0]
         final fun <get-headers>(): kotlin.collections/List<com.apollographql.apollo.api.http/HttpHeader> // com.apollographql.apollo.api.http/HttpResponse.headers.<get-headers>|<get-headers>(){}[0]
     final val statusCode // com.apollographql.apollo.api.http/HttpResponse.statusCode|{}statusCode[0]
@@ -577,6 +579,7 @@ final class com.apollographql.apollo.api.http/HttpResponse { // com.apollographq
         final val statusCode // com.apollographql.apollo.api.http/HttpResponse.Builder.statusCode|{}statusCode[0]
             final fun <get-statusCode>(): kotlin/Int // com.apollographql.apollo.api.http/HttpResponse.Builder.statusCode.<get-statusCode>|<get-statusCode>(){}[0]
 
+        final fun addExecutionContext(com.apollographql.apollo.api/ExecutionContext): com.apollographql.apollo.api.http/HttpResponse.Builder // com.apollographql.apollo.api.http/HttpResponse.Builder.addExecutionContext|addExecutionContext(com.apollographql.apollo.api.ExecutionContext){}[0]
         final fun addHeader(kotlin/String, kotlin/String): com.apollographql.apollo.api.http/HttpResponse.Builder // com.apollographql.apollo.api.http/HttpResponse.Builder.addHeader|addHeader(kotlin.String;kotlin.String){}[0]
         final fun addHeaders(kotlin.collections/List<com.apollographql.apollo.api.http/HttpHeader>): com.apollographql.apollo.api.http/HttpResponse.Builder // com.apollographql.apollo.api.http/HttpResponse.Builder.addHeaders|addHeaders(kotlin.collections.List<com.apollographql.apollo.api.http.HttpHeader>){}[0]
         final fun body(okio/BufferedSource): com.apollographql.apollo.api.http/HttpResponse.Builder // com.apollographql.apollo.api.http/HttpResponse.Builder.body|body(okio.BufferedSource){}[0]

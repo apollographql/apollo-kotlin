@@ -251,9 +251,9 @@ object TestUtils {
  * We just can't test across all possible variations of different tools, especially
  * because some of them have dependencies.
  */
-val agp8_kgp2_0 = VersionsUnderTest(
+val agp8_kgp2_1_0 = VersionsUnderTest(
     agp = "8.0.0",
-    kgp = "2.0.0",
+    kgp = "2.1.0",
     compileSdk = 33,
     gradle = "8.0",
     isolatedProjects = false

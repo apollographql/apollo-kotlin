@@ -11,11 +11,9 @@ import kotlinx.atomicfu.locks.withLock
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.Buffer
 import okio.BufferedSource
-import okio.ByteString.Companion.toByteString
 import okio.Sink
 import okio.Source
 import okio.Timeout
@@ -49,6 +47,7 @@ import platform.posix.pthread_mutex_init
 import platform.posix.pthread_mutex_lock
 import platform.posix.pthread_mutex_t
 import platform.posix.pthread_mutex_unlock
+import okio.ByteString.Companion.toByteString
 
 actual fun DefaultHttpEngine(timeoutMillis: Long): HttpEngine = AppleHttpEngine(timeoutMillis)
 

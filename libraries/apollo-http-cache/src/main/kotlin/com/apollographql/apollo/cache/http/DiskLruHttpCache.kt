@@ -1,5 +1,7 @@
+@file:Suppress("DEPRECATION")
 package com.apollographql.apollo.cache.http
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.api.http.HttpResponse
 import com.apollographql.apollo.cache.http.internal.DiskLruCache
@@ -16,6 +18,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
 
+@Deprecated("Use `CacheUrlOverrideInterceptor` and the OkHttp cache instead. See https://go.apollo.dev/ak-http-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory: File, private val maxSize: Long) : ApolloHttpCache {
   private var cache = createDiskLruCache()
   private val cacheLock = ReentrantReadWriteLock()

@@ -3,6 +3,7 @@ package test
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Subscription
@@ -25,6 +26,14 @@ internal class FooQuery: FooOperation("query"), Query<FooOperation.Data> {
     val errorResponse = "{\"errors\": [{\"message\": \"Oh no! Something went wrong :(\"}]}"
   }
 }
+
+/**
+ * [FooMutation] is a query for tests that doesn't require codegen.
+ *
+ * Use it to test parts of the runtime without having to use included builds.
+ */
+internal class FooMutation: FooOperation("mutation"), Mutation<FooOperation.Data>
+
 
 /**
  * [FooSubscription] is a query for tests that doesn't require codegen.
@@ -109,7 +118,7 @@ internal class FooSubscription: FooOperation("subscription"), Subscription<FooOp
  * Note we can't make [FooOperation] extend both [Query] and [Subscription] because that confuses [ApolloClient] when deciding whant NetworkTransport to use.
  */
 internal abstract class FooOperation(private val operationType: String): Operation<FooOperation.Data> {
-  class Data(val foo: Int): Query.Data, Subscription.Data {
+  class Data(val foo: Int): Query.Data, Mutation.Data, Subscription.Data {
     override fun toString(): String {
       return "Data(foo: $foo)"
     }

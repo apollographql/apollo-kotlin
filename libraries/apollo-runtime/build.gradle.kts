@@ -91,6 +91,7 @@ kotlin {
         implementation(libs.kotlin.test.junit)
         implementation(libs.truth)
         implementation(libs.okhttp)
+        implementation(libs.okio.fakefilesystem)
       }
     }
   }
