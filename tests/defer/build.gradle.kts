@@ -21,12 +21,6 @@ kotlin {
         implementation(libs.apollo.mockserver)
       }
     }
-
-    findByName("jvmTest")?.apply {
-      dependencies {
-        implementation(libs.apollo.httpCache)
-      }
-    }
   }
 }
 

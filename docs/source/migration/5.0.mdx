@@ -96,3 +96,69 @@ query GetUser {
 ```
 
 You can read more in the ["handling nullability" page](https://www.apollographql.com/docs/kotlin/advanced/nullability).
+
+
+## `apollo-http-cache` is deprecated
+
+Apollo Kotlin 5 removes the `apollo-http-cache` artifact. Instead, it leverages the existing OkHttp cache using [cacheUrlOverride](https://square.github.io/okhttp/5.x/okhttp/okhttp3/-request/-builder/cache-url-override.html).
+
+You can remove the `apollo-http-cache` artifact:
+
+```kotlin
+dependencies {
+  // Remove
+  implementation("com.apollographql.apollo:apollo-http-cache:4.3.3")
+}
+```
+
+And configure your `ApolloClient` with a cache-enabled `OkHttpClient` and `CacheUrlOverrideInterceptor`:
+
+```kotlin
+// Replace
+val apolloClient = ApolloClient.Builder()
+    .serverUrl(mockServer.url())
+    .httpCache(directory = dir, maxSize = 10_000_000)
+    .build()
+
+// With
+val apolloClient = ApolloClient.Builder()
+    .serverUrl(serverUrl)
+    .addInterceptor(CacheUrlOverrideInterceptor("https://example.com/graphql"))
+    .okHttpClient(
+        OkHttpClient.Builder()
+            .cache(Cache(directory = dir, maxSize = 10_000_000))
+            .build()
+    )
+    .build()
+```
+
+The OkHttp cache uses `Cache-Control` HTTP headers and has different semantics compared to Apollo Kotlin 4 `HttpFetchPolicy` but most of them using the rules below:
+
+**CacheFirst**:
+```kotlin
+// Replace 
+apolloClient.query(query).httpFetchPolicy(HttpFetchPolicy.CacheFirst)
+
+// With
+apolloClient.query(query) // no need to add a cache-control header, this is the default
+```
+
+**CacheOnly**:
+```kotlin
+// Replace 
+apolloClient.query(query).httpFetchPolicy(HttpFetchPolicy.CacheOnly)
+
+// With
+apolloClient.query(query).addHttpHeader("cache-control", "only-if-cached")
+```
+
+**NetworkOnly**:
+```kotlin
+// Replace
+apolloClient.query(query).httpFetchPolicy(HttpFetchPolicy.CacheOnly)
+
+// With
+apolloClient.query(query).addHttpHeader("cache-control", "no-cache")
+```
+
+There is no equivalent to `NetworkFirst` and/or `httpExpireTimeout()`. If you have a use case for them, please [open an issue](https://github.com/apollographql/apollo-kotlin/issues/new). 

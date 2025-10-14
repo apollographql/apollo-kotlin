@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.cache.http.httpFetchPolicy
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueMultipart
 import com.apollographql.apollo.mpp.currentTimeMillis
@@ -41,9 +40,10 @@ class DeferJvmTest {
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .okHttpClient(OkHttpClient.Builder()
-            .cache(Cache(directory = dir, maxSize = 4_000))
-            .build()
+        .okHttpClient(
+            OkHttpClient.Builder()
+                .cache(Cache(directory = dir, maxSize = 4_000))
+                .build()
         )
         .addInterceptor(CacheUrlOverrideInterceptor("http://localhost/graphql"))
         .build()
@@ -84,7 +84,8 @@ class DeferJvmTest {
     job.cancel()
 
     // Also check that caching worked
-    val actual = apolloClient.query(WithFragmentSpreadsQuery()).addHttpHeader("cache-control", "only-if-cached").toFlow().last().dataOrThrow()
+    val actual =
+      apolloClient.query(WithFragmentSpreadsQuery()).addHttpHeader("cache-control", "only-if-cached").toFlow().last().dataOrThrow()
     val expected = WithFragmentSpreadsQuery.Data(
         listOf(
             WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,

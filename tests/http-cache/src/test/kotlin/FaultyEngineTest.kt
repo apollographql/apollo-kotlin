@@ -1,12 +1,14 @@
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.http.HttpRequest
 import com.apollographql.apollo.api.http.HttpResponse
-import com.apollographql.apollo.cache.http.httpCache
 import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.network.http.CacheUrlOverrideInterceptor
 import com.apollographql.apollo.network.http.HttpEngine
-import com.apollographql.apollo.network.http.HttpNetworkTransport
+import com.apollographql.apollo.network.okHttpClient
 import httpcache.GetRandomQuery
 import kotlinx.coroutines.runBlocking
+import okhttp3.Cache
+import okhttp3.OkHttpClient
 import okio.Buffer
 import okio.IOException
 import okio.Source
@@ -17,7 +19,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
-class FaultySource: Source {
+class FaultySource : Source {
 
   private val data = Buffer().writeUtf8("{ \"data\":")
 
@@ -40,7 +42,7 @@ class FaultySource: Source {
   }
 }
 
-class FaultyEngine: HttpEngine {
+class FaultyEngine : HttpEngine {
   val requests = mutableListOf<HttpRequest>()
 
   override suspend fun execute(request: HttpRequest): HttpResponse {
@@ -62,17 +64,11 @@ class FaultyEngineTest {
     val dir = File("build/httpCache")
     dir.deleteRecursively()
 
-    val apolloClient = ApolloClient.Builder().apply {
-      httpCache(dir, Long.MAX_VALUE)
-      networkTransport(
-          HttpNetworkTransport.Builder()
-              .serverUrl("unused")
-              .interceptors(httpInterceptors)
-              .httpEngine(engine)
-              .build()
-      )
-      httpInterceptors(emptyList())
-    }.build()
+    val apolloClient = ApolloClient.Builder()
+        .addInterceptor(CacheUrlOverrideInterceptor("http://localhost/graphql"))
+        .serverUrl("https://unused.com")
+        .httpEngine(engine)
+        .build()
 
     apolloClient.query(GetRandomQuery()).execute().apply {
       assertIs<ApolloNetworkException>(exception)

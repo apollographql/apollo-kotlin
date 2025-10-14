@@ -56,7 +56,6 @@ class NoRuntimeTest {
     val response = okHttpClient.newCall(request).execute()
 
     assertTrue(response.isSuccessful)
-    assertTrue(response.body != null)
 
     val apolloResponse = response.body?.use {
       BufferedSourceJsonReader(it.source()).toApolloResponse(operation = query)
