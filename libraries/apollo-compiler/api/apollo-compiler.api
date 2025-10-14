@@ -602,7 +602,7 @@ public abstract interface class com/apollographql/apollo/compiler/codegen/Schema
 
 public abstract interface class com/apollographql/apollo/compiler/codegen/SchemaLayout : com/apollographql/apollo/compiler/codegen/CommonLayout {
 	public abstract fun assertionsName ()Ljava/lang/String;
-	public abstract fun paginationName ()Ljava/lang/String;
+	public fun paginationName ()Ljava/lang/String;
 	public abstract fun schemaName ()Ljava/lang/String;
 	public abstract fun schemaPackageName ()Ljava/lang/String;
 	public abstract fun schemaTypeName (Ljava/lang/String;)Ljava/lang/String;

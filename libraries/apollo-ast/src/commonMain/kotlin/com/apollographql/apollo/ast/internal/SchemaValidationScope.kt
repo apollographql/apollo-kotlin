@@ -1,13 +1,11 @@
 package com.apollographql.apollo.ast.internal
 
 import com.apollographql.apollo.annotations.ApolloExperimental
-import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.DirectiveRedefinition
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.GQLDefinition
 import com.apollographql.apollo.ast.GQLDirective
 import com.apollographql.apollo.ast.GQLDirectiveDefinition
-import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo.ast.GQLField
 import com.apollographql.apollo.ast.GQLFieldDefinition
@@ -43,7 +41,6 @@ import com.apollographql.apollo.ast.autoLinkedKotlinLabsForeignSchema
 import com.apollographql.apollo.ast.builtinDefinitions
 import com.apollographql.apollo.ast.canHaveKeyFields
 import com.apollographql.apollo.ast.findOneOf
-import com.apollographql.apollo.ast.introspection.defaultSchemaDefinition
 import com.apollographql.apollo.ast.linkDefinitions
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.parseAsGQLSelections
@@ -325,7 +322,6 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
   mergedScope.validateDirectiveDefinitions()
 
   val keyFields = mergedScope.validateAndComputeKeyFields()
-  val connectionTypes = mergedScope.computeConnectionTypes()
 
   return GQLResult(
       Schema(
@@ -333,7 +329,6 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
           keyFields = keyFields,
           foreignNames = foreignNames,
           directivesToStrip = linkedSchemas.flatMap { it.foreignSchema.directivesToStrip },
-          connectionTypes = connectionTypes,
       ),
       issues
   )
@@ -1001,12 +996,6 @@ private fun ValidationScope.keyFields(
 
 private fun List<GQLDirective>.toKeyFields(): Set<String> = extractFields("keyFields")
 
-@ApolloInternal
-fun List<GQLDirective>.toEmbeddedFields(): List<String> = extractFields("embeddedFields").toList()
-
-@ApolloInternal
-fun List<GQLDirective>.toConnectionFields(): List<String> = extractFields("connectionFields").toList()
-
 private fun List<GQLDirective>.extractFields(argumentName: String): Set<String> {
   if (isEmpty()) {
     return emptySet()
@@ -1036,34 +1025,5 @@ internal fun ValidationScope.validateAndComputeKeyFields(): Map<String, Set<Stri
     keyFields(it, keyFieldsCache)
   }
   return keyFieldsCache
-}
-
-internal fun ValidationScope.computeConnectionTypes(): Set<String> {
-  val connectionTypes = mutableSetOf<String>()
-  for (typeDefinition in typeDefinitions.values) {
-    val connectionFields = typeDefinition.directives.filter { originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields()
-    for (fieldName in connectionFields) {
-      val field = typeDefinition.fields.firstOrNull { it.name == fieldName } ?: continue
-      connectionTypes.add(field.type.rawType().name)
-    }
-  }
-  return connectionTypes
-}
-
-private val GQLTypeDefinition.fields
-  get() = when (this) {
-    is GQLObjectTypeDefinition -> fields
-    is GQLInterfaceTypeDefinition -> fields
-    else -> emptyList()
-  }
-
-internal fun GQLDocument.ensureSchemaDefinition(): GQLDocument {
-  if (definitions.any { it is GQLSchemaDefinition }) {
-    return this
-  }
-
-  val typeDefinitions = definitions.filterIsInstance<GQLTypeDefinition>()
-      .associateBy { it.name }
-  return this.copy(listOf(defaultSchemaDefinition(typeDefinitions)) + definitions)
 }
 

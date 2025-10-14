@@ -285,7 +285,7 @@ public final class com/apollographql/apollo/api/CompiledArgument$Builder {
 }
 
 public final class com/apollographql/apollo/api/CompiledArgumentDefinition {
-	public synthetic fun <init> (Ljava/lang/String;ZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getName ()Ljava/lang/String;
 	public final fun isKey ()Z
 	public final fun isPagination ()Z

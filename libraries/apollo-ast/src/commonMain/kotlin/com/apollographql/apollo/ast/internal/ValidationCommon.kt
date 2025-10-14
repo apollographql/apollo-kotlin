@@ -262,8 +262,6 @@ internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDire
   }
 
   validateTypePolicyArgument(directive, "keyFields", typeName, fieldDefinitions)
-  validateTypePolicyArgument(directive, "embeddedFields", typeName, fieldDefinitions)
-  validateTypePolicyArgument(directive, "connectionFields", typeName, fieldDefinitions)
 }
 
 private fun ValidationScope.validateTypePolicyArgument(

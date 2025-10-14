@@ -2,7 +2,6 @@
 
 package com.apollographql.apollo.compiler.codegen
 
-import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.compiler.CodegenSchema
 import com.apollographql.apollo.compiler.PackageNameFactory
 import com.apollographql.apollo.compiler.allTypes
@@ -87,10 +86,6 @@ internal class LayoutImpl(
     return "Assertions"
   }
 
-  override fun paginationName(): String {
-    return "Pagination"
-  }
-
   override fun operationName(name: String, capitalizedOperationType: String): String {
     return className(name).let {
       if (useSemanticNaming) {
@@ -159,7 +154,6 @@ internal fun SchemaLayout.typeAdapterPackageName() = "${schemaPackageName()}.typ
 internal fun SchemaLayout.typeUtilPackageName() = "${schemaPackageName()}.type.util"
 internal fun SchemaLayout.typeScalarPackageName() = "${schemaPackageName()}.type.scalar"
 
-internal fun SchemaLayout.paginationPackageName() = "${schemaPackageName()}.pagination"
 internal fun SchemaLayout.schemaSubPackageName() = "${schemaPackageName()}.schema"
 
 internal fun javaOptionalAdapterClassName() = "OptionalAdapter"
