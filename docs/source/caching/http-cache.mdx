@@ -60,8 +60,12 @@ OkHttp leverages the [cache-control header](https://developer.mozilla.org/en-US/
       .build()
   mockServer.enqueue(successResponse)
 
-  apolloClient.query(FooQuery()).execute() // cache miss
-  apolloClient.query(FooQuery()).execute() // cache hit
+  // first query: goes to the network and caches the response
+  val response1 = apolloClient.query(FooQuery()).execute()
+  println(response1.isFromHttpCache) // false
+  // second query: uses the cached response
+  val response2 = apolloClient.query(FooQuery()).execute()
+  println(response2.isFromHttpCache) // false
 ```
 
 You can use `ApolloResponse.isFromHttpCache` to determine if a given request comes from the cache:
