@@ -21,17 +21,12 @@ Configure your `NetworkTransport` with your cache-enabled `OkHttpClient` and `ca
   val apolloClient = ApolloClient.Builder()
     .networkTransport(
         HttpNetworkTransport.Builder()
-            .serverUrl(url)
+            // Enable POST caching
+            .httpRequestComposer(DefaultHttpRequestComposer(serverUrl = serverUrl, enablePostCaching = true))
             .httpEngine(
-                OkHttpEngine(cachePostRequests = true) { // highlight-line
+                DefaultHttpEngine {
                   OkHttpClient.Builder()
-                      .cache(
-                          Cache(
-                              directory = File(application.cacheDir, "http_cache"),
-                              // $0.05 worth of phone storage in 2020
-                              maxSize = 50L * 1024L * 1024L // 50 MiB
-                          )
-                      )
+                      .cache(directory = File(application.cacheDir, "http_cache"), maxSize = 10_000_000)
                       .build()
                 }
             )
@@ -40,7 +35,7 @@ Configure your `NetworkTransport` with your cache-enabled `OkHttpClient` and `ca
     .build()
 ```
 
-Under the hood, the OkHttp `HttpEngine` uses `"${url}?httpKey=${body.sha256()}"` as a cache key, allowing to cache POST requests.
+Under the hood, the OkHttp `HttpEngine` uses `"${url}?variablesHash=${variables.sha256()}&operationName=${operation.name()}&operationId=${operation.id()}"` as a cache url override, allowing to cache POST requests.
 
 ## Usage
 

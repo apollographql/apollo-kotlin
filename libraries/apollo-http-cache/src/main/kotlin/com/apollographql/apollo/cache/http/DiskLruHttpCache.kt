@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
 
-@Deprecated("Use `OkHttpEngine(cachePostResponses = true)` instead. See https://go.apollo.dev/ak-http-cache")
+@Deprecated("Use `DefaultHttpRequestComposer(enablePostCaching = true)` instead. See https://go.apollo.dev/ak-http-cache")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory: File, private val maxSize: Long) : ApolloHttpCache {
   private var cache = createDiskLruCache()
