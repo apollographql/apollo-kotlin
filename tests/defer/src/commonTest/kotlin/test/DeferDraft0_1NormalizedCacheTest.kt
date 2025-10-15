@@ -18,9 +18,9 @@ import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.CacheMissException
+import com.apollographql.apollo.network.IncrementalDeliveryProtocol
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.network.http.HttpNetworkTransport
-import com.apollographql.apollo.network.IncrementalDeliveryProtocol
 import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.assertNoRequest
@@ -48,7 +48,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
-class DeferGraphQL17Alpha9NormalizedCacheTest {
+class DeferDraft0_1NormalizedCacheTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
@@ -60,7 +60,7 @@ class DeferGraphQL17Alpha9NormalizedCacheTest {
         .networkTransport(
             HttpNetworkTransport.Builder()
                 .serverUrl(mockServer.url())
-                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.GraphQL17Alpha9)
+                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.Draft0_1)
                 .build()
         )
         .store(store).build()

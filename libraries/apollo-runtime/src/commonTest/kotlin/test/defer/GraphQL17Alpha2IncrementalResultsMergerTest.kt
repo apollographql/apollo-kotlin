@@ -6,7 +6,7 @@ import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.DeferredFragmentIdentifier
 import com.apollographql.apollo.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.json.readAny
-import com.apollographql.apollo.internal.incremental.GraphQL17Alpha2IncrementalResultsMerger
+import com.apollographql.apollo.internal.incremental.DraftInitialIncrementalResultsMerger
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,7 +21,7 @@ private fun jsonToMap(json: String): Map<String, Any?> = BufferedSourceJsonReade
 class GraphQL17Alpha2IncrementalResultsMergerTest {
   @Test
   fun mergeJsonSingleIncrementalItem() {
-    val incrementalResultsMerger = GraphQL17Alpha2IncrementalResultsMerger()
+    val incrementalResultsMerger = DraftInitialIncrementalResultsMerger()
 
     //language=JSON
     val payload1 = """
@@ -392,7 +392,7 @@ class GraphQL17Alpha2IncrementalResultsMergerTest {
 
   @Test
   fun mergeJsonMultipleIncrementalItems() {
-    val incrementalResultsMerger = GraphQL17Alpha2IncrementalResultsMerger()
+    val incrementalResultsMerger = DraftInitialIncrementalResultsMerger()
 
     //language=JSON
     val payload1 = """
@@ -668,7 +668,7 @@ class GraphQL17Alpha2IncrementalResultsMergerTest {
 
   @Test
   fun emptyPayloads() {
-    val incrementalResultsMerger = GraphQL17Alpha2IncrementalResultsMerger()
+    val incrementalResultsMerger = DraftInitialIncrementalResultsMerger()
 
     //language=JSON
     val payload1 = """

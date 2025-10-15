@@ -7,23 +7,23 @@ internal sealed interface IncrementalDeliveryProtocolImpl {
 
   fun newIncrementalResultsMerger(): IncrementalResultsMerger
 
-  object GraphQL17Alpha2 : IncrementalDeliveryProtocolImpl {
+  object DraftInitial : IncrementalDeliveryProtocolImpl {
     override val acceptHeader: String = "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
 
-    override fun newIncrementalResultsMerger(): IncrementalResultsMerger = GraphQL17Alpha2IncrementalResultsMerger()
+    override fun newIncrementalResultsMerger(): IncrementalResultsMerger = DraftInitialIncrementalResultsMerger()
   }
 
-  object GraphQL17Alpha9 : IncrementalDeliveryProtocolImpl {
+  object Draft0_1 : IncrementalDeliveryProtocolImpl {
     // TODO To be agreed upon with the router and other clients
     override val acceptHeader: String =
       "multipart/mixed;incrementalDeliverySpec=20230621, application/graphql-response+json, application/json"
 
-    override fun newIncrementalResultsMerger(): IncrementalResultsMerger = GraphQL17Alpha9IncrementalResultsMerger()
+    override fun newIncrementalResultsMerger(): IncrementalResultsMerger = Draft0_1IncrementalResultsMerger()
   }
 }
 
 internal val IncrementalDeliveryProtocol.impl: IncrementalDeliveryProtocolImpl
   get() = when (this) {
-    IncrementalDeliveryProtocol.GraphQL17Alpha2 -> IncrementalDeliveryProtocolImpl.GraphQL17Alpha2
-    IncrementalDeliveryProtocol.GraphQL17Alpha9 -> IncrementalDeliveryProtocolImpl.GraphQL17Alpha9
+    IncrementalDeliveryProtocol.DraftInitial -> IncrementalDeliveryProtocolImpl.DraftInitial
+    IncrementalDeliveryProtocol.Draft0_1 -> IncrementalDeliveryProtocolImpl.Draft0_1
   }

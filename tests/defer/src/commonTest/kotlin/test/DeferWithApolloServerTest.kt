@@ -4,8 +4,8 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.Optional
-import com.apollographql.apollo.network.http.HttpNetworkTransport
 import com.apollographql.apollo.network.IncrementalDeliveryProtocol
+import com.apollographql.apollo.network.http.HttpNetworkTransport
 import com.apollographql.apollo.testing.internal.runTest
 import com.benasher44.uuid.uuid4
 import defer.CanDeferFragmentsOnTheTopLevelQueryFieldQuery
@@ -49,7 +49,7 @@ class DeferWithApolloServerTest {
         .networkTransport(
             HttpNetworkTransport.Builder()
                 .serverUrl("http://127.0.0.1:4000/")
-                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.GraphQL17Alpha9)
+                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.Draft0_1)
                 .build()
         )
         .build()

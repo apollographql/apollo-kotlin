@@ -4,10 +4,10 @@ import com.apollographql.apollo.api.DeferredFragmentIdentifier
 import okio.BufferedSource
 
 /**
- * Merger for the [com.apollographql.apollo.network.IncrementalDeliveryProtocol.GraphQL17Alpha2] protocol format.
+ * Merger for the [com.apollographql.apollo.network.IncrementalDeliveryProtocol.DraftInitial] protocol format.
  */
 @Suppress("UNCHECKED_CAST")
-internal class GraphQL17Alpha2IncrementalResultsMerger : IncrementalResultsMerger {
+internal class DraftInitialIncrementalResultsMerger : IncrementalResultsMerger {
   private val _merged: MutableJsonMap = mutableMapOf()
   override val merged: JsonMap = _merged
 

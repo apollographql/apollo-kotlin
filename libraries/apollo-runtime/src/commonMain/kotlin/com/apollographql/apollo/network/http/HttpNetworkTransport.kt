@@ -326,7 +326,7 @@ private constructor(
     private var engine: HttpEngine? = null
     private val interceptors: MutableList<HttpInterceptor> = mutableListOf()
     private var exposeErrorBody: Boolean = false
-    private var incrementalDeliveryProtocol: IncrementalDeliveryProtocol = IncrementalDeliveryProtocol.GraphQL17Alpha2
+    private var incrementalDeliveryProtocol: IncrementalDeliveryProtocol = IncrementalDeliveryProtocol.DraftInitial
     private val headers: MutableList<HttpHeader> = mutableListOf()
 
     fun httpRequestComposer(httpRequestComposer: HttpRequestComposer) = apply {
@@ -373,7 +373,7 @@ private constructor(
     /**
      * The incremental delivery protocol to use when using `@defer` and/or `@stream`.
      *
-     * Default: [IncrementalDeliveryProtocol.GraphQL17Alpha2]
+     * Default: [IncrementalDeliveryProtocol.DraftInitial]
      */
     @ApolloExperimental
     fun incrementalDeliveryProtocol(incrementalDeliveryProtocol: IncrementalDeliveryProtocol) = apply {

@@ -6,8 +6,8 @@ import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.Error.Builder
 import com.apollographql.apollo.autoPersistedQueryInfo
 import com.apollographql.apollo.mpp.currentTimeMillis
-import com.apollographql.apollo.network.http.HttpNetworkTransport
 import com.apollographql.apollo.network.IncrementalDeliveryProtocol
+import com.apollographql.apollo.network.http.HttpNetworkTransport
 import com.apollographql.apollo.testing.Platform
 import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.apollo.testing.platform
@@ -30,7 +30,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class DeferGraphQL17Alpha9Test {
+class DeferDraft0_1Test {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
 
@@ -40,7 +40,7 @@ class DeferGraphQL17Alpha9Test {
         .networkTransport(
             HttpNetworkTransport.Builder()
                 .serverUrl(mockServer.url())
-                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.GraphQL17Alpha9)
+                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.Draft0_1)
                 .build()
         )
         .build()
