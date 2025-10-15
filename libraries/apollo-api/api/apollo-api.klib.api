@@ -491,8 +491,20 @@ final class com.apollographql.apollo.api.http/ByteStringHttpBody : com.apollogra
     final fun writeTo(okio/BufferedSink) // com.apollographql.apollo.api.http/ByteStringHttpBody.writeTo|writeTo(okio.BufferedSink){}[0]
 }
 
+final class com.apollographql.apollo.api.http/CacheUrlOverride : com.apollographql.apollo.api/ExecutionContext.Element { // com.apollographql.apollo.api.http/CacheUrlOverride|null[0]
+    constructor <init>(kotlin/String) // com.apollographql.apollo.api.http/CacheUrlOverride.<init>|<init>(kotlin.String){}[0]
+
+    final val key // com.apollographql.apollo.api.http/CacheUrlOverride.key|{}key[0]
+        final fun <get-key>(): com.apollographql.apollo.api/ExecutionContext.Key<*> // com.apollographql.apollo.api.http/CacheUrlOverride.key.<get-key>|<get-key>(){}[0]
+    final val url // com.apollographql.apollo.api.http/CacheUrlOverride.url|{}url[0]
+        final fun <get-url>(): kotlin/String // com.apollographql.apollo.api.http/CacheUrlOverride.url.<get-url>|<get-url>(){}[0]
+
+    final object Key : com.apollographql.apollo.api/ExecutionContext.Key<com.apollographql.apollo.api.http/CacheUrlOverride> // com.apollographql.apollo.api.http/CacheUrlOverride.Key|null[0]
+}
+
 final class com.apollographql.apollo.api.http/DefaultHttpRequestComposer : com.apollographql.apollo.api.http/HttpRequestComposer { // com.apollographql.apollo.api.http/DefaultHttpRequestComposer|null[0]
     constructor <init>(kotlin/String) // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.<init>|<init>(kotlin.String){}[0]
+    constructor <init>(kotlin/String, kotlin/Boolean) // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.<init>|<init>(kotlin.String;kotlin.Boolean){}[0]
 
     final fun <#A1: com.apollographql.apollo.api/Operation.Data> compose(com.apollographql.apollo.api/ApolloRequest<#A1>): com.apollographql.apollo.api.http/HttpRequest // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.compose|compose(com.apollographql.apollo.api.ApolloRequest<0:0>){0§<com.apollographql.apollo.api.Operation.Data>}[0]
 

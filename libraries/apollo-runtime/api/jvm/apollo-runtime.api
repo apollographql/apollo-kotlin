@@ -262,11 +262,6 @@ public final class com/apollographql/apollo/network/http/BatchingHttpInterceptor
 	public final fun getRequest ()Lcom/apollographql/apollo/api/http/HttpRequest;
 }
 
-public final class com/apollographql/apollo/network/http/CacheUrlOverrideInterceptor : com/apollographql/apollo/interceptor/ApolloInterceptor {
-	public fun <init> (Ljava/lang/String;)V
-	public fun intercept (Lcom/apollographql/apollo/api/ApolloRequest;Lcom/apollographql/apollo/interceptor/ApolloInterceptorChain;)Lkotlinx/coroutines/flow/Flow;
-}
-
 public final class com/apollographql/apollo/network/http/DefaultHttpEngine {
 	public static final fun DefaultHttpEngine (J)Lcom/apollographql/apollo/network/http/HttpEngine;
 	public static final fun DefaultHttpEngine (JJ)Lcom/apollographql/apollo/network/http/HttpEngine;

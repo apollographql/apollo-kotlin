@@ -925,9 +925,20 @@ public final class com/apollographql/apollo/api/http/ByteStringHttpBody : com/ap
 	public fun writeTo (Lokio/BufferedSink;)V
 }
 
+public final class com/apollographql/apollo/api/http/CacheUrlOverride : com/apollographql/apollo/api/ExecutionContext$Element {
+	public static final field Key Lcom/apollographql/apollo/api/http/CacheUrlOverride$Key;
+	public fun <init> (Ljava/lang/String;)V
+	public fun getKey ()Lcom/apollographql/apollo/api/ExecutionContext$Key;
+	public final fun getUrl ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo/api/http/CacheUrlOverride$Key : com/apollographql/apollo/api/ExecutionContext$Key {
+}
+
 public final class com/apollographql/apollo/api/http/DefaultHttpRequestComposer : com/apollographql/apollo/api/http/HttpRequestComposer {
 	public static final field Companion Lcom/apollographql/apollo/api/http/DefaultHttpRequestComposer$Companion;
 	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Z)V
 	public fun compose (Lcom/apollographql/apollo/api/ApolloRequest;)Lcom/apollographql/apollo/api/http/HttpRequest;
 }
 
