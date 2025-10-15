@@ -7,7 +7,7 @@ title: HTTP cache
 
 <Note>
 
-HTTP caching is only available on Android and the JVM.
+HTTP caching is only available on the JVM.
 
 </Note>
 
@@ -15,39 +15,32 @@ Apollo leverages OkHttp's [cacheUrlOverride](https://square.github.io/okhttp/5.x
 
 ## Setup
 
-`OkHttpClient` comes with [built-in cache support](https://square.github.io/okhttp/features/caching/):
-
-```kotlin
-  val okHttpClient = OkHttpClient.Builder()
-      .cache(Cache(
-          directory = File(application.cacheDir, "http_cache"),
-          // $0.05 worth of phone storage in 2020
-          maxSize = 50L * 1024L * 1024L // 50 MiB
-      ))
-      .build()
-```
-
-Configure your `ApolloClient` to use your `okHttpClient`:
+Configure your `NetworkTransport` with your cache-enabled `OkHttpClient` and `cachePostRequests` set to `true`:
 
 ```kotlin
   val apolloClient = ApolloClient.Builder()
-        .serverUrl(url)
-        .okHttpClient(apolloClient) // highlight-line
-        .addInterceptor(CacheUrlOverrideInterceptor("https://example.com/graphql")) 
-        .build()
+    .networkTransport(
+        HttpNetworkTransport.Builder()
+            .serverUrl(url)
+            .httpEngine(
+                OkHttpEngine(cachePostRequests = true) { // highlight-line
+                  OkHttpClient.Builder()
+                      .cache(
+                          Cache(
+                              directory = File(application.cacheDir, "http_cache"),
+                              // $0.05 worth of phone storage in 2020
+                              maxSize = 50L * 1024L * 1024L // 50 MiB
+                          )
+                      )
+                      .build()
+                }
+            )
+            .build()
+    )
+    .build()
 ```
 
-`DefaultHttpEngine` comes with built-in `cacheUrlOverride` support that you can enable with `CacheUrlOverrideInterceptor`:
-
-```kotlin
-  val apolloClient = ApolloClient.Builder()
-        .serverUrl(url)
-        .okHttpClient(apolloClient) 
-        .addInterceptor(CacheUrlOverrideInterceptor(baseUrl = "https://example.com/graphql")) // highlight-line
-        .build()
-```
-
-`CacheUrlOverrideInterceptor` uses `${baseUrl}/${operation.id()}` as a cache key, allowing to cache POST requests.
+Under the hood, the OkHttp `HttpEngine` uses `"${url}?httpKey=${body.sha256()}"` as a cache key, allowing to cache POST requests.
 
 ## Usage
 
@@ -55,34 +48,34 @@ OkHttp leverages the [cache-control header](https://developer.mozilla.org/en-US/
 
 ```kotlin
   val successResponse = MockResponse.Builder()
-      .body(FooQuery.successResponse)
-      .addHeader("cache-control", "max-age=100")
-      .build()
-  mockServer.enqueue(successResponse)
+    .body(FooQuery.successResponse)
+    .addHeader("cache-control", "max-age=100")
+    .build()
+mockServer.enqueue(successResponse)
 
-  // first query: goes to the network and caches the response
-  val response1 = apolloClient.query(FooQuery()).execute()
-  println(response1.isFromHttpCache) // false
-  // second query: uses the cached response
-  val response2 = apolloClient.query(FooQuery()).execute()
-  println(response2.isFromHttpCache) // false
+// first query: goes to the network and caches the response
+val response1 = apolloClient.query(FooQuery()).execute()
+println(response1.isFromHttpCache) // false
+// second query: uses the cached response
+val response2 = apolloClient.query(FooQuery()).execute()
+println(response2.isFromHttpCache) // true
 ```
 
 You can use `ApolloResponse.isFromHttpCache` to determine if a given request comes from the cache:
 
 ```kotlin
   val response = apolloClient.query(FooQuery()).execute()
-  assertEquals(false, response.isFromHttpCache)
+assertEquals(false, response.isFromHttpCache)
 ```
 
 To disable caching for a particular request, use the usual HTTP headers. For an example, you may use `no-store` to disable storing a response:
 
 ```kotlin
-  val response1 = apolloClient.query(FooQuery()) 
-      .addHttpHeader("cache-control", "no-store") // this response is not stored
-      .execute()
-  assertEquals(false, response1.isFromHttpCache)
-  val response2 = apolloClient.query(FooQuery()) // a new HTTP request is issued.
-      .execute() 
-  assertEquals(false, response2.isFromHttpCache)
+  val response1 = apolloClient.query(FooQuery())
+    .addHttpHeader("cache-control", "no-store") // this response is not stored
+    .execute()
+assertEquals(false, response1.isFromHttpCache)
+val response2 = apolloClient.query(FooQuery()) // a new HTTP request is issued.
+    .execute()
+assertEquals(false, response2.isFromHttpCache)
 ```

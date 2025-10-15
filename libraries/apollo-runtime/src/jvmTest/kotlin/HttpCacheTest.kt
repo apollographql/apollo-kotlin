@@ -1,7 +1,8 @@
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.network.http.CacheUrlOverrideInterceptor
+import com.apollographql.apollo.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo.network.http.DefaultHttpEngine
+import com.apollographql.apollo.network.http.HttpNetworkTransport
 import com.apollographql.apollo.network.http.isFromHttpCache
-import com.apollographql.apollo.network.okHttpClient
 import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
@@ -19,13 +20,20 @@ class HttpCacheTest {
       .body(FooQuery.successResponse)
       .addHeader("cache-control", "max-age=100")
       .build()
+
   private fun apolloClient(url: String): ApolloClient {
     return ApolloClient.Builder()
-        .serverUrl(url)
-        .addInterceptor(CacheUrlOverrideInterceptor("http://localhost/graphql"))
-        .okHttpClient(OkHttpClient.Builder()
-            .cache(Cache(FakeFileSystem(), "/cache".toPath(), Long.MAX_VALUE))
-            .build()
+        .networkTransport(
+            HttpNetworkTransport.Builder()
+                .httpRequestComposer(DefaultHttpRequestComposer(serverUrl = url, enablePostCaching = true))
+                .httpEngine(
+                    DefaultHttpEngine {
+                      OkHttpClient.Builder()
+                          .cache(Cache(FakeFileSystem(), "/cache".toPath(), Long.MAX_VALUE))
+                          .build()
+                    }
+                )
+                .build()
         )
         .build()
   }

@@ -111,22 +111,28 @@ dependencies {
 }
 ```
 
-And configure your `ApolloClient` with a cache-enabled `OkHttpClient` and `CacheUrlOverrideInterceptor`:
+And configure your `ApolloClient` with a cache-enabled `OkHttpClient` and `cachePostResponses`:
 
 ```kotlin
 // Replace
 val apolloClient = ApolloClient.Builder()
     .serverUrl(mockServer.url())
-    .httpCache(directory = dir, maxSize = 10_000_000)
+    .httpCache(directory = "http_cache", maxSize = 10_000_000)
     .build()
 
 // With
 val apolloClient = ApolloClient.Builder()
-    .serverUrl(serverUrl)
-    .addInterceptor(CacheUrlOverrideInterceptor("https://example.com/graphql"))
-    .okHttpClient(
-        OkHttpClient.Builder()
-            .cache(Cache(directory = dir, maxSize = 10_000_000))
+    .networkTransport(
+        HttpNetworkTransport.Builder()
+            .httpEngine(
+                OkHttpEngine(cachePostResponses = true) { // highlight-line
+                  OkHttpClient.Builder()
+                      // Make sure to use a different directory for your cache
+                      .cache(directory = "http_cache2", maxSize = 10_000_000)
+                      .build()
+                }
+            )
+            .httpRequestComposer(DefaultHttpRequestComposer(serverUrl = mockServer.url(), computeHttpCacheKey = true))
             .build()
     )
     .build()
@@ -161,4 +167,11 @@ apolloClient.query(query).httpFetchPolicy(HttpFetchPolicy.CacheOnly)
 apolloClient.query(query).addHttpHeader("cache-control", "no-cache")
 ```
 
-There is no equivalent to `NetworkFirst` and/or `httpExpireTimeout()`. If you have a use case for them, please [open an issue](https://github.com/apollographql/apollo-kotlin/issues/new). 
+### Limitations
+
+While we believe this new caching scheme is simpler and more aligned with the rest of the ecosystem, there are important differences with the previous scheme:
+
+* There is no equivalent to `NetworkFirst` and/or `httpExpireTimeout()`.
+* The cache keys have changed, meaning your cache will be invalidated.
+
+If any of those is important for your use case, please [open an issue](https://github.com/apollographql/apollo-kotlin/issues/new). 

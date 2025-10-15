@@ -1,8 +1,10 @@
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo.api.toResponseJson
-import com.apollographql.apollo.network.http.CacheUrlOverrideInterceptor
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo.network.http.DefaultHttpEngine
+import com.apollographql.apollo.network.http.HttpNetworkTransport
 import com.apollographql.apollo.network.http.isFromHttpCache
-import com.apollographql.apollo.network.okHttpClient
 import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
@@ -18,6 +20,7 @@ import okhttp3.OkHttpClient
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 
 class HttpCacheTest {
@@ -47,11 +50,16 @@ class HttpCacheTest {
     val dir = File("build/httpCache")
     dir.deleteRecursively()
     apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
-        .addInterceptor(CacheUrlOverrideInterceptor("http://localhost/graphql"))
-        .okHttpClient(
-            OkHttpClient.Builder()
-                .cache(Cache(directory = dir, maxSize = Long.MAX_VALUE))
+        .networkTransport(
+            HttpNetworkTransport.Builder()
+                .httpRequestComposer(DefaultHttpRequestComposer(serverUrl = mockServer.url(), enablePostCaching = true))
+                .httpEngine(
+                    DefaultHttpEngine {
+                      OkHttpClient.Builder()
+                          .cache(Cache(directory = dir, maxSize = Long.MAX_VALUE))
+                          .build()
+                    }
+                )
                 .build()
         )
         .build()
@@ -141,6 +149,28 @@ class HttpCacheTest {
 
       // The HTTP request should hit the network
       mockServer.awaitRequest()
+    }
+  }
+
+  @Test
+  fun httpErrorsAreNotCached() = runTest(before = { before() }, after = { tearDown() }) {
+    mockServer.enqueueError(statusCode = 500)
+    mockServer.enqueueError(statusCode = 500)
+
+    var response = apolloClient.query(GetRandomQuery()).execute()
+    assertEquals(false, response.isFromHttpCache)
+    response.exception.apply {
+      assertIs<ApolloHttpException>(this)
+      assertEquals(500, statusCode)
+    }
+
+    response = apolloClient.query(GetRandomQuery())
+        .addHttpHeader("cache-control", "only-if-cached")
+        .execute()
+    assertEquals(false, response.isFromHttpCache)
+    response.exception.apply {
+      assertIs<ApolloHttpException>(this)
+      assertEquals(504, statusCode)
     }
   }
 

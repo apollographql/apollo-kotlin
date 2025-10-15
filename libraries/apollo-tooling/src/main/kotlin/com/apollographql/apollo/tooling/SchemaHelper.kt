@@ -58,7 +58,7 @@ internal object SchemaHelper {
         .headers(defaultHeaders + headers.map { HttpHeader(it.key, it.value) })
         .body(httpBody)
         .build()
-    val httpEngine = DefaultHttpEngine(newOkHttpClient(insecure))
+    val httpEngine = DefaultHttpEngine { newOkHttpClient(insecure) }
     val httpResponse = runBlocking { httpEngine.execute(httpRequest) }
     val bodyStr = httpResponse.body?.use {
       it.readUtf8()

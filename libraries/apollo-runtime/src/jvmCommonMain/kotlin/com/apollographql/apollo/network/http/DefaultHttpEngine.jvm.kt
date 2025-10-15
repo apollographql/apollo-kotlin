@@ -2,22 +2,19 @@
 
 package com.apollographql.apollo.network.http
 
-import com.apollographql.apollo.api.ApolloRequest
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.http.CacheUrlOverride
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.api.http.HttpMethod
 import com.apollographql.apollo.api.http.HttpRequest
 import com.apollographql.apollo.api.http.HttpResponse
 import com.apollographql.apollo.api.http.UploadsHttpBody
 import com.apollographql.apollo.exception.ApolloNetworkException
-import com.apollographql.apollo.interceptor.ApolloInterceptor
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo.network.defaultOkHttpClientBuilder
 import com.apollographql.apollo.network.toOkHttpHeaders
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -27,45 +24,46 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
 import okio.BufferedSink
-import okio.ByteString.Companion.encode
 import okio.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-actual fun DefaultHttpEngine(timeoutMillis: Long): HttpEngine = JvmHttpEngine(timeoutMillis)
+actual fun DefaultHttpEngine(timeoutMillis: Long): HttpEngine = DefaultHttpEngine {
+  defaultOkHttpClientBuilder
+      .connectTimeout(timeoutMillis, TimeUnit.MILLISECONDS)
+      .readTimeout(timeoutMillis, TimeUnit.MILLISECONDS)
+      .build()
+}
 
-fun DefaultHttpEngine(httpCallFactory: Call.Factory): HttpEngine = JvmHttpEngine(httpCallFactory)
+fun DefaultHttpEngine(connectTimeoutMillis: Long, readTimeoutMillis: Long): HttpEngine = DefaultHttpEngine {
+  defaultOkHttpClientBuilder
+      .connectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
+      .readTimeout(readTimeoutMillis, TimeUnit.MILLISECONDS)
+      .build()
+}
 
-fun DefaultHttpEngine(httpCallFactory: () -> Call.Factory): HttpEngine = JvmHttpEngine(httpCallFactory)
+@Deprecated("Initializing an `OkHttpClient` from the main thread may be expensive. Use `DefaultHttpEngine(() -> Call.Factory)` instead")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+fun DefaultHttpEngine(httpCallFactory: Call.Factory): HttpEngine = DefaultHttpEngine { httpCallFactory }
 
-fun DefaultHttpEngine(okHttpClient: OkHttpClient): HttpEngine = JvmHttpEngine(okHttpClient)
+@Deprecated("Initializing an `OkHttpClient` from the main thread may be expensive. Use `DefaultHttpEngine(() -> Call.Factory)` instead")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+fun DefaultHttpEngine(okHttpClient: OkHttpClient): HttpEngine = DefaultHttpEngine { okHttpClient }
 
-fun DefaultHttpEngine(connectTimeoutMillis: Long, readTimeoutMillis: Long): HttpEngine =
-  JvmHttpEngine(connectTimeoutMillis, readTimeoutMillis)
+fun DefaultHttpEngine(httpCallFactory: () -> Call.Factory): HttpEngine = OkHttpEngineImpl(lazyCallFactory = httpCallFactory)
 
-private class JvmHttpEngine(
-    private val httpCallFactory: () -> Call.Factory,
+
+private class OkHttpEngineImpl(
+    private val lazyCallFactory: () -> Call.Factory,
 ) : HttpEngine {
-  private val callFactory by lazy { httpCallFactory() }
-
-  constructor(httpCallFactory: Call.Factory) : this({ httpCallFactory })
-
-  constructor(timeoutMillis: Long) : this(timeoutMillis, timeoutMillis)
-
-  constructor(connectTimeoutMillis: Long, readTimeoutMillis: Long) : this(
-      defaultOkHttpClientBuilder
-          .connectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
-          .readTimeout(readTimeoutMillis, TimeUnit.MILLISECONDS)
-          .build()
-  )
+  private val callFactory by lazy { lazyCallFactory() }
 
   override suspend fun execute(request: HttpRequest): HttpResponse {
     return callFactory.execute(request.toOkHttpRequest()).toApolloHttpResponse()
   }
 
-  override fun close() {
-  }
+  override fun close() {}
 
   companion object {
     fun HttpRequest.toOkHttpRequest(): Request {
@@ -80,7 +78,7 @@ private class JvmHttpEngine(
               check(body != null) {
                 "HTTP POST requires a request body"
               }
-              post(object : RequestBody() {
+              val okHttpBody = object : RequestBody() {
                 override fun contentType() = body.contentType.toMediaType()
 
                 override fun contentLength() = body.contentLength
@@ -92,12 +90,12 @@ private class JvmHttpEngine(
                 override fun writeTo(sink: BufferedSink) {
                   body.writeTo(sink)
                 }
-              })
-            }
-
-            val cacheUrlOverride = executionContext[CacheUrlOverride]?.url
-            if (cacheUrlOverride != null) {
-              this.cacheUrlOverride(cacheUrlOverride.toHttpUrl())
+              }
+              post(okHttpBody)
+              val cacheUrlOverride = this@toOkHttpRequest.executionContext[CacheUrlOverride]?.url
+              if (cacheUrlOverride != null) {
+                cacheUrlOverride(cacheUrlOverride.toHttpUrl())
+              }
             }
           }
           .build()
@@ -153,53 +151,12 @@ internal class IsFromHttpCache(val isFromHttpCache: Boolean) : ExecutionContext.
   companion object Key : ExecutionContext.Key<IsFromHttpCache>
 }
 
-internal class CacheUrlOverride(val url: String) : ExecutionContext.Element {
-  override val key: ExecutionContext.Key<CacheUrlOverride>
-    get() = Key
-
-  companion object Key : ExecutionContext.Key<CacheUrlOverride>
-}
-
-/**
- * An interceptor that configures the cache url override to allow caching HTTP POST requests.
- *
- * @param baseUrl the baseUrl for the cache url override. If it does not end with '/',
- * a '/' is added.
- * For a given operation, the cache url override is `${baseUrlWithTrailingSlash}${operation.id()}`
- */
-class CacheUrlOverrideInterceptor(baseUrl: String) : ApolloInterceptor {
-  private var base: String
-
-  init {
-    this.base = buildString {
-      append(baseUrl)
-      if (!baseUrl.endsWith('/')) {
-        append('/')
-      }
-    }
-  }
-  override fun <D : Operation.Data> intercept(
-      request: ApolloRequest<D>,
-      chain: ApolloInterceptorChain,
-  ): Flow<ApolloResponse<D>> {
-    val newRequest = if(request.operation is Query<*>) {
-      request.newBuilder()
-          .addExecutionContext(CacheUrlOverride(base + request.operation.id()))
-          .build()
-    } else {
-      // do not cache mutations/subscriptions
-      request
-    }
-    return chain.proceed(newRequest)
-  }
-}
-
 /**
  * Returns true if the body of that response comes from the HTTP cache.
  *
  * In some cases (HTTP 304 Not Modified), a network request may still have happened to get the headers.
  */
-val <D: Operation.Data> ApolloResponse<D>.isFromHttpCache: Boolean
+val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache: Boolean
   get() {
     return executionContext[IsFromHttpCache]?.isFromHttpCache == true
   }

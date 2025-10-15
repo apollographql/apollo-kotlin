@@ -5,9 +5,11 @@ import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.Upload
 import com.apollographql.apollo.api.http.internal.urlEncode
+import com.apollographql.apollo.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.json.buildJsonByteString
 import com.apollographql.apollo.api.json.buildJsonMap
@@ -15,10 +17,12 @@ import com.apollographql.apollo.api.json.buildJsonString
 import com.apollographql.apollo.api.json.internal.FileUploadAwareJsonWriter
 import com.apollographql.apollo.api.json.writeAny
 import com.apollographql.apollo.api.json.writeObject
+import com.apollographql.apollo.api.variables
 import com.benasher44.uuid.uuid4
 import okio.Buffer
 import okio.BufferedSink
 import okio.ByteString
+import okio.HashingSink
 import okio.Sink
 import okio.blackholeSink
 import okio.buffer
@@ -29,10 +33,15 @@ import okio.buffer
  * - FileUpload by intercepting the Upload custom scalars and sending them as multipart if needed
  * - Automatic Persisted Queries
  * - Adding the default Apollo headers
+ *
+ * @param enablePostCaching enables caching of query POST requests using [CacheUrlOverride]
  */
 class DefaultHttpRequestComposer(
     private val serverUrl: String,
+    private val enablePostCaching: Boolean
 ) : HttpRequestComposer {
+
+  constructor(serverUrl: String): this(serverUrl, false)
 
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
     val operation = apolloRequest.operation
@@ -68,14 +77,24 @@ class DefaultHttpRequestComposer(
         HttpRequest.Builder(
             method = HttpMethod.Post,
             url = serverUrl,
-        ).body(body)
-            .let {
-              if (body.contentType.startsWith("multipart/form-data")) {
-                it.addHeader(HEADER_APOLLO_REQUIRE_PREFLIGHT, "true")
-              } else {
-                it
-              }
+        ).apply {
+          body(body)
+          if (body.contentType.startsWith("multipart/form-data")) {
+            addHeader(HEADER_APOLLO_REQUIRE_PREFLIGHT, "true")
+          }
+          if (enablePostCaching && operation is Query<*>) {
+            val cacheParameters = mutableMapOf<String, String>()
+
+            val variables = operation.variables(customScalarAdapters)
+            if (variables.valueMap.isNotEmpty()) {
+              cacheParameters.put("variablesHash", variables.valueMap.sha256())
             }
+            cacheParameters.put("operationName", operation.name())
+            cacheParameters.put("operationId", operation.id())
+
+            addExecutionContext(CacheUrlOverride(serverUrl.appendQueryParameters(cacheParameters)))
+          }
+        }
       }
     }
 
@@ -83,6 +102,14 @@ class DefaultHttpRequestComposer(
         .addHeaders(requestHeaders)
         .addExecutionContext(apolloRequest.executionContext)
         .build()
+  }
+
+  private fun Any.sha256(): String {
+    val hashingSink = HashingSink.sha256(blackholeSink())
+    val buffer = hashingSink.buffer()
+    BufferedSinkJsonWriter(buffer).writeAny(this)
+    buffer.flush()
+    return hashingSink.hash.hex()
   }
 
   companion object {

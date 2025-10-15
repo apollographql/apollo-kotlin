@@ -1,11 +1,12 @@
 package test
 
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.http.DefaultHttpRequestComposer
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueMultipart
 import com.apollographql.apollo.mpp.currentTimeMillis
-import com.apollographql.apollo.network.http.CacheUrlOverrideInterceptor
-import com.apollographql.apollo.network.okHttpClient
+import com.apollographql.apollo.network.http.DefaultHttpEngine
+import com.apollographql.apollo.network.http.HttpNetworkTransport
 import com.apollographql.apollo.testing.awaitElement
 import com.apollographql.apollo.testing.internal.runTest
 import defer.WithFragmentSpreadsQuery
@@ -21,6 +22,7 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okio.ByteString.Companion.encodeUtf8
+import okio.Path.Companion.toPath
 import org.junit.Ignore
 import org.junit.Test
 import supergraph.ProductQuery
@@ -39,13 +41,18 @@ class DeferJvmTest {
     dir.deleteRecursively()
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
-        .okHttpClient(
-            OkHttpClient.Builder()
-                .cache(Cache(directory = dir, maxSize = 4_000))
+        .networkTransport(
+            HttpNetworkTransport.Builder()
+                .httpRequestComposer(DefaultHttpRequestComposer(serverUrl = mockServer.url(), enablePostCaching = true))
+                .httpEngine(
+                    DefaultHttpEngine {
+                      OkHttpClient.Builder()
+                          .cache(Cache(directory = dir, maxSize = 4_000))
+                          .build()
+                    }
+                )
                 .build()
         )
-        .addInterceptor(CacheUrlOverrideInterceptor("http://localhost/graphql"))
         .build()
   }
 

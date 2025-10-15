@@ -20,7 +20,7 @@ import java.io.IOException
 import java.time.Instant
 import java.time.format.DateTimeParseException
 
-@Deprecated("Use `CacheUrlOverrideInterceptor` and the OkHttp cache instead. See https://go.apollo.dev/ak-http-cache")
+@Deprecated("Use `OkHttpEngine(cachePostResponses = true)` instead. See https://go.apollo.dev/ak-http-cache")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 class CachingHttpInterceptor internal constructor(
     private val lruHttpCache: ApolloHttpCache
