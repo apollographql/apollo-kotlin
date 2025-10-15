@@ -11,7 +11,7 @@ HTTP caching is only available on the JVM.
 
 </Note>
 
-Apollo leverages OkHttp's [cacheUrlOverride](https://square.github.io/okhttp/5.x/okhttp/okhttp3/-request/-builder/cache-url-override.html) to cache GraphQL POST requests when [persisted queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries) and GET requests are not an option.
+Apollo uses OkHttp's [cacheUrlOverride](https://square.github.io/okhttp/5.x/okhttp/okhttp3/-request/-builder/cache-url-override.html) to cache GraphQL POST requests when [persisted queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries) and GET requests are not an option.
 
 ## Setup
 
@@ -35,11 +35,11 @@ Configure your `NetworkTransport` with your cache-enabled `OkHttpClient` and `ca
     .build()
 ```
 
-Under the hood, the OkHttp `HttpEngine` uses `"${url}?variablesHash=${variables.sha256()}&operationName=${operation.name()}&operationId=${operation.id()}"` as a cache url override, allowing to cache POST requests.
+Under the hood, the OkHttp `HttpEngine` uses `"${url}?variablesHash=${variables.sha256()}&operationName=${operation.name()}&operationId=${operation.id()}"` as a <code>cacheUrlOverride</code> to cache POST requests.
 
 ## Usage
 
-OkHttp leverages the [cache-control header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control):
+OkHttp uses the [cache-control header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control):
 
 ```kotlin
   val successResponse = MockResponse.Builder()
@@ -63,7 +63,7 @@ You can use `ApolloResponse.isFromHttpCache` to determine if a given request com
 assertEquals(false, response.isFromHttpCache)
 ```
 
-To disable caching for a particular request, use the usual HTTP headers. For an example, you may use `no-store` to disable storing a response:
+To disable caching for a particular request, use standard HTTP headers. For example, you can use `no-store` to disable storing a response:
 
 ```kotlin
   val response1 = apolloClient.query(FooQuery())

@@ -100,7 +100,7 @@ You can read more in the ["handling nullability" page](https://www.apollographql
 
 ## `apollo-http-cache` is deprecated
 
-Apollo Kotlin 5 removes the `apollo-http-cache` artifact. Instead, it leverages the existing OkHttp cache using [cacheUrlOverride](https://square.github.io/okhttp/5.x/okhttp/okhttp3/-request/-builder/cache-url-override.html).
+Apollo Kotlin 5 removes the `apollo-http-cache` artifact. Instead, it uses the existing OkHttp cache using [cacheUrlOverride](https://square.github.io/okhttp/5.x/okhttp/okhttp3/-request/-builder/cache-url-override.html).
 
 You can remove the `apollo-http-cache` artifact:
 
@@ -111,7 +111,7 @@ dependencies {
 }
 ```
 
-And configure your `ApolloClient` with a cache-enabled `OkHttpClient` and `cachePostResponses`:
+Configure your `ApolloClient` with a cache-enabled `OkHttpClient` and `cachePostResponses`:
 
 ```kotlin
 // Replace
@@ -139,7 +139,7 @@ val apolloClient = ApolloClient.Builder()
     .build()
 ```
 
-The OkHttp cache uses `Cache-Control` HTTP headers and has different semantics compared to Apollo Kotlin 4 `HttpFetchPolicy` but most of them using the rules below:
+The OkHttp cache uses the standard `Cache-Control` HTTP header. Compared Apollo Kotlin 4 and `HttpFetchPolicy` the semantics are different but you can map most of the concepts:
 
 **CacheFirst**:
 ```kotlin
@@ -170,9 +170,9 @@ apolloClient.query(query).addHttpHeader("cache-control", "no-cache")
 
 ### Limitations
 
-While we believe this new caching scheme is simpler and more aligned with the rest of the ecosystem, there are important differences with the previous scheme:
+We believe this new caching scheme is simpler and more aligned with the rest of the ecosystem, but there are important differences with the previous scheme:
 
-* There is no equivalent to `NetworkFirst` and/or `httpExpireTimeout()`.
-* The cache keys have changed, meaning your cache will be invalidated.
+- There is no equivalent to `NetworkFirst` and/or `httpExpireTimeout()`.
+- The cache keys have changed, meaning your cache will be invalidated.
 
-If any of those is important for your use case, please [open an issue](https://github.com/apollographql/apollo-kotlin/issues/new). 
+If either of these limitations is important for your use case, please [open an issue](https://github.com/apollographql/apollo-kotlin/issues/new). 
