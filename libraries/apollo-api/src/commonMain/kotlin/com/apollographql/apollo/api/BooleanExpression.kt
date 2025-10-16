@@ -88,10 +88,10 @@ private fun shouldParseFragment(deferredFragmentIdentifiers: Set<DeferredFragmen
   }
   val identifier = DeferredFragmentIdentifier(path, label)
   return if (deferredFragmentIdentifiers.isPending()) {
-    // Modern protocol: parse fragments that are _not_ pending
+    // Modern (v0.1 draft) protocol: parse fragments that are _not_ pending
     !deferredFragmentIdentifiers.contains(identifier)
   } else {
-    // Legacy GraphQL17Alpha2 protocol: parse fragments that have been merged
+    // Legacy (initial draft) protocol: parse fragments that have been merged
     deferredFragmentIdentifiers.contains(identifier)
   }
 }
