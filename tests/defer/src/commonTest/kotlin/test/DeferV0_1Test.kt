@@ -30,7 +30,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class DeferDraft0_1Test {
+class DeferV0_1Test {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
 
@@ -40,7 +40,7 @@ class DeferDraft0_1Test {
         .networkTransport(
             HttpNetworkTransport.Builder()
                 .serverUrl(mockServer.url())
-                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.Draft0_1)
+                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.V0_1)
                 .build()
         )
         .build()

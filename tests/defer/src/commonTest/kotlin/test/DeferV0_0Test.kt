@@ -25,7 +25,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class DeferDraftInitialTest {
+class DeferV0_0Test {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
 

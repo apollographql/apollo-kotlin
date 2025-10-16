@@ -48,7 +48,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
-class DeferDraft0_1NormalizedCacheTest {
+class DeferV0_1NormalizedCacheTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
@@ -60,7 +60,7 @@ class DeferDraft0_1NormalizedCacheTest {
         .networkTransport(
             HttpNetworkTransport.Builder()
                 .serverUrl(mockServer.url())
-                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.Draft0_1)
+                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.V0_1)
                 .build()
         )
         .store(store).build()

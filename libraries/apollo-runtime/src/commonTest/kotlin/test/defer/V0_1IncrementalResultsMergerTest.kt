@@ -6,7 +6,7 @@ import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.DeferredFragmentIdentifier
 import com.apollographql.apollo.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.json.readAny
-import com.apollographql.apollo.internal.incremental.Draft0_1IncrementalResultsMerger
+import com.apollographql.apollo.internal.incremental.V0_1IncrementalResultsMerger
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,10 +18,10 @@ private fun String.buffer() = Buffer().writeUtf8(this)
 @Suppress("UNCHECKED_CAST")
 private fun jsonToMap(json: String): Map<String, Any?> = BufferedSourceJsonReader(json.buffer()).readAny() as Map<String, Any?>
 
-class GraphQL17Alpha9IncrementalResultsMergerTest {
+class V0_1IncrementalResultsMergerTest {
   @Test
   fun mergeJsonSingleIncrementalItem() {
-    val incrementalResultsMerger = Draft0_1IncrementalResultsMerger()
+    val incrementalResultsMerger = V0_1IncrementalResultsMerger()
 
     //language=JSON
     val payload1 = """
@@ -454,7 +454,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
 
   @Test
   fun mergeJsonMultipleIncrementalItems() {
-    val incrementalResultsMerger = Draft0_1IncrementalResultsMerger()
+    val incrementalResultsMerger = V0_1IncrementalResultsMerger()
 
     //language=JSON
     val payload1 = """
@@ -762,7 +762,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
 
   @Test
   fun emptyPayloads() {
-    val incrementalResultsMerger = Draft0_1IncrementalResultsMerger()
+    val incrementalResultsMerger = V0_1IncrementalResultsMerger()
 
     //language=JSON
     val payload1 = """
@@ -851,7 +851,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
    */
   @Test
   fun june2023ExampleA() {
-    val incrementalResultsMerger = Draft0_1IncrementalResultsMerger()
+    val incrementalResultsMerger = V0_1IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -970,7 +970,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
    */
   @Test
   fun june2023ExampleA2() {
-    val incrementalResultsMerger = Draft0_1IncrementalResultsMerger()
+    val incrementalResultsMerger = V0_1IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -1149,7 +1149,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
    */
   @Test
   fun june2023ExampleB1() {
-    val incrementalResultsMerger = Draft0_1IncrementalResultsMerger()
+    val incrementalResultsMerger = V0_1IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -1316,7 +1316,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
    */
   @Test
   fun june2023ExampleB2() {
-    val incrementalResultsMerger = Draft0_1IncrementalResultsMerger()
+    val incrementalResultsMerger = V0_1IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -1486,7 +1486,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
    */
   @Test
   fun june2023ExampleD() {
-    val incrementalResultsMerger = Draft0_1IncrementalResultsMerger()
+    val incrementalResultsMerger = V0_1IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -1714,7 +1714,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
    */
   @Test
   fun june2023ExampleF() {
-    val incrementalResultsMerger = Draft0_1IncrementalResultsMerger()
+    val incrementalResultsMerger = V0_1IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -1794,7 +1794,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
    */
   @Test
   fun june2023ExampleG() {
-    val incrementalResultsMerger = Draft0_1IncrementalResultsMerger()
+    val incrementalResultsMerger = V0_1IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -1963,7 +1963,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
    */
   @Test
   fun june2023ExampleH() {
-    val incrementalResultsMerger = Draft0_1IncrementalResultsMerger()
+    val incrementalResultsMerger = V0_1IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -2135,7 +2135,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
    */
   @Test
   fun july2025ExampleI() {
-    val incrementalResultsMerger = Draft0_1IncrementalResultsMerger()
+    val incrementalResultsMerger = V0_1IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {
@@ -2348,7 +2348,7 @@ class GraphQL17Alpha9IncrementalResultsMergerTest {
    */
   @Test
   fun july2025ExampleJ() {
-    val incrementalResultsMerger = Draft0_1IncrementalResultsMerger()
+    val incrementalResultsMerger = V0_1IncrementalResultsMerger()
     //language=JSON
     val payload1 = """
     {

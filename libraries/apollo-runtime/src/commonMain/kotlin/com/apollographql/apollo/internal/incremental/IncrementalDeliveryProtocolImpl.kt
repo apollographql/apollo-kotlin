@@ -7,21 +7,21 @@ internal sealed interface IncrementalDeliveryProtocolImpl {
 
   fun newIncrementalResultsMerger(): IncrementalResultsMerger
 
-  object DraftInitial : IncrementalDeliveryProtocolImpl {
+  object V0_0 : IncrementalDeliveryProtocolImpl {
     override val acceptHeader: String = "multipart/mixed;deferSpec=20220824, application/graphql-response+json, application/json"
 
-    override fun newIncrementalResultsMerger(): IncrementalResultsMerger = DraftInitialIncrementalResultsMerger()
+    override fun newIncrementalResultsMerger(): IncrementalResultsMerger = V0_0IncrementalResultsMerger()
   }
 
-  object Draft0_1 : IncrementalDeliveryProtocolImpl {
+  object V0_1 : IncrementalDeliveryProtocolImpl {
     override val acceptHeader: String = "multipart/mixed;incrementalSpec=v0.1, application/graphql-response+json, application/json"
 
-    override fun newIncrementalResultsMerger(): IncrementalResultsMerger = Draft0_1IncrementalResultsMerger()
+    override fun newIncrementalResultsMerger(): IncrementalResultsMerger = V0_1IncrementalResultsMerger()
   }
 }
 
 internal val IncrementalDeliveryProtocol.impl: IncrementalDeliveryProtocolImpl
   get() = when (this) {
-    IncrementalDeliveryProtocol.DraftInitial -> IncrementalDeliveryProtocolImpl.DraftInitial
-    IncrementalDeliveryProtocol.Draft0_1 -> IncrementalDeliveryProtocolImpl.Draft0_1
+    IncrementalDeliveryProtocol.V0_0 -> IncrementalDeliveryProtocolImpl.V0_0
+    IncrementalDeliveryProtocol.V0_1 -> IncrementalDeliveryProtocolImpl.V0_1
   }

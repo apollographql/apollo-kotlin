@@ -216,8 +216,8 @@ public final class com/apollographql/apollo/interceptor/RetryOnErrorInterceptorK
 }
 
 public final class com/apollographql/apollo/network/IncrementalDeliveryProtocol : java/lang/Enum {
-	public static final field Draft0_1 Lcom/apollographql/apollo/network/IncrementalDeliveryProtocol;
-	public static final field DraftInitial Lcom/apollographql/apollo/network/IncrementalDeliveryProtocol;
+	public static final field V0_0 Lcom/apollographql/apollo/network/IncrementalDeliveryProtocol;
+	public static final field V0_1 Lcom/apollographql/apollo/network/IncrementalDeliveryProtocol;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo/network/IncrementalDeliveryProtocol;
 	public static fun values ()[Lcom/apollographql/apollo/network/IncrementalDeliveryProtocol;

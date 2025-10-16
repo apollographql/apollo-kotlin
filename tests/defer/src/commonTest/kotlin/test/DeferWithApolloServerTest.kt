@@ -49,7 +49,7 @@ class DeferWithApolloServerTest {
         .networkTransport(
             HttpNetworkTransport.Builder()
                 .serverUrl("http://127.0.0.1:4000/")
-                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.Draft0_1)
+                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.V0_1)
                 .build()
         )
         .build()

@@ -91,7 +91,7 @@ private fun shouldParseFragment(deferredFragmentIdentifiers: Set<DeferredFragmen
     // Modern (v0.1 draft) protocol: parse fragments that are _not_ pending
     !deferredFragmentIdentifiers.contains(identifier)
   } else {
-    // Legacy (initial draft) protocol: parse fragments that have been merged
+    // Legacy (v0.0 draft) protocol: parse fragments that have been merged
     deferredFragmentIdentifiers.contains(identifier)
   }
 }

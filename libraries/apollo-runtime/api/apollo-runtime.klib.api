@@ -22,8 +22,8 @@ final enum class com.apollographql.apollo.network.ws/WsFrameType : kotlin/Enum<c
 }
 
 final enum class com.apollographql.apollo.network/IncrementalDeliveryProtocol : kotlin/Enum<com.apollographql.apollo.network/IncrementalDeliveryProtocol> { // com.apollographql.apollo.network/IncrementalDeliveryProtocol|null[0]
-    enum entry Draft0_1 // com.apollographql.apollo.network/IncrementalDeliveryProtocol.Draft0_1|null[0]
-    enum entry DraftInitial // com.apollographql.apollo.network/IncrementalDeliveryProtocol.DraftInitial|null[0]
+    enum entry V0_0 // com.apollographql.apollo.network/IncrementalDeliveryProtocol.V0_0|null[0]
+    enum entry V0_1 // com.apollographql.apollo.network/IncrementalDeliveryProtocol.V0_1|null[0]
 
     final val entries // com.apollographql.apollo.network/IncrementalDeliveryProtocol.entries|#static{}entries[0]
         final fun <get-entries>(): kotlin.enums/EnumEntries<com.apollographql.apollo.network/IncrementalDeliveryProtocol> // com.apollographql.apollo.network/IncrementalDeliveryProtocol.entries.<get-entries>|<get-entries>#static(){}[0]
