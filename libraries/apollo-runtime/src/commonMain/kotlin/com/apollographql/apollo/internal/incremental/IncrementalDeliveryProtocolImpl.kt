@@ -14,9 +14,7 @@ internal sealed interface IncrementalDeliveryProtocolImpl {
   }
 
   object Draft0_1 : IncrementalDeliveryProtocolImpl {
-    // TODO To be agreed upon with the router and other clients
-    override val acceptHeader: String =
-      "multipart/mixed;incrementalDeliverySpec=20230621, application/graphql-response+json, application/json"
+    override val acceptHeader: String = "multipart/mixed;incrementalSpec=v0.1, application/graphql-response+json, application/json"
 
     override fun newIncrementalResultsMerger(): IncrementalResultsMerger = Draft0_1IncrementalResultsMerger()
   }
