@@ -1,6 +1,7 @@
 package com.apollographql.apollo.network
 
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.network.http.DefaultHttpEngine
 import com.apollographql.apollo.network.http.HttpNetworkTransport
@@ -16,7 +17,9 @@ import okhttp3.OkHttpClient
  *
  * See also [ApolloClient.Builder.httpEngine] and [ApolloClient.Builder.webSocketEngine]
  */
+
 fun ApolloClient.Builder.okHttpClient(okHttpClient: OkHttpClient) = apply {
+  @Suppress("DEPRECATION")
   httpEngine(DefaultHttpEngine(okHttpClient))
   webSocketEngine(DefaultWebSocketEngine(okHttpClient))
 }
@@ -25,6 +28,7 @@ fun ApolloClient.Builder.okHttpClient(okHttpClient: OkHttpClient) = apply {
  * Configures the [ApolloClient] to use the [callFactory] for network requests.
  */
 fun ApolloClient.Builder.okHttpCallFactory(callFactory: Call.Factory) = apply {
+  @Suppress("DEPRECATION")
   httpEngine(DefaultHttpEngine(callFactory))
 }
 
@@ -32,6 +36,7 @@ fun ApolloClient.Builder.okHttpCallFactory(callFactory: Call.Factory) = apply {
  * Configures the [ApolloClient] to use the lazily initialized [callFactory] for network requests.
  */
 fun ApolloClient.Builder.okHttpCallFactory(callFactory: () -> Call.Factory) = apply {
+  @Suppress("DEPRECATION")
   httpEngine(DefaultHttpEngine(callFactory))
 }
 
@@ -39,6 +44,7 @@ fun ApolloClient.Builder.okHttpCallFactory(callFactory: () -> Call.Factory) = ap
  * Configures the [HttpNetworkTransport] to use the [DefaultHttpEngine] for network requests.
  */
 fun HttpNetworkTransport.Builder.okHttpClient(okHttpClient: OkHttpClient) = apply {
+  @Suppress("DEPRECATION")
   httpEngine(DefaultHttpEngine(okHttpClient))
 }
 
@@ -46,6 +52,7 @@ fun HttpNetworkTransport.Builder.okHttpClient(okHttpClient: OkHttpClient) = appl
  * Configures the [HttpNetworkTransport] to use the [okHttpCallFactory] for network requests.
  */
 fun HttpNetworkTransport.Builder.okHttpCallFactory(okHttpCallFactory: Call.Factory) = apply {
+  @Suppress("DEPRECATION")
   httpEngine(DefaultHttpEngine(okHttpCallFactory))
 }
 

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.http.internal
 
 import com.apollographql.apollo.api.ApolloRequest

@@ -8,35 +8,14 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import util.TestUtils
 import util.TestUtils.setVersionsUnderTest
-import util.agp8_kgp2_0
+import util.agp8_kgp2_1_0
 import util.generatedSource
 import java.io.File
 import kotlin.test.assertEquals
 
 class LanguageVersionTests {
-  private val versionsUnderTest = agp8_kgp2_0
+  private val versionsUnderTest = agp8_kgp2_1_0
   private val gradleVersion = versionsUnderTest.gradle
-
-  @Test
-  fun `compiling with 1_5 features with Kotlin 1_5 is working`() {
-    withProject(kotlinLanguageVersion = "1.5", apolloLanguageVersion = "1.5") { dir ->
-      TestUtils.executeGradleWithVersion(dir, gradleVersion, ":assemble").apply {
-        assertEquals(TaskOutcome.SUCCESS, task(":assemble")!!.outcome)
-      }
-    }
-  }
-
-  @Test
-  fun `compiling with 1_5 features with Kotlin 1_4 is not working`() {
-    withProject(kotlinLanguageVersion = "1.4", apolloLanguageVersion = "1.5") { dir ->
-      try {
-        TestUtils.executeGradleWithVersion(dir, gradleVersion, ":assemble")
-        Assert.fail("Compiling with incompatible languageVersion should fail")
-      } catch (e: UnexpectedBuildFailure) {
-        Truth.assertThat(e.message).contains("The feature \"sealed interfaces\" is only available since language version 1.5")
-      }
-    }
-  }
 
   @Test
   fun `using bogus languageVersion fails`() {

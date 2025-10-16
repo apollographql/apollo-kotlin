@@ -11,7 +11,7 @@ import util.TestUtils.executeTaskAndAssertSuccess
 import util.TestUtils.setVersionsUnderTest
 import util.TestUtils.withTestProject
 import util.VersionsUnderTest
-import util.agp8_kgp2_0
+import util.agp8_kgp2_1_0
 import util.agp8_13_0_versions
 import util.agp9_versions
 import util.generatedSource
@@ -30,7 +30,7 @@ class AndroidProjectTests {
   fun androidLibrary() = androidLibrary(null)
 
   @Test
-  fun androidLibrary_8_0_0() = androidLibrary(agp8_kgp2_0)
+  fun androidLibrary_8_0_0() = androidLibrary(agp8_kgp2_1_0)
 
   @Test
   fun androidLibrary_8_13_0() = androidLibrary(agp8_13_0_versions)
@@ -40,7 +40,7 @@ class AndroidProjectTests {
 
   private fun androidVariants(versionsUnderTest: VersionsUnderTest?) {
     withTestProject("android-variants") { dir ->
-      TestUtils.setVersionsUnderTest(dir, versionsUnderTest)
+      setVersionsUnderTest(dir, versionsUnderTest)
       val tasks = buildList {
         add(":compileDemoDebugKotlin")
         add(":compileDemoReleaseKotlin")
@@ -68,7 +68,7 @@ class AndroidProjectTests {
   fun androidVariants() = androidVariants(null)
 
   @Test
-  fun androidVariants_8_0_0() = androidVariants(agp8_kgp2_0)
+  fun androidVariants_8_0_0() = androidVariants(agp8_kgp2_1_0)
 
   @Test
   fun androidVariants_8_13_0() = androidVariants(agp8_13_0_versions)
@@ -89,7 +89,7 @@ class AndroidProjectTests {
   fun androidJava() = androidJava(null)
 
   @Test
-  fun androidJava_8_0_0() = androidJava(agp8_kgp2_0)
+  fun androidJava_8_0_0() = androidJava(agp8_kgp2_1_0)
 
   @Test
   fun androidJava_8_13_0() = androidJava(agp8_13_0_versions)

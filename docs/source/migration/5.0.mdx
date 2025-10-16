@@ -96,3 +96,83 @@ query GetUser {
 ```
 
 You can read more in the ["handling nullability" page](https://www.apollographql.com/docs/kotlin/advanced/nullability).
+
+
+## `apollo-http-cache` is deprecated
+
+Apollo Kotlin 5 removes the `apollo-http-cache` artifact. Instead, it uses the existing OkHttp cache using [cacheUrlOverride](https://square.github.io/okhttp/5.x/okhttp/okhttp3/-request/-builder/cache-url-override.html).
+
+You can remove the `apollo-http-cache` artifact:
+
+```kotlin
+dependencies {
+  // Remove
+  implementation("com.apollographql.apollo:apollo-http-cache:4.3.3")
+}
+```
+
+Configure your `ApolloClient` with a cache-enabled `OkHttpClient` and set `enablePostCaching` to true:
+
+```kotlin
+// Replace
+val apolloClient = ApolloClient.Builder()
+    .serverUrl(mockServer.url())
+    .httpCache(directory = "http_cache", maxSize = 10_000_000)
+    .build()
+
+// With
+val apolloClient = ApolloClient.Builder()
+    .networkTransport(
+        HttpNetworkTransport.Builder()
+            // Enable POST caching
+            .httpRequestComposer(DefaultHttpRequestComposer(serverUrl = mockServer.url(), enablePostCaching = true))
+            .httpEngine(
+                DefaultHttpEngine {
+                  OkHttpClient.Builder()
+                      // Make sure to use a different directory for your cache
+                      .cache(directory = "http_cache2", maxSize = 10_000_000)
+                      .build()
+                }
+            )
+            .build()
+    )
+    .build()
+```
+
+The OkHttp cache uses the standard `Cache-Control` HTTP header. Compared to Apollo Kotlin 4 and `HttpFetchPolicy` the semantics are different but you can map most of the concepts:
+
+**CacheFirst**:
+```kotlin
+// Replace 
+apolloClient.query(query).httpFetchPolicy(HttpFetchPolicy.CacheFirst)
+
+// With
+apolloClient.query(query) // no need to add a cache-control header, this is the default
+```
+
+**CacheOnly**:
+```kotlin
+// Replace 
+apolloClient.query(query).httpFetchPolicy(HttpFetchPolicy.CacheOnly)
+
+// With
+apolloClient.query(query).addHttpHeader("cache-control", "only-if-cached")
+```
+
+**NetworkOnly**:
+```kotlin
+// Replace
+apolloClient.query(query).httpFetchPolicy(HttpFetchPolicy.CacheOnly)
+
+// With
+apolloClient.query(query).addHttpHeader("cache-control", "no-cache")
+```
+
+### Limitations
+
+We believe this new caching scheme is simpler and more aligned with the rest of the ecosystem, but there are important differences with the previous scheme:
+
+- There is no equivalent to `NetworkFirst` and/or `httpExpireTimeout()`.
+- The cache keys have changed, meaning your cache will be invalidated.
+
+If either of these limitations is important for your use case, please [open an issue](https://github.com/apollographql/apollo-kotlin/issues/new). 

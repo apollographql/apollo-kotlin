@@ -15,7 +15,6 @@
  */
 package com.apollographql.apollo.cache.http.internal
 
-import com.apollographql.apollo.cache.http.internal.DiskLruCache.Editor
 import okio.BufferedSink
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath

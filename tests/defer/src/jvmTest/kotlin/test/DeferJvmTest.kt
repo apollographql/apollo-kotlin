@@ -1,12 +1,12 @@
 package test
 
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.cache.http.HttpFetchPolicy
-import com.apollographql.apollo.cache.http.httpCache
-import com.apollographql.apollo.cache.http.httpFetchPolicy
+import com.apollographql.apollo.api.http.DefaultHttpRequestComposer
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueMultipart
 import com.apollographql.apollo.mpp.currentTimeMillis
+import com.apollographql.apollo.network.http.DefaultHttpEngine
+import com.apollographql.apollo.network.http.HttpNetworkTransport
 import com.apollographql.apollo.testing.awaitElement
 import com.apollographql.apollo.testing.internal.runTest
 import defer.WithFragmentSpreadsQuery
@@ -19,7 +19,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import okhttp3.Cache
+import okhttp3.OkHttpClient
 import okio.ByteString.Companion.encodeUtf8
+import okio.Path.Companion.toPath
 import org.junit.Ignore
 import org.junit.Test
 import supergraph.ProductQuery
@@ -38,8 +41,18 @@ class DeferJvmTest {
     dir.deleteRecursively()
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
-        .httpCache(dir, 4_000)
+        .networkTransport(
+            HttpNetworkTransport.Builder()
+                .httpRequestComposer(DefaultHttpRequestComposer(serverUrl = mockServer.url(), enablePostCaching = true))
+                .httpEngine(
+                    DefaultHttpEngine {
+                      OkHttpClient.Builder()
+                          .cache(Cache(directory = dir, maxSize = 4_000))
+                          .build()
+                    }
+                )
+                .build()
+        )
         .build()
   }
 
@@ -50,7 +63,7 @@ class DeferJvmTest {
   @Test
   fun payloadsAreReceivedIncrementallyWithHttpCache() = runTest(before = { setUp() }, after = { tearDown() }) {
     val delayMillis = 200L
-    val multipartBody = mockServer.enqueueMultipart("application/json")
+    val multipartBody = mockServer.enqueueMultipart("application/json", headers = mapOf("cache-control" to "max-age=100"))
 
     val syncChannel = Channel<Unit>()
     val job = launch {
@@ -78,15 +91,22 @@ class DeferJvmTest {
     job.cancel()
 
     // Also check that caching worked
-    val actual = apolloClient.query(WithFragmentSpreadsQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).toFlow().last().dataOrThrow()
+    val actual =
+      apolloClient.query(WithFragmentSpreadsQuery()).addHttpHeader("cache-control", "only-if-cached").toFlow().last().dataOrThrow()
     val expected = WithFragmentSpreadsQuery.Data(
         listOf(
             WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
                 ComputerFields.Screen("Screen", "640x480",
-                    ScreenFields(false)))),
+                    ScreenFields(false)
+                )
+            )
+            ),
             WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
                 ComputerFields.Screen("Screen", "800x600",
-                    ScreenFields(true)))),
+                    ScreenFields(true)
+                )
+            )
+            ),
         )
     )
 

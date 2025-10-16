@@ -39,10 +39,8 @@ ksp = "2.2.20-2.0.4"
 #noinspection NewerVersionAvailable requires KGP 2.2
 ktor = "3.2.3"
 moshix = "0.14.1"
-#noinspection NewerVersionAvailable requires KGP 2.2
-okio = "3.15.0"
-#noinspection NewerVersionAvailable requires KGP 2.2
-okhttp = "4.12.0"
+okio = "3.16.1"
+okhttp = "5.2.1"
 sqldelight = "2.1.0"
 truth = "1.4.5"
 
@@ -157,6 +155,7 @@ okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver",
 okhttp-tls = { group = "com.squareup.okhttp3", name = "okhttp-tls", version.ref = "okhttp" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version = "1.15.2" }
 okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
+okio-fakefilesystem = { group = "com.squareup.okio", name = "okio-fakefilesystem", version.ref = "okio" }
 okio-nodefilesystem = { group = "com.squareup.okio", name = "okio-nodefilesystem", version.ref = "okio" }
 poet-java = { group = "com.squareup", name = "javapoet", version.ref = "javaPoet" }
 # Depend on the -jvm artifact directly to workaround https://github.com/gradle/gradle/issues/31158

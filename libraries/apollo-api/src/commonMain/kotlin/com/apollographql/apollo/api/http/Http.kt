@@ -136,6 +136,7 @@ private constructor(
      * Prefer [bodySource] on so that the response can be streamed.
      */
     private val bodyString: ByteString?,
+    val executionContext: ExecutionContext,
 ) {
 
   val body: BufferedSource?
@@ -157,6 +158,7 @@ private constructor(
     private val headers = mutableListOf<HttpHeader>()
     private val hasBody: Boolean
       get() = bodySource != null || bodyString != null
+    private var executionContext = ExecutionContext.Empty
 
     /**
      * A streamable body.
@@ -190,12 +192,17 @@ private constructor(
       this.headers.addAll(headers)
     }
 
+    fun addExecutionContext(executionContext: ExecutionContext) = apply {
+      this.executionContext += executionContext
+    }
+
     fun build(): HttpResponse {
       return HttpResponse(
           statusCode = statusCode,
           headers = headers,
           bodySource = bodySource,
           bodyString = bodyString,
+          executionContext = executionContext
       )
     }
   }
