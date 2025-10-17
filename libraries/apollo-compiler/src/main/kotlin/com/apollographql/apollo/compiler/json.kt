@@ -9,7 +9,6 @@ import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.pqm.PersistedQueryManifest
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 
@@ -19,6 +18,8 @@ private val json = Json {
    * with IrField.type
    */
   classDiscriminator = "#class"
+
+  ignoreUnknownKeys = true
 }
 
 private val prettyPrintJson = Json { prettyPrint = true }
