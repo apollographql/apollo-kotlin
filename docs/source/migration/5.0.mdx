@@ -11,11 +11,11 @@ In most cases, bumping the version should be transparent. The exceptions are:
 - Symbols that were `DeprecationLevel.ERROR` in v4 are now removed. Remove all your deprecated usages before migrating to v5.
 - `apollo-compiler` is still considered experimental. You will need to update your [Apollo Compiler Plugins](https://www.apollographql.com/docs/kotlin/advanced/compiler-plugins). 
 
-We tried hard to minimize the impact of the binary changes so that running code compiled for v4 will run with v5. But the occasional incompatibility may happen. In that case, the incompatible libraries will need to compile against v5 and make a new release.   
+Read below for more details.
 
-## Removed `apollo-gradle-plugin-external` and `com.apollographql.apollo.external`
+## `apollo-gradle-plugin-external`
 
-The Apollo Gradle Plugin [now uses classloader isolation](https://github.com/apollographql/apollo-kotlin/pull/6524) and does not use R8 to relocate dependencies anymore. As a result, the `apollo-gradle-plugin-external` artifact and the `com.apollographql.apollo.external` plugins have been removed. You should use `apollo-gradle-plugin` and `com.apollographql.apollo` instead:
+The Apollo Gradle Plugin [now uses classloader isolation](https://github.com/apollographql/apollo-kotlin/pull/6524) and does not use R8 to relocate dependencies anymore. As a result, the `apollo-gradle-plugin-external` artifact and the `com.apollographql.apollo.external` plugins are not used anymore and now point to an empty plugin. You should use `apollo-gradle-plugin` and `com.apollographql.apollo` instead:
 
 ```kotlin
 // Replace
@@ -31,13 +31,13 @@ plugins {
 }
 ```
 
-## Removed `Service.operationOutputGenerator` and `Service.operationIdGenerator`
+## `apollo-gradle-plugin`
 
-While running your `OperationOutputGenerator` directly in your build script classpath was convenient, it required the compiler code to run completely in the global buildscript classpath. This created numerous issues such as incompatible dependencies and/or unneeded build invalidations.
+### `operationOutputGenerator` and `operationIdGenerator` are removed.
 
-To mitigate the impact of incompatible dependencies, Apollo Kotlin 4 used to shadow and relocate all its dependencies, which came with additional issues: increased build times, weird stack traces and larger plugin size.
+While running your `OperationOutputGenerator` directly in your build script classpath was convenient, it required the compiler code to run completely in the global buildscript classpath. This created many issues such as incompatible dependencies and/or unneeded build invalidations.
 
-Apollo Kotlin v5 instead runs its compiler in isolated classloaders, meaning generating the ids now needs to happen in that same classloader. 
+The v5 Apollo Gradle plugin runs the Apollo compiler in isolated classloaders, meaning generating the ids needs to happen in that same classloader using the `ServiceLoader` API. 
 
 To do so, use `ApolloCompilerPlugin`:
 
@@ -56,14 +56,42 @@ class MyPlugin : ApolloCompilerPlugin {
 
 Read more in the [persisted queries](https://www.apollographql.com/docs/kotlin/v5/advanced/persisted-queries) and [compiler plugins](https://www.apollographql.com/docs/kotlin/v5/advanced/compiler-plugins) pages.
 
+### `downloadApolloSchema` is removed
 
-## Removed ApolloIdlingResource
+Apollo Kotlin 4 allowed downloading a schema with a `downloadApolloSchema` Gradle task. This task is now removed.
 
-Apollo Kotlin 5 removes `ApolloIdlingResource`. `IdlingResource` usage has been slowly decreasing and there are now better alternatives to do your testing.
+For single-shot downloads of a schema during development, use the [Apollo Kotlin CLI](https://github.com/apollographql/apollo-kotlin-cli). It is much faster (no Gradle configuration), comes with interactive help and soon autocomplete scripts.
 
-For a good overview of alternative solutions, we recommend [this article from Jose Alcérreca](https://medium.com/androiddevelopers/alternatives-to-idling-resources-in-compose-tests-8ae71f9fc473).
+Alternatively, configure [your introspection block](https://www.apollographql.com/docs/kotlin/advanced/plugin-recipes#downloading-a-schema). Doing so documents how to update the schema for other developers and makes it easy to update the schema without passing extra arguments.
 
-## Using `@nonnull` is now an error
+```kotlin 
+apollo {
+  service("service") {
+    packageName.set("com.example")
+
+    // This creates a downloadServiceApolloSchemaFromIntrospection task
+    introspection {
+      endpointUrl.set("https://example.com/graphql/endpoint")
+      // The path is interpreted relative to the current project
+      schemaFile.set(file("src/main/graphql/schema.graphqls"))
+    }
+  }
+}
+
+// You can create a shorthand lifecycle task name
+tasks.register("downloadSchema") {
+  dependsOn("downloadServiceApolloSchemaFromIntrospection")
+}
+```
+## `apollo-idling-resource` 
+
+Apollo Kotlin 5 removes the `apollo-idling-resource` artifact. Usage of `ApolloIdlingResource` has been decreasing, and better alternatives for testing are now available.
+
+For a good overview of alternative solutions, we recommend reading [this article from Jose Alcérreca](https://medium.com/androiddevelopers/alternatives-to-idling-resources-in-compose-tests-8ae71f9fc473).
+
+## `apollo-compiler` 
+
+### `@nonnull` is an error
 
 Apollo Kotlin 4 had a `@nonnull` client directive to force generating fields as non-null.
 
@@ -98,9 +126,9 @@ query GetUser {
 You can read more in the ["handling nullability" page](https://www.apollographql.com/docs/kotlin/advanced/nullability).
 
 
-## `apollo-http-cache` is deprecated
+## `apollo-http-cache`
 
-Apollo Kotlin 5 removes the `apollo-http-cache` artifact. Instead, it uses the existing OkHttp cache using [cacheUrlOverride](https://square.github.io/okhttp/5.x/okhttp/okhttp3/-request/-builder/cache-url-override.html).
+`apollo-http-cache` is now deprecated. Instead, it uses the existing OkHttp cache using [cacheUrlOverride](https://square.github.io/okhttp/5.x/okhttp/okhttp3/-request/-builder/cache-url-override.html).
 
 You can remove the `apollo-http-cache` artifact:
 
@@ -167,8 +195,6 @@ apolloClient.query(query).httpFetchPolicy(HttpFetchPolicy.CacheOnly)
 // With
 apolloClient.query(query).addHttpHeader("cache-control", "no-cache")
 ```
-
-### Limitations
 
 We believe this new caching scheme is simpler and more aligned with the rest of the ecosystem, but there are important differences with the previous scheme:
 
