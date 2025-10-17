@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Ecosystem Roadmap
 
-**Last updated: 2025-10-02**
+**Last updated: 2025-10-16**
 
 For up-to-date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -26,7 +26,7 @@ We aim for ABI compatibility for all symbols except those that were deprecated i
 
 ### Incremental delivery: protocol updates and `@stream` support
 
-The incremental delivery portion of the GraphQL specification has been unchanged since 2023 and will be merged into the draft specification soon.  Currently, Apollo Kotlin supports the `@defer` directive using an older (but still functional) implementation of the incremental delivery protocol.  Soon, we will release support for the current version of the protocol, along with support for the `@stream` directive for streaming elements in lists.  We will also keep supporting the old format as well.  For more information, see the RFC here: https://github.com/graphql/graphql-spec/pull/1110
+The incremental delivery portion of the GraphQL specification has been unchanged since 2023 and will be merged into the draft specification soon.  Currently, Apollo Kotlin supports the `@defer` directive using an older (but still functional) implementation of the incremental delivery protocol.  Soon, we will release support for the current version of the protocol, along with support for the `@stream` directive for streaming elements in lists.  We will also keep supporting the old format as well.  For more information, see the GraphQL Specification RFC here: https://github.com/graphql/graphql-spec/pull/1110.  You can follow along with our [updated `@defer` implementation PR](https://github.com/apollographql/apollo-kotlin/pull/6331) and our [specs.apollo.dev PR](https://github.com/apollographql/specs/pull/67).
 
 ### Other GraphQL spec tracking items
 
@@ -51,7 +51,7 @@ We encourage you to try it out with the (important) caveat that the binary forma
 
 ## Apollo Kotlin Compose
 
-[Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin.  We [are](https://github.com/apollographql/apollo-kotlin-compose) [experimenting](https://github.com/apollographql/apollo-kotlin-compiler-plugin) with a few different approaches for supporting Compose in the Apollo Kotlin library.  Our 3.8.0 release introduced an experimental API for use with Compose but gathered little feedback. We're planning to revisit this with more ambitious goals in terms of fragments colocation, error boundaries and more generally integration with the UI framework.
+[Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin.  [Apollo Kotlin Compose](https://github.com/apollographql/apollo-kotlin-compose) is an experimental framework that, along with a [special compiler plugin](https://github.com/apollographql/apollo-kotlin-compiler-plugin), provides APIs for Compose users with the Apollo Kotlin library.  This new framework has ambitious goals in terms of fragments colocation, error boundaries and more generally integration with the UI framework.
 
 This pattern is encouraged by [Relay](https://relay.dev/docs/tutorial/fragments-1/) and [Apollo Client (TypeScript)](https://www.apollographql.com/blog/optimizing-data-fetching-with-apollo-client-leveraging-usefragment-and-colocated-fragments) and may prove to be valuable to developers using Compose.
 
