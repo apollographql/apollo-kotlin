@@ -1,5 +1,8 @@
+@file:OptIn(ApolloInternal::class)
+
 package test
 
+import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.AnyAdapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.LongAdapter
@@ -8,9 +11,11 @@ import com.apollographql.apollo.api.json.MapJsonWriter
 import com.apollographql.apollo.api.json.buildJsonString
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.json.readAny
+import com.apollographql.apollo.exception.JsonEncodingException
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class JsonTest {
   @Test
@@ -62,5 +67,25 @@ class JsonTest {
     }
 
     MapJsonReader(root).readAny()
+  }
+
+  @Test
+  fun unquotedKeysFails() {
+    try {
+      Buffer().writeUtf8("{ foo: \"bar\"}").jsonReader().readAny()
+      error("an error was expected")
+    } catch (e: JsonEncodingException) {
+      assertEquals("Unexpected character: f at path []", e.message)
+    }
+  }
+
+  @Test
+  fun singleQuoteStringFails() {
+    try {
+      Buffer().writeUtf8("{ \"foo\": 'bar'}").jsonReader().readAny()
+      error("an error was expected")
+    } catch (e: JsonEncodingException) {
+      assertEquals("Unexpected value at path [foo]", e.message)
+    }
   }
 }
