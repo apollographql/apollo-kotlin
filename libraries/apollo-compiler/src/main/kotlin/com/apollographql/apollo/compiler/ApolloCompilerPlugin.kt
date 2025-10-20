@@ -107,6 +107,8 @@ fun interface SchemaDocumentTransform {
    * Transforms the given schema document.
    *
    * [transform] is called before validation of the schema.
+   *
+   * @param schemaDocument a [GQLDocument] containing all the definitions (possibly from several files) passed as input to the compiler.
    */
   fun transform(schemaDocument: GQLDocument): GQLDocument
 }
@@ -169,7 +171,7 @@ interface ApolloCompilerRegistry {
   /**
    * Registers an [OperationIdsGenerator].
    *
-   * Use this function implement [persisted queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries).
+   * Use this function to implement [persisted queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries).
    */
   fun registerOperationIdsGenerator(generator: OperationIdsGenerator)
 
