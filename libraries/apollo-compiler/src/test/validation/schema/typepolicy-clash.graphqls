@@ -1,0 +1,22 @@
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.5/", import: ["@typePolicy"])
+
+type Query {
+  x: Int
+}
+
+interface UnifiedEntity {
+  unifiedEntityId: ID!
+}
+
+interface OtherInterface {
+  otherField: String!
+}
+
+interface Video implements UnifiedEntity & OtherInterface {
+  unifiedEntityId: ID!
+  otherField: String!
+  videoId: ID!
+}
+
+extend interface UnifiedEntity @typePolicy(keyFields: "unifiedEntityId")
+extend interface Video @typePolicy(keyFields: "videoId")

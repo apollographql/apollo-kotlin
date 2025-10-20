@@ -951,20 +951,22 @@ private fun ValidationScope.keyFields(
     return cached
   }
 
-  val (directives, interfaces) = when (typeDefinition) {
+  val (directives, allInterfaces) = when (typeDefinition) {
     is GQLObjectTypeDefinition -> typeDefinition.directives to typeDefinition.implementsInterfaces
     is GQLInterfaceTypeDefinition -> typeDefinition.directives to typeDefinition.implementsInterfaces
     else -> error("Unexpected type definition $typeDefinition")
   }
 
-  val interfacesKeyFields = interfaces.map { keyFields(typeDefinitions[it]!!, keyFieldsCache) }
-      .filter { it.isNotEmpty() }
+  val interfacesToKeyFields: Map<String, Set<String>> = allInterfaces.associate { it to keyFields(typeDefinitions[it]!!, keyFieldsCache) }
+      .filter { it.value.isNotEmpty() }
+  val interfaces = interfacesToKeyFields.keys.toList()
+  val interfacesKeyFields = interfacesToKeyFields.values.toList()
 
   val distinct = interfacesKeyFields.distinct()
   if (distinct.size > 1) {
-    val extra = interfaces.indices.map {
+    val extra = interfaces.indices.joinToString("\n") {
       "${interfaces[it]}: ${interfacesKeyFields[it]}"
-    }.joinToString("\n")
+    }
 
     registerIssue(
         message = "Apollo: Type '${typeDefinition.name}' cannot inherit different keys from different interfaces:\n$extra",
@@ -975,9 +977,9 @@ private fun ValidationScope.keyFields(
   val keyFields = directives.filter { originalDirectiveName(it.name) == TYPE_POLICY }.toKeyFields()
   val ret = if (keyFields.isNotEmpty()) {
     if (distinct.isNotEmpty()) {
-      val extra = interfaces.indices.map {
+      val extra = interfaces.indices.joinToString("\n") {
         "${interfaces[it]}: ${interfacesKeyFields[it]}"
-      }.joinToString("\n")
+      }
 
       registerIssue(
           message = "Type '${typeDefinition.name}' cannot have key fields since it implements the following interfaces which also have key fields: $extra",

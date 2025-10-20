@@ -1,0 +1,2 @@
+OtherValidationIssue (15:1)
+Type 'Video' cannot have key fields since it implements the following interfaces which also have key fields: UnifiedEntity: [unifiedEntityId]
