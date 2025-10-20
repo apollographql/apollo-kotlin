@@ -374,7 +374,7 @@ private constructor(
     private var idleTimeoutMillis: Long? = null
     private var protocolFactory: WsProtocol.Factory? = null
     private var reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
-    private var incrementalDeliveryProtocol: IncrementalDeliveryProtocol = IncrementalDeliveryProtocol.V0_0
+    private var incrementalDeliveryProtocol: IncrementalDeliveryProtocol = IncrementalDeliveryProtocol.V0_1
 
     /**
      * Configure the server URL.
@@ -444,7 +444,7 @@ private constructor(
     /**
      * The incremental delivery protocol to use when using `@defer` and/or `@stream`.
      *
-     * Default: [IncrementalDeliveryProtocol.V0_0]
+     * Default: [IncrementalDeliveryProtocol.V0_1]
      */
     @ApolloExperimental
     fun incrementalDeliveryProtocol(incrementalDeliveryProtocol: IncrementalDeliveryProtocol) = apply {

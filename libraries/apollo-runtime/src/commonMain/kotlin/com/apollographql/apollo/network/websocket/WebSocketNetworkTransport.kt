@@ -116,7 +116,7 @@ class WebSocketNetworkTransport private constructor(
     private var pingInterval: Duration? = null
     private var idleTimeout: Duration? = null
     private var parserFactory: SubscriptionParserFactory? = null
-    private var incrementalDeliveryProtocol: IncrementalDeliveryProtocol = IncrementalDeliveryProtocol.V0_0
+    private var incrementalDeliveryProtocol: IncrementalDeliveryProtocol = IncrementalDeliveryProtocol.V0_1
 
     /**
      * @param serverUrl a server url that is called every time a WebSocket
@@ -183,7 +183,7 @@ class WebSocketNetworkTransport private constructor(
     /**
      * The incremental delivery protocol to use when using `@defer` and/or `@stream`.
      *
-     * Default: [IncrementalDeliveryProtocol.V0_0]
+     * Default: [IncrementalDeliveryProtocol.V0_1]
      */
     @ApolloExperimental
     fun incrementalDeliveryProtocol(incrementalDeliveryProtocol: IncrementalDeliveryProtocol) = apply {

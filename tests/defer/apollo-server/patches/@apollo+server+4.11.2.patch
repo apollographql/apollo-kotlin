@@ -1,5 +1,5 @@
 diff --git a/node_modules/@apollo/server/dist/esm/ApolloServer.js b/node_modules/@apollo/server/dist/esm/ApolloServer.js
-index 7665490..1e8bb12 100644
+index 7665490..233a304 100644
 --- a/node_modules/@apollo/server/dist/esm/ApolloServer.js
 +++ b/node_modules/@apollo/server/dist/esm/ApolloServer.js
 @@ -631,7 +631,7 @@ export const MEDIA_TYPES = {
@@ -7,12 +7,12 @@ index 7665490..1e8bb12 100644
      APPLICATION_GRAPHQL_RESPONSE_JSON: 'application/graphql-response+json; charset=utf-8',
      MULTIPART_MIXED_NO_DEFER_SPEC: 'multipart/mixed',
 -    MULTIPART_MIXED_EXPERIMENTAL: 'multipart/mixed; deferSpec=20220824',
-+    MULTIPART_MIXED_EXPERIMENTAL: 'multipart/mixed; incrementalSpec=v0.1',
++    MULTIPART_MIXED_EXPERIMENTAL: 'multipart/mixed; incrementalSpec=v0.2',
      TEXT_HTML: 'text/html',
  };
  export function chooseContentTypeForSingleResultResponse(head) {
 diff --git a/node_modules/@apollo/server/dist/esm/runHttpQuery.js b/node_modules/@apollo/server/dist/esm/runHttpQuery.js
-index 96ef0ab..f35174b 100644
+index 96ef0ab..d650c7b 100644
 --- a/node_modules/@apollo/server/dist/esm/runHttpQuery.js
 +++ b/node_modules/@apollo/server/dist/esm/runHttpQuery.js
 @@ -161,9 +161,9 @@ export async function runHttpQuery({ server, httpRequest, contextValue, schemaDe
@@ -20,10 +20,10 @@ index 96ef0ab..f35174b 100644
              '(@defer or @stream), but the client does not accept multipart/mixed ' +
              'HTTP responses. To enable incremental delivery support, add the HTTP ' +
 -            "header 'Accept: multipart/mixed; deferSpec=20220824'.", { extensions: { http: { status: 406 } } });
-+            "header 'Accept: multipart/mixed; incrementalSpec=v0.1'.", { extensions: { http: { status: 406 } } });
++            "header 'Accept: multipart/mixed; incrementalSpec=v0.2'.", { extensions: { http: { status: 406 } } });
      }
 -    graphQLResponse.http.headers.set('content-type', 'multipart/mixed; boundary="-"; deferSpec=20220824');
-+    graphQLResponse.http.headers.set('content-type', 'multipart/mixed; boundary="-"; incrementalSpec=v0.1');
++    graphQLResponse.http.headers.set('content-type', 'multipart/mixed; boundary="-"; incrementalSpec=v0.2');
      return {
          ...graphQLResponse.http,
          body: {

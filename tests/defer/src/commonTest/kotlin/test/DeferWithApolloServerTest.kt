@@ -1,6 +1,9 @@
+@file:OptIn(ApolloExperimental::class)
+
 package test
 
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.Optional
@@ -49,7 +52,7 @@ class DeferWithApolloServerTest {
         .networkTransport(
             HttpNetworkTransport.Builder()
                 .serverUrl("http://127.0.0.1:4000/")
-                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.V0_1)
+                .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.V0_2)
                 .build()
         )
         .build()

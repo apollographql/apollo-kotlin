@@ -11,15 +11,12 @@ internal class V0_1IncrementalResultsMerger : IncrementalResultsMerger {
   private val _merged: MutableJsonMap = mutableMapOf()
   override val merged: JsonMap = _merged
 
-  /**
-   * Map of identifiers to their corresponding IncrementalResultIdentifier, found in `pending`.
-   */
-  private val _pendingResultIds = mutableMapOf<String, DeferredFragmentIdentifier>()
+  private val _deferredFragmentIdentifiers = mutableSetOf<DeferredFragmentIdentifier>()
 
   /**
-   * For this protocol, this represents the set of ids that are pending.
+   * For this protocol, this represents the set of fragment ids that are already merged.
    */
-  override val deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier> get() = _pendingResultIds.values.toSet() + DeferredFragmentIdentifier.Pending
+  override val deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier> = _deferredFragmentIdentifiers
 
   override var hasNext: Boolean = true
     private set
@@ -32,97 +29,60 @@ internal class V0_1IncrementalResultsMerger : IncrementalResultsMerger {
   }
 
   override fun merge(part: JsonMap): JsonMap {
-    val completed = part["completed"] as? List<JsonMap>
     if (merged.isEmpty()) {
-      // Initial part, no merging needed (strip some fields that should not appear in the final result)
-      _merged += part - "hasNext" - "pending"
-      handlePending(part)
-      handleCompleted(completed)
+      // Initial part, no merging needed
+      _merged += part
       return merged
     }
-    handlePending(part)
 
     val incremental = part["incremental"] as? List<JsonMap>
-    if (incremental != null) {
+    if (incremental == null) {
+      isEmptyResponse = true
+    } else {
+      isEmptyResponse = false
+      val mergedErrors = mutableListOf<JsonMap>()
+      val mergedExtensions = mutableListOf<JsonMap>()
       for (incrementalResult in incremental) {
-        mergeIncrementalResult(incrementalResult)
-        // Merge errors (if any) of the incremental result
-        (incrementalResult["errors"] as? List<JsonMap>)?.let { getOrPutMergedErrors() += it }
+        incrementalResult(incrementalResult)
+        // Merge errors and extensions (if any) of the incremental result
+        (incrementalResult["errors"] as? List<JsonMap>)?.let { mergedErrors += it }
+        (incrementalResult["extensions"] as? JsonMap)?.let { mergedExtensions += it }
+      }
+      // Keep only this payload's errors and extensions, if any
+      if (mergedErrors.isNotEmpty()) {
+        _merged["errors"] = mergedErrors
+      } else {
+        _merged.remove("errors")
+      }
+      if (mergedExtensions.isNotEmpty()) {
+        _merged["extensions"] = mapOf("incremental" to mergedExtensions)
+      } else {
+        _merged.remove("extensions")
       }
     }
-    isEmptyResponse = completed == null && incremental == null
 
     hasNext = part["hasNext"] as Boolean? ?: false
-
-    handleCompleted(completed)
-
-    (part["extensions"] as? JsonMap)?.let { getOrPutExtensions() += it }
 
     return merged
   }
 
-  private fun getOrPutMergedErrors() = _merged.getOrPut("errors") { mutableListOf<JsonMap>() } as MutableList<JsonMap>
-
-  private fun getOrPutExtensions() = _merged.getOrPut("extensions") { mutableMapOf<String, Any?>() } as MutableJsonMap
-
-  private fun handlePending(part: JsonMap) {
-    val pending = part["pending"] as? List<JsonMap>
-    if (pending != null) {
-      for (pendingResult in pending) {
-        val id = pendingResult["id"] as String
-        val path = pendingResult["path"] as List<Any>
-        val label = pendingResult["label"] as String?
-        _pendingResultIds[id] = DeferredFragmentIdentifier(path = path, label = label)
-      }
-    }
-  }
-
-  private fun handleCompleted(completed: List<JsonMap>?) {
-    if (completed != null) {
-      for (completedResult in completed) {
-        // Merge errors (if any) of the completed result
-        val errors = completedResult["errors"] as? List<JsonMap>
-        if (errors != null) {
-          getOrPutMergedErrors() += errors
-        } else {
-          // Fragment is no longer pending - only if there were no errors
-          val id = completedResult["id"] as String
-          _pendingResultIds.remove(id) ?: error("Id '$id' not found in pending results")
-        }
-      }
-    }
-  }
-
-  private fun mergeIncrementalResult(incrementalResult: JsonMap) {
-    val id = incrementalResult["id"] as String? ?: error("No id found in incremental result")
+  private fun incrementalResult(incrementalResult: JsonMap) {
     val data = incrementalResult["data"] as JsonMap?
-    val items = incrementalResult["items"] as List<Any>?
-    val subPath = incrementalResult["subPath"] as List<Any>? ?: emptyList()
-    val path = (_pendingResultIds[id]?.path ?: error("Id '$id' not found in pending results")) + subPath
+    val path = incrementalResult["path"] as List<Any>
     val mergedData = merged["data"] as JsonMap
-    val nodeToMergeInto = nodeAtPath(mergedData, path)
-    when {
-      data != null -> {
-        deepMergeObject(nodeToMergeInto as MutableJsonMap, data)
-      }
 
-      items != null -> {
-        mergeList(nodeToMergeInto as MutableList<Any>, items)
-      }
+    // data can be null if there are errors
+    if (data != null) {
+      val nodeToMergeInto = nodeAtPath(mergedData, path) as MutableJsonMap
+      deepMergeObject(nodeToMergeInto, data)
 
-      else -> {
-        error("Neither data nor items found in incremental result")
-      }
+      _deferredFragmentIdentifiers += DeferredFragmentIdentifier(path = path, label = incrementalResult["label"] as String?)
     }
-  }
-
-  private fun mergeList(destination: MutableList<Any>, items: List<Any>) {
-    destination.addAll(items)
   }
 
   override fun reset() {
     _merged.clear()
-    _pendingResultIds.clear()
+    _deferredFragmentIdentifiers.clear()
     hasNext = true
     isEmptyResponse = false
   }
