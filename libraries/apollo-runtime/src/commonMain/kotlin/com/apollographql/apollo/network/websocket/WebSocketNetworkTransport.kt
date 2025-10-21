@@ -12,7 +12,9 @@ import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloWebSocketForceCloseException
 import com.apollographql.apollo.exception.DefaultApolloException
 import com.apollographql.apollo.exception.SubscriptionOperationException
-import com.apollographql.apollo.internal.DeferredJsonMerger
+import com.apollographql.apollo.internal.incremental.IncrementalDeliveryProtocolImpl
+import com.apollographql.apollo.internal.incremental.impl
+import com.apollographql.apollo.network.IncrementalDeliveryProtocol
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.network.websocket.internal.OperationListener
 import com.apollographql.apollo.network.websocket.internal.WebSocketPool
@@ -41,7 +43,7 @@ class WebSocketNetworkTransport private constructor(
     private val connectionAcknowledgeTimeout: Duration,
     private val pingInterval: Duration?,
     private val idleTimeout: Duration,
-    private val parserFactory: SubscriptionParserFactory
+    private val parserFactory: SubscriptionParserFactory,
 ) : NetworkTransport {
 
   private val pool = WebSocketPool(
@@ -114,6 +116,7 @@ class WebSocketNetworkTransport private constructor(
     private var pingInterval: Duration? = null
     private var idleTimeout: Duration? = null
     private var parserFactory: SubscriptionParserFactory? = null
+    private var incrementalDeliveryProtocol: IncrementalDeliveryProtocol = IncrementalDeliveryProtocol.V0_1
 
     /**
      * @param serverUrl a server url that is called every time a WebSocket
@@ -177,6 +180,15 @@ class WebSocketNetworkTransport private constructor(
       this.parserFactory = parserFactory
     }
 
+    /**
+     * The incremental delivery protocol to use when using `@defer` and/or `@stream`.
+     *
+     * Default: [IncrementalDeliveryProtocol.V0_1]
+     */
+    @ApolloExperimental
+    fun incrementalDeliveryProtocol(incrementalDeliveryProtocol: IncrementalDeliveryProtocol) = apply {
+      this.incrementalDeliveryProtocol = incrementalDeliveryProtocol
+    }
 
     /**
      * Builds the [WebSocketNetworkTransport]
@@ -189,20 +201,25 @@ class WebSocketNetworkTransport private constructor(
           wsProtocol = wsProtocol ?: GraphQLWsProtocol { null },
           pingInterval = pingInterval,
           connectionAcknowledgeTimeout = connectionAcknowledgeTimeout ?: 10.seconds,
-          parserFactory = parserFactory ?: DefaultSubscriptionParserFactory
+          parserFactory = parserFactory ?: DefaultSubscriptionParserFactory(incrementalDeliveryProtocol.impl),
       )
     }
   }
 }
 
-private object DefaultSubscriptionParserFactory: SubscriptionParserFactory {
+private class DefaultSubscriptionParserFactory(
+    private val incrementalDeliveryProtocolImpl: IncrementalDeliveryProtocolImpl,
+) : SubscriptionParserFactory {
   override fun <D : Operation.Data> createParser(request: ApolloRequest<D>): SubscriptionParser<D> {
-    return DefaultSubscriptionParser(request)
+    return DefaultSubscriptionParser(incrementalDeliveryProtocolImpl, request)
   }
 }
 
-private class DefaultSubscriptionParser<D : Operation.Data>(private val request: ApolloRequest<D>) : SubscriptionParser<D> {
-  private var deferredJsonMerger: DeferredJsonMerger = DeferredJsonMerger()
+private class DefaultSubscriptionParser<D : Operation.Data>(
+    incrementalDeliveryProtocolImpl: IncrementalDeliveryProtocolImpl,
+    private val request: ApolloRequest<D>,
+) : SubscriptionParser<D> {
+  private val incrementalResultsMerger = incrementalDeliveryProtocolImpl.newIncrementalResultsMerger()
   private val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
   @Suppress("NAME_SHADOWING")
@@ -214,8 +231,8 @@ private class DefaultSubscriptionParser<D : Operation.Data>(private val request:
           .exception(DefaultApolloException("Invalid payload")).build()
     }
 
-    val (payload, mergedFragmentIds) = if (responseMap.isDeferred()) {
-      deferredJsonMerger.merge(responseMap) to deferredJsonMerger.mergedFragmentIds
+    val (payload, deferredFragmentIdentifiers) = if (responseMap.isDeferred()) {
+      incrementalResultsMerger.merge(responseMap) to incrementalResultsMerger.deferredFragmentIdentifiers
     } else {
       responseMap to null
     }
@@ -223,15 +240,15 @@ private class DefaultSubscriptionParser<D : Operation.Data>(private val request:
         operation = request.operation,
         requestUuid = request.requestUuid,
         customScalarAdapters = requestCustomScalarAdapters,
-        deferredFragmentIdentifiers = mergedFragmentIds
+        deferredFragmentIdentifiers = deferredFragmentIdentifiers,
     )
 
-    if (!deferredJsonMerger.hasNext) {
-      // Last deferred payload: reset the deferredJsonMerger for potential subsequent responses
-      deferredJsonMerger.reset()
+    if (!incrementalResultsMerger.hasNext) {
+      // Last deferred payload: reset the incrementalResultsMerger for potential subsequent responses
+      incrementalResultsMerger.reset()
     }
 
-    return if (deferredJsonMerger.isEmptyPayload) {
+    return if (incrementalResultsMerger.isEmptyResponse) {
       null
     } else {
       apolloResponse
@@ -242,7 +259,7 @@ private class DefaultSubscriptionParser<D : Operation.Data>(private val request:
 private class DefaultOperationListener<D : Operation.Data>(
     private val request: ApolloRequest<D>,
     private val producerScope: ProducerScope<ApolloResponse<D>>,
-    private val parser: SubscriptionParser<D>
+    private val parser: SubscriptionParser<D>,
 ) : OperationListener {
   override fun onResponse(response: ApolloJsonElement) {
     parser.parse(response)?.let {
@@ -289,7 +306,8 @@ private fun Map<String, Any?>.isDeferred(): Boolean {
  */
 @ApolloExperimental
 fun NetworkTransport.closeConnection(exception: ApolloException) {
-  val webSocketNetworkTransport = (this as? WebSocketNetworkTransport) ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo.websocket.WebSocketNetworkTransport")
+  val webSocketNetworkTransport = (this as? WebSocketNetworkTransport)
+      ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo.websocket.WebSocketNetworkTransport")
 
   webSocketNetworkTransport.closeConnection(exception)
 }
@@ -301,7 +319,8 @@ fun NetworkTransport.closeConnection(exception: ApolloException) {
  */
 @ApolloExperimental
 fun NetworkTransport.closeConnection() {
-  val webSocketNetworkTransport = (this as? WebSocketNetworkTransport) ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo.websocket.WebSocketNetworkTransport")
+  val webSocketNetworkTransport = (this as? WebSocketNetworkTransport)
+      ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo.websocket.WebSocketNetworkTransport")
 
   webSocketNetworkTransport.closeConnection(ApolloWebSocketForceCloseException)
 }
