@@ -5,11 +5,11 @@ description: 'Fetch slower schema fields asynchronously'
 
 <Note>
 
-The incremental delivery format used by `@defer` has not yet been standardized. There have been multiple proposals and Apollo Kotlin only supports [the format implemented by Apollo Router](https://www.apollographql.com/docs/graphos/routing/operations/defer#specification-status).
+The incremental delivery format used by `@defer` isn't yet standardized. There have been multiple proposals and Apollo Kotlin only supports [the format implemented by Apollo Router](https://www.apollographql.com/docs/graphos/routing/operations/defer#specification-status).
 
 </Note>
 
-The [`@defer` directive](https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md) enables your queries to receive data for specific fields *incrementally*, instead of receiving all field data at the same time. This is helpful whenever some fields in a query take much longer to resolve than the others.
+The [`@defer` directive](https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md) enables your queries to receive data for specific fields incrementally, instead of receiving all field data at the same time. This is helpful whenever some fields in a query take much longer to resolve than the others.
 
 For example, let's say we're building a social media application that can quickly fetch a user's basic profile information, but retrieving that user's friends takes longer. If we include _all_ of those fields in a single query, we want to be able to display the profile information as soon as it's available, instead of waiting for the friend fields to resolve.
 
