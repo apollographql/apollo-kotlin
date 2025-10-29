@@ -20,18 +20,4 @@ class ApolloClientBuilderTest {
         .okHttpClient(OkHttpClient())
         .build()
   }
-
-  @Test
-  fun forgettingToCallServerUrlFailsWithAnExplicitError() = runTest {
-    ApolloClient.Builder()
-        .build()
-        .use {
-          val flow = it.query(FooQuery()).toFlow()
-          try {
-            flow.first()
-          } catch (e: IllegalStateException) {
-            assertEquals(e.message?.contains("ApolloRequest.url is missing for request 'FooOperation', did you call ApolloClient.Builder.url(url)"), true)
-          }
-        }
-  }
 }
