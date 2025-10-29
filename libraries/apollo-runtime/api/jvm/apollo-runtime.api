@@ -22,6 +22,7 @@ public final class com/apollographql/apollo/ApolloCall : com/apollographql/apoll
 	public final fun getRetryOnError ()Ljava/lang/Boolean;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
+	public fun getUrl ()Ljava/lang/String;
 	public fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo/ApolloCall;
 	public synthetic fun httpHeaders (Ljava/util/List;)Ljava/lang/Object;
 	public fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/ApolloCall;
@@ -35,6 +36,8 @@ public final class com/apollographql/apollo/ApolloCall : com/apollographql/apoll
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
 	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun toFlow ()Lkotlinx/coroutines/flow/Flow;
+	public fun url (Ljava/lang/String;)Lcom/apollographql/apollo/ApolloCall;
+	public synthetic fun url (Ljava/lang/String;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo/ApolloClient : com/apollographql/apollo/api/ExecutionOptions, java/io/Closeable {
@@ -54,6 +57,7 @@ public final class com/apollographql/apollo/ApolloClient : com/apollographql/apo
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
 	public final fun getSubscriptionNetworkTransport ()Lcom/apollographql/apollo/network/NetworkTransport;
+	public fun getUrl ()Ljava/lang/String;
 	public final fun mutation (Lcom/apollographql/apollo/api/Mutation;)Lcom/apollographql/apollo/ApolloCall;
 	public final fun newBuilder ()Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun query (Lcom/apollographql/apollo/api/Query;)Lcom/apollographql/apollo/ApolloCall;
@@ -110,6 +114,7 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public fun getSendDocument ()Ljava/lang/Boolean;
 	public final fun getSendEnhancedClientAwareness ()Z
 	public final fun getSubscriptionNetworkTransport ()Lcom/apollographql/apollo/network/NetworkTransport;
+	public fun getUrl ()Ljava/lang/String;
 	public final fun getWebSocketEngine ()Lcom/apollographql/apollo/network/ws/WebSocketEngine;
 	public final fun getWebSocketIdleTimeoutMillis ()Ljava/lang/Long;
 	public final fun getWebSocketReopenServerUrl ()Lkotlin/jvm/functions/Function1;
@@ -144,6 +149,8 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public final fun sendEnhancedClientAwareness (Z)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun subscriptionNetworkTransport (Lcom/apollographql/apollo/network/NetworkTransport;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public fun url (Ljava/lang/String;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public synthetic fun url (Ljava/lang/String;)Ljava/lang/Object;
 	public final fun webSocketEngine (Lcom/apollographql/apollo/network/ws/WebSocketEngine;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun webSocketIdleTimeoutMillis (Ljava/lang/Long;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun webSocketReopenWhen (Lkotlin/jvm/functions/Function3;)Lcom/apollographql/apollo/ApolloClient$Builder;
