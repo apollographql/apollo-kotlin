@@ -85,6 +85,7 @@ private constructor(
   private val sendEnhancedClientAwareness = builder.sendEnhancedClientAwareness
 
   override val executionContext: ExecutionContext = builder.executionContext
+  override val url: String? = builder.url
   override val httpMethod: HttpMethod? = builder.httpMethod
   override val httpHeaders: List<HttpHeader>? = builder.httpHeaders
   override val sendApqExtensions: Boolean? = builder.sendApqExtensions
@@ -336,6 +337,8 @@ private constructor(
     val httpInterceptors: List<HttpInterceptor> = _httpInterceptors
 
     override var executionContext: ExecutionContext = ExecutionContext.Empty
+      private set
+    override var url: String? = null
       private set
     override var httpMethod: HttpMethod? = null
       private set

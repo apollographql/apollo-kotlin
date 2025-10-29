@@ -46,6 +46,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   val operation: Operation<D> get() = requestBuilder.operation
   override val executionContext: ExecutionContext get() = requestBuilder.executionContext
+  override val url: String? get() = requestBuilder.url
   override val httpMethod: HttpMethod? get() = requestBuilder.httpMethod
   override val sendApqExtensions: Boolean? get() = requestBuilder.sendApqExtensions
   override val sendDocument: Boolean? get() = requestBuilder.sendDocument

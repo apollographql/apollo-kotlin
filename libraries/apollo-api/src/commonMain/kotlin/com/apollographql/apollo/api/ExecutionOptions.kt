@@ -10,6 +10,11 @@ interface ExecutionOptions {
   val executionContext: ExecutionContext
 
   /**
+   * The url to use for that request.
+   */
+  val url: String?
+
+  /**
    *
    * The HTTP method to use for the request.
    *

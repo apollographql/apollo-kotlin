@@ -28,6 +28,7 @@ private constructor(
     val operation: Operation<D>,
     val requestUuid: Uuid,
     override val executionContext: ExecutionContext,
+    override val url: String?,
     override val httpMethod: HttpMethod?,
     override val httpHeaders: List<HttpHeader>?,
     override val sendApqExtensions: Boolean?,
@@ -70,6 +71,8 @@ private constructor(
       private set
     override var executionContext: ExecutionContext = ExecutionContext.Empty
       private set
+    override var url: String? = null
+      private set
     override var httpMethod: HttpMethod? = null
       private set
     override var httpHeaders: List<HttpHeader>? = null
@@ -94,7 +97,6 @@ private constructor(
       private set
     var sendEnhancedClientAwareness: Boolean = true
       private set
-
 
     fun requestUuid(requestUuid: Uuid) = apply {
       this.requestUuid = requestUuid
@@ -174,6 +176,7 @@ private constructor(
           failFastIfOffline = failFastIfOffline,
           ignoreUnknownKeys = ignoreUnknownKeys,
           sendEnhancedClientAwareness = sendEnhancedClientAwareness,
+          url = url
       )
     }
   }
