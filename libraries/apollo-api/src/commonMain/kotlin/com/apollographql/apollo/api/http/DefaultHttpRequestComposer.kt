@@ -53,6 +53,10 @@ class DefaultHttpRequestComposer(
         addAll(apolloRequest.httpHeaders)
       }
       if (get("accept") == null) {
+        /** 
+          * This is for backward compatibility reasons only. 
+          * We should encourage users to set the accept headers before calling DefaultHttpRequestComposer         
+          */
         add(
             HttpHeader("accept",
                 if (apolloRequest.operation is Subscription<*>) {
