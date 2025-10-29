@@ -487,6 +487,13 @@ private constructor(
     }
 
     /**
+     * Configures the url to use for this request.
+     */
+    override fun url(url: String?) = apply{
+      this.url = url
+    }
+
+    /**
      * Configures the [HttpMethod] to use.
      *
      * @param httpMethod the [HttpMethod] to use or `null` to use the default [HttpMethod.Post].
@@ -955,6 +962,7 @@ private constructor(
           .interceptors(interceptors)
           .dispatcher(dispatcher)
           .executionContext(executionContext)
+          .url(url)
           .httpMethod(httpMethod)
           .httpHeaders(httpHeaders)
           .httpServerUrl(httpServerUrl)

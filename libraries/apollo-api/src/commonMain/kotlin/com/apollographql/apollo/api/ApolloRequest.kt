@@ -51,6 +51,7 @@ private constructor(
     return Builder(operation)
         .requestUuid(requestUuid)
         .executionContext(executionContext)
+        .url(url)
         .httpMethod(httpMethod)
         .httpHeaders(httpHeaders)
         .sendApqExtensions(sendApqExtensions)
@@ -112,6 +113,10 @@ private constructor(
 
     fun ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders: Boolean?) = apply {
       this.ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders
+    }
+
+    override fun url(url: String?) = apply {
+      this.url = url
     }
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder<D> = apply {

@@ -1,6 +1,5 @@
 package com.apollographql.apollo
 
-import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
@@ -68,6 +67,10 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   override fun addExecutionContext(executionContext: ExecutionContext) = apply {
     requestBuilder.addExecutionContext(executionContext)
+  }
+
+  override fun url(url: String?) = apply{
+    requestBuilder.url(url)
   }
 
   override fun httpMethod(httpMethod: HttpMethod?) = apply {

@@ -71,6 +71,11 @@ interface MutableExecutionOptions<T> : ExecutionOptions {
   fun addExecutionContext(executionContext: ExecutionContext): T
 
   /**
+   * Configures the url to use for this request.
+   */
+  fun url(url: String?): T
+
+  /**
    * Configures whether the request should use GET or POST
    * Usually, POST request can transfer bigger GraphQL documents but are more difficult to cache
    *
