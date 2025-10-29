@@ -13,8 +13,6 @@ enum class IncrementalDeliveryProtocol {
    * version `17.0.0-alpha.2`, also referred to as `20220824`.
    *
    * Only `@defer` is supported with this format.
-   *
-   * This is the default.
    */
   V0_1,
 
