@@ -110,11 +110,8 @@ private constructor(
       }
       builder.networkTransport!!
     } else {
-      check(builder.httpServerUrl != null) {
-        "Apollo: 'serverUrl' is required"
-      }
       HttpNetworkTransport.Builder()
-          .serverUrl(builder.httpServerUrl!!)
+          .serverUrl(builder.httpServerUrl)
           .apply {
             if (builder.httpEngine != null) {
               httpEngine(builder.httpEngine!!)
@@ -487,7 +484,11 @@ private constructor(
     }
 
     /**
-     * Configures the url to use for this request.
+     * Configures the url to use for every request.
+     * This applies to every request, including subscriptions. Use [httpServerUrl] and [webSocketServerUrl] if you need different urls.
+     *
+     * @see serverUrl
+     * @see httpServerUrl
      */
     override fun url(url: String?) = apply{
       this.url = url

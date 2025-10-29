@@ -38,11 +38,11 @@ import okio.buffer
  * @param enablePostCaching enables caching of query POST requests using [CacheUrlOverride]
  */
 class DefaultHttpRequestComposer(
-    private val serverUrl: String,
+    private val serverUrl: String?,
     private val enablePostCaching: Boolean,
 ) : HttpRequestComposer {
 
-  constructor(serverUrl: String) : this(serverUrl, false)
+  constructor(serverUrl: String?) : this(serverUrl, false)
 
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
     val operation = apolloRequest.operation
@@ -73,11 +73,12 @@ class DefaultHttpRequestComposer(
     val sendEnhancedClientAwarenessExtensions = apolloRequest.sendEnhancedClientAwareness
     val sendDocument = apolloRequest.sendDocument ?: true
 
+    val url = apolloRequest.url ?: serverUrl ?: error("ApolloRequest.url is missing for request '${apolloRequest.operation.name()}', did you call ApolloClient.Builder.url(url)?")
     val httpRequestBuilder = when (apolloRequest.httpMethod ?: HttpMethod.Post) {
       HttpMethod.Get -> {
         HttpRequest.Builder(
             method = HttpMethod.Get,
-            url = buildGetUrl(serverUrl, operation, customScalarAdapters, sendApqExtensions, sendDocument, sendEnhancedClientAwarenessExtensions),
+            url = buildGetUrl(url, operation, customScalarAdapters, sendApqExtensions, sendDocument, sendEnhancedClientAwarenessExtensions),
         ).addHeader(HEADER_APOLLO_REQUIRE_PREFLIGHT, "true")
       }
 
@@ -87,7 +88,7 @@ class DefaultHttpRequestComposer(
           buildPostBody(operation, customScalarAdapters, query, extensionsWriter(operation.id(), sendApqExtensions, sendEnhancedClientAwarenessExtensions))
         HttpRequest.Builder(
             method = HttpMethod.Post,
-            url = serverUrl,
+            url = url,
         ).apply {
           body(body)
           if (body.contentType.startsWith("multipart/form-data")) {
@@ -103,7 +104,7 @@ class DefaultHttpRequestComposer(
             cacheParameters.put("operationName", operation.name())
             cacheParameters.put("operationId", operation.id())
 
-            addExecutionContext(CacheUrlOverride(serverUrl.appendQueryParameters(cacheParameters)))
+            addExecutionContext(CacheUrlOverride(url.appendQueryParameters(cacheParameters)))
           }
         }
       }
@@ -145,14 +146,14 @@ class DefaultHttpRequestComposer(
     val HEADER_ACCEPT_VALUE_MULTIPART = "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
 
     private fun <D : Operation.Data> buildGetUrl(
-        serverUrl: String,
+        url: String,
         operation: Operation<D>,
         customScalarAdapters: CustomScalarAdapters,
         sendApqExtensions: Boolean,
         sendDocument: Boolean,
         sendEnhancedClientAwarenessExtensions: Boolean,
     ): String {
-      return serverUrl.appendQueryParameters(
+      return url.appendQueryParameters(
           composeGetParams(operation, customScalarAdapters, sendApqExtensions, sendDocument, sendEnhancedClientAwarenessExtensions)
       )
     }

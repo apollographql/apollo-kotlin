@@ -335,7 +335,7 @@ private constructor(
       this.httpRequestComposer = httpRequestComposer
     }
 
-    fun serverUrl(serverUrl: String) = apply {
+    fun serverUrl(serverUrl: String?) = apply {
       this.serverUrl = serverUrl
     }
 
@@ -396,8 +396,7 @@ private constructor(
         "It is an error to set both 'httpRequestComposer' and 'serverUrl'"
       }
       val composer = httpRequestComposer
-          ?: serverUrl?.let { DefaultHttpRequestComposer(it) }
-          ?: error("No HttpRequestComposer found. Use 'httpRequestComposer' or 'serverUrl'")
+          ?: DefaultHttpRequestComposer(serverUrl)
 
       if (headers.isNotEmpty()) {
         interceptors.add(TransportHeadersInterceptor(headers))
