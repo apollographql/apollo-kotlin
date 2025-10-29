@@ -38,6 +38,7 @@ internal object ResponseParser {
           val falseVariables = operation.falseVariables(customScalarAdapters)
           data = operation.parseData(jsonReader, customScalarAdapters, falseVariables, deferredFragmentIds, errors)
         }
+
         "errors" -> errors = jsonReader.readErrors()
         "extensions" -> extensions = jsonReader.readAny() as? Map<String, Any?>
         else -> {
@@ -100,7 +101,8 @@ private fun JsonReader.readError(): Error {
 
 
   @Suppress("DEPRECATION")
-  return Error.Builder(message = message).locations(locations).path(path).extensions(extensions).nonStandardFields(nonStandardFields).build()
+  return Error.Builder(message = message).locations(locations).path(path).extensions(extensions).nonStandardFields(nonStandardFields)
+      .build()
 }
 
 private fun JsonReader.readPath(): List<Any>? {

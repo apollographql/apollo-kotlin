@@ -1,0 +1,17 @@
+{
+  "type": "module",
+  "name": "subgraph-computers",
+  "version": "1.1.0",
+  "description": "",
+  "main": "computers.js",
+  "scripts": {
+    "start": "node computers.js"
+  },
+  "dependencies": {
+    "@apollo/server": "5.1.0",
+    "graphql": "17.0.0-alpha.9"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}

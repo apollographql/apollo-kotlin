@@ -1,0 +1,2514 @@
+@file:OptIn(ApolloInternal::class)
+
+package test.defer
+
+import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.api.DeferredFragmentIdentifier
+import com.apollographql.apollo.api.json.BufferedSourceJsonReader
+import com.apollographql.apollo.api.json.readAny
+import com.apollographql.apollo.internal.incremental.V0_2IncrementalResultsMerger
+import okio.Buffer
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+
+private fun String.buffer() = Buffer().writeUtf8(this)
+
+@Suppress("UNCHECKED_CAST")
+private fun jsonToMap(json: String): Map<String, Any?> = BufferedSourceJsonReader(json.buffer()).readAny() as Map<String, Any?>
+
+class V0_2IncrementalResultsMergerTest {
+  @Test
+  fun mergeJsonSingleIncrementalItem() {
+    val incrementalResultsMerger = V0_2IncrementalResultsMerger()
+
+    //language=JSON
+    val payload1 = """
+    {
+      "data": {
+        "computers": [
+          {
+            "id": "Computer1",
+            "screen": {
+              "isTouch": true
+            }
+          },
+          {
+            "id": "Computer2",
+            "screen": {
+              "isTouch": false
+            }
+          }
+        ]
+      },
+      "pending": [
+        {
+          "id": "0",
+          "path": [
+            "computers",
+            0
+          ],
+          "label": "query:Query1:0"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1 = """
+    {
+      "data": {
+        "computers": [
+          {
+            "id": "Computer1",
+            "screen": {
+              "isTouch": true
+            }
+          },
+          {
+            "id": "Computer2",
+            "screen": {
+              "isTouch": false
+            }
+          }
+        ]
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0")
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload2 = """
+    {
+      "incremental": [
+        {
+          "data": {
+            "cpu": "386",
+            "year": 1993,
+            "screen": {
+              "resolution": "640x480"
+            }
+          },
+          "id": "0"
+        }
+      ],
+      "completed": [
+        {
+          "id": "0"
+        }
+      ],
+      "pending": [
+        {
+          "id": "1",
+          "path": [
+            "computers",
+            1
+          ],
+          "label": "query:Query1:0"
+        }
+      ],
+      "extensions": {
+        "duration": {
+          "amount": 100,
+          "unit": "ms"
+        }
+      },
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2 = """
+    {
+      "data": {
+        "computers": [
+          {
+            "id": "Computer1",
+            "cpu": "386",
+            "year": 1993,
+            "screen": {
+              "isTouch": true,
+              "resolution": "640x480"
+            }
+          },
+          {
+            "id": "Computer2",
+            "screen": {
+              "isTouch": false
+            }
+          }
+        ]
+      },
+      "extensions": {
+        "duration": {
+          "amount": 100,
+          "unit": "ms"
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0")
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload3 = """
+    {
+      "incremental": [
+        {
+          "data": {
+            "cpu": "486",
+            "year": 1996,
+            "screen": {
+              "resolution": "640x480"
+            }
+          },
+          "id": "1"
+        }
+      ],
+      "completed": [
+        {
+          "id": "1"
+        }
+      ],
+      "pending": [
+        {
+          "id": "2",
+          "path": [
+            "computers",
+            0,
+            "screen"
+          ],
+          "label": "fragment:ComputerFields:0"
+        }
+      ],
+      "extensions": {
+        "duration": {
+          "amount": 25,
+          "unit": "ms"
+        }
+      },
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
+    {
+      "data": {
+        "computers": [
+          {
+            "id": "Computer1",
+            "cpu": "386",
+            "year": 1993,
+            "screen": {
+              "isTouch": true,
+              "resolution": "640x480"
+            }
+          },
+          {
+            "id": "Computer2",
+            "cpu": "486",
+            "year": 1996,
+            "screen": {
+              "isTouch": false,
+              "resolution": "640x480"
+            }
+          }
+        ]
+      },
+      "extensions": {
+        "duration": {
+          "amount": 25,
+          "unit": "ms"
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload4 = """
+    {
+      "completed": [
+        {
+          "id": "2",
+          "errors": [
+            {
+              "message": "Cannot resolve isColor",
+              "locations": [
+                {
+                  "line": 12,
+                  "column": 11
+                }
+              ],
+              "path": [
+                "computers",
+                0,
+                "screen",
+                "isColor"
+              ]
+            }
+          ]
+        }
+      ],
+      "pending": [
+        {
+          "id": "3",
+          "path": [
+            "computers",
+            1,
+            "screen"
+          ],
+          "label": "fragment:ComputerFields:0"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2_3_4 = """
+    {
+      "data": {
+        "computers": [
+          {
+            "id": "Computer1",
+            "cpu": "386",
+            "year": 1993,
+            "screen": {
+              "isTouch": true,
+              "resolution": "640x480"
+            }
+          },
+          {
+            "id": "Computer2",
+            "cpu": "486",
+            "year": 1996,
+            "screen": {
+              "isTouch": false,
+              "resolution": "640x480"
+            }
+          }
+        ]
+      },
+      "errors": [
+        {
+          "message": "Cannot resolve isColor",
+          "locations": [
+            {
+              "line": 12,
+              "column": 11
+            }
+          ],
+          "path": [
+            "computers",
+            0,
+            "screen",
+            "isColor"
+          ]
+        }
+      ],
+      "extensions": {
+        "duration": {
+          "amount": 25,
+          "unit": "ms"
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload4.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3_4), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload5 = """
+    {
+      "incremental": [
+        {
+          "data": {
+            "isColor": false
+          },
+          "id": "3",
+          "errors": [
+            {
+              "message": "Another error",
+              "locations": [
+                {
+                  "line": 1,
+                  "column": 1
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "completed": [
+        {
+          "id": "3"
+        }
+      ],
+      "extensions": {
+        "value": 42,
+        "duration": {
+          "amount": 130,
+          "unit": "ms"
+        }
+      },
+      "hasNext": false
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2_3_4_5 = """
+    {
+      "data": {
+        "computers": [
+          {
+            "id": "Computer1",
+            "cpu": "386",
+            "year": 1993,
+            "screen": {
+              "isTouch": true,
+              "resolution": "640x480"
+            }
+          },
+          {
+            "id": "Computer2",
+            "cpu": "486",
+            "year": 1996,
+            "screen": {
+              "isTouch": false,
+              "resolution": "640x480",
+              "isColor": false
+            }
+          }
+        ]
+      },
+      "errors": [
+        {
+          "message": "Cannot resolve isColor",
+          "locations": [
+            {
+              "line": 12,
+              "column": 11
+            }
+          ],
+          "path": [
+            "computers",
+            0,
+            "screen",
+            "isColor"
+          ]
+        },
+        {
+          "message": "Another error",
+          "locations": [
+            {
+              "line": 1,
+              "column": 1
+            }
+          ]
+        }
+      ],
+      "extensions": {
+        "value": 42,
+        "duration": {
+          "amount": 130,
+          "unit": "ms"
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload5.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+  }
+
+  @Test
+  fun mergeJsonMultipleIncrementalItems() {
+    val incrementalResultsMerger = V0_2IncrementalResultsMerger()
+
+    //language=JSON
+    val payload1 = """
+    {
+      "data": {
+        "computers": [
+          {
+            "id": "Computer1",
+            "screen": {
+              "isTouch": true
+            }
+          },
+          {
+            "id": "Computer2",
+            "screen": {
+              "isTouch": false
+            }
+          }
+        ]
+      },
+      "pending": [
+        {
+          "id": "0",
+          "path": [
+            "computers",
+            0
+          ],
+          "label": "query:Query1:0"
+        },
+        {
+          "id": "1",
+          "path": [
+            "computers",
+            1
+          ],
+          "label": "query:Query1:0"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1 = """
+    {
+      "data": {
+        "computers": [
+          {
+            "id": "Computer1",
+            "screen": {
+              "isTouch": true
+            }
+          },
+          {
+            "id": "Computer2",
+            "screen": {
+              "isTouch": false
+            }
+          }
+        ]
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload2_3 = """
+    {
+      "incremental": [
+        {
+          "data": {
+            "cpu": "386",
+            "year": 1993,
+            "screen": {
+              "resolution": "640x480"
+            }
+          },
+          "id": "0"
+        },
+        {
+          "data": {
+            "cpu": "486",
+            "year": 1996,
+            "screen": {
+              "resolution": "640x480"
+            }
+          },
+          "id": "1"
+        }
+      ],
+      "completed": [
+        {
+          "id": "0"
+        },
+        {
+          "id": "1"
+        }
+      ],
+      "pending": [
+        {
+          "id": "2",
+          "path": [
+            "computers",
+            0,
+            "screen"
+          ],
+          "label": "fragment:ComputerFields:0"
+        },
+        {
+          "id": "3",
+          "path": [
+            "computers",
+            1,
+            "screen"
+          ],
+          "label": "fragment:ComputerFields:0"
+        }
+      ],
+      "extensions": {
+        "duration": {
+          "amount": 100,
+          "unit": "ms"
+        }
+      },
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
+    {
+      "data": {
+        "computers": [
+          {
+            "id": "Computer1",
+            "cpu": "386",
+            "year": 1993,
+            "screen": {
+              "isTouch": true,
+              "resolution": "640x480"
+            }
+          },
+          {
+            "id": "Computer2",
+            "cpu": "486",
+            "year": 1996,
+            "screen": {
+              "isTouch": false,
+              "resolution": "640x480"
+            }
+          }
+        ]
+      },
+      "extensions": {
+        "duration": {
+          "amount": 100,
+          "unit": "ms"
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload2_3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload4_5 = """
+    {
+      "incremental": [
+        {
+          "data": {
+            "isColor": false
+          },
+          "id": "3",
+          "errors": [
+            {
+              "message": "Another error",
+              "locations": [
+                {
+                  "line": 1,
+                  "column": 1
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "completed": [
+        {
+          "id": "2",
+          "errors": [
+            {
+              "message": "Cannot resolve isColor",
+              "locations": [
+                {
+                  "line": 12,
+                  "column": 11
+                }
+              ],
+              "path": [
+                "computers",
+                0,
+                "screen",
+                "isColor"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "3"
+        }
+      ],
+      "extensions": {
+        "value": 42,
+        "duration": {
+          "amount": 130,
+          "unit": "ms"
+        }
+      },
+      "hasNext": false
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2_3_4_5 = """
+    {
+      "data": {
+        "computers": [
+          {
+            "id": "Computer1",
+            "cpu": "386",
+            "year": 1993,
+            "screen": {
+              "isTouch": true,
+              "resolution": "640x480"
+            }
+          },
+          {
+            "id": "Computer2",
+            "cpu": "486",
+            "year": 1996,
+            "screen": {
+              "isTouch": false,
+              "resolution": "640x480",
+              "isColor": false
+            }
+          }
+        ]
+      },
+      "errors": [
+        {
+          "message": "Another error",
+          "locations": [
+            {
+              "line": 1,
+              "column": 1
+            }
+          ]
+        },
+        {
+          "message": "Cannot resolve isColor",
+          "locations": [
+            {
+              "line": 12,
+              "column": 11
+            }
+          ],
+          "path": [
+            "computers",
+            0,
+            "screen",
+            "isColor"
+          ]
+        }
+      ],
+      "extensions": {
+        "value": 42,
+        "duration": {
+          "amount": 130,
+          "unit": "ms"
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload4_5.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("computers", 0, "screen"), label = "fragment:ComputerFields:0"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+  }
+
+  @Test
+  fun emptyPayloads() {
+    val incrementalResultsMerger = V0_2IncrementalResultsMerger()
+
+    //language=JSON
+    val payload1 = """
+    {
+      "data": {
+        "computers": [
+          {
+            "id": "Computer1",
+            "screen": {
+              "isTouch": true
+            }
+          },
+          {
+            "id": "Computer2",
+            "screen": {
+              "isTouch": false
+            }
+          }
+        ]
+      },
+      "pending": [
+        {
+          "id": "0",
+          "path": [
+            "computers",
+            0
+          ],
+          "label": "query:Query1:0"
+        },
+        {
+          "id": "1",
+          "path": [
+            "computers",
+            1
+          ],
+          "label": "query:Query1:0"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertFalse(incrementalResultsMerger.isEmptyResponse)
+
+    //language=JSON
+    val payload2 = """
+    {
+      "hasNext": true
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertTrue(incrementalResultsMerger.isEmptyResponse)
+    //language=JSON
+    val payload3 = """
+    {
+      "incremental": [
+        {
+          "data": {
+            "cpu": "386",
+            "year": 1993,
+            "screen": {
+              "resolution": "640x480"
+            }
+          },
+          "id": "0"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertFalse(incrementalResultsMerger.isEmptyResponse)
+
+    //language=JSON
+    val payload4 = """
+    {
+      "hasNext": false
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload4.buffer())
+    assertTrue(incrementalResultsMerger.isEmptyResponse)
+  }
+
+  /**
+   * Example A from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
+   */
+  @Test
+  fun june2023ExampleA() {
+    val incrementalResultsMerger = V0_2IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
+    {
+      "data": {
+        "f2": {
+          "a": "a",
+          "b": "b",
+          "c": {
+            "d": "d",
+            "e": "e",
+            "f": {
+              "h": "h",
+              "i": "i"
+            }
+          }
+        }
+      },
+      "pending": [
+        {
+          "path": [],
+          "id": "0"
+        }
+      ],
+      "hasNext": true
+    }    
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1 = """
+    {
+      "data": {
+        "f2": {
+          "a": "a",
+          "b": "b",
+          "c": {
+            "d": "d",
+            "e": "e",
+            "f": {
+              "h": "h",
+              "i": "i"
+            }
+          }
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf(), label = null),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload2 = """
+    {
+      "incremental": [
+        {
+          "id": "0",
+          "data": {
+            "MyFragment": "Query"
+          }
+        },
+        {
+          "id": "0",
+          "subPath": [
+            "f2",
+            "c",
+            "f"
+          ],
+          "data": {
+            "j": "j"
+          }
+        }
+      ],
+      "completed": [
+        {
+          "id": "0"
+        }
+      ],
+      "hasNext": false
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2 = """
+    {
+      "data": {
+        "f2": {
+          "a": "a",
+          "b": "b",
+          "c": {
+            "d": "d",
+            "e": "e",
+            "f": {
+              "h": "h",
+              "i": "i",
+              "j": "j"
+            }
+          }
+        },
+        "MyFragment": "Query"
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+  }
+
+  /**
+   * Example A2 from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
+   */
+  @Test
+  fun june2023ExampleA2() {
+    val incrementalResultsMerger = V0_2IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
+    {
+      "data": {
+        "f2": {
+          "a": "A",
+          "b": "B",
+          "c": {
+            "d": "D",
+            "e": "E",
+            "f": {
+              "h": "H",
+              "i": "I"
+            }
+          }
+        }
+      },
+      "pending": [
+        {
+          "id": "0",
+          "path": [],
+          "label": "D1"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1 = """
+    {
+      "data": {
+        "f2": {
+          "a": "A",
+          "b": "B",
+          "c": {
+            "d": "D",
+            "e": "E",
+            "f": {
+              "h": "H",
+              "i": "I"
+            }
+          }
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf(), label = "D1"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload2 = """
+    {
+      "incremental": [
+        {
+          "id": "0",
+          "subPath": [
+            "f2",
+            "c",
+            "f"
+          ],
+          "data": {
+            "j": "J",
+            "k": "K"
+          }
+        }
+      ],
+      "pending": [
+        {
+          "id": "1",
+          "path": [
+            "f2",
+            "c",
+            "f"
+          ],
+          "label": "D2"
+        }
+      ],
+      "completed": [
+        {
+          "id": "0"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2 = """
+    {
+      "data": {
+        "f2": {
+          "a": "A",
+          "b": "B",
+          "c": {
+            "d": "D",
+            "e": "E",
+            "f": {
+              "h": "H",
+              "i": "I",
+              "j": "J",
+              "k": "K"
+            }
+          }
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("f2", "c", "f"), label = "D2"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload3 = """
+    {
+      "incremental": [
+        {
+          "id": "1",
+          "data": {
+            "l": "L",
+            "m": "M"
+          }
+        }
+      ],
+      "completed": [
+        {
+          "id": "1"
+        }
+      ],
+      "hasNext": false
+    }
+    """.trimIndent()
+
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
+    {
+      "data": {
+        "f2": {
+          "a": "A",
+          "b": "B",
+          "c": {
+            "d": "D",
+            "e": "E",
+            "f": {
+              "h": "H",
+              "i": "I",
+              "j": "J",
+              "k": "K",
+              "l": "L",
+              "m": "M"
+            }
+          }
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+  }
+
+  /**
+   * Example B1 from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
+   */
+  @Test
+  fun june2023ExampleB1() {
+    val incrementalResultsMerger = V0_2IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
+    {
+      "data": {
+        "a": {
+          "b": {
+            "c": {
+              "d": "d"
+            }
+          }
+        }
+      },
+      "pending": [
+        {
+          "path": [],
+          "id": "0",
+          "label": "Blue"
+        },
+        {
+          "path": [
+            "a",
+            "b"
+          ],
+          "id": "1",
+          "label": "Red"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+
+    //language=JSON
+    val mergedPayloads_1 = """
+    {
+      "data": {
+        "a": {
+          "b": {
+            "c": {
+              "d": "d"
+            }
+          }
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
+            DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload2 = """
+    {
+      "incremental": [
+        {
+          "id": "1",
+          "data": {
+            "potentiallySlowFieldA": "potentiallySlowFieldA"
+          }
+        },
+        {
+          "id": "1",
+          "data": {
+            "e": {
+              "f": "f"
+            }
+          }
+        }
+      ],
+      "completed": [
+        {
+          "id": "1"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2 = """
+    {
+      "data": {
+        "a": {
+          "b": {
+            "c": {
+              "d": "d"
+            },
+            "e": {
+              "f": "f"
+            },
+            "potentiallySlowFieldA": "potentiallySlowFieldA"
+          }
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload3 = """
+    {
+      "incremental": [
+        {
+          "id": "0",
+          "data": {
+            "g": {
+              "h": "h"
+            },
+            "potentiallySlowFieldB": "potentiallySlowFieldB"
+          }
+        }
+      ],
+      "completed": [
+        {
+          "id": "0"
+        }
+      ],
+      "hasNext": false
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
+    {
+      "data": {
+        "a": {
+          "b": {
+            "c": {
+              "d": "d"
+            },
+            "e": {
+              "f": "f"
+            },
+            "potentiallySlowFieldA": "potentiallySlowFieldA"
+          }
+        },
+        "g": {
+          "h": "h"
+        },
+        "potentiallySlowFieldB": "potentiallySlowFieldB"
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+  }
+
+  /**
+   * Example B2 from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
+   */
+  @Test
+  fun june2023ExampleB2() {
+    val incrementalResultsMerger = V0_2IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
+    {
+      "data": {
+        "a": {
+          "b": {
+            "c": {
+              "d": "d"
+            }
+          }
+        }
+      },
+      "pending": [
+        {
+          "path": [],
+          "id": "0",
+          "label": "Blue"
+        },
+        {
+          "path": [
+            "a",
+            "b"
+          ],
+          "id": "1",
+          "label": "Red"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+
+    //language=JSON
+    val mergedPayloads_1 = """
+    {
+      "data": {
+        "a": {
+          "b": {
+            "c": {
+              "d": "d"
+            }
+          }
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf(), label = "Blue"),
+            DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload2 = """
+    {
+      "incremental": [
+        {
+          "id": "0",
+          "data": {
+            "g": {
+              "h": "h"
+            },
+            "potentiallySlowFieldB": "potentiallySlowFieldB"
+          }
+        },
+        {
+          "id": "1",
+          "data": {
+            "e": {
+              "f": "f"
+            }
+          }
+        }
+      ],
+      "completed": [
+        {
+          "id": "0"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2 = """
+    {
+      "data": {
+        "a": {
+          "b": {
+            "c": {
+              "d": "d"
+            },
+            "e": {
+              "f": "f"
+            }
+          }
+        },
+        "g": {
+          "h": "h"
+        },
+        "potentiallySlowFieldB": "potentiallySlowFieldB"
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("a", "b"), label = "Red"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload3 = """
+    {
+      "incremental": [
+        {
+          "id": "1",
+          "data": {
+            "potentiallySlowFieldA": "potentiallySlowFieldA"
+          }
+        }
+      ],
+      "completed": [
+        {
+          "id": "1"
+        }
+      ],
+      "hasNext": false
+    } 
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
+    {
+      "data": {
+        "a": {
+          "b": {
+            "c": {
+              "d": "d"
+            },
+            "e": {
+              "f": "f"
+            },
+            "potentiallySlowFieldA": "potentiallySlowFieldA"
+          }
+        },
+        "g": {
+          "h": "h"
+        },
+        "potentiallySlowFieldB": "potentiallySlowFieldB"
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+  }
+
+  /**
+   * Example D from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
+   */
+  @Test
+  fun june2023ExampleD() {
+    val incrementalResultsMerger = V0_2IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
+    {
+      "data": {
+        "me": {}
+      },
+      "pending": [
+        {
+          "path": [],
+          "id": "0"
+        },
+        {
+          "path": [
+            "me"
+          ],
+          "id": "1"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1 = """
+    {
+      "data": {
+        "me": {}
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf(), label = null),
+            DeferredFragmentIdentifier(path = listOf("me"), label = null),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload2 = """
+    {
+      "incremental": [
+        {
+          "id": "1",
+          "data": {
+            "list": [
+              {
+                "item": {}
+              },
+              {
+                "item": {}
+              },
+              {
+                "item": {}
+              }
+            ]
+          }
+        },
+        {
+          "id": "1",
+          "subPath": [
+            "list",
+            0,
+            "item"
+          ],
+          "data": {
+            "id": "1"
+          }
+        },
+        {
+          "id": "1",
+          "subPath": [
+            "list",
+            1,
+            "item"
+          ],
+          "data": {
+            "id": "2"
+          }
+        },
+        {
+          "id": "1",
+          "subPath": [
+            "list",
+            2,
+            "item"
+          ],
+          "data": {
+            "id": "3"
+          }
+        }
+      ],
+      "completed": [
+        {
+          "id": "1"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2 = """
+    {
+      "data": {
+        "me": {
+          "list": [
+            {
+              "item": {
+                "id": "1"
+              }
+            },
+            {
+              "item": {
+                "id": "2"
+              }
+            },
+            {
+              "item": {
+                "id": "3"
+              }
+            }
+          ]
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf(), label = null),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload3 = """
+    {
+      "incremental": [
+        {
+          "id": "0",
+          "subPath": [
+            "me",
+            "list",
+            0,
+            "item"
+          ],
+          "data": {
+            "value": "Foo"
+          }
+        },
+        {
+          "id": "0",
+          "subPath": [
+            "me",
+            "list",
+            1,
+            "item"
+          ],
+          "data": {
+            "value": "Bar"
+          }
+        },
+        {
+          "id": "0",
+          "subPath": [
+            "me",
+            "list",
+            2,
+            "item"
+          ],
+          "data": {
+            "value": "Baz"
+          }
+        }
+      ],
+      "completed": [
+        {
+          "id": "0"
+        }
+      ],
+      "hasNext": false
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
+    {
+      "data": {
+        "me": {
+          "list": [
+            {
+              "item": {
+                "id": "1",
+                "value": "Foo"
+              }
+            },
+            {
+              "item": {
+                "id": "2",
+                "value": "Bar"
+              }
+            },
+            {
+              "item": {
+                "id": "3",
+                "value": "Baz"
+              }
+            }
+          ]
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+  }
+
+  /**
+   * Example F from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
+   */
+  @Test
+  fun june2023ExampleF() {
+    val incrementalResultsMerger = V0_2IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
+    {
+      "data": {
+        "me": {}
+      },
+      "pending": [
+        {
+          "id": "0",
+          "path": [
+            "me"
+          ],
+          "label": "B"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1 = """
+    {
+      "data": {
+        "me": {}
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload2 = """
+    {
+      "incremental": [
+        {
+          "id": "0",
+          "data": {
+            "a": "A",
+            "b": "B"
+          }
+        }
+      ],
+      "completed": [
+        {
+          "id": "0"
+        }
+      ],
+      "hasNext": false
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2 = """
+    {
+      "data": {
+        "me": {
+          "a": "A",
+          "b": "B"
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+  }
+
+  /**
+   * Example G from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
+   */
+  @Test
+  fun june2023ExampleG() {
+    val incrementalResultsMerger = V0_2IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
+    {
+      "data": {
+        "me": {
+          "id": 1,
+          "avatarUrl": "http://…",
+          "projects": [
+            {
+              "name": "My Project"
+            }
+          ]
+        }
+      },
+      "pending": [
+        {
+          "id": "0",
+          "path": [
+            "me"
+          ],
+          "label": "Billing"
+        },
+        {
+          "id": "1",
+          "path": [
+            "me"
+          ],
+          "label": "Prev"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1 = """
+    {
+      "data": {
+        "me": {
+          "id": 1,
+          "avatarUrl": "http://…",
+          "projects": [
+            {
+              "name": "My Project"
+            }
+          ]
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("me"), label = "Billing"),
+            DeferredFragmentIdentifier(path = listOf("me"), label = "Prev"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload2 = """
+    {
+      "incremental": [
+        {
+          "id": "0",
+          "data": {
+            "tier": "BRONZE",
+            "renewalDate": "2023-03-20",
+            "latestInvoiceTotal": "${'$'}12.34"
+          }
+        }
+      ],
+      "completed": [
+        {
+          "id": "0"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2 = """
+    {
+      "data": {
+        "me": {
+          "id": 1,
+          "avatarUrl": "http://…",
+          "projects": [
+            {
+              "name": "My Project"
+            }
+          ],
+          "tier": "BRONZE",
+          "renewalDate": "2023-03-20",
+          "latestInvoiceTotal": "${'$'}12.34"
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("me"), label = "Prev"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload3 = """
+    {
+      "incremental": [
+        {
+          "id": "1",
+          "data": {
+            "previousInvoices": [
+              {
+                "name": "My Invoice"
+              }
+            ]
+          }
+        }
+      ],
+      "completed": [
+        {
+          "id": "1"
+        }
+      ],
+      "hasNext": false
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
+    {
+      "data": {
+        "me": {
+          "id": 1,
+          "avatarUrl": "http://…",
+          "projects": [
+            {
+              "name": "My Project"
+            }
+          ],
+          "tier": "BRONZE",
+          "renewalDate": "2023-03-20",
+          "latestInvoiceTotal": "${'$'}12.34",
+          "previousInvoices": [
+            {
+              "name": "My Invoice"
+            }
+          ]
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+  }
+
+  /**
+   * Example H from https://github.com/graphql/defer-stream-wg/discussions/69 (Dec 13 2024 version)
+   */
+  @Test
+  fun june2023ExampleH() {
+    val incrementalResultsMerger = V0_2IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
+    {
+      "data": {
+        "me": {}
+      },
+      "pending": [
+        {
+          "id": "0",
+          "path": [],
+          "label": "A"
+        },
+        {
+          "id": "1",
+          "path": [
+            "me"
+          ],
+          "label": "B"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1 = """
+    {
+      "data": {
+        "me": {}
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf(), label = "A"),
+            DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload2 = """
+    {
+      "incremental": [
+        {
+          "id": "0",
+          "subPath": [
+            "me"
+          ],
+          "data": {
+            "foo": {
+              "bar": {}
+            }
+          }
+        },
+        {
+          "id": "0",
+          "subPath": [
+            "me",
+            "foo",
+            "bar"
+          ],
+          "data": {
+            "baz": "BAZ"
+          }
+        }
+      ],
+      "completed": [
+        {
+          "id": "0"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2 = """
+    {
+      "data": {
+        "me": {
+          "foo": {
+            "bar": {
+              "baz": "BAZ"
+            }
+          }
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload3 = """
+    {
+      "completed": [
+        {
+          "id": "1",
+          "errors": [
+            {
+              "message": "Cannot return null for non-nullable field Bar.qux.",
+              "locations": [
+                {
+                  "line": 1,
+                  "column": 1
+                }
+              ],
+              "path": [
+                "foo",
+                "bar",
+                "qux"
+              ]
+            }
+          ]
+        }
+      ],
+      "hasNext": false
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
+    {
+      "data": {
+        "me": {
+          "foo": {
+            "bar": {
+              "baz": "BAZ"
+            }
+          }
+        }
+      },
+      "errors": [
+        {
+          "message": "Cannot return null for non-nullable field Bar.qux.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 1
+            }
+          ],
+          "path": [
+            "foo",
+            "bar",
+            "qux"
+          ]
+        }
+      ]
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("me"), label = "B"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+  }
+
+  /**
+   * Example I from https://github.com/graphql/defer-stream-wg/discussions/69 (Jul 18 2025 version)
+   */
+  @Test
+  fun july2025ExampleI() {
+    val incrementalResultsMerger = V0_2IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
+    {
+      "data": {
+        "person": {
+          "name": "Luke Skywalker",
+          "films": [
+            {
+              "title": "A New Hope"
+            },
+            {
+              "title": "The Empire Strikes Back"
+            }
+          ]
+        }
+      },
+      "pending": [
+        {
+          "id": "0",
+          "path": [
+            "person"
+          ],
+          "label": "homeWorldDefer"
+        },
+        {
+          "id": "1",
+          "path": [
+            "person",
+            "films"
+          ],
+          "label": "filmsStream"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1 = """
+    {
+      "data": {
+        "person": {
+          "name": "Luke Skywalker",
+          "films": [
+            {
+              "title": "A New Hope"
+            },
+            {
+              "title": "The Empire Strikes Back"
+            }
+          ]
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("person"), label = "homeWorldDefer"),
+            DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload2 = """
+    {
+      "incremental": [
+        {
+          "id": "1",
+          "items": [
+            {
+              "title": "Return of the Jedi"
+            }
+          ]
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2 = """
+    {
+      "data": {
+        "person": {
+          "name": "Luke Skywalker",
+          "films": [
+            {
+              "title": "A New Hope"
+            },
+            {
+              "title": "The Empire Strikes Back"
+            },
+            {
+              "title": "Return of the Jedi"
+            }
+          ]
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("person"), label = "homeWorldDefer"),
+            DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload3 = """
+    {
+      "completed": [
+        {
+          "id": "1"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
+    {
+      "data": {
+        "person": {
+          "name": "Luke Skywalker",
+          "films": [
+            {
+              "title": "A New Hope"
+            },
+            {
+              "title": "The Empire Strikes Back"
+            },
+            {
+              "title": "Return of the Jedi"
+            }
+          ]
+        }
+      }
+    }
+    """.trimIndent()
+
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("person"), label = "homeWorldDefer"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload4 = """
+    {
+      "incremental": [
+        {
+          "id": "0",
+          "data": {
+            "homeworld": {
+              "name": "Tatooine"
+            }
+          }
+        }
+      ],
+      "completed": [
+        {
+          "id": "0"
+        }
+      ],
+      "hasNext": false
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2_3_4 = """
+    {
+      "data": {
+        "person": {
+          "name": "Luke Skywalker",
+          "homeworld": {
+            "name": "Tatooine"
+          },
+          "films": [
+            {
+              "title": "A New Hope"
+            },
+            {
+              "title": "The Empire Strikes Back"
+            },
+            {
+              "title": "Return of the Jedi"
+            }
+          ]
+        }
+      }
+    }
+    """.trimIndent()
+
+    incrementalResultsMerger.merge(payload4.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3_4), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+  }
+
+  /**
+   * Example J from https://github.com/graphql/defer-stream-wg/discussions/69 (Jul 18 2025 version)
+   */
+  @Test
+  fun july2025ExampleJ() {
+    val incrementalResultsMerger = V0_2IncrementalResultsMerger()
+    //language=JSON
+    val payload1 = """
+    {
+      "data": {
+        "person": {
+          "films": [
+            {
+              "title": "A New Hope"
+            }
+          ]
+        }
+      },
+      "pending": [
+        {
+          "id": "1",
+          "path": [
+            "person",
+            "films"
+          ],
+          "label": "filmsStream"
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1 = """
+    {
+      "data": {
+        "person": {
+          "films": [
+            {
+              "title": "A New Hope"
+            }
+          ]
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload1.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload2 = """
+    {
+      "incremental": [
+        {
+          "id": "1",
+          "items": [
+            {
+              "title": "The Empire Strikes Back"
+            }
+          ]
+        }
+      ],
+      "hasNext": true
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2 = """
+    {
+      "data": {
+        "person": {
+          "films": [
+            {
+              "title": "A New Hope"
+            },
+            {
+              "title": "The Empire Strikes Back"
+            }
+          ]
+        }
+      }
+    }
+    """.trimIndent()
+    incrementalResultsMerger.merge(payload2.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+
+    //language=JSON
+    val payload3 = """
+    {
+      "completed": [
+        {
+          "id": "1",
+          "errors": [
+            {
+              "message": "Cannot return null for non-nullable field Person.films.",
+              "locations": [
+                {
+                  "line": 2,
+                  "column": 3
+                }
+              ],
+              "path": [
+                "person",
+                "films"
+              ]
+            }
+          ]
+        }
+      ],
+      "hasNext": false
+    }
+    """.trimIndent()
+    //language=JSON
+    val mergedPayloads_1_2_3 = """
+    {
+      "data": {
+        "person": {
+          "films": [
+            {
+              "title": "A New Hope"
+            },
+            {
+              "title": "The Empire Strikes Back"
+            }
+          ]
+        }
+      },
+      "errors": [
+        {
+          "message": "Cannot return null for non-nullable field Person.films.",
+          "locations": [
+            {
+              "line": 2,
+              "column": 3
+            }
+          ],
+          "path": [
+            "person",
+            "films"
+          ]
+        }
+      ]
+    }
+    """.trimIndent()
+
+    incrementalResultsMerger.merge(payload3.buffer())
+    assertEquals(jsonToMap(mergedPayloads_1_2_3), incrementalResultsMerger.merged)
+    assertEquals(
+        setOf(
+            DeferredFragmentIdentifier(path = listOf("person", "films"), label = "filmsStream"),
+        ),
+        incrementalResultsMerger.deferredFragmentIdentifiers.nonPending()
+    )
+  }
+}
+
+private fun Set<DeferredFragmentIdentifier>.nonPending(): Set<DeferredFragmentIdentifier> {
+  return filter { it !== DeferredFragmentIdentifier.Pending }.toSet()
+}

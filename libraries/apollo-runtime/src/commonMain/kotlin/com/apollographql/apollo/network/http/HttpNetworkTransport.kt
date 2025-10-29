@@ -1,6 +1,7 @@
 package com.apollographql.apollo.network.http
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.CustomScalarAdapters
@@ -21,11 +22,14 @@ import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.RouterError
-import com.apollographql.apollo.internal.DeferredJsonMerger
+import com.apollographql.apollo.internal.incremental.IncrementalDeliveryProtocolImpl
+import com.apollographql.apollo.internal.incremental.IncrementalResultsMerger
+import com.apollographql.apollo.internal.incremental.impl
 import com.apollographql.apollo.internal.isGraphQLResponse
 import com.apollographql.apollo.internal.isMultipart
 import com.apollographql.apollo.internal.multipartBodyFlow
 import com.apollographql.apollo.mpp.currentTimeMillis
+import com.apollographql.apollo.network.IncrementalDeliveryProtocol
 import com.apollographql.apollo.network.NetworkTransport
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
@@ -44,13 +48,26 @@ private constructor(
     private val engine: HttpEngine,
     val interceptors: List<HttpInterceptor>,
     private val exposeErrorBody: Boolean,
+    private val incrementalDeliveryProtocol: IncrementalDeliveryProtocol,
 ) : NetworkTransport {
   private val engineInterceptor = EngineInterceptor()
+  private val incrementalDeliveryProtocolImpl: IncrementalDeliveryProtocolImpl = incrementalDeliveryProtocol.impl
 
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
     val customScalarAdapters = request.executionContext[CustomScalarAdapters]!!
+
+    val request = if (request.httpHeaders.orEmpty().none { it.name.lowercase() == "accept" }) {
+      val accept = if (request.operation is Subscription<*>) {
+        "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
+      } else {
+        incrementalDeliveryProtocolImpl.acceptHeader
+      }
+      request.newBuilder().addHttpHeader("accept", accept).build()
+    } else {
+      request
+    }
     val httpRequest = httpRequestComposer.compose(request)
 
     return execute(request, httpRequest, customScalarAdapters)
@@ -170,7 +187,7 @@ private constructor(
       customScalarAdapters: CustomScalarAdapters,
       httpResponse: HttpResponse,
   ): Flow<ApolloResponse<D>> {
-    var jsonMerger: DeferredJsonMerger? = null
+    var incrementalResultsMerger: IncrementalResultsMerger? = null
     val operation = request.operation
 
     return multipartBodyFlow(httpResponse)
@@ -218,21 +235,20 @@ private constructor(
               else -> null
             }
           } else {
-            if (jsonMerger == null) {
-              jsonMerger = DeferredJsonMerger()
+            if (incrementalResultsMerger == null) {
+              incrementalResultsMerger = incrementalDeliveryProtocolImpl.newIncrementalResultsMerger()
             }
-            val merged = jsonMerger.merge(part)
-            val deferredFragmentIds = jsonMerger.mergedFragmentIds
-            val isLast = !jsonMerger.hasNext
+            val merged = incrementalResultsMerger.merge(part)
+            val deferredFragmentIdentifiers = incrementalResultsMerger.deferredFragmentIdentifiers
+            val isLast = !incrementalResultsMerger.hasNext
 
-            if (jsonMerger.isEmptyPayload) {
+            if (incrementalResultsMerger.isEmptyResponse) {
               null
             } else {
-              @Suppress("DEPRECATION")
               merged.jsonReader().toApolloResponse(
                   operation = operation,
                   customScalarAdapters = customScalarAdapters,
-                  deferredFragmentIdentifiers = deferredFragmentIds
+                  deferredFragmentIdentifiers = deferredFragmentIdentifiers
               ).newBuilder().isLast(isLast).build()
             }
           }
@@ -300,6 +316,7 @@ private constructor(
         .interceptors(interceptors)
         .httpRequestComposer(httpRequestComposer)
         .exposeErrorBody(exposeErrorBody)
+        .incrementalDeliveryProtocol(incrementalDeliveryProtocol)
   }
 
   /**
@@ -311,6 +328,7 @@ private constructor(
     private var engine: HttpEngine? = null
     private val interceptors: MutableList<HttpInterceptor> = mutableListOf()
     private var exposeErrorBody: Boolean = false
+    private var incrementalDeliveryProtocol: IncrementalDeliveryProtocol = IncrementalDeliveryProtocol.V0_1
     private val headers: MutableList<HttpHeader> = mutableListOf()
 
     fun httpRequestComposer(httpRequestComposer: HttpRequestComposer) = apply {
@@ -354,6 +372,16 @@ private constructor(
       this.engine = httpEngine
     }
 
+    /**
+     * The incremental delivery protocol to use when using `@defer` and/or `@stream`.
+     *
+     * Default: [IncrementalDeliveryProtocol.V0_1]
+     */
+    @ApolloExperimental
+    fun incrementalDeliveryProtocol(incrementalDeliveryProtocol: IncrementalDeliveryProtocol) = apply {
+      this.incrementalDeliveryProtocol = incrementalDeliveryProtocol
+    }
+
     fun interceptors(interceptors: List<HttpInterceptor>) = apply {
       this.interceptors.clear()
       this.interceptors.addAll(interceptors)
@@ -380,6 +408,7 @@ private constructor(
           engine = engine ?: DefaultHttpEngine(),
           interceptors = interceptors,
           exposeErrorBody = exposeErrorBody,
+          incrementalDeliveryProtocol = incrementalDeliveryProtocol,
       )
     }
   }

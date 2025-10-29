@@ -1,5 +1,6 @@
 package com.apollographql.apollo.network.ws
 
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.CustomScalarAdapters
@@ -10,9 +11,10 @@ import com.apollographql.apollo.api.toApolloResponse
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.SubscriptionOperationException
-import com.apollographql.apollo.internal.DeferredJsonMerger
-import com.apollographql.apollo.internal.isDeferred
+import com.apollographql.apollo.internal.incremental.IncrementalDeliveryProtocolImpl
+import com.apollographql.apollo.internal.incremental.impl
 import com.apollographql.apollo.internal.transformWhile
+import com.apollographql.apollo.network.IncrementalDeliveryProtocol
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.network.ws.internal.Command
 import com.apollographql.apollo.network.ws.internal.ConnectionReEstablished
@@ -45,7 +47,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
-import okio.use
 
 /**
  * A [NetworkTransport] that manages a single instance of a [WebSocketConnection].
@@ -62,7 +63,8 @@ private constructor(
     private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
     private val idleTimeoutMillis: Long = 60_000,
     private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
-    private val reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)?
+    private val reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)?,
+    private val incrementalDeliveryProtocolImpl: IncrementalDeliveryProtocolImpl,
 ) : NetworkTransport {
 
   /**
@@ -263,7 +265,7 @@ private constructor(
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
-    val deferredJsonMerger = DeferredJsonMerger()
+    val incrementalResultsMerger = incrementalDeliveryProtocolImpl.newIncrementalResultsMerger()
 
     return events.onSubscription {
       messages.send(StartOperation(request))
@@ -303,8 +305,8 @@ private constructor(
         is OperationResponse -> {
           val responsePayload = response.payload
           val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters]!!
-          val (payload, mergedFragmentIds) = if (responsePayload.isDeferred()) {
-            deferredJsonMerger.merge(responsePayload) to deferredJsonMerger.mergedFragmentIds
+          val (payload, deferredFragmentIdentifiers) = if (responsePayload.isDeferred()) {
+            incrementalResultsMerger.merge(responsePayload) to incrementalResultsMerger.deferredFragmentIdentifiers
           } else {
             responsePayload to null
           }
@@ -312,12 +314,12 @@ private constructor(
               operation = request.operation,
               requestUuid = request.requestUuid,
               customScalarAdapters = requestCustomScalarAdapters,
-              deferredFragmentIdentifiers = mergedFragmentIds
+              deferredFragmentIdentifiers = deferredFragmentIdentifiers
           )
 
-          if (!deferredJsonMerger.hasNext) {
-            // Last deferred payload: reset the deferredJsonMerger for potential subsequent responses
-            deferredJsonMerger.reset()
+          if (!incrementalResultsMerger.hasNext) {
+            // Last deferred payload: reset the incrementalResultsMerger for potential subsequent responses
+            incrementalResultsMerger.reset()
           }
           apolloResponse
         }
@@ -329,7 +331,7 @@ private constructor(
         is ConnectionReEstablished, is OperationComplete, is GeneralError -> error("Unexpected event $response")
       }
     }.filterNot {
-      deferredJsonMerger.isEmptyPayload
+      incrementalResultsMerger.isEmptyResponse
     }.onCompletion {
       messages.send(StopOperation(request))
     }
@@ -372,6 +374,7 @@ private constructor(
     private var idleTimeoutMillis: Long? = null
     private var protocolFactory: WsProtocol.Factory? = null
     private var reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
+    private var incrementalDeliveryProtocol: IncrementalDeliveryProtocol = IncrementalDeliveryProtocol.V0_1
 
     /**
      * Configure the server URL.
@@ -438,6 +441,16 @@ private constructor(
       this.reopenWhen = reopenWhen
     }
 
+    /**
+     * The incremental delivery protocol to use when using `@defer` and/or `@stream`.
+     *
+     * Default: [IncrementalDeliveryProtocol.V0_1]
+     */
+    @ApolloExperimental
+    fun incrementalDeliveryProtocol(incrementalDeliveryProtocol: IncrementalDeliveryProtocol) = apply {
+      this.incrementalDeliveryProtocol = incrementalDeliveryProtocol
+    }
+
     fun build(): WebSocketNetworkTransport {
       return WebSocketNetworkTransport(
           serverUrl = serverUrl ?: error("No serverUrl specified"),
@@ -445,7 +458,8 @@ private constructor(
           webSocketEngine = webSocketEngine ?: DefaultWebSocketEngine(),
           idleTimeoutMillis = idleTimeoutMillis ?: 60_000,
           protocolFactory = protocolFactory ?: SubscriptionWsProtocol.Factory(),
-          reopenWhen = reopenWhen
+          reopenWhen = reopenWhen,
+          incrementalDeliveryProtocolImpl = incrementalDeliveryProtocol.impl,
       )
     }
   }
@@ -459,4 +473,8 @@ private constructor(
 fun NetworkTransport.closeConnection(reason: Throwable) {
   (this as? WebSocketNetworkTransport
       ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo.ws.WebSocketNetworkTransport")).closeConnection(reason)
+}
+
+private fun Map<String, Any?>.isDeferred(): Boolean {
+  return keys.contains("hasNext")
 }

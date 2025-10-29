@@ -50,7 +50,8 @@ fun <T : Any> and(vararg other: BooleanExpression<T>): BooleanExpression<T> = Bo
 fun <T : Any> not(other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.Not(other)
 fun variable(name: String): BooleanExpression<BVariable> = BooleanExpression.Element(BVariable(name))
 fun label(label: String? = null): BooleanExpression<BLabel> = BooleanExpression.Element(BLabel(label))
-fun possibleTypes(vararg typenames: String): BooleanExpression<BPossibleTypes> = BooleanExpression.Element(BPossibleTypes(typenames.toSet()))
+fun possibleTypes(vararg typenames: String): BooleanExpression<BPossibleTypes> =
+  BooleanExpression.Element(BPossibleTypes(typenames.toSet()))
 
 internal fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
   return when (this) {
@@ -74,18 +75,29 @@ fun BooleanExpression<BTerm>.evaluate(
   return evaluate {
     when (it) {
       is BVariable -> !(variables?.contains(it.name) ?: false)
-      is BLabel -> hasDeferredFragment(deferredFragmentIdentifiers, croppedPath!!, it.label)
+      is BLabel -> shouldParseFragment(deferredFragmentIdentifiers, croppedPath!!, it.label)
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }
   }
 }
 
-private fun hasDeferredFragment(deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?, path: List<Any>, label: String?): Boolean {
+private fun shouldParseFragment(deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?, path: List<Any>, label: String?): Boolean {
   if (deferredFragmentIdentifiers == null) {
     // By default, parse all deferred fragments - this is the case when parsing from the normalized cache.
     return true
   }
-  return deferredFragmentIdentifiers.contains(DeferredFragmentIdentifier(path, label))
+  val identifier = DeferredFragmentIdentifier(path, label)
+  return if (deferredFragmentIdentifiers.isPending()) {
+    // v0.2: parse fragments that are _not_ pending
+    !deferredFragmentIdentifiers.contains(identifier)
+  } else {
+    // v0.1: parse fragments that have been merged
+    deferredFragmentIdentifiers.contains(identifier)
+  }
+}
+
+private fun Set<DeferredFragmentIdentifier>.isPending(): Boolean {
+  return any { it === DeferredFragmentIdentifier.Pending }
 }
 
 /**

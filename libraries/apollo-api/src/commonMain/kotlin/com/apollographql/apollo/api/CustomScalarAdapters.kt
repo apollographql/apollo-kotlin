@@ -19,7 +19,7 @@ class CustomScalarAdapters private constructor(
     @JvmField
     val falseVariables: Set<String>?,
     /**
-     * Defer identifiers used to determine whether the parser must parse @defer fragments
+     * Identifiers used to determine whether the parser must parse deferred fragments
      */
     @JvmField
     val deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?,

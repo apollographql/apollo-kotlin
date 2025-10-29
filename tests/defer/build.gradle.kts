@@ -44,6 +44,14 @@ fun configureApollo(generateKotlinModels: Boolean) {
   }
 }
 
+apollo {
+  service("noTypename") {
+    packageName.set("defer.notypename")
+    srcDir("src/commonMain/graphql/noTypename")
+    addTypename.set("ifPolymorphic")
+  }
+}
+
 configureApollo(true)
 if (System.getProperty("idea.sync.active") == null) {
   registerJavaCodegenTestTask()
@@ -61,12 +69,15 @@ fun com.apollographql.apollo.gradle.api.Service.configureConnection(generateKotl
 }
 
 tasks.withType(AbstractTestTask::class.java) {
-  // Run the defer with Router tests only from a specific CI job
+  // Run the defer with Router and defer with Apollo Server tests only from a specific CI job
   val runDeferWithRouterTests = System.getenv("DEFER_WITH_ROUTER_TESTS").toBoolean()
-  if (runDeferWithRouterTests) {
-    filter.setIncludePatterns("test.DeferWithRouterTest")
-  } else {
-    filter.setExcludePatterns("test.DeferWithRouterTest")
-  }
+  val runDeferWithApolloServerTests = System.getenv("DEFER_WITH_APOLLO_SERVER_TESTS").toBoolean()
+  filter.setIncludePatterns(*buildList {
+    if (runDeferWithRouterTests) add("test.DeferWithRouterTest")
+    if (runDeferWithApolloServerTests) add("test.DeferWithApolloServerTest")
+  }.toTypedArray())
+  filter.setExcludePatterns(*buildList {
+    if (!runDeferWithRouterTests) add("test.DeferWithRouterTest")
+    if (!runDeferWithApolloServerTests) add("test.DeferWithApolloServerTest")
+  }.toTypedArray())
 }
-

@@ -1,4 +1,4 @@
-name: defer-with-router-tests
+name: defer-integration-tests
 
 on:
   schedule:
@@ -24,9 +24,22 @@ jobs:
       - run: |
           ./router --supergraph tests/defer/router/simple-supergraph.graphqls &
 
-      - uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda #v3.4.2
-
       - env:
           DEFER_WITH_ROUTER_TESTS: true
+        run: |
+          ./gradlew --no-daemon --console plain -p tests :defer:allTests
+  defer-with-apollo-server-tests:
+    runs-on: ubuntu-latest
+    if: github.repository == 'apollographql/apollo-kotlin'
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #v4.1.7
+
+      - working-directory: tests/defer/apollo-server/
+        run: |
+          npm install --legacy-peer-deps
+          APOLLO_PORT=4000 npm start &
+
+      - env:
+          DEFER_WITH_APOLLO_SERVER_TESTS: true
         run: |
           ./gradlew --no-daemon --console plain -p tests :defer:allTests
