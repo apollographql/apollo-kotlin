@@ -27,5 +27,5 @@ They are enabled only when running from the specific `defer-with-apollo-server-t
 To run them locally:
 
 1. Install and run the
-   subgraph: `(cd tests/defer/apollo-server && npm install --legacy-peer-deps && npx patch-package && APOLLO_PORT=4000 npm start)&`
+   subgraph: `(cd tests/defer/apollo-server && npm install --legacy-peer-deps && APOLLO_PORT=4000 npm start)&`
 2. Run the tests: `DEFER_WITH_APOLLO_SERVER_TESTS=true ./gradlew -p tests :defer:allTests`

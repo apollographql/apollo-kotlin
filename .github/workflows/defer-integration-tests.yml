@@ -37,7 +37,6 @@ jobs:
       - working-directory: tests/defer/apollo-server/
         run: |
           npm install --legacy-peer-deps
-          npx patch-package
           APOLLO_PORT=4000 npm start &
 
       - env:
