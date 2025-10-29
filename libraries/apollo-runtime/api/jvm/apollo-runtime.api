@@ -330,7 +330,7 @@ public abstract interface class com/apollographql/apollo/network/http/HttpInterc
 }
 
 public final class com/apollographql/apollo/network/http/HttpNetworkTransport : com/apollographql/apollo/network/NetworkTransport {
-	public synthetic fun <init> (Lcom/apollographql/apollo/api/http/HttpRequestComposer;Lcom/apollographql/apollo/network/http/HttpEngine;Ljava/util/List;ZLcom/apollographql/apollo/internal/incremental/IncrementalDeliveryProtocolImpl;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo/api/http/HttpRequestComposer;Lcom/apollographql/apollo/network/http/HttpEngine;Ljava/util/List;ZLcom/apollographql/apollo/network/IncrementalDeliveryProtocol;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun dispose ()V
 	public fun execute (Lcom/apollographql/apollo/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 	public final fun getInterceptors ()Ljava/util/List;

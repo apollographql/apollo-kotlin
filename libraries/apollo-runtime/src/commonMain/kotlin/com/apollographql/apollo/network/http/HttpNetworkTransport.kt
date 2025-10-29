@@ -48,9 +48,10 @@ private constructor(
     private val engine: HttpEngine,
     val interceptors: List<HttpInterceptor>,
     private val exposeErrorBody: Boolean,
-    private val incrementalDeliveryProtocolImpl: IncrementalDeliveryProtocolImpl,
+    private val incrementalDeliveryProtocol: IncrementalDeliveryProtocol,
 ) : NetworkTransport {
   private val engineInterceptor = EngineInterceptor()
+  private val incrementalDeliveryProtocolImpl: IncrementalDeliveryProtocolImpl = incrementalDeliveryProtocol.impl
 
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
@@ -315,6 +316,7 @@ private constructor(
         .interceptors(interceptors)
         .httpRequestComposer(httpRequestComposer)
         .exposeErrorBody(exposeErrorBody)
+        .incrementalDeliveryProtocol(incrementalDeliveryProtocol)
   }
 
   /**
@@ -406,7 +408,7 @@ private constructor(
           engine = engine ?: DefaultHttpEngine(),
           interceptors = interceptors,
           exposeErrorBody = exposeErrorBody,
-          incrementalDeliveryProtocolImpl = incrementalDeliveryProtocol.impl,
+          incrementalDeliveryProtocol = incrementalDeliveryProtocol,
       )
     }
   }
