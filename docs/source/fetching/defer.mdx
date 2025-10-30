@@ -1,11 +1,11 @@
 ---
-title: 'Using the @defer directive in Apollo Kotlin'
+title: 'Using the @defer and @stream directives in Apollo Kotlin'
 description: 'Fetch slower schema fields asynchronously'
 ---
 
 <Note>
 
-The incremental delivery format used by `@defer` [isn't yet standardized](https://github.com/graphql/defer-stream-wg). Apollo Kotlin supports [the format implemented by Apollo Router](https://www.apollographql.com/docs/graphos/routing/operations/defer#specification-status), which is described in this [specification](https://specs.apollo.dev/incremental/v0.1/).
+The incremental delivery format used by `@defer`/`@stream` [isn't yet standardized](https://github.com/graphql/defer-stream-wg). Apollo Kotlin supports [the format implemented by Apollo Router](https://www.apollographql.com/docs/graphos/routing/operations/defer#specification-status), which is described in this [specification](https://specs.apollo.dev/incremental/v0.1/), and the more recent format described in this [specification](https://specs.apollo.dev/incremental/v0.2/)
 
 </Note>
 
@@ -59,6 +59,39 @@ Received: Person(id=1, firstName=John, lastName=Doe, onUser=null))
 Received: Person(id=1, firstName=John, lastName=Doe, onUser=OnUser(friends=[Friend(id=2), Friend(id=3)]))
 ```
 
+### `@stream` directive support
+Similarly to `@defer`, the `@stream` directive can be used to receive the first few items of **lists** in the initial response, while the remaining items arrive later.
+
+Note: this directive is only supported when using the [v0.2](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo.network/-incremental-delivery-protocol/-v0_2/index.html) protocol:
+
+```kotlin
+apolloClient = ApolloClient.Builder()
+  .networkTransport(
+    HttpNetworkTransport.Builder()
+      .serverUrl("https://...")
+      // Configure the incremental v0.2 protocol // highlight-line
+      .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.V0_2) // highlight-line
+      .build()
+  )
+  .build()
+```
+
+For example this query:
+```graphql
+query FriendsQuery {
+  friends @stream(initialCount: 2) {
+    firstName
+  }
+}
+```
+
+Will print something like this:
+
+```
+Received: friends=[Person(firstName=John), Person(firstName=Jane)]
+Received: friends=[Person(firstName=John), Person(firstName=Jane), Person(firstName=Michael), Person(firstName=Patricia), Person(firstName=James)]
+```
+
 ### Error handling
 When using `@defer`, the incremental payloads received from the server may each contain GraphQL errors related to the fields being returned.
 These errors are accumulated and exposed in the [`ApolloResponse.errors`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-api/com.apollographql.apollo.api/-apollo-response/errors.html) field.
@@ -66,6 +99,15 @@ These errors are accumulated and exposed in the [`ApolloResponse.errors`](https:
 Fetch errors like network failures can also happen during collection of the flow, and will be exposed in [`ApolloResponse.exception`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-api/com.apollographql.apollo.api/-apollo-response/exception.html)
 
 See also the [error handling section](../essentials/errors).
+
+### Support matrix
+
+| Protocol | Compatible servers           | Supported directives |
+|----------|------------------------------|----------------------|
+| v0.1     | Apollo Router, Apollo Server | `@defer`             |
+| v0.2     | Apollo Server                | `@defer`, `@stream`  |
+
+
 
 ### Limitations/known issues
 * `@defer` cannot be used with `responseBased` codegen.
@@ -76,4 +118,3 @@ apolloClient.query(MyQuery()).toFlow()
     .distinctUntilChangedBy { it.data }  // filter out duplicates
     .collect { /* ... */ }
 ```
-
