@@ -58,7 +58,7 @@ items:
         href: ./essentials/custom-scalars
       - label: Fragments
         href: ./essentials/fragments
-      - label: "@defer and @stream support"
+      - label: "@defer and @stream"
         href: ./fetching/defer
       - label: Persisted queries
         href: ./advanced/persisted-queries
