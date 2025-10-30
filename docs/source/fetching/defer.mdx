@@ -5,7 +5,7 @@ description: 'Fetch slower schema fields asynchronously'
 
 <Note>
 
-The incremental delivery format used by `@defer` [isn't yet standardized](https://github.com/graphql/defer-stream-wg). Apollo Kotlin supports [the format implemented by Apollo Router](https://www.apollographql.com/docs/graphos/routing/operations/defer#specification-status), which is described in this [specification](https://specs.apollo.dev/incremental/v0.1/).
+The incremental delivery format used by `@defer` [isn't yet standardized](https://github.com/graphql/defer-stream-wg). Apollo Kotlin supports [the format implemented by Apollo Router](https://www.apollographql.com/docs/graphos/routing/operations/defer#specification-status), which is described in this [specification](https://specs.apollo.dev/incremental/v0.1/), and the more recent format described in this [specification](https://specs.apollo.dev/incremental/v0.2/)
 
 </Note>
 
@@ -57,6 +57,39 @@ Will print something like this:
 ```
 Received: Person(id=1, firstName=John, lastName=Doe, onUser=null))
 Received: Person(id=1, firstName=John, lastName=Doe, onUser=OnUser(friends=[Friend(id=2), Friend(id=3)]))
+```
+
+### `@stream` directive support
+Similarly to `@defer`, the `@stream` directive can be used to receive the first few items of **lists** in the initial response, while the remaining items arrive later.
+
+Note: this directive is only supported when using the [v0.2](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo.network/-incremental-delivery-protocol/-v0_2/index.html) protocol:
+
+```kotlin
+apolloClient = ApolloClient.Builder()
+  .networkTransport(
+    HttpNetworkTransport.Builder()
+      .serverUrl("https://...")
+      // Configure the incremental v0.2 protocol // highlight-line
+      .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.V0_2) // highlight-line
+      .build()
+  )
+  .build()
+```
+
+For example this query:
+```graphql
+query PersonQuery($personId: ID!) {
+  friends @stream(initialCount: 2) {
+    firstName
+  }
+}
+```
+
+Will print something like this:
+
+```
+Received: friends=[Person(firstName=John), Person(firstName=Jane)]
+Received: friends=[Person(firstName=John), Person(firstName=Jane), Person(firstName=Michael), Person(firstName=Patricia), Person(firstName=James)]
 ```
 
 ### Error handling
