@@ -1,11 +1,11 @@
 ---
-title: 'Using the @defer directive in Apollo Kotlin'
+title: 'Using the @defer and @stream directives in Apollo Kotlin'
 description: 'Fetch slower schema fields asynchronously'
 ---
 
 <Note>
 
-The incremental delivery format used by `@defer` [isn't yet standardized](https://github.com/graphql/defer-stream-wg). Apollo Kotlin supports [the format implemented by Apollo Router](https://www.apollographql.com/docs/graphos/routing/operations/defer#specification-status), which is described in this [specification](https://specs.apollo.dev/incremental/v0.1/), and the more recent format described in this [specification](https://specs.apollo.dev/incremental/v0.2/)
+The incremental delivery format used by `@defer`/`@stream` [isn't yet standardized](https://github.com/graphql/defer-stream-wg). Apollo Kotlin supports [the format implemented by Apollo Router](https://www.apollographql.com/docs/graphos/routing/operations/defer#specification-status), which is described in this [specification](https://specs.apollo.dev/incremental/v0.1/), and the more recent format described in this [specification](https://specs.apollo.dev/incremental/v0.2/)
 
 </Note>
 
@@ -100,6 +100,15 @@ Fetch errors like network failures can also happen during collection of the flow
 
 See also the [error handling section](../essentials/errors).
 
+### Support matrix
+
+| Protocol | Compatible servers           | Supported directives |
+|----------|------------------------------|----------------------|
+| v0.1     | Apollo Router, Apollo Server | `@defer`             |
+| v0.2     | Apollo Server                | `@defer`, `@stream`  |
+
+
+
 ### Limitations/known issues
 * `@defer` cannot be used with `responseBased` codegen.
 * Some servers might send an empty payload to signal the end of the stream. In such a case you will receive an extra terminal emission. You can filter it out by using `distinctUntilChangedBy()`:
@@ -109,4 +118,3 @@ apolloClient.query(MyQuery()).toFlow()
     .distinctUntilChangedBy { it.data }  // filter out duplicates
     .collect { /* ... */ }
 ```
-
