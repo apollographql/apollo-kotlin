@@ -78,7 +78,7 @@ apolloClient = ApolloClient.Builder()
 
 For example this query:
 ```graphql
-query PersonQuery($personId: ID!) {
+query FriendsQuery {
   friends @stream(initialCount: 2) {
     firstName
   }
