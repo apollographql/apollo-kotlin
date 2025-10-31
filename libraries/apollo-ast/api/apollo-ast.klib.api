@@ -238,6 +238,15 @@ final class com.apollographql.apollo.ast/ForeignSchema { // com.apollographql.ap
         final fun <get-version>(): kotlin/String // com.apollographql.apollo.ast/ForeignSchema.version.<get-version>|<get-version>(){}[0]
 }
 
+final class com.apollographql.apollo.ast/FragmentCycle : com.apollographql.apollo.ast/GraphQLValidationIssue { // com.apollographql.apollo.ast/FragmentCycle|null[0]
+    constructor <init>(kotlin/String, com.apollographql.apollo.ast/SourceLocation?) // com.apollographql.apollo.ast/FragmentCycle.<init>|<init>(kotlin.String;com.apollographql.apollo.ast.SourceLocation?){}[0]
+
+    final val message // com.apollographql.apollo.ast/FragmentCycle.message|{}message[0]
+        final fun <get-message>(): kotlin/String // com.apollographql.apollo.ast/FragmentCycle.message.<get-message>|<get-message>(){}[0]
+    final val sourceLocation // com.apollographql.apollo.ast/FragmentCycle.sourceLocation|{}sourceLocation[0]
+        final fun <get-sourceLocation>(): com.apollographql.apollo.ast/SourceLocation? // com.apollographql.apollo.ast/FragmentCycle.sourceLocation.<get-sourceLocation>|<get-sourceLocation>(){}[0]
+}
+
 final class com.apollographql.apollo.ast/GQLArgument : com.apollographql.apollo.ast/GQLNamed, com.apollographql.apollo.ast/GQLNode { // com.apollographql.apollo.ast/GQLArgument|null[0]
     constructor <init>(com.apollographql.apollo.ast/SourceLocation? = ..., kotlin/String, com.apollographql.apollo.ast/GQLValue) // com.apollographql.apollo.ast/GQLArgument.<init>|<init>(com.apollographql.apollo.ast.SourceLocation?;kotlin.String;com.apollographql.apollo.ast.GQLValue){}[0]
 
