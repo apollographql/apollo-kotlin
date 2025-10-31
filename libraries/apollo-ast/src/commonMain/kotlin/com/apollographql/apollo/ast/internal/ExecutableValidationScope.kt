@@ -6,6 +6,7 @@ import com.apollographql.apollo.ast.Catch
 import com.apollographql.apollo.ast.DeprecatedUsage
 import com.apollographql.apollo.ast.DifferentShape
 import com.apollographql.apollo.ast.ExecutableValidationResult
+import com.apollographql.apollo.ast.FragmentCycle
 import com.apollographql.apollo.ast.GQLArgument
 import com.apollographql.apollo.ast.GQLBooleanValue
 import com.apollographql.apollo.ast.GQLDirective
@@ -117,7 +118,7 @@ internal class ExecutableValidationScope(
             val index = path.indexOf("__${name}")
             val nextPath = path + "__${fragment.name}"
             if (index != -1) {
-              registerIssue("Fragment '$name' spreads itself, creating a cycle at '${nextPath.subList(index, nextPath.size).joinToString(".")}'", it.sourceLocation)
+              issues.add(FragmentCycle("Fragment '$name' spreads itself, creating a cycle at '${nextPath.subList(index, nextPath.size).joinToString(".")}'", it.sourceLocation))
               cyclicFragments.add(name)
               return@forEach
             }
