@@ -50,7 +50,7 @@ public final class com/apollographql/apollo/api/ApolloOptionalAdapter : com/apol
 }
 
 public final class com/apollographql/apollo/api/ApolloRequest : com/apollographql/apollo/api/ExecutionOptions {
-	public synthetic fun <init> (Lcom/apollographql/apollo/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo/api/ExecutionContext;Lcom/apollographql/apollo/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo/api/ExecutionContext;Ljava/lang/String;Lcom/apollographql/apollo/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo/api/ExecutionContext;
@@ -65,6 +65,7 @@ public final class com/apollographql/apollo/api/ApolloRequest : com/apollographq
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
 	public final fun getSendEnhancedClientAwareness ()Z
+	public fun getUrl ()Ljava/lang/String;
 	public final fun newBuilder ()Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public final fun newBuilder (Lcom/apollographql/apollo/api/Operation;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 }
@@ -96,6 +97,7 @@ public final class com/apollographql/apollo/api/ApolloRequest$Builder : com/apol
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
 	public final fun getSendEnhancedClientAwareness ()Z
+	public fun getUrl ()Ljava/lang/String;
 	public fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public synthetic fun httpHeaders (Ljava/util/List;)Ljava/lang/Object;
 	public fun httpMethod (Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
@@ -110,6 +112,8 @@ public final class com/apollographql/apollo/api/ApolloRequest$Builder : com/apol
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun sendEnhancedClientAwareness (Z)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
+	public fun url (Ljava/lang/String;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
+	public synthetic fun url (Ljava/lang/String;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo/api/ApolloResponse {
@@ -654,6 +658,7 @@ public abstract interface class com/apollographql/apollo/api/ExecutionOptions {
 	public abstract fun getIgnoreUnknownKeys ()Ljava/lang/Boolean;
 	public abstract fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public abstract fun getSendDocument ()Ljava/lang/Boolean;
+	public abstract fun getUrl ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo/api/ExecutionOptions$Companion {
@@ -756,6 +761,7 @@ public abstract interface class com/apollographql/apollo/api/MutableExecutionOpt
 	public abstract fun ignoreUnknownKeys (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public abstract fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public abstract fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public abstract fun url (Ljava/lang/String;)Ljava/lang/Object;
 }
 
 public abstract interface class com/apollographql/apollo/api/Mutation : com/apollographql/apollo/api/Operation {

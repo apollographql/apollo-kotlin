@@ -84,6 +84,7 @@ abstract interface <#A: kotlin/Any?> com.apollographql.apollo.api/MutableExecuti
     abstract fun ignoreUnknownKeys(kotlin/Boolean?): #A // com.apollographql.apollo.api/MutableExecutionOptions.ignoreUnknownKeys|ignoreUnknownKeys(kotlin.Boolean?){}[0]
     abstract fun sendApqExtensions(kotlin/Boolean?): #A // com.apollographql.apollo.api/MutableExecutionOptions.sendApqExtensions|sendApqExtensions(kotlin.Boolean?){}[0]
     abstract fun sendDocument(kotlin/Boolean?): #A // com.apollographql.apollo.api/MutableExecutionOptions.sendDocument|sendDocument(kotlin.Boolean?){}[0]
+    abstract fun url(kotlin/String?): #A // com.apollographql.apollo.api/MutableExecutionOptions.url|url(kotlin.String?){}[0]
 }
 
 abstract interface <#A: out com.apollographql.apollo.api/DataBuilder<*>> com.apollographql.apollo.api/DataBuilderFactory { // com.apollographql.apollo.api/DataBuilderFactory|null[0]
@@ -216,6 +217,8 @@ abstract interface com.apollographql.apollo.api/ExecutionOptions { // com.apollo
         abstract fun <get-sendApqExtensions>(): kotlin/Boolean? // com.apollographql.apollo.api/ExecutionOptions.sendApqExtensions.<get-sendApqExtensions>|<get-sendApqExtensions>(){}[0]
     abstract val sendDocument // com.apollographql.apollo.api/ExecutionOptions.sendDocument|{}sendDocument[0]
         abstract fun <get-sendDocument>(): kotlin/Boolean? // com.apollographql.apollo.api/ExecutionOptions.sendDocument.<get-sendDocument>|<get-sendDocument>(){}[0]
+    abstract val url // com.apollographql.apollo.api/ExecutionOptions.url|{}url[0]
+        abstract fun <get-url>(): kotlin/String? // com.apollographql.apollo.api/ExecutionOptions.url.<get-url>|<get-url>(){}[0]
 
     final object Companion { // com.apollographql.apollo.api/ExecutionOptions.Companion|null[0]
         final const val CAN_BE_BATCHED // com.apollographql.apollo.api/ExecutionOptions.Companion.CAN_BE_BATCHED|{}CAN_BE_BATCHED[0]
@@ -324,6 +327,8 @@ final class <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.
         final fun <get-sendDocument>(): kotlin/Boolean? // com.apollographql.apollo.api/ApolloRequest.sendDocument.<get-sendDocument>|<get-sendDocument>(){}[0]
     final val sendEnhancedClientAwareness // com.apollographql.apollo.api/ApolloRequest.sendEnhancedClientAwareness|{}sendEnhancedClientAwareness[0]
         final fun <get-sendEnhancedClientAwareness>(): kotlin/Boolean // com.apollographql.apollo.api/ApolloRequest.sendEnhancedClientAwareness.<get-sendEnhancedClientAwareness>|<get-sendEnhancedClientAwareness>(){}[0]
+    final val url // com.apollographql.apollo.api/ApolloRequest.url|{}url[0]
+        final fun <get-url>(): kotlin/String? // com.apollographql.apollo.api/ApolloRequest.url.<get-url>|<get-url>(){}[0]
 
     final fun <#A1: com.apollographql.apollo.api/Operation.Data> newBuilder(com.apollographql.apollo.api/Operation<#A1>): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.newBuilder|newBuilder(com.apollographql.apollo.api.Operation<0:0>){0§<com.apollographql.apollo.api.Operation.Data>}[0]
     final fun newBuilder(): com.apollographql.apollo.api/ApolloRequest.Builder<#A> // com.apollographql.apollo.api/ApolloRequest.newBuilder|newBuilder(){}[0]
@@ -360,6 +365,8 @@ final class <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.
             final fun <get-sendDocument>(): kotlin/Boolean? // com.apollographql.apollo.api/ApolloRequest.Builder.sendDocument.<get-sendDocument>|<get-sendDocument>(){}[0]
         final var sendEnhancedClientAwareness // com.apollographql.apollo.api/ApolloRequest.Builder.sendEnhancedClientAwareness|{}sendEnhancedClientAwareness[0]
             final fun <get-sendEnhancedClientAwareness>(): kotlin/Boolean // com.apollographql.apollo.api/ApolloRequest.Builder.sendEnhancedClientAwareness.<get-sendEnhancedClientAwareness>|<get-sendEnhancedClientAwareness>(){}[0]
+        final var url // com.apollographql.apollo.api/ApolloRequest.Builder.url|{}url[0]
+            final fun <get-url>(): kotlin/String? // com.apollographql.apollo.api/ApolloRequest.Builder.url.<get-url>|<get-url>(){}[0]
 
         final fun addExecutionContext(com.apollographql.apollo.api/ExecutionContext): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.addExecutionContext|addExecutionContext(com.apollographql.apollo.api.ExecutionContext){}[0]
         final fun addHttpHeader(kotlin/String, kotlin/String): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.addHttpHeader|addHttpHeader(kotlin.String;kotlin.String){}[0]
@@ -377,6 +384,7 @@ final class <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.
         final fun sendApqExtensions(kotlin/Boolean?): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.sendApqExtensions|sendApqExtensions(kotlin.Boolean?){}[0]
         final fun sendDocument(kotlin/Boolean?): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.sendDocument|sendDocument(kotlin.Boolean?){}[0]
         final fun sendEnhancedClientAwareness(kotlin/Boolean): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.sendEnhancedClientAwareness|sendEnhancedClientAwareness(kotlin.Boolean){}[0]
+        final fun url(kotlin/String?): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.url|url(kotlin.String?){}[0]
     }
 }
 
@@ -503,8 +511,8 @@ final class com.apollographql.apollo.api.http/CacheUrlOverride : com.apollograph
 }
 
 final class com.apollographql.apollo.api.http/DefaultHttpRequestComposer : com.apollographql.apollo.api.http/HttpRequestComposer { // com.apollographql.apollo.api.http/DefaultHttpRequestComposer|null[0]
-    constructor <init>(kotlin/String) // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.<init>|<init>(kotlin.String){}[0]
-    constructor <init>(kotlin/String, kotlin/Boolean) // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.<init>|<init>(kotlin.String;kotlin.Boolean){}[0]
+    constructor <init>(kotlin/String?) // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.<init>|<init>(kotlin.String?){}[0]
+    constructor <init>(kotlin/String?, kotlin/Boolean) // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.<init>|<init>(kotlin.String?;kotlin.Boolean){}[0]
 
     final fun <#A1: com.apollographql.apollo.api/Operation.Data> compose(com.apollographql.apollo.api/ApolloRequest<#A1>): com.apollographql.apollo.api.http/HttpRequest // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.compose|compose(com.apollographql.apollo.api.ApolloRequest<0:0>){0§<com.apollographql.apollo.api.Operation.Data>}[0]
 

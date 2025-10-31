@@ -73,7 +73,7 @@ class DefaultHttpRequestComposer(
     val sendEnhancedClientAwarenessExtensions = apolloRequest.sendEnhancedClientAwareness
     val sendDocument = apolloRequest.sendDocument ?: true
 
-    val url = apolloRequest.url ?: serverUrl ?: error("ApolloRequest.url is missing for request '${apolloRequest.operation.name()}', did you call ApolloClient.Builder.url(url)?")
+    val url = apolloRequest.url ?: serverUrl ?: error("ApolloRequest.url is missing for request '${apolloRequest.operation.name()}', did you call ApolloClient.Builder.serverUrl(url)?")
     val httpRequestBuilder = when (apolloRequest.httpMethod ?: HttpMethod.Post) {
       HttpMethod.Get -> {
         HttpRequest.Builder(

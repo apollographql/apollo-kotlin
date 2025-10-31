@@ -19,6 +19,7 @@ import test.FooQuery
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertIs
 
 class HttpNetworkTransportTest {
   @Test
@@ -78,5 +79,30 @@ class HttpNetworkTransportTest {
             assertEquals("HTTP request failed", exception.message)
           }
     }
+  }
+
+  @Test
+  fun canChangeRequestUrl() = runTest {
+    ApolloClient.Builder()
+        .build()
+        .use { apolloClient ->
+          MockServer().use { mockServer ->
+            mockServer.enqueueError(500)
+            apolloClient.query(FooQuery()).url(mockServer.url()).execute().exception.apply {
+              assertIs<ApolloHttpException>(this)
+              assertEquals(500, statusCode)
+            }
+            mockServer.takeRequest()
+          }
+
+          MockServer().use { mockServer ->
+            mockServer.enqueueError(501)
+            apolloClient.query(FooQuery()).url(mockServer.url()).execute().exception.apply {
+              assertIs<ApolloHttpException>(this)
+              assertEquals(501, statusCode)
+            }
+            mockServer.takeRequest()
+          }
+        }
   }
 }
