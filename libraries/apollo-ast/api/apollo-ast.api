@@ -132,6 +132,12 @@ public final class com/apollographql/apollo/ast/ForeignSchema {
 	public final fun getVersion ()Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo/ast/FragmentCycle : com/apollographql/apollo/ast/GraphQLValidationIssue {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo/ast/SourceLocation;)V
+	public fun getMessage ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+}
+
 public final class com/apollographql/apollo/ast/GQLArgument : com/apollographql/apollo/ast/GQLNamed, com/apollographql/apollo/ast/GQLNode {
 	public fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Lcom/apollographql/apollo/ast/GQLValue;)V
 	public synthetic fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Lcom/apollographql/apollo/ast/GQLValue;ILkotlin/jvm/internal/DefaultConstructorMarker;)V

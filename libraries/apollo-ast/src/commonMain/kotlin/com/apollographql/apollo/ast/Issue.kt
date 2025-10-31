@@ -71,6 +71,13 @@ class DifferentShape(override val message: String, override val sourceLocation: 
 class UnusedFragment(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLValidationIssue
 
 /**
+ * There is a fragment cycle.
+ *
+ * See https://spec.graphql.org/September2025/#sec-Fragment-Spreads-Must-Not-Form-Cycles
+ */
+class FragmentCycle(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLValidationIssue
+
+/**
  * Two type definitions have the same name
  */
 class DuplicateTypeName(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLValidationIssue
