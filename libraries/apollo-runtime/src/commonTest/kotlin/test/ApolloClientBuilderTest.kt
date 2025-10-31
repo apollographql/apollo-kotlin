@@ -18,7 +18,7 @@ class ApolloClientBuilderTest {
           try {
             flow.first()
           } catch (e: IllegalStateException) {
-            assertEquals(e.message?.contains("ApolloRequest.url is missing for request 'FooOperation', did you call ApolloClient.Builder.url(url)"), true)
+            assertEquals(e.message?.contains("ApolloRequest.url is missing for request 'FooOperation', did you call ApolloClient.Builder.serverUrl(url)?"), true)
           }
         }
   }
