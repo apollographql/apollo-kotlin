@@ -7,7 +7,6 @@ import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo.exception.DefaultApolloException
@@ -17,14 +16,15 @@ import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo.network.websocket.GraphQLWsProtocol
 import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo.network.websocket.closeConnection
+import com.apollographql.apollo.testing.Platform
 import com.apollographql.apollo.testing.internal.runTest
+import com.apollographql.apollo.testing.platform
 import com.apollographql.mockserver.CloseFrame
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.TextMessage
 import com.apollographql.mockserver.WebSocketBody
 import com.apollographql.mockserver.WebsocketMockRequest
 import com.apollographql.mockserver.awaitWebSocketRequest
-import com.apollographql.mockserver.enqueueError
 import com.apollographql.mockserver.enqueueWebSocket
 import com.apollographql.mockserver.headerValueOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,7 +40,6 @@ import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.launch
 import okio.use
 import test.FooOperation
-import test.FooQuery
 import test.FooSubscription
 import test.FooSubscription.Companion.completeMessage
 import test.FooSubscription.Companion.errorMessage
@@ -493,6 +492,11 @@ class WebSocketNetworkTransportTest {
 
   @Test
   fun canChangeRequestUrl() = runTest {
+    if (platform() == Platform.Js) {
+      // See https://github.com/apollographql/apollo-kotlin-mockserver/issues/38
+      return@runTest
+    }
+
     ApolloClient.Builder()
         .subscriptionNetworkTransport(WebSocketNetworkTransport.Builder().build())
         .build()
