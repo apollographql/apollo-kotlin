@@ -121,5 +121,6 @@ private suspend fun readBody(body: dynamic, readTimeoutMillis: Long, abortContro
       throw cause
     }
   }
+  clearTimeout(readTimeoutId)
   return bufferedSource
 }
