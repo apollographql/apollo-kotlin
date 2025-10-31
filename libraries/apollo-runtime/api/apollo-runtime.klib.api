@@ -38,6 +38,19 @@ abstract interface <#A: com.apollographql.apollo.api/Operation.Data> com.apollog
 
 abstract interface com.apollographql.apollo.interceptor/ApolloInterceptor { // com.apollographql.apollo.interceptor/ApolloInterceptor|null[0]
     abstract fun <#A1: com.apollographql.apollo.api/Operation.Data> intercept(com.apollographql.apollo.api/ApolloRequest<#A1>, com.apollographql.apollo.interceptor/ApolloInterceptorChain): kotlinx.coroutines.flow/Flow<com.apollographql.apollo.api/ApolloResponse<#A1>> // com.apollographql.apollo.interceptor/ApolloInterceptor.intercept|intercept(com.apollographql.apollo.api.ApolloRequest<0:0>;com.apollographql.apollo.interceptor.ApolloInterceptorChain){0§<com.apollographql.apollo.api.Operation.Data>}[0]
+
+    final enum class InsertionPoint : kotlin/Enum<com.apollographql.apollo.interceptor/ApolloInterceptor.InsertionPoint> { // com.apollographql.apollo.interceptor/ApolloInterceptor.InsertionPoint|null[0]
+        enum entry BeforeAutoPersistedQueries // com.apollographql.apollo.interceptor/ApolloInterceptor.InsertionPoint.BeforeAutoPersistedQueries|null[0]
+        enum entry BeforeCache // com.apollographql.apollo.interceptor/ApolloInterceptor.InsertionPoint.BeforeCache|null[0]
+        enum entry BeforeNetwork // com.apollographql.apollo.interceptor/ApolloInterceptor.InsertionPoint.BeforeNetwork|null[0]
+        enum entry BeforeRetryOnError // com.apollographql.apollo.interceptor/ApolloInterceptor.InsertionPoint.BeforeRetryOnError|null[0]
+
+        final val entries // com.apollographql.apollo.interceptor/ApolloInterceptor.InsertionPoint.entries|#static{}entries[0]
+            final fun <get-entries>(): kotlin.enums/EnumEntries<com.apollographql.apollo.interceptor/ApolloInterceptor.InsertionPoint> // com.apollographql.apollo.interceptor/ApolloInterceptor.InsertionPoint.entries.<get-entries>|<get-entries>#static(){}[0]
+
+        final fun valueOf(kotlin/String): com.apollographql.apollo.interceptor/ApolloInterceptor.InsertionPoint // com.apollographql.apollo.interceptor/ApolloInterceptor.InsertionPoint.valueOf|valueOf#static(kotlin.String){}[0]
+        final fun values(): kotlin/Array<com.apollographql.apollo.interceptor/ApolloInterceptor.InsertionPoint> // com.apollographql.apollo.interceptor/ApolloInterceptor.InsertionPoint.values|values#static(){}[0]
+    }
 }
 
 abstract interface com.apollographql.apollo.interceptor/ApolloInterceptorChain { // com.apollographql.apollo.interceptor/ApolloInterceptorChain|null[0]
@@ -663,7 +676,7 @@ final class com.apollographql.apollo/ApolloClient : com.apollographql.apollo.api
         final fun addExecutionContext(com.apollographql.apollo.api/ExecutionContext): com.apollographql.apollo/ApolloClient.Builder // com.apollographql.apollo/ApolloClient.Builder.addExecutionContext|addExecutionContext(com.apollographql.apollo.api.ExecutionContext){}[0]
         final fun addHttpHeader(kotlin/String, kotlin/String): com.apollographql.apollo/ApolloClient.Builder // com.apollographql.apollo/ApolloClient.Builder.addHttpHeader|addHttpHeader(kotlin.String;kotlin.String){}[0]
         final fun addHttpInterceptor(com.apollographql.apollo.network.http/HttpInterceptor): com.apollographql.apollo/ApolloClient.Builder // com.apollographql.apollo/ApolloClient.Builder.addHttpInterceptor|addHttpInterceptor(com.apollographql.apollo.network.http.HttpInterceptor){}[0]
-        final fun addInterceptor(com.apollographql.apollo.interceptor/ApolloInterceptor): com.apollographql.apollo/ApolloClient.Builder // com.apollographql.apollo/ApolloClient.Builder.addInterceptor|addInterceptor(com.apollographql.apollo.interceptor.ApolloInterceptor){}[0]
+        final fun addInterceptor(com.apollographql.apollo.interceptor/ApolloInterceptor, com.apollographql.apollo.interceptor/ApolloInterceptor.InsertionPoint = ...): com.apollographql.apollo/ApolloClient.Builder // com.apollographql.apollo/ApolloClient.Builder.addInterceptor|addInterceptor(com.apollographql.apollo.interceptor.ApolloInterceptor;com.apollographql.apollo.interceptor.ApolloInterceptor.InsertionPoint){}[0]
         final fun addInterceptors(kotlin.collections/List<com.apollographql.apollo.interceptor/ApolloInterceptor>): com.apollographql.apollo/ApolloClient.Builder // com.apollographql.apollo/ApolloClient.Builder.addInterceptors|addInterceptors(kotlin.collections.List<com.apollographql.apollo.interceptor.ApolloInterceptor>){}[0]
         final fun autoPersistedQueries(com.apollographql.apollo.api.http/HttpMethod = ..., com.apollographql.apollo.api.http/HttpMethod = ..., kotlin/Boolean = ...): com.apollographql.apollo/ApolloClient.Builder // com.apollographql.apollo/ApolloClient.Builder.autoPersistedQueries|autoPersistedQueries(com.apollographql.apollo.api.http.HttpMethod;com.apollographql.apollo.api.http.HttpMethod;kotlin.Boolean){}[0]
         final fun autoPersistedQueriesInterceptor(com.apollographql.apollo.interceptor/ApolloInterceptor?): com.apollographql.apollo/ApolloClient.Builder // com.apollographql.apollo/ApolloClient.Builder.autoPersistedQueriesInterceptor|autoPersistedQueriesInterceptor(com.apollographql.apollo.interceptor.ApolloInterceptor?){}[0]
