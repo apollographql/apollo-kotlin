@@ -849,8 +849,8 @@ private constructor(
      * @see retryOnErrorInterceptor
      */
     @JvmOverloads
-    fun addInterceptor(interceptor: ApolloInterceptor, where: ApolloInterceptor.InsertionPoint = ApolloInterceptor.InsertionPoint.BeforeCache) = apply {
-      when(where) {
+    fun addInterceptor(interceptor: ApolloInterceptor, insertionPoint: ApolloInterceptor.InsertionPoint = ApolloInterceptor.InsertionPoint.BeforeCache) = apply {
+      when(insertionPoint) {
         ApolloInterceptor.InsertionPoint.BeforeCache -> _beforeCacheInterceptors
         ApolloInterceptor.InsertionPoint.BeforeAutoPersistedQueries -> _beforeAutoPersistedQueriesInterceptors
         ApolloInterceptor.InsertionPoint.BeforeRetryOnError -> _beforeRetryOnErrorInterceptors
