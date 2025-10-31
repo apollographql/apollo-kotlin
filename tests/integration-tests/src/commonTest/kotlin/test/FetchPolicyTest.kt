@@ -3,7 +3,6 @@
 
 package test
 
-import app.cash.turbine.test
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.ApolloRequest
@@ -22,8 +21,6 @@ import com.apollographql.apollo.cache.normalized.isFromCache
 import com.apollographql.apollo.cache.normalized.refetchPolicyInterceptor
 import com.apollographql.apollo.cache.normalized.store
 import com.apollographql.apollo.cache.normalized.watch
-import com.apollographql.apollo.exception.ApolloCompositeException
-import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.CacheMissException
 import com.apollographql.apollo.exception.JsonEncodingException
@@ -47,13 +44,11 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import kotlin.test.fail
 
 class FetchPolicyTest {
   private lateinit var mockServer: MockServer
