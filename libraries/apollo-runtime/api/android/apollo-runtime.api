@@ -75,6 +75,7 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public final fun addInterceptor (Lcom/apollographql/apollo/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun addInterceptor (Lcom/apollographql/apollo/interceptor/ApolloInterceptor;Lcom/apollographql/apollo/interceptor/ApolloInterceptor$InsertionPoint;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public static synthetic fun addInterceptor$default (Lcom/apollographql/apollo/ApolloClient$Builder;Lcom/apollographql/apollo/interceptor/ApolloInterceptor;Lcom/apollographql/apollo/interceptor/ApolloInterceptor$InsertionPoint;ILjava/lang/Object;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public final fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun autoPersistedQueries ()Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun autoPersistedQueries (Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun autoPersistedQueries (Lcom/apollographql/apollo/api/http/HttpMethod;Lcom/apollographql/apollo/api/http/HttpMethod;)Lcom/apollographql/apollo/ApolloClient$Builder;
