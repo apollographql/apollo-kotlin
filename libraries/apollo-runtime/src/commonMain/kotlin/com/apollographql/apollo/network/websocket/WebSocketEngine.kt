@@ -18,7 +18,7 @@ interface WebSocketEngine: Closeable {
    * - [WebSocketListener.onError] has been called
    * - [WebSocketListener.onClosed] has been called
    *
-   * @param url: an url starting with one of:
+   * @param url the url, starting with one of:
    * - ws://
    * - wss://
    * - http://
