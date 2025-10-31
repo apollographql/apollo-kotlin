@@ -485,10 +485,12 @@ private constructor(
 
     /**
      * Configures the url to use for every request.
-     * This applies to every request, including subscriptions. Use [httpServerUrl] and [webSocketServerUrl] if you need different urls.
+     * This applies to every request, including subscriptions. This url is set in the request [ExecutionContext] and takes precedence over
+     * [serverUrl] and [webSocketServerUrl].
+     * You may use an interceptor to change the url based on the incoming [ApolloRequest].
      *
      * @see serverUrl
-     * @see httpServerUrl
+     * @see webSocketServerUrl
      */
     override fun url(url: String?) = apply{
       this.url = url
@@ -593,26 +595,28 @@ private constructor(
     }
 
     /**
-     * The http:// or https:// url of the GraphQL server.
+     * Sets the default http:// or https:// url of the GraphQL endpoint.
      *
      * This is the same as [httpServerUrl].
      *
      * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
      *
      * @see networkTransport
+     * @see url
      */
     fun serverUrl(serverUrl: String) = apply {
       httpServerUrl = serverUrl
     }
 
     /**
-     * The http:// or https:// url of the GraphQL server.
+     * Sets the default http:// or https:// url of the GraphQL endpoint.
      *
      * This is the same as [serverUrl].
      *
      * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
      *
      * @see networkTransport
+     * @see url
      */
     fun httpServerUrl(httpServerUrl: String?) = apply {
       this.httpServerUrl = httpServerUrl
@@ -678,8 +682,7 @@ private constructor(
     }
 
     /**
-     * The url of the GraphQL server used for WebSockets
-     * Use this function or webSocketServerUrl((suspend () -> String)) but not both.
+     * Sets the default url of the GraphQL websockets endpoint.
      *
      * This is a convenience function that configures the underlying [WebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
      *
@@ -701,6 +704,7 @@ private constructor(
      *
      * This is a convenience function that configures the underlying [WebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
      *
+     * @see url
      * @see subscriptionNetworkTransport
      */
     fun webSocketServerUrl(webSocketServerUrl: (suspend () -> String)?) = apply {
