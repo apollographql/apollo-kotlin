@@ -41,6 +41,8 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import okio.Closeable
+import kotlin.collections.mutableListOf
+import kotlin.collections.plusAssign
 import kotlin.jvm.JvmOverloads
 
 /**
@@ -288,14 +290,20 @@ private constructor(
     }.build()
 
     val allInterceptors = buildList {
-      addAll(interceptors)
+      addAll(builder._beforeCacheInterceptors)
       if (cacheInterceptor != null) {
         add(cacheInterceptor)
       }
+
+      addAll(builder._beforeAutoPersistedQueriesInterceptors)
       if (autoPersistedQueryInterceptor != null) {
         add(autoPersistedQueryInterceptor)
       }
+
+      addAll(builder._beforeRetryOnErrorInterceptors)
       add(retryOnErrorInterceptor ?: RetryOnErrorInterceptor())
+
+      addAll(builder._beforeNetworkInterceptors)
       add(networkInterceptor)
     }
     return DefaultInterceptorChain(allInterceptors, 0)
@@ -327,8 +335,12 @@ private constructor(
     private val _customScalarAdaptersBuilder = CustomScalarAdapters.Builder()
     val customScalarAdapters: CustomScalarAdapters get() = _customScalarAdaptersBuilder.build()
 
-    private val _interceptors: MutableList<ApolloInterceptor> = mutableListOf()
-    val interceptors: List<ApolloInterceptor> = _interceptors
+    internal val _beforeCacheInterceptors: MutableList<ApolloInterceptor> = mutableListOf()
+    internal val _beforeAutoPersistedQueriesInterceptors: MutableList<ApolloInterceptor> = mutableListOf()
+    internal val _beforeRetryOnErrorInterceptors: MutableList<ApolloInterceptor> = mutableListOf()
+    internal val _beforeNetworkInterceptors: MutableList<ApolloInterceptor> = mutableListOf()
+
+    val interceptors: List<ApolloInterceptor> = _beforeCacheInterceptors + _beforeAutoPersistedQueriesInterceptors + _beforeRetryOnErrorInterceptors + _beforeNetworkInterceptors
 
     private val _httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
     val httpInterceptors: List<HttpInterceptor> = _httpInterceptors
@@ -819,25 +831,31 @@ private constructor(
     /**
      * Adds an [ApolloInterceptor] to this [ApolloClient].
      *
-     * [ApolloInterceptor]s monitor, rewrite and retry an [ApolloCall]. Internally, [ApolloInterceptor] is used for features
+     * An [ApolloInterceptor] may monitor, rewrite, or retry an [ApolloRequest]. Internally, [ApolloInterceptor] is used for features
      * such as normalized cache and auto persisted queries. [ApolloClient] also inserts a terminating [ApolloInterceptor] that
      * executes the request.
      *
-     * **The order is important**. The [ApolloInterceptor]s are executed in the order they are added and are always added before
-     * the built-in interceptors:
+     * **The order is important**. The built-in interceptors are always called in the following order:
      *
-     * - user interceptors
      * - cacheInterceptor
      * - autoPersistedQueriesInterceptor
      * - retryOnErrorInterceptor
      * - networkInterceptor
      *
+     * Use [ApolloInterceptor.InsertionPoint] to control where to insert a specific interceptor.
+     *
      * @see cacheInterceptor
      * @see autoPersistedQueriesInterceptor
      * @see retryOnErrorInterceptor
      */
-    fun addInterceptor(interceptor: ApolloInterceptor) = apply {
-      _interceptors.add(interceptor)
+    @JvmOverloads
+    fun addInterceptor(interceptor: ApolloInterceptor, where: ApolloInterceptor.InsertionPoint = ApolloInterceptor.InsertionPoint.BeforeCache) = apply {
+      when(where) {
+        ApolloInterceptor.InsertionPoint.BeforeCache -> _beforeCacheInterceptors
+        ApolloInterceptor.InsertionPoint.BeforeAutoPersistedQueries -> _beforeAutoPersistedQueriesInterceptors
+        ApolloInterceptor.InsertionPoint.BeforeRetryOnError -> _beforeRetryOnErrorInterceptors
+        ApolloInterceptor.InsertionPoint.BeforeNetwork -> _beforeNetworkInterceptors
+      }.add(interceptor)
     }
 
     /**
@@ -846,7 +864,7 @@ private constructor(
      * **The order is important**. This method removes the first occurrence of the [ApolloInterceptor] in the list.
      */
     fun removeInterceptor(interceptor: ApolloInterceptor) = apply {
-      _interceptors.remove(interceptor)
+      _beforeCacheInterceptors.remove(interceptor)
     }
 
     /**
@@ -862,7 +880,7 @@ private constructor(
     @Deprecated("Use addInterceptor() or interceptors()", level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
     fun addInterceptors(interceptors: List<ApolloInterceptor>) = apply {
-      this._interceptors += interceptors
+      error("This function is not supported anymore, please use addInterceptor() instead")
     }
 
     /**
@@ -876,8 +894,8 @@ private constructor(
      * use interceptors, the order of the cache/APQs configuration also influences the final interceptor list.
      */
     fun interceptors(interceptors: List<ApolloInterceptor>) = apply {
-      this._interceptors.clear()
-      this._interceptors += interceptors
+      this._beforeCacheInterceptors.clear()
+      this._beforeCacheInterceptors += interceptors
     }
 
     /**
@@ -964,7 +982,12 @@ private constructor(
     fun copy(): Builder {
       return Builder()
           .customScalarAdapters(_customScalarAdaptersBuilder.build())
-          .interceptors(interceptors)
+          .also {
+            it._beforeCacheInterceptors.addAll(_beforeCacheInterceptors)
+            it._beforeAutoPersistedQueriesInterceptors.addAll(_beforeAutoPersistedQueriesInterceptors)
+            it._beforeRetryOnErrorInterceptors.addAll(_beforeRetryOnErrorInterceptors)
+            it._beforeNetworkInterceptors.addAll(_beforeNetworkInterceptors)
+          }
           .dispatcher(dispatcher)
           .executionContext(executionContext)
           .url(url)
