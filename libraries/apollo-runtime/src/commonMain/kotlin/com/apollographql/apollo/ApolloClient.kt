@@ -85,6 +85,7 @@ private constructor(
   private val sendEnhancedClientAwareness = builder.sendEnhancedClientAwareness
 
   override val executionContext: ExecutionContext = builder.executionContext
+  override val url: String? = builder.url
   override val httpMethod: HttpMethod? = builder.httpMethod
   override val httpHeaders: List<HttpHeader>? = builder.httpHeaders
   override val sendApqExtensions: Boolean? = builder.sendApqExtensions
@@ -109,11 +110,8 @@ private constructor(
       }
       builder.networkTransport!!
     } else {
-      check(builder.httpServerUrl != null) {
-        "Apollo: 'serverUrl' is required"
-      }
       HttpNetworkTransport.Builder()
-          .serverUrl(builder.httpServerUrl!!)
+          .serverUrl(builder.httpServerUrl)
           .apply {
             if (builder.httpEngine != null) {
               httpEngine(builder.httpEngine!!)
@@ -337,6 +335,8 @@ private constructor(
 
     override var executionContext: ExecutionContext = ExecutionContext.Empty
       private set
+    override var url: String? = null
+      private set
     override var httpMethod: HttpMethod? = null
       private set
     override var httpHeaders: List<HttpHeader>? = null
@@ -484,6 +484,19 @@ private constructor(
     }
 
     /**
+     * Configures the url to use for every request.
+     * This applies to every request, including subscriptions. This url is set in the request [ExecutionContext] and takes precedence over
+     * [serverUrl] and [webSocketServerUrl].
+     * You may use an interceptor to change the url based on the incoming [ApolloRequest].
+     *
+     * @see serverUrl
+     * @see webSocketServerUrl
+     */
+    override fun url(url: String?) = apply{
+      this.url = url
+    }
+
+    /**
      * Configures the [HttpMethod] to use.
      *
      * @param httpMethod the [HttpMethod] to use or `null` to use the default [HttpMethod.Post].
@@ -582,26 +595,28 @@ private constructor(
     }
 
     /**
-     * The http:// or https:// url of the GraphQL server.
+     * Sets the default http:// or https:// url of the GraphQL endpoint.
      *
      * This is the same as [httpServerUrl].
      *
      * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
      *
      * @see networkTransport
+     * @see url
      */
     fun serverUrl(serverUrl: String) = apply {
       httpServerUrl = serverUrl
     }
 
     /**
-     * The http:// or https:// url of the GraphQL server.
+     * Sets the default http:// or https:// url of the GraphQL endpoint.
      *
      * This is the same as [serverUrl].
      *
      * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
      *
      * @see networkTransport
+     * @see url
      */
     fun httpServerUrl(httpServerUrl: String?) = apply {
       this.httpServerUrl = httpServerUrl
@@ -667,8 +682,7 @@ private constructor(
     }
 
     /**
-     * The url of the GraphQL server used for WebSockets
-     * Use this function or webSocketServerUrl((suspend () -> String)) but not both.
+     * Sets the default url of the GraphQL websockets endpoint.
      *
      * This is a convenience function that configures the underlying [WebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
      *
@@ -690,6 +704,7 @@ private constructor(
      *
      * This is a convenience function that configures the underlying [WebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
      *
+     * @see url
      * @see subscriptionNetworkTransport
      */
     fun webSocketServerUrl(webSocketServerUrl: (suspend () -> String)?) = apply {
@@ -952,6 +967,7 @@ private constructor(
           .interceptors(interceptors)
           .dispatcher(dispatcher)
           .executionContext(executionContext)
+          .url(url)
           .httpMethod(httpMethod)
           .httpHeaders(httpHeaders)
           .httpServerUrl(httpServerUrl)

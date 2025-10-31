@@ -10,6 +10,11 @@ interface ExecutionOptions {
   val executionContext: ExecutionContext
 
   /**
+   * The url to use for that request.
+   */
+  val url: String?
+
+  /**
    *
    * The HTTP method to use for the request.
    *
@@ -64,6 +69,11 @@ interface ExecutionOptions {
 
 interface MutableExecutionOptions<T> : ExecutionOptions {
   fun addExecutionContext(executionContext: ExecutionContext): T
+
+  /**
+   * Configures the url to use for this request.
+   */
+  fun url(url: String?): T
 
   /**
    * Configures whether the request should use GET or POST

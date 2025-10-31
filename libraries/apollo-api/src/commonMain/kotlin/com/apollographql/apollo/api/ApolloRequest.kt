@@ -28,6 +28,7 @@ private constructor(
     val operation: Operation<D>,
     val requestUuid: Uuid,
     override val executionContext: ExecutionContext,
+    override val url: String?,
     override val httpMethod: HttpMethod?,
     override val httpHeaders: List<HttpHeader>?,
     override val sendApqExtensions: Boolean?,
@@ -50,6 +51,7 @@ private constructor(
     return Builder(operation)
         .requestUuid(requestUuid)
         .executionContext(executionContext)
+        .url(url)
         .httpMethod(httpMethod)
         .httpHeaders(httpHeaders)
         .sendApqExtensions(sendApqExtensions)
@@ -69,6 +71,8 @@ private constructor(
     var requestUuid: Uuid? = null
       private set
     override var executionContext: ExecutionContext = ExecutionContext.Empty
+      private set
+    override var url: String? = null
       private set
     override var httpMethod: HttpMethod? = null
       private set
@@ -95,7 +99,6 @@ private constructor(
     var sendEnhancedClientAwareness: Boolean = true
       private set
 
-
     fun requestUuid(requestUuid: Uuid) = apply {
       this.requestUuid = requestUuid
     }
@@ -110,6 +113,10 @@ private constructor(
 
     fun ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders: Boolean?) = apply {
       this.ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders
+    }
+
+    override fun url(url: String?) = apply {
+      this.url = url
     }
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder<D> = apply {
@@ -174,6 +181,7 @@ private constructor(
           failFastIfOffline = failFastIfOffline,
           ignoreUnknownKeys = ignoreUnknownKeys,
           sendEnhancedClientAwareness = sendEnhancedClientAwareness,
+          url = url
       )
     }
   }

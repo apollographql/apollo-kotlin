@@ -1,5 +1,6 @@
 package test.network
 
+import app.cash.turbine.awaitItem
 import app.cash.turbine.test
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloRequest
@@ -15,7 +16,9 @@ import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo.network.websocket.GraphQLWsProtocol
 import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo.network.websocket.closeConnection
+import com.apollographql.apollo.testing.Platform
 import com.apollographql.apollo.testing.internal.runTest
+import com.apollographql.apollo.testing.platform
 import com.apollographql.mockserver.CloseFrame
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.TextMessage
@@ -24,8 +27,9 @@ import com.apollographql.mockserver.WebsocketMockRequest
 import com.apollographql.mockserver.awaitWebSocketRequest
 import com.apollographql.mockserver.enqueueWebSocket
 import com.apollographql.mockserver.headerValueOf
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -33,13 +37,16 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.retryWhen
+import kotlinx.coroutines.launch
 import okio.use
+import test.FooOperation
 import test.FooSubscription
 import test.FooSubscription.Companion.completeMessage
 import test.FooSubscription.Companion.errorMessage
 import test.FooSubscription.Companion.nextMessage
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.milliseconds
@@ -460,9 +467,9 @@ class WebSocketNetworkTransportTest {
 
       return flow {
         counter++
-        val request =  request.newBuilder()
-                .addHttpHeader("Authorization", counter.toString())
-                .build()
+        val request = request.newBuilder()
+            .addHttpHeader("Authorization", counter.toString())
+            .build()
 
         emitAll(chain.proceed(request))
       }.onEach {
@@ -472,6 +479,7 @@ class WebSocketNetworkTransportTest {
               throw RetryException
             }
           }
+
           else -> {
             // Terminate the subscription if the exception is terminal or retry
           }
@@ -480,6 +488,90 @@ class WebSocketNetworkTransportTest {
         cause is RetryException
       }
     }
+  }
+
+  @Test
+  fun canChangeRequestUrl() = runTest {
+    if (platform() == Platform.Js) {
+      // See https://github.com/apollographql/apollo-kotlin-mockserver/issues/38
+      return@runTest
+    }
+
+    ApolloClient.Builder()
+        .subscriptionNetworkTransport(WebSocketNetworkTransport.Builder().build())
+        .build()
+        .use { apolloClient ->
+          MockServer().use { mockServer1 ->
+            MockServer().use { mockServer2 ->
+              coroutineScope {
+                val session1 = MockServerWebSocketTest(apolloClient, mockServer1)
+                val session2 = MockServerWebSocketTest(apolloClient, mockServer2)
+                val channel = Channel<ApolloResponse<FooOperation.Data>>()
+                launch {
+                  apolloClient.subscription(FooSubscription())
+                      .url(mockServer1.url())
+                      .toFlow()
+                      .collect {
+                        channel.send(it)
+                      }
+                }
+
+                session1.awaitConnectionInit()
+
+                // play session1
+                val operationId1 = session1.serverReader.awaitSubscribe()
+                session1.serverWriter.enqueueMessage(nextMessage(operationId1, 1))
+                assertEquals(1, channel.awaitItem().data?.foo)
+
+                launch {
+                  apolloClient.subscription(FooSubscription())
+                      .url(mockServer2.url())
+                      .toFlow()
+                      .collect {
+                        channel.send(it)
+                      }
+                }
+
+                session2.awaitConnectionInit()
+
+                // play session2
+                val operationId2 = session2.serverReader.awaitSubscribe()
+                session2.serverWriter.enqueueMessage(nextMessage(operationId2, 2))
+                assertEquals(2, channel.awaitItem().data?.foo)
+
+                // session1 is still alive
+                session1.serverWriter.enqueueMessage(nextMessage(operationId1, 3))
+                assertEquals(3, channel.awaitItem().data?.foo)
+
+                // we can run more subscriptions on session1
+                launch {
+                  apolloClient.subscription(FooSubscription())
+                      .url(mockServer1.url())
+                      .toFlow()
+                      .collect {
+                        channel.send(it)
+                      }
+                }
+                val operationId3 = session1.serverReader.awaitSubscribe()
+                session1.serverWriter.enqueueMessage(nextMessage(operationId3, 4))
+                assertEquals(4, channel.awaitItem().data?.foo)
+
+                // terminate the subscriptions
+                session1.serverWriter.enqueueMessage(completeMessage(operationId1))
+                session2.serverWriter.enqueueMessage(completeMessage(operationId2))
+                session1.serverWriter.enqueueMessage(completeMessage(operationId3))
+
+                // Make sure there were only 2 HTTP requests overall
+                assertFails {
+                  mockServer1.takeRequest()
+                }
+                assertFails {
+                  mockServer2.takeRequest()
+                }
+              }
+            }
+          }
+        }
   }
 }
 
@@ -490,7 +582,6 @@ internal fun WebSocketBody.enqueueMessage(message: String) {
 class MockServerWebSocketTest(
     val apolloClient: ApolloClient,
     private val mockServer: MockServer,
-    val coroutineScope: CoroutineScope,
 ) {
   /**
    * Enqueue the response straight away
@@ -533,7 +624,7 @@ fun mockServerWebSocketTest(
                 .build()
         )
         .build().use { apolloClient ->
-          MockServerWebSocketTest(apolloClient, mockServer, this@runTest).block()
+          MockServerWebSocketTest(apolloClient, mockServer).block()
         }
   }
 }

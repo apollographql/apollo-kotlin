@@ -1,5 +1,6 @@
 package com.apollographql.apollo.network.websocket.internal
 
+import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloNetworkException
@@ -8,20 +9,24 @@ import com.apollographql.apollo.network.websocket.WebSocketEngine
 import com.apollographql.apollo.network.websocket.WsProtocol
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
+import okio.ByteString
+import okio.HashingSink
+import okio.blackholeSink
+import okio.buffer
 import kotlin.time.Duration
 
 internal class WebSocketPool(
     private val webSocketEngine: WebSocketEngine,
-    private val serverUrl: String,
+    private val serverUrl: String?,
     private val wsProtocol: WsProtocol,
     private val connectionAcknowledgeTimeout: Duration,
     private val pingInterval: Duration?,
     private val idleTimeout: Duration,
 )  {
   private var lock = reentrantLock()
-  private val subscribableWebSockets = mutableMapOf<List<HttpHeader>, SubscribableWebSocket>()
+  private val subscribableWebSockets = mutableMapOf<ByteString, SubscribableWebSocket>()
 
-  private fun cleanupLocked(key: List<HttpHeader>) {
+  private fun cleanupLocked(key: ByteString) {
     val iterator = subscribableWebSockets.iterator()
     while(iterator.hasNext()) {
       val entry = iterator.next()
@@ -58,23 +63,41 @@ internal class WebSocketPool(
     }
   }
 
-  fun acquire(httpHeaders: List<HttpHeader>): SubscribableWebSocket {
+  private fun key(url: String, httpHeaders: List<HttpHeader>): ByteString {
+    val hashingSink = HashingSink.sha256(blackholeSink())
+    hashingSink.buffer().apply {
+      writeUtf8(url)
+      writeByte(0)
+      httpHeaders.forEach {
+        writeUtf8("${it.name}: ${it.value}")
+        writeByte(0)
+      }
+      flush()
+    }
+
+    return hashingSink.hash
+  }
+
+  fun acquire(apolloRequest: ApolloRequest<*>): SubscribableWebSocket {
     return lock.withLock {
 
-      cleanupLocked(httpHeaders)
+      val url = apolloRequest.url ?: serverUrl ?: error("ApolloRequest.url is missing for request '${apolloRequest.operation.name()}', did you call ApolloClient.Builder.webSocketServerUrl(url)?")
+      val httpHeaders = apolloRequest.httpHeaders.orEmpty()
+      val key = key(url, httpHeaders)
+      cleanupLocked(key)
 
-      var webSocket = subscribableWebSockets.get(httpHeaders)
+      var webSocket = subscribableWebSockets.get(key)
       if (webSocket == null) {
         webSocket = SubscribableWebSocket(
             webSocketEngine = webSocketEngine,
-            serverUrl = serverUrl,
+            serverUrl = url,
             httpHeaders = httpHeaders,
             wsProtocol = wsProtocol,
             pingInterval = pingInterval,
             connectionAcknowledgeTimeout = connectionAcknowledgeTimeout,
             idleTimeout = idleTimeout
         )
-        subscribableWebSockets.put(httpHeaders, webSocket)
+        subscribableWebSockets.put(key, webSocket)
       }
       webSocket
     }

@@ -38,7 +38,7 @@ import kotlin.time.Duration.Companion.seconds
 @ApolloExperimental
 class WebSocketNetworkTransport private constructor(
     private val webSocketEngine: WebSocketEngine,
-    private val serverUrl: String,
+    private val serverUrl: String?,
     private val wsProtocol: WsProtocol,
     private val connectionAcknowledgeTimeout: Duration,
     private val pingInterval: Duration?,
@@ -79,7 +79,7 @@ class WebSocketNetworkTransport private constructor(
 
       val operationListener = DefaultOperationListener(newRequest, this, parserFactory.createParser(request))
 
-      val webSocket = pool.acquire(newRequest.httpHeaders.orEmpty())
+      val webSocket = pool.acquire(newRequest)
 
       webSocket.startOperation(newRequest, operationListener)
 
@@ -196,7 +196,7 @@ class WebSocketNetworkTransport private constructor(
     fun build(): WebSocketNetworkTransport {
       return WebSocketNetworkTransport(
           webSocketEngine = webSocketEngine ?: WebSocketEngine(),
-          serverUrl = serverUrl ?: error("Apollo: 'serverUrl' is required"),
+          serverUrl = serverUrl,
           idleTimeout = idleTimeout ?: 60.seconds,
           wsProtocol = wsProtocol ?: GraphQLWsProtocol { null },
           pingInterval = pingInterval,
