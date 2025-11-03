@@ -74,14 +74,14 @@ fun interface RetryDelegate {
    *
    * @return true if this request should be retried.
    */
-  suspend fun shouldRetry(request: ApolloRequest<*>, response: ApolloResponse<*>, state: RetryState): Boolean
+  suspend fun shouldRetry(state: RetryState, request: ApolloRequest<*>, response: ApolloResponse<*>): Boolean
 }
 
 /**
  * The state of this request
  */
 class RetryState(
-    val networkMonitor: NetworkMonitor?
+    val networkMonitor: NetworkMonitor?,
 ) {
   /**
    * The current attempt, starting at 0.
@@ -92,7 +92,7 @@ class RetryState(
 
 internal fun RetryOnErrorInterceptor(): ApolloInterceptor = DefaultRetryOnErrorInterceptorImpl(null, defaultRetryDelegate)
 
-private val defaultRetryDelegate = RetryDelegate { request: ApolloRequest<*>, response: ApolloResponse<*>, state: RetryState ->
+private val defaultRetryDelegate = RetryDelegate { state: RetryState, request: ApolloRequest<*>, response: ApolloResponse<*> ->
   val exception = response.exception
   if (exception == null) {
     // success: continue
@@ -140,7 +140,7 @@ private class DefaultRetryOnErrorInterceptorImpl(
 
     // Do not move this down into flow{} because WebSocketNetworkTransport saves some state in there
     val downstream = chain.proceed(request)
-    
+
     return flow {
       if (failFastIfOffline && networkMonitor?.isOnline?.value == false) {
         emit((ApolloResponse.Builder(request.operation, request.requestUuid).exception(ApolloOfflineException()).build()))
@@ -148,7 +148,7 @@ private class DefaultRetryOnErrorInterceptorImpl(
         emitAll(downstream)
       }
     }.onEach {
-      if (request.retryOnError == true && retryDelegate.shouldRetry(request, it, state)) {
+      if (request.retryOnError == true && retryDelegate.shouldRetry(state, request, it)) {
         throw RetryException()
       } else {
         state.attempt = 0
@@ -185,4 +185,4 @@ private fun ApolloException.isRecoverable(): Boolean {
  * Do not try to turn this into a singleton because the coroutine stacktrace recovery
  * mechanism may duplicate it anyway.
  */
-private class RetryException: Exception("Retry")
+private class RetryException : Exception("Retry")

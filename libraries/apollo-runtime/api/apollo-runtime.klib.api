@@ -33,7 +33,7 @@ final enum class com.apollographql.apollo.network/IncrementalDeliveryProtocol : 
 }
 
 abstract fun interface com.apollographql.apollo.interceptor/RetryDelegate { // com.apollographql.apollo.interceptor/RetryDelegate|null[0]
-    abstract suspend fun shouldRetry(com.apollographql.apollo.api/ApolloRequest<*>, com.apollographql.apollo.api/ApolloResponse<*>, com.apollographql.apollo.interceptor/RetryState): kotlin/Boolean // com.apollographql.apollo.interceptor/RetryDelegate.shouldRetry|shouldRetry(com.apollographql.apollo.api.ApolloRequest<*>;com.apollographql.apollo.api.ApolloResponse<*>;com.apollographql.apollo.interceptor.RetryState){}[0]
+    abstract suspend fun shouldRetry(com.apollographql.apollo.interceptor/RetryState, com.apollographql.apollo.api/ApolloRequest<*>, com.apollographql.apollo.api/ApolloResponse<*>): kotlin/Boolean // com.apollographql.apollo.interceptor/RetryDelegate.shouldRetry|shouldRetry(com.apollographql.apollo.interceptor.RetryState;com.apollographql.apollo.api.ApolloRequest<*>;com.apollographql.apollo.api.ApolloResponse<*>){}[0]
 }
 
 abstract interface <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.apollo.network.websocket/SubscriptionParser { // com.apollographql.apollo.network.websocket/SubscriptionParser|null[0]

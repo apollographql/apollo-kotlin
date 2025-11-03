@@ -220,7 +220,7 @@ public final class com/apollographql/apollo/interceptor/AutoPersistedQueryInterc
 }
 
 public abstract interface class com/apollographql/apollo/interceptor/RetryDelegate {
-	public abstract fun shouldRetry (Lcom/apollographql/apollo/api/ApolloRequest;Lcom/apollographql/apollo/api/ApolloResponse;Lcom/apollographql/apollo/interceptor/RetryState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun shouldRetry (Lcom/apollographql/apollo/interceptor/RetryState;Lcom/apollographql/apollo/api/ApolloRequest;Lcom/apollographql/apollo/api/ApolloResponse;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo/interceptor/RetryOnErrorInterceptorKt {

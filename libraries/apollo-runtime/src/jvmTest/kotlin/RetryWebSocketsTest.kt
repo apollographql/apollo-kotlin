@@ -10,7 +10,6 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo.testing.internal.runTest
-import test.network.connectionAckMessage
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.awaitWebSocketRequest
@@ -31,6 +30,7 @@ import test.FooSubscription
 import test.FooSubscription.Companion.completeMessage
 import test.FooSubscription.Companion.nextMessage
 import test.network.awaitSubscribe
+import test.network.connectionAckMessage
 import test.network.enqueueMessage
 import test.network.mockServerTest
 import test.network.retryWhen
