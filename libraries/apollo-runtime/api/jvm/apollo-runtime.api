@@ -220,6 +220,7 @@ public final class com/apollographql/apollo/interceptor/AutoPersistedQueryInterc
 
 public final class com/apollographql/apollo/interceptor/RetryOnErrorInterceptorKt {
 	public static final fun RetryOnErrorInterceptor (Lcom/apollographql/apollo/network/NetworkMonitor;)Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
+	public static final fun RetryOnErrorInterceptor (Lcom/apollographql/apollo/network/NetworkMonitor;Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
 }
 
 public final class com/apollographql/apollo/network/IncrementalDeliveryProtocol : java/lang/Enum {

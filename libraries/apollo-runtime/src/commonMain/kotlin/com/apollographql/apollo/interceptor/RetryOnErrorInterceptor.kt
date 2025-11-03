@@ -6,6 +6,8 @@ import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.exception.ApolloWebSocketClosedException
+import com.apollographql.apollo.exception.ApolloWebSocketForceCloseException
 import com.apollographql.apollo.exception.OfflineException
 import com.apollographql.apollo.network.NetworkMonitor
 import com.apollographql.apollo.network.waitForNetwork
@@ -44,11 +46,20 @@ import kotlin.time.Duration.Companion.seconds
  * @see [ApolloRequest.failFastIfOffline]
  */
 @ApolloExperimental
-fun RetryOnErrorInterceptor(networkMonitor: NetworkMonitor): ApolloInterceptor = DefaultRetryOnErrorInterceptorImpl(networkMonitor)
+fun RetryOnErrorInterceptor(networkMonitor: NetworkMonitor): ApolloInterceptor =
+  DefaultRetryOnErrorInterceptorImpl(networkMonitor) { it.isRecoverable() }
 
-internal fun RetryOnErrorInterceptor(): ApolloInterceptor = DefaultRetryOnErrorInterceptorImpl(null)
+@ApolloExperimental
+fun RetryOnErrorInterceptor(networkMonitor: NetworkMonitor, isRecoverable: (ApolloException) -> Boolean): ApolloInterceptor =
+  DefaultRetryOnErrorInterceptorImpl(networkMonitor, isRecoverable)
 
-private class DefaultRetryOnErrorInterceptorImpl(private val networkMonitor: NetworkMonitor?) : ApolloInterceptor {
+
+internal fun RetryOnErrorInterceptor(): ApolloInterceptor = DefaultRetryOnErrorInterceptorImpl(null) { it.isRecoverable() }
+
+private class DefaultRetryOnErrorInterceptorImpl(
+    private val networkMonitor: NetworkMonitor?,
+    private val isRecoverable: (ApolloException) -> Boolean,
+) : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     val failFastIfOffline = request.failFastIfOffline ?: false
     val retryOnError = request.retryOnError ?: false
@@ -61,31 +72,31 @@ private class DefaultRetryOnErrorInterceptorImpl(private val networkMonitor: Net
     val downStream = chain.proceed(request)
 
     return flow {
-          if (failFastIfOffline && networkMonitor?.isOnline?.value == false) {
-            emit((ApolloResponse.Builder(request.operation, request.requestUuid).exception(OfflineApolloException).build()))
-          } else {
-            emitAll(downStream)
-          }
-        }.onEach {
-          if (retryOnError && it.exception != null && it.exception!!.isRecoverable()) {
-            throw RetryException
-          } else {
-            attempt = 0
-          }
-        }.retryWhen { cause, _ ->
-          if (cause is RetryException) {
-            attempt++
-            if (networkMonitor != null) {
-              networkMonitor.waitForNetwork()
-            } else {
-              delay(2.0.pow(attempt).seconds)
-            }
-            true
-          } else {
-            // Not a RetryException, probably a programming error, pass it through
-            false
-          }
+      if (failFastIfOffline && networkMonitor?.isOnline?.value == false) {
+        emit((ApolloResponse.Builder(request.operation, request.requestUuid).exception(OfflineApolloException).build()))
+      } else {
+        emitAll(downStream)
+      }
+    }.onEach {
+      if (retryOnError && it.exception != null && isRecoverable(it.exception!!)) {
+        throw RetryException
+      } else {
+        attempt = 0
+      }
+    }.retryWhen { cause, _ ->
+      if (cause is RetryException) {
+        attempt++
+        if (networkMonitor != null) {
+          networkMonitor.waitForNetwork()
+        } else {
+          delay(2.0.pow(attempt).seconds)
         }
+        true
+      } else {
+        // Not a RetryException, probably a programming error, pass it through
+        false
+      }
+    }
   }
 }
 
@@ -93,7 +104,15 @@ private fun ApolloException.isRecoverable(): Boolean {
   /**
    * TODO: refine this. Some networks errors are probably not recoverable (SSL errors probably, maybe others?)
    */
-  return this is ApolloNetworkException
+  return when (this) {
+    is ApolloNetworkException,
+    is ApolloWebSocketClosedException,
+      -> {
+      true
+    }
+
+    else -> false
+  }
 }
 
 private object RetryException : Exception()
@@ -106,7 +125,7 @@ private val OfflineApolloException = ApolloNetworkException("The device is offli
  * This is taken from 1.8.0
  */
 internal fun <T, R> Flow<T>.flatMapConcatPolyfill(transform: suspend (value: T) -> Flow<R>): Flow<R> =
-    map(transform).flattenConcatPolyfill()
+  map(transform).flattenConcatPolyfill()
 
 internal fun <T> Flow<Flow<T>>.flattenConcatPolyfill(): Flow<T> = flow {
   collect { value -> emitAll(value) }
