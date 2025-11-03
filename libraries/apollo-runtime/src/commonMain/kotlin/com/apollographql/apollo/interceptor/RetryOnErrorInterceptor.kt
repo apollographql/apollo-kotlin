@@ -138,18 +138,23 @@ private class DefaultRetryOnErrorInterceptorImpl(
 
     val state = RetryState(networkMonitor)
 
+    // Do not move this down into flow{} because WebSocketNetworkTransport saves some state in there
+    val downstream = chain.proceed(request)
+    
     return flow {
       if (failFastIfOffline && networkMonitor?.isOnline?.value == false) {
         emit((ApolloResponse.Builder(request.operation, request.requestUuid).exception(ApolloOfflineException()).build()))
       } else {
-        emitAll(chain.proceed(request))
+        emitAll(downstream)
       }
     }.onEach {
       if (request.retryOnError == true && retryDelegate.shouldRetry(request, it, state)) {
-        throw RetryException
+        throw RetryException()
+      } else {
+        state.attempt = 0
       }
     }.retryWhen { cause, _ ->
-      if (cause == RetryException) {
+      if (cause is RetryException) {
         true
       } else {
         // Not a RetryException, probably a programming error, pass it through
@@ -176,4 +181,8 @@ private fun ApolloException.isRecoverable(): Boolean {
   }
 }
 
-private val RetryException = Exception()
+/**
+ * Do not try to turn this into a singleton because the coroutine stacktrace recovery
+ * mechanism may duplicate it anyway.
+ */
+private class RetryException: Exception("Retry")

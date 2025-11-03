@@ -3,16 +3,12 @@
 
 package com.apollographql.apollo.network
 
-import com.apollographql.apollo.annotations.ApolloExperimental
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.takeWhile
 import okio.Closeable
-import kotlin.js.JsName
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
@@ -20,7 +16,6 @@ import kotlin.jvm.JvmName
  * Monitors the network state.
  * A [NetworkMonitor] is used to retry requests when network is available.
  */
-@ApolloExperimental
 interface NetworkMonitor : Closeable {
   /**
    * Emits the current network state. May emit null during initialization
