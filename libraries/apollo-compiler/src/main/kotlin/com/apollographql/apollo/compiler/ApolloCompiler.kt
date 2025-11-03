@@ -14,6 +14,8 @@ import com.apollographql.apollo.ast.QueryDocumentMinifier
 import com.apollographql.apollo.ast.builtinForeignSchemas
 import com.apollographql.apollo.ast.checkEmpty
 import com.apollographql.apollo.ast.internal.SchemaValidationOptions
+import com.apollographql.apollo.ast.internal.SchemaValidationOptions.AddKotlinLabsDefinitions.All
+import com.apollographql.apollo.ast.internal.SchemaValidationOptions.AddKotlinLabsDefinitions.AllExceptCacheDirectives
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.pretty
 import com.apollographql.apollo.ast.toGQLDocument
@@ -57,6 +59,13 @@ object ApolloCompiler {
     }
 
     fun error(message: String)
+  }
+
+  private val hasCacheCompilerPlugin = try {
+    Class.forName("com.apollographql.cache.apollocompilerplugin.ApolloCacheCompilerPlugin")
+    true
+  } catch (_: ClassNotFoundException) {
+    false
   }
 
   fun buildCodegenSchema(
@@ -143,10 +152,12 @@ object ApolloCompiler {
     val result = schemaDocument.validateAsSchema(
         validationOptions = SchemaValidationOptions(
             /**
-             * TODO: switch to false
+             * If the cache compiler plugin is present, don't automatically import the cache related directives, as they are now part of the foreign schema provided by the plugin
+             * TODO do this only for alpha.8
+             * TODO: switch to None
              */
-            addKotlinLabsDefinitions = true,
-            builtinForeignSchemas() + foreignSchemas
+            addKotlinLabsDefinitions = if (hasCacheCompilerPlugin) AllExceptCacheDirectives else All,
+            foreignSchemas = builtinForeignSchemas() + foreignSchemas
         )
     )
 
@@ -241,13 +252,6 @@ object ApolloCompiler {
      * If we detect that the cache compiler plugin is present, we skip adding the keyfields because it will do it.
      * TODO: deprecate `addTypename`
      */
-    val hasCacheCompilerPlugin = try {
-      Class.forName("com.apollographql.cache.apollocompilerplugin.internal.ApolloCacheCompilerPlugin")
-      true
-    } catch (_: ClassNotFoundException) {
-      false
-    }
-
     var document = ApolloExecutableDocumentTransform(options.addTypename ?: defaultAddTypename, !hasCacheCompilerPlugin).transform(
         schema = schema,
         document = GQLDocument(userDefinitions, sourceLocation = null),

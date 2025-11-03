@@ -35,12 +35,16 @@ import com.apollographql.apollo.ast.MergeOptions
 import com.apollographql.apollo.ast.NoQueryType
 import com.apollographql.apollo.ast.OtherValidationIssue
 import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.Schema.Companion.FIELD_POLICY
 import com.apollographql.apollo.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo.ast.SourceLocation
 import com.apollographql.apollo.ast.autoLinkedKotlinLabsForeignSchema
 import com.apollographql.apollo.ast.builtinDefinitions
 import com.apollographql.apollo.ast.canHaveKeyFields
 import com.apollographql.apollo.ast.findOneOf
+import com.apollographql.apollo.ast.internal.SchemaValidationOptions.AddKotlinLabsDefinitions.All
+import com.apollographql.apollo.ast.internal.SchemaValidationOptions.AddKotlinLabsDefinitions.AllExceptCacheDirectives
+import com.apollographql.apollo.ast.internal.SchemaValidationOptions.AddKotlinLabsDefinitions.None
 import com.apollographql.apollo.ast.linkDefinitions
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.parseAsGQLSelections
@@ -54,12 +58,30 @@ import com.apollographql.apollo.ast.withBuiltinDefinitions
  */
 @ApolloExperimental
 class SchemaValidationOptions(
-    val addKotlinLabsDefinitions: Boolean,
+    val addKotlinLabsDefinitions: AddKotlinLabsDefinitions,
     val foreignSchemas: List<ForeignSchema>,
-)
+) {
+  @ApolloExperimental
+  enum class AddKotlinLabsDefinitions {
+    All,
+    AllExceptCacheDirectives,
+    None,
+  }
+}
 
 private fun ForeignSchema.asNonPrefixedImport(): LinkedSchema {
   return LinkedSchema(this, definitions, definitions.map { (it as GQLNamed).definitionName() }.associateBy { it }, null)
+}
+
+private fun ForeignSchema.withoutCacheSymbols(): ForeignSchema {
+  return ForeignSchema(
+      name = name,
+      version = version,
+      definitions = definitions.filterNot {
+        it is GQLDirectiveDefinition && (it.name == TYPE_POLICY || it.name == FIELD_POLICY)
+      },
+      directivesToStrip = directivesToStrip
+  )
 }
 
 private class LinkedDefinition<T : GQLDefinition>(val definition: T, val linkedSchema: LinkedSchema)
@@ -80,8 +102,12 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
    */
   val linkedSchemas = definitions.filterIsInstance<GQLSchemaExtension>().getLinkedSchemas(issues, options.foreignSchemas).toMutableList()
 
-  if (options.addKotlinLabsDefinitions && linkedSchemas.none { it.foreignSchema.name == "kotlin_labs" }) {
-    linkedSchemas.add(autoLinkedKotlinLabsForeignSchema.asNonPrefixedImport())
+  if (linkedSchemas.none { it.foreignSchema.name == "kotlin_labs" }) {
+    when (options.addKotlinLabsDefinitions) {
+      All -> linkedSchemas.add(autoLinkedKotlinLabsForeignSchema.asNonPrefixedImport())
+      AllExceptCacheDirectives -> linkedSchemas.add(autoLinkedKotlinLabsForeignSchema.withoutCacheSymbols().asNonPrefixedImport())
+      None -> {}
+    }
   }
 
   val typeDefinitions = mutableMapOf<String, GQLTypeDefinition>()
