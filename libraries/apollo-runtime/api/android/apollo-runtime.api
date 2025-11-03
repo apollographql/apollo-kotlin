@@ -70,6 +70,8 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public synthetic fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
 	public final fun addHttpInterceptor (Lcom/apollographql/apollo/network/http/HttpInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun addInterceptor (Lcom/apollographql/apollo/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public final fun addInterceptor (Lcom/apollographql/apollo/interceptor/ApolloInterceptor;Lcom/apollographql/apollo/interceptor/ApolloInterceptor$InsertionPoint;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public static synthetic fun addInterceptor$default (Lcom/apollographql/apollo/ApolloClient$Builder;Lcom/apollographql/apollo/interceptor/ApolloInterceptor;Lcom/apollographql/apollo/interceptor/ApolloInterceptor$InsertionPoint;ILjava/lang/Object;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun addListener (Lcom/apollographql/apollo/internal/ApolloClientListener;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun autoPersistedQueries ()Lcom/apollographql/apollo/ApolloClient$Builder;
@@ -198,6 +200,16 @@ public final class com/apollographql/apollo/ConflatedResponsesKt {
 
 public abstract interface class com/apollographql/apollo/interceptor/ApolloInterceptor {
 	public abstract fun intercept (Lcom/apollographql/apollo/api/ApolloRequest;Lcom/apollographql/apollo/interceptor/ApolloInterceptorChain;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/apollographql/apollo/interceptor/ApolloInterceptor$InsertionPoint : java/lang/Enum {
+	public static final field BeforeAutoPersistedQueries Lcom/apollographql/apollo/interceptor/ApolloInterceptor$InsertionPoint;
+	public static final field BeforeCache Lcom/apollographql/apollo/interceptor/ApolloInterceptor$InsertionPoint;
+	public static final field BeforeNetwork Lcom/apollographql/apollo/interceptor/ApolloInterceptor$InsertionPoint;
+	public static final field BeforeRetryOnError Lcom/apollographql/apollo/interceptor/ApolloInterceptor$InsertionPoint;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo/interceptor/ApolloInterceptor$InsertionPoint;
+	public static fun values ()[Lcom/apollographql/apollo/interceptor/ApolloInterceptor$InsertionPoint;
 }
 
 public abstract interface class com/apollographql/apollo/interceptor/ApolloInterceptorChain {
