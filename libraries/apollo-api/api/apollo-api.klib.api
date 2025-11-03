@@ -1183,6 +1183,10 @@ final class com.apollographql.apollo.exception/ApolloNetworkException : com.apol
         final fun <get-platformCause>(): kotlin/Any? // com.apollographql.apollo.exception/ApolloNetworkException.platformCause.<get-platformCause>|<get-platformCause>(){}[0]
 }
 
+final class com.apollographql.apollo.exception/ApolloOfflineException : com.apollographql.apollo.exception/ApolloException { // com.apollographql.apollo.exception/ApolloOfflineException|null[0]
+    constructor <init>() // com.apollographql.apollo.exception/ApolloOfflineException.<init>|<init>(){}[0]
+}
+
 final class com.apollographql.apollo.exception/ApolloParseException : com.apollographql.apollo.exception/ApolloException { // com.apollographql.apollo.exception/ApolloParseException|null[0]
     constructor <init>(kotlin/String? = ..., kotlin/Throwable? = ...) // com.apollographql.apollo.exception/ApolloParseException.<init>|<init>(kotlin.String?;kotlin.Throwable?){}[0]
 }

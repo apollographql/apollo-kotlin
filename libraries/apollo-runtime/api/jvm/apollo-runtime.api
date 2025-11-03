@@ -140,6 +140,7 @@ public final class com/apollographql/apollo/ApolloClient$Builder : com/apollogra
 	public final fun networkTransport (Lcom/apollographql/apollo/network/NetworkTransport;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun removeHttpInterceptor (Lcom/apollographql/apollo/network/http/HttpInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun removeInterceptor (Lcom/apollographql/apollo/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
+	public final fun retryOnError (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun retryOnError (Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public final fun retryOnErrorInterceptor (Lcom/apollographql/apollo/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo/ApolloClient$Builder;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloClient$Builder;
@@ -218,9 +219,20 @@ public final class com/apollographql/apollo/interceptor/AutoPersistedQueryInterc
 public final class com/apollographql/apollo/interceptor/AutoPersistedQueryInterceptor$Companion {
 }
 
+public abstract interface class com/apollographql/apollo/interceptor/RetryDelegate {
+	public abstract fun shouldRetry (Lcom/apollographql/apollo/api/ApolloRequest;Lcom/apollographql/apollo/api/ApolloResponse;Lcom/apollographql/apollo/interceptor/RetryState;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class com/apollographql/apollo/interceptor/RetryOnErrorInterceptorKt {
 	public static final fun RetryOnErrorInterceptor (Lcom/apollographql/apollo/network/NetworkMonitor;)Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
-	public static final fun RetryOnErrorInterceptor (Lcom/apollographql/apollo/network/NetworkMonitor;Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
+	public static final fun RetryOnErrorInterceptor (Lcom/apollographql/apollo/network/NetworkMonitor;Lcom/apollographql/apollo/interceptor/RetryDelegate;)Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
+}
+
+public final class com/apollographql/apollo/interceptor/RetryState {
+	public fun <init> (Lcom/apollographql/apollo/network/NetworkMonitor;)V
+	public final fun getAttempt ()I
+	public final fun getNetworkMonitor ()Lcom/apollographql/apollo/network/NetworkMonitor;
+	public final fun setAttempt (I)V
 }
 
 public final class com/apollographql/apollo/network/IncrementalDeliveryProtocol : java/lang/Enum {

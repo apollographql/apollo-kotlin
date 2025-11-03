@@ -56,9 +56,8 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   val ignoreApolloClientHttpHeaders: Boolean? get() = requestBuilder.ignoreApolloClientHttpHeaders
 
-  @ApolloExperimental
   val retryOnError: Boolean? get() = requestBuilder.retryOnError
-  @ApolloExperimental
+
   val failFastIfOffline: Boolean? get() = requestBuilder.failFastIfOffline
 
   fun failFastIfOffline(failFastIfOffline: Boolean?) = apply {
@@ -105,7 +104,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
     requestBuilder.ignoreUnknownKeys(ignoreUnknownKeys)
   }
 
-  @ApolloExperimental
   fun retryOnError(retryOnError: Boolean?): ApolloCall<D> = apply {
     requestBuilder.retryOnError(retryOnError)
   }
@@ -144,7 +142,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
    *
    * The returned [Flow] has [kotlinx.coroutines.channels.Channel.UNLIMITED] buffering so that no response is missed in the case of a slow consumer. Use [kotlinx.coroutines.flow.buffer] to change that behaviour.
    *
-   * @see toFlowV3
    * @see ApolloClient.Builder.dispatcher
    */
   fun toFlow(): Flow<ApolloResponse<D>> {
@@ -178,7 +175,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
    *
    * @throws ApolloException if the call returns zero or multiple valid GraphQL responses.
    *
-   * @see executeV3
    * @see ApolloClient.Builder.dispatcher
    */
   suspend fun execute(): ApolloResponse<D> {
