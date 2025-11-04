@@ -116,11 +116,9 @@ private val defaultRetryDelegate = RetryDelegate { state: RetryState, request: A
         // Give up and return the error
         return@RetryDelegate false
       }
-    } else {
-      // Cap the delay at 64s
-      state.attempt = state.attempt.coerceAtMost(6)
     }
-    delay(2.0.pow(state.attempt).seconds)
+    // Cap the delay at 64s
+    delay(2.0.pow(state.attempt).coerceAtMost(64.0).seconds)
     state.attempt++
     return@RetryDelegate true
   }
