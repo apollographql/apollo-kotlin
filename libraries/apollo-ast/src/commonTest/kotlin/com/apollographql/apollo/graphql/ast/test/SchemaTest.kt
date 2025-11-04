@@ -2,7 +2,6 @@ package com.apollographql.apollo.graphql.ast.test
 
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.internal.SchemaValidationOptions
-import com.apollographql.apollo.ast.internal.SchemaValidationOptions.AddKotlinLabsDefinitions.None
 import com.apollographql.apollo.ast.internal.toSemanticSdl
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
@@ -48,7 +47,7 @@ class SchemaTest {
 
     schemaString.toGQLDocument().validateAsSchema(
         SchemaValidationOptions(
-            addKotlinLabsDefinitions = None,
+            addKotlinLabsDefinitions = false,
             foreignSchemas = listOf(cacheControlSchema)
         )
     ).getOrThrow()
@@ -67,7 +66,7 @@ class SchemaTest {
 
     val schema = schemaString.toGQLDocument().validateAsSchema(
         SchemaValidationOptions(
-            addKotlinLabsDefinitions = None,
+            addKotlinLabsDefinitions = false,
             foreignSchemas = listOf(cacheControlSchema)
         )
     ).getOrThrow()
@@ -92,7 +91,7 @@ class SchemaTest {
 
     val schema = schemaString.toGQLDocument().validateAsSchema(
         SchemaValidationOptions(
-            addKotlinLabsDefinitions = None,
+            addKotlinLabsDefinitions = false,
             foreignSchemas = listOf(
                 cacheControlSchema,
                 ForeignSchema("example", "v0.1",
@@ -122,7 +121,7 @@ class SchemaTest {
 
     val result = schemaString.toGQLDocument().validateAsSchema(
         SchemaValidationOptions(
-            addKotlinLabsDefinitions = None,
+            addKotlinLabsDefinitions = false,
             foreignSchemas = listOf(cacheControlSchema)
         )
     )
@@ -144,7 +143,7 @@ class SchemaTest {
 
     val result = schemaString.toGQLDocument().validateAsSchema(
         SchemaValidationOptions(
-            addKotlinLabsDefinitions = None,
+            addKotlinLabsDefinitions = false,
             foreignSchemas = listOf(cacheControlSchema)
         )
     )

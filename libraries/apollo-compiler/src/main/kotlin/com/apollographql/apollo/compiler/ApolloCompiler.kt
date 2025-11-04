@@ -14,8 +14,6 @@ import com.apollographql.apollo.ast.QueryDocumentMinifier
 import com.apollographql.apollo.ast.builtinForeignSchemas
 import com.apollographql.apollo.ast.checkEmpty
 import com.apollographql.apollo.ast.internal.SchemaValidationOptions
-import com.apollographql.apollo.ast.internal.SchemaValidationOptions.AddKotlinLabsDefinitions.All
-import com.apollographql.apollo.ast.internal.SchemaValidationOptions.AddKotlinLabsDefinitions.AllExceptCacheDirectives
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.pretty
 import com.apollographql.apollo.ast.toGQLDocument
@@ -61,11 +59,33 @@ object ApolloCompiler {
     fun error(message: String)
   }
 
-  private val hasCacheCompilerPlugin = try {
-    Class.forName("com.apollographql.cache.apollocompilerplugin.ApolloCacheCompilerPlugin")
-    true
-  } catch (_: ClassNotFoundException) {
-    false
+  private val cacheCompilerPluginVersion: String? = try {
+    Class.forName("com.apollographql.cache.apollocompilerplugin.VersionKt")
+        .getDeclaredField("VERSION")
+        .get(null) as String
+  } catch (_: Exception) {
+    null
+  }
+
+  /**
+   * The Cache plugin starts providing the cache directives in v1.0.0-alpha.7
+   */
+  private fun String.hasCacheDirectives(): Boolean {
+    val parts = this.split('.', '-')
+    val major = parts[0].toInt()
+    if (major < 1) return false
+    if (major > 1) return true
+    val minor = parts[1].toInt()
+    if (minor > 0) return true
+    if (minor < 0) return false
+    val patch = parts[2].toInt()
+    if (patch > 0) return true
+    if (patch < 0) return false
+    if (parts.size <= 3) return true
+    val preRelease = parts[3]
+    if (preRelease != "alpha") return true
+    val alphaVersion = parts[4].toInt()
+    return alphaVersion >= 7
   }
 
   fun buildCodegenSchema(
@@ -152,12 +172,14 @@ object ApolloCompiler {
     val result = schemaDocument.validateAsSchema(
         validationOptions = SchemaValidationOptions(
             /**
-             * If the cache compiler plugin is present, don't automatically import the cache related directives, as they are now part of the foreign schema provided by the plugin
-             * TODO do this only for alpha.8
              * TODO: switch to None
              */
-            addKotlinLabsDefinitions = if (hasCacheCompilerPlugin) AllExceptCacheDirectives else All,
-            foreignSchemas = builtinForeignSchemas() + foreignSchemas
+            addKotlinLabsDefinitions = true,
+            foreignSchemas = builtinForeignSchemas() + foreignSchemas,
+            /**
+             * If the cache compiler plugin is present and provides the cache directives, don't automatically import the cache related directives to avoid a conflict
+             */
+            excludeCacheDirectives = cacheCompilerPluginVersion?.hasCacheDirectives() == true,
         )
     )
 
@@ -252,11 +274,12 @@ object ApolloCompiler {
      * If we detect that the cache compiler plugin is present, we skip adding the keyfields because it will do it.
      * TODO: deprecate `addTypename`
      */
-    var document = ApolloExecutableDocumentTransform(options.addTypename ?: defaultAddTypename, !hasCacheCompilerPlugin).transform(
-        schema = schema,
-        document = GQLDocument(userDefinitions, sourceLocation = null),
-        upstreamFragmentDefinitions
-    )
+    var document =
+      ApolloExecutableDocumentTransform(options.addTypename ?: defaultAddTypename, cacheCompilerPluginVersion == null).transform(
+          schema = schema,
+          document = GQLDocument(userDefinitions, sourceLocation = null),
+          upstreamFragmentDefinitions
+      )
 
     if (documentTransform != null) {
       document = documentTransform.transform(schema, document, upstreamFragmentDefinitions)
