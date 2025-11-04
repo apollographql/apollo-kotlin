@@ -340,7 +340,8 @@ private constructor(
     internal val _beforeRetryOnErrorInterceptors: MutableList<ApolloInterceptor> = mutableListOf()
     internal val _beforeNetworkInterceptors: MutableList<ApolloInterceptor> = mutableListOf()
 
-    val interceptors: List<ApolloInterceptor> = _beforeCacheInterceptors + _beforeAutoPersistedQueriesInterceptors + _beforeRetryOnErrorInterceptors + _beforeNetworkInterceptors
+    val interceptors: List<ApolloInterceptor> 
+      get() = _beforeCacheInterceptors + _beforeAutoPersistedQueriesInterceptors + _beforeRetryOnErrorInterceptors + _beforeNetworkInterceptors
 
     private val _httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
     val httpInterceptors: List<HttpInterceptor> = _httpInterceptors
