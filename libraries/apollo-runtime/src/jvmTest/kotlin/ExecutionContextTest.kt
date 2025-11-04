@@ -28,7 +28,7 @@ import kotlin.test.assertNull
 
 class ExecutionContextTest {
   @Test
-  fun test() = runTest {
+  fun responseDoesNotContainRequestExecutionContext() = runTest {
     MockServer().use { mockServer ->
       ApolloClient.Builder()
           .serverUrl(mockServer.url())
@@ -48,6 +48,24 @@ class ExecutionContextTest {
             mockServer.enqueueString(FooQuery.successResponse)
             val response = apolloClient.query(FooQuery())
                 .addExecutionContext(MyExecutionContext())
+                .execute()
+
+            assertNull(response.executionContext[MyExecutionContext])
+          }
+    }
+  }
+
+  @Test
+  fun responseDoesNotContainClientExecutionContext() = runTest {
+    MockServer().use { mockServer ->
+      ApolloClient.Builder()
+          .serverUrl(mockServer.url())
+          .addExecutionContext(MyExecutionContext())
+          .build()
+          .use { apolloClient ->
+
+            mockServer.enqueueString(FooQuery.successResponse)
+            val response = apolloClient.query(FooQuery())
                 .execute()
 
             assertNull(response.executionContext[MyExecutionContext])
