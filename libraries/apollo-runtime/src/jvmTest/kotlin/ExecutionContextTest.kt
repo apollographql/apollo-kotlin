@@ -24,6 +24,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class ExecutionContextTest {
   @Test
@@ -31,6 +32,16 @@ class ExecutionContextTest {
     MockServer().use { mockServer ->
       ApolloClient.Builder()
           .serverUrl(mockServer.url())
+          .addInterceptor(object : ApolloInterceptor {
+            override fun <D : Operation.Data> intercept(
+                request: ApolloRequest<D>,
+                chain: ApolloInterceptorChain,
+            ): Flow<ApolloResponse<D>> {
+              assertNotNull(request.executionContext[MyExecutionContext])
+              return chain.proceed(request)
+            }
+
+          })
           .build()
           .use { apolloClient ->
 
@@ -39,7 +50,7 @@ class ExecutionContextTest {
                 .addExecutionContext(MyExecutionContext())
                 .execute()
 
-            assertNotNull(response.executionContext[MyExecutionContext])
+            assertNull(response.executionContext[MyExecutionContext])
           }
     }
   }
