@@ -77,10 +77,8 @@ object ApolloCompiler {
     if (major > 1) return true
     val minor = parts[1].toInt()
     if (minor > 0) return true
-    if (minor < 0) return false
     val patch = parts[2].toInt()
     if (patch > 0) return true
-    if (patch < 0) return false
     if (parts.size <= 3) return true
     val preRelease = parts[3]
     if (preRelease != "alpha") return true
