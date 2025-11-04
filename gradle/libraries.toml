@@ -11,7 +11,7 @@ android-sdkversion-benchmark-min = "24"
 android-sdkversion-target = "30"
 androidx-sqlite = "2.6.0"
 # This is used by the Gradle integration tests to get the artifacts locally
-apollo = "5.0.0-alpha.3-SNAPSHOT"
+apollo = "5.0.0-alpha.3"
 apollo-execution = "0.1.1"
 apollo-normalizedcache-incubating = "1.0.0-alpha.6"
 # Used by the apollo-tooling project which uses a published version of Apollo
@@ -22,7 +22,7 @@ compat-patrouille = "0.0.2"
 compose = "1.9.1"
 guava = "33.5.0-jre"
 # This is used at build time only, and it's ok to resolve SNAPSHOTS
-gratatouille = "0.1.3-SNAPSHOT-1c31e2ccc821700af5b80c77c58ecff7b71d0301"
+gratatouille = "0.1.3"
 # This is a transitive dependency of apollo-gradle-plugin and therefore cannot use SNAPSHOTs
 gratatouille-runtime = "0.1.2"
 javaPoet = "1.13.0"
@@ -175,7 +175,7 @@ androidx-test-runner = "androidx.test:runner:1.7.0"
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.2.1" }
 uuid = { group = "com.benasher44", name = "uuid", version = "0.8.4" }
-librarian = "com.gradleup.librarian:librarian-gradle-plugin:0.2.1-SNAPSHOT-0e052601ffa861b65446d7525d4dae4dcf8f045a"
+librarian = "com.gradleup.librarian:librarian-gradle-plugin:0.2.1"
 nmcp = "com.gradleup.nmcp:nmcp:1.2.0"
 slf4j-simple = "org.slf4j:slf4j-simple:2.0.17"
 slf4j-nop = "org.slf4j:slf4j-nop:2.0.17"
