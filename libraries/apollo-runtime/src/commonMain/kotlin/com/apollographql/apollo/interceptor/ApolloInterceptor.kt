@@ -37,6 +37,18 @@ interface ApolloInterceptor {
    * @see ApolloResponse.Builder
    */
   fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>>
+
+  /**
+   * The place where the interceptor must be inserted in the interceptor chain.
+   *
+   * If two interceptors are added at the same insertion point, their relative order is the order in which they have been added.
+   */
+  enum class InsertionPoint {
+    BeforeCache,
+    BeforeAutoPersistedQueries,
+    BeforeRetryOnError,
+    BeforeNetwork
+  }
 }
 
 /**

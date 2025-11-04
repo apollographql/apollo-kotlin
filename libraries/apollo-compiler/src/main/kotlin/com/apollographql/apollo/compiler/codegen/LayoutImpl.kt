@@ -47,7 +47,7 @@ internal class LayoutImpl(
      * Make it possible to support several types with different cases. Example:
      *
      * ```graphql
-     * type URL @targetName(newName: "Url1")
+     * type URL @targetName(name: "Url1")
      * type Url
      * type url
      * ```
