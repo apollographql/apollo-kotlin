@@ -32,8 +32,8 @@ final enum class com.apollographql.apollo.network/IncrementalDeliveryProtocol : 
     final fun values(): kotlin/Array<com.apollographql.apollo.network/IncrementalDeliveryProtocol> // com.apollographql.apollo.network/IncrementalDeliveryProtocol.values|values#static(){}[0]
 }
 
-abstract fun interface com.apollographql.apollo.interceptor/RetryDelegate { // com.apollographql.apollo.interceptor/RetryDelegate|null[0]
-    abstract suspend fun shouldRetry(com.apollographql.apollo.interceptor/RetryState, com.apollographql.apollo.api/ApolloRequest<*>, com.apollographql.apollo.api/ApolloResponse<*>): kotlin/Boolean // com.apollographql.apollo.interceptor/RetryDelegate.shouldRetry|shouldRetry(com.apollographql.apollo.interceptor.RetryState;com.apollographql.apollo.api.ApolloRequest<*>;com.apollographql.apollo.api.ApolloResponse<*>){}[0]
+abstract fun interface com.apollographql.apollo.interceptor/RetryStrategy { // com.apollographql.apollo.interceptor/RetryStrategy|null[0]
+    abstract suspend fun shouldRetry(com.apollographql.apollo.interceptor/RetryState, com.apollographql.apollo.api/ApolloRequest<*>, com.apollographql.apollo.api/ApolloResponse<*>): kotlin/Boolean // com.apollographql.apollo.interceptor/RetryStrategy.shouldRetry|shouldRetry(com.apollographql.apollo.interceptor.RetryState;com.apollographql.apollo.api.ApolloRequest<*>;com.apollographql.apollo.api.ApolloResponse<*>){}[0]
 }
 
 abstract interface <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.apollo.network.websocket/SubscriptionParser { // com.apollographql.apollo.network.websocket/SubscriptionParser|null[0]
@@ -790,7 +790,7 @@ final fun (com.apollographql.apollo.network/NetworkTransport).com.apollographql.
 final fun (com.apollographql.apollo.network/NetworkTransport).com.apollographql.apollo.network.ws/closeConnection(kotlin/Throwable) // com.apollographql.apollo.network.ws/closeConnection|closeConnection@com.apollographql.apollo.network.NetworkTransport(kotlin.Throwable){}[0]
 final fun <#A: kotlin/Any?> (com.apollographql.apollo.api/MutableExecutionOptions<#A>).com.apollographql.apollo/conflateFetchPolicyInterceptorResponses(kotlin/Boolean): #A // com.apollographql.apollo/conflateFetchPolicyInterceptorResponses|conflateFetchPolicyInterceptorResponses@com.apollographql.apollo.api.MutableExecutionOptions<0:0>(kotlin.Boolean){0§<kotlin.Any?>}[0]
 final fun com.apollographql.apollo.interceptor/RetryOnErrorInterceptor(com.apollographql.apollo.network/NetworkMonitor): com.apollographql.apollo.interceptor/ApolloInterceptor // com.apollographql.apollo.interceptor/RetryOnErrorInterceptor|RetryOnErrorInterceptor(com.apollographql.apollo.network.NetworkMonitor){}[0]
-final fun com.apollographql.apollo.interceptor/RetryOnErrorInterceptor(com.apollographql.apollo.network/NetworkMonitor, com.apollographql.apollo.interceptor/RetryDelegate): com.apollographql.apollo.interceptor/ApolloInterceptor // com.apollographql.apollo.interceptor/RetryOnErrorInterceptor|RetryOnErrorInterceptor(com.apollographql.apollo.network.NetworkMonitor;com.apollographql.apollo.interceptor.RetryDelegate){}[0]
+final fun com.apollographql.apollo.interceptor/RetryOnErrorInterceptor(com.apollographql.apollo.network/NetworkMonitor, com.apollographql.apollo.interceptor/RetryStrategy): com.apollographql.apollo.interceptor/ApolloInterceptor // com.apollographql.apollo.interceptor/RetryOnErrorInterceptor|RetryOnErrorInterceptor(com.apollographql.apollo.network.NetworkMonitor;com.apollographql.apollo.interceptor.RetryStrategy){}[0]
 final fun com.apollographql.apollo.network.http/DefaultHttpEngine(kotlin/Long = ...): com.apollographql.apollo.network.http/HttpEngine // com.apollographql.apollo.network.http/DefaultHttpEngine|DefaultHttpEngine(kotlin.Long){}[0]
 final fun com.apollographql.apollo.network.websocket/WebSocketEngine(): com.apollographql.apollo.network.websocket/WebSocketEngine // com.apollographql.apollo.network.websocket/WebSocketEngine|WebSocketEngine(){}[0]
 
