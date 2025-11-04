@@ -53,7 +53,7 @@ When a `NetworkMonitor` is configured, `retryOnError` uses `NetworkMonitor.waitF
 
 ### Customizing the retry algorithm
 
-You can customize the retry algorithm further by using a `RetryDelegate`. A very basic 
+You can customize the retry algorithm further by using a `RetryDelegate`. A very basic `RetryDelegate` that uses exponential backoff and gives up after 4 tries looks like this:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
@@ -65,7 +65,7 @@ val apolloClient = ApolloClient.Builder()
 
       delay(2.0.pow(state.attempt).seconds)
       state.attempt++
-      return@RetryOnErrorInterceptor false
+      return@RetryOnErrorInterceptor state.attempt < 4
     })
     .build()
 ```
