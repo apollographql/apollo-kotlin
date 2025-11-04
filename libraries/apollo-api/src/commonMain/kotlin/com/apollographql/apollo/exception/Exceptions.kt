@@ -1,6 +1,7 @@
 // This is in the `exception` package and not `api.exception` to keep some compatibility with 2.x
 package com.apollographql.apollo.exception
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.Error
@@ -44,6 +45,13 @@ class ApolloNetworkException(
 /**
  * The device has been detected as offline
  */
+class ApolloOfflineException: ApolloException("The device is offline")
+
+/**
+ * The device has been detected as offline
+ */
+@Deprecated("This exception is not used anymore, check for `ApolloOfflineException` instead.", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 data object OfflineException: IOException("The device is offline")
 
 /**

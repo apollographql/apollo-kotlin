@@ -1313,6 +1313,10 @@ public final class com/apollographql/apollo/exception/ApolloNetworkException : c
 	public final fun getPlatformCause ()Ljava/lang/Object;
 }
 
+public final class com/apollographql/apollo/exception/ApolloOfflineException : com/apollographql/apollo/exception/ApolloException {
+	public fun <init> ()V
+}
+
 public final class com/apollographql/apollo/exception/ApolloParseException : com/apollographql/apollo/exception/ApolloException {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V

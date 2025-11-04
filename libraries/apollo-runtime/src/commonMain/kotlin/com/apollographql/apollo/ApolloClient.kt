@@ -388,15 +388,12 @@ private constructor(
     var webSocketReopenServerUrl: (suspend () -> String)? = null
       private set
 
-    @ApolloExperimental
     var retryOnError: ((ApolloRequest<*>) -> Boolean)? = null
       private set
 
-    @ApolloExperimental
     var retryOnErrorInterceptor: ApolloInterceptor? = null
       private set
 
-    @ApolloExperimental
     var failFastIfOffline: Boolean? = null
       private set
 
@@ -425,13 +422,12 @@ private constructor(
      * @see [retryOnErrorInterceptor]
      * @see [com.apollographql.apollo.network.NetworkMonitor]
      */
-    @ApolloExperimental
     fun failFastIfOffline(failFastIfOffline: Boolean?): Builder = apply {
       this.failFastIfOffline = failFastIfOffline
     }
 
     /**
-     * Configures the [retryOnError] default if [ApolloRequest.retryOnError] is not set.
+     * Configures the [retryOnError] for this [com.apollographql.apollo.ApolloClient].
      *
      * For an example, to retry all subscriptions by default:
      * ```
@@ -444,25 +440,32 @@ private constructor(
      * @param retryOnError a function called if [ApolloRequest.retryOnError] is `null` and returns a default value. Pass `null` to use the default `{ false }`
      * @see [ApolloRequest.retryOnError], [ApolloCall.retryOnError]
      */
-    @ApolloExperimental
     fun retryOnError(retryOnError: ((ApolloRequest<*>) -> Boolean)?): Builder = apply {
       this.retryOnError = retryOnError
     }
 
     /**
+     * Configures the [retryOnError] for this [com.apollographql.apollo.ApolloClient].
+     *
+     * @param retryOnError whether to retry on error
+     * @see [ApolloRequest.retryOnError], [ApolloCall.retryOnError]
+     */
+    fun retryOnError(retryOnError: Boolean?): Builder = apply {
+      this.retryOnError = { retryOnError ?: false }
+    }
+
+    /**
      * Sets the [ApolloInterceptor] used to retry or fail fast a request. The interceptor may use [ApolloRequest.retryOnError]
      * and [ApolloRequest.failFastIfOffline].
-     * The interceptor is also responsible for allocating a new [ApolloRequest.requestUuid] on retries if needed.
      *
-     * By default [ApolloClient] uses a best effort interceptor that is not aware about network state, uses exponential backoff
-     * and ignores [ApolloRequest.failFastIfOffline].
+     * By default [ApolloClient] uses a best effort interceptor that is not aware about network state.
      *
-     * Use [RetryOnErrorInterceptor] to add network state awareness:
+     * Pass an instance of a [com.apollographql.apollo.network.NetworkMonitor] to [RetryOnErrorInterceptor] to add network state awareness:
      *
      * ```
      * apolloClient = ApolloClient.Builder()
      *                 .serverUrl("https://...")
-     *                 .retryOnErrorInterceptor(RetryOnErrorInterceptor(NetworkMonitor(context)))
+     *                 .retryOnErrorInterceptor(RetryOnErrorInterceptor(networkMonitor))
      *                 .build()
      * ```
      *
@@ -472,7 +475,6 @@ private constructor(
      * @see [ApolloRequest.retryOnError]
      * @see [ApolloRequest.failFastIfOffline]
      */
-    @ApolloExperimental
     fun retryOnErrorInterceptor(retryOnErrorInterceptor: ApolloInterceptor?) = apply {
       this.retryOnErrorInterceptor = retryOnErrorInterceptor
     }

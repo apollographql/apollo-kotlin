@@ -2,11 +2,6 @@
 title: Monitor the network state to reduce latency
 ---
 
-<ExperimentalFeature>
-
-**Network Monitor APIs are currently [experimental](https://www.apollographql.com/docs/resources/product-launch-stages/#experimental-features) in Apollo Kotlin.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md) or in the [Kotlin Slack community](https://slack.kotl.in/).
-
-</ExperimentalFeature> 
 
 Android and Apple targets provide APIs to monitor the network state of your device:
 
@@ -40,6 +35,7 @@ When a `NetworkMonitor` is configured, you can use `failFastIfOffline` to avoid 
 // Opt-in `failFastIfOffline` on all queries
 val apolloClient = ApolloClient.Builder()
     .serverUrl("https://example.com/graphql")
+    .retryOnErrorInterceptor(RetryOnErrorInterceptor(networkMonitor))
     .failFastIfOffline(true)
     .build()
 
@@ -57,35 +53,20 @@ When a `NetworkMonitor` is configured, `retryOnError` uses `NetworkMonitor.waitF
 
 ### Customizing the retry algorithm
 
-You can customize the retry algorithm further by defining your own interceptor:
+To customize the retry algorithm, use a `RetryStrategy`. The following example shows a `RetryStrategy` that uses exponential backoff and gives up after four tries: 
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
-    .retryOnErrorInterceptor(MyRetryOnErrorInterceptor())
+    .retryOnErrorInterceptor(RetryOnErrorInterceptor(networkMonitor) { state, request, response,  ->
+      val exception = response.exception
+      if (exception == null) {
+        return@RetryOnErrorInterceptor false
+      }
+
+      delay(2.0.pow(state.attempt).seconds)
+      state.attempt++
+      return@RetryOnErrorInterceptor state.attempt < 4
+    })
     .build()
-
-class MyRetryOnErrorInterceptor : ApolloInterceptor {
-  object RetryException : Exception()
-
-  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    var attempt = 0
-    return chain.proceed(request).onEach {
-      if (request.retryOnError == true && it.exception != null && it.exception is ApolloNetworkException) {
-        throw RetryException
-      } else {
-        attempt = 0
-      }
-    }.retryWhen { cause, _ ->
-      if (cause is RetryException) {
-        attempt++
-        delay(2.0.pow(attempt).seconds)
-        true
-      } else {
-        // Not a RetryException, probably a programming error, pass it through
-        false
-      }
-    }
-  }
-}
 ```
 

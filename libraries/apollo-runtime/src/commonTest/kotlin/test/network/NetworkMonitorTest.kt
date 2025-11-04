@@ -5,7 +5,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.exception.ApolloOfflineException
 import com.apollographql.apollo.interceptor.ApolloInterceptor
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo.interceptor.RetryOnErrorInterceptor
@@ -16,7 +16,6 @@ import com.apollographql.apollo.network.NetworkMonitor
 import com.apollographql.apollo.network.waitForNetwork
 import com.apollographql.apollo.testing.internal.runTest
 import test.FooQuery
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,7 +46,7 @@ class NetworkMonitorTest {
           .test {
             awaitItem().apply {
               assertNull(data)
-              assertIs<ApolloNetworkException>(exception)
+              assertIs<ApolloOfflineException>(exception)
               assertEquals("The device is offline", exception?.message)
             }
             mockServer.assertNoRequest()
@@ -106,7 +105,7 @@ class NetworkMonitorInterceptor(private val networkMonitor: NetworkMonitor): Apo
   }
 }
 
-class MockServerTest(val mockServer: MockServer, val apolloClient: ApolloClient, val scope: CoroutineScope)
+class MockServerTest(val mockServer: MockServer, val apolloClient: ApolloClient)
 
 fun mockServerTest(
     clientBuilder: ApolloClient.Builder.() -> Unit = {},
@@ -118,7 +117,7 @@ fun mockServerTest(
         .apply(clientBuilder)
         .build()
         .use {apolloClient ->
-          MockServerTest(mockServer, apolloClient, this).block()
+          MockServerTest(mockServer, apolloClient).block()
         }
   }
 }

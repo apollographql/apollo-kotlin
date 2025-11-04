@@ -37,9 +37,7 @@ private constructor(
     override val canBeBatched: Boolean?,
     override val ignoreUnknownKeys: Boolean?,
     val ignoreApolloClientHttpHeaders: Boolean?,
-    @ApolloExperimental
     val retryOnError: Boolean?,
-    @ApolloExperimental
     val failFastIfOffline: Boolean?,
     val sendEnhancedClientAwareness: Boolean,
 ) : ExecutionOptions {
@@ -90,10 +88,8 @@ private constructor(
       private set
     var ignoreApolloClientHttpHeaders: Boolean? = null
       private set
-    @ApolloExperimental
     var retryOnError: Boolean? = null
       private set
-    @ApolloExperimental
     var failFastIfOffline: Boolean? = null
       private set
     var sendEnhancedClientAwareness: Boolean = true
@@ -151,12 +147,10 @@ private constructor(
       this.ignoreUnknownKeys = ignoreUnknownKeys
     }
 
-    @ApolloExperimental
     fun retryOnError(retryOnError: Boolean?): Builder<D> = apply {
       this.retryOnError = retryOnError
     }
 
-    @ApolloExperimental
     fun failFastIfOffline(failFastIfOffline: Boolean?): Builder<D> = apply {
       this.failFastIfOffline = failFastIfOffline
     }
