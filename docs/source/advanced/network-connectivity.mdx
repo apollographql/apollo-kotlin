@@ -53,7 +53,7 @@ When a `NetworkMonitor` is configured, `retryOnError` uses `NetworkMonitor.waitF
 
 ### Customizing the retry algorithm
 
-You can customize the retry algorithm further by using a `RetryStrategy`. A very basic `RetryStrategy` that uses exponential backoff and gives up after 4 tries looks like this:
+To customize the retry algorithm, use a `RetryStrategy`. The following example shows a `RetryStrategy` that uses exponential backoff and gives up after four tries: 
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
