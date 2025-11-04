@@ -170,7 +170,7 @@ object ApolloCompiler {
     val result = schemaDocument.validateAsSchema(
         validationOptions = SchemaValidationOptions(
             /**
-             * TODO: switch to None
+             * TODO: switch to false
              */
             addKotlinLabsDefinitions = true,
             foreignSchemas = builtinForeignSchemas() + foreignSchemas,
