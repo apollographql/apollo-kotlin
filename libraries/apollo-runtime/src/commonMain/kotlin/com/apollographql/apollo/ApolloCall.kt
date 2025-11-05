@@ -153,8 +153,8 @@ class ApolloCall<D : Operation.Data> internal constructor(
    *
    * [execute] calls [toFlow] and filters out cache or network errors to return a single success [ApolloResponse].
    *
-   * [execute] throws if more than one success [ApolloResponse] is returned, for an example, if [operation] is a subscription or a `@defer` query.
-   * In those cases use [toFlow] instead.
+   * If more than one success [ApolloResponse] is emitted, for an example, if [operation] is a subscription or a `@defer` query, the first one is returned.
+   * Prefer [toFlow] for those cases to handle all the responses.
    *
    * [execute] may fail due to an I/O error, a cache miss or other reasons. In that case, check [ApolloResponse.exception]:
    * ```
@@ -204,8 +204,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         }
       }
 
-      1 -> successResponses.first()
-      else -> throw DefaultApolloException("The operation returned multiple items, use .toFlow() instead of .execute()")
+      else -> successResponses.first()
     }
   }
 }
