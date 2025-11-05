@@ -231,20 +231,25 @@ public final class com/apollographql/apollo/interceptor/AutoPersistedQueryInterc
 public final class com/apollographql/apollo/interceptor/AutoPersistedQueryInterceptor$Companion {
 }
 
-public final class com/apollographql/apollo/interceptor/RetryOnErrorInterceptorKt {
-	public static final fun RetryOnErrorInterceptor (Lcom/apollographql/apollo/network/NetworkMonitor;)Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
-	public static final fun RetryOnErrorInterceptor (Lcom/apollographql/apollo/network/NetworkMonitor;Lcom/apollographql/apollo/interceptor/RetryStrategy;)Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
-}
-
-public final class com/apollographql/apollo/interceptor/RetryState {
-	public fun <init> (Lcom/apollographql/apollo/network/NetworkMonitor;)V
+public final class com/apollographql/apollo/interceptor/RetryContext {
+	public fun <init> (Lcom/apollographql/apollo/network/NetworkMonitor;Lcom/apollographql/apollo/api/ApolloRequest;)V
 	public final fun getAttempt ()I
 	public final fun getNetworkMonitor ()Lcom/apollographql/apollo/network/NetworkMonitor;
-	public final fun setAttempt (I)V
+	public final fun getRequest ()Lcom/apollographql/apollo/api/ApolloRequest;
+	public final fun getResponse ()Lcom/apollographql/apollo/api/ApolloResponse;
+	public final fun resetAttempt ()V
+}
+
+public final class com/apollographql/apollo/interceptor/RetryOnErrorInterceptorKt {
+	public static final fun RetryOnErrorInterceptor ()Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
+	public static final fun RetryOnErrorInterceptor (Lcom/apollographql/apollo/network/NetworkMonitor;)Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
+	public static final fun RetryOnErrorInterceptor (Lcom/apollographql/apollo/network/NetworkMonitor;Lcom/apollographql/apollo/interceptor/RetryStrategy;)Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
+	public static synthetic fun RetryOnErrorInterceptor$default (Lcom/apollographql/apollo/network/NetworkMonitor;Lcom/apollographql/apollo/interceptor/RetryStrategy;ILjava/lang/Object;)Lcom/apollographql/apollo/interceptor/ApolloInterceptor;
+	public static final fun getDefaultRetryStrategy ()Lcom/apollographql/apollo/interceptor/RetryStrategy;
 }
 
 public abstract interface class com/apollographql/apollo/interceptor/RetryStrategy {
-	public abstract fun shouldRetry (Lcom/apollographql/apollo/interceptor/RetryState;Lcom/apollographql/apollo/api/ApolloRequest;Lcom/apollographql/apollo/api/ApolloResponse;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun shouldRetry (Lcom/apollographql/apollo/interceptor/RetryContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo/network/IncrementalDeliveryProtocol : java/lang/Enum {
@@ -534,6 +539,7 @@ public abstract interface class com/apollographql/apollo/network/websocket/WebSo
 }
 
 public final class com/apollographql/apollo/network/websocket/WebSocketEngine_jvmKt {
+	public static final fun DefaultWebSocketEngine (Lokhttp3/WebSocket$Factory;)Lcom/apollographql/apollo/network/websocket/WebSocketEngine;
 	public static final fun WebSocketEngine ()Lcom/apollographql/apollo/network/websocket/WebSocketEngine;
 	public static final fun WebSocketEngine (Lkotlin/jvm/functions/Function0;)Lcom/apollographql/apollo/network/websocket/WebSocketEngine;
 	public static final fun WebSocketEngine (Lokhttp3/WebSocket$Factory;)Lcom/apollographql/apollo/network/websocket/WebSocketEngine;
@@ -552,6 +558,7 @@ public final class com/apollographql/apollo/network/websocket/WebSocketNetworkTr
 	public final fun closeConnection (Lcom/apollographql/apollo/exception/ApolloException;)V
 	public fun dispose ()V
 	public fun execute (Lcom/apollographql/apollo/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
+	public final fun getSubscriptionCount ()Lkotlinx/coroutines/flow/StateFlow;
 }
 
 public final class com/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder {
@@ -559,9 +566,11 @@ public final class com/apollographql/apollo/network/websocket/WebSocketNetworkTr
 	public final fun build ()Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport;
 	public final fun connectionAcknowledgeTimeout-BwNAW2A (Lkotlin/time/Duration;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
 	public final fun idleTimeout-BwNAW2A (Lkotlin/time/Duration;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
+	public final fun idleTimeoutMillis (Ljava/lang/Long;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
 	public final fun incrementalDeliveryProtocol (Lcom/apollographql/apollo/network/IncrementalDeliveryProtocol;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
 	public final fun parserFactory (Lcom/apollographql/apollo/network/websocket/SubscriptionParserFactory;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
 	public final fun pingInterval-BwNAW2A (Lkotlin/time/Duration;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
+	public final fun protocol (Lcom/apollographql/apollo/network/websocket/WsProtocol;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
 	public final fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
 	public final fun webSocketEngine (Lcom/apollographql/apollo/network/websocket/WebSocketEngine;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;
 	public final fun wsProtocol (Lcom/apollographql/apollo/network/websocket/WsProtocol;)Lcom/apollographql/apollo/network/websocket/WebSocketNetworkTransport$Builder;

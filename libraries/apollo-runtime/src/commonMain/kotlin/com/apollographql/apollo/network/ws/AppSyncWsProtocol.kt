@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.network.ws
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.NullableAnyAdapter
 import com.apollographql.apollo.api.Operation
@@ -15,6 +18,8 @@ import kotlinx.coroutines.withTimeout
 /**
  * A [WsProtocol] for https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html
  */
+@Deprecated("The websocket implementation has moved to 'com.apollographql.apollo.network.websocket'. See https://go.apollo.dev/ak-v5-websockets for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 class AppSyncWsProtocol(
     private val connectionAcknowledgeTimeoutMs: Long,
     private val connectionPayload: suspend () -> Map<String, Any?>? = { null },

@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.network.ws
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
@@ -56,6 +59,8 @@ import kotlinx.coroutines.launch
  * The [WebSocketConnection] is opened when the first subscription is started and closed if there are no active subscriptions
  * after a given timeout.
  */
+@Deprecated("The websocket implementation has moved to 'com.apollographql.apollo.network.websocket'. See https://go.apollo.dev/ak-v5-websockets for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 class WebSocketNetworkTransport
 private constructor(
     private val serverUrl: (suspend () -> String),
@@ -367,6 +372,8 @@ private constructor(
     messages.trySend(NetworkError(reason))
   }
 
+  @Deprecated("The websocket implementation has moved to 'com.apollographql.apollo.network.websocket'. See https://go.apollo.dev/ak-v5-websockets for more details.")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
   class Builder {
     private var serverUrl: (suspend () -> String)? = null
     private var headers: MutableList<HttpHeader> = mutableListOf()

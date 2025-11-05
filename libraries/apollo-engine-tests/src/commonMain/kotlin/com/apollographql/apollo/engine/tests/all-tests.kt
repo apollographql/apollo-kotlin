@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION")
 package com.apollographql.apollo.engine.tests
 
 import com.apollographql.apollo.annotations.ApolloInternal

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
@@ -28,9 +30,7 @@ import com.apollographql.apollo.network.http.BatchingHttpInterceptor
 import com.apollographql.apollo.network.http.HttpEngine
 import com.apollographql.apollo.network.http.HttpInterceptor
 import com.apollographql.apollo.network.http.HttpNetworkTransport
-import com.apollographql.apollo.network.ws.WebSocketEngine
-import com.apollographql.apollo.network.ws.WebSocketNetworkTransport
-import com.apollographql.apollo.network.ws.WsProtocol
+import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -44,9 +44,13 @@ import okio.Closeable
 import kotlin.collections.mutableListOf
 import kotlin.collections.plusAssign
 import kotlin.jvm.JvmOverloads
+import kotlin.time.Duration.Companion.milliseconds
+import com.apollographql.apollo.network.ws.WebSocketEngine as DeprecatedWebSocketEngine
+import com.apollographql.apollo.network.ws.WebSocketNetworkTransport as DeprecatedWebSocketNetworkTransport
+import com.apollographql.apollo.network.ws.WsProtocol as DeprecatedWsProtocol
 
 /**
- * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
+ * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations, and subscriptions
  *
  * Use [ApolloClient.Builder] to create a new [ApolloClient]:
  *
@@ -149,11 +153,11 @@ private constructor(
     } else {
       val url = builder.webSocketServerUrl ?: builder.httpServerUrl
       if (url == null) {
-        // Fallback to the regular [NetworkTransport]. This is unlikely to work but chances are
-        // that the user is not going to use subscription, so it's better than failing
+        // Fallback to the regular [NetworkTransport]. This is unlikely to work, but chances are
+        // that the user is not going to use a subscription, so it's better than failing
         networkTransport
-      } else {
-        WebSocketNetworkTransport.Builder()
+      } else if(builder.webSocketEngine != null || builder.wsProtocolFactory != null || builder.webSocketReopenWhen != null || builder.webSocketReopenServerUrl != null) {
+        DeprecatedWebSocketNetworkTransport.Builder()
             .serverUrl(url)
             .apply {
               if (builder.webSocketEngine != null) {
@@ -170,6 +174,15 @@ private constructor(
               }
               if (builder.webSocketReopenServerUrl != null) {
                 serverUrl(builder.webSocketReopenServerUrl)
+              }
+            }
+            .build()
+      } else {
+        WebSocketNetworkTransport.Builder()
+            .serverUrl(url)
+            .apply {
+              if (builder.webSocketIdleTimeoutMillis != null) {
+                idleTimeout(builder.webSocketIdleTimeoutMillis!!.milliseconds)
               }
             }
             .build()
@@ -206,7 +219,7 @@ private constructor(
 
   /**
    * Disposes resources held by this [ApolloClient]. On JVM platforms, resources are ultimately garbage collected but calling [close] is necessary
-   * on other platform or to reclaim those resources earlier.
+   * on another platform or to reclaim those resources earlier.
    */
   override fun close() {
     concurrencyInfo.coroutineScope.cancel()
@@ -287,6 +300,7 @@ private constructor(
       failFastIfOffline(failFastIfOffline ?: apolloClient.failFastIfOffline)
       ignoreUnknownKeys(ignoreUnknownKeys ?: apolloClient.ignoreUnknownKeys)
       sendEnhancedClientAwareness(apolloClient.sendEnhancedClientAwareness)
+      url(url ?: apolloClient.url)
     }.build()
 
     val allInterceptors = buildList {
@@ -378,11 +392,11 @@ private constructor(
       private set
     var webSocketIdleTimeoutMillis: Long? = null
       private set
-    var wsProtocolFactory: WsProtocol.Factory? = null
+    var wsProtocolFactory: DeprecatedWsProtocol.Factory? = null
       private set
     var httpExposeErrorBody: Boolean? = null
       private set
-    var webSocketEngine: WebSocketEngine? = null
+    var webSocketEngine: DeprecatedWebSocketEngine? = null
       private set
     var webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
       private set
@@ -554,7 +568,7 @@ private constructor(
      * }
      * ```
      *
-     * To configure APQs in general, including retry behaviour, use [autoPersistedQueries] and [enableAutoPersistedQueries].
+     * To configure APQs in general, including retry behavior, use [autoPersistedQueries] and [enableAutoPersistedQueries].
      *
      * @see autoPersistedQueries
      * @see enableAutoPersistedQueries
@@ -572,7 +586,7 @@ private constructor(
      * Set [sendDocument] to `false` if your server supports [persisted queries](https://www.apollographql.com/docs/kotlin/advanced/persisted-queries/) and
      * can execute an operation base on an id instead.
      *
-     * To configure APQs in general, including retry behaviour, use [autoPersistedQueries] and [enableAutoPersistedQueries].
+     * To configure APQs in general, including retry behavior, use [autoPersistedQueries] and [enableAutoPersistedQueries].
      *
      * @see autoPersistedQueries
      * @see enableAutoPersistedQueries
@@ -663,7 +677,7 @@ private constructor(
     }
 
     /**
-     * Adds [httpInterceptor] to the list of HTTP interceptors.
+     * Adds [httpInterceptors] to the list of HTTP interceptors.
      *
      * This is a convenience function that configures the underlying [HttpNetworkTransport]. See also [networkTransport] for more customization.
      *
@@ -722,6 +736,8 @@ private constructor(
      * @see url
      * @see subscriptionNetworkTransport
      */
+    @Deprecated("Use subscriptionNetworkTransport() directly. See https://go.apollo.dev/ak-v5-websockets for more details.")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     fun webSocketServerUrl(webSocketServerUrl: (suspend () -> String)?) = apply {
       this.webSocketReopenServerUrl = webSocketServerUrl
     }
@@ -740,24 +756,28 @@ private constructor(
     }
 
     /**
-     * The [WsProtocol.Factory] to use for websockets
+     * The [DeprecatedWsProtocol.Factory] to use for websockets
      *
-     * This is a convenience function that configures the underlying [WebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
+     * This is a convenience function that configures the underlying [DeprecatedWebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
      *
      * @see subscriptionNetworkTransport
      */
-    fun wsProtocol(wsProtocolFactory: WsProtocol.Factory?) = apply {
+    @Deprecated("Use subscriptionNetworkTransport() directly. See https://go.apollo.dev/ak-v5-websockets for more details.")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+    fun wsProtocol(wsProtocolFactory: DeprecatedWsProtocol.Factory?) = apply {
       this.wsProtocolFactory = wsProtocolFactory
     }
 
     /**
-     * The [WebSocketEngine] to use for WebSocket requests
+     * The [DeprecatedWebSocketEngine] to use for WebSocket requests
      *
-     * This is a convenience function that configures the underlying [WebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
+     * This is a convenience function that configures the underlying [DeprecatedWebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
      *
      * @see subscriptionNetworkTransport
      */
-    fun webSocketEngine(webSocketEngine: WebSocketEngine?) = apply {
+    @Deprecated("Use subscriptionNetworkTransport() directly. See https://go.apollo.dev/ak-v5-websockets for more details.")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+    fun webSocketEngine(webSocketEngine: DeprecatedWebSocketEngine?) = apply {
       this.webSocketEngine = webSocketEngine
     }
 
@@ -768,13 +788,15 @@ private constructor(
      * @param webSocketReopenWhen a function taking the error and attempt index (starting from zero) as parameters
      * and returning 'true' to reopen automatically or 'false' to forward the error to all listening [Flow].
      *
-     * It is a suspending function, so it can be used to introduce delay before retry (e.g. backoff strategy).
-     * attempt is reset after a successful connection.
+     * It is a suspending function, so it can be used to introduce delay before retry (e.g., backoff strategy).
+     * `attempt` is reset after a successful connection.
      *
      * This is a convenience function that configures the underlying [WebSocketNetworkTransport]. See also [subscriptionNetworkTransport] for more customization.
      *
      * @see subscriptionNetworkTransport
      */
+    @Deprecated("Use subscriptionNetworkTransport() directly. See https://go.apollo.dev/ak-v5-websockets for more details.")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     fun webSocketReopenWhen(webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)?) = apply {
       this.webSocketReopenWhen = webSocketReopenWhen
     }
@@ -873,7 +895,7 @@ private constructor(
     /**
      * Adds several [ApolloInterceptor]s to this [ApolloClient].
      *
-     * [ApolloInterceptor]s monitor, rewrite and retry an [ApolloCall]. Internally, [ApolloInterceptor] is used for features
+     * [ApolloInterceptor]s monitor, rewrite, and retry an [ApolloCall]. Internally, [ApolloInterceptor] is used for features
      * such as normalized cache and auto persisted queries. [ApolloClient] also inserts a terminating [ApolloInterceptor] that
      * executes the request.
      *
@@ -889,7 +911,7 @@ private constructor(
     /**
      * Sets the [ApolloInterceptor]s on this [ApolloClient].
      *
-     * [ApolloInterceptor]s monitor, rewrite and retry an [ApolloCall]. Internally, [ApolloInterceptor] is used for features
+     * [ApolloInterceptor]s monitor, rewrite, and retry an [ApolloCall]. Internally, [ApolloInterceptor] is used for features
      * such as normalized cache and auto persisted queries. [ApolloClient] also inserts a terminating [ApolloInterceptor] that
      * executes the request.
      *
@@ -954,7 +976,7 @@ private constructor(
      * Batch HTTP queries to execute multiple at once.
      * This reduces the number of HTTP round trips at the price of increased latency as
      * every request in the batch is now as slow as the slowest one.
-     * Some servers might have a per-HTTP-call cache making it faster to resolve 1 big array
+     * Some servers might have a per-HTTP-call cache, making it faster to resolve 1 big array
      * of n queries compared to resolving the n queries separately.
      *
      * See also [BatchingHttpInterceptor]
@@ -977,8 +999,8 @@ private constructor(
      * Creates an [ApolloClient] from this [Builder]
      */
     fun build(): ApolloClient {
-      // Copy the builder so that any subsequent modifications of the builder
-      // doesn't change the ApolloClient owned one
+      // Copy the builder so that any later modifications of the builder
+      // don't change the ApolloClient owned one
       return ApolloClient(copy())
     }
 

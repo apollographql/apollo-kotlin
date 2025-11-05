@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 import com.apollographql.apollo.engine.tests.Platform
 import com.apollographql.apollo.engine.tests.platform
 import com.apollographql.apollo.engine.tests.runAllTests

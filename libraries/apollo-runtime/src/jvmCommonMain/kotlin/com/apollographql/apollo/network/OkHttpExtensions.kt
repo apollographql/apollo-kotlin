@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.network
 
 import com.apollographql.apollo.ApolloClient
@@ -5,8 +7,10 @@ import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.network.http.DefaultHttpEngine
 import com.apollographql.apollo.network.http.HttpNetworkTransport
+import com.apollographql.apollo.network.websocket.WebSocketEngine
+import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo.network.ws.DefaultWebSocketEngine
-import com.apollographql.apollo.network.ws.WebSocketNetworkTransport
+import com.apollographql.apollo.network.ws.WebSocketNetworkTransport as DeprecatedWebSocketNetworkTransport
 import okhttp3.Call
 import okhttp3.Headers
 import okhttp3.OkHttpClient
@@ -17,11 +21,13 @@ import okhttp3.OkHttpClient
  *
  * See also [ApolloClient.Builder.httpEngine] and [ApolloClient.Builder.webSocketEngine]
  */
-
 fun ApolloClient.Builder.okHttpClient(okHttpClient: OkHttpClient) = apply {
-  @Suppress("DEPRECATION")
   httpEngine(DefaultHttpEngine(okHttpClient))
-  webSocketEngine(DefaultWebSocketEngine(okHttpClient))
+  subscriptionNetworkTransport(
+      WebSocketNetworkTransport.Builder()
+          .webSocketEngine(WebSocketEngine(okHttpClient))
+          .build()
+  )
 }
 
 /**
@@ -36,7 +42,6 @@ fun ApolloClient.Builder.okHttpCallFactory(callFactory: Call.Factory) = apply {
  * Configures the [ApolloClient] to use the lazily initialized [callFactory] for network requests.
  */
 fun ApolloClient.Builder.okHttpCallFactory(callFactory: () -> Call.Factory) = apply {
-  @Suppress("DEPRECATION")
   httpEngine(DefaultHttpEngine(callFactory))
 }
 
@@ -57,9 +62,11 @@ fun HttpNetworkTransport.Builder.okHttpCallFactory(okHttpCallFactory: Call.Facto
 }
 
 /**
- * Configures the [WebSocketNetworkTransport] to use the [okHttpCallFactory] for network requests.
+ * Configures the [DeprecatedWebSocketNetworkTransport] to use the [okHttpCallFactory] for network requests.
  */
-fun WebSocketNetworkTransport.Builder.okHttpClient(okHttpClient: OkHttpClient) = apply {
+@Deprecated("The websocket implementation has moved to 'com.apollographql.apollo.network.websocket'. See https://go.apollo.dev/ak-v5-websockets for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+fun DeprecatedWebSocketNetworkTransport.Builder.okHttpClient(okHttpClient: OkHttpClient) = apply {
   webSocketEngine(DefaultWebSocketEngine(okHttpClient))
 }
 

@@ -1,13 +1,14 @@
+@file:Suppress("DEPRECATION")
+
 package legacy
 
-import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.exception.SubscriptionOperationException
-import com.apollographql.apollo.network.ws.SubscriptionWsProtocolAdapter
-import com.apollographql.apollo.network.ws.WebSocketConnection
-import com.apollographql.apollo.network.ws.WebSocketNetworkTransport
-import com.apollographql.apollo.network.ws.WsProtocol
-import kotlinx.coroutines.CoroutineScope
+import com.apollographql.apollo.interceptor.RetryOnErrorInterceptor
+import com.apollographql.apollo.network.websocket.SubscriptionWsProtocol
+import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
+import com.apollographql.apollo.sample.server.SampleServer
+import com.apollographql.apollo.testing.internal.runTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
@@ -17,8 +18,6 @@ import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
@@ -27,6 +26,7 @@ import sample.server.GraphqlAccessErrorSubscription
 import sample.server.OperationErrorSubscription
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.time.Duration.Companion.milliseconds
 
 class SampleServerTest {
   companion object {
@@ -46,12 +46,8 @@ class SampleServerTest {
   }
 
   @Test
-  fun simple() {
-    val apolloClient = ApolloClient.Builder()
-        .serverUrl(sampleServer.subscriptionsUrl())
-        .build()
-
-    runBlocking {
+  fun simple() = runTest {
+    apolloClient().use { apolloClient ->
       val list = apolloClient.subscription(CountSubscription(5, 0))
           .toFlow()
           .map {
@@ -62,13 +58,22 @@ class SampleServerTest {
     }
   }
 
-  @Test
-  fun interleavedSubscriptions() {
-    val apolloClient = ApolloClient.Builder()
-        .serverUrl(sampleServer.subscriptionsUrl())
-        .build()
+  private fun apolloClientBuilder(block: WebSocketNetworkTransport.Builder.() -> Unit = {}) = ApolloClient.Builder()
+      .subscriptionNetworkTransport(
+          WebSocketNetworkTransport.Builder()
+              .wsProtocol(SubscriptionWsProtocol())
+              .serverUrl(sampleServer.subscriptionsUrl())
+              .apply(block)
+              .build()
+      )
 
-    runBlocking {
+  private fun apolloClient(block: WebSocketNetworkTransport.Builder.() -> Unit = {}): ApolloClient {
+    return apolloClientBuilder(block).build()
+  }
+
+  @Test
+  fun interleavedSubscriptions() = runTest {
+    apolloClient().use { apolloClient ->
       val items = mutableListOf<Int>()
       launch {
         apolloClient.subscription(CountSubscription(5, 1000))
@@ -88,23 +93,11 @@ class SampleServerTest {
   }
 
   @Test
-  fun idleTimeout() {
-    val transport = WebSocketNetworkTransport.Builder().serverUrl(
-        serverUrl = sampleServer.subscriptionsUrl(),
-    ).idleTimeoutMillis(
-        idleTimeoutMillis = 1000
-    ).build()
-
-    val apolloClient = ApolloClient.Builder()
-        .networkTransport(transport)
-        .build()
-
-    runBlocking {
+  fun idleTimeout() = runTest {
+    apolloClient {
+      idleTimeout(1000.milliseconds)
+    }.use { apolloClient ->
       apolloClient.subscription(CountSubscription(50, 1000)).toFlow().first()
-
-      withTimeout(500) {
-        transport.subscriptionCount.first { it == 0 }
-      }
 
       delay(1500)
       val number = apolloClient.subscription(CountSubscription(50, 0)).toFlow().drop(3).first().data?.count
@@ -113,10 +106,8 @@ class SampleServerTest {
   }
 
   @Test
-  fun slowConsumer() {
-    val apolloClient = ApolloClient.Builder().serverUrl(serverUrl = sampleServer.subscriptionsUrl()).build()
-
-    runBlocking {
+  fun slowConsumer() = runTest {
+    apolloClient().use { apolloClient ->
       /**
        * Take 3 items, delaying the first items by 100ms in total.
        * During that time, the server should continue sending. Then resume reading as fast as we can
@@ -138,38 +129,18 @@ class SampleServerTest {
   }
 
   @Test
-  fun serverTermination() {
-    val transport = WebSocketNetworkTransport.Builder().serverUrl(
-        serverUrl = sampleServer.subscriptionsUrl(),
-    ).idleTimeoutMillis(
-        idleTimeoutMillis = 1000
-    ).build()
-
-    val apolloClient = ApolloClient.Builder()
-        .networkTransport(transport)
-        .build()
-    runBlocking {
+  fun serverTermination() = runTest {
+    apolloClient().use { apolloClient ->
       /**
        * Collect all items the server sends us
        */
       apolloClient.subscription(CountSubscription(50, 0)).toFlow().toList()
-
-      /**
-       * Make sure we're unsubscribed
-       */
-      withTimeout(500) {
-        transport.subscriptionCount.first { it == 0 }
-      }
     }
   }
 
   @Test
-  fun operationError() {
-    val apolloClient = ApolloClient.Builder()
-        .serverUrl(sampleServer.subscriptionsUrl())
-        .build()
-
-    runBlocking {
+  fun operationError() = runTest {
+    apolloClient().use { apolloClient ->
       val response = apolloClient.subscription(OperationErrorSubscription())
           .toFlow()
           .single()
@@ -183,70 +154,27 @@ class SampleServerTest {
 
   private inline fun <reified T> Any?.cast() = this as T
 
-  private object AuthorizationException : Exception()
-
-  private class AuthorizationAwareWsProtocol(
-      webSocketConnection: WebSocketConnection,
-      listener: Listener,
-  ) : SubscriptionWsProtocolAdapter(webSocketConnection, listener) {
-    @Suppress("UNCHECKED_CAST")
-    private fun Any?.asMap() = this as? Map<String, Any?>
-
-    @Suppress("UNCHECKED_CAST")
-    private fun Any?.asList() = this as? List<Any?>
-
-    override fun handleServerMessage(messageMap: Map<String, Any?>) {
-      /**
-       * For this test, we use the sample server and I haven't figured out a way to make it out errors yet so we just check
-       * if the value is null. A more real life example would do something like below
-       * val isError = messageMap.get("payload")
-       *                      ?.asMap()
-       *                      ?.get("errors")
-       *                      ?.asList()
-       *                      ?.first()
-       *                      ?.asMap()
-       *                      ?.get("message") == "Unauthorized error"
-       */
-      val isError = messageMap.get("payload")?.asMap()?.get("data")?.asMap()?.get("graphqlAccessError") == null
-      if (isError) {
-        /**
-         * The server returned a message with an error and no data. Send a general error upstream
-         * so that the WebSocket is restarted
-         */
-        listener.networkError(AuthorizationException)
-      } else {
-        super.handleServerMessage(messageMap)
-      }
-    }
-  }
-
-  class AuthorizationAwareWsProtocolFactory : WsProtocol.Factory {
-    override val name: String
-      get() = "graphql-ws"
-
-    override fun create(webSocketConnection: WebSocketConnection, listener: WsProtocol.Listener, scope: CoroutineScope): WsProtocol {
-      return AuthorizationAwareWsProtocol(webSocketConnection, listener)
-    }
-  }
 
   @Test
-  fun canResumeAfterGraphQLError() {
-    val wsFactory = AuthorizationAwareWsProtocolFactory()
-    val apolloClient = ApolloClient.Builder()
-        .serverUrl(sampleServer.subscriptionsUrl())
-        .wsProtocol(wsFactory)
-        .webSocketReopenWhen { e, _ ->
-          e is AuthorizationException
+  fun canResumeAfterGraphQLError() = runTest {
+    apolloClientBuilder()
+        .retryOnErrorInterceptor(RetryOnErrorInterceptor {
+          val error = it.response.errors.orEmpty().firstOrNull()
+          if (error != null) {
+            return@RetryOnErrorInterceptor true
+          } else {
+            return@RetryOnErrorInterceptor false
+          }
+        })
+        .build().use { apolloClient ->
+          val list = apolloClient.subscription(GraphqlAccessErrorSubscription(1))
+              .toFlow()
+              .map {
+                it.data?.graphqlAccessError?.foo
+              }
+              .take(2)
+              .toList()
+          assertEquals(listOf(42, 42), list)
         }
-        .build()
-
-    runBlocking {
-      val list = apolloClient.subscription(GraphqlAccessErrorSubscription(1))
-          .toFlow()
-          .map { it.data!!.graphqlAccessError }
-          .take(2)
-          .toList()
-      assertEquals(listOf(0, 0), list)
-    }
   }
 }

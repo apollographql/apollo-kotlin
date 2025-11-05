@@ -1,6 +1,6 @@
 package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.CustomScalarAdapters
@@ -23,9 +23,11 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -35,7 +37,6 @@ import kotlin.time.Duration.Companion.seconds
  *
  * @see [WebSocketNetworkTransport.Builder]
  */
-@ApolloExperimental
 class WebSocketNetworkTransport private constructor(
     private val webSocketEngine: WebSocketEngine,
     private val serverUrl: String?,
@@ -45,6 +46,11 @@ class WebSocketNetworkTransport private constructor(
     private val idleTimeout: Duration,
     private val parserFactory: SubscriptionParserFactory,
 ) : NetworkTransport {
+
+  @Deprecated("This is not exposed anymore. If you have a use case that requires knowing the number of subscriptions, please open an issue.")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+  val subscriptionCount: StateFlow<Int>
+    get() = TODO()
 
   private val pool = WebSocketPool(
       webSocketEngine = webSocketEngine,
@@ -107,7 +113,6 @@ class WebSocketNetworkTransport private constructor(
     pool.closeAllConnections(reason)
   }
 
-  @ApolloExperimental
   class Builder {
     private var serverUrl: String? = null
     private var webSocketEngine: WebSocketEngine? = null
@@ -147,6 +152,15 @@ class WebSocketNetworkTransport private constructor(
     }
 
     /**
+     * This is a convenience function to ease migration from v4 webSockets.
+     *
+     * @see idleTimeout
+     */
+    @Deprecated("Use idleTimeout instead", ReplaceWith("idleTimeout(idleTimeoutMillis.milliseconds)", "kotlin.time.Duration.Companion.milliseconds"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+    fun idleTimeoutMillis(idleTimeoutMillis: Long?) = idleTimeout(idleTimeoutMillis?.milliseconds)
+
+    /**
      * The [WsProtocol] to use for this [WebSocketNetworkTransport]
      *
      * Default: [GraphQLWsProtocol]
@@ -158,6 +172,15 @@ class WebSocketNetworkTransport private constructor(
     fun wsProtocol(wsProtocol: WsProtocol?) = apply {
       this.wsProtocol = wsProtocol
     }
+
+    /**
+     * Convenience function to help migrate from the v4 websockets
+     *
+     * @see wsProtocol
+     */
+    @Deprecated("Use wsProtocol instead", ReplaceWith("wsProtocol(protocol)"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+    fun protocol(protocol: WsProtocol?) = wsProtocol(protocol)
 
     /**
      * @param pingInterval the interval between two client pings or null to disable client pings.
@@ -175,7 +198,6 @@ class WebSocketNetworkTransport private constructor(
       this.connectionAcknowledgeTimeout = connectionAcknowledgeTimeout
     }
 
-    @ApolloExperimental
     fun parserFactory(parserFactory: SubscriptionParserFactory?) = apply {
       this.parserFactory = parserFactory
     }
@@ -185,7 +207,6 @@ class WebSocketNetworkTransport private constructor(
      *
      * Default: [IncrementalDeliveryProtocol.V0_1]
      */
-    @ApolloExperimental
     fun incrementalDeliveryProtocol(incrementalDeliveryProtocol: IncrementalDeliveryProtocol) = apply {
       this.incrementalDeliveryProtocol = incrementalDeliveryProtocol
     }
@@ -304,7 +325,6 @@ private fun Map<String, Any?>.isDeferred(): Boolean {
  * @throws IllegalArgumentException if transport is not a [WebSocketNetworkTransport]
  * @see DefaultApolloException
  */
-@ApolloExperimental
 fun NetworkTransport.closeConnection(exception: ApolloException) {
   val webSocketNetworkTransport = (this as? WebSocketNetworkTransport)
       ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo.websocket.WebSocketNetworkTransport")
@@ -317,7 +337,6 @@ fun NetworkTransport.closeConnection(exception: ApolloException) {
  *
  * A response is emitted with [ApolloResponse.exception] set to [ApolloWebSocketForceCloseException].
  */
-@ApolloExperimental
 fun NetworkTransport.closeConnection() {
   val webSocketNetworkTransport = (this as? WebSocketNetworkTransport)
       ?: throw IllegalArgumentException("'$this' is not an instance of com.apollographql.apollo.websocket.WebSocketNetworkTransport")

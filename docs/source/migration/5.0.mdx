@@ -126,6 +126,105 @@ query GetUser {
 You can read more in the ["handling nullability" page](https://www.apollographql.com/docs/kotlin/advanced/nullability).
 
 
+## `apollo-runtime`
+
+### New WebSockets
+
+In Apollo Kotlin 5, the websocket code has been rewritten to simplify it and clarify the error and retry semantics. 
+
+All the classes in the `com.apollographql.apollo.network.ws` package have been deprecated and a new implementation is available in `com.apollographql.apollo.network.websocket`. 
+
+To migrate, replace all your instances of `com.apollographql.apollo.network.ws` with `com.apollographql.apollo.network.websocket`:
+
+```kotlin
+// Replace 
+import com.apollographql.apollo.network.ws.AppSyncWsProtocol
+import com.apollographql.apollo.network.ws.WebSocketNetworkTransport
+
+// With
+import com.apollographql.apollo.network.websocket.AppSyncWsProtocol
+import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
+```
+
+Some shorthand methods on `ApolloClient.Builder` have been deprecated and replaced by explicit configuration. In those cases, you can use `subscriptionNetworkTransport` directly.
+
+For an example, you can replace `ApolloClient.Builder.webSocketEngine()` like so:
+
+```kotlin
+// Replace
+ApolloClient.Builder()
+    .webSocketEngine(webSocketEngine) 
+    .build()
+// With
+ApolloClient.Builder()
+    .subscriptionNetworkTransport(
+        WebSocketNetworkTransport.Builder()
+            .webSocketEngine(webSocketEngine)
+            .build()
+    )
+    .build()
+```
+
+The default WebSocket protocol has changed to [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md).
+
+If you were already using it before, you'll now need to create the `subscriptionNetworkTransport()` explicitely:
+
+```kotlin
+// Replace
+val apolloClient = ApolloClient.Builder()
+    .protocol(GraphQLWsProtocol.Factory())
+    .build()
+    
+// With
+val apolloClient = ApolloClient.Builder()
+    .subscriptionNetworkTransport(
+        WebSocketNetworkTransport.Builder()
+            .serverUrl(url)
+            .wsProtocol(GraphQLWsProtocol())
+            .build()
+    )
+    .build()
+
+```
+
+If you are still relying on [the (now deprecated) transport](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md), you can use `SubscriptionWsProtocol`:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .subscriptionNetworkTransport(
+        WebSocketNetworkTransport.Builder()
+            .serverUrl(url)
+            .wsProtocol(SubscriptionsWsProtocol())
+            .build()
+    )
+    .build()
+```
+
+The retry management is now moved to `retryOnErrorInterceptor`:   
+
+```kotlin
+// Replace
+val apolloClient = ApolloClient.Builder()
+    .webSocketServerUrl("http://localhost:8080/subscriptions")
+    .webSocketReopenWhen { e, attempt ->
+      delay(2.0.pow(attempt.toDouble()).toLong())
+      // retry after the delay
+      true
+    }
+
+// With
+val apolloClient = ApolloClient.Builder()
+    .webSocketServerUrl("http://localhost:8080/subscriptions")
+    .retryOnErrorInterceptor(RetryOnErrorInterceptor { context ->
+      if (context.request.operation is Subscription<*>) {
+        delay(2.0.pow(attempt.toDouble()).toLong())
+        true
+      } else {
+        false
+      }
+    })
+```
+
 ## `apollo-http-cache`
 
 `apollo-http-cache` is now deprecated. Instead, it uses the existing OkHttp cache using [cacheUrlOverride](https://square.github.io/okhttp/5.x/okhttp/okhttp3/-request/-builder/cache-url-override.html).

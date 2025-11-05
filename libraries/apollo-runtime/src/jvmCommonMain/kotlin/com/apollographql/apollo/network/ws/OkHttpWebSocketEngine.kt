@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.network.ws
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.ApolloWebSocketClosedException
@@ -18,6 +21,8 @@ import okio.ByteString
  *
  * This constructor accepts a function so that OkHttp is initialized from a background thread
  */
+@Deprecated("The websocket implementation has moved to 'com.apollographql.apollo.network.websocket'. See https://go.apollo.dev/ak-v5-websockets for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 actual class DefaultWebSocketEngine(
     webSocketFactory: () -> WebSocket.Factory,
 ) : WebSocketEngine {

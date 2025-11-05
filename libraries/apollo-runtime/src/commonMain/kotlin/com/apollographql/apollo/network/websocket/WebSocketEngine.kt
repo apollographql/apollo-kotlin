@@ -1,6 +1,5 @@
 package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.exception.ApolloException
 import okio.Closeable
@@ -8,7 +7,6 @@ import okio.Closeable
 /**
  * The low-level WebSocket API. Implement this interface to customize how WebSockets are handled
  */
-@ApolloExperimental
 interface WebSocketEngine: Closeable {
   /**
    * Creates a new [WebSocket].
@@ -33,7 +31,6 @@ interface WebSocketEngine: Closeable {
   ): WebSocket
 }
 
-@ApolloExperimental
 interface WebSocketListener {
   /**
    * The HTTP 101 Switching Protocols response has been received and is valid.
@@ -62,7 +59,6 @@ interface WebSocketListener {
   fun onClosed(code: Int?, reason: String?)
 }
 
-@ApolloExperimental
 interface WebSocket {
   /**
    * Sends a binary message asynchronously.
@@ -91,7 +87,6 @@ interface WebSocket {
   fun close(code: Int, reason: String)
 }
 
-@ApolloExperimental
 expect fun WebSocketEngine() : WebSocketEngine
 
 internal const val CLOSE_NORMAL = 1000

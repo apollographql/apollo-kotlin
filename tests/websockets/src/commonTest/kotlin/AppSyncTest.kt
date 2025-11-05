@@ -1,7 +1,7 @@
 import appsync.CommentsSubscription
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.network.ws.AppSyncWsProtocol
-import com.apollographql.apollo.network.ws.WebSocketNetworkTransport
+import com.apollographql.apollo.network.websocket.AppSyncWsProtocol
+import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo.testing.internal.runTest
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -61,10 +61,8 @@ class AppSyncTest {
     val apolloClient = ApolloClient.Builder().networkTransport(
         networkTransport = WebSocketNetworkTransport.Builder().serverUrl(
             serverUrl = url,
-        ).protocol(
-            protocolFactory = AppSyncWsProtocol.Factory(
-                connectionPayload = { generateAuth() }
-            )
+        ).wsProtocol(
+            AppSyncWsProtocol(authorization = { generateAuth() })
         ).build()
     ).build()
 

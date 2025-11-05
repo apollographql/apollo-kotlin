@@ -1,7 +1,7 @@
 
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.network.ws.GraphQLWsProtocol
-import com.apollographql.apollo.network.ws.WebSocketNetworkTransport
+import com.apollographql.apollo.network.websocket.GraphQLWsProtocol
+import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo.testing.internal.runTest
 import graphql.ws.GreetingsSubscription
 import graphql.ws.HelloQuery
@@ -25,8 +25,6 @@ class GraphQLWsTest {
         .networkTransport(
             WebSocketNetworkTransport.Builder().serverUrl(
                 serverUrl = "http://localhost:9090/graphql",
-            ).protocol(
-                protocolFactory = GraphQLWsProtocol.Factory()
             ).build()
         )
         .build()
