@@ -35,10 +35,10 @@ import com.apollographql.apollo.ast.MergeOptions
 import com.apollographql.apollo.ast.NoQueryType
 import com.apollographql.apollo.ast.OtherValidationIssue
 import com.apollographql.apollo.ast.Schema
-import com.apollographql.apollo.ast.Schema.Companion.FIELD_POLICY
 import com.apollographql.apollo.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo.ast.SourceLocation
 import com.apollographql.apollo.ast.autoLinkedKotlinLabsForeignSchema
+import com.apollographql.apollo.ast.autoLinkedKotlinLabsForeignSchemaNoCache
 import com.apollographql.apollo.ast.builtinDefinitions
 import com.apollographql.apollo.ast.canHaveKeyFields
 import com.apollographql.apollo.ast.findOneOf
@@ -74,17 +74,6 @@ private fun ForeignSchema.asNonPrefixedImport(): LinkedSchema {
   return LinkedSchema(this, definitions, definitions.map { (it as GQLNamed).definitionName() }.associateBy { it }, null)
 }
 
-private fun ForeignSchema.withoutCacheSymbols(): ForeignSchema {
-  return ForeignSchema(
-      name = name,
-      version = version,
-      definitions = definitions.filterNot {
-        it is GQLDirectiveDefinition && (it.name == TYPE_POLICY || it.name == FIELD_POLICY)
-      },
-      directivesToStrip = directivesToStrip
-  )
-}
-
 private class LinkedDefinition<T : GQLDefinition>(val definition: T, val linkedSchema: LinkedSchema)
 
 internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaValidationOptions): GQLResult<Schema> {
@@ -106,10 +95,10 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
   if (options.addKotlinLabsDefinitions && linkedSchemas.none { it.foreignSchema.name == "kotlin_labs" }) {
     linkedSchemas.add(
         if (options.excludeCacheDirectives) {
-          autoLinkedKotlinLabsForeignSchema.withoutCacheSymbols().asNonPrefixedImport()
+          autoLinkedKotlinLabsForeignSchemaNoCache
         } else {
-          autoLinkedKotlinLabsForeignSchema.asNonPrefixedImport()
-        }
+          autoLinkedKotlinLabsForeignSchema
+        }.asNonPrefixedImport()
     )
   }
 
@@ -242,7 +231,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
   importedDirectiveDefinitions.forEach { entry ->
     val existing = directiveDefinitions.get(entry.key)
     if (existing != null) {
-      if (entry.value.linkedSchema.foreignSchema == autoLinkedKotlinLabsForeignSchema) {
+      if (entry.value.linkedSchema.foreignSchema == autoLinkedKotlinLabsForeignSchema || entry.value.linkedSchema.foreignSchema == autoLinkedKotlinLabsForeignSchemaNoCache) {
         /*
          * This may be an auto-linked definition.
          * For compatibility reasons, it takes precedence over the user-provided ones.

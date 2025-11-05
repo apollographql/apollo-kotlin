@@ -132,6 +132,56 @@ internal val kotlinLabsDefinitions_0_3 = """
       | INPUT_OBJECT
 """.trimIndent()
 
+/**
+ * This is the same as `kotlinLabsDefinitions_0_3` without `@typePolicy` and `@fieldPolicy`.
+ */
+internal val kotlinLabsDefinitions_0_3_no_cache = """
+  ""${'"'}
+  Marks a field or variable definition as optional or required
+  By default Apollo Kotlin generates all variables of nullable types as optional, in compliance with the GraphQL specification,
+  but this can be configured with this directive, because if the variable was added in the first place, it's usually to pass a value
+  Since: 3.0.0
+  ""${'"'}
+  directive @optional(if: Boolean = true) on FIELD | VARIABLE_DEFINITION
+  
+  ""${'"'}
+  Marks a field as non-null. The corresponding Kotlin property will be made non-nullable even if the GraphQL type is nullable.
+  When used on an object definition in a schema document, `fields` must be non-empty and contain a selection set of fields that should be non-null
+  When used on a field from an executable document, `fields` must always be empty
+  
+  Setting the directive at the schema level is usually easier as there is little reason that a field would be non-null in one place
+  and null in the other
+  Since: 3.0.0
+  ""${'"'}
+  directive @nonnull(fields: String! = "") on OBJECT | FIELD
+  
+  ""${'"'}
+  Indicates that the given field, argument, input field or enum value requires
+  giving explicit consent before being used.
+  Since: 3.3.1
+  ""${'"'}
+  directive @requiresOptIn(feature: String!) repeatable
+  on FIELD_DEFINITION
+      | ARGUMENT_DEFINITION
+      | INPUT_FIELD_DEFINITION
+      | ENUM_VALUE
+  
+  ""${'"'}
+  Use the specified name in the generated code instead of the GraphQL name.
+  Use this for instance when the name would clash with a reserved keyword or field in the generated code.
+  This directive is experimental.
+  Since: 3.3.1
+  ""${'"'}
+  directive @targetName(name: String!)
+  on OBJECT
+      | INTERFACE
+      | ENUM
+      | ENUM_VALUE
+      | UNION
+      | SCALAR
+      | INPUT_OBJECT
+""".trimIndent()
+
 internal val kotlinLabsDefinitions_0_4 = """
 ""${'"'}
 Marks a field or variable definition as optional or required
