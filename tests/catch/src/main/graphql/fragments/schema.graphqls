@@ -7,5 +7,6 @@ type Query {
 
 type Foo {
   bar: Int!
+  foo: Foo
 }
 

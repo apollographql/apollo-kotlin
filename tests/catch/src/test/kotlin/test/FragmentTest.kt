@@ -14,17 +14,21 @@ class FragmentTest {
     val json = """
       {
         "errors": [
-          { "message":  "Cannot return null for bar", "path": ["foo"] }        
+          { "message":  "Cannot return null for bar", "path": ["foo", "foo", "bar"] }        
         ],
         "data": {
-          "__typename": "Foo",
-          "foo": null        
+          "foo": {
+            "foo": {
+              "bar": null,
+              "bar2": 42
+            }
+          }        
         }
       }
     """.trimIndent()
 
     val response = GetFooQuery().parseResponse(json)
-    response.data?.queryDetails?.foo.apply {
+    response.data?.foo.apply {
       assertIs<FieldResult.Failure>(this)
       assertEquals("Cannot return null for bar", this.graphQLErrorOrNull()?.message)
     }

@@ -1,18 +1,8 @@
 query GetFoo {
-  ...queryDetails
-}
-
-fragment queryDetails on Query {
-  ...typeName
-  foo @catch(to: RESULT){
-    ...fooDetails
+  foo @catch(to: RESULT) {
+    foo {
+      bar
+      bar2: bar
+    }
   }
-}
-
-fragment fooDetails on Foo {
-  bar
-}
-
-fragment typeName on Query {
-  __typename
 }
