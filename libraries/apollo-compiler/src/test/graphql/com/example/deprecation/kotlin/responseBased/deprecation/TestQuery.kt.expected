@@ -54,6 +54,8 @@ public data class TestQuery(
       public val deprecated: String,
       @Deprecated(message = "No longer supported")
       public val deprecatedBool: Boolean,
+      @Deprecated(message = "")
+      public val deprecatedEmptyReason: String,
     )
   }
 
@@ -68,7 +70,7 @@ public data class TestQuery(
         .build()
 
     public const val OPERATION_ID: String =
-        "6a8dd101c1681dc829d72040868fdf394c52bacb692da3549bc73e9504013470"
+        "966ff95da151b6e5de110e4ef356053da71e83ed39055254fefec22b9c8e15e4"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -80,12 +82,13 @@ public data class TestQuery(
      *     name
      *     deprecated
      *     deprecatedBool
+     *     deprecatedEmptyReason
      *   }
      * }
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() = "query TestQuery(${'$'}episode: Episode) { hero(episode: ${'$'}episode) { name deprecated deprecatedBool } }"
+      get() = "query TestQuery(${'$'}episode: Episode) { hero(episode: ${'$'}episode) { name deprecated deprecatedBool deprecatedEmptyReason } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

@@ -29,6 +29,10 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "deprecatedBool",
           type = GraphQLBoolean.type.notNull()
+        ).build(),
+        CompiledField.Builder(
+          name = "deprecatedEmptyReason",
+          type = GraphQLString.type.notNull()
         ).build()
       )
 

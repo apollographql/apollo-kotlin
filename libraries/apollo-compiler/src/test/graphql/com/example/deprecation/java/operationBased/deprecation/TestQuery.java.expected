@@ -28,7 +28,7 @@ import java.lang.SuppressWarnings;
 public class TestQuery implements Query<TestQuery.Data> {
   public static ExecutableDefinition<Data> definition = new Definition();
 
-  public static final String OPERATION_ID = "6a8dd101c1681dc829d72040868fdf394c52bacb692da3549bc73e9504013470";
+  public static final String OPERATION_ID = "966ff95da151b6e5de110e4ef356053da71e83ed39055254fefec22b9c8e15e4";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -39,10 +39,11 @@ public class TestQuery implements Query<TestQuery.Data> {
    *     name
    *     deprecated
    *     deprecatedBool
+   *     deprecatedEmptyReason
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery($episode: Episode) { hero(episode: $episode) { name deprecated deprecatedBool } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery($episode: Episode) { hero(episode: $episode) { name deprecated deprecatedBool deprecatedEmptyReason } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -229,16 +230,24 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Deprecated
     public Boolean deprecatedBool;
 
+    /**
+     *
+     */
+    @Deprecated
+    public String deprecatedEmptyReason;
+
     private transient volatile int $hashCode;
 
     private transient volatile boolean $hashCodeMemoized;
 
     private transient volatile String $toString;
 
-    public Hero(String name, String deprecated, Boolean deprecatedBool) {
+    public Hero(String name, String deprecated, Boolean deprecatedBool,
+        String deprecatedEmptyReason) {
       this.name = name;
       this.deprecated = deprecated;
       this.deprecatedBool = deprecatedBool;
+      this.deprecatedEmptyReason = deprecatedEmptyReason;
     }
 
     @Override
@@ -250,7 +259,8 @@ public class TestQuery implements Query<TestQuery.Data> {
         Hero that = (Hero) o;
         return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          &&((this.deprecated == null) ? (that.deprecated == null) : this.deprecated.equals(that.deprecated))
-         &&((this.deprecatedBool == null) ? (that.deprecatedBool == null) : this.deprecatedBool.equals(that.deprecatedBool));
+         &&((this.deprecatedBool == null) ? (that.deprecatedBool == null) : this.deprecatedBool.equals(that.deprecatedBool))
+         &&((this.deprecatedEmptyReason == null) ? (that.deprecatedEmptyReason == null) : this.deprecatedEmptyReason.equals(that.deprecatedEmptyReason));
       }
       return false;
     }
@@ -265,6 +275,8 @@ public class TestQuery implements Query<TestQuery.Data> {
         __h ^= (deprecated == null) ? 0 : deprecated.hashCode();
         __h *= 1000003;
         __h ^= (deprecatedBool == null) ? 0 : deprecatedBool.hashCode();
+        __h *= 1000003;
+        __h ^= (deprecatedEmptyReason == null) ? 0 : deprecatedEmptyReason.hashCode();
         $hashCode = __h;
         $hashCodeMemoized = true;
       }
@@ -277,7 +289,8 @@ public class TestQuery implements Query<TestQuery.Data> {
         $toString = "Hero{"
           + "name=" + name + ", "
           + "deprecated=" + deprecated + ", "
-          + "deprecatedBool=" + deprecatedBool
+          + "deprecatedBool=" + deprecatedBool + ", "
+          + "deprecatedEmptyReason=" + deprecatedEmptyReason
           + "}";
       }
       return $toString;
