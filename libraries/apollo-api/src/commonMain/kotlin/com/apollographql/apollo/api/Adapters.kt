@@ -30,11 +30,20 @@ class ListAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<List<@Jvm
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): List<T> {
     reader.beginArray()
     val list = mutableListOf<T>()
-    while (reader.hasNext()) {
-      list.add(wrappedAdapter.fromJson(reader, customScalarAdapters))
+    try {
+      while (reader.hasNext()) {
+        list.add(wrappedAdapter.fromJson(reader, customScalarAdapters))
+      }
+      reader.endArray()
+      return list
+    } catch (e: ApolloGraphQLException) {
+      // There was an error. Consume the remaining entries
+      while (reader.hasNext()) {
+        reader.skipValue()
+      }
+      reader.endArray()
+      throw e
     }
-    reader.endArray()
-    return list
   }
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: List<T>) {
@@ -358,8 +367,18 @@ class ObjectAdapter<T>(
       reader
     }
     actualReader.beginObject()
-    return wrappedAdapter.fromJson(actualReader, customScalarAdapters).also {
+    try {
+      val result = wrappedAdapter.fromJson(actualReader, customScalarAdapters)
       actualReader.endObject()
+      return result
+    } catch (e: ApolloGraphQLException) {
+      // There was an error. Consume the remaining entries of the object
+      while (actualReader.hasNext()) {
+        actualReader.nextName()
+        actualReader.skipValue()
+      }
+      actualReader.endObject()
+      throw e
     }
   }
 
