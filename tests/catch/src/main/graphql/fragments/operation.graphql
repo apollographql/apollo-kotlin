@@ -1,0 +1,8 @@
+query GetFoo {
+  foo @catch(to: RESULT) {
+    foo {
+      bar
+      bar2: bar
+    }
+  }
+}
