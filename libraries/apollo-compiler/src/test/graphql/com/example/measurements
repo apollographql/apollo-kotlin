@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  200014
-aggregate-kotlin-responseBased                                                                  62779
+aggregate-all                                                                                  200049
+aggregate-kotlin-responseBased                                                                  62793
 aggregate-kotlin-operationBased                                                                 41065
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   96170
+aggregate-java-operationBased                                                                   96191
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5747
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3409
@@ -133,13 +133,13 @@ kotlin-operationBased-fragment_spread_with_nested_fields                        
 java-operationBased-monomorphic                                                                   648
 java-operationBased-interface_always_nested                                                       644
 kotlin-responseBased-union_fragment                                                               641
+java-operationBased-deprecation                                                                   639
 kotlin-responseBased-used_arguments                                                               639
 java-operationBased-capitalized_fields                                                            626
 java-operationBased-field_with_include_directive                                                  625
 java-operationBased-hero_with_review                                                              625
 kotlin-operationBased-operationbased2_ex8                                                         625
 java-operationBased-recursive_selection                                                           622
-java-operationBased-deprecation                                                                   618
 kotlin-operationBased-union_fragment                                                              607
 kotlin-responseBased-java_android_annotations                                                     606
 kotlin-responseBased-java_apollo_optionals                                                        606
@@ -205,9 +205,9 @@ kotlin-operationBased-typename_always_first                                     
 java-operationBased-merged_include                                                                451
 java-operationBased-operation_id_generator                                                        451
 kotlin-operationBased-path_vs_flat_accessors                                                      448
+kotlin-responseBased-deprecation                                                                  444
 kotlin-responseBased-hero_name                                                                    441
 kotlin-responseBased-interface_always_nested                                                      432
-kotlin-responseBased-deprecation                                                                  430
 kotlin-responseBased-enum_field                                                                   430
 kotlin-operationBased-root_query_fragment                                                         424
 kotlin-responseBased-inline_fragment_for_non_optional_field                                       423

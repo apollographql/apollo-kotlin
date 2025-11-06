@@ -10,4 +10,5 @@ type Character {
     name: String!
     deprecated: String! @deprecated
     deprecatedBool: Boolean! @deprecated
+    deprecatedEmptyReason: String! @deprecated(reason: "")
 }

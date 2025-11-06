@@ -49,18 +49,21 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Hero : Adapter<TestQuery.Data.Hero> {
-      public val RESPONSE_NAMES: List<String> = listOf("name", "deprecated", "deprecatedBool")
+      public val RESPONSE_NAMES: List<String> =
+          listOf("name", "deprecated", "deprecatedBool", "deprecatedEmptyReason")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero {
         var _name: String? = null
         var _deprecated: String? = null
         var _deprecatedBool: Boolean? = null
+        var _deprecatedEmptyReason: String? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _deprecated = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> _deprecatedBool = BooleanAdapter.fromJson(reader, customScalarAdapters)
+            3 -> _deprecatedEmptyReason = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -68,7 +71,8 @@ public object TestQuery_ResponseAdapter {
         return TestQuery.Data.Hero(
           name = _name ?: missingField(reader, "name"),
           deprecated = _deprecated ?: missingField(reader, "deprecated"),
-          deprecatedBool = _deprecatedBool ?: missingField(reader, "deprecatedBool")
+          deprecatedBool = _deprecatedBool ?: missingField(reader, "deprecatedBool"),
+          deprecatedEmptyReason = _deprecatedEmptyReason ?: missingField(reader, "deprecatedEmptyReason")
         )
       }
 
@@ -86,6 +90,9 @@ public object TestQuery_ResponseAdapter {
 
         writer.name("deprecatedBool")
         BooleanAdapter.toJson(writer, customScalarAdapters, value.deprecatedBool)
+
+        writer.name("deprecatedEmptyReason")
+        StringAdapter.toJson(writer, customScalarAdapters, value.deprecatedEmptyReason)
       }
     }
   }

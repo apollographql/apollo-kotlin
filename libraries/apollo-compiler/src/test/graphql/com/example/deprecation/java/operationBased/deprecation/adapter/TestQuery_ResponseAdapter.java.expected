@@ -58,7 +58,7 @@ public class TestQuery_ResponseAdapter {
   public enum Hero implements Adapter<TestQuery.Hero> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "deprecated", "deprecatedBool");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "deprecated", "deprecatedBool", "deprecatedEmptyReason");
 
     @SuppressWarnings("unchecked")
     @Override
@@ -67,6 +67,7 @@ public class TestQuery_ResponseAdapter {
       String _name = null;
       String _deprecated = null;
       Boolean _deprecatedBool = null;
+      String _deprecatedEmptyReason = null;
 
       loop:
       while(true) {
@@ -74,6 +75,7 @@ public class TestQuery_ResponseAdapter {
           case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _deprecated = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 2: _deprecatedBool = Adapters.BooleanAdapter.fromJson(reader, customScalarAdapters); break;
+          case 3: _deprecatedEmptyReason = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -81,11 +83,13 @@ public class TestQuery_ResponseAdapter {
       Assertions.checkFieldNotMissing(_name, "name");
       Assertions.checkFieldNotMissing(_deprecated, "deprecated");
       Assertions.checkFieldNotMissing(_deprecatedBool, "deprecatedBool");
+      Assertions.checkFieldNotMissing(_deprecatedEmptyReason, "deprecatedEmptyReason");
 
       return new TestQuery.Hero(
         _name,
         _deprecated,
-        _deprecatedBool
+        _deprecatedBool,
+        _deprecatedEmptyReason
       );
     }
 
@@ -100,6 +104,9 @@ public class TestQuery_ResponseAdapter {
 
       writer.name("deprecatedBool");
       Adapters.BooleanAdapter.toJson(writer, customScalarAdapters, value.deprecatedBool);
+
+      writer.name("deprecatedEmptyReason");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.deprecatedEmptyReason);
     }
   }
 }
