@@ -789,7 +789,7 @@ interface Service {
    * By default, the generated sources are connected to:
    * - main sourceSet for Kotlin projects
    * - commonMain sourceSet for Kotlin multiplatform projects
-   * - main sourceSet for Android projects
+   * - main variants for Android projects
    */
   fun outputDirConnection(action: Action<in DirectoryConnection>)
 
@@ -800,7 +800,7 @@ interface Service {
    * By default, the generated sources are connected to:
    * - main sourceSet for Kotlin projects
    * - commonMain sourceSet for Kotlin multiplatform projects
-   * - main sourceSet for Android projects
+   * - test variants for Android projects
    */
   fun dataBuildersOutputDirConnection(action: Action<in DirectoryConnection>)
 
@@ -844,12 +844,16 @@ interface Service {
     fun connectToAndroidComponent(component: Any, kotlin: Boolean)
 
     /**
-     * Connects the generated sources to all the Variants.
+     * Connects the generated sources to the "main" components.
+     * - When using AGP8, this uses `android.libraryVariants` and `android.applicationVariants`.
+     * - When using AGP9+, this uses `onVariants(selector().all())`
      */
     fun connectToAndroidVariants(kotlin: Boolean)
 
     /**
-     * Connects the generated sources to all the TestComponents.
+     * Connects the generated sources to all "test" components.
+     * - When using AGP8, this uses `android.testVariants` and `android.unitTestVariants`.
+     * - When using AGP9+, this uses `variant.hostTests` and `variant.deviceTests`
      */
     fun connectToAndroidTestComponents(kotlin: Boolean)
 
