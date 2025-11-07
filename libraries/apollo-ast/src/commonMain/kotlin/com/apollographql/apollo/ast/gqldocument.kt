@@ -8,6 +8,7 @@ import com.apollographql.apollo.ast.internal.builtinsDefinitionsStr
 import com.apollographql.apollo.ast.internal.compilerOptions_0_0
 import com.apollographql.apollo.ast.internal.compilerOptions_0_1_additions
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_3
+import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_3_no_cache
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_4
 import com.apollographql.apollo.ast.internal.linkDefinitionsStr
 import com.apollographql.apollo.ast.internal.nullabilityDefinitionsStr
@@ -127,6 +128,8 @@ fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
   return definitionsFromString(when (version) {
     // v0.3 has no behavior change over v0.2, so both versions map to the same definitions
     "v0.2", "v0.3" -> kotlinLabsDefinitions_0_3
+    // v0.3-noCache is the same as v0.3 without `@typePolicy` and `@fieldPolicy`
+    "v0.3-noCache" -> kotlinLabsDefinitions_0_3_no_cache
     // v0.4 doesn't have `@nonnull`
     "v0.4" -> kotlinLabsDefinitions_0_4
     // v0.5 adds `@map` and `@mapTo`
@@ -138,6 +141,8 @@ fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
 }
 
 internal val autoLinkedKotlinLabsForeignSchema = ForeignSchema("kotlin_labs", "v0.3", kotlinLabsDefinitions("v0.3"), listOf("optional", "nonnull"))
+internal val autoLinkedKotlinLabsForeignSchemaNoCache =
+  ForeignSchema("kotlin_labs", "v0.3-noCache", kotlinLabsDefinitions("v0.3-noCache"), listOf("optional", "nonnull"))
 
 /**
  * The foreign schemas supported by Apollo Kotlin.

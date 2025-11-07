@@ -38,6 +38,7 @@ import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo.ast.SourceLocation
 import com.apollographql.apollo.ast.autoLinkedKotlinLabsForeignSchema
+import com.apollographql.apollo.ast.autoLinkedKotlinLabsForeignSchemaNoCache
 import com.apollographql.apollo.ast.builtinDefinitions
 import com.apollographql.apollo.ast.canHaveKeyFields
 import com.apollographql.apollo.ast.findOneOf
@@ -49,14 +50,25 @@ import com.apollographql.apollo.ast.transform2
 import com.apollographql.apollo.ast.withBuiltinDefinitions
 
 /**
- * @param addKotlinLabsDefinitions automatically import all the kotlin_labs definitions, even if no `@link` is present
+ * @param addKotlinLabsDefinitions automatically import the kotlin_labs definitions, even if no `@link` is present. If [excludeCacheDirectives] is `true`, cache related directives are excluded.
  * @param foreignSchemas a list of known [ForeignSchema] that may or may not be imported depending on the `@link` directives
+ * @param excludeCacheDirectives whether to exclude cache related directives when auto-importing the kotlin_labs definitions. Has no effect if [addKotlinLabsDefinitions] is `false`.
  */
 @ApolloExperimental
 class SchemaValidationOptions(
     val addKotlinLabsDefinitions: Boolean,
     val foreignSchemas: List<ForeignSchema>,
-)
+    val excludeCacheDirectives: Boolean,
+) {
+  constructor(
+      addKotlinLabsDefinitions: Boolean,
+      foreignSchemas: List<ForeignSchema>,
+  ) : this(
+      addKotlinLabsDefinitions = addKotlinLabsDefinitions,
+      foreignSchemas = foreignSchemas,
+      excludeCacheDirectives = false,
+  )
+}
 
 private fun ForeignSchema.asNonPrefixedImport(): LinkedSchema {
   return LinkedSchema(this, definitions, definitions.map { (it as GQLNamed).definitionName() }.associateBy { it }, null)
@@ -81,7 +93,13 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
   val linkedSchemas = definitions.filterIsInstance<GQLSchemaExtension>().getLinkedSchemas(issues, options.foreignSchemas).toMutableList()
 
   if (options.addKotlinLabsDefinitions && linkedSchemas.none { it.foreignSchema.name == "kotlin_labs" }) {
-    linkedSchemas.add(autoLinkedKotlinLabsForeignSchema.asNonPrefixedImport())
+    linkedSchemas.add(
+        if (options.excludeCacheDirectives) {
+          autoLinkedKotlinLabsForeignSchemaNoCache
+        } else {
+          autoLinkedKotlinLabsForeignSchema
+        }.asNonPrefixedImport()
+    )
   }
 
   val typeDefinitions = mutableMapOf<String, GQLTypeDefinition>()
@@ -213,7 +231,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
   importedDirectiveDefinitions.forEach { entry ->
     val existing = directiveDefinitions.get(entry.key)
     if (existing != null) {
-      if (entry.value.linkedSchema.foreignSchema == autoLinkedKotlinLabsForeignSchema) {
+      if (entry.value.linkedSchema.foreignSchema == autoLinkedKotlinLabsForeignSchema || entry.value.linkedSchema.foreignSchema == autoLinkedKotlinLabsForeignSchemaNoCache) {
         /*
          * This may be an auto-linked definition.
          * For compatibility reasons, it takes precedence over the user-provided ones.
