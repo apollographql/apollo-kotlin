@@ -29,4 +29,8 @@ apollo {
     srcDir("src/main/graphql/result")
     packageName.set("result")
   }
+  service("fragments") {
+    srcDir("src/main/graphql/fragments")
+    packageName.set("fragments")
+  }
 }
