@@ -35,12 +35,12 @@ kotlinx-datetime = "0.7.1"
 #noinspection NewerVersionAvailable requires KGP 2.2
 kotlinx-serialization-runtime = "1.8.1"
 #noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
-ksp = "2.2.20-2.0.4"
+ksp = "2.3.1"
 #noinspection NewerVersionAvailable requires KGP 2.2
 ktor = "3.2.3"
 moshix = "0.14.1"
-okio = "3.16.1"
-okhttp = "5.2.1"
+okio = "3.16.2"
+okhttp = "5.3.0"
 sqldelight = "2.1.0"
 truth = "1.4.5"
 
@@ -101,7 +101,8 @@ gratatouille-wiring-runtime = { group = "com.gradleup.gratatouille", name = "gra
 gratatouille-tasks-runtime = { group = "com.gradleup.gratatouille", name = "gratatouille-tasks-runtime", version.ref = "gratatouille-runtime" }
 jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
 # built from https://github.com/apollographql/dokka/releases/tag/v2.1.0-beta.2
-# remove when https://github.com/Kotlin/dokka/pull/4286 is merged
+# remove when https://github.com/Kotlin/dokka/pull/4334 is merged
+# noinspection NewerVersionAvailable
 dokka = "org.jetbrains.dokka:org.jetbrains.dokka.gradle.plugin:2.1.0-beta.2"
 #
 # See https://github.com/gradle/gradle/issues/1835
@@ -112,14 +113,14 @@ dokka = "org.jetbrains.dokka:org.jetbrains.dokka.gradle.plugin:2.1.0-beta.2"
 #noinspection NewerVersionAvailable this is a compileOnly dependency
 gradle-api-min = { group = "dev.gradleplugins", name = "gradle-api", version = "8.0" }
 guava-jre = { group = "com.google.guava", name = "guava", version.ref = "guava" }
-http4k-bom = "org.http4k:http4k-bom:6.18.0.1"
+http4k-bom = "org.http4k:http4k-bom:6.20.0.3"
 http4k-core = { module = "org.http4k:http4k-core" }
 http4k-server-jetty = { module = "org.http4k:http4k-server-jetty" }
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-allopen = { group = "org.jetbrains.kotlin", name = "kotlin-allopen", version.ref = "kotlin-plugin" }
-kotlin-compiletesting = { group = "dev.zacsweers.kctfork", name = "core", version = "0.9.0" }
-graphql-java = "com.graphql-java:graphql-java:24.2"
+kotlin-compiletesting = { group = "dev.zacsweers.kctfork", name = "core", version = "0.11.0" }
+graphql-java = "com.graphql-java:graphql-java:24.3"
 # The main kotlin version for build-logic and Gradle tests
 kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin" }
 kotlin-plugin-annotations = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin-annotations", version.ref = "kotlin-plugin" }
@@ -134,7 +135,7 @@ kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit"
 kotlin-stdlib-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-js", version.ref = "kotlin-plugin" }
 kotlin-stdlib-wasm-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-wasm-js", version.ref = "kotlin-plugin" }
 kotlinx-benchmark-runtime = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.14"
-kotlinx-benchmark = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin:0.4.12"
+kotlinx-benchmark = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin:0.4.14"
 kotlinx-browser = "org.jetbrains.kotlinx:kotlinx-browser:0.3"
 androidx-benchmark-macro = "androidx.benchmark:benchmark-macro-junit4:1.4.1"
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -166,7 +167,7 @@ sqldelight-native = { group = "app.cash.sqldelight", name = "native-driver", ver
 sqldelight-plugin = { group = "app.cash.sqldelight", name = "gradle-plugin", version.ref = "sqldelight" }
 sqldelight-runtime = { group = "app.cash.sqldelight", name = "runtime", version.ref = "sqldelight" }
 benchmark-gradle-plugin = "androidx.benchmark:benchmark-gradle-plugin:1.4.1"
-asm = "org.ow2.asm:asm-commons:9.8"
+asm = "org.ow2.asm:asm-commons:9.9"
 moshix-ksp = { group = "dev.zacsweers.moshix", name = "moshi-ksp", version.ref = "moshix" }
 benchmark-junit4 = "androidx.benchmark:benchmark-junit4:1.4.1"
 androidx-test-core = "androidx.test:core:1.7.0"
@@ -179,7 +180,7 @@ librarian = "com.gradleup.librarian:librarian-gradle-plugin:0.2.1-SNAPSHOT-0e052
 nmcp = "com.gradleup.nmcp:nmcp:1.2.0"
 slf4j-simple = "org.slf4j:slf4j-simple:2.0.17"
 slf4j-nop = "org.slf4j:slf4j-nop:2.0.17"
-licensee = "app.cash.licensee:licensee-gradle-plugin:1.13.0"
+licensee = "app.cash.licensee:licensee-gradle-plugin:1.14.1"
 #compileOnly dependency for the Apollo Gradle Plugin
 #noinspection SimilarGradleDependency,NewerVersionAvailable
 kgp-compile = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
