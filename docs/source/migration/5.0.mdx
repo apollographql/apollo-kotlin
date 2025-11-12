@@ -130,7 +130,7 @@ You can read more in the ["handling nullability" page](https://www.apollographql
 
 ### New WebSockets
 
-In Apollo Kotlin 5, the websocket code has been rewritten to simplify it and clarify the error and retry semantics. 
+In Apollo Kotlin 5, the WebSocket code has been rewritten to simplify it and clarify the error and retry semantics. 
 
 All the classes in the `com.apollographql.apollo.network.ws` package have been deprecated and a new implementation is available in `com.apollographql.apollo.network.websocket`. 
 
@@ -148,7 +148,7 @@ import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
 
 Some shorthand methods on `ApolloClient.Builder` have been deprecated and replaced by explicit configuration. In those cases, you can use `subscriptionNetworkTransport` directly.
 
-For an example, you can replace `ApolloClient.Builder.webSocketEngine()` like so:
+For an example, you can replace `ApolloClient.Builder.webSocketEngine()` as follows:
 
 ```kotlin
 // Replace
@@ -167,7 +167,7 @@ ApolloClient.Builder()
 
 The default WebSocket protocol has changed to [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md).
 
-If you were already using it before, you'll now need to create the `subscriptionNetworkTransport()` explicitely:
+If you were already using it before, you'll now need to create the `subscriptionNetworkTransport()` explicitly:
 
 ```kotlin
 // Replace
