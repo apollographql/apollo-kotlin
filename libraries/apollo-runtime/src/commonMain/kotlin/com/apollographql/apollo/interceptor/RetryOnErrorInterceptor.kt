@@ -57,7 +57,7 @@ fun interface RetryStrategy {
 }
 
 /**
- * The retry state of this request.
+ * The retry context of this request.
  */
 class RetryContext(
     val networkMonitor: NetworkMonitor?,
