@@ -167,7 +167,7 @@ ApolloClient.Builder()
 
 The default WebSocket protocol has changed to [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md).
 
-If you were already using it before, you'll now need to create the `subscriptionNetworkTransport()` explicitly:
+If you were already using it before, you may remove the call to `protocol()` or define it explicitly using `subscriptionNetworkTransport()`:
 
 ```kotlin
 // Replace
