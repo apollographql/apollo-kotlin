@@ -17,7 +17,6 @@ gratatouille {
   codeGeneration {
     addDependencies.set(false)
   }
-  pluginMarker("com.apollographql.apollo.external")
 }
 
 dependencies {
