@@ -217,7 +217,7 @@ val apolloClient = ApolloClient.Builder()
     .webSocketServerUrl("http://localhost:8080/subscriptions")
     .retryOnErrorInterceptor(RetryOnErrorInterceptor { context ->
       if (context.request.operation is Subscription<*>) {
-        delay(2.0.pow(attempt.toDouble()).toLong())
+        delay(2.0.pow(context.attempt.toDouble()).toLong())
         true
       } else {
         false
