@@ -1,6 +1,5 @@
 package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.http.DefaultHttpRequestComposer
@@ -13,7 +12,6 @@ import okio.Buffer
  *
  * [GraphQLWsProtocol] can execute queries and mutations in addition to subscriptions
  */
-@ApolloExperimental
 class GraphQLWsProtocol(
     val connectionPayload: suspend () -> Any? = { null },
 ) : WsProtocol {
@@ -58,7 +56,7 @@ class GraphQLWsProtocol(
     val map = try {
       @Suppress("UNCHECKED_CAST")
       Buffer().writeUtf8(text).jsonReader().readAny() as Map<String, Any?>
-    } catch (e: Exception) {
+    } catch (_: Exception) {
       return ParseErrorServerMessage("Invalid JSON: '$text'")
     }
 

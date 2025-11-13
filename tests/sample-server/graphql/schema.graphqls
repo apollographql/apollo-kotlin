@@ -8,6 +8,10 @@ type MutationRoot {
   closeAllWebSockets: String!
 }
 
+type Nested {
+  foo: Int
+}
+
 type QueryRoot {
   random: Int!
 
@@ -33,7 +37,7 @@ type SubscriptionRoot {
 
   operationError: String!
 
-  graphqlAccessError(after: Int!): Int
+  graphqlAccessError(after: Int!): Nested!
 
   closeWebSocket: String!
 

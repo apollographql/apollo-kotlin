@@ -1,13 +1,9 @@
 import app.cash.turbine.test
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.ApolloRequest
-import com.apollographql.apollo.api.ApolloResponse
-import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
-import com.apollographql.apollo.interceptor.ApolloInterceptor
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo.interceptor.RetryOnErrorInterceptor
 import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
 import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.mockserver.MockResponse
@@ -16,11 +12,7 @@ import com.apollographql.mockserver.awaitWebSocketRequest
 import com.apollographql.mockserver.enqueueWebSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
@@ -160,21 +152,6 @@ class RetryWebSocketsTest {
         }
   }
 
-  class MyRetryOnErrorInterceptor : ApolloInterceptor {
-    data object RetryException : Exception()
-
-    override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-      return chain.proceed(request).onEach {
-        if (request.retryOnError == true && it.exception != null && it.exception is ApolloNetworkException) {
-          throw RetryException
-        }
-      }.retryWhen { cause, attempt ->
-        cause is RetryException && attempt < 2
-      }.catch {
-        if (it !is RetryException) throw it
-      }
-    }
-  }
 
   @Test
   fun customRetryOnErrorInterceptor() = runTest {
@@ -186,10 +163,15 @@ class RetryWebSocketsTest {
                 .serverUrl(mockServer.url())
                 .build()
         )
-        .retryOnError {
-          it.operation is Subscription
-        }
-        .retryOnErrorInterceptor(MyRetryOnErrorInterceptor())
+        .retryOnErrorInterceptor(RetryOnErrorInterceptor { context ->
+          if (context.request.operation is Subscription<*>
+              && context.response.exception is ApolloNetworkException
+              && context.attempt < 2) {
+            true
+          } else {
+            false
+          }
+        })
         .build().use { apolloClient ->
           var serverWriter = mockServer.enqueueWebSocket(keepAlive = false)
 
@@ -218,6 +200,10 @@ class RetryWebSocketsTest {
                 assertFails {
                   // Make sure that no retry is done
                   mockServer.awaitAnyRequest(timeout = 1.seconds)
+                }
+                // The terminal item
+                awaitItem().exception.apply {
+                  assertIs<ApolloNetworkException>(this)
                 }
                 serverWriter.close()
                 awaitComplete()

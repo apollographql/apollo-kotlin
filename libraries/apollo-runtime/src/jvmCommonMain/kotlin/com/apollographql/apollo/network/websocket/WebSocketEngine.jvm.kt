@@ -1,11 +1,10 @@
 package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.network.defaultOkHttpClientBuilder
 import okhttp3.Headers
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okio.ByteString
@@ -121,7 +120,6 @@ actual fun WebSocketEngine(): WebSocketEngine = JvmWebSocketEngine { defaultOkHt
  *
  * This factory function accepts a function so that OkHttp is initialized from a background thread
  */
-@ApolloExperimental
 fun WebSocketEngine(webSocketFactory: () -> PlatformWebSocket.Factory): WebSocketEngine = JvmWebSocketEngine(webSocketFactory)
 
 /**
@@ -130,5 +128,11 @@ fun WebSocketEngine(webSocketFactory: () -> PlatformWebSocket.Factory): WebSocke
  * Prefer using the factory function accepting a function so that OkHttp is initialized from a background thread.
  * See https://github.com/square/okhttp/pull/8248
  */
-@ApolloExperimental
 fun WebSocketEngine(webSocketFactory: PlatformWebSocket.Factory): WebSocketEngine = JvmWebSocketEngine(webSocketFactory)
+
+/**
+ * This is a convenience function to ease migration from v4 webSockets.
+ */
+@Deprecated("Use WebSocketEngine instead", ReplaceWith("WebSocketEngine(webSocketFactory)"))
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+fun DefaultWebSocketEngine(webSocketFactory: PlatformWebSocket.Factory): WebSocketEngine = JvmWebSocketEngine(webSocketFactory)

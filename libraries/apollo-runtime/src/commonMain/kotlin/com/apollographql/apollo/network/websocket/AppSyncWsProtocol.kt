@@ -1,6 +1,5 @@
 package com.apollographql.apollo.network.websocket
 
-import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.NullableAnyAdapter
 import com.apollographql.apollo.api.Operation
@@ -15,8 +14,9 @@ import okio.Buffer
 
 /**
  * A [WsProtocol] for https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html
+ *
+ * @param authorization the value of the "authorization" extension in the "start" payload.
  */
-@ApolloExperimental
 class AppSyncWsProtocol(
     val authorization: suspend () -> Any? = { null },
 ) : WsProtocol {
@@ -31,17 +31,16 @@ class AppSyncWsProtocol(
     // AppSync encodes the data as a String
     val data = NullableAnyAdapter.toJsonString(DefaultHttpRequestComposer.composePayload(request))
 
-
-        return mapOf(
-            "type" to "start",
-            "id" to request.requestUuid.toString(),
-            "payload" to mapOf(
-                "data" to data,
-                "extensions" to mapOf(
-                    "authorization" to authorization()
-                )
+    return mapOf(
+        "type" to "start",
+        "id" to request.requestUuid.toString(),
+        "payload" to mapOf(
+            "data" to data,
+            "extensions" to mapOf(
+                "authorization" to authorization()
             )
-        ).toClientMessage()
+        )
+    ).toClientMessage()
   }
 
   override fun <D : Operation.Data> operationStop(request: ApolloRequest<D>): ClientMessage {
@@ -51,11 +50,11 @@ class AppSyncWsProtocol(
     ).toClientMessage()
   }
 
-  override fun ping(): ClientMessage? {
+  override fun ping(): ClientMessage {
     return mapOf("type" to "ping").toClientMessage()
   }
 
-  override fun pong(): ClientMessage? {
+  override fun pong(): ClientMessage {
     return mapOf("type" to "pong").toClientMessage()
   }
 
@@ -63,7 +62,7 @@ class AppSyncWsProtocol(
     val map = try {
       @Suppress("UNCHECKED_CAST")
       Buffer().writeUtf8(text).jsonReader().readAny() as Map<String, Any?>
-    } catch (e: Exception) {
+    } catch (_: Exception) {
       return ParseErrorServerMessage("Invalid JSON: '$this'")
     }
 
@@ -85,6 +84,7 @@ class AppSyncWsProtocol(
           else -> error("") // make the compiler happy
         }
       }
+
       "error" -> {
         val id = map["id"] as? String
         if (id != null) {
@@ -98,11 +98,10 @@ class AppSyncWsProtocol(
     }
   }
 
-  @ApolloExperimental
   companion object {
     /**
      * Helper method that builds the final URL. It will append the authorization and payload arguments as query parameters.
-     * This method can be used for both the HTTP URL as well as the WebSocket URL
+     * This method can be used for both the HTTP URL and the WebSocket URL
      *
      * Example:
      * ```
@@ -125,11 +124,12 @@ class AppSyncWsProtocol(
         authorization: Map<String, Any?>,
         payload: Map<String, Any?> = emptyMap(),
     ): String =
-        baseUrl
-            .appendQueryParameters(mapOf(
-                "header" to authorization.base64Encode(),
-                "payload" to payload.base64Encode(),
-            ))
+      baseUrl
+          .appendQueryParameters(mapOf(
+              "header" to authorization.base64Encode(),
+              "payload" to payload.base64Encode(),
+          )
+          )
 
     private fun Map<String, Any?>.base64Encode(): String {
       return buildJsonByteString {

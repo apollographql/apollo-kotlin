@@ -16,20 +16,12 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.retryWhen
+import kotlin.jvm.JvmOverloads
 import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Returns a default [ApolloInterceptor] that monitors exceptions and possibly retries the [Flow].
- *
- * The returned [RetryOnErrorInterceptor] uses default behavior depending on whether the current request is a subscription
- * (long-lived request) or not (short-lived request):
- * - for subscriptions:
- *   - if [ApolloResponse.exception] is an instance of [ApolloOfflineException], wait for the network to become available again and retry the request.
- *   - else if [ApolloResponse.exception] is recoverable, uses exponential backoff with a max delay of 64 seconds.
- * - for queries and mutations:
- *   - if [ApolloResponse.exception] is an instance of [ApolloOfflineException], let the exception through.
- *   - else if [ApolloResponse.exception] is recoverable, retries after 1, 3 and 7 seconds and stops retrying.
+ * Returns a default [ApolloInterceptor] that monitors exceptions and possibly retries the [Flow] according to [retryStrategy].
  *
  * Use with [com.apollographql.apollo.ApolloClient.Builder.retryOnErrorInterceptor]:
  *
@@ -46,64 +38,69 @@ import kotlin.time.Duration.Companion.seconds
  * @see [com.apollographql.apollo.ApolloClient.Builder.retryOnErrorInterceptor]
  * @see [ApolloRequest.retryOnError]
  */
-fun RetryOnErrorInterceptor(networkMonitor: NetworkMonitor): ApolloInterceptor =
-  DefaultRetryOnErrorInterceptorImpl(networkMonitor, defaultRetryStrategy)
-
-/**
- * Returns a default [ApolloInterceptor] that monitors exceptions and possibly retries the [Flow] according to [retryStrategy].
- *
- * Use with [com.apollographql.apollo.ApolloClient.Builder.retryOnErrorInterceptor]:
- *
- * ```kotlin
- * apolloClient = ApolloClient.Builder()
- *                 .serverUrl("https://...")
- *                 .retryOnErrorInterceptor(RetryOnErrorInterceptor(NetworkMonitor(context)))
- *                 .build()
- * ```
- *
- * @see [com.apollographql.apollo.ApolloClient.Builder.retryOnErrorInterceptor]
- * @see [ApolloRequest.retryOnError]
- */
-fun RetryOnErrorInterceptor(networkMonitor: NetworkMonitor, retryStrategy: RetryStrategy): ApolloInterceptor =
+@JvmOverloads
+fun RetryOnErrorInterceptor(
+    networkMonitor: NetworkMonitor? = null,
+    retryStrategy: RetryStrategy = defaultRetryStrategy,
+): ApolloInterceptor =
   DefaultRetryOnErrorInterceptorImpl(networkMonitor, retryStrategy)
 
 fun interface RetryStrategy {
   /**
-   * Determines whether [request] should be retried.
+   * Determines whether the request should be retried.
    * This function may suspend.
    *
+   * @param context the retry state for a given request.
    * @return true if this request should be retried.
    */
-  suspend fun shouldRetry(state: RetryState, request: ApolloRequest<*>, response: ApolloResponse<*>): Boolean
+  suspend fun shouldRetry(context: RetryContext): Boolean
 }
 
 /**
- * The state of this request
+ * The retry context of this request.
  */
-class RetryState(
+class RetryContext(
     val networkMonitor: NetworkMonitor?,
+    /**
+     * The request that needs to be retried
+     */
+    val request: ApolloRequest<*>,
 ) {
+  internal var _attempt: Int = 0
+
+  internal lateinit var _response: ApolloResponse<*>
+
   /**
-   * The current attempt, starting at 0.
-   * [RetryStrategy] implementations may update this value, for an example to reset exponential backoff.
+   * The last response that was seen
    */
-  var attempt = 0
-}
+  val response: ApolloResponse<*>
+    get() = _response
 
-internal fun RetryOnErrorInterceptor(): ApolloInterceptor = DefaultRetryOnErrorInterceptorImpl(null, defaultRetryStrategy)
-
-private val defaultRetryStrategy = RetryStrategy { state: RetryState, request: ApolloRequest<*>, response: ApolloResponse<*> ->
-  val exception = response.exception
-  if (exception == null) {
-    // success: continue
-    return@RetryStrategy false
+  /**
+   * Reset the value of [attempt]
+   */
+  fun resetAttempt() {
+    _attempt = 0
   }
 
+  /**
+   * The attempt number, starting from 0
+   */
+  val attempt: Int
+    get() = _attempt
+}
+
+val defaultRetryStrategy = RetryStrategy { state: RetryContext ->
+  val request = state.request
+  val exception = state.response.exception
+  if (request.retryOnError != true || exception == null) {
+    return@RetryStrategy false
+  }
   if (exception is ApolloOfflineException) {
     // We are offline
     if (request.operation is Subscription<*>) {
       state.networkMonitor!!.waitForNetwork()
-      state.attempt = 0
+      state.resetAttempt()
       return@RetryStrategy true
     } else {
       return@RetryStrategy false
@@ -112,14 +109,13 @@ private val defaultRetryStrategy = RetryStrategy { state: RetryState, request: A
 
   if (exception.isRecoverable()) {
     if (request.operation !is Subscription && state.attempt >= 3) {
-      // We have waited 1 + 2 + 4 = 7 seconds
-      // Give up and return the error
+      // We have waited 1 + 2 + 4 = 7 seconds.
+      // Give up and return the error.
       return@RetryStrategy false
     }
 
-    // Cap the delay at 60s
+    // Cap the delay at 60 seconds
     delay(2.0.pow(state.attempt).coerceAtMost(60.0).seconds)
-    state.attempt++
     return@RetryStrategy true
   }
 
@@ -134,7 +130,7 @@ private class DefaultRetryOnErrorInterceptorImpl(
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     val failFastIfOffline = request.failFastIfOffline ?: false
 
-    val state = RetryState(networkMonitor)
+    val state = RetryContext(networkMonitor, request)
 
     // Do not move this down into flow{} because WebSocketNetworkTransport saves some state in there
     val downstream = chain.proceed(request)
@@ -146,10 +142,10 @@ private class DefaultRetryOnErrorInterceptorImpl(
         emitAll(downstream)
       }
     }.onEach {
-      if (request.retryOnError == true && retryStrategy.shouldRetry(state, request, it)) {
+      state._response = it
+      if (retryStrategy.shouldRetry(state)) {
+        state._attempt++
         throw RetryException()
-      } else {
-        state.attempt = 0
       }
     }.retryWhen { cause, _ ->
       if (cause is RetryException) {

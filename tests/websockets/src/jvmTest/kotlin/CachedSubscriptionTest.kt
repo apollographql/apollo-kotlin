@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION")
 
 import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo.ApolloClient
@@ -5,6 +6,8 @@ import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo.cache.normalized.store
 import com.apollographql.apollo.cache.normalized.watch
+import com.apollographql.apollo.network.websocket.SubscriptionWsProtocol
+import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.filter
@@ -46,7 +49,12 @@ class CachedSubscriptionTest {
 
     val apolloClient = ApolloClient.Builder()
         .httpServerUrl(sampleServer.graphqlUrl())
-        .webSocketServerUrl(sampleServer.subscriptionsUrl())
+        .subscriptionNetworkTransport(
+            WebSocketNetworkTransport.Builder()
+                .serverUrl(sampleServer.subscriptionsUrl())
+                .wsProtocol(SubscriptionWsProtocol())
+                .build()
+        )
         .store(store)
         .build()
 

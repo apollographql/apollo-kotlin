@@ -1,11 +1,16 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.network.ws
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.http.HttpHeader
 import okio.ByteString
 
 /**
  * The low-level WebSocket API. Implement this interface to customize how WebSockets are handled
  */
+@Deprecated("The websocket implementation has moved to 'com.apollographql.apollo.network.websocket'. See https://go.apollo.dev/ak-v5-websockets for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 interface WebSocketEngine {
   /**
    * Open the websocket. Suspends until the handshake is done
@@ -16,6 +21,8 @@ interface WebSocketEngine {
   ): WebSocketConnection
 }
 
+@Deprecated("The websocket implementation has moved to 'com.apollographql.apollo.network.websocket'. See https://go.apollo.dev/ak-v5-websockets for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 interface WebSocketConnection {
   /**
    * Suspends until a message is available and return it. If the message was binary, it is converted to a String
@@ -48,6 +55,8 @@ interface WebSocketConnection {
   fun close()
 }
 
+@Deprecated("The websocket implementation has moved to 'com.apollographql.apollo.network.websocket'. See https://go.apollo.dev/ak-v5-websockets for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 expect class DefaultWebSocketEngine() : WebSocketEngine{
   override suspend fun open(url: String, headers: List<HttpHeader>): WebSocketConnection
 }

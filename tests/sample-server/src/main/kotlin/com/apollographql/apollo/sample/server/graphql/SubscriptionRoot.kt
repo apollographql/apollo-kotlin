@@ -40,12 +40,12 @@ class SubscriptionRoot(private val tag: String) {
     throw Exception("Woops")
   }
 
-  fun graphqlAccessError(after: Int): Flow<Int?> = flow {
+  fun graphqlAccessError(after: Int): Flow<Nested> = flow {
     repeat(after) {
-      emit(it)
+      emit(Nested(false))
     }
 
-    error("Woops")
+    emit(Nested(true))
   }
 
   fun closeWebSocket(executionContext: ExecutionContext): Flow<String> = flow {
@@ -73,3 +73,14 @@ class State(
     val tag: String,
     val subscriptionId: String
 )
+
+class Nested(private val shouldThrow: Boolean) {
+  val foo: Int? // TODO: not sure why this needs to be nullable
+    get() {
+      return if (shouldThrow) {
+        error("Cannot get 'foo' value")
+      } else {
+        42
+      }
+    }
+}

@@ -21,6 +21,6 @@ apollo {
     @OptIn(ApolloExperimental::class)
     generateDataBuilders.set(true)
     packageName.set("com.example")
-    schemaFiles.from(file("../sample-server/src/main/resources/schema.graphqls"))
+    schemaFiles.from(file("../sample-server/graphql/schema.graphqls"))
   }
 }

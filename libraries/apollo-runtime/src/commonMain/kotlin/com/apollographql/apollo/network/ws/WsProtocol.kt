@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.network.ws
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.AnyAdapter
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.CustomScalarAdapters
@@ -23,6 +26,8 @@ import okio.Buffer
  * @param webSocketConnection the connection
  * @param listener a listener
  */
+@Deprecated("The websocket implementation has moved to 'com.apollographql.apollo.network.websocket'. See https://go.apollo.dev/ak-v5-websockets for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 abstract class WsProtocol(
     protected val webSocketConnection: WebSocketConnection,
     protected val listener: Listener,

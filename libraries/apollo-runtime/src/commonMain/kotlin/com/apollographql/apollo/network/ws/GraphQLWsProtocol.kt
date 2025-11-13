@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.network.ws
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
@@ -17,6 +19,8 @@ import kotlinx.coroutines.withTimeout
  * An [WsProtocol] that uses https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md
  * It can carry queries in addition to subscriptions over the websocket
  */
+@Deprecated("The websocket implementation has moved to 'com.apollographql.apollo.network.websocket'. See https://go.apollo.dev/ak-v5-websockets for more details.")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 class GraphQLWsProtocol internal constructor(
     private val connectionPayload: suspend () -> Map<String, Any?>? = { null },
     private val pingPayload: Map<String, Any?>? = null,

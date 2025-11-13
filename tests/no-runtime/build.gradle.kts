@@ -16,6 +16,6 @@ dependencies {
 apollo {
   service("service") {
     packageName.set("com.example")
-    schemaFiles.from(file("../sample-server/src/main/resources/schema.graphqls"))
+    schemaFiles.from(file("../sample-server/graphql/schema.graphqls"))
   }
 }

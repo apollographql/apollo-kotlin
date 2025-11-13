@@ -1,13 +1,11 @@
 package com.apollographql.apollo.network.websocket
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.json.readAny
-import com.apollographql.apollo.network.ws.GraphQLWsProtocol
 import okio.Buffer
 
 /**
@@ -15,7 +13,6 @@ import okio.Buffer
  *
  * Note: This protocol is no longer actively maintained, and [GraphQLWsProtocol] should be favored instead.
  */
-@ApolloExperimental
 @Deprecated("Migrate your server to GraphQLWsProtocol instead")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
 class SubscriptionWsProtocol(

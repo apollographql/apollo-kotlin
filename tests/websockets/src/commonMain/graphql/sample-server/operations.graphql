@@ -35,7 +35,9 @@ subscription CloseSocketSubscription {
 }
 
 subscription GraphqlAccessError($after: Int!) {
-  graphqlAccessError(after: $after)
+  graphqlAccessError(after: $after) {
+    foo
+  }
 }
 
 subscription Tag($intervalMillis: Int!)  {
