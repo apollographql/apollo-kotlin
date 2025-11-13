@@ -28,7 +28,7 @@ We aim for ABI compatibility for all symbols except those that were deprecated i
 
 v5.0.0-alpha.3 supports [incremental:v0.1](https://specs.apollo.dev/incremental/v0.1/) (`@defer`) and [incremental:v0.2](https://specs.apollo.dev/incremental/v0.2/)) (both `@defer` and `@stream`).
 
-The [GraphQL Specification RFC](https://github.com/graphql/graphql-spec/pull/1110) is not merged yet. We continue monitory the RFC and will adapt the implementation if needed.
+The [GraphQL Specification RFC](https://github.com/graphql/graphql-spec/pull/1110) is not merged yet. We continue monitoring the RFC and will adapt the implementation if needed.
 
 ### Other GraphQL spec tracking items
 
