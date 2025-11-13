@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Ecosystem Roadmap
 
-**Last updated: 2025-10-30**
+**Last updated: 2025-11-13**
 
 For up-to-date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -26,7 +26,9 @@ We aim for ABI compatibility for all symbols except those that were deprecated i
 
 ### Incremental delivery: protocol updates and `@stream` support
 
-The incremental delivery portion of the GraphQL specification has been unchanged since 2023 and will be merged into the draft specification soon.  Currently, Apollo Kotlin supports the `@defer` directive using an older (but still functional) implementation of the incremental delivery protocol.  Soon, we will release support for the current version of the protocol, along with support for the `@stream` directive for streaming elements in lists.  We will also keep supporting the old format as well.  For more information, see the GraphQL Specification RFC here: https://github.com/graphql/graphql-spec/pull/1110.  You can follow along with our [updated `@defer` implementation PR](https://github.com/apollographql/apollo-kotlin/pull/6331) and the protocol specs ([v0.1](https://specs.apollo.dev/incremental/v0.1/) and [v0.2](https://specs.apollo.dev/incremental/v0.2/)).
+v5.0.0-alpha.3 supports [incremental:v0.1](https://specs.apollo.dev/incremental/v0.1/) (`@defer`) and [incremental:v0.2](https://specs.apollo.dev/incremental/v0.2/)) (both `@defer` and `@stream`).
+
+The [GraphQL Specification RFC](https://github.com/graphql/graphql-spec/pull/1110) is not merged yet. We continue monitoring the RFC and will adapt the implementation if needed.
 
 ### Other GraphQL spec tracking items
 
