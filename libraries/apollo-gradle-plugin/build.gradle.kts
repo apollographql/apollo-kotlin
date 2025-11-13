@@ -22,7 +22,6 @@ gratatouille {
   codeGeneration {
     addDependencies = false
   }
-  pluginMarker("com.apollographql.apollo")
 }
 
 val agpCompat = kotlin.target.compilations.create("agp-compat")
