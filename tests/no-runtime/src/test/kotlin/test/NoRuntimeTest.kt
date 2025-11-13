@@ -57,10 +57,10 @@ class NoRuntimeTest {
 
     assertTrue(response.isSuccessful)
 
-    val apolloResponse = response.body?.use {
+    val apolloResponse = response.body.use {
       BufferedSourceJsonReader(it.source()).toApolloResponse(operation = query)
     }
 
-    assertEquals(42, apolloResponse?.data?.random)
+    assertEquals(42, apolloResponse.data?.random)
   }
 }
