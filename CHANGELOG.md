@@ -10,7 +10,7 @@ _2025-11-13_
 
 You may now use [`@stream`](https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#stream) to stream list responses from a compatible server.
 
-To do this, opt in support for the [incremental:v0.2 spec](https://specs.apollo.dev/incremental/v0.2/) protocol:
+To do this, opt in support for the [incremental:v0.2 protocol](https://specs.apollo.dev/incremental/v0.2/):
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
@@ -23,11 +23,11 @@ val apolloClient = ApolloClient.Builder()
     .build()
 ```
 
-The implementation details are still under discussion and may still change. Both `@defer` and `@stream` will stay opt-in until the RFC is merged.  
+Using `@defer` and `@stream` will stay opt-in until the RFC is merged.  
 
 ### WebSockets
 
-The [experimental WebSockets](https://github.com/apollographql/apollo-kotlin/issues/5862) are promoted to stable. In particular, the [request url](https://github.com/apollographql/apollo-kotlin/pull/6758) may now be changed in interceptors. This can be used together with [RetryStrategy](https://github.com/apollographql/apollo-kotlin/pull/6764) to change the authentication parameters when retrying a subscription. The previous implementation (using the `com.apollographql.apollo.ws`) is now deprecated. 
+The [experimental WebSockets](https://github.com/apollographql/apollo-kotlin/issues/5862) are promoted to stable. In particular, the [request url](https://github.com/apollographql/apollo-kotlin/pull/6758) may now be changed in interceptors. This can be used together with [RetryStrategy](https://github.com/apollographql/apollo-kotlin/pull/6764) to change the authentication parameters when retrying a subscription. The previous implementation (using the `com.apollographql.apollo.ws` package name) is now deprecated. 
 
 Read more in the [migration guide](https://www.apollographql.com/docs/kotlin/v5/migration/5.0).
 
@@ -65,7 +65,7 @@ The Gradle plugin now works with AGP 9 and the `com.android.kotlin.multiplatform
 
 ### `Service.issueSeverity()`
 
-You may now control the severity of issues found by the compiler:
+You may now control the severity of issues found by the compiler in your Gradle scripts:
 
 ```kotlin
 service("service") { 
@@ -75,7 +75,6 @@ service("service") {
   issueSeverity("UnusedFragment", "warn") 
 }
 ```
-
 
 ## 👷‍♂️ All changes
 
