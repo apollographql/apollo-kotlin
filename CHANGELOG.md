@@ -3,6 +3,107 @@ Change Log
 
 # Next version
 
+# Version 5.0.0-alpha.3
+_2025-11-13_
+
+### `@stream` support
+
+You may now use [`@stream`](https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#stream) to stream list responses from a compatible server.
+
+To do this, opt in support for the [incremental:v0.2 protocol](https://specs.apollo.dev/incremental/v0.2/):
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .networkTransport(
+        HttpNetworkTransport.Builder()
+            .serverUrl("http://example.com/graphql")
+            .incrementalDeliveryProtocol(IncrementalDeliveryProtocol.V0_2)
+            .build()
+    )
+    .build()
+```
+
+Using `@defer` and `@stream` will stay opt-in until the RFC is merged.  
+
+### WebSockets
+
+The [experimental WebSockets](https://github.com/apollographql/apollo-kotlin/issues/5862) are promoted to stable. In particular, the [request url](https://github.com/apollographql/apollo-kotlin/pull/6758) may now be changed in interceptors. This can be used together with [RetryStrategy](https://github.com/apollographql/apollo-kotlin/pull/6764) to change the authentication parameters when retrying a subscription. The previous implementation (using the `com.apollographql.apollo.ws` package name) is now deprecated. 
+
+Read more in the [migration guide](https://www.apollographql.com/docs/kotlin/v5/migration/5.0).
+
+### HTTP cache
+
+You can now use OkHttp [cacheUrlOverride()](https://square.github.io/okhttp/5.x/okhttp/okhttp3/-request/-builder/cache-url-override.html) to cache POST requests.
+
+To do so, [configure a cache on your OkHttpClient](https://square.github.io/okhttp/features/caching/) and use `enablePostCaching`:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .networkTransport(
+        HttpNetworkTransport.Builder()
+            // Enable POST caching
+            .httpRequestComposer(DefaultHttpRequestComposer(serverUrl = mockServer.url(), enablePostCaching = true))
+            .httpEngine(
+                DefaultHttpEngine {
+                  OkHttpClient.Builder()
+                      .cache(directory = File(application.cacheDir, "http_cache"), maxSize = 10_000_000)
+                      .build()
+                }
+            )
+            .build()
+    )
+    .build()
+```
+
+The existing `apollo-http-cache` artifacts have been deprecated. Moving forward, leveraging the cache of existing clients (OkHttp, Ktor, etc...) is the recommended way to do caching at the HTTP layer. 
+
+Read more in the [migration guide](https://www.apollographql.com/docs/kotlin/v5/migration/5.0).
+
+### AGP9 support
+
+The Gradle plugin now works with AGP 9 and the `com.android.kotlin.multiplatform.library` plugin.
+
+### `Service.issueSeverity()`
+
+You may now control the severity of issues found by the compiler in your Gradle scripts:
+
+```kotlin
+service("service") { 
+  packageName.set("com.example")
+  // Do not fail the build on unused fragments
+  // Valid values are the names of the subclasses of `com.apollographql.apollo.ast.Issue`
+  issueSeverity("UnusedFragment", "warn") 
+}
+```
+
+## 👷‍♂️ All changes
+
+* NEW: Promote experimental websockets to stable by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6774
+* NEW: Add `@catch` support for responseBased codegen by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6697
+* NEW: Support descriptions on variable definitions by @BoD in https://github.com/apollographql/apollo-kotlin/pull/6699
+* NEW: Support Android Gradle Plugin 9 (AGP9) by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6703
+* NEW: Add `Service.issueSeverity()` by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6731
+* NEW: Add HTTP caching using OkHttp cacheUrlOverride by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6739
+* NEW: Implement `@defer` and `@stream` as of `incremental/v0.2` by @BoD in https://github.com/apollographql/apollo-kotlin/pull/6331
+* NEW: Add `ApolloRequest.Builder.url(String)` by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6758
+* NEW: Add a specific issue type for fragment cycles by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6759
+* NEW: Add `ApolloInterceptor.InsertionPoint` to control where the interceptors are added by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6761
+* NEW: Introduce `RetryStrategy` by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6764
+* FIX: Make `Optional.Absent` a `data object` by @JakeWharton in https://github.com/apollographql/apollo-kotlin/pull/6686
+* FIX: Use regular `if`/`else` to avoid `Int` boxing by @JakeWharton in https://github.com/apollographql/apollo-kotlin/pull/6688
+* FIX: Remove kotlin-node dependency by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6708
+* FIX: Do not check already checked fragments in checkCapitalizedFields by @BoD in https://github.com/apollographql/apollo-kotlin/pull/6718
+* FIX: Pretty-print operation manifest by @BoD in https://github.com/apollographql/apollo-kotlin/pull/6720
+* FIX: Allow empty deprecationReasons by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6729
+* FIX: Fix IndexOutOfBoundsException in keyFields validation by @BoD in https://github.com/apollographql/apollo-kotlin/pull/6748
+* FIX: Allow multiple success responses in ApolloCall.execute() by @BoD in https://github.com/apollographql/apollo-kotlin/pull/6772
+* FIX: Restore JsonReader state if a field throws in-flight by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6775
+* FIX: Exclude auto-imported cache related directives when the Apollo cache plugin is present by @BoD in https://github.com/apollographql/apollo-kotlin/pull/6766
+* FIX: fix a timeout leak in the default HttpEngine by @martinbonnin in https://github.com/apollographql/apollo-kotlin/pull/6762
+* DOCS: add linuxX64 as supported for apollo-runtime by @hrach in https://github.com/apollographql/apollo-kotlin/pull/6689
+* DOCS: Update `@defer` documentation by @calvincestari in https://github.com/apollographql/apollo-kotlin/pull/6751
+* UPDATE: Bump KGP to 2.2.20 by @BoD in https://github.com/apollographql/apollo-kotlin/pull/6716
+
 # Version 5.0.0-alpha.2
 _2025-08-21_
 

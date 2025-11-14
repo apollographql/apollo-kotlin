@@ -256,8 +256,8 @@ val apolloClient = ApolloClient.Builder()
             .httpEngine(
                 DefaultHttpEngine {
                   OkHttpClient.Builder()
-                      // Make sure to use a different directory for your cache
-                      .cache(directory = "http_cache2", maxSize = 10_000_000)
+                      // Make sure to use a different directory for your cache as the format changed
+                      .cache(directory = File(application.cacheDir, "http_cache2"), maxSize = 10_000_000)
                       .build()
                 }
             )
