@@ -1,4 +1,13 @@
 import com.google.devtools.ksp.gradle.KspAATask
+import gratatouille.tasks.FileWithPath
+import nmcp.transport.Content
+import nmcp.transport.Transport
+import nmcp.transport.publishFileByFile
+import okio.BufferedSource
+import okio.buffer
+import okio.sink
+import okio.source
+import okio.use
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -136,8 +145,46 @@ val cleanStaleTestProjects = tasks.register("cleanStaleTestProjects", CleanStale
   directory = layout.buildDirectory.asFile.get()
 }
 
+// Remove when https://github.com/GradleUp/nmcp/pull/207 is released
+class FilesystemTransport(
+    private val basePath: String,
+) : Transport {
+  override fun get(path: String): BufferedSource? {
+    val file = File(basePath).resolve(path)
+    if (!file.exists()) {
+      return null
+    }
+    return file.source().buffer()
+  }
+
+  override fun put(path: String, body: Content) {
+    File(basePath).resolve(path).apply {
+      parentFile.mkdirs()
+      sink().buffer().use {
+        body.writeTo(it)
+      }
+    }
+  }
+}
+
+val publishMarkers = tasks.register("publishMarkers") {
+  val from = tasks.named("librarianGenerateMarkerFiles").map { it.outputs.files }
+  val into = rootProject.layout.buildDirectory.dir("localMaven")
+  dependsOn("librarianGenerateMarkerFiles")
+  doLast {
+    val src = from.get().files.single()
+    val dst = into.get().asFile
+    publishFileByFile(FilesystemTransport(dst.absolutePath), src.walk().filter { it.isFile }.map { FileWithPath(it, it.relativeTo(src).path) }.toList())
+  }
+}
+
+tasks.named("librarianGenerateMarkerFiles").configure {
+  this.outputs.upToDateWhen { false }
+}
+
 val publishDependencies = tasks.register("publishDependencies") {
   dependsOn("publishAllPublicationsToPluginTestRepository")
+  dependsOn(publishMarkers)
   dependsOn(":apollo-annotations:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-ast:publishAllPublicationsToPluginTestRepository")
@@ -147,7 +194,6 @@ val publishDependencies = tasks.register("publishDependencies") {
   dependsOn(":apollo-gradle-plugin-tasks:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-tooling:publishAllPublicationsToPluginTestRepository")
 }
-
 
 tasks.withType<Test> {
   dependsOn(publishDependencies)
