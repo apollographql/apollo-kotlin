@@ -13,6 +13,7 @@ internal val allAppleTargets = setOf(
     "iosSimulatorArm64",
     "watchosArm32",
     "watchosArm64",
+    "watchosDeviceArm64",
     "watchosSimulatorArm64",
     "tvosArm64",
     "tvosX64",
@@ -84,6 +85,7 @@ fun defaultTargets(
           "iosSimulatorArm64" -> iosSimulatorArm64()
           "watchosArm32" -> watchosArm32()
           "watchosArm64" -> watchosArm64()
+          "watchosDeviceArm64" -> watchosDeviceArm64()
           "watchosSimulatorArm64" -> watchosSimulatorArm64()
           "tvosArm64" -> tvosArm64()
           "tvosX64" -> tvosX64()
@@ -117,6 +119,7 @@ fun defaultTargets(
  * apple --> iosSimulatorArm64
  * apple --> watchosArm32
  * apple --> watchosArm64
+ * apple --> watchosDeviceArm64
  * apple --> watchosSimulatorArm64
  * apple --> tvosArm64
  * apple --> tvosX64

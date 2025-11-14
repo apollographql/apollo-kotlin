@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64.linux, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosSimulatorArm64]
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64.linux, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
 // Alias: apple => [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosSimulatorArm64]
 // Alias: ios => [iosArm64, iosSimulatorArm64, iosX64]
 // Alias: macos => [macosArm64, macosX64]
@@ -825,7 +825,7 @@ abstract interface com.apollographql.apollo.network.ws/WebSocketConnectionListen
     // Targets: [ios, macos, tvos, watchosSimulatorArm64]
     abstract fun onClose(platform.Foundation/NSURLSessionWebSocketTask, kotlin/Long) // com.apollographql.apollo.network.ws/WebSocketConnectionListener.onClose|onClose(platform.Foundation.NSURLSessionWebSocketTask;kotlin.Long){}[0]
 
-    // Targets: [watchosArm32, watchosArm64]
+    // Targets: [watchosArm32, watchosArm64, watchosDeviceArm64]
     abstract fun onClose(platform.Foundation/NSURLSessionWebSocketTask, kotlin/Int) // com.apollographql.apollo.network.ws/WebSocketConnectionListener.onClose|onClose(platform.Foundation.NSURLSessionWebSocketTask;kotlin.Int){}[0]
 }
 
