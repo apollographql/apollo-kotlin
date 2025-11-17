@@ -29,6 +29,7 @@ dependencies {
 
   implementation(libs.android.plugin)
   implementation(libs.librarian)
+  implementation(libs.nmcp.tasks)
   implementation(libs.nmcp)
   implementation(libs.kotlinx.serialization.json)
   implementation(libs.poet.java)
