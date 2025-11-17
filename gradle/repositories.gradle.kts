@@ -32,10 +32,12 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         includeModuleByRegex("androidx\\..*", ".*")
       }
     }
-    // This is used at build time but not part of pluginManagement
     maven("https://storage.googleapis.com/gradleup/m2") {
       content {
+        // Those libraries are used at build time but using separate configurations that are not part of pluginManagement.
+        // This is why we need to include them here explicitely
         includeModule("com.gradleup.gratatouille", "gratatouille-processor")
+        includeModule("com.gradleup.nmcp", "nmcp-tasks")
       }
     }
     maven("https://storage.googleapis.com/apollo-previews/m2") {
