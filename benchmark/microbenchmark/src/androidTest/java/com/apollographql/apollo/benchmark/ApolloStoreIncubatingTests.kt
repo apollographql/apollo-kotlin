@@ -9,6 +9,8 @@ import com.apollographql.apollo.benchmark.Utils.operationBasedQuery
 import com.apollographql.apollo.benchmark.Utils.resource
 import com.apollographql.apollo.benchmark.test.R
 import com.apollographql.cache.normalized.CacheManager
+import com.apollographql.cache.normalized.api.DefaultCacheKeyGenerator
+import com.apollographql.cache.normalized.api.DefaultCacheResolver
 import com.apollographql.cache.normalized.memory.MemoryCacheFactory
 import com.apollographql.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
@@ -65,7 +67,7 @@ class ApolloStoreIncubatingTests {
   }
 
   private fun createCacheManager(cacheFactory: NormalizedCacheFactory): CacheManager {
-    return CacheManager(cacheFactory)
+    return CacheManager(cacheFactory, cacheKeyGenerator = DefaultCacheKeyGenerator, cacheResolver = DefaultCacheResolver)
   }
 
 

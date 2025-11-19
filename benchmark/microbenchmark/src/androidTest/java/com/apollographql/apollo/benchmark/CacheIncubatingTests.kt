@@ -14,6 +14,8 @@ import com.apollographql.apollo.benchmark.Utils.resource
 import com.apollographql.apollo.benchmark.Utils.responseBasedQuery
 import com.apollographql.apollo.benchmark.test.R
 import com.apollographql.cache.normalized.CacheManager
+import com.apollographql.cache.normalized.api.DefaultCacheKeyGenerator
+import com.apollographql.cache.normalized.api.DefaultCacheResolver
 import com.apollographql.cache.normalized.memory.MemoryCacheFactory
 import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
 import kotlinx.coroutines.runBlocking
@@ -61,7 +63,9 @@ class CacheIncubatingTests {
           SqlNormalizedCacheFactory(name = dbName)
         } else {
           MemoryCacheFactory()
-        }
+        },
+        cacheKeyGenerator = DefaultCacheKeyGenerator,
+        cacheResolver = DefaultCacheResolver,
     )
 
     val data = query.parseJsonResponse(resource(jsonResponseResId).jsonReader()).data!!
