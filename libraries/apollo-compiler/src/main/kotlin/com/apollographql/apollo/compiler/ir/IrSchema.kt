@@ -297,7 +297,7 @@ internal fun GQLInputObjectTypeDefinition.toIr(schema: Schema): IrInputObject {
   )
 }
 
-internal fun GQLInterfaceTypeDefinition.toIr(schema: Schema, usedCoordinates: UsedCoordinates): IrInterface {
+internal fun GQLInterfaceTypeDefinition.toIr(schema: Schema, usedCoordinates: UsedCoordinates, computeKeyArgs: Boolean): IrInterface {
   return IrInterface(
       name = name,
       implements = implementsInterfaces,
@@ -309,14 +309,14 @@ internal fun GQLInterfaceTypeDefinition.toIr(schema: Schema, usedCoordinates: Us
       fieldDefinitions = this.fieldDefinitions(schema).filter {
         usedCoordinates.hasField(type = name, field = it.name)
       }.mapNotNull {
-        it.toIrFieldDefinition(schema, name, usedCoordinates)
+        it.toIrFieldDefinition(schema, name, usedCoordinates, computeKeyArgs)
             // Only include fields that have arguments used in operations
             .takeIf { it.argumentDefinitions.isNotEmpty() }
       },
   )
 }
 
-internal fun GQLObjectTypeDefinition.toIr(schema: Schema, usedCoordinates: UsedCoordinates): IrObject {
+internal fun GQLObjectTypeDefinition.toIr(schema: Schema, usedCoordinates: UsedCoordinates, computeKeyArgs: Boolean): IrObject {
   return IrObject(
       name = name,
       implements = implementsInterfaces,
@@ -327,7 +327,7 @@ internal fun GQLObjectTypeDefinition.toIr(schema: Schema, usedCoordinates: UsedC
       fieldDefinitions = this.fieldDefinitions(schema).filter {
         usedCoordinates.hasField(type = name, field = it.name)
       }.mapNotNull {
-        it.toIrFieldDefinition(schema, name, usedCoordinates)
+        it.toIrFieldDefinition(schema, name, usedCoordinates, computeKeyArgs)
             // Only include fields that have arguments used in operations
             .takeIf { it.argumentDefinitions.isNotEmpty() }
       },
@@ -338,9 +338,10 @@ private fun GQLFieldDefinition.toIrFieldDefinition(
     schema: Schema,
     parentType: String,
     usedCoordinates: UsedCoordinates,
+    computeKeyArgs: Boolean,
 ): IrFieldDefinition {
   val typeDefinition = schema.typeDefinition(parentType)
-  val keyArgs = typeDefinition.keyArgs(name, schema)
+  val keyArgs = if (computeKeyArgs) typeDefinition.keyArgs(name, schema) else emptyList()
   return IrFieldDefinition(
       argumentDefinitions = arguments.mapNotNull {
         // We only include arguments that are used in operations

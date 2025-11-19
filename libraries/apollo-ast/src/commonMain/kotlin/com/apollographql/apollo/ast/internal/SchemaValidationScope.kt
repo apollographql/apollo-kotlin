@@ -53,13 +53,26 @@ import com.apollographql.apollo.ast.withBuiltinDefinitions
  * @param addKotlinLabsDefinitions automatically import the kotlin_labs definitions, even if no `@link` is present. If [excludeCacheDirectives] is `true`, cache related directives are excluded.
  * @param foreignSchemas a list of known [ForeignSchema] that may or may not be imported depending on the `@link` directives
  * @param excludeCacheDirectives whether to exclude cache related directives when auto-importing the kotlin_labs definitions. Has no effect if [addKotlinLabsDefinitions] is `false`.
+ * @param computeKeyFields whether to compute cache key fields. Can be false when using the Apollo Cache compiler plugin to avoid unneeded computation.
  */
 @ApolloExperimental
 class SchemaValidationOptions(
     val addKotlinLabsDefinitions: Boolean,
     val foreignSchemas: List<ForeignSchema>,
     val excludeCacheDirectives: Boolean,
+    val computeKeyFields: Boolean,
 ) {
+  constructor(
+      addKotlinLabsDefinitions: Boolean,
+      foreignSchemas: List<ForeignSchema>,
+      excludeCacheDirectives: Boolean,
+  ) : this(
+      addKotlinLabsDefinitions = addKotlinLabsDefinitions,
+      foreignSchemas = foreignSchemas,
+      excludeCacheDirectives = excludeCacheDirectives,
+      computeKeyFields = true,
+  )
+
   constructor(
       addKotlinLabsDefinitions: Boolean,
       foreignSchemas: List<ForeignSchema>,
@@ -67,6 +80,7 @@ class SchemaValidationOptions(
       addKotlinLabsDefinitions = addKotlinLabsDefinitions,
       foreignSchemas = foreignSchemas,
       excludeCacheDirectives = false,
+      computeKeyFields = true,
   )
 }
 
@@ -339,7 +353,11 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
   mergedScope.validateScalars()
   mergedScope.validateDirectiveDefinitions()
 
-  val keyFields = mergedScope.validateAndComputeKeyFields()
+  val keyFields = if (options.computeKeyFields) {
+    mergedScope.validateAndComputeKeyFields()
+  } else {
+    emptyMap()
+  }
 
   return GQLResult(
       Schema(
