@@ -13,6 +13,7 @@ internal object IrSchemaBuilder {
   fun build(
       schema: Schema,
       usedCoordinates: UsedCoordinates,
+      computeKeyArgs: Boolean,
   ): IrSchema {
 
     val irEnums = mutableListOf<IrEnum>()
@@ -65,10 +66,10 @@ internal object IrSchemaBuilder {
           irUnions.add(typeDefinition.toIr())
         }
         typeDefinition is GQLInterfaceTypeDefinition -> {
-          irInterfaces.add(typeDefinition.toIr(schema, mergedUsedCoordinates))
+          irInterfaces.add(typeDefinition.toIr(schema, mergedUsedCoordinates, computeKeyArgs))
         }
         typeDefinition is GQLObjectTypeDefinition -> {
-          irObjects.add(typeDefinition.toIr(schema, mergedUsedCoordinates))
+          irObjects.add(typeDefinition.toIr(schema, mergedUsedCoordinates, computeKeyArgs))
         }
       }
     }

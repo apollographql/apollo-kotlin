@@ -70,7 +70,14 @@ object ApolloCompiler {
   /**
    * The Cache plugin starts providing the cache directives in v1.0.0-alpha.7
    */
-  private fun String.hasCacheDirectives(): Boolean {
+  private val cacheCompilerPluginHasCacheDirectives: Boolean = cacheCompilerPluginVersion?.isAtLeastAlpha(7) == true
+
+  /**
+   * The Cache plugin starts computing key fields and key args in v1.0.0-alpha.8
+   */
+  private val cacheCompilerPluginComputesKeys: Boolean = cacheCompilerPluginVersion?.isAtLeastAlpha(8) == true
+
+  private fun String.isAtLeastAlpha(alpha: Int): Boolean {
     val parts = this.split('.', '-')
     val major = parts[0].toInt()
     if (major < 1) return false
@@ -83,7 +90,7 @@ object ApolloCompiler {
     val preRelease = parts[3]
     if (preRelease != "alpha") return true
     val alphaVersion = parts[4].toInt()
-    return alphaVersion >= 7
+    return alphaVersion >= alpha
   }
 
   fun buildCodegenSchema(
@@ -177,7 +184,11 @@ object ApolloCompiler {
             /**
              * If the cache compiler plugin is present and provides the cache directives, don't automatically import the cache related directives to avoid a conflict
              */
-            excludeCacheDirectives = cacheCompilerPluginVersion?.hasCacheDirectives() == true,
+            excludeCacheDirectives = cacheCompilerPluginHasCacheDirectives,
+            /**
+             * If the cache compiler plugin is present and computes key fields, don't compute them to save redundant work
+             */
+            computeKeyFields = !cacheCompilerPluginComputesKeys,
         )
     )
 
@@ -379,6 +390,7 @@ object ApolloCompiler {
     val irSchema = IrSchemaBuilder.build(
         schema = codegenSchema.schema,
         usedCoordinates = usedCoordinates,
+        computeKeyArgs = !cacheCompilerPluginComputesKeys,
     )
 
     val targetLanguage = defaultTargetLanguage(codegenOptions.targetLanguage, emptyList())
