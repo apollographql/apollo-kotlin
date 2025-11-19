@@ -20,6 +20,8 @@ import com.apollographql.mockserver.MockServerHandler
 import com.apollographql.apollo.testing.MapTestNetworkTransport
 import com.apollographql.apollo.testing.registerTestResponse
 import com.apollographql.cache.normalized.CacheManager
+import com.apollographql.cache.normalized.api.DefaultCacheKeyGenerator
+import com.apollographql.cache.normalized.api.DefaultCacheResolver
 import com.apollographql.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.cache.normalized.cacheManager
 import com.apollographql.cache.normalized.memory.MemoryCacheFactory
@@ -101,7 +103,7 @@ class CacheIncubatingIntegrationTests {
   }
 
   private fun createCacheManager(cacheFactory: NormalizedCacheFactory): CacheManager {
-    return CacheManager(cacheFactory)
+    return CacheManager(cacheFactory, cacheKeyGenerator = DefaultCacheKeyGenerator, cacheResolver = DefaultCacheResolver)
   }
 
 

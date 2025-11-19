@@ -5,7 +5,7 @@ extend schema
 )
 
 @link(
-  url: "https://specs.apollo.dev/cache/v0.1",
+  url: "https://specs.apollo.dev/cache/v0.3",
   import: ["@cacheControl", "@cacheControlField"]
 )
 
