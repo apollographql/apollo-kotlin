@@ -2,12 +2,15 @@ package com.apollographql.apollo.benchmark
 
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
+import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.benchmark.Utils.dbFile
 import com.apollographql.apollo.benchmark.Utils.dbName
 import com.apollographql.apollo.conferences.cache.Cache
-import com.apollographql.cache.normalized.ApolloStore
+import com.apollographql.apollo.conferences.cache.Cache.cache
 import com.apollographql.cache.normalized.CacheManager
+import com.apollographql.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.cache.normalized.api.SchemaCoordinatesMaxAgeProvider
+import com.apollographql.cache.normalized.apolloStore
 import com.apollographql.cache.normalized.garbageCollect
 import com.apollographql.cache.normalized.memory.MemoryCacheFactory
 import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
@@ -25,7 +28,7 @@ class GarbageCollectTests {
     lateinit var cacheManager: CacheManager
     benchmarkRule.measureRepeated {
       runWithTimingDisabled {
-        cacheManager = CacheManager(MemoryCacheFactory())
+        cacheManager = cacheManager(MemoryCacheFactory())
         primeCache(cacheManager)
       }
       runBlocking {
@@ -42,7 +45,7 @@ class GarbageCollectTests {
     benchmarkRule.measureRepeated {
       runWithTimingDisabled {
         dbFile.delete()
-        cacheManager = CacheManager(SqlNormalizedCacheFactory(dbName))
+        cacheManager = cacheManager(SqlNormalizedCacheFactory(dbName))
         primeCache(cacheManager)
       }
       runBlocking {
@@ -59,7 +62,7 @@ class GarbageCollectTests {
     benchmarkRule.measureRepeated {
       runWithTimingDisabled {
         dbFile.delete()
-        cacheManager = CacheManager(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(dbName)))
+        cacheManager = cacheManager(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(dbName)))
         primeCache(cacheManager)
       }
       runBlocking {
@@ -70,6 +73,9 @@ class GarbageCollectTests {
     }
   }
 }
+
+private fun cacheManager(factory: NormalizedCacheFactory): CacheManager =
+  ApolloClient.Builder().cache(factory).serverUrl("http://unused").build().apolloStore.cacheManager
 
 private val maxAgeProvider = SchemaCoordinatesMaxAgeProvider(
     Cache.maxAges,
