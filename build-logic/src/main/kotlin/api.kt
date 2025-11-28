@@ -108,7 +108,7 @@ fun Project.apolloLibrary(
     extensions.getByType(PublishingExtension::class.java).repositories.apply {
       maven {
         it.name = "pluginTest"
-        it.url = uri(rootProject.layout.buildDirectory.dir("localMaven"))
+        it.url = uri(rootDir.resolve("build/localMaven"))
       }
     }
   }

@@ -12,10 +12,10 @@ fun Project.maybeCustomizeDokka(moduleName: String? = null) {
     pluginsConfiguration.getByName("html") {
       it as DokkaHtmlPluginParameters
       it.customStyleSheets.from(
-          listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
+          listOf("style.css", "prism.css", "logo-styles.css").map { project.rootDir.resolve("dokka/$it") }
       )
       it.customAssets.from(
-          listOf("apollo.svg").map { rootProject.file("dokka/$it") }
+          listOf("apollo.svg").map { project.rootDir.resolve("dokka/$it") }
       )
     }
   }
