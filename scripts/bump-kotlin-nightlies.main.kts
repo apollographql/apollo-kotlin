@@ -11,23 +11,21 @@ val BRANCH_NAME = "kotlin-nightlies"
 
 fun bumpVersions() {
   val kotlinVersion =
-    getLatestVersion("https://redirector.kotlinlang.org/maven/dev/org/jetbrains/kotlin/kotlin-stdlib/maven-metadata.xml", prefix = "2.2.20-RC")
+    getLatestVersion("https://redirector.kotlinlang.org/maven/dev/org/jetbrains/kotlin/kotlin-stdlib/maven-metadata.xml", prefix = "2.3.0")
 
-  val useKspSnapshots = false
+  val useKspSnapshots = true
   val kspVersion = getLatestVersion(
       if (useKspSnapshots) {
-        "https://oss.sonatype.org/content/repositories/snapshots/com/google/devtools/ksp/com.google.devtools.ksp.gradle.plugin/maven-metadata.xml"
+        "https://central.sonatype.com/repository/maven-snapshots/com/google/devtools/ksp/com.google.devtools.ksp.gradle.plugin/maven-metadata.xml"
       } else {
         "https://repo1.maven.org/maven2/com/google/devtools/ksp/com.google.devtools.ksp.gradle.plugin/maven-metadata.xml"
-      },
-      prefix = "2.2.20"
+      }
   )
 
   File("gradle/libraries.toml").let { file ->
     file.writeText(
         file.readText()
             .replaceVersion("kotlin-plugin", kotlinVersion)
-            .replaceVersion("kotlin-plugin-max", kotlinVersion)
             .replaceVersion("ksp", kspVersion)
     )
   }
@@ -57,7 +55,7 @@ fun getLatestVersion(url: String, prefix: String? = null): String {
                 Version.parse(
                     // Make it SemVer comparable
                     it
-                        .replace("-dev-", "-dev.")
+                        .replace("-dev-", "-Dev.")
                         .replace("-RC-", "-RC.")
                         .replace("-RC2-", "-RC2.")
                         .replace("-RC3-", "-RC3.")
@@ -77,7 +75,9 @@ fun getLatestVersion(url: String, prefix: String? = null): String {
 }
 
 fun runCommand(vararg args: String): String {
+  println("Running command: '${args.joinToString(" ")}'")
   val builder = ProcessBuilder(*args)
+      .redirectErrorStream(true)
       .redirectError(ProcessBuilder.Redirect.INHERIT)
   val process = builder.start()
   val output = StringBuilder()
@@ -88,7 +88,7 @@ fun runCommand(vararg args: String): String {
   }
   val ret = process.waitFor()
   if (ret != 0) {
-    throw Exception("command ${args.joinToString(" ")} failed:\n$output")
+    throw Exception("command ${args.joinToString(" ")} failed (ret=$ret):\n$output")
   }
   return output.toString().trim()
 }
