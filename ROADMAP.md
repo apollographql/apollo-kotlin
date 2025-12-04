@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Ecosystem Roadmap
 
-**Last updated: 2025-11-13**
+**Last updated: 2025-12-04**
 
 For up-to-date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -50,9 +50,9 @@ We have recently shipped these features, please try them out and give us feedbac
 
 ## [Cache improvements](https://github.com/apollographql/apollo-kotlin/issues/2331)
 
-The new Apollo Normalized Cache v1 alphas [are available now](https://github.com/apollographql/apollo-kotlin-normalized-cache/releases) and contain lots of new features like [Cache Control](https://apollographql.github.io/apollo-kotlin-normalized-cache/cache-control.html), [garbage collection](https://apollographql.github.io/apollo-kotlin-normalized-cache/garbage-collection.html), [partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache/issues/57), better performance and more...
+The new Apollo Normalized Cache v1 beta [is available now](https://github.com/apollographql/apollo-kotlin-normalized-cache/releases) and contain lots of new features like [Cache Control](https://apollographql.github.io/apollo-kotlin-normalized-cache/cache-control.html), [garbage collection](https://apollographql.github.io/apollo-kotlin-normalized-cache/garbage-collection.html), [partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache/issues/57), better performance and more...
 
-We encourage you to try it out with the (important) caveat that the binary format might still change (your persistent cache might be lost when upgrading to a newer alpha version, memory cache isn't impacted).  Your feedback is greatly appreciated and helps us ship a stable version faster.
+We encourage you to try it out with the (important) caveat that the binary format might still change (your persistent cache might be lost when upgrading to a newer prerelease version, memory cache isn't impacted).  Your feedback is greatly appreciated and helps us ship a stable version faster.
 
 ## Apollo Kotlin Compose
 
@@ -62,7 +62,7 @@ This pattern is encouraged by [Relay](https://relay.dev/docs/tutorial/fragments-
 
 ## [IntelliJ plugin usability](https://github.com/apollographql/apollo-intellij-plugin)
 
-IJ Plugin version 5.0.0 is released 🎉 
+IJ Plugin version v5 is released 🎉 
 Highlights includes:
 * Support for `@link`.
 * No-Gradle mode: if you are using Apollo 5, the IJ plugin can now invoke the Apollo compiler directly without needing a full Gradle daemon.
