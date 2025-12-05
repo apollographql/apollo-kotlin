@@ -678,7 +678,28 @@ class GQLDirectiveDefinition(
     val arguments: List<GQLInputValueDefinition>,
     val repeatable: Boolean,
     val locations: List<GQLDirectiveLocation>,
-) : GQLDefinition, GQLDescribed, GQLNamed {
+    override val directives: List<GQLDirective>,
+) : GQLDefinition, GQLDescribed, GQLNamed, GQLHasDirectives {
+
+  @Deprecated("Use the other constructor")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+  constructor(
+      sourceLocation: SourceLocation? = null,
+      description: String?,
+      name: String,
+      arguments: List<GQLInputValueDefinition>,
+      repeatable: Boolean,
+      locations: List<GQLDirectiveLocation>,
+  ) : this(
+      sourceLocation = sourceLocation,
+      description = description,
+      name = name,
+      arguments = arguments,
+      repeatable = repeatable,
+      locations = locations,
+      directives = emptyList(),
+  )
+
   override val children: List<GQLNode> = arguments
 
   override fun writeInternal(writer: SDLWriter) {
@@ -686,19 +707,41 @@ class GQLDirectiveDefinition(
       writeDescription(description)
       write("directive @$name")
       if (arguments.isNotEmpty()) {
-        write(" ")
         arguments.join(writer, prefix = "(", separator = ", ", postfix = ")") {
           it.write(writer, true)
         }
       }
+      if (directives.isNotEmpty()) {
+        directives.join(writer, prefix = " ")
+      }
       if (repeatable) {
         write(" repeatable")
       }
-      write(" on ${locations.joinToString("|")}")
+      write(" on ${locations.joinToString(" | ")}")
       write("\n")
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      description: String? = this.description,
+      name: String = this.name,
+      arguments: List<GQLInputValueDefinition> = this.arguments,
+      repeatable: Boolean = this.repeatable,
+      locations: List<GQLDirectiveLocation> = this.locations,
+      directives: List<GQLDirective> = this.directives,
+  ): GQLDirectiveDefinition = GQLDirectiveDefinition(
+      sourceLocation = sourceLocation,
+      description = description,
+      name = name,
+      arguments = arguments,
+      repeatable = repeatable,
+      locations = locations,
+      directives = directives,
+  )
+
+  @Deprecated("Kept for binary compatibility", level = DeprecationLevel.HIDDEN)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
@@ -713,6 +756,7 @@ class GQLDirectiveDefinition(
       arguments = arguments,
       repeatable = repeatable,
       locations = locations,
+      directives = this.directives,
   )
 
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
@@ -1051,6 +1095,40 @@ class GQLUnionTypeExtension(
     return copy(
         directives = container.take(),
         memberTypes = container.take()
+    )
+  }
+}
+
+class GQLDirectiveExtension(
+    override val sourceLocation: SourceLocation? = null,
+    override val name: String,
+    override val directives: List<GQLDirective>,
+) : GQLDefinition, GQLTypeSystemExtension, GQLNamed, GQLHasDirectives {
+
+  override val children: List<GQLNode> = directives
+
+  override fun writeInternal(writer: SDLWriter) {
+    with(writer) {
+      write("extend directive @$name")
+      if (directives.isNotEmpty()) {
+        directives.join(writer, prefix = " ")
+      }
+    }
+  }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+  ): GQLDirectiveExtension = GQLDirectiveExtension(
+      sourceLocation = sourceLocation,
+      name = name,
+      directives = directives,
+  )
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take()
     )
   }
 }
@@ -2059,6 +2137,7 @@ enum class GQLDirectiveLocation {
   ENUM_VALUE,
   INPUT_OBJECT,
   INPUT_FIELD_DEFINITION,
+  DIRECTIVE_DEFINITION,
 }
 
 sealed interface GQLSchemaCoordinate
