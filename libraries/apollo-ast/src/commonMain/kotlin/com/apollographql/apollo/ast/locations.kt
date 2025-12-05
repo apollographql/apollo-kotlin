@@ -23,6 +23,7 @@ internal fun GQLDefinition.removeLocation(): GQLDefinition = when(this) {
   is GQLScalarTypeDefinition -> this@removeLocation.removeLocation()
   is GQLUnionTypeDefinition -> this@removeLocation.removeLocation()
   is GQLUnionTypeExtension -> this@removeLocation.removeLocation()
+  is GQLDirectiveExtension -> this@removeLocation.removeLocation()
 }
 
 internal fun GQLEnumTypeDefinition.removeLocation() = copy(
@@ -58,6 +59,10 @@ internal fun GQLUnionTypeExtension.removeLocation() = copy(
     sourceLocation = null,
     directives = directives.map { it.removeLocation() },
     memberTypes = memberTypes.map { it.removeLocation() }
+)
+internal fun GQLDirectiveExtension.removeLocation() = copy(
+    sourceLocation = null,
+    directives = directives.map { it.removeLocation() },
 )
 
 internal fun GQLFieldDefinition.removeLocation() = copy(

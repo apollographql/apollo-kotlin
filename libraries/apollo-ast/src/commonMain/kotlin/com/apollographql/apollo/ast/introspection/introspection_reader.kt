@@ -32,6 +32,7 @@ import com.apollographql.apollo.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo.ast.GQLValue
 import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.SourceLocation
+import com.apollographql.apollo.ast.introspection.Optional.Absent
 import com.apollographql.apollo.ast.parseAsGQLValue
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -199,6 +200,8 @@ private class RDirective(
     val locations: Optional<List<String>> = Optional.absent(),
     val args: Optional<List<RInputValue>> = Optional.absent(),
     val isRepeatable: Boolean = false,
+    val isDeprecated: Optional<Boolean> = Optional.absent(),
+    val deprecationReason: Optional<String?> = Optional.absent(),
 )
 
 @Serializable(with = OptionalSerializer::class)
@@ -341,8 +344,8 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 
   private fun RField.toGQLFieldDefinition(): GQLFieldDefinition {
     val args = if (args is Optional.Absent) {
-        println("Apollo: $name.args is missing, double check your introspection query")
-        emptyList()
+      println("Apollo: $name.args is missing, double check your introspection query")
+      emptyList()
     } else {
       args.getOrThrow()
     }
@@ -525,6 +528,11 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
         arguments = args.map { it.toGQLInputValueDefinition() },
         locations = locations.map { GQLDirectiveLocation.valueOf(it) },
         repeatable = isRepeatable,
+        directives = if (deprecationReason == Absent) {
+          emptyList()
+        } else {
+          makeDirectives(deprecationReason.unwrapDeprecationReason(name))
+        },
     )
   }
 }

@@ -231,16 +231,21 @@ public final class com/apollographql/apollo/ast/GQLDirectiveCoordinate : com/apo
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
-public final class com/apollographql/apollo/ast/GQLDirectiveDefinition : com/apollographql/apollo/ast/GQLDefinition, com/apollographql/apollo/ast/GQLDescribed, com/apollographql/apollo/ast/GQLNamed {
+public final class com/apollographql/apollo/ast/GQLDirectiveDefinition : com/apollographql/apollo/ast/GQLDefinition, com/apollographql/apollo/ast/GQLDescribed, com/apollographql/apollo/ast/GQLHasDirectives, com/apollographql/apollo/ast/GQLNamed {
 	public static final field Companion Lcom/apollographql/apollo/ast/GQLDirectiveDefinition$Companion;
 	public fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLjava/util/List;)V
 	public synthetic fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLjava/util/List;)Lcom/apollographql/apollo/ast/GQLDirectiveDefinition;
+	public fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLjava/util/List;Ljava/util/List;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLjava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLjava/util/List;)Lcom/apollographql/apollo/ast/GQLDirectiveDefinition;
+	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLjava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLDirectiveDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLDirectiveDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLjava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLDirectiveDefinition;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLDirectiveDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLjava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLDirectiveDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
 	public final fun getArguments ()Ljava/util/List;
 	public fun getChildren ()Ljava/util/List;
 	public fun getDescription ()Ljava/lang/String;
+	public fun getDirectives ()Ljava/util/List;
 	public final fun getLocations ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public final fun getRepeatable ()Z
@@ -253,8 +258,22 @@ public final class com/apollographql/apollo/ast/GQLDirectiveDefinition$Companion
 	public final fun getBuiltInDirectives ()Ljava/util/Set;
 }
 
+public final class com/apollographql/apollo/ast/GQLDirectiveExtension : com/apollographql/apollo/ast/GQLDefinition, com/apollographql/apollo/ast/GQLHasDirectives, com/apollographql/apollo/ast/GQLNamed, com/apollographql/apollo/ast/GQLTypeSystemExtension {
+	public fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLDirectiveExtension;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLDirectiveExtension;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLDirectiveExtension;
+	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun getChildren ()Ljava/util/List;
+	public fun getDirectives ()Ljava/util/List;
+	public fun getName ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
+}
+
 public final class com/apollographql/apollo/ast/GQLDirectiveLocation : java/lang/Enum {
 	public static final field ARGUMENT_DEFINITION Lcom/apollographql/apollo/ast/GQLDirectiveLocation;
+	public static final field DIRECTIVE_DEFINITION Lcom/apollographql/apollo/ast/GQLDirectiveLocation;
 	public static final field ENUM Lcom/apollographql/apollo/ast/GQLDirectiveLocation;
 	public static final field ENUM_VALUE Lcom/apollographql/apollo/ast/GQLDirectiveLocation;
 	public static final field FIELD Lcom/apollographql/apollo/ast/GQLDirectiveLocation;

@@ -89,6 +89,7 @@ internal class DefaultValidationScope(
       definitions.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
       definitions.filterIsInstance<GQLDirectiveDefinition>().associateBy { it.name },
   )
+
   constructor(schema: Schema) : this(schema.typeDefinitions, schema.directiveDefinitions)
 
   override val issues = issues ?: mutableListOf()
@@ -147,6 +148,7 @@ internal fun ValidationScope.validateDirectives(
       }
     }
 
+    is GQLDirectiveDefinition -> GQLDirectiveLocation.DIRECTIVE_DEFINITION
     is GQLFragmentDefinition -> GQLDirectiveLocation.FRAGMENT_DEFINITION
     is GQLVariableDefinition -> GQLDirectiveLocation.VARIABLE_DEFINITION
     is GQLSchemaDefinition, is GQLSchemaExtension -> GQLDirectiveLocation.SCHEMA
