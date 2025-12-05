@@ -12,7 +12,7 @@ query IntrospectionQuery {
     types {
       ...FullType
     }
-    directives {
+    directives { # directives(includeDeprecated: true) - introduced in https://github.com/graphql/graphql-spec/pull/907
       name
       description
       locations
@@ -20,6 +20,8 @@ query IntrospectionQuery {
         ...InputValue
       }
       # isRepeatable - introduced in https://spec.graphql.org/October2021/
+      # isDeprecated - introduced in https://github.com/graphql/graphql-spec/pull/907
+      # deprecationReason - introduced in https://github.com/graphql/graphql-spec/pull/907
     }
   }
 }

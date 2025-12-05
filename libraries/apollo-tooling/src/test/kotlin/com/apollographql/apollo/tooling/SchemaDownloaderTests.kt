@@ -20,10 +20,10 @@ private val preIntrospectionResponseSeptember2025 =
   pathToUtf8("apollo-tooling/src/test/fixtures/pre-introspection-response-september2025.json")
 private val introspectionRequestSeptember2025 = pathToUtf8("apollo-tooling/src/test/fixtures/introspection-request-september2025.json")
 
-private val preIntrospectionResponseSeptember2025OneOf =
-  pathToUtf8("apollo-tooling/src/test/fixtures/pre-introspection-response-september2025-oneOf.json")
-private val introspectionRequestSeptember2025OneOf =
-  pathToUtf8("apollo-tooling/src/test/fixtures/introspection-request-september2025-oneOf.json")
+private val preIntrospectionResponseSeptember2025DeprecatedDirectives =
+  pathToUtf8("apollo-tooling/src/test/fixtures/pre-introspection-response-september2025-deprecatedDirectives.json")
+private val introspectionRequestSeptember2025DeprecatedDirectives =
+  pathToUtf8("apollo-tooling/src/test/fixtures/introspection-request-september2025-deprecatedDirectives.json")
 
 private val introspectionRequestFailSafe = pathToUtf8("apollo-tooling/src/test/fixtures/introspection-request-failSafe.json")
 
@@ -127,9 +127,9 @@ class SchemaDownloaderTests {
     }
 
   @Test
-  fun `schema is downloaded correctly when server supports September 2025 spec including oneOf`() =
+  fun `schema is downloaded correctly when server supports September 2025 spec with deprecated directives`() =
     runTest(before = { setUp() }, after = { tearDown() }) {
-      mockServer.enqueueString(preIntrospectionResponseSeptember2025OneOf)
+      mockServer.enqueueString(preIntrospectionResponseSeptember2025DeprecatedDirectives)
       mockServer.enqueueString(introspectionResponseSuccess)
 
       SchemaDownloader.download(
@@ -142,7 +142,7 @@ class SchemaDownloaderTests {
 
       mockServer.takeRequest()
       val introspectionRequest = mockServer.takeRequest().body.utf8()
-      assertEquals(introspectionRequestSeptember2025OneOf, introspectionRequest)
+      assertEquals(introspectionRequestSeptember2025DeprecatedDirectives, introspectionRequest)
       assertEquals(introspectionResponseSuccess, tempFileJson.readText())
     }
 
