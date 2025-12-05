@@ -370,5 +370,5 @@ query GetFoo {
 }
 
 # and make foo `@semanticNonNull` in your schema
-extends type Query @semanticNonNullField(name: "foo")
+extend type Query @semanticNonNullField(name: "foo")
 ```
