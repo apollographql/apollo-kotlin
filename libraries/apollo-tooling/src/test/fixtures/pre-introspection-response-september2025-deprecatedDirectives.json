@@ -25,7 +25,11 @@
             },
             {
               "name": "directives",
-              "args": []
+              "args": [
+                {
+                  "name": "includeDeprecated"
+                }
+              ]
             },
             {
               "name": "description",
@@ -121,6 +125,14 @@
             },
             {
               "name": "isRepeatable",
+              "args": []
+            },
+            {
+              "name": "isDeprecated",
+              "args": []
+            },
+            {
+              "name": "deprecationReason",
               "args": []
             }
           ]

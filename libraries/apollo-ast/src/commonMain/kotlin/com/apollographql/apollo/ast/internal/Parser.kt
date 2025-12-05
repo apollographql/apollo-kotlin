@@ -8,6 +8,7 @@ import com.apollographql.apollo.ast.GQLDirective
 import com.apollographql.apollo.ast.GQLDirectiveArgumentCoordinate
 import com.apollographql.apollo.ast.GQLDirectiveCoordinate
 import com.apollographql.apollo.ast.GQLDirectiveDefinition
+import com.apollographql.apollo.ast.GQLDirectiveExtension
 import com.apollographql.apollo.ast.GQLDirectiveLocation
 import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLEnumTypeDefinition
@@ -737,6 +738,7 @@ internal class Parser(
     expectToken<Token.At>()
     val name = parseName()
     val arguments = parseArgumentDefinitions()
+    val directives = parseDirectives(const = true)
     val repeatable = expectOptionalKeyword("repeatable") != null
     expectKeyword("on")
     val locations = parseDirectiveLocations()
@@ -747,7 +749,25 @@ internal class Parser(
         name = name,
         arguments = arguments,
         repeatable = repeatable,
-        locations = locations
+        locations = locations,
+        directives = directives
+    )
+  }
+
+  private fun parseDirectiveExtension(): GQLDirectiveExtension {
+    val start = token
+    expectKeyword("extend")
+    expectKeyword("directive")
+    expectToken<Token.At>()
+    val name = parseName()
+    val directives = parseDirectives(const = true)
+    if (directives.isEmpty()) {
+      unexpected()
+    }
+    return GQLDirectiveExtension(
+        sourceLocation = sourceLocation(start),
+        name = name,
+        directives = directives
     )
   }
 
@@ -766,6 +786,7 @@ internal class Parser(
       "union" -> parseUnionTypeExtension()
       "enum" -> parseEnumTypeExtension()
       "input" -> parseInputObjectTypeExtension()
+      "directive" -> parseDirectiveExtension()
       else -> unexpected(t)
     }
   }
