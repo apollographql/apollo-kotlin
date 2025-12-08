@@ -162,7 +162,26 @@ Because subscriptions are long-lasting operations, you should call `toFlow()` to
 
 ## Terminating a subscription
 
-Termination is handled through the coroutine scope. Cancel the coroutine to terminate the subscription.
+The coroutine scope that collects your subscription handles termination.
+
+When the coroutine scope is canceled, the subscription is also terminated:
+
+```kotlin
+val job = launch {
+    apolloClient.subscription(TripsBookedSubscription())
+        .toFlow()
+        .collect {
+          println("trips booked: ${it.data?.tripsBooked}")
+        }
+}
+
+// do other things
+
+// when closing your app/screen, the job gets cancelled and the subscription is terminated.
+job.cancel()
+```
+
+Most of the time, this is handled automatically by [lifecycle scopes](https://developer.android.com/topic/libraries/architecture/coroutines).
 
 By default, a single WebSocket is shared between all active subscriptions. When no subscription is active, the WebSocket is closed after a configurable timeout.
 
