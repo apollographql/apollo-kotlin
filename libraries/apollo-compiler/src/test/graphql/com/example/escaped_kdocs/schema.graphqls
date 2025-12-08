@@ -1,0 +1,15 @@
+type Query {
+  someType: SomeType
+}
+
+"""
+/1 Stuff
+*TODO*/2 More stuff
+"""
+type SomeType {
+  """
+  Some URL: https://example.com/some-url/*
+  """
+  someField: Int
+}
+

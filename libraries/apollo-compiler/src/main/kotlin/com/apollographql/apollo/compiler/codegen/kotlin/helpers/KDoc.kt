@@ -1,8 +1,8 @@
 package com.apollographql.apollo.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo.compiler.internal.applyIf
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo.compiler.internal.applyIf
 import com.apollographql.apollo.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.Annotatable
 import com.squareup.kotlinpoet.AnnotationSpec
@@ -18,7 +18,7 @@ internal fun TypeSpec.Builder.maybeAddDescription(description: String?): TypeSpe
     return this
   }
 
-  return addKdoc("%L", description.replace(' ', '♢'))
+  return addKdoc("%L", description.sanitized())
 }
 
 internal fun PropertySpec.Builder.maybeAddDescription(description: String?): PropertySpec.Builder {
@@ -26,7 +26,7 @@ internal fun PropertySpec.Builder.maybeAddDescription(description: String?): Pro
     return this
   }
 
-  return addKdoc("%L", description.replace(' ', '♢'))
+  return addKdoc("%L", description.sanitized())
 }
 
 internal fun ParameterSpec.Builder.maybeAddDescription(description: String?): ParameterSpec.Builder {
@@ -34,7 +34,7 @@ internal fun ParameterSpec.Builder.maybeAddDescription(description: String?): Pa
     return this
   }
 
-  return addKdoc("%L", description.replace(' ', '♢'))
+  return addKdoc("%L", description.sanitized())
 }
 
 internal fun FunSpec.Builder.maybeAddDescription(description: String?): FunSpec.Builder {
@@ -42,9 +42,15 @@ internal fun FunSpec.Builder.maybeAddDescription(description: String?): FunSpec.
     return this
   }
 
-  return addKdoc("%L", description.replace(' ', '♢'))
+  return addKdoc("%L", description.sanitized())
 }
 
+private fun String.sanitized(): String {
+  return replace(' ', '♢')
+      // See https://github.com/square/kotlinpoet/issues/887
+      .replace("/*", "/&#42;")
+      .replace("*/", "&#42;/")
+}
 
 internal fun TypeSpec.Builder.maybeAddDeprecation(deprecationReason: String?): TypeSpec.Builder {
   if (deprecationReason == null) {
@@ -120,7 +126,7 @@ internal fun requiresOptInAnnotation(annotation: ClassName): AnnotationSpec {
       .build()
 }
 
-internal fun <T: Annotatable.Builder<*>> T.maybeAddOptIn(
+internal fun <T : Annotatable.Builder<*>> T.maybeAddOptIn(
     resolver: KotlinResolver,
     enumValues: List<IrEnum.Value>,
 ): T = applyIf(enumValues.any { it.optInFeature != null }) {
@@ -132,10 +138,10 @@ internal fun <T: Annotatable.Builder<*>> T.maybeAddOptIn(
  * Add suppressions for generated code.
  * This is code the user has no control over and it should not generate warnings
  */
-internal fun <T: Annotatable.Builder<*>> T.addSuppressions(
+internal fun <T : Annotatable.Builder<*>> T.addSuppressions(
     deprecation: Boolean = false,
     optInUsage: Boolean = false,
-    unusedParameter: Boolean = false
+    unusedParameter: Boolean = false,
 ): T = apply {
   if (!deprecation && !optInUsage && !unusedParameter) {
     return@apply

@@ -1,0 +1,7 @@
+{
+    "typeToFieldsToArguments": {
+        "SomeType": {},
+        "Int": {},
+        "Query": {}
+    }
+}
