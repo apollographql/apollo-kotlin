@@ -167,10 +167,12 @@ Termination is handled through the coroutine scope that collects your subscripti
 When the coroutine scope is canceled, the subscription is also terminated:
 
 ```kotlin
-val job = apolloClient.subscription(TripsBookedSubscription())
-    .toFlow()
-    .collect {
-      println("trips booked: ${it.data?.tripsBooked}")
+val job = launch {
+    apolloClient.subscription(TripsBookedSubscription())
+        .toFlow()
+        .collect {
+          println("trips booked: ${it.data?.tripsBooked}")
+        }
     }
 
 // do other things
