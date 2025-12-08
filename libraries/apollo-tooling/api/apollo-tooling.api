@@ -37,6 +37,7 @@ public final class com/apollographql/apollo/tooling/GraphNotFound : com/apollogr
 }
 
 public final class com/apollographql/apollo/tooling/GraphQLFeature : java/lang/Enum {
+	public static final field DeprecatedDirectives Lcom/apollographql/apollo/tooling/GraphQLFeature;
 	public static final field DeprecatedInputValues Lcom/apollographql/apollo/tooling/GraphQLFeature;
 	public static final field OneOf Lcom/apollographql/apollo/tooling/GraphQLFeature;
 	public static final field RepeatableDirectives Lcom/apollographql/apollo/tooling/GraphQLFeature;
