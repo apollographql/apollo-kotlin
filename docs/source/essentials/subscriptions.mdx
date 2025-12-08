@@ -162,7 +162,7 @@ Because subscriptions are long-lasting operations, you should call `toFlow()` to
 
 ## Terminating a subscription
 
-Termination is handled through the coroutine scope that collects your subscription. 
+The coroutine scope that collects your subscription handles termination.
 
 When the coroutine scope is canceled, the subscription is also terminated:
 
