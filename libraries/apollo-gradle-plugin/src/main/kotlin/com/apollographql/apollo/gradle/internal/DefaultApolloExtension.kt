@@ -630,7 +630,7 @@ abstract class DefaultApolloExtension(
           arguments = pluginArguments,
           warnIfNotFound = project.provider { warnIfNoPluginFound },
           codegenSchemas = upstreamAndSelfCodegenSchemas,
-          usedCoordinates = computeUsedCoordinatesTask.flatMap { it.outputFile },
+          downstreamUsedCoordinates = computeUsedCoordinatesTask.flatMap { it.outputFile },
           irOperations = irOperationsTaskProvider.flatMap { it.irOperationsFile },
           upstreamMetadata = codegenMetadata.resolvable,
           codegenOptions = optionsTaskProvider.flatMap { it.codegenOptions },
@@ -655,6 +655,7 @@ abstract class DefaultApolloExtension(
             warnIfNotFound = project.provider { warnIfNoPluginFound },
             codegenSchemas = upstreamAndSelfCodegenSchemas,
             downstreamUsedCoordinates = computeUsedCoordinatesTask.flatMap { it.outputFile },
+            irOperations = irOperationsTaskProvider.flatMap { it.irOperationsFile },
             upstreamMetadata = upstreamAndSelfCodegenMetadata,
             codegenOptions = optionsTaskProvider.flatMap { it.codegenOptions },
             outputDirectory = dataBuildersOutputDir(project, service)

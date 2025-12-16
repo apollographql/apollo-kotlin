@@ -71,7 +71,7 @@ object EntryPoints {
       codegenSchemas: List<InputFile>,
       upstreamMetadata: List<InputFile>,
       irOperations: File,
-      usedCoordinates: File,
+      downstreamUsedCoordinates: File,
       codegenOptions: File,
       operationManifest: File?,
       outputDirectory: File,
@@ -89,7 +89,7 @@ object EntryPoints {
     buildSchemaAndOperationsSourcesFromIr(
         codegenSchema = codegenSchema,
         irOperations = irOperations.toIrOperations(),
-        downstreamUsedCoordinates = usedCoordinates.toUsedCoordinates(),
+        downstreamUsedCoordinates = downstreamUsedCoordinates.toUsedCoordinates(),
         upstreamCodegenMetadata = upstreamCodegenMetadata,
         codegenOptions = codegenOptions.toCodegenOptions(),
         layout = registry.layout(codegenSchema),
@@ -183,6 +183,7 @@ object EntryPoints {
       codegenSchemas: List<InputFile>,
       upstreamMetadatas: List<InputFile>,
       downstreamUsedCoordinates: File,
+      irOperations: File,
       codegenOptions: File,
       outputDirectory: File,
   ) {
@@ -197,7 +198,7 @@ object EntryPoints {
 
     ApolloCompiler.buildDataBuilders(
         codegenSchema = codegenSchema,
-        usedCoordinates = downstreamUsedCoordinates.toUsedCoordinates(),
+        usedCoordinates = downstreamUsedCoordinates.toUsedCoordinates().mergeWith(irOperations.toIrOperations().usedCoordinates),
         codegenOptions = codegenOptions.toCodegenOptions(),
         layout = registry.layout(codegenSchema),
         upstreamCodegenMetadata = upstreamCodegenMetadata,
