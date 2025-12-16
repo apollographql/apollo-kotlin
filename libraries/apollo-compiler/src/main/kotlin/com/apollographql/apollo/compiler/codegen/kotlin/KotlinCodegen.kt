@@ -356,9 +356,9 @@ internal object KotlinCodegen {
         if (it.isAbstract) {
           builders.add(DataMapBuilder(context, it, withFields = false))
         }
-        builders.add(ResolverBuilder(context, dataBuilders.possibleTypes))
-        builders.add(AdaptBuilder(context, dataBuilders.scalars))
       }
+      builders.add(ResolverBuilder(context, dataBuilders.possibleTypes))
+      builders.add(AdaptBuilder(context, dataBuilders.scalars))
     }
   }
 }
