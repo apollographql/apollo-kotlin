@@ -19,7 +19,7 @@ internal fun apolloGenerateSourcesFromIr(
     warnIfNotFound: Boolean,
     codegenSchemas: GInputFiles,
     irOperations: GInputFile,
-    usedCoordinates: GInputFile,
+    downstreamUsedCoordinates: GInputFile,
     upstreamMetadata: GInputFiles,
     codegenOptions: GInputFile,
     // outputs
@@ -42,7 +42,7 @@ internal fun apolloGenerateSourcesFromIr(
       logger = logger,
       codegenSchemas = codegenSchemas.toInputFiles(),
       irOperations = irOperations,
-      usedCoordinates = usedCoordinates,
+      downstreamUsedCoordinates = downstreamUsedCoordinates,
       upstreamMetadata = upstreamMetadata.toInputFiles(),
       codegenOptions = codegenOptions,
       operationManifest = operationManifest,

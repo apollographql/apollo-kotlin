@@ -17,6 +17,7 @@ internal fun apolloGenerateDataBuildersSources(
     warnIfNotFound: Boolean,
     codegenSchemas: GInputFiles,
     downstreamUsedCoordinates: GInputFile,
+    irOperations: GInputFile,
     upstreamMetadata: GInputFiles,
     codegenOptions: GInputFile,
     @GManuallyWired
@@ -36,6 +37,7 @@ internal fun apolloGenerateDataBuildersSources(
       codegenSchemas = codegenSchemas.toInputFiles(),
       upstreamMetadatas = upstreamMetadata.toInputFiles(),
       downstreamUsedCoordinates = downstreamUsedCoordinates,
+      irOperations = irOperations,
       codegenOptions = codegenOptions,
       outputDirectory = outputDirectory,
   )
