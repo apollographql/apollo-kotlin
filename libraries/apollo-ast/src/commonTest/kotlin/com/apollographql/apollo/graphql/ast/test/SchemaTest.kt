@@ -1,5 +1,8 @@
+@file:OptIn(ApolloExperimental::class)
+
 package com.apollographql.apollo.graphql.ast.test
 
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.internal.SchemaValidationOptions
 import com.apollographql.apollo.ast.internal.toSemanticSdl

@@ -466,22 +466,22 @@ enum __DirectiveLocation {
 """
 Directs the executor to include this field or fragment only when the `if` argument is true.
 """
-directive @include ("Included when true." if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
+directive @include("Included when true." if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
 
 """
 Directs the executor to skip this field or fragment when the `if` argument is true.
 """
-directive @skip ("Skipped when true." if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
+directive @skip("Skipped when true." if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
 
 """
 Marks an element of a GraphQL schema as no longer supported.
 """
-directive @deprecated ("Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https://commonmark.org/)." reason: String! = "No longer supported") on FIELD_DEFINITION|ARGUMENT_DEFINITION|INPUT_FIELD_DEFINITION|ENUM_VALUE
+directive @deprecated("Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https://commonmark.org/)." reason: String! = "No longer supported") on FIELD_DEFINITION | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | ENUM_VALUE
 
 """
 Exposes a URL that specifies the behavior of this scalar.
 """
-directive @specifiedBy ("The URL that specifies the behavior of this scalar." url: String!) on SCALAR
+directive @specifiedBy("The URL that specifies the behavior of this scalar." url: String!) on SCALAR
 
 """
 Indicates exactly one field must be supplied and this field must not be `null`.
