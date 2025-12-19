@@ -4,7 +4,7 @@ import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.benchmark.Utils.dbFile
-import com.apollographql.apollo.benchmark.Utils.dbName
+import com.apollographql.apollo.benchmark.Utils.getDbName
 import com.apollographql.apollo.conferences.cache.Cache
 import com.apollographql.apollo.conferences.cache.Cache.cache
 import com.apollographql.cache.normalized.CacheManager
@@ -45,7 +45,7 @@ class GarbageCollectTests {
     benchmarkRule.measureRepeated {
       runWithTimingDisabled {
         dbFile.delete()
-        cacheManager = cacheManager(SqlNormalizedCacheFactory(dbName))
+        cacheManager = cacheManager(SqlNormalizedCacheFactory(getDbName()))
         primeCache(cacheManager)
       }
       runBlocking {
@@ -62,7 +62,7 @@ class GarbageCollectTests {
     benchmarkRule.measureRepeated {
       runWithTimingDisabled {
         dbFile.delete()
-        cacheManager = cacheManager(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(dbName)))
+        cacheManager = cacheManager(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(getDbName())))
         primeCache(cacheManager)
       }
       runBlocking {
