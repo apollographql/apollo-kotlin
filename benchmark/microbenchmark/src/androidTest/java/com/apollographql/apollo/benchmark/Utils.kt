@@ -18,8 +18,8 @@ import java.io.File
 object Utils {
   private val cache = mutableMapOf<Int, BufferedSource>()
 
-  const val dbName = "testDb"
-  val dbFile: File = InstrumentationRegistry.getInstrumentation().context.getDatabasePath(dbName)
+  fun getDbName(): String = "testDb-${System.currentTimeMillis()}"
+  val dbFile: File = InstrumentationRegistry.getInstrumentation().context.getDatabasePath(getDbName())
   val responseBasedQuery = com.apollographql.apollo.calendar.response.ItemsQuery(endingAfter = "", startingBefore = "")
   val operationBasedQuery = ItemsQuery(endingAfter = "", startingBefore = "")
   val largeListQuery = PlaylistRawTracksQuery("42")
