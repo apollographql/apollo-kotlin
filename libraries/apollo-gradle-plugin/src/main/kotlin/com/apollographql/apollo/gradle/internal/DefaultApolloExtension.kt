@@ -1,4 +1,3 @@
-
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.AgpCompat
@@ -31,6 +30,7 @@ import com.apollographql.com.apollographql.apollo.Agp9
 import com.apollographql.com.apollographql.apollo.Agp9Component
 import gratatouille.wiring.capitalizeFirstLetter
 import org.gradle.api.Action
+import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
@@ -51,7 +51,6 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
-import org.jetbrains.kotlin.gradle.utils.`is`
 import java.io.File
 import javax.inject.Inject
 
@@ -332,30 +331,30 @@ abstract class DefaultApolloExtension(
   }
 
   class Configurations(
-      val consumable: Configuration,
-      val resolvable: Configuration,
+      val consumable: NamedDomainObjectProvider<Configuration>,
+      val resolvable: NamedDomainObjectProvider<Configuration>,
   )
 
   private fun createConfigurations(
       serviceName: String,
       apolloUsage: ApolloUsage,
       direction: ApolloDirection,
-      extendsFrom: Configuration,
+      extendsFrom: NamedDomainObjectProvider<Configuration>,
   ): Configurations {
     val consumable =
-      project.configurations.create(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.Consumable)) {
+      project.configurations.register(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.Consumable)) {
         it.isCanBeConsumed = true
         it.isCanBeResolved = false
 
-        it.extendsFrom(extendsFrom)
+        it.extendsFrom(extendsFrom.get())
         it.attributes(serviceName, apolloUsage, direction)
       }
     val resolvable =
-      project.configurations.create(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.Resolvable)) {
+      project.configurations.register(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.Resolvable)) {
         it.isCanBeConsumed = false
         it.isCanBeResolved = true
 
-        it.extendsFrom(extendsFrom)
+        it.extendsFrom(extendsFrom.get())
         it.attributes(serviceName, apolloUsage, direction)
       }
 
@@ -389,11 +388,11 @@ abstract class DefaultApolloExtension(
     val sourcesBaseTaskProvider: TaskProvider<*>
     val dataBuildersSourcesBaseTaskProvider: TaskProvider<*>?
 
-    val upstreamScope = project.configurations.create(ModelNames.scopeConfiguration(service.name, ApolloDirection.Upstream)) {
+    val upstreamScope = project.configurations.register(ModelNames.scopeConfiguration(service.name, ApolloDirection.Upstream)) {
       it.isCanBeConsumed = false
       it.isCanBeResolved = false
     }
-    val downstreamScope = project.configurations.create(ModelNames.scopeConfiguration(service.name, ApolloDirection.Downstream)) {
+    val downstreamScope = project.configurations.register(ModelNames.scopeConfiguration(service.name, ApolloDirection.Downstream)) {
       it.isCanBeConsumed = false
       it.isCanBeResolved = false
     }
@@ -484,7 +483,7 @@ abstract class DefaultApolloExtension(
         /**
          * Gradle model
          */
-        upstreamOtherOptions = otherOptions.resolvable,
+        upstreamOtherOptions = project.files(otherOptions.resolvable),
         javaPluginApplied = project.provider { project.hasJavaPlugin() },
         kgpVersion = project.provider { project.apolloGetKotlinPluginVersion() },
         kmp = project.provider { project.isKotlinMultiplatform },
@@ -511,7 +510,9 @@ abstract class DefaultApolloExtension(
         },
         endpointUrl = project.provider { service.introspection?.endpointUrl?.orNull },
         endpointHeaders = project.provider { service.introspection?.headers?.orNull },
-        pluginDependencies = project.provider { service.compilerConfiguration.files.map { it.absolutePath }.toSet() },
+        pluginDependencies = service.compilerConfiguration.map { configuration ->
+          configuration.files.map { it.absolutePath }.toSet()
+        },
         pluginArguments = pluginArguments,
     )
     generateApolloProjectModel.configure {
@@ -523,7 +524,7 @@ abstract class DefaultApolloExtension(
           taskName = ModelNames.generateApolloSources(service),
           taskGroup = TASK_GROUP,
           taskDescription = "Generate Apollo models for service '${service.name}'",
-          extraClasspath = service.compilerConfiguration,
+          extraClasspath = project.files(service.compilerConfiguration),
           arguments = pluginArguments,
           warnIfNotFound = project.provider { warnIfNoPluginFound },
           schemas = service.schemaFiles(project),
@@ -581,10 +582,10 @@ abstract class DefaultApolloExtension(
             taskDescription = "Generate Apollo schema for service '${service.name}'",
             schemaFiles = service.schemaFiles(project),
             fallbackSchemaFiles = service.fallbackSchemaFiles(project),
-            upstreamSchemaFiles = codegenSchema.resolvable,
+            upstreamSchemaFiles = project.files(codegenSchema.resolvable),
             codegenSchemaOptionsFile = optionsTaskProvider.flatMap { it.codegenSchemaOptionsFile },
             arguments = pluginArguments,
-            extraClasspath = service.compilerConfiguration,
+            extraClasspath = project.files(service.compilerConfiguration),
             warnIfNotFound = project.provider { warnIfNoPluginFound },
         )
       } else {
@@ -608,10 +609,10 @@ abstract class DefaultApolloExtension(
           taskName = ModelNames.generateApolloIrOperations(service),
           taskGroup = TASK_GROUP,
           taskDescription = "Generate Apollo IR operations for service '${service.name}'",
-          extraClasspath = service.compilerConfiguration,
+          extraClasspath = project.files(service.compilerConfiguration),
           arguments = pluginArguments,
           warnIfNotFound = project.provider { warnIfNoPluginFound },
-          upstreamIrFiles = upstreamIr.resolvable,
+          upstreamIrFiles = project.files(upstreamIr.resolvable),
           codegenSchemas = upstreamAndSelfCodegenSchemas,
           graphqlFiles = service.graphqlSourceDirectorySet,
           irOptionsFile = optionsTaskProvider.flatMap { it.irOptionsFile },
@@ -620,19 +621,19 @@ abstract class DefaultApolloExtension(
       val computeUsedCoordinatesTask = project.registerApolloComputeUsedCoordinatesTask(
           taskName = ModelNames.computeUsedCoordinates(service),
           taskGroup = TASK_GROUP,
-          irOperations = downstreamIr.resolvable,
+          irOperations = project.files(downstreamIr.resolvable),
       )
       val sourcesFromIrTaskProvider = project.registerApolloGenerateSourcesFromIrTask(
           taskName = ModelNames.generateApolloSources(service),
           taskGroup = TASK_GROUP,
           taskDescription = "Generate Apollo models for service '${service.name}'",
-          extraClasspath = service.compilerConfiguration,
+          extraClasspath = project.files(service.compilerConfiguration),
           arguments = pluginArguments,
           warnIfNotFound = project.provider { warnIfNoPluginFound },
           codegenSchemas = upstreamAndSelfCodegenSchemas,
           downstreamUsedCoordinates = computeUsedCoordinatesTask.flatMap { it.outputFile },
           irOperations = irOperationsTaskProvider.flatMap { it.irOperationsFile },
-          upstreamMetadata = codegenMetadata.resolvable,
+          upstreamMetadata = project.files(codegenMetadata.resolvable),
           codegenOptions = optionsTaskProvider.flatMap { it.codegenOptions },
           outputDirectory = outputDir(project, service),
           operationManifest = BuildDirLayout.operationManifest(project, service)
@@ -650,7 +651,7 @@ abstract class DefaultApolloExtension(
             taskName = ModelNames.generateDataBuildersApolloSources(service),
             taskGroup = TASK_GROUP,
             taskDescription = "Generate Apollo data builders for service '${service.name}'",
-            extraClasspath = service.compilerConfiguration,
+            extraClasspath = project.files(service.compilerConfiguration),
             arguments = pluginArguments,
             warnIfNotFound = project.provider { warnIfNoPluginFound },
             codegenSchemas = upstreamAndSelfCodegenSchemas,
@@ -707,7 +708,7 @@ abstract class DefaultApolloExtension(
         }
 
         override val outgoingVariants: List<Configuration>
-          get() = listOf(codegenMetadata.consumable, upstreamIr.consumable, codegenSchema.consumable, otherOptions.consumable)
+          get() = listOf(codegenMetadata.consumable.get(), upstreamIr.consumable.get(), codegenSchema.consumable.get(), otherOptions.consumable.get())
       }
       if (service.outgoingVariantsConnection != null) {
         service.outgoingVariantsConnection!!.execute(outgoingVariantsConnection)
@@ -715,12 +716,12 @@ abstract class DefaultApolloExtension(
         outgoingVariantsConnection.addToSoftwareComponent(adhocComponentWithVariants)
       }
 
-      service.upstreamDependencies.forEach {
-        upstreamScope.dependencies.add(it)
+      service.upstreamDependencies.forEach { dependency ->
+        upstreamScope.configure { it.dependencies.add(dependency) }
       }
 
-      service.downstreamDependencies.forEach {
-        downstreamScope.dependencies.add(it)
+      service.downstreamDependencies.forEach { dependency ->
+        downstreamScope.configure { it.dependencies.add(dependency) }
       }
     }
 
@@ -862,7 +863,7 @@ abstract class DefaultApolloExtension(
     }
   }
 
-  private fun Project.regularFileProperty(provider : () -> File): RegularFileProperty {
+  private fun Project.regularFileProperty(provider: () -> File): RegularFileProperty {
     return objects.fileProperty().fileProvider(project.provider(provider))
   }
 

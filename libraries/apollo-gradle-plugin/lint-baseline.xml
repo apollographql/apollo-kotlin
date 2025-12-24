@@ -30,7 +30,7 @@
         errorLine2="                                                                         ~~~~~~">
         <location
             file="build/gtask/gratatouilleUnzipPluginSources/outputDirectory/com/apollographql/apollo/gradle/task/ApolloDownloadSchemaTask.kt"
-            line="55"
+            line="57"
             column="74"/>
     </issue>
 
@@ -41,7 +41,7 @@
         errorLine2="                 ~~~~">
         <location
             file="build/gtask/gratatouilleUnzipPluginSources/outputDirectory/com/apollographql/apollo/gradle/task/ApolloDownloadSchemaTask.kt"
-            line="62"
+            line="64"
             column="18"/>
     </issue>
 
@@ -96,7 +96,7 @@
         errorLine2="                                                                          ~~~~~~">
         <location
             file="build/gtask/gratatouilleUnzipPluginSources/outputDirectory/com/apollographql/apollo/gradle/task/ApolloGenerateDataBuildersSourcesTask.kt"
-            line="66"
+            line="67"
             column="75"/>
     </issue>
 
@@ -107,7 +107,7 @@
         errorLine2="                 ~~~~">
         <location
             file="build/gtask/gratatouilleUnzipPluginSources/outputDirectory/com/apollographql/apollo/gradle/task/ApolloGenerateDataBuildersSourcesTask.kt"
-            line="73"
+            line="74"
             column="18"/>
     </issue>
 
@@ -140,7 +140,7 @@
         errorLine2="                                                                          ~~~~~~">
         <location
             file="build/gtask/gratatouilleUnzipPluginSources/outputDirectory/com/apollographql/apollo/gradle/task/ApolloGenerateOptionsTask.kt"
-            line="92"
+            line="91"
             column="75"/>
     </issue>
 
@@ -151,7 +151,7 @@
         errorLine2="                 ~~~~">
         <location
             file="build/gtask/gratatouilleUnzipPluginSources/outputDirectory/com/apollographql/apollo/gradle/task/ApolloGenerateOptionsTask.kt"
-            line="99"
+            line="98"
             column="18"/>
     </issue>
 
@@ -241,105 +241,6 @@
             file="build/gtask/gratatouilleUnzipPluginSources/outputDirectory/com/apollographql/apollo/gradle/task/ApolloRegisterOperationsTask.kt"
             line="62"
             column="18"/>
-    </issue>
-
-    <issue
-        id="EagerGradleConfiguration"
-        message="Use register instead of create"
-        errorLine1="      project.configurations.create(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.Consumable)) {"
-        errorLine2="                             ~~~~~~">
-        <location
-            file="src/main/kotlin/com/apollographql/apollo/gradle/internal/DefaultApolloExtension.kt"
-            line="343"
-            column="30"/>
-    </issue>
-
-    <issue
-        id="EagerGradleConfiguration"
-        message="Use register instead of create"
-        errorLine1="      project.configurations.create(ModelNames.configuration(serviceName, direction, apolloUsage, ConfigurationKind.Resolvable)) {"
-        errorLine2="                             ~~~~~~">
-        <location
-            file="src/main/kotlin/com/apollographql/apollo/gradle/internal/DefaultApolloExtension.kt"
-            line="351"
-            column="30"/>
-    </issue>
-
-    <issue
-        id="EagerGradleConfiguration"
-        message="Use register instead of create"
-        errorLine1="    val upstreamScope = project.configurations.create(ModelNames.scopeConfiguration(service.name, ApolloDirection.Upstream)) {"
-        errorLine2="                                               ~~~~~~">
-        <location
-            file="src/main/kotlin/com/apollographql/apollo/gradle/internal/DefaultApolloExtension.kt"
-            line="389"
-            column="48"/>
-    </issue>
-
-    <issue
-        id="EagerGradleConfiguration"
-        message="Use register instead of create"
-        errorLine1="    val downstreamScope = project.configurations.create(ModelNames.scopeConfiguration(service.name, ApolloDirection.Downstream)) {"
-        errorLine2="                                                 ~~~~~~">
-        <location
-            file="src/main/kotlin/com/apollographql/apollo/gradle/internal/DefaultApolloExtension.kt"
-            line="393"
-            column="50"/>
-    </issue>
-
-    <issue
-        id="EagerGradleConfiguration"
-        message="Passing Configuration to ConfigurableFileCollection.from results in eager resolution of this configuration. Instead use project.files(configuration) or configuration.incoming.artifactView {}.files to wrap the configuration making it lazy."
-        errorLine1="        it.from(codegenSchema.resolvable)"
-        errorLine2="           ~~~~">
-        <location
-            file="src/main/kotlin/com/apollographql/apollo/gradle/internal/DefaultApolloExtension.kt"
-            line="589"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="EagerGradleConfiguration"
-        message="Passing Configuration to ConfigurableFileCollection.from results in eager resolution of this configuration. Instead use project.files(configuration) or configuration.incoming.artifactView {}.files to wrap the configuration making it lazy."
-        errorLine1="        from(codegenMetadata.resolvable)"
-        errorLine2="        ~~~~">
-        <location
-            file="src/main/kotlin/com/apollographql/apollo/gradle/internal/DefaultApolloExtension.kt"
-            line="631"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="EagerGradleConfiguration"
-        message="Use register instead of create"
-        errorLine1="  val compilerConfiguration = project.configurations.create(ModelNames.compilerConfiguration(this)) {"
-        errorLine2="                                                     ~~~~~~">
-        <location
-            file="src/main/kotlin/com/apollographql/apollo/gradle/internal/DefaultService.kt"
-            line="28"
-            column="54"/>
-    </issue>
-
-    <issue
-        id="FilePropertyDetector"
-        message="`Property&lt;File>` is discouraged. Use `RegularFileProperty` or `DirectoryProperty`."
-        errorLine1="  public abstract val schema: Property&lt;File>"
-        errorLine2="                      ~~~~~~">
-        <location
-            file="build/gtask/gratatouilleUnzipPluginSources/outputDirectory/com/apollographql/apollo/gradle/task/ApolloDownloadSchemaTask.kt"
-            line="112"
-            column="23"/>
-    </issue>
-
-    <issue
-        id="GradleProjectIsolation"
-        message="Use isolated.rootProject instead of getRootProject"
-        errorLine1="        is ProjectDependency -> project.rootProject.project(dependencyNotation.getPathCompat())"
-        errorLine2="                                        ~~~~~~~~~~~">
-        <location
-            file="src/main/kotlin/com/apollographql/apollo/gradle/internal/DefaultService.kt"
-            line="214"
-            column="41"/>
     </issue>
 
 </issues>
