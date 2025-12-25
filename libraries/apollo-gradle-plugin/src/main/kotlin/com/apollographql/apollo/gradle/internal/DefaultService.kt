@@ -26,7 +26,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   internal var hasPlugin: Boolean = false
   internal val issueSeverities = mutableMapOf<String, String>()
 
-  val compilerConfiguration = project.configurations.create(ModelNames.compilerConfiguration(this)) {
+  val compilerConfiguration = project.configurations.register(ModelNames.compilerConfiguration(this)) {
     it.isCanBeConsumed = false
     it.isCanBeResolved = true
   }
@@ -212,7 +212,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     upstreamDependencies.add(project.dependencies.create(dependencyNotation))
     if (bidirectional) {
       val upstreamProject = when (dependencyNotation) {
-        is ProjectDependency -> project.rootProject.project(dependencyNotation.getPathCompat())
+        is ProjectDependency -> project.project(dependencyNotation.getPathCompat())
         is Project -> dependencyNotation
         else -> error("dependsOn(dependencyNotation, true) requires a Project or ProjectDependency")
       }
