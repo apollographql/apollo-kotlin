@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.parseJsonResponse
 import com.apollographql.apollo.benchmark.Utils.dbFile
-import com.apollographql.apollo.benchmark.Utils.dbName
+import com.apollographql.apollo.benchmark.Utils.getDbName
 import com.apollographql.apollo.benchmark.Utils.largeListQuery
 import com.apollographql.apollo.benchmark.Utils.operationBasedQuery
 import com.apollographql.apollo.benchmark.Utils.registerCacheSize
@@ -58,7 +58,7 @@ class CacheTests {
     val store = ApolloStore(
         if (sql) {
           dbFile.delete()
-          SqlNormalizedCacheFactory(name = dbName)
+          SqlNormalizedCacheFactory(name = getDbName())
         } else {
           MemoryCacheFactory()
         }
