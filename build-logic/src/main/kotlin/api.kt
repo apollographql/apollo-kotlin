@@ -101,6 +101,7 @@ fun Project.apolloLibrary(
         null
       },
       signing = signing(),
+      checkDependencies = false
   )
   maybeCustomizeDokka()
 
