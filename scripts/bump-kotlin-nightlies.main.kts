@@ -81,8 +81,9 @@ fun runCommand(vararg args: String): String {
       .redirectError(ProcessBuilder.Redirect.INHERIT)
   val process = builder.start()
   val output = StringBuilder()
+  val reader = process.inputStream.bufferedReader()
   while (true) {
-    val line = process.inputStream.bufferedReader().readLine() ?: break
+    val line = reader.readLine() ?: break
     println("> $line")
     output.append(line + "\n")
   }
@@ -116,15 +117,23 @@ fun updateLockFiles() {
   runCommand("./gradlew -p tests kotlinUpgradePackageLock kotlinWasmUpgradePackageLock")
 }
 
+fun hasChanges(): Boolean {
+  return try {
+    runCommand("git diff --quiet")
+    false
+  } catch (_: Exception) {
+    true
+  }
+}
+
 fun commitAndPush() {
-  val status = runCommand("git status")
-  if (status.contains("nothing to commit")) {
+  if (!hasChanges()) {
     println("No changes to commit")
   } else {
     runCommand("git add .")
     runCommand("git", "commit", "-m", "Bump Kotlin and KSP")
+    runCommand("git push --force origin $BRANCH_NAME")
   }
-  runCommand("git push --force origin $BRANCH_NAME")
 }
 
 fun main() {
