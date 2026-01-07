@@ -26,4 +26,6 @@ interface D implements A & B {
     b: String
 }
 
-directive @myDirective(arg1: String, arg2: Int = 42) @deprecated(reason: "Use newDirective instead") @myDirective(arg1: "test") on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT | DIRECTIVE_DEFINITION
+directive @myDirective1(arg1: String) on DIRECTIVE_DEFINITION
+
+directive @myDirective2(arg1: String, arg2: Int = 42) @deprecated(reason: "Use newDirective instead") @myDirective1(arg1: "test") on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT

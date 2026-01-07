@@ -76,10 +76,14 @@ private fun <T : Any> String.parseInternal(filePath: String?, options: ParserOpt
 class ParserOptions private constructor(
     val allowEmptyDocuments: Boolean,
     val withSourceLocation: Boolean,
+    val allowDirectivesOnDirectives: Boolean,
 ) {
   class Builder {
     var allowEmptyDocuments = true
     var withSourceLocation = true
+
+    @ApolloExperimental
+    var allowDirectivesOnDirectives = false
 
     fun allowEmptyDocuments(allowEmptyDocuments: Boolean) = apply {
       this.allowEmptyDocuments = allowEmptyDocuments
@@ -89,10 +93,16 @@ class ParserOptions private constructor(
       this.withSourceLocation = withSourceLocation
     }
 
+    @ApolloExperimental
+    fun allowDirectivesOnDirectives(allowDirectivesOnDirectives: Boolean) = apply {
+      this.allowDirectivesOnDirectives = allowDirectivesOnDirectives
+    }
+
     fun build(): ParserOptions {
       return ParserOptions(
           allowEmptyDocuments = allowEmptyDocuments,
-          withSourceLocation = withSourceLocation
+          withSourceLocation = withSourceLocation,
+          allowDirectivesOnDirectives = allowDirectivesOnDirectives,
       )
     }
   }

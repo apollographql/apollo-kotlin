@@ -1259,6 +1259,8 @@ final class com.apollographql.apollo.ast/OtherValidationIssue : com.apollographq
 }
 
 final class com.apollographql.apollo.ast/ParserOptions { // com.apollographql.apollo.ast/ParserOptions|null[0]
+    final val allowDirectivesOnDirectives // com.apollographql.apollo.ast/ParserOptions.allowDirectivesOnDirectives|{}allowDirectivesOnDirectives[0]
+        final fun <get-allowDirectivesOnDirectives>(): kotlin/Boolean // com.apollographql.apollo.ast/ParserOptions.allowDirectivesOnDirectives.<get-allowDirectivesOnDirectives>|<get-allowDirectivesOnDirectives>(){}[0]
     final val allowEmptyDocuments // com.apollographql.apollo.ast/ParserOptions.allowEmptyDocuments|{}allowEmptyDocuments[0]
         final fun <get-allowEmptyDocuments>(): kotlin/Boolean // com.apollographql.apollo.ast/ParserOptions.allowEmptyDocuments.<get-allowEmptyDocuments>|<get-allowEmptyDocuments>(){}[0]
     final val withSourceLocation // com.apollographql.apollo.ast/ParserOptions.withSourceLocation|{}withSourceLocation[0]
@@ -1267,6 +1269,9 @@ final class com.apollographql.apollo.ast/ParserOptions { // com.apollographql.ap
     final class Builder { // com.apollographql.apollo.ast/ParserOptions.Builder|null[0]
         constructor <init>() // com.apollographql.apollo.ast/ParserOptions.Builder.<init>|<init>(){}[0]
 
+        final var allowDirectivesOnDirectives // com.apollographql.apollo.ast/ParserOptions.Builder.allowDirectivesOnDirectives|{}allowDirectivesOnDirectives[0]
+            final fun <get-allowDirectivesOnDirectives>(): kotlin/Boolean // com.apollographql.apollo.ast/ParserOptions.Builder.allowDirectivesOnDirectives.<get-allowDirectivesOnDirectives>|<get-allowDirectivesOnDirectives>(){}[0]
+            final fun <set-allowDirectivesOnDirectives>(kotlin/Boolean) // com.apollographql.apollo.ast/ParserOptions.Builder.allowDirectivesOnDirectives.<set-allowDirectivesOnDirectives>|<set-allowDirectivesOnDirectives>(kotlin.Boolean){}[0]
         final var allowEmptyDocuments // com.apollographql.apollo.ast/ParserOptions.Builder.allowEmptyDocuments|{}allowEmptyDocuments[0]
             final fun <get-allowEmptyDocuments>(): kotlin/Boolean // com.apollographql.apollo.ast/ParserOptions.Builder.allowEmptyDocuments.<get-allowEmptyDocuments>|<get-allowEmptyDocuments>(){}[0]
             final fun <set-allowEmptyDocuments>(kotlin/Boolean) // com.apollographql.apollo.ast/ParserOptions.Builder.allowEmptyDocuments.<set-allowEmptyDocuments>|<set-allowEmptyDocuments>(kotlin.Boolean){}[0]
@@ -1274,6 +1279,7 @@ final class com.apollographql.apollo.ast/ParserOptions { // com.apollographql.ap
             final fun <get-withSourceLocation>(): kotlin/Boolean // com.apollographql.apollo.ast/ParserOptions.Builder.withSourceLocation.<get-withSourceLocation>|<get-withSourceLocation>(){}[0]
             final fun <set-withSourceLocation>(kotlin/Boolean) // com.apollographql.apollo.ast/ParserOptions.Builder.withSourceLocation.<set-withSourceLocation>|<set-withSourceLocation>(kotlin.Boolean){}[0]
 
+        final fun allowDirectivesOnDirectives(kotlin/Boolean): com.apollographql.apollo.ast/ParserOptions.Builder // com.apollographql.apollo.ast/ParserOptions.Builder.allowDirectivesOnDirectives|allowDirectivesOnDirectives(kotlin.Boolean){}[0]
         final fun allowEmptyDocuments(kotlin/Boolean): com.apollographql.apollo.ast/ParserOptions.Builder // com.apollographql.apollo.ast/ParserOptions.Builder.allowEmptyDocuments|allowEmptyDocuments(kotlin.Boolean){}[0]
         final fun build(): com.apollographql.apollo.ast/ParserOptions // com.apollographql.apollo.ast/ParserOptions.Builder.build|build(){}[0]
         final fun withSourceLocation(kotlin/Boolean): com.apollographql.apollo.ast/ParserOptions.Builder // com.apollographql.apollo.ast/ParserOptions.Builder.withSourceLocation|withSourceLocation(kotlin.Boolean){}[0]

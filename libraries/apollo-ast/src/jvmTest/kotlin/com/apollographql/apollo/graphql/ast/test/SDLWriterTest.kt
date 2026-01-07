@@ -1,10 +1,9 @@
 package com.apollographql.apollo.graphql.ast.test
 
+import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.parseAsGQLDocument
-import com.apollographql.apollo.ast.toFullSchemaGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.ast.toSDL
-import com.apollographql.apollo.ast.withBuiltinDefinitions
 import com.apollographql.apollo.graphql.ast.test.ParserTest.Companion.checkExpected
 import java.io.File
 import kotlin.test.Test
@@ -15,7 +14,7 @@ class SDLWriterTest {
     val sdlSchema = File("${CWD}/test-fixtures/sdl/simple.graphqls")
 
     checkExpected(sdlSchema) {
-      it.parseAsGQLDocument().getOrThrow().toSDL("    ")
+      it.parseAsGQLDocument(options = ParserOptions.Builder().allowDirectivesOnDirectives(true).build()).getOrThrow().toSDL("    ")
     }
   }
 

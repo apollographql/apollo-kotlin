@@ -1093,17 +1093,21 @@ public final class com/apollographql/apollo/ast/OtherValidationIssue : com/apoll
 
 public final class com/apollographql/apollo/ast/ParserOptions {
 	public static final field Companion Lcom/apollographql/apollo/ast/ParserOptions$Companion;
-	public synthetic fun <init> (ZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAllowDirectivesOnDirectives ()Z
 	public final fun getAllowEmptyDocuments ()Z
 	public final fun getWithSourceLocation ()Z
 }
 
 public final class com/apollographql/apollo/ast/ParserOptions$Builder {
 	public fun <init> ()V
+	public final fun allowDirectivesOnDirectives (Z)Lcom/apollographql/apollo/ast/ParserOptions$Builder;
 	public final fun allowEmptyDocuments (Z)Lcom/apollographql/apollo/ast/ParserOptions$Builder;
 	public final fun build ()Lcom/apollographql/apollo/ast/ParserOptions;
+	public final fun getAllowDirectivesOnDirectives ()Z
 	public final fun getAllowEmptyDocuments ()Z
 	public final fun getWithSourceLocation ()Z
+	public final fun setAllowDirectivesOnDirectives (Z)V
 	public final fun setAllowEmptyDocuments (Z)V
 	public final fun setWithSourceLocation (Z)V
 	public final fun withSourceLocation (Z)Lcom/apollographql/apollo/ast/ParserOptions$Builder;
