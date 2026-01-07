@@ -671,7 +671,7 @@ class GQLUnionTypeDefinition(
 /**
  * @param name the name of the directive without the '@'
  */
-class GQLDirectiveDefinition(
+class GQLDirectiveDefinition @ApolloExperimental constructor(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
     override val name: String,
@@ -681,8 +681,6 @@ class GQLDirectiveDefinition(
     override val directives: List<GQLDirective>,
 ) : GQLDefinition, GQLDescribed, GQLNamed, GQLHasDirectives {
 
-  @Deprecated("Use the other constructor")
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
   constructor(
       sourceLocation: SourceLocation? = null,
       description: String?,
@@ -1099,6 +1097,7 @@ class GQLUnionTypeExtension(
   }
 }
 
+@ApolloExperimental
 class GQLDirectiveExtension(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -2137,6 +2136,8 @@ enum class GQLDirectiveLocation {
   ENUM_VALUE,
   INPUT_OBJECT,
   INPUT_FIELD_DEFINITION,
+
+  @ApolloExperimental
   DIRECTIVE_DEFINITION,
 }
 
@@ -2145,7 +2146,7 @@ sealed interface GQLSchemaCoordinate
 class GQLTypeCoordinate(
     override val sourceLocation: SourceLocation?,
     val name: String,
-): GQLNode, GQLSchemaCoordinate {
+) : GQLNode, GQLSchemaCoordinate {
   override val children: List<GQLNode> = emptyList()
 
   override fun writeInternal(writer: SDLWriter) {
@@ -2154,13 +2155,14 @@ class GQLTypeCoordinate(
 
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
-      name: String = this.name
+      name: String = this.name,
   ): GQLTypeCoordinate {
     return GQLTypeCoordinate(
         sourceLocation,
         name
     )
   }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy()
   }
@@ -2169,7 +2171,7 @@ class GQLTypeCoordinate(
 class GQLDirectiveCoordinate(
     override val sourceLocation: SourceLocation?,
     val name: String,
-): GQLNode, GQLSchemaCoordinate {
+) : GQLNode, GQLSchemaCoordinate {
   override val children: List<GQLNode> = emptyList()
 
   override fun writeInternal(writer: SDLWriter) {
@@ -2179,13 +2181,14 @@ class GQLDirectiveCoordinate(
 
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
-      name: String = this.name
+      name: String = this.name,
   ): GQLDirectiveCoordinate {
     return GQLDirectiveCoordinate(
         sourceLocation,
         name
     )
   }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy()
   }
@@ -2194,8 +2197,8 @@ class GQLDirectiveCoordinate(
 class GQLMemberCoordinate(
     override val sourceLocation: SourceLocation?,
     val type: String,
-    val member: String
-): GQLNode, GQLSchemaCoordinate {
+    val member: String,
+) : GQLNode, GQLSchemaCoordinate {
   override val children: List<GQLNode> = emptyList()
 
   override fun writeInternal(writer: SDLWriter) {
@@ -2207,7 +2210,7 @@ class GQLMemberCoordinate(
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
       type: String = this.type,
-      name: String = this.member
+      name: String = this.member,
   ): GQLMemberCoordinate {
     return GQLMemberCoordinate(
         sourceLocation,
@@ -2226,7 +2229,7 @@ class GQLArgumentCoordinate(
     val type: String,
     val field: String,
     val argument: String,
-): GQLNode, GQLSchemaCoordinate {
+) : GQLNode, GQLSchemaCoordinate {
   override val children: List<GQLNode> = emptyList()
 
   override fun writeInternal(writer: SDLWriter) {
@@ -2242,7 +2245,7 @@ class GQLArgumentCoordinate(
       sourceLocation: SourceLocation? = this.sourceLocation,
       type: String = this.type,
       name: String = this.field,
-      argument: String = this.argument
+      argument: String = this.argument,
   ): GQLArgumentCoordinate {
     return GQLArgumentCoordinate(
         sourceLocation,
@@ -2261,7 +2264,7 @@ class GQLDirectiveArgumentCoordinate(
     override val sourceLocation: SourceLocation?,
     val name: String,
     val argument: String,
-): GQLNode, GQLSchemaCoordinate {
+) : GQLNode, GQLSchemaCoordinate {
   override val children: List<GQLNode> = emptyList()
 
   override fun writeInternal(writer: SDLWriter) {
@@ -2275,7 +2278,7 @@ class GQLDirectiveArgumentCoordinate(
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
-      argument: String = this.argument
+      argument: String = this.argument,
   ): GQLDirectiveArgumentCoordinate {
     return GQLDirectiveArgumentCoordinate(
         sourceLocation,
