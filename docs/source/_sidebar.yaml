@@ -111,7 +111,7 @@ items:
       - label: Uploading files
         href: ./advanced/upload
       - label: Handling network errors
-        href: ./advanced/networks-errors
+        href: ./advanced/network-errors
       - label: Handling nullability
         href: ./advanced/nullability
       - label: Using aliases
