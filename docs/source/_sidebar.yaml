@@ -114,8 +114,6 @@ items:
         href: ./advanced/networks-errors
       - label: Handling nullability
         href: ./advanced/nullability
-      - label: Experimental WebSockets
-        href: ./advanced/experimental-websockets
       - label: Using aliases
         href: ./advanced/using-aliases
       - label: Using Java
