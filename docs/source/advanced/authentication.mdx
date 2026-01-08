@@ -12,7 +12,7 @@ OkHttp Interceptors have been around for a long time and work well but can only 
 
 ## Authenticating your HTTP requests with Apollo HttpInterceptor
 
-In order to authenticate your HTTP requests in a multi-platform way, you can use an Apollo [HttpInterceptor](./interceptors-http).
+To authenticate your HTTP requests in a multi-platform way, you can use an Apollo [HttpInterceptor](./interceptors-http).
 
 HttpInterceptor is multiplatform and uses an API very similar to OkHttp's:
 
@@ -41,92 +41,65 @@ class AuthorizationInterceptor() : HttpInterceptor {
 
 For a more advanced example, you can take a look at the [AuthorizationInterceptor integration tests](https://github.com/apollographql/apollo-kotlin/blob/6f0b798198c215013f12e7da509624a1befc1b73/apollo-runtime/src/commonTest/kotlin/com/apollographql/apollo3/network/AuthorizationInterceptor.kt#L30)
 
-## Authenticating your WebSockets
+## Authenticate your subscriptions with an HTTP header or query parameter
 
-Authenticating WebSockets is typically handled with a specific connection payload:
-
-```kotlin
-val apolloClient = ApolloClient.Builder()
-    .httpServerUrl("http://localhost:8080/graphql")
-    .webSocketServerUrl("http://localhost:8080/subscriptions")
-    .wsProtocol(
-        SubscriptionWsProtocol.Factory(
-            connectionPayload = {
-              // some servers use "authorization" directly
-              mapOf("authorization" to token)   // highlight-line
-              // others require to wrap in a "headers" map
-              mapOf("headers" to mapOf("authorization" to token))
-              // others will expect different maps
-              // refer to your backend docs for the actual map to use
-            }
-        )
-    )
-    .build()
-
-```
-
-Alternatively, you can also send headers in the initial WebSocket handshake request:
+`ApolloClient` creates different WebSockets for different header values. Use an interceptor to change the header value on error:
 
 ```kotlin
-val apolloClient = ApolloClient.Builder()
-    .httpServerUrl("https://example.com/graphql")
-    .subscriptionNetworkTransport(
-        WebSocketNetworkTransport.Builder()
-            .serverUrl("https://example.com/subscriptions")
-            .addHeader("Authorization", authorization) // highlight-line
+private class UpdateAuthorizationHeaderInterceptor : ApolloInterceptor {
+  @OptIn(ExperimentalCoroutinesApi::class)
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    return flow {
+      // Retrieve a new access token every time
+      val request = if (request.operation is Subscription<*>) {
+        request.newBuilder()
+            // Update the HTTP header
+            .addHttpHeader("Authorization", "Bearer ${accessToken()}")
+            // Or change the url
+            .url("https://example.com/subscription?token=${accessToken()}")
             .build()
-    )
-    .build()
+      } else {
+        request
+      }
+
+      emitAll(chain.proceed(request))
+    }
+  }
+}
 ```
 
-### Updating your WebSocket token
+Note: The client shares WebSockets in a pool. If your access token changes frequently, the client might open multiple WebSockets concurrently.
 
-When using authenticated subscriptions over WebSockets, you might want to refresh your authentication token because it was invalidated or simply because it expired.
+## Authenticate your subscriptions with a connection payload
 
-<Note>
-
-If your user logged out, you might want to consider creating a new `ApolloClient` instead. This will make sure that all other state besides the WebSocket, like cache for an example, is new and not shared amongst different users.
-
-</Note>
-
-Sometimes the websocket will emit an error that you can use in `webSocketReopenWhen` to create a new WebSocket. Other times that information will come from elsewhere in your app, and you have to force disconnect the WebSocket.
-
-First define your own Exception:
+The connection payload is specific to the `WsProtocol`. Pass a lambda to the `WsProtocol` constructor that the client evaluates whenever it creates a WebSocket.
 
 ```kotlin
-class WebSocketReconnectException: Exception("The WebSocket needs to be reopened")
+ApolloClient.Builder()
+  .httpServerUrl(mockServer.url())
+  .subscriptionNetworkTransport(
+      WebSocketNetworkTransport.Builder()
+          .serverUrl(mockServer.url())
+          .wsProtocol(GraphQLWsProtocol(
+              connectionPayload = {
+                getFreshConnectionPayload()
+              }
+          ))
+          .build()
+  )
+  .build()
 ```
+
+## Retry your subscriptions automatically
+
+The preceding approaches require your backend to indicate when a token expires. Unlike HTTP 401 errors, WebSockets lack a widespread standard for expiration signaling.
+
+If your backend closes the WebSocket, retry subscriptions automatically using `retryOnError { it.operation is Subscription }`:
 
 ```kotlin
-    val apolloClient = ApolloClient.Builder()
-        .httpServerUrl("http://localhost:8080/graphql")
-        .webSocketServerUrl("http://localhost:8080/subscriptions")
-        .wsProtocol(
-            SubscriptionWsProtocol.Factory(
-                connectionPayload = {
-                  // the connection_init payload
-                  // This is an example. You will most likely have to tweak it for your backend
-                  mapOf("Authorization" to token)
-                }
-            )
-        )
-        .webSocketReopenWhen { e, attempt ->
-          if (e is WebSocketReconnectException) {
-            true
-          } else {
-            // Another WebSocket error happened, decide what to do with it
-            // Here we're trying to reconnect at most 3 times
-            attempt < 3
-          }
-        }
-        .build()
+ApolloClient.Builder()
+  .serverUrl(mockServer.url())
+  .retryOnError { it.operation is Subscription }
 ```
 
-When you need to reopen the WebSocket, call `closeConnection`:
-
-```kotlin
-apolloClient.subscriptionNetworkTransport.closeConnection(WebSocketReconnectException())`
-```
-
-The WebSocket will close and reopen with a fresh new `connectionPayload`.
-
+For other cases, customize your `RetryStrategy`. For details, see [Network errors](network-errors).

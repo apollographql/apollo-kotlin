@@ -90,8 +90,6 @@ items:
         href: ./advanced/no-runtime
       - label: Authentication
         href: ./advanced/authentication
-      - label: WebSocket errors
-        href: ./advanced/websocket-errors
       - label: Batching operations
         href: ./advanced/query-batching
   - label: Development & Testing
@@ -112,12 +110,10 @@ items:
     children:
       - label: Uploading files
         href: ./advanced/upload
-      - label: Monitoring the network state
-        href: ./advanced/network-connectivity
+      - label: Handling network errors
+        href: ./advanced/networks-errors
       - label: Handling nullability
         href: ./advanced/nullability
-      - label: Experimental WebSockets
-        href: ./advanced/experimental-websockets
       - label: Using aliases
         href: ./advanced/using-aliases
       - label: Using Java

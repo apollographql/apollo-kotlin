@@ -1,0 +1,102 @@
+---
+title: Handling Networks Errors
+---
+
+Building robust mobile applications requires dealing with spotty internet connectivity and/or backend errors.
+
+By default, `ApolloClient` exposes all network errors. You are responsible for handling them. A typical strategy is to display a generic error and suggest the user retry later.
+
+`ApolloClient` exposes APIs to retry failed operations and/or get the status of the network.
+
+
+### `retryOnError()`
+
+To make your applications more robust, you may opt-in retrying failed operations. 
+
+To do so, call `retryOnError(true)`:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://example.com/graphql")
+    .retryOnError(true)
+    .build()
+
+// retries up to three times before giving up
+val response = apolloClient.query(myQuery).execute()
+```
+
+By default, `retryOnError(true)` has the following behavior:
+
+* queries and mutations are retried up to three times, with exponential backoff.
+* subscriptions are retried as long as the scope is running, with exponential backoff, capped at 60 seconds.
+
+### `RetryStrategy`
+
+You may customize the default strategy using a `RetryStrategy`. The following example shows a `RetryStrategy` that waits 10 seconds between each retry:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .retryOnErrorInterceptor(RetryOnErrorInterceptor(networkMonitor) { state, request, response  ->
+      val exception = response.exception
+      if (exception == null) {
+        // No error, do not retry
+        return@RetryOnErrorInterceptor false
+      }
+
+      delay(10.seconds)
+      return@RetryOnErrorInterceptor true
+    })
+    .build()
+```
+
+### `NetworkMonitor`
+
+Android and Apple targets provide APIs to monitor the network state of your device:
+
+- [ConnectivityManager](https://developer.android.com/training/monitoring-device-state/) on Android targets.
+- [NWPathMonitor](https://developer.apple.com/documentation/network/nwpathmonitor) on Apple targets.
+
+You can configure your [ApolloClient](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo/-apollo-client/index.html) to use these APIs using a `NetworkMonitor`:
+
+```kotlin
+// androidMain
+val networkMonitor = NetworkMonitor(context)
+
+// appleMain
+val networkMonitor = NetworkMonitor()
+
+// commonMain
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://example.com/graphql")
+    .retryOnErrorInterceptor(RetryOnErrorInterceptor(networkMonitor))
+    .build()
+
+// once you're done with your `ApolloClient`
+networkMonitor.close()
+```
+
+When a `NetworkMonitor` is configured, the default [`RetryStrategy`](#retrystrategy) waits for the network to be back online before retrying subscriptions. This improves the latency of reconnecting subscriptions.
+
+
+### `failFastIfOffline`
+
+When a `NetworkMonitor` is configured, use `failFastIfOffline(true)` to avoid executing requests when the device is offline:
+
+```kotlin
+// Opt-in `failFastIfOffline` on all queries
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://example.com/graphql")
+    .retryOnErrorInterceptor(RetryOnErrorInterceptor(networkMonitor))
+    .failFastIfOffline(true)
+    .build()
+
+val response = apolloClient.query(myQuery).execute()
+println(response.exception?.message)
+// "The device is offline"
+```
+
+In addition to waiting for the network to be back online before retrying subscriptions, this also has the following benefits:
+
+* Network requests fail eagerly, without going to the OS layers (DNS, etc...). This reduces error latency in bad network conditions.
+* `ApolloOfflineException` is returned instead of a more generic `ApolloNetworkException`. This gives the user more precise error messages.
+
