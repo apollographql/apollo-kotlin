@@ -48,7 +48,17 @@ enum class GraphQLFeature {
    *
    * Introspection: `__Type.isOneOf`.
    */
-  OneOf
+  OneOf,
+
+  /**
+   * Deprecated directives, introduced in [Add support for directives on directives](https://github.com/graphql/graphql-spec/pull/907/).
+   *
+   * Introspection:
+   * - `__Directive.isDeprecated`
+   * - `__Directive.deprecationReason`
+   * - `__Schema.directives`'s `includeDeprecated` argument
+   */
+  DeprecatedDirectives,
 }
 
 internal fun PreIntrospectionQuery.Data.getFeatures(): Set<GraphQLFeature> {
@@ -76,6 +86,12 @@ internal fun PreIntrospectionQuery.Data.getFeatures(): Set<GraphQLFeature> {
     val directiveFields = directive?.typeFields?.fields.orEmpty()
     if (directiveFields.any { it.name == "isRepeatable" }) {
       add(RepeatableDirectives)
+    }
+    if (directiveFields.any { it.name == "isDeprecated" } &&
+        directiveFields.any { it.name == "deprecationReason" } &&
+        schema?.typeFields?.fields?.firstOrNull { it.name == "directives" }?.args?.any { it.name == "includeDeprecated" } == true
+    ) {
+      add(GraphQLFeature.DeprecatedDirectives)
     }
     val directiveArgsIncludeDeprecated = directiveFields.firstOrNull { it.name == "args" }?.let { args ->
       args.args.any { it.name == "includeDeprecated" }

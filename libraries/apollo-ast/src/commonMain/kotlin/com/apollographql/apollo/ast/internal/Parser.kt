@@ -1,65 +1,11 @@
 package com.apollographql.apollo.ast.internal
 
-import com.apollographql.apollo.ast.GQLArgument
-import com.apollographql.apollo.ast.GQLArgumentCoordinate
-import com.apollographql.apollo.ast.GQLBooleanValue
-import com.apollographql.apollo.ast.GQLDefinition
-import com.apollographql.apollo.ast.GQLDirective
-import com.apollographql.apollo.ast.GQLDirectiveArgumentCoordinate
-import com.apollographql.apollo.ast.GQLDirectiveCoordinate
-import com.apollographql.apollo.ast.GQLDirectiveDefinition
-import com.apollographql.apollo.ast.GQLDirectiveLocation
-import com.apollographql.apollo.ast.GQLDocument
-import com.apollographql.apollo.ast.GQLEnumTypeDefinition
-import com.apollographql.apollo.ast.GQLEnumTypeExtension
-import com.apollographql.apollo.ast.GQLEnumValue
-import com.apollographql.apollo.ast.GQLEnumValueDefinition
-import com.apollographql.apollo.ast.GQLField
-import com.apollographql.apollo.ast.GQLFieldDefinition
-import com.apollographql.apollo.ast.GQLFloatValue
-import com.apollographql.apollo.ast.GQLFragmentDefinition
-import com.apollographql.apollo.ast.GQLFragmentSpread
-import com.apollographql.apollo.ast.GQLInlineFragment
-import com.apollographql.apollo.ast.GQLInputObjectTypeDefinition
-import com.apollographql.apollo.ast.GQLInputObjectTypeExtension
-import com.apollographql.apollo.ast.GQLInputValueDefinition
-import com.apollographql.apollo.ast.GQLIntValue
-import com.apollographql.apollo.ast.GQLInterfaceTypeDefinition
-import com.apollographql.apollo.ast.GQLInterfaceTypeExtension
-import com.apollographql.apollo.ast.GQLListType
-import com.apollographql.apollo.ast.GQLListValue
-import com.apollographql.apollo.ast.GQLMemberCoordinate
-import com.apollographql.apollo.ast.GQLNamedType
-import com.apollographql.apollo.ast.GQLNonNullType
-import com.apollographql.apollo.ast.GQLNullValue
-import com.apollographql.apollo.ast.GQLObjectField
-import com.apollographql.apollo.ast.GQLObjectTypeDefinition
-import com.apollographql.apollo.ast.GQLObjectTypeExtension
-import com.apollographql.apollo.ast.GQLObjectValue
-import com.apollographql.apollo.ast.GQLOperationDefinition
-import com.apollographql.apollo.ast.GQLOperationTypeDefinition
-import com.apollographql.apollo.ast.GQLScalarTypeDefinition
-import com.apollographql.apollo.ast.GQLScalarTypeExtension
-import com.apollographql.apollo.ast.GQLSchemaCoordinate
-import com.apollographql.apollo.ast.GQLSchemaDefinition
-import com.apollographql.apollo.ast.GQLSchemaExtension
-import com.apollographql.apollo.ast.GQLSelection
-import com.apollographql.apollo.ast.GQLStringValue
-import com.apollographql.apollo.ast.GQLType
-import com.apollographql.apollo.ast.GQLTypeCoordinate
-import com.apollographql.apollo.ast.GQLTypeDefinition
-import com.apollographql.apollo.ast.GQLUnionTypeDefinition
-import com.apollographql.apollo.ast.GQLUnionTypeExtension
-import com.apollographql.apollo.ast.GQLValue
-import com.apollographql.apollo.ast.GQLVariableDefinition
-import com.apollographql.apollo.ast.GQLVariableValue
-import com.apollographql.apollo.ast.ParserOptions
-import com.apollographql.apollo.ast.SourceLocation
+import com.apollographql.apollo.ast.*
 
 internal class Parser(
     src: String,
     options: ParserOptions,
-    private val filePath: String?
+    private val filePath: String?,
 ) {
   private val lexer = Lexer(src)
   private var token = lexer.nextToken()
@@ -67,6 +13,7 @@ internal class Parser(
   private var lookaheadToken: Token? = null
   private val withSourceLocation = options.withSourceLocation
   private val allowEmptyDocuments = options.allowEmptyDocuments
+  private val allowDirectivesOnDirectives = options.allowDirectivesOnDirectives
 
   fun parseDocument(): GQLDocument {
     val start = token
@@ -724,7 +671,7 @@ internal class Parser(
       "true",
       "false",
       "null",
-      -> {
+        -> {
         throw ParserException("'$name' is reserved and cannot be used for an enum value", start)
       }
     }
@@ -737,6 +684,15 @@ internal class Parser(
     expectToken<Token.At>()
     val name = parseName()
     val arguments = parseArgumentDefinitions()
+    val directives = if (!allowDirectivesOnDirectives) {
+      if (token is Token.At) {
+        throw ParserException("Experimental `allowDirectivesOnDirectives` must be set to true to allow directives on directives", token)
+      } else {
+        emptyList()
+      }
+    } else {
+      parseDirectives(const = true)
+    }
     val repeatable = expectOptionalKeyword("repeatable") != null
     expectKeyword("on")
     val locations = parseDirectiveLocations()
@@ -747,7 +703,25 @@ internal class Parser(
         name = name,
         arguments = arguments,
         repeatable = repeatable,
-        locations = locations
+        locations = locations,
+        directives = directives
+    )
+  }
+
+  private fun parseDirectiveExtension(): GQLDirectiveExtension {
+    val start = token
+    expectKeyword("extend")
+    expectKeyword("directive")
+    expectToken<Token.At>()
+    val name = parseName()
+    val directives = parseDirectives(const = true)
+    if (directives.isEmpty()) {
+      unexpected()
+    }
+    return GQLDirectiveExtension(
+        sourceLocation = sourceLocation(start),
+        name = name,
+        directives = directives
     )
   }
 
@@ -766,6 +740,11 @@ internal class Parser(
       "union" -> parseUnionTypeExtension()
       "enum" -> parseEnumTypeExtension()
       "input" -> parseInputObjectTypeExtension()
+      "directive" -> if (!allowDirectivesOnDirectives) {
+        throw ParserException("Experimental `allowDirectivesOnDirectives` must be set to true to allow directive extensions", t)
+      } else {
+        parseDirectiveExtension()
+      }
       else -> unexpected(t)
     }
   }
@@ -864,6 +843,10 @@ internal class Parser(
       GQLDirectiveLocation.valueOf(parseName())
     } catch (e: IllegalArgumentException) {
       unexpected(start)
+    }.also {
+      if (!allowDirectivesOnDirectives && it == GQLDirectiveLocation.DIRECTIVE_DEFINITION) {
+        throw ParserException("Experimental `allowDirectivesOnDirectives` must be set to true to allow directives on directives", start)
+      }
     }
   }
 
@@ -1025,6 +1008,7 @@ internal class Parser(
       }
     }
   }
+
   private fun parseTypeInternal(): GQLType {
     val start = token
 

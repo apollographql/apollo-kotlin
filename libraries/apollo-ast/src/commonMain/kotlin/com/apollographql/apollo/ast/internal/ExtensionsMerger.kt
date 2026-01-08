@@ -3,6 +3,7 @@ package com.apollographql.apollo.ast.internal
 import com.apollographql.apollo.ast.GQLDefinition
 import com.apollographql.apollo.ast.GQLDirective
 import com.apollographql.apollo.ast.GQLDirectiveDefinition
+import com.apollographql.apollo.ast.GQLDirectiveExtension
 import com.apollographql.apollo.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo.ast.GQLEnumTypeExtension
 import com.apollographql.apollo.ast.GQLEnumValueDefinition
@@ -62,6 +63,7 @@ internal class ExtensionsMerger(private val definitions: List<GQLDefinition>, in
             is GQLInputObjectTypeExtension -> mergeNamedDefinition(GQLInputObjectTypeDefinition::class, newDefinitions, definition, "input") { mergeInputObject(it, definition) }
             is GQLEnumTypeExtension -> mergeNamedDefinition(GQLEnumTypeDefinition::class, newDefinitions, definition, "enum") { mergeEnum(it, definition) }
             is GQLUnionTypeExtension -> mergeNamedDefinition(GQLUnionTypeDefinition::class, newDefinitions, definition, "union") { mergeUnion(it, definition) }
+            is GQLDirectiveExtension -> mergeNamedDefinition(GQLDirectiveDefinition::class, newDefinitions, definition, "directive") { mergeDirective(it, definition) }
           }
         }
 
@@ -172,6 +174,15 @@ private fun ExtensionsMerger.mergeScalar(
 ): GQLScalarTypeDefinition = with(scalarTypeDefinition) {
   return copy(
       directives = mergeDirectives(directives, scalarTypeExtension.directives)
+  )
+}
+
+private fun ExtensionsMerger.mergeDirective(
+    directiveDefinition: GQLDirectiveDefinition,
+    extension: GQLDirectiveExtension,
+): GQLDirectiveDefinition = with(directiveDefinition) {
+  return copy(
+      directives = mergeDirectives(directives, extension.directives)
   )
 }
 

@@ -7,32 +7,7 @@ package com.apollographql.apollo.ast.introspection
 
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.annotations.ApolloInternal
-import com.apollographql.apollo.ast.ConversionException
-import com.apollographql.apollo.ast.GQLArgument
-import com.apollographql.apollo.ast.GQLDirective
-import com.apollographql.apollo.ast.GQLDirectiveDefinition
-import com.apollographql.apollo.ast.GQLDirectiveLocation
-import com.apollographql.apollo.ast.GQLDocument
-import com.apollographql.apollo.ast.GQLEnumTypeDefinition
-import com.apollographql.apollo.ast.GQLEnumValueDefinition
-import com.apollographql.apollo.ast.GQLFieldDefinition
-import com.apollographql.apollo.ast.GQLInputObjectTypeDefinition
-import com.apollographql.apollo.ast.GQLInputValueDefinition
-import com.apollographql.apollo.ast.GQLInterfaceTypeDefinition
-import com.apollographql.apollo.ast.GQLListType
-import com.apollographql.apollo.ast.GQLNamedType
-import com.apollographql.apollo.ast.GQLNonNullType
-import com.apollographql.apollo.ast.GQLObjectTypeDefinition
-import com.apollographql.apollo.ast.GQLOperationTypeDefinition
-import com.apollographql.apollo.ast.GQLScalarTypeDefinition
-import com.apollographql.apollo.ast.GQLSchemaDefinition
-import com.apollographql.apollo.ast.GQLStringValue
-import com.apollographql.apollo.ast.GQLType
-import com.apollographql.apollo.ast.GQLUnionTypeDefinition
-import com.apollographql.apollo.ast.GQLValue
-import com.apollographql.apollo.ast.Schema
-import com.apollographql.apollo.ast.SourceLocation
-import com.apollographql.apollo.ast.parseAsGQLValue
+import com.apollographql.apollo.ast.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -199,6 +174,8 @@ private class RDirective(
     val locations: Optional<List<String>> = Optional.absent(),
     val args: Optional<List<RInputValue>> = Optional.absent(),
     val isRepeatable: Boolean = false,
+    val isDeprecated: Optional<Boolean> = Optional.absent(),
+    val deprecationReason: Optional<String?> = Optional.absent(),
 )
 
 @Serializable(with = OptionalSerializer::class)
@@ -341,8 +318,8 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 
   private fun RField.toGQLFieldDefinition(): GQLFieldDefinition {
     val args = if (args is Optional.Absent) {
-        println("Apollo: $name.args is missing, double check your introspection query")
-        emptyList()
+      println("Apollo: $name.args is missing, double check your introspection query")
+      emptyList()
     } else {
       args.getOrThrow()
     }
@@ -525,6 +502,11 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
         arguments = args.map { it.toGQLInputValueDefinition() },
         locations = locations.map { GQLDirectiveLocation.valueOf(it) },
         repeatable = isRepeatable,
+        directives = if (deprecationReason == Optional.Absent) {
+          emptyList()
+        } else {
+          makeDirectives(deprecationReason.unwrapDeprecationReason(name))
+        },
     )
   }
 }

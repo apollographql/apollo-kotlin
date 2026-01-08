@@ -263,6 +263,12 @@ internal fun introspectionResolvers(schema: Schema): Map<String, Resolver> {
       "description" to Resolver {
         it.parentObject.cast<GQLDirectiveDefinition>().description
       },
+      "isDeprecated" to Resolver {
+        it.parentObject.cast<GQLDirectiveDefinition>().directives.findDeprecationReason() != null
+      },
+      "deprecationReason" to Resolver {
+        it.parentObject.cast<GQLDirectiveDefinition>().directives.findDeprecationReason()
+      },
       "isRepeatable" to Resolver {
         it.parentObject.cast<GQLDirectiveDefinition>().repeatable
       },

@@ -20,6 +20,7 @@ final enum class com.apollographql.apollo.ast/CatchTo : kotlin/Enum<com.apollogr
 
 final enum class com.apollographql.apollo.ast/GQLDirectiveLocation : kotlin/Enum<com.apollographql.apollo.ast/GQLDirectiveLocation> { // com.apollographql.apollo.ast/GQLDirectiveLocation|null[0]
     enum entry ARGUMENT_DEFINITION // com.apollographql.apollo.ast/GQLDirectiveLocation.ARGUMENT_DEFINITION|null[0]
+    enum entry DIRECTIVE_DEFINITION // com.apollographql.apollo.ast/GQLDirectiveLocation.DIRECTIVE_DEFINITION|null[0]
     enum entry ENUM // com.apollographql.apollo.ast/GQLDirectiveLocation.ENUM|null[0]
     enum entry ENUM_VALUE // com.apollographql.apollo.ast/GQLDirectiveLocation.ENUM_VALUE|null[0]
     enum entry FIELD // com.apollographql.apollo.ast/GQLDirectiveLocation.FIELD|null[0]
@@ -362,8 +363,9 @@ final class com.apollographql.apollo.ast/GQLDirectiveCoordinate : com.apollograp
     final fun writeInternal(com.apollographql.apollo.ast/SDLWriter) // com.apollographql.apollo.ast/GQLDirectiveCoordinate.writeInternal|writeInternal(com.apollographql.apollo.ast.SDLWriter){}[0]
 }
 
-final class com.apollographql.apollo.ast/GQLDirectiveDefinition : com.apollographql.apollo.ast/GQLDefinition, com.apollographql.apollo.ast/GQLDescribed, com.apollographql.apollo.ast/GQLNamed { // com.apollographql.apollo.ast/GQLDirectiveDefinition|null[0]
+final class com.apollographql.apollo.ast/GQLDirectiveDefinition : com.apollographql.apollo.ast/GQLDefinition, com.apollographql.apollo.ast/GQLDescribed, com.apollographql.apollo.ast/GQLHasDirectives, com.apollographql.apollo.ast/GQLNamed { // com.apollographql.apollo.ast/GQLDirectiveDefinition|null[0]
     constructor <init>(com.apollographql.apollo.ast/SourceLocation? = ..., kotlin/String?, kotlin/String, kotlin.collections/List<com.apollographql.apollo.ast/GQLInputValueDefinition>, kotlin/Boolean, kotlin.collections/List<com.apollographql.apollo.ast/GQLDirectiveLocation>) // com.apollographql.apollo.ast/GQLDirectiveDefinition.<init>|<init>(com.apollographql.apollo.ast.SourceLocation?;kotlin.String?;kotlin.String;kotlin.collections.List<com.apollographql.apollo.ast.GQLInputValueDefinition>;kotlin.Boolean;kotlin.collections.List<com.apollographql.apollo.ast.GQLDirectiveLocation>){}[0]
+    constructor <init>(com.apollographql.apollo.ast/SourceLocation? = ..., kotlin/String?, kotlin/String, kotlin.collections/List<com.apollographql.apollo.ast/GQLInputValueDefinition>, kotlin/Boolean, kotlin.collections/List<com.apollographql.apollo.ast/GQLDirectiveLocation>, kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>) // com.apollographql.apollo.ast/GQLDirectiveDefinition.<init>|<init>(com.apollographql.apollo.ast.SourceLocation?;kotlin.String?;kotlin.String;kotlin.collections.List<com.apollographql.apollo.ast.GQLInputValueDefinition>;kotlin.Boolean;kotlin.collections.List<com.apollographql.apollo.ast.GQLDirectiveLocation>;kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>){}[0]
 
     final val arguments // com.apollographql.apollo.ast/GQLDirectiveDefinition.arguments|{}arguments[0]
         final fun <get-arguments>(): kotlin.collections/List<com.apollographql.apollo.ast/GQLInputValueDefinition> // com.apollographql.apollo.ast/GQLDirectiveDefinition.arguments.<get-arguments>|<get-arguments>(){}[0]
@@ -371,6 +373,8 @@ final class com.apollographql.apollo.ast/GQLDirectiveDefinition : com.apollograp
         final fun <get-children>(): kotlin.collections/List<com.apollographql.apollo.ast/GQLNode> // com.apollographql.apollo.ast/GQLDirectiveDefinition.children.<get-children>|<get-children>(){}[0]
     final val description // com.apollographql.apollo.ast/GQLDirectiveDefinition.description|{}description[0]
         final fun <get-description>(): kotlin/String? // com.apollographql.apollo.ast/GQLDirectiveDefinition.description.<get-description>|<get-description>(){}[0]
+    final val directives // com.apollographql.apollo.ast/GQLDirectiveDefinition.directives|{}directives[0]
+        final fun <get-directives>(): kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective> // com.apollographql.apollo.ast/GQLDirectiveDefinition.directives.<get-directives>|<get-directives>(){}[0]
     final val locations // com.apollographql.apollo.ast/GQLDirectiveDefinition.locations|{}locations[0]
         final fun <get-locations>(): kotlin.collections/List<com.apollographql.apollo.ast/GQLDirectiveLocation> // com.apollographql.apollo.ast/GQLDirectiveDefinition.locations.<get-locations>|<get-locations>(){}[0]
     final val name // com.apollographql.apollo.ast/GQLDirectiveDefinition.name|{}name[0]
@@ -381,6 +385,7 @@ final class com.apollographql.apollo.ast/GQLDirectiveDefinition : com.apollograp
         final fun <get-sourceLocation>(): com.apollographql.apollo.ast/SourceLocation? // com.apollographql.apollo.ast/GQLDirectiveDefinition.sourceLocation.<get-sourceLocation>|<get-sourceLocation>(){}[0]
 
     final fun copy(com.apollographql.apollo.ast/SourceLocation? = ..., kotlin/String? = ..., kotlin/String = ..., kotlin.collections/List<com.apollographql.apollo.ast/GQLInputValueDefinition> = ..., kotlin/Boolean = ..., kotlin.collections/List<com.apollographql.apollo.ast/GQLDirectiveLocation> = ...): com.apollographql.apollo.ast/GQLDirectiveDefinition // com.apollographql.apollo.ast/GQLDirectiveDefinition.copy|copy(com.apollographql.apollo.ast.SourceLocation?;kotlin.String?;kotlin.String;kotlin.collections.List<com.apollographql.apollo.ast.GQLInputValueDefinition>;kotlin.Boolean;kotlin.collections.List<com.apollographql.apollo.ast.GQLDirectiveLocation>){}[0]
+    final fun copy(com.apollographql.apollo.ast/SourceLocation? = ..., kotlin/String? = ..., kotlin/String = ..., kotlin.collections/List<com.apollographql.apollo.ast/GQLInputValueDefinition> = ..., kotlin/Boolean = ..., kotlin.collections/List<com.apollographql.apollo.ast/GQLDirectiveLocation> = ..., kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective> = ...): com.apollographql.apollo.ast/GQLDirectiveDefinition // com.apollographql.apollo.ast/GQLDirectiveDefinition.copy|copy(com.apollographql.apollo.ast.SourceLocation?;kotlin.String?;kotlin.String;kotlin.collections.List<com.apollographql.apollo.ast.GQLInputValueDefinition>;kotlin.Boolean;kotlin.collections.List<com.apollographql.apollo.ast.GQLDirectiveLocation>;kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>){}[0]
     final fun copyWithNewChildrenInternal(com.apollographql.apollo.ast/NodeContainer): com.apollographql.apollo.ast/GQLNode // com.apollographql.apollo.ast/GQLDirectiveDefinition.copyWithNewChildrenInternal|copyWithNewChildrenInternal(com.apollographql.apollo.ast.NodeContainer){}[0]
     final fun isBuiltIn(): kotlin/Boolean // com.apollographql.apollo.ast/GQLDirectiveDefinition.isBuiltIn|isBuiltIn(){}[0]
     final fun writeInternal(com.apollographql.apollo.ast/SDLWriter) // com.apollographql.apollo.ast/GQLDirectiveDefinition.writeInternal|writeInternal(com.apollographql.apollo.ast.SDLWriter){}[0]
@@ -389,6 +394,23 @@ final class com.apollographql.apollo.ast/GQLDirectiveDefinition : com.apollograp
         final val builtInDirectives // com.apollographql.apollo.ast/GQLDirectiveDefinition.Companion.builtInDirectives|{}builtInDirectives[0]
             final fun <get-builtInDirectives>(): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.ast/GQLDirectiveDefinition.Companion.builtInDirectives.<get-builtInDirectives>|<get-builtInDirectives>(){}[0]
     }
+}
+
+final class com.apollographql.apollo.ast/GQLDirectiveExtension : com.apollographql.apollo.ast/GQLDefinition, com.apollographql.apollo.ast/GQLHasDirectives, com.apollographql.apollo.ast/GQLNamed, com.apollographql.apollo.ast/GQLTypeSystemExtension { // com.apollographql.apollo.ast/GQLDirectiveExtension|null[0]
+    constructor <init>(com.apollographql.apollo.ast/SourceLocation? = ..., kotlin/String, kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective>) // com.apollographql.apollo.ast/GQLDirectiveExtension.<init>|<init>(com.apollographql.apollo.ast.SourceLocation?;kotlin.String;kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>){}[0]
+
+    final val children // com.apollographql.apollo.ast/GQLDirectiveExtension.children|{}children[0]
+        final fun <get-children>(): kotlin.collections/List<com.apollographql.apollo.ast/GQLNode> // com.apollographql.apollo.ast/GQLDirectiveExtension.children.<get-children>|<get-children>(){}[0]
+    final val directives // com.apollographql.apollo.ast/GQLDirectiveExtension.directives|{}directives[0]
+        final fun <get-directives>(): kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective> // com.apollographql.apollo.ast/GQLDirectiveExtension.directives.<get-directives>|<get-directives>(){}[0]
+    final val name // com.apollographql.apollo.ast/GQLDirectiveExtension.name|{}name[0]
+        final fun <get-name>(): kotlin/String // com.apollographql.apollo.ast/GQLDirectiveExtension.name.<get-name>|<get-name>(){}[0]
+    final val sourceLocation // com.apollographql.apollo.ast/GQLDirectiveExtension.sourceLocation|{}sourceLocation[0]
+        final fun <get-sourceLocation>(): com.apollographql.apollo.ast/SourceLocation? // com.apollographql.apollo.ast/GQLDirectiveExtension.sourceLocation.<get-sourceLocation>|<get-sourceLocation>(){}[0]
+
+    final fun copy(com.apollographql.apollo.ast/SourceLocation? = ..., kotlin/String = ..., kotlin.collections/List<com.apollographql.apollo.ast/GQLDirective> = ...): com.apollographql.apollo.ast/GQLDirectiveExtension // com.apollographql.apollo.ast/GQLDirectiveExtension.copy|copy(com.apollographql.apollo.ast.SourceLocation?;kotlin.String;kotlin.collections.List<com.apollographql.apollo.ast.GQLDirective>){}[0]
+    final fun copyWithNewChildrenInternal(com.apollographql.apollo.ast/NodeContainer): com.apollographql.apollo.ast/GQLNode // com.apollographql.apollo.ast/GQLDirectiveExtension.copyWithNewChildrenInternal|copyWithNewChildrenInternal(com.apollographql.apollo.ast.NodeContainer){}[0]
+    final fun writeInternal(com.apollographql.apollo.ast/SDLWriter) // com.apollographql.apollo.ast/GQLDirectiveExtension.writeInternal|writeInternal(com.apollographql.apollo.ast.SDLWriter){}[0]
 }
 
 final class com.apollographql.apollo.ast/GQLDocument : com.apollographql.apollo.ast/GQLNode { // com.apollographql.apollo.ast/GQLDocument|null[0]
@@ -1237,6 +1259,8 @@ final class com.apollographql.apollo.ast/OtherValidationIssue : com.apollographq
 }
 
 final class com.apollographql.apollo.ast/ParserOptions { // com.apollographql.apollo.ast/ParserOptions|null[0]
+    final val allowDirectivesOnDirectives // com.apollographql.apollo.ast/ParserOptions.allowDirectivesOnDirectives|{}allowDirectivesOnDirectives[0]
+        final fun <get-allowDirectivesOnDirectives>(): kotlin/Boolean // com.apollographql.apollo.ast/ParserOptions.allowDirectivesOnDirectives.<get-allowDirectivesOnDirectives>|<get-allowDirectivesOnDirectives>(){}[0]
     final val allowEmptyDocuments // com.apollographql.apollo.ast/ParserOptions.allowEmptyDocuments|{}allowEmptyDocuments[0]
         final fun <get-allowEmptyDocuments>(): kotlin/Boolean // com.apollographql.apollo.ast/ParserOptions.allowEmptyDocuments.<get-allowEmptyDocuments>|<get-allowEmptyDocuments>(){}[0]
     final val withSourceLocation // com.apollographql.apollo.ast/ParserOptions.withSourceLocation|{}withSourceLocation[0]
@@ -1245,6 +1269,9 @@ final class com.apollographql.apollo.ast/ParserOptions { // com.apollographql.ap
     final class Builder { // com.apollographql.apollo.ast/ParserOptions.Builder|null[0]
         constructor <init>() // com.apollographql.apollo.ast/ParserOptions.Builder.<init>|<init>(){}[0]
 
+        final var allowDirectivesOnDirectives // com.apollographql.apollo.ast/ParserOptions.Builder.allowDirectivesOnDirectives|{}allowDirectivesOnDirectives[0]
+            final fun <get-allowDirectivesOnDirectives>(): kotlin/Boolean // com.apollographql.apollo.ast/ParserOptions.Builder.allowDirectivesOnDirectives.<get-allowDirectivesOnDirectives>|<get-allowDirectivesOnDirectives>(){}[0]
+            final fun <set-allowDirectivesOnDirectives>(kotlin/Boolean) // com.apollographql.apollo.ast/ParserOptions.Builder.allowDirectivesOnDirectives.<set-allowDirectivesOnDirectives>|<set-allowDirectivesOnDirectives>(kotlin.Boolean){}[0]
         final var allowEmptyDocuments // com.apollographql.apollo.ast/ParserOptions.Builder.allowEmptyDocuments|{}allowEmptyDocuments[0]
             final fun <get-allowEmptyDocuments>(): kotlin/Boolean // com.apollographql.apollo.ast/ParserOptions.Builder.allowEmptyDocuments.<get-allowEmptyDocuments>|<get-allowEmptyDocuments>(){}[0]
             final fun <set-allowEmptyDocuments>(kotlin/Boolean) // com.apollographql.apollo.ast/ParserOptions.Builder.allowEmptyDocuments.<set-allowEmptyDocuments>|<set-allowEmptyDocuments>(kotlin.Boolean){}[0]
@@ -1252,6 +1279,7 @@ final class com.apollographql.apollo.ast/ParserOptions { // com.apollographql.ap
             final fun <get-withSourceLocation>(): kotlin/Boolean // com.apollographql.apollo.ast/ParserOptions.Builder.withSourceLocation.<get-withSourceLocation>|<get-withSourceLocation>(){}[0]
             final fun <set-withSourceLocation>(kotlin/Boolean) // com.apollographql.apollo.ast/ParserOptions.Builder.withSourceLocation.<set-withSourceLocation>|<set-withSourceLocation>(kotlin.Boolean){}[0]
 
+        final fun allowDirectivesOnDirectives(kotlin/Boolean): com.apollographql.apollo.ast/ParserOptions.Builder // com.apollographql.apollo.ast/ParserOptions.Builder.allowDirectivesOnDirectives|allowDirectivesOnDirectives(kotlin.Boolean){}[0]
         final fun allowEmptyDocuments(kotlin/Boolean): com.apollographql.apollo.ast/ParserOptions.Builder // com.apollographql.apollo.ast/ParserOptions.Builder.allowEmptyDocuments|allowEmptyDocuments(kotlin.Boolean){}[0]
         final fun build(): com.apollographql.apollo.ast/ParserOptions // com.apollographql.apollo.ast/ParserOptions.Builder.build|build(){}[0]
         final fun withSourceLocation(kotlin/Boolean): com.apollographql.apollo.ast/ParserOptions.Builder // com.apollographql.apollo.ast/ParserOptions.Builder.withSourceLocation|withSourceLocation(kotlin.Boolean){}[0]

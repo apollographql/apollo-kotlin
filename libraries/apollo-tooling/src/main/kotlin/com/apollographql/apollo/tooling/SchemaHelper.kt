@@ -108,82 +108,94 @@ internal object SchemaHelper {
   }
 
   internal fun List<GQLDefinition>.reworkIntrospectionQuery(features: Set<GraphQLFeature>) =
-      mapIf<_, GQLOperationDefinition>({ it.name == "IntrospectionQuery" }) {
-        it.copy(
-            selections = it.selections
-                // Add __schema { description }
-                .mapIf(SchemaDescription in features) { schemaField ->
-                  schemaField as GQLField
-                  schemaField.copy(
-                      selections = schemaField.selections + createField("description")
-                  )
-                }
-                // Add __schema { directives { isRepeatable } }
-                .mapIf(RepeatableDirectives in features) { schemaField ->
-                  schemaField as GQLField
-                  schemaField.copy(
-                      selections = schemaField.selections.mapIf<_, GQLField>({ it.name == "directives" }) { directivesField ->
-                        directivesField.copy(selections = directivesField.selections + createField("isRepeatable"))
-                      }
-                  )
-                }
-                // Replace __schema { directives { args { ... } } }  by  __schema { directives { args(includeDeprecated: true) { ... } } }
-                .mapIf(DeprecatedInputValues in features) { schemaField ->
-                  schemaField as GQLField
-                  schemaField.copy(
-                      selections = schemaField.selections.mapIf<_, GQLField>({ it.name == "directives" }) { directivesField ->
-                        directivesField.copy(
-                            selections = directivesField.selections.mapIf<_, GQLField>({ it.name == "args" }) { argsField ->
-                              argsField.copy(arguments = listOf(GQLArgument(name = "includeDeprecated", value = GQLBooleanValue(value = true))))
-                            }
-                        )
-                      }
-                  )
-                }
-        )
-      }
+    mapIf<_, GQLOperationDefinition>({ it.name == "IntrospectionQuery" }) {
+      it.copy(
+          selections = it.selections
+              // Add __schema { description }
+              .mapIf(SchemaDescription in features) { schemaField ->
+                schemaField as GQLField
+                schemaField.copy(
+                    selections = schemaField.selections + createField("description")
+                )
+              }
+              // Add __schema { directives { isRepeatable } }
+              .mapIf(RepeatableDirectives in features) { schemaField ->
+                schemaField as GQLField
+                schemaField.copy(
+                    selections = schemaField.selections.mapIf<_, GQLField>({ it.name == "directives" }) { directivesField ->
+                      directivesField.copy(selections = directivesField.selections + createField("isRepeatable"))
+                    }
+                )
+              }
+              // Add __schema { directives(includeDeprecated: true) { isDeprecated deprecationReason } }
+              .mapIf(DeprecatedDirectives in features) { schemaField ->
+                schemaField as GQLField
+                schemaField.copy(
+                    selections = schemaField.selections.mapIf<_, GQLField>({ it.name == "directives" }) { directivesField ->
+                      directivesField.copy(
+                          arguments = listOf(GQLArgument(name = "includeDeprecated", value = GQLBooleanValue(value = true))),
+                          selections = directivesField.selections + createField("isDeprecated") + createField("deprecationReason")
+                      )
+                    }
+                )
+              }
+              // Replace __schema { directives { args { ... } } }  by  __schema { directives { args(includeDeprecated: true) { ... } } }
+              .mapIf(DeprecatedInputValues in features) { schemaField ->
+                schemaField as GQLField
+                schemaField.copy(
+                    selections = schemaField.selections.mapIf<_, GQLField>({ it.name == "directives" }) { directivesField ->
+                      directivesField.copy(
+                          selections = directivesField.selections.mapIf<_, GQLField>({ it.name == "args" }) { argsField ->
+                            argsField.copy(arguments = listOf(GQLArgument(name = "includeDeprecated", value = GQLBooleanValue(value = true))))
+                          }
+                      )
+                    }
+                )
+              }
+      )
+    }
 
   internal fun List<GQLDefinition>.reworkFullTypeFragment(features: Set<GraphQLFeature>) =
-      mapIf<_, GQLFragmentDefinition>({ it.name == "FullType" }) {
-        it.copy(
-            selections = it.selections
-                // Add specifiedByUrl
-                .letIf(SpecifiedBy in features) { fields ->
-                  fields + createField("specifiedByURL")
-                }
-                // Add isOneOf
-                .letIf(OneOf in features) { fields ->
-                  fields + createField("isOneOf")
-                }
-                // Replace inputFields { ... }  by  inputFields(includeDeprecated: true) { ... }
-                .mapIf<_, GQLField>({ DeprecatedInputValues in features && it.name == "inputFields" }) { inputFieldsField ->
-                  inputFieldsField.copy(arguments = listOf(GQLArgument(name = "includeDeprecated", value = GQLBooleanValue(value = true))))
-                }
-                // Replace fields { args { ... } }  by  fields { args(includeDeprecated: true) { ... } }
-                .mapIf<_, GQLField>({ DeprecatedInputValues in features && it.name == "fields" }) { fieldsField ->
-                  fieldsField.copy(
-                      selections = fieldsField.selections.mapIf<_, GQLField>({ it.name == "args" }) { argsField ->
-                        argsField.copy(arguments = listOf(GQLArgument(name = "includeDeprecated", value = GQLBooleanValue(value = true))))
-                      }
-                  )
-                }
-        )
-      }
+    mapIf<_, GQLFragmentDefinition>({ it.name == "FullType" }) {
+      it.copy(
+          selections = it.selections
+              // Add specifiedByUrl
+              .letIf(SpecifiedBy in features) { fields ->
+                fields + createField("specifiedByURL")
+              }
+              // Add isOneOf
+              .letIf(OneOf in features) { fields ->
+                fields + createField("isOneOf")
+              }
+              // Replace inputFields { ... }  by  inputFields(includeDeprecated: true) { ... }
+              .mapIf<_, GQLField>({ DeprecatedInputValues in features && it.name == "inputFields" }) { inputFieldsField ->
+                inputFieldsField.copy(arguments = listOf(GQLArgument(name = "includeDeprecated", value = GQLBooleanValue(value = true))))
+              }
+              // Replace fields { args { ... } }  by  fields { args(includeDeprecated: true) { ... } }
+              .mapIf<_, GQLField>({ DeprecatedInputValues in features && it.name == "fields" }) { fieldsField ->
+                fieldsField.copy(
+                    selections = fieldsField.selections.mapIf<_, GQLField>({ it.name == "args" }) { argsField ->
+                      argsField.copy(arguments = listOf(GQLArgument(name = "includeDeprecated", value = GQLBooleanValue(value = true))))
+                    }
+                )
+              }
+      )
+    }
 
   internal fun List<GQLDefinition>.reworkInputValueFragment(features: Set<GraphQLFeature>) =
-      mapIf<_, GQLFragmentDefinition>({ it.name == "InputValue" }) {
-        it.copy(
-            selections = it.selections
-                // Add isDeprecated
-                .letIf(DeprecatedInputValues in features) { fields ->
-                  fields + createField("isDeprecated")
-                }
-                // Add deprecationReason
-                .letIf(DeprecatedInputValues in features) { fields ->
-                  fields + createField("deprecationReason")
-                }
-        )
-      }
+    mapIf<_, GQLFragmentDefinition>({ it.name == "InputValue" }) {
+      it.copy(
+          selections = it.selections
+              // Add isDeprecated
+              .letIf(DeprecatedInputValues in features) { fields ->
+                fields + createField("isDeprecated")
+              }
+              // Add deprecationReason
+              .letIf(DeprecatedInputValues in features) { fields ->
+                fields + createField("deprecationReason")
+              }
+      )
+    }
 
   private inline fun <T> T.letIf(condition: Boolean, block: (T) -> T): T = if (condition) block(this) else this
 
@@ -194,7 +206,8 @@ internal object SchemaHelper {
       block: (E) -> E,
   ): List<T> = map { if (it is E && condition(it)) block(it) else it }
 
-  private fun createField(name: String) = GQLField(alias = null, name = name, arguments = emptyList(), directives = emptyList(), selections = emptyList())
+  private fun createField(name: String) =
+    GQLField(alias = null, name = name, arguments = emptyList(), directives = emptyList(), selections = emptyList())
 
   private fun OkHttpClient.Builder.applyInsecureTrustManager() = apply {
     val insecureTrustManager = InsecureTrustManager()

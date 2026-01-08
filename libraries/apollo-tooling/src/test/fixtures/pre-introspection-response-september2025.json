@@ -88,6 +88,10 @@
             {
               "name": "specifiedByURL",
               "args": []
+            },
+            {
+              "name": "isOneOf",
+              "args": []
             }
           ]
         },

@@ -772,14 +772,15 @@ private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition)
 }
 
 private fun ValidationScope.validateDirectiveDefinitions() {
-  directiveDefinitions.values.forEach {
-    it.arguments.forEach {
+  directiveDefinitions.values.forEach { d ->
+    d.arguments.forEach {
       if (it.defaultValue != null) {
         validateAndCoerceValue(it.defaultValue, it.type, false, false) {
           issues.add(it.constContextError())
         }
       }
     }
+    validateDirectivesInConstContext(d.directives, d)
   }
 }
 

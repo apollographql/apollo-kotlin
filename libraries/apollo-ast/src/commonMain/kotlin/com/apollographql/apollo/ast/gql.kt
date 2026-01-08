@@ -671,14 +671,33 @@ class GQLUnionTypeDefinition(
 /**
  * @param name the name of the directive without the '@'
  */
-class GQLDirectiveDefinition(
+class GQLDirectiveDefinition @ApolloExperimental constructor(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
     override val name: String,
     val arguments: List<GQLInputValueDefinition>,
     val repeatable: Boolean,
     val locations: List<GQLDirectiveLocation>,
-) : GQLDefinition, GQLDescribed, GQLNamed {
+    override val directives: List<GQLDirective>,
+) : GQLDefinition, GQLDescribed, GQLNamed, GQLHasDirectives {
+
+  constructor(
+      sourceLocation: SourceLocation? = null,
+      description: String?,
+      name: String,
+      arguments: List<GQLInputValueDefinition>,
+      repeatable: Boolean,
+      locations: List<GQLDirectiveLocation>,
+  ) : this(
+      sourceLocation = sourceLocation,
+      description = description,
+      name = name,
+      arguments = arguments,
+      repeatable = repeatable,
+      locations = locations,
+      directives = emptyList(),
+  )
+
   override val children: List<GQLNode> = arguments
 
   override fun writeInternal(writer: SDLWriter) {
@@ -686,19 +705,41 @@ class GQLDirectiveDefinition(
       writeDescription(description)
       write("directive @$name")
       if (arguments.isNotEmpty()) {
-        write(" ")
         arguments.join(writer, prefix = "(", separator = ", ", postfix = ")") {
           it.write(writer, true)
         }
       }
+      if (directives.isNotEmpty()) {
+        directives.join(writer, prefix = " ")
+      }
       if (repeatable) {
         write(" repeatable")
       }
-      write(" on ${locations.joinToString("|")}")
+      write(" on ${locations.joinToString(" | ")}")
       write("\n")
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      description: String? = this.description,
+      name: String = this.name,
+      arguments: List<GQLInputValueDefinition> = this.arguments,
+      repeatable: Boolean = this.repeatable,
+      locations: List<GQLDirectiveLocation> = this.locations,
+      directives: List<GQLDirective> = this.directives,
+  ): GQLDirectiveDefinition = GQLDirectiveDefinition(
+      sourceLocation = sourceLocation,
+      description = description,
+      name = name,
+      arguments = arguments,
+      repeatable = repeatable,
+      locations = locations,
+      directives = directives,
+  )
+
+  @Deprecated("Kept for binary compatibility", level = DeprecationLevel.HIDDEN)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
@@ -713,6 +754,7 @@ class GQLDirectiveDefinition(
       arguments = arguments,
       repeatable = repeatable,
       locations = locations,
+      directives = this.directives,
   )
 
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
@@ -1051,6 +1093,41 @@ class GQLUnionTypeExtension(
     return copy(
         directives = container.take(),
         memberTypes = container.take()
+    )
+  }
+}
+
+@ApolloExperimental
+class GQLDirectiveExtension(
+    override val sourceLocation: SourceLocation? = null,
+    override val name: String,
+    override val directives: List<GQLDirective>,
+) : GQLDefinition, GQLTypeSystemExtension, GQLNamed, GQLHasDirectives {
+
+  override val children: List<GQLNode> = directives
+
+  override fun writeInternal(writer: SDLWriter) {
+    with(writer) {
+      write("extend directive @$name")
+      if (directives.isNotEmpty()) {
+        directives.join(writer, prefix = " ")
+      }
+    }
+  }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+  ): GQLDirectiveExtension = GQLDirectiveExtension(
+      sourceLocation = sourceLocation,
+      name = name,
+      directives = directives,
+  )
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take()
     )
   }
 }
@@ -2059,6 +2136,9 @@ enum class GQLDirectiveLocation {
   ENUM_VALUE,
   INPUT_OBJECT,
   INPUT_FIELD_DEFINITION,
+
+  @ApolloExperimental
+  DIRECTIVE_DEFINITION,
 }
 
 sealed interface GQLSchemaCoordinate
@@ -2066,7 +2146,7 @@ sealed interface GQLSchemaCoordinate
 class GQLTypeCoordinate(
     override val sourceLocation: SourceLocation?,
     val name: String,
-): GQLNode, GQLSchemaCoordinate {
+) : GQLNode, GQLSchemaCoordinate {
   override val children: List<GQLNode> = emptyList()
 
   override fun writeInternal(writer: SDLWriter) {
@@ -2075,13 +2155,14 @@ class GQLTypeCoordinate(
 
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
-      name: String = this.name
+      name: String = this.name,
   ): GQLTypeCoordinate {
     return GQLTypeCoordinate(
         sourceLocation,
         name
     )
   }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy()
   }
@@ -2090,7 +2171,7 @@ class GQLTypeCoordinate(
 class GQLDirectiveCoordinate(
     override val sourceLocation: SourceLocation?,
     val name: String,
-): GQLNode, GQLSchemaCoordinate {
+) : GQLNode, GQLSchemaCoordinate {
   override val children: List<GQLNode> = emptyList()
 
   override fun writeInternal(writer: SDLWriter) {
@@ -2100,13 +2181,14 @@ class GQLDirectiveCoordinate(
 
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
-      name: String = this.name
+      name: String = this.name,
   ): GQLDirectiveCoordinate {
     return GQLDirectiveCoordinate(
         sourceLocation,
         name
     )
   }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy()
   }
@@ -2115,8 +2197,8 @@ class GQLDirectiveCoordinate(
 class GQLMemberCoordinate(
     override val sourceLocation: SourceLocation?,
     val type: String,
-    val member: String
-): GQLNode, GQLSchemaCoordinate {
+    val member: String,
+) : GQLNode, GQLSchemaCoordinate {
   override val children: List<GQLNode> = emptyList()
 
   override fun writeInternal(writer: SDLWriter) {
@@ -2128,7 +2210,7 @@ class GQLMemberCoordinate(
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
       type: String = this.type,
-      name: String = this.member
+      name: String = this.member,
   ): GQLMemberCoordinate {
     return GQLMemberCoordinate(
         sourceLocation,
@@ -2147,7 +2229,7 @@ class GQLArgumentCoordinate(
     val type: String,
     val field: String,
     val argument: String,
-): GQLNode, GQLSchemaCoordinate {
+) : GQLNode, GQLSchemaCoordinate {
   override val children: List<GQLNode> = emptyList()
 
   override fun writeInternal(writer: SDLWriter) {
@@ -2163,7 +2245,7 @@ class GQLArgumentCoordinate(
       sourceLocation: SourceLocation? = this.sourceLocation,
       type: String = this.type,
       name: String = this.field,
-      argument: String = this.argument
+      argument: String = this.argument,
   ): GQLArgumentCoordinate {
     return GQLArgumentCoordinate(
         sourceLocation,
@@ -2182,7 +2264,7 @@ class GQLDirectiveArgumentCoordinate(
     override val sourceLocation: SourceLocation?,
     val name: String,
     val argument: String,
-): GQLNode, GQLSchemaCoordinate {
+) : GQLNode, GQLSchemaCoordinate {
   override val children: List<GQLNode> = emptyList()
 
   override fun writeInternal(writer: SDLWriter) {
@@ -2196,7 +2278,7 @@ class GQLDirectiveArgumentCoordinate(
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
-      argument: String = this.argument
+      argument: String = this.argument,
   ): GQLDirectiveArgumentCoordinate {
     return GQLDirectiveArgumentCoordinate(
         sourceLocation,
