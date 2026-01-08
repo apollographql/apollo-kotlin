@@ -1,5 +1,5 @@
 ---
-title: Handling nullability and errors
+title: Handling nullability and partial data
 description: Make your queries even more typesafe
 ---
 
@@ -91,8 +91,8 @@ fun User(user: GetUserQuery.User) {
 When there are a lot of fields, handling the `null` case on every one of them becomes really tedious. 
 
 Apollo Kotlin offers nullability directives to deal with this situation:
-* [`@semanticNonNull`](#semanticnonnull) (schema directive)
-* [`@catch`](#handle-errors-and-receive-partial-data-with-catch) (client directive)
+* [`@semanticNonNull`](#semanticnonnull) (type-system directive)
+* [`@catch`](#handle-errors-and-receive-partial-data-with-catch) (executable directive)
 
 These tools change the GraphQL default from "handle every field error" to "opt-in the errors you want to handle".
 
@@ -134,7 +134,7 @@ Adding `@catchByDefault(to: NULL)` is a no-op for codegen that unlocks using `@c
 
 Because errors can never happen on non-null fields (`String!` and others), `@catchByDefault` only influences the nullable fields in your schema.
 
-Some of those fields are only nullable for error reasons. For those cases, Apollo Kotlin supports `@semanticNonNull`.
+For fields that are only nullable for error reasons, Apollo Kotlin supports `@semanticNonNull`.
 
 ## `@semanticNonNull`
 
@@ -142,7 +142,7 @@ Some of those fields are only nullable for error reasons. For those cases, Apoll
 
 A `@semanticNonNull` type can never be null **except** if there is an error in the errors array.
 
-Use it in your schema:
+Define a field as semantically non null by adding the `@semanticNonNull` directive on its definition:
 
 ```graphql
 type User {
@@ -170,20 +170,20 @@ type User {
 }
 ```
 
-With `@semanticNonNull`, a frontend developer knows that a given field will never be null in regular operation and can therefore act accordingly. The Apollo Kotlin codegen generates `@semanticNonNull` fields as non-null Kotlin properties. No need to guess anymore! 
+With `@semanticNonNull`, a frontend developer knows that a given field is never null unless there is an error and can therefore act accordingly. The Apollo Kotlin codegen generates `@semanticNonNull` fields as non-null Kotlin properties. No need to guess anymore! 
 
 Ideally, your backend team annotates their schema with `@semanticNonNull` directives so that different frontend teams can benefit from the new type information. 
 
 Sometimes this process takes time. 
 
-For these situations, you can extend your schema by using `@semanticNonNullField` in your extra.graphqls file:
+For these situations, extend your schema by using `@semanticNonNullField` in your extra.graphqls file:
 
 ```graphql
 # Same effect as above but works as a schema extensions
 extend type User @semanticNonNullField(name: "name")
 ```
 
-You can later share that file with your backend team and double check that your interpretation of the types is the correct one.
+You can later share that file with your backend team and double-check that your interpretation of the types is the correct one.
 
 ## `@catch`
 
