@@ -353,6 +353,7 @@ class DefaultHttpRequestComposer(
     }
 
     @Deprecated("Use new function with additional parameters instead.", ReplaceWith("buildParamsMap(operation = operation, customScalarAdapters = customScalarAdapters, autoPersistQueries = autoPersistQueries, sendDocument = sendDocument, sendEnhancedClientAwarenessExtensions = true)"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_3_1)
     fun <D : Operation.Data> buildParamsMap(
         operation: Operation<D>,
         customScalarAdapters: CustomScalarAdapters,
