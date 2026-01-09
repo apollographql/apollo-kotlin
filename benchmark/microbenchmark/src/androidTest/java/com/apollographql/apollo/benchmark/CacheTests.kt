@@ -5,7 +5,7 @@ import androidx.benchmark.junit4.measureRepeated
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.parseJsonResponse
-import com.apollographql.apollo.benchmark.Utils.dbFile
+import com.apollographql.apollo.benchmark.Utils.getDbFile
 import com.apollographql.apollo.benchmark.Utils.getDbName
 import com.apollographql.apollo.benchmark.Utils.largeListQuery
 import com.apollographql.apollo.benchmark.Utils.operationBasedQuery
@@ -55,10 +55,12 @@ class CacheTests {
   }
 
   private fun <D : Query.Data> readFromCache(testName: String, query: Query<D>, jsonResponseResId: Int, sql: Boolean, check: (D) -> Unit) {
+    val dbName = getDbName()
+    val dbFile = getDbFile(dbName)
     val store = ApolloStore(
         if (sql) {
           dbFile.delete()
-          SqlNormalizedCacheFactory(name = getDbName())
+          SqlNormalizedCacheFactory(name = dbName)
         } else {
           MemoryCacheFactory()
         }

@@ -1,11 +1,15 @@
+@file:OptIn(ApolloExperimental::class)
+
 package com.apollographql.apollo.benchmark
 
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.parseJsonResponse
-import com.apollographql.apollo.benchmark.Utils.getDbName
+import com.apollographql.apollo.benchmark.Utils.getMemoryThenSqlCacheFactory
+import com.apollographql.apollo.benchmark.Utils.getSqlCacheFactory
 import com.apollographql.apollo.benchmark.Utils.operationBasedQuery
 import com.apollographql.apollo.benchmark.Utils.resource
 import com.apollographql.apollo.benchmark.test.R
@@ -14,7 +18,6 @@ import com.apollographql.apollo.cache.normalized.FetchPolicy
 import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo.cache.normalized.fetchPolicy
-import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo.cache.normalized.store
 import com.apollographql.apollo.testing.MapTestNetworkTransport
 import com.apollographql.apollo.testing.registerTestResponse
@@ -39,16 +42,12 @@ class CacheIntegrationTests {
 
   @Test
   fun concurrentQueriesTestNetworkTransportSql() {
-    Utils.dbFile.delete()
-    val cacheFactory = SqlNormalizedCacheFactory(getDbName())
-    concurrentQueries(cacheFactory, withMockServer = false)
+    concurrentQueries(getSqlCacheFactory(), withMockServer = false)
   }
 
   @Test
   fun concurrentQueriesTestNetworkTransportMemoryThenSql() {
-    Utils.dbFile.delete()
-    val cacheFactory = MemoryCacheFactory().chain(SqlNormalizedCacheFactory(getDbName()))
-    concurrentQueries(cacheFactory, withMockServer = false)
+    concurrentQueries(getMemoryThenSqlCacheFactory(), withMockServer = false)
   }
 
 

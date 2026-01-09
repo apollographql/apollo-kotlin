@@ -5,7 +5,8 @@ import androidx.benchmark.junit4.measureRepeated
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.parseJsonResponse
-import com.apollographql.apollo.benchmark.Utils.getDbName
+import com.apollographql.apollo.benchmark.Utils.getIncubatingMemoryThenSqlCacheFactory
+import com.apollographql.apollo.benchmark.Utils.getIncubatingSqlCacheFactory
 import com.apollographql.apollo.benchmark.Utils.operationBasedQuery
 import com.apollographql.apollo.benchmark.Utils.resource
 import com.apollographql.apollo.benchmark.test.R
@@ -19,7 +20,6 @@ import com.apollographql.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.cache.normalized.cacheManager
 import com.apollographql.cache.normalized.fetchPolicy
 import com.apollographql.cache.normalized.memory.MemoryCacheFactory
-import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.mockserver.MockRequestBase
 import com.apollographql.mockserver.MockResponse
 import com.apollographql.mockserver.MockServer
@@ -41,16 +41,12 @@ class CacheIncubatingIntegrationTests {
 
   @Test
   fun concurrentQueriesTestNetworkTransportSql() {
-    Utils.dbFile.delete()
-    val cacheFactory = SqlNormalizedCacheFactory(getDbName())
-    concurrentQueries(cacheFactory, withMockServer = false)
+    concurrentQueries(getIncubatingSqlCacheFactory(), withMockServer = false)
   }
 
   @Test
   fun concurrentQueriesTestNetworkTransportMemoryThenSql() {
-    Utils.dbFile.delete()
-    val cacheFactory = MemoryCacheFactory().chain(SqlNormalizedCacheFactory(getDbName()))
-    concurrentQueries(cacheFactory, withMockServer = false)
+    concurrentQueries(getIncubatingMemoryThenSqlCacheFactory(), withMockServer = false)
   }
 
 

@@ -9,7 +9,8 @@ import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.Optional
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.parseResponse
-import com.apollographql.apollo.benchmark.Utils.getDbName
+import com.apollographql.apollo.benchmark.Utils.getIncubatingMemoryThenSqlCacheFactory
+import com.apollographql.apollo.benchmark.Utils.getIncubatingSqlCacheFactory
 import com.apollographql.apollo.benchmark.Utils.resource
 import com.apollographql.apollo.benchmark.test.R
 import com.apollographql.apollo.pagination.UsersPageQuery
@@ -24,7 +25,6 @@ import com.apollographql.cache.normalized.apolloStore
 import com.apollographql.cache.normalized.fetchPolicy
 import com.apollographql.cache.normalized.memory.MemoryCacheFactory
 import com.apollographql.cache.normalized.normalizedCache
-import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
@@ -41,16 +41,12 @@ class CacheIncubatingPaginationTests {
 
   @Test
   fun paginationSql() {
-    Utils.dbFile.delete()
-    val cacheFactory = SqlNormalizedCacheFactory(getDbName())
-    paginationWritesAndRead(cacheFactory, paginationEnabled = true)
+    paginationWritesAndRead(getIncubatingSqlCacheFactory(), paginationEnabled = true)
   }
 
   @Test
   fun paginationMemoryThenSql() {
-    Utils.dbFile.delete()
-    val cacheFactory = MemoryCacheFactory().chain(SqlNormalizedCacheFactory(getDbName()))
-    paginationWritesAndRead(cacheFactory, paginationEnabled = true)
+    paginationWritesAndRead(getIncubatingMemoryThenSqlCacheFactory(), paginationEnabled = true)
   }
 
   @Test
@@ -60,16 +56,12 @@ class CacheIncubatingPaginationTests {
 
   @Test
   fun noPaginationSql() {
-    Utils.dbFile.delete()
-    val cacheFactory = SqlNormalizedCacheFactory(getDbName())
-    paginationWritesAndRead(cacheFactory, paginationEnabled = false)
+    paginationWritesAndRead(getIncubatingSqlCacheFactory(), paginationEnabled = false)
   }
 
   @Test
   fun noPaginationMemoryThenSql() {
-    Utils.dbFile.delete()
-    val cacheFactory = MemoryCacheFactory().chain(SqlNormalizedCacheFactory(getDbName()))
-    paginationWritesAndRead(cacheFactory, paginationEnabled = false)
+    paginationWritesAndRead(getIncubatingMemoryThenSqlCacheFactory(), paginationEnabled = false)
   }
 
   private fun paginationWritesAndRead(cacheFactory: NormalizedCacheFactory, paginationEnabled: Boolean) {

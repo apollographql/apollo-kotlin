@@ -4,14 +4,14 @@ import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.parseJsonResponse
-import com.apollographql.apollo.benchmark.Utils.getDbName
+import com.apollographql.apollo.benchmark.Utils.getMemoryThenSqlCacheFactory
+import com.apollographql.apollo.benchmark.Utils.getSqlCacheFactory
 import com.apollographql.apollo.benchmark.Utils.operationBasedQuery
 import com.apollographql.apollo.benchmark.Utils.resource
 import com.apollographql.apollo.benchmark.test.R
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -28,16 +28,12 @@ class ApolloStoreTests {
 
   @Test
   fun concurrentReadWritesSql() {
-    Utils.dbFile.delete()
-    val cacheFactory = SqlNormalizedCacheFactory(getDbName())
-    concurrentReadWrites(cacheFactory)
+    concurrentReadWrites(getSqlCacheFactory())
   }
 
   @Test
   fun concurrentReadWritesMemoryThenSql() {
-    Utils.dbFile.delete()
-    val cacheFactory = MemoryCacheFactory().chain(SqlNormalizedCacheFactory(getDbName()))
-    concurrentReadWrites(cacheFactory)
+    concurrentReadWrites(getMemoryThenSqlCacheFactory())
   }
 
   private fun concurrentReadWrites(cacheFactory: NormalizedCacheFactory) {
