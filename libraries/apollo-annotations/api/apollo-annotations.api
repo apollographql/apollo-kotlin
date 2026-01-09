@@ -26,6 +26,7 @@ public final class com/apollographql/apollo/annotations/ApolloDeprecatedSince$Ve
 	public static final field v4_0_2 Lcom/apollographql/apollo/annotations/ApolloDeprecatedSince$Version;
 	public static final field v4_1_2 Lcom/apollographql/apollo/annotations/ApolloDeprecatedSince$Version;
 	public static final field v4_2_1 Lcom/apollographql/apollo/annotations/ApolloDeprecatedSince$Version;
+	public static final field v4_3_1 Lcom/apollographql/apollo/annotations/ApolloDeprecatedSince$Version;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo/annotations/ApolloDeprecatedSince$Version;
 	public static fun values ()[Lcom/apollographql/apollo/annotations/ApolloDeprecatedSince$Version;
