@@ -1,0 +1,114 @@
+{
+  "data": {
+    "users": {
+      "__typename": "UserConnection",
+      "pageInfo": {
+        "__typename": "PageInfo",
+        "startCursor": "cursor_11",
+        "endCursor": "cursor_20"
+      },
+      "edges": [
+        {
+          "__typename": "UserEdge",
+          "cursor": "cursor_11",
+          "node": {
+            "__typename": "User",
+            "id": "11",
+            "name": "Kevin",
+            "admin": false
+          }
+        },
+        {
+          "__typename": "UserEdge",
+          "cursor": "cursor_12",
+          "node": {
+            "__typename": "User",
+            "id": "12",
+            "name": "Laura",
+            "admin": true
+          }
+        },
+        {
+          "__typename": "UserEdge",
+          "cursor": "cursor_13",
+          "node": {
+            "__typename": "User",
+            "id": "13",
+            "name": "Michael",
+            "admin": false
+          }
+        },
+        {
+          "__typename": "UserEdge",
+          "cursor": "cursor_14",
+          "node": {
+            "__typename": "User",
+            "id": "14",
+            "name": "Nina",
+            "admin": true
+          }
+        },
+        {
+          "__typename": "UserEdge",
+          "cursor": "cursor_15",
+          "node": {
+            "__typename": "User",
+            "id": "15",
+            "name": "Oliver",
+            "admin": false
+          }
+        },
+        {
+          "__typename": "UserEdge",
+          "cursor": "cursor_16",
+          "node": {
+            "__typename": "User",
+            "id": "16",
+            "name": "Paula",
+            "admin": true
+          }
+        },
+        {
+          "__typename": "UserEdge",
+          "cursor": "cursor_17",
+          "node": {
+            "__typename": "User",
+            "id": "17",
+            "name": "Quentin",
+            "admin": false
+          }
+        },
+        {
+          "__typename": "UserEdge",
+          "cursor": "cursor_18",
+          "node": {
+            "__typename": "User",
+            "id": "18",
+            "name": "Rachel",
+            "admin": true
+          }
+        },
+        {
+          "__typename": "UserEdge",
+          "cursor": "cursor_19",
+          "node": {
+            "__typename": "User",
+            "id": "19",
+            "name": "Steve",
+            "admin": false
+          }
+        },
+        {
+          "__typename": "UserEdge",
+          "cursor": "cursor_20",
+          "node": {
+            "__typename": "User",
+            "id": "20",
+            "name": "Tina",
+            "admin": true
+          }
+        }
+      ]
+    }
+  }
+}

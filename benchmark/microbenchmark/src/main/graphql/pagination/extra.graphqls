@@ -1,0 +1,7 @@
+extend schema
+@link(url: "https://specs.apollo.dev/kotlin_labs/v0.5")
+@link(url: "https://specs.apollo.dev/cache/v0.3", import: ["@typePolicy", "@connection"])
+
+extend type UserConnection @connection
+
+extend type User @typePolicy(keyFields: "id")

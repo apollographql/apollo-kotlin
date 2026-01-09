@@ -70,12 +70,18 @@ configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
     srcDir("src/main/graphql/conferences")
     packageName.set("com.apollographql.apollo.conferences")
     @OptIn(ApolloExperimental::class)
-    plugin(libs.apollo.normalizedcache.apollo.compiler.plugin.incubating.get()) {
-      argument("packageName", packageName.get())
-    }
+    plugin(libs.apollo.normalizedcache.apollo.compiler.plugin.incubating.get())
+    pluginArgument("packageName", packageName.get())
   }
   service("tracks") {
     srcDir("src/main/graphql/tracks")
     packageName.set("com.apollographql.apollo.tracks")
+  }
+  service("pagination") {
+    srcDir("src/main/graphql/pagination")
+    packageName.set("com.apollographql.apollo.pagination")
+    @OptIn(ApolloExperimental::class)
+    plugin(libs.apollo.normalizedcache.apollo.compiler.plugin.incubating.get())
+    pluginArgument("packageName", packageName.get())
   }
 }
