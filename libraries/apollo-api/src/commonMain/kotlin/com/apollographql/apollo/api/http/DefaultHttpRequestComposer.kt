@@ -18,6 +18,9 @@ import com.apollographql.apollo.api.json.buildJsonString
 import com.apollographql.apollo.api.json.internal.FileUploadAwareJsonWriter
 import com.apollographql.apollo.api.json.writeAny
 import com.apollographql.apollo.api.json.writeObject
+import com.apollographql.apollo.api.toByteString
+import com.apollographql.apollo.api.toMap
+import com.apollographql.apollo.api.toRequestParameters
 import com.apollographql.apollo.api.variables
 import com.benasher44.uuid.uuid4
 import okio.Buffer
@@ -366,6 +369,8 @@ class DefaultHttpRequestComposer(
       }
     }
 
+    @Deprecated("Use `toRequestParameters()` instead.", ReplaceWith("apolloRequest.toRequestParameters().toByteString()"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     fun <D : Operation.Data> buildParamsMap(
         operation: Operation<D>,
         customScalarAdapters: CustomScalarAdapters,
@@ -373,26 +378,22 @@ class DefaultHttpRequestComposer(
         sendDocument: Boolean,
         sendEnhancedClientAwarenessExtensions: Boolean,
     ): ByteString {
-      return buildJsonByteString {
-        val query = if (sendDocument) operation.document() else null
-        composePostParams(this, operation, customScalarAdapters, autoPersistQueries, sendEnhancedClientAwarenessExtensions, query)
-      }
+      return ApolloRequest.Builder(operation)
+          .addExecutionContext(customScalarAdapters)
+          .sendApqExtensions(autoPersistQueries)
+          .sendDocument(sendDocument)
+          .sendEnhancedClientAwareness(sendEnhancedClientAwarenessExtensions)
+          .build()
+          .toRequestParameters()
+          .toByteString()
     }
 
-    @Suppress("UNCHECKED_CAST")
+    @Deprecated("Use `toRequestParameters()` instead.", ReplaceWith("apolloRequest.toRequestParameters().toMap()"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     fun <D : Operation.Data> composePayload(
         apolloRequest: ApolloRequest<D>,
     ): Map<String, Any?> {
-      val operation = apolloRequest.operation
-      val sendApqExtensions = apolloRequest.sendApqExtensions ?: false
-      val sendEnhancedClientAwarenessExtensions = apolloRequest.sendEnhancedClientAwareness
-      val sendDocument = apolloRequest.sendDocument ?: true
-      val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
-
-      val query = if (sendDocument) operation.document() else null
-      return buildJsonMap {
-        composePostParams(this, operation, customScalarAdapters, sendApqExtensions, sendEnhancedClientAwarenessExtensions, query)
-      } as Map<String, Any?>
+      return apolloRequest.toRequestParameters().toMap()
     }
   }
 }
