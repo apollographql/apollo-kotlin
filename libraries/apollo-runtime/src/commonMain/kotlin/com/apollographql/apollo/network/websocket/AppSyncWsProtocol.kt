@@ -10,6 +10,8 @@ import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.json.readAny
 import com.apollographql.apollo.api.json.writeAny
 import com.apollographql.apollo.api.toJsonString
+import com.apollographql.apollo.api.toMap
+import com.apollographql.apollo.api.toRequestParameters
 import okio.Buffer
 
 /**
@@ -29,7 +31,7 @@ class AppSyncWsProtocol(
 
   override suspend fun <D : Operation.Data> operationStart(request: ApolloRequest<D>): ClientMessage {
     // AppSync encodes the data as a String
-    val data = NullableAnyAdapter.toJsonString(DefaultHttpRequestComposer.composePayload(request))
+    val data = NullableAnyAdapter.toJsonString(request.toRequestParameters().toMap())
 
     return mapOf(
         "type" to "start",
@@ -119,6 +121,7 @@ class AppSyncWsProtocol(
      * @param authorization The authorization as per the AppSync documentation.
      * @param payload An optional payload. Defaults to an empty object.
      */
+    @Suppress("DEPRECATION")
     fun buildUrl(
         baseUrl: String,
         authorization: Map<String, Any?>,
@@ -128,8 +131,7 @@ class AppSyncWsProtocol(
           .appendQueryParameters(mapOf(
               "header" to authorization.base64Encode(),
               "payload" to payload.base64Encode(),
-          )
-          )
+          ))
 
     private fun Map<String, Any?>.base64Encode(): String {
       return buildJsonByteString {

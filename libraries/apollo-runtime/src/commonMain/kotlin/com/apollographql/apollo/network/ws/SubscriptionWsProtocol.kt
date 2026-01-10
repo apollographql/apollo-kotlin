@@ -6,6 +6,8 @@ import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo.api.toMap
+import com.apollographql.apollo.api.toRequestParameters
 import com.apollographql.apollo.exception.ApolloNetworkException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withTimeout
@@ -73,7 +75,7 @@ constructor(
         mapOf(
             "type" to "start",
             "id" to request.requestUuid.toString(),
-            "payload" to DefaultHttpRequestComposer.composePayload(request)
+            "payload" to request.toRequestParameters().toMap()
         ),
         frameType
     )

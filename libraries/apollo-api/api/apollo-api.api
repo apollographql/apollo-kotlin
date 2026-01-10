@@ -50,10 +50,11 @@ public final class com/apollographql/apollo/api/ApolloOptionalAdapter : com/apol
 }
 
 public final class com/apollographql/apollo/api/ApolloRequest : com/apollographql/apollo/api/ExecutionOptions {
-	public synthetic fun <init> (Lcom/apollographql/apollo/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo/api/ExecutionContext;Ljava/lang/String;Lcom/apollographql/apollo/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo/api/ExecutionContext;Ljava/lang/String;Lcom/apollographql/apollo/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;ZLjava/util/Map;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo/api/ExecutionContext;
+	public final fun getExtensions ()Ljava/util/Map;
 	public final fun getFailFastIfOffline ()Ljava/lang/Boolean;
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo/api/http/HttpMethod;
@@ -82,10 +83,12 @@ public final class com/apollographql/apollo/api/ApolloRequest$Builder : com/apol
 	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun executionContext (Lcom/apollographql/apollo/api/ExecutionContext;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
+	public final fun extensions (Ljava/util/Map;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public final fun failFastIfOffline (Ljava/lang/Boolean;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo/api/ExecutionContext;
+	public final fun getExtensions ()Ljava/util/Map;
 	public final fun getFailFastIfOffline ()Ljava/lang/Boolean;
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo/api/http/HttpMethod;
@@ -894,6 +897,23 @@ public abstract interface class com/apollographql/apollo/api/Query : com/apollog
 }
 
 public abstract interface class com/apollographql/apollo/api/Query$Data : com/apollographql/apollo/api/Operation$Data {
+}
+
+public final class com/apollographql/apollo/api/RequestParameters {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;)V
+	public final fun getExtensions ()Ljava/util/Map;
+	public final fun getOperationName ()Ljava/lang/String;
+	public final fun getQuery ()Ljava/lang/String;
+	public final fun getUploads ()Ljava/util/Map;
+	public final fun getVariables ()Ljava/util/Map;
+}
+
+public final class com/apollographql/apollo/api/RequestParametersKt {
+	public static final fun toByteString (Lcom/apollographql/apollo/api/RequestParameters;)Lokio/ByteString;
+	public static final fun toHttpBody (Lcom/apollographql/apollo/api/RequestParameters;)Lcom/apollographql/apollo/api/http/HttpBody;
+	public static final fun toMap (Lcom/apollographql/apollo/api/RequestParameters;)Ljava/util/Map;
+	public static final fun toRequestParameters (Lcom/apollographql/apollo/api/ApolloRequest;Ljava/util/Map;)Lcom/apollographql/apollo/api/RequestParameters;
+	public static synthetic fun toRequestParameters$default (Lcom/apollographql/apollo/api/ApolloRequest;Ljava/util/Map;ILjava/lang/Object;)Lcom/apollographql/apollo/api/RequestParameters;
 }
 
 public abstract interface class com/apollographql/apollo/api/Subscription : com/apollographql/apollo/api/Operation {

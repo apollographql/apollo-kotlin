@@ -8,9 +8,12 @@ import com.apollographql.apollo.api.NullableAnyAdapter
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo.api.http.DefaultHttpRequestComposer.Companion.appendQueryParameters
+import com.apollographql.apollo.api.http.DefaultHttpRequestComposer.Companion.composePayload
 import com.apollographql.apollo.api.json.buildJsonByteString
 import com.apollographql.apollo.api.json.writeAny
 import com.apollographql.apollo.api.toJsonString
+import com.apollographql.apollo.api.toMap
+import com.apollographql.apollo.api.toRequestParameters
 import com.apollographql.apollo.exception.ApolloNetworkException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withTimeout
@@ -56,7 +59,7 @@ class AppSyncWsProtocol(
 
   override fun <D : Operation.Data> startOperation(request: ApolloRequest<D>) {
     // AppSync encodes the data as a String
-    val data = NullableAnyAdapter.toJsonString(DefaultHttpRequestComposer.composePayload(request))
+    val data = NullableAnyAdapter.toJsonString(request.toRequestParameters().toMap())
 
     sendMessageMapText(
         mapOf(
@@ -162,11 +165,11 @@ class AppSyncWsProtocol(
         authorization: Map<String, Any?>,
         payload: Map<String, Any?> = emptyMap(),
     ): String =
-        baseUrl
-            .appendQueryParameters(mapOf(
-                "header" to authorization.base64Encode(),
-                "payload" to payload.base64Encode(),
-            ))
+      baseUrl
+          .appendQueryParameters(mapOf(
+              "header" to authorization.base64Encode(),
+              "payload" to payload.base64Encode(),
+          ))
 
     private fun Map<String, Any?>.base64Encode(): String {
       return buildJsonByteString {

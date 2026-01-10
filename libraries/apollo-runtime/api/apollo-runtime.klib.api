@@ -205,6 +205,7 @@ final class <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.
     final fun canBeBatched(kotlin/Boolean?): com.apollographql.apollo/ApolloCall<#A> // com.apollographql.apollo/ApolloCall.canBeBatched|canBeBatched(kotlin.Boolean?){}[0]
     final fun copy(): com.apollographql.apollo/ApolloCall<#A> // com.apollographql.apollo/ApolloCall.copy|copy(){}[0]
     final fun enableAutoPersistedQueries(kotlin/Boolean?): com.apollographql.apollo/ApolloCall<#A> // com.apollographql.apollo/ApolloCall.enableAutoPersistedQueries|enableAutoPersistedQueries(kotlin.Boolean?){}[0]
+    final fun extensions(kotlin.collections/Map<kotlin/String, kotlin/Any?>): com.apollographql.apollo/ApolloCall<#A> // com.apollographql.apollo/ApolloCall.extensions|extensions(kotlin.collections.Map<kotlin.String,kotlin.Any?>){}[0]
     final fun failFastIfOffline(kotlin/Boolean?): com.apollographql.apollo/ApolloCall<#A> // com.apollographql.apollo/ApolloCall.failFastIfOffline|failFastIfOffline(kotlin.Boolean?){}[0]
     final fun httpHeaders(kotlin.collections/List<com.apollographql.apollo.api.http/HttpHeader>?): com.apollographql.apollo/ApolloCall<#A> // com.apollographql.apollo/ApolloCall.httpHeaders|httpHeaders(kotlin.collections.List<com.apollographql.apollo.api.http.HttpHeader>?){}[0]
     final fun httpMethod(com.apollographql.apollo.api.http/HttpMethod?): com.apollographql.apollo/ApolloCall<#A> // com.apollographql.apollo/ApolloCall.httpMethod|httpMethod(com.apollographql.apollo.api.http.HttpMethod?){}[0]

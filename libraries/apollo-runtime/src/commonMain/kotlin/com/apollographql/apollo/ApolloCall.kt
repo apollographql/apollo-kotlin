@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.MutableExecutionOptions
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.api.json.ApolloJsonElement
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.DefaultApolloException
 import kotlinx.coroutines.flow.Flow
@@ -110,6 +111,10 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   fun ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders: Boolean?) = apply {
     requestBuilder.ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders)
+  }
+
+  fun extensions(extensions: Map<String, ApolloJsonElement>) = apply {
+    requestBuilder.extensions(extensions)
   }
 
   fun copy(): ApolloCall<D> {

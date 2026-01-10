@@ -1,11 +1,14 @@
 package com.apollographql.apollo.api
 
+import com.apollographql.apollo.api.http.HttpBody
+import com.apollographql.apollo.api.http.UploadsHttpBody
 import com.apollographql.apollo.api.json.ApolloJsonElement
 import com.apollographql.apollo.api.json.MapJsonWriter
 import com.apollographql.apollo.api.json.buildJsonByteString
 import com.apollographql.apollo.api.json.internal.FileUploadAwareJsonWriter
 import com.apollographql.apollo.api.json.writeAny
 import com.apollographql.apollo.api.json.writeObject
+import okio.BufferedSink
 import okio.ByteString
 
 /**
@@ -22,12 +25,12 @@ import okio.ByteString
 class RequestParameters(
     val query: String?,
     val operationName: String,
-    val variables: Map<String, ApolloJsonElement>?,
-    val extensions: Map<String, ApolloJsonElement>?,
+    val variables: Map<String, ApolloJsonElement>,
+    val extensions: Map<String, ApolloJsonElement>,
     val uploads: Map<String, Upload>,
 )
 
-fun <D : Operation.Data> ApolloRequest<D>.toRequestParameters(extensions: Map<String, ApolloJsonElement>? = null): RequestParameters {
+fun <D : Operation.Data> ApolloRequest<D>.toRequestParameters(): RequestParameters {
   val sendApqExtensions = sendApqExtensions ?: false
   val sendEnhancedClientAwarenessExtensions = sendEnhancedClientAwareness
   val sendDocument = sendDocument ?: true
@@ -42,35 +45,48 @@ fun <D : Operation.Data> ApolloRequest<D>.toRequestParameters(extensions: Map<St
   @Suppress("UNCHECKED_CAST")
   val variables = jsonWriter.root() as Map<String, ApolloJsonElement>
 
-  val extensions = mutableMapOf<String, ApolloJsonElement>()
+  val ext = mutableMapOf<String, ApolloJsonElement>()
   if (sendApqExtensions) {
-    extensions.put("persistedQuery", mapOf(
+    ext.put("persistedQuery", mapOf(
         "version" to 1,
         "sha256Hash" to operation.id()
     ))
   }
   if (sendEnhancedClientAwarenessExtensions) {
-    extensions.put("clientLibrary", mapOf(
+    ext.put("clientLibrary", mapOf(
         "name" to "apollo-kotlin",
         "version" to apolloApiVersion
     ))
+  }
+  if (extensions != null) {
+    ext.putAll(extensions)
   }
   return RequestParameters(
       query = if (sendDocument) operation.document() else null,
       operationName = operation.name(),
       variables = variables,
-      extensions = extensions,
+      extensions = ext,
       uploads = uploadAwareWriter.collectedUploads()
   )
 }
 
+/**
+ * Turns the [RequestParameters] into a [Map]
+ *
+ * @throws IllegalStateException if the [RequestParameters] contain uploads.
+ */
 fun RequestParameters.toMap(): Map<String, Any?> {
-  check (uploads.isEmpty()) {
+  check(uploads.isEmpty()) {
     "Apollo: sending uploads in this context is an error. Uploads are not supported by default for GET requests or subscriptions."
   }
   return toMapUnsafe()
 }
 
+/**
+ * Turns the [RequestParameters] into a [ByteString]
+ *
+ * @throws IllegalStateException if the [RequestParameters] contain uploads.
+ */
 fun RequestParameters.toByteString(): ByteString {
   return buildJsonByteString {
     writeAny(toMap())
@@ -81,12 +97,41 @@ fun RequestParameters.toByteString(): ByteString {
  * This function doesn't check the uploads. The caller is responsible for handling uploads.
  */
 internal fun RequestParameters.toMapUnsafe(): Map<String, Any?> {
-  return mapOf(
-      "query" to query,
-      "operationName" to operationName,
-      "variables" to variables,
-      "extensions" to extensions,
-  )
+  return buildMap {
+    if (query != null) {
+      put("query", query)
+    }
+    put("operationName", operationName)
+    if (variables.isNotEmpty()) {
+      put("variables", variables)
+    }
+    if (extensions.isNotEmpty()) {
+      put("extensions", extensions)
+    }
+  }
 }
 
+/**
+ * Turns the [RequestParameters] into a [HttpBody]
+ *
+ * The [HttpBody] may be a multipart body if uploads are present.
+ */
+fun RequestParameters.toHttpBody(): HttpBody {
+  // Do not replace this with `toByteString()`: there may be uploads
+  val byteString = buildJsonByteString {
+    writeAny(toMapUnsafe())
+  }
 
+  return if (uploads.isEmpty()) {
+    object : HttpBody {
+      override val contentType = "application/json"
+      override val contentLength = byteString.size.toLong()
+
+      override fun writeTo(bufferedSink: BufferedSink) {
+        bufferedSink.write(byteString)
+      }
+    }
+  } else {
+    UploadsHttpBody(uploads, byteString)
+  }
+}
