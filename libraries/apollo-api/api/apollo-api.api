@@ -912,8 +912,7 @@ public final class com/apollographql/apollo/api/RequestParametersKt {
 	public static final fun toByteString (Lcom/apollographql/apollo/api/RequestParameters;)Lokio/ByteString;
 	public static final fun toHttpBody (Lcom/apollographql/apollo/api/RequestParameters;)Lcom/apollographql/apollo/api/http/HttpBody;
 	public static final fun toMap (Lcom/apollographql/apollo/api/RequestParameters;)Ljava/util/Map;
-	public static final fun toRequestParameters (Lcom/apollographql/apollo/api/ApolloRequest;Ljava/util/Map;)Lcom/apollographql/apollo/api/RequestParameters;
-	public static synthetic fun toRequestParameters$default (Lcom/apollographql/apollo/api/ApolloRequest;Ljava/util/Map;ILjava/lang/Object;)Lcom/apollographql/apollo/api/RequestParameters;
+	public static final fun toRequestParameters (Lcom/apollographql/apollo/api/ApolloRequest;)Lcom/apollographql/apollo/api/RequestParameters;
 }
 
 public abstract interface class com/apollographql/apollo/api/Subscription : com/apollographql/apollo/api/Operation {

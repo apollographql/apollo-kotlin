@@ -1,5 +1,6 @@
 package com.apollographql.apollo.api
 
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.http.HttpBody
 import com.apollographql.apollo.api.http.UploadsHttpBody
 import com.apollographql.apollo.api.json.ApolloJsonElement
@@ -34,7 +35,8 @@ fun <D : Operation.Data> ApolloRequest<D>.toRequestParameters(): RequestParamete
   val sendApqExtensions = sendApqExtensions ?: false
   val sendEnhancedClientAwarenessExtensions = sendEnhancedClientAwareness
   val sendDocument = sendDocument ?: true
-  val scalarAdapters = executionContext[CustomScalarAdapters]!!
+  // We should probably assert that there are always scalar adapters but we're doing this for legacy reasons
+  val scalarAdapters = executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
   val jsonWriter = MapJsonWriter()
   val uploadAwareWriter = FileUploadAwareJsonWriter(jsonWriter)

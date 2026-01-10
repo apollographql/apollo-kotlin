@@ -56,7 +56,7 @@ class JvmFileUploadTest {
     val request = mockServer.awaitRequest()
     val parts = request.parts()
 
-    val expectedBodyLength = 1009
+    val expectedBodyLength = 989
     assertEquals(expectedBodyLength, request.body.size)
     assertEquals(expectedBodyLength.toString(), request.headers["Content-Length"])
     assertEquals(4, parts.size)
