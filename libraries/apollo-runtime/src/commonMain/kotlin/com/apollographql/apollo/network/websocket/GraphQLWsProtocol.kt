@@ -5,6 +5,8 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.json.readAny
+import com.apollographql.apollo.api.toMap
+import com.apollographql.apollo.api.toRequestParameters
 import okio.Buffer
 
 /**
@@ -33,7 +35,7 @@ class GraphQLWsProtocol(
     return mapOf(
         "type" to "subscribe",
         "id" to request.requestUuid.toString(),
-        "payload" to DefaultHttpRequestComposer.composePayload(request)
+        "payload" to request.toRequestParameters().toMap()
     ).toClientMessage()
   }
 

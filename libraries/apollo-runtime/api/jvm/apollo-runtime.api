@@ -9,6 +9,7 @@ public final class com/apollographql/apollo/ApolloCall : com/apollographql/apoll
 	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
 	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun extensions (Ljava/util/Map;)Lcom/apollographql/apollo/ApolloCall;
 	public final fun failFastIfOffline (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;

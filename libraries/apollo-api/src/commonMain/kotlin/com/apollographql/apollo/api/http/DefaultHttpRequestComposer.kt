@@ -8,17 +8,18 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.Upload
-import com.apollographql.apollo.api.http.DefaultHttpRequestComposer.Companion.composePostParams
 import com.apollographql.apollo.api.http.internal.urlEncode
+import com.apollographql.apollo.api.json.ApolloJsonElement
 import com.apollographql.apollo.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.json.buildJsonByteString
 import com.apollographql.apollo.api.json.buildJsonMap
 import com.apollographql.apollo.api.json.buildJsonString
-import com.apollographql.apollo.api.json.internal.FileUploadAwareJsonWriter
 import com.apollographql.apollo.api.json.writeAny
-import com.apollographql.apollo.api.json.writeObject
-import com.apollographql.apollo.api.variables
+import com.apollographql.apollo.api.toByteString
+import com.apollographql.apollo.api.toHttpBody
+import com.apollographql.apollo.api.toMap
+import com.apollographql.apollo.api.toRequestParameters
 import com.benasher44.uuid.uuid4
 import okio.Buffer
 import okio.BufferedSink
@@ -45,9 +46,6 @@ class DefaultHttpRequestComposer(
   constructor(serverUrl: String?) : this(serverUrl, false)
 
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
-    val operation = apolloRequest.operation
-    val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
-
     val requestHeaders = mutableListOf<HttpHeader>().apply {
       if (apolloRequest.httpHeaders != null) {
         addAll(apolloRequest.httpHeaders)
@@ -69,23 +67,21 @@ class DefaultHttpRequestComposer(
       }
     }
 
-    val sendApqExtensions = apolloRequest.sendApqExtensions ?: false
-    val sendEnhancedClientAwarenessExtensions = apolloRequest.sendEnhancedClientAwareness
-    val sendDocument = apolloRequest.sendDocument ?: true
+    val requestParameters = apolloRequest.toRequestParameters()
 
     val url = apolloRequest.url ?: serverUrl ?: error("ApolloRequest.url is missing for request '${apolloRequest.operation.name()}', did you call ApolloClient.Builder.serverUrl(url)?")
     val httpRequestBuilder = when (apolloRequest.httpMethod ?: HttpMethod.Post) {
       HttpMethod.Get -> {
+
+        @Suppress("DEPRECATION")
         HttpRequest.Builder(
             method = HttpMethod.Get,
-            url = buildGetUrl(url, operation, customScalarAdapters, sendApqExtensions, sendDocument, sendEnhancedClientAwarenessExtensions),
+            url = url.appendQueryParameters(requestParameters.toMap().asGetParameters()),
         ).addHeader(HEADER_APOLLO_REQUIRE_PREFLIGHT, "true")
       }
 
       HttpMethod.Post -> {
-        val query = if (sendDocument) operation.document() else null
-        val body =
-          buildPostBody(operation, customScalarAdapters, query, extensionsWriter(operation.id(), sendApqExtensions, sendEnhancedClientAwarenessExtensions))
+        val body = requestParameters.toHttpBody()
         HttpRequest.Builder(
             method = HttpMethod.Post,
             url = url,
@@ -94,16 +90,17 @@ class DefaultHttpRequestComposer(
           if (body.contentType.startsWith("multipart/form-data")) {
             addHeader(HEADER_APOLLO_REQUIRE_PREFLIGHT, "true")
           }
+          val operation = apolloRequest.operation
           if (enablePostCaching && operation is Query<*>) {
             val cacheParameters = mutableMapOf<String, String>()
 
-            val variables = operation.variables(customScalarAdapters)
-            if (variables.valueMap.isNotEmpty()) {
-              cacheParameters.put("variablesHash", variables.valueMap.sha256())
+            if (requestParameters.variables.isNotEmpty()) {
+              cacheParameters.put("variablesHash", requestParameters.variables.sha256())
             }
             cacheParameters.put("operationName", operation.name())
             cacheParameters.put("operationId", operation.id())
 
+            @Suppress("DEPRECATION")
             addExecutionContext(CacheUrlOverride(url.appendQueryParameters(cacheParameters)))
           }
         }
@@ -145,152 +142,11 @@ class DefaultHttpRequestComposer(
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     val HEADER_ACCEPT_VALUE_MULTIPART = "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
 
-    private fun <D : Operation.Data> buildGetUrl(
-        url: String,
-        operation: Operation<D>,
-        customScalarAdapters: CustomScalarAdapters,
-        sendApqExtensions: Boolean,
-        sendDocument: Boolean,
-        sendEnhancedClientAwarenessExtensions: Boolean,
-    ): String {
-      return url.appendQueryParameters(
-          composeGetParams(operation, customScalarAdapters, sendApqExtensions, sendDocument, sendEnhancedClientAwarenessExtensions)
-      )
-    }
-
-    private fun <D : Operation.Data> composePostParams(
-        writer: JsonWriter,
-        operation: Operation<D>,
-        customScalarAdapters: CustomScalarAdapters,
-        query: String?,
-        extensionsWriter: (JsonWriter.() -> Unit),
-    ): Map<String, Upload> {
-      val uploads: Map<String, Upload>
-      writer.writeObject {
-        name("operationName")
-        value(operation.name())
-
-        name("variables")
-        val uploadAwareWriter = FileUploadAwareJsonWriter(this)
-        uploadAwareWriter.writeObject {
-          operation.serializeVariables(this, customScalarAdapters, false)
-        }
-        uploads = uploadAwareWriter.collectedUploads()
-
-        if (query != null) {
-          name("query")
-          value(query)
-        }
-
-        extensionsWriter()
-      }
-
-      return uploads
-    }
-
-    private fun <D : Operation.Data> composePostParams(
-        writer: JsonWriter,
-        operation: Operation<D>,
-        customScalarAdapters: CustomScalarAdapters,
-        sendApqExtensions: Boolean,
-        sendEnhancedClientAwarenessExtensions: Boolean,
-        query: String?,
-    ): Map<String, Upload> {
-      return composePostParams(
-          writer, operation, customScalarAdapters, query, extensionsWriter(operation.id(), sendApqExtensions, sendEnhancedClientAwarenessExtensions)
-      )
-    }
-
-    private fun extensionsWriter(
-        apqId: String,
-        sendApqExtensions: Boolean,
-        sendEnhancedClientAwarenessExtensions: Boolean,
-    ): JsonWriter.() -> Unit {
-      if (!sendApqExtensions && !sendEnhancedClientAwarenessExtensions) return { }
-
-      return {
-        name("extensions")
-        writeObject {
-          if (sendApqExtensions) {
-            name("persistedQuery")
-            writeObject {
-              name("version").value(1)
-              name("sha256Hash").value(apqId)
-            }
-          }
-
-          if (sendEnhancedClientAwarenessExtensions) {
-            name("clientLibrary")
-            writeObject {
-              name("name").value("apollo-kotlin")
-              name("version").value(com.apollographql.apollo.api.apolloApiVersion)
-            }
-          }
-        }
-      }
-    }
-
-    /**
-     * This mostly duplicates [composePostParams] but encode variables and extensions as strings
-     * and not json elements. I tried factoring in that code, but it ended up being more clunky that
-     * duplicating it
-     */
-    private fun <D : Operation.Data> composeGetParams(
-        operation: Operation<D>,
-        customScalarAdapters: CustomScalarAdapters,
-        autoPersistQueries: Boolean,
-        sendDocument: Boolean,
-        sendEnhancedClientAwareness: Boolean,
-    ): Map<String, String> {
-      val queryParams = mutableMapOf<String, String>()
-
-      queryParams.put("operationName", operation.name())
-
-      val variables = buildJsonString {
-        val uploadAwareWriter = FileUploadAwareJsonWriter(this)
-        uploadAwareWriter.writeObject {
-          operation.serializeVariables(writer = this, customScalarAdapters = customScalarAdapters, withDefaultValues = false)
-        }
-        check(uploadAwareWriter.collectedUploads().isEmpty()) {
-          "FileUpload and Http GET are not supported at the same time"
-        }
-      }
-
-      queryParams.put("variables", variables)
-
-      if (sendDocument) {
-        queryParams.put("query", operation.document())
-      }
-
-      val extensions = buildJsonString {
-        writeObject {
-          if (autoPersistQueries) {
-            name("persistedQuery")
-            writeObject {
-              name("version").value(1)
-              name("sha256Hash").value(operation.id())
-            }
-          }
-          if (sendEnhancedClientAwareness) {
-            name("clientLibrary")
-            writeObject {
-              name("name").value("apollo-kotlin")
-              name("version").value(com.apollographql.apollo.api.apolloApiVersion)
-            }
-          }
-        }
-      }
-
-      if (!extensions.isEmpty()) {
-        queryParams.put("extensions", extensions)
-      }
-
-      return queryParams
-    }
-
     /**
      * A very simplified method to append query parameters
      */
+    @Deprecated("appendQueryParameters was not supposed to be exposed and will be removed in a future version. Use a dedicated URL parsing library instead.")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     fun String.appendQueryParameters(parameters: Map<String, String>): String = buildString {
       append(this@appendQueryParameters)
       var hasQuestionMark = this@appendQueryParameters.contains("?")
@@ -317,42 +173,50 @@ class DefaultHttpRequestComposer(
         sendEnhancedClientAwarenessExtensions: Boolean,
         query: String?,
     ): HttpBody {
-      return buildPostBody(operation, customScalarAdapters, query, extensionsWriter(operation.id(), autoPersistQueries, sendEnhancedClientAwarenessExtensions))
+      if (query != null) {
+        require(query == operation.document()) {
+          "The query parameter must match the operation document"
+        }
+      }
+
+      return ApolloRequest.Builder(operation)
+          .addExecutionContext(customScalarAdapters)
+          .sendDocument(if (query == null) false else true)
+          .sendApqExtensions(autoPersistQueries)
+          .sendEnhancedClientAwareness(sendEnhancedClientAwarenessExtensions)
+          .build()
+          .toRequestParameters()
+          .toHttpBody()
+
     }
 
+    @Deprecated("Use `toRequestParameters()` instead.", ReplaceWith("apolloRequest.toRequestParameters().toHttpBody()"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_3_1)
     fun <D : Operation.Data> buildPostBody(
         operation: Operation<D>,
         customScalarAdapters: CustomScalarAdapters,
         query: String?,
         extensionsWriter: JsonWriter.() -> Unit,
     ): HttpBody {
-      val uploads: Map<String, Upload>
-
-      val operationByteString = buildJsonByteString(indent = null) {
-        uploads = composePostParams(
-            this,
-            operation,
-            customScalarAdapters,
-            query,
-            extensionsWriter,
-        )
-      }
-
-      return if (uploads.isEmpty()) {
-        object : HttpBody {
-          override val contentType = "application/json"
-          override val contentLength = operationByteString.size.toLong()
-
-          override fun writeTo(bufferedSink: BufferedSink) {
-            bufferedSink.write(operationByteString)
-          }
+      if (query != null) {
+        require(query == operation.document()) {
+          "The query parameter must match the operation document"
         }
-      } else {
-        UploadsHttpBody(uploads, operationByteString)
       }
+
+      @Suppress("UNCHECKED_CAST")
+      return ApolloRequest.Builder(operation)
+          .addExecutionContext(customScalarAdapters)
+          .sendDocument(if (query == null) false else true)
+          .extensions(buildJsonMap {
+            extensionsWriter()
+          } as Map<String, ApolloJsonElement>)
+          .build()
+          .toRequestParameters()
+          .toHttpBody()
     }
 
-    @Deprecated("Use new function with additional parameters instead.", ReplaceWith("buildParamsMap(operation = operation, customScalarAdapters = customScalarAdapters, autoPersistQueries = autoPersistQueries, sendDocument = sendDocument, sendEnhancedClientAwarenessExtensions = true)"))
+    @Deprecated("Use `toRequestParameters()` instead.", ReplaceWith("apolloRequest.toRequestParameters().toByteString()"))
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_3_1)
     fun <D : Operation.Data> buildParamsMap(
         operation: Operation<D>,
@@ -360,12 +224,12 @@ class DefaultHttpRequestComposer(
         autoPersistQueries: Boolean,
         sendDocument: Boolean,
     ): ByteString {
-      return buildJsonByteString {
-        val query = if (sendDocument) operation.document() else null
-        composePostParams(this, operation, customScalarAdapters, autoPersistQueries, true, query)
-      }
+      @Suppress("DEPRECATION")
+      return buildParamsMap(operation, customScalarAdapters, autoPersistQueries, sendDocument, false)
     }
 
+    @Deprecated("Use `toRequestParameters()` instead.", ReplaceWith("apolloRequest.toRequestParameters().toByteString()"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     fun <D : Operation.Data> buildParamsMap(
         operation: Operation<D>,
         customScalarAdapters: CustomScalarAdapters,
@@ -373,26 +237,22 @@ class DefaultHttpRequestComposer(
         sendDocument: Boolean,
         sendEnhancedClientAwarenessExtensions: Boolean,
     ): ByteString {
-      return buildJsonByteString {
-        val query = if (sendDocument) operation.document() else null
-        composePostParams(this, operation, customScalarAdapters, autoPersistQueries, sendEnhancedClientAwarenessExtensions, query)
-      }
+      return ApolloRequest.Builder(operation)
+          .addExecutionContext(customScalarAdapters)
+          .sendApqExtensions(autoPersistQueries)
+          .sendDocument(sendDocument)
+          .sendEnhancedClientAwareness(sendEnhancedClientAwarenessExtensions)
+          .build()
+          .toRequestParameters()
+          .toByteString()
     }
 
-    @Suppress("UNCHECKED_CAST")
+    @Deprecated("Use `toRequestParameters()` instead.", ReplaceWith("apolloRequest.toRequestParameters().toMap()"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     fun <D : Operation.Data> composePayload(
         apolloRequest: ApolloRequest<D>,
     ): Map<String, Any?> {
-      val operation = apolloRequest.operation
-      val sendApqExtensions = apolloRequest.sendApqExtensions ?: false
-      val sendEnhancedClientAwarenessExtensions = apolloRequest.sendEnhancedClientAwareness
-      val sendDocument = apolloRequest.sendDocument ?: true
-      val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
-
-      val query = if (sendDocument) operation.document() else null
-      return buildJsonMap {
-        composePostParams(this, operation, customScalarAdapters, sendApqExtensions, sendEnhancedClientAwarenessExtensions, query)
-      } as Map<String, Any?>
+      return apolloRequest.toRequestParameters().toMap()
     }
   }
 }
@@ -473,5 +333,18 @@ private class CountingSink(
   override fun write(source: Buffer, byteCount: Long) {
     delegate.write(source, byteCount)
     bytesWritten += byteCount
+  }
+}
+
+private fun Map<String, ApolloJsonElement>.asGetParameters(): Map<String, String> {
+  return mapValues {
+    val v = it.value
+    if (v is String) {
+      v
+    } else {
+      buildJsonString {
+        writeAny(v)
+      }
+    }
   }
 }

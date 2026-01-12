@@ -3,6 +3,7 @@ package com.apollographql.apollo.api
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.api.http.HttpMethod
+import com.apollographql.apollo.api.json.ApolloJsonElement
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 
@@ -40,6 +41,7 @@ private constructor(
     val retryOnError: Boolean?,
     val failFastIfOffline: Boolean?,
     val sendEnhancedClientAwareness: Boolean,
+    val extensions: Map<String, ApolloJsonElement>?,
 ) : ExecutionOptions {
 
   fun newBuilder(): Builder<D> = newBuilder(operation)
@@ -61,6 +63,7 @@ private constructor(
         .ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders)
         .ignoreUnknownKeys(ignoreUnknownKeys)
         .sendEnhancedClientAwareness(sendEnhancedClientAwareness)
+        .extensions(extensions)
   }
 
   class Builder<D : Operation.Data>(
@@ -93,6 +96,8 @@ private constructor(
     var failFastIfOffline: Boolean? = null
       private set
     var sendEnhancedClientAwareness: Boolean = true
+      private set
+    var extensions: Map<String, ApolloJsonElement>? = null
       private set
 
     fun requestUuid(requestUuid: Uuid) = apply {
@@ -159,6 +164,14 @@ private constructor(
       this.sendEnhancedClientAwareness = sendEnhancedClientAwareness
     }
 
+    /**
+     * Custom extensions to be sent to the server.
+     * Those extensions are sent in addition to the default Apollo extensions, if any (like auto-persisted queries).
+     */
+    fun extensions(extensions: Map<String, ApolloJsonElement>?): Builder<D> = apply {
+      this.extensions = extensions
+    }
+
     fun build(): ApolloRequest<D> {
       return ApolloRequest(
           operation = operation,
@@ -175,7 +188,8 @@ private constructor(
           failFastIfOffline = failFastIfOffline,
           ignoreUnknownKeys = ignoreUnknownKeys,
           sendEnhancedClientAwareness = sendEnhancedClientAwareness,
-          url = url
+          url = url,
+          extensions = extensions
       )
     }
   }
