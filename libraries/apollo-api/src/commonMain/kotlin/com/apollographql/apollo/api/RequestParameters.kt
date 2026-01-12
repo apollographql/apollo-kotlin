@@ -1,6 +1,5 @@
 package com.apollographql.apollo.api
 
-import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.http.HttpBody
 import com.apollographql.apollo.api.http.UploadsHttpBody
 import com.apollographql.apollo.api.json.ApolloJsonElement
@@ -68,7 +67,14 @@ fun <D : Operation.Data> ApolloRequest<D>.toRequestParameters(): RequestParamete
       operationName = operation.name(),
       variables = variables,
       extensions = ext,
-      uploads = uploadAwareWriter.collectedUploads()
+      uploads = uploadAwareWriter.collectedUploads().mapKeys {
+        /**
+         * See https://github.com/jaydenseric/graphql-multipart-request-spec
+         *
+         * The map path should start at the root and contain the "variables" part.
+         */
+        "variables." + it.key
+      }
   )
 }
 
