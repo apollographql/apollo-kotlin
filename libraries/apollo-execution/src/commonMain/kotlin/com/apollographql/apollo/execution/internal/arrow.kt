@@ -130,8 +130,8 @@ internal sealed class Either<out A, out B> {
   }
 
   override fun toString(): String = fold(
-    { "Either.Left($it)" },
-    { "Either.Right($it)" }
+      { "Either.Left($it)" },
+      { "Either.Right($it)" }
   )
 }
 
@@ -158,24 +158,20 @@ internal fun <A> A.left(): Either<A, Nothing> = Left(this)
 
 internal fun <A> A.right(): Either<Nothing, A> = Right(this)
 
-@DslMarker
-internal annotation class RaiseDSL
-
 internal interface Raise<in Error> {
-  @RaiseDSL
   fun raise(r: Error): Nothing
 }
 
-internal inline fun <Error, A> either(@BuilderInference block: Raise<Error>.() -> A): Either<Error, A> {
+internal inline fun <Error, A> either(block: Raise<Error>.() -> A): Either<Error, A> {
   contract { callsInPlace(block, AT_MOST_ONCE) }
   return fold(block, { Left(it) }, { Right(it) })
 }
 
 @JvmName("_foldOrThrow")
 internal inline fun <Error, A, B> fold(
-  @BuilderInference block: Raise<Error>.() -> A,
-  recover: (error: Error) -> B,
-  transform: (value: A) -> B,
+    block: Raise<Error>.() -> A,
+    recover: (error: Error) -> B,
+    transform: (value: A) -> B,
 ): B {
   contract {
     callsInPlace(block, AT_MOST_ONCE)
@@ -187,10 +183,10 @@ internal inline fun <Error, A, B> fold(
 
 @JvmName("_fold")
 internal inline fun <Error, A, B> fold(
-  @BuilderInference block: Raise<Error>.() -> A,
-  catch: (throwable: Throwable) -> B,
-  recover: (error: Error) -> B,
-  transform: (value: A) -> B,
+    block: Raise<Error>.() -> A,
+    catch: (throwable: Throwable) -> B,
+    recover: (error: Error) -> B,
+    transform: (value: A) -> B,
 ): B {
   contract {
     callsInPlace(block, AT_MOST_ONCE)
@@ -224,8 +220,8 @@ internal class DefaultRaise(internal val isTraced: Boolean) : Raise<Any?> {
 }
 
 internal sealed class RaiseCancellationException(
-  internal val raised: Any?,
-  internal val raise: Raise<Any?>
+    internal val raised: Any?,
+    internal val raise: Raise<Any?>,
 ) : CancellationException(RaiseCancellationExceptionCaptured)
 
 internal const val RaiseCancellationExceptionCaptured: String =
@@ -234,12 +230,12 @@ internal const val RaiseCancellationExceptionCaptured: String =
       "When working with Arrow prefer Either.catch or arrow.core.raise.catch to automatically rethrow CancellationException."
 
 private class RaiseLeakedException : IllegalStateException(
-  """
-  'raise' or 'bind' was leaked outside of its context scope.
-  Make sure all calls to 'raise' and 'bind' occur within the lifecycle of nullable { }, either { } or similar builders.
- 
-  See Arrow documentation on 'Typed errors' for further information.
-  """.trimIndent()
+    """
+    'raise' or 'bind' was leaked outside of its context scope.
+    Make sure all calls to 'raise' and 'bind' occur within the lifecycle of nullable { }, either { } or similar builders.
+   
+    See Arrow documentation on 'Typed errors' for further information.
+    """.trimIndent()
 )
 
 @Suppress("UNCHECKED_CAST")
@@ -252,10 +248,9 @@ internal fun <R> CancellationException.raisedOrRethrow(raise: DefaultRaise): R =
 internal fun Throwable.nonFatalOrThrow(): Throwable =
   if (NonFatal(this)) this else throw this
 
-@RaiseDSL
 internal inline fun <Error, OtherError, A> Raise<Error>.withError(
-  transform: (OtherError) -> Error,
-  @BuilderInference block: Raise<OtherError>.() -> A
+    transform: (OtherError) -> Error,
+    block: Raise<OtherError>.() -> A,
 ): A {
   contract {
     callsInPlace(block, EXACTLY_ONCE)
@@ -263,10 +258,9 @@ internal inline fun <Error, OtherError, A> Raise<Error>.withError(
   recover({ return block(this) }) { raise(transform(it)) }
 }
 
-@RaiseDSL
 internal inline fun <Error, A> recover(
-  @BuilderInference block: Raise<Error>.() -> A,
-  @BuilderInference recover: (error: Error) -> A,
+    block: Raise<Error>.() -> A,
+    recover: (error: Error) -> A,
 ): A {
   contract {
     callsInPlace(block, AT_MOST_ONCE)
@@ -294,4 +288,4 @@ internal fun NonFatal(t: Throwable): Boolean =
  */
 internal class NoTrace(raised: Any?, raise: Raise<Any?>) : RaiseCancellationException(raised, raise)
 
-internal class Traced(raised: Any?, raise: Raise<Any?>, override val cause: Traced? = null): RaiseCancellationException(raised, raise)
+internal class Traced(raised: Any?, raise: Raise<Any?>, override val cause: Traced? = null) : RaiseCancellationException(raised, raise)
