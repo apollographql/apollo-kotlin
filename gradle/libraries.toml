@@ -29,7 +29,7 @@ javaPoet = "1.13.0"
 jetbrains-annotations = "26.0.2-1"
 junit = "4.13.2"
 #noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
-kotlin-plugin = "2.3.0"
+kotlin-plugin = "2.3.20-Beta1"
 kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.7.1"
 #noinspection NewerVersionAvailable requires KGP 2.2
@@ -177,7 +177,7 @@ androidx-test-runner = "androidx.test:runner:1.7.0"
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.2.1" }
 uuid = { group = "com.benasher44", name = "uuid", version = "0.8.4" }
-librarian = { module ="com.gradleup.librarian:librarian-gradle-plugin", version = "0.2.2-SNAPSHOT-e8574739fa730c6118181ba7b8cf7f559a568fd0" }
+librarian = { module ="com.gradleup.librarian:librarian-gradle-plugin", version = "0.2.2-SNAPSHOT-b82defcba093f4db772683cd32a4e9b511faf1f2" }
 nmcp = { module = "com.gradleup.nmcp:nmcp", version.ref = "nmcp" }
 nmcp-tasks = { module = "com.gradleup.nmcp:nmcp-tasks", version.ref = "nmcp" }
 slf4j-simple = "org.slf4j:slf4j-simple:2.0.17"
