@@ -78,17 +78,17 @@ fun defaultTargets(
     if (enableApple) {
       appleTargets.toSet().intersect(allAppleTargets).forEach { presetName ->
         when (presetName) {
-          "macosX64" -> macosX64()
+          "macosX64" -> @Suppress("DEPRECATION") macosX64()
           "macosArm64" -> macosArm64()
           "iosArm64" -> iosArm64()
-          "iosX64" -> iosX64()
+          "iosX64" -> @Suppress("DEPRECATION") iosX64()
           "iosSimulatorArm64" -> iosSimulatorArm64()
           "watchosArm32" -> watchosArm32()
           "watchosArm64" -> watchosArm64()
           "watchosDeviceArm64" -> watchosDeviceArm64()
           "watchosSimulatorArm64" -> watchosSimulatorArm64()
           "tvosArm64" -> tvosArm64()
-          "tvosX64" -> tvosX64()
+          "tvosX64" -> @Suppress("DEPRECATION") tvosX64()
           "tvosSimulatorArm64" -> tvosSimulatorArm64()
         }
       }
