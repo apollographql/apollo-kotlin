@@ -7,7 +7,7 @@ import com.apollographql.apollo.api.http.HttpMethod
 import com.apollographql.apollo.api.http.HttpRequest
 import com.apollographql.apollo.api.http.HttpResponse
 import com.apollographql.apollo.exception.ApolloNetworkException
-import kotlinx.coroutines.CancellationException
+import kotlin.coroutines.cancellation.CancellationException
 import okio.Closeable
 
 /**
@@ -21,6 +21,7 @@ interface HttpEngine : Closeable {
    * HTTP errors should not throw but instead return a [HttpResponse] indicating the status code
    *
    * @throws [ApolloNetworkException] if a network error happens
+   * @throws [CancellationException]
    */
   @Throws(ApolloNetworkException::class, CancellationException::class)
   suspend fun execute(request: HttpRequest): HttpResponse
