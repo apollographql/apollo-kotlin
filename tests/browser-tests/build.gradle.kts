@@ -25,9 +25,7 @@ apolloTest {
       browser {
         commonWebpackConfig {
           devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-            static = (static ?: mutableListOf()).apply {
-              add(projectDirPath)
-            }
+            static(projectDirPath)
           }
         }
         testTask {
