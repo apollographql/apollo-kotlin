@@ -4,6 +4,7 @@ package com.apollographql.apollo.graphql.ast.test
 
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.ast.ForeignSchema
+import com.apollographql.apollo.ast.builtinForeignSchemas
 import com.apollographql.apollo.ast.internal.SchemaValidationOptions
 import com.apollographql.apollo.ast.internal.toSemanticSdl
 import com.apollographql.apollo.ast.parseAsGQLDocument
@@ -35,7 +36,11 @@ class SchemaTest {
   /**
    * A trimmed version of a cache foreign schema.
    */
-  private val cacheControlSchema = ForeignSchema("cache", "v0.1", listOf("directive @cacheControl(maxAge: Int!) on FIELD_DEFINITION".parseAsGQLDocument().getOrThrow().definitions.single()))
+  private val cacheControlSchema =
+    ForeignSchema("cache", "v0.1", listOf("directive @cacheControl(maxAge: Int!) on FIELD_DEFINITION".parseAsGQLDocument()
+        .getOrThrow().definitions.single()
+    )
+    )
 
   @Test
   fun linkDirective() {
@@ -175,6 +180,36 @@ class SchemaTest {
       ) on FRAGMENT_SPREAD|INLINE_FRAGMENT
     """.trimIndent()
 
-    assertEquals(document1.toGQLDocument().toSemanticSdl(),document2.toGQLDocument().toSemanticSdl())
+    assertEquals(document1.toGQLDocument().toSemanticSdl(), document2.toGQLDocument().toSemanticSdl())
+  }
+
+  @Test
+  fun purposeDoesNotClash() {
+    // language=graphql
+    val schemaString = """
+      extend schema @link(
+        url: "https://specs.apollo.dev/nullability/v0.4",
+        import: ["@semanticNonNull", "@semanticNonNullField", "@catch", "CatchTo", "@catchByDefault"]
+      )
+
+      # Make sure this doesn't clash with the @link Purpose
+      enum Purpose {
+        Foo
+      }
+
+      type Query {
+        purpose: Purpose
+      }
+
+      extend schema @catchByDefault(to: THROW)
+    """.trimIndent()
+    schemaString.toGQLDocument().validateAsSchema(
+        SchemaValidationOptions(
+            foreignSchemas = builtinForeignSchemas(),
+            addKotlinLabsDefinitions = false,
+            excludeCacheDirectives = true,
+            computeKeyFields = false
+        )
+    ).getOrThrow()
   }
 }

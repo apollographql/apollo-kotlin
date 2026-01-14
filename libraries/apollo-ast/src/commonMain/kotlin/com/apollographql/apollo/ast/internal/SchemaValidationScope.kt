@@ -445,7 +445,23 @@ private fun List<GQLSchemaExtension>.getLinkedSchemas(
   val schemaExtensions = this
 
   val linkedSchemas = mutableListOf<LinkedSchema>()
-  val linkLinkedSchema = ForeignSchema("link", "v1.0", linkDefinitions()).asNonPrefixedImport()
+  val foreignSchema = ForeignSchema("link", "v1.0", linkDefinitions())
+
+  /**
+   * Link the @link definitions using a very specific import for Import and Purpose to avoid clashing with user directives.
+   *
+   * TODO: make it possible to rename the @link directive itself.
+   */
+  val linkLinkedSchema = foreignSchema.link(
+      mapOf(
+          "@link" to "@link",
+          "Import" to "apollo__kotlin__link__Import",
+          "Purpose" to "apollo__kotlin__link__Purpose",
+      ),
+      "", // prefix is not relevant here because we specify imports for all definitions
+      null
+  )
+
   schemaExtensions.forEach { schemaExtension ->
     schemaExtension.directives.forEach eachDirective@{ gqlDirective ->
       if (gqlDirective.name == Schema.LINK) {
@@ -502,15 +518,7 @@ private fun List<GQLSchemaExtension>.getLinkedSchemas(
             }
           }
 
-          val (definitions, renames) = foreignSchema.definitions.rename(imports, prefix)
-          linkedSchemas.add(
-              LinkedSchema(
-                  foreignSchema = foreignSchema,
-                  renamedDefinitions = definitions,
-                  newNames = renames,
-                  foreignSchemaImportLocation = gqlDirective.sourceLocation
-              )
-          )
+          linkedSchemas.add(foreignSchema.link(imports, prefix, gqlDirective.sourceLocation))
         } else {
           issues.add(
               OtherValidationIssue(
@@ -524,6 +532,20 @@ private fun List<GQLSchemaExtension>.getLinkedSchemas(
   }
 
   return linkedSchemas
+}
+
+private fun ForeignSchema.link(
+    imports: Map<DefinitionName, DefinitionName>,
+    prefix: String,
+    sourceLocation: SourceLocation?,
+): LinkedSchema {
+  val (definitions, renames) = definitions.rename(imports, prefix)
+  return LinkedSchema(
+      foreignSchema = this,
+      renamedDefinitions = definitions,
+      newNames = renames,
+      foreignSchemaImportLocation = sourceLocation
+  )
 }
 
 /**
@@ -594,7 +616,7 @@ private fun List<GQLValue>.parseImport(issues: MutableList<Issue>): Map<Definiti
 /**
  * The name of a type definition or, for directives, the name prefixed with '@'.
  *
- * This is to avoid directives possibly clashing with types (very unlikely but still).
+ * This is to avoid directive names clashing with type names.
  */
 private typealias DefinitionName = String
 
