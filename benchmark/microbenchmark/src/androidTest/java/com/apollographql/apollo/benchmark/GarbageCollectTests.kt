@@ -3,8 +3,8 @@ package com.apollographql.apollo.benchmark
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.benchmark.Utils.dbFile
-import com.apollographql.apollo.benchmark.Utils.getDbName
+import com.apollographql.apollo.benchmark.Utils.getIncubatingMemoryThenSqlCacheFactory
+import com.apollographql.apollo.benchmark.Utils.getIncubatingSqlCacheFactory
 import com.apollographql.apollo.conferences.cache.Cache
 import com.apollographql.apollo.conferences.cache.Cache.cache
 import com.apollographql.cache.normalized.CacheManager
@@ -13,7 +13,6 @@ import com.apollographql.cache.normalized.api.SchemaCoordinatesMaxAgeProvider
 import com.apollographql.cache.normalized.apolloStore
 import com.apollographql.cache.normalized.garbageCollect
 import com.apollographql.cache.normalized.memory.MemoryCacheFactory
-import com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
@@ -44,8 +43,7 @@ class GarbageCollectTests {
     lateinit var cacheManager: CacheManager
     benchmarkRule.measureRepeated {
       runWithTimingDisabled {
-        dbFile.delete()
-        cacheManager = cacheManager(SqlNormalizedCacheFactory(getDbName()))
+        cacheManager = cacheManager(getIncubatingSqlCacheFactory())
         primeCache(cacheManager)
       }
       runBlocking {
@@ -61,8 +59,7 @@ class GarbageCollectTests {
     lateinit var cacheManager: CacheManager
     benchmarkRule.measureRepeated {
       runWithTimingDisabled {
-        dbFile.delete()
-        cacheManager = cacheManager(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(getDbName())))
+        cacheManager = cacheManager(getIncubatingMemoryThenSqlCacheFactory())
         primeCache(cacheManager)
       }
       runBlocking {

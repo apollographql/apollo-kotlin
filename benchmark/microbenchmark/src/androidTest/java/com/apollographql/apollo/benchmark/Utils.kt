@@ -5,6 +5,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.apollographql.apollo.api.AnyAdapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.json.buildJsonString
+import com.apollographql.apollo.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo.cache.normalized.api.NormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo.calendar.operation.ItemsQuery
 import com.apollographql.apollo.calendar.response.ItemsQuery.Data.Items.Edge.Node.Companion.itemFragment
 import com.apollographql.apollo.calendar.response.fragment.CalendarFragment.Provider.Node.Companion.calendarProviderFragment
@@ -19,7 +22,8 @@ object Utils {
   private val cache = mutableMapOf<Int, BufferedSource>()
 
   fun getDbName(): String = "testDb-${System.currentTimeMillis()}"
-  val dbFile: File = InstrumentationRegistry.getInstrumentation().context.getDatabasePath(getDbName())
+  fun getDbFile(dbName: String): File = InstrumentationRegistry.getInstrumentation().context.getDatabasePath(dbName)
+
   val responseBasedQuery = com.apollographql.apollo.calendar.response.ItemsQuery(endingAfter = "", startingBefore = "")
   val operationBasedQuery = ItemsQuery(endingAfter = "", startingBefore = "")
   val largeListQuery = PlaylistRawTracksQuery("42")
@@ -73,5 +77,30 @@ object Utils {
 
   internal fun checkLargeList(data: PlaylistRawTracksQuery.Data) {
     check(data.playlist!!.rawTracks.size == 10000 && data.playlist.rawTracks[9999]!!.trackId == "142429999")
+  }
+
+  fun getSqlCacheFactory(): NormalizedCacheFactory {
+    val dbName = getDbName()
+    getDbFile(dbName).delete()
+    return SqlNormalizedCacheFactory(dbName)
+  }
+
+  fun getMemoryThenSqlCacheFactory(): NormalizedCacheFactory {
+    val dbName = getDbName()
+    getDbFile(dbName).delete()
+    return MemoryCacheFactory().chain(SqlNormalizedCacheFactory(dbName))
+  }
+
+  fun getIncubatingSqlCacheFactory(): com.apollographql.cache.normalized.api.NormalizedCacheFactory {
+    val dbFile = getDbFile(getDbName())
+    dbFile.delete()
+    return com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory(dbFile.absolutePath)
+  }
+
+  fun getIncubatingMemoryThenSqlCacheFactory(): com.apollographql.cache.normalized.api.NormalizedCacheFactory {
+    val dbFile = getDbFile(getDbName())
+    dbFile.delete()
+    return com.apollographql.cache.normalized.memory.MemoryCacheFactory()
+        .chain(com.apollographql.cache.normalized.sql.SqlNormalizedCacheFactory(dbFile.absolutePath))
   }
 }
