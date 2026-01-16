@@ -3,8 +3,6 @@
 # Can be as high as IJ supports
 # Consult https://kotlinlang.org/docs/multiplatform-compatibility-guide.html#version-compatibility for compatibility with KGP
 android-plugin = "8.7.2"
-# The version we compile against
-android-plugin-min = "8.0.0"
 # The version used by the 'android-plugin-max' test
 android-plugin-max = "8.2.1"
 android-sdkversion-compile = "34"
@@ -45,7 +43,10 @@ truth = "1.1.3"
 
 [libraries]
 android-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin" }
-android-plugin-min = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin-min" }
+#noinspection AndroidGradlePluginVersion,SimilarGradleDependency,NewerVersionAvailable this is a compileOnly dependency
+android-plugin8 = { group = "com.android.tools.build", name = "gradle", version= "8.0.0" }
+#noinspection AndroidGradlePluginVersion,SimilarGradleDependency,NewerVersionAvailable this is a compileOnly dependency
+android-plugin9 = { group = "com.android.tools.build", name = "gradle", version = "9.0.0" }
 android-test-runner = { group = "androidx.test", name = "runner", version = "1.5.2" }
 androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
 androidx-activity = "androidx.activity:activity-ktx:1.7.2"
@@ -96,7 +97,7 @@ dgp = "com.gradle:develocity-gradle-plugin:3.19.2" # // sync with settings.gradl
 # annotation @org.jetbrains.annotations.Nullable not applicable in this type context
 google-testing-compile = { group = "com.google.testing.compile", name = "compile-testing", version = "0.19" }
 google-testparameterinjector = { group = "com.google.testparameterinjector", name = "test-parameter-injector", version = "1.11" }
-gr8 = { group = "com.gradleup", name = "gr8-plugin", version = "0.11.1" }
+gr8 = { group = "com.gradleup", name = "gr8-plugin", version = "0.11.3-SNAPSHOT" }
 #
 # See https://github.com/gradle/gradle/issues/1835
 # We use the Nokee[redistributed artifacts](https://docs.nokee.dev/manual/gradle-plugin-development.html#sec:gradle-dev-redistributed-gradle-api)

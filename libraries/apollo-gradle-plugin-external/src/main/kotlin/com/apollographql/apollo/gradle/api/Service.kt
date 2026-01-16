@@ -2,7 +2,6 @@
 
 package com.apollographql.apollo.gradle.api
 
-import com.android.build.gradle.api.BaseVariant
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.compiler.MANIFEST_PERSISTED_QUERY
@@ -855,7 +854,7 @@ interface Service {
      * Connects the generated sources to the given Kotlin source set.
      * Throws if the Kotlin plugin is not applied
      *
-     * @param name: the name of the source set. For an example, "commonTest"
+     * @param name the name of the source set. For an example, "commonTest"
      */
     fun connectToKotlinSourceSet(name: String)
 
@@ -863,45 +862,71 @@ interface Service {
      * Connects the generated sources to the given Java source set.
      * Throws if the Java plugin is not applied
      *
-     * @param name: the name of the source set. For an example, "test"
+     * @param name the name of the source set. For an example, "test"
      */
     fun connectToJavaSourceSet(name: String)
+
+    /**
+     * Connects the generated sources to the given Android Component.
+     *
+     * @param component the component to connect to.
+     * - When using AGP8, component must be an instance of [com.android.build.gradle.api.BaseVariant]
+     * - When using AGP9+, component must be an instance of [com.android.build.api.variant.Component]
+     *
+     * Note [component]  is of type [Any] because [DirectoryConnection] can be used in non-Android projects,
+     * and we don't want the class to fail during loading because of a missing symbol in that case.
+     */
+    fun connectToAndroidComponent(component: Any, kotlin: Boolean)
+
+    /**
+     * Connects the generated sources to the "main" components.
+     * - When using AGP8, this uses `android.libraryVariants` and `android.applicationVariants`.
+     * - When using AGP9+, this uses `onVariants(selector().all())`
+     */
+    fun connectToAndroidVariants(kotlin: Boolean)
+
+    /**
+     * Connects the generated sources to all "test" components.
+     * - When using AGP8, this uses `android.testVariants` and `android.unitTestVariants`.
+     * - When using AGP9+, this uses `variant.hostTests` and `variant.deviceTests`
+     */
+    fun connectToAndroidTestComponents(kotlin: Boolean)
+
+    /**
+     * Connects the generated sources to the given Android variant.
+     */
+    @Deprecated("use connectToAndroidComponent() instead", ReplaceWith("connectToAndroidComponent(variant, true)"))
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_3_4)
+    fun connectToAndroidVariant(variant: Any)
 
     /**
      * Connects the generated sources to the given Android source set.
      * Throws if the Android plugin is not applied
      *
-     * @param name: the name of the source set. For an example, "main", "test" or "androidTest"
+     * @param name the name of the source set. For example, "main", "test" or "androidTest"
      * You can also use more qualified source sets like "demo", "debug" or "demoDebug"
      */
+    @Deprecated("This function is deprecated and fails with AGP9+. Use connectToAndroidVariant instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_3_4)
     fun connectToAndroidSourceSet(name: String)
 
     /**
-     * Connects the generated sources to the main Android variants.
+     * Connect the generated sources to the main Android variants.
      * Note: despite the name, this method does not connect to the test variants as the main
      * classpath is accessible from the tests and adding the sources twice causes issues.
      * See https://issuetracker.google.com/u/1/issues/268218176
      *
      * @throws Exception if the Android plugin is not applied
      */
+    @Deprecated("Use connectToAndroidVariants() instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_3_4)
     fun connectToAllAndroidVariants()
 
     /**
-     * Connects the generated sources to the given Android variant. This will
-     * look up the most specific source set used by this variant. For an example, "demoDebug"
-     *
-     * @param variant: the [BaseVariant] to connect to. It is of type [Any] because [DirectoryConnection]
-     * can be used in non-Android projects, and we don't want the class to fail during loading because
-     * of a missing symbol in that case
-     */
-    fun connectToAndroidVariant(variant: Any)
-
-    /**
-     * The directory where the generated models will be written.
+     * The directory where the generated models are written.
      * This provider carries task dependency information.
      */
     val outputDir: Provider<Directory>
-
 
     /**
      * The task that produces outputDir. Usually this is not needed as [outputDir] carries

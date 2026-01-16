@@ -2,6 +2,8 @@
 
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.AgpCompat
+import com.apollographql.apollo.ComponentFilter
 import com.apollographql.apollo.compiler.APOLLO_VERSION
 import com.apollographql.apollo.compiler.GeneratedMethod
 import com.apollographql.apollo.compiler.JavaNullable
@@ -14,6 +16,10 @@ import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
 import com.apollographql.apollo.gradle.api.SchemaConnection
 import com.apollographql.apollo.gradle.api.Service
+import com.apollographql.com.apollographql.apollo.Agp8
+import com.apollographql.com.apollographql.apollo.Agp8Component
+import com.apollographql.com.apollographql.apollo.Agp9
+import com.apollographql.com.apollographql.apollo.Agp9Component
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -54,6 +60,30 @@ abstract class DefaultApolloExtension(
       project.components.add(it)
     }
   }
+  /**
+   * Needs to be lazy because we don't know the order in which the plugins are going to be applied
+   */
+  internal val agpOrNull: AgpCompat? by lazy {
+    val androidComponents = project.extensions.findByName("androidComponents")
+    if (androidComponents != null) {
+      val agpVersion = agpVersion()
+      val major = agpVersion.split('.').get(0).toIntOrNull()
+      check(major != null) {
+        "Apollo: unrecognized AGP version: $agpVersion"
+      }
+      if (major >= 9) {
+        Agp9(agpVersion, androidComponents, project.extensions.findByName("android"), project.extensions.findByName("kotlin"))
+      } else {
+        Agp8(agpVersion, project.extensions.findByName("android") ?: error("No 'android' extension found. If you're applying `com.android.kotlin.multiplatform.library`, Apollo only supports it in conjunction with AGP9."))
+      }
+    } else {
+      null
+    }
+  }
+
+  internal val agp
+    get() = agpOrNull ?: error("Apollo: androidComponents extension not found, is the Android Gradle Plugin applied?")
+
   private val apolloMetadataConfiguration: Configuration
   private var apolloBuildServiceProvider: Provider<ApolloBuildService>
 
@@ -632,9 +662,11 @@ abstract class DefaultApolloExtension(
 
     val directoryConnection = DefaultDirectoryConnection(
         project = project,
+        agp = agpOrNull,
         task = sourcesBaseTaskProvider,
         outputDir = sourcesBaseTaskProvider.flatMap { (it as ApolloGenerateSourcesBaseTask).outputDir },
-        hardCodedOutputDir = BuildDirLayout.outputDir(project, service)
+        hardCodedOutputDir = BuildDirLayout.outputDir(project, service),
+        wiredWith = { (it as ApolloGenerateSourcesBaseTask).outputDir },
     )
 
     if (project.hasKotlinPlugin()) {
@@ -873,8 +905,8 @@ abstract class DefaultApolloExtension(
         connection.connectToKotlinSourceSet("commonMain")
       }
 
-      project.androidExtension != null -> {
-        connection.connectToAllAndroidVariants()
+      agpOrNull != null -> {
+        connection.connectToAndroidVariants(project.extensions.findByName("kotlin") != null)
       }
 
       project.kotlinProjectExtension != null -> {
@@ -999,8 +1031,8 @@ abstract class DefaultApolloExtension(
           """.trimIndent()
     }
 
-    AndroidProject.onEachVariant(project, true) { variant ->
-      val name = "${variant.name}${nameSuffix.capitalizeFirstLetter()}"
+    agp.onComponent(ComponentFilter.All) { component ->
+      val name = "${component.name}${nameSuffix.capitalizeFirstLetter()}"
 
       service(name) { service ->
         action.execute(service)
@@ -1009,11 +1041,18 @@ abstract class DefaultApolloExtension(
         check(!service.sourceFolder.isPresent) {
           "Apollo: service.sourceFolder is not used when calling createAllAndroidVariantServices. Use the parameter instead"
         }
-        variant.sourceSets.forEach { sourceProvider ->
-          service.srcDir("src/${sourceProvider.name}/graphql/$sourceFolder")
+
+        if (component is Agp8Component) {
+          component.sourceSets.forEach {
+            service.srcDir("src/${it}/graphql/$sourceFolder")
+          }
+        } else if (component is Agp9Component) {
+          component.graphQLDirectories.forEach {
+            service.srcDir(it)
+          }
         }
         (service as DefaultService).outputDirAction = Action<Service.DirectoryConnection> { connection ->
-          connection.connectToAndroidVariant(variant.wrapped)
+          connection.connectToAndroidComponent(component.wrappedComponent, project.extensions.findByName("kotlin") != null)
         }
       }
     }
