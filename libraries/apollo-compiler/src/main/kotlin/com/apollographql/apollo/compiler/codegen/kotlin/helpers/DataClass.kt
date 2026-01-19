@@ -113,7 +113,7 @@ internal fun TypeSpec.Builder.withCopyImplementation(className: ClassName): Type
   return addFunction(FunSpec.builder(Identifier.copy)
       .apply {
         constructorProperties.forEach {
-          addParameter(ParameterSpec.builder(it.name, it.type).defaultValue("this.%L", it.name).build())
+          addParameter(ParameterSpec.builder(it.name, it.type).defaultValue("this.%N", it.name).build())
         }
       }
       .returns(className)
@@ -134,7 +134,7 @@ internal fun TypeSpec.Builder.withEqualsImplementation(className: ClassName): Ty
   fun equalsCode(property: PropertySpec): CodeBlock {
     return CodeBlock
         .builder()
-        .addStatement("this.%L == other.%L", property.name, property.name).build()
+        .addStatement("this.%N == other.%N", property.name, property.name).build()
   }
 
   fun methodCode(): CodeBlock {
@@ -177,7 +177,7 @@ internal fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder = a
       CodeBlock.builder()
           .addStatement("${Identifier.__h} *= 31")
           .apply {
-            addStatement("${Identifier.__h} += %L.hashCode()", property.name)
+            addStatement("${Identifier.__h} += %N.hashCode()", property.name)
           }
           .build()
 
@@ -187,7 +187,7 @@ internal fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder = a
     }
     return CodeBlock.builder()
         .beginControlFlow("if (%L == null)", MEMOIZED_HASH_CODE_VAR)
-        .addStatement("var ${Identifier.__h} = %L.hashCode()", propertySpecs.getOrNull(0)?.name ?: "null")
+        .addStatement("var ${Identifier.__h} = %N.hashCode()", propertySpecs.getOrNull(0)?.name ?: "null")
         .add(propertySpecs
             .drop(1)
             .excludeInternalProperties()

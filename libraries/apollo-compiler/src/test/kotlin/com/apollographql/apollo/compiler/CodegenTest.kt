@@ -119,9 +119,9 @@ class CodegenTest {
      */
     val compileDuration = measureTime {
       if (parameters.generateKotlinModels) {
-        KotlinCompiler.assertCompiles(actualFiles.filter { it.extension == "java" }.toSet())
+        KotlinCompiler.assertCompiles(actualFiles.filter { it.extension == "kt" }.toSet())
       } else {
-        JavaCompiler.assertCompiles(actualFiles.filter { it.extension == "kt" }.toSet())
+        JavaCompiler.assertCompiles(actualFiles.filter { it.extension == "java" }.toSet())
       }
     }
 
@@ -309,6 +309,8 @@ class CodegenTest {
         else -> {
           if (folder.name == "input_object_variable_and_argument_with_generated_methods") {
             listOf(GeneratedMethod.COPY, GeneratedMethod.TO_STRING, GeneratedMethod.EQUALS_HASH_CODE)
+          } else if(folder.name == "escape_equals_hashcode") {
+            listOf(GeneratedMethod.EQUALS_HASH_CODE)
           } else {
             null
           }

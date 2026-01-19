@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  200049
-aggregate-kotlin-responseBased                                                                  62793
+aggregate-all                                                                                  201263
+aggregate-kotlin-responseBased                                                                  63274
 aggregate-kotlin-operationBased                                                                 41065
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   96191
+aggregate-java-operationBased                                                                   96924
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5747
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3409
@@ -214,6 +214,7 @@ kotlin-responseBased-inline_fragment_for_non_optional_field                     
 kotlin-responseBased-hero_name_query_long_name                                                    422
 kotlin-responseBased-variable_default_value                                                       420
 kotlin-responseBased-field_with_include_directive                                                 414
+java-operationBased-escaped_kdocs                                                                 411
 java-operationBased-companion                                                                     408
 kotlin-responseBased-monomorphic                                                                  408
 kotlin-operationBased-monomorphic                                                                 403
@@ -238,14 +239,17 @@ kotlin-operationBased-inline_fragment_type_coercion                             
 kotlin-responseBased-subscriptions                                                                338
 kotlin-responseBased-antlr_tokens                                                                 335
 kotlin-responseBased-java8annotation                                                              332
+java-operationBased-escape_equals_hashcode                                                        322
 java-operationBased-java_hashcode                                                                 302
 kotlin-responseBased-operation_id_generator                                                       296
 kotlin-responseBased-merged_include                                                               294
 kotlin-responseBased-enums_as_sealed                                                              288
 kotlin-responseBased-big_query                                                                    273
 kotlin-responseBased-case_sensitive_enum                                                          257
+kotlin-responseBased-escaped_kdocs                                                                257
 kotlin-operationBased-companion                                                                   252
 kotlin-responseBased-object                                                                       250
+kotlin-responseBased-escape_equals_hashcode                                                       224
 kotlin-responseBased-java_hashcode                                                                187
 kotlin-responseBased-__schema                                                                      35
 java-operationBased-__schema                                                                       29
