@@ -200,8 +200,11 @@ public abstract interface class com/apollographql/apollo/gradle/api/Service {
 
 public abstract interface class com/apollographql/apollo/gradle/api/Service$DirectoryConnection {
 	public abstract fun connectToAllAndroidVariants ()V
+	public abstract fun connectToAndroidComponent (Ljava/lang/Object;Z)V
 	public abstract fun connectToAndroidSourceSet (Ljava/lang/String;)V
+	public abstract fun connectToAndroidTestComponents (Z)V
 	public abstract fun connectToAndroidVariant (Ljava/lang/Object;)V
+	public abstract fun connectToAndroidVariants (Z)V
 	public abstract fun connectToJavaSourceSet (Ljava/lang/String;)V
 	public abstract fun connectToKotlinSourceSet (Ljava/lang/String;)V
 	public abstract fun getOutputDir ()Lorg/gradle/api/provider/Provider;

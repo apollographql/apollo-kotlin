@@ -10,6 +10,7 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import util.TestUtils.executeGradleWithVersion
 import util.disableIsolatedProjects
 import java.io.File
 

@@ -20,7 +20,7 @@ pluginManagement {
   resolutionStrategy {
     eachPlugin {
       // Workaround for the Kotlin plugin 1.5.0 not publishing the marker
-      if(requested.id.id.startsWith("org.jetbrains.kotlin")) {
+      if(requested.id.id.startsWith("org.jetbrains.kotlin.jvm")) {
         useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
       }
     }
