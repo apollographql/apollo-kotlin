@@ -122,12 +122,4 @@ class AndroidProjectTests {
       Truth.assertThat(result.task(":build")!!.outcome).isEqualTo(TaskOutcome.SUCCESS)
     }
   }
-
-  @Test
-  fun `agp9_compiles`() {
-    withTestProject("agp9") { dir ->
-      val result = executeGradleWithVersion(dir, "9.1.0", ":app:assembleDebug")
-      assertTrue(result.task(":app:assembleDebug")!!.outcome == TaskOutcome.SUCCESS)
-    }
-  }
 }

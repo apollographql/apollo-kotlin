@@ -3,8 +3,6 @@
 # Can be as high as IJ supports
 # Consult https://kotlinlang.org/docs/multiplatform-compatibility-guide.html#version-compatibility for compatibility with KGP
 android-plugin = "8.7.2"
-# The version used by the 'android-plugin-max' test
-android-plugin-max = "8.2.1"
 android-sdkversion-compile = "34"
 android-sdkversion-compilebenchmark = "34"
 android-sdkversion-min = "16"
@@ -202,6 +200,5 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-jvm-min = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin-min" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-plugin" }
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
-android-application-max = { id = "com.android.application", version.ref = "android-plugin-max" }
 android-library = { id = "com.android.library", version.ref = "android-plugin" }
 grammarkit = { id = "org.jetbrains.grammarkit", version = "2022.3.2.2" }
