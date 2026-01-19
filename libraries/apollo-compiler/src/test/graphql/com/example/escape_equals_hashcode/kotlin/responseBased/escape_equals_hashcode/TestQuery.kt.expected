@@ -71,6 +71,10 @@ public class TestQuery() : Query<TestQuery.Data> {
       }
       return false
     }
+
+    override fun toString(): String = "Data(in=$`in`, out=$`out`)"
+
+    public fun copy(`in`: Int = this.`in`, `out`: Int = this.`out`): Data = Data(`in`,`out`,)
   }
 
   public companion object : ExecutableDefinition<Data> {

@@ -42,7 +42,8 @@ internal fun TypeSpec.Builder.makeClassFromParameters(
   parameters.forEach {
     addProperty(PropertySpec.builder(it.name, it.type)
         .initializer(CodeBlock.of(it.name))
-        .build())
+        .build()
+    )
   }
   addGeneratedMethods(generateMethods, className)
 }
@@ -50,7 +51,7 @@ internal fun TypeSpec.Builder.makeClassFromParameters(
 internal fun TypeSpec.Builder.makeClassFromProperties(
     generateMethods: List<GeneratedMethod>,
     properties: List<PropertySpec>,
-    className: ClassName
+    className: ClassName,
 ) = apply {
   primaryConstructor(FunSpec.constructorBuilder()
       .apply {
@@ -169,17 +170,18 @@ internal fun TypeSpec.Builder.withEqualsImplementation(className: ClassName): Ty
       .addParameter("other", KotlinSymbols.Any.copy(nullable = true))
       .returns(KotlinSymbols.Boolean)
       .addCode(methodCode())
-      .build())
+      .build()
+  )
 }
 
 internal fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder = apply {
   fun hashPropertyCode(property: PropertySpec) =
-      CodeBlock.builder()
-          .addStatement("${Identifier.__h} *= 31")
-          .apply {
-            addStatement("${Identifier.__h} += %N.hashCode()", property.name)
-          }
-          .build()
+    CodeBlock.builder()
+        .addStatement("${Identifier.__h} *= 31")
+        .apply {
+          addStatement("${Identifier.__h} += %N.hashCode()", property.name)
+        }
+        .build()
 
   fun methodCode(): CodeBlock {
     if (propertySpecs.isEmpty()) {
@@ -193,7 +195,8 @@ internal fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder = a
             .excludeInternalProperties()
             .map(::hashPropertyCode)
             .fold(CodeBlock.builder(), CodeBlock.Builder::add)
-            .build())
+            .build()
+        )
         .addStatement("%L = ${Identifier.__h}", MEMOIZED_HASH_CODE_VAR)
         .endControlFlow()
         .addStatement("return %L!!", MEMOIZED_HASH_CODE_VAR)
@@ -222,21 +225,23 @@ internal fun TypeSpec.Builder.withHashCodeImplementation(): TypeSpec.Builder = a
 }
 
 internal fun TypeSpec.Builder.withToStringImplementation(className: ClassName): TypeSpec.Builder {
-  fun printPropertiesTemplate() =
-      "${className.simpleName}(" + propertySpecs
-            .excludeInternalProperties()
-            .joinToString(", ") { "${it.name}=\$${it.name}" } + ")"
-
   fun methodCode() =
-      CodeBlock.builder()
-          .addStatement("return %P", printPropertiesTemplate())
-          .build()
+    CodeBlock.builder()
+        .add("return \"%N(", className.simpleName)
+        .add(
+            propertySpecs
+                .excludeInternalProperties()
+                .joinToCode(", ") { CodeBlock.of("${it.name}=$%N", it.name) }
+        )
+        .add(")\"")
+        .build()
 
   return addFunction(FunSpec.builder(Identifier.toString)
-          .addModifiers(KModifier.OVERRIDE)
-          .returns(KotlinSymbols.String)
-          .addCode(methodCode())
-          .build())
+      .addModifiers(KModifier.OVERRIDE)
+      .returns(KotlinSymbols.String)
+      .addCode(methodCode())
+      .build()
+  )
 }
 
 

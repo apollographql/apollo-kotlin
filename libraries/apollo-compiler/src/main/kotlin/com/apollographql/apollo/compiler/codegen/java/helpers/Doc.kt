@@ -13,7 +13,7 @@ import com.squareup.javapoet.TypeSpec
  *
  * GraphQL is markdown so that doesn't map to the Javadoc. For now, we're just preventing
  * parsing errors from markdown that contains nested comments.
- * 
+ *
  * TODO: see if we can format that markdown better for Javadocs
  */
 private fun String.escape(): String {

@@ -307,10 +307,8 @@ class CodegenTest {
       val generateMethods = when (targetLanguage) {
         JAVA -> null
         else -> {
-          if (folder.name == "input_object_variable_and_argument_with_generated_methods") {
+          if (folder.name in setOf("input_object_variable_and_argument_with_generated_methods", "escape_equals_hashcode")) {
             listOf(GeneratedMethod.COPY, GeneratedMethod.TO_STRING, GeneratedMethod.EQUALS_HASH_CODE)
-          } else if(folder.name == "escape_equals_hashcode") {
-            listOf(GeneratedMethod.EQUALS_HASH_CODE)
           } else {
             null
           }
