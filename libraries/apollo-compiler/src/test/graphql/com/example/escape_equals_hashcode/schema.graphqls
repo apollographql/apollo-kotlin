@@ -1,0 +1,5 @@
+type Query {
+  in: Int!
+  out: Int!
+}
+

@@ -9,7 +9,7 @@ import com.apollographql.apollo.api.ObjectType;
 
 /**
  * /1 Stuff
- * *TODO*/2 More stuff
+ * *TODO*&#47;2 More stuff
  */
 public class SomeType {
   public static ObjectType type = (new ObjectType.Builder("SomeType")).build();
