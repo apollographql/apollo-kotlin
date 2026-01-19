@@ -10,6 +10,7 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import util.TestUtils.executeGradleWithVersion
 import util.disableIsolatedProjects
 import java.io.File
 
@@ -119,6 +120,14 @@ class AndroidProjectTests {
       val result = TestUtils.executeTask("build", dir)
 
       Truth.assertThat(result.task(":build")!!.outcome).isEqualTo(TaskOutcome.SUCCESS)
+    }
+  }
+
+  @Test
+  fun `agp9_compiles`() {
+    withTestProject("agp9") { dir ->
+      val result = executeGradleWithVersion(dir, "9.1.0", ":app:assembleDebug")
+      assertTrue(result.task(":app:assembleDebug")!!.outcome == TaskOutcome.SUCCESS)
     }
   }
 }
