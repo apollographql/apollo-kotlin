@@ -1,25 +1,22 @@
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.com.apollographql.apollo
+package com.apollographql.apollo.gradle
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.Component
-import com.android.build.api.variant.HasAndroidTest
 import com.android.build.api.variant.HasDeviceTests
 import com.android.build.api.variant.HasHostTests
-import com.apollographql.apollo.AgpCompat
-import com.apollographql.apollo.AgpComponent
-import com.apollographql.apollo.ComponentFilter
 import org.gradle.api.Task
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.TaskProvider
 import java.io.File
 
-internal class Agp9(
+@EmbeddedGradleSymbol
+class Agp9(
     override val version: String,
     androidComponents: Any,
     android: Any?,
@@ -112,7 +109,8 @@ internal class Agp9(
   }
 }
 
-internal class Agp9Component(private val base: Component) : AgpComponent {
+@EmbeddedGradleSymbol
+class Agp9Component(private val base: Component) : AgpComponent {
   override val name: String
     get() = base.name
 

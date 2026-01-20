@@ -40,6 +40,7 @@ open annotation class com.apollographql.apollo.annotations/ApolloDeprecatedSince
         enum entry v4_1_2 // com.apollographql.apollo.annotations/ApolloDeprecatedSince.Version.v4_1_2|null[0]
         enum entry v4_2_1 // com.apollographql.apollo.annotations/ApolloDeprecatedSince.Version.v4_2_1|null[0]
         enum entry v4_3_1 // com.apollographql.apollo.annotations/ApolloDeprecatedSince.Version.v4_3_1|null[0]
+        enum entry v4_3_4 // com.apollographql.apollo.annotations/ApolloDeprecatedSince.Version.v4_3_4|null[0]
         enum entry v5_0_0 // com.apollographql.apollo.annotations/ApolloDeprecatedSince.Version.v5_0_0|null[0]
 
         final val entries // com.apollographql.apollo.annotations/ApolloDeprecatedSince.Version.entries|#static{}entries[0]
