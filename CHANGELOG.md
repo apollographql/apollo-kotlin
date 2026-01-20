@@ -1,7 +1,17 @@
 Change Log
 ==========
 
-# Next version
+# Version 4.4.0
+
+Most of the development is now made in the 5.x alpha. This version backports compatibility with [AGP9](https://blog.jetbrains.com/kotlin/2026/01/update-your-projects-for-agp9/) as well as a few other fixes.
+
+
+## 👷‍♂️
+* [NEW] Agp9 support (#6844)
+* [NEW] Add `@catch` support for `responseBased` codegen (#6698)
+* [NEW] Add `ApolloInterceptor.InsertionPoint` to control where the interceptors are added (#6767)
+* [FIX] Do not check already checked fragments in checkCapitalizedFields (#6721)
+* [FIX] Restore JsonReader state if a field throws in-flight (#6781)
 
 # Version 5.0.0-alpha.3
 _2025-11-13_
