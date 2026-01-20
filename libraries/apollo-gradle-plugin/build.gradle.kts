@@ -44,15 +44,7 @@ dependencies {
 if (relocateJar) {
   gr8 {
     val shadowedJar = create("default") {
-      addProgramJarsFrom(shadowedDependencies.elements.map {
-        it.filter {
-          /**
-           * For some reason, `apollo-gradle-plugin-external` exposes directories as dependencies. We don't want those.
-           * We only want jar files in there.
-           */
-          it.asFile.isFile
-        }
-      })
+      addProgramJarsFrom(shadowedDependencies)
       addProgramJarsFrom(tasks.getByName("jar"))
       r8Version("31d8f0676a22526f2ce7fb39cfdd83671536eb3c")
       systemClassesToolchain {

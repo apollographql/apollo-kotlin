@@ -1,11 +1,11 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.AgpCompat
-import com.apollographql.apollo.ComponentFilter
+import com.apollographql.apollo.gradle.AgpCompat
+import com.apollographql.apollo.gradle.ComponentFilter
 import com.apollographql.apollo.gradle.api.Service
-import com.apollographql.com.apollographql.apollo.Agp8
-import com.apollographql.com.apollographql.apollo.Agp8Component
-import com.apollographql.com.apollographql.apollo.Agp9
+import com.apollographql.apollo.gradle.Agp9
+import com.apollographql.apollo.gradle.Agp8Component
+import com.apollographql.apollo.gradle.Agp8
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.Directory

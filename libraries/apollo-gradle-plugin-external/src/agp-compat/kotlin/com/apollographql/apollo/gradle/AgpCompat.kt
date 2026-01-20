@@ -1,6 +1,7 @@
-package com.apollographql.apollo
+package com.apollographql.apollo.gradle
 
-internal interface AgpCompat {
+@EmbeddedGradleSymbol
+interface AgpCompat {
   fun compileSdk(): String?
   fun targetSdk(): Int?
   fun minSdk(): Int?
@@ -10,13 +11,15 @@ internal interface AgpCompat {
   val version: String
 }
 
-internal enum class ComponentFilter {
+@EmbeddedGradleSymbol
+enum class ComponentFilter {
   All,
   Test,
   Main
 }
 
-internal interface AgpComponent {
+@EmbeddedGradleSymbol
+interface AgpComponent {
   /**
    * The name of the component ("prodDebug", "demoRelease", etc..)
    */
