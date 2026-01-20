@@ -1,20 +1,18 @@
 @file:Suppress("DEPRECATION")
 
-package com.apollographql.com.apollographql.apollo
+package com.apollographql.apollo.gradle
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.BaseVariant
-import com.apollographql.apollo.AgpCompat
-import com.apollographql.apollo.AgpComponent
-import com.apollographql.apollo.ComponentFilter
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 
-internal class Agp8(override val version: String, extension: Any): AgpCompat {
+@EmbeddedGradleSymbol
+class Agp8(override val version: String, extension: Any): AgpCompat {
   private val extension = extension as BaseExtension
 
   override fun compileSdk(): String? {
@@ -69,7 +67,8 @@ internal class Agp8(override val version: String, extension: Any): AgpCompat {
   }
 }
 
-internal class Agp8Component(private val base: BaseVariant): AgpComponent {
+@EmbeddedGradleSymbol
+class Agp8Component(private val base: BaseVariant): AgpComponent {
   override val name: String
     get() = base.name
 

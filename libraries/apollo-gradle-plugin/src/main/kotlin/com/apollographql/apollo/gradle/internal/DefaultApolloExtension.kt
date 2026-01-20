@@ -1,7 +1,7 @@
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.AgpCompat
-import com.apollographql.apollo.ComponentFilter
+import com.apollographql.apollo.gradle.AgpCompat
+import com.apollographql.apollo.gradle.ComponentFilter
 import com.apollographql.apollo.gradle.api.ApolloDependencies
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
@@ -24,10 +24,10 @@ import com.apollographql.apollo.gradle.task.registerApolloGenerateProjectModelTa
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesFromIrTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloRegisterOperationsTask
-import com.apollographql.com.apollographql.apollo.Agp8
-import com.apollographql.com.apollographql.apollo.Agp8Component
-import com.apollographql.com.apollographql.apollo.Agp9
-import com.apollographql.com.apollographql.apollo.Agp9Component
+import com.apollographql.apollo.gradle.Agp8
+import com.apollographql.apollo.gradle.Agp8Component
+import com.apollographql.apollo.gradle.Agp9
+import com.apollographql.apollo.gradle.Agp9Component
 import gratatouille.wiring.capitalizeFirstLetter
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectProvider

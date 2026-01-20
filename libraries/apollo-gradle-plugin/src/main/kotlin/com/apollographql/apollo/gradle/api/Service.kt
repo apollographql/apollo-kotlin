@@ -861,7 +861,7 @@ interface Service {
      * Connects the generated sources to the given Android variant.
      */
     @Deprecated("use connectToAndroidComponent() instead", ReplaceWith("connectToAndroidComponent(variant, true)"))
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_3_4)
     fun connectToAndroidVariant(variant: Any)
 
     /**
@@ -872,7 +872,7 @@ interface Service {
      * You can also use more qualified source sets like "demo", "debug" or "demoDebug"
      */
     @Deprecated("This function is deprecated and fails with AGP9+. Use connectToAndroidVariant instead")
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_3_4)
     fun connectToAndroidSourceSet(name: String)
 
     /**
@@ -884,7 +884,7 @@ interface Service {
      * @throws Exception if the Android plugin is not applied
      */
     @Deprecated("Use connectToAndroidVariants() instead")
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_3_4)
     fun connectToAllAndroidVariants()
 
     /**
