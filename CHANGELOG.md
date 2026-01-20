@@ -6,7 +6,7 @@ Change Log
 Most of the development is now made in the 5.x alpha. This version backports compatibility with [AGP9](https://blog.jetbrains.com/kotlin/2026/01/update-your-projects-for-agp9/) as well as a few other fixes.
 
 
-## 👷‍♂️
+## 👷‍♂️ All changes
 * [NEW] Agp9 support (#6844)
 * [NEW] Add `@catch` support for `responseBased` codegen (#6698)
 * [NEW] Add `ApolloInterceptor.InsertionPoint` to control where the interceptors are added (#6767)
