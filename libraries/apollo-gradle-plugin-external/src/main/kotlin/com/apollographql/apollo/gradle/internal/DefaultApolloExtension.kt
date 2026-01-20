@@ -2,8 +2,8 @@
 
 package com.apollographql.apollo.gradle.internal
 
-import com.apollographql.apollo.AgpCompat
-import com.apollographql.apollo.ComponentFilter
+import com.apollographql.apollo.gradle.AgpCompat
+import com.apollographql.apollo.gradle.ComponentFilter
 import com.apollographql.apollo.compiler.APOLLO_VERSION
 import com.apollographql.apollo.compiler.GeneratedMethod
 import com.apollographql.apollo.compiler.JavaNullable
@@ -16,10 +16,10 @@ import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
 import com.apollographql.apollo.gradle.api.SchemaConnection
 import com.apollographql.apollo.gradle.api.Service
-import com.apollographql.com.apollographql.apollo.Agp8
-import com.apollographql.com.apollographql.apollo.Agp8Component
-import com.apollographql.com.apollographql.apollo.Agp9
-import com.apollographql.com.apollographql.apollo.Agp9Component
+import com.apollographql.apollo.gradle.Agp8
+import com.apollographql.apollo.gradle.Agp8Component
+import com.apollographql.apollo.gradle.Agp9
+import com.apollographql.apollo.gradle.Agp9Component
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task

@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
@@ -44,24 +45,43 @@ gradlePlugin {
   }
 }
 
+private fun setFlags(compilation: KotlinCompilation<*>) {
+  compilation.compileTaskProvider.configure {
+    this.compilerOptions.optIn.add("com.apollographql.apollo.gradle.EmbeddedGradleSymbol")
+  }
+}
+private fun addEdge(compilation: KotlinCompilation<*>, dependency: KotlinCompilation<*>) {
+  dependencies.add(compilation.compileOnlyConfigurationName, dependency.output.classesDirs)
+}
+
+val mainCompilation = kotlin.target.compilations.getByName("main")
+setFlags(mainCompilation)
+
 val agpCompat = kotlin.target.compilations.create("agp-compat")
+setFlags(mainCompilation)
+
 dependencies {
   add(agpCompat.compileOnlyConfigurationName, libs.gradle.api.min)
   add(agpCompat.compileOnlyConfigurationName, project(":apollo-annotations"))
 }
+tasks.jar.configure {
+  from(agpCompat.output.classesDirs)
+}
+addEdge(mainCompilation, agpCompat)
 
 mapOf(
     "8" to setOf(libs.android.plugin8),
     "9" to setOf(libs.android.plugin9, libs.kotlin.plugin)
 ).forEach {
   val compilation = kotlin.target.compilations.create("agp-${it.key}")
+  setFlags(compilation)
 
-  compilation.associateWith(agpCompat)
-  kotlin.target.compilations.getByName("main").associateWith(compilation)
-
+  addEdge(compilation, agpCompat)
+  addEdge(mainCompilation, compilation) // Needed to be able
   tasks.jar {
     from(compilation.output.classesDirs)
   }
+
   dependencies {
     add(compilation.compileOnlyConfigurationName, project(":apollo-annotations"))
     it.value.forEach {
@@ -70,43 +90,6 @@ mapOf(
     // See https://issuetracker.google.com/issues/445209309
     add(compilation.compileOnlyConfigurationName, libs.gradle.api.min)
   }
-}
-
-tasks.jar.configure {
-  from(agpCompat.output.classesDirs)
-}
-
-/**
- * associateWith() pulls the secondary compilations into the main dependencies,
- * which we don't want.
- *
- * An alternative would be to not use `associateWith()` but that fails in the IDE,
- * probably because there is no way to set `AbstractKotlinCompile.friendSourceSets`
- * from public API.
- */
-configurations.compileOnly.get().dependencies.removeIf {
-  when {
-    it is ExternalDependency && it.group == "com.android.tools.build" && it.name == "gradle" -> true
-    else -> false
-  }
-}
-/**
- * Also force our own version of KGP
- */
-configurations.compileClasspath.get().resolutionStrategy {
-  eachDependency {
-    val kgp = libs.kotlin.plugin.min.get()
-    if (requested.group == kgp.group && requested.name == kgp.name) {
-      /**
-       * Use our declared KGP version
-       */
-      useVersion(kgp.version!!)
-    }
-  }
-}
-
-kotlin.target.compilations.get("main").apply {
-  associateWith(agpCompat)
 }
 
 
