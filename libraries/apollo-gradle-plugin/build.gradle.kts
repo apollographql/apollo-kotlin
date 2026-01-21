@@ -95,7 +95,7 @@ gradlePlugin {
       id = "com.apollographql.apollo"
       displayName = "Apollo Kotlin GraphQL client plugin."
       description = """
-        ℹ️ Newer versions of the Apollo Kotlin Gradle Plugin (v5+) are only published on Maven Central.
+        ⚠️ Newer versions of the Apollo Kotlin Gradle Plugin (v5+) are only published on Maven Central.
          
         See https://github.com/gradle/plugin-portal-requests/issues/225 for more details and https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration for documentation about the Gradle plugin.
         """.trimIndent()
