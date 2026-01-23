@@ -39,7 +39,7 @@ ksp = "2.3.1"
 #noinspection NewerVersionAvailable requires KGP 2.2
 ktor = "3.2.3"
 moshix = "0.14.1"
-nmcp = "1.3.0-SNAPSHOT-acb2ac5e165a088e84d0ec056e33d7ab90ad45cd"
+nmcp = "1.4.4-SNAPSHOT-2ca915cf54be6c4f61da6e62f9fd1ddbf8fa3534"
 okio = "3.16.2"
 okhttp = "5.3.0"
 sqldelight = "2.1.0"
