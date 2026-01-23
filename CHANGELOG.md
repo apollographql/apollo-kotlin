@@ -1,6 +1,25 @@
 Change Log
 ==========
 
+# Version 5.0.0-alpha.4
+_2025-01-23_
+
+Many thanks @MatthewFolbigg, @scana, and @simonlebras for their contributions to this release! 
+
+## 👷‍♂️ All changes
+
+## What's Changed
+* [NEW] Add watchosDeviceArm64 target in https://github.com/apollographql/apollo-kotlin/pull/6791
+* [NEW] Add support for directives on directive definitions in https://github.com/apollographql/apollo-kotlin/pull/6803
+* [NEW] Add `ApolloCall.extensions()` in https://github.com/apollographql/apollo-kotlin/pull/6834
+* [FIX] Do not compute key fields and key args when the Cache compiler plugin is present in https://github.com/apollographql/apollo-kotlin/pull/6797
+* [FIX] Escape /* and */ in KDocs in https://github.com/apollographql/apollo-kotlin/pull/6805
+* [FIX] Fix DataBuilders in multi-modules scenarios in https://github.com/apollographql/apollo-kotlin/pull/6810
+* [FIX] Data Builders: do not build the FakeResolver multiple times in https://github.com/apollographql/apollo-kotlin/pull/6811
+* [FIX] Gradle Plugin: Avoid eager configuration of Gradle objects in https://github.com/apollographql/apollo-kotlin/pull/6820
+* [FIX] Rename @link `Purpose` and `Import` definitions in https://github.com/apollographql/apollo-kotlin/pull/6838
+* [FIX] Escape names in equals(), hashCode(), copy(), and toString() in https://github.com/apollographql/apollo-kotlin/pull/6843
+
 # Version 4.4.0
 
 Most of the development is now made in the 5.x alpha. This version backports compatibility with [AGP9](https://blog.jetbrains.com/kotlin/2026/01/update-your-projects-for-agp9/) as well as a few other fixes.
