@@ -9,7 +9,6 @@ import com.apollographql.apollo.ast.toUtf8
 import org.intellij.lang.annotations.Language
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class TypeExtensionsMergeTest {
 
@@ -109,7 +108,7 @@ class TypeExtensionsMergeTest {
   }
 
   @Test
-  fun canAddDirectiveToExistingField() {
+  fun addDirectiveToExistingField() {
     @Language("graphqls")
     val sdl = """
       type Query {
@@ -131,7 +130,7 @@ class TypeExtensionsMergeTest {
   }
 
   @Test
-  fun canAddArgumentToExistingField() {
+  fun addArgumentToExistingField() {
     @Language("graphqls")
     val sdl = """
       type Query {
@@ -155,7 +154,55 @@ class TypeExtensionsMergeTest {
   private fun Issue.pretty(): String = "${sourceLocation?.line}:${sourceLocation?.column} $message"
 
   @Test
-  fun byDefaultCantExtendField() {
+  fun addDirectiveToInterfaceField() {
+    @Language("graphqls")
+    val sdl = """
+      interface Foo {
+        random: Int
+      }      
+      extend interface Foo {
+        random: Int @deprecated
+      }
+    """.trimIndent()
+
+    sdl.toGQLDocument().mergeExtensions(MergeOptions(true)).getOrThrow().toUtf8().apply {
+      assertEquals("""
+        interface Foo {
+          random: Int @deprecated
+        }
+        
+      """.trimIndent(), this )
+    }
+  }
+
+  @Test
+  fun fieldDescriptionIsPreserved() {
+    @Language("graphqls")
+    val sdl = """
+      type Query {
+        "A random field"
+        random: Int
+      }      
+      extend type Query {
+        random: Int @deprecated
+      }
+    """.trimIndent()
+
+    sdl.toGQLDocument().mergeExtensions(MergeOptions(true)).getOrThrow().toUtf8().apply {
+      assertEquals("""
+        type Query {
+          ""${'"'}
+          A random field
+          ""${'"'}
+          random: Int @deprecated
+        }
+        
+      """.trimIndent(), this )
+    }
+  }
+
+  @Test
+  fun byDefaultCannotExtendField() {
     @Language("graphqls")
     val sdl = """
             type Query {
