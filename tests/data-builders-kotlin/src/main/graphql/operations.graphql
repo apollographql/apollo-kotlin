@@ -65,7 +65,9 @@ query GetEverything {
   }
   cat {
     mustaches
-    owner
+    owner {
+      name
+    }
   }
   animal {
     species
