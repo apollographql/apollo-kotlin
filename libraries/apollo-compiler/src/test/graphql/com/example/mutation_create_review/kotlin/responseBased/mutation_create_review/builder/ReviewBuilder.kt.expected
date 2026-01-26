@@ -31,7 +31,8 @@ internal class ReviewBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : DataBuilder<ReviewMap>(customScalarAdapters) {
   init {
-    __typename = "Review"}
+    __typename = "Review"
+  }
 
   public var commentary: String? by BuilderProperty(com.example.MyStringAdapter().nullable())
 

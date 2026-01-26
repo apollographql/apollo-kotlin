@@ -17,7 +17,8 @@ internal class DroidBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : DataBuilder<DroidMap>(customScalarAdapters) {
   init {
-    __typename = "Droid"}
+    __typename = "Droid"
+  }
 
   override fun build(): DroidMap = DroidMap(__fields)
 

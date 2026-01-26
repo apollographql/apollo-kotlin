@@ -21,7 +21,8 @@ public class QueryBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : DataBuilder<QueryMap>(customScalarAdapters) {
   init {
-    __typename = "Query"}
+    __typename = "Query"
+  }
 
   public var animal: AnimalMap by __fields
 

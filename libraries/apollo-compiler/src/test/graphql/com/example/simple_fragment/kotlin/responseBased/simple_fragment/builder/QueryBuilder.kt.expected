@@ -21,9 +21,10 @@ internal class QueryBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : DataBuilder<QueryMap>(customScalarAdapters) {
   init {
-    __typename = "Query"}
+    __typename = "Query"
+  }
 
-  public var hero: CharacterMap by __fields
+  public var hero: CharacterMap? by __fields
 
   override fun build(): QueryMap = QueryMap(__fields)
 

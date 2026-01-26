@@ -22,7 +22,8 @@ public class DogBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : DataBuilder<DogMap>(customScalarAdapters) {
   init {
-    __typename = "Dog"}
+    __typename = "Dog"
+  }
 
   public var id: String by __fields
 

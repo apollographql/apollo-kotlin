@@ -22,7 +22,8 @@ public class DroidBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : DataBuilder<DroidMap>(customScalarAdapters) {
   init {
-    __typename = "Droid"}
+    __typename = "Droid"
+  }
 
   public var name: String by __fields
 

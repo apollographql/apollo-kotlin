@@ -22,7 +22,8 @@ internal class HumanBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : DataBuilder<HumanMap>(customScalarAdapters) {
   init {
-    __typename = "Human"}
+    __typename = "Human"
+  }
 
   public var name: String by __fields
 

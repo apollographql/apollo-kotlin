@@ -17,7 +17,8 @@ internal class StarshipBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : DataBuilder<StarshipMap>(customScalarAdapters) {
   init {
-    __typename = "Starship"}
+    __typename = "Starship"
+  }
 
   override fun build(): StarshipMap = StarshipMap(__fields)
 
