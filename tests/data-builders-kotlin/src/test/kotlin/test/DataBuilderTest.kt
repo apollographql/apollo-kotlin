@@ -196,7 +196,14 @@ class DataBuilderTest {
     assertEquals(43, data.long2?.value)
     assertEquals(44, data.long3)
   }
-
+  @Test
+  fun canSetObjectFieldToNull() {
+    val data = GetEverythingQuery.Data(DefaultFakeResolver(), customScalarAdapters) {
+      cat = buildCat {
+        owner = null
+      }
+    }
+  }
   @Test
   fun fakeValues() {
     val data = GetEverythingQuery.Data(DefaultFakeResolver(), customScalarAdapters)
