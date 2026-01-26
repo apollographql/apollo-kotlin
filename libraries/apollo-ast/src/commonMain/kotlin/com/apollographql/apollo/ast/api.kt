@@ -9,6 +9,7 @@ import com.apollographql.apollo.ast.internal.ExecutableValidationScope
 import com.apollographql.apollo.ast.internal.LexerException
 import com.apollographql.apollo.ast.internal.Parser
 import com.apollographql.apollo.ast.internal.ParserException
+import com.apollographql.apollo.ast.internal.validateSchema
 import okio.BufferedSource
 import okio.use
 import kotlin.jvm.JvmMultifileClass

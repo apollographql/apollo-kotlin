@@ -14,7 +14,7 @@ import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.QueryDocumentMinifier
 import com.apollographql.apollo.ast.builtinForeignSchemas
 import com.apollographql.apollo.ast.checkEmpty
-import com.apollographql.apollo.ast.SchemaValidationOptions
+import com.apollographql.apollo.ast.internal.SchemaValidationOptions
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.pretty
 import com.apollographql.apollo.ast.toGQLDocument
