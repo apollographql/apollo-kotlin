@@ -5,7 +5,7 @@ package com.apollographql.apollo.graphql.ast.test
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.builtinForeignSchemas
-import com.apollographql.apollo.ast.internal.SchemaValidationOptions
+import com.apollographql.apollo.ast.SchemaValidationOptions
 import com.apollographql.apollo.ast.internal.toSemanticSdl
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
