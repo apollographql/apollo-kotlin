@@ -22,7 +22,8 @@ public class CatBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : DataBuilder<CatMap>(customScalarAdapters) {
   init {
-    __typename = "Cat"}
+    __typename = "Cat"
+  }
 
   public var id: String by __fields
 

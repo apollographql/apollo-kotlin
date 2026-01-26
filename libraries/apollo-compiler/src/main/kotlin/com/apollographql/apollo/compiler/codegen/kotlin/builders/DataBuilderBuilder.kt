@@ -93,7 +93,7 @@ internal class DataBuilderBuilder(
              * If this is a concrete type, initialize typename directly. If not, the user must provide it
              */
             addInitializerBlock(buildCodeBlock {
-              add("__typename = %S", dataBuilder.name)
+              add("__typename = %S\n", dataBuilder.name)
             })
           }
         }

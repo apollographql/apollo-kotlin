@@ -62,6 +62,11 @@ type Cat implements Animal & Animal2 & Node {
   unusedField: String!
   bestFriend: Animal!
   country: String!
+  owner: Owner
+}
+
+type Owner {
+  name: String
 }
 
 type Lion implements Animal {

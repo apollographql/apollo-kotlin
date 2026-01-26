@@ -21,9 +21,10 @@ internal class MutationBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : DataBuilder<MutationMap>(customScalarAdapters) {
   init {
-    __typename = "Mutation"}
+    __typename = "Mutation"
+  }
 
-  public var createReview: ReviewMap by __fields
+  public var createReview: ReviewMap? by __fields
 
   override fun build(): MutationMap = MutationMap(__fields)
 

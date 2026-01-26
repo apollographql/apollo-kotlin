@@ -134,7 +134,7 @@ internal class KotlinResolver(
     return when (type) {
       is IrNonNullType2 -> resolveIrType2(type.ofType).copy(nullable = false)
       is IrListType2 -> KotlinSymbols.List.parameterizedBy(resolveIrType2(type.ofType)).copy(nullable = true)
-      is IrCompositeType2 -> mapTypes.get(type.name) ?: error("Cannot find map type for ${type.name}")
+      is IrCompositeType2 -> mapTypes.get(type.name)?.copy(nullable = true) ?: error("Cannot find map type for ${type.name}")
       is IrEnumType2 -> resolveIrType(IrEnumType(type.name, nullable = true), false).copy(nullable = true)
       is IrScalarType2 -> resolveIrType(IrScalarType(type.name, nullable = true), false).copy(nullable = true)
     }
