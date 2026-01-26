@@ -1,53 +1,25 @@
-package com.apollographql.apollo.ast.internal
+package com.apollographql.apollo.ast
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
-import com.apollographql.apollo.ast.DirectiveRedefinition
-import com.apollographql.apollo.ast.ForeignSchema
-import com.apollographql.apollo.ast.GQLDefinition
-import com.apollographql.apollo.ast.GQLDirective
-import com.apollographql.apollo.ast.GQLDirectiveDefinition
-import com.apollographql.apollo.ast.GQLEnumTypeDefinition
-import com.apollographql.apollo.ast.GQLField
-import com.apollographql.apollo.ast.GQLFieldDefinition
-import com.apollographql.apollo.ast.GQLInputObjectTypeDefinition
-import com.apollographql.apollo.ast.GQLInputValueDefinition
-import com.apollographql.apollo.ast.GQLInterfaceTypeDefinition
-import com.apollographql.apollo.ast.GQLListValue
-import com.apollographql.apollo.ast.GQLNamed
-import com.apollographql.apollo.ast.GQLNamedType
-import com.apollographql.apollo.ast.GQLNonNullType
-import com.apollographql.apollo.ast.GQLObjectTypeDefinition
-import com.apollographql.apollo.ast.GQLObjectValue
-import com.apollographql.apollo.ast.GQLOperationTypeDefinition
-import com.apollographql.apollo.ast.GQLResult
-import com.apollographql.apollo.ast.GQLScalarTypeDefinition
-import com.apollographql.apollo.ast.GQLSchemaDefinition
-import com.apollographql.apollo.ast.GQLSchemaExtension
-import com.apollographql.apollo.ast.GQLStringValue
-import com.apollographql.apollo.ast.GQLTypeDefinition
 import com.apollographql.apollo.ast.GQLTypeDefinition.Companion.builtInTypes
-import com.apollographql.apollo.ast.GQLTypeSystemExtension
-import com.apollographql.apollo.ast.GQLUnionTypeDefinition
-import com.apollographql.apollo.ast.GQLValue
-import com.apollographql.apollo.ast.IncompatibleDefinition
-import com.apollographql.apollo.ast.Issue
-import com.apollographql.apollo.ast.MergeOptions
-import com.apollographql.apollo.ast.NoQueryType
-import com.apollographql.apollo.ast.OtherValidationIssue
-import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.Schema.Companion.TYPE_POLICY
-import com.apollographql.apollo.ast.SourceLocation
-import com.apollographql.apollo.ast.autoLinkedKotlinLabsForeignSchema
-import com.apollographql.apollo.ast.autoLinkedKotlinLabsForeignSchemaNoCache
-import com.apollographql.apollo.ast.builtinDefinitions
-import com.apollographql.apollo.ast.canHaveKeyFields
-import com.apollographql.apollo.ast.findOneOf
-import com.apollographql.apollo.ast.linkDefinitions
-import com.apollographql.apollo.ast.parseAsGQLDocument
-import com.apollographql.apollo.ast.parseAsGQLSelections
-import com.apollographql.apollo.ast.rawType
-import com.apollographql.apollo.ast.transform2
-import com.apollographql.apollo.ast.withBuiltinDefinitions
+import com.apollographql.apollo.ast.internal.DefaultValidationScope
+import com.apollographql.apollo.ast.internal.ExtensionsMerger
+import com.apollographql.apollo.ast.internal.ValidationScope
+import com.apollographql.apollo.ast.internal.compilerOptions_0_0
+import com.apollographql.apollo.ast.internal.compilerOptions_0_1_additions
+import com.apollographql.apollo.ast.internal.constContextError
+import com.apollographql.apollo.ast.internal.deferDefinitionsStr
+import com.apollographql.apollo.ast.internal.disableErrorPropagationStr
+import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_4
+import com.apollographql.apollo.ast.internal.nonNullDefinitionStr
+import com.apollographql.apollo.ast.internal.nullabilityDefinitionsStr
+import com.apollographql.apollo.ast.internal.oneOfDefinitionsStr
+import com.apollographql.apollo.ast.internal.semanticEquals
+import com.apollographql.apollo.ast.internal.toSemanticSdl
+import com.apollographql.apollo.ast.internal.validateAndCoerceValue
+import com.apollographql.apollo.ast.internal.validateDirectivesInConstContext
 
 /**
  * @param addKotlinLabsDefinitions automatically import the kotlin_labs definitions, even if no `@link` is present. If [excludeCacheDirectives] is `true`, cache related directives are excluded.
@@ -56,12 +28,63 @@ import com.apollographql.apollo.ast.withBuiltinDefinitions
  * @param computeKeyFields whether to compute cache key fields. Can be false when using the Apollo Cache compiler plugin to avoid unneeded computation.
  */
 @ApolloExperimental
-class SchemaValidationOptions(
+class SchemaValidationOptions
+@Deprecated("This constructor was exposed by mistake and will be removed in a future version.", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+constructor(
     val addKotlinLabsDefinitions: Boolean,
     val foreignSchemas: List<ForeignSchema>,
     val excludeCacheDirectives: Boolean,
     val computeKeyFields: Boolean,
+    val mergeOptions: MergeOptions,
 ) {
+  class Builder {
+    var addKotlinLabsDefinitions: Boolean = false
+    val foreignSchemas: MutableList<ForeignSchema> = mutableListOf()
+    var excludeCacheDirectives: Boolean = false
+    var computeKeyFields: Boolean = true
+    var mergeOptions: MergeOptions = MergeOptions.Default
+
+    fun addKotlinLabsDefinitions(addKotlinLabsDefinitions: Boolean) = apply {
+      this.addKotlinLabsDefinitions = addKotlinLabsDefinitions
+    }
+
+    fun foreignSchemas(schemas: List<ForeignSchema>): Builder = apply {
+      foreignSchemas.clear()
+      foreignSchemas.addAll(schemas)
+    }
+
+    fun addForeignSchema(schema: ForeignSchema): Builder = apply {
+      foreignSchemas.add(schema)
+    }
+
+    fun excludeCacheDirectives(excludeCacheDirectives: Boolean) = apply {
+      this.excludeCacheDirectives = excludeCacheDirectives
+    }
+
+    fun computeKeyFields(computeKeyFields: Boolean) = apply {
+      this.computeKeyFields = computeKeyFields
+    }
+
+    fun mergeOptions(mergeOptions: MergeOptions) = apply {
+      this.mergeOptions = mergeOptions
+    }
+
+    fun build(): SchemaValidationOptions {
+      @Suppress("DEPRECATION_ERROR")
+      return SchemaValidationOptions(
+          addKotlinLabsDefinitions = addKotlinLabsDefinitions,
+          foreignSchemas = foreignSchemas,
+          excludeCacheDirectives = excludeCacheDirectives,
+          computeKeyFields = computeKeyFields,
+          mergeOptions = mergeOptions
+      )
+    }
+  }
+
+  @Deprecated("This constructor was exposed by mistake and will be removed in a future version.", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+  @Suppress("DEPRECATION_ERROR")
   constructor(
       addKotlinLabsDefinitions: Boolean,
       foreignSchemas: List<ForeignSchema>,
@@ -71,8 +94,12 @@ class SchemaValidationOptions(
       foreignSchemas = foreignSchemas,
       excludeCacheDirectives = excludeCacheDirectives,
       computeKeyFields = true,
+      mergeOptions = MergeOptions.Default,
   )
 
+  @Deprecated("This constructor was exposed by mistake and will be removed in a future version.", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+  @Suppress("DEPRECATION_ERROR")
   constructor(
       addKotlinLabsDefinitions: Boolean,
       foreignSchemas: List<ForeignSchema>,
@@ -81,6 +108,7 @@ class SchemaValidationOptions(
       foreignSchemas = foreignSchemas,
       excludeCacheDirectives = false,
       computeKeyFields = true,
+      mergeOptions = MergeOptions.Default,
   )
 }
 
@@ -331,7 +359,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
    * Moving forward, extensions merging should probably be done first thing as a separate step, before any validation and/or linking of foreign schemas.
    */
   val dedupedDefinitions = listOfNotNull(schemaDefinition) + directiveDefinitions.values + typeDefinitions.values
-  val mergedDefinitions = ExtensionsMerger(dedupedDefinitions + typeSystemExtensions, MergeOptions(false, true)).merge().getOrThrow()
+  val mergedDefinitions = ExtensionsMerger(dedupedDefinitions + typeSystemExtensions, options.mergeOptions).merge().getOrThrow()
 
   val mergedScope = DefaultValidationScope(
       typeDefinitions = mergedDefinitions.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },

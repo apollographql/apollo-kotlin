@@ -1206,12 +1206,10 @@ final class com.apollographql.apollo.ast/InvalidDeferLabel : com.apollographql.a
 }
 
 final class com.apollographql.apollo.ast/MergeOptions { // com.apollographql.apollo.ast/MergeOptions|null[0]
-    constructor <init>(kotlin/Boolean, kotlin/Boolean) // com.apollographql.apollo.ast/MergeOptions.<init>|<init>(kotlin.Boolean;kotlin.Boolean){}[0]
+    constructor <init>(kotlin/Boolean) // com.apollographql.apollo.ast/MergeOptions.<init>|<init>(kotlin.Boolean){}[0]
 
-    final val allowAddingDirectivesToExistingFieldDefinitions // com.apollographql.apollo.ast/MergeOptions.allowAddingDirectivesToExistingFieldDefinitions|{}allowAddingDirectivesToExistingFieldDefinitions[0]
-        final fun <get-allowAddingDirectivesToExistingFieldDefinitions>(): kotlin/Boolean // com.apollographql.apollo.ast/MergeOptions.allowAddingDirectivesToExistingFieldDefinitions.<get-allowAddingDirectivesToExistingFieldDefinitions>|<get-allowAddingDirectivesToExistingFieldDefinitions>(){}[0]
-    final val allowFieldNullabilityModification // com.apollographql.apollo.ast/MergeOptions.allowFieldNullabilityModification|{}allowFieldNullabilityModification[0]
-        final fun <get-allowFieldNullabilityModification>(): kotlin/Boolean // com.apollographql.apollo.ast/MergeOptions.allowFieldNullabilityModification.<get-allowFieldNullabilityModification>|<get-allowFieldNullabilityModification>(){}[0]
+    final val allowMergingFieldDefinitions // com.apollographql.apollo.ast/MergeOptions.allowMergingFieldDefinitions|{}allowMergingFieldDefinitions[0]
+        final fun <get-allowMergingFieldDefinitions>(): kotlin/Boolean // com.apollographql.apollo.ast/MergeOptions.allowMergingFieldDefinitions.<get-allowMergingFieldDefinitions>|<get-allowMergingFieldDefinitions>(){}[0]
 
     final object Companion { // com.apollographql.apollo.ast/MergeOptions.Companion|null[0]
         final val Default // com.apollographql.apollo.ast/MergeOptions.Companion.Default|{}Default[0]
@@ -1443,6 +1441,51 @@ final class com.apollographql.apollo.ast/SchemaValidationException : com.apollog
     constructor <init>(kotlin/String, com.apollographql.apollo.ast/SourceLocation? = ...) // com.apollographql.apollo.ast/SchemaValidationException.<init>|<init>(kotlin.String;com.apollographql.apollo.ast.SourceLocation?){}[0]
 }
 
+final class com.apollographql.apollo.ast/SchemaValidationOptions { // com.apollographql.apollo.ast/SchemaValidationOptions|null[0]
+    constructor <init>(kotlin/Boolean, kotlin.collections/List<com.apollographql.apollo.ast/ForeignSchema>) // com.apollographql.apollo.ast/SchemaValidationOptions.<init>|<init>(kotlin.Boolean;kotlin.collections.List<com.apollographql.apollo.ast.ForeignSchema>){}[0]
+    constructor <init>(kotlin/Boolean, kotlin.collections/List<com.apollographql.apollo.ast/ForeignSchema>, kotlin/Boolean) // com.apollographql.apollo.ast/SchemaValidationOptions.<init>|<init>(kotlin.Boolean;kotlin.collections.List<com.apollographql.apollo.ast.ForeignSchema>;kotlin.Boolean){}[0]
+    constructor <init>(kotlin/Boolean, kotlin.collections/List<com.apollographql.apollo.ast/ForeignSchema>, kotlin/Boolean, kotlin/Boolean, com.apollographql.apollo.ast/MergeOptions) // com.apollographql.apollo.ast/SchemaValidationOptions.<init>|<init>(kotlin.Boolean;kotlin.collections.List<com.apollographql.apollo.ast.ForeignSchema>;kotlin.Boolean;kotlin.Boolean;com.apollographql.apollo.ast.MergeOptions){}[0]
+
+    final val addKotlinLabsDefinitions // com.apollographql.apollo.ast/SchemaValidationOptions.addKotlinLabsDefinitions|{}addKotlinLabsDefinitions[0]
+        final fun <get-addKotlinLabsDefinitions>(): kotlin/Boolean // com.apollographql.apollo.ast/SchemaValidationOptions.addKotlinLabsDefinitions.<get-addKotlinLabsDefinitions>|<get-addKotlinLabsDefinitions>(){}[0]
+    final val computeKeyFields // com.apollographql.apollo.ast/SchemaValidationOptions.computeKeyFields|{}computeKeyFields[0]
+        final fun <get-computeKeyFields>(): kotlin/Boolean // com.apollographql.apollo.ast/SchemaValidationOptions.computeKeyFields.<get-computeKeyFields>|<get-computeKeyFields>(){}[0]
+    final val excludeCacheDirectives // com.apollographql.apollo.ast/SchemaValidationOptions.excludeCacheDirectives|{}excludeCacheDirectives[0]
+        final fun <get-excludeCacheDirectives>(): kotlin/Boolean // com.apollographql.apollo.ast/SchemaValidationOptions.excludeCacheDirectives.<get-excludeCacheDirectives>|<get-excludeCacheDirectives>(){}[0]
+    final val foreignSchemas // com.apollographql.apollo.ast/SchemaValidationOptions.foreignSchemas|{}foreignSchemas[0]
+        final fun <get-foreignSchemas>(): kotlin.collections/List<com.apollographql.apollo.ast/ForeignSchema> // com.apollographql.apollo.ast/SchemaValidationOptions.foreignSchemas.<get-foreignSchemas>|<get-foreignSchemas>(){}[0]
+    final val mergeOptions // com.apollographql.apollo.ast/SchemaValidationOptions.mergeOptions|{}mergeOptions[0]
+        final fun <get-mergeOptions>(): com.apollographql.apollo.ast/MergeOptions // com.apollographql.apollo.ast/SchemaValidationOptions.mergeOptions.<get-mergeOptions>|<get-mergeOptions>(){}[0]
+
+    final class Builder { // com.apollographql.apollo.ast/SchemaValidationOptions.Builder|null[0]
+        constructor <init>() // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.<init>|<init>(){}[0]
+
+        final val foreignSchemas // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.foreignSchemas|{}foreignSchemas[0]
+            final fun <get-foreignSchemas>(): kotlin.collections/MutableList<com.apollographql.apollo.ast/ForeignSchema> // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.foreignSchemas.<get-foreignSchemas>|<get-foreignSchemas>(){}[0]
+
+        final var addKotlinLabsDefinitions // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.addKotlinLabsDefinitions|{}addKotlinLabsDefinitions[0]
+            final fun <get-addKotlinLabsDefinitions>(): kotlin/Boolean // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.addKotlinLabsDefinitions.<get-addKotlinLabsDefinitions>|<get-addKotlinLabsDefinitions>(){}[0]
+            final fun <set-addKotlinLabsDefinitions>(kotlin/Boolean) // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.addKotlinLabsDefinitions.<set-addKotlinLabsDefinitions>|<set-addKotlinLabsDefinitions>(kotlin.Boolean){}[0]
+        final var computeKeyFields // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.computeKeyFields|{}computeKeyFields[0]
+            final fun <get-computeKeyFields>(): kotlin/Boolean // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.computeKeyFields.<get-computeKeyFields>|<get-computeKeyFields>(){}[0]
+            final fun <set-computeKeyFields>(kotlin/Boolean) // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.computeKeyFields.<set-computeKeyFields>|<set-computeKeyFields>(kotlin.Boolean){}[0]
+        final var excludeCacheDirectives // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.excludeCacheDirectives|{}excludeCacheDirectives[0]
+            final fun <get-excludeCacheDirectives>(): kotlin/Boolean // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.excludeCacheDirectives.<get-excludeCacheDirectives>|<get-excludeCacheDirectives>(){}[0]
+            final fun <set-excludeCacheDirectives>(kotlin/Boolean) // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.excludeCacheDirectives.<set-excludeCacheDirectives>|<set-excludeCacheDirectives>(kotlin.Boolean){}[0]
+        final var mergeOptions // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.mergeOptions|{}mergeOptions[0]
+            final fun <get-mergeOptions>(): com.apollographql.apollo.ast/MergeOptions // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.mergeOptions.<get-mergeOptions>|<get-mergeOptions>(){}[0]
+            final fun <set-mergeOptions>(com.apollographql.apollo.ast/MergeOptions) // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.mergeOptions.<set-mergeOptions>|<set-mergeOptions>(com.apollographql.apollo.ast.MergeOptions){}[0]
+
+        final fun addForeignSchema(com.apollographql.apollo.ast/ForeignSchema): com.apollographql.apollo.ast/SchemaValidationOptions.Builder // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.addForeignSchema|addForeignSchema(com.apollographql.apollo.ast.ForeignSchema){}[0]
+        final fun addKotlinLabsDefinitions(kotlin/Boolean): com.apollographql.apollo.ast/SchemaValidationOptions.Builder // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.addKotlinLabsDefinitions|addKotlinLabsDefinitions(kotlin.Boolean){}[0]
+        final fun build(): com.apollographql.apollo.ast/SchemaValidationOptions // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.build|build(){}[0]
+        final fun computeKeyFields(kotlin/Boolean): com.apollographql.apollo.ast/SchemaValidationOptions.Builder // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.computeKeyFields|computeKeyFields(kotlin.Boolean){}[0]
+        final fun excludeCacheDirectives(kotlin/Boolean): com.apollographql.apollo.ast/SchemaValidationOptions.Builder // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.excludeCacheDirectives|excludeCacheDirectives(kotlin.Boolean){}[0]
+        final fun foreignSchemas(kotlin.collections/List<com.apollographql.apollo.ast/ForeignSchema>): com.apollographql.apollo.ast/SchemaValidationOptions.Builder // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.foreignSchemas|foreignSchemas(kotlin.collections.List<com.apollographql.apollo.ast.ForeignSchema>){}[0]
+        final fun mergeOptions(com.apollographql.apollo.ast/MergeOptions): com.apollographql.apollo.ast/SchemaValidationOptions.Builder // com.apollographql.apollo.ast/SchemaValidationOptions.Builder.mergeOptions|mergeOptions(com.apollographql.apollo.ast.MergeOptions){}[0]
+    }
+}
+
 final class com.apollographql.apollo.ast/SourceLocation { // com.apollographql.apollo.ast/SourceLocation|null[0]
     constructor <init>(kotlin/Int, kotlin/Int, kotlin/Int, kotlin/Int, kotlin/String?) // com.apollographql.apollo.ast/SourceLocation.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.String?){}[0]
 
@@ -1581,7 +1624,7 @@ final fun (com.apollographql.apollo.ast/GQLDocument).com.apollographql.apollo.as
 final fun (com.apollographql.apollo.ast/GQLDocument).com.apollographql.apollo.ast/toSchema(): com.apollographql.apollo.ast/Schema // com.apollographql.apollo.ast/toSchema|toSchema@com.apollographql.apollo.ast.GQLDocument(){}[0]
 final fun (com.apollographql.apollo.ast/GQLDocument).com.apollographql.apollo.ast/validateAsExecutable(com.apollographql.apollo.ast/Schema): com.apollographql.apollo.ast/ExecutableValidationResult // com.apollographql.apollo.ast/validateAsExecutable|validateAsExecutable@com.apollographql.apollo.ast.GQLDocument(com.apollographql.apollo.ast.Schema){}[0]
 final fun (com.apollographql.apollo.ast/GQLDocument).com.apollographql.apollo.ast/validateAsSchema(): com.apollographql.apollo.ast/GQLResult<com.apollographql.apollo.ast/Schema> // com.apollographql.apollo.ast/validateAsSchema|validateAsSchema@com.apollographql.apollo.ast.GQLDocument(){}[0]
-final fun (com.apollographql.apollo.ast/GQLDocument).com.apollographql.apollo.ast/validateAsSchema(com.apollographql.apollo.ast.internal/SchemaValidationOptions): com.apollographql.apollo.ast/GQLResult<com.apollographql.apollo.ast/Schema> // com.apollographql.apollo.ast/validateAsSchema|validateAsSchema@com.apollographql.apollo.ast.GQLDocument(com.apollographql.apollo.ast.internal.SchemaValidationOptions){}[0]
+final fun (com.apollographql.apollo.ast/GQLDocument).com.apollographql.apollo.ast/validateAsSchema(com.apollographql.apollo.ast/SchemaValidationOptions): com.apollographql.apollo.ast/GQLResult<com.apollographql.apollo.ast/Schema> // com.apollographql.apollo.ast/validateAsSchema|validateAsSchema@com.apollographql.apollo.ast.GQLDocument(com.apollographql.apollo.ast.SchemaValidationOptions){}[0]
 final fun (com.apollographql.apollo.ast/GQLDocument).com.apollographql.apollo.ast/validateAsSchemaAndAddApolloDefinition(): com.apollographql.apollo.ast/GQLResult<com.apollographql.apollo.ast/Schema> // com.apollographql.apollo.ast/validateAsSchemaAndAddApolloDefinition|validateAsSchemaAndAddApolloDefinition@com.apollographql.apollo.ast.GQLDocument(){}[0]
 final fun (com.apollographql.apollo.ast/GQLDocument).com.apollographql.apollo.ast/withBuiltinDefinitions(): com.apollographql.apollo.ast/GQLDocument // com.apollographql.apollo.ast/withBuiltinDefinitions|withBuiltinDefinitions@com.apollographql.apollo.ast.GQLDocument(){}[0]
 final fun (com.apollographql.apollo.ast/GQLDocument).com.apollographql.apollo.ast/withoutBuiltinDefinitions(): com.apollographql.apollo.ast/GQLDocument // com.apollographql.apollo.ast/withoutBuiltinDefinitions|withoutBuiltinDefinitions@com.apollographql.apollo.ast.GQLDocument(){}[0]

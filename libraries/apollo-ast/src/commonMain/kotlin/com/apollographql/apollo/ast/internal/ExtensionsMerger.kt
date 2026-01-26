@@ -75,6 +75,57 @@ internal class ExtensionsMerger(private val definitions: List<GQLDefinition>, in
 
     return GQLResult(newDefinitions, issues)
   }
+
+  fun mergeFieldDefinition(
+      issues: MutableList<Issue>,
+      existing: GQLFieldDefinition,
+      incoming: GQLFieldDefinition,
+  ): GQLFieldDefinition? {
+    // Cannot change the type
+    if (!areEqual(existing.type, incoming.type)) {
+      issues.add(OtherValidationIssue("Cannot merge field '${incoming.name}': wrong type '${incoming.type.toUtf8()}' (expected: '${existing.type.toUtf8()}')", incoming.sourceLocation))
+      return null
+    }
+
+    if (incoming.description != null) {
+      issues.add(OtherValidationIssue("Cannot merge field '${incoming.name}': descriptions cannot be merged", incoming.sourceLocation))
+    }
+
+    return existing.copy(
+        directives = mergeDirectives(existing.directives, incoming.directives),
+        arguments = mergeArguments(existing.arguments, incoming.arguments)
+    )
+  }
+}
+
+private fun ExtensionsMerger.mergeArguments(
+    existingDefinitions: List<GQLInputValueDefinition>,
+    incomingDefinitions: List<GQLInputValueDefinition>,
+): List<GQLInputValueDefinition> {
+  val newArguments = mutableListOf<GQLInputValueDefinition>()
+  newArguments.addAll(existingDefinitions)
+  incomingDefinitions.forEach { incoming ->
+    val index = newArguments.indexOfFirst { arg -> arg.name == incoming.name }
+    if (index != -1) {
+      val existing = newArguments[index]
+      if (!areEqual(existing.type, incoming.type)) {
+        issues.add(OtherValidationIssue("Cannot merge argument '${incoming.name}': wrong type '${incoming.type.toUtf8()}' (expected: '${existing.type.toUtf8()}')", incoming.sourceLocation))
+      }
+      if (incoming.description != null) {
+        issues.add(OtherValidationIssue("Cannot merge argument '${incoming.name}': descriptions cannot be merged", incoming.sourceLocation))
+      }
+      if (incoming.defaultValue != null) {
+        issues.add(OtherValidationIssue("Cannot merge argument '${incoming.name}': default values cannot be merged", incoming.sourceLocation))
+      }
+      newArguments[index] = existing.copy(
+          directives = mergeDirectives(existing.directives, incoming.directives)
+      )
+    } else {
+      newArguments.add(incoming)
+    }
+  }
+
+  return newArguments
 }
 
 private fun ExtensionsMerger.mergeUnion(
@@ -327,40 +378,15 @@ private fun ExtensionsMerger.mergeFields(
       // field doesn't exist, add it
       result.add(newFieldDefinition)
     } else {
-      if (!mergeOptions.allowFieldNullabilityModification && !mergeOptions.allowAddingDirectivesToExistingFieldDefinitions) {
+      if (!mergeOptions.allowMergingFieldDefinitions) {
         issues.add(OtherValidationIssue("There is already a field definition named `${newFieldDefinition.name}` for this type", newFieldDefinition.sourceLocation))
         return@forEach
       }
 
-      val existingFieldDefinition = result[index]
-      if (!areEqual(newFieldDefinition.arguments, existingFieldDefinition.arguments)) {
-        issues.add(OtherValidationIssue("Cannot merge field definition `${newFieldDefinition.name}`: its arguments do not match the arguments of the original field definition", newFieldDefinition.sourceLocation))
-        return@forEach
+      val mergedFieldDefinition = mergeFieldDefinition(issues, result[index], newFieldDefinition)
+      if (mergedFieldDefinition != null) {
+        result[index] = mergedFieldDefinition
       }
-
-      if (mergeOptions.allowFieldNullabilityModification) {
-        if (!newFieldDefinition.type.isCompatibleWith(existingFieldDefinition.type)) {
-          issues.add(OtherValidationIssue("Cannot merge field definition `${newFieldDefinition.name}`: its type is not compatible with the original type.", newFieldDefinition.sourceLocation))
-          return@forEach
-        }
-      } else {
-        if (newFieldDefinition.type.toUtf8() != existingFieldDefinition.type.toUtf8()) {
-          issues.add(OtherValidationIssue("Cannot merge field definition`${newFieldDefinition.name}`: they have different types.", newFieldDefinition.sourceLocation))
-          return@forEach
-        }
-      }
-      if (!mergeOptions.allowAddingDirectivesToExistingFieldDefinitions) {
-        if (newFieldDefinition.directives.isNotEmpty()) {
-          issues.add(OtherValidationIssue("Cannot add directives to existing field definition `${newFieldDefinition.name}`", newFieldDefinition.sourceLocation))
-          return@forEach
-        }
-      }
-
-      /*
-       * No need to validate repeated directives, this is done later on by schema validation.
-       */
-      val newDirectives = existingFieldDefinition.directives + newFieldDefinition.directives
-      result[index] = existingFieldDefinition.copy(type = newFieldDefinition.type, directives = newDirectives)
     }
   }
 
@@ -403,18 +429,29 @@ private fun GQLType.isCompatibleWith(other: GQLType): Boolean {
   }
 }
 
-private fun areEqual(a: List<GQLInputValueDefinition>, b: List<GQLInputValueDefinition>): Boolean {
-  if (a.size != b.size) {
-    return false
-  }
+private fun areEqual(a: GQLType, b: GQLType): Boolean {
+  when (a) {
+    is GQLListType -> {
+      if (b !is GQLNonNullType) {
+        return false
+      }
+      return areEqual(a.type, b.type)
+    }
 
-  a.forEachIndexed { index, aDefinition ->
-    if (aDefinition.toUtf8() != b[index].toUtf8()) {
-      return false
+    is GQLNamedType -> {
+      if (b !is GQLNamedType) {
+        return false
+      }
+      return a.name == b.name
+    }
+
+    is GQLNonNullType -> {
+      if (b !is GQLNonNullType) {
+        return false
+      }
+      return areEqual(a.type, b.type)
     }
   }
-
-  return true
 }
 
 private inline fun <reified T : GQLNode> ExtensionsMerger.mergeUniquesOrThrow(
