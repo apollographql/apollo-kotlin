@@ -1,0 +1,48 @@
+
+schema {
+  query: Query
+}
+
+type Query {
+  field1: Int
+}
+
+interface Iface {
+  field2: Int
+}
+
+enum Direction {
+  SOUTH
+}
+
+input Params {
+  field5: String
+}
+
+union Any = Query
+
+scalar Json
+
+directive @stuff on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT | OBJECT
+
+type Mutation {
+  field4: Int
+}
+
+extend schema @stuff 
+extend type Query {
+  field3: Int
+}
+
+extend type Query implements Iface
+extend union Any = Query|Mutation
+
+extend schema {
+  mutation: Mutation
+}
+
+extend input Params @stuff {
+  field6: String
+}
+
+extend scalar Json @stuff

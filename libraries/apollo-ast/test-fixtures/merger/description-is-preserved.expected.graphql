@@ -1,0 +1,7 @@
+
+type Query {
+  """
+  A random field
+  """
+  random: Int @deprecated
+}

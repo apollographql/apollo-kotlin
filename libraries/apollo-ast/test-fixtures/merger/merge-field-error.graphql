@@ -1,0 +1,6 @@
+type Query {
+  random: Int
+}
+extend type Query {
+  random: Int @deprecated
+}

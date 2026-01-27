@@ -1,0 +1,10 @@
+# PRAGMA allowMergingFieldDefinitions
+
+type Query {
+  random: Int
+}
+
+extend type Query {
+  "A new field"
+  random: Int
+}

@@ -1,0 +1,8 @@
+# PRAGMA allowMergingFieldDefinitions
+
+interface Foo {
+  random: Int
+}
+extend interface Foo {
+  random: Int @deprecated
+}

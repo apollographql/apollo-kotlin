@@ -1,30 +1,30 @@
+
 schema {
-    query: Query
+  query: Query
 }
 
 type Query {
-    foo: Int
+  foo: Int
 }
 
 interface A {
-    a: String
+  a: String
 }
 
 interface B {
-    b: String
+  b: String
 }
 
 type C implements A & B {
-    a: String
+  a: String
 
-    b: String
+  b: String
 }
 
 interface D implements A & B {
-    a: String
+  a: String
 
-    b: String
+  b: String
 }
 
 directive @myDirective1(arg1: String) on QUERY
-
