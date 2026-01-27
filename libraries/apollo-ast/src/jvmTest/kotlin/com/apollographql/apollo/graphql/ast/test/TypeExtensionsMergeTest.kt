@@ -205,7 +205,7 @@ class TypeExtensionsMergeTest {
   fun byDefaultCannotExtendField() {
     @Language("graphqls")
     val sdl = """
-            type Query {
+      type Query {
         random: Int
       }      
       extend type Query {
