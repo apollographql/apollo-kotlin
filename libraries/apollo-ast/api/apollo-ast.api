@@ -48,7 +48,7 @@ public final class com/apollographql/apollo/ast/ApolloParser {
 	public static synthetic fun toSchema$default (Ljava/io/File;ZILjava/lang/Object;)Lcom/apollographql/apollo/ast/Schema;
 	public static final fun validateAsExecutable (Lcom/apollographql/apollo/ast/GQLDocument;Lcom/apollographql/apollo/ast/Schema;)Lcom/apollographql/apollo/ast/ExecutableValidationResult;
 	public static final fun validateAsSchema (Lcom/apollographql/apollo/ast/GQLDocument;)Lcom/apollographql/apollo/ast/GQLResult;
-	public static final fun validateAsSchema (Lcom/apollographql/apollo/ast/GQLDocument;Lcom/apollographql/apollo/ast/internal/SchemaValidationOptions;)Lcom/apollographql/apollo/ast/GQLResult;
+	public static final fun validateAsSchema (Lcom/apollographql/apollo/ast/GQLDocument;Lcom/apollographql/apollo/ast/SchemaValidationOptions;)Lcom/apollographql/apollo/ast/GQLResult;
 	public static final fun validateAsSchemaAndAddApolloDefinition (Lcom/apollographql/apollo/ast/GQLDocument;)Lcom/apollographql/apollo/ast/GQLResult;
 }
 
@@ -1053,9 +1053,8 @@ public final class com/apollographql/apollo/ast/IssueKt {
 
 public final class com/apollographql/apollo/ast/MergeOptions {
 	public static final field Companion Lcom/apollographql/apollo/ast/MergeOptions$Companion;
-	public fun <init> (ZZ)V
-	public final fun getAllowAddingDirectivesToExistingFieldDefinitions ()Z
-	public final fun getAllowFieldNullabilityModification ()Z
+	public fun <init> (Z)V
+	public final fun getAllowMergingFieldDefinitions ()Z
 }
 
 public final class com/apollographql/apollo/ast/MergeOptions$Companion {
@@ -1236,6 +1235,37 @@ public final class com/apollographql/apollo/ast/Schema$Companion {
 public final class com/apollographql/apollo/ast/SchemaValidationException : com/apollographql/apollo/ast/SourceAwareException {
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo/ast/SourceLocation;)V
 	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo/ast/SourceLocation;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class com/apollographql/apollo/ast/SchemaValidationOptions {
+	public fun <init> (ZLjava/util/List;)V
+	public fun <init> (ZLjava/util/List;Z)V
+	public fun <init> (ZLjava/util/List;ZZLcom/apollographql/apollo/ast/MergeOptions;)V
+	public final fun getAddKotlinLabsDefinitions ()Z
+	public final fun getComputeKeyFields ()Z
+	public final fun getExcludeCacheDirectives ()Z
+	public final fun getForeignSchemas ()Ljava/util/List;
+	public final fun getMergeOptions ()Lcom/apollographql/apollo/ast/MergeOptions;
+}
+
+public final class com/apollographql/apollo/ast/SchemaValidationOptions$Builder {
+	public fun <init> ()V
+	public final fun addForeignSchema (Lcom/apollographql/apollo/ast/ForeignSchema;)Lcom/apollographql/apollo/ast/SchemaValidationOptions$Builder;
+	public final fun addKotlinLabsDefinitions (Z)Lcom/apollographql/apollo/ast/SchemaValidationOptions$Builder;
+	public final fun build ()Lcom/apollographql/apollo/ast/SchemaValidationOptions;
+	public final fun computeKeyFields (Z)Lcom/apollographql/apollo/ast/SchemaValidationOptions$Builder;
+	public final fun excludeCacheDirectives (Z)Lcom/apollographql/apollo/ast/SchemaValidationOptions$Builder;
+	public final fun foreignSchemas (Ljava/util/List;)Lcom/apollographql/apollo/ast/SchemaValidationOptions$Builder;
+	public final fun getAddKotlinLabsDefinitions ()Z
+	public final fun getComputeKeyFields ()Z
+	public final fun getExcludeCacheDirectives ()Z
+	public final fun getForeignSchemas ()Ljava/util/List;
+	public final fun getMergeOptions ()Lcom/apollographql/apollo/ast/MergeOptions;
+	public final fun mergeOptions (Lcom/apollographql/apollo/ast/MergeOptions;)Lcom/apollographql/apollo/ast/SchemaValidationOptions$Builder;
+	public final fun setAddKotlinLabsDefinitions (Z)V
+	public final fun setComputeKeyFields (Z)V
+	public final fun setExcludeCacheDirectives (Z)V
+	public final fun setMergeOptions (Lcom/apollographql/apollo/ast/MergeOptions;)V
 }
 
 public class com/apollographql/apollo/ast/SourceAwareException : java/lang/RuntimeException {

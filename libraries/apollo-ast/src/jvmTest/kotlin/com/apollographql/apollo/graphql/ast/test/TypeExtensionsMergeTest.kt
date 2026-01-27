@@ -1,70 +1,221 @@
 package com.apollographql.apollo.graphql.ast.test
 
-import com.apollographql.apollo.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.MergeOptions
 import com.apollographql.apollo.ast.mergeExtensions
-import com.apollographql.apollo.ast.toMergedGQLDocument
+import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.ast.toUtf8
 import org.intellij.lang.annotations.Language
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class TypeExtensionsMergeTest {
+
   @Test
-  fun simpleTest() {
+  fun cannotChangeFieldType() {
     @Language("graphqls")
     val sdl = """
       type Query {
         random: Int
-        list: [String]
-        required: Int!
-      }
-      
+      }      
       extend type Query {
-        random: Int!
-        list: [String!]!
-        required: Int
-        new: Float
+        random: String
       }
     """.trimIndent()
 
-    val result = sdl.toGQLDocument().toMergedGQLDocument(MergeOptions(false, true))
-        .definitions
-        .single() as GQLObjectTypeDefinition
-
-
-    assertEquals("Int!", result.fields.first { it.name == "random" }.type.toUtf8())
-    assertEquals("[String!]!", result.fields.first { it.name == "list" }.type.toUtf8())
-    assertEquals("Int", result.fields.first { it.name == "required" }.type.toUtf8())
-    assertEquals("Float", result.fields.first { it.name == "new" }.type.toUtf8())
+    sdl.toGQLDocument().mergeExtensions(MergeOptions(true)).issues.apply {
+      assertEquals(1, size)
+      assertEquals("5:3 Cannot merge field 'random': wrong type 'String' (expected: 'Int')", get(0).pretty())
+    }
   }
 
   @Test
-  fun errors() {
+  fun cannotAddDescriptionToType() {
     @Language("graphqls")
     val sdl = """
       type Query {
         random: Int
-        list: [String]
-        required: Int! 
-      }
+      }      
       
-      directive @custom on FIELD_DEFINITION
+      "The root query"
+      extend type Query
+    """.trimIndent()
+
+    // Note how this is a parsing issue, not validation
+    sdl.parseAsGQLDocument().issues.apply {
+      assertEquals(1, size)
+      assertEquals("6:1 Type system extensions cannot have a description", get(0).pretty())
+    }
+  }
+
+  @Test
+  fun cannotAddDescriptionToExistingField() {
+    @Language("graphqls")
+    val sdl = """
+      type Query {
+        random: Int
+      }      
       
       extend type Query {
-        random: String
-        list(arg: String): [String!]!
-        required: Int @custom
+        "A new field"
+        random: Int
       }
     """.trimIndent()
 
-    val issues = sdl.toGQLDocument().mergeExtensions(MergeOptions(false, true)).issues
+    sdl.toGQLDocument().mergeExtensions(MergeOptions(true)).issues.apply {
+      assertEquals(1, size)
+      assertEquals("6:3 Cannot merge field 'random': descriptions cannot be merged", get(0).pretty())
+    }
+  }
 
-    assertEquals(3, issues.size)
-    assertTrue(issues[0].message.contains("its type is not compatible with the original type"))
-    assertTrue(issues[1].message.contains("its arguments do not match the arguments of the original field definition"))
-    assertTrue(issues[2].message.contains("Cannot add directives to existing field definition"))
+  @Test
+  fun cannotAddDescriptionToExistingArgument() {
+    @Language("graphqls")
+    val sdl = """
+      type Query {
+        random(id: ID!): Int
+      }      
+      
+      extend type Query {
+        random("A new argument" id: ID!): Int
+      }
+    """.trimIndent()
+
+    sdl.toGQLDocument().mergeExtensions(MergeOptions(true)).issues.apply {
+      assertEquals(1, size)
+      assertEquals("6:10 Cannot merge argument 'id': descriptions cannot be merged", get(0).pretty())
+    }
+  }
+
+  @Test
+  fun cannotAddDefaultValueToExistingArgument() {
+    @Language("graphqls")
+    val sdl = """
+      type Query {
+        random(id: ID!): Int
+      }      
+      
+      extend type Query {
+        random(id: ID! = "42"): Int
+      }
+    """.trimIndent()
+
+    sdl.toGQLDocument().mergeExtensions(MergeOptions(true)).issues.apply {
+      assertEquals(1, size)
+      assertEquals("6:10 Cannot merge argument 'id': default values cannot be merged", get(0).pretty())
+    }
+  }
+
+  @Test
+  fun addDirectiveToExistingField() {
+    @Language("graphqls")
+    val sdl = """
+      type Query {
+        random: Int
+      }      
+      extend type Query {
+        random: Int @deprecated
+      }
+    """.trimIndent()
+
+    sdl.toGQLDocument().mergeExtensions(MergeOptions(true)).getOrThrow().toUtf8().apply {
+      assertEquals("""
+        type Query {
+          random: Int @deprecated
+        }
+        
+      """.trimIndent(), this )
+    }
+  }
+
+  @Test
+  fun addArgumentToExistingField() {
+    @Language("graphqls")
+    val sdl = """
+      type Query {
+        random: Int
+      }      
+      extend type Query {
+        random(id: ID!): Int
+      }
+    """.trimIndent()
+
+    sdl.toGQLDocument().mergeExtensions(MergeOptions(true)).getOrThrow().toUtf8().apply {
+      assertEquals("""
+        type Query {
+          random(id: ID!): Int
+        }
+        
+      """.trimIndent(), this )
+    }
+  }
+
+  private fun Issue.pretty(): String = "${sourceLocation?.line}:${sourceLocation?.column} $message"
+
+  @Test
+  fun addDirectiveToInterfaceField() {
+    @Language("graphqls")
+    val sdl = """
+      interface Foo {
+        random: Int
+      }      
+      extend interface Foo {
+        random: Int @deprecated
+      }
+    """.trimIndent()
+
+    sdl.toGQLDocument().mergeExtensions(MergeOptions(true)).getOrThrow().toUtf8().apply {
+      assertEquals("""
+        interface Foo {
+          random: Int @deprecated
+        }
+        
+      """.trimIndent(), this )
+    }
+  }
+
+  @Test
+  fun fieldDescriptionIsPreserved() {
+    @Language("graphqls")
+    val sdl = """
+      type Query {
+        "A random field"
+        random: Int
+      }      
+      extend type Query {
+        random: Int @deprecated
+      }
+    """.trimIndent()
+
+    sdl.toGQLDocument().mergeExtensions(MergeOptions(true)).getOrThrow().toUtf8().apply {
+      assertEquals("""
+        type Query {
+          ""${'"'}
+          A random field
+          ""${'"'}
+          random: Int @deprecated
+        }
+        
+      """.trimIndent(), this )
+    }
+  }
+
+  @Test
+  fun byDefaultCannotExtendField() {
+    @Language("graphqls")
+    val sdl = """
+      type Query {
+        random: Int
+      }      
+      extend type Query {
+        random: Int @deprecated
+      }
+    """.trimIndent()
+
+    sdl.toGQLDocument().mergeExtensions(MergeOptions(false)).issues.apply {
+      assertEquals(1, size)
+      assertEquals("5:3 There is already a field definition named `random` for this type", first().pretty())
+    }
   }
 }

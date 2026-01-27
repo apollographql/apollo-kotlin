@@ -9,7 +9,6 @@ import com.apollographql.apollo.ast.internal.ExecutableValidationScope
 import com.apollographql.apollo.ast.internal.LexerException
 import com.apollographql.apollo.ast.internal.Parser
 import com.apollographql.apollo.ast.internal.ParserException
-import com.apollographql.apollo.ast.internal.SchemaValidationOptions
 import com.apollographql.apollo.ast.internal.validateSchema
 import okio.BufferedSource
 import okio.use
@@ -224,7 +223,7 @@ fun BufferedSource.parseAsGQLSelections(
  */
 @ApolloExperimental
 fun GQLDocument.validateAsSchema(): GQLResult<Schema> {
-  return validateSchema(definitions, SchemaValidationOptions(false, emptyList()))
+  return validateSchema(definitions, SchemaValidationOptions.Builder().build())
 }
 
 @ApolloExperimental
@@ -236,10 +235,10 @@ fun GQLDocument.validateAsSchema(validationOptions: SchemaValidationOptions): GQ
 fun GQLDocument.validateAsSchemaAndAddApolloDefinition(): GQLResult<Schema> {
   return validateSchema(
       definitions,
-      SchemaValidationOptions(
-          true,
-          builtinForeignSchemas()
-      )
+      SchemaValidationOptions.Builder()
+          .addKotlinLabsDefinitions(true)
+          .foreignSchemas(builtinForeignSchemas())
+          .build()
   )
 }
 

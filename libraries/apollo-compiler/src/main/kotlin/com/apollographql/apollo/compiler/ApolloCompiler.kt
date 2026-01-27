@@ -9,11 +9,12 @@ import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.GQLSchemaDefinition
 import com.apollographql.apollo.ast.GQLTypeDefinition
 import com.apollographql.apollo.ast.Issue
+import com.apollographql.apollo.ast.MergeOptions
 import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.QueryDocumentMinifier
 import com.apollographql.apollo.ast.builtinForeignSchemas
 import com.apollographql.apollo.ast.checkEmpty
-import com.apollographql.apollo.ast.internal.SchemaValidationOptions
+import com.apollographql.apollo.ast.SchemaValidationOptions
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.pretty
 import com.apollographql.apollo.ast.toGQLDocument
@@ -175,21 +176,22 @@ object ApolloCompiler {
     }
 
     val result = schemaDocument.validateAsSchema(
-        validationOptions = SchemaValidationOptions(
+        validationOptions = SchemaValidationOptions.Builder()
             /**
              * TODO: switch to false
              */
-            addKotlinLabsDefinitions = true,
-            foreignSchemas = builtinForeignSchemas() + foreignSchemas,
+            .addKotlinLabsDefinitions(true)
+            .foreignSchemas(builtinForeignSchemas() + foreignSchemas)
             /**
              * If the cache compiler plugin is present and provides the cache directives, don't automatically import the cache related directives to avoid a conflict
              */
-            excludeCacheDirectives = cacheCompilerPluginHasCacheDirectives,
+            .excludeCacheDirectives(cacheCompilerPluginHasCacheDirectives)
             /**
              * If the cache compiler plugin is present and computes key fields, don't compute them to save redundant work
              */
-            computeKeyFields = !cacheCompilerPluginComputesKeys,
-        )
+            .computeKeyFields(!cacheCompilerPluginComputesKeys)
+            .mergeOptions(MergeOptions(true))
+            .build()
     )
 
     // TODO: allow the user to override the severities for schema validation

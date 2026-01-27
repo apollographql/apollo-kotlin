@@ -63,11 +63,10 @@ fun GQLDocument.toSchema(): Schema = validateAsSchema().getOrThrow()
 
 @ApolloExperimental
 class MergeOptions(
-    val allowAddingDirectivesToExistingFieldDefinitions: Boolean,
-    val allowFieldNullabilityModification: Boolean
+    val allowMergingFieldDefinitions: Boolean,
 ) {
   companion object {
-    val Default: MergeOptions = MergeOptions(false, false)
+    val Default: MergeOptions = MergeOptions(false)
   }
 }
 

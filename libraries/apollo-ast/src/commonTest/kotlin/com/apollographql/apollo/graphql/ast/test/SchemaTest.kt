@@ -5,7 +5,7 @@ package com.apollographql.apollo.graphql.ast.test
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.builtinForeignSchemas
-import com.apollographql.apollo.ast.internal.SchemaValidationOptions
+import com.apollographql.apollo.ast.SchemaValidationOptions
 import com.apollographql.apollo.ast.internal.toSemanticSdl
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
@@ -54,10 +54,10 @@ class SchemaTest {
     """.trimIndent()
 
     schemaString.toGQLDocument().validateAsSchema(
-        SchemaValidationOptions(
-            addKotlinLabsDefinitions = false,
-            foreignSchemas = listOf(cacheControlSchema)
-        )
+        SchemaValidationOptions.Builder()
+            .addKotlinLabsDefinitions(false)
+            .addForeignSchema(cacheControlSchema)
+            .build()
     ).getOrThrow()
   }
 
@@ -73,10 +73,10 @@ class SchemaTest {
     """.trimIndent()
 
     val schema = schemaString.toGQLDocument().validateAsSchema(
-        SchemaValidationOptions(
-            addKotlinLabsDefinitions = false,
-            foreignSchemas = listOf(cacheControlSchema)
-        )
+        SchemaValidationOptions.Builder()
+            .addKotlinLabsDefinitions(false)
+            .addForeignSchema(cacheControlSchema)
+            .build()
     ).getOrThrow()
 
     assertEquals("cacheControl", schema.originalDirectiveName("cacheControl"))
@@ -98,9 +98,8 @@ class SchemaTest {
     """.trimIndent()
 
     val schema = schemaString.toGQLDocument().validateAsSchema(
-        SchemaValidationOptions(
-            addKotlinLabsDefinitions = false,
-            foreignSchemas = listOf(
+        SchemaValidationOptions.Builder()
+            .foreignSchemas(listOf(
                 cacheControlSchema,
                 ForeignSchema("example", "v0.1",
                     listOf("directive @example on FIELD_DEFINITION".parseAsGQLDocument().getOrThrow().definitions.single())
@@ -109,10 +108,11 @@ class SchemaTest {
                     listOf("directive @example2 on FIELD_DEFINITION".parseAsGQLDocument().getOrThrow().definitions.single())
                 )
             )
-        )
+            ).build()
     ).getOrThrow()
 
-    assertEquals("cacheControl", schema.originalDirectiveName("cacheControl"))
+    assertEquals("cacheControl", schema.originalDirectiveName("cacheControl")
+    )
     assertEquals("example", schema.originalDirectiveName("example"))
   }
 
@@ -128,10 +128,9 @@ class SchemaTest {
     """.trimIndent()
 
     val result = schemaString.toGQLDocument().validateAsSchema(
-        SchemaValidationOptions(
-            addKotlinLabsDefinitions = false,
-            foreignSchemas = listOf(cacheControlSchema)
-        )
+        SchemaValidationOptions.Builder()
+            .addForeignSchema(cacheControlSchema)
+            .build()
     )
 
     assertEquals(1, result.issues.size)
@@ -150,10 +149,9 @@ class SchemaTest {
     """.trimIndent()
 
     val result = schemaString.toGQLDocument().validateAsSchema(
-        SchemaValidationOptions(
-            addKotlinLabsDefinitions = false,
-            foreignSchemas = listOf(cacheControlSchema)
-        )
+        SchemaValidationOptions.Builder()
+            .addForeignSchema(cacheControlSchema)
+            .build()
     )
 
     assertEquals(1, result.issues.size)
@@ -204,12 +202,9 @@ class SchemaTest {
       extend schema @catchByDefault(to: THROW)
     """.trimIndent()
     schemaString.toGQLDocument().validateAsSchema(
-        SchemaValidationOptions(
-            foreignSchemas = builtinForeignSchemas(),
-            addKotlinLabsDefinitions = false,
-            excludeCacheDirectives = true,
-            computeKeyFields = false
-        )
+        SchemaValidationOptions.Builder()
+            .foreignSchemas(builtinForeignSchemas())
+            .build()
     ).getOrThrow()
   }
 }
