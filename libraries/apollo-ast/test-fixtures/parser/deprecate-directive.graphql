@@ -1,0 +1,2 @@
+# PRAGMA allowDirectivesOnDirectives
+directive @myDirective(arg1: String, arg2: Int = 42) @deprecated(reason: "Use newDirective instead") on FIELD

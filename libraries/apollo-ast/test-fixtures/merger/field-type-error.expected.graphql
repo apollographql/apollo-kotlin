@@ -1,0 +1,5 @@
+OtherValidationIssue (7:3)
+Cannot merge field 'random': wrong type 'String' (expected: 'Int')
+type Query {
+  random: Int
+}

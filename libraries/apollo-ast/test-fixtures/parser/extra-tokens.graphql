@@ -1,0 +1,3 @@
+# comment before
+query Test { field }
+ab bc

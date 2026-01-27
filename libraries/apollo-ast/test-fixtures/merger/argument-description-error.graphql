@@ -1,0 +1,9 @@
+# PRAGMA allowMergingFieldDefinitions
+
+type Query {
+  random(id: ID!): Int
+}
+
+extend type Query {
+  random("A new argument" id: ID!): Int
+}

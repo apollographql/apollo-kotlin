@@ -1,0 +1,9 @@
+# PRAGMA allowMergingFieldDefinitions
+
+type Query {
+  "A random field"
+  random: Int
+}
+extend type Query {
+  random: Int @deprecated
+}

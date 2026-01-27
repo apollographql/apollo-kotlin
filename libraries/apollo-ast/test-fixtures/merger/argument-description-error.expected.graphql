@@ -1,0 +1,5 @@
+OtherValidationIssue (8:10)
+Cannot merge argument 'id': descriptions cannot be merged
+type Query {
+  random(id: ID!): Int
+}

@@ -1,0 +1,6 @@
+type Query {
+  random: Int
+}
+
+"The root query"
+extend type Query

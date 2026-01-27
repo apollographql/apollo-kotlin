@@ -1,0 +1,5 @@
+OtherValidationIssue (5:3)
+There is already a field definition named `random` for this type
+type Query {
+  random: Int
+}
