@@ -61,7 +61,7 @@ enum class GraphQLFeature {
   DeprecatedDirectives,
 
   /**
-   * Service capabilities directives, experimental
+   * Service capabilities directives, experimental, see [Service capabilities](https://github.com/graphql/graphql-spec/pull/1208).
    *
    * Introspection:
    * - `__Service`
