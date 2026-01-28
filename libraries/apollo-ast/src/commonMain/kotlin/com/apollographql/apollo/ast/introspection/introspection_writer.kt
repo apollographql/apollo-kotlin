@@ -136,13 +136,11 @@ internal class IntrospectionSchemaBuilder(document: GQLDocument) {
   private val typeDefinitions: Map<String, GQLTypeDefinition>
   private val directiveDefinitions: List<GQLDirectiveDefinition>
   private val schemaDefinition: GQLSchemaDefinition
-  private val serviceDefinition: GQLServiceDefinition
 
   init {
     val types = mutableMapOf<String, GQLTypeDefinition>()
     val directives = mutableListOf<GQLDirectiveDefinition>()
     var schema: GQLSchemaDefinition? = null
-    var service: GQLServiceDefinition? = null
 
     document.definitions.forEach {
       when (it) {
@@ -159,7 +157,7 @@ internal class IntrospectionSchemaBuilder(document: GQLDocument) {
         }
 
         is GQLServiceDefinition -> {
-          service = it
+          // Nothing to do here, since service definitions are experimental, we do not serialize them
         }
 
         else -> {
@@ -171,7 +169,6 @@ internal class IntrospectionSchemaBuilder(document: GQLDocument) {
     schemaDefinition = schema ?: defaultSchemaDefinition(types)
     typeDefinitions = types
     directiveDefinitions = directives
-    serviceDefinition = service ?: defaultServiceDefinition()
   }
 
   fun toIntrospectionSchema(): ApolloIntrospectionSchema {
@@ -385,15 +382,6 @@ internal fun defaultSchemaDefinition(typeDefinitions: Map<String, GQLTypeDefinit
       )
   )
 }
-
-internal fun defaultServiceDefinition(): GQLServiceDefinition {
-  return GQLServiceDefinition(
-      description = null,
-      directives = emptyList(),
-      capabilities = emptyList(),
-  )
-}
-
 
 internal fun GQLSchemaDefinition.queryType(): String {
   return rootTypeFor("query") ?: throw ConversionException("Schema does not define a 'query' type")
