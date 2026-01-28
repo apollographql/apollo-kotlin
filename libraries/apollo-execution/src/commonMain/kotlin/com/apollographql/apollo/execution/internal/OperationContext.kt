@@ -10,6 +10,7 @@ import com.apollographql.apollo.execution.FieldCallback
 import com.apollographql.apollo.execution.GraphQLResponse
 import com.apollographql.apollo.execution.Instrumentation
 import com.apollographql.apollo.execution.InternalValue
+import com.apollographql.apollo.execution.OnError
 import com.apollographql.apollo.execution.OperationCallback
 import com.apollographql.apollo.execution.OperationInfo
 import com.apollographql.apollo.execution.ResolveInfo
@@ -40,24 +41,23 @@ import kotlinx.coroutines.flow.*
  *
  */
 internal class OperationContext(
-  private val schema: Schema,
-  private val coercings: Map<String, Coercing<*>>,
-  private val introspectionResolver: Resolver,
-  private val queryRoot: RootResolver?,
-  private val mutationRoot: RootResolver?,
-  private val subscriptionRoot: RootResolver?,
-  private val resolver: Resolver,
-  private val typeResolver: TypeResolver,
-  private val instrumentations: List<Instrumentation>,
-  private val operation: GQLOperationDefinition,
-  private val fragments: Map<String, GQLFragmentDefinition>,
-  private val variableValues: Map<String, InternalValue>,
-  private val executionContext: ExecutionContext,
+    private val schema: Schema,
+    private val coercings: Map<String, Coercing<*>>,
+    private val introspectionResolver: Resolver,
+    private val queryRoot: RootResolver?,
+    private val mutationRoot: RootResolver?,
+    private val subscriptionRoot: RootResolver?,
+    private val resolver: Resolver,
+    private val typeResolver: TypeResolver,
+    private val instrumentations: List<Instrumentation>,
+    private val operation: GQLOperationDefinition,
+    private val fragments: Map<String, GQLFragmentDefinition>,
+    private val variableValues: Map<String, InternalValue>,
+    private val executionContext: ExecutionContext,
+    private val onError: OnError,
 ) {
-  private val bubbles: Boolean = operation.bubbles()
-
   /**
-   * executes the given operation and awaits its result.
+   * Executes the given operation and awaits its result.
    *
    * Note: a future version may add an "executeAsync" function so we can start sending some data before the whole
    * map is computed.
@@ -66,11 +66,16 @@ internal class OperationContext(
     var instrumentationException: Exception? = null
     val operationCallbacks = mutableListOf<OperationCallback>()
     val operationInfo = OperationInfo(
-      operation,
-      fragments,
-      schema,
-      executionContext
+        operation,
+        fragments,
+        schema,
+        executionContext
     )
+
+    if (onError == OnError.HALT) {
+      return graphqlErrorResponse("onError: HALT is not supported.")
+    }
+
     instrumentations.forEach {
       val callback = try {
         it.onOperation(operationInfo)
@@ -110,13 +115,13 @@ internal class OperationContext(
     return coroutineScope {
       async(start = CoroutineStart.UNDISPATCHED) {
         executeGroupedFieldSet(
-          this,
-          groupedFieldSet,
-          typeDefinition as GQLObjectTypeDefinition,
-          rootObject,
-          variableValues,
-          emptyList(),
-          operation.operationType == "mutation"
+            this,
+            groupedFieldSet,
+            typeDefinition as GQLObjectTypeDefinition,
+            rootObject,
+            variableValues,
+            emptyList(),
+            operation.operationType == "mutation"
         )
       }.toGraphQLResponse(callbacks = operationCallbacks)
     }
@@ -156,21 +161,21 @@ internal class OperationContext(
 
   @OptIn(ExperimentalCoroutinesApi::class)
   private fun resolveFieldEventStream(
-    subscriptionType: GQLObjectTypeDefinition,
-    rootValue: ResolverValue,
-    fields: List<GQLField>,
-    argumentValues: Map<String, InternalValue>,
-    responseName: String
+      subscriptionType: GQLObjectTypeDefinition,
+      rootValue: ResolverValue,
+      fields: List<GQLField>,
+      argumentValues: Map<String, InternalValue>,
+      responseName: String,
   ): Flow<FieldEvent> {
     return flow {
       val resolveInfo = ResolveInfo(
-        parentObject = rootValue,
-        executionContext = executionContext,
-        fields = fields,
-        schema = schema,
-        arguments = argumentValues,
-        parentType = subscriptionType.name,
-        path = emptyList()
+          parentObject = rootValue,
+          executionContext = executionContext,
+          fields = fields,
+          schema = schema,
+          arguments = argumentValues,
+          parentType = subscriptionType.name,
+          path = emptyList()
       )
 
       emit(resolveFieldValue(resolveInfo))
@@ -180,10 +185,10 @@ internal class OperationContext(
       } else {
         it.map { objectValue ->
           FieldEventItem(
-            parentType = subscriptionType.name,
-            objectValue = objectValue,
-            fields = fields,
-            responseName = responseName
+              parentType = subscriptionType.name,
+              objectValue = objectValue,
+              fields = fields,
+              responseName = responseName
           )
         }
       }
@@ -192,19 +197,19 @@ internal class OperationContext(
 
   sealed interface FieldEvent
   private class FieldEventItem(
-    val parentType: String,
-    val objectValue: InternalValue,
-    val fields: List<GQLField>,
-    val responseName: String,
+      val parentType: String,
+      val objectValue: InternalValue,
+      val fields: List<GQLField>,
+      val responseName: String,
   ) : FieldEvent
 
   private class FieldEventError(
-    val message: String,
+      val message: String,
   ) : FieldEvent
 
   private fun createSourceEventStream(
-    subscription: GQLOperationDefinition,
-    rootValue: ResolverValue
+      subscription: GQLOperationDefinition,
+      rootValue: ResolverValue,
   ): Flow<FieldEvent> {
     val rootTypename = schema.rootTypeNameOrNullFor(subscription.operationType)
     if (rootTypename == null) {
@@ -224,17 +229,17 @@ internal class OperationContext(
     val field = fields.first()
     val argumentValues = coerceArgumentValues(schema, typeDefinition.name, field, coercings, variableValues)
     return resolveFieldEventStream(
-      subscriptionType = typeDefinition,
-      rootValue = rootValue,
-      fields = fields,
-      argumentValues = argumentValues,
-      responseName = fields.first().responseName()
+        subscriptionType = typeDefinition,
+        rootValue = rootValue,
+        fields = fields,
+        argumentValues = argumentValues,
+        responseName = fields.first().responseName()
     )
   }
 
   private fun mapSourceToResponseEvent(
-    sourceStream: Flow<FieldEvent>,
-    variableValues: Map<String, ExternalValue>
+      sourceStream: Flow<FieldEvent>,
+      variableValues: Map<String, ExternalValue>,
   ): Flow<SubscriptionEvent> {
     return sourceStream.map {
       // TODO: allow implementers to terminate the stream with an exception
@@ -243,18 +248,18 @@ internal class OperationContext(
   }
 
   private suspend fun executeSubscriptionEvent(
-    event: FieldEvent,
+      event: FieldEvent,
   ): GraphQLResponse {
     return when (event) {
       is FieldEventError -> GraphQLResponse.Builder().errors(listOf(Error.Builder(event.message).build())).build()
       is FieldEventItem -> {
         coroutineScope {
           val fieldData = completeValue(
-            scope = this,
-            fieldType = event.fields.first().definitionFromScope(schema, event.parentType)!!.type,
-            fields = event.fields,
-            result = event.objectValue,
-            path = listOf(event.responseName)
+              scope = this,
+              fieldType = event.fields.first().definitionFromScope(schema, event.parentType)!!.type,
+              fields = event.fields,
+              result = event.objectValue,
+              path = listOf(event.responseName)
           )
 
           mapOf(event.responseName to fieldData).toGraphQLResponse(emptyList())
@@ -274,26 +279,26 @@ internal class OperationContext(
    * @param variableValues the coerced variable values.
    */
   private fun executeField(
-    scope: CoroutineScope,
-    objectType: GQLObjectTypeDefinition,
-    objectValue: ResolverValue,
-    fieldType: GQLType,
-    fields: List<GQLField>,
-    variableValues: Map<String, InternalValue>,
-    path: List<Any>,
+      scope: CoroutineScope,
+      objectType: GQLObjectTypeDefinition,
+      objectValue: ResolverValue,
+      fieldType: GQLType,
+      fields: List<GQLField>,
+      variableValues: Map<String, InternalValue>,
+      path: List<Any>,
   ): Deferred<ExternalValue> {
     val field = fields.first()
     val argumentValues = coerceArgumentValues(schema, objectType.name, field, coercings, variableValues)
 
     return scope.async(start = CoroutineStart.UNDISPATCHED) {
       val resolveInfo = ResolveInfo(
-        parentObject = objectValue,
-        executionContext = executionContext,
-        fields = fields,
-        schema = schema,
-        arguments = argumentValues,
-        parentType = objectType.name,
-        path = path,
+          parentObject = objectValue,
+          executionContext = executionContext,
+          fields = fields,
+          schema = schema,
+          arguments = argumentValues,
+          parentType = objectType.name,
+          path = path,
       )
 
       val fieldCallbacks = mutableListOf<FieldCallback>()
@@ -309,19 +314,19 @@ internal class OperationContext(
             throw e
           }
           instrumentationError = Error.Builder("Cannot instrument '${path.lastOrNull()}': ${e.message}")
-            .path(path)
-            .build()
+              .path(path)
+              .build()
         }
       }
 
       val completedValue = if (instrumentationError == null) {
         val resolvedValue = resolveFieldValue(resolveInfo)
         completeValue(
-          scope = scope,
-          fieldType = fieldType,
-          fields = fields,
-          result = resolvedValue,
-          path = path
+            scope = scope,
+            fieldType = fieldType,
+            fields = fields,
+            result = resolvedValue,
+            path = path
         )
       } else {
         instrumentationError
@@ -334,19 +339,19 @@ internal class OperationContext(
   }
 
   private suspend fun completeValue(
-    scope: CoroutineScope,
-    fieldType: GQLType,
-    fields: List<GQLField>,
-    result: ResolverValue,
-    path: List<Any>
+      scope: CoroutineScope,
+      fieldType: GQLType,
+      fields: List<GQLField>,
+      result: ResolverValue,
+      path: List<Any>,
   ): ExternalValue {
     return runFieldOrError(path) {
       completeValueOrThrow(
-        scope,
-        fieldType,
-        fields,
-        result,
-        path
+          scope,
+          fieldType,
+          fields,
+          result,
+          path
       )
     }
   }
@@ -356,11 +361,11 @@ internal class OperationContext(
    * @throws Exception if [typeResolver] fails.
    */
   private suspend fun completeValueOrThrow(
-    scope: CoroutineScope,
-    fieldType: GQLType,
-    fields: List<GQLField>,
-    result: ResolverValue,
-    path: List<Any>
+      scope: CoroutineScope,
+      fieldType: GQLType,
+      fields: List<GQLField>,
+      result: ResolverValue,
+      path: List<Any>,
   ): ExternalValue {
     if (result is Error) {
       // fast path if the resolver failed
@@ -371,8 +376,8 @@ internal class OperationContext(
       val completedResult = completeValue(scope, fieldType.type, fields, result, path)
       if (completedResult == null) {
         return Error.Builder("A resolver returned null in a non-nullable position")
-          .path(path)
-          .build()
+            .path(path)
+            .build()
       }
       return completedResult
     }
@@ -384,8 +389,8 @@ internal class OperationContext(
     if (fieldType is GQLListType) {
       if (result !is List<*>) {
         return Error.Builder("A resolver returned non-list in a list position")
-          .path(path)
-          .build()
+            .path(path)
+            .build()
       }
 
       val deferred = result.mapIndexed { index, item ->
@@ -395,12 +400,14 @@ internal class OperationContext(
       }
       val list = deferred.map {
         val completed = it.await()
-        if (bubbles && completed is Error && fieldType.type is GQLNonNullType) {
-          /**
-           * We got an error in non-null position, return early
-           * TODO: cancel other deferred items
-           */
-          return completed
+        if (completed is Error) {
+          if (onError == OnError.PROPAGATE && fieldType.type is GQLNonNullType) {
+            /**
+             * We got an error in non-null position, bubble the error out of the list
+             * TODO: cancel other deferred items
+             */
+            return completed
+          }
         }
         completed
       }
@@ -408,8 +415,7 @@ internal class OperationContext(
     }
 
     fieldType as GQLNamedType
-    val typeDefinition = schema.typeDefinition(fieldType.name)
-    return when (typeDefinition) {
+    return when (val typeDefinition = schema.typeDefinition(fieldType.name)) {
       is GQLEnumTypeDefinition,
       is GQLScalarTypeDefinition,
         -> {
@@ -429,28 +435,28 @@ internal class OperationContext(
 
         val selections = fields.flatMap { it.selections }
         val groupedFieldSet = collectFields(typename, selections, variableValues)
-        return executeGroupedFieldSet(
-          scope = scope,
-          groupedFieldSet = groupedFieldSet,
-          typeDefinition = schema.typeDefinition(typename) as GQLObjectTypeDefinition,
-          objectValue = result,
-          variableValues = variableValues,
-          path = path,
-          serial = false,
+        executeGroupedFieldSet(
+            scope = scope,
+            groupedFieldSet = groupedFieldSet,
+            typeDefinition = schema.typeDefinition(typename) as GQLObjectTypeDefinition,
+            objectValue = result,
+            variableValues = variableValues,
+            path = path,
+            serial = false,
         )
       }
 
       is GQLInputObjectTypeDefinition -> {
-        return Error.Builder("Input type used in output position")
-          .path(path)
-          .build()
+        Error.Builder("Input type used in output position")
+            .path(path)
+            .build()
       }
     }
   }
 
   private suspend fun runFieldOrError(
-    path: List<Any>,
-    block: suspend () -> Any?
+      path: List<Any>,
+      block: suspend () -> Any?,
   ): Any? {
     return try {
       block()
@@ -459,13 +465,13 @@ internal class OperationContext(
         throw e
       }
       Error.Builder("Cannot resolve '${path.lastOrNull()}': ${e.message}")
-        .path(path)
-        .build()
+          .path(path)
+          .build()
     }
   }
 
   private suspend fun resolveFieldValue(
-    resolveInfo: ResolveInfo,
+      resolveInfo: ResolveInfo,
   ): ResolverValueOrError {
     return runFieldOrError(resolveInfo.path) {
       resolveFieldValueOrThrow(resolveInfo)
@@ -478,7 +484,7 @@ internal class OperationContext(
    * @throws [Exception] when the resolver throws.
    */
   private suspend fun resolveFieldValueOrThrow(
-    resolveInfo: ResolveInfo
+      resolveInfo: ResolveInfo,
   ): ResolverValue {
     val resolver = when {
       resolveInfo.fieldName.startsWith("__") -> introspectionResolver
@@ -489,19 +495,19 @@ internal class OperationContext(
   }
 
   private class Entry(
-    val key: String,
-    val value: Deferred<ExternalValue>,
-    val nullable: Boolean
+      val key: String,
+      val value: Deferred<ExternalValue>,
+      val nullable: Boolean,
   )
 
   private suspend fun executeGroupedFieldSet(
-    scope: CoroutineScope,
-    groupedFieldSet: Map<String, List<GQLField>>,
-    typeDefinition: GQLObjectTypeDefinition,
-    objectValue: ResolverValue,
-    variableValues: Map<String, InternalValue>,
-    path: List<Any>,
-    serial: Boolean
+      scope: CoroutineScope,
+      groupedFieldSet: Map<String, List<GQLField>>,
+      typeDefinition: GQLObjectTypeDefinition,
+      objectValue: ResolverValue,
+      variableValues: Map<String, InternalValue>,
+      path: List<Any>,
+      serial: Boolean,
   ): ExternalValue {
     val typename = typeDefinition.name
     val entries = groupedFieldSet.entries.map { entry ->
@@ -520,8 +526,11 @@ internal class OperationContext(
     val result = mutableMapOf<String, ExternalValue>()
     entries.forEach {
       val value = it.value.await()
-      if (bubbles && value is Error && !it.nullable) {
-        return value
+      if (value is Error) {
+        if (onError == OnError.PROPAGATE && !it.nullable) {
+          // Bubble the error out of the map
+          return value
+        }
       }
 
       result.put(it.key, it.value)
@@ -574,9 +583,9 @@ internal class OperationContext(
   }
 
   private fun collectFields(
-    objectType: String,
-    selections: List<GQLSelection>,
-    coercedVariables: Map<String, InternalValue>,
+      objectType: String,
+      selections: List<GQLSelection>,
+      coercedVariables: Map<String, InternalValue>,
   ): Map<String, List<GQLField>> {
     val groupedFields = mutableMapOf<String, List<GQLField>>()
     collectFields(objectType, selections, coercedVariables, mutableSetOf(), groupedFields)
@@ -584,11 +593,11 @@ internal class OperationContext(
   }
 
   private fun collectFields(
-    objectType: String,
-    selections: List<GQLSelection>,
-    coercedVariables: Map<String, InternalValue>,
-    visitedFragments: MutableSet<String>,
-    groupedFields: MutableMap<String, List<GQLField>>,
+      objectType: String,
+      selections: List<GQLSelection>,
+      coercedVariables: Map<String, InternalValue>,
+      visitedFragments: MutableSet<String>,
+      groupedFields: MutableMap<String, List<GQLField>>,
   ) {
     selections.forEach { selection ->
       if (selection.directives.shouldSkip(coercedVariables)) {
@@ -625,12 +634,6 @@ internal class OperationContext(
   }
 }
 
-private fun <E> List<E>.orNullIfEmpty(): List<E>? {
-  return this.ifEmpty {
-    null
-  }
-}
-
 private val GQLSelection.directives: List<GQLDirective>
   get() = when (this) {
     is GQLField -> directives
@@ -638,6 +641,3 @@ private val GQLSelection.directives: List<GQLDirective>
     is GQLInlineFragment -> directives
   }
 
-private fun GQLOperationDefinition.bubbles(): Boolean {
-  return !directives.any { it.name == "noBubblesPlz" }
-}

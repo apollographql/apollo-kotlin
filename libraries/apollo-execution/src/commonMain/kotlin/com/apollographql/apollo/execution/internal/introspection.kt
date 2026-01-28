@@ -14,6 +14,9 @@ internal val introspectionCoercings = mapOf(
     "__DirectiveLocation" to StringCoercing,
 )
 
+/**
+ * Returns a resolver that can resolve all fields that start with `__` or whose parent starts with `__`
+ */
 internal fun introspectionResolver(schema: Schema): Resolver {
   val resolvers = introspectionResolvers(schema)
   return Resolver {
@@ -291,13 +294,17 @@ internal fun introspectionResolvers(schema: Schema): Map<String, Resolver> {
       "__Service" to mapOf(
           "description" to Resolver { null },
           "capabilities" to Resolver {
-            emptyList<IntrospectionCapability>()
+            val serviceDefinition = schema.toGQLDocument().definitions.filterIsInstance<GQLServiceDefinition>().firstOrNull()
+            if (serviceDefinition == null) {
+              return@Resolver emptyList<GQLCapability>()
+            }
+            serviceDefinition.capabilities
           }
       ),
       "__Capability" to mapOf(
-          "description" to Resolver { it.parentObject.cast<IntrospectionCapability>().description },
-          "identifier" to Resolver { it.parentObject.cast<IntrospectionCapability>().identifier },
-          "value" to Resolver { it.parentObject.cast<IntrospectionCapability>().value },
+          "description" to Resolver { it.parentObject.cast<GQLCapability>().description },
+          "identifier" to Resolver { it.parentObject.cast<GQLCapability>().name },
+          "value" to Resolver { it.parentObject.cast<GQLCapability>().value },
       )
   ).entries.flatMap { (type, fields) ->
     fields.entries.map { (field, resolver) ->
@@ -317,12 +324,6 @@ private fun IntrospectionType(type: GQLType, schema: Schema): IntrospectionType 
 private class IntrospectionType(
     val type: GQLType,
     val typeDefinition: GQLTypeDefinition?,
-)
-
-private class IntrospectionCapability(
-    val description: String?,
-    val identifier: String,
-    val value: String?,
 )
 
 internal enum class __TypeKind {

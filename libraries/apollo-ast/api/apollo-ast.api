@@ -196,7 +196,7 @@ public final class com/apollographql/apollo/ast/GQLCapability : com/apollographq
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
 	public fun getChildren ()Ljava/util/List;
 	public final fun getDescription ()Ljava/lang/String;
-	public final fun getQualifiedName ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getValue ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V

@@ -14,66 +14,68 @@ import kotlinx.coroutines.flow.flowOf
  * A GraphQL schema with execution information:
  * - root values
  * - coercings
- * - resolver
+ * - resolvers
  *
  * [ExecutableSchema] also includes handling for persisted documents. This part is not technically part of the main GraphQL spec but is popular that we add first party support to it.
  */
-class ExecutableSchema(
-  private val schema: Schema,
-  private val coercings: Map<String, Coercing<*>>,
-  private val queryRoot: RootResolver?,
-  private val mutationRoot: RootResolver?,
-  private val subscriptionRoot: RootResolver?,
-  private val resolver: Resolver,
-  private val typeResolver: TypeResolver,
-  private val instrumentations: List<Instrumentation>,
-  private val persistedDocumentCache: PersistedDocumentCache?,
+class ExecutableSchema internal constructor(
+    private val schema: Schema,
+    private val coercings: Map<String, Coercing<*>>,
+    private val queryRoot: RootResolver?,
+    private val mutationRoot: RootResolver?,
+    private val subscriptionRoot: RootResolver?,
+    private val resolver: Resolver,
+    private val typeResolver: TypeResolver,
+    private val instrumentations: List<Instrumentation>,
+    private val persistedDocumentCache: PersistedDocumentCache?,
+    private val onError: OnError,
 ) {
   private val introspectionResolver: Resolver = introspectionResolver(schema)
 
   suspend fun execute(
-    request: GraphQLRequest,
-    executionContext: ExecutionContext = ExecutionContext.Empty
+      request: GraphQLRequest,
+      executionContext: ExecutionContext = ExecutionContext.Empty,
   ): GraphQLResponse {
     return prepareRequest(schema, coercings, persistedDocumentCache, request).fold(
-      ifLeft = {
-        GraphQLResponse.Builder().errors(it).build()
-      },
-      ifRight = {
-        operationContext(it, executionContext).execute()
-      }
+        ifLeft = {
+          GraphQLResponse.Builder().errors(it).build()
+        },
+        ifRight = {
+          operationContext(it, executionContext).execute()
+        }
     )
   }
 
   fun subscribe(
-    request: GraphQLRequest,
-    executionContext: ExecutionContext = ExecutionContext.Empty
+      request: GraphQLRequest,
+      executionContext: ExecutionContext = ExecutionContext.Empty,
   ): Flow<SubscriptionEvent> {
     return prepareRequest(schema, coercings, persistedDocumentCache, request).fold(
-      ifLeft = {
-        flowOf(SubscriptionResponse(GraphQLResponse.Builder().errors(it).build()))
-      },
-      ifRight = {
-        operationContext(it, executionContext).subscribe()
-      }
+        ifLeft = {
+          flowOf(SubscriptionResponse(GraphQLResponse.Builder().errors(it).build()))
+        },
+        ifRight = {
+          operationContext(it, executionContext).subscribe()
+        }
     )
   }
 
   private fun operationContext(preparedRequest: PreparedRequest, executionContext: ExecutionContext): OperationContext {
     return OperationContext(
-      schema,
-      coercings + introspectionCoercings,
-      introspectionResolver,
-      queryRoot,
-      mutationRoot,
-      subscriptionRoot,
-      resolver,
-      typeResolver,
-      instrumentations,
-      preparedRequest.operation,
-      preparedRequest.fragments,
-      preparedRequest.variables,
-      executionContext,
+        schema,
+        coercings + introspectionCoercings,
+        introspectionResolver,
+        queryRoot,
+        mutationRoot,
+        subscriptionRoot,
+        resolver,
+        typeResolver,
+        instrumentations,
+        preparedRequest.operation,
+        preparedRequest.fragments,
+        preparedRequest.variables,
+        executionContext,
+        preparedRequest.onError ?: onError
     )
   }
 
@@ -87,6 +89,7 @@ class ExecutableSchema(
     private var typeResolver: TypeResolver? = null
     private val instrumentations = mutableListOf<Instrumentation>()
     private var persistedDocumentCache: PersistedDocumentCache? = null
+    private var onError: OnError = OnError.PROPAGATE
 
     fun schema(schema: GQLDocument): Builder = apply {
       this.schema = schema
@@ -128,25 +131,65 @@ class ExecutableSchema(
       this.persistedDocumentCache = persistedDocumentCache
     }
 
+    fun onError(onError: OnError) = apply {
+      check(onError != OnError.HALT) {
+        "OnError.HALT is not supported"
+      }
+      this.onError = onError
+    }
+
     fun build(): ExecutableSchema {
       check(schema != null) {
         "A schema is required to build an ExecutableSchema"
       }
-      val definitions = builtinDefinitions().filter { it !is GQLScalarTypeDefinition } + schema!!.definitions
-      val schema = GQLDocument(definitions, null).toSchema()
+      /**
+       * TODO: scalar definitions are added back when calling `toSchema()` but I'm unclear why we have to filter them out here.
+       */
+      val ourDefinitions = builtinDefinitions().filter { it !is GQLScalarTypeDefinition } + serviceDefinition(onError)
+      val reservedNames = ourDefinitions.mapNotNull { it.definitionName() }.toSet()
+      val sourceDefinitions = schema!!.definitions
+      sourceDefinitions.forEach {
+        val definitionName = it.definitionName()
+        if (definitionName in reservedNames) {
+          error("Source schema cannot contain definition '$definitionName'. It is provided by the implementation")
+        }
+      }
+      val schema = GQLDocument(ourDefinitions + schema!!.definitions, null).toSchema()
 
       return ExecutableSchema(
-        schema,
-        coercings,
-        queryRoot,
-        mutationRoot,
-        subscriptionRoot,
-        resolver ?: ThrowingResolver,
-        typeResolver ?: ThrowingTypeResolver,
-        instrumentations,
-        persistedDocumentCache
+          schema,
+          coercings,
+          queryRoot,
+          mutationRoot,
+          subscriptionRoot,
+          resolver ?: ThrowingResolver,
+          typeResolver ?: ThrowingTypeResolver,
+          instrumentations,
+          persistedDocumentCache,
+          onError
       )
     }
   }
 }
 
+private fun serviceDefinition(onError: OnError): GQLDefinition {
+  return GQLServiceDefinition(
+      sourceLocation = null,
+      description = null,
+      directives = emptyList(),
+      capabilities = listOf(
+          GQLCapability(description = null, name = "graphql.onError", value = null),
+          GQLCapability(description = null, name = "graphql.defaultErrorBehavior", value = onError.name)
+      ),
+  )
+}
+
+private fun GQLDefinition.definitionName(): String? {
+  return when (this) {
+    is GQLTypeDefinition -> name
+    is GQLDirectiveDefinition -> "@$name"
+    is GQLSchemaDefinition -> "schema"
+    is GQLServiceDefinition -> "service"
+    else -> null
+  }
+}

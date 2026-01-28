@@ -11,23 +11,32 @@ import okio.Buffer
 import okio.BufferedSource
 import okio.use
 
+enum class OnError {
+  NULL,
+  PROPAGATE,
+  HALT
+}
+
 /**
- * @property document the document, may be null if persisted queries are used.
+ * @property document the document. Can be null if persisted queries are used.
  * @property operationName the name of the operation to execute (optional). Useful if [document] contains several operations.
- * @property variables the variables, may be empty
- * @property extensions the extensions, may be empty
+ * @property variables the variables.
+ * @property extensions the extensions.
  */
 class GraphQLRequest internal constructor(
-  val document: String?,
-  val operationName: String?,
-  val variables: Map<String, ExternalValue>,
-  val extensions: Map<String, ExternalValue>,
+    val document: String?,
+    val operationName: String?,
+    val variables: Map<String, ExternalValue>,
+    val extensions: Map<String, ExternalValue>,
+    val onError: OnError?,
 ) {
   class Builder {
     var document: String? = null
     var operationName: String? = null
     var variables: Map<String, ExternalValue>? = null
     var extensions: Map<String, ExternalValue>? = null
+
+    var onError: OnError? = null
 
     fun document(document: String?): Builder = apply {
       this.document = document
@@ -45,12 +54,17 @@ class GraphQLRequest internal constructor(
       this.extensions = extensions
     }
 
+    fun onError(onError: OnError?): Builder = apply {
+      this.onError = onError
+    }
+
     fun build(): GraphQLRequest {
       return GraphQLRequest(
-        document,
-        operationName,
-        variables.orEmpty(),
-        extensions.orEmpty()
+          document = document,
+          operationName = operationName,
+          variables = variables.orEmpty(),
+          extensions = extensions.orEmpty(),
+          onError = onError
       )
     }
   }
@@ -84,14 +98,29 @@ fun Map<String, ExternalValue>.parseAsGraphQLRequest(): Result<GraphQLRequest> {
   if (operationName !is String?) {
     return Result.failure(Exception("Expected 'operationName' to be a string"))
   }
-  return GraphQLRequest.Builder()
-    .document(document)
-    .variables(variables as Map<String, Any?>?)
-    .extensions(extensions as Map<String, Any?>?)
-    .operationName(operationName)
-    .build().let {
-      Result.success(it)
+  val onError = map.get("onError")
+  var onErrorValue: OnError? = null
+  if (onError != null) {
+    if (onError !is String) {
+      return Result.failure(Exception("Expected 'onError' to be a string"))
     }
+    onErrorValue = when (onError) {
+      "NULL" -> OnError.PROPAGATE
+      "PROPAGATE" -> OnError.PROPAGATE
+      "HALT" -> OnError.HALT
+      else -> return Result.failure(Exception("Unknown 'onError' value: $onError"))
+    }
+  }
+
+  return GraphQLRequest.Builder()
+      .document(document)
+      .variables(variables as Map<String, Any?>?)
+      .extensions(extensions as Map<String, Any?>?)
+      .operationName(operationName)
+      .onError(onErrorValue)
+      .build().let {
+        Result.success(it)
+      }
 }
 
 @OptIn(ApolloInternal::class)
@@ -129,19 +158,13 @@ fun String.parseAsGraphQLRequest(): Result<GraphQLRequest> {
       it.get(0).urlDecode() to it.get(1).urlDecode()
     }
   }.groupBy { it.first }
-    .mapValues {
-      it.value.map { it.second }
-    }
-    .toExternalValueMap()
-    .flatMap {
-      it.parseAsGraphQLRequest()
-    }
-}
-
-fun String.toGraphQLRequest(): GraphQLRequest {
-  return GraphQLRequest.Builder()
-    .document(this)
-    .build()
+      .mapValues {
+        it.value.map { it.second }
+      }
+      .toExternalValueMap()
+      .flatMap {
+        it.parseAsGraphQLRequest()
+      }
 }
 
 /**

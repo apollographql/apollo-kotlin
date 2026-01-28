@@ -89,6 +89,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
   val typeSystemExtensions = mutableListOf<GQLTypeSystemExtension>()
   var schemaDefinition: GQLSchemaDefinition? = null
   val reportedDefinitions = mutableSetOf<GQLDefinition>()
+  var serviceDefinition: GQLServiceDefinition? = null
 
   /*
    * Deduplicate the user input
@@ -139,6 +140,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
       }
 
       is GQLServiceDefinition -> {
+        serviceDefinition = definition
         // TODO: any validation to do here?
         // See https://github.com/graphql/graphql-spec/pull/1208/changes#r2732688632
       }
@@ -303,7 +305,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
    *
    * Moving forward, extensions merging should probably be done first thing as a separate step, before any validation and/or linking of foreign schemas.
    */
-  val dedupedDefinitions = listOfNotNull(schemaDefinition) + directiveDefinitions.values + typeDefinitions.values
+  val dedupedDefinitions = listOfNotNull(schemaDefinition) + directiveDefinitions.values + typeDefinitions.values + listOfNotNull(serviceDefinition)
   val mergedDefinitions = ExtensionsMerger(dedupedDefinitions + typeSystemExtensions, options.mergeOptions).merge().getOrThrow()
 
   val mergedScope = DefaultValidationScope(

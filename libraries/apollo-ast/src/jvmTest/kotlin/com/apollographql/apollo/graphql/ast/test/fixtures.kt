@@ -28,13 +28,7 @@ internal fun GQLResult<GQLDocument>.serialize(): String {
   }
 }
 
-fun shouldUpdateTestFixtures(): Boolean {
-  if (System.getenv("updateTestFixtures") != null) {
-    return true
-  }
-
-  return false
-}
+fun shouldUpdateTestFixtures() = System.getenv("updateTestFixtures") != null
 
 internal fun testFilterMatches(value: String): Boolean {
   val testFilter = System.getenv("testFilter") ?: return true

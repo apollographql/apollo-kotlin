@@ -438,7 +438,7 @@ class GQLServiceExtension(
 class GQLCapability(
     override val sourceLocation: SourceLocation? = null,
     val description: String?,
-    val qualifiedName: String,
+    val name: String,
     val value: String?,
 ) : GQLNode {
   override val children: List<GQLNode>
@@ -448,7 +448,7 @@ class GQLCapability(
     with(writer) {
       writeDescription(description)
       write("capability ")
-      write(qualifiedName)
+      write(name)
       if (value != null) {
         write("(\"$value\")")
       }
@@ -459,13 +459,13 @@ class GQLCapability(
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
-      qualifiedName: String = this.qualifiedName,
+      qualifiedName: String = this.name,
       value: String? = this.value,
   ): GQLCapability {
     return GQLCapability(
         sourceLocation = sourceLocation,
         description = description,
-        qualifiedName = qualifiedName,
+        name = qualifiedName,
         value = value
     )
   }

@@ -6,7 +6,6 @@
 package com.apollographql.apollo.ast.introspection
 
 import com.apollographql.apollo.annotations.ApolloExperimental
-import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -479,7 +478,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
   private fun RCapability.toGQLCapability(): GQLCapability {
     return GQLCapability(
         description = description.unwrapDescription(qualifiedName),
-        qualifiedName = qualifiedName,
+        name = qualifiedName,
         value = value.getOrThrow()
     )
   }
