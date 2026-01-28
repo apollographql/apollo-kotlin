@@ -24,6 +24,7 @@ query IntrospectionQuery {
       # deprecationReason - introduced in https://github.com/graphql/graphql-spec/pull/907
     }
   }
+  # __service { } - experimental, see https://github.com/graphql/graphql-spec/pull/1208
 }
 
 fragment FullType on __Type {

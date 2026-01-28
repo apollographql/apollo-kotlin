@@ -1,0 +1,12 @@
+
+"""
+my service
+"""
+service {
+  """
+  my capability
+  """
+  capability com.example
+  capability com.example.foo
+  capability com.example.bar("bar")
+}

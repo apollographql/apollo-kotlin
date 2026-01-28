@@ -16,12 +16,10 @@ class MergerTest {
   @Test
   fun test(@TestParameter(valuesProvider = ParametersProvider::class) graphqlFile: File) {
     checkExpected(graphqlFile) {
-      val pragmas = it.readLines().takeWhile { it.startsWith("# PRAGMA") }.map {
-        it.substring("# PRAGMA".length).trim()
-      }.toSet()
-      it.parseAsGQLDocument()
+      val pragmas = it.pragmas()
+      it.parseAsGQLDocument(pragmas.toParserOptions())
           .getOrThrow()
-          .mergeExtensions(MergeOptions("allowMergingFieldDefinitions" in pragmas))
+          .mergeExtensions(pragmas.toMergerOptions())
           .serialize()
     }
   }

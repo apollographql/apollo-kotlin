@@ -14,6 +14,7 @@ internal class Parser(
   private val withSourceLocation = options.withSourceLocation
   private val allowEmptyDocuments = options.allowEmptyDocuments
   private val allowDirectivesOnDirectives = options.allowDirectivesOnDirectives
+  private val allowServiceCapabilities = options.allowServiceCapabilities
 
   fun parseDocument(): GQLDocument {
     val start = token
@@ -162,6 +163,18 @@ internal class Parser(
 
   private fun parseName(): String {
     return expectToken<Token.Name>().value
+  }
+
+  private fun parseQualifiedName(): String {
+    val components = mutableListOf<String>()
+    components.add(parseName())
+    expectToken<Token.Dot>()
+    components.add(parseName())
+    while (peek<Token.Dot>()) {
+      advance()
+      components.add(parseName())
+    }
+    return components.joinToString(".")
   }
 
   private inline fun <reified T : Token> peek(): Boolean {
@@ -339,6 +352,27 @@ internal class Parser(
     unexpected()
   }
 
+  private fun parseServiceCapability(): GQLCapability {
+    val start = token
+    val description = parseDescription()
+
+    expectKeyword("capability")
+
+    val qualifiedName = parseQualifiedName()
+
+    var value: String? = null
+    if (expectOptionalToken<Token.LeftParenthesis>() != null) {
+      value = expectToken<Token.String>().value
+      expectToken<Token.RightParenthesis>()
+    }
+    return GQLCapability(
+        sourceLocation = sourceLocation(start),
+        description = description,
+        qualifiedName = qualifiedName,
+        value = value
+    )
+  }
+
   private fun parseOperationTypeDefinition(): GQLOperationTypeDefinition {
     val start = token
     val operationType = parseOperationType()
@@ -369,6 +403,23 @@ internal class Parser(
     )
   }
 
+  private fun parseServiceDefinition(start: Token): GQLServiceDefinition {
+    val description = parseDescription()
+
+    expectKeyword("service")
+    val directives = parseDirectives(const = true)
+    val capabilities = parseList<Token.LeftBrace, Token.RightBrace, GQLCapability> {
+      parseServiceCapability()
+    }
+
+    return GQLServiceDefinition(
+        sourceLocation = sourceLocation(start),
+        description = description,
+        directives = directives,
+        capabilities = capabilities
+    )
+  }
+
   private fun parseSchemaExtension(): GQLSchemaExtension {
     val start = token
     expectKeyword("extend")
@@ -386,6 +437,22 @@ internal class Parser(
         sourceLocation = sourceLocation(start),
         directives = directives,
         operationTypeDefinitions = operationTypeDefinitions
+    )
+  }
+
+  private fun parseServiceExtension(): GQLServiceExtension {
+    val start = token
+    expectKeyword("extend")
+    expectKeyword("service")
+    val directives = parseDirectives(const = true)
+    val capabilities = parseNonEmptyListOrNull<Token.LeftBrace, Token.RightBrace, GQLCapability> {
+      parseServiceCapability()
+    }.orEmpty()
+
+    return GQLServiceExtension(
+        sourceLocation = sourceLocation(start),
+        directives = directives,
+        capabilities = capabilities
     )
   }
 
@@ -745,6 +812,12 @@ internal class Parser(
       } else {
         parseDirectiveExtension()
       }
+      "service" -> {
+        if (!allowServiceCapabilities) {
+          unexpected(t)
+        }
+        parseServiceExtension()
+      }
       else -> unexpected(t)
     }
   }
@@ -757,9 +830,6 @@ internal class Parser(
     return when (t) {
       is Token.LeftBrace -> parseOperationDefinition(start)
       is Token.Name -> {
-        if (t.value == "extend" && hasDescription) {
-          throw ParserException("Type system extensions cannot have a description", t)
-        }
         when (t.value) {
           "schema" -> parseSchemaDefinition(start)
           "scalar" -> parseScalarTypeDefinition(start)
@@ -771,7 +841,18 @@ internal class Parser(
           "directive" -> parseDirectiveDefinition(start)
           "query", "mutation", "subscription" -> parseOperationDefinition(start)
           "fragment" -> parseFragmentDefinition(start)
-          "extend" -> parseTypeSystemExtension()
+          "extend" -> {
+            if (hasDescription) {
+              throw ParserException("Type system extensions cannot have a description", t)
+            }
+            parseTypeSystemExtension()
+          }
+          "service" -> {
+            if (!allowServiceCapabilities) {
+              unexpected(t)
+            }
+            parseServiceDefinition(start)
+          }
           else -> unexpected(t)
         }
       }
@@ -935,7 +1016,7 @@ internal class Parser(
           }
         }
         val name = parseName()
-        return GQLVariableValue(
+        GQLVariableValue(
             sourceLocation = sourceLocation(start),
             name = name
         )

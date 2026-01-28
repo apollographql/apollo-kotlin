@@ -188,6 +188,20 @@ public final class com/apollographql/apollo/ast/GQLBooleanValue : com/apollograp
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
+public final class com/apollographql/apollo/ast/GQLCapability : com/apollographql/apollo/ast/GQLNode {
+	public fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLCapability;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLCapability;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLCapability;
+	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun getChildren ()Ljava/util/List;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getQualifiedName ()Ljava/lang/String;
+	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public final fun getValue ()Ljava/lang/String;
+	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
+}
+
 public abstract interface class com/apollographql/apollo/ast/GQLDefinition : com/apollographql/apollo/ast/GQLNode {
 }
 
@@ -803,6 +817,33 @@ public final class com/apollographql/apollo/ast/GQLSelectionSet : com/apollograp
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
+public final class com/apollographql/apollo/ast/GQLServiceDefinition : com/apollographql/apollo/ast/GQLDefinition, com/apollographql/apollo/ast/GQLDescribed, com/apollographql/apollo/ast/GQLHasDirectives {
+	public fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLServiceDefinition;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLServiceDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLServiceDefinition;
+	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public final fun getCapabilities ()Ljava/util/List;
+	public fun getChildren ()Ljava/util/List;
+	public fun getDescription ()Ljava/lang/String;
+	public fun getDirectives ()Ljava/util/List;
+	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
+}
+
+public final class com/apollographql/apollo/ast/GQLServiceExtension : com/apollographql/apollo/ast/GQLDefinition, com/apollographql/apollo/ast/GQLHasDirectives, com/apollographql/apollo/ast/GQLTypeSystemExtension {
+	public fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/util/List;Ljava/util/List;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLServiceExtension;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLServiceExtension;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLServiceExtension;
+	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public final fun getCapabilities ()Ljava/util/List;
+	public fun getChildren ()Ljava/util/List;
+	public fun getDirectives ()Ljava/util/List;
+	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
+}
+
 public final class com/apollographql/apollo/ast/GQLStringValue : com/apollographql/apollo/ast/GQLValue {
 	public fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;)V
 	public synthetic fun <init> (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -1092,9 +1133,10 @@ public final class com/apollographql/apollo/ast/OtherValidationIssue : com/apoll
 
 public final class com/apollographql/apollo/ast/ParserOptions {
 	public static final field Companion Lcom/apollographql/apollo/ast/ParserOptions$Companion;
-	public synthetic fun <init> (ZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getAllowDirectivesOnDirectives ()Z
 	public final fun getAllowEmptyDocuments ()Z
+	public final fun getAllowServiceCapabilities ()Z
 	public final fun getWithSourceLocation ()Z
 }
 
@@ -1102,12 +1144,15 @@ public final class com/apollographql/apollo/ast/ParserOptions$Builder {
 	public fun <init> ()V
 	public final fun allowDirectivesOnDirectives (Z)Lcom/apollographql/apollo/ast/ParserOptions$Builder;
 	public final fun allowEmptyDocuments (Z)Lcom/apollographql/apollo/ast/ParserOptions$Builder;
+	public final fun allowServiceCapabilities (Z)Lcom/apollographql/apollo/ast/ParserOptions$Builder;
 	public final fun build ()Lcom/apollographql/apollo/ast/ParserOptions;
 	public final fun getAllowDirectivesOnDirectives ()Z
 	public final fun getAllowEmptyDocuments ()Z
+	public final fun getAllowServiceCapabilities ()Z
 	public final fun getWithSourceLocation ()Z
 	public final fun setAllowDirectivesOnDirectives (Z)V
 	public final fun setAllowEmptyDocuments (Z)V
+	public final fun setAllowServiceCapabilities (Z)V
 	public final fun setWithSourceLocation (Z)V
 	public final fun withSourceLocation (Z)Lcom/apollographql/apollo/ast/ParserOptions$Builder;
 }
@@ -1355,7 +1400,6 @@ public final class com/apollographql/apollo/ast/introspection/ApolloIntrospectio
 }
 
 public final class com/apollographql/apollo/ast/introspection/Introspection {
-	public static final fun normalize (Lcom/apollographql/apollo/ast/introspection/IntrospectionSchema;)Lcom/apollographql/apollo/ast/introspection/IntrospectionSchema;
 	public static final fun toGQLDocument (Lcom/apollographql/apollo/ast/introspection/IntrospectionSchema;)Lcom/apollographql/apollo/ast/GQLDocument;
 	public static final fun toIntrospectionSchema (Lcom/apollographql/apollo/ast/GQLDocument;)Lcom/apollographql/apollo/ast/introspection/ApolloIntrospectionSchema;
 	public static final fun toIntrospectionSchema (Ljava/io/File;)Lcom/apollographql/apollo/ast/introspection/IntrospectionSchema;

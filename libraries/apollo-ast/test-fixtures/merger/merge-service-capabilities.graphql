@@ -1,0 +1,11 @@
+# PRAGMA allowServiceCapabilities
+
+"my service"
+service {
+  "my capability"
+  capability com.example
+}
+
+extend service {
+  capability com.example2
+}
