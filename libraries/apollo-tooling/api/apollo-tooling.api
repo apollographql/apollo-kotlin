@@ -42,6 +42,7 @@ public final class com/apollographql/apollo/tooling/GraphQLFeature : java/lang/E
 	public static final field OneOf Lcom/apollographql/apollo/tooling/GraphQLFeature;
 	public static final field RepeatableDirectives Lcom/apollographql/apollo/tooling/GraphQLFeature;
 	public static final field SchemaDescription Lcom/apollographql/apollo/tooling/GraphQLFeature;
+	public static final field ServiceCapabilities Lcom/apollographql/apollo/tooling/GraphQLFeature;
 	public static final field SpecifiedBy Lcom/apollographql/apollo/tooling/GraphQLFeature;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo/tooling/GraphQLFeature;

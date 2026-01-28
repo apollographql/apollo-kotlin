@@ -17,6 +17,14 @@ private val schemaMetaFieldDefinition = GQLFieldDefinition(
     description = ""
 )
 
+private val serviceMetaFieldDefinition = GQLFieldDefinition(
+    name = "__service",
+    type = GQLNonNullType(type = GQLNamedType(name = "__Service")),
+    directives = emptyList(),
+    arguments = emptyList(),
+    description = ""
+)
+
 private val typeMetaFieldDefinition = GQLFieldDefinition(
     name = "__type",
     type = GQLNonNullType(type = GQLNamedType(name = "__Type")),
@@ -41,7 +49,7 @@ fun GQLTypeDefinition.fieldDefinitions(schema: Schema): List<GQLFieldDefinition>
   return when (this) {
     is GQLObjectTypeDefinition -> {
       if (name == schema.queryTypeDefinition.name) {
-        fields + typeMetaFieldDefinition + schemaMetaFieldDefinition + typenameMetaFieldDefinition
+        fields + typeMetaFieldDefinition + schemaMetaFieldDefinition + serviceMetaFieldDefinition + typenameMetaFieldDefinition
       } else {
         fields + typenameMetaFieldDefinition
       }

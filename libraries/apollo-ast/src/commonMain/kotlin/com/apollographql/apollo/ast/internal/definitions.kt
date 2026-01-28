@@ -473,6 +473,17 @@ internal val builtinsDefinitionsStr = """
   ) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
   directive @specifiedBy(url: String!) on SCALAR  
+  
+  type __Service {
+    description: String
+    capabilities: [__Capability!]!
+  }
+
+  type __Capability {
+    identifier: String!
+    description: String
+    value: String
+  }
 """.trimIndent()
 
 internal val linkDefinitionsStr = """

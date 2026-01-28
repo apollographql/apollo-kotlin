@@ -22,9 +22,12 @@ import kotlin.jvm.JvmName
 
 /**
  * Because there are different versions of GraphQL in the wild and because users may use
- * different introspection queries it tries to be as lenient as possible.
+ * different introspection queries, this model is a superset of all possible introspection models.
  *
- * Probable user error (incomplete introspection query):
+ * Especially:
+ *
+ * - a schema definition is always added
+ * - a service definition is always added
  * - missing description defaults to null
  * - missing directive argument definitions default to empty
  * - missing directives default to empty
@@ -40,7 +43,6 @@ import kotlin.jvm.JvmName
  * - missing directive locations skip the directive definition
  *
  */
-
 interface IntrospectionSchema
 
 @ApolloExperimental
@@ -53,11 +55,20 @@ fun BufferedSource.toIntrospectionSchema(filePath: String? = null): Introspectio
 
   val string = this.readUtf8()
   val envelope: REnvelope = json.decodeFromString(string)
-  val __schema = envelope.__schema ?: envelope.data?.__schema
-  if (__schema == null) {
-    throw ConversionException("Invalid introspection schema '${string.substring(0, 50)}': expected input should look like '{ \"__schema\": { \"types\": ...'")
+  val __schema: RSchema
+  val __service: Optional<RService>
+  if (envelope.__schema == null) {
+    if (envelope.data == null) {
+      throw ConversionException("Invalid introspection schema '${string.substring(0, 50)}': the input must have a __schema or a data property")
+    }
+    __schema = envelope.data.__schema
+    __service = envelope.data.__service
+  } else {
+    __schema = envelope.__schema
+    __service = envelope.__service
   }
-  return IntrospectionSchemaImpl(__schema, filePath)
+
+  return IntrospectionSchemaImpl(__schema, __service, filePath)
 }
 
 fun String.toIntrospectionSchema(): IntrospectionSchema = Buffer().writeUtf8(this).toIntrospectionSchema()
@@ -70,7 +81,7 @@ fun IntrospectionSchema.toGQLDocument(): GQLDocument {
   return GQLDocumentBuilder(this).toGQLDocument(filePath)
 }
 
-private class IntrospectionSchemaImpl(val __schema: RSchema, val filePath: String?) : IntrospectionSchema
+private class IntrospectionSchemaImpl(val __schema: RSchema, val __service: Optional<RService>, val filePath: String?) : IntrospectionSchema
 
 private val json = Json {
   // be robust to errors: [] keys
@@ -82,12 +93,14 @@ private class REnvelope(
     val data: RData? = null,
     @Suppress("PropertyName")
     val __schema: RSchema? = null,
+    val __service: Optional<RService> = Optional.absent(),
 )
 
 @Serializable
 private class RData(
     @Suppress("PropertyName")
     val __schema: RSchema,
+    val __service: Optional<RService> = Optional.absent(),
 )
 
 @Serializable
@@ -98,6 +111,19 @@ private class RSchema(
     val mutationType: Optional<RTypeRoot?> = Optional.absent(),
     val subscriptionType: Optional<RTypeRoot?> = Optional.absent(),
     val directives: Optional<List<RDirective>> = Optional.absent(),
+)
+
+@Serializable
+private class RService(
+    val description: Optional<String?> = Optional.absent(),
+    val capabilities: List<RCapability>,
+)
+
+@Serializable
+private class RCapability(
+    val description: Optional<String?> = Optional.absent(),
+    val qualifiedName: String,
+    val value: Optional<String?> = Optional.absent(),
 )
 
 @Serializable
@@ -240,7 +266,8 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
             }
           }
               + directives.mapNotNull { it.toGQLDirectiveDefinition() }
-              + schemaDefinition(),
+              + schemaDefinition()
+              + (introspectionSchema.__service.getOrNull()?.toGQLServiceDefinition() ?: defaultServiceDefinition()),
           sourceLocation = SourceLocation.forPath(filePath)
       )
     }
@@ -441,6 +468,23 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     )
   }
 
+  private fun RService.toGQLServiceDefinition(): GQLServiceDefinition {
+    return GQLServiceDefinition(
+        description = description.unwrapDescription("service"),
+        directives = emptyList(),
+        capabilities = capabilities.map { it.toGQLCapability() }
+    )
+  }
+
+  private fun RCapability.toGQLCapability(): GQLCapability {
+    return GQLCapability(
+        description = description.unwrapDescription(qualifiedName),
+        qualifiedName = qualifiedName,
+        value = value.getOrThrow()
+    )
+  }
+
+
   private fun RTypeFull.toGQLInputObjectTypeDefinition(): GQLInputObjectTypeDefinition {
     return GQLInputObjectTypeDefinition(
         description = description.unwrapDescription(name),
@@ -507,25 +551,6 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
         } else {
           makeDirectives(deprecationReason.unwrapDeprecationReason(name))
         },
-    )
-  }
-}
-
-@ApolloInternal
-fun IntrospectionSchema.normalize(): IntrospectionSchema {
-  this as IntrospectionSchemaImpl
-  // This does not sort the fields/arguments for some reason
-  return with(__schema) {
-    IntrospectionSchemaImpl(
-        RSchema(
-            queryType = queryType,
-            mutationType = mutationType,
-            subscriptionType = subscriptionType,
-            types = types.sortedBy { it.name },
-            directives = directives.mapValue { it.sortedBy { it.name } },
-            description = description
-        ),
-        null
     )
   }
 }

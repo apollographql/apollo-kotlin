@@ -339,6 +339,142 @@ class GQLSchemaDefinition(
   }
 }
 
+@ApolloExperimental
+class GQLServiceDefinition(
+    override val sourceLocation: SourceLocation? = null,
+    override val description: String?,
+    override val directives: List<GQLDirective>,
+    val capabilities: List<GQLCapability>,
+) : GQLDefinition, GQLDescribed, GQLHasDirectives {
+
+  override val children = directives + capabilities
+
+  override fun writeInternal(writer: SDLWriter) {
+    if (description == null && directives.isEmpty() && capabilities.isEmpty()) {
+      return
+    }
+    with(writer) {
+      writeDescription(description)
+      write("service ")
+      if (directives.isNotEmpty()) {
+        directives.join(writer)
+        write(" ")
+      }
+      write("{\n")
+      indent()
+      capabilities.join(writer, separator = "")
+      unindent()
+      write("}\n")
+    }
+  }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      description: String? = this.description,
+      directives: List<GQLDirective> = this.directives,
+      capabilities: List<GQLCapability> = this.capabilities,
+  ): GQLServiceDefinition {
+    return GQLServiceDefinition(
+        sourceLocation = sourceLocation,
+        description = description,
+        directives = directives,
+        capabilities = capabilities,
+    )
+  }
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        capabilities = container.take(),
+    )
+  }
+}
+
+@ApolloExperimental
+class GQLServiceExtension(
+    override val sourceLocation: SourceLocation? = null,
+    override val directives: List<GQLDirective>,
+    val capabilities: List<GQLCapability>,
+) : GQLDefinition, GQLTypeSystemExtension, GQLHasDirectives {
+
+  override val children = directives + capabilities
+
+  override fun writeInternal(writer: SDLWriter) {
+    with(writer) {
+      write("extend service ")
+      if (directives.isNotEmpty()) {
+        directives.join(writer)
+        write(" ")
+      }
+      if (capabilities.isNotEmpty()) {
+        write("{\n")
+        indent()
+        capabilities.join(writer, separator = "")
+        unindent()
+        write("}\n")
+      }
+    }
+  }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      directives: List<GQLDirective> = this.directives,
+      capabilities: List<GQLCapability> = this.capabilities,
+  ): GQLServiceExtension = GQLServiceExtension(
+      sourceLocation = sourceLocation,
+      directives = directives,
+      capabilities = capabilities,
+  )
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        capabilities = container.take()
+    )
+  }
+}
+
+@ApolloExperimental
+class GQLCapability(
+    override val sourceLocation: SourceLocation? = null,
+    val description: String?,
+    val qualifiedName: String,
+    val value: String?,
+) : GQLNode {
+  override val children: List<GQLNode>
+    get() = emptyList()
+
+  override fun writeInternal(writer: SDLWriter) {
+    with(writer) {
+      writeDescription(description)
+      write("capability ")
+      write(qualifiedName)
+      if (value != null) {
+        write("(\"$value\")")
+      }
+      write("\n")
+    }
+  }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      description: String? = this.description,
+      qualifiedName: String = this.qualifiedName,
+      value: String? = this.value,
+  ): GQLCapability {
+    return GQLCapability(
+        sourceLocation = sourceLocation,
+        description = description,
+        qualifiedName = qualifiedName,
+        value = value
+    )
+  }
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return this
+  }
+}
+
 sealed class GQLTypeDefinition : GQLDefinition, GQLNamed, GQLDescribed, GQLHasDirectives {
   fun isBuiltIn(): Boolean = builtInTypes.contains(this.name)
 
@@ -359,7 +495,9 @@ sealed class GQLTypeDefinition : GQLDefinition, GQLNamed, GQLDescribed, GQLHasDi
         "__EnumValue",
         "__TypeKind",
         "__Directive",
-        "__DirectiveLocation"
+        "__DirectiveLocation",
+        "__Service",
+        "__Capability"
     )
   }
 }

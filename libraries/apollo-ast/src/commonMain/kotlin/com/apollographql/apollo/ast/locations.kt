@@ -24,6 +24,8 @@ internal fun GQLDefinition.removeLocation(): GQLDefinition = when(this) {
   is GQLUnionTypeDefinition -> this@removeLocation.removeLocation()
   is GQLUnionTypeExtension -> this@removeLocation.removeLocation()
   is GQLDirectiveExtension -> this@removeLocation.removeLocation()
+  is GQLServiceDefinition -> this@removeLocation.removeLocation()
+  is GQLServiceExtension -> this@removeLocation.removeLocation()
 }
 
 internal fun GQLEnumTypeDefinition.removeLocation() = copy(

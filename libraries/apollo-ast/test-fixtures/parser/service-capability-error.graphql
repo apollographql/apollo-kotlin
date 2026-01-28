@@ -1,0 +1,6 @@
+# PRAGMA allowServiceCapabilities
+
+service {
+  # qualified names must have 2 components
+  capability example
+}

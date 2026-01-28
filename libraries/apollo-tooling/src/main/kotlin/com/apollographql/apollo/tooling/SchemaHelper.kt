@@ -14,6 +14,7 @@ import com.apollographql.apollo.ast.GQLDefinition
 import com.apollographql.apollo.ast.GQLField
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLOperationDefinition
+import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.network.http.DefaultHttpEngine
 import com.apollographql.apollo.network.okHttpClient
 import com.apollographql.apollo.tooling.GraphQLFeature.*
@@ -29,6 +30,7 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSession
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.X509TrustManager
+import kotlin.plus
 
 internal object SchemaHelper {
   internal val client = OkHttpClient()
@@ -196,6 +198,35 @@ internal object SchemaHelper {
               }
       )
     }
+
+  private val __serviceQuery = """
+  { 
+    __service {
+      description
+      capabilities {
+        description
+        identifier
+        value
+      }
+    }
+  }
+
+  """.trimIndent()
+
+  internal fun List<GQLDefinition>.reworkServiceCapabilities(features: Set<GraphQLFeature>): List<GQLDefinition> {
+    return mapIf<_, GQLOperationDefinition>({ it.name == "IntrospectionQuery" }) {
+      val newSelections = buildList {
+        addAll(it.selections)
+        if (ServiceCapabilities in features) {
+          add((__serviceQuery.parseAsGQLDocument().getOrThrow().definitions.single() as GQLOperationDefinition).selections.single())
+        }
+      }
+      it.copy(
+          selections = newSelections
+      )
+    }
+  }
+
 
   private inline fun <T> T.letIf(condition: Boolean, block: (T) -> T): T = if (condition) block(this) else this
 

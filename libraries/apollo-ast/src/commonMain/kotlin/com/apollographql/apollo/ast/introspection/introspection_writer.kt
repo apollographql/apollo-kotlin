@@ -4,6 +4,7 @@
 
 package com.apollographql.apollo.ast.introspection
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.ast.ConversionException
 import com.apollographql.apollo.ast.GQLDirectiveDefinition
 import com.apollographql.apollo.ast.GQLDocument
@@ -20,6 +21,7 @@ import com.apollographql.apollo.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo.ast.GQLOperationTypeDefinition
 import com.apollographql.apollo.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo.ast.GQLSchemaDefinition
+import com.apollographql.apollo.ast.GQLServiceDefinition
 import com.apollographql.apollo.ast.GQLType
 import com.apollographql.apollo.ast.GQLTypeDefinition
 import com.apollographql.apollo.ast.GQLUnionTypeDefinition
@@ -28,19 +30,21 @@ import com.apollographql.apollo.ast.findOneOf
 import com.apollographql.apollo.ast.findSpecifiedBy
 import com.apollographql.apollo.ast.toUtf8
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
 /**
- * The Json Model matching the `__Schema` [GraphQL type](https://spec.graphql.org/draft/#sec-The-__Schema-Type)
+ * The JSON Model matching the `__Schema` [GraphQL type](https://spec.graphql.org/draft/#sec-The-__Schema-Type)
  *
  * It matches the draft version of the spec. Some fields did not exist in earlier versions
  * like `__InputValue.isDeprecated` for an example.
  *
- * The models match with the spec types except for Type that is used recursively, and therefore
- * we have [WTypeFull], [WTypeRef] and [WTypeRoot]
+ * TODO: This is potentially an issue because it means adding new features changes the output of this function.
+ * For an example, it doesn't support service capabilities as of now to avoid confusing other external tools.
+ *
+ * The models match with the spec types except for Type that has the full details [WTypeFull] for getting all
+ * the metadata and [WTypeRef] for getting only the type of a field.
  */
 @Serializable
 internal class WSchema(
@@ -132,11 +136,13 @@ internal class IntrospectionSchemaBuilder(document: GQLDocument) {
   private val typeDefinitions: Map<String, GQLTypeDefinition>
   private val directiveDefinitions: List<GQLDirectiveDefinition>
   private val schemaDefinition: GQLSchemaDefinition
+  private val serviceDefinition: GQLServiceDefinition
 
   init {
     val types = mutableMapOf<String, GQLTypeDefinition>()
     val directives = mutableListOf<GQLDirectiveDefinition>()
     var schema: GQLSchemaDefinition? = null
+    var service: GQLServiceDefinition? = null
 
     document.definitions.forEach {
       when (it) {
@@ -152,6 +158,10 @@ internal class IntrospectionSchemaBuilder(document: GQLDocument) {
           schema = it
         }
 
+        is GQLServiceDefinition -> {
+          service = it
+        }
+
         else -> {
           throw ConversionException("Unsupported definition ${it::class.simpleName} apply type extensions before converting to introspection")
         }
@@ -161,6 +171,7 @@ internal class IntrospectionSchemaBuilder(document: GQLDocument) {
     schemaDefinition = schema ?: defaultSchemaDefinition(types)
     typeDefinitions = types
     directiveDefinitions = directives
+    serviceDefinition = service ?: defaultServiceDefinition()
   }
 
   fun toIntrospectionSchema(): ApolloIntrospectionSchema {
@@ -375,6 +386,15 @@ internal fun defaultSchemaDefinition(typeDefinitions: Map<String, GQLTypeDefinit
   )
 }
 
+internal fun defaultServiceDefinition(): GQLServiceDefinition {
+  return GQLServiceDefinition(
+      description = null,
+      directives = emptyList(),
+      capabilities = emptyList(),
+  )
+}
+
+
 internal fun GQLSchemaDefinition.queryType(): String {
   return rootTypeFor("query") ?: throw ConversionException("Schema does not define a 'query' type")
 }
@@ -422,4 +442,8 @@ fun ApolloIntrospectionSchema.toJson(): String {
   return Json.encodeToString(WData(__schema))
 }
 
+/**
+ * TODO: should this be deprecated? See also the comment in [WSchema]. It's not clear what value there is
+ * in converting from SDL to JSON.
+ */
 fun GQLDocument.toIntrospectionSchema(): ApolloIntrospectionSchema = IntrospectionSchemaBuilder(this).toIntrospectionSchema()

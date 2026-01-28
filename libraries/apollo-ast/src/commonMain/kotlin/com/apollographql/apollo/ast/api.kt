@@ -76,6 +76,7 @@ class ParserOptions private constructor(
     val allowEmptyDocuments: Boolean,
     val withSourceLocation: Boolean,
     val allowDirectivesOnDirectives: Boolean,
+    val allowServiceCapabilities: Boolean
 ) {
   class Builder {
     var allowEmptyDocuments = true
@@ -84,12 +85,20 @@ class ParserOptions private constructor(
     @ApolloExperimental
     var allowDirectivesOnDirectives = false
 
+    @ApolloExperimental
+    var allowServiceCapabilities = false
+
     fun allowEmptyDocuments(allowEmptyDocuments: Boolean) = apply {
       this.allowEmptyDocuments = allowEmptyDocuments
     }
 
     fun withSourceLocation(withSourceLocation: Boolean) = apply {
       this.withSourceLocation = withSourceLocation
+    }
+
+    @ApolloExperimental
+    fun allowServiceCapabilities(allowServiceCapabilities: Boolean) = apply {
+      this.allowServiceCapabilities = allowServiceCapabilities
     }
 
     @ApolloExperimental
@@ -102,6 +111,7 @@ class ParserOptions private constructor(
           allowEmptyDocuments = allowEmptyDocuments,
           withSourceLocation = withSourceLocation,
           allowDirectivesOnDirectives = allowDirectivesOnDirectives,
+          allowServiceCapabilities = allowServiceCapabilities
       )
     }
   }

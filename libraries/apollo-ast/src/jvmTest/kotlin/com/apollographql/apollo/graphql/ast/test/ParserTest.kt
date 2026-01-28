@@ -1,6 +1,5 @@
 package com.apollographql.apollo.graphql.ast.test
 
-import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
@@ -14,18 +13,9 @@ class ParserTest {
   @Test
   fun test(@TestParameter(valuesProvider = ParametersProvider::class) graphqlFile: File) {
     checkExpected(graphqlFile) {
-      val pragmas = it.readLines().takeWhile { it.startsWith("# PRAGMA") }.map {
-        it.substring("# PRAGMA".length).trim()
-      }.toSet()
-      it.parseAsGQLDocument(
-          options = ParserOptions.Builder()
-              .apply {
-                if ("allowDirectivesOnDirectives" in pragmas) {
-                  allowDirectivesOnDirectives(true)
-                }
-              }
-              .build()
-      ).serialize()
+      val pragmas = it.pragmas()
+
+      it.parseAsGQLDocument(pragmas.toParserOptions()).serialize()
     }
   }
 

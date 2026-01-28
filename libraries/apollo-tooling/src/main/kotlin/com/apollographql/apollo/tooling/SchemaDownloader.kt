@@ -17,6 +17,7 @@ import com.apollographql.apollo.network.okHttpClient
 import com.apollographql.apollo.tooling.SchemaHelper.reworkFullTypeFragment
 import com.apollographql.apollo.tooling.SchemaHelper.reworkInputValueFragment
 import com.apollographql.apollo.tooling.SchemaHelper.reworkIntrospectionQuery
+import com.apollographql.apollo.tooling.SchemaHelper.reworkServiceCapabilities
 import com.apollographql.apollo.tooling.graphql.PreIntrospectionQuery
 import com.apollographql.apollo.tooling.platformapi.public.DownloadSchemaQuery
 import kotlinx.coroutines.runBlocking
@@ -116,6 +117,8 @@ object SchemaDownloader {
         /*
          * As of Feb. 2025, the registry schema contains the introspection types but not
          * the scalars and we therefore need to call `toFullSchemaGQLDocument()`
+         *
+         * TODO: Should this be removed? It's not clear what value there is in converting from SDL to JSON.
          */
         sdlSchema
             .toGQLDocument()
@@ -152,6 +155,7 @@ object SchemaDownloader {
             .reworkIntrospectionQuery(features)
             .reworkFullTypeFragment(features)
             .reworkInputValueFragment(features)
+            .reworkServiceCapabilities(features)
     )
     return introspectionGql.toUtf8()
   }

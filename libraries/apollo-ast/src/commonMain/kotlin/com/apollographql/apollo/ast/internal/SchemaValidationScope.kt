@@ -24,6 +24,7 @@ import com.apollographql.apollo.ast.GQLResult
 import com.apollographql.apollo.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo.ast.GQLSchemaDefinition
 import com.apollographql.apollo.ast.GQLSchemaExtension
+import com.apollographql.apollo.ast.GQLServiceDefinition
 import com.apollographql.apollo.ast.GQLStringValue
 import com.apollographql.apollo.ast.GQLTypeDefinition
 import com.apollographql.apollo.ast.GQLTypeDefinition.Companion.builtInTypes
@@ -135,6 +136,11 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
 
       is GQLTypeSystemExtension -> {
         typeSystemExtensions.add(definition)
+      }
+
+      is GQLServiceDefinition -> {
+        // TODO: any validation to do here?
+        // See https://github.com/graphql/graphql-spec/pull/1208/changes#r2732688632
       }
 
       else -> {

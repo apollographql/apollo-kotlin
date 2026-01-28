@@ -59,6 +59,16 @@ enum class GraphQLFeature {
    * - `__Schema.directives`'s `includeDeprecated` argument
    */
   DeprecatedDirectives,
+
+  /**
+   * Service capabilities directives, experimental
+   *
+   * Introspection:
+   * - `__Service`
+   * - `__Capability`
+   * - `Query.__service`
+   */
+  ServiceCapabilities,
 }
 
 internal fun PreIntrospectionQuery.Data.getFeatures(): Set<GraphQLFeature> {
@@ -107,6 +117,10 @@ internal fun PreIntrospectionQuery.Data.getFeatures(): Set<GraphQLFeature> {
 
     if (typeInputFieldsArgsIncludeDeprecated && directiveArgsIncludeDeprecated && fieldArgsIncludeDeprecated && inputValueIsDeprecated && inputValueDeprecatedReason) {
       add(DeprecatedInputValues)
+    }
+
+    if (__schema.types.any { it.typeFields.name == "__Service" }) {
+      add(GraphQLFeature.ServiceCapabilities)
     }
   }
 }

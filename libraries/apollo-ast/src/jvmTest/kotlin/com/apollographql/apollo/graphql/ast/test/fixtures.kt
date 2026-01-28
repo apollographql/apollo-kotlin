@@ -3,6 +3,9 @@ package com.apollographql.apollo.graphql.ast.test
 import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLResult
 import com.apollographql.apollo.ast.Issue
+import com.apollographql.apollo.ast.MergeOptions
+import com.apollographql.apollo.ast.ParserOptions
+import com.apollographql.apollo.ast.SchemaValidationOptions
 import com.apollographql.apollo.ast.toUtf8
 import java.io.File
 import kotlin.test.assertEquals
@@ -59,4 +62,30 @@ internal fun checkExpected(graphQLFile: File, block: (File) -> String) {
   } else {
     assertEquals(expected, actual)
   }
+}
+
+enum class Pragma {
+  allowMergingFieldDefinitions,
+  allowDirectivesOnDirectives,
+  allowServiceCapabilities,
+}
+
+fun File.pragmas(): List<Pragma> =
+  readText().lines().filter { it.startsWith("# PRAGMA ") }.map { it.removePrefix("# PRAGMA ").trim() }.map { Pragma.valueOf(it) }
+
+fun List<Pragma>.toParserOptions(): ParserOptions {
+  return ParserOptions.Builder()
+      .apply {
+        if (Pragma.allowServiceCapabilities in this@toParserOptions) {
+          allowServiceCapabilities(true)
+        }
+        if (Pragma.allowDirectivesOnDirectives in this@toParserOptions) {
+          allowDirectivesOnDirectives(true)
+        }
+      }
+      .build()
+}
+
+fun List<Pragma>.toMergerOptions(): MergeOptions {
+  return MergeOptions(Pragma.allowMergingFieldDefinitions in this)
 }

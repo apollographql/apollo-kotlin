@@ -25,6 +25,8 @@ import com.apollographql.apollo.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo.ast.GQLScalarTypeExtension
 import com.apollographql.apollo.ast.GQLSchemaDefinition
 import com.apollographql.apollo.ast.GQLSchemaExtension
+import com.apollographql.apollo.ast.GQLServiceDefinition
+import com.apollographql.apollo.ast.GQLServiceExtension
 import com.apollographql.apollo.ast.GQLStringValue
 import com.apollographql.apollo.ast.GQLType
 import com.apollographql.apollo.ast.GQLTypeSystemExtension
@@ -64,6 +66,7 @@ internal class ExtensionsMerger(private val definitions: List<GQLDefinition>, in
             is GQLEnumTypeExtension -> mergeNamedDefinition(GQLEnumTypeDefinition::class, newDefinitions, definition, "enum") { mergeEnum(it, definition) }
             is GQLUnionTypeExtension -> mergeNamedDefinition(GQLUnionTypeDefinition::class, newDefinitions, definition, "union") { mergeUnion(it, definition) }
             is GQLDirectiveExtension -> mergeNamedDefinition(GQLDirectiveDefinition::class, newDefinitions, definition, "directive") { mergeDirective(it, definition) }
+            is GQLServiceExtension -> mergeTypedDefinition(GQLServiceDefinition::class, newDefinitions, definition, "service") { mergeService(it, definition) }
           }
         }
 
@@ -271,6 +274,16 @@ private fun ExtensionsMerger.mergeSchema(
   return copy(
       directives = mergeDirectives(directives, extension.directives),
       rootOperationTypeDefinitions = mergeUniquesOrThrow(rootOperationTypeDefinitions, extension.operationTypeDefinitions) { it.operationType }
+  )
+}
+
+private fun ExtensionsMerger.mergeService(
+    serviceDefinition: GQLServiceDefinition,
+    extension: GQLServiceExtension,
+): GQLServiceDefinition = with(serviceDefinition) {
+  return copy(
+      directives = mergeDirectives(directives, extension.directives),
+      capabilities = mergeUniquesOrThrow(capabilities, extension.capabilities) { it.qualifiedName }
   )
 }
 

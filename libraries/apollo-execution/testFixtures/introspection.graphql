@@ -16,6 +16,14 @@ query IntrospectionQuery {
             isRepeatable
         }
     }
+    __service {
+        description
+        capabilities {
+           description
+           identifier
+           value
+        }
+    }
 }
 
 fragment FullType on __Type {
