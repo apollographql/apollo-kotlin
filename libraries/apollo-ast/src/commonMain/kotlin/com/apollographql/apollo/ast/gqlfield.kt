@@ -48,10 +48,16 @@ fun GQLField.definitionFromScope(schema: Schema, rawTypename: String): GQLFieldD
 fun GQLTypeDefinition.fieldDefinitions(schema: Schema): List<GQLFieldDefinition> {
   return when (this) {
     is GQLObjectTypeDefinition -> {
-      if (name == schema.queryTypeDefinition.name) {
-        fields + typeMetaFieldDefinition + schemaMetaFieldDefinition + serviceMetaFieldDefinition + typenameMetaFieldDefinition
-      } else {
-        fields + typenameMetaFieldDefinition
+      buildList { 
+        addAll(fields)
+        add(typenameMetaFieldDefinition)
+        if (name == schema.queryTypeDefinition.name) {
+          add(typeMetaFieldDefinition)
+          if (schema.hasService) {
+            add(schemaMetaFieldDefinition)
+          }
+          add(serviceMetaFieldDefinition)
+        }
       }
     }
     is GQLInterfaceTypeDefinition -> {

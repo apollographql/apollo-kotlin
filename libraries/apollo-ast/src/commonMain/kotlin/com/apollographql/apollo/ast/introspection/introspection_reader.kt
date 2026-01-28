@@ -555,6 +555,14 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
   }
 }
 
+private fun defaultServiceDefinition(): GQLServiceDefinition {
+  return GQLServiceDefinition(
+      description = null,
+      directives = emptyList(),
+      capabilities = emptyList(),
+  )
+}
+
 
 
 

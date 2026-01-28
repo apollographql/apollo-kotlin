@@ -44,6 +44,8 @@ class Schema internal constructor(
     originalDirectiveName(it.key) == CATCH
   }
 
+  internal val hasService: Boolean = typeDefinitions.get("__Service") != null
+
   val queryTypeDefinition: GQLTypeDefinition = rootOperationTypeDefinition("query", definitions)
       ?: throw SchemaValidationException("No query root type found")
 
