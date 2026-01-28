@@ -449,10 +449,6 @@ internal class Parser(
       parseServiceCapability()
     }.orEmpty()
 
-    if (directives.isEmpty() && capabilities.isEmpty()) {
-      unexpected()
-    }
-
     return GQLServiceExtension(
         sourceLocation = sourceLocation(start),
         directives = directives,
