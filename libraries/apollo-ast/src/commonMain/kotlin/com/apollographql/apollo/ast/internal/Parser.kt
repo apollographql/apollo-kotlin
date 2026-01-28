@@ -408,7 +408,7 @@ internal class Parser(
 
     expectKeyword("service")
     val directives = parseDirectives(const = true)
-    val capabilities = parseNonEmptyList<Token.LeftBrace, Token.RightBrace, GQLCapability> {
+    val capabilities = parseList<Token.LeftBrace, Token.RightBrace, GQLCapability> {
       parseServiceCapability()
     }
 
