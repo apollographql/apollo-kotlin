@@ -68,6 +68,7 @@ enum class GraphQLFeature {
    * - `__Capability`
    * - `Query.__service`
    */
+  @ApolloExperimental
   ServiceCapabilities,
 }
 
