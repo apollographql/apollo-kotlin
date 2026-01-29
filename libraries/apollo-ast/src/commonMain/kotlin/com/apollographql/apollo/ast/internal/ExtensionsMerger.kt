@@ -283,7 +283,7 @@ private fun ExtensionsMerger.mergeService(
 ): GQLServiceDefinition = with(serviceDefinition) {
   return copy(
       directives = mergeDirectives(directives, extension.directives),
-      capabilities = mergeUniquesOrThrow(capabilities, extension.capabilities) { it.qualifiedName }
+      capabilities = mergeUniquesOrThrow(capabilities, extension.capabilities) { it.name }
   )
 }
 

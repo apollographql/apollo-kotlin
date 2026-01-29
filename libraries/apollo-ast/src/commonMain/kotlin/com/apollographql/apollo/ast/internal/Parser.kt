@@ -368,7 +368,7 @@ internal class Parser(
     return GQLCapability(
         sourceLocation = sourceLocation(start),
         description = description,
-        qualifiedName = qualifiedName,
+        name = qualifiedName,
         value = value
     )
   }

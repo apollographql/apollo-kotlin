@@ -11,14 +11,16 @@ import com.apollographql.apollo.execution.ErrorPersistedDocument
 import com.apollographql.apollo.execution.ExternalValue
 import com.apollographql.apollo.execution.GraphQLRequest
 import com.apollographql.apollo.execution.InternalValue
+import com.apollographql.apollo.execution.OnError
 import com.apollographql.apollo.execution.PersistedDocument
 import com.apollographql.apollo.execution.PersistedDocumentCache
 import com.apollographql.apollo.execution.ValidPersistedDocument
 
 internal class PreparedRequest(
-  val operation: GQLOperationDefinition,
-  val fragments: Map<String, GQLFragmentDefinition>,
-  val variables: Map<String, InternalValue>
+    val operation: GQLOperationDefinition,
+    val fragments: Map<String, GQLFragmentDefinition>,
+    val variables: Map<String, InternalValue>,
+    val onError: OnError?,
 )
 
 /**
@@ -27,14 +29,14 @@ internal class PreparedRequest(
  */
 internal fun validateDocument(schema: Schema, document: String): Either<List<Issue>, GQLDocument> {
   val parseResult = document.parseAsGQLDocument()
-  var issues = parseResult.issues.filter { it is GraphQLIssue }
+  var issues = parseResult.issues.filterIsInstance<GraphQLIssue>()
   if (issues.isNotEmpty()) {
     return issues.left()
   }
 
   val gqlDocument = parseResult.getOrThrow()
   val validationResult = gqlDocument.validateAsExecutable(schema)
-  issues = validationResult.issues.filter { it is GraphQLIssue }
+  issues = validationResult.issues.filterIsInstance<GraphQLIssue>()
   if (issues.isNotEmpty()) {
     return issues.left()
   }
@@ -52,11 +54,12 @@ internal fun validateDocument(schema: Schema, document: String): Either<List<Iss
  * @param operationName the name of the operation to execute if any
  */
 internal fun Raise<String>.prepareRequest(
-  schema: Schema,
-  coercings: Map<String, Coercing<*>>,
-  document: GQLDocument,
-  operationName: String?,
-  variables: Map<String, ExternalValue>
+    schema: Schema,
+    coercings: Map<String, Coercing<*>>,
+    document: GQLDocument,
+    operationName: String?,
+    variables: Map<String, ExternalValue>,
+    onError: OnError?
 ): PreparedRequest {
   val operations = document.definitions.filterIsInstance<GQLOperationDefinition>()
   val operation = when {
@@ -86,13 +89,17 @@ internal fun Raise<String>.prepareRequest(
   } catch (e: Exception) {
     raise("Cannot coerce variable values: '${e.message}'")
   }
-  return PreparedRequest(operation, fragments, variableValues)
+  return PreparedRequest(operation, fragments, variableValues, onError)
 }
 
 /**
  * Returns a [com.apollographql.apollo.execution.PersistedDocument]. If no cache is configured, a new [com.apollographql.apollo.execution.PersistedDocument] is computed for each request.
  */
-internal fun Raise<String>.getPersistedDocument(schema: Schema, persistedDocumentCache: PersistedDocumentCache?, request: GraphQLRequest): PersistedDocument {
+internal fun Raise<String>.getPersistedDocument(
+    schema: Schema,
+    persistedDocumentCache: PersistedDocumentCache?,
+    request: GraphQLRequest,
+): PersistedDocument {
   val persistedQuery = request.extensions.get("persistedQuery")
   var persistedDocument: PersistedDocument?
   if (persistedQuery != null) {
@@ -137,19 +144,19 @@ internal fun Raise<String>.getPersistedDocument(schema: Schema, persistedDocumen
 }
 
 private fun Either<List<Issue>, GQLDocument>.toPersistedDocument() = fold(
-  ifLeft = {
-    ErrorPersistedDocument(it)
-  },
-  ifRight = {
-    ValidPersistedDocument(it)
-  }
+    ifLeft = {
+      ErrorPersistedDocument(it)
+    },
+    ifRight = {
+      ValidPersistedDocument(it)
+    }
 )
 
 internal fun Raise<List<Error>>.prepareRequest(
-  schema: Schema,
-  coercings: Map<String, Coercing<*>>,
-  persistedDocumentCache: PersistedDocumentCache?,
-  request: GraphQLRequest
+    schema: Schema,
+    coercings: Map<String, Coercing<*>>,
+    persistedDocumentCache: PersistedDocumentCache?,
+    request: GraphQLRequest,
 ): PreparedRequest {
   val persistedDocument = withError({
     singleGraphQLError(it)
@@ -166,15 +173,15 @@ internal fun Raise<List<Error>>.prepareRequest(
   return withError({
     singleGraphQLError(it)
   }) {
-    prepareRequest(schema, coercings, persistedDocument.document, request.operationName, request.variables)
+    prepareRequest(schema, coercings, persistedDocument.document, request.operationName, request.variables, request.onError)
   }
 }
 
 internal fun prepareRequest(
-  schema: Schema,
-  coercings: Map<String, Coercing<*>>,
-  persistedDocumentCache: PersistedDocumentCache?,
-  request: GraphQLRequest
+    schema: Schema,
+    coercings: Map<String, Coercing<*>>,
+    persistedDocumentCache: PersistedDocumentCache?,
+    request: GraphQLRequest,
 ): Either<List<Error>, PreparedRequest> = either {
   prepareRequest(schema, coercings, persistedDocumentCache, request)
 }
