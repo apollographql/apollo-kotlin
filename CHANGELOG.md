@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+# Version 4.4.1
+_2025-01-30_
+
+* [FIX] Fix `./gradlew download${Service}ApolloSchemaFromIntrospection` was crashing due to a bad class relocation (https://github.com/apollographql/apollo-kotlin/issues/6863)
+
 # Version 5.0.0-alpha.4
 _2025-01-23_
 
