@@ -6,7 +6,12 @@ plugins {
 apolloTest(withJs = false, appleTargets = setOf("iosSimulatorArm64"))
 
 kotlin {
-  listOf(macosArm64(), macosX64()).forEach {
+  listOf(
+      macosArm64(),
+
+      @Suppress("DEPRECATION")
+      macosX64(),
+  ).forEach {
     it.binaries {
       framework {
         export(libs.apollo.api)
