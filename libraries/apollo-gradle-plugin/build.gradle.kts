@@ -46,6 +46,7 @@ if (relocateJar) {
     val shadowedJar = create("default") {
       addProgramJarsFrom(shadowedDependencies)
       addProgramJarsFrom(tasks.getByName("jar"))
+      // 97951e94471814d3148bfb1ff0a4617f1781a1fe
       r8Version("31d8f0676a22526f2ce7fb39cfdd83671536eb3c")
       systemClassesToolchain {
         languageVersion.set(JavaLanguageVersion.of(jvmTarget))
