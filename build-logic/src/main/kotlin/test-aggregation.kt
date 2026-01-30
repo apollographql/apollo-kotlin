@@ -6,10 +6,15 @@ import org.gradle.api.attributes.Usage
 import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.internal.tasks.testing.junit.result.TestClassResult
-import org.gradle.api.internal.tasks.testing.junit.result.TestResultSerializer
+import org.gradle.api.internal.tasks.testing.report.generic.TestTreeModel
+import org.gradle.api.internal.tasks.testing.report.generic.TestTreeModelResultsProvider
+import org.gradle.api.internal.tasks.testing.results.serializable.SerializableTestResultStore
+import org.gradle.api.internal.tasks.testing.worker.TestEventSerializer
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.testing.AbstractTestTask
+import org.gradle.api.tasks.testing.TestOutputEvent
 import java.io.File
+
 
 internal fun Project.configureTestAggregationProducer() {
   val configuration = configurations.create("apolloTestAggregationProducer") {
@@ -39,7 +44,7 @@ fun Project.configureTestAggregationConsumer() {
     it.isCanBeResolved = true
 
     it.attributes {
-      it.attribute(org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE, objects.named(org.gradle.api.attributes.Usage::class.java, "apolloTestAggregation"))
+      it.attribute(USAGE_ATTRIBUTE, objects.named(Usage::class.java, "apolloTestAggregation"))
     }
   }
 
@@ -72,7 +77,12 @@ abstract class GenerateApolloTestAggregation : DefaultTask() {
     var count = 0
     val result = binaryTestResults.files.map { binaryDir ->
       val classResults = mutableListOf<TestClassResult>()
-      TestResultSerializer(binaryDir).read {
+
+      val store = SerializableTestResultStore(binaryDir.toPath())
+      val root = TestTreeModel.loadModelFromStores(listOf(store))
+      val testOutputEventSerializer = TestEventSerializer.create().build(TestOutputEvent::class.java)
+      val resultsProvider = TestTreeModelResultsProvider(root, store.createOutputReader(testOutputEventSerializer))
+      resultsProvider.visitClasses {
         classResults.add(it)
       }
 
