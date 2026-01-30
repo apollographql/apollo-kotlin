@@ -46,7 +46,13 @@ if (relocateJar) {
     val shadowedJar = create("default") {
       addProgramJarsFrom(shadowedDependencies)
       addProgramJarsFrom(tasks.getByName("jar"))
-      r8Version("31d8f0676a22526f2ce7fb39cfdd83671536eb3c")
+      /**
+       * 8cdc1d997552226b0212abb7d720f02205653609 prevents repackaging of `kotlinx.coroutines.scheduling.DefaultIoScheduler`
+       *
+       * See https://github.com/apollographql/apollo-kotlin/issues/6863
+       * See https://issuetracker.google.com/u/2/issues/479862365
+       */
+      r8Version("97951e94471814d3148bfb1ff0a4617f1781a1fe")
       systemClassesToolchain {
         languageVersion.set(JavaLanguageVersion.of(jvmTarget))
       }
