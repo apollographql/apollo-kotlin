@@ -1,0 +1,7 @@
+
+type Query {
+  """
+  a field
+  """
+  random("an argument" id: ID!): Int @deprecated
+}
