@@ -1,25 +1,32 @@
 package com.apollographql.apollo.ast.internal
 
+import com.apollographql.apollo.ast.GQLBooleanValue
 import com.apollographql.apollo.ast.GQLDefinition
 import com.apollographql.apollo.ast.GQLDirective
 import com.apollographql.apollo.ast.GQLDirectiveDefinition
 import com.apollographql.apollo.ast.GQLDirectiveExtension
 import com.apollographql.apollo.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo.ast.GQLEnumTypeExtension
+import com.apollographql.apollo.ast.GQLEnumValue
 import com.apollographql.apollo.ast.GQLEnumValueDefinition
 import com.apollographql.apollo.ast.GQLFieldDefinition
+import com.apollographql.apollo.ast.GQLFloatValue
 import com.apollographql.apollo.ast.GQLInputObjectTypeDefinition
 import com.apollographql.apollo.ast.GQLInputObjectTypeExtension
 import com.apollographql.apollo.ast.GQLInputValueDefinition
+import com.apollographql.apollo.ast.GQLIntValue
 import com.apollographql.apollo.ast.GQLInterfaceTypeDefinition
 import com.apollographql.apollo.ast.GQLInterfaceTypeExtension
 import com.apollographql.apollo.ast.GQLListType
+import com.apollographql.apollo.ast.GQLListValue
 import com.apollographql.apollo.ast.GQLNamed
 import com.apollographql.apollo.ast.GQLNamedType
 import com.apollographql.apollo.ast.GQLNode
 import com.apollographql.apollo.ast.GQLNonNullType
+import com.apollographql.apollo.ast.GQLNullValue
 import com.apollographql.apollo.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo.ast.GQLObjectTypeExtension
+import com.apollographql.apollo.ast.GQLObjectValue
 import com.apollographql.apollo.ast.GQLResult
 import com.apollographql.apollo.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo.ast.GQLScalarTypeExtension
@@ -32,6 +39,8 @@ import com.apollographql.apollo.ast.GQLType
 import com.apollographql.apollo.ast.GQLTypeSystemExtension
 import com.apollographql.apollo.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo.ast.GQLUnionTypeExtension
+import com.apollographql.apollo.ast.GQLValue
+import com.apollographql.apollo.ast.GQLVariableValue
 import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.MergeOptions
 import com.apollographql.apollo.ast.OtherValidationIssue
@@ -90,8 +99,8 @@ internal class ExtensionsMerger(private val definitions: List<GQLDefinition>, in
       return null
     }
 
-    if (incoming.description != null) {
-      issues.add(OtherValidationIssue("Cannot merge field '${incoming.name}': descriptions cannot be merged", incoming.sourceLocation))
+    if (incoming.description != null && incoming.description != existing.description) {
+      issues.add(OtherValidationIssue("Cannot merge field '${incoming.name}': descriptions are different", incoming.sourceLocation))
     }
 
     return existing.copy(
@@ -114,11 +123,11 @@ private fun ExtensionsMerger.mergeArguments(
       if (!areEqual(existing.type, incoming.type)) {
         issues.add(OtherValidationIssue("Cannot merge argument '${incoming.name}': wrong type '${incoming.type.toUtf8()}' (expected: '${existing.type.toUtf8()}')", incoming.sourceLocation))
       }
-      if (incoming.description != null) {
-        issues.add(OtherValidationIssue("Cannot merge argument '${incoming.name}': descriptions cannot be merged", incoming.sourceLocation))
+      if (incoming.description != null && incoming.description != existing.description) {
+        issues.add(OtherValidationIssue("Cannot merge argument '${incoming.name}': descriptions are different", incoming.sourceLocation))
       }
-      if (incoming.defaultValue != null) {
-        issues.add(OtherValidationIssue("Cannot merge argument '${incoming.name}': default values cannot be merged", incoming.sourceLocation))
+      if (incoming.defaultValue != null && !areEqual(incoming.defaultValue, existing.defaultValue)) {
+        issues.add(OtherValidationIssue("Cannot merge argument '${incoming.name}': default values are different", incoming.sourceLocation))
       }
       newArguments[index] = existing.copy(
           directives = mergeDirectives(existing.directives, incoming.directives)
@@ -463,6 +472,93 @@ private fun areEqual(a: GQLType, b: GQLType): Boolean {
         return false
       }
       return areEqual(a.type, b.type)
+    }
+  }
+}
+
+private fun areEqual(a: GQLValue?, b: GQLValue?): Boolean {
+  return when (a) {
+    null -> {
+      b == null
+    }
+    is GQLBooleanValue -> {
+      if (b !is GQLBooleanValue){
+         false
+      } else {
+        a.value == b.value
+      }
+    }
+    is GQLEnumValue -> {
+      if (b !is GQLEnumValue) {
+        false
+      } else {
+        a.value == b.value
+      }
+    }
+    is GQLFloatValue -> {
+      if (b !is GQLFloatValue) {
+        false
+      } else {
+        a.value == b.value
+      }
+    }
+    is GQLIntValue -> {
+      if (b !is GQLIntValue) {
+        false
+      } else {
+        a.value == b.value
+      }
+    }
+    is GQLListValue -> {
+      if (b !is GQLListValue) {
+        false
+      } else {
+        if (a.values.size != b.values.size) {
+          false
+        } else {
+          for (i in a.values.indices) {
+            if (a.values.get(i) != b.values.get(i)) {
+              return false
+            }
+          }
+          true
+        }
+      }
+    }
+    is GQLNullValue -> b is GQLNullValue
+    is GQLObjectValue -> {
+      if (b !is GQLObjectValue) {
+        false
+      } else {
+        // TODO: Can object literal have duplicate fields?
+        if (a.fields.size != b.fields.size) {
+          false
+        } else {
+          for (i in a.fields.indices) {
+            val aField = a.fields.get(i)
+            val bField = b.fields.firstOrNull { it.name == aField.name }
+            if (bField == null) {
+              return false
+            }
+            return aField.value == bField.value
+          }
+          true
+        }
+      }
+    }
+    is GQLStringValue -> {
+      if (b !is GQLStringValue) {
+        false
+      } else {
+        a.value == b.value
+      }
+    }
+    is GQLVariableValue -> {
+      if (b !is GQLVariableValue) {
+        false
+      } else {
+        a.name == b.name
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 OtherValidationIssue (8:3)
-Cannot merge field 'random': descriptions cannot be merged
+Cannot merge field 'random': descriptions are different
 type Query {
   random: Int
 }
