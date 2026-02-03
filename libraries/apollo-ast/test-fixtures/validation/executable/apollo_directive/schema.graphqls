@@ -1,3 +1,6 @@
+# PRAGMA addKotlinLabsDefinitions
+# PRAGMA allowDirectiveRedefinition
+
 type Query {
     field: String
 }

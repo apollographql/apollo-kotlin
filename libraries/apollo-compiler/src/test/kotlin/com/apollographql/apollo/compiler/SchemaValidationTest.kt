@@ -1,14 +1,12 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.ast.parseAsGQLDocument
+import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.apollo.compiler.TestUtils.checkTestFixture
 import com.apollographql.apollo.compiler.TestUtils.serialize
 import com.apollographql.apollo.compiler.TestUtils.testFilterMatches
 import com.apollographql.apollo.compiler.internal.checkApolloReservedEnumValueNames
 import com.apollographql.apollo.compiler.internal.checkApolloTargetNameClashes
-import okio.buffer
-import okio.source
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -20,15 +18,12 @@ class SchemaValidationTest(name: String, private val graphqlsFile: File) {
 
   @Test
   fun testValidation() {
-    val parseResult = graphqlsFile.source().buffer().parseAsGQLDocument(graphqlsFile.name)
+    val result = graphqlsFile.toGQLDocument().validateAsSchemaAndAddApolloDefinition()
 
-    val issues = if (parseResult.issues.isNotEmpty()) {
-      parseResult.issues
-    } else {
-      val schemaResult = parseResult.getOrThrow().validateAsSchemaAndAddApolloDefinition()
-      schemaResult.issues +
-          (schemaResult.value?.let { checkApolloReservedEnumValueNames(it) } ?: emptyList()) +
-          (schemaResult.value?.let { checkApolloTargetNameClashes(it) } ?: emptyList())
+    val issues = result.issues.toMutableList()
+    val schema = result.value
+    if (schema != null) {
+      issues.addAll(checkApolloReservedEnumValueNames(schema) + checkApolloTargetNameClashes(schema))
     }
 
     val actualContents = issues.serialize()

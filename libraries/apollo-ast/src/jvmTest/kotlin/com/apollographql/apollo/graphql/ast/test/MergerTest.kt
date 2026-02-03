@@ -1,7 +1,5 @@
 package com.apollographql.apollo.graphql.ast.test
 
-import com.apollographql.apollo.ast.MergeOptions
-import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.mergeExtensions
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.google.testing.junit.testparameterinjector.TestParameter
@@ -26,13 +24,8 @@ class MergerTest {
 
   class ParametersProvider : TestParameterValuesProvider() {
     override fun provideValues(context: Context?): List<File> {
-      return File("test-fixtures/merger/")
-          .listFiles()!!
+      return findFiles("test-fixtures/merger")
           .filter { it.name.endsWith(".graphql") && !it.name.endsWith(".expected.graphql") }
-          .sortedBy { it.name }
-          .filter {
-            testFilterMatches(it.name)
-          }
     }
   }
 }

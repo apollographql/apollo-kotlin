@@ -1,3 +1,5 @@
+# PRAGMA addKotlinLabsDefinitions
+
 type Query {
     Page("The page number" page: Int, "The amount of entries per page, max 50" perPage: Int): Page
 

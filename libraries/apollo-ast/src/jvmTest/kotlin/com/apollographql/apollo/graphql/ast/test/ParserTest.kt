@@ -21,13 +21,8 @@ class ParserTest {
 
   class ParametersProvider : TestParameterValuesProvider() {
     override fun provideValues(context: Context?): List<File> {
-      return File("test-fixtures/parser/")
-          .listFiles()!!
-          .filter { it.name.endsWith(".graphql") && !it.name.endsWith(".expected.graphql") }
-          .sortedBy { it.name }
-          .filter {
-            testFilterMatches(it.name)
-          }
+      return findFiles("test-fixtures/parser")
+          .filter { it.extension in setOf("graphql", "graphqls")  }
     }
   }
 }

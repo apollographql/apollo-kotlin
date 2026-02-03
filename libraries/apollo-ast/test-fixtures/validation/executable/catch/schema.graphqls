@@ -1,3 +1,5 @@
+# PRAGMA addBuiltinForeignSchemas
+
 extend schema @link(url: "https://specs.apollo.dev/nullability/v0.4", import: ["@semanticNonNull", "@catch", "@catchByDefault", "CatchTo"])
 
 extend schema @catchByDefault(to: THROW)
