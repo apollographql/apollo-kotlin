@@ -1,3 +1,5 @@
+# PRAGMA addBuiltinForeignSchemas
+
 extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3")
 
 type Query {

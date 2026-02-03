@@ -1,3 +1,5 @@
+# PRAGMA addKotlinLabsDefinitions
+
 type Query {
     field: String
 }

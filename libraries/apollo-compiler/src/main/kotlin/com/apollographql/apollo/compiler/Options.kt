@@ -706,7 +706,6 @@ internal val defaultSealedClassesForEnumsMatching = emptyList<String>()
 internal val defaultClassesForEnumsMatching = listOf(".*")
 internal const val defaultGenerateOptionalOperationVariables = true
 internal const val defaultAddJvmOverloads = false
-internal const val defaultFieldsOnDisjointTypesMustMerge = true
 internal const val defaultGeneratePrimitiveTypes = false
 internal const val defaultJsExport = false
 internal const val defaultGenerateInputBuilders = false
