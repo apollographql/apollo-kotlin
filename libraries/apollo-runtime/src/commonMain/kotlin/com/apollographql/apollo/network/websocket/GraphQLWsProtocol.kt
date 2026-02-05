@@ -3,6 +3,7 @@ package com.apollographql.apollo.network.websocket
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo.api.json.ApolloJsonElement
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.json.readAny
 import com.apollographql.apollo.api.toMap
@@ -62,35 +63,41 @@ class GraphQLWsProtocol(
       return ParseErrorServerMessage("Invalid JSON: '$text'")
     }
 
-    val type = map["type"] as? String
-    if (type == null) {
-      return ParseErrorServerMessage("No 'type' found in server message: '$text'")
-    }
+    return parseServerMessage(map)
+  }
 
-    return when (type) {
-      "connection_ack" -> ConnectionAckServerMessage
-      "ping" -> PingServerMessage
-      "pong" -> PongServerMessage
-      "next", "complete", "error" -> {
-        val id = map["id"] as? String
-
-        /**
-         * See https://youtrack.jetbrains.com/issue/KT-79673/Kotlin-Wasm-object-WebAssembly.Exception-in-production-mode
-         * and https://github.com/apollographql/apollo-kotlin/pull/6637#discussion_r2240372931 for why this `if` block is needed.
-         */
-        if (type == "next") {
-          return ResponseServerMessage(id.toString(), map["payload"])
-        }
-        when {
-          id == null -> ParseErrorServerMessage("No 'id' found in message: '$text'")
-          type == "next" -> ResponseServerMessage(id, map["payload"])
-          type == "complete" -> CompleteServerMessage(id)
-          type == "error" -> OperationErrorServerMessage(id, map["payload"])
-          else -> error("") // make the compiler happy
-        }
+  companion object {
+    fun parseServerMessage(map: Map<String, ApolloJsonElement>): ServerMessage {
+      val type = map["type"] as? String
+      if (type == null) {
+        return ParseErrorServerMessage("No 'type' found in server message: '$map'")
       }
 
-      else -> ParseErrorServerMessage("Unknown type: '$type' found in server message: '$text'")
+      return when (type) {
+        "connection_ack" -> ConnectionAckServerMessage
+        "ping" -> PingServerMessage
+        "pong" -> PongServerMessage
+        "next", "complete", "error" -> {
+          val id = map["id"] as? String
+
+          /**
+           * See https://youtrack.jetbrains.com/issue/KT-79673/Kotlin-Wasm-object-WebAssembly.Exception-in-production-mode
+           * and https://github.com/apollographql/apollo-kotlin/pull/6637#discussion_r2240372931 for why this `if` block is needed.
+           */
+          if (type == "next") {
+            return ResponseServerMessage(id.toString(), map["payload"])
+          }
+          when {
+            id == null -> ParseErrorServerMessage("No 'id' found in message: '$map'")
+            type == "next" -> ResponseServerMessage(id, map["payload"])
+            type == "complete" -> CompleteServerMessage(id)
+            type == "error" -> OperationErrorServerMessage(id, map["payload"])
+            else -> error("") // make the compiler happy
+          }
+        }
+
+        else -> ParseErrorServerMessage("Unknown type: '$type' found in server message: '$map'")
+      }
     }
   }
 }
