@@ -417,6 +417,10 @@ final class com.apollographql.apollo.network.websocket/GraphQLWsProtocol : com.a
     final fun pong(): com.apollographql.apollo.network.websocket/ClientMessage // com.apollographql.apollo.network.websocket/GraphQLWsProtocol.pong|pong(){}[0]
     final suspend fun <#A1: com.apollographql.apollo.api/Operation.Data> operationStart(com.apollographql.apollo.api/ApolloRequest<#A1>): com.apollographql.apollo.network.websocket/ClientMessage // com.apollographql.apollo.network.websocket/GraphQLWsProtocol.operationStart|operationStart(com.apollographql.apollo.api.ApolloRequest<0:0>){0§<com.apollographql.apollo.api.Operation.Data>}[0]
     final suspend fun connectionInit(): com.apollographql.apollo.network.websocket/ClientMessage // com.apollographql.apollo.network.websocket/GraphQLWsProtocol.connectionInit|connectionInit(){}[0]
+
+    final object Companion { // com.apollographql.apollo.network.websocket/GraphQLWsProtocol.Companion|null[0]
+        final fun parseServerMessage(kotlin.collections/Map<kotlin/String, kotlin/Any?>): com.apollographql.apollo.network.websocket/ServerMessage // com.apollographql.apollo.network.websocket/GraphQLWsProtocol.Companion.parseServerMessage|parseServerMessage(kotlin.collections.Map<kotlin.String,kotlin.Any?>){}[0]
+    }
 }
 
 final class com.apollographql.apollo.network.websocket/OperationErrorServerMessage : com.apollographql.apollo.network.websocket/ServerMessage { // com.apollographql.apollo.network.websocket/OperationErrorServerMessage|null[0]

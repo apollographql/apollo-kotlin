@@ -460,6 +460,7 @@ public final class com/apollographql/apollo/network/websocket/DataClientMessage 
 }
 
 public final class com/apollographql/apollo/network/websocket/GraphQLWsProtocol : com/apollographql/apollo/network/websocket/WsProtocol {
+	public static final field Companion Lcom/apollographql/apollo/network/websocket/GraphQLWsProtocol$Companion;
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -471,6 +472,10 @@ public final class com/apollographql/apollo/network/websocket/GraphQLWsProtocol 
 	public fun parseServerMessage (Ljava/lang/String;)Lcom/apollographql/apollo/network/websocket/ServerMessage;
 	public fun ping ()Lcom/apollographql/apollo/network/websocket/ClientMessage;
 	public fun pong ()Lcom/apollographql/apollo/network/websocket/ClientMessage;
+}
+
+public final class com/apollographql/apollo/network/websocket/GraphQLWsProtocol$Companion {
+	public final fun parseServerMessage (Ljava/util/Map;)Lcom/apollographql/apollo/network/websocket/ServerMessage;
 }
 
 public final class com/apollographql/apollo/network/websocket/OperationErrorServerMessage : com/apollographql/apollo/network/websocket/ServerMessage {
