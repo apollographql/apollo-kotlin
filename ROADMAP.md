@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Ecosystem Roadmap
 
-**Last updated: 2026-01-22**
+**Last updated: 2026-02-05**
 
 For up-to-date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -38,7 +38,7 @@ We plan to implement these GraphQL specification RFCs:
 - [x] [Schema coordinates](https://github.com/graphql/graphql-spec/pull/794/)
 - [x] [Directives on directive definitions](https://github.com/graphql/graphql-spec/pull/567)
 - [ ] [Fragment arguments](https://github.com/graphql/graphql-spec/pull/1081)
-- [ ] [Service capabilities](https://github.com/graphql/graphql-spec/pull/1163)
+- [x] [Service capabilities](https://github.com/graphql/graphql-spec/pull/1163)
 
 ### Testing improvements:
 
