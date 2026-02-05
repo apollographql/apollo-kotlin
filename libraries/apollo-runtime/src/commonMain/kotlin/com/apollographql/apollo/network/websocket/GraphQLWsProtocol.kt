@@ -58,7 +58,7 @@ class GraphQLWsProtocol(
   override fun parseServerMessage(text: String): ServerMessage {
     val map = try {
       @Suppress("UNCHECKED_CAST")
-      Buffer().writeUtf8(text).jsonReader().readAny() as Map<String, Any?>
+      Buffer().writeUtf8(text).jsonReader().readAny() as Map<String, ApolloJsonElement>
     } catch (_: Exception) {
       return ParseErrorServerMessage("Invalid JSON: '$text'")
     }
