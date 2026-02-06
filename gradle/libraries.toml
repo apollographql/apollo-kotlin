@@ -29,13 +29,13 @@ javaPoet = "1.13.0"
 jetbrains-annotations = "26.0.2-1"
 junit = "4.13.2"
 #noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
-kotlin-plugin = "2.2.20"
+kotlin-plugin = "2.3.10"
 kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.7.1"
 #noinspection NewerVersionAvailable requires KGP 2.2
 kotlinx-serialization-runtime = "1.8.1"
 #noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
-ksp = "2.3.1"
+ksp = "2.3.5"
 #noinspection NewerVersionAvailable requires KGP 2.2
 ktor = "3.2.3"
 moshix = "0.14.1"
