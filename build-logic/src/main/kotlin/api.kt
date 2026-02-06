@@ -74,8 +74,15 @@ fun Project.apolloLibrary(
       kotlinTarget = kotlinCompilerOptions.version.version + ".0",
       bcv = Bcv(
           false,
-          listOf("**.internal.**")
-      ),
+      ) {
+        it as AbiValidationVariantSpec
+        @OptIn(ExperimentalAbiValidation::class)
+        it.filters {
+          it.excluded {
+            byNames.add("**.internal.**")
+          }
+        }
+      },
       versionPackageName = versionPackageName,
       publishing = if (description != null) {
         Publishing(
