@@ -125,7 +125,7 @@ class CustomScalarTest {
     /*
      * Decimal is mapped to a String to get the same `toString` representation, else Double
      */
-    assertEquals("1000000000000000000000000000000000000000000", data.decimal?.toString())
+    assertEquals("1000000000000000000000000000000000000000000", data.decimal)
   }
 
   /**

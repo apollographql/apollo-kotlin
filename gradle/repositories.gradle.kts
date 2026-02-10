@@ -2,8 +2,8 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
   it.apply {
     // Uncomment this one to use the Kotlin "dev" repository
     // maven("https://redirector.kotlinlang.org/maven/dev/")
-    // Uncomment this one to use the Sonatype OSSRH snapshots repository
-    // maven("https://oss.sonatype.org/content/repositories/snapshots/")
+    // Uncomment this one to use the Maven Snapshots repository
+    // maven("https://central.sonatype.com/repository/maven-snapshots/")
     // Uncomment this one to use the GradleUp repository
     // maven("https://storage.googleapis.com/gradleup/m2")
 

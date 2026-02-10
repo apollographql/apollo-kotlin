@@ -131,6 +131,7 @@ internal class AppleWebSocket(
     nsurlSessionWebSocketTask.receiveMessageWithCompletionHandler { message, nsError ->
       if (nsError != null) {
         if (disposed.compareAndSet(expect = false, update = true)) {
+          @Suppress("REDUNDANT_CALL_OF_CONVERSION_METHOD")
           val exception = if (nsError.domain == "NSPOSIXErrorDomain" && nsError.code.toLong() == ENOTCONN.toLong()) {
             ApolloWebSocketClosedException(nsurlSessionWebSocketTask.closeCode.convert(), nsurlSessionWebSocketTask.closeReason?.toByteString()
                 ?.toByteArray()?.commonToUtf8String())
