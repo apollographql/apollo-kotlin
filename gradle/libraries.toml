@@ -32,7 +32,7 @@ junit = "4.13.2"
 # Version for projects that we publish, and we need to give some time for non-JVM consumers to upgrade before we do
 # Our current strategy is to bump whenever AndroidX bumps
 #noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
-kotlin-plugin = "2.3.10"
+kotlin-plugin = "2.3.20-RC-101"
 # Version for projects that we don't publish: build-logic, benchmarks, etc...
 #noinspection SimilarGradleDependency
 kotlin-plugin-latest = "2.3.10"
@@ -41,7 +41,7 @@ kotlinx-datetime = "0.7.1"
 #noinspection NewerVersionAvailable requires KGP 2.2
 kotlinx-serialization-runtime = "1.8.1"
 #noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
-ksp = "2.3.5"
+ksp = "2.3.6-SNAPSHOT"
 #noinspection NewerVersionAvailable requires KGP 2.2
 ktor = "3.2.3"
 moshix = "0.14.1"
