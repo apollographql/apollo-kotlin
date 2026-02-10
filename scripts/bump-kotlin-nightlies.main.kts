@@ -56,6 +56,9 @@ fun getLatestVersion(url: String, prefix: String? = null): String {
                     // Make it SemVer comparable
                     it
                         .replace("-dev-", "-Dev.")
+                        .replace("-mars-", "-Dev.")
+                        .replace("-vega-", "-Dev.")
+                        .replace("-titan-", "-Dev.")
                         .replace("-RC-", "-RC.")
                         .replace("-RC2-", "-RC2.")
                         .replace("-RC3-", "-RC3.")
