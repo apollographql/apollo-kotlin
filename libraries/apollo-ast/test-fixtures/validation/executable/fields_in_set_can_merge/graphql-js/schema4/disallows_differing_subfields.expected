@@ -1,0 +1,5 @@
+OtherValidationIssue (5:9)
+Field at path `someBox.box.val` conflicts with another field: 'scalar' and 'unrelatedField' are different fields. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (6:9)
+Field at path `someBox.box.val` conflicts with another field: 'scalar' and 'unrelatedField' are different fields. Use different aliases on the fields to fetch both if this was intentional.

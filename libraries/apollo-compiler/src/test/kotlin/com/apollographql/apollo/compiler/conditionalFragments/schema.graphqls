@@ -2,3 +2,16 @@ type Query {
   field1: String
   field2: String
 }
+
+# TODO: remove when defer becomes part of the draft
+directive @defer(
+  label: String
+  if: Boolean! = true
+) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+# TODO: remove when defer becomes part of the draft
+directive @stream(
+  label: String
+  if: Boolean! = true
+  initialCount: Int = 0
+) on FIELD

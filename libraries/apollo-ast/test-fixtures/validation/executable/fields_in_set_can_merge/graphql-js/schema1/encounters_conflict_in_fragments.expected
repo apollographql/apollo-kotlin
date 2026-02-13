@@ -1,0 +1,5 @@
+OtherValidationIssue (8:3)
+Field at path `fragA.x` conflicts with another field: 'a' and 'b' are different fields. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (11:3)
+Field at path `fragA.x` conflicts with another field: 'a' and 'b' are different fields. Use different aliases on the fields to fetch both if this was intentional.

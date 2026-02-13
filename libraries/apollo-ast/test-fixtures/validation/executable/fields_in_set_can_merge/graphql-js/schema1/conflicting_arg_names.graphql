@@ -1,0 +1,10 @@
+fragment conflictingArgs on Dog {
+  isAtLocation(x: 0)
+  isAtLocation(y: 0)
+}
+
+query Test {
+  dog {
+    ...conflictingArgs
+  }
+}

@@ -1,0 +1,42 @@
+query Test {
+  someBox {
+    ... on IntBox {
+      deepBox {
+        ...X
+      }
+    }
+  }
+  someBox {
+    ... on StringBox {
+      deepBox {
+        ...Y
+      }
+    }
+  }
+  memoed: someBox {
+    ... on IntBox {
+      deepBox {
+        ...X
+      }
+    }
+  }
+  memoed: someBox {
+    ... on StringBox {
+      deepBox {
+        ...Y
+      }
+    }
+  }
+  other: someBox {
+    ...X
+  }
+  other: someBox {
+    ...Y
+  }
+}
+fragment X on SomeBox {
+  scalar
+}
+fragment Y on SomeBox {
+  scalar: unrelatedField
+}

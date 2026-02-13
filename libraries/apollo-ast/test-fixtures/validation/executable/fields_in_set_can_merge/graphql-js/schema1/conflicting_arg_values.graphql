@@ -1,0 +1,10 @@
+fragment conflictingArgs on Dog {
+  doesKnowCommand(dogCommand: SIT)
+  doesKnowCommand(dogCommand: HEEL)
+}
+
+query Test {
+  dog {
+    ...conflictingArgs
+  }
+}

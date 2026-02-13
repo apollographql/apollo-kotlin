@@ -55,7 +55,7 @@ internal fun checkExpected(graphQLFile: File, block: (File) -> String) {
   if (shouldUpdateTestFixtures()) {
     expectedFile.writeText(actual)
   } else {
-    assertEquals(expected, actual)
+    assertEquals(expected, actual, "The expected results do not match the test data. If this is expected, re-run the test with `updateTestFixtures=true` as an environment variable.")
   }
 }
 
@@ -68,15 +68,21 @@ internal fun findFiles(path: String): List<File> {
       .toList()
       .sortedBy { it.name }
 }
+
 enum class Pragma {
   // Parser
   allowDirectivesOnDirectives,
   allowServiceCapabilities,
+
   // Merger
   allowMergingFieldDefinitions,
+
   // Schema validation
   addBuiltinForeignSchemas,
   addKotlinLabsDefinitions,
+  addBuiltinDefinitions,
+  noAddBuiltinDefinitions,
+
   //
   allowDirectiveRedefinition,
 }
@@ -109,6 +115,12 @@ fun List<Pragma>.toSchemaValidationOptions(): SchemaValidationOptions {
         }
         if (Pragma.addKotlinLabsDefinitions in this@toSchemaValidationOptions) {
           addKotlinLabsDefinitions(true)
+        }
+        if (Pragma.addBuiltinDefinitions in this@toSchemaValidationOptions) {
+          addBuiltinDefinitions(true)
+        }
+        if (Pragma.noAddBuiltinDefinitions in this@toSchemaValidationOptions) {
+          addBuiltinDefinitions(false)
         }
       }
       .build()

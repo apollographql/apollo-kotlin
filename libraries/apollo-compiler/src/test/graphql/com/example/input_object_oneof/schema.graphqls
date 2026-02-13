@@ -1,5 +1,3 @@
-directive @oneOf on INPUT_OBJECT
-
 input FindUserInput @oneOf {
   email: String
   name: String

@@ -1,0 +1,5 @@
+DifferentShape (4:13)
+Field at path `animal.meow` conflicts with another field: they return different types: 'String' and 'ID!'. Use different aliases on the fields to fetch both if this was intentional.
+------------
+DifferentShape (7:13)
+Field at path `animal.meow` conflicts with another field: they return different types: 'String' and 'ID!'. Use different aliases on the fields to fetch both if this was intentional.

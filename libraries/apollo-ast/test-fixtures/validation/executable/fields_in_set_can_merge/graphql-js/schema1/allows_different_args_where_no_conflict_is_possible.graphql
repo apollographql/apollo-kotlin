@@ -1,0 +1,14 @@
+fragment conflictingArgs on Pet {
+  ... on Dog {
+    name(surname: true)
+  }
+  ... on Cat {
+    name
+  }
+}
+
+query Test {
+  pet {
+    ...conflictingArgs
+  }
+}

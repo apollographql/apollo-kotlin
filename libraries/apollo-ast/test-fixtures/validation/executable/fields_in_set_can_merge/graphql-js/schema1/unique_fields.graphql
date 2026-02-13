@@ -1,0 +1,10 @@
+fragment uniqueFields on Dog {
+  name
+  nickname
+}
+
+query Test {
+  dog {
+    ...uniqueFields
+  }
+}

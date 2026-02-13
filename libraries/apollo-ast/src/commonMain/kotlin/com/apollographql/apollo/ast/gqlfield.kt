@@ -54,9 +54,9 @@ fun GQLTypeDefinition.fieldDefinitions(schema: Schema): List<GQLFieldDefinition>
         if (name == schema.queryTypeDefinition.name) {
           add(typeMetaFieldDefinition)
           if (schema.hasService) {
-            add(schemaMetaFieldDefinition)
+            add(serviceMetaFieldDefinition)
           }
-          add(serviceMetaFieldDefinition)
+          add(schemaMetaFieldDefinition)
         }
       }
     }

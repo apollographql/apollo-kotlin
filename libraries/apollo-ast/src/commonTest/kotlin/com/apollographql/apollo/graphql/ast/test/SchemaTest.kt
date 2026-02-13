@@ -15,23 +15,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SchemaTest {
-  @Test
-  fun schemaMayContainBuiltinDirectives() {
-    // language=graphql
-    val schemaString = """
-      "Directs the executor to include this field or fragment only when the `if` argument is true"
-      directive @include(
-          "Included when true."
-          if: Boolean!
-      ) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
-      
-      type Query {
-        foo: Int
-      }
-    """.trimIndent()
-
-    schemaString.toGQLDocument().toSchema()
-  }
 
   /**
    * A trimmed version of a cache foreign schema.

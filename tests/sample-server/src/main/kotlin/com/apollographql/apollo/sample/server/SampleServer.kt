@@ -2,6 +2,7 @@ package com.apollographql.apollo.sample.server
 
 import com.apollographql.apollo.sample.server.graphql.SubscriptionRoot
 import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.ast.GQLNamed
 import com.apollographql.apollo.execution.ExecutableSchema
 import com.apollographql.apollo.execution.parseAsGraphQLRequest
 import com.apollographql.execution.websocket.ConnectionInitAck
@@ -42,6 +43,7 @@ import org.http4k.websocket.WsMessage
 import org.http4k.websocket.WsResponse
 import org.http4k.websocket.WsStatus
 import sample.server.SampleserverExecutableSchemaBuilder
+import sample.server.sampleserverSchemaDocument
 import java.io.Closeable
 import java.time.Duration
 import org.http4k.routing.websocket.bind as wsBind
@@ -51,6 +53,9 @@ fun ExecutableSchema(tag: String): ExecutableSchema {
       .subscriptionRoot {
         SubscriptionRoot(tag)
       }
+      // older versions of apollo-kotlin-execution generates custom scalars.
+      // Remove when updating apollo-kotlin-execution
+      .schema(sampleserverSchemaDocument.copy(definitions = sampleserverSchemaDocument.definitions.filter { !(it is GQLNamed && it.name in setOf("Float", "String", "Boolean", "ID", "Int")) }))
       .build()
 }
 

@@ -1,2 +1,8 @@
+UnknownDirective (9:21)
+Unknown directive '@defer'
+------------
+UnknownDirective (3:23)
+Unknown directive '@defer'
+------------
 DuplicateDeferLabel (9:21)
 @defer label 'foobar' must be unique within all other @defer directives in the document. Same label found in duplicate_labels.graphql: (3, 23)

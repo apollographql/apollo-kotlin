@@ -1,0 +1,4 @@
+query Test {
+  someField(arg: { a: null, b: null })
+  someField(arg: { b: null, a: null })
+}

@@ -1,0 +1,12 @@
+query Test {
+  field {
+    field
+    ...Unknown
+    ...Known
+  }
+}
+
+fragment Known on T {
+  field
+  ...OtherUnknown
+}

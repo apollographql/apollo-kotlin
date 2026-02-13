@@ -44,8 +44,6 @@ type D implements MyInterface {
   x: Int
 }
 
-directive @oneOf on INPUT_OBJECT
-
 type User {
   id: ID!
 }

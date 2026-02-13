@@ -1,0 +1,5 @@
+OtherValidationIssue (2:3)
+Field at path `dog.isAtLocation` conflicts with another field: they have different arguments. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (3:3)
+Field at path `dog.isAtLocation` conflicts with another field: they have different arguments. Use different aliases on the fields to fetch both if this was intentional.

@@ -985,6 +985,7 @@ public final class com/apollographql/apollo/ast/GqldocumentKt {
 	public static final fun mergeExtensions (Lcom/apollographql/apollo/ast/GQLDocument;Lcom/apollographql/apollo/ast/MergeOptions;)Lcom/apollographql/apollo/ast/GQLResult;
 	public static synthetic fun mergeExtensions$default (Lcom/apollographql/apollo/ast/GQLDocument;Lcom/apollographql/apollo/ast/MergeOptions;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLResult;
 	public static final fun nullabilityDefinitions (Ljava/lang/String;)Ljava/util/List;
+	public static final fun serviceCapabilitiesDefinitions ()Ljava/util/List;
 	public static final fun toFullSchemaGQLDocument (Lcom/apollographql/apollo/ast/GQLDocument;)Lcom/apollographql/apollo/ast/GQLDocument;
 	public static final fun toMergedGQLDocument (Lcom/apollographql/apollo/ast/GQLDocument;Lcom/apollographql/apollo/ast/MergeOptions;)Lcom/apollographql/apollo/ast/GQLDocument;
 	public static synthetic fun toMergedGQLDocument$default (Lcom/apollographql/apollo/ast/GQLDocument;Lcom/apollographql/apollo/ast/MergeOptions;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLDocument;
@@ -1283,9 +1284,10 @@ public final class com/apollographql/apollo/ast/SchemaValidationException : com/
 }
 
 public final class com/apollographql/apollo/ast/SchemaValidationOptions {
+	public fun <init> (ZLjava/lang/Boolean;Ljava/util/List;ZZLcom/apollographql/apollo/ast/MergeOptions;)V
 	public fun <init> (ZLjava/util/List;)V
 	public fun <init> (ZLjava/util/List;Z)V
-	public fun <init> (ZLjava/util/List;ZZLcom/apollographql/apollo/ast/MergeOptions;)V
+	public final fun getAddBuiltinDefinitions ()Ljava/lang/Boolean;
 	public final fun getAddKotlinLabsDefinitions ()Z
 	public final fun getComputeKeyFields ()Z
 	public final fun getExcludeCacheDirectives ()Z
@@ -1295,18 +1297,21 @@ public final class com/apollographql/apollo/ast/SchemaValidationOptions {
 
 public final class com/apollographql/apollo/ast/SchemaValidationOptions$Builder {
 	public fun <init> ()V
+	public final fun addBuiltinDefinitions (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ast/SchemaValidationOptions$Builder;
 	public final fun addForeignSchema (Lcom/apollographql/apollo/ast/ForeignSchema;)Lcom/apollographql/apollo/ast/SchemaValidationOptions$Builder;
 	public final fun addKotlinLabsDefinitions (Z)Lcom/apollographql/apollo/ast/SchemaValidationOptions$Builder;
 	public final fun build ()Lcom/apollographql/apollo/ast/SchemaValidationOptions;
 	public final fun computeKeyFields (Z)Lcom/apollographql/apollo/ast/SchemaValidationOptions$Builder;
 	public final fun excludeCacheDirectives (Z)Lcom/apollographql/apollo/ast/SchemaValidationOptions$Builder;
 	public final fun foreignSchemas (Ljava/util/List;)Lcom/apollographql/apollo/ast/SchemaValidationOptions$Builder;
+	public final fun getAddBuiltinDefinitions ()Ljava/lang/Boolean;
 	public final fun getAddKotlinLabsDefinitions ()Z
 	public final fun getComputeKeyFields ()Z
 	public final fun getExcludeCacheDirectives ()Z
 	public final fun getForeignSchemas ()Ljava/util/List;
 	public final fun getMergeOptions ()Lcom/apollographql/apollo/ast/MergeOptions;
 	public final fun mergeOptions (Lcom/apollographql/apollo/ast/MergeOptions;)Lcom/apollographql/apollo/ast/SchemaValidationOptions$Builder;
+	public final fun setAddBuiltinDefinitions (Ljava/lang/Boolean;)V
 	public final fun setAddKotlinLabsDefinitions (Z)V
 	public final fun setComputeKeyFields (Z)V
 	public final fun setExcludeCacheDirectives (Z)V

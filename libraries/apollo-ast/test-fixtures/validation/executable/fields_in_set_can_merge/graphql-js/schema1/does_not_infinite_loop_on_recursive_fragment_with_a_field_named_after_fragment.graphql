@@ -1,0 +1,6 @@
+query Test {
+  ...fragA
+  fragA
+}
+
+fragment fragA on Query { ...fragA }

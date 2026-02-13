@@ -1,0 +1,10 @@
+query Test {
+  someBox {
+    ...on UnknownType {
+      scalar
+    }
+    ...on NonNullStringBox2 {
+      scalar
+    }
+  }
+}

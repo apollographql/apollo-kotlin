@@ -1,0 +1,2 @@
+FragmentCycle (3:3)
+Fragment 'sameAliasesWithDifferentFieldTargets' spreads itself, creating a cycle at '__sameAliasesWithDifferentFieldTargets.__sameAliasesWithDifferentFieldTargets'

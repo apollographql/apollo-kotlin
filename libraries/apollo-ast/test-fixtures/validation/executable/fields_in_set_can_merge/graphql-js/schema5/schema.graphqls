@@ -1,0 +1,7 @@
+type Foo {
+  constructor: String
+}
+
+type Query {
+  foo: Foo
+}

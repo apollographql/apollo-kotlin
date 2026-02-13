@@ -1,5 +1,14 @@
+UnknownDirective (2:16)
+Unknown directive '@defer'
+------------
+UnknownDirective (10:23)
+Unknown directive '@defer'
+------------
 InvalidDeferDirective (10:23)
 The @defer directive is not allowed to be used on root fields of mutations or subscriptions
+------------
+UnknownDirective (18:19)
+Unknown directive '@defer'
 ------------
 InvalidDeferDirective (18:19)
 The @defer directive is not allowed to be used on root fields of mutations or subscriptions

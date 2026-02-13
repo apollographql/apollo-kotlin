@@ -1,0 +1,5 @@
+DifferentShape (5:9)
+Field at path `someBox.box.scalar` conflicts with another field: they return different types: 'String' and 'Int'. Use different aliases on the fields to fetch both if this was intentional.
+------------
+DifferentShape (10:9)
+Field at path `someBox.box.scalar` conflicts with another field: they return different types: 'String' and 'Int'. Use different aliases on the fields to fetch both if this was intentional.
