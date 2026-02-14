@@ -75,11 +75,16 @@ abstract class DefaultApolloExtension(
   internal val agpOrNull: AgpCompat? by lazy {
     val androidComponents = project.extensions.findByName("androidComponents")
     if (androidComponents != null) {
-      val agpVersion = agpVersion()
-      val major = agpVersion.split('.').get(0).toIntOrNull()
-      check(major != null) {
-        "Apollo: unrecognized AGP version: $agpVersion"
-      }
+      // Use the public API (AndroidComponentsExtension.pluginVersion) via reflection
+      // This avoids accessing the internal com.android.Version class
+      val pluginVersionMethod = androidComponents.javaClass.getMethod("getPluginVersion")
+      val pluginVersion = pluginVersionMethod.invoke(androidComponents)
+
+      val majorField = pluginVersion.javaClass.getMethod("getMajor")
+      val major = majorField.invoke(pluginVersion) as Int
+
+      val agpVersion = pluginVersion.toString()
+
       if (major >= 9) {
         Agp9(agpVersion, androidComponents, project.extensions.findByName("android"), project.extensions.findByName("kotlin"))
       } else {
