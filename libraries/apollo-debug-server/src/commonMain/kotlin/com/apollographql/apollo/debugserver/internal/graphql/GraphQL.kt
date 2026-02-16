@@ -3,7 +3,6 @@ package com.apollographql.apollo.debugserver.internal.graphql
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.CacheDumpProviderContext
 import com.apollographql.apollo.api.ExecutionContext
-import com.apollographql.apollo.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo.ast.GQLValue
 import com.apollographql.apollo.execution.Coercing
 import com.apollographql.apollo.execution.ExecutableSchema
@@ -25,7 +24,6 @@ internal class GraphQL(
 ) {
   private val executableSchema: ExecutableSchema by lazy {
     ApolloDebugServerExecutableSchemaBuilder()
-        .schema(apolloDebugServerSchemaDocument)
         .queryRoot {
           Query(apolloClients)
         }.build()

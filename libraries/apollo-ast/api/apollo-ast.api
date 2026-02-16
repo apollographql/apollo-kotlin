@@ -1284,9 +1284,9 @@ public final class com/apollographql/apollo/ast/SchemaValidationException : com/
 }
 
 public final class com/apollographql/apollo/ast/SchemaValidationOptions {
-	public fun <init> (ZLjava/lang/Boolean;Ljava/util/List;ZZLcom/apollographql/apollo/ast/MergeOptions;)V
 	public fun <init> (ZLjava/util/List;)V
 	public fun <init> (ZLjava/util/List;Z)V
+	public fun <init> (ZLjava/util/List;ZZLcom/apollographql/apollo/ast/MergeOptions;)V
 	public final fun getAddBuiltinDefinitions ()Ljava/lang/Boolean;
 	public final fun getAddKotlinLabsDefinitions ()Z
 	public final fun getComputeKeyFields ()Z

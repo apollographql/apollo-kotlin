@@ -1,8 +1,2 @@
-UnknownDirective (3:16)
-Unknown directive '@defer'
-------------
 VariableDeferLabel (3:16)
 @defer label argument must not be a variable
-------------
-UnusedVariable (1:17)
-Variable `label` is unused

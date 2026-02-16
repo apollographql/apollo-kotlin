@@ -1,8 +1,2 @@
-UnknownDirective (10:21)
-Unknown directive '@defer'
-------------
-UnknownDirective (16:21)
-Unknown directive '@defer'
-------------
 DuplicateDeferLabel (16:21)
 A @defer directive with the same path 'computers.screen' and no label is already defined in duplicate_path_and_labels_spread.graphql: (10, 21). Set a unique label to distinguish them.

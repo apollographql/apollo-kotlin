@@ -53,5 +53,14 @@ type Dog implements Animal {
     barf: String
 }
 
+directive @defer(
+  label: String
+  if: Boolean! = true
+) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
+directive @stream(
+  label: String
+  if: Boolean! = true
+  initialCount: Int = 0
+) on FIELD
 

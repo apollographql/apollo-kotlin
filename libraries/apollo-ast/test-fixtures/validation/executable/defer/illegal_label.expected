@@ -1,5 +1,2 @@
-UnknownDirective (3:16)
-Unknown directive '@defer'
-------------
 InvalidDeferLabel (3:16)
 @defer label 'a/b' must only contain letters, numbers, or underscores

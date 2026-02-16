@@ -14,10 +14,7 @@ import com.apollographql.apollo.annotations.ApolloExperimental
  * @property mergeOptions the options to use when merging extensions.
  */
 @ApolloExperimental
-class SchemaValidationOptions
-@Deprecated("This constructor was exposed by mistake and will be removed in a future version.", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
-constructor(
+class SchemaValidationOptions internal constructor(
     val addKotlinLabsDefinitions: Boolean,
     val addBuiltinDefinitions: Boolean?,
     val foreignSchemas: List<ForeignSchema>,
@@ -25,6 +22,16 @@ constructor(
     val computeKeyFields: Boolean,
     val mergeOptions: MergeOptions,
 ) {
+  @Deprecated("This constructor was exposed by mistake and will be removed in a future version.", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+  constructor(
+      addKotlinLabsDefinitions: Boolean,
+      foreignSchemas: List<ForeignSchema>,
+      excludeCacheDirectives: Boolean,
+      computeKeyFields: Boolean,
+      mergeOptions: MergeOptions,
+  ) : this(addKotlinLabsDefinitions, null, foreignSchemas, excludeCacheDirectives, computeKeyFields, mergeOptions)
+
   class Builder {
     var addKotlinLabsDefinitions: Boolean = false
 
