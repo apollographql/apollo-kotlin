@@ -5,6 +5,8 @@ import com.apollographql.apollo.ast.parseAsGQLDocument
 import okio.buffer
 import okio.source
 import java.io.File
+import java.net.URI
+import java.net.URL
 import graphql.parser.Parser as GraphQLJavaParser
 
 fun findTestFiles(): List<File>  {
@@ -34,3 +36,8 @@ fun parseWithApollo(testFiles: List<File>): Double {
   }
 }
 
+/**
+ * This is downloaded to avoid storing a 6MB file in the repo.
+ * The test file is from graphql-java: https://raw.githubusercontent.com/graphql-java/graphql-java/70acb6cd1da81e7fdead317123c2dd4dd2461407/src/test/resources/large-schema-4.graphqls
+ */
+val largeSchema = URI("https://storage.googleapis.com/apollo-kotlin-files/large-schema-4.graphqls").toURL()

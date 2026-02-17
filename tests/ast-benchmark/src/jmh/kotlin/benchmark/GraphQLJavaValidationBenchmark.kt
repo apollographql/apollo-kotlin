@@ -1,5 +1,7 @@
 package benchmark
 
+import com.apollographql.apollo.ast.parseAsGQLDocument
+import com.apollographql.apollo.ast.toSchema
 import graphql.language.Document
 import graphql.parser.Parser
 import graphql.schema.GraphQLSchema
@@ -9,6 +11,8 @@ import graphql.schema.idl.SchemaGenerator
 import graphql.schema.idl.SchemaParser
 import graphql.validation.Validator
 import kotlinx.benchmark.Blackhole
+import okio.buffer
+import okio.source
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.Fork
 import org.openjdk.jmh.annotations.Measurement
@@ -30,7 +34,7 @@ open class GraphQLJavaValidationBenchmark {
 
   @Setup
   fun setUp() {
-    val typeRegistry = SchemaParser().parse(File("test-data/large-schema-4.graphqls").readText())
+    val typeRegistry = SchemaParser().parse(largeSchema.openStream().reader().buffered().readText())
     val runtimeWiring = RuntimeWiring.newRuntimeWiring().wiringFactory(MockedWiringFactory()).build()
     schema = SchemaGenerator().makeExecutableSchema(typeRegistry, runtimeWiring)
     document = Parser().parseDocument(File("test-data/large-schema-4-query.graphql").readText())

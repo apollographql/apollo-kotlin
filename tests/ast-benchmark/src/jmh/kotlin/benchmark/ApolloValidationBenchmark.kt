@@ -2,10 +2,13 @@ package benchmark
 
 import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.ast.toSchema
 import com.apollographql.apollo.ast.validateAsExecutable
 import kotlinx.benchmark.Blackhole
+import okio.buffer
+import okio.source
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.Fork
 import org.openjdk.jmh.annotations.Measurement
@@ -26,7 +29,7 @@ open class ApolloValidationBenchmark {
 
   @Setup
   fun setUp() {
-    schema = File("test-data/large-schema-4.graphqls").toGQLDocument().toSchema()
+    schema = largeSchema.openStream().source().buffer().parseAsGQLDocument().getOrThrow().toSchema()
     document = File("test-data/large-schema-4-query.graphql").toGQLDocument()
   }
 
