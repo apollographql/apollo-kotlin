@@ -1,0 +1,11 @@
+OtherValidationIssue (10:3)
+Field at path `field.x` conflicts with another field: 'a' and 'b' are different fields. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (21:3)
+Field at path `field.x` conflicts with another field: 'a' and 'b' are different fields. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (14:3)
+Field at path `field.y` conflicts with another field: 'c' and 'd' are different fields. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (17:3)
+Field at path `field.y` conflicts with another field: 'c' and 'd' are different fields. Use different aliases on the fields to fetch both if this was intentional.

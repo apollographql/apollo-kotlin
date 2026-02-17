@@ -1,0 +1,15 @@
+fragment F on T {
+  ...G
+}
+fragment G on T {
+  ...H
+}
+fragment H on T {
+  x: a
+}
+query Test {
+  field {
+    x: b
+    ...F
+  }
+}

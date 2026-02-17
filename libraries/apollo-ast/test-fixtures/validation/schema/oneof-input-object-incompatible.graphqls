@@ -1,0 +1,10 @@
+# An incompatible version of @oneOf is detected
+directive @oneOf(withSomeArgs: String) on INPUT_OBJECT
+
+type Query {
+    x: Int
+}
+
+input A @oneOf {
+    a: String
+}

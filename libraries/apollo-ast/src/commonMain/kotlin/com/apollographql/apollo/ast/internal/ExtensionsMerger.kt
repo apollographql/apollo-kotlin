@@ -476,7 +476,7 @@ private fun areEqual(a: GQLType, b: GQLType): Boolean {
   }
 }
 
-private fun areEqual(a: GQLValue?, b: GQLValue?): Boolean {
+internal fun areEqual(a: GQLValue?, b: GQLValue?): Boolean {
   return when (a) {
     null -> {
       b == null
@@ -517,7 +517,7 @@ private fun areEqual(a: GQLValue?, b: GQLValue?): Boolean {
           false
         } else {
           for (i in a.values.indices) {
-            if (a.values.get(i) != b.values.get(i)) {
+            if (areEqual(a.values.get(i), b.values.get(i))) {
               return false
             }
           }
@@ -540,7 +540,7 @@ private fun areEqual(a: GQLValue?, b: GQLValue?): Boolean {
             if (bField == null) {
               return false
             }
-            return aField.value == bField.value
+            return areEqual(aField.value, bField.value)
           }
           true
         }

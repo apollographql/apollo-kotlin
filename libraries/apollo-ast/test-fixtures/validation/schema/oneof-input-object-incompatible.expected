@@ -1,0 +1,2 @@
+IncompatibleDefinition (2:1)
+Unexpected 'oneOf' definition. Expecting 'directive @oneOf on INPUT_OBJECT'.

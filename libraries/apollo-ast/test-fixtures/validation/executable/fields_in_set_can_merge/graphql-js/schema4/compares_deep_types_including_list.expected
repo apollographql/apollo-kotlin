@@ -1,0 +1,11 @@
+DifferentShape (15:7)
+Field at path `connection.edges.node.id` conflicts with another field: they return different types: 'ID' and 'String'. Use different aliases on the fields to fetch both if this was intentional.
+------------
+DifferentShape (6:9)
+Field at path `connection.edges.node.id` conflicts with another field: they return different types: 'ID' and 'String'. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (15:7)
+Field at path `connection.edges.node.id` conflicts with another field: 'id' and 'name' are different fields. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (6:9)
+Field at path `connection.edges.node.id` conflicts with another field: 'id' and 'name' are different fields. Use different aliases on the fields to fetch both if this was intentional.

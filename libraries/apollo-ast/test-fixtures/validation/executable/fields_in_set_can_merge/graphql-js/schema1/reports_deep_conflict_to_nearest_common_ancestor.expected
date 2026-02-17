@@ -1,0 +1,5 @@
+OtherValidationIssue (4:7)
+Field at path `field.deepField.x` conflicts with another field: 'a' and 'b' are different fields. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (7:7)
+Field at path `field.deepField.x` conflicts with another field: 'a' and 'b' are different fields. Use different aliases on the fields to fetch both if this was intentional.

@@ -1,0 +1,14 @@
+fragment sameAliasesWithDifferentFieldTargets on Pet {
+  ... on Dog {
+    name
+  }
+  ... on Cat {
+    name: nickname
+  }
+}
+
+query Test {
+  pet {
+    ...sameAliasesWithDifferentFieldTargets
+  }
+}

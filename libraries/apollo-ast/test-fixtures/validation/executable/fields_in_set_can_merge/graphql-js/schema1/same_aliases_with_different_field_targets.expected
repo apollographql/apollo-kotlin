@@ -1,0 +1,5 @@
+OtherValidationIssue (2:3)
+Field at path `dog.fido` conflicts with another field: 'name' and 'nickname' are different fields. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (3:3)
+Field at path `dog.fido` conflicts with another field: 'name' and 'nickname' are different fields. Use different aliases on the fields to fetch both if this was intentional.

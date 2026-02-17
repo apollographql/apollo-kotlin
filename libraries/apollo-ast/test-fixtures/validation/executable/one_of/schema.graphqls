@@ -3,8 +3,6 @@ type Query {
   field2(myInput: [MyInput]): String
 }
 
-directive @oneOf on INPUT_OBJECT
-
 input MyInput @oneOf {
   a: String
   b: Int

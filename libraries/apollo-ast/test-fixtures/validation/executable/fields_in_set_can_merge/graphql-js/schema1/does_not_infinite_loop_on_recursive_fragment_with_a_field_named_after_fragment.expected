@@ -1,0 +1,8 @@
+FragmentCycle (6:27)
+Fragment 'fragA' spreads itself, creating a cycle at '__fragA.__fragA'
+------------
+OtherValidationIssue (2:3)
+Fragment `fragA` cannot be spread here as result can never be of type `QueryRoot`
+------------
+OtherValidationIssue (3:3)
+Field `fragA` of type `Type` must have a selection of sub-fields

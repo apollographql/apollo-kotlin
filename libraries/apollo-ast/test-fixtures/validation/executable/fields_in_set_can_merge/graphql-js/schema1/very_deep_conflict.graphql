@@ -1,0 +1,12 @@
+query Test {
+  field {
+    deepField {
+      x: a
+    }
+  },
+  field {
+    deepField {
+      x: b
+    }
+  }
+}

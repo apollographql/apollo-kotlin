@@ -328,15 +328,17 @@ internal val compilerOptions_0_1_additions = """
   directive @generateDataBuilders on SCHEMA
 """.trimIndent()
 
+internal val oneOfDefinitionsStr = "directive @oneOf on INPUT_OBJECT"
+
 /**
- * Built in scalar and introspection types from the Draft
- *  - https://spec.graphql.org/draft/#sec-Scalars
- *  - https://spec.graphql.org/draft/#sec-Schema-Introspection.Schema-Introspection-Schema
+ * Built-in type system definitions from the Draft
+ *  - https://spec.graphql.org/draft/#sec-Appendix-Type-System-Definitions
  *
- * In theory the user needs to provide the builtin definitions because we cannot know in advance what
- * version of the spec they are using neither if they have extended any of the introspection types.
+ * These definitions aim to always track the latest draft.
  *
- * TODO v5: Only keep built-in scalars as almost everything else may evolve and requiring an explicit decision from the user is safer.
+ * They are used for validation of source schemas.
+ * In theory the user needs to provide a full schema, but this is not always the case and builtin definitions allow to validate
+ * those schemas.
  */
 internal val builtinsDefinitionsStr = """
   ""${'"'}
@@ -467,13 +469,12 @@ internal val builtinsDefinitionsStr = """
     reason: String! = "No longer supported"
   ) on FIELD_DEFINITION | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | ENUM_VALUE
 
-  directive @defer(
-    label: String
-    if: Boolean! = true
-  ) on FRAGMENT_SPREAD | INLINE_FRAGMENT
-
   directive @specifiedBy(url: String!) on SCALAR  
-  
+
+  $oneOfDefinitionsStr
+""".trimIndent()
+
+internal val serviceCapabilitiesDefinitionsStr = """
   type __Service {
     description: String
     capabilities: [__Capability!]!
@@ -632,21 +633,6 @@ enum CatchTo {
 }
 """.trimIndent()
 
-internal val oneOfDefinitionsStr = """
-directive @oneOf on INPUT_OBJECT  
-""".trimIndent()
-
-internal val deferDefinitionsStr = """
-directive @defer(
-  label: String
-  if: Boolean! = true
-) on FRAGMENT_SPREAD | INLINE_FRAGMENT  
-""".trimIndent()
-
 internal val nonNullDefinitionStr = """
 directive @nonnull(fields: String! = "") on OBJECT | FIELD
-""".trimIndent()
-
-internal val disableErrorPropagationStr = """
-directive @experimental_disableErrorPropagation on QUERY | MUTATION | SUBSCRIPTION
 """.trimIndent()

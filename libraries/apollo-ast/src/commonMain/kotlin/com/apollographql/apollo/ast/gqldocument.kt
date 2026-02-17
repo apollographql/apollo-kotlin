@@ -12,6 +12,7 @@ import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_3_no_cache
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_4
 import com.apollographql.apollo.ast.internal.linkDefinitionsStr
 import com.apollographql.apollo.ast.internal.nullabilityDefinitionsStr
+import com.apollographql.apollo.ast.internal.serviceCapabilitiesDefinitionsStr
 import okio.Buffer
 
 /**
@@ -38,7 +39,7 @@ fun GQLDocument.withBuiltinDefinitions(): GQLDocument {
  * 2. When converting a schema from SDL to introspection, because the SDL might be a backend SDL.
  * 3. When downloading a schema from the registry, because the API doesn't return the scalar type definitions.
  *
- * TODO v5: only add scalar definitions, and not everything.
+ * 1. and 3. is probably wrong. Apollo Kotlin should always work with full schemas.
  */
 internal fun List<GQLDefinition>.withBuiltinDefinitions(): List<GQLDefinition> {
   return combineDefinitions(this, builtinDefinitions())
@@ -102,6 +103,13 @@ fun builtinDefinitions() = definitionsFromString(builtinsDefinitionsStr)
  */
 @ApolloInternal
 fun linkDefinitions() = definitionsFromString(linkDefinitionsStr)
+
+/**
+ * The experimental service capabilities definitions
+ */
+@ApolloInternal
+@ApolloExperimental
+fun serviceCapabilitiesDefinitions() = definitionsFromString(serviceCapabilitiesDefinitionsStr)
 
 /**
  * We used to auto import kotlin_labs definitions so that users could use `@nonnull`, etc...
