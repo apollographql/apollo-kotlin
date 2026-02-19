@@ -95,8 +95,8 @@ abstract class DefaultApolloExtension(
         name = service.name,
         schemaFiles = service.schemaFilesSnapshot(project),
         graphqlSrcDirs = service.graphqlSourceDirectorySet.srcDirs,
-        upstreamProjects = service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.name }.toSet(),
-        upstreamProjectPaths = service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet(),
+        upstreamProjects = service.upstreamScope.get().dependencies.filterIsInstance<ProjectDependency>().map { it.name }.toSet(),
+        upstreamProjectPaths = service.upstreamScope.get().dependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet(),
         endpointUrl = service.introspection?.endpointUrl?.orNull,
         endpointHeaders = service.introspection?.headers?.orNull,
         useSemanticNaming = service.useSemanticNaming.getOrElse(true),
@@ -163,8 +163,8 @@ abstract class DefaultApolloExtension(
     if (alwaysGenerateTypesMatching.isPresent) add("alwaysGenerateTypesMatching")
     if (introspection != null) add("introspection")
     if (registry != null) add("registry")
-    if (upstreamDependencies.isNotEmpty()) add("dependsOn")
-    if (downstreamDependencies.isNotEmpty()) add("isADependencyOf")
+    if (upstreamScope.get().dependencies.isNotEmpty()) add("dependsOn")
+    if (downstreamScope.get().dependencies.isNotEmpty()) add("isADependencyOf")
     @Suppress("DEPRECATION")
     if (warnOnDeprecatedUsages.isPresent) add("warnOnDeprecatedUsages")
     @Suppress("DEPRECATION")
@@ -313,6 +313,16 @@ abstract class DefaultApolloExtension(
     check(!service.sourceFolder.isPresent) {
       error("Apollo: using 'sourceFolder' is deprecated, replace with 'srcDir(\"src/${project.mainSourceSet()}/graphql/${service.sourceFolder.get()}\")'")
     }
+    project.afterEvaluate {
+      if (!service.upstreamScope.get().dependencies.isEmpty()) {
+        check(service.scalarTypeMapping.isEmpty()) {
+          "Apollo: the custom scalar configuration is not used in non-schema modules. Add custom scalars to your schema module."
+        }
+        check(!service.generateDataBuilders.isPresent) {
+          "Apollo: generateDataBuilders is not used in non-schema modules. Add generateDataBuilders to your schema module."
+        }
+      }
+    }
   }
 
   // See https://twitter.com/Sellmair/status/1619308362881187840
@@ -351,6 +361,38 @@ abstract class DefaultApolloExtension(
         it.isCanBeConsumed = false
         it.isCanBeResolved = true
 
+        /**
+         * By default all apollo configurations are transitive
+         *
+         * If you have a graph like this:
+         *
+         * ```kotlin
+         * // leaf/build.gradle.kts
+         * dependencies {
+         *   add("apolloService", project(":intermediate"))
+         * }
+         *
+         * // leaf/build.gradle.kts
+         * dependencies {
+         *   add("apolloService", project(":schema"))
+         * }
+         *
+         * // schema/build.gradle.kts
+         * apollo {
+         *   service("service") {
+         *     generateApolloMetadata.set(true)
+         *   }
+         * }
+         * ```
+         *
+         * Then `apolloServiceCodegenSchemaResolvable` contains the codegen schemas for both `leaf` and `schema` projects.
+         *
+         * This also means the fragments defined in `schema` are available in `leaf` even though there is not a direct dependency.
+         *
+         * In other terms, Apollo doesn't have a concept of `api` vs `implementation`.
+         */
+        it.isTransitive = true
+
         it.extendsFrom(extendsFrom.get())
         it.attributes(serviceName, apolloUsage, direction)
       }
@@ -385,20 +427,11 @@ abstract class DefaultApolloExtension(
     val sourcesBaseTaskProvider: TaskProvider<*>
     val dataBuildersSourcesBaseTaskProvider: TaskProvider<*>?
 
-    val upstreamScope = project.configurations.register(ModelNames.scopeConfiguration(service.name, ApolloDirection.Upstream)) {
-      it.isCanBeConsumed = false
-      it.isCanBeResolved = false
-    }
-    val downstreamScope = project.configurations.register(ModelNames.scopeConfiguration(service.name, ApolloDirection.Downstream)) {
-      it.isCanBeConsumed = false
-      it.isCanBeResolved = false
-    }
-
     val otherOptions = createConfigurations(
         serviceName = service.name,
         apolloUsage = ApolloUsage.OtherOptions,
         direction = ApolloDirection.Upstream,
-        extendsFrom = upstreamScope
+        extendsFrom = service.upstreamScope
     )
 
     val warnIfNoPluginFound = service.hasPlugin
@@ -485,7 +518,7 @@ abstract class DefaultApolloExtension(
         kgpVersion = project.provider { project.apolloGetKotlinPluginVersion() },
         kmp = project.provider { project.isKotlinMultiplatform },
         // If there is no downstream dependency, generate everything because we don't know what types are going to be used downstream
-        generateAllTypes = project.provider { service.isSchemaModule() && service.isMultiModule() && service.downstreamDependencies.isEmpty() },
+        generateAllTypes = project.provider { service.isSchemaModule() && service.isMultiModule() && service.downstreamScope.get().dependencies.isEmpty() },
     )
     generateApolloProjectModel.configure {
       it.dependsOn(optionsTaskProvider)
@@ -500,10 +533,10 @@ abstract class DefaultApolloExtension(
         schemaFiles = project.provider { service.schemaFilesSnapshot(project).map { it.absolutePath }.toSet() },
         graphqlSrcDirs = project.provider { service.graphqlSourceDirectorySet.srcDirs.map { it.absolutePath }.toSet() },
         upstreamGradleProjectPaths = project.provider {
-          service.upstreamDependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet()
+          service.upstreamScope.get().dependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet()
         },
         downstreamGradleProjectPaths = project.provider {
-          service.downstreamDependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet()
+          service.downstreamScope.get().dependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet()
         },
         endpointUrl = project.provider { service.introspection?.endpointUrl?.orNull },
         endpointHeaders = project.provider { service.introspection?.headers?.orNull },
@@ -545,62 +578,49 @@ abstract class DefaultApolloExtension(
           serviceName = service.name,
           apolloUsage = ApolloUsage.CodegenSchema,
           direction = ApolloDirection.Upstream,
-          extendsFrom = upstreamScope
+          extendsFrom = service.upstreamScope
       )
 
       val upstreamIr = createConfigurations(
           serviceName = service.name,
           apolloUsage = ApolloUsage.Ir,
           direction = ApolloDirection.Upstream,
-          extendsFrom = upstreamScope
+          extendsFrom = service.upstreamScope
       )
 
       val downstreamIr = createConfigurations(
           serviceName = service.name,
           apolloUsage = ApolloUsage.Ir,
           direction = ApolloDirection.Downstream,
-          extendsFrom = downstreamScope
+          extendsFrom = service.downstreamScope
       )
 
       val codegenMetadata = createConfigurations(
           serviceName = service.name,
           apolloUsage = ApolloUsage.CodegenMetadata,
           direction = ApolloDirection.Upstream,
-          extendsFrom = upstreamScope
+          extendsFrom = service.upstreamScope
       )
 
       /**
        * Tasks
        */
-      val codegenSchemaTaskProvider = if (service.isSchemaModule()) {
-        project.registerApolloGenerateCodegenSchemaTask(
-            taskName = ModelNames.generateApolloCodegenSchema(service),
-            taskGroup = TASK_GROUP,
-            taskDescription = "Generate Apollo schema for service '${service.name}'",
-            schemaFiles = service.schemaFiles(project),
-            fallbackSchemaFiles = service.fallbackSchemaFiles(project),
-            upstreamSchemaFiles = project.files(codegenSchema.resolvable),
-            codegenSchemaOptionsFile = optionsTaskProvider.flatMap { it.codegenSchemaOptionsFile },
-            arguments = pluginArguments,
-            extraClasspath = project.files(service.compilerConfiguration),
-            warnIfNotFound = project.provider { warnIfNoPluginFound },
-        )
-      } else {
-        check(service.scalarTypeMapping.isEmpty()) {
-          "Apollo: the custom scalar configuration is not used in non-schema modules. Add custom scalars to your schema module."
-        }
-        check(!service.generateDataBuilders.isPresent) {
-          "Apollo: generateDataBuilders is not used in non-schema modules. Add generateDataBuilders to your schema module."
-        }
-
-        null
-      }
+      val codegenSchemaTaskProvider = project.registerApolloGenerateCodegenSchemaTask(
+          taskName = ModelNames.generateApolloCodegenSchema(service),
+          taskGroup = TASK_GROUP,
+          taskDescription = "Generate Apollo schema for service '${service.name}'",
+          schemaFiles = service.schemaFiles(project),
+          fallbackSchemaFiles = service.fallbackSchemaFiles(project),
+          upstreamSchemaFiles = project.files(codegenSchema.resolvable),
+          codegenSchemaOptionsFile = optionsTaskProvider.flatMap { it.codegenSchemaOptionsFile },
+          arguments = pluginArguments,
+          extraClasspath = project.files(service.compilerConfiguration),
+          warnIfNotFound = project.provider { warnIfNoPluginFound },
+      )
 
       val upstreamAndSelfCodegenSchemas = project.files().also {
         it.from(codegenSchema.resolvable)
-        if (codegenSchemaTaskProvider != null) {
-          it.from(codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile })
-        }
+        it.from(codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile })
       }
       val irOperationsTaskProvider = project.registerApolloGenerateIrOperationsTask(
           taskName = ModelNames.generateApolloIrOperations(service),
@@ -663,13 +683,11 @@ abstract class DefaultApolloExtension(
       }
 
       project.artifacts {
-        if (codegenSchemaTaskProvider != null) {
-          it.add(codegenSchema.consumable.name, codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile }) {
-            it.classifier = "codegen-schema-${service.name}"
-          }
-          it.add(otherOptions.consumable.name, optionsTaskProvider.flatMap { it.otherOptions }) {
-            it.classifier = "other-options-${service.name}"
-          }
+        it.add(codegenSchema.consumable.name, codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile }) {
+          it.classifier = "codegen-schema-${service.name}"
+        }
+        it.add(otherOptions.consumable.name, optionsTaskProvider.flatMap { it.otherOptions }) {
+          it.classifier = "other-options-${service.name}"
         }
         it.add(upstreamIr.consumable.name, irOperationsTaskProvider.flatMap { it.irOperationsFile }) {
           it.classifier = "ir-${service.name}"
@@ -711,14 +729,6 @@ abstract class DefaultApolloExtension(
         service.outgoingVariantsConnection!!.execute(outgoingVariantsConnection)
       } else {
         outgoingVariantsConnection.addToSoftwareComponent(adhocComponentWithVariants)
-      }
-
-      service.upstreamDependencies.forEach { dependency ->
-        upstreamScope.configure { it.dependencies.add(dependency) }
-      }
-
-      service.downstreamDependencies.forEach { dependency ->
-        downstreamScope.configure { it.dependencies.add(dependency) }
       }
     }
 

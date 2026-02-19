@@ -41,7 +41,7 @@ apollo {
 }
 ```
 
-In your feature module, declare your schema module as a dependency:
+In your feature module, declare your schema module as a dependency using the `"apollo${serviceName.capitalize()}"` configuration:
 
 ```kotlin
 // feature/build.gradle.kts
@@ -49,15 +49,24 @@ apollo {
   // Service names must match
   service("service") {
     packageName.set("feature")
-    
-    // The 'feature' depends on the 'schema' module
-    dependsOn(project(":schema")) // highlight-line
-
-    // If you want to reuse fragments from other modules, you can add them too
-    dependsOn(project(":fragments")) 
+    generateApolloMetadata.set(true)
   }
 }
+
+dependencies {
+  // The 'feature' depends on the 'schema' module.
+  // Note: this must happen **after** the `apollo {}` block or the `"apolloService"` configuration does not exist. 
+  add("apolloService", project(":schema")) // highlight-line
+  // Also add the Kotlin symbols as dependencies
+  add("implementation", project(":schema"))
+
+  // If you want to reuse fragments from other modules, you can add them too
+  add("apolloService", project(":fragments"))
+  add("implementation", project(":fragments"))
+}
 ```
+
+This makes sure the Apollo compiler can read the GraphQL types and fragments from dependencies.
 
 ## Auto-detection of used types
 
@@ -65,8 +74,9 @@ By default, Apollo Kotlin generates all the types in your schema module. This is
 
 For large schemas, this can generate a lot of code and increase your build time significantly. In this case, you can opt in auto-detection of used types. 
 
-This works by splitting the codegen task in different steps so that feature modules can let the schema module know what types are used before actually generating the models. To opt in, call `isADependencyOf()` to establish the bidirectional dependency between your feature module and your schema module:
+This works by splitting the codegen task in different steps so that feature modules can let the schema module know what types are used before actually generating the models. 
 
+To opt in, add a dependency to the `"apollo${serviceName.capitalize()}UsedCoordinates"` configuration:
 
 ```kotlin
 // schema/build.gradle.kts
@@ -74,52 +84,17 @@ apollo {
   service("service") {
     packageName.set("schema")
     generateApolloMetadata.set(true)
-    
-    isADependencyOf(project(":feature")) // highlight-line
-    // list all your feature modules here
-    isADependencyOf(project(":feature2"))
-    // ...
   }
 }
+
+dependencies {
+  add("apolloServiceUsedCoordinates", project(":feature")) // highlight-line
+  add("apolloServiceUsedCoordinates", project(":feature2"))
+  // ...
+}
 ```
+
 Once you opt in auto-detection of used types, it's important that **all** modules are doubly linked like above. If not the feature modules will fail to compile due to some missing schema classes.
-
-## bidirectional parameter (Experimental)
-
-Using `isADependencyOf()` requires listing all your feature modules in your schema module which duplicates code. To keep things minimal and configure the dependency automatically, use `bidirectional = true`:
-
-```kotlin
-// feature/build.gradle.kts
-apollo {
-  service("service") {
-    packageName.set("feature")
-
-    // Use `bidirectional` to have the schema module get the used types from this module
-    dependsOn(dependencyNotation = project(":schema"), bidirectional = true) // highlight-line
-  }
-}
-```
-
-Also disable generating types in the schema module:
-
-```kotlin
-// schema/build.gradle.kts
-apollo {
-  service("service") {
-    packageName.set("schema")
-    generateApolloMetadata.set(true)
-    
-    // Disable generating all types 
-    alwaysGenerateTypesMatching.set(emptyList())
-  }
-}
-```
-
-<ExperimentalFeature>
-
-The `bidirectional` parameter is experimental and not compatible with <a href="https://docs.gradle.org/current/userguide/build_environment.html">Gradle project isolation</a>. 
-
-</ExperimentalFeature>
 
 ## Optional optimizations
 
