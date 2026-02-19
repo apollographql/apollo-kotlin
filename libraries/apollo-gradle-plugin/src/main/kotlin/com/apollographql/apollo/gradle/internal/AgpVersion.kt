@@ -4,7 +4,7 @@ package com.apollographql.apollo.gradle.internal
  * This function throws if AGP is not in the current context classloader
  */
 fun agpVersion(): String {
-  val version = Thread.currentThread().contextClassLoader.loadClass("com.android.Version")
+  val version = Class.forName("com.android.Version")
 
   val field = version.declaredFields.firstOrNull { it.name == "ANDROID_GRADLE_PLUGIN_VERSION" }
   check(field != null) {
