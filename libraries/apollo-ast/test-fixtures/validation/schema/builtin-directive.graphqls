@@ -1,0 +1,11 @@
+# This schema some of the builtin directives (`@include`) but not all.
+
+"Directs the executor to include this field or fragment only when the `if` argument is true"
+directive @include(
+    "Included when true."
+    if: Boolean!
+) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+type Query {
+  foo: Int
+}

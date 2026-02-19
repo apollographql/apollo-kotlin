@@ -1,0 +1,12 @@
+# This test case is currently not detecting the conflict, unlike graphql-js
+fragment sameAliasesWithDifferentFieldTargets on Dog {
+  ...sameAliasesWithDifferentFieldTargets
+  fido: name
+  fido: nickname
+}
+
+query Test {
+  dog {
+    ...sameAliasesWithDifferentFieldTargets
+  }
+}

@@ -75,8 +75,11 @@ abstract class DefaultApolloExtension(
   internal val agpOrNull: AgpCompat? by lazy {
     val androidComponents = project.extensions.findByName("androidComponents")
     if (androidComponents != null) {
-      // Use the public API (AndroidComponentsExtension.pluginVersion) via reflection
-      // This avoids accessing the internal com.android.Version class
+      /**
+       * AndroidComponentsExtension.pluginVersion is available
+       * - in AGP 8.0 as AndroidComponentsExtension.pluginVersion: https://developer.android.com/reference/tools/gradle-api/8.0/com/android/build/api/variant/AndroidComponentsExtension#pluginVersion()
+       * - in AGP 8.2 as AndroidComponents.pluginVersion: https://developer.android.com/reference/tools/gradle-api/8.2/com/android/build/api/variant/AndroidComponents#pluginVersion()
+       */
       val pluginVersionMethod = androidComponents.javaClass.getMethod("getPluginVersion")
       val pluginVersion = pluginVersionMethod.invoke(androidComponents)
 

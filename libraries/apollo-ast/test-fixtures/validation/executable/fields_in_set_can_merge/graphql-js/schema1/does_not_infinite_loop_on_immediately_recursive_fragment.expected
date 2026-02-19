@@ -1,0 +1,2 @@
+FragmentCycle (7:33)
+Fragment 'fragA' spreads itself, creating a cycle at '__fragA.__fragA'

@@ -8,8 +8,6 @@ input UserInput {
   email: String
 }
 
-directive @oneOf on INPUT_OBJECT
-
 type User {
   id: ID!
 }

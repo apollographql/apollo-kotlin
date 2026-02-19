@@ -1,5 +1,5 @@
-OtherValidationIssue (8:5)
+OtherValidationIssue (6:5)
 Input field 'a' of OneOf input object 'A' must be nullable
 ------------
-OtherValidationIssue (12:5)
+OtherValidationIssue (10:5)
 Input field 'b' of OneOf input object 'B' must not have a default value

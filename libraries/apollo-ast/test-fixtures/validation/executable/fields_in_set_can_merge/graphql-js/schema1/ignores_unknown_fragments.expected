@@ -1,0 +1,11 @@
+OtherValidationIssue (10:3)
+Field `field` of type `T` must have a selection of sub-fields
+------------
+OtherValidationIssue (11:3)
+Cannot find fragment `OtherUnknown`
+------------
+OtherValidationIssue (3:5)
+Field `field` of type `T` must have a selection of sub-fields
+------------
+OtherValidationIssue (4:5)
+Cannot find fragment `Unknown`

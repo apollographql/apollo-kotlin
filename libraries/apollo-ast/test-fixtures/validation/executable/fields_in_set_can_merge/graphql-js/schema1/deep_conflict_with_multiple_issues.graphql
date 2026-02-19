@@ -1,0 +1,10 @@
+query Test {
+  field {
+    x: a
+    y: c
+  },
+  field {
+    x: b
+    y: d
+  }
+}

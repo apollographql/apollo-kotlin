@@ -1,7 +1,5 @@
 package com.apollographql.apollo.ast.internal
 
-import com.apollographql.apollo.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.ast.DirectiveRedefinition
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.GQLDefinition
@@ -16,6 +14,7 @@ import com.apollographql.apollo.ast.GQLInterfaceTypeDefinition
 import com.apollographql.apollo.ast.GQLListValue
 import com.apollographql.apollo.ast.GQLNamed
 import com.apollographql.apollo.ast.GQLNamedType
+import com.apollographql.apollo.ast.GQLNode
 import com.apollographql.apollo.ast.GQLNonNullType
 import com.apollographql.apollo.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo.ast.GQLObjectValue
@@ -33,7 +32,6 @@ import com.apollographql.apollo.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo.ast.GQLValue
 import com.apollographql.apollo.ast.IncompatibleDefinition
 import com.apollographql.apollo.ast.Issue
-import com.apollographql.apollo.ast.MergeOptions
 import com.apollographql.apollo.ast.NoQueryType
 import com.apollographql.apollo.ast.OtherValidationIssue
 import com.apollographql.apollo.ast.Schema
@@ -50,7 +48,6 @@ import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.parseAsGQLSelections
 import com.apollographql.apollo.ast.rawType
 import com.apollographql.apollo.ast.transform2
-import com.apollographql.apollo.ast.withBuiltinDefinitions
 
 private fun ForeignSchema.asNonPrefixedImport(): LinkedSchema {
   return LinkedSchema(this, definitions, definitions.map { (it as GQLNamed).definitionName() }.associateBy { it }, null)
@@ -58,16 +55,44 @@ private fun ForeignSchema.asNonPrefixedImport(): LinkedSchema {
 
 private class LinkedDefinition<T : GQLDefinition>(val definition: T, val linkedSchema: LinkedSchema)
 
+private fun GQLNode.name(assert: Boolean): String? = when (this) {
+  is GQLTypeDefinition -> name
+  is GQLDirectiveDefinition -> "@$name"
+  else -> if (assert) {
+    error("Unexpected node type: ${this::class.simpleName}")
+  } else {
+    null
+  }
+}
+
 internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaValidationOptions): GQLResult<Schema> {
   val issues = mutableListOf<Issue>()
 
-  /*
-   * Make sure we have a full schema.
-   * This can lead to issues if the Apollo Kotlin built-in definitions do not match the schema ones.
-   * In those cases, some operations might be considered valid while they are in fact not supported
-   * by the server.
-   */
-  val fullDefinitions = definitions.withBuiltinDefinitions()
+  val fullDefinitions = buildList {
+    addAll(definitions)
+
+    when (options.addBuiltinDefinitions) {
+      null -> {
+        /*
+         * Make sure we have a full schema.
+         * This can lead to issues if the Apollo Kotlin built-in definitions do not match the schema ones.
+         * In those cases, some operations might be considered valid while they are in fact not supported
+         * by the server.
+         */
+        builtinDefinitions().forEach { builtin ->
+          if (definitions.none { it.name(false) == builtin.name(true) }) {
+            add(builtin)
+          }
+        }
+      }
+
+      true -> {
+        addAll(builtinDefinitions())
+      }
+
+      false -> Unit
+    }
+  }
 
   /**
    * TODO: this should probably be done after merging so that we can handle @link on the schema definition itself.
@@ -267,13 +292,11 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
    */
   listOf(
       oneOfDefinitionsStr,
-      deferDefinitionsStr,
       nonNullDefinitionStr,
       kotlinLabsDefinitions_0_4,
       compilerOptions_0_0,
       compilerOptions_0_1_additions,
       nullabilityDefinitionsStr,
-      disableErrorPropagationStr
   ).flatMap {
     it.parseAsGQLDocument().getOrThrow().definitions
   }
@@ -305,7 +328,8 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
    *
    * Moving forward, extensions merging should probably be done first thing as a separate step, before any validation and/or linking of foreign schemas.
    */
-  val dedupedDefinitions = listOfNotNull(schemaDefinition) + directiveDefinitions.values + typeDefinitions.values + listOfNotNull(serviceDefinition)
+  val dedupedDefinitions =
+    listOfNotNull(schemaDefinition) + directiveDefinitions.values + typeDefinitions.values + listOfNotNull(serviceDefinition)
   val mergedDefinitions = ExtensionsMerger(dedupedDefinitions + typeSystemExtensions, options.mergeOptions).merge().getOrThrow()
 
   val mergedScope = DefaultValidationScope(

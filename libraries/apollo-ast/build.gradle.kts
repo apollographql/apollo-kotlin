@@ -37,7 +37,7 @@ kotlin {
 }
 
 tasks.named("jvmTest") {
-  inputs.dir("test-fixtures/parser")
+  inputs.dir("test-fixtures/")
       .withPropertyName("testFixtures")
       .withPathSensitivity(PathSensitivity.RELATIVE)
 }

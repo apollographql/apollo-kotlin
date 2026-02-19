@@ -1,5 +1,3 @@
-directive @oneOf on INPUT_OBJECT
-
 type Query {
     x: Int
 }

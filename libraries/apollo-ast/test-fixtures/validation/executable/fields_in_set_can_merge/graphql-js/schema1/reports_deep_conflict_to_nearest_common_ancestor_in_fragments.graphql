@@ -1,0 +1,23 @@
+query Test {
+  field {
+    ...F
+  }
+  field {
+    ...F
+  }
+}
+fragment F on T {
+  deepField {
+    deeperField {
+      x: a
+    }
+    deeperField {
+      x: b
+    }
+  },
+  deepField {
+    deeperField {
+      y
+    }
+  }
+}

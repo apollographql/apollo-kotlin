@@ -1,0 +1,5 @@
+DifferentShape (9:7)
+Field at path `foo.value` conflicts with another field: they return different types: 'Boolean' and 'Int'. Use different aliases on the fields to fetch both if this was intentional.
+------------
+DifferentShape (12:7)
+Field at path `foo.value` conflicts with another field: they return different types: 'Boolean' and 'Int'. Use different aliases on the fields to fetch both if this was intentional.

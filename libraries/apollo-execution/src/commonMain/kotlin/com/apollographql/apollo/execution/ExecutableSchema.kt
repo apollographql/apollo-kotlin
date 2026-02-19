@@ -142,10 +142,8 @@ class ExecutableSchema internal constructor(
       check(schema != null) {
         "A schema is required to build an ExecutableSchema"
       }
-      /**
-       * TODO: scalar definitions are added back when calling `toSchema()` but I'm unclear why we have to filter them out here.
-       */
-      val ourDefinitions = builtinDefinitions().filter { it !is GQLScalarTypeDefinition } + serviceDefinition(onError)
+
+      val ourDefinitions = builtinDefinitions() + serviceCapabilitiesDefinitions() + serviceDefinition(onError)
       val reservedNames = ourDefinitions.mapNotNull { it.definitionName() }.toSet()
       val sourceDefinitions = schema!!.definitions
       sourceDefinitions.forEach {

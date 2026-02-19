@@ -1,0 +1,10 @@
+fragment mergeSameFieldsWithSameDirectives on Dog {
+  name @include(if: true)
+  name @include(if: true)
+}
+
+query Test {
+  dog {
+    ...mergeSameFieldsWithSameDirectives
+  }
+}

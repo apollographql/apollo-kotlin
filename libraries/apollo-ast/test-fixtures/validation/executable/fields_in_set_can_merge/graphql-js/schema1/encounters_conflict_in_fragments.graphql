@@ -1,0 +1,12 @@
+query Test {
+  fragA {
+    ...A
+    ...B
+  }
+}
+fragment A on Type {
+  x: a
+}
+fragment B on Type {
+  x: b
+}

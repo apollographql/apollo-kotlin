@@ -1,5 +1,0 @@
-OtherValidationIssue (4:13)
-`foo` cannot be merged with `foo` (at multiple_merged_fields.graphql: (9, 13)): they have different types. Use different aliases on the fields to fetch both if this was intentional.
-------------
-OtherValidationIssue (9:13)
-`foo` cannot be merged with `foo` (at multiple_merged_fields.graphql: (4, 13)): they have different types. Use different aliases on the fields to fetch both if this was intentional.

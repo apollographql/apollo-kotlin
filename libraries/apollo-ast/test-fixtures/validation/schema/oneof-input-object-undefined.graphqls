@@ -1,7 +1,0 @@
-type Query {
-    x: Int
-}
-
-input A @oneOf {
-    a: String
-}

@@ -1,0 +1,5 @@
+DifferentShape (4:7)
+Field at path `someBox.box` conflicts with another field: they return different types: 'StringBox' and '[StringBox]'. Use different aliases on the fields to fetch both if this was intentional.
+------------
+DifferentShape (9:7)
+Field at path `someBox.box` conflicts with another field: they return different types: 'StringBox' and '[StringBox]'. Use different aliases on the fields to fetch both if this was intentional.

@@ -1,0 +1,10 @@
+fragment mergeIdenticalFields on Dog {
+  name
+  name
+}
+
+query Test {
+  dog {
+    ...mergeIdenticalFields
+  }
+}

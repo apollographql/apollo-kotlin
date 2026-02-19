@@ -1,0 +1,10 @@
+# By default it's OK to have it defined
+directive @oneOf on INPUT_OBJECT
+
+type Query {
+    x: Int
+}
+
+input C @oneOf {
+    c: String
+}

@@ -1,0 +1,11 @@
+DifferentShape (4:13)
+Field at path `character.address.foo` conflicts with another field: they return different types: 'String' and 'Int'. Use different aliases on the fields to fetch both if this was intentional.
+------------
+DifferentShape (5:13)
+Field at path `character.address.foo` conflicts with another field: they return different types: 'String' and 'Int'. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (4:13)
+Field at path `character.address.foo` conflicts with another field: 'street' and 'number' are different fields. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (5:13)
+Field at path `character.address.foo` conflicts with another field: 'street' and 'number' are different fields. Use different aliases on the fields to fetch both if this was intentional.

@@ -1,0 +1,8 @@
+input SomeInput {
+  a: String
+  b: String
+}
+
+type Query {
+  someField(arg: SomeInput): String
+}

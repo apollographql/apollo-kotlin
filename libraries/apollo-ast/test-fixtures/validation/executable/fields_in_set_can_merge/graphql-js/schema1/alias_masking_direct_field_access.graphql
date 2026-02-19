@@ -1,0 +1,10 @@
+fragment aliasMaskingDirectFieldAccess on Dog {
+  name: nickname
+  name
+}
+
+query Test {
+  dog {
+    ...aliasMaskingDirectFieldAccess
+  }
+}

@@ -2,12 +2,9 @@ package com.apollographql.apollo.ast.internal
 
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.AnonymousOperation
-import com.apollographql.apollo.ast.Catch
 import com.apollographql.apollo.ast.DeprecatedUsage
-import com.apollographql.apollo.ast.DifferentShape
 import com.apollographql.apollo.ast.ExecutableValidationResult
 import com.apollographql.apollo.ast.FragmentCycle
-import com.apollographql.apollo.ast.GQLArgument
 import com.apollographql.apollo.ast.GQLBooleanValue
 import com.apollographql.apollo.ast.GQLDirective
 import com.apollographql.apollo.ast.GQLDocument
@@ -22,11 +19,9 @@ import com.apollographql.apollo.ast.GQLInlineFragment
 import com.apollographql.apollo.ast.GQLIntValue
 import com.apollographql.apollo.ast.GQLListType
 import com.apollographql.apollo.ast.GQLListValue
-import com.apollographql.apollo.ast.GQLNamedType
 import com.apollographql.apollo.ast.GQLNode
 import com.apollographql.apollo.ast.GQLNonNullType
 import com.apollographql.apollo.ast.GQLNullValue
-import com.apollographql.apollo.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo.ast.GQLObjectValue
 import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.GQLScalarTypeDefinition
@@ -362,8 +357,8 @@ internal class ExecutableValidationScope(
 
   /**
    * Validate the fragment outside the context of an operation
-   * This can be helpful to show warnings in the IDE while editing fragments of a parent module and the fragment may appear unused
-   * This will not catch field merging conflicts and missing variables so ultimately, validation
+   * This can be helpful to show warnings in the IDE while editing fragments of a parent module, and the fragment may appear unused
+   * This will not catch field merging conflicts and missing variables. Ultimately, validation
    * in the context of an operation is required.
    */
   private fun GQLFragmentDefinition.validate() {
@@ -419,7 +414,14 @@ internal class ExecutableValidationScope(
       validateCatch(selections.collectFieldsNoFragments())
     }
 
-    fieldsInSetCanMerge(selections.collectFields(rootTypeDefinition.name))
+    fieldsInSetCanMerge(this, schema, fragmentDefinitions.filter {
+      /**
+       * Prevent infinite recursion. We could probably do both validations at the
+       * same time and save a bit of time.
+       * We could also detect more issues, see `finds_invalid_case_even_with_immediately_recursive_fragment.graphql`
+       */
+      it.key !in cyclicFragments
+    })
 
     issues.addAll(validateDeferLabels(this, rootTypeDefinition.name, schema, fragmentDefinitions))
 
@@ -441,7 +443,12 @@ internal class ExecutableValidationScope(
     }
     variableDefinitions.forEach {
       if (it.defaultValue != null) {
-        validateAndCoerceValue(it.defaultValue, it.type, false, false) {
+        validateAndCoerceValue(
+            value = it.defaultValue,
+            expectedType = it.type,
+            hasLocationDefaultValue = false,
+            isOneOfInputField = false
+        ) {
           issues.add(it.constContextError())
         }
       }
@@ -498,86 +505,6 @@ internal class ExecutableValidationScope(
     }
   }
 
-  /**
-   * XXX: optimize by not visiting the same fields several times
-   */
-  private fun fieldPairCanMerge(fieldWithParentA: FieldWithParent, fieldWithParentB: FieldWithParent) {
-    val parentTypeDefinitionA = fieldWithParentA.parentTypeDefinition
-    val parentTypeDefinitionB = fieldWithParentB.parentTypeDefinition
-
-    if (parentTypeDefinitionA.name != parentTypeDefinitionB.name
-        && parentTypeDefinitionA is GQLObjectTypeDefinition
-        && parentTypeDefinitionB is GQLObjectTypeDefinition) {
-      // 5.3.2 2.b disjoint objects merge only if they have the same shape
-      sameResponseShapeRecursive(fieldWithParentA, fieldWithParentB)
-      return
-    }
-
-    val fieldA = fieldWithParentA.field
-    val fieldB = fieldWithParentB.field
-
-    val fieldDefinitionA = fieldA.definitionFromScope(schema, parentTypeDefinitionA)
-    val fieldDefinitionB = fieldB.definitionFromScope(schema, parentTypeDefinitionB)
-    val typeA = fieldDefinitionA?.type
-    val typeB = fieldDefinitionB?.type
-    if (typeA == null || typeB == null) {
-      // will be caught by other validation rules
-      return
-    }
-
-    if (!areTypesEqual(typeA, typeB)) {
-      addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different types")
-      return
-    }
-
-    if (!areArgumentsEqual(fieldA.arguments, fieldB.arguments)) {
-      addFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field, "they have different arguments")
-      return
-    }
-
-    // no need to call the recursive version here, it will be taken care at the end of this iteration
-    if (!haveSameResponseShape(fieldWithParentA, fieldWithParentB)) {
-      addShapeFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field)
-      return
-    }
-
-    val setA = fieldA.selections.collectFields(typeA.rawType().name)
-    val setB = fieldB.selections.collectFields(typeB.rawType().name)
-
-    fieldsInSetCanMerge(setA + setB)
-  }
-
-  private fun fieldsInSetCanMerge(fieldsWithParent: List<FieldWithParent>) {
-    fieldsWithParent.groupBy { it.field.responseName() }
-        .values
-        .forEach { fieldsForName ->
-          if (fieldsForName.size == 1) {
-            val first = fieldsForName.first()
-            val fieldDefinition = first.field.definitionFromScope(schema, first.parentTypeDefinition.name)
-            if (fieldDefinition == null) {
-              // This field is unknown. Let other validation rules catch this
-              return@forEach
-            }
-            val set = first.field.selections.collectFields(fieldDefinition.type.rawType().name)
-            // recurse in subfields
-            fieldsInSetCanMerge(set)
-          } else {
-            fieldsForName.pairs().forEach {
-              fieldPairCanMerge(it.first, it.second)
-            }
-          }
-        }
-  }
-
-  private fun areTypesEqual(typeA: GQLType, typeB: GQLType): Boolean {
-    return when (typeA) {
-      is GQLNonNullType -> (typeB is GQLNonNullType) && areTypesEqual(typeA.type, typeB.type)
-      is GQLListType -> (typeB is GQLListType) && areTypesEqual(typeA.type, typeB.type)
-      is GQLNamedType -> (typeB is GQLNamedType) && typeA.name == typeB.name
-    }
-  }
-
-
   private fun validateCatch(fields: List<GQLField>) {
     fields.groupBy { it.responseName() }
         .forEach {
@@ -591,34 +518,6 @@ internal class ExecutableValidationScope(
         }
   }
 
-
-  private fun areArgumentsEqual(argumentsA: List<GQLArgument>, argumentsB: List<GQLArgument>): Boolean {
-    if (argumentsA.size != argumentsB.size) {
-      return false
-    }
-
-    (argumentsA + argumentsB).groupBy {
-      // other validations will ensure no duplicates, so it's safe to
-      // put everything in a Map here
-      it.name
-    }.values.forEach {
-      if (it.size != 2) {
-        // some argument is missing
-        return false
-      }
-      if (!areValuesEqual(it[0].value, it[1].value)) {
-        return false
-      }
-    }
-
-    return true
-  }
-
-  private fun buildMessage(fieldA: GQLField, fieldB: GQLField, message: String): String {
-    return "`${fieldA.responseName()}` cannot be merged with `${fieldB.responseName()}` (at ${fieldB.sourceLocation.pretty()}): " +
-        "$message. Use different aliases on the fields to fetch both if this was intentional."
-  }
-
   private fun addFieldMergingIssue(fieldA: GQLField, fieldB: GQLField, message: String) {
     registerIssue(
         message = buildMessage(fieldA, fieldB, message),
@@ -628,22 +527,6 @@ internal class ExecutableValidationScope(
     registerIssue(
         message = buildMessage(fieldB, fieldA, message),
         sourceLocation = fieldB.sourceLocation,
-    )
-  }
-
-  private fun addShapeFieldMergingIssue(fieldA: GQLField, fieldB: GQLField) {
-    issues.add(
-        DifferentShape(
-            message = buildMessage(fieldA, fieldB, "they have different shapes"),
-            sourceLocation = fieldA.sourceLocation,
-        )
-    )
-    // Also add the symmetrical error
-    issues.add(
-        DifferentShape(
-            message = buildMessage(fieldB, fieldA, "they have different shapes"),
-            sourceLocation = fieldB.sourceLocation,
-        )
     )
   }
 
@@ -688,87 +571,6 @@ internal class ExecutableValidationScope(
     }
   }
 
-  private fun sameResponseShapeRecursive(fieldWithParentA: FieldWithParent, fieldWithParentB: FieldWithParent): Boolean {
-    if (!haveSameResponseShape(fieldWithParentA, fieldWithParentB)) {
-      addShapeFieldMergingIssue(fieldWithParentA.field, fieldWithParentB.field)
-      return false
-    }
-
-    val parentTypeDefinitionA = fieldWithParentA.parentTypeDefinition
-    val parentTypeDefinitionB = fieldWithParentB.parentTypeDefinition
-
-    val setA = fieldWithParentA.field.selections.collectFields(parentTypeDefinitionA.name)
-    val setB = fieldWithParentB.field.selections.collectFields(parentTypeDefinitionB.name)
-
-    (setA + setB).groupBy { it.field.responseName() }.values.forEach { fieldsForName ->
-      if (fieldsForName.pairs().firstOrNull { sameResponseShapeRecursive(it.first, it.second) } != null) {
-        return false
-      }
-    }
-
-    return true
-  }
-
-  // 5.3.2 2.1
-  private fun haveSameResponseShape(fieldWithParentA: FieldWithParent, fieldWithParentB: FieldWithParent): Boolean {
-    val fieldA = fieldWithParentA.field
-    val fieldB = fieldWithParentB.field
-
-    val parentTypeDefinitionA = fieldWithParentA.parentTypeDefinition
-    val parentTypeDefinitionB = fieldWithParentB.parentTypeDefinition
-
-    val fieldDefinitionA = fieldA.definitionFromScope(schema, parentTypeDefinitionA)
-    val fieldDefinitionB = fieldB.definitionFromScope(schema, parentTypeDefinitionB)
-
-    if (fieldDefinitionA == null || fieldDefinitionB == null) {
-      // will be caught by other validation rules
-      return true
-    }
-
-    var typeA = fieldDefinitionA.type
-    var typeB = fieldDefinitionB.type
-
-    while (typeA is GQLNonNullType || typeA is GQLListType || typeB is GQLNonNullType || typeB is GQLListType) {
-      when {
-        typeA is GQLNonNullType && typeB !is GQLNonNullType -> return false
-        typeA !is GQLNonNullType && typeB is GQLNonNullType -> return false
-        typeA is GQLNonNullType && typeB is GQLNonNullType -> {
-          // both are non-null, unwrap
-          typeA = typeA.type
-          typeB = typeB.type
-        }
-      }
-      when {
-        typeA is GQLListType && typeB !is GQLListType -> return false
-        typeA !is GQLListType && typeB is GQLListType -> return false
-        typeA is GQLListType && typeB is GQLListType -> {
-          // both are list, unwrap
-          typeA = typeA.type
-          typeB = typeB.type
-        }
-      }
-    }
-
-    check(typeA is GQLNamedType && typeB is GQLNamedType) {
-      "${typeA.pretty()} and ${typeB.pretty()} should be GQLNamedType"
-    }
-
-    val typeDefinitionA = typeDefinitions[typeA.name]
-    val typeDefinitionB = typeDefinitions[typeB.name]
-
-    if (typeDefinitionA == null || typeDefinitionB == null) {
-      // will be caught by other validation rules
-      return true
-    }
-
-    if (typeDefinitionA is GQLScalarTypeDefinition || typeDefinitionA is GQLEnumTypeDefinition
-        || typeDefinitionB is GQLScalarTypeDefinition || typeDefinitionB is GQLEnumTypeDefinition) {
-      return typeDefinitionA.name == typeDefinitionB.name
-    }
-
-    return true
-  }
-
   private fun <T> List<T>.pairs(): List<Pair<T, T>> {
     val pairs = mutableListOf<Pair<T, T>>()
     for (i in indices) {
@@ -777,23 +579,6 @@ internal class ExecutableValidationScope(
       }
     }
     return pairs
-  }
-
-  private class FieldWithParent(val field: GQLField, val parentTypeDefinition: GQLTypeDefinition)
-
-  private fun List<GQLSelection>.collectFields(parentType: String): List<FieldWithParent> {
-    return flatMap { selection ->
-      when (selection) {
-        is GQLField -> listOf(typeDefinitions[parentType]).mapNotNull { typeDefinition ->
-          // typeDefinition should never be null here
-          // if it is, we just skip this field and let other validation report the error
-          typeDefinition?.let { FieldWithParent(selection, it) }
-        }
-
-        is GQLInlineFragment -> selection.collectFields(parentType)
-        is GQLFragmentSpread -> selection.collectFields()
-      }
-    }
   }
 
   private fun List<GQLSelection>.collectFieldsNoFragments(): List<GQLField> {
@@ -807,25 +592,6 @@ internal class ExecutableValidationScope(
       }
     }
   }
-
-  private fun GQLInlineFragment.collectFields(parentType: String) = selections.collectFields(typeCondition?.name ?: parentType)
-
-  private fun GQLFragmentSpread.collectFields(): List<FieldWithParent> {
-    if (name in cyclicFragments) {
-      return emptyList()
-    }
-
-    val fragmentDefinition = fragmentDefinitions[name]
-    if (fragmentDefinition == null) {
-      // will be caught by other validation rules
-      return emptyList()
-    }
-
-    return fragmentDefinition
-        .selections
-        .collectFields(fragmentDefinition.typeCondition.name)
-  }
-
 
   private fun List<GQLFragmentDefinition>.checkDuplicateFragments(): List<Issue> {
     val filtered = mutableMapOf<String, GQLFragmentDefinition>()
@@ -874,3 +640,8 @@ internal fun <T> MutableMap<String, T>.putIfAbsentMpp(key: String, value: T): T?
   }
 }
 
+
+private fun buildMessage(fieldA: GQLField, fieldB: GQLField, message: String): String {
+  return "`${fieldA.responseName()}` cannot be merged with `${fieldB.responseName()}` (at ${fieldB.sourceLocation.pretty()}): " +
+      "$message. Use different aliases on the fields to fetch both if this was intentional."
+}

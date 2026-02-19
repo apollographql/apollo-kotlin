@@ -1,0 +1,11 @@
+FragmentCycle (10:5)
+Fragment 'fragA' spreads itself, creating a cycle at '__fragA.x.__fragA'
+------------
+FragmentCycle (12:7)
+Fragment 'fragA' spreads itself, creating a cycle at '__fragA.x.x.__fragA'
+------------
+FragmentCycle (19:5)
+Fragment 'fragB' spreads itself, creating a cycle at '__fragB.x.__fragB'
+------------
+FragmentCycle (21:7)
+Fragment 'fragB' spreads itself, creating a cycle at '__fragB.x.x.__fragB'

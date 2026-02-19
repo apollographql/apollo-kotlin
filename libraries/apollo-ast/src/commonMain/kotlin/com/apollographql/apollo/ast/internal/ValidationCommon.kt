@@ -43,6 +43,18 @@ import com.apollographql.apollo.ast.pretty
 
 internal interface IssuesScope {
   val issues: MutableList<Issue>
+
+  fun registerIssue(
+      message: String,
+      sourceLocation: SourceLocation?,
+  ) {
+    issues.add(
+        OtherValidationIssue(
+            message,
+            sourceLocation,
+        )
+    )
+  }
 }
 
 /**
@@ -64,18 +76,6 @@ internal interface ValidationScope : IssuesScope {
 
   fun originalTypeName(name: String): String {
     return foreignNames[name] ?: name
-  }
-
-  fun registerIssue(
-      message: String,
-      sourceLocation: SourceLocation?,
-  ) {
-    issues.add(
-        OtherValidationIssue(
-            message,
-            sourceLocation,
-        )
-    )
   }
 }
 

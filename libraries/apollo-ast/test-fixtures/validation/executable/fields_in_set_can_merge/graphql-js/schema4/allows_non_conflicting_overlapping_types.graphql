@@ -1,0 +1,10 @@
+query Test {
+  someBox {
+    ... on IntBox {
+      scalar: unrelatedField
+    }
+    ... on StringBox {
+      scalar
+    }
+  }
+}

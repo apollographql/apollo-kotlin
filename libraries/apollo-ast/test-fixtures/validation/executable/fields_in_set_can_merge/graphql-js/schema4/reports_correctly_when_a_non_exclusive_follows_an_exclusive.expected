@@ -1,0 +1,5 @@
+OtherValidationIssue (38:3)
+Field at path `other.scalar` conflicts with another field: 'scalar' and 'unrelatedField' are different fields. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (41:3)
+Field at path `other.scalar` conflicts with another field: 'scalar' and 'unrelatedField' are different fields. Use different aliases on the fields to fetch both if this was intentional.

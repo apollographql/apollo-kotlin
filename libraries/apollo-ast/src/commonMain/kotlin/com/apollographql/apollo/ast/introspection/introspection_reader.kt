@@ -201,6 +201,9 @@ private class RDirective(
     val isRepeatable: Boolean = false,
     val isDeprecated: Optional<Boolean> = Optional.absent(),
     val deprecationReason: Optional<String?> = Optional.absent(),
+    val onOperation: Optional<Boolean> = Optional.absent(),
+    val onFragment: Optional<Boolean> = Optional.absent(),
+    val onField: Optional<Boolean> = Optional.absent(),
 )
 
 @Serializable(with = OptionalSerializer::class)
@@ -216,7 +219,7 @@ private sealed class Optional<out V> {
   fun <R> mapValue(block: (V) -> R): Optional<R> {
     return when (this) {
       is Absent -> Absent
-      is Present -> Optional.present(block(this.value))
+      is Present -> present(block(this.value))
     }
   }
 
@@ -528,14 +531,62 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
   }
 
   private fun RDirective.toGQLDirectiveDefinition(): GQLDirectiveDefinition? {
-    if (locations is Optional.Absent) {
-      println("Apollo: '$name.locations' is missing, check your introspection query")
-      return null
+    val locations = if (locations is Optional.Absent) {
+      /**
+       * pre 2016 introspection
+       * See https://github.com/graphql/graphql-spec/commit/1c38e6ac16de82a2a28487c8f193d673e39a1e33
+       *
+       * Note: it's not clear from the spec what exactly `onField`, `onFragment`, `onOperation` mean so we take
+       * a liberal approach here.
+       */
+      println("Apollo: '$name.locations' is missing, trying to read `onField`, `onFragment`, `onOperation`")
+      buildList {
+        when (onField.getOrNull()) {
+          null, true -> {
+            addAll(listOf(GQLDirectiveLocation.FIELD.name, GQLDirectiveLocation.FIELD_DEFINITION.name))
+          }
+          else -> Unit
+        }
+        when (onFragment.getOrNull()) {
+          null, true -> {
+            addAll(listOf(GQLDirectiveLocation.FRAGMENT_SPREAD.name, GQLDirectiveLocation.FRAGMENT_DEFINITION.name))
+          }
+          else -> Unit
+        }
+        when (onOperation.getOrNull()) {
+          null, true -> {
+            addAll(listOf(GQLDirectiveLocation.QUERY.name, GQLDirectiveLocation.MUTATION.name, GQLDirectiveLocation.SUBSCRIPTION.name))
+          }
+          else -> Unit
+        }
+      }
+    } else {
+      locations.getOrThrow()
     }
-    val locations = locations.getOrThrow()
     val args = if (args is Optional.Absent) {
       println("Apollo: '$name.args' is missing, check your introspection query")
-      emptyList()
+      /**
+       * 2015 introspection did not include arguments.
+       * See https://github.com/tyranron/graphql-spec/commit/9e68777f0ee50809de1f10c55fdd909e618e7fe1
+       */
+      if (name == "deprecated") {
+        /**
+         * Generate a synthetic argument for `@deprecated`
+         */
+        listOf(RInputValue(
+            name = "reason",
+            description = Optional.absent(),
+            type = RTypeRef(kind = RTypeKind.OBJECT,
+                name = "String",
+                ofType = null
+            ),
+            defaultValue = Optional.absent(),
+            isDeprecated = false,
+            deprecationReason = null,
+        ))
+      } else {
+        emptyList()
+      }
     } else {
       args.getOrThrow()
     }

@@ -1,3 +1,5 @@
+directive @defer(label: String, if: Boolean! = true) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
 type Query {
   computers: [Computer!]!
   computer(id: ID!): Computer
