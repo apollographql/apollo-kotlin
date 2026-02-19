@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Ecosystem Roadmap
 
-**Last updated: 2026-02-05**
+**Last updated: 2026-02-19**
 
 For up-to-date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -26,7 +26,7 @@ We aim for ABI compatibility for all symbols except those that were deprecated i
 
 ### Incremental delivery: protocol updates and `@stream` support
 
-v5.0.0-alpha.3 supports [incremental:v0.1](https://specs.apollo.dev/incremental/v0.1/) (`@defer`) and [incremental:v0.2](https://specs.apollo.dev/incremental/v0.2/)) (both `@defer` and `@stream`).
+As of v5.0.0-alpha.3, Apollo Kotlin supports [incremental:v0.1](https://specs.apollo.dev/incremental/v0.1/) (`@defer`) and [incremental:v0.2](https://specs.apollo.dev/incremental/v0.2/)) (both `@defer` and `@stream`).
 
 The [GraphQL Specification RFC](https://github.com/graphql/graphql-spec/pull/1110) is not merged yet. We continue monitoring the RFC and will adapt the implementation if needed.
 
@@ -50,7 +50,7 @@ We have recently shipped these features, please try them out and give us feedbac
 
 ## [Cache improvements](https://github.com/apollographql/apollo-kotlin/issues/2331)
 
-The new Apollo Normalized Cache v1 beta [is available now](https://github.com/apollographql/apollo-kotlin-normalized-cache/releases) and contain lots of new features like [Cache Control](https://apollographql.github.io/apollo-kotlin-normalized-cache/cache-control.html), [garbage collection](https://apollographql.github.io/apollo-kotlin-normalized-cache/garbage-collection.html), [partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache/issues/57), better performance and more...
+The new Apollo Normalized Cache v1 release candidate [is available now](https://github.com/apollographql/apollo-kotlin-normalized-cache/releases) and contain lots of new features like [Cache Control](https://apollographql.github.io/apollo-kotlin-normalized-cache/cache-control.html), [garbage collection](https://apollographql.github.io/apollo-kotlin-normalized-cache/garbage-collection.html), [partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache/issues/57), better performance and more...
 
 We encourage you to try it out with the (important) caveat that the binary format might still change (your persistent cache might be lost when upgrading to a newer prerelease version, memory cache isn't impacted).  Your feedback is greatly appreciated and helps us ship a stable version faster.
 
