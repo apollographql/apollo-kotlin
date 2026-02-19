@@ -2,6 +2,7 @@
 
 package com.apollographql.apollo.gradle
 
+import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
@@ -79,3 +80,21 @@ class Agp8Component(private val base: BaseVariant): AgpComponent {
     get() = base
 }
 
+@EmbeddedGradleSymbol
+class AgpVersion(val major: Int, private val asString: String) {
+  override fun toString(): String {
+    return asString
+  }
+}
+
+@EmbeddedGradleSymbol
+fun getAgpVersion(androidComponentsExtension: Any): AgpVersion {
+  androidComponentsExtension as AndroidComponentsExtension<*, *, *>
+  /**
+   * AndroidComponentsExtension.pluginVersion is available
+   * - in AGP 8.0 as AndroidComponentsExtension.pluginVersion: https://developer.android.com/reference/tools/gradle-api/8.0/com/android/build/api/variant/AndroidComponentsExtension#pluginVersion()
+   * - in AGP 8.2 as AndroidComponents.pluginVersion: https://developer.android.com/reference/tools/gradle-api/8.2/com/android/build/api/variant/AndroidComponents#pluginVersion()
+   */
+  val version = androidComponentsExtension.pluginVersion
+  return AgpVersion(version.major, version.toString())
+}

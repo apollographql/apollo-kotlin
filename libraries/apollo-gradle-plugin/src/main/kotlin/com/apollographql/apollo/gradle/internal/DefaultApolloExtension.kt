@@ -28,6 +28,7 @@ import com.apollographql.apollo.gradle.Agp8
 import com.apollographql.apollo.gradle.Agp8Component
 import com.apollographql.apollo.gradle.Agp9
 import com.apollographql.apollo.gradle.Agp9Component
+import com.apollographql.apollo.gradle.getAgpVersion
 import gratatouille.wiring.capitalizeFirstLetter
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectProvider
@@ -75,23 +76,11 @@ abstract class DefaultApolloExtension(
   internal val agpOrNull: AgpCompat? by lazy {
     val androidComponents = project.extensions.findByName("androidComponents")
     if (androidComponents != null) {
-      /**
-       * AndroidComponentsExtension.pluginVersion is available
-       * - in AGP 8.0 as AndroidComponentsExtension.pluginVersion: https://developer.android.com/reference/tools/gradle-api/8.0/com/android/build/api/variant/AndroidComponentsExtension#pluginVersion()
-       * - in AGP 8.2 as AndroidComponents.pluginVersion: https://developer.android.com/reference/tools/gradle-api/8.2/com/android/build/api/variant/AndroidComponents#pluginVersion()
-       */
-      val pluginVersionMethod = androidComponents.javaClass.getMethod("getPluginVersion")
-      val pluginVersion = pluginVersionMethod.invoke(androidComponents)
-
-      val majorField = pluginVersion.javaClass.getMethod("getMajor")
-      val major = majorField.invoke(pluginVersion) as Int
-
-      val agpVersion = pluginVersion.toString()
-
-      if (major >= 9) {
-        Agp9(agpVersion, androidComponents, project.extensions.findByName("android"), project.extensions.findByName("kotlin"))
+      val agpVersion = getAgpVersion(androidComponents)
+      if (agpVersion.major >= 9) {
+        Agp9(agpVersion.toString(), androidComponents, project.extensions.findByName("android"), project.extensions.findByName("kotlin"))
       } else {
-        Agp8(agpVersion, project.extensions.findByName("android") ?: error("No 'android' extension found. If you're applying `com.android.kotlin.multiplatform.library`, Apollo only supports it in conjunction with AGP9."))
+        Agp8(agpVersion.toString(), project.extensions.findByName("android") ?: error("No 'android' extension found. If you're applying `com.android.kotlin.multiplatform.library`, Apollo only supports it in conjunction with AGP9."))
       }
     } else {
       null
