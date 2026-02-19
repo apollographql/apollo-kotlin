@@ -270,10 +270,11 @@ interface Service {
   val generateAsInternal: Property<Boolean>
 
   /**
-   * Whether to generate Apollo metadata. Apollo metadata is used for multimodule support. Set this to true if you want other
-   * modules to be able to re-use fragments and types from this module.
+   * Whether to generate Apollo metadata. Apollo metadata is used for multimodule support.
    *
-   * This is currently experimental and this API might change in the future.
+   * Set this to true if you want this project to contribute a multimodule build.
+   * When enabled, the main codegen task is split in smaller tasks to generate the metadata as
+   * intermediate results.
    *
    * Default value: false
    */

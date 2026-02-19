@@ -20,12 +20,18 @@ import javax.inject.Inject
 
 abstract class DefaultService @Inject constructor(val project: Project, override val name: String) : Service {
 
-  internal val upstreamDependencies = mutableListOf<Dependency>()
-  internal val downstreamDependencies = mutableListOf<Dependency>()
   internal val pluginsArguments = mutableMapOf<String, Any?>()
   internal var hasPlugin: Boolean = false
   internal val issueSeverities = mutableMapOf<String, String>()
 
+  internal val upstreamScope = project.configurations.register(ModelNames.scopeConfiguration(name, ApolloDirection.Upstream)) {
+    it.isCanBeConsumed = false
+    it.isCanBeResolved = false
+  }
+  internal val downstreamScope = project.configurations.register(ModelNames.scopeConfiguration(name, ApolloDirection.Downstream)) {
+    it.isCanBeConsumed = false
+    it.isCanBeResolved = false
+  }
   val compilerConfiguration = project.configurations.register(ModelNames.compilerConfiguration(this)) {
     it.isCanBeConsumed = false
     it.isCanBeResolved = true
@@ -209,7 +215,10 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   }
 
   override fun dependsOn(dependencyNotation: Any, bidirectional: Boolean) {
-    upstreamDependencies.add(project.dependencies.create(dependencyNotation))
+    upstreamScope.configure {
+      it.dependencies.add(project.dependencies.create(dependencyNotation))
+    }
+
     if (bidirectional) {
       val upstreamProject = when (dependencyNotation) {
         is ProjectDependency -> project.project(dependencyNotation.getPathCompat())
@@ -228,13 +237,15 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   }
 
   override fun isADependencyOf(dependencyNotation: Any) {
-    downstreamDependencies.add(project.dependencies.create(dependencyNotation))
+    downstreamScope.configure {
+      it.dependencies.add(project.dependencies.create(dependencyNotation))
+    }
   }
 
   internal fun isMultiModule(): Boolean =
-    generateApolloMetadata.getOrElse(false) || downstreamDependencies.isNotEmpty() || upstreamDependencies.isNotEmpty()
+    generateApolloMetadata.getOrElse(false) || upstreamScope.get().dependencies.isNotEmpty() || downstreamScope.get().dependencies.isNotEmpty()
 
-  internal fun isSchemaModule(): Boolean = upstreamDependencies.isEmpty()
+  internal fun isSchemaModule(): Boolean = upstreamScope.get().dependencies.isEmpty()
 
   override fun plugin(dependencyNotation: Any) {
     project.dependencies.add(compilerConfiguration.name, dependencyNotation)
