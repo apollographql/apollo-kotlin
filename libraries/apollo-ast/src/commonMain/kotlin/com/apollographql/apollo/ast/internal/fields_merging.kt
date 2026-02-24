@@ -59,7 +59,47 @@ private fun IssuesScope.addDifferentShapeIssue(path: List<String>, message: Stri
 private data class ValidationContext(
     val schema: Schema,
     val fragments: Map<String, GQLFragmentDefinition>,
-)
+) {
+  val variableValuesInScope = mutableListOf<Map<String, GQLValue>>()
+
+  fun pushFragment(arguments: List<GQLArgument>, variableDefinitions: List<GQLVariableDefinition>) {
+    val newValues = mutableMapOf<String, GQLValue>()
+    variableDefinitions.forEach { variableDefinition ->
+      val argument = arguments.firstOrNull { it.name == variableDefinition.name }
+      if (argument == null) {
+        if (variableDefinition.defaultValue != null) {
+          newValues.put(variableDefinition.name, variableDefinition.defaultValue)
+        }
+      } else {
+        newValues.put(variableDefinition.name, substituteVariables(argument.value))
+      }
+    }
+    variableValuesInScope.add(variableValuesInScope.lastOrNull().orEmpty() + newValues)
+  }
+
+  fun substituteVariables(value: GQLValue): GQLValue {
+    return when (value) {
+      is GQLBooleanValue -> value
+      is GQLEnumValue -> value
+      is GQLFloatValue -> value
+      is GQLIntValue -> value
+      is GQLListValue -> value.copy(values = value.values.map { substituteVariables(it) })
+      is GQLNullValue -> value
+      is GQLObjectValue -> value.copy(fields = value.fields.map { it.copy(value = substituteVariables(it.value)) })
+      is GQLStringValue -> value
+      is GQLVariableValue -> variableValue(value.name)
+    }
+  }
+
+  fun popFragment() {
+    variableValuesInScope.removeLast()
+  }
+
+  fun variableValue(variableName: String): GQLValue {
+    // the variableName may not exist in the operation, which validation should catch
+    return variableValuesInScope.lastOrNull()?.get(variableName) ?: GQLVariableValue(null, variableName)
+  }
+}
 
 @OptIn(ApolloExperimental::class)
 private fun collectFields(
@@ -97,15 +137,12 @@ private fun collectFields(
       is GQLFragmentSpread -> {
         val fragment = context.fragments[selection.name]
         if (fragment != null) {
-          // Use name + arguments as key so same fragment with different arguments is collected twice
           val fragmentType = context.schema.typeDefinitions[fragment.typeCondition.name]
           if (fragmentType != null) {
-            val selections = if (selection.arguments.isNotEmpty() && fragment.variableDefinitions.isNotEmpty()) {
-              substituteFragmentVariables(fragment.selections, fragment.variableDefinitions, selection.arguments)
-            } else {
-              fragment.selections
-            }
+            context.pushFragment(selection.arguments, fragment.variableDefinitions)
+            val selections = fragment.selections.map { it.substituteVariables(context) }
             collectFields(fieldMap, selections, fragmentType, context)
+            context.popFragment()
           }
         }
       }
@@ -334,67 +371,16 @@ private fun buildMessage(path: List<String>, message: String): String {
       "$message. Use different aliases on the fields to fetch both if this was intentional."
 }
 
-/**
- * Substitutes fragment variable references in selections with actual argument values.
- * This ensures field merging compares resolved values when a fragment is spread with arguments.
- */
 @OptIn(ApolloExperimental::class)
-private fun substituteFragmentVariables(
-    selections: List<GQLSelection>,
-    variableDefinitions: List<GQLVariableDefinition>,
-    arguments: List<GQLArgument>,
-): List<GQLSelection> {
-  val argMap = mutableMapOf<String, GQLValue>()
-  for (varDef in variableDefinitions) {
-    val arg = arguments.firstOrNull { it.name == varDef.name }
-    if (arg != null) {
-      argMap[varDef.name] = arg.value
-    } else if (varDef.defaultValue != null) {
-      argMap[varDef.name] = varDef.defaultValue
-    }
-  }
-  if (argMap.isEmpty()) return selections
-  return selections.map { it.substituteVariables(argMap) }
-}
-
-@OptIn(ApolloExperimental::class)
-private fun GQLSelection.substituteVariables(argMap: Map<String, GQLValue>): GQLSelection {
+private fun GQLSelection.substituteVariables(context: ValidationContext): GQLSelection {
   return when (this) {
-    is GQLField -> GQLField(
-        sourceLocation = sourceLocation,
-        alias = alias,
-        name = name,
+    is GQLField -> copy(
         arguments = arguments.map { arg ->
-          GQLArgument(
-              sourceLocation = arg.sourceLocation,
-              name = arg.name,
-              value = arg.value.substituteVariables(argMap)
-          )
-        },
-        directives = directives,
-        selections = selections.map { it.substituteVariables(argMap) }
+          arg.copy(value = context.substituteVariables(arg.value))
+        }
     )
 
-    is GQLInlineFragment -> GQLInlineFragment(
-        sourceLocation = sourceLocation,
-        typeCondition = typeCondition,
-        directives = directives,
-        selections = selections.map { it.substituteVariables(argMap) }
-    )
-
+    is GQLInlineFragment -> this
     is GQLFragmentSpread -> this
-  }
-}
-
-private fun GQLValue.substituteVariables(argMap: Map<String, GQLValue>): GQLValue {
-  return when (this) {
-    is GQLVariableValue -> argMap[name] ?: this
-    is GQLListValue -> GQLListValue(sourceLocation = sourceLocation, values = values.map { it.substituteVariables(argMap) })
-    is GQLObjectValue -> GQLObjectValue(
-        sourceLocation = sourceLocation,
-        fields = fields.map { GQLObjectField(sourceLocation = it.sourceLocation, name = it.name, value = it.value.substituteVariables(argMap)) }
-    )
-
-    else -> this
   }
 }
