@@ -218,3 +218,26 @@ val data = AnimalDetailsImpl.Data(OtherAnimalBuilder) {
   species = "alien"
 }
 ```
+
+
+## Using test fixtures
+
+If using [multiple modules](../advanced/multi-modules), you can use [Java](https://docs.gradle.org/current/userguide/java_testing.html#sec:java_test_fixtures) or [Android](https://developer.android.com/reference/tools/gradle-api/8.5/com/android/build/api/dsl/TestFixtures) test fixtures.  
+
+For an example, for Kotlin JVM, apply the `java-test-fixtures` plugin and connect the data builders sources to the `testFixtures` source set:
+
+```kotlin
+plugins {
+  id("org.jetbrains.kotlin.jvm")
+  id("com.apollographql.apollo")
+  id("java-test-fixtures")
+}
+
+apollo {
+  service("service") {
+    dataBuildersOutputDirConnection {
+      connectToKotlinSourceSet("testFixtures") // highlight-line 
+    }
+  }
+}
+```
