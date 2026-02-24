@@ -233,6 +233,7 @@ class GQLOperationDefinition(
 class GQLFragmentDefinition @ApolloExperimental constructor(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
+    @ApolloExperimental
     val variableDefinitions: List<GQLVariableDefinition>,
     override val directives: List<GQLDirective>,
     val typeCondition: GQLNamedType,

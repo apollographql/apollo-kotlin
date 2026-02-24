@@ -77,6 +77,7 @@ class ParserOptions private constructor(
     val withSourceLocation: Boolean,
     val allowDirectivesOnDirectives: Boolean,
     val allowServiceCapabilities: Boolean,
+    @ApolloExperimental
     val allowFragmentArguments: Boolean
 ) {
   class Builder {

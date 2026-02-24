@@ -122,11 +122,7 @@ internal class ExecutableValidationScope(
             val index = path.indexOf("__${name}")
             val nextPath = path + "__${fragment.name}"
             if (index != -1) {
-              issues.add(FragmentCycle("Fragment '$name' spreads itself, creating a cycle at '${
-                nextPath.subList(index, nextPath.size).joinToString(".")
-              }'", it.sourceLocation
-              )
-              )
+              issues.add(FragmentCycle("Fragment '$name' spreads itself, creating a cycle at '${nextPath.subList(index, nextPath.size).joinToString(".")}'", it.sourceLocation))
               cyclicFragments.add(name)
               return@forEach
             }
