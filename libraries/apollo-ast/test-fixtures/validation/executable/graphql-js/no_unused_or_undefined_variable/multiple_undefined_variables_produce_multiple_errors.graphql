@@ -1,0 +1,24 @@
+query Foo($b: String) {
+  field {
+    ...FragAB
+  }
+}
+query Bar($a: String) {
+  field {
+    ...FragAB
+  }
+}
+fragment FragAB on Type {
+  field(a: $a, b: $b) {
+    foo
+  }
+  ...FragC
+  field(a: $a, b: $b) {
+    foo
+  }
+}
+fragment FragC on Type {
+  field(c: $c) {
+    foo
+  }
+}

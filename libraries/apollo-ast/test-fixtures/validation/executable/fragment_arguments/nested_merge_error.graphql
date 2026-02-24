@@ -1,0 +1,27 @@
+# PRAGMA allowFragmentArguments
+
+fragment queryDetails0($first: Int!) on Query {
+  ...queryDetails1(first: $first)
+}
+
+fragment queryDetails1($first: Int!) on Query {
+  users(first: $first) {
+    totalCount
+  }
+}
+
+query GetFoo($first: Int!, $second: Int!) {
+  users(first: $first) {
+    totalCount
+  }
+  # invalid: different variables
+  ...queryDetails0(first: $second)
+}
+
+query GetFoo1($first: Int!) {
+  users(first: $first) {
+    totalCount
+  }
+  # valid
+  ...queryDetails0(first: $first)
+}

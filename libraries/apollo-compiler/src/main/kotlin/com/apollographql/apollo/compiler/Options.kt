@@ -199,6 +199,8 @@ class IrOptions(
     val alwaysGenerateTypesMatching: Set<String>?,
 
     val codegenModels: String?,
+
+    val allowFragmentArguments: Boolean?
 )
 
 fun buildIrOptions(
@@ -210,6 +212,7 @@ fun buildIrOptions(
     alwaysGenerateTypesMatching: Set<String>? = null,
     codegenModels: String? = null,
     issueSeverity: Map<String, IssueSeverity>? = null,
+    allowFragmentArguments: Boolean? = null
 ): IrOptions = IrOptions(
     decapitalizeFields = decapitalizeFields,
     flattenModels = flattenModels,
@@ -218,7 +221,8 @@ fun buildIrOptions(
     generateOptionalOperationVariables = generateOptionalOperationVariables,
     alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
     codegenModels = codegenModels,
-    issueSeverities = issueSeverity
+    issueSeverities = issueSeverity,
+    allowFragmentArguments = allowFragmentArguments
 )
 
 interface CommonCodegenOpt {

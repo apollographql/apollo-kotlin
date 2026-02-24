@@ -214,11 +214,11 @@ object ApolloCompiler {
   /**
    * Parses the given files. Throws if there are parsing errors
    */
-  private fun File.definitions(): List<GQLDefinition> {
+  private fun File.definitions(allowFragmentArguments: Boolean): List<GQLDefinition> {
     val definitions = mutableListOf<GQLDefinition>()
     val parseIssues = mutableListOf<Issue>()
 
-    val parseResult = parseAsGQLDocument(options = ParserOptions.Builder().build())
+    val parseResult = parseAsGQLDocument(options = ParserOptions.Builder().allowFragmentArguments(allowFragmentArguments).build())
     if (parseResult.issues.isNotEmpty()) {
       parseIssues.addAll(parseResult.issues)
     } else {
@@ -263,7 +263,7 @@ object ApolloCompiler {
      * See https://github.com/apollographql/apollo-kotlin/pull/5916
      */
     executableFiles.sortedBy { it.normalizedPath }.forEach { normalizedFile ->
-      val fileDefinitions = normalizedFile.file.definitions()
+      val fileDefinitions = normalizedFile.file.definitions(options.allowFragmentArguments ?: false)
 
       userDefinitions.addAll(fileDefinitions)
       fileDefinitions.forEach {

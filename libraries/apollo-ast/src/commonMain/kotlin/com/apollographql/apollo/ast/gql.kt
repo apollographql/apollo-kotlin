@@ -230,14 +230,34 @@ class GQLOperationDefinition(
   }
 }
 
-class GQLFragmentDefinition(
+class GQLFragmentDefinition @ApolloExperimental constructor(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
+    @ApolloExperimental
+    val variableDefinitions: List<GQLVariableDefinition>,
     override val directives: List<GQLDirective>,
     val typeCondition: GQLNamedType,
     val selections: List<GQLSelection>,
-    override val description: String?, // spec extension
+    override val description: String?,
 ) : GQLExecutableDefinition, GQLNamed, GQLDescribed, GQLHasDirectives {
+
+  constructor(
+      sourceLocation: SourceLocation? = null,
+      name: String,
+      directives: List<GQLDirective>,
+      typeCondition: GQLNamedType,
+      selections: List<GQLSelection>,
+      description: String?,
+  ) : this(
+      sourceLocation = sourceLocation,
+      name = name,
+      variableDefinitions = emptyList(),
+      directives = directives,
+      typeCondition = typeCondition,
+      selections = selections,
+      description = description
+  )
+
   @Suppress("DEPRECATION_ERROR")
   @Deprecated("Use selections directly", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
@@ -249,11 +269,15 @@ class GQLFragmentDefinition(
       )
     }
 
-  override val children = directives + selections + typeCondition
+  override val children = variableDefinitions + directives + selections + typeCondition
 
   override fun writeInternal(writer: SDLWriter) {
     with(writer) {
-      write("fragment $name on ${typeCondition.name}")
+      write("fragment $name")
+      if (variableDefinitions.isNotEmpty()) {
+        variableDefinitions.join(writer = writer, separator = ", ", prefix = "(", postfix = ")")
+      }
+      write(" on ${typeCondition.name}")
       if (directives.isNotEmpty()) {
         write(" ")
         directives.join(writer)
@@ -265,9 +289,11 @@ class GQLFragmentDefinition(
     }
   }
 
+  @ApolloExperimental
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
+      variableDefinitions: List<GQLVariableDefinition> = this.variableDefinitions,
       directives: List<GQLDirective> = this.directives,
       typeCondition: GQLNamedType = this.typeCondition,
       selections: List<GQLSelection> = this.selections,
@@ -276,6 +302,26 @@ class GQLFragmentDefinition(
     return GQLFragmentDefinition(
         sourceLocation = sourceLocation,
         name = name,
+        variableDefinitions = variableDefinitions,
+        directives = directives,
+        typeCondition = typeCondition,
+        selections = selections,
+        description = description,
+    )
+  }
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+      typeCondition: GQLNamedType = this.typeCondition,
+      selections: List<GQLSelection> = this.selections,
+      description: String? = this.description,
+  ): GQLFragmentDefinition {
+    return copy(
+        sourceLocation = sourceLocation,
+        name = name,
+        variableDefinitions = variableDefinitions,
         directives = directives,
         typeCondition = typeCondition,
         selections = selections,
@@ -286,6 +332,7 @@ class GQLFragmentDefinition(
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
+        variableDefinitions = container.take(),
         typeCondition = container.take<GQLNamedType>().single(),
         selections = container.take(),
     )
@@ -1440,8 +1487,14 @@ class GQLInputValueDefinition(
 }
 
 /**
- * A variable definition is very similar to an InputValue definition except it doesn't
- * have a description
+ * A variable definition is very similar to a [GQLInputValueDefinition].
+ * They are different grammar rules because [GQLVariableDefinition] didn't support descriptions early on.
+ * Also input values have a `name` and variables have a `$name`.
+ *
+ * We could probably merge them.
+ *
+ * See https://github.com/graphql/graphql-spec/pull/1170 for the PR that adds description to the variable
+ * definitions
  */
 class GQLVariableDefinition(
     override val sourceLocation: SourceLocation? = null,
@@ -1873,17 +1926,33 @@ class GQLInlineFragment(
   }
 }
 
-class GQLFragmentSpread(
+class GQLFragmentSpread @ApolloExperimental constructor(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
+    @ApolloExperimental
+    val arguments: List<GQLArgument>,
     override val directives: List<GQLDirective>,
 ) : GQLSelection(), GQLNamed, GQLHasDirectives {
 
-  override val children = directives
+  constructor(
+      sourceLocation: SourceLocation? = null,
+      name: String,
+      directives: List<GQLDirective>,
+  ) : this(
+      sourceLocation = sourceLocation,
+      name = name,
+      arguments = emptyList(),
+      directives = directives
+  )
+
+  override val children: List<GQLNode> = arguments + directives
 
   override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("...${name}")
+      if (arguments.isNotEmpty()) {
+        arguments.writeArguments(writer)
+      }
       if (directives.isNotEmpty()) {
         write(" ")
         directives.join(writer)
@@ -1892,19 +1961,38 @@ class GQLFragmentSpread(
     }
   }
 
+  @ApolloExperimental
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      name: String = this.name,
+      arguments: List<GQLArgument> = this.arguments,
+      directives: List<GQLDirective> = this.directives,
+  ): GQLFragmentSpread {
+    return GQLFragmentSpread(
+        sourceLocation = sourceLocation,
+        name = name,
+        arguments = arguments,
+        directives = directives,
+    )
+  }
+
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
       directives: List<GQLDirective> = this.directives,
-  ) = GQLFragmentSpread(
-      sourceLocation = sourceLocation,
-      name = name,
-      directives = directives,
-  )
+  ): GQLFragmentSpread {
+    return copy(
+        sourceLocation = sourceLocation,
+        name = name,
+        arguments = arguments,
+        directives = directives,
+    )
+  }
 
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
-        directives = container.take()
+        arguments = container.take(),
+        directives = container.take(),
     )
   }
 }

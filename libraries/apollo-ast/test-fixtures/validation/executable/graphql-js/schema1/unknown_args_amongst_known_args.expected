@@ -1,0 +1,8 @@
+OtherValidationIssue (6:19)
+Unknown argument `whoKnows` on field `doesKnowCommand`
+------------
+OtherValidationIssue (6:49)
+Unknown argument `unknown` on field `doesKnowCommand`
+------------
+AnonymousOperation (3:1)
+Apollo does not support anonymous operations

@@ -10,7 +10,7 @@ sealed interface Issue {
 }
 
 /**
- * An issue from the GraphQL spec
+ * An issue from the GraphQL spec, either a parsing error or a validation issue.
  */
 sealed interface GraphQLIssue : Issue
 

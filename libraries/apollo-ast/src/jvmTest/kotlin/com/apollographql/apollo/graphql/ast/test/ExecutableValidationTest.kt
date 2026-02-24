@@ -21,7 +21,8 @@ class ExecutableValidationTest {
   @Test
   fun testValidation(@TestParameter(valuesProvider = ParametersProvider::class) graphQLFile: File) {
     findSchemaAndCheck(graphQLFile) { schema ->
-      val parseResult = graphQLFile.source().buffer().parseAsGQLDocument(graphQLFile.name)
+      val parserOptions = graphQLFile.pragmas().toParserOptions()
+      val parseResult = graphQLFile.source().buffer().parseAsGQLDocument(graphQLFile.name, parserOptions)
       val issues = if (parseResult.issues.isNotEmpty()) {
         parseResult.issues
       } else {

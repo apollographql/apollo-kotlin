@@ -1,0 +1,12 @@
+# PRAGMA allowFragmentArguments
+
+fragment UserFields($includeEmail: Boolean!) on User {
+    name
+    email @include(if: $includeEmail)
+}
+
+query GetUser {
+    user(id: "1") {
+        ...UserFields(includeEmail: "not_a_boolean")
+    }
+}

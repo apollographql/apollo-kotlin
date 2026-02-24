@@ -30,6 +30,7 @@ listOf(
     "enums",
     "escaping",
     "filesystem-sensitivity",
+    "fragment-arguments",
     "generated-methods",
     "gzip",
     "http-cache",

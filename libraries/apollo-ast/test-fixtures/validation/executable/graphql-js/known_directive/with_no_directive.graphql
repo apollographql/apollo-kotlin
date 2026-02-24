@@ -1,0 +1,8 @@
+query Foo {
+  foo
+  ...Frag
+}
+
+fragment Frag on Query {
+  foo
+}

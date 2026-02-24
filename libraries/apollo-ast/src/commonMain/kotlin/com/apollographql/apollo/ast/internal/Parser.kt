@@ -15,6 +15,7 @@ internal class Parser(
   private val allowEmptyDocuments = options.allowEmptyDocuments
   private val allowDirectivesOnDirectives = options.allowDirectivesOnDirectives
   private val allowServiceCapabilities = options.allowServiceCapabilities
+  private val allowFragmentArguments = options.allowFragmentArguments
 
   fun parseDocument(): GQLDocument {
     val start = token
@@ -198,11 +199,18 @@ internal class Parser(
     val on = expectOptionalKeyword("on")
     return if (on == null && peek<Token.Name>()) {
       val name = parseFragmentName()
+      val arguments: List<GQLArgument>
+      if (allowFragmentArguments) {
+        arguments = parseArguments(false)
+      } else {
+        arguments = emptyList()
+      }
       val directives = parseDirectives(const = false)
       GQLFragmentSpread(
           sourceLocation = sourceLocation(start),
           name = name,
-          directives = directives
+          arguments = arguments,
+          directives = directives,
       )
     } else {
       val typeCondition = if (on != null) parseNamedType() else null
@@ -865,6 +873,11 @@ internal class Parser(
     val description = parseDescription()
     expectKeyword("fragment")
     val name = parseFragmentName()
+    val variableDefinitions = if (allowFragmentArguments) {
+      parseVariableDefinitions()
+    } else {
+      emptyList()
+    }
     expectKeyword("on")
     val typeCondition = parseNamedType()
     val directives = parseDirectives(const = false)
@@ -875,7 +888,8 @@ internal class Parser(
         name = name,
         typeCondition = typeCondition,
         directives = directives,
-        selections = selections
+        selections = selections,
+        variableDefinitions = variableDefinitions
     )
   }
 

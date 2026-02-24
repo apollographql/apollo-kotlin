@@ -27,8 +27,8 @@ internal class PreparedRequest(
  * Parses and validates a document. When using persisted documents, the result of this function may be
  * cached for future reuse.
  */
-internal fun validateDocument(schema: Schema, document: String): Either<List<Issue>, GQLDocument> {
-  val parseResult = document.parseAsGQLDocument()
+internal fun validateDocument(schema: Schema, document: String, parserOptions: ParserOptions): Either<List<Issue>, GQLDocument> {
+  val parseResult = document.parseAsGQLDocument(parserOptions)
   var issues = parseResult.issues.filterIsInstance<GraphQLIssue>()
   if (issues.isNotEmpty()) {
     return issues.left()
@@ -98,6 +98,7 @@ internal fun Raise<String>.prepareRequest(
 internal fun Raise<String>.getPersistedDocument(
     schema: Schema,
     persistedDocumentCache: PersistedDocumentCache?,
+    parserOptions: ParserOptions,
     request: GraphQLRequest,
 ): PersistedDocument {
   val persistedQuery = request.extensions.get("persistedQuery")
@@ -125,7 +126,7 @@ internal fun Raise<String>.getPersistedDocument(
         raise("PersistedQueryNotFound")
       }
 
-      persistedDocument = validateDocument(schema, request.document).toPersistedDocument()
+      persistedDocument = validateDocument(schema, request.document, parserOptions).toPersistedDocument()
 
       /**
        * Note this code trusts the client for the id. Given that APQs are not a security
@@ -137,7 +138,7 @@ internal fun Raise<String>.getPersistedDocument(
     if (request.document == null) {
       raise("no GraphQL document found")
     }
-    persistedDocument = validateDocument(schema, request.document).toPersistedDocument()
+    persistedDocument = validateDocument(schema, request.document, parserOptions).toPersistedDocument()
   }
 
   return persistedDocument
@@ -156,12 +157,13 @@ internal fun Raise<List<Error>>.prepareRequest(
     schema: Schema,
     coercings: Map<String, Coercing<*>>,
     persistedDocumentCache: PersistedDocumentCache?,
+    parserOptions: ParserOptions,
     request: GraphQLRequest,
 ): PreparedRequest {
   val persistedDocument = withError({
     singleGraphQLError(it)
   }) {
-    getPersistedDocument(schema, persistedDocumentCache, request)
+    getPersistedDocument(schema, persistedDocumentCache, parserOptions, request)
   }
 
   if (persistedDocument is ErrorPersistedDocument) {
@@ -181,7 +183,8 @@ internal fun prepareRequest(
     schema: Schema,
     coercings: Map<String, Coercing<*>>,
     persistedDocumentCache: PersistedDocumentCache?,
+    parserOptions: ParserOptions,
     request: GraphQLRequest,
 ): Either<List<Error>, PreparedRequest> = either {
-  prepareRequest(schema, coercings, persistedDocumentCache, request)
+  prepareRequest(schema, coercings, persistedDocumentCache, parserOptions, request)
 }

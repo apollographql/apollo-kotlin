@@ -1,0 +1,7 @@
+query GetFoo {
+  ...queryDetails(arg: 10)
+}
+
+fragment queryDetails($arg: Int!) on Query {
+  foo(arg: $arg)
+}

@@ -286,8 +286,9 @@ public final class com/apollographql/apollo/compiler/InputFile {
 
 public final class com/apollographql/apollo/compiler/IrOptions {
 	public static final field Companion Lcom/apollographql/apollo/compiler/IrOptions$Companion;
-	public fun <init> (Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/Map;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/util/Set;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/Map;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/util/Set;Ljava/lang/String;Ljava/lang/Boolean;)V
 	public final fun getAddTypename ()Ljava/lang/String;
+	public final fun getAllowFragmentArguments ()Ljava/lang/Boolean;
 	public final fun getAlwaysGenerateTypesMatching ()Ljava/util/Set;
 	public final fun getCodegenModels ()Ljava/lang/String;
 	public final fun getDecapitalizeFields ()Ljava/lang/Boolean;
@@ -399,8 +400,8 @@ public final class com/apollographql/apollo/compiler/OptionsKt {
 	public static final field MODELS_RESPONSE_BASED Ljava/lang/String;
 	public static final fun buildCodegenOptions (Lcom/apollographql/apollo/compiler/TargetLanguage;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Lcom/apollographql/apollo/compiler/JavaNullable;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo/compiler/CodegenOptions;
 	public static synthetic fun buildCodegenOptions$default (Lcom/apollographql/apollo/compiler/TargetLanguage;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Boolean;Lcom/apollographql/apollo/compiler/JavaNullable;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/compiler/CodegenOptions;
-	public static final fun buildIrOptions (Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/util/Set;Ljava/lang/String;Ljava/util/Map;)Lcom/apollographql/apollo/compiler/IrOptions;
-	public static synthetic fun buildIrOptions$default (Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/util/Set;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)Lcom/apollographql/apollo/compiler/IrOptions;
+	public static final fun buildIrOptions (Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/util/Set;Ljava/lang/String;Ljava/util/Map;Ljava/lang/Boolean;)Lcom/apollographql/apollo/compiler/IrOptions;
+	public static synthetic fun buildIrOptions$default (Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/util/Set;Ljava/lang/String;Ljava/util/Map;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/apollographql/apollo/compiler/IrOptions;
 	public static final fun validate (Lcom/apollographql/apollo/compiler/CodegenOptions;)V
 }
 

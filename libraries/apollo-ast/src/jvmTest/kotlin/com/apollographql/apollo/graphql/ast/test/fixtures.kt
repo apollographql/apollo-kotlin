@@ -73,18 +73,17 @@ enum class Pragma {
   // Parser
   allowDirectivesOnDirectives,
   allowServiceCapabilities,
-
   // Merger
   allowMergingFieldDefinitions,
-
   // Schema validation
   addBuiltinForeignSchemas,
   addKotlinLabsDefinitions,
   addBuiltinDefinitions,
   noAddBuiltinDefinitions,
-
-  //
+  // Executable validation
   allowDirectiveRedefinition,
+  // Parser and validation
+  allowFragmentArguments,
 }
 
 fun File.pragmas(): List<Pragma> =
@@ -98,6 +97,9 @@ fun List<Pragma>.toParserOptions(): ParserOptions {
         }
         if (Pragma.allowDirectivesOnDirectives in this@toParserOptions) {
           allowDirectivesOnDirectives(true)
+        }
+        if (Pragma.allowFragmentArguments in this@toParserOptions) {
+          allowFragmentArguments(true)
         }
       }
       .build()

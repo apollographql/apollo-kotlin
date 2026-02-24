@@ -1,2 +1,2 @@
 UnusedVariable (2:16)
-Variable `condition` is unused
+Variable `condition` is unused in operation `HeroName`

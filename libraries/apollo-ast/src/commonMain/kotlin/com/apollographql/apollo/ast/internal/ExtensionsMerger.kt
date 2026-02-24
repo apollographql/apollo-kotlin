@@ -530,7 +530,7 @@ internal fun areEqual(a: GQLValue?, b: GQLValue?): Boolean {
       if (b !is GQLObjectValue) {
         false
       } else {
-        // TODO: Can object literal have duplicate fields?
+        // TODO: Can object literals have duplicate fields?
         if (a.fields.size != b.fields.size) {
           false
         } else {

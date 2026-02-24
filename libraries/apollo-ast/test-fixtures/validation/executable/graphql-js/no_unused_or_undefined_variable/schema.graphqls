@@ -1,0 +1,8 @@
+type Query {
+  field(a: String, b: String, c: String): Type
+}
+
+type Type {
+  field(a: String, b: String, c: String): Type
+  foo: String
+}

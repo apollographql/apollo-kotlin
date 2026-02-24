@@ -300,7 +300,7 @@ internal class IrOperationsBuilder(
         description = description,
         filePath = fragmentNameToNormalizedPath[name] ?: "",
         typeCondition = typeDefinition.name,
-        variables = inferredVariables.map { it.toIr() },
+        variables = inferredVariables.map { it.toIr() } + variableDefinitions.map { it.toIr() },
         selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selections, typeCondition.name),
         interfaceModelGroup = interfaceModelGroup,
         dataProperty = dataProperty,

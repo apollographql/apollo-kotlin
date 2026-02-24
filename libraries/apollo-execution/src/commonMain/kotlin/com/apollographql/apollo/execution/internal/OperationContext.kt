@@ -163,31 +163,41 @@ internal class OperationContext(
   private fun resolveFieldEventStream(
       subscriptionType: GQLObjectTypeDefinition,
       rootValue: ResolverValue,
-      fields: List<GQLField>,
-      argumentValues: Map<String, InternalValue>,
+      collectedResult: CollectedResult,
       responseName: String,
   ): Flow<FieldEvent> {
     return flow {
-      val resolveInfo = ResolveInfo(
-          parentObject = rootValue,
-          executionContext = executionContext,
-          fields = fields,
-          schema = schema,
-          arguments = argumentValues,
-          parentType = subscriptionType.name,
-          path = emptyList()
-      )
+      val value = when (collectedResult) {
+        is CollectedError -> {
+          Error.Builder(collectedResult.message)
+              .build()
+        }
+        is CollectedField -> {
+          val resolveInfo = ResolveInfo(
+              parentObject = rootValue,
+              executionContext = executionContext,
+              fields = collectedResult.fields,
+              schema = schema,
+              arguments = collectedResult.coercedArguments,
+              parentType = subscriptionType.name,
+              path = emptyList()
+          )
+          resolveFieldValue(resolveInfo)
+        }
+      }
 
-      emit(resolveFieldValue(resolveInfo))
+      emit(value)
     }.flatMapConcat {
-      if (it !is Flow<*>) {
+      if (it is Error) {
+        flowOf(FieldEventError(it.message))
+      } else if (it !is Flow<*>) {
         flowOf(FieldEventError("Subscription resolvers must return a Flow<> (got '$it')"))
       } else {
         it.map { objectValue ->
           FieldEventItem(
               parentType = subscriptionType.name,
               objectValue = objectValue,
-              fields = fields,
+              collectedResult = collectedResult,
               responseName = responseName
           )
         }
@@ -199,7 +209,7 @@ internal class OperationContext(
   private class FieldEventItem(
       val parentType: String,
       val objectValue: InternalValue,
-      val fields: List<GQLField>,
+      val collectedResult: CollectedResult,
       val responseName: String,
   ) : FieldEvent
 
@@ -225,15 +235,12 @@ internal class OperationContext(
     check(groupedFieldsSet.size == 1) {
       return flowOf(FieldEventError("Subscriptions must have a single root field"))
     }
-    val fields = groupedFieldsSet.entries.single().value
-    val field = fields.first()
-    val argumentValues = coerceArgumentValues(schema, typeDefinition.name, field, coercings, variableValues)
+    val collectedResult = groupedFieldsSet.entries.single().value
     return resolveFieldEventStream(
         subscriptionType = typeDefinition,
         rootValue = rootValue,
-        fields = fields,
-        argumentValues = argumentValues,
-        responseName = fields.first().responseName()
+        collectedResult = collectedResult,
+        responseName = collectedResult.first.responseName()
     )
   }
 
@@ -256,8 +263,8 @@ internal class OperationContext(
         coroutineScope {
           val fieldData = completeValue(
               scope = this,
-              fieldType = event.fields.first().definitionFromScope(schema, event.parentType)!!.type,
-              fields = event.fields,
+              fieldType = event.collectedResult.first.definitionFromScope(schema, event.parentType)!!.type,
+              fields = (event.collectedResult as? CollectedField)?.fields.orEmpty(),
               result = event.objectValue,
               path = listOf(event.responseName)
           )
@@ -275,66 +282,69 @@ internal class OperationContext(
    * @param objectType the parent type of the field. Always a concrete object type.
    * @param objectValue the parent object as returned from a resolver.
    * @param fieldType the field type as in the schema field definition.
-   * @param fields the merged fields
-   * @param variableValues the coerced variable values.
+   * @param collectedResult the merged fields
    */
   private fun executeField(
       scope: CoroutineScope,
       objectType: GQLObjectTypeDefinition,
       objectValue: ResolverValue,
       fieldType: GQLType,
-      fields: List<GQLField>,
-      variableValues: Map<String, InternalValue>,
+      collectedResult: CollectedResult,
       path: List<Any>,
   ): Deferred<ExternalValue> {
-    val field = fields.first()
-    val argumentValues = coerceArgumentValues(schema, objectType.name, field, coercings, variableValues)
-
     return scope.async(start = CoroutineStart.UNDISPATCHED) {
-      val resolveInfo = ResolveInfo(
-          parentObject = objectValue,
-          executionContext = executionContext,
-          fields = fields,
-          schema = schema,
-          arguments = argumentValues,
-          parentType = objectType.name,
-          path = path,
-      )
+      when (collectedResult) {
+        is CollectedError -> Error.Builder(collectedResult.message)
+            .path(path)
+            .build()
 
-      val fieldCallbacks = mutableListOf<FieldCallback>()
-      var instrumentationError: Error? = null
-      instrumentations.map {
-        try {
-          val callback = it.onField(resolveInfo)
-          if (callback != null) {
-            fieldCallbacks.add(callback)
+        is CollectedField -> {
+          val resolveInfo = ResolveInfo(
+              parentObject = objectValue,
+              executionContext = executionContext,
+              fields = collectedResult.fields,
+              schema = schema,
+              arguments = collectedResult.coercedArguments,
+              parentType = objectType.name,
+              path = path,
+          )
+
+          val fieldCallbacks = mutableListOf<FieldCallback>()
+          var instrumentationError: Error? = null
+          instrumentations.map {
+            try {
+              val callback = it.onField(resolveInfo)
+              if (callback != null) {
+                fieldCallbacks.add(callback)
+              }
+            } catch (e: Exception) {
+              if (e is CancellationException) {
+                throw e
+              }
+              instrumentationError = Error.Builder("Cannot instrument '${path.lastOrNull()}': ${e.message}")
+                  .path(path)
+                  .build()
+            }
           }
-        } catch (e: Exception) {
-          if (e is CancellationException) {
-            throw e
+
+          val completedValue = if (instrumentationError == null) {
+            val resolvedValue = resolveFieldValue(resolveInfo)
+            completeValue(
+                scope = scope,
+                fieldType = fieldType,
+                fields = collectedResult.fields,
+                result = resolvedValue,
+                path = path
+            )
+          } else {
+            instrumentationError
           }
-          instrumentationError = Error.Builder("Cannot instrument '${path.lastOrNull()}': ${e.message}")
-              .path(path)
-              .build()
+          fieldCallbacks.forEach {
+            it.onFieldCompleted(completedValue)
+          }
+          completedValue
         }
       }
-
-      val completedValue = if (instrumentationError == null) {
-        val resolvedValue = resolveFieldValue(resolveInfo)
-        completeValue(
-            scope = scope,
-            fieldType = fieldType,
-            fields = fields,
-            result = resolvedValue,
-            path = path
-        )
-      } else {
-        instrumentationError
-      }
-      fieldCallbacks.forEach {
-        it.onFieldCompleted(completedValue)
-      }
-      completedValue
     }
   }
 
@@ -502,7 +512,7 @@ internal class OperationContext(
 
   private suspend fun executeGroupedFieldSet(
       scope: CoroutineScope,
-      groupedFieldSet: Map<String, List<GQLField>>,
+      groupedFieldSet: Map<String, CollectedResult>,
       typeDefinition: GQLObjectTypeDefinition,
       objectValue: ResolverValue,
       variableValues: Map<String, InternalValue>,
@@ -511,12 +521,12 @@ internal class OperationContext(
   ): ExternalValue {
     val typename = typeDefinition.name
     val entries = groupedFieldSet.entries.map { entry ->
-      val field = entry.value.first()
+      val field = entry.value.first
       val fieldDefinition = field.definitionFromScope(schema, typename)!!
       val fieldPath = path + field.responseName()
 
       val deferred =
-        executeField(scope, typeDefinition, objectValue, fieldDefinition.type, entry.value, variableValues, fieldPath)
+        executeField(scope, typeDefinition, objectValue, fieldDefinition.type, entry.value, fieldPath)
       if (serial) {
         deferred.await()
       }
@@ -573,22 +583,13 @@ internal class OperationContext(
     return false
   }
 
-  private fun <K, V> MutableMap<K, V>.update(key: K, update: (prev: V?) -> V) {
-    val newValue = if (this.containsKey(key)) {
-      update(this.get(key))
-    } else {
-      update(null)
-    }
-    put(key, newValue)
-  }
-
   private fun collectFields(
       objectType: String,
       selections: List<GQLSelection>,
       coercedVariables: Map<String, InternalValue>,
-  ): Map<String, List<GQLField>> {
-    val groupedFields = mutableMapOf<String, List<GQLField>>()
-    collectFields(objectType, selections, coercedVariables, mutableSetOf(), groupedFields)
+  ): Map<String, CollectedResult> {
+    val groupedFields = mutableMapOf<String, CollectedResult>()
+    collectFields(objectType, selections, coercedVariables, emptyMap(), mutableSetOf(), groupedFields)
     return groupedFields
   }
 
@@ -596,8 +597,9 @@ internal class OperationContext(
       objectType: String,
       selections: List<GQLSelection>,
       coercedVariables: Map<String, InternalValue>,
+      fragmentCoercedVariables: Map<String, InternalValue>,
       visitedFragments: MutableSet<String>,
-      groupedFields: MutableMap<String, List<GQLField>>,
+      groupedFields: MutableMap<String, CollectedResult>,
   ) {
     selections.forEach { selection ->
       if (selection.directives.shouldSkip(coercedVariables)) {
@@ -605,8 +607,21 @@ internal class OperationContext(
       }
       when (selection) {
         is GQLField -> {
-          groupedFields.update(selection.responseName()) {
-            (it.orEmpty()).plus(selection)
+          val responseName = selection.responseName()
+          val collectedField = groupedFields.get(responseName)
+          if (collectedField == null) {
+            val arguments = try {
+              // Fragment variables take precedence here
+              coerceArgumentValues(schema, objectType, selection, coercings, coercedVariables + fragmentCoercedVariables)
+            } catch (e: Exception) {
+              groupedFields.put(responseName, CollectedError(selection, e.message ?: "Error"))
+              return@forEach
+            }
+            groupedFields.put(responseName,
+                CollectedField(selection, arguments)
+            )
+          } else if (collectedField is CollectedField) {
+            collectedField.fields.add(selection)
           }
         }
 
@@ -619,14 +634,15 @@ internal class OperationContext(
           val fragmentDefinition = fragments.get(selection.name)!!
 
           if (schema.possibleTypes(fragmentDefinition.typeCondition.name).contains(objectType)) {
-            collectFields(objectType, fragmentDefinition.selections, coercedVariables, visitedFragments, groupedFields)
+            val fragmentCoercedVariables = coerceArgumentValues(schema, fragmentDefinition.variableDefinitions, selection.arguments, coercings, coercedVariables)
+            collectFields(objectType, fragmentDefinition.selections, coercedVariables, fragmentCoercedVariables, visitedFragments, groupedFields)
           }
         }
 
         is GQLInlineFragment -> {
           val typeCondition = selection.typeCondition?.name
           if (typeCondition == null || schema.possibleTypes(typeCondition).contains(objectType)) {
-            collectFields(objectType, selection.selections, coercedVariables, visitedFragments, groupedFields)
+            collectFields(objectType, selection.selections, coercedVariables, fragmentCoercedVariables, visitedFragments, groupedFields)
           }
         }
       }
@@ -641,3 +657,19 @@ private val GQLSelection.directives: List<GQLDirective>
     is GQLInlineFragment -> directives
   }
 
+internal class CollectedField(
+    override val first: GQLField,
+    val coercedArguments: Map<String, InternalValue>,
+) : CollectedResult {
+  val fields = mutableListOf<GQLField>()
+
+  init {
+    fields.add(first)
+  }
+}
+
+internal sealed interface CollectedResult {
+  val first: GQLField
+}
+
+internal class CollectedError(override val first: GQLField, val message: String) : CollectedResult

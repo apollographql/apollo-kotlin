@@ -1,0 +1,2 @@
+UnusedVariable (8:16)
+Variable `a` is unused in fragment `FragA`

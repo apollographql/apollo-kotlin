@@ -1,0 +1,29 @@
+OtherValidationIssue (9:7)
+Directive 'onQuery' cannot be applied on 'FIELD'
+------------
+OtherValidationIssue (8:44)
+Directive 'onQuery' cannot be applied on 'FRAGMENT_DEFINITION'
+------------
+OtherValidationIssue (8:25)
+Directive 'onField' cannot be applied on 'VARIABLE_DEFINITION'
+------------
+UnusedVariable (8:15)
+Variable `arg` is unused in fragment `Frag`
+------------
+AnonymousOperation (3:1)
+Apollo does not support anonymous operations
+------------
+OtherValidationIssue (4:22)
+Directive 'onQuery' cannot be applied on 'FRAGMENT_SPREAD'
+------------
+OtherValidationIssue (5:7)
+Directive 'onQuery' cannot be applied on 'FIELD'
+------------
+OtherValidationIssue (3:28)
+Directive 'onMutation' cannot be applied on 'QUERY'
+------------
+OtherValidationIssue (3:18)
+Directive 'onQuery' cannot be applied on 'VARIABLE_DEFINITION'
+------------
+OtherValidationIssue (3:28)
+Directive 'onMutation' cannot be applied on 'QUERY'

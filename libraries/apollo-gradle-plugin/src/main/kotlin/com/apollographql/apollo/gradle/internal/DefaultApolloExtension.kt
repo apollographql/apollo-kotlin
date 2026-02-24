@@ -475,6 +475,7 @@ abstract class DefaultApolloExtension(
         failOnWarnings = service.failOnWarnings,
         generateOptionalOperationVariables = service.generateOptionalOperationVariables,
         alwaysGenerateTypesMatching = service.alwaysGenerateTypesMatching,
+        allowFragmentArguments = service.allowFragmentArguments,
 
         /**
          * CommonCodegenOptions

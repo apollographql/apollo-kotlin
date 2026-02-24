@@ -1,0 +1,5 @@
+AnonymousOperation (3:1)
+Apollo does not support anonymous operations
+------------
+OtherValidationIssue (5:19)
+Unknown argument `unknown` on fragment `withoutArg`

@@ -1,5 +1,6 @@
 package com.apollographql.apollo.ast.internal
 
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.ast.*
 
 /**
@@ -8,7 +9,7 @@ import com.apollographql.apollo.ast.*
  * There is no caching per-fieldset because it hides some otherwise useful diagnostics.
  *
  * See `reports_each_conflict_once` for an example. The caching only works when reusing fragment
- * spreads but because the fragments may be spread at different paths, having the full path for
+ * spreads, but because the fragments may be spread at different paths, having the full path for
  * each issue can be useful.
  */
 internal fun IssuesScope.fieldsInSetCanMerge(
@@ -30,8 +31,7 @@ internal fun IssuesScope.fieldsInSetCanMerge(
   }
 
   val fieldMap = mutableMapOf<String, MutableSet<FieldAndType>>()
-  val visitedFragmentSpreads = mutableSetOf<String>()
-  collectFields(fieldMap, operation.selections, rootType, visitedFragmentSpreads, context)
+  collectFields(fieldMap, operation.selections, rootType, context)
 
   sameResponseShapeByName(fieldMap, emptyList(), context)
   sameForCommonParentsByName(fieldMap, emptyList(), context)
@@ -59,13 +59,53 @@ private fun IssuesScope.addDifferentShapeIssue(path: List<String>, message: Stri
 private data class ValidationContext(
     val schema: Schema,
     val fragments: Map<String, GQLFragmentDefinition>,
-)
+) {
+  val variableValuesInScope = mutableListOf<Map<String, GQLValue>>()
 
+  fun pushFragment(arguments: List<GQLArgument>, variableDefinitions: List<GQLVariableDefinition>) {
+    val newValues = mutableMapOf<String, GQLValue>()
+    variableDefinitions.forEach { variableDefinition ->
+      val argument = arguments.firstOrNull { it.name == variableDefinition.name }
+      if (argument == null) {
+        if (variableDefinition.defaultValue != null) {
+          newValues.put(variableDefinition.name, variableDefinition.defaultValue)
+        }
+      } else {
+        newValues.put(variableDefinition.name, substituteVariables(argument.value))
+      }
+    }
+    variableValuesInScope.add(variableValuesInScope.lastOrNull().orEmpty() + newValues)
+  }
+
+  fun substituteVariables(value: GQLValue): GQLValue {
+    return when (value) {
+      is GQLBooleanValue -> value
+      is GQLEnumValue -> value
+      is GQLFloatValue -> value
+      is GQLIntValue -> value
+      is GQLListValue -> value.copy(values = value.values.map { substituteVariables(it) })
+      is GQLNullValue -> value
+      is GQLObjectValue -> value.copy(fields = value.fields.map { it.copy(value = substituteVariables(it.value)) })
+      is GQLStringValue -> value
+      is GQLVariableValue -> variableValue(value.name)
+    }
+  }
+
+  fun popFragment() {
+    variableValuesInScope.removeLast()
+  }
+
+  fun variableValue(variableName: String): GQLValue {
+    // the variableName may not exist in the operation, which validation should catch
+    return variableValuesInScope.lastOrNull()?.get(variableName) ?: GQLVariableValue(null, variableName)
+  }
+}
+
+@OptIn(ApolloExperimental::class)
 private fun collectFields(
     fieldMap: MutableMap<String, MutableSet<FieldAndType>>,
     selections: List<GQLSelection>,
     parentType: GQLTypeDefinition,
-    visitedFragmentSpreads: MutableSet<String>,
     context: ValidationContext,
 ) {
   for (selection in selections) {
@@ -90,17 +130,19 @@ private fun collectFields(
         }
         // See ignores_unknown_types test
         if (fragmentType != null) {
-          collectFields(fieldMap, selection.selections, fragmentType, visitedFragmentSpreads, context)
+          collectFields(fieldMap, selection.selections, fragmentType, context)
         }
       }
 
       is GQLFragmentSpread -> {
         val fragment = context.fragments[selection.name]
-        if (fragment != null && fragment.name !in visitedFragmentSpreads) {
-          visitedFragmentSpreads.add(fragment.name)
+        if (fragment != null) {
           val fragmentType = context.schema.typeDefinitions[fragment.typeCondition.name]
           if (fragmentType != null) {
-            collectFields(fieldMap, fragment.selections, fragmentType, visitedFragmentSpreads, context)
+            context.pushFragment(selection.arguments, fragment.variableDefinitions)
+            val selections = fragment.selections.map { it.substituteVariables(context) }
+            collectFields(fieldMap, selections, fragmentType, context)
+            context.popFragment()
           }
         }
       }
@@ -129,12 +171,10 @@ private fun mergeSubSelections(sameNameFields: Set<FieldAndType>, context: Valid
   val fieldMap = mutableMapOf<String, MutableSet<FieldAndType>>()
   for (fieldAndType in sameNameFields) {
     if (fieldAndType.field.selections.isNotEmpty() && fieldAndType.type != null) {
-      val visitedFragmentSpreads = mutableSetOf<String>()
-
       val unwrappedType = fieldAndType.type.rawType()
       val typeDefinition = context.schema.typeDefinitions[unwrappedType.name]
       if (typeDefinition != null) {
-        collectFields(fieldMap, fieldAndType.field.selections, typeDefinition, visitedFragmentSpreads, context)
+        collectFields(fieldMap, fieldAndType.field.selections, typeDefinition, context)
       }
     }
   }
@@ -329,4 +369,18 @@ private data class FieldAndType(
 private fun buildMessage(path: List<String>, message: String): String {
   return "Field at path `${path.joinToString(".")}` conflicts with another field: " +
       "$message. Use different aliases on the fields to fetch both if this was intentional."
+}
+
+@OptIn(ApolloExperimental::class)
+private fun GQLSelection.substituteVariables(context: ValidationContext): GQLSelection {
+  return when (this) {
+    is GQLField -> copy(
+        arguments = arguments.map { arg ->
+          arg.copy(value = context.substituteVariables(arg.value))
+        }
+    )
+
+    is GQLInlineFragment -> this
+    is GQLFragmentSpread -> this
+  }
 }

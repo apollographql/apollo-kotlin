@@ -345,7 +345,7 @@ internal fun ValidationScope.validateArguments(
         // This will be caught later when validating individual arguments
         // registerIssue((message = "Cannot pass `null` for a required argument", sourceLocation = argumentValue.sourceLocation))
       } else if (argumentValue == null) {
-        registerIssue(message = "No value passed for required argument '${inputValueDefinition.name}'", sourceLocation = sourceLocation)
+        registerIssue(message = "No value passed for required argument `${inputValueDefinition.name}` on $debug", sourceLocation = sourceLocation)
       }
     }
   }
@@ -355,20 +355,24 @@ internal fun ValidationScope.validateArguments(
   }
 }
 
-internal fun ValidationScope.validateVariable(
-    operation: GQLOperationDefinition?,
-    variableUsage: VariableUsage,
-) {
-  if (operation == null) {
-    // if operation is null, it means we're currently validating a fragment outside the context of an operation
-    return
+internal fun GQLOperationDefinition.pretty(): String {
+  return if (name == null) {
+    "anonymous operation"
+  } else {
+    "operation `${name}`"
   }
+}
 
+internal fun ValidationScope.validateVariableUsage(
+    variableUsage: VariableUsage,
+    variableDefinitions: List<GQLVariableDefinition>,
+    context: String,
+) {
   val variable = variableUsage.variable
-  val variableDefinition = operation.variableDefinitions.firstOrNull { it.name == variable.name }
+  val variableDefinition = variableDefinitions.firstOrNull { it.name == variable.name }
   if (variableDefinition == null) {
     registerIssue(
-        message = "Variable `${variable.name}` is not defined by operation `${operation.name}`",
+        message = "Variable `${variable.name}` is not defined by $context",
         sourceLocation = variable.sourceLocation
     )
     return

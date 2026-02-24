@@ -1,5 +1,6 @@
 package com.apollographql.apollo.ast.internal
 
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.AnonymousOperation
 import com.apollographql.apollo.ast.DeprecatedUsage
@@ -16,6 +17,7 @@ import com.apollographql.apollo.ast.GQLFloatValue
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLFragmentSpread
 import com.apollographql.apollo.ast.GQLInlineFragment
+import com.apollographql.apollo.ast.GQLInputValueDefinition
 import com.apollographql.apollo.ast.GQLIntValue
 import com.apollographql.apollo.ast.GQLListType
 import com.apollographql.apollo.ast.GQLListValue
@@ -30,6 +32,7 @@ import com.apollographql.apollo.ast.GQLStringValue
 import com.apollographql.apollo.ast.GQLType
 import com.apollographql.apollo.ast.GQLTypeDefinition
 import com.apollographql.apollo.ast.GQLValue
+import com.apollographql.apollo.ast.GQLVariableDefinition
 import com.apollographql.apollo.ast.GQLVariableValue
 import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.OtherValidationIssue
@@ -41,7 +44,9 @@ import com.apollographql.apollo.ast.definitionFromScope
 import com.apollographql.apollo.ast.findCatch
 import com.apollographql.apollo.ast.findDeprecationReason
 import com.apollographql.apollo.ast.getArgumentValueOrDefault
+import com.apollographql.apollo.ast.internal.pretty
 import com.apollographql.apollo.ast.internal.validation.validateDeferLabels
+import com.apollographql.apollo.ast.isInputType
 import com.apollographql.apollo.ast.pretty
 import com.apollographql.apollo.ast.rawType
 import com.apollographql.apollo.ast.responseName
@@ -49,7 +54,7 @@ import com.apollographql.apollo.ast.rootTypeDefinition
 import com.apollographql.apollo.ast.sharesPossibleTypesWith
 
 
-@OptIn(ApolloInternal::class)
+@OptIn(ApolloInternal::class, ApolloExperimental::class)
 internal class ExecutableValidationScope(
     private val schema: Schema,
 ) : ValidationScope {
@@ -64,7 +69,11 @@ internal class ExecutableValidationScope(
    */
   override val issues = mutableListOf<Issue>()
   private val fragmentDefinitions = mutableMapOf<String, GQLFragmentDefinition>()
-  private val fragmentVariableUsages = mutableMapOf<String, List<VariableUsage>>()
+
+  /**
+   * Contains the direct variable usages in the given fragment definition that are not defined by the fragment itself.
+   */
+  private val fragmentOperationVariableUsages = mutableMapOf<String, List<VariableUsage>>()
   private val cyclicFragments = mutableSetOf<String>()
   private val usedFragments = mutableSetOf<String>()
   private val hasCatchByDefault = schema.directiveDefinitions.any { schema.originalDirectiveName(it.key) == Schema.CATCH_BY_DEFAULT }
@@ -143,6 +152,7 @@ internal class ExecutableValidationScope(
     val fragments = document.definitions.filterIsInstance<GQLFragmentDefinition>()
     fragments.checkDuplicateFragments()
     fragments.forEach {
+      // Needs to happen before validating the operations to set `fragmentVariableUsages`
       it.validate()
     }
 
@@ -163,7 +173,7 @@ internal class ExecutableValidationScope(
 
     val fragmentVariables = fragments.associate {
       it.name to (setOf(it.name) + it.selections.collectFragmentSpreads()).fold(emptyList<VariableUsage>()) { acc, item ->
-        acc + fragmentVariableUsages.get(item).orEmpty()
+        acc + fragmentOperationVariableUsages.get(item).orEmpty()
       }
     }
     return ExecutableValidationResult(fragmentVariables, issues)
@@ -204,7 +214,8 @@ internal class ExecutableValidationScope(
     }
 
     if (typeDefinition !is GQLScalarTypeDefinition
-        && typeDefinition !is GQLEnumTypeDefinition) {
+        && typeDefinition !is GQLEnumTypeDefinition
+    ) {
       if (selections.isEmpty()) {
         registerIssue(
             message = "Field `$name` of type `${fieldDefinition.type.pretty()}` must have a selection of sub-fields",
@@ -342,6 +353,24 @@ internal class ExecutableValidationScope(
       return
     }
 
+    validateArguments(
+        arguments,
+        sourceLocation,
+        fragmentDefinition.variableDefinitions.map {
+          GQLInputValueDefinition(
+              sourceLocation = it.sourceLocation,
+              description = it.description,
+              name = it.name,
+              directives = it.directives,
+              type = it.type,
+              defaultValue = it.defaultValue
+          )
+        },
+        debug = "fragment `$name`"
+    ) {
+      variableUsages.add(it)
+    }
+
     validateDirectives(directives, this) {
       variableUsages.add(it)
     }
@@ -371,12 +400,20 @@ internal class ExecutableValidationScope(
       return
     }
 
-    validateCommon(this, selections, directives, rootTypeDefinition)
+    validateCommon(this, selections, directives, variableDefinitions, rootTypeDefinition)
+
     if (schema.errorAware) {
       validateCatch(selections.collectFieldsNoFragments())
     }
 
-    fragmentVariableUsages[name] = variableUsages.toList()
+    val ownVariables = variableDefinitions.map { it.name }.toSet()
+    val (ownVariableUsages, operationVariableUsages) = variableUsages.partition { it.variable.name in ownVariables }
+    validateVariableUsages(variableDefinitions, ownVariableUsages, context = "fragment `$name`")
+
+    /**
+     * We only track the variables that are not defined by this fragment.
+     */
+    fragmentOperationVariableUsages[name] = operationVariableUsages
   }
 
   /**
@@ -387,6 +424,7 @@ internal class ExecutableValidationScope(
       directiveContext: GQLNode,
       selections: List<GQLSelection>,
       directives: List<GQLDirective>,
+      variableDefinitions: List<GQLVariableDefinition>,
       rootTypeDefinition: GQLTypeDefinition,
   ) {
     variableUsages.clear()
@@ -394,7 +432,35 @@ internal class ExecutableValidationScope(
     selections.validate(rootTypeDefinition)
 
     validateDirectives(directives, directiveContext) {
+      /**
+       * ```graphql
+       * query GetFoo($arg: Int!) @myDirective(arg: $arg) {
+       *   foo
+       * }
+       * ```
+       */
       variableUsages.add(it)
+    }
+
+    variableDefinitions.forEach { varDef ->
+      if (!varDef.type.isInputType(typeDefinitions)) {
+        registerIssue(
+            message = "Variable `${varDef.name}` of type `${varDef.type.pretty()}` is not an input type",
+            sourceLocation = varDef.sourceLocation
+        )
+      }
+      if (varDef.defaultValue != null) {
+        validateAndCoerceValue(
+            value = varDef.defaultValue,
+            expectedType = varDef.type,
+            hasLocationDefaultValue = false,
+            isOneOfInputField = false
+        ) {
+          issues.add(it.constContextError())
+        }
+      }
+
+      validateDirectivesInConstContext(varDef.directives, varDef)
     }
   }
 
@@ -408,7 +474,7 @@ internal class ExecutableValidationScope(
       )
       return
     }
-    validateCommon(this, selections, directives, rootTypeDefinition)
+    validateCommon(this, selections, directives, variableDefinitions, rootTypeDefinition)
 
     if (schema.errorAware) {
       validateCatch(selections.collectFieldsNoFragments())
@@ -423,36 +489,34 @@ internal class ExecutableValidationScope(
       it.key !in cyclicFragments
     })
 
-    issues.addAll(validateDeferLabels(this, rootTypeDefinition.name, schema, fragmentDefinitions))
-
-    val allVariableUsages = selections.collectFragmentSpreads().flatMap { fragmentVariableUsages.get(it) ?: emptyList() } + variableUsages
-    (allVariableUsages).forEach {
-      validateVariable(this, it)
-    }
-    val foundVariables = allVariableUsages.map { it.variable.name }.toSet()
-    variableDefinitions.forEach {
-      if (!foundVariables.contains(it.name)) {
-        issues.add(UnusedVariable(
-            message = "Variable `${it.name}` is unused",
-            sourceLocation = it.sourceLocation
-        ))
-      }
-    }
     validateDirectives(directives, this) {
       variableUsages.add(it)
     }
+    issues.addAll(validateDeferLabels(this, rootTypeDefinition.name, schema, fragmentDefinitions))
+
+    val allVariableUsages = selections.collectFragmentSpreads().flatMap { fragmentOperationVariableUsages.get(it) ?: emptyList() } + variableUsages
+    validateVariableUsages(variableDefinitions, allVariableUsages, context = this.pretty())
+  }
+
+  private fun validateVariableUsages(variableDefinitions: List<GQLVariableDefinition>, variableUsages: List<VariableUsage>, context: String) {
+    variableUsages.forEach {
+      validateVariableUsage(
+          variableUsage = it,
+          variableDefinitions = variableDefinitions,
+          context = context,
+      )
+    }
+    val foundVariables = variableUsages.map { it.variable.name }.toSet()
     variableDefinitions.forEach {
-      if (it.defaultValue != null) {
-        validateAndCoerceValue(
-            value = it.defaultValue,
-            expectedType = it.type,
-            hasLocationDefaultValue = false,
-            isOneOfInputField = false
-        ) {
-          issues.add(it.constContextError())
-        }
+      if (!foundVariables.contains(it.name)) {
+        issues.add(UnusedVariable(
+            message = "Variable `${it.name}` is unused in $context",
+            sourceLocation = it.sourceLocation
+        )
+        )
       }
     }
+
   }
 
   private fun List<GQLSelection>.collectFragmentSpreads(): Set<String> {
@@ -601,7 +665,8 @@ internal class ExecutableValidationScope(
         issues.add(OtherValidationIssue(
             message = "Fragment ${it.name} is already defined",
             sourceLocation = it.sourceLocation,
-        ))
+        )
+        )
       }
     }
     return issues
@@ -615,7 +680,8 @@ internal class ExecutableValidationScope(
         issues.add(AnonymousOperation(
             message = "Apollo does not support anonymous operations",
             sourceLocation = it.sourceLocation,
-        ))
+        )
+        )
         return@forEach
       }
       val existing = filtered.putIfAbsentMpp(it.name, it)
@@ -623,7 +689,8 @@ internal class ExecutableValidationScope(
         issues.add(OtherValidationIssue(
             message = "Operation ${it.name} is already defined",
             sourceLocation = it.sourceLocation,
-        ))
+        )
+        )
       }
     }
     return issues

@@ -2,7 +2,9 @@
 
 package test
 
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.execution.ExecutableSchema
 import com.apollographql.apollo.execution.GraphQLRequest
 import com.apollographql.apollo.execution.OnError
@@ -22,6 +24,7 @@ fun String.toGraphQLRequest(): GraphQLRequest {
       .build()
 }
 
+@OptIn(ApolloExperimental::class)
 class ExecutionTest {
 
   @Test
@@ -67,12 +70,12 @@ class ExecutionTest {
     val response = ExecutableSchema.Builder()
         .schema(schema)
         .resolver { resolveInfo ->
-          resolveInfo.getArgument<Int>("first").getOrNull()?.toString(16)
+          resolveInfo.getArgument<Int>("first").getOrNull()?.toString()
         }
         .build()
         .execute(document.toGraphQLRequest(), ExecutionContext.Empty)
 
-    assertEquals(mapOf("foo" to "2a"), response.data)
+    assertEquals(mapOf("foo" to "42"), response.data)
     assertEquals(null, response.errors)
   }
 
@@ -215,5 +218,130 @@ class ExecutionTest {
           assertEquals("A resolver returned null in a non-nullable position", errors.orEmpty().single().message)
           assertEquals(listOf("foo"), errors.orEmpty().single().path)
         }
+  }
+
+  @Test
+  fun fragmentArgument() = runBlocking {
+    val schema = """
+            type Query {
+                foo(first: Int): String!
+            }
+        """.trimIndent()
+
+    val document = """
+            {
+                ...queryDetails(first: 42)
+            }
+            
+            fragment queryDetails(${'$'}first: Int) on Query {
+                foo(first: ${'$'}first)
+            }
+        """.trimIndent()
+
+    val response = ExecutableSchema.Builder()
+        .schema(schema)
+        .parserOptions(ParserOptions.Builder().allowFragmentArguments(true).build())
+        .resolver { resolveInfo ->
+          resolveInfo.getArgument<Int>("first").getOrNull()?.toString()
+        }
+        .build()
+        .execute(document.toGraphQLRequest(), ExecutionContext.Empty)
+
+    assertEquals(mapOf("foo" to "42"), response.data)
+    assertEquals(null, response.errors)
+  }
+
+  @Test
+  fun fragmentArgumentfromOperationVariable() = runBlocking {
+    val schema = """
+            type Query {
+                foo(first: Int): String!
+            }
+        """.trimIndent()
+
+    val document = """
+            query GetFoo(${'$'}first: Int!) {
+                ...queryDetails(first: ${'$'}first)
+            }
+            
+            fragment queryDetails(${'$'}first: Int) on Query {
+                foo(first: ${'$'}first)
+            }
+        """.trimIndent()
+
+    val response = ExecutableSchema.Builder()
+        .schema(schema)
+        .parserOptions(ParserOptions.Builder().allowFragmentArguments(true).build())
+        .resolver { resolveInfo ->
+          resolveInfo.getArgument<Int>("first").getOrNull()?.toString()
+        }
+        .build()
+        .execute(GraphQLRequest.Builder().document(document).variables(mapOf("first" to 42)).build(), ExecutionContext.Empty)
+
+    assertEquals(mapOf("foo" to "42"), response.data)
+    assertEquals(null, response.errors)
+  }
+
+  @Test
+  fun fragmentVariableTakePrecedenceOverOperationVariable() = runBlocking {
+    val schema = """
+            type Query {
+                foo(first: Int): String!
+            }
+        """.trimIndent()
+
+    val document = """
+            query GetFoo(${'$'}first: Int!) {
+                a: foo(first: ${'$'}first)
+                ...queryDetails(first: 42)
+            }
+            
+            fragment queryDetails(${'$'}first: Int) on Query {
+                foo(first: ${'$'}first)
+            }
+        """.trimIndent()
+
+    val response = ExecutableSchema.Builder()
+        .schema(schema)
+        .parserOptions(ParserOptions.Builder().allowFragmentArguments(true).build())
+        .resolver { resolveInfo ->
+          resolveInfo.getArgument<Int>("first").getOrNull()?.toString()
+        }
+        .build()
+        .execute(GraphQLRequest.Builder().document(document).variables(mapOf("first" to 43)).build(), ExecutionContext.Empty)
+
+    assertEquals(mapOf("a" to "43", "foo" to "42"), response.data)
+    assertEquals(null, response.errors)
+  }
+
+  @Test
+  fun variableReferencingOperationVariable() = runBlocking {
+    val schema = """
+            type Query {
+                foo(first: Int): String!
+            }
+        """.trimIndent()
+
+    val document = """
+            query GetFoo(${'$'}first: Int!) {
+                ...queryDetails
+            }
+            
+            fragment queryDetails on Query {
+                foo(first: ${'$'}first)
+            }
+        """.trimIndent()
+
+    val response = ExecutableSchema.Builder()
+        .schema(schema)
+        .parserOptions(ParserOptions.Builder().allowFragmentArguments(true).build())
+        .resolver { resolveInfo ->
+          resolveInfo.getArgument<Int>("first").getOrNull()?.toString()
+        }
+        .build()
+        .execute(GraphQLRequest.Builder().document(document).variables(mapOf("first" to 42)).build(), ExecutionContext.Empty)
+
+    assertEquals(mapOf("foo" to "42"), response.data)
+    assertEquals(null, response.errors)
   }
 }
