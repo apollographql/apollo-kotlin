@@ -24,6 +24,7 @@ listOf(
     "compiler-plugins/multiple",
     "data-builders-java",
     "data-builders-kotlin",
+    "data-builders-kotlin-consumer",
     "defer",
     "deprecated-requires-opt-in",
     "enums",

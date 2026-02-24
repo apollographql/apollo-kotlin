@@ -1,0 +1,5 @@
+query GetCat2 {
+  cat {
+    ...CatDetails
+  }
+}

@@ -301,3 +301,77 @@ We believe this new caching scheme is simpler and more aligned with the rest of 
 - The cache keys have changed, meaning your cache will be invalidated.
 
 If either of these limitations is important for your use case, please [open an issue](https://github.com/apollographql/apollo-kotlin/issues/new). 
+
+## Data Builders
+
+Data Builders have been modified so the code can be generated in the `test` source set, outside your shipped code.
+
+* All `buildFoo()` functions are now in separate files in a separate package:
+
+```kotlin
+// Replace
+import com.example.type.buildCat
+
+// With
+import com.example.builder.buildCat
+```
+
+* The `Data {}` root function to build `Data` instances is now an extension function:
+
+```kotlin
+// Add
+import com.example.builder.Data
+```
+
+* The `FakeResolver` is not passed automatically. If you are relying on fake values, you need to pass an instance of `FakeResolver` explicitely. This is to make it work better with https://github.com/apollographql/apollo-kotlin-faker
+
+```kotlin
+// Replace
+val data = GetFooQuery.Data {}
+
+// With 
+val data = GetFooQuery.Data(fakeResolver) {}
+```
+
+* Similarly, if you are using runtime scalar adapters, they need to be passed explicitely
+
+```kotlin
+// Replace
+val data = GetFooQuery.Data {}
+
+// With 
+val data = GetFooQuery.Data(customScalarAdapters = customScalarAdapters) {}
+```
+
+Note that it's possible to register all your scalar adapters at build time using the 3 parameters `mapScalar(graphQLName: String, targetName: String, expression: String)`.
+
+* When working with fragments, the concrete objects builders are not companion objects anymore and you'll have to reference them explicitely: 
+
+```kotlin
+// Replace
+val data = AnimalDetailsImpl.Data(Lion) { /* ... */ }
+
+// With
+val data = AnimalDetailsImpl.Data(LionBuilder) { /* ... */ }
+```
+* `FakeResolver` works exclusively in the Json domain now. There is a `FakeResolverContext.adaptToJson()` helper function to help with this:
+
+```kotlin
+// Replace
+override fun resolveLeaf(context: FakeResolverContext): Any {
+  return if (context.mergedField.type.rawType().name == "Date") {
+    LocalDate.of(2025, Month.APRIL, 28)
+  } else {
+    super.resolveLeaf(context)
+  }
+}
+
+// With
+override fun resolveLeaf(context: FakeResolverContext): Any {
+  return if (context.mergedField.type.rawType().name == "Date") {
+    context.adaptToJson(LocalDate.of(2025, Month.APRIL, 28))
+  } else {
+    super.resolveLeaf(context)
+  }
+}
+```
