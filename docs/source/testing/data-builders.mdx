@@ -201,7 +201,7 @@ fun test() {
 Because fragments may be defined on interfaces and unions, you need to explicit the concrete type you want to model. For an example, if you have an `Animal` interface, create a `Lion` fragment data using the following:
 
 ```kotlin
-val data = AnimalDetailsImpl.Data(Lion) {
+val data = AnimalDetailsImpl.Data(LionBuilder) {
   // you can access roar here
   roar = "Grrrrr"
 }
@@ -212,7 +212,7 @@ Sometimes, you may want to test new types defined in your server that are not kn
 In those cases, you need to specify the `__typename` of the returned object type explicitly: 
 
 ```kotlin
-val data = AnimalDetailsImpl.Data(Animal) {
+val data = AnimalDetailsImpl.Data(OtherAnimalBuilder) {
   // the client doesn't know about this type yet, and you need to specify it explicitly
   __typename = "Brontaroc"
   species = "alien"
