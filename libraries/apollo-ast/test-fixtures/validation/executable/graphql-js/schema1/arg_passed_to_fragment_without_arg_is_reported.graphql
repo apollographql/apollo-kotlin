@@ -1,0 +1,10 @@
+# PRAGMA allowFragmentArguments
+
+{
+  dog {
+    ...withoutArg(unknown: true)
+  }
+}
+fragment withoutArg on Dog {
+  doesKnowCommand
+}

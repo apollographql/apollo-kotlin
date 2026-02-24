@@ -1,0 +1,5 @@
+UnusedVariable (1:11)
+Variable `a` is unused in operation `Foo`
+------------
+UnusedVariable (1:35)
+Variable `c` is unused in operation `Foo`

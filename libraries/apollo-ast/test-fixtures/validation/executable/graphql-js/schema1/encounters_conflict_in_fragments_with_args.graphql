@@ -1,0 +1,9 @@
+# PRAGMA allowFragmentArguments
+
+{
+  ...WithArgs(x: 3)
+  ...WithArgs(x: 4)
+}
+fragment WithArgs($x: Int) on QueryRoot {
+  foo(x: $x)
+}

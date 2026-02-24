@@ -1,5 +1,6 @@
 package com.apollographql.apollo.ast.internal
 
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.ast.*
 
 /**
@@ -8,7 +9,7 @@ import com.apollographql.apollo.ast.*
  * There is no caching per-fieldset because it hides some otherwise useful diagnostics.
  *
  * See `reports_each_conflict_once` for an example. The caching only works when reusing fragment
- * spreads but because the fragments may be spread at different paths, having the full path for
+ * spreads, but because the fragments may be spread at different paths, having the full path for
  * each issue can be useful.
  */
 internal fun IssuesScope.fieldsInSetCanMerge(
@@ -30,8 +31,7 @@ internal fun IssuesScope.fieldsInSetCanMerge(
   }
 
   val fieldMap = mutableMapOf<String, MutableSet<FieldAndType>>()
-  val visitedFragmentSpreads = mutableSetOf<String>()
-  collectFields(fieldMap, operation.selections, rootType, visitedFragmentSpreads, context)
+  collectFields(fieldMap, operation.selections, rootType, context)
 
   sameResponseShapeByName(fieldMap, emptyList(), context)
   sameForCommonParentsByName(fieldMap, emptyList(), context)
@@ -61,11 +61,11 @@ private data class ValidationContext(
     val fragments: Map<String, GQLFragmentDefinition>,
 )
 
+@OptIn(ApolloExperimental::class)
 private fun collectFields(
     fieldMap: MutableMap<String, MutableSet<FieldAndType>>,
     selections: List<GQLSelection>,
     parentType: GQLTypeDefinition,
-    visitedFragmentSpreads: MutableSet<String>,
     context: ValidationContext,
 ) {
   for (selection in selections) {
@@ -90,17 +90,22 @@ private fun collectFields(
         }
         // See ignores_unknown_types test
         if (fragmentType != null) {
-          collectFields(fieldMap, selection.selections, fragmentType, visitedFragmentSpreads, context)
+          collectFields(fieldMap, selection.selections, fragmentType, context)
         }
       }
 
       is GQLFragmentSpread -> {
         val fragment = context.fragments[selection.name]
-        if (fragment != null && fragment.name !in visitedFragmentSpreads) {
-          visitedFragmentSpreads.add(fragment.name)
+        if (fragment != null) {
+          // Use name + arguments as key so same fragment with different arguments is collected twice
           val fragmentType = context.schema.typeDefinitions[fragment.typeCondition.name]
           if (fragmentType != null) {
-            collectFields(fieldMap, fragment.selections, fragmentType, visitedFragmentSpreads, context)
+            val selections = if (selection.arguments.isNotEmpty() && fragment.variableDefinitions.isNotEmpty()) {
+              substituteFragmentVariables(fragment.selections, fragment.variableDefinitions, selection.arguments)
+            } else {
+              fragment.selections
+            }
+            collectFields(fieldMap, selections, fragmentType, context)
           }
         }
       }
@@ -129,12 +134,10 @@ private fun mergeSubSelections(sameNameFields: Set<FieldAndType>, context: Valid
   val fieldMap = mutableMapOf<String, MutableSet<FieldAndType>>()
   for (fieldAndType in sameNameFields) {
     if (fieldAndType.field.selections.isNotEmpty() && fieldAndType.type != null) {
-      val visitedFragmentSpreads = mutableSetOf<String>()
-
       val unwrappedType = fieldAndType.type.rawType()
       val typeDefinition = context.schema.typeDefinitions[unwrappedType.name]
       if (typeDefinition != null) {
-        collectFields(fieldMap, fieldAndType.field.selections, typeDefinition, visitedFragmentSpreads, context)
+        collectFields(fieldMap, fieldAndType.field.selections, typeDefinition, context)
       }
     }
   }
@@ -329,4 +332,69 @@ private data class FieldAndType(
 private fun buildMessage(path: List<String>, message: String): String {
   return "Field at path `${path.joinToString(".")}` conflicts with another field: " +
       "$message. Use different aliases on the fields to fetch both if this was intentional."
+}
+
+/**
+ * Substitutes fragment variable references in selections with actual argument values.
+ * This ensures field merging compares resolved values when a fragment is spread with arguments.
+ */
+@OptIn(ApolloExperimental::class)
+private fun substituteFragmentVariables(
+    selections: List<GQLSelection>,
+    variableDefinitions: List<GQLVariableDefinition>,
+    arguments: List<GQLArgument>,
+): List<GQLSelection> {
+  val argMap = mutableMapOf<String, GQLValue>()
+  for (varDef in variableDefinitions) {
+    val arg = arguments.firstOrNull { it.name == varDef.name }
+    if (arg != null) {
+      argMap[varDef.name] = arg.value
+    } else if (varDef.defaultValue != null) {
+      argMap[varDef.name] = varDef.defaultValue
+    }
+  }
+  if (argMap.isEmpty()) return selections
+  return selections.map { it.substituteVariables(argMap) }
+}
+
+@OptIn(ApolloExperimental::class)
+private fun GQLSelection.substituteVariables(argMap: Map<String, GQLValue>): GQLSelection {
+  return when (this) {
+    is GQLField -> GQLField(
+        sourceLocation = sourceLocation,
+        alias = alias,
+        name = name,
+        arguments = arguments.map { arg ->
+          GQLArgument(
+              sourceLocation = arg.sourceLocation,
+              name = arg.name,
+              value = arg.value.substituteVariables(argMap)
+          )
+        },
+        directives = directives,
+        selections = selections.map { it.substituteVariables(argMap) }
+    )
+
+    is GQLInlineFragment -> GQLInlineFragment(
+        sourceLocation = sourceLocation,
+        typeCondition = typeCondition,
+        directives = directives,
+        selections = selections.map { it.substituteVariables(argMap) }
+    )
+
+    is GQLFragmentSpread -> this
+  }
+}
+
+private fun GQLValue.substituteVariables(argMap: Map<String, GQLValue>): GQLValue {
+  return when (this) {
+    is GQLVariableValue -> argMap[name] ?: this
+    is GQLListValue -> GQLListValue(sourceLocation = sourceLocation, values = values.map { it.substituteVariables(argMap) })
+    is GQLObjectValue -> GQLObjectValue(
+        sourceLocation = sourceLocation,
+        fields = fields.map { GQLObjectField(sourceLocation = it.sourceLocation, name = it.name, value = it.value.substituteVariables(argMap)) }
+    )
+
+    else -> this
+  }
 }

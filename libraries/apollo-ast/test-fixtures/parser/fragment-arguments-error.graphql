@@ -1,0 +1,7 @@
+{
+  ...foo(a: 42, b: $b)
+}
+
+fragment foo on Query($a: Int, $b: [String]) {
+  __typename
+}

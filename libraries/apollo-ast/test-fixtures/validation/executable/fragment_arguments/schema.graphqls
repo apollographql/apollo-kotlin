@@ -1,0 +1,29 @@
+# PRAGMA allowFragmentArguments
+
+type Query {
+    user(id: ID!): User
+    users(first: Int, after: String): UserConnection
+    node(id: ID!): Node
+}
+
+type User implements Node {
+    id: ID!
+    name: String
+    age: Int
+    email: String
+    friends(first: Int, after: String): UserConnection
+}
+
+type UserConnection {
+    edges: [UserEdge]
+    totalCount: Int
+}
+
+type UserEdge {
+    node: User
+    cursor: String
+}
+
+interface Node {
+    id: ID!
+}

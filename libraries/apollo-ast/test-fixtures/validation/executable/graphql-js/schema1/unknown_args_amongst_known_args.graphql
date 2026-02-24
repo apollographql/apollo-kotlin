@@ -1,0 +1,7 @@
+# PRAGMA allowFragmentArguments
+
+{ dog {...oneGoodArgOneInvalidArg } }
+
+fragment oneGoodArgOneInvalidArg on Dog {
+  doesKnowCommand(whoKnows: 1, dogCommand: SIT, unknown: true)
+}

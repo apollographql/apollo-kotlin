@@ -76,7 +76,8 @@ class ParserOptions private constructor(
     val allowEmptyDocuments: Boolean,
     val withSourceLocation: Boolean,
     val allowDirectivesOnDirectives: Boolean,
-    val allowServiceCapabilities: Boolean
+    val allowServiceCapabilities: Boolean,
+    val allowFragmentArguments: Boolean
 ) {
   class Builder {
     var allowEmptyDocuments = true
@@ -87,6 +88,9 @@ class ParserOptions private constructor(
 
     @ApolloExperimental
     var allowServiceCapabilities = false
+
+    @ApolloExperimental
+    var allowFragmentArguments = false
 
     fun allowEmptyDocuments(allowEmptyDocuments: Boolean) = apply {
       this.allowEmptyDocuments = allowEmptyDocuments
@@ -106,12 +110,18 @@ class ParserOptions private constructor(
       this.allowDirectivesOnDirectives = allowDirectivesOnDirectives
     }
 
+    @ApolloExperimental
+    fun allowFragmentArguments(allowFragmentArguments: Boolean) = apply {
+      this.allowFragmentArguments = allowFragmentArguments
+    }
+
     fun build(): ParserOptions {
       return ParserOptions(
           allowEmptyDocuments = allowEmptyDocuments,
           withSourceLocation = withSourceLocation,
           allowDirectivesOnDirectives = allowDirectivesOnDirectives,
-          allowServiceCapabilities = allowServiceCapabilities
+          allowServiceCapabilities = allowServiceCapabilities,
+          allowFragmentArguments = allowFragmentArguments
       )
     }
   }

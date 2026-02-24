@@ -1,0 +1,11 @@
+OtherValidationIssue (12:12)
+Variable `a` is not defined by operation `Foo`
+------------
+UnusedVariable (1:11)
+Variable `b` is unused in operation `Foo`
+------------
+OtherValidationIssue (17:12)
+Variable `b` is not defined by operation `Bar`
+------------
+UnusedVariable (6:11)
+Variable `a` is unused in operation `Bar`

@@ -1,0 +1,10 @@
+# PRAGMA allowFragmentArguments
+
+query ($var: Int @onQuery) @onMutation {
+  ...Frag(arg: $var) @onQuery
+  foo @onQuery
+}
+
+fragment Frag($arg: Int @onField) on Query @onQuery {
+  foo @onQuery
+}

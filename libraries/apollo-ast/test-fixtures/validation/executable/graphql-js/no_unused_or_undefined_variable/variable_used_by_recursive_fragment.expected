@@ -1,0 +1,2 @@
+FragmentCycle (8:5)
+Fragment 'FragA' spreads itself, creating a cycle at '__FragA.field.__FragA'

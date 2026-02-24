@@ -690,6 +690,13 @@ interface Service {
   val decapitalizeFields: Property<Boolean>
 
   /**
+   * Whether to allow fragment spread with arguments.
+   * Default: false
+   */
+  @ApolloExperimental
+  val allowFragmentArguments: Property<Boolean>
+
+  /**
    * Configures [Introspection] to download an introspection Json schema
    */
   fun introspection(configure: Action<in Introspection>)

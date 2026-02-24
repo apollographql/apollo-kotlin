@@ -105,6 +105,7 @@ type QueryRoot {
   f1: Type
   f2: Type
   f3: Type
+  foo(x: Int): String
 }
 
 type Type {

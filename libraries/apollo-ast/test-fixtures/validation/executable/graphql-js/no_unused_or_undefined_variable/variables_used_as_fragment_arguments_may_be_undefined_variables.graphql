@@ -1,0 +1,12 @@
+# PRAGMA allowFragmentArguments
+
+query Foo {
+  field {
+    ...FragA(a: $a)
+  }
+}
+fragment FragA($a: String) on Type {
+  field {
+    foo
+  }
+}

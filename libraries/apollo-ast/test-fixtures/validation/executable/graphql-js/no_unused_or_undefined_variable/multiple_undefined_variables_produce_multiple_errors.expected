@@ -1,0 +1,35 @@
+OtherValidationIssue (12:3)
+Field at path `field.field` conflicts with another field: they have different arguments. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (21:3)
+Field at path `field.field` conflicts with another field: they have different arguments. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (16:3)
+Field at path `field.field` conflicts with another field: they have different arguments. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (12:12)
+Variable `a` is not defined by operation `Foo`
+------------
+OtherValidationIssue (16:12)
+Variable `a` is not defined by operation `Foo`
+------------
+OtherValidationIssue (21:12)
+Variable `c` is not defined by operation `Foo`
+------------
+OtherValidationIssue (12:3)
+Field at path `field.field` conflicts with another field: they have different arguments. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (21:3)
+Field at path `field.field` conflicts with another field: they have different arguments. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (16:3)
+Field at path `field.field` conflicts with another field: they have different arguments. Use different aliases on the fields to fetch both if this was intentional.
+------------
+OtherValidationIssue (12:19)
+Variable `b` is not defined by operation `Bar`
+------------
+OtherValidationIssue (16:19)
+Variable `b` is not defined by operation `Bar`
+------------
+OtherValidationIssue (21:12)
+Variable `c` is not defined by operation `Bar`

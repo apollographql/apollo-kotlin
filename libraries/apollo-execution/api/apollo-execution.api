@@ -33,6 +33,7 @@ public final class com/apollographql/apollo/execution/ExecutableSchema$Builder {
 	public final fun build ()Lcom/apollographql/apollo/execution/ExecutableSchema;
 	public final fun mutationRoot (Lcom/apollographql/apollo/execution/RootResolver;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
 	public final fun onError (Lcom/apollographql/apollo/execution/OnError;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
+	public final fun parserOptions (Lcom/apollographql/apollo/ast/ParserOptions;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
 	public final fun persistedDocumentCache (Lcom/apollographql/apollo/execution/PersistedDocumentCache;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
 	public final fun queryRoot (Lcom/apollographql/apollo/execution/RootResolver;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
 	public final fun resolver (Lcom/apollographql/apollo/execution/Resolver;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;

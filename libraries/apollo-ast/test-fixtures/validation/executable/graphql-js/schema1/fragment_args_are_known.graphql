@@ -1,0 +1,10 @@
+# PRAGMA allowFragmentArguments
+
+{
+  dog {
+    ...withArg(dogCommand: SIT)
+  }
+}
+fragment withArg($dogCommand: DogCommand) on Dog {
+  doesKnowCommand(dogCommand: $dogCommand)
+}

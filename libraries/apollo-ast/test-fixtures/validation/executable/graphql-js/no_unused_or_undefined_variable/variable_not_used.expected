@@ -1,0 +1,5 @@
+AnonymousOperation (1:1)
+Apollo does not support anonymous operations
+------------
+UnusedVariable (1:32)
+Variable `c` is unused in anonymous operation

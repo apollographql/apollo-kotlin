@@ -1,2 +1,2 @@
 OtherValidationIssue (2:5)
-No value passed for required argument 'input'
+No value passed for required argument `input` on field `edit`

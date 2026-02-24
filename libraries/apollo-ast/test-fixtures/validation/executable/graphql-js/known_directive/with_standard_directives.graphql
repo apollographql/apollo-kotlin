@@ -1,0 +1,4 @@
+{
+  foo @skip(if: false)
+  foo @include(if: true)
+}

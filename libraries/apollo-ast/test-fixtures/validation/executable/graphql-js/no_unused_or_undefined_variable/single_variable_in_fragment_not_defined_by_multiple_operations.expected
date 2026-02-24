@@ -1,0 +1,5 @@
+OtherValidationIssue (12:19)
+Variable `b` is not defined by operation `Foo`
+------------
+OtherValidationIssue (12:19)
+Variable `b` is not defined by operation `Bar`

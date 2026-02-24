@@ -1,0 +1,2 @@
+UnusedVariable (1:35)
+Variable `c` is unused in operation `Foo`

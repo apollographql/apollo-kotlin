@@ -1,0 +1,20 @@
+query Foo($a: String, $b: String, $c: String) {
+  field {
+    ...FragA
+  }
+}
+fragment FragA on Type {
+  field {
+    ...FragB
+  }
+}
+fragment FragB on Type {
+  field(b: $b) {
+    ...FragC
+  }
+}
+fragment FragC on Type {
+  field {
+    foo
+  }
+}

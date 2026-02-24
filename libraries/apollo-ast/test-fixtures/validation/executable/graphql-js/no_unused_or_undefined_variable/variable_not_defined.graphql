@@ -1,0 +1,5 @@
+query Foo($a: String, $b: String, $c: String) {
+  field(a: $a, b: $b, c: $c, d: $d) {
+    foo
+  }
+}

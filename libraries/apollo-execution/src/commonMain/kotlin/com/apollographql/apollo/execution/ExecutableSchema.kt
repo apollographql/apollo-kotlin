@@ -29,6 +29,7 @@ class ExecutableSchema internal constructor(
     private val instrumentations: List<Instrumentation>,
     private val persistedDocumentCache: PersistedDocumentCache?,
     private val onError: OnError,
+    private val parserOptions: ParserOptions
 ) {
   private val introspectionResolver: Resolver = introspectionResolver(schema)
 
@@ -36,7 +37,7 @@ class ExecutableSchema internal constructor(
       request: GraphQLRequest,
       executionContext: ExecutionContext = ExecutionContext.Empty,
   ): GraphQLResponse {
-    return prepareRequest(schema, coercings, persistedDocumentCache, request).fold(
+    return prepareRequest(schema, coercings, persistedDocumentCache, parserOptions, request).fold(
         ifLeft = {
           GraphQLResponse.Builder().errors(it).build()
         },
@@ -50,7 +51,7 @@ class ExecutableSchema internal constructor(
       request: GraphQLRequest,
       executionContext: ExecutionContext = ExecutionContext.Empty,
   ): Flow<SubscriptionEvent> {
-    return prepareRequest(schema, coercings, persistedDocumentCache, request).fold(
+    return prepareRequest(schema, coercings, persistedDocumentCache, parserOptions, request).fold(
         ifLeft = {
           flowOf(SubscriptionResponse(GraphQLResponse.Builder().errors(it).build()))
         },
@@ -90,6 +91,7 @@ class ExecutableSchema internal constructor(
     private val instrumentations = mutableListOf<Instrumentation>()
     private var persistedDocumentCache: PersistedDocumentCache? = null
     private var onError: OnError = OnError.PROPAGATE
+    private var parserOptions: ParserOptions = ParserOptions.Default
 
     fun schema(schema: GQLDocument): Builder = apply {
       this.schema = schema
@@ -138,6 +140,13 @@ class ExecutableSchema internal constructor(
       this.onError = onError
     }
 
+    /**
+     * Configures the parsing options for this executable schema.
+     */
+    fun parserOptions(parserOptions: ParserOptions): Builder = apply {
+      this.parserOptions = parserOptions
+    }
+
     fun build(): ExecutableSchema {
       check(schema != null) {
         "A schema is required to build an ExecutableSchema"
@@ -164,7 +173,8 @@ class ExecutableSchema internal constructor(
           typeResolver ?: ThrowingTypeResolver,
           instrumentations,
           persistedDocumentCache,
-          onError
+          onError,
+          parserOptions
       )
     }
   }

@@ -1,0 +1,18 @@
+# PRAGMA allowFragmentArguments
+
+fragment UserFields($first: Int!) on User {
+    friends(first: $first) {
+        edges {
+            node {
+                name
+            }
+        }
+    }
+}
+
+query GetUser($first: Int!) {
+    user(id: "1") {
+        ...UserFields(first: $first)
+        name
+    }
+}

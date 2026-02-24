@@ -1,0 +1,5 @@
+UnusedVariable (8:16)
+Variable `a` is unused in fragment `FragA`
+------------
+OtherValidationIssue (5:17)
+Variable `a` is not defined by operation `Foo`

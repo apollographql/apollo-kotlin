@@ -1,0 +1,8 @@
+OtherValidationIssue (7:12)
+Variable `a` is not defined by operation `Foo`
+------------
+UnusedVariable (1:11)
+Variable `b` is unused in operation `Foo`
+------------
+UnusedFragment (11:1)
+Fragment 'FragB' is not used

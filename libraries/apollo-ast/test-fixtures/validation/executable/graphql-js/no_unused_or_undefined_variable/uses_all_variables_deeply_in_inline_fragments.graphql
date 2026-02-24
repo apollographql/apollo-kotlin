@@ -1,0 +1,13 @@
+query Foo($a: String, $b: String, $c: String) {
+  field(a: $a) {
+    ... on Type {
+      field(b: $b) {
+        ... on Type {
+          field(c: $c) {
+            foo
+          }
+        }
+      }
+    }
+  }
+}
