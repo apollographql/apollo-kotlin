@@ -411,7 +411,7 @@ internal class ExecutableValidationScope(
     validateVariableUsages(variableDefinitions, ownVariableUsages, context = "fragment `$name`")
 
     /**
-     * We only track the variables that are not by this fragment.
+     * We only track the variables that are not defined by this fragment.
      */
     fragmentOperationVariableUsages[name] = operationVariableUsages
   }
