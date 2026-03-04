@@ -1,5 +1,13 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized.sql
 
+import app.cash.sqldelight.Query
+import app.cash.sqldelight.Transacter
+import app.cash.sqldelight.db.QueryResult
+import app.cash.sqldelight.db.SqlCursor
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlPreparedStatement
 import com.apollographql.apollo.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo.cache.normalized.api.CacheKey
@@ -8,18 +16,7 @@ import com.apollographql.apollo.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo.cache.normalized.api.Record
 import com.apollographql.apollo.cache.normalized.sql.internal.JsonRecordDatabase
 import com.apollographql.apollo.cache.normalized.sql.internal.json.JsonQueries
-import com.apollographql.apollo.cache.normalized.sql.internal.json.RecordForKey
-import com.apollographql.apollo.cache.normalized.sql.internal.json.Records
-import com.apollographql.apollo.cache.normalized.sql.internal.json.RecordsForKeys
 import com.apollographql.apollo.exception.apolloExceptionHandler
-import app.cash.sqldelight.Query
-import app.cash.sqldelight.Transacter
-import app.cash.sqldelight.TransactionWithReturn
-import app.cash.sqldelight.TransactionWithoutReturn
-import app.cash.sqldelight.db.QueryResult
-import app.cash.sqldelight.db.SqlCursor
-import app.cash.sqldelight.db.SqlDriver
-import app.cash.sqldelight.db.SqlPreparedStatement
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
