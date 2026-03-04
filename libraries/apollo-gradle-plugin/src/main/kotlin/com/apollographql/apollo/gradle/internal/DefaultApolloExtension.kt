@@ -37,6 +37,7 @@ import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.ProjectDependency
+import org.gradle.api.attributes.Category
 import org.gradle.api.attributes.HasConfigurableAttributes
 import org.gradle.api.attributes.Usage
 import org.gradle.api.component.AdhocComponentWithVariants
@@ -405,7 +406,8 @@ abstract class DefaultApolloExtension(
 
   private fun <T : Any> HasConfigurableAttributes<T>.attributes(serviceName: String, usage: ApolloUsage, direction: ApolloDirection) {
     attributes {
-      it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, usage.name))
+      it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, "com.apollographql.${usage.name.lowercase()}"))
+      it.attribute(Category.CATEGORY_ATTRIBUTE, project.objects.named(Category::class.java, "com.apollographql.${usage.name.lowercase()}"))
       it.attribute(APOLLO_SERVICE_ATTRIBUTE, serviceName)
       it.attribute(APOLLO_DIRECTION_ATTRIBUTE, direction.name)
     }
