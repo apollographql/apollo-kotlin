@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 @file:OptIn(ApolloExperimental::class)
 
 package test

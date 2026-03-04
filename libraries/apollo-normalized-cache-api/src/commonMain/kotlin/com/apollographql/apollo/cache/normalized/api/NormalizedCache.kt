@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized.api
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSuppressWildcards
 import kotlin.reflect.KClass
@@ -17,6 +20,8 @@ import kotlin.reflect.KClass
  *
  * A [NormalizedCache] can choose to store records in any manner.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 abstract class NormalizedCache : ReadOnlyNormalizedCache {
   var nextCache: NormalizedCache? = null
     private set

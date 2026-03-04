@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package test
 
 import cache.include.AbsentArgumentWithArgumentDefaultValueQuery

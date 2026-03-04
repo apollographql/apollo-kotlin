@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized.sql.internal
 
 import com.apollographql.apollo.cache.normalized.api.Record

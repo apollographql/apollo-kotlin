@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized.api
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
@@ -12,12 +15,16 @@ import com.apollographql.apollo.api.variables
 import com.apollographql.apollo.cache.normalized.api.internal.CacheBatchReader
 import com.apollographql.apollo.cache.normalized.api.internal.Normalizer
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
     cacheKeyGenerator: CacheKeyGenerator,
 ) = normalize(data, customScalarAdapters, cacheKeyGenerator, CacheKey.rootKey().key)
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 @Suppress("UNCHECKED_CAST")
 fun <D : Executable.Data> Executable<D>.normalize(
     data: D,
@@ -32,6 +39,8 @@ fun <D : Executable.Data> Executable<D>.normalize(
       .normalize(writer.root() as Map<String, Any?>, rootField().selections, rootField().type.rawType().name)
 }
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <D : Executable.Data> Executable<D>.readDataFromCache(
     customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
@@ -48,6 +57,8 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
   ).toData(adapter(), customScalarAdapters, variables)
 }
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cacheKey: CacheKey,
     customScalarAdapters: CustomScalarAdapters,
@@ -65,6 +76,8 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
   ).toData(adapter(), customScalarAdapters, variables)
 }
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 @ApolloInternal
 fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
     cache: ReadOnlyNormalizedCache,
@@ -79,6 +92,8 @@ fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
     variables = variables
 )
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 @ApolloInternal
 fun <D : Fragment.Data> Fragment<D>.readDataFromCacheInternal(
     cacheKey: CacheKey,
@@ -112,12 +127,16 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
   ).collectData()
 }
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun Collection<Record>?.dependentKeys(): Set<String> {
   return this?.flatMap {
     it.fieldKeys()
   }?.toSet() ?: emptySet()
 }
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 @ApolloInternal
 fun <D: Executable.Data> CacheData.toData(
     adapter: Adapter<D>,

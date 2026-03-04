@@ -1,8 +1,13 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized.api
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import kotlin.jvm.JvmSuppressWildcards
 import kotlin.reflect.KClass
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 interface ReadOnlyNormalizedCache {
   /**
    * @param key          The key of the record to read.

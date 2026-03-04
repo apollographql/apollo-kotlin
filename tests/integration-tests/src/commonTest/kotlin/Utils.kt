@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 import IdCacheKeyGenerator.toString
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.Executable

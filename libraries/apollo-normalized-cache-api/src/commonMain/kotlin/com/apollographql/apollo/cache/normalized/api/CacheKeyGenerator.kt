@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized.api
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.Executable
 import com.apollographql.apollo.api.keyFields
@@ -13,6 +16,8 @@ import com.apollographql.apollo.api.keyFields
  * See also `@typePolicy`
  * See also [CacheResolver]
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 interface CacheKeyGenerator {
   /**
    * Returns a [CacheKey] for the given object or null if the object doesn't have an id
@@ -35,6 +40,8 @@ interface CacheKeyGenerator {
  * not concrete types.
  * @param variables the variables used in the operation where the object is normalized.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 class CacheKeyGeneratorContext(
     val field: CompiledField,
     /**
@@ -47,6 +54,8 @@ class CacheKeyGeneratorContext(
 /**
  * A [CacheKeyGenerator] that uses annotations to compute the id
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 object TypePolicyCacheKeyGenerator : CacheKeyGenerator {
   override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
     val keyFields = context.field.type.rawType().keyFields()

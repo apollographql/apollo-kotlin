@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized.api
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.CompiledListType
 import com.apollographql.apollo.api.CompiledNamedType
@@ -17,6 +20,8 @@ import kotlin.jvm.JvmSuppressWildcards
  *
  * For simplicity, this only handles one level of lists. Implement [CacheResolver] if you need arbitrary nested lists of objects.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 abstract class CacheKeyResolver : CacheResolver {
   /**
    * Returns the computed cache key for a composite field.

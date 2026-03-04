@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized.api
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.cache.normalized.api.internal.CacheLock
 import com.apollographql.apollo.cache.normalized.api.internal.LruCache
 import com.apollographql.apollo.mpp.currentTimeMillis
@@ -16,6 +19,8 @@ import kotlin.reflect.KClass
  * Expired entries removed from the cache only on cache miss ([loadRecord] operation) and not removed from the cache automatically
  * (there is no any sort of GC that runs in the background).
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 class MemoryCache(
     private val maxSizeBytes: Int = Int.MAX_VALUE,
     private val expireAfterMillis: Long = -1,

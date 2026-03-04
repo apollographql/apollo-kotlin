@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized.api
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.CompiledField
 import com.apollographql.apollo.api.Executable
@@ -10,6 +13,8 @@ import kotlin.jvm.JvmSuppressWildcards
 /**
  * An interface for [CacheResolver] used to read the cache
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 interface CacheResolver {
   /**
    * Resolves a field from the cache. Called when reading from the cache, usually before a network request.
@@ -81,6 +86,8 @@ interface CacheResolver {
 /**
  * A cache resolver that uses the parent to resolve fields.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 object DefaultCacheResolver : CacheResolver {
   /**
    * @param parent a [Map] that represent the object containing this field. The map values can have the same types as the ones in  [Record]
@@ -104,6 +111,8 @@ object DefaultCacheResolver : CacheResolver {
 /**
  * A cache resolver that uses the cache date as a receive date and expires after a fixed max age
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 @ApolloExperimental
 class ReceiveDateCacheResolver(private val maxAge: Int) : CacheResolver {
   /**
@@ -137,6 +146,8 @@ class ReceiveDateCacheResolver(private val maxAge: Int) : CacheResolver {
 /**
  * A cache resolver that uses the cache date as an expiration date and expires past it
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 @ApolloExperimental
 class ExpireDateCacheResolver() : CacheResolver {
   /**
@@ -169,6 +180,8 @@ class ExpireDateCacheResolver() : CacheResolver {
 /**
  * A [CacheResolver] that uses @fieldPolicy annotations to resolve fields and delegates to [DefaultCacheResolver] else
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 object FieldPolicyCacheResolver : CacheResolver {
   override fun resolveField(
       field: CompiledField,

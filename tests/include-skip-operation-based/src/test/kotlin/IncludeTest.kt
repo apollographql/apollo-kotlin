@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION")
 
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.CustomScalarAdapters

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 @file:JvmName("NormalizedCache")
 
 package com.apollographql.apollo.cache.normalized
@@ -30,7 +32,6 @@ import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.CacheMissException
 import com.apollographql.apollo.interceptor.ApolloInterceptor
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
-import com.apollographql.apollo.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo.mpp.currentTimeMillis
 import com.apollographql.apollo.network.http.HttpInfo
 import kotlinx.coroutines.flow.Flow
@@ -40,6 +41,8 @@ import kotlinx.coroutines.flow.map
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 enum class FetchPolicy {
   /**
    * Try the cache, if that failed, try the network.
@@ -98,6 +101,8 @@ enum class FetchPolicy {
  * @param writeToCacheAsynchronously set to true to write to the cache after the response has been emitted.
  * This allows to display results faster
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 @JvmOverloads
 @JvmName("configureApolloClientBuilder")
 fun ApolloClient.Builder.normalizedCache(
@@ -109,6 +114,8 @@ fun ApolloClient.Builder.normalizedCache(
   return store(ApolloStore(normalizedCacheFactory, cacheKeyGenerator, cacheResolver), writeToCacheAsynchronously)
 }
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 @JvmName("-logCacheMisses")
 fun ApolloClient.Builder.logCacheMisses(
     log: (String) -> Unit = { println(it) },
@@ -139,11 +146,12 @@ private fun ApolloInterceptorChain.asInterceptor(): ApolloInterceptor {
         request: ApolloRequest<D>,
         chain: ApolloInterceptorChain,
     ): Flow<ApolloResponse<D>> {
-     return this@asInterceptor.proceed(request)
+      return this@asInterceptor.proceed(request)
     }
   }
 }
-internal class CacheInterceptor(val store: ApolloStore): ApolloInterceptor {
+
+internal class CacheInterceptor(val store: ApolloStore) : ApolloInterceptor {
   private val delegates = listOf(
       WatcherInterceptor(store),
       FetchPolicyRouterInterceptor,
@@ -159,6 +167,8 @@ internal class CacheInterceptor(val store: ApolloStore): ApolloInterceptor {
 }
 
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
   return cacheInterceptor(CacheInterceptor(store))
       .writeToCacheAsynchronously(writeToCacheAsynchronously)
@@ -175,6 +185,8 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
  * @see fetchPolicy
  * @see refetchPolicy
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
   return flow {
     var lastResponse: ApolloResponse<D>? = null
@@ -227,6 +239,8 @@ fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
  * Observes the cache for the given data. Unlike [watch], no initial request is executed on the network.
  * The fetch policy set by [fetchPolicy] will be used.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <D : Query.Data> ApolloCall<D>.watch(data: D?): Flow<ApolloResponse<D>> {
   return watchInternal(data).filter { it.exception !== WatcherSentinel }
 }
@@ -239,6 +253,8 @@ internal fun <D : Query.Data> ApolloCall<D>.watchInternal(data: D?): Flow<Apollo
   return copy().addExecutionContext(WatchContext(data)).toFlow()
 }
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 val ApolloClient.apolloStore: ApolloStore
   get() {
     return (cacheInterceptor as? CacheInterceptor ?: error("no cache configured")).store
@@ -248,6 +264,8 @@ val ApolloClient.apolloStore: ApolloStore
  * Sets the initial [FetchPolicy]
  * This only has effects for queries. Mutations and subscriptions always use [FetchPolicy.NetworkOnly]
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <T> MutableExecutionOptions<T>.fetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
     FetchPolicyContext(interceptorFor(fetchPolicy))
 )
@@ -255,6 +273,8 @@ fun <T> MutableExecutionOptions<T>.fetchPolicy(fetchPolicy: FetchPolicy) = addEx
 /**
  * Sets the [FetchPolicy] used when watching queries and a cache change has been published
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <T> MutableExecutionOptions<T>.refetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
     RefetchPolicyContext(interceptorFor(fetchPolicy))
 )
@@ -263,6 +283,8 @@ fun <T> MutableExecutionOptions<T>.refetchPolicy(fetchPolicy: FetchPolicy) = add
  * Sets the initial [FetchPolicy]
  * This only has effects for queries. Mutations and subscriptions always use [FetchPolicy.NetworkOnly]
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <T> MutableExecutionOptions<T>.fetchPolicyInterceptor(interceptor: ApolloInterceptor) = addExecutionContext(
     FetchPolicyContext(interceptor)
 )
@@ -270,6 +292,8 @@ fun <T> MutableExecutionOptions<T>.fetchPolicyInterceptor(interceptor: ApolloInt
 /**
  * Sets the [FetchPolicy] used when watching queries and a cache change has been published
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <T> MutableExecutionOptions<T>.refetchPolicyInterceptor(interceptor: ApolloInterceptor) = addExecutionContext(
     RefetchPolicyContext(interceptor)
 )
@@ -287,6 +311,8 @@ private fun interceptorFor(fetchPolicy: FetchPolicy) = when (fetchPolicy) {
  *
  * Default: false
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <T> MutableExecutionOptions<T>.doNotStore(doNotStore: Boolean) = addExecutionContext(
     DoNotStoreContext(doNotStore)
 )
@@ -296,6 +322,8 @@ fun <T> MutableExecutionOptions<T>.doNotStore(doNotStore: Boolean) = addExecutio
  *
  * Default: false
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <T> MutableExecutionOptions<T>.memoryCacheOnly(memoryOnly: Boolean) = addExecutionContext(
     MemoryCacheOnlyContext(memoryOnly)
 )
@@ -314,6 +342,8 @@ fun <T> MutableExecutionOptions<T>.emitCacheMisses(emitCacheMisses: Boolean) = t
  *
  * Default: false
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <T> MutableExecutionOptions<T>.storePartialResponses(storePartialResponses: Boolean) = addExecutionContext(
     StorePartialResponsesContext(storePartialResponses)
 )
@@ -323,6 +353,8 @@ fun <T> MutableExecutionOptions<T>.storePartialResponses(storePartialResponses: 
  *
  * Default: false
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 @ApolloExperimental
 fun <T> MutableExecutionOptions<T>.storeReceiveDate(storeReceiveDate: Boolean) = addExecutionContext(
     StoreReceiveDateContext(storeReceiveDate)
@@ -335,6 +367,8 @@ fun <T> MutableExecutionOptions<T>.storeReceiveDate(storeReceiveDate: Boolean) =
  *
  * Default: false
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 @ApolloExperimental
 fun <T> MutableExecutionOptions<T>.storeExpirationDate(storeExpirationDate: Boolean): T {
   addExecutionContext(StoreExpirationDateContext(storeExpirationDate))
@@ -348,7 +382,7 @@ fun <T> MutableExecutionOptions<T>.storeExpirationDate(storeExpirationDate: Bool
   return this as T
 }
 
-private class StoreExpirationInterceptor: ApolloInterceptor {
+private class StoreExpirationInterceptor : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return chain.proceed(request).map {
       val store = request.executionContext[StoreExpirationDateContext]?.value
@@ -389,6 +423,8 @@ private class StoreExpirationInterceptor: ApolloInterceptor {
 /**
  * @param cacheHeaders additional cache headers to be passed to your [com.apollographql.apollo.cache.normalized.api.NormalizedCache]
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <T> MutableExecutionOptions<T>.cacheHeaders(cacheHeaders: CacheHeaders) = addExecutionContext(
     CacheHeadersContext(cacheHeaders)
 )
@@ -400,6 +436,8 @@ fun <T> MutableExecutionOptions<T>.cacheHeaders(cacheHeaders: CacheHeaders) = ad
  *
  * Default: false
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <T> MutableExecutionOptions<T>.writeToCacheAsynchronously(writeToCacheAsynchronously: Boolean) = addExecutionContext(
     WriteToCacheAsynchronouslyContext(writeToCacheAsynchronously)
 )
@@ -407,10 +445,14 @@ fun <T> MutableExecutionOptions<T>.writeToCacheAsynchronously(writeToCacheAsynch
 /**
  * Sets the optimistic updates to write to the cache while a query is pending.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <D : Mutation.Data> ApolloRequest.Builder<D>.optimisticUpdates(data: D) = addExecutionContext(
     OptimisticUpdatesContext(data)
 )
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <D : Mutation.Data> ApolloCall<D>.optimisticUpdates(data: D) = addExecutionContext(
     OptimisticUpdatesContext(data)
 )
@@ -453,6 +495,8 @@ internal val <D : Operation.Data> ApolloRequest<D>.watchContext: WatchContext?
  * @param cacheMissException the exception while reading the cache. Note that it's possible to have [isCacheHit] == false && [cacheMissException] == null
  * if no cache read was attempted
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 class CacheInfo private constructor(
     val cacheStartMillis: Long,
     val cacheEndMillis: Long,
@@ -571,15 +615,21 @@ class CacheInfo private constructor(
  * Note that this can be true regardless of whether the data was found in the cache.
  * To know whether the **data** is from the cache, use `cacheInfo?.isCacheHit == true`.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 val <D : Operation.Data> ApolloResponse<D>.isFromCache: Boolean
   get() {
     return cacheInfo?.isCacheHit == true || exception is CacheMissException
   }
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 val <D : Operation.Data> ApolloResponse<D>.cacheInfo
   get() = executionContext[CacheInfo]
 
-internal fun <D : Operation.Data> ApolloResponse<D>.withCacheInfo(cacheInfo: CacheInfo) = newBuilder().addExecutionContext(cacheInfo).build()
+internal fun <D : Operation.Data> ApolloResponse<D>.withCacheInfo(cacheInfo: CacheInfo) =
+  newBuilder().addExecutionContext(cacheInfo).build()
+
 internal fun <D : Operation.Data> ApolloResponse.Builder<D>.cacheInfo(cacheInfo: CacheInfo) = addExecutionContext(cacheInfo)
 
 internal class FetchPolicyContext(val interceptor: ApolloInterceptor) : ExecutionContext.Element {
@@ -676,8 +726,12 @@ internal fun <D : Operation.Data> ApolloRequest.Builder<D>.fetchFromCache(fetchF
 internal val <D : Operation.Data> ApolloRequest<D>.fetchFromCache
   get() = executionContext[FetchFromCacheContext]?.value ?: false
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun <D : Operation.Data> ApolloResponse.Builder<D>.cacheHeaders(cacheHeaders: CacheHeaders) =
-    addExecutionContext(CacheHeadersContext(cacheHeaders))
+  addExecutionContext(CacheHeadersContext(cacheHeaders))
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 val <D : Operation.Data> ApolloResponse<D>.cacheHeaders
   get() = executionContext[CacheHeadersContext]?.value ?: CacheHeaders.NONE
