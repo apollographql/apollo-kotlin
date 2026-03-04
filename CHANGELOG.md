@@ -1,6 +1,29 @@
 Change Log
 ==========
 
+# Version 5.0.0-alpha.5
+
+This version is ["golden-path ready"](https://github.com/graphql/graphql-wg/issues/1887). It supports latest GraphQL experimental features:
+* [Fragment arguments](https://github.com/graphql/graphql-spec/pull/1081)
+* [Service capabilities](https://github.com/graphql/graphql-spec/pull/1163)
+* [`onError` request parameter](https://github.com/graphql/graphql-spec/pull/1163)
+* [Field extensions](https://github.com/graphql/graphql-spec/issues/1162)
+
+It also bumps KGP version to 2.3.10. This has no impact for JVM/Android consumers but requires Native/JS/Wasm consumers to compile with Kotlin 2.3.
+
+## 👷‍♂️ All changes
+
+* [NEW] Add fragment-arguments (#6882)
+* [NEW] Add support for service capabilities (#6858)
+* [NEW] Add support for `onError` (#6860)
+* [NEW] Implement field extensions (#6856, #6867)
+* [NEW] Use KGP 2.3.10 (#6873)
+* [NEW] Add GraphQLWsProtocol.parseServerMessage() (#6871)
+* [NEW] Rework field merging validation (#6875)
+* [FIX] Data builders: fix nullable fields of composite type (#6855)
+* [FIX] Use the same classloader than the one which loaded apollo-gradle-plugin to lookup the AGP version (#6877)
+* [FIX] Use public AGP API for version detection instead of internal class (#6874)
+
 # Version 4.4.1
 _2025-01-30_
 
