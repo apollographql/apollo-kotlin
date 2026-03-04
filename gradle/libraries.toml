@@ -28,8 +28,13 @@ gratatouille-runtime = "0.1.2"
 javaPoet = "1.13.0"
 jetbrains-annotations = "26.0.2-1"
 junit = "4.13.2"
+# Version for projects that we publish, and we need to give some time for non-JVM consumers to upgrade before we do
+# Our current strategy is to bump whenever AndroidX bumps
 #noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
 kotlin-plugin = "2.3.10"
+# Version for projects that we don't publish: build-logic, benchmarks, etc...
+#noinspection SimilarGradleDependency
+kotlin-plugin-latest = "2.3.10"
 kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.7.1"
 #noinspection NewerVersionAvailable requires KGP 2.2
@@ -194,9 +199,8 @@ apollo = { id = "com.apollographql.apollo", version.ref = "apollo" }
 #noinspection SimilarGradleDependency
 apollo-published = { id = "com.apollographql.apollo", version.ref = "apollo-published" }
 compat-patrouille = { id = "com.gradleup.compat.patrouille", version.ref = "compat-patrouille" }
-# KGP that does not need to care about the native consumers (build-logic, benchmarks, etc...)
 #noinspection SimilarGradleDependency
-kotlin-jvm-latest = { id = "org.jetbrains.kotlin.jvm", version = "2.2.20" }
+kotlin-jvm-latest = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin-latest" }
 #noinspection SimilarGradleDependency
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin" }
 kotlin-sam = { id = "org.jetbrains.kotlin.plugin.sam.with.receiver", version.ref = "kotlin-plugin" }
