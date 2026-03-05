@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Ecosystem Roadmap
 
-**Last updated: 2026-02-19**
+**Last updated: 2026-03-05**
 
 For up-to-date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -37,7 +37,7 @@ We plan to implement these GraphQL specification RFCs:
 - [x] [Default values coercion](https://github.com/graphql/graphql-spec/pull/793/)
 - [x] [Schema coordinates](https://github.com/graphql/graphql-spec/pull/794/)
 - [x] [Directives on directive definitions](https://github.com/graphql/graphql-spec/pull/567)
-- [ ] [Fragment arguments](https://github.com/graphql/graphql-spec/pull/1081)
+- [x] [Fragment arguments](https://github.com/graphql/graphql-spec/pull/1081)
 - [x] [Service capabilities](https://github.com/graphql/graphql-spec/pull/1163)
 
 ### Testing improvements:
@@ -50,9 +50,9 @@ We have recently shipped these features, please try them out and give us feedbac
 
 ## [Cache improvements](https://github.com/apollographql/apollo-kotlin/issues/2331)
 
-The new Apollo Normalized Cache v1 release candidate [is available now](https://github.com/apollographql/apollo-kotlin-normalized-cache/releases) and contain lots of new features like [Cache Control](https://apollographql.github.io/apollo-kotlin-normalized-cache/cache-control.html), [garbage collection](https://apollographql.github.io/apollo-kotlin-normalized-cache/garbage-collection.html), [partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache/issues/57), better performance and more...
+The new Apollo Normalized Cache v1 [is available now](https://github.com/apollographql/apollo-kotlin-normalized-cache/releases) and contain lots of new features like [Cache Control](https://apollographql.github.io/apollo-kotlin-normalized-cache/cache-control.html), [garbage collection](https://apollographql.github.io/apollo-kotlin-normalized-cache/garbage-collection.html), [partial cache results](https://github.com/apollographql/apollo-kotlin-normalized-cache/issues/57), better performance and more...
 
-We encourage you to try it out with the (important) caveat that the binary format might still change (your persistent cache might be lost when upgrading to a newer prerelease version, memory cache isn't impacted).  Your feedback is greatly appreciated and helps us ship a stable version faster.
+The current cache is deprecated in v5 and we encourage you to migrate. 
 
 ## Apollo Kotlin Compose
 
