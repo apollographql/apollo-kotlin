@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package test.circular_cache_read
 
 import circular_cache_read.GetUserQuery

@@ -1,9 +1,15 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized.api
+
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 
 /**
  * A Factory used to construct an instance of a [NormalizedCache] configured with the custom scalar adapters set in
  * ApolloClient.Builder#addCustomScalarAdapter(CustomScalarType, Adapter).
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 abstract class NormalizedCacheFactory {
 
   private var nextFactory: NormalizedCacheFactory? = null

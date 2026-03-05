@@ -1,10 +1,13 @@
 package com.apollographql.apollo.cache.normalized.api
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 
 /**
  * A collection of cache headers that Apollo's implementations of [NormalizedCache] respect.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 object ApolloCacheHeaders {
   /**
    * Records from this request should not be stored in the [NormalizedCache].

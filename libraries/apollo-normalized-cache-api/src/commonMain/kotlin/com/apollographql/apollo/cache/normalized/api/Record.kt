@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized.api
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.cache.normalized.api.internal.RecordWeigher.calculateBytes
@@ -9,6 +12,8 @@ import com.benasher44.uuid.Uuid
  * A normalized entry that corresponds to a response object. Object fields are stored if they are a GraphQL Scalars. If
  * a field is a GraphQL Object a [CacheKey] will be stored instead.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 class Record(
     val key: String,
     /**
@@ -134,4 +139,6 @@ class Record(
  * - [com.apollographql.apollo.api.json.ApolloJsonElement]
  * - [CacheKey]
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 typealias RecordValue = Any?

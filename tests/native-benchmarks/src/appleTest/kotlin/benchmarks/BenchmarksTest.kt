@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package benchmarks
 
 import benchmarks.builder.Data

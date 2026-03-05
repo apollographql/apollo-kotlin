@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized.sql
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo.cache.normalized.api.ApolloCacheHeaders.EVICT_AFTER_READ
 import com.apollographql.apollo.cache.normalized.api.CacheHeaders
@@ -10,6 +13,8 @@ import com.apollographql.apollo.cache.normalized.sql.internal.RecordDatabase
 import com.apollographql.apollo.exception.apolloExceptionHandler
 import kotlin.reflect.KClass
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 class SqlNormalizedCache internal constructor(
     private val recordDatabase: RecordDatabase,
 ) : NormalizedCache() {

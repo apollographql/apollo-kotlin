@@ -1,6 +1,7 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.cache.normalized.api.CacheKey
 import com.apollographql.apollo.cache.normalized.api.Record
 import com.apollographql.apollo.cache.normalized.api.internal.JsonRecordSerializer
@@ -54,7 +55,8 @@ class JsonRecordSerializerTest {
     assertEquals(actual = (deserializedMap["listOfScalarList"] as List<*>).size, expected = 1)
     assertEquals(
         actual = (deserializedMap["listOfScalarList"] as List<*>)[0] as Iterable<*>?,
-        expected = expectedScalarList)
+        expected = expectedScalarList
+    )
     assertEquals(actual = (deserializedMap["map"] as Map<*, *>)[expectedMapKey], expected = expectedMapValue)
     // The default deserialization algorithm will use the number type with the smallest possible width.
     // This is OK as the generated parser know what to expect and will convert back to Long if needed.

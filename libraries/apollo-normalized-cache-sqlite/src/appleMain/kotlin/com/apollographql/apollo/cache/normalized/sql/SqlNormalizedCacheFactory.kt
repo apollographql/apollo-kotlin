@@ -1,12 +1,17 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized.sql
 
 import app.cash.sqldelight.db.SqlDriver
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo.cache.normalized.sql.internal.createDriver
 import com.apollographql.apollo.cache.normalized.sql.internal.createRecordDatabase
 import com.apollographql.apollo.cache.normalized.sql.internal.getSchema
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 actual class SqlNormalizedCacheFactory actual constructor(
     private val driver: SqlDriver,
 ) : NormalizedCacheFactory() {

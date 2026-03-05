@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized.api
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.Operation
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
@@ -9,6 +12,8 @@ import kotlin.jvm.JvmStatic
  *
  * For headers which the default [NormalizedCache] respect, see [ApolloCacheHeaders].
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 class CacheHeaders internal constructor(private val headerMap: Map<String, String>) {
 
   class Builder {

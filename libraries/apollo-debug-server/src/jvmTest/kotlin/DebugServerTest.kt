@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.http.HttpBody
 import com.apollographql.apollo.api.json.buildJsonString

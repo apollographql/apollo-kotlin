@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package test.declarativecache
 
 import com.apollographql.apollo.api.CompiledField

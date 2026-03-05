@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo.cache.normalized
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
@@ -25,6 +28,8 @@ import kotlin.reflect.KClass
  * Note that most operations are synchronous and might block if the underlying cache is doing IO - calling them from the main thread
  * should be avoided.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 interface ApolloStore {
   /**
    * Exposes the keys of records that have changed.
@@ -275,6 +280,8 @@ interface ApolloStore {
   fun dispose()
 }
 
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 fun ApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,

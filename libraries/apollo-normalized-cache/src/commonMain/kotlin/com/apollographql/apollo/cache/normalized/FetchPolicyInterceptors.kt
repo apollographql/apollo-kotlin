@@ -3,6 +3,7 @@
 
 package com.apollographql.apollo.cache.normalized
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.Operation
@@ -25,6 +26,8 @@ import kotlin.jvm.JvmName
 /**
  * An interceptor that emits the response from the cache only.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 val CacheOnlyInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return chain.proceed(
@@ -39,6 +42,8 @@ val CacheOnlyInterceptor = object : ApolloInterceptor {
 /**
  * An interceptor that emits the response(s) from the network only.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 val NetworkOnlyInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return chain.proceed(request)
@@ -48,6 +53,8 @@ val NetworkOnlyInterceptor = object : ApolloInterceptor {
 /**
  * An interceptor that emits the response from the cache first, and if there was a cache miss, emits the response(s) from the network.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 val CacheFirstInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
@@ -71,6 +78,8 @@ val CacheFirstInterceptor = object : ApolloInterceptor {
 /**
  * An interceptor that emits the response(s) from the network first, and if there was a network error, emits the response from the cache.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 val NetworkFirstInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
@@ -111,6 +120,8 @@ val NetworkFirstInterceptor = object : ApolloInterceptor {
 /**
  * An interceptor that emits the response from the cache first, and then emits the response(s) from the network.
  */
+@Deprecated("Use the new Normalized Cache at https://github.com/apollographql/apollo-kotlin-normalized-cache")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
 val CacheAndNetworkInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
