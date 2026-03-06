@@ -9,7 +9,6 @@ dependencies {
   implementation(libs.apollo.runtime)
   testImplementation(libs.apollo.testingsupport)
   testImplementation(libs.apollo.mockserver)
-  testImplementation(libs.kotlin.test)
 }
 
 apollo {

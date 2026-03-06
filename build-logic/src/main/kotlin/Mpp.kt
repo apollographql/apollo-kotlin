@@ -16,6 +16,7 @@ internal val allAppleTargets = setOf(
     "watchosArm32",
     "watchosArm64",
     "watchosSimulatorArm64",
+    "watchosDeviceArm64",
     "tvosArm64",
     "tvosX64",
     "tvosSimulatorArm64",
@@ -102,6 +103,7 @@ fun Project.configureMpp(
           "watchosArm32" -> watchosArm32()
           "watchosArm64" -> watchosArm64()
           "watchosSimulatorArm64" -> watchosSimulatorArm64()
+          "watchosDeviceArm64" -> watchosDeviceArm64()
           "tvosArm64" -> tvosArm64()
           "tvosX64" -> tvosX64()
           "tvosSimulatorArm64" -> tvosSimulatorArm64()

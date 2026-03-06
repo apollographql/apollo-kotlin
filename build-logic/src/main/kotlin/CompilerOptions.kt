@@ -143,7 +143,8 @@ fun Project.configureJavaAndKotlinCompilers(jvmTarget: Int?, kotlinCompilerOptio
   }
 
   kotlinExtensionOrNull?.coreLibrariesVersion = "${kotlinCompilerOptions.version.version}.0"
-  allWarningsAsErrors(true)
+  // Disable because of `Language version 1.9 is deprecated and its support will be removed in a future version of Kotlin`
+  //allWarningsAsErrors(true)
 }
 
 fun setTestToolchain(project: Project, test: Test, javaVersion: Int) {
