@@ -11,7 +11,6 @@ apolloTest()
 dependencies {
   implementation(libs.apollo.api)
   implementation(libs.apollo.tooling)
-  testImplementation(libs.kotlin.test)
   testImplementation(libs.apollo.testingsupport)
   testImplementation(libs.apollo.mockserver)
 }

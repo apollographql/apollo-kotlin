@@ -50,7 +50,7 @@ fun Project.apolloLibrary(
       listOf(
           "kotlin.RequiresOptIn",
           "com.apollographql.apollo.annotations.ApolloInternal",
-          "com.apollographql.apollo.annotations.ApolloExperimental"
+          "com.apollographql.apollo.annotations.ApolloExperimental",
       )
   )
 
@@ -119,7 +119,7 @@ fun Project.apolloTest(
       listOf(
           "kotlin.RequiresOptIn",
           "com.apollographql.apollo.annotations.ApolloExperimental",
-          "com.apollographql.apollo.annotations.ApolloInternal"
+          "com.apollographql.apollo.annotations.ApolloInternal",
       )
   )
 
