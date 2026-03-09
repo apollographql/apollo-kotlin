@@ -12,7 +12,6 @@ dependencies {
   implementation(project(":sample-server"))
   testImplementation(libs.apollo.testingsupport)
   testImplementation(libs.apollo.mockserver)
-  testImplementation(libs.kotlin.test)
   testImplementation(libs.junit)
   testImplementation(libs.okhttp)
 }
