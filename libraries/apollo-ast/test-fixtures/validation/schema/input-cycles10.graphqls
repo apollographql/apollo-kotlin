@@ -1,0 +1,13 @@
+type Query {
+  test(arg: A): Int
+}
+
+# valid
+input A @oneOf {
+  b: B
+  escape: Int
+}
+
+input B {
+  a: A!
+}
