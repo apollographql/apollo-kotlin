@@ -1,0 +1,5 @@
+extend schema @link(url: "https://specs.apollo.dev/cache/v0.4", import: ["@typePolicy", "@fieldPolicy"])
+
+type Query @typePolicy(keyFields: "foo"){
+  foo: Int!
+}
