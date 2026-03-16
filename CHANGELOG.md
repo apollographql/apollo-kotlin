@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+# Version 4.4.2
+_2025-03-16_
+
+Maintenance release that adds a new KMP target and makes it easier to work with the new cache and AGP9.
+
+This version also bumps KGP to 2.2. This is transparent for Android/JVM consumers but requires native/JS/wasm consumers to use KGP 2.2 to compile against `4.4.2`.
+
+* [NEW] Add watchosDeviceArm64 (#6892)
+* [UPDATE] Upgrade KGP to 2.2 (#6892)
+* [FIX] If the new cache is present, do not import @typePolicy and @fieldPolicy (#6896)
+* [FIX] Use the same classloader than the one which loaded apollo-gradle-plugin to lookup the AGP version (#6877) (#6893)
+
+
 # Version 5.0.0-alpha.5
 
 This version is ["golden-path ready"](https://github.com/graphql/graphql-wg/issues/1887). It supports latest GraphQL experimental features:
