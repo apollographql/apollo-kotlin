@@ -10,6 +10,8 @@ import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.GQLSchemaDefinition
+import com.apollographql.apollo.ast.GQLSchemaExtension
+import com.apollographql.apollo.ast.GQLStringValue
 import com.apollographql.apollo.ast.GQLTypeDefinition
 import com.apollographql.apollo.ast.IncompatibleDefinition
 import com.apollographql.apollo.ast.Issue
@@ -53,6 +55,35 @@ import java.io.File
 object ApolloCompiler {
   interface Logger {
     fun warning(message: String)
+  }
+
+  private val cacheCompilerPluginVersion: String? = try {
+    Class.forName("com.apollographql.cache.apollocompilerplugin.VersionKt")
+        .getDeclaredField("VERSION")
+        .get(null) as String
+  } catch (_: Exception) {
+    null
+  }
+
+  /**
+   * The Cache plugin starts providing the cache directives in v1.0.0-alpha.7
+   */
+  private val cacheCompilerPluginHasCacheDirectives: Boolean = cacheCompilerPluginVersion?.isAtLeastAlpha(7) == true
+
+  private fun String.isAtLeastAlpha(alpha: Int): Boolean {
+    val parts = this.split('.', '-')
+    val major = parts[0].toInt()
+    if (major < 1) return false
+    if (major > 1) return true
+    val minor = parts[1].toInt()
+    if (minor > 0) return true
+    val patch = parts[2].toInt()
+    if (patch > 0) return true
+    if (parts.size <= 3) return true
+    val preRelease = parts[3]
+    if (preRelease != "alpha") return true
+    val alphaVersion = parts[4].toInt()
+    return alphaVersion >= alpha
   }
 
   fun buildCodegenSchema(
@@ -114,6 +145,26 @@ object ApolloCompiler {
           append(")\n")
         }
       }
+
+      if (schemaDefinitions.none {
+        it is GQLSchemaExtension && it.directives.any {
+          it.name == "link" && it.arguments.any {
+            it.name == "url" && (it.value as? GQLStringValue)?.value?.startsWith("https://specs.apollo.dev/kotlin_labs/") == true
+          }
+        }
+      }) {
+        if (cacheCompilerPluginHasCacheDirectives) {
+          // The cache docs recommend importing @typePolicy and @fieldPolicy so we leave them with the default (long) import
+          appendLine("""
+            extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3", import: ["@optional", "@nonnull", "@requiresOptIn", "@targetName"])
+          """.trimIndent())
+        } else {
+          // No cache plugin, import everything
+          appendLine("""
+            extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3", import: ["@optional", "@nonnull", "@requiresOptIn", "@targetName", "@typePolicy", "@fieldPolicy"])
+          """.trimIndent())
+        }
+      }
     }
     val scalarExtensions = sdl.toGQLDocument().definitions
 
@@ -124,10 +175,7 @@ object ApolloCompiler {
 
     val result = schemaDocument.validateAsSchema(
         validationOptions = SchemaValidationOptions(
-            /**
-             * TODO: switch to false
-             */
-            addKotlinLabsDefinitions = true,
+            addKotlinLabsDefinitions = false,
             builtinForeignSchemas() + foreignSchemas
         )
     )
