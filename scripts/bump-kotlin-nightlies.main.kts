@@ -11,7 +11,7 @@ val BRANCH_NAME = "kotlin-nightlies"
 
 fun bumpVersions() {
   val kotlinVersion =
-    getLatestVersion("https://redirector.kotlinlang.org/maven/dev/org/jetbrains/kotlin/kotlin-stdlib/maven-metadata.xml", prefix = "2.3.20")
+    getLatestVersion("https://redirector.kotlinlang.org/maven/dev/org/jetbrains/kotlin/kotlin-stdlib/maven-metadata.xml", prefix = "2.4.0")
 
   val useKspSnapshots = true
   val kspVersion = getLatestVersion(
@@ -59,6 +59,8 @@ fun getLatestVersion(url: String, prefix: String? = null): String {
                         .replace("-mars-", "-Dev.")
                         .replace("-vega-", "-Dev.")
                         .replace("-titan-", "-Dev.")
+                        .replace("-saturn-", "-Dev.")
+                        .replace("-saturn", "-Dev.0")
                         .replace("-RC-", "-RC.")
                         .replace("-RC2-", "-RC2.")
                         .replace("-RC3-", "-RC3.")
