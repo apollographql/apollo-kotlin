@@ -16,8 +16,6 @@ import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationVariantSpec
-import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
