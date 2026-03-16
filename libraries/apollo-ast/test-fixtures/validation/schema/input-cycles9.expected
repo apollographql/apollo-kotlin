@@ -1,0 +1,5 @@
+OtherValidationIssue (10:3)
+Input object `B` references itself through an unbreakable chain of input fields and cannot be constructed: B.a --> A.b --> B
+------------
+OtherValidationIssue (6:3)
+Input object `A` references itself through an unbreakable chain of input fields and cannot be constructed: A.b --> B.a --> A

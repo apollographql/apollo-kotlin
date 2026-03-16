@@ -1,0 +1,11 @@
+type Query {
+  test(arg: A): Int
+}
+
+input A @oneOf {
+  b: B
+}
+
+input B {
+  x: Int
+}

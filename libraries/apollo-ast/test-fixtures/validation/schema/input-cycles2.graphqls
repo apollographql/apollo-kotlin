@@ -1,18 +1,19 @@
 type Query {
-    field(arg: SomeInputObject): String
+    field(arg: A): String
 }
 
-# multiple cycles involving other objects
-input SomeInputObject {
-    startLoop: AnotherInputObject!
+input A {
+    b: B!
 }
 
-input AnotherInputObject {
-    closeLoop: SomeInputObject!
-    startSecondLoop: YetAnotherInputObject!
+# This is an example of a SCC of size 3 containing 2 cycles (A <-> B) and (B <-> C). Only (B <-> C) is reported
+# Input object `B` references itself through an unbreakable chain of input fields and cannot be constructed: B.c --> C.b --> B
+input B {
+    a: A!
+    c: C!
 }
 
-input YetAnotherInputObject {
-    closeSecondLoop: AnotherInputObject!
-    nonNullSelf: YetAnotherInputObject!
+input C {
+    b: B!
+    c: C!
 }

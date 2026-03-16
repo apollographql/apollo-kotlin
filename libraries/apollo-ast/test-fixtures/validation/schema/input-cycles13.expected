@@ -1,8 +1,8 @@
-OtherValidationIssue (15:5)
+OtherValidationIssue (14:3)
 Input object `C` references itself through an unbreakable chain of input fields and cannot be constructed: C.a --> A.b --> B.c --> C
 ------------
-OtherValidationIssue (7:5)
+OtherValidationIssue (6:3)
 Input object `A` references itself through an unbreakable chain of input fields and cannot be constructed: A.b --> B.c --> C.a --> A
 ------------
-OtherValidationIssue (11:5)
+OtherValidationIssue (10:3)
 Input object `B` references itself through an unbreakable chain of input fields and cannot be constructed: B.c --> C.a --> A.b --> B

@@ -1,0 +1,7 @@
+type Query {
+  test(arg: A): Int
+}
+
+input A @oneOf {
+  a: [A!]
+}

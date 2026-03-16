@@ -1,0 +1,11 @@
+type Query {
+  test(arg: A): Int
+}
+
+input A {
+  b: B!
+}
+
+input B {
+  a: A
+}

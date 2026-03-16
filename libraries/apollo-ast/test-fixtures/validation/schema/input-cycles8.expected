@@ -1,0 +1,2 @@
+OtherValidationIssue (6:3)
+Input object `A` references itself through field `A.self` and cannot be constructed.

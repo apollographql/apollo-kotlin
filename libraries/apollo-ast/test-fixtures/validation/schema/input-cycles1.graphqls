@@ -2,15 +2,15 @@ type Query {
     field(arg: SomeInputObject): String
 }
 
-# cycle involving other objects
-input SomeInputObject {
-    startLoop: AnotherInputObject!
+# Input object `A` references itself through an unbreakable chain of input fields and cannot be constructed: A.b --> B.c --> C.a --> A
+input A {
+    b: B!
 }
 
-input AnotherInputObject {
-    nextInLoop: YetAnotherInputObject!
+input B {
+    c: C!
 }
 
-input YetAnotherInputObject {
-    closeLoop: SomeInputObject!
+input C {
+    a: A!
 }
