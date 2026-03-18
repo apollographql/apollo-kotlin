@@ -16,9 +16,8 @@ class SchemaValidationTest {
 
     checkExpected(graphqlsFile) {
       val pragmas = graphqlsFile.pragmas()
-      val parseResult = graphqlsFile.toGQLDocument().validateAsSchema(
-          pragmas.toSchemaValidationOptions()
-      )
+      val parseResult = graphqlsFile
+          .toGQLDocument(pragmas.toParserOptions()).validateAsSchema(pragmas.toSchemaValidationOptions())
 
       parseResult.issues.serialize()
     }

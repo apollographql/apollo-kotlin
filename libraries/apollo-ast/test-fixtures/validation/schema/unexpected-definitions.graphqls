@@ -1,4 +1,12 @@
+# PRAGMA allowDirectivesOnDirectives
+# PRAGMA addBuiltinForeignSchemas
+
+extend schema @link(url: "https://specs.apollo.dev/kotlin_ignore/v0.1/", import: ["@ignore"])
+
 directive @catch on FIELD_DEFINITION
+
+extend directive @catch @ignore
+
 enum CatchTo {
   NULL
   EMPTY

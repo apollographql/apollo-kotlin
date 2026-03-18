@@ -1,3 +1,5 @@
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.7/", import: ["@targetName"])
+
 type Query {
   enum: Enum
 }

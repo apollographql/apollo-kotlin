@@ -1,6 +1,7 @@
+
 query TestQuery {
-    # The schema defines @nonnull with a 'required' argument but this still validates
+    # The schema directive takes precedence over the linked one. Since the schema one has a required argument, this does not validate
     field @nonnull
-    # This fails to validate
-    alias: field @nonnull(toto: "foo")
+    # This validates
+    alias: field @nonnull(required: "foo")
 }

@@ -68,22 +68,14 @@ internal interface ValidationScope : IssuesScope {
 
   val typeDefinitions: Map<String, GQLTypeDefinition>
   val directiveDefinitions: Map<String, GQLDirectiveDefinition>
-  val foreignNames: Map<String, String>
-
-  fun originalDirectiveName(name: String): String {
-    return foreignNames["@$name"]?.substring(1) ?: name
-  }
-
-  fun originalTypeName(name: String): String {
-    return foreignNames[name] ?: name
-  }
+  val directivesMapping: DirectivesMapping
 }
 
 internal class DefaultValidationScope(
     override val typeDefinitions: Map<String, GQLTypeDefinition>,
     override val directiveDefinitions: Map<String, GQLDirectiveDefinition>,
     issues: MutableList<Issue>? = null,
-    override val foreignNames: Map<String, String> = emptyMap(),
+    override val directivesMapping: DirectivesMapping = DirectivesMapping(emptyMap()),
 ) : ValidationScope {
   constructor(definitions: List<GQLDefinition>) : this(
       definitions.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
@@ -178,12 +170,12 @@ internal fun ValidationScope.validateDirectives(
     validateDirectiveInternal(it.first, directiveLocation, it.second, registerVariableUsage)
 
     /**
-     * Apollo specific validation
+     * Apollo-specific validation
      */
-    if (originalDirectiveName(it.first.name) == Schema.NONNULL) {
-      extraValidateNonNullDirective(it.first, directiveContext)
+    if (directivesMapping.canonicalName(it.first.name) == Schema.NONNULL) {
+      extraValidateNonNullDirective(it.first)
     }
-    if (originalDirectiveName(it.first.name) == TYPE_POLICY) {
+    if (directivesMapping.canonicalName(it.first.name) == TYPE_POLICY) {
       extraValidateTypePolicyDirective(it.first, directiveContext)
     }
   }
@@ -201,38 +193,10 @@ internal fun ValidationScope.validateDirectives(
 /**
  * Extra Apollo-specific validation for @nonnull
  */
-internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirective, directiveContext: GQLNode) {
+internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirective) {
   issues.add(
       NonNullUsage(message = "Using `@nonnull` is deprecated. Use `@semanticNonNull` and/or `@catch` instead. See https://go.apollo.dev/ak-nullability.", directive.sourceLocation)
   )
-  if (directiveContext is GQLField && directive.arguments.isNotEmpty()) {
-    registerIssue(
-        message = "'${directive.name}' cannot have arguments when applied on a field",
-        sourceLocation = directive.sourceLocation
-    )
-
-  } else if (directiveContext is GQLObjectTypeDefinition && directive.arguments.isEmpty()) {
-    registerIssue(
-        message = "'${directive.name}' must contain a selection of fields",
-        sourceLocation = directive.sourceLocation
-    )
-    val stringValue = (directive.arguments.first().value as GQLStringValue).value
-
-    val selections = stringValue.parseAsGQLSelections().getOrThrow()
-
-    val badSelection = selections.firstOrNull { it !is GQLField }
-    check(badSelection == null) {
-      "'$badSelection' cannot be made non-null. '$stringValue' should only contain fields."
-    }
-
-    val nonNullFields = selections.map { (it as GQLField).name }.toSet()
-    val schemaFields = directiveContext.fields.map { it.name }.toSet()
-
-    val unknownFields = nonNullFields - schemaFields
-    check(unknownFields.isEmpty()) {
-      "Fields '${unknownFields.joinToString()}' are not defined in ${directiveContext.name}"
-    }
-  }
 }
 
 /**

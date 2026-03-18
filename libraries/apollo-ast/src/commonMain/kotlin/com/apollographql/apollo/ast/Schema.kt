@@ -3,6 +3,7 @@ package com.apollographql.apollo.ast
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.ast.internal.DirectivesMapping
 
 /**
  * A wrapper around a schema [GQLDocument] that ensures the [GQLDocument] is valid and caches
@@ -12,13 +13,13 @@ import com.apollographql.apollo.annotations.ApolloInternal
  * - has all type system extensions merged
  * - has some helper functions to retrieve a type by name and/or possible types
  * - caches [keyFields] for easier lookup during codegen
- * - remembers [foreignNames] to keep track of renamed definitions
+ * - remembers [directivesMapping] to keep track of renamed definitions
  * - remembers [directivesToStrip] to keep track of client-only directives
  *
  * @param definitions a list of validated and merged definitions
  * @param keyFields a Map containing the key fields for each type
- * @param foreignNames a Map from a type system name -> its original name in the foreign schema.
- * To distinguish between directives and types, directive names must be prefixed by '@'
+ * @param directivesMapping a Map from the foreign schema name to the final name in the schema.
+ * Ignored directives are absent from the map.
  * Example: "@kotlin_labs_nonnull" -> "@nonnull"
  * @param directivesToStrip directives to strip because they are coming from a foreign schema
  * Example: "kotlin_labs_nonnull"
@@ -26,7 +27,7 @@ import com.apollographql.apollo.annotations.ApolloInternal
 class Schema internal constructor(
     private val definitions: List<GQLDefinition>,
     private val keyFields: Map<String, Set<String>>,
-    val foreignNames: Map<String, String>,
+    internal val directivesMapping: DirectivesMapping,
     private val directivesToStrip: List<String>,
 ) {
   @ApolloInternal
@@ -63,12 +64,8 @@ class Schema internal constructor(
    *
    * @return the original directive name (like "targetName") or null if the directive was not linked.
    */
-  fun originalDirectiveName(name: String): String {
-    return foreignNames["@$name"]?.substring(1) ?: name
-  }
-
-  fun originalTypeName(name: String): String {
-    return foreignNames[name] ?: name
+  fun originalDirectiveName(name: String): String? {
+    return directivesMapping.canonicalName(name)
   }
 
   fun rootTypeNameOrNullFor(operationType: String): String? {
@@ -134,7 +131,7 @@ class Schema internal constructor(
     return mapOf(
         "sdl" to GQLDocument(definitions, sourceLocation = null).toSDL(indent = "", includeBuiltInScalarDefinitions = true),
         "keyFields" to keyFields.mapValues { it.value.toList().sorted() },
-        "foreignNames" to foreignNames,
+        "directivesMapping" to directivesMapping.names,
         "directivesToStrip" to directivesToStrip,
     )
   }
@@ -179,16 +176,6 @@ class Schema internal constructor(
   }
 
   /**
-   * Returns whether the `typePolicy` directive is present on at least one object in the schema
-   */
-  fun hasTypeWithTypePolicy(): Boolean {
-    val directives = typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>().flatMap { it.directives } +
-        typeDefinitions.values.filterIsInstance<GQLInterfaceTypeDefinition>().flatMap { it.directives } +
-        typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().flatMap { it.directives }
-    return directives.any { originalDirectiveName(it.name) == TYPE_POLICY }
-  }
-
-  /**
    *  Get the key fields for an object, interface or union type.
    */
   @ApolloInternal
@@ -227,6 +214,7 @@ class Schema internal constructor(
     const val OPTIONAL = "optional"
     const val REQUIRES_OPT_IN = "requiresOptIn"
     const val TARGET_NAME = "targetName"
+    internal const val IGNORE = "ignore"
 
     @ApolloExperimental
     const val CATCH = "catch"
@@ -263,7 +251,7 @@ class Schema internal constructor(
       return Schema(
           definitions = (map["sdl"] as String).parseAsGQLDocument().getOrThrow().definitions,
           keyFields = (map["keyFields"]!! as Map<String, Collection<String>>).mapValues { it.value.toSet() },
-          foreignNames = map["foreignNames"]!! as Map<String, String>,
+          directivesMapping = DirectivesMapping(map["directivesMapping"]!! as Map<String, String>),
           directivesToStrip = map["directivesToStrip"]!! as List<String>,
       )
     }

@@ -185,7 +185,7 @@ private fun ValidationScope.validateAndCoerceInputObject(
             typeDefinitions = typeDefinitions,
             directiveDefinitions = directiveDefinitions,
             issues = null,
-            foreignNames = foreignNames
+            directivesMapping = directivesMapping
         )
         return@mapNotNull GQLObjectField(
             name = inputValueDefinition.name,

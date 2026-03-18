@@ -4,6 +4,7 @@ import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.ast.DeprecatedUsage
 import com.apollographql.apollo.ast.DirectiveRedefinition
+import com.apollographql.apollo.ast.IgnoredLinkDirective
 import com.apollographql.apollo.ast.IncompatibleDefinition
 import com.apollographql.apollo.ast.UnusedFragment
 import com.apollographql.apollo.ast.UnusedVariable
@@ -200,7 +201,9 @@ class IrOptions(
 
     val codegenModels: String?,
 
-    val allowFragmentArguments: Boolean?
+    val allowFragmentArguments: Boolean?,
+
+    val allowDirectivesOnDirectives: Boolean?,
 )
 
 fun buildIrOptions(
@@ -212,7 +215,8 @@ fun buildIrOptions(
     alwaysGenerateTypesMatching: Set<String>? = null,
     codegenModels: String? = null,
     issueSeverity: Map<String, IssueSeverity>? = null,
-    allowFragmentArguments: Boolean? = null
+    allowFragmentArguments: Boolean? = null,
+    allowDirectivesOnDirectives: Boolean? = null,
 ): IrOptions = IrOptions(
     decapitalizeFields = decapitalizeFields,
     flattenModels = flattenModels,
@@ -222,7 +226,8 @@ fun buildIrOptions(
     alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
     codegenModels = codegenModels,
     issueSeverities = issueSeverity,
-    allowFragmentArguments = allowFragmentArguments
+    allowFragmentArguments = allowFragmentArguments,
+    allowDirectivesOnDirectives = allowDirectivesOnDirectives
 )
 
 interface CommonCodegenOpt {
@@ -690,8 +695,7 @@ internal val defaultIssueSeverities = mapOf(
     DeprecatedUsage::class.simpleName!! to IssueSeverity.Warn,
     UnusedVariable::class.simpleName!! to IssueSeverity.Warn,
     UnusedFragment::class.simpleName!! to IssueSeverity.Warn,
-    DirectiveRedefinition::class.simpleName!! to IssueSeverity.Warn,
-    IncompatibleDefinition::class.simpleName!! to IssueSeverity.Warn,  // This should probably be an error by default
+    IgnoredLinkDirective::class.simpleName!! to IssueSeverity.Warn,
 )
 internal const val defaultFailOnWarnings = false
 internal const val defaultGenerateAsInternal = false

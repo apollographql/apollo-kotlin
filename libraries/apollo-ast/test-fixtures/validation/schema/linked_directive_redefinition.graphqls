@@ -1,0 +1,10 @@
+# PRAGMA addBuiltinForeignSchemas
+
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3", import: ["@optional", "@nonnull", "@requiresOptIn", "@targetName", "@typePolicy", "@fieldPolicy"])
+
+type Query {
+    field: String
+}
+
+# A directive that clashes with some of the Apollo directives
+directive @nonnull(required: String!) on FIELD

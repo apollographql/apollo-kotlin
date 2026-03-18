@@ -1,0 +1,10 @@
+# PRAGMA addBuiltinForeignSchemas
+
+# we need at least one extension or no @link will be added
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3", import: ["@optional"])
+
+type Query {
+  foo: Int!
+}
+
+directive @link on SCHEMA

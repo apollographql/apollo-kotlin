@@ -30,6 +30,7 @@ import com.apollographql.apollo.ast.GQLTypeDefinition.Companion.builtInTypes
 import com.apollographql.apollo.ast.GQLTypeSystemExtension
 import com.apollographql.apollo.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo.ast.GQLValue
+import com.apollographql.apollo.ast.IgnoredLinkDirective
 import com.apollographql.apollo.ast.IncompatibleDefinition
 import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.NoQueryType
@@ -38,20 +39,13 @@ import com.apollographql.apollo.ast.Schema
 import com.apollographql.apollo.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo.ast.SchemaValidationOptions
 import com.apollographql.apollo.ast.SourceLocation
-import com.apollographql.apollo.ast.autoLinkedKotlinLabsForeignSchema
-import com.apollographql.apollo.ast.autoLinkedKotlinLabsForeignSchemaNoCache
 import com.apollographql.apollo.ast.builtinDefinitions
 import com.apollographql.apollo.ast.canHaveKeyFields
 import com.apollographql.apollo.ast.findOneOf
 import com.apollographql.apollo.ast.linkDefinitions
-import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.parseAsGQLSelections
 import com.apollographql.apollo.ast.rawType
 import com.apollographql.apollo.ast.transform2
-
-private fun ForeignSchema.asNonPrefixedImport(): LinkedSchema {
-  return LinkedSchema(this, definitions, definitions.map { (it as GQLNamed).definitionName() }.associateBy { it }, null)
-}
 
 private class LinkedDefinition<T : GQLDefinition>(val definition: T, val linkedSchema: LinkedSchema)
 
@@ -98,16 +92,6 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
    * TODO: this should probably be done after merging so that we can handle @link on the schema definition itself.
    */
   val linkedSchemas = definitions.filterIsInstance<GQLSchemaExtension>().getLinkedSchemas(issues, options.foreignSchemas).toMutableList()
-
-  if (options.addKotlinLabsDefinitions && linkedSchemas.none { it.foreignSchema.name == "kotlin_labs" }) {
-    linkedSchemas.add(
-        if (options.excludeCacheDirectives) {
-          autoLinkedKotlinLabsForeignSchemaNoCache
-        } else {
-          autoLinkedKotlinLabsForeignSchema
-        }.asNonPrefixedImport()
-    )
-  }
 
   val typeDefinitions = mutableMapOf<String, GQLTypeDefinition>()
   val directiveDefinitions = mutableMapOf<String, GQLDirectiveDefinition>()
@@ -245,98 +229,50 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
   importedDirectiveDefinitions.forEach { entry ->
     val existing = directiveDefinitions.get(entry.key)
     if (existing != null) {
-      if (entry.value.linkedSchema.foreignSchema == autoLinkedKotlinLabsForeignSchema || entry.value.linkedSchema.foreignSchema == autoLinkedKotlinLabsForeignSchemaNoCache) {
-        /*
-         * This may be an auto-linked definition.
-         * For compatibility reasons, it takes precedence over the user-provided ones.
-         * In the future, we should ask the user to explicitly import the definitions
-         * and rename them so that they do not clash.
-         * TODO v5: remove this branch
-         */
-        issues.add(DirectiveRedefinition(entry.key, existing.sourceLocation, existing.sourceLocation))
-        directiveDefinitions.put(entry.key, entry.value.definition)
-      } else if (entry.value.linkedSchema.foreignSchema.name == Schema.LINK) {
+      if (entry.value.linkedSchema.foreignSchema.name == Schema.LINK) {
         /*
          * Since we don't support renaming @link just yet, there's no good resolution if the directive
-         * is already defined in the API schema. Just ignore the schema one in this case
+         * is already defined in the API schema. Just ignore the schema one in this case.
          */
-        issues.add(DirectiveRedefinition(entry.key, existing.sourceLocation, existing.sourceLocation))
+        issues.add(IgnoredLinkDirective(existing.sourceLocation))
         directiveDefinitions.put(entry.key, entry.value.definition)
       } else {
-        issues.add(OtherValidationIssue("Definition is conflicting with linked definition '${entry.value.linkedSchema.foreignSchema.nameWithVersion}/${entry.value.definition.definitionName()}'", existing.sourceLocation))
+        issues.add(DirectiveRedefinition("${entry.value.linkedSchema.foreignSchema.nameWithVersion}/${entry.value.definition.definitionName()}", existing.sourceLocation, null))
       }
     } else {
       directiveDefinitions.put(entry.key, entry.value.definition)
     }
   }
 
-  val foreignNames = linkedSchemas.flatMap {
-    it.newNames.entries
-  }.associateBy(keySelector = { it.value }, valueTransform = { it.key })
-
-  /*
-   * For definitions that we have special processing for, verify that they match
-   * what we expect to provide a good error message.
-   *
-   * If not, we could get crashes in the compiler because it is expecting
-   * certain argument names. Or a directive could be ignored, which would be surprising.
-   *
-   * Note: server implementations may ignore what checked directives we have and get stuck
-   * here with an error or worse, trigger undesired behaviour without realizing it. If that
-   * were to happen, we could add an "ignore" directive to ignore them. Or only do special
-   * processing for the directives that are defined on the clients (which would be quite
-   * hard to do at the moment because we do not distinguish server vs client `.graphqls`
-   * files).
-   *
-   * TODO: should this be done after merging?
-   */
-  listOf(
-      oneOfDefinitionsStr,
-      nonNullDefinitionStr,
-      kotlinLabsDefinitions_0_4,
-      compilerOptions_0_0,
-      compilerOptions_0_1_additions,
-      nullabilityDefinitionsStr,
-  ).flatMap {
-    it.parseAsGQLDocument().getOrThrow().definitions
-  }
-      .forEach { expected ->
-        val existing = when (expected) {
-          is GQLTypeDefinition -> typeDefinitions.get(expected.name)
-          is GQLDirectiveDefinition -> directiveDefinitions.get(expected.name)
-          else -> error("")// should never happen
-        }
-        if (existing != null && !foreignNames.containsKey(expected.definitionName()) && !existing.semanticEquals(expected)) {
-          /*
-           * For non-linked definitions, check that the definitions match 1:1.
-           * We do not check linked definitions because:
-           * - we know we support them by construction.
-           * - someone may rename argument types, which makes validation much harder. One example is importing `@catch` but not
-           * `@catchTo`.
-           */
-          issues.add(IncompatibleDefinition(expected.name, expected.toSemanticSdl(), existing.sourceLocation))
-        }
-      }
-
   /**
    * I'm not 100% clear on the order of validations, here I'm merging the extensions first thing.
    *
    * It seems more natural. Two examples:
-   * - If we were one day to validate that objects implement all interfaces fields for an example, this would have to be
-   * done post merging (because extensions may add fields to interfaces).
+   * - If we were, one day to validate that objects implement all interfaces fields, for an example, this would have to be
+   * done post-merging (because extensions may add fields to interfaces).
    * - Same for validated repeated directives.
    *
-   * Moving forward, extensions merging should probably be done first thing as a separate step, before any validation and/or linking of foreign schemas.
+   * Moving forward, merging extensions should probably be done first thing as a separate step, before any validation and/or linking of foreign schemas.
    */
   val dedupedDefinitions =
     listOfNotNull(schemaDefinition) + directiveDefinitions.values + typeDefinitions.values + listOfNotNull(serviceDefinition)
   val mergedDefinitions = ExtensionsMerger(dedupedDefinitions + typeSystemExtensions, options.mergeOptions).merge().getOrThrow()
 
+  val directivesNames = mutableMapOf<String, String>()
+  linkedSchemas.forEach {
+    it.newNames.forEach {
+      if (it.key.startsWith('@')) {
+        directivesNames.put(it.value.substring(1), it.key.substring(1))
+      }
+    }
+  }
+  val directivesMapping = DirectivesMapping(directivesNames)
+
   val mergedScope = DefaultValidationScope(
       typeDefinitions = mergedDefinitions.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
       directiveDefinitions = mergedDefinitions.filterIsInstance<GQLDirectiveDefinition>().associateBy { it.name },
       issues = issues,
-      foreignNames = foreignNames,
+      directivesMapping = directivesMapping,
   )
   mergedScope.validateNoIntrospectionNames()
 
@@ -358,11 +294,39 @@ internal fun validateSchema(definitions: List<GQLDefinition>, options: SchemaVal
     emptyMap()
   }
 
+  mergedDefinitions.forEach {
+    if (it !is GQLDirectiveDefinition) {
+      return@forEach
+    }
+
+    if (it.directives.any { directivesMapping.canonicalName(it.name) == Schema.IGNORE }) {
+      directivesNames.remove(it.name)
+      return@forEach
+    }
+    if (!directivesNames.containsKey(it.name)) {
+      // This is a non-linked directive, import it under its own name
+      directivesNames.put(it.name, it.name)
+    }
+  }
+
+  /**
+   * TODO: for types and directives that we have special processing for, check that they either:
+   * - come from a supported foreign schema (for client, non builtin-directives, like `@catch`)
+   * - or have the expected shape (for server, builtin-directives, like `@semanticNonNull`)
+   *
+   * If not, we could get crashes in the compiler because it is expecting
+   * certain argument names. Or a directive could be ignored, which would be surprising.
+   *
+   * We tolerate this for now because this is a build-time error, not runtime.
+   * If anyone comes into an issue like this, they can use `@ignore` to remove processing
+   * for that specific directive.
+   */
+
   return GQLResult(
       Schema(
           definitions = mergedDefinitions,
           keyFields = keyFields,
-          foreignNames = foreignNames,
+          directivesMapping = directivesMapping,
           directivesToStrip = linkedSchemas.flatMap { it.foreignSchema.directivesToStrip },
       ),
       issues
@@ -404,13 +368,12 @@ internal fun syntheticSchemaDefinition(typeDefinitions: Map<String, GQLTypeDefin
  * @param foreignSchema the [ForeignSchema] being imported.
  * @param renamedDefinitions [ForeignSchema.definitions] renamed according to the import.
  * By default, the new names are `${foreignSchemaName}__${definitionName}`
- * @param newNames a mapping from the initial foreign name to the new name.
+ * @param newNames a mapping from the initial foreign name to actual, schema name.
  */
 private class LinkedSchema(
     val foreignSchema: ForeignSchema,
     val renamedDefinitions: List<GQLDefinition>,
     val newNames: Map<DefinitionName, DefinitionName>,
-    val foreignSchemaImportLocation: SourceLocation?,
 )
 
 private class UrlParseResult(val name: String, val version: String)
@@ -459,7 +422,6 @@ private fun List<GQLSchemaExtension>.getLinkedSchemas(
           "Purpose" to "apollo__kotlin__link__Purpose",
       ),
       "", // prefix is not relevant here because we specify imports for all definitions
-      null
   )
 
   schemaExtensions.forEach { schemaExtension ->
@@ -518,7 +480,7 @@ private fun List<GQLSchemaExtension>.getLinkedSchemas(
             }
           }
 
-          linkedSchemas.add(foreignSchema.link(imports, prefix, gqlDirective.sourceLocation))
+          linkedSchemas.add(foreignSchema.link(imports, prefix))
         } else {
           issues.add(
               OtherValidationIssue(
@@ -537,14 +499,12 @@ private fun List<GQLSchemaExtension>.getLinkedSchemas(
 private fun ForeignSchema.link(
     imports: Map<DefinitionName, DefinitionName>,
     prefix: String,
-    sourceLocation: SourceLocation?,
 ): LinkedSchema {
   val (definitions, renames) = definitions.rename(imports, prefix)
   return LinkedSchema(
       foreignSchema = this,
       renamedDefinitions = definitions,
       newNames = renames,
-      foreignSchemaImportLocation = sourceLocation
   )
 }
 
@@ -759,7 +719,7 @@ private fun ValidationScope.validateField(fieldDefinition: GQLFieldDefinition) {
 
   fieldDefinition.arguments.forEach {
     if (it.defaultValue != null) {
-      validateAndCoerceValue(it.defaultValue, it.type, false, false) {
+      validateAndCoerceValue(it.defaultValue, it.type, hasLocationDefaultValue = false, isOneOfInputField = false) {
         issues.add(it.constContextError())
       }
     }
@@ -774,7 +734,7 @@ private fun ValidationScope.validateUnions() {
 
 private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition) {
   val hasCatchDefinition = directiveDefinitions.any {
-    originalDirectiveName(it.key) == Schema.CATCH
+    directivesMapping.canonicalName(it.key) == Schema.CATCH
   }
 
   if (!hasCatchDefinition) {
@@ -782,7 +742,7 @@ private fun ValidationScope.validateCatch(schemaDefinition: GQLSchemaDefinition)
   }
 
   val catches = schemaDefinition.directives.filter {
-    originalDirectiveName(it.name) == Schema.CATCH_BY_DEFAULT
+    directivesMapping.canonicalName(it.name) == Schema.CATCH_BY_DEFAULT
   }
 
   if (catches.isEmpty()) {
@@ -797,7 +757,7 @@ private fun ValidationScope.validateDirectiveDefinitions() {
   directiveDefinitions.values.forEach { d ->
     d.arguments.forEach {
       if (it.defaultValue != null) {
-        validateAndCoerceValue(it.defaultValue, it.type, false, false) {
+        validateAndCoerceValue(it.defaultValue, it.type, hasLocationDefaultValue = false, isOneOfInputField = false) {
           issues.add(it.constContextError())
         }
       }
@@ -812,7 +772,7 @@ private fun ValidationScope.validateScalars() {
     var hasMap = false
     var hasMapTo = false
     scalarTypeDefinition.directives.forEach {
-      when (originalDirectiveName(it.name)) {
+      when (directivesMapping.canonicalName(it.name)) {
         Schema.MAP_TO -> hasMapTo = true
         Schema.MAP -> hasMap = true
       }
@@ -1207,7 +1167,7 @@ private fun ValidationScope.keyFields(
     )
   }
 
-  val keyFields = directives.filter { originalDirectiveName(it.name) == TYPE_POLICY }.toKeyFields()
+  val keyFields = directives.filter { directivesMapping.canonicalName(it.name) == TYPE_POLICY }.toKeyFields()
   val ret = if (keyFields.isNotEmpty()) {
     if (distinct.isNotEmpty()) {
       val extra = interfaces.indices.joinToString("\n") {

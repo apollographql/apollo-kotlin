@@ -7,6 +7,8 @@ import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.GQLSchemaDefinition
+import com.apollographql.apollo.ast.GQLSchemaExtension
+import com.apollographql.apollo.ast.GQLStringValue
 import com.apollographql.apollo.ast.GQLTypeDefinition
 import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.MergeOptions
@@ -161,13 +163,32 @@ object ApolloCompiler {
         if (!hasLink) {
           appendLine("extend schema @link(url: \"https://specs.apollo.dev/kotlin_compiler_options/v0.1/\")")
         }
-        append("extend schema @kotlin_compiler_options__generateDataBuilders")
+        appendLine("extend schema @kotlin_compiler_options__generateDataBuilders")
+      }
+      if (schemaDefinitions.none {
+            it is GQLSchemaExtension && it.directives.any {
+              it.name == "link" && it.arguments.any {
+                it.name == "url" && (it.value as? GQLStringValue)?.value?.startsWith("https://specs.apollo.dev/kotlin_labs/") == true
+              }
+            }
+          }) {
+        if (cacheCompilerPluginHasCacheDirectives) {
+          // The cache docs recommend importing @typePolicy and @fieldPolicy so we leave them with the default (long) import
+          appendLine("""
+            extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3", import: ["@optional", "@nonnull", "@requiresOptIn", "@targetName"])
+          """.trimIndent())
+        } else {
+          // No cache plugin, import everything
+          appendLine("""
+            extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3", import: ["@optional", "@nonnull", "@requiresOptIn", "@targetName", "@typePolicy", "@fieldPolicy"])
+          """.trimIndent())
+        }
       }
     }
-    val scalarExtensions = sdl.toGQLDocument().definitions
+    val schemaExtensions = sdl.toGQLDocument().definitions
 
     var schemaDocument = GQLDocument(
-        definitions = schemaDefinitions + scalarExtensions,
+        definitions = schemaDefinitions + schemaExtensions,
         sourceLocation = null
     )
 
@@ -177,15 +198,7 @@ object ApolloCompiler {
 
     val result = schemaDocument.validateAsSchema(
         validationOptions = SchemaValidationOptions.Builder()
-            /**
-             * TODO: switch to false
-             */
-            .addKotlinLabsDefinitions(true)
             .foreignSchemas(builtinForeignSchemas() + foreignSchemas)
-            /**
-             * If the cache compiler plugin is present and provides the cache directives, don't automatically import the cache related directives to avoid a conflict
-             */
-            .excludeCacheDirectives(cacheCompilerPluginHasCacheDirectives)
             /**
              * If the cache compiler plugin is present and computes key fields, don't compute them to save redundant work
              */
@@ -214,11 +227,11 @@ object ApolloCompiler {
   /**
    * Parses the given files. Throws if there are parsing errors
    */
-  private fun File.definitions(allowFragmentArguments: Boolean): List<GQLDefinition> {
+  private fun File.definitions(parserOptions: ParserOptions): List<GQLDefinition> {
     val definitions = mutableListOf<GQLDefinition>()
     val parseIssues = mutableListOf<Issue>()
 
-    val parseResult = parseAsGQLDocument(options = ParserOptions.Builder().allowFragmentArguments(allowFragmentArguments).build())
+    val parseResult = parseAsGQLDocument(options = parserOptions)
     if (parseResult.issues.isNotEmpty()) {
       parseIssues.addAll(parseResult.issues)
     } else {
@@ -263,7 +276,11 @@ object ApolloCompiler {
      * See https://github.com/apollographql/apollo-kotlin/pull/5916
      */
     executableFiles.sortedBy { it.normalizedPath }.forEach { normalizedFile ->
-      val fileDefinitions = normalizedFile.file.definitions(options.allowFragmentArguments ?: false)
+      val parserOptions = ParserOptions.Builder()
+          .allowFragmentArguments(options.allowFragmentArguments ?: false)
+          .allowDirectivesOnDirectives(options.allowDirectivesOnDirectives ?: false)
+          .build()
+      val fileDefinitions = normalizedFile.file.definitions(parserOptions)
 
       userDefinitions.addAll(fileDefinitions)
       fileDefinitions.forEach {

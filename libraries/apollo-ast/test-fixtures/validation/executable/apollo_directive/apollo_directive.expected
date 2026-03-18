@@ -1,11 +1,8 @@
-NonNullUsage (3:11)
+OtherValidationIssue (4:11)
+No value passed for required argument `required` on directive 'nonnull'
+------------
+NonNullUsage (4:11)
 Using `@nonnull` is deprecated. Use `@semanticNonNull` and/or `@catch` instead. See https://go.apollo.dev/ak-nullability.
 ------------
-OtherValidationIssue (5:27)
-Unknown argument `toto` on directive 'nonnull'
-------------
-NonNullUsage (5:18)
+NonNullUsage (6:18)
 Using `@nonnull` is deprecated. Use `@semanticNonNull` and/or `@catch` instead. See https://go.apollo.dev/ak-nullability.
-------------
-OtherValidationIssue (5:18)
-'nonnull' cannot have arguments when applied on a field
