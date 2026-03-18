@@ -60,7 +60,8 @@ android-plugin9 = { group = "com.android.tools.build", name = "gradle", version 
 androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.3.0"
 androidx-activity = "androidx.activity:activity-ktx:1.11.0"
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version = "1.9.1" }
-androidx-core = "androidx.core:core-ktx:1.17.0"
+#noinspection NewerVersionAvailable 1.16.0 is the last version compatible with compileSdk 35
+androidx-core = "androidx.core:core-ktx:1.16.0"
 androidx-lint-rules = "androidx.lint:lint-gradle:1.0.0-alpha05"
 androidx-lint-gradle-plugin = { module = "com.android.lint:com.android.lint.gradle.plugin", version.ref = "android-plugin" }
 androidx-profileinstaller = "androidx.profileinstaller:profileinstaller:1.4.1"
