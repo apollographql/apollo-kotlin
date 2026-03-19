@@ -142,7 +142,7 @@ fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
     "v0.5" -> kotlinLabsDefinitions_0_4 + compilerOptions_0_0
     // v0.6 adds `@generateDataBuilders`
     "v0.6" -> kotlinLabsDefinitions_0_4 + compilerOptions_0_0 + compilerOptions_0_1_additions
-    // v0.7 adds `@ignore`
+    // v0.7 removes `@fieldPolicy` and `@typePolicy`
     "v0.7" -> kotlinLabsDefinitions_0_7
     else -> error("kotlin_labs/$version definitions are not supported, please use $AUTO_IMPORTED_KOTLIN_LABS_VERSION")
   }
