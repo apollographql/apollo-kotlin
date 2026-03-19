@@ -38,7 +38,6 @@ class SchemaTest {
 
     schemaString.toGQLDocument().validateAsSchema(
         SchemaValidationOptions.Builder()
-            .addKotlinLabsDefinitions(false)
             .addForeignSchema(cacheControlSchema)
             .build()
     ).getOrThrow()
@@ -57,7 +56,6 @@ class SchemaTest {
 
     val schema = schemaString.toGQLDocument().validateAsSchema(
         SchemaValidationOptions.Builder()
-            .addKotlinLabsDefinitions(false)
             .addForeignSchema(cacheControlSchema)
             .build()
     ).getOrThrow()

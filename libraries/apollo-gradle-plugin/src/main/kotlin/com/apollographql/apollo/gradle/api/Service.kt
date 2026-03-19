@@ -697,6 +697,13 @@ interface Service {
   val allowFragmentArguments: Property<Boolean>
 
   /**
+   * Whether to allow adding directives on directives.
+   * Default: false
+   */
+  @ApolloExperimental
+  val allowDirectivesOnDirectives: Property<Boolean>
+
+  /**
    * Configures [Introspection] to download an introspection Json schema
    */
   fun introspection(configure: Action<in Introspection>)

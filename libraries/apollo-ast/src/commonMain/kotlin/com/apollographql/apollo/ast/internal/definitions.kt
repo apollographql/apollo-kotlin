@@ -132,56 +132,6 @@ internal val kotlinLabsDefinitions_0_3 = """
       | INPUT_OBJECT
 """.trimIndent()
 
-/**
- * This is the same as `kotlinLabsDefinitions_0_3` without `@typePolicy` and `@fieldPolicy`.
- */
-internal val kotlinLabsDefinitions_0_3_no_cache = """
-  ""${'"'}
-  Marks a field or variable definition as optional or required
-  By default Apollo Kotlin generates all variables of nullable types as optional, in compliance with the GraphQL specification,
-  but this can be configured with this directive, because if the variable was added in the first place, it's usually to pass a value
-  Since: 3.0.0
-  ""${'"'}
-  directive @optional(if: Boolean = true) on FIELD | VARIABLE_DEFINITION
-  
-  ""${'"'}
-  Marks a field as non-null. The corresponding Kotlin property will be made non-nullable even if the GraphQL type is nullable.
-  When used on an object definition in a schema document, `fields` must be non-empty and contain a selection set of fields that should be non-null
-  When used on a field from an executable document, `fields` must always be empty
-  
-  Setting the directive at the schema level is usually easier as there is little reason that a field would be non-null in one place
-  and null in the other
-  Since: 3.0.0
-  ""${'"'}
-  directive @nonnull(fields: String! = "") on OBJECT | FIELD
-  
-  ""${'"'}
-  Indicates that the given field, argument, input field or enum value requires
-  giving explicit consent before being used.
-  Since: 3.3.1
-  ""${'"'}
-  directive @requiresOptIn(feature: String!) repeatable
-  on FIELD_DEFINITION
-      | ARGUMENT_DEFINITION
-      | INPUT_FIELD_DEFINITION
-      | ENUM_VALUE
-  
-  ""${'"'}
-  Use the specified name in the generated code instead of the GraphQL name.
-  Use this for instance when the name would clash with a reserved keyword or field in the generated code.
-  This directive is experimental.
-  Since: 3.3.1
-  ""${'"'}
-  directive @targetName(name: String!)
-  on OBJECT
-      | INTERFACE
-      | ENUM
-      | ENUM_VALUE
-      | UNION
-      | SCALAR
-      | INPUT_OBJECT
-""".trimIndent()
-
 internal val kotlinLabsDefinitions_0_4 = """
 ""${'"'}
 Marks a field or variable definition as optional or required
@@ -259,6 +209,99 @@ on OBJECT
     | UNION
     | SCALAR
     | INPUT_OBJECT
+""".trimIndent()
+
+val kotlinLabsDefinitions_0_7 = """
+  ""${'"'}
+  Marks a field or variable definition as optional or required
+  By default Apollo Kotlin generates all variables of nullable types as optional, in compliance with the GraphQL specification,
+  but this can be configured with this directive, because if the variable was added in the first place, it's usually to pass a value
+  Since: 3.0.0
+  ""${'"'}
+  directive @optional(if: Boolean = true) on FIELD | VARIABLE_DEFINITION
+
+  ""${'"'}
+  Indicates that the given field, argument, input field or enum value requires
+  giving explicit consent before being used.
+  Since: 3.3.1
+  ""${'"'}
+  directive @requiresOptIn(feature: String!) repeatable
+  on FIELD_DEFINITION
+      | ARGUMENT_DEFINITION
+      | INPUT_FIELD_DEFINITION
+      | ENUM_VALUE
+
+  ""${'"'}
+  Use the specified name in the generated code instead of the GraphQL name.
+  Use this for instance when the name would clash with a reserved keyword or field in the generated code.
+  This directive is experimental.
+  Since: 3.3.1
+  ""${'"'}
+  directive @targetName(name: String!)
+  on OBJECT
+      | INTERFACE
+      | ENUM
+      | ENUM_VALUE
+      | UNION
+      | SCALAR
+      | INPUT_OBJECT
+
+  ""${'"'}
+  Configure the Apollo compiler to map the given scalar to the given class.
+  ""${'"'}
+  directive @map(
+    ""${'"'}
+    The fully qualified type name to map the scalar to. 
+    Simple generic types without variance or wildcards are also supported. 
+    
+    Examples: 
+      - `java.util.Date`
+      - `kotlin.collections.Map<kotlin.String, java.util.Date>`
+    ""${'"'}
+    to: String!, 
+
+    ""${'"'}
+    A fully qualified expression referencing the adapter used to adapt to/from the type
+    or inline property type, or `null` to specify the adapter at runtime.
+     
+    Examples:
+      - `com.apollographql.adapter.datetime.KotlinxInstantAdapter`
+      - `com.example.MyAdapter()`
+    ""${'"'}
+    with: String = null, 
+    
+    ""${'"'}
+    If non null, contains the name of the property used to wrap/unwrap the inline class.
+    [to] must be an inline class.
+    
+    Only used in Kotlin codegen.
+    ""${'"'}  
+    inlineProperty: String = null
+  ) on SCALAR
+
+  ""${'"'}
+  Built-in types known at compile time. Apollo Kotlin knows the adapters for those types.
+  ""${'"'}
+  enum BuiltIn { String, Boolean, Int, Long, Float, Double }
+
+  ""${'"'}
+  Use the given builtin type for this scalar.
+  ""${'"'}
+  directive @mapTo(
+    ""${'"'}
+    The built-in type to use for this scalar.
+    ""${'"'}
+    builtIn: BuiltIn!, 
+    ""${'"'}
+    Whether to generate a wrapper inline class for this scalar.
+    ""${'"'}
+    inline: Boolean! = true
+  ) on SCALAR
+
+  ""${'"'}
+  Tells the Apollo compiler to generate Data Builders
+  ""${'"'}
+  directive @generateDataBuilders on SCHEMA
 """.trimIndent()
 /**
  * These definitions are publicly part of `kotlin_labs` but to avoid conflicting with user imports
@@ -633,6 +676,20 @@ enum CatchTo {
 }
 """.trimIndent()
 
-internal val nonNullDefinitionStr = """
-directive @nonnull(fields: String! = "") on OBJECT | FIELD
+internal val ignoreDefinitionStr = """
+""${'"'}
+Tell the Apollo compiler to ignore this directive.
+This can be used when some servers come with directives that would otherwise clash
+with the special Apollo ones. 
+
+```graphql
+# Import the Apollo directive under a new name
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3/", import: [name: "@nonnull", as: "@apollo_nonnull"])
+
+# And do not interpret the @nonnull directive
+extend directive @nonnull @ignore
+```
+""${'"'}
+directive @ignore on DIRECTIVE_DEFINITION
 """.trimIndent()
+

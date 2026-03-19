@@ -1,0 +1,2 @@
+DirectiveRedefinition (null:null)
+Directive `kotlin_labs/v0.3/@nonnull` redefines the one defined at test-fixtures/validation/schema/linked_directive_redefinition.graphqls: (10, 1). If it is an imported directive, rename it using @link.

@@ -1,9 +1,6 @@
-# PRAGMA addKotlinLabsDefinitions
-# PRAGMA allowDirectiveRedefinition
-
 type Query {
     field: String
 }
 
-# A directive that clashes with some of the Apollo directives and that will be overridden
+# A directive that clashes with some of the Apollo directives
 directive @nonnull(required: String!) on FIELD

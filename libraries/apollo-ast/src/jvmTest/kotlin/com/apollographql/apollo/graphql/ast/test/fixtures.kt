@@ -77,11 +77,8 @@ enum class Pragma {
   allowMergingFieldDefinitions,
   // Schema validation
   addBuiltinForeignSchemas,
-  addKotlinLabsDefinitions,
   addBuiltinDefinitions,
   noAddBuiltinDefinitions,
-  // Executable validation
-  allowDirectiveRedefinition,
   // Parser and validation
   allowFragmentArguments,
 }
@@ -114,9 +111,6 @@ fun List<Pragma>.toSchemaValidationOptions(): SchemaValidationOptions {
       .apply {
         if (Pragma.addBuiltinForeignSchemas in this@toSchemaValidationOptions) {
           foreignSchemas(builtinForeignSchemas())
-        }
-        if (Pragma.addKotlinLabsDefinitions in this@toSchemaValidationOptions) {
-          addKotlinLabsDefinitions(true)
         }
         if (Pragma.addBuiltinDefinitions in this@toSchemaValidationOptions) {
           addBuiltinDefinitions(true)

@@ -257,7 +257,6 @@ fun GQLDocument.validateAsSchemaAndAddApolloDefinition(): GQLResult<Schema> {
   return validateSchema(
       definitions,
       SchemaValidationOptions.Builder()
-          .addKotlinLabsDefinitions(true)
           .foreignSchemas(builtinForeignSchemas())
           .build()
   )

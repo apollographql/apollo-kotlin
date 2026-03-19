@@ -7,9 +7,10 @@ import com.apollographql.apollo.ast.internal.ExtensionsMerger
 import com.apollographql.apollo.ast.internal.builtinsDefinitionsStr
 import com.apollographql.apollo.ast.internal.compilerOptions_0_0
 import com.apollographql.apollo.ast.internal.compilerOptions_0_1_additions
+import com.apollographql.apollo.ast.internal.ignoreDefinitionStr
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_3
-import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_3_no_cache
 import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_4
+import com.apollographql.apollo.ast.internal.kotlinLabsDefinitions_0_7
 import com.apollographql.apollo.ast.internal.linkDefinitionsStr
 import com.apollographql.apollo.ast.internal.nullabilityDefinitionsStr
 import com.apollographql.apollo.ast.internal.serviceCapabilitiesDefinitionsStr
@@ -135,21 +136,18 @@ fun kotlinLabsDefinitions(version: String): List<GQLDefinition> {
   return definitionsFromString(when (version) {
     // v0.3 has no behavior change over v0.2, so both versions map to the same definitions
     "v0.2", "v0.3" -> kotlinLabsDefinitions_0_3
-    // v0.3-noCache is the same as v0.3 without `@typePolicy` and `@fieldPolicy`
-    "v0.3-noCache" -> kotlinLabsDefinitions_0_3_no_cache
     // v0.4 doesn't have `@nonnull`
     "v0.4" -> kotlinLabsDefinitions_0_4
     // v0.5 adds `@map` and `@mapTo`
     "v0.5" -> kotlinLabsDefinitions_0_4 + compilerOptions_0_0
     // v0.6 adds `@generateDataBuilders`
     "v0.6" -> kotlinLabsDefinitions_0_4 + compilerOptions_0_0 + compilerOptions_0_1_additions
+    // v0.7 removes `@fieldPolicy` and `@typePolicy`
+    "v0.7" -> kotlinLabsDefinitions_0_7
     else -> error("kotlin_labs/$version definitions are not supported, please use $AUTO_IMPORTED_KOTLIN_LABS_VERSION")
-  })
+  }
+  )
 }
-
-internal val autoLinkedKotlinLabsForeignSchema = ForeignSchema("kotlin_labs", "v0.3", kotlinLabsDefinitions("v0.3"), listOf("optional", "nonnull"))
-internal val autoLinkedKotlinLabsForeignSchemaNoCache =
-  ForeignSchema("kotlin_labs", "v0.3-noCache", kotlinLabsDefinitions("v0.3-noCache"), listOf("optional", "nonnull"))
 
 /**
  * The foreign schemas supported by Apollo Kotlin.
@@ -159,12 +157,14 @@ internal val autoLinkedKotlinLabsForeignSchemaNoCache =
 fun builtinForeignSchemas(): List<ForeignSchema> {
   return listOf(
       ForeignSchema("kotlin_labs", "v0.2", kotlinLabsDefinitions("v0.2"), listOf("optional", "nonnull")),
-      autoLinkedKotlinLabsForeignSchema,
+      ForeignSchema("kotlin_labs", "v0.3", kotlinLabsDefinitions("v0.3"), listOf("optional", "nonnull")),
       ForeignSchema("kotlin_labs", "v0.4", kotlinLabsDefinitions("v0.4"), listOf("optional")),
       ForeignSchema("kotlin_labs", "v0.5", kotlinLabsDefinitions("v0.5"), listOf("optional")),
       ForeignSchema("kotlin_labs", "v0.6", kotlinLabsDefinitions("v0.6"), listOf("optional")),
+      ForeignSchema("kotlin_labs", "v0.7", kotlinLabsDefinitions("v0.7"), listOf("optional")),
       ForeignSchema("nullability", "v0.4", nullabilityDefinitions("v0.4"), listOf("catch")),
-      ForeignSchema("kotlin_compiler_options", "v0.1", definitionsFromString(compilerOptions_0_0 + compilerOptions_0_1_additions), emptyList())
+      ForeignSchema("kotlin_compiler_options", "v0.1", definitionsFromString(compilerOptions_0_0 + compilerOptions_0_1_additions), emptyList()),
+      ForeignSchema("kotlin_ignore", "v0.1", definitionsFromString(ignoreDefinitionStr), emptyList()),
   )
 }
 
@@ -178,12 +178,13 @@ fun nullabilityDefinitions(version: String): List<GQLDefinition> {
   return definitionsFromString(when (version) {
     NULLABILITY_VERSION -> nullabilityDefinitionsStr
     else -> error("nullability/$version definitions are not supported, please use $NULLABILITY_VERSION")
-  })
+  }
+  )
 }
 
 private fun definitionsFromString(string: String): List<GQLDefinition> {
   return string
-      .parseAsGQLDocument()
+      .parseAsGQLDocument(options = ParserOptions.Builder().allowDirectivesOnDirectives(true).build())
       .getOrThrow()
       .definitions
 }
@@ -252,6 +253,7 @@ fun GQLDocument.toSDL(indent: String = "  ", includeBuiltInScalarDefinitions: Bo
         // Always skip scalar definitions, it's a must in the spec
         return@forEachIndexed
       }
+
       else -> {
         writer.write(definition)
       }

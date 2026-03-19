@@ -1,0 +1,2 @@
+IgnoredLinkDirective (10:1)
+Directive `@link` clashes with Apollo's built-in `@link` directive and is ignored.

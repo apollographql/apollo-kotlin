@@ -51,6 +51,9 @@ class UnknownDirective(
  *
  * Because the Apollo compiler expects a certain shape of directive and arguments, anything else may trigger
  * a crash in the compiler. By validating explicitly, the error is more explicit.
+ *
+ * This is currently not implemented because the semantics of comparing different definitions is not trivial (parameter
+ * types may be renamed, etc...)
  */
 class IncompatibleDefinition(
     name: String,
@@ -83,15 +86,25 @@ class FragmentCycle(override val message: String, override val sourceLocation: S
 class DuplicateTypeName(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLValidationIssue
 
 /**
- * This is a bit abused for kotlin_labs directive that override the existing ones for compatibility reasons.
- * This is so that `ApolloCompiler` can later on treat them as warnings.
+ * Two directives have the same name
  */
 class DirectiveRedefinition(
     val name: String,
     existingSourceLocation: SourceLocation?,
     override val sourceLocation: SourceLocation?,
 ) : GraphQLValidationIssue {
-  override val message = "Implicit kotlin_labs definition '@${name}' overrides explicit one provided by the schema. Import kotlin_labs explicitly using @link."
+  override val message = "Directive `${name}` redefines the one defined at ${existingSourceLocation?.pretty()}. If it is an imported directive, rename it using @link."
+}
+
+/**
+ * A schema cannot contain `@link` because it's imported by default without a prefix.
+ *
+ * TODO: find a way to import `@link` with a rename.
+ */
+class IgnoredLinkDirective(
+    override val sourceLocation: SourceLocation?
+): ApolloIssue {
+  override val message = "Directive `@link` clashes with Apollo's built-in `@link` directive and is ignored."
 }
 
 class NoQueryType(override val message: String, override val sourceLocation: SourceLocation?) : GraphQLValidationIssue

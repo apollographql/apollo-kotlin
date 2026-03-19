@@ -46,6 +46,7 @@ internal fun apolloGenerateOptions(
     operationManifestFormat: String?,
     severities: Map<String, String>?,
     allowFragmentArguments: Boolean?,
+    allowDirectivesOnDirectives: Boolean?,
     // JavaCodegenOptions
     generatePrimitiveTypes: Boolean?,
     nullableFieldStyle: String?,
@@ -111,7 +112,8 @@ internal fun apolloGenerateOptions(
       generateOptionalOperationVariables = generateOptionalOperationVariables,
       alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
       issueSeverities = severities?.convert(),
-      allowFragmentArguments = allowFragmentArguments
+      allowFragmentArguments = allowFragmentArguments,
+      allowDirectivesOnDirectives = allowDirectivesOnDirectives,
   ).writeTo(irOptionsFile)
 
   CodegenOptions(

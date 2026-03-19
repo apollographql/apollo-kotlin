@@ -48,7 +48,6 @@ class ExecutableValidationTest {
         ).let {
           it.issues.forEach {
             when (it) {
-              is DirectiveRedefinition -> if (Pragma.allowDirectiveRedefinition in pragmas) return@forEach
               is GraphQLIssue -> error("Cannot validate schema: $it")
               else -> error("Unexpected issue type: ${it::class.simpleName}")
             }

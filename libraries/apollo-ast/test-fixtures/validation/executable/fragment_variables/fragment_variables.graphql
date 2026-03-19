@@ -7,10 +7,9 @@ fragment AniListCharacter on Character {
     }
 }
 
-query CharactersSearch($search: String, $perPage: Int, $page: Int, $mediaPage: Int,
-    $mediaPerPage: Int) {
-    Page(perPage: $perPage, page: $page) @nonnull {
-        characters(search: $search) @nonnull {
+query CharactersSearch($search: String, $perPage: Int, $page: Int, $mediaPage: Int, $mediaPerPage: Int) {
+    Page(perPage: $perPage, page: $page) {
+        characters(search: $search) {
             ...AniListCharacter
         }
     }
