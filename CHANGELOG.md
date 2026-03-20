@@ -1,8 +1,23 @@
 Change Log
 ==========
 
+
+# Version 5.0.0-alpha.6
+_2026-03-20_
+
+As the new features stream is drying up, this version is probably one of the last alpha before going `-rc`.
+
+* [NEW] Add support for `@ignore` (https://github.com/apollographql/apollo-kotlin/pull/6900)
+* [FIX] Gradle plugin: set `org.gradle.category` attribute and use reverse DNS naming to avoid name clashes (https://github.com/apollographql/apollo-kotlin/pull/6886)
+* [FIX] Fix validation of `@oneOf` input objects.  (https://github.com/apollographql/apollo-kotlin/pull/6894)
+* [DOWNGRADE] Downgrade `compileSdk` version to 35 for better compatibility (https://github.com/apollographql/apollo-kotlin/pull/6899, https://github.com/apollographql/apollo-kotlin/pull/6902)
+
+Many thanks to @eboudrant for the contributions in this release 💙
+
+**Full Changelog**: https://github.com/apollographql/apollo-kotlin/compare/v5.0.0-alpha.5...v5.0.0-alpha.6
+
 # Version 4.4.2
-_2025-03-16_
+_2026-03-16_
 
 Maintenance release that adds a new KMP target and makes it easier to work with the new cache and AGP9.
 
@@ -43,7 +58,7 @@ _2025-01-30_
 * [FIX] Fix `./gradlew download${Service}ApolloSchemaFromIntrospection` was crashing due to a bad class relocation (https://github.com/apollographql/apollo-kotlin/issues/6863)
 
 # Version 5.0.0-alpha.4
-_2025-01-23_
+_2026-01-23_
 
 Many thanks @MatthewFolbigg, @scana, and @simonlebras for their contributions to this release! 
 
