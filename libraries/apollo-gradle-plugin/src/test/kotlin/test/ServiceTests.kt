@@ -1,20 +1,18 @@
 package test
 
-import util.TestUtils
-import util.TestUtils.fixturesDirectory
-import util.TestUtils.withSimpleProject
-import util.TestUtils.withTestProject
-import util.generatedSource
-import util.replaceInText
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
+import util.TestUtils
+import util.TestUtils.fixturesDirectory
+import util.TestUtils.withSimpleProject
+import util.TestUtils.withTestProject
+import util.generatedSource
 import java.io.File
 import java.nio.file.Files
 
@@ -158,20 +156,6 @@ class ServiceTests {
   fun `dependencies are using the plugin version by default`() {
     withTestProject("defaultVersion") { dir ->
       TestUtils.executeTaskAndAssertSuccess(":generateApolloSources", dir)
-    }
-  }
-
-  @Test
-  fun `legacy js target is not supported`() {
-    withTestProject("legacyJsTarget") { dir ->
-      var exception: Exception? = null
-      try {
-        TestUtils.executeTask("generateApolloSources", dir)
-      } catch (e: UnexpectedBuildFailure) {
-        exception = e
-        Truth.assertThat(e.message).contains("Apollo: LEGACY js target is not supported by Apollo, please use IR.")
-      }
-      assertNotNull(exception)
     }
   }
 

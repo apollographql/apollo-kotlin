@@ -1,5 +1,9 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.gradle.Agp8
+import com.apollographql.apollo.gradle.Agp8Component
+import com.apollographql.apollo.gradle.Agp9
+import com.apollographql.apollo.gradle.Agp9Component
 import com.apollographql.apollo.gradle.AgpCompat
 import com.apollographql.apollo.gradle.ComponentFilter
 import com.apollographql.apollo.gradle.api.ApolloDependencies
@@ -7,6 +11,7 @@ import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
 import com.apollographql.apollo.gradle.api.SchemaConnection
 import com.apollographql.apollo.gradle.api.Service
+import com.apollographql.apollo.gradle.getAgpVersion
 import com.apollographql.apollo.gradle.internal.BuildDirLayout.dataBuildersOutputDir
 import com.apollographql.apollo.gradle.internal.BuildDirLayout.outputDir
 import com.apollographql.apollo.gradle.task.ApolloDownloadSchemaTask
@@ -24,11 +29,6 @@ import com.apollographql.apollo.gradle.task.registerApolloGenerateProjectModelTa
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesFromIrTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloRegisterOperationsTask
-import com.apollographql.apollo.gradle.Agp8
-import com.apollographql.apollo.gradle.Agp8Component
-import com.apollographql.apollo.gradle.Agp9
-import com.apollographql.apollo.gradle.Agp9Component
-import com.apollographql.apollo.gradle.getAgpVersion
 import gratatouille.wiring.capitalizeFirstLetter
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectProvider
@@ -51,8 +51,6 @@ import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
 import java.io.File
 import javax.inject.Inject
 
@@ -81,7 +79,9 @@ abstract class DefaultApolloExtension(
       if (agpVersion.major >= 9) {
         Agp9(agpVersion.toString(), androidComponents, project.extensions.findByName("android"), project.extensions.findByName("kotlin"))
       } else {
-        Agp8(agpVersion.toString(), project.extensions.findByName("android") ?: error("No 'android' extension found. If you're applying `com.android.kotlin.multiplatform.library`, Apollo only supports it in conjunction with AGP9."))
+        Agp8(agpVersion.toString(), project.extensions.findByName("android")
+            ?: error("No 'android' extension found. If you're applying `com.android.kotlin.multiplatform.library`, Apollo only supports it in conjunction with AGP9.")
+        )
       }
     } else {
       null
@@ -97,7 +97,8 @@ abstract class DefaultApolloExtension(
         schemaFiles = service.schemaFilesSnapshot(project),
         graphqlSrcDirs = service.graphqlSourceDirectorySet.srcDirs,
         upstreamProjects = service.upstreamScope.get().dependencies.filterIsInstance<ProjectDependency>().map { it.name }.toSet(),
-        upstreamProjectPaths = service.upstreamScope.get().dependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }.toSet(),
+        upstreamProjectPaths = service.upstreamScope.get().dependencies.filterIsInstance<ProjectDependency>().map { it.getPathCompat() }
+            .toSet(),
         endpointUrl = service.introspection?.endpointUrl?.orNull,
         endpointHeaders = service.introspection?.headers?.orNull,
         useSemanticNaming = service.useSemanticNaming.getOrElse(true),
@@ -248,17 +249,6 @@ abstract class DefaultApolloExtension(
 
     project.afterEvaluate {
       maybeLinkSqlite()
-      checkForLegacyJsTarget()
-    }
-  }
-
-  private fun checkForLegacyJsTarget() {
-    val kotlin = project.extensions.findByName("kotlin") as? KotlinMultiplatformExtension
-    val hasLegacyJsTarget = kotlin?.targets?.any { target ->
-      target is KotlinJsTarget && target.irTarget == null
-    } == true
-    check(!hasLegacyJsTarget) {
-      "Apollo: LEGACY js target is not supported by Apollo, please use IR."
     }
   }
 
@@ -272,7 +262,7 @@ abstract class DefaultApolloExtension(
 
       null -> { // default: automatic detection
         project.configurations.configureEach {
-          it.dependencies.configureEach {
+          it.dependencies.configureEach { dependency ->
             /*
              * Try to detect if a native version of apollo-normalized-cache-sqlite is in the classpath
              * This is a heuristic and will not work in 100% of the cases.
@@ -280,11 +270,11 @@ abstract class DefaultApolloExtension(
              * Note: we only check external dependencies as reading the group of project dependencies
              * is not compatible with isolated projects
              */
-            if (it is ExternalModuleDependency
-                && it.group?.contains("apollo") == true
-                && it.name.contains("normalized-cache-sqlite")
-                && !it.name.contains("jvm")
-                && !it.name.contains("android")
+            if (dependency is ExternalModuleDependency
+                && dependency.group?.contains("apollo") == true
+                && dependency.name.contains("normalized-cache-sqlite")
+                && !dependency.name.contains("jvm")
+                && !dependency.name.contains("android")
             ) {
               linkSqlite(project)
             }
