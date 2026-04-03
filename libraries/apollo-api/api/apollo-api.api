@@ -680,6 +680,8 @@ public final class com/apollographql/apollo/api/FakeResolverContext {
 	public final fun getCustomScalarAdapters ()Lcom/apollographql/apollo/api/CustomScalarAdapters;
 	public final fun getId ()Ljava/lang/String;
 	public final fun getMergedField ()Lcom/apollographql/apollo/api/CompiledField;
+	public final fun getParent ()Ljava/util/Map;
+	public final fun getParentType ()Ljava/lang/String;
 	public final fun getPath ()Ljava/util/List;
 }
 
