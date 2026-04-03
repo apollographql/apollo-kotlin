@@ -1,0 +1,16 @@
+# See https://github.com/apollographql/apollo-kotlin/issues/6901
+type Query {
+  item: Item
+}
+
+type Item {
+  id: ID!
+  details: Details
+}
+
+type Details {
+  id: ID!
+  title: String!
+  summary: String
+  tags: [String!]
+}

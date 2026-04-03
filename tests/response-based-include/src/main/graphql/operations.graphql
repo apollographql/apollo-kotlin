@@ -1,0 +1,22 @@
+query GetItem($includeExtras: Boolean!) {
+  item {
+    ...CoreFields
+    ...ExtraFields
+  }
+}
+
+fragment CoreFields on Item {
+  id
+  details {
+    id
+    title
+    summary
+  }
+}
+
+fragment ExtraFields on Item {
+  details @include(if: $includeExtras) {
+    id
+    tags
+  }
+}
