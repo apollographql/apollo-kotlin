@@ -1,6 +1,5 @@
 plugins {
   alias(libs.plugins.kotlin.jvm.latest)
-  alias(libs.plugins.kotlin.sam)
   alias(libs.plugins.compat.patrouille)
 }
 
