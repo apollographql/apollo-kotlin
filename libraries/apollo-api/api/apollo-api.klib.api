@@ -1098,6 +1098,10 @@ final class com.apollographql.apollo.api/FakeResolverContext { // com.apollograp
         final fun <get-id>(): kotlin/String // com.apollographql.apollo.api/FakeResolverContext.id.<get-id>|<get-id>(){}[0]
     final val mergedField // com.apollographql.apollo.api/FakeResolverContext.mergedField|{}mergedField[0]
         final fun <get-mergedField>(): com.apollographql.apollo.api/CompiledField // com.apollographql.apollo.api/FakeResolverContext.mergedField.<get-mergedField>|<get-mergedField>(){}[0]
+    final val parent // com.apollographql.apollo.api/FakeResolverContext.parent|{}parent[0]
+        final fun <get-parent>(): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.api/FakeResolverContext.parent.<get-parent>|<get-parent>(){}[0]
+    final val parentType // com.apollographql.apollo.api/FakeResolverContext.parentType|{}parentType[0]
+        final fun <get-parentType>(): kotlin/String // com.apollographql.apollo.api/FakeResolverContext.parentType.<get-parentType>|<get-parentType>(){}[0]
     final val path // com.apollographql.apollo.api/FakeResolverContext.path|{}path[0]
         final fun <get-path>(): kotlin.collections/List<kotlin/Any> // com.apollographql.apollo.api/FakeResolverContext.path.<get-path>|<get-path>(){}[0]
 }

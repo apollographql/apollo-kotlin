@@ -14,6 +14,7 @@ import data.builders.GetDirectionQuery
 import data.builders.GetEgotisticalCatQuery
 import data.builders.GetEverythingQuery
 import data.builders.GetFelineQuery
+import data.builders.GetIdQuery
 import data.builders.GetIntQuery
 import data.builders.GetNodeQuery
 import data.builders.GetPartialQuery
@@ -323,5 +324,22 @@ class DataBuilderTest {
     }
 
     assertNull(data.nonNullableInt)
+  }
+
+  @Test
+  fun alias() {
+    val resolver = object : DefaultFakeResolver() {
+      override fun resolveLeaf(context: FakeResolverContext): Any {
+        if (context.parentType == "Query" && context.mergedField.name == "id") {
+          return context.parent.get("id")!!
+        }
+        return super.resolveLeaf(context)
+      }
+    }
+    val data = GetIdQuery.Data(resolver, customScalarAdapters) {
+      id = "42"
+    }
+
+    assertEquals("42", data.queryId)
   }
 }

@@ -4,6 +4,7 @@ schema {
 }
 
 type Query {
+  id: ID!
   nullableInt: Int
   nonNullableInt: Int!
   direction: Direction!,

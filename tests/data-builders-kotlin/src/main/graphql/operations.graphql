@@ -37,6 +37,10 @@ query GetAnimal {
   }
 }
 
+query GetId {
+  queryId: id
+}
+
 query GetNode {
   node {
     id
