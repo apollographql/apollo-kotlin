@@ -67,6 +67,7 @@ listOf(
     "optional-variables",
     "outofbounds",
     "platform-api",
+    "response-based-include",
     "runtime",
     "sample-server",
     "scalar-adapters",
