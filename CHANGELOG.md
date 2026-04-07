@@ -2,6 +2,13 @@ Change Log
 ==========
 
 
+# Version 4.4.3
+_2026-04-07_
+
+Compatibility release for Kotlin 2.4.0-Beta1
+
+* [FIX] Compatibility with Kotlin 2.4-Beta1: Remove legacy JS target check (#6910)
+
 # Version 5.0.0-alpha.6
 _2026-03-20_
 
