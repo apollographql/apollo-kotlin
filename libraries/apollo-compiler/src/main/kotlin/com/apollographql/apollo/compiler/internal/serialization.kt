@@ -64,7 +64,6 @@ internal fun JsonElement.toAny(): Any? = when (this) {
       else -> booleanOrNull ?: intOrNull ?: longOrNull ?: doubleOrNull ?: error("cannot decode $this")
     }
   }
-  else -> error("cannot convert $this to Any")
 }
 
 internal inline fun <reified T> Any?.cast() = this as T
