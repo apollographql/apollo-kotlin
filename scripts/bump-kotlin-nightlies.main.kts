@@ -60,6 +60,7 @@ fun getLatestVersion(url: String, prefix: String? = null): String {
                         .replace("-vega-", "-Dev.")
                         .replace("-titan-", "-Dev.")
                         .replace("-saturn-", "-Dev.")
+                        .replace("-jupiter-", "-Dev.")
                         .replace("-saturn", "-Dev.0")
                         .replace("-RC-", "-RC.")
                         .replace("-RC2-", "-RC2.")
@@ -150,7 +151,6 @@ fun main() {
 
   println("Update lock files")
   updateLockFiles()
-
   println("Commit and push")
   commitAndPush()
 
