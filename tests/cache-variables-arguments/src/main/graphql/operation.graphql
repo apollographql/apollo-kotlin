@@ -33,3 +33,19 @@ query AbsentArgumentWithArgumentDefaultValue {
 query PresentArgumentEmpty {
   a1(b: {})
 }
+
+fragment userId on Query {
+  user {
+    id
+  }
+}
+fragment userName on Query {
+  user @include(if: $details) {
+    name
+  }
+}
+
+query TwoFields($details: Boolean!) {
+  ...userId
+  ...userName
+}
