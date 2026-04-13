@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+# Version 5.0.0-alpha.7
+_2026-04-07_
+
+Compatibility release for Kotlin 2.4.0-Beta1
+
+* [NEW] Pass parent and parentType to FakeResolver (#6913)
+* [FIX] Compatibility with Kotlin 2.4-Beta1: Remove legacy JS target check (#6908)
 
 # Version 4.4.3
 _2026-04-07_
