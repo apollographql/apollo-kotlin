@@ -125,7 +125,23 @@ internal class CacheBatchReader(
           it.responseName to value
         }.toMap()
 
-        data[pendingReference.path] = map
+        if (data.contains(pendingReference.path)) {
+          /**
+           * In the presence of include directives, we might already have read some data.
+           * In that case, we need to merge them.
+           *
+           * Note1: if a key is present in both the existing and the new data, we expect the
+           * value to be the same.
+           * Note2: we're not deep merging because the reader reads normalized records. The only
+           * case where there can be a nested map is scalar, and we expect the values to be the
+           * same as in Note1.
+           * See https://github.com/apollographql/apollo-kotlin/issues/6901
+           */
+          data[pendingReference.path] = data[pendingReference.path]!! + map
+        } else {
+          data[pendingReference.path] = map
+        }
+
       }
     }
 
