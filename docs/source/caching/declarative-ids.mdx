@@ -29,7 +29,7 @@ You can obtain a given object type's cache ID from one of two sources:
 
 ## Importing the directives
 
-The `@typePolicy` and `@fieldPolicy` directives are not part of your backend schema, so you need to import them in a `extra.graphqls` file in the same directory as our schema, before using them:
+The `@typePolicy` and `@fieldPolicy` directives are not part of your backend schema, so you need to import them in a `extra.graphqls` file in the same directory as your schema, before using them:
 
 ```graphql title="extra.graphqls"
 @link(url: "https://specs.apollo.dev/cache/v0.4", import: ["@typePolicy", "@fieldPolicy"])
