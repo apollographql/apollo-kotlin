@@ -119,7 +119,7 @@ When your app is stopped, data in the `MemoryCache` is lost forever. If you need
 
 Apollo Kotlin's SQLite cache uses [SQLDelight](https://github.com/cashapp/sqldelight) to store data persistently. You can use it to persist data across app restarts, or if your cached data becomes too large to fit in memory.
 
-To enable SQLite cache support, add the `normalized-cache-sqlite` dependency to your project's `build.gradle` file:
+To use the SQLite cache, add the `normalized-cache-sqlite` dependency to your project's `build.gradle` file:
 
 ```kotlin title="build.gradle.kts"
 dependencies {
