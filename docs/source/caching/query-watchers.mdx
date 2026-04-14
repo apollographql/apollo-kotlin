@@ -140,7 +140,7 @@ Because the `setTodoCompleted` field above returns an `Item` type with both an `
 
 It's often possible to predict the most likely result of a mutation _before_ your GraphQL server returns it. Apollo Kotlin can use this "most likely result" to update your UI **optimistically**, making your app feel more responsive to the user.
 
-First, configure the cache to support optimistic updates (they are disabled by default, to avoid the overhead of keeping track of the optimistic data if you don't need it):
+First, configure the cache to support optimistic updates (they are disabled by default to avoid the overhead of keeping track of the optimistic data if you don't use it):
 
 ```kotlin {2}
 val apolloClient = ApolloClient.Builder()

@@ -45,7 +45,7 @@ println("Title=${data.title}")
 println("Author Name=${data.author.name}")
 ```
 
-In the event of cache miss, `readOperation` will return a response with a `CacheMissException` in its `exception`.
+In the event of cache miss, `readOperation` will return a response with a `CacheMissException` in its `exception` field.
 
 ```kotlin
 val response = apolloClient.apolloStore.readOperation(GetBookQuery(id = "42"))
