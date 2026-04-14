@@ -9,7 +9,7 @@ The store is accessible with the `ApolloClient.apolloStore` extension:
 ```kotlin
 val apolloClient = ApolloClient.Builder()
   .serverUrl("https://example.com/graphql")
-  .normalizedCache(MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024))
+  .cache(MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024))
   .build()
 
 val apolloStore: ApolloStore = apolloClient.apolloStore
@@ -38,30 +38,28 @@ query GetBook($id: String!) {
 You can read it like this:
 
 ```kotlin
-val data = apolloClient.apolloStore.readOperation(GetBookQuery(id = "42"), apolloClient.customScalarAdapters)
+val response = apolloClient.apolloStore.readOperation(GetBookQuery(id = "42"))
+val data = response.dataOrThrow()
 
 println("Title=${data.title}")
 println("Author Name=${data.author.name}")
 ```
 
-In the event of cache miss, `readOperation` will throw:
+In the event of cache miss, `readOperation` will return a response with a `CacheMissException` in its `exception`.
 
 ```kotlin
-try {
-  apolloClient.apolloStore.readOperation(GetBookQuery(id = "42"), apolloClient.customScalarAdapters)
-} catch(e: CacheMissException) {
-  println("CacheMiss on key: ${e.key}.${e.fieldName}")
+val response = apolloClient.apolloStore.readOperation(GetBookQuery(id = "42"))
+if (response.exception is CacheMissException) {
+  println("CacheMiss on key: ${response.exception.key}.${response.exception.fieldName}")
 }
 ```
-
-> If you declared [scalar adapters](../essentials/custom-scalars/) at runtime, pass your client's `customScalarAdapters` to the store's methods, as the store will need them to convert scalar values to and from their Kotlin/Java types.
 
 ## Writing operation data
 
 Writing operation data is similar to reading:
 
 ```kotlin
-apolloClient.apolloStore.writeOperation(GetBookQuery(id = "42"), data, apolloClient.customScalarAdapters)
+apolloClient.apolloStore.writeOperation(GetBookQuery(id = "42"), data)
 ```
 
 Note how you'll need to pass the data along the operation.
@@ -93,7 +91,7 @@ apollo {
 Because fragments are not rooted, you need to specify the root cache id of the fragment:
 
 ```kotlin
-val data = apolloClient.apolloStore.readFragment(BookDetailsImpl(), CacheKey("42"), apolloClient.customScalarAdapters)
+val data = apolloClient.apolloStore.readFragment(BookDetailsImpl(), CacheKey("42")).data
 
 println("Title=${data.title}")
 println("Author Name=${data.author.name}")
@@ -109,7 +107,7 @@ fragment BookDetails on Book {
 ```
 
 ```kotlin
-val data = apolloClient.apolloStore.readFragment(BookDetailsImpl(locale = "en-US"), CacheKey("42"), apolloClient.customScalarAdapters)
+val data = apolloClient.apolloStore.readFragment(BookDetailsImpl(locale = "en-US"), CacheKey("42")).data
 
 println("Title=${data.title}")
 ```

@@ -27,6 +27,14 @@ You can obtain a given object type's cache ID from one of two sources:
 | From a response object's fields (e.g., `Book.id`)      | [`@typePolicy`](#typepolicy) | This happens _after_ a network request and is essential to merging a query result with existing cached data. This is the most common case. |
 | From a field's arguments (e.g., `author(id: "au456")`) | [`@fieldPolicy`](#fieldpolicy) | This happens _before_ a network request and enables you to avoid a network round trip if all requested data is in the cache already. This is an optional optimization that can avoid some cache misses. |
 
+## Importing the directives
+
+The `@typePolicy` and `@fieldPolicy` directives are not part of your backend schema, so you need to import them in a `extra.graphqls` file in the same directory as our schema, before using them:
+
+```graphql title="extra.graphqls"
+@link(url: "https://specs.apollo.dev/cache/v0.4", import: ["@typePolicy", "@fieldPolicy"])
+```
+
 ## `@typePolicy`
 
 The `@typePolicy` directive enables you to specify an object's cache ID from **key fields** of the object returned by your GraphQL server. Most commonly, you can use an object's `id` field as its key field.
@@ -41,7 +49,7 @@ type Book {
 }
 ```
 
-We can add the following definition to an `extra.graphqls` file in the same directory as our schema:
+We can add the following definition to the `extra.graphqls` file:
 
 ```graphql title="extra.graphqls"
 extend type Book @typePolicy(keyFields: "id")
@@ -63,7 +71,7 @@ extend type Author @typePolicy(keyFields: "firstName lastName")
 In this case, the cache ID for an `Author` object includes the values of both its `firstName` and `lastName` fields:
 
 ```
-"Author:PierreBordage": {"id": "au456", "firstName": "Pierre", "lastName": "Bordage"}
+"Author:Pierre+Bordage": {"id": "au456", "firstName": "Pierre", "lastName": "Bordage"}
 ```
 
 It is also possible to use `@typePolicy` on _interfaces_. This specifies the key fields for all the implementing types:
@@ -76,18 +84,6 @@ extend interface Node @typePolicy(keyFields: "id")
 
 > Note that the **key fields** specified this way will automatically be added during code generation to selections on the object type, since they are always needed to identify the object in the cache.
 > This means you don't need to include them in your queries.
-
-## Adding `__typename` to your operations
-
-In addition to the key fields, the declarative cache requires the `__typename` of each object by default. These typenames are not included by default because they make the queries larger for users not using the cache. To avoid cache misses, add `__typename` to every selection using [addTypename](https://www.apollographql.com/docs/kotlin/kdoc/apollo-gradle-plugin/com.apollographql.apollo.gradle.api/-service/add-typename.html):
-
-```kotlin
-apollo {
-  service("service") {
-    addTypename.set("always")
-  }
-}
-```
 
 ## `@fieldPolicy`
 
