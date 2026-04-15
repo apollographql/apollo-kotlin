@@ -97,7 +97,7 @@ Make sure you thoroughly test migration scenarios before deploying to production
 ## `ApolloStore`
 
 ### Partial cache reads
-`readOperation()` now returns an `ApolloResponse<D>` (it previously returned a `<D>`). This allows for returning partial data from the cache, whereas
+`readOperation()` now returns an `ApolloResponse<D>` (it previously returned a `<D>`). This allows for returning [partial data](./partial-cache-reads/) from the cache, whereas
 previously no data and a `CacheMissException` would be returned if any field was not found.
 
 Now data with null fields (when possible) is returned with `Error`s in `ApolloResponse.errors` for any missing field
