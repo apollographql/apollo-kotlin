@@ -80,7 +80,7 @@ dependencies {
 }
 ```
 
-Configure the Apollo compiler plugin for the cache:
+Configure the Apollo [compiler plugin](./compiler-plugin/) for the cache:
 
 ```kotlin title="build.gradle[.kts]"
 apollo {
@@ -173,41 +173,7 @@ val apolloClient = ApolloClient.Builder()
     .build()
 ```
 
-You can also customize how the cache is used for a particular query by setting a fetch policy for that query.
-
-The following snippets show how to set all available fetch policies and their behavior:
-
-```kotlin
-val response = apolloClient.query(query)
-
-  // (Default) Check the cache, then only use the network if data isn't present
-  .fetchPolicy(FetchPolicy.CacheFirst)
-
-  // Check the cache and never use the network, even if data isn't present
-  .fetchPolicy(FetchPolicy.CacheOnly)
-
-  // Always use the network, then check the cache if network fails
-  .fetchPolicy(FetchPolicy.NetworkFirst)
-
-  // Always use the network and never check the cache, even if network fails
-  .fetchPolicy(FetchPolicy.NetworkOnly)
-  
-  // Check the cache and also use the network
-  .fetchPolicy(FetchPolicy.CacheAndNetwork)
-
-  // Execute the query and collect the responses
-  .toFlow().collect { response ->
-    // ...
-  }
-```
-Note that cache misses **will** emit a response with a non-null `.exception`, meaning that some of these policies can emit multiple values:
-- `CacheFirst` can emit 1 or 2 values
-- `NetworkFirst` can emit 1 or 2 values
-- `CacheAndNetwork` will emit 2 values
-
-Note: `.execute()` filters out cache or network errors to return a single success response, however since `CacheAndNetwork` can emit 2 success responses, you must use `.toFlow()` when using that policy.
-
-As with `cache(NormalizedCacheFactory)`, `fetchPolicy(FetchPolicy)` is an extension function on `ApolloClient.Builder`, so you need `normalized-cache` in your classpath for this to work.
+Learn more about fetch policies in the [query options documentation](./options/).
 
 Because the normalized cache deduplicates data, it enables you to react to cache changes. You do this with `watchers` that listen for cache changes. [Learn more about query watchers.](./query-watchers/)
 
@@ -280,3 +246,17 @@ There are two methods for specifying an object's cache ID:
 ## Clearing the cache
 
 Call `apolloClient.apolloStore.clearAll()` to clear the cache of all entries. Note that calling `apolloClient.apolloStore` throws an exception if a cache has not been configured.
+
+## More features
+
+The normalized cache also supports these features:
+- [Pagination support](./pagination/home/)
+- [Expiration](./expiration/) (a.k.a. Time to live)
+- [Garbage collection](./garbage-collection/), and [trimming](./trimming/)
+- [Partial results from the cache](./partial-cache-reads/)
+
+Consult these additional resources to get the most out of the normalized cache:
+- [Performance](./performance/)
+- [Compiler plugin](./compiler-plugin/)
+- [Query options](./query-options/)
+- [Migration guide](./migration-guide/) to help you migrate from the previous version of the normalized cache

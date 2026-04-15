@@ -76,6 +76,32 @@ items:
         href: ./caching/query-watchers
       - label: ApolloStore
         href: ./caching/store
+      - label: Pagination
+        children:
+          - label: Pagination home
+            href: ./caching/pagination/home
+          - label: Relay-style pagination
+            href: ./caching/pagination/relay-style
+          - label: Other types of pagination
+            href: ./caching/pagination/other
+          - label: Managing pagination manually
+            href: ./caching/pagination/manual
+      - label: Expiration
+        href: ./caching/expiration
+      - label: Garbage collection
+        href: ./caching/garbage-collection
+      - label: Trimming
+        href: ./caching/trimming
+      - label: Cache compiler plugin
+        href: ./caching/compiler-plugin
+      - label: Partial cache reads
+        href: ./caching/partial-cache-reads
+      - label: Query options
+        href: ./caching/options
+      - label: Performance
+        href: ./caching/performance
+      - label: Migration guide
+        href: ./caching/migration-guide
       - label: HTTP cache
         href: ./caching/http-cache
       - label: Troubleshooting
