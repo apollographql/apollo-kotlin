@@ -34,6 +34,7 @@ val apolloClient = ApolloClient.Builder()
   .normalizedCache(
     normalizedCacheFactory = cacheFactory,
     cacheKeyGenerator = cacheKeyGenerator,
+    cacheResolver = DefaultCacheResolver,
   )
   .build()
 ```
@@ -71,14 +72,14 @@ The `CacheKeyResolver` class enables you to generate custom cache IDs from a fie
 
 ```kotlin
 val cacheKeyResolver = object: CacheKeyResolver() {
-  override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
-    // [field] contains compile-time information about what type of object is being resolved.
+  override fun cacheKeyForField(context: ResolverContext): CacheKey?
+    // context.field contains compile-time information about what type of object is being resolved.
     // Even though we call rawType() here, we're guaranteed that the type is a composite type and not a list
-    val typename = field.type.rawType().name
+    val typename = context.field.type.rawType().name
 
     // argumentValue returns the runtime value of the "id" argument
     // from either the variables or as a literal value
-    val id = field.argumentValue("id", variables).getOrNull()
+    val id = context.field.argumentValue("id", context.variables).getOrNull()
 
     if (id is String) {
       // This field has an id argument, so we can use it to compute a cache ID
@@ -125,13 +126,13 @@ query GetBooks($ids: [String!]!) {
 To have the cache look up _all_ books in the `ids` list, we need to override `listOfCacheKeysForField` in `CacheKeyResolver`:
 
 ```kotlin
-override fun listOfCacheKeysForField(field: CompiledField, variables: Executable.Variables): List<CacheKey?>? {
+override fun listOfCacheKeysForField(context: ResolverContext): List<CacheKey?>? {
   // Note that the field *can* be a list type here
-  val typename = field.type.rawType().name
+  val typename = context.field.type.rawType().name
 
   // argumentValue returns the runtime value of the "id" argument
   // from either the variables or as a literal value
-  val ids = field.argumentValue("ids", variables).getOrNull()
+  val ids = context.field.argumentValue("ids", context.variables).getOrNull()
 
   if (ids is List<*>) {
     // This field has an id argument, so we can use it to compute a cache ID
@@ -147,14 +148,8 @@ For the sake of simplicity, only one level of list is supported. To support more
 
 ```kotlin
 val cacheResolver = object: CacheResolver {
-  override fun resolveField(
-      field: CompiledField,
-      variables: Executable.Variables,
-      parent: Map<String, @JvmSuppressWildcards Any?>,
-      parentId: String,
-  ): Any? {
-
-    var type = field.type
+  override fun resolveField(context: ResolverContext): Any? {
+    var type = context.field.type
     var listDepth = 0
 
     while (true) {
@@ -178,7 +173,7 @@ val cacheResolver = object: CacheResolver {
     }
 
     // CacheResolver must always call DefaultCacheResolver last or all fields will be null else
-    return DefaultCacheResolver.resolveField(field, variables, parent, parentId)
+    return DefaultCacheResolver.resolveField(context)
   }
 }
 ```
