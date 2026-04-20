@@ -1,0 +1,67 @@
+---
+title: Options
+---
+
+When you execute an operation, certain options control how the query is executed.
+
+These options can be set globally on the `ApolloClient` or per operation, on `ApolloRequest`. When set globally, they apply to all requests executed by that client, unless overridden by per-request options.
+
+## `fetchPolicy`
+
+Fetch policy controls how and if the cache is used. The default is `CacheFirst`.
+
+### `CacheFirst` (default)
+
+A response is fetched from the cache first. If no valid response cannot be found, the network is queried.
+
+### `CacheOnly`
+
+The response is fetched from the cache. If no valid response cannot be found, `response.exception` is set.
+
+### `NetworkFirst`
+
+A response is fetched from the network first. If no valid response cannot be found, the cache is queried.
+
+### `NetworkOnly`
+
+The response is fetched from the network. If no valid response cannot be found, `response.exception` is set.
+
+### `CacheAndNetwork`
+
+A response is fetched from the cache and then from the network.
+
+Warning: this policy can emit multiple successful responses, therefore [ApolloCall.execute()](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo/-apollo-call/execute.html) must not be used with this policy.
+Use only with [ApolloCall.toFlow()](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo/-apollo-call/index.html#-2144194671%2FFunctions%2F981543781) or [ApolloCall.watch()](https://apollographql.github.io/apollo-kotlin-normalized-cache/kdoc/normalized-cache/com.apollographql.cache.normalized/watch.html?query=fun%20%3CD%20:%20Query.Data%3E%20ApolloCall%3CD%3E.watch():%20Flow%3CApolloResponse%3CD%3E%3E).
+
+## `serverErrorsAsException`
+
+Sets whether GraphQL errors in the cache should be exposed as an exception. When true (the default), if any field is an Error in the cache, the returned response will have a null data and a non-null exception of type `ApolloGraphQLException`.
+
+Set this to false to allow [partial responses](./partial-cache-reads/) from the cache, where errors are included in the response's `errors`.
+
+## `cacheMissesAsException`
+
+Sets whether missing fields from the cache should be exposed as an exception. When true (the default), if any field is missing in the cache, the returned response will have a null data and a non-null exception of type `CacheMissException`.
+
+Set this to false to allow [partial responses](./partial-cache-reads/) from the cache, where _some_ or _all_ of the fields may be missing, and Errors are included in the response's `errors` to represent cache misses.
+
+## `maxStale`
+
+If [stale](./expiration/) fields are acceptable up to a certain value, you can set a maximum staleness duration. This duration is the maximum time that a stale field will be resolved without resulting in a cache miss. To set this duration, call [`.maxStale(Duration)`](https://apollographql.github.io/apollo-kotlin-normalized-cache/kdoc/normalized-cache/com.apollographql.cache.normalized/max-stale.html?query=fun%20%3CT%3E%20MutableExecutionOptions%3CT%3E.maxStale(maxStale:%20Duration):%20T) either globally on your client, or per operation:
+
+```kotlin
+val response = client.query(MyQuery())
+  .fetchPolicy(FetchPolicy.CacheOnly)
+  .maxStale(1.hours)
+  .execute()
+```
+
+### `isStale`
+
+With `maxStale`, it is possible to get data from the cache even if it is stale. To know if the response contains stale fields, you can check [`CacheInfo.isStale`](https://apollographql.github.io/apollo-kotlin-normalized-cache/kdoc/normalized-cache/com.apollographql.cache.normalized/-cache-info/is-stale.html):
+
+```kotlin
+if (response.cacheInfo?.isStale == true) {
+  // The response contains at least one stale field
+}
+```

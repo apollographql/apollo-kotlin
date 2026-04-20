@@ -1,0 +1,37 @@
+---
+title: Performance of the normalized cache
+---
+
+On an indicative basis, here are a few measurements to give an idea of the performance characteristics that can be expected from the cache.
+
+These measurements were made on a **Samsung Galaxy S8 (2017)**, using v1.0.0-beta.1 of the library.
+
+This is based on benchmarks that can be found [here](https://github.com/apollographql/apollo-kotlin/tree/main/benchmark).
+
+- Nested query: a [fairly nested query](https://github.com/apollographql/apollo-kotlin/blob/af353ee5602f1604e8e6a224f62ac80b263432dc/benchmark/microbenchmark/src/main/graphql/calendar/ItemsQuery.graphql)
+  involving lists and fragments (~6000 records / ~2 MiB of data).
+
+- Large list query: a [simple query](https://github.com/apollographql/apollo-kotlin/blob/44f9ab1147ba4facc192000a50a922271bbcf713/benchmark/microbenchmark/src/main/graphql/tracks/operations.graphql)
+  returning 10000 items in a flat list, each item with 2 fields (~10000 records / ~1.5 MiB of data).
+
+## Cache writes
+
+Durations include normalizing the generated models and writing to the cache (JSON parsing is not included).
+
+| Cache  | Query type | Duration |
+|--------|------------|----------|
+| Memory | Nested     | ~800 ms  |
+| Memory | Large list | ~800 ms  |
+| SQL    | Nested     | ~1500 ms | 
+| SQL    | Large list | ~1800 ms |
+
+## Cache reads
+
+Durations include reading from the cache, de-normalizing, instantiating and populating the generated models.
+
+| Cache  | Query type | Duration |
+|--------|------------|----------|
+| Memory | Nested     | ~530 ms  |
+| Memory | Large list | ~490 ms  |
+| SQL    | Nested     | ~830 ms  |
+| SQL    | Large list | ~850 ms  |
