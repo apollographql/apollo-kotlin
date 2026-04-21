@@ -8,7 +8,7 @@ These options can be set globally on the `ApolloClient` or per operation, on `Ap
 
 ## `fetchPolicy`
 
-Fetch policy controls how and if the cache is used. The default is `CacheFirst`.
+The fetch policy controls how and if the cache is used. The default is `CacheFirst`.
 
 ### `CacheFirst` (default)
 
@@ -32,6 +32,10 @@ A response is fetched from the cache and then from the network.
 
 Warning: this policy can emit multiple successful responses, therefore [ApolloCall.execute()](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo/-apollo-call/execute.html) must not be used with this policy.
 Use only with [ApolloCall.toFlow()](https://www.apollographql.com/docs/kotlin/kdoc/apollo-runtime/com.apollographql.apollo/-apollo-call/index.html#-2144194671%2FFunctions%2F981543781) or [ApolloCall.watch()](https://apollographql.github.io/apollo-kotlin-normalized-cache/kdoc/normalized-cache/com.apollographql.cache.normalized/watch.html?query=fun%20%3CD%20:%20Query.Data%3E%20ApolloCall%3CD%3E.watch():%20Flow%3CApolloResponse%3CD%3E%3E).
+
+## `refetchPolicy`
+
+The refetch policy controls how the cache is used when [watchers](./query-watchers/) are notified of changes in the cache. The default is `CacheOnly`.
 
 ## `serverErrorsAsException`
 
