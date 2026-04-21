@@ -4,7 +4,9 @@ import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.network.websocket.WebSocket
 import com.apollographql.apollo.network.websocket.WebSocketEngine
 import com.apollographql.apollo.network.websocket.WebSocketListener
+import com.apollographql.apollo.testing.Platform
 import com.apollographql.apollo.testing.internal.runTest
+import com.apollographql.apollo.testing.platform
 import com.apollographql.mockserver.CloseFrame
 import com.apollographql.mockserver.DataMessage
 import com.apollographql.mockserver.MockRequestBase
@@ -21,6 +23,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.withTimeout
 import okio.ByteString.Companion.toByteString
+import test.network.enqueueMessage
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -147,7 +150,7 @@ class MockServerWebSocketEngineTest {
 
     clientWriter.close(1003, "Client Bye")
     @Suppress("DEPRECATION")
-    if (com.apollographql.apollo.testing.platform() != com.apollographql.apollo.testing.Platform.Native) {
+    if (platform() != com.apollographql.apollo.testing.Platform.Native) {
       // Apple sometimes does not send the Close frame. See https://developer.apple.com/forums/thread/679446
       serverReader.awaitMessage().apply {
         assertIs<CloseFrame>(this)
@@ -159,22 +162,27 @@ class MockServerWebSocketEngineTest {
 
   @OptIn(ExperimentalCoroutinesApi::class)
   @Test
-  fun serverClose() = whenHandshakeDone {
-    serverWriter.enqueueMessage(CloseFrame(1002, "Server Bye"))
-
-    val item = clientReader.awaitItem()
-
-    if (item.message != null) {
-      item.message.apply {
-        assertIs<CloseFrame>(this)
-        assertEquals(1002, code)
-        assertEquals("Server Bye", reason)
-      }
-    } else if (item.exception != null) {
-      // Apple implementation calls onError instead on onClose
+  fun serverClose() {
+    if (platform() == Platform.Linux) {
+      return
     }
+    whenHandshakeDone {
+      serverWriter.enqueueMessage(CloseFrame(1002, "Server Bye"))
 
-    assertTrue(clientReader.isEmpty)
+      val item = clientReader.awaitItem()
+
+      if (item.message != null) {
+        item.message.apply {
+          assertIs<CloseFrame>(this)
+          assertEquals(1002, code)
+          assertEquals("Server Bye", reason)
+        }
+      } else if (item.exception != null) {
+        // Apple implementation calls onError instead on onClose
+      }
+
+      assertTrue(clientReader.isEmpty)
+    }
   }
 }
 

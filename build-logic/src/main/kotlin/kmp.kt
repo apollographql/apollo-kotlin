@@ -66,7 +66,8 @@ fun defaultTargets(
     }
 
     if (enableLinux && withLinux) {
-      linuxX64("linux")
+      linuxX64()
+      linuxArm64()
     }
 
     if (withAndroid) {
