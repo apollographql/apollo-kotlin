@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.ExecutionTaskHolder
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithHostTests
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithTests
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeOutputKind
@@ -90,7 +91,8 @@ internal fun Project.disableSomeTests(enableWasmJsTests: Boolean) {
     /**
      * Disable every native test except the KotlinNativeTargetWithHostTests to save some time
      */
-    if (target is KotlinNativeTargetWithSimulatorTests || target is KotlinNativeTargetWithTests<*>) {
+    if ((target is KotlinNativeTargetWithSimulatorTests || target is KotlinNativeTargetWithTests<*>)
+        && target !is KotlinNativeTargetWithHostTests) {
       target.testRuns.configureEach {
         it as ExecutionTaskHolder<*>
         it.executionTask.configure {
