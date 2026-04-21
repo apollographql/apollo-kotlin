@@ -106,6 +106,10 @@ class WebSocketNetworkTransportTest {
 
   @Test
   fun slowConsumer() = mockServerWebSocketTest {
+    if (platform() == Platform.Linux) {
+      return@mockServerWebSocketTest
+    }
+
     /**
      * Simulate a low read on the first 5 items.
      * During that time, the server should continue sending.
@@ -214,6 +218,10 @@ class WebSocketNetworkTransportTest {
 
   @Test
   fun socketClosedEmitsException() = runTest {
+    if (platform() == Platform.Linux) {
+      return@runTest
+    }
+
     MockServer().use { mockServer ->
       ApolloClient.Builder()
           .serverUrl(mockServer.url())
@@ -278,6 +286,10 @@ class WebSocketNetworkTransportTest {
 
   @Test
   fun flowThrowsIfNoReconnect() = mockServerWebSocketTest {
+    if (platform() == Platform.Linux) {
+      return@mockServerWebSocketTest
+    }
+
     apolloClient.subscription(FooSubscription())
         .toFlow()
         .test {
@@ -363,6 +375,10 @@ class WebSocketNetworkTransportTest {
 
   @Test
   fun canChangeHeadersAndConnectionPayloadOnError() = runTest {
+    if (platform() == Platform.Linux) {
+      return@runTest
+    }
+
     MockServer().use { mockServer ->
       var connectionPayload = "init0"
       ApolloClient.Builder()

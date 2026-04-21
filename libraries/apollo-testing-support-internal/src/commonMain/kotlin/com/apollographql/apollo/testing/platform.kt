@@ -8,6 +8,7 @@ import com.apollographql.apollo.annotations.ApolloInternal
 enum class Platform {
   Jvm,
   Native,
+  Linux,
   Js,
   WasmJs
 }
