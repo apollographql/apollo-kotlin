@@ -83,6 +83,7 @@ kotlin {
     findByName("linuxMain")?.apply {
       dependencies {
         implementation(libs.ktor.client.curl)
+        implementation(libs.ktor.client.websockets)
       }
     }
 
