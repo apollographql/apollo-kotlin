@@ -20,6 +20,6 @@ object JavaCompiler {
       JavaFileObjects.forSourceLines(qualifiedName, it.readLines())
     }.toList()
 
-    Truth.assertAbout(JavaSourcesSubjectFactory.javaSources()).that(javaFileObjects).compilesWithoutError()
+    Truth.assertAbout(JavaSourcesSubjectFactory.javaSources()).that(javaFileObjects.toMutableList()).compilesWithoutError()
   }
 }
