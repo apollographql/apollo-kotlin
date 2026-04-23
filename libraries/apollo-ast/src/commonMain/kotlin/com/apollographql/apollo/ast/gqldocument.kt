@@ -162,7 +162,7 @@ fun builtinForeignSchemas(): List<ForeignSchema> {
       ForeignSchema("kotlin_labs", "v0.5", kotlinLabsDefinitions("v0.5"), listOf("optional")),
       ForeignSchema("kotlin_labs", "v0.6", kotlinLabsDefinitions("v0.6"), listOf("optional")),
       ForeignSchema("kotlin_labs", "v0.7", kotlinLabsDefinitions("v0.7"), listOf("optional")),
-      ForeignSchema("nullability", "v0.4", nullabilityDefinitions("v0.4"), listOf("catch")),
+      ForeignSchema("nullability", "v0.4", nullabilityDefinitions("v0.4"), listOf("catch", "catchByDefault")),
       ForeignSchema("kotlin_compiler_options", "v0.1", definitionsFromString(compilerOptions_0_0 + compilerOptions_0_1_additions), emptyList()),
       ForeignSchema("kotlin_ignore", "v0.1", definitionsFromString(ignoreDefinitionStr), emptyList()),
   )
