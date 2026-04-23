@@ -24,7 +24,7 @@ fun KotlinCommonCompilerOptions.configure(
 
   // Workaround for https://youtrack.jetbrains.com/projects/KT/issues/KT-84767/
   // TODO remove when that issue is resolved, to avoid being too broad in what's disabled
-  freeCompilerArgs.add("-Xwarning-level=COMPILER_ARGUMENTS_WARNING:disabled")
+//  freeCompilerArgs.add("-Xwarning-level=COMPILER_ARGUMENTS_WARNING:disabled")
 
   optIns.forEach {
     freeCompilerArgs.add("-opt-in=$it")
