@@ -32,7 +32,7 @@ junit = "4.13.2"
 # Version for projects that we publish, and we need to give some time for non-JVM consumers to upgrade before we do
 # Our current strategy is to bump whenever AndroidX bumps
 #noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
-kotlin-plugin = "2.4.0-dev-9387"
+kotlin-plugin = "2.4.0-RC-126"
 # Version for projects that we don't publish: build-logic, benchmarks, etc...
 #noinspection SimilarGradleDependency
 kotlin-plugin-latest = "2.3.10"
