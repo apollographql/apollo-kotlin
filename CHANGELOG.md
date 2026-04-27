@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+# Version 5.0.0-rc.0
+_2026-04-27_
+
+First release candidate of Apollo Kotlin 5.
+
+* [NEW] Add linuxArm64 target (#6929)
+* [NEW] Add linux WebSockets support (#6929)
+* [FIX] Always strip `@catchByDefault` in executable documents (#6932)
+* [FIX] Cache: merge data in the presence of include directives (#6922)
+
 # Version 5.0.0-alpha.7
 _2026-04-07_
 
