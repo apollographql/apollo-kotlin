@@ -42,6 +42,6 @@ class SchemaValidationTest(name: String, private val graphqlsFile: File) {
         .filter { it.extension == "graphqls" }
         .filter { testFilterMatches(it.name) }
         .sortedBy { it.name }
-        .map { arrayOf(it.nameWithoutExtension, it) }
+        .map { arrayOf<Any>(it.nameWithoutExtension, it) }
   }
 }
