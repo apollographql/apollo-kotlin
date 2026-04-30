@@ -57,6 +57,7 @@ private data class ValidationContext(
   val visitedShapeSets = mutableSetOf<Set<FieldAndType>>()
   val visitedParentSets = mutableSetOf<Set<FieldAndType>>()
   val variableValuesInScope = mutableListOf<Map<String, GQLValue>>()
+  val mergeSubSelectionsCache = mutableMapOf<Set<FieldAndType>, Map<String, MutableSet<FieldAndType>>>()
 
   fun pushFragment(arguments: List<GQLArgument>, variableDefinitions: List<GQLVariableDefinition>) {
     val newValues = mutableMapOf<String, GQLValue>()

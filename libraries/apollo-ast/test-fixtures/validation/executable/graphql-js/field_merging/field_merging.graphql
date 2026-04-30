@@ -1,3 +1,5 @@
+# See https://github.com/apollographql/apollo-kotlin/issues/6938
+
 fragment Fragment0164 on Type1575 {
   field1840
   field1841
