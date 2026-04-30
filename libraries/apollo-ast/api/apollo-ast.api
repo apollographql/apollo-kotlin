@@ -144,10 +144,13 @@ public final class com/apollographql/apollo/ast/GQLArgument : com/apollographql/
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Lcom/apollographql/apollo/ast/GQLValue;)Lcom/apollographql/apollo/ast/GQLArgument;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLArgument;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Lcom/apollographql/apollo/ast/GQLValue;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLArgument;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getValue ()Lcom/apollographql/apollo/ast/GQLValue;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -156,11 +159,14 @@ public final class com/apollographql/apollo/ast/GQLArgumentCoordinate : com/apol
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLArgumentCoordinate;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLArgumentCoordinate;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLArgumentCoordinate;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getArgument ()Ljava/lang/String;
 	public fun getChildren ()Ljava/util/List;
 	public final fun getField ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -170,9 +176,12 @@ public final class com/apollographql/apollo/ast/GQLArguments : com/apollographql
 	public final fun copy (Ljava/util/List;Lcom/apollographql/apollo/ast/SourceLocation;)Lcom/apollographql/apollo/ast/GQLArguments;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLArguments;Ljava/util/List;Lcom/apollographql/apollo/ast/SourceLocation;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLArguments;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getArguments ()Ljava/util/List;
 	public fun getChildren ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -182,9 +191,12 @@ public final class com/apollographql/apollo/ast/GQLBooleanValue : com/apollograp
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Z)Lcom/apollographql/apollo/ast/GQLBooleanValue;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLBooleanValue;Lcom/apollographql/apollo/ast/SourceLocation;ZILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLBooleanValue;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getValue ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -194,11 +206,14 @@ public final class com/apollographql/apollo/ast/GQLCapability : com/apollographq
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLCapability;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLCapability;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLCapability;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public final fun getDescription ()Ljava/lang/String;
 	public final fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -215,10 +230,13 @@ public final class com/apollographql/apollo/ast/GQLDirective : com/apollographql
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLDirective;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLDirective;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLDirective;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getArguments ()Ljava/util/List;
 	public fun getChildren ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -227,10 +245,13 @@ public final class com/apollographql/apollo/ast/GQLDirectiveArgumentCoordinate :
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLDirectiveArgumentCoordinate;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLDirectiveArgumentCoordinate;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLDirectiveArgumentCoordinate;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getArgument ()Ljava/lang/String;
 	public fun getChildren ()Ljava/util/List;
 	public final fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -239,9 +260,12 @@ public final class com/apollographql/apollo/ast/GQLDirectiveCoordinate : com/apo
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLDirectiveCoordinate;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLDirectiveCoordinate;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLDirectiveCoordinate;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public final fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -256,6 +280,7 @@ public final class com/apollographql/apollo/ast/GQLDirectiveDefinition : com/apo
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLDirectiveDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLjava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLDirectiveDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLDirectiveDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ZLjava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLDirectiveDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getArguments ()Ljava/util/List;
 	public fun getChildren ()Ljava/util/List;
 	public fun getDescription ()Ljava/lang/String;
@@ -264,7 +289,9 @@ public final class com/apollographql/apollo/ast/GQLDirectiveDefinition : com/apo
 	public fun getName ()Ljava/lang/String;
 	public final fun getRepeatable ()Z
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
 	public final fun isBuiltIn ()Z
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -278,10 +305,13 @@ public final class com/apollographql/apollo/ast/GQLDirectiveExtension : com/apol
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLDirectiveExtension;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLDirectiveExtension;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLDirectiveExtension;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDirectives ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -317,9 +347,12 @@ public final class com/apollographql/apollo/ast/GQLDocument : com/apollographql/
 	public final fun copy (Ljava/util/List;Lcom/apollographql/apollo/ast/SourceLocation;)Lcom/apollographql/apollo/ast/GQLDocument;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLDocument;Ljava/util/List;Lcom/apollographql/apollo/ast/SourceLocation;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLDocument;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public final fun getDefinitions ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -332,12 +365,15 @@ public final class com/apollographql/apollo/ast/GQLEnumTypeDefinition : com/apol
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLEnumTypeDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLEnumTypeDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLEnumTypeDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDescription ()Ljava/lang/String;
 	public fun getDirectives ()Ljava/util/List;
 	public final fun getEnumValues ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -347,11 +383,14 @@ public final class com/apollographql/apollo/ast/GQLEnumTypeExtension : com/apoll
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLEnumTypeExtension;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLEnumTypeExtension;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLEnumTypeExtension;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDirectives ()Ljava/util/List;
 	public final fun getEnumValues ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -361,9 +400,12 @@ public final class com/apollographql/apollo/ast/GQLEnumValue : com/apollographql
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLEnumValue;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLEnumValue;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLEnumValue;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -373,11 +415,14 @@ public final class com/apollographql/apollo/ast/GQLEnumValueDefinition : com/apo
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLEnumValueDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLEnumValueDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLEnumValueDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDescription ()Ljava/lang/String;
 	public fun getDirectives ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -390,6 +435,7 @@ public final class com/apollographql/apollo/ast/GQLField : com/apollographql/apo
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLField;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLField;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLField;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAlias ()Ljava/lang/String;
 	public final fun getArguments ()Ljava/util/List;
 	public fun getChildren ()Ljava/util/List;
@@ -398,6 +444,8 @@ public final class com/apollographql/apollo/ast/GQLField : com/apollographql/apo
 	public final fun getSelectionSet ()Lcom/apollographql/apollo/ast/GQLSelectionSet;
 	public final fun getSelections ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -407,6 +455,7 @@ public final class com/apollographql/apollo/ast/GQLFieldDefinition : com/apollog
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo/ast/GQLType;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLFieldDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLFieldDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo/ast/GQLType;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLFieldDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getArguments ()Ljava/util/List;
 	public fun getChildren ()Ljava/util/List;
 	public fun getDescription ()Ljava/lang/String;
@@ -414,6 +463,8 @@ public final class com/apollographql/apollo/ast/GQLFieldDefinition : com/apollog
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getType ()Lcom/apollographql/apollo/ast/GQLType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -423,9 +474,12 @@ public final class com/apollographql/apollo/ast/GQLFloatValue : com/apollographq
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLFloatValue;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLFloatValue;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLFloatValue;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -439,6 +493,7 @@ public final class com/apollographql/apollo/ast/GQLFragmentDefinition : com/apol
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLFragmentDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo/ast/GQLNamedType;Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLFragmentDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLFragmentDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo/ast/GQLNamedType;Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLFragmentDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDescription ()Ljava/lang/String;
 	public fun getDirectives ()Ljava/util/List;
@@ -448,6 +503,8 @@ public final class com/apollographql/apollo/ast/GQLFragmentDefinition : com/apol
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getTypeCondition ()Lcom/apollographql/apollo/ast/GQLNamedType;
 	public final fun getVariableDefinitions ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -461,11 +518,14 @@ public final class com/apollographql/apollo/ast/GQLFragmentSpread : com/apollogr
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLFragmentSpread;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLFragmentSpread;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLFragmentSpread;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLFragmentSpread;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getArguments ()Ljava/util/List;
 	public fun getChildren ()Ljava/util/List;
 	public fun getDirectives ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -479,12 +539,15 @@ public final class com/apollographql/apollo/ast/GQLInlineFragment : com/apollogr
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Lcom/apollographql/apollo/ast/GQLNamedType;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLInlineFragment;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLInlineFragment;Lcom/apollographql/apollo/ast/SourceLocation;Lcom/apollographql/apollo/ast/GQLNamedType;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLInlineFragment;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDirectives ()Ljava/util/List;
 	public final fun getSelectionSet ()Lcom/apollographql/apollo/ast/GQLSelectionSet;
 	public final fun getSelections ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getTypeCondition ()Lcom/apollographql/apollo/ast/GQLNamedType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -494,12 +557,15 @@ public final class com/apollographql/apollo/ast/GQLInputObjectTypeDefinition : c
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLInputObjectTypeDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLInputObjectTypeDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLInputObjectTypeDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDescription ()Ljava/lang/String;
 	public fun getDirectives ()Ljava/util/List;
 	public final fun getInputFields ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -509,11 +575,14 @@ public final class com/apollographql/apollo/ast/GQLInputObjectTypeExtension : co
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLInputObjectTypeExtension;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLInputObjectTypeExtension;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLInputObjectTypeExtension;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDirectives ()Ljava/util/List;
 	public final fun getInputFields ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -523,6 +592,7 @@ public final class com/apollographql/apollo/ast/GQLInputValueDefinition : com/ap
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo/ast/GQLType;Lcom/apollographql/apollo/ast/GQLValue;)Lcom/apollographql/apollo/ast/GQLInputValueDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLInputValueDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo/ast/GQLType;Lcom/apollographql/apollo/ast/GQLValue;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLInputValueDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public final fun getDefaultValue ()Lcom/apollographql/apollo/ast/GQLValue;
 	public fun getDescription ()Ljava/lang/String;
@@ -530,6 +600,8 @@ public final class com/apollographql/apollo/ast/GQLInputValueDefinition : com/ap
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getType ()Lcom/apollographql/apollo/ast/GQLType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public final fun write (Lcom/apollographql/apollo/ast/SDLWriter;Z)V
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
@@ -540,9 +612,12 @@ public final class com/apollographql/apollo/ast/GQLIntValue : com/apollographql/
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLIntValue;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLIntValue;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLIntValue;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -552,6 +627,7 @@ public final class com/apollographql/apollo/ast/GQLInterfaceTypeDefinition : com
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLInterfaceTypeDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLInterfaceTypeDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLInterfaceTypeDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDescription ()Ljava/lang/String;
 	public fun getDirectives ()Ljava/util/List;
@@ -559,6 +635,8 @@ public final class com/apollographql/apollo/ast/GQLInterfaceTypeDefinition : com
 	public final fun getImplementsInterfaces ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -568,12 +646,15 @@ public final class com/apollographql/apollo/ast/GQLInterfaceTypeExtension : com/
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLInterfaceTypeExtension;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLInterfaceTypeExtension;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLInterfaceTypeExtension;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDirectives ()Ljava/util/List;
 	public final fun getFields ()Ljava/util/List;
 	public final fun getImplementsInterfaces ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -583,9 +664,12 @@ public final class com/apollographql/apollo/ast/GQLListType : com/apollographql/
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Lcom/apollographql/apollo/ast/GQLType;)Lcom/apollographql/apollo/ast/GQLListType;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLListType;Lcom/apollographql/apollo/ast/SourceLocation;Lcom/apollographql/apollo/ast/GQLType;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLListType;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getType ()Lcom/apollographql/apollo/ast/GQLType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -595,9 +679,12 @@ public final class com/apollographql/apollo/ast/GQLListValue : com/apollographql
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLListValue;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLListValue;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLListValue;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getValues ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -606,10 +693,13 @@ public final class com/apollographql/apollo/ast/GQLMemberCoordinate : com/apollo
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLMemberCoordinate;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLMemberCoordinate;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLMemberCoordinate;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public final fun getMember ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -623,9 +713,12 @@ public final class com/apollographql/apollo/ast/GQLNamedType : com/apollographql
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLNamedType;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLNamedType;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLNamedType;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -642,9 +735,12 @@ public final class com/apollographql/apollo/ast/GQLNonNullType : com/apollograph
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Lcom/apollographql/apollo/ast/GQLType;)Lcom/apollographql/apollo/ast/GQLNonNullType;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLNonNullType;Lcom/apollographql/apollo/ast/SourceLocation;Lcom/apollographql/apollo/ast/GQLType;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLNonNullType;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getType ()Lcom/apollographql/apollo/ast/GQLType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -655,8 +751,11 @@ public final class com/apollographql/apollo/ast/GQLNullValue : com/apollographql
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;)Lcom/apollographql/apollo/ast/GQLNullValue;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLNullValue;Lcom/apollographql/apollo/ast/SourceLocation;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLNullValue;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -666,10 +765,13 @@ public final class com/apollographql/apollo/ast/GQLObjectField : com/apollograph
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Lcom/apollographql/apollo/ast/GQLValue;)Lcom/apollographql/apollo/ast/GQLObjectField;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLObjectField;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Lcom/apollographql/apollo/ast/GQLValue;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLObjectField;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getValue ()Lcom/apollographql/apollo/ast/GQLValue;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -679,6 +781,7 @@ public final class com/apollographql/apollo/ast/GQLObjectTypeDefinition : com/ap
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLObjectTypeDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLObjectTypeDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLObjectTypeDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDescription ()Ljava/lang/String;
 	public fun getDirectives ()Ljava/util/List;
@@ -686,6 +789,8 @@ public final class com/apollographql/apollo/ast/GQLObjectTypeDefinition : com/ap
 	public final fun getImplementsInterfaces ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -695,12 +800,15 @@ public final class com/apollographql/apollo/ast/GQLObjectTypeExtension : com/apo
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLObjectTypeExtension;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLObjectTypeExtension;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLObjectTypeExtension;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDirectives ()Ljava/util/List;
 	public final fun getFields ()Ljava/util/List;
 	public final fun getImplementsInterfaces ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -710,9 +818,12 @@ public final class com/apollographql/apollo/ast/GQLObjectValue : com/apollograph
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLObjectValue;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLObjectValue;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLObjectValue;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public final fun getFields ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -722,6 +833,7 @@ public final class com/apollographql/apollo/ast/GQLOperationDefinition : com/apo
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLOperationDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLOperationDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLOperationDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDescription ()Ljava/lang/String;
 	public fun getDirectives ()Ljava/util/List;
@@ -731,6 +843,8 @@ public final class com/apollographql/apollo/ast/GQLOperationDefinition : com/apo
 	public final fun getSelections ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getVariableDefinitions ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -740,10 +854,13 @@ public final class com/apollographql/apollo/ast/GQLOperationTypeDefinition : com
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLOperationTypeDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLOperationTypeDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLOperationTypeDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public final fun getNamedType ()Ljava/lang/String;
 	public final fun getOperationType ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -761,11 +878,14 @@ public final class com/apollographql/apollo/ast/GQLScalarTypeDefinition : com/ap
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLScalarTypeDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLScalarTypeDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLScalarTypeDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDescription ()Ljava/lang/String;
 	public fun getDirectives ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -775,10 +895,13 @@ public final class com/apollographql/apollo/ast/GQLScalarTypeExtension : com/apo
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLScalarTypeExtension;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLScalarTypeExtension;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLScalarTypeExtension;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDirectives ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -791,11 +914,14 @@ public final class com/apollographql/apollo/ast/GQLSchemaDefinition : com/apollo
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLSchemaDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLSchemaDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLSchemaDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDescription ()Ljava/lang/String;
 	public fun getDirectives ()Ljava/util/List;
 	public final fun getRootOperationTypeDefinitions ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -805,10 +931,13 @@ public final class com/apollographql/apollo/ast/GQLSchemaExtension : com/apollog
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLSchemaExtension;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLSchemaExtension;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLSchemaExtension;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDirectives ()Ljava/util/List;
 	public final fun getOperationTypeDefinitions ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -821,9 +950,12 @@ public final class com/apollographql/apollo/ast/GQLSelectionSet : com/apollograp
 	public final fun copy (Ljava/util/List;Lcom/apollographql/apollo/ast/SourceLocation;)Lcom/apollographql/apollo/ast/GQLSelectionSet;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLSelectionSet;Ljava/util/List;Lcom/apollographql/apollo/ast/SourceLocation;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLSelectionSet;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public final fun getSelections ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -833,11 +965,14 @@ public final class com/apollographql/apollo/ast/GQLServiceDefinition : com/apoll
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLServiceDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLServiceDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLServiceDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCapabilities ()Ljava/util/List;
 	public fun getChildren ()Ljava/util/List;
 	public fun getDescription ()Ljava/lang/String;
 	public fun getDirectives ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -847,10 +982,13 @@ public final class com/apollographql/apollo/ast/GQLServiceExtension : com/apollo
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLServiceExtension;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLServiceExtension;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLServiceExtension;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCapabilities ()Ljava/util/List;
 	public fun getChildren ()Ljava/util/List;
 	public fun getDirectives ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -860,9 +998,12 @@ public final class com/apollographql/apollo/ast/GQLStringValue : com/apollograph
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLStringValue;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLStringValue;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLStringValue;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -874,9 +1015,12 @@ public final class com/apollographql/apollo/ast/GQLTypeCoordinate : com/apollogr
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLTypeCoordinate;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLTypeCoordinate;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLTypeCoordinate;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public final fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -901,12 +1045,15 @@ public final class com/apollographql/apollo/ast/GQLUnionTypeDefinition : com/apo
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLUnionTypeDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLUnionTypeDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLUnionTypeDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDescription ()Ljava/lang/String;
 	public fun getDirectives ()Ljava/util/List;
 	public final fun getMemberTypes ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -916,11 +1063,14 @@ public final class com/apollographql/apollo/ast/GQLUnionTypeExtension : com/apol
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo/ast/GQLUnionTypeExtension;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLUnionTypeExtension;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLUnionTypeExtension;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getDirectives ()Ljava/util/List;
 	public final fun getMemberTypes ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -937,6 +1087,7 @@ public final class com/apollographql/apollo/ast/GQLVariableDefinition : com/apol
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLVariableDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Lcom/apollographql/apollo/ast/GQLType;Lcom/apollographql/apollo/ast/GQLValue;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLVariableDefinition;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLVariableDefinition;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;Lcom/apollographql/apollo/ast/GQLType;Lcom/apollographql/apollo/ast/GQLValue;Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLVariableDefinition;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public final fun getDefaultValue ()Lcom/apollographql/apollo/ast/GQLValue;
 	public fun getDescription ()Ljava/lang/String;
@@ -944,6 +1095,8 @@ public final class com/apollographql/apollo/ast/GQLVariableDefinition : com/apol
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
 	public final fun getType ()Lcom/apollographql/apollo/ast/GQLType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -953,9 +1106,12 @@ public final class com/apollographql/apollo/ast/GQLVariableValue : com/apollogra
 	public final fun copy (Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;)Lcom/apollographql/apollo/ast/GQLVariableValue;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo/ast/GQLVariableValue;Lcom/apollographql/apollo/ast/SourceLocation;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo/ast/GQLVariableValue;
 	public fun copyWithNewChildrenInternal (Lcom/apollographql/apollo/ast/NodeContainer;)Lcom/apollographql/apollo/ast/GQLNode;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getChildren ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public fun getSourceLocation ()Lcom/apollographql/apollo/ast/SourceLocation;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public fun writeInternal (Lcom/apollographql/apollo/ast/SDLWriter;)V
 }
 
@@ -1342,11 +1498,13 @@ public final class com/apollographql/apollo/ast/SourceAwareException$Companion {
 public final class com/apollographql/apollo/ast/SourceLocation {
 	public static final field Companion Lcom/apollographql/apollo/ast/SourceLocation$Companion;
 	public fun <init> (IIIILjava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getColumn ()I
 	public final fun getEnd ()I
 	public final fun getFilePath ()Ljava/lang/String;
 	public final fun getLine ()I
 	public final fun getStart ()I
+	public fun hashCode ()I
 	public final fun pretty ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
 }

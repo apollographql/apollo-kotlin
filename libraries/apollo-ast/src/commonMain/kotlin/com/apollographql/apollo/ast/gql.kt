@@ -2,6 +2,7 @@ package com.apollographql.apollo.ast
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
+import dev.drewhamilton.poko.Poko
 
 /**
  * The GraphQL AST definition
@@ -128,6 +129,7 @@ sealed class GQLSelection : GQLNode
  *
  * See [parseAsGQLDocument] for how to obtain a [GQLDocument].
  */
+@Poko
 class GQLDocument(
     val definitions: List<GQLDefinition>,
     override val sourceLocation: SourceLocation?,
@@ -158,6 +160,7 @@ class GQLDocument(
   companion object
 }
 
+@Poko
 class GQLOperationDefinition(
     override val sourceLocation: SourceLocation? = null,
     val operationType: String,
@@ -230,6 +233,7 @@ class GQLOperationDefinition(
   }
 }
 
+@Poko
 class GQLFragmentDefinition @ApolloExperimental constructor(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -339,6 +343,7 @@ class GQLFragmentDefinition @ApolloExperimental constructor(
   }
 }
 
+@Poko
 class GQLSchemaDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
@@ -387,6 +392,7 @@ class GQLSchemaDefinition(
 }
 
 @ApolloExperimental
+@Poko
 class GQLServiceDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
@@ -438,6 +444,7 @@ class GQLServiceDefinition(
 }
 
 @ApolloExperimental
+@Poko
 class GQLServiceExtension(
     override val sourceLocation: SourceLocation? = null,
     override val directives: List<GQLDirective>,
@@ -482,6 +489,7 @@ class GQLServiceExtension(
 }
 
 @ApolloExperimental
+@Poko
 class GQLCapability(
     override val sourceLocation: SourceLocation? = null,
     val description: String?,
@@ -549,6 +557,7 @@ sealed class GQLTypeDefinition : GQLDefinition, GQLNamed, GQLDescribed, GQLHasDi
   }
 }
 
+@Poko
 class GQLInterfaceTypeDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
@@ -605,6 +614,7 @@ class GQLInterfaceTypeDefinition(
   }
 }
 
+@Poko
 class GQLObjectTypeDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
@@ -665,6 +675,7 @@ class GQLObjectTypeDefinition(
   }
 }
 
+@Poko
 class GQLInputObjectTypeDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
@@ -718,6 +729,7 @@ class GQLInputObjectTypeDefinition(
   }
 }
 
+@Poko
 class GQLScalarTypeDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
@@ -758,6 +770,7 @@ class GQLScalarTypeDefinition(
   }
 }
 
+@Poko
 class GQLEnumTypeDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
@@ -807,6 +820,7 @@ class GQLEnumTypeDefinition(
   }
 }
 
+@Poko
 class GQLUnionTypeDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
@@ -856,6 +870,7 @@ class GQLUnionTypeDefinition(
 /**
  * @param name the name of the directive without the '@'
  */
+@Poko
 class GQLDirectiveDefinition @ApolloExperimental constructor(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
@@ -960,6 +975,7 @@ class GQLDirectiveDefinition @ApolloExperimental constructor(
   }
 }
 
+@Poko
 class GQLSchemaExtension(
     override val sourceLocation: SourceLocation? = null,
     override val directives: List<GQLDirective>,
@@ -1003,6 +1019,7 @@ class GQLSchemaExtension(
   }
 }
 
+@Poko
 class GQLEnumTypeExtension(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -1050,6 +1067,7 @@ class GQLEnumTypeExtension(
   }
 }
 
+@Poko
 class GQLObjectTypeExtension(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -1104,6 +1122,7 @@ class GQLObjectTypeExtension(
   }
 }
 
+@Poko
 class GQLInputObjectTypeExtension(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -1151,6 +1170,7 @@ class GQLInputObjectTypeExtension(
   }
 }
 
+@Poko
 class GQLScalarTypeExtension(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -1187,6 +1207,7 @@ class GQLScalarTypeExtension(
   }
 }
 
+@Poko
 class GQLInterfaceTypeExtension(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -1240,6 +1261,7 @@ class GQLInterfaceTypeExtension(
   }
 }
 
+@Poko
 class GQLUnionTypeExtension(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -1283,6 +1305,7 @@ class GQLUnionTypeExtension(
 }
 
 @ApolloExperimental
+@Poko
 class GQLDirectiveExtension(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -1317,6 +1340,7 @@ class GQLDirectiveExtension(
   }
 }
 
+@Poko
 class GQLEnumValueDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
@@ -1359,6 +1383,7 @@ class GQLEnumValueDefinition(
   }
 }
 
+@Poko
 class GQLFieldDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
@@ -1414,6 +1439,7 @@ class GQLFieldDefinition(
   }
 }
 
+@Poko
 class GQLInputValueDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val description: String?,
@@ -1496,6 +1522,7 @@ class GQLInputValueDefinition(
  * See https://github.com/graphql/graphql-spec/pull/1170 for the PR that adds description to the variable
  * definitions
  */
+@Poko
 class GQLVariableDefinition(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -1583,6 +1610,7 @@ class GQLVariableDefinition(
  * @param operationType one of "query", "mutation", "subscription"
  * @param namedType the name of the root object type, i.e. "Query", ...
  */
+@Poko
 class GQLOperationTypeDefinition(
     override val sourceLocation: SourceLocation? = null,
     val operationType: String,
@@ -1617,6 +1645,7 @@ class GQLOperationTypeDefinition(
 /**
  * @param name the name of the directive without the '@'. Example: "include"
  */
+@Poko
 class GQLDirective(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -1653,6 +1682,7 @@ class GQLDirective(
   }
 }
 
+@Poko
 class GQLObjectField(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -1687,6 +1717,7 @@ class GQLObjectField(
   }
 }
 
+@Poko
 class GQLArgument(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -1723,6 +1754,7 @@ class GQLArgument(
 
 @Deprecated("For brevity, GQLSelectionSet has been removed. Use `selections` directly", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+@Poko
 class GQLSelectionSet(
     val selections: List<GQLSelection>,
     override val sourceLocation: SourceLocation? = null,
@@ -1753,6 +1785,7 @@ class GQLSelectionSet(
 
 @Deprecated("For brevity, GQLArguments has been removed. Use `arguments` directly", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
+@Poko
 class GQLArguments(
     val arguments: List<GQLArgument>,
     override val sourceLocation: SourceLocation? = null,
@@ -1801,6 +1834,7 @@ private fun List<GQLArgument>.writeArguments(writer: SDLWriter) {
   join(writer, prefix = "(", separator = ", ", postfix = ")")
 }
 
+@Poko
 class GQLField @ApolloExperimental constructor(
     override val sourceLocation: SourceLocation? = null,
     val alias: String?,
@@ -1869,6 +1903,7 @@ class GQLField @ApolloExperimental constructor(
   }
 }
 
+@Poko
 class GQLInlineFragment(
     override val sourceLocation: SourceLocation? = null,
     val typeCondition: GQLNamedType?,
@@ -1926,6 +1961,7 @@ class GQLInlineFragment(
   }
 }
 
+@Poko
 class GQLFragmentSpread @ApolloExperimental constructor(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -1999,6 +2035,7 @@ class GQLFragmentSpread @ApolloExperimental constructor(
 
 sealed class GQLType : GQLNode
 
+@Poko
 class GQLNamedType(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -2025,6 +2062,7 @@ class GQLNamedType(
   }
 }
 
+@Poko
 class GQLNonNullType(
     override val sourceLocation: SourceLocation? = null,
     val type: GQLType,
@@ -2054,6 +2092,7 @@ class GQLNonNullType(
   }
 }
 
+@Poko
 class GQLListType(
     override val sourceLocation: SourceLocation? = null,
     val type: GQLType,
@@ -2086,6 +2125,7 @@ class GQLListType(
 
 
 sealed class GQLValue : GQLNode
+@Poko
 class GQLVariableValue(
     override val sourceLocation: SourceLocation? = null,
     override val name: String,
@@ -2112,6 +2152,7 @@ class GQLVariableValue(
   }
 }
 
+@Poko
 class GQLIntValue(
     override val sourceLocation: SourceLocation? = null,
     val value: String,
@@ -2138,6 +2179,7 @@ class GQLIntValue(
   }
 }
 
+@Poko
 class GQLFloatValue(
     override val sourceLocation: SourceLocation? = null,
     val value: String,
@@ -2164,6 +2206,7 @@ class GQLFloatValue(
   }
 }
 
+@Poko
 class GQLStringValue(
     override val sourceLocation: SourceLocation? = null,
     val value: String,
@@ -2190,6 +2233,7 @@ class GQLStringValue(
   }
 }
 
+@Poko
 class GQLBooleanValue(
     override val sourceLocation: SourceLocation? = null,
     val value: Boolean,
@@ -2216,6 +2260,7 @@ class GQLBooleanValue(
   }
 }
 
+@Poko
 class GQLEnumValue(
     override val sourceLocation: SourceLocation? = null,
     val value: String,
@@ -2242,6 +2287,7 @@ class GQLEnumValue(
   }
 }
 
+@Poko
 class GQLListValue(
     override val sourceLocation: SourceLocation? = null,
     val values: List<GQLValue>,
@@ -2272,6 +2318,7 @@ class GQLListValue(
   }
 }
 
+@Poko
 class GQLObjectValue(
     override val sourceLocation: SourceLocation? = null,
     val fields: List<GQLObjectField>,
@@ -2304,6 +2351,7 @@ class GQLObjectValue(
   }
 }
 
+@Poko
 class GQLNullValue(override val sourceLocation: SourceLocation? = null) : GQLValue() {
 
   override val children = emptyList<GQLNode>()
@@ -2369,6 +2417,7 @@ enum class GQLDirectiveLocation {
 
 sealed interface GQLSchemaCoordinate
 
+@Poko
 class GQLTypeCoordinate(
     override val sourceLocation: SourceLocation?,
     val name: String,
@@ -2394,6 +2443,7 @@ class GQLTypeCoordinate(
   }
 }
 
+@Poko
 class GQLDirectiveCoordinate(
     override val sourceLocation: SourceLocation?,
     val name: String,
@@ -2420,6 +2470,7 @@ class GQLDirectiveCoordinate(
   }
 }
 
+@Poko
 class GQLMemberCoordinate(
     override val sourceLocation: SourceLocation?,
     val type: String,
@@ -2450,6 +2501,7 @@ class GQLMemberCoordinate(
   }
 }
 
+@Poko
 class GQLArgumentCoordinate(
     override val sourceLocation: SourceLocation?,
     val type: String,
@@ -2486,6 +2538,7 @@ class GQLArgumentCoordinate(
   }
 }
 
+@Poko
 class GQLDirectiveArgumentCoordinate(
     override val sourceLocation: SourceLocation?,
     val name: String,

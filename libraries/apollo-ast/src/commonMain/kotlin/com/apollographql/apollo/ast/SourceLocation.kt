@@ -1,6 +1,7 @@
 package com.apollographql.apollo.ast
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import dev.drewhamilton.poko.Poko
 
 /**
  * @param start the offset where the symbol starts, inclusive, starting at 0
@@ -18,6 +19,7 @@ import com.apollographql.apollo.annotations.ApolloDeprecatedSince
  * @param filePath The path to the document containing the node
  * Might be null if the document origin is not known (parsing from a String for an example)
  */
+@Poko
 class SourceLocation(
     val start: Int,
     val end: Int,
