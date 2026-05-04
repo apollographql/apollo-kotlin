@@ -5,12 +5,6 @@ import com.apollographql.apollo.ast.*
 
 /**
  * This implements listing 10 of https://tech.new-work.se/graphql-overlapping-fields-can-be-merged-fast-ea6e92e0a01
- *
- * There is no caching per-fieldset because it hides some otherwise useful diagnostics.
- *
- * See `reports_each_conflict_once` for an example. The caching only works when reusing fragment
- * spreads, but because the fragments may be spread at different paths, having the full path for
- * each issue can be useful.
  */
 internal fun IssuesScope.fieldsInSetCanMerge(
     operation: GQLOperationDefinition,
@@ -60,7 +54,10 @@ private data class ValidationContext(
     val schema: Schema,
     val fragments: Map<String, GQLFragmentDefinition>,
 ) {
+  val visitedShapeSets = mutableSetOf<Set<FieldAndType>>()
+  val visitedParentSets = mutableSetOf<Set<FieldAndType>>()
   val variableValuesInScope = mutableListOf<Map<String, GQLValue>>()
+  val mergeSubSelectionsCache = mutableMapOf<Set<FieldAndType>, Map<String, MutableSet<FieldAndType>>>()
 
   fun pushFragment(arguments: List<GQLArgument>, variableDefinitions: List<GQLVariableDefinition>) {
     val newValues = mutableMapOf<String, GQLValue>()
@@ -139,10 +136,15 @@ private fun collectFields(
         if (fragment != null) {
           val fragmentType = context.schema.typeDefinitions[fragment.typeCondition.name]
           if (fragmentType != null) {
-            context.pushFragment(selection.arguments, fragment.variableDefinitions)
-            val selections = fragment.selections.map { it.substituteVariables(context) }
-            collectFields(fieldMap, selections, fragmentType, context)
-            context.popFragment()
+            if (selection.arguments.isNotEmpty() || fragment.variableDefinitions.isNotEmpty()) {
+              context.pushFragment(selection.arguments, fragment.variableDefinitions)
+              val selections = fragment.selections.map { it.substituteVariables(context) }
+              collectFields(fieldMap, selections, fragmentType, context)
+              context.popFragment()
+            } else {
+              // No fragment arguments, skip substituting the variables
+              collectFields(fieldMap, fragment.selections, fragmentType, context)
+            }
           }
         }
       }
@@ -159,6 +161,13 @@ private fun IssuesScope.sameResponseShapeByName(
     val newPath = currentPath + key
 
     if (!requireSameOutputTypeShape(newPath, fieldAndTypes, context.schema)) {
+      continue
+    }
+
+    if (!context.visitedShapeSets.add(fieldAndTypes)) {
+      /**
+       * We have visited this set before, do not recurse
+       */
       continue
     }
 
@@ -192,6 +201,13 @@ private fun IssuesScope.sameForCommonParentsByName(
 
     for (group in groups) {
       if (!requireSameNameAndArguments(newPath, group)) {
+        continue
+      }
+
+      if (!context.visitedParentSets.add(group)) {
+        /**
+         * We have visited this set before, do not recurse
+         */
         continue
       }
 
@@ -328,10 +344,10 @@ private fun IssuesScope.requireSameOutputTypeShape(path: List<String>, fieldAndT
     val nameA = typeA.name
     val nameB = typeB.name
 
-    val aDefintion = schema.typeDefinitions.get(nameA)
+    val aDefinition = schema.typeDefinitions.get(nameA)
     val bDefinition = schema.typeDefinitions.get(nameB)
 
-    if (aDefintion?.isLeaf() == true || bDefinition?.isLeaf() == true) {
+    if (aDefinition?.isLeaf() == true || bDefinition?.isLeaf() == true) {
       if (nameA != nameB) {
         addDifferentShapeIssue(path, "they return different types: '${nameA}' and '${nameB}'", fields)
         return false
@@ -358,11 +374,19 @@ private data class FieldAndType(
     if (this === other) return true
     if (other == null || this::class != other::class) return false
     other as FieldAndType
-    return field === other.field
+    /**
+     * A given field in the AST always has the same parentType so we can ignore it for equality checks
+     */
+    return field == other.field
   }
 
   override fun hashCode(): Int {
     return field.hashCode()
+  }
+
+
+  override fun toString(): String {
+    return "${field.sourceLocation.pretty()}: ${field.toUtf8()} (${parentType.name})"
   }
 }
 

@@ -13,6 +13,7 @@ dependencies {
   // See https://github.com/gradle/gradle/issues/4741
   implementation(libs.okhttp)
   implementation(libs.dokka)
+  implementation(libs.poko)
 
   /**
    * Ktor for the websocket tests in integration tests

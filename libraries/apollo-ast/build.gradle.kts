@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
   id("org.jetbrains.kotlin.plugin.serialization")
+  id("dev.drewhamilton.poko")
 }
 
 apolloLibrary(

@@ -195,6 +195,7 @@ licensee = "app.cash.licensee:licensee-gradle-plugin:1.14.1"
 #compileOnly dependency for the Apollo Gradle Plugin
 #noinspection SimilarGradleDependency,NewerVersionAvailable
 kgp-compile = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
+poko = "dev.drewhamilton.poko:dev.drewhamilton.poko.gradle.plugin:0.21.3"
 
 [plugins]
 #noinspection SimilarGradleDependency
