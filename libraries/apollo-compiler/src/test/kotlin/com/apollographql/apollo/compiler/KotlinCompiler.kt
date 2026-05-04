@@ -19,7 +19,7 @@ object KotlinCompiler {
     val result = KotlinCompilation().apply {
       sources = kotlinFiles
 
-      kotlincArguments = kotlincArguments + "-opt-in=kotlin.RequiresOptIn" + "-Xskip-prerelease-check"
+      kotlincArguments = kotlincArguments + "-opt-in=kotlin.RequiresOptIn" + "-Xskip-prerelease-check" + "-Xskip-metadata-version-check"
       inheritClassPath = true
       verbose = false
       messageOutputStream = okio.blackholeSink().buffer().outputStream()

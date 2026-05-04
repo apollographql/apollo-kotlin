@@ -31,6 +31,7 @@ internal class UtilAssertionsBuilder(val context: JavaSchemaContext) : JavaClass
                                 WildcardTypeName.subtypeOf(
                                     ParameterizedTypeName.get(
                                         ClassName.get("com.google.common.base", "Optional"),
+                                        @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
                                         WildcardTypeName.subtypeOf(Object::class.java)
                                     )
                                 )
