@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+# Version 5.0.0-rc.1
+_2026-05-04_
+
+Fix for a performance regression in the compiler (#6938). Many thanks @apramana for diving into this.
+
 # Version 5.0.0-rc.0
 _2026-04-27_
 
