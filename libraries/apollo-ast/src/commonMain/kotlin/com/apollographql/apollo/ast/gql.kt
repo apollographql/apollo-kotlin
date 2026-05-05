@@ -391,6 +391,21 @@ class GQLSchemaDefinition(
   }
 }
 
+/**
+ * A service definition.
+ *
+ * [Service capabilities](https://github.com/graphql/graphql-spec/pull/1208) is an experimental feature.
+ * Because [GQLServiceExtension] implements a sealed interface, you might have to handle the `when` case even though you did not opt into the feature.
+ * If that is the case, and if you do not want to support the experimental feature, you can safely ignore the case:
+ *
+ * ```kotlin
+ * @OptIn(ApolloExperimental::class)
+ * when (definition) {
+ *   // ...
+ *   is GQLServiceDefinition -> error("Service capabilities is an experimental feature and is currently not supported. See https://github.com/graphql/graphql-spec/pull/1208 for more details.")
+ * }
+ * ```
+ */
 @ApolloExperimental
 @Poko
 class GQLServiceDefinition(
@@ -443,6 +458,22 @@ class GQLServiceDefinition(
   }
 }
 
+
+/**
+ * A service extension for service capabilities.
+ *
+ * [Service capabilities](https://github.com/graphql/graphql-spec/pull/1208) is an experimental feature.
+ * Because [GQLServiceExtension] implements a sealed interface, you might have to handle the `when` case even though you did not opt into the feature.
+ * If that is the case, and if you do not want to support the experimental feature, you can safely ignore the case:
+ *
+ * ```kotlin
+ * @OptIn(ApolloExperimental::class)
+ * when (extension) {
+ *   // ...
+ *   is GQLServiceExtension -> error("Service capabilities is an experimental feature and is currently not supported. See https://github.com/graphql/graphql-spec/pull/1208 for more details.")
+ * }
+ * ```
+ */
 @ApolloExperimental
 @Poko
 class GQLServiceExtension(
@@ -488,6 +519,21 @@ class GQLServiceExtension(
   }
 }
 
+/**
+ * A service capability.
+ *
+ * [Service capabilities](https://github.com/graphql/graphql-spec/pull/1208) is an experimental feature.
+ * Because [GQLServiceExtension] implements a sealed interface, you might have to handle the `when` case even though you did not opt into the feature.
+ * If that is the case, and if you do not want to support the experimental feature, you can safely ignore the case:
+ *
+ * ```kotlin
+ * @OptIn(ApolloExperimental::class)
+ * when (node) {
+ *   // ...
+ *   is GQLCapability -> error("Service capabilities is an experimental feature and is currently not supported. See https://github.com/graphql/graphql-spec/pull/1208 for more details.")
+ * }
+ * ```
+ */
 @ApolloExperimental
 @Poko
 class GQLCapability(
@@ -1304,6 +1350,21 @@ class GQLUnionTypeExtension(
   }
 }
 
+/**
+ * A directive extension.
+ *
+ * [Directive on directives](https://github.com/graphql/graphql-spec/pull/567) is an experimental feature.
+ * Because [GQLDirectiveExtension] implements a sealed interface, you might have to handle the `when` case even though you did not opt into the feature.
+ * If that is the case, and if you do not want to support the experimental feature, you can safely ignore the case:
+ *
+ * ```kotlin
+ * @OptIn(ApolloExperimental::class)
+ * when (extension) {
+ *   // ...
+ *   is GQLDirectiveExtension -> error("Directives on directives is an experimental feature and is currently not supported. See https://github.com/graphql/graphql-spec/pull/567 for more details.")
+ * }
+ * ```
+ */
 @ApolloExperimental
 @Poko
 class GQLDirectiveExtension(
@@ -1835,7 +1896,7 @@ private fun List<GQLArgument>.writeArguments(writer: SDLWriter) {
 }
 
 @Poko
-class GQLField @ApolloExperimental constructor(
+class GQLField(
     override val sourceLocation: SourceLocation? = null,
     val alias: String?,
     override val name: String,
@@ -2411,6 +2472,21 @@ enum class GQLDirectiveLocation {
   INPUT_OBJECT,
   INPUT_FIELD_DEFINITION,
 
+  /**
+   * The directive is applied to a directive.
+   *
+   * [Directives on directives](https://github.com/graphql/graphql-spec/pull/567) is an experimental feature.
+   * Because [GQLDirectiveExtension] implements a sealed interface, you might have to handle the `when` case even though you did not opt into the feature.
+   * If that is the case, and if you do not want to support the experimental feature, you can safely ignore the case:
+   *
+   * ```kotlin
+   * @OptIn(ApolloExperimental::class)
+   * when (location) {
+   *   // ...
+   *   DIRECTIVE_DEFINITION -> error("irectives on directives is an experimental feature and is currently not supported. See https://github.com/graphql/graphql-spec/pull/567 for more details.")
+   * }
+   * ```
+   */
   @ApolloExperimental
   DIRECTIVE_DEFINITION,
 }
