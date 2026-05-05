@@ -391,17 +391,36 @@ class GQLSchemaDefinition(
   }
 }
 
-@ApolloExperimental
+/**
+ * A service definition.
+ *
+ * [Service capabilities](https://github.com/graphql/graphql-spec/pull/1208) is an experimental feature.
+ * Because [GQLServiceExtension] implements a sealed interface, you might have to handle the `when` case even though you did not opt into the feature.
+ * If that is the case, and if you do not want to support the experimental feature, you can safely ignore the case:
+ *
+ * ```kotlin
+ * when (definition) {
+ *   // ...
+ *   is GQLServiceDefinition -> error("Service capabilities is an experimental feature and is currently not supported. See https://github.com/graphql/graphql-spec/pull/1208 for more details.")
+ * }
+ * ```
+ */
 @Poko
 class GQLServiceDefinition(
+    @ApolloExperimental
     override val sourceLocation: SourceLocation? = null,
+    @ApolloExperimental
     override val description: String?,
+    @ApolloExperimental
     override val directives: List<GQLDirective>,
+    @ApolloExperimental
     val capabilities: List<GQLCapability>,
 ) : GQLDefinition, GQLDescribed, GQLHasDirectives {
 
+  @ApolloExperimental
   override val children = directives + capabilities
 
+  @ApolloExperimental
   override fun writeInternal(writer: SDLWriter) {
     if (description == null && directives.isEmpty() && capabilities.isEmpty()) {
       return
@@ -421,6 +440,7 @@ class GQLServiceDefinition(
     }
   }
 
+  @ApolloExperimental
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
@@ -435,6 +455,7 @@ class GQLServiceDefinition(
     )
   }
 
+  @ApolloExperimental
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
@@ -443,16 +464,35 @@ class GQLServiceDefinition(
   }
 }
 
-@ApolloExperimental
+
+/**
+ * A service extension for service capabilities.
+ *
+ * [Service capabilities](https://github.com/graphql/graphql-spec/pull/1208) is an experimental feature.
+ * Because [GQLServiceExtension] implements a sealed interface, you might have to handle the `when` case even though you did not opt into the feature.
+ * If that is the case, and if you do not want to support the experimental feature, you can safely ignore the case:
+ *
+ * ```kotlin
+ * when (extension) {
+ *   // ...
+ *   is GQLServiceExtension -> error("Service capabilities is an experimental feature and is currently not supported. See https://github.com/graphql/graphql-spec/pull/1208 for more details.")
+ * }
+ * ```
+ */
 @Poko
 class GQLServiceExtension(
+    @ApolloExperimental
     override val sourceLocation: SourceLocation? = null,
+    @ApolloExperimental
     override val directives: List<GQLDirective>,
+    @ApolloExperimental
     val capabilities: List<GQLCapability>,
 ) : GQLDefinition, GQLTypeSystemExtension, GQLHasDirectives {
 
+  @ApolloExperimental
   override val children = directives + capabilities
 
+  @ApolloExperimental
   override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("extend service ")
@@ -470,6 +510,7 @@ class GQLServiceExtension(
     }
   }
 
+  @ApolloExperimental
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
       directives: List<GQLDirective> = this.directives,
@@ -480,6 +521,7 @@ class GQLServiceExtension(
       capabilities = capabilities,
   )
 
+  @ApolloExperimental
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
@@ -488,17 +530,36 @@ class GQLServiceExtension(
   }
 }
 
-@ApolloExperimental
+/**
+ * A service capability.
+ *
+ * [Service capabilities](https://github.com/graphql/graphql-spec/pull/1208) is an experimental feature.
+ * Because [GQLServiceExtension] implements a sealed interface, you might have to handle the `when` case even though you did not opt into the feature.
+ * If that is the case, and if you do not want to support the experimental feature, you can safely ignore the case:
+ *
+ * ```kotlin
+ * when (node) {
+ *   // ...
+ *   is GQLCapability -> error("Service capabilities is an experimental feature and is currently not supported. See https://github.com/graphql/graphql-spec/pull/1208 for more details.")
+ * }
+ * ```
+ */
 @Poko
 class GQLCapability(
+    @ApolloExperimental
     override val sourceLocation: SourceLocation? = null,
+    @ApolloExperimental
     val description: String?,
+    @ApolloExperimental
     val name: String,
+    @ApolloExperimental
     val value: String?,
 ) : GQLNode {
+  @ApolloExperimental
   override val children: List<GQLNode>
     get() = emptyList()
 
+  @ApolloExperimental
   override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       writeDescription(description)
@@ -511,6 +572,7 @@ class GQLCapability(
     }
   }
 
+  @ApolloExperimental
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
       description: String? = this.description,
@@ -525,6 +587,7 @@ class GQLCapability(
     )
   }
 
+  @ApolloExperimental
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
@@ -1304,16 +1367,34 @@ class GQLUnionTypeExtension(
   }
 }
 
-@ApolloExperimental
+/**
+ * A directive extension.
+ *
+ * [Directive on directives](https://github.com/graphql/graphql-spec/pull/567) is an experimental feature.
+ * Because [GQLDirectiveExtension] implements a sealed interface, you might have to handle the `when` case even though you did not opt into the feature.
+ * If that is the case, and if you do not want to support the experimental feature, you can safely ignore the case:
+ *
+ * ```kotlin
+ * when (extension) {
+ *   // ...
+ *   is GQLDirectiveExtension -> error("Directives on directives is an experimental feature and is currently not supported. See https://github.com/graphql/graphql-spec/pull/567 for more details.")
+ * }
+ * ```
+ */
 @Poko
 class GQLDirectiveExtension(
+    @ApolloExperimental
     override val sourceLocation: SourceLocation? = null,
+    @ApolloExperimental
     override val name: String,
+    @ApolloExperimental
     override val directives: List<GQLDirective>,
 ) : GQLDefinition, GQLTypeSystemExtension, GQLNamed, GQLHasDirectives {
 
+  @ApolloExperimental
   override val children: List<GQLNode> = directives
 
+  @ApolloExperimental
   override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("extend directive @$name")
@@ -1323,6 +1404,7 @@ class GQLDirectiveExtension(
     }
   }
 
+  @ApolloExperimental
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
       name: String = this.name,
@@ -1333,6 +1415,7 @@ class GQLDirectiveExtension(
       directives = directives,
   )
 
+  @ApolloExperimental
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take()
@@ -2411,7 +2494,20 @@ enum class GQLDirectiveLocation {
   INPUT_OBJECT,
   INPUT_FIELD_DEFINITION,
 
-  @ApolloExperimental
+  /**
+   * The directive is applied to a directive.
+   *
+   * [Directives on directives](https://github.com/graphql/graphql-spec/pull/567) is an experimental feature.
+   * Because [GQLDirectiveExtension] implements a sealed interface, you might have to handle the `when` case even though you did not opt into the feature.
+   * If that is the case, and if you do not want to support the experimental feature, you can safely ignore the case:
+   *
+   * ```kotlin
+   * when (location) {
+   *   // ...
+   *   DIRECTIVE_DEFINITION -> error("irectives on directives is an experimental feature and is currently not supported. See https://github.com/graphql/graphql-spec/pull/567 for more details.")
+   * }
+   * ```
+   */
   DIRECTIVE_DEFINITION,
 }
 
