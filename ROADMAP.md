@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Ecosystem Roadmap
 
-**Last updated: 2026-03-05**
+**Last updated: 2026-05-07**
 
 For up-to-date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
