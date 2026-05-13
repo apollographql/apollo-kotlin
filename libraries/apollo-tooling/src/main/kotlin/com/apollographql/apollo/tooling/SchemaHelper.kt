@@ -54,7 +54,7 @@ internal object SchemaHelper {
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
-  ): String {
+  ): Response {
     val defaultHeaders = listOf(HttpHeader("Accept", "application/graphql-response+json, application/json"))
     val httpRequest = HttpRequest.Builder(HttpMethod.Post, endpoint)
         .headers(defaultHeaders + headers.map { HttpHeader(it.key, it.value) })
@@ -65,11 +65,9 @@ internal object SchemaHelper {
     val bodyStr = httpResponse.body?.use {
       it.readUtf8()
     }
-    check(httpResponse.statusCode in 200..299 && bodyStr != null) {
-      "Cannot get schema from $endpoint: ${httpResponse.statusCode}:\n${bodyStr ?: "(empty body)"}"
-    }
-    return bodyStr
+    return Response(httpResponse.statusCode, bodyStr)
   }
+  internal class Response(val statusCode: Int, val body: String?)
 
   internal fun executePreIntrospectionQuery(
       endpoint: String,
@@ -99,7 +97,7 @@ internal object SchemaHelper {
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
-  ): String {
+  ): Response {
     val jsonBody = buildJsonString {
       writeObject {
         name("operationName").value("IntrospectionQuery")

@@ -2,7 +2,10 @@ package com.apollographql.apollo.tooling
 
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.api.internal.readErrors
+import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.ast.GQLDocument
 import com.apollographql.apollo.ast.introspection.IntrospectionSchema
 import com.apollographql.apollo.ast.introspection.toGQLDocument
@@ -21,6 +24,7 @@ import com.apollographql.apollo.tooling.SchemaHelper.reworkServiceCapabilities
 import com.apollographql.apollo.tooling.graphql.PreIntrospectionQuery
 import com.apollographql.apollo.tooling.platformapi.public.DownloadSchemaQuery
 import kotlinx.coroutines.runBlocking
+import okio.Buffer
 import okio.buffer
 import okio.source
 import java.io.File
@@ -173,7 +177,7 @@ object SchemaDownloader {
       insecure: Boolean,
       failSafe: Boolean = false,
   ): String {
-    val features = if (failSafe) {
+    var features = if (failSafe) {
       emptySet()
     } else {
       val preIntrospectionData: PreIntrospectionQuery.Data = SchemaHelper.executePreIntrospectionQuery(
@@ -183,13 +187,34 @@ object SchemaDownloader {
       )
       preIntrospectionData.getFeatures()
     }
-    val introspectionQuery = getIntrospectionQuery(features)
-    return SchemaHelper.executeIntrospectionQuery(
-        introspectionQuery = introspectionQuery,
-        endpoint = endpoint,
-        headers = headers,
-        insecure = insecure,
-    )
+
+    var lastFeatures = features
+    while (true) {
+      val introspectionQuery = getIntrospectionQuery(features)
+      val response = SchemaHelper.executeIntrospectionQuery(
+          introspectionQuery = introspectionQuery,
+          endpoint = endpoint,
+          headers = headers,
+          insecure = insecure,
+      )
+
+      response.body?.readErrors().orEmpty().forEach {
+        // See https://github.com/apollographql/apollo-kotlin/issues/6945
+        when (it.message) {
+          "Cannot query field \"isDeprecated\" on type \"__Directive\"." -> features = features - GraphQLFeature.DeprecatedDirectives
+          "Cannot query field \"isOneOf\" on type \"__Type\"." -> features = features - GraphQLFeature.OneOf
+        }
+      }
+
+      if (lastFeatures == features) {
+        check(response.statusCode in 200..299 && response.body != null) {
+          "Cannot get schema from $endpoint: ${response.statusCode}:\n${response.body ?: "(empty body)"}"
+        }
+        return response.body
+      } else {
+        lastFeatures = features
+      }
+    }
   }
 
   fun downloadRegistry(
@@ -232,4 +257,17 @@ object SchemaDownloader {
   }
 
   inline fun <reified T> Any?.cast() = this as? T
+}
+
+private fun String.readErrors(): List<Error> {
+  Buffer().writeUtf8(this).jsonReader().use { reader ->
+    reader.beginObject()
+    while (reader.hasNext()) {
+      when (reader.nextName()) {
+        "errors" -> return reader.readErrors()
+        else -> reader.skipValue()
+      }
+    }
+    return emptyList()
+  }
 }
