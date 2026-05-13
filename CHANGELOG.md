@@ -1,6 +1,116 @@
 Change Log
 ==========
 
+# Version 5.0.0
+_2026-05-12_
+
+Apollo Kotlin 5 is a major release focused on:
+
+- **GraphQL golden path**: incremental delivery (`@defer`/`@stream`), fragment arguments, service capabilities, `onError`, nullability, field extensions, `@oneOf`, schema coordinates, ...
+- **Modernized infrastructure**: KGP 2.3.10, Gradle 9, AGP 9, classloader isolation, isolated projects support.
+
+In addition, Apollo Kotlin 5 stabilizes the new WebSocket engine, adds new KMP targets, a new HTTP cache strategy on top of OkHttp, new compiler plugin APIs, and more.
+
+Previous `DeprecationLevel.WARNING` symbols are now `DeprecationLevel.ERROR`.   
+Previous `DeprecationLevel.ERROR` symbols are removed.
+
+Apollo Kotlin 5 is an incremental release. Most of the APIs are compatible with Apollo Kotlin 4\. The main breaking changes are in experimental Data Builders and Apollo Compiler Plugins.
+
+For an upgrade walkthrough, see the [v5 migration guide](https://www.apollographql.com/docs/kotlin/v5/migration/5.0).
+
+## 🚀 GraphQL golden path
+
+Apollo Kotlin 5 implements the latest version of the GraphQL specification draft as well as [support for many experimental RFCs](https://caniuse.graphql.now/project/apollo-kotlin.html).
+
+Those [RFCs](https://rfcs.graphql.org/) solve long-standing pain points in GraphQL, such as semantic nullability or fragment arguments.
+
+* Add `incremental/v0.2` format for `@defer` and `@stream` (\#6331).
+* Add fragment arguments (\#6882).
+* Add support for `onError` (\#6860).
+* Add support for service capabilities (\#6858).
+* Add field extensions (\#6856, \#6867).
+* Add schema coordinates (\#6560).
+* Add `@ignore` support (\#6900).
+* Add support descriptions on variable definitions (\#6699).
+* Add support for directives on directive definitions (\#6803).
+* Speed up field merging validation (\#6875).
+* Validate `@oneOf` input objects when they create cycles (\#6894).
+
+## 🧰 Modernized infrastructure
+
+The Gradle plugin now uses [Gratatouille classloader isolation](https://github.com/gradleup/gratatouille), instead of [GR8 relocation](https://github.com/GradleUp/gr8) previously (\#6524). This makes the plugin more robust and easier to debug.
+
+Apollo Kotlin 5 uses KGP 2.3, with `2.1` compatibility for JVM and Android consumers. Native and JS consumers must compile with KGP 2.3+.
+
+* Switch the Gradle plugin to [Gratatouille](https://github.com/gradleup/gratatouille) (\#6524).
+* Simplify task wiring and propagate task dependencies in multi-module setups (\#6562, \#6879).
+* Avoid eager configuration of Gradle objects (\#6820).
+* Add `linuxX64` (\#6493), `linuxArm64` (\#6929) and `watchosDeviceArm64` (\#6791) targets.
+* Bump to 2.3.10 (\#6873). Native/JS/Wasm consumers must compile with Kotlin 2.3.
+* Update to Gradle 9 (\#6548, \#6652, \#6769, \#6862, \#6887).
+* Bump Ktor to 3.1.2 (\#6465).
+* AGP9 support, including `com.android.kotlin.multiplatform.library` (\#6703, \#6707, \#6736).
+* Add a default `Accept` header to introspection queries (\#6616).
+
+## 🚗 Runtime
+
+Apollo Kotlin 5 stabilizes the new WebSocket API, making it easier to manage the lifecycle of the WebSocket and retry subscriptions.
+
+* Promote experimental WebSockets to stable; the previous implementation (under `com.apollographql.apollo.ws`) is deprecated (\#6774).
+* Add `RetryStrategy` (\#6764).
+* Add `ApolloRequest.Builder.url(String)` (\#6758).
+* Add `ApolloCall.extensions()` (\#6834).
+* Add `ApolloCall.ignoreUnknownKeys` and `ApolloClient.Builder.ignoreUnknownKeys` (\#6473).
+* Restore `JsonReader` state if a field throws in-flight (\#6775).
+* Make `Optional.Absent` a `data object` (\#6686); use `if`/`else` to avoid `Int` boxing (\#6688).
+
+## 🗄️ Normalized cache
+
+The normalized cache artifacts are also deprecated and moved to a separate repository [apollo-kotlin-normalized-cache](https://github.com/apollographql/apollo-kotlin-normalized-cache/) (\#6888).
+
+This new cache supports:
+
+* TTL
+* Garbage collection
+* Pagination
+* Partial results
+
+Note that the SQLite storage format is not backward-compatible. See the [dedicated migration guide](https://www.apollographql.com/docs/kotlin/v5/caching/migration-guide) for more details.
+
+## 🌐 HTTP cache
+
+The legacy `apollo-http-cache` artifact is deprecated.
+
+Instead, Apollo Kotlin now uses OkHttp's `cacheUrlOverride()` and supports POST caching via `enablePostCaching` (\#6739).
+
+See the [migration guide](https://www.apollographql.com/docs/kotlin/v5/migration/5.0) for more details.
+
+## 🛠️ Compiler & AST
+
+* Add schema-transform API (\#6450).
+* Allow registering multiple compiler plugins; introduce `Service.pluginsArguments` (\#6523, \#6622).
+* Add `Service.issueSeverity()` to control the severity of compiler issues per type (\#6731).
+* Introduce `Service.generateApolloEnums` to generate enums as a sealed hierarchy with a `__Known` interface (\#6611).
+* Allow generating Data Builders outside the main source set (\#6485).
+* Add `generateApolloProjectIdeModel` task (\#6666).
+* Add a specific issue type for fragment cycles (\#6759).
+* Move validation tests to `apollo-ast` (\#6868).
+* Reorganize parser, introspection, and merger tests (\#6857).
+* Warn on unused fragments (\#6601).
+* Pretty-print the operation manifest (\#6720).
+* Allow empty deprecation messages (\#6729, \#6779).
+* Add key fields of possible types of interfaces and fragments (\#6515).
+* Add key fields to selections even when they're already selected with an alias (\#6503).
+* Transform GraphQL documents before running validation (\#6511).
+* Call `DocumentTransform.transform` after processing (\#6510).
+* Rename `@link` `Purpose` and `Import` definitions (\#6838).
+* Escape names in `equals()`, `hashCode()`, `copy()`, and `toString()` (\#6843).
+* Escape `/*` and `*/` in KDocs (\#6805).
+* Ignore scalars/enums in `checkCapitalizedFields` (\#6502).
+* Fix `IndexOutOfBoundsException` in `keyFields` validation (\#6748).
+* Do not check already-checked fragments in `checkCapitalizedFields` (\#6718).
+
+
 # Version 5.0.0-rc.1
 _2026-05-04_
 
