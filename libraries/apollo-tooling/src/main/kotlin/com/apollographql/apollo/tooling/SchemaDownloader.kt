@@ -199,6 +199,7 @@ object SchemaDownloader {
       )
 
       response.body?.readErrors().orEmpty().forEach {
+        // See https://github.com/apollographql/apollo-kotlin/issues/6945
         when (it.message) {
           "Cannot query field \"isDeprecated\" on type \"__Directive\"." -> features = features - GraphQLFeature.DeprecatedDirectives
           "Cannot query field \"isOneOf\" on type \"__Type\"." -> features = features - GraphQLFeature.OneOf
