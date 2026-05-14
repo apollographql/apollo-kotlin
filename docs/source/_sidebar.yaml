@@ -1,7 +1,3 @@
-banner:
-  link:
-    href: "./#previews"
-    content: "Learn about previews."
 switcher:
   heading: "Apollo Kotlin"
   versions:
