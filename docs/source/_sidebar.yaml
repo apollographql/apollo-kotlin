@@ -1,5 +1,4 @@
 banner:
-  message: "You are viewing documentation for a preview version of this software."
   link:
     href: "./#previews"
     content: "Learn about previews."
