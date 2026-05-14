@@ -1,15 +1,19 @@
 switcher:
+  banner: "You are viewing documentation for a previous version of this software."
+  link:
+    href: "../migration/5.0"
+    content: "Switch to the latest stable version."
   heading: "Apollo Kotlin"
   versions:
     - label: v5
-      href: ./v5
+      href: ../
     - label: v4
       latest: true
-      href: ./
+      href: ../v4
     - label: v3
-      href: ./v3
+      href: ../v3
     - label: v2
-      href: ./v2
+      href: ../v2
 items:
   - label: Get Started
     href: "."
