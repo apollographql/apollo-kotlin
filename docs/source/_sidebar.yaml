@@ -8,6 +8,7 @@ switcher:
   versions:
     - label: v5
       href: ../
+      latest: true
     - label: v4
       latest: true
       href: ../v4
