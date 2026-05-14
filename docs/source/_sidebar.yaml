@@ -3,8 +3,8 @@ switcher:
   versions:
     - label: v5
       href: ./
-    - label: v4
       latest: true
+    - label: v4
       href: ./v4
     - label: v3
       href: ./v3
