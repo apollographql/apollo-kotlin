@@ -10,7 +10,6 @@ switcher:
       href: ../
       latest: true
     - label: v4
-      latest: true
       href: ../v4
     - label: v3
       href: ../v3
