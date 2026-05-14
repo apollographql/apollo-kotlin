@@ -1,4 +1,8 @@
-banner: "You are viewing documentation for a previous version of this software."
+banner:
+  message: "You are viewing documentation for a previous version of this software."
+  link:
+    href: "../migration/5.0"
+    content: "Switch to the latest stable version."
 switcher:
   heading: "Apollo Kotlin"
   versions:
