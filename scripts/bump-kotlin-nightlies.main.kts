@@ -151,6 +151,12 @@ fun main() {
 
   println("Update lock files")
   updateLockFiles()
+
+  if (System.getenv("DRY_RUN") == "true") {
+    println("DRY_RUN is set, skipping commit and push")
+    return
+  }
+
   println("Commit and push")
   commitAndPush()
 
