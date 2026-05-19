@@ -3,9 +3,7 @@ package com.apollographql.apollo.compiler
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.ast.DeprecatedUsage
-import com.apollographql.apollo.ast.DirectiveRedefinition
 import com.apollographql.apollo.ast.IgnoredLinkDirective
-import com.apollographql.apollo.ast.IncompatibleDefinition
 import com.apollographql.apollo.ast.UnusedFragment
 import com.apollographql.apollo.ast.UnusedVariable
 import com.apollographql.apollo.compiler.internal.sha256
@@ -16,17 +14,22 @@ import kotlinx.serialization.Serializable
 
 @JvmField
 val MODELS_RESPONSE_BASED = "responseBased"
+
 @JvmField
 val MODELS_OPERATION_BASED = "operationBased"
+
 @JvmField
 val MODELS_OPERATION_BASED_WITH_INTERFACES = "experimental_operationBasedWithInterfaces"
 
 @JvmField
 val ADD_TYPENAME_IF_FRAGMENTS = "ifFragments"
+
 @JvmField
 val ADD_TYPENAME_IF_POLYMORPHIC = "ifPolymorphic"
+
 @JvmField
 val ADD_TYPENAME_IF_ABSTRACT = "ifAbstract"
+
 @JvmField
 val ADD_TYPENAME_ALWAYS = "always"
 
@@ -34,8 +37,10 @@ val ADD_TYPENAME_ALWAYS = "always"
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_1)
 @JvmField
 val MANIFEST_OPERATION_OUTPUT = "operationOutput"
+
 @JvmField
 val MANIFEST_PERSISTED_QUERY = "persistedQueryManifest"
+
 @JvmField
 val MANIFEST_NONE = "none"
 
@@ -158,8 +163,14 @@ class CodegenSchemaOptions(
     val scalarTypeMapping: Map<String, String>,
     val scalarAdapterMapping: Map<String, String>,
     val generateDataBuilders: Boolean,
+    val allowDirectivesOnDirectives: Boolean,
 ) {
-  constructor(): this(emptyMap(), emptyMap(), false)
+  constructor() : this(emptyMap(), emptyMap(), false, false)
+  constructor(
+      scalarTypeMapping: Map<String, String>,
+      scalarAdapterMapping: Map<String, String>,
+      generateDataBuilders: Boolean,
+  ) : this(scalarTypeMapping, scalarAdapterMapping, generateDataBuilders, false)
 }
 
 enum class IssueSeverity {
@@ -203,6 +214,7 @@ class IrOptions(
 
     val allowFragmentArguments: Boolean?,
 
+    @Deprecated("Unused, use CodegenSchemaOptions.allowDirectivesOnDirectives instead")
     val allowDirectivesOnDirectives: Boolean?,
 )
 

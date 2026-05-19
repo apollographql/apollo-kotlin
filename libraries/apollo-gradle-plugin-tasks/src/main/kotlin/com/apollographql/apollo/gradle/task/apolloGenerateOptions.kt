@@ -101,6 +101,7 @@ internal fun apolloGenerateOptions(
       scalarTypeMapping = scalarTypeMapping ?: emptyMap(),
       scalarAdapterMapping = scalarAdapterMapping ?: emptyMap(),
       generateDataBuilders = generateDataBuilders ?: false,
+      allowDirectivesOnDirectives = allowDirectivesOnDirectives ?: false,
   ).writeTo(codegenSchemaOptionsFile)
 
   IrOptions(

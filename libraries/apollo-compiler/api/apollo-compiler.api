@@ -169,6 +169,8 @@ public final class com/apollographql/apollo/compiler/CodegenSchemaOptions {
 	public static final field Companion Lcom/apollographql/apollo/compiler/CodegenSchemaOptions$Companion;
 	public fun <init> ()V
 	public fun <init> (Ljava/util/Map;Ljava/util/Map;Z)V
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;ZZ)V
+	public final fun getAllowDirectivesOnDirectives ()Z
 	public final fun getGenerateDataBuilders ()Z
 	public final fun getScalarAdapterMapping ()Ljava/util/Map;
 	public final fun getScalarTypeMapping ()Ljava/util/Map;
