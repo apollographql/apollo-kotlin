@@ -215,6 +215,7 @@ class IrOptions(
     val allowFragmentArguments: Boolean?,
 
     @Deprecated("Unused, use CodegenSchemaOptions.allowDirectivesOnDirectives instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
     val allowDirectivesOnDirectives: Boolean?,
 )
 
