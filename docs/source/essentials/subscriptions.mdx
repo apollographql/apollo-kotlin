@@ -11,6 +11,7 @@ The GraphQL spec does not specify a particular protocol to use for subscription 
   - [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md)
   - [appsync](https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html) (also uses `graphql-ws` as [Sec-WebSocket-Protocol](https://datatracker.ietf.org/doc/html/rfc6455#section-1.2))
 * **HTTP,** using [chunked multipart responses](https://github.com/graphql/graphql-over-http/blob/main/rfcs/IncrementalDelivery.md)
+* **SSE,** using the community [Avian Labs network transport](https://github.com/avianlabs/apollo-sse)
 
 **You must use whichever transport is supported by your GraphQL endpoint.**
 
