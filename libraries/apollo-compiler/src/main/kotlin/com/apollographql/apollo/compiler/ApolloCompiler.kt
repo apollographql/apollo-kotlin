@@ -14,9 +14,9 @@ import com.apollographql.apollo.ast.Issue
 import com.apollographql.apollo.ast.MergeOptions
 import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.QueryDocumentMinifier
+import com.apollographql.apollo.ast.SchemaValidationOptions
 import com.apollographql.apollo.ast.builtinForeignSchemas
 import com.apollographql.apollo.ast.checkEmpty
-import com.apollographql.apollo.ast.SchemaValidationOptions
 import com.apollographql.apollo.ast.parseAsGQLDocument
 import com.apollographql.apollo.ast.pretty
 import com.apollographql.apollo.ast.toGQLDocument
@@ -104,7 +104,10 @@ object ApolloCompiler {
       schemaTransform: SchemaDocumentTransform?,
   ): CodegenSchema {
     val schemaDocuments = schemaFiles.map {
-      it.normalizedPath to it.file.toGQLDocument(allowJson = true)
+      it.normalizedPath to it.file.toGQLDocument(
+          allowJson = true,
+          options = ParserOptions.Builder().allowDirectivesOnDirectives(codegenSchemaOptions.allowDirectivesOnDirectives).build(),
+      )
     }
 
     if (schemaDocuments.isEmpty()) {
@@ -174,14 +177,18 @@ object ApolloCompiler {
           }) {
         if (cacheCompilerPluginHasCacheDirectives) {
           // The cache docs recommend importing @typePolicy and @fieldPolicy so we leave them with the default (long) import
-          appendLine("""
-            extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3", import: ["@optional", "@nonnull", "@requiresOptIn", "@targetName"])
-          """.trimIndent())
+          appendLine(
+              """
+                extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3", import: ["@optional", "@nonnull", "@requiresOptIn", "@targetName"])
+              """.trimIndent()
+          )
         } else {
           // No cache plugin, import everything
-          appendLine("""
-            extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3", import: ["@optional", "@nonnull", "@requiresOptIn", "@targetName", "@typePolicy", "@fieldPolicy"])
-          """.trimIndent())
+          appendLine(
+              """
+                extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.3", import: ["@optional", "@nonnull", "@requiresOptIn", "@targetName", "@typePolicy", "@fieldPolicy"])
+              """.trimIndent()
+          )
         }
       }
     }
@@ -278,7 +285,6 @@ object ApolloCompiler {
     executableFiles.sortedBy { it.normalizedPath }.forEach { normalizedFile ->
       val parserOptions = ParserOptions.Builder()
           .allowFragmentArguments(options.allowFragmentArguments ?: false)
-          .allowDirectivesOnDirectives(options.allowDirectivesOnDirectives ?: false)
           .build()
       val fileDefinitions = normalizedFile.file.definitions(parserOptions)
 

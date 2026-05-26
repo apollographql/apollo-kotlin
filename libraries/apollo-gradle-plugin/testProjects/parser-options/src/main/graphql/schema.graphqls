@@ -1,0 +1,10 @@
+type Query {
+  hello: String @testDirective
+}
+
+directive @testDirective @deprecated @testDirective2 on FIELD_DEFINITION
+
+#directive @deprecated @testDirective2 on FIELD_DEFINITION
+directive @deprecated(reason: String! = "No longer supported") on FIELD_DEFINITION | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | ENUM_VALUE | DIRECTIVE_DEFINITION
+
+directive @testDirective2 on DIRECTIVE_DEFINITION
