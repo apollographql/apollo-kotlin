@@ -148,11 +148,17 @@ Some platforms have specific runtime requirements:
 * Android API level 21+ (`apollo-http-cache` requires enabling [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26)
 * iOS 13+
 
-At build time, it requires:
+At build time:
 
-* Gradle 8.0+
-* Kotlin 2.1+ for JVM projects
-* Kotlin 2.2+ for native, JS, and Wasm projects
+| Apollo        | Gradle       | KGP (Android/JVM) | KGP (JS/Native) | AGP            |
+|---------------|--------------|-------------------|-----------------|----------------|
+| 5.0.0+        | 8.0+         | 2.1.0+            | 2.2.0+          | 8.0.0+         |
+| 4.4.3         | 8.0+         | 1.9.0+            | 2.2.0+          | 8.0.0+         |
+| 4.4.2         | 8.0+         | 1.9.0 - 2.3.21    | 2.2.0 - 2.3.21  | 8.0.0+         |
+| 4.1.1 - 4.4.1 | 8.0+         | 1.9.0 - 2.3.21    | 2.1.0 - 2.3.21  | 8.0.0 - 8.13.2 |
+| 4.0.0 - 4.1.0 | 8.0 - 8.14.4 | 1.9.0 - 2.3.21    | 2.1.0 - 2.3.21  | 8.0.0 - 8.13.2 |
+
+
 
 ## Proguard / R8 configuration
 
