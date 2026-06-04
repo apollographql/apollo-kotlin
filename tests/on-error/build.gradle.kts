@@ -6,11 +6,11 @@ plugins {
 apolloTest()
 
 dependencies {
-  implementation(libs.apollo.api)
+  implementation(libs.apollo.runtime)
   implementation(libs.apollo.testingsupport.internal)
-  implementation(libs.apollo.execution)
   testImplementation(libs.junit)
   testImplementation(libs.okhttp)
+  testImplementation(libs.apollo.mockserver)
 }
 
 apollo {
