@@ -25,7 +25,7 @@ kotlin {
         implementation(project(":apollo-normalized-cache-api"))
         implementation(project(":apollo-ast"))
         api(project(":apollo-runtime"))
-        implementation(libs.apollo.execution)
+        implementation(libs.apollo.execution.runtime)
       }
     }
     getByName("jvmTest") {

@@ -1,7 +1,3 @@
-@file:OptIn(ApolloExperimental::class)
-
-import com.apollographql.apollo.annotations.ApolloExperimental
-
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("com.apollographql.apollo")
@@ -11,14 +7,14 @@ apolloTest()
 
 dependencies {
   implementation(libs.apollo.api)
+  implementation(libs.apollo.testingsupport.internal)
+  implementation(libs.apollo.execution)
   testImplementation(libs.junit)
-  testImplementation(libs.apollo.execution.runtime)
   testImplementation(libs.okhttp)
 }
 
 apollo {
   service("service") {
-    packageName.set("fragment.arguments")
-    allowFragmentArguments.set(true)
+    packageName.set("com.example")
   }
 }

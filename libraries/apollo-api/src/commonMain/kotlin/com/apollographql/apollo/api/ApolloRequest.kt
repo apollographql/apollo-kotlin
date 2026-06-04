@@ -28,6 +28,9 @@ class ApolloRequest<D : Operation.Data>
 private constructor(
     val operation: Operation<D>,
     val requestUuid: Uuid,
+    val extensions: Map<String, ApolloJsonElement>?,
+    @ApolloExperimental
+    val onError: OnError?,
     override val executionContext: ExecutionContext,
     override val url: String?,
     override val httpMethod: HttpMethod?,
@@ -41,7 +44,6 @@ private constructor(
     val retryOnError: Boolean?,
     val failFastIfOffline: Boolean?,
     val sendEnhancedClientAwareness: Boolean,
-    val extensions: Map<String, ApolloJsonElement>?,
 ) : ExecutionOptions {
 
   fun newBuilder(): Builder<D> = newBuilder(operation)
@@ -98,6 +100,8 @@ private constructor(
     var sendEnhancedClientAwareness: Boolean = true
       private set
     var extensions: Map<String, ApolloJsonElement>? = null
+      private set
+    var onError: OnError? = null
       private set
 
     fun requestUuid(requestUuid: Uuid) = apply {
@@ -172,6 +176,10 @@ private constructor(
       this.extensions = extensions
     }
 
+    fun onError(onError: OnError?): Builder<D> = apply {
+      this.onError = onError
+    }
+
     fun build(): ApolloRequest<D> {
       return ApolloRequest(
           operation = operation,
@@ -189,7 +197,8 @@ private constructor(
           ignoreUnknownKeys = ignoreUnknownKeys,
           sendEnhancedClientAwareness = sendEnhancedClientAwareness,
           url = url,
-          extensions = extensions
+          extensions = extensions,
+          onError = onError,
       )
     }
   }

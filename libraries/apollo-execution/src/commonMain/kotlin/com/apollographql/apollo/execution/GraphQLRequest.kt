@@ -3,6 +3,7 @@
 package com.apollographql.apollo.execution
 
 import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.api.OnError
 import com.apollographql.apollo.api.http.internal.urlDecode
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.json.readAny
@@ -11,11 +12,6 @@ import okio.Buffer
 import okio.BufferedSource
 import okio.use
 
-enum class OnError {
-  NULL,
-  PROPAGATE,
-  HALT
-}
 
 /**
  * @property document the document. Can be null if persisted queries are used.

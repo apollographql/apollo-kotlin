@@ -82,7 +82,8 @@ apollo-normalizedcache-apollo-compiler-plugin-incubating = { group = "com.apollo
 apollo-runtime = { group = "com.apollographql.apollo", name = "apollo-runtime", version.ref = "apollo" }
 apollo-compiler = { group = "com.apollographql.apollo", name = "apollo-compiler", version.ref = "apollo" }
 apollo-ast = { group = "com.apollographql.apollo", name = "apollo-ast", version.ref = "apollo" }
-apollo-execution = { group = "com.apollographql.execution", name = "apollo-execution-runtime", version.ref = "apollo-execution" }
+apollo-execution = { group = "com.apollographql.apollo", name = "apollo-execution", version.ref = "apollo" }
+apollo-execution-runtime = { group = "com.apollographql.execution", name = "apollo-execution-runtime", version.ref = "apollo-execution" }
 apollo-execution-http4k = { group = "com.apollographql.execution", name = "apollo-execution-http4k", version.ref = "apollo-execution" }
 apollo-execution-gradle-plugin = { group = "com.apollographql.execution", name = "apollo-execution-gradle-plugin", version.ref = "apollo-execution" }
 # Used by the apollo-tooling project which uses a published version of Apollo

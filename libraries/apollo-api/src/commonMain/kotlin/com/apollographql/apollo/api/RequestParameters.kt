@@ -1,5 +1,6 @@
 package com.apollographql.apollo.api
 
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.http.HttpBody
 import com.apollographql.apollo.api.http.UploadsHttpBody
 import com.apollographql.apollo.api.json.ApolloJsonElement
@@ -22,13 +23,23 @@ import okio.ByteString
  * @property extensions additional parameters for the request.
  * @property uploads files to upload.
  */
-class RequestParameters(
+class RequestParameters internal constructor(
     val query: String?,
     val operationName: String,
     val variables: Map<String, ApolloJsonElement>,
     val extensions: Map<String, ApolloJsonElement>,
     val uploads: Map<String, Upload>,
-)
+    @ApolloExperimental
+    val onError: OnError?,
+) {
+  constructor(
+      query: String?,
+      operationName: String,
+      variables: Map<String, ApolloJsonElement>,
+      extensions: Map<String, ApolloJsonElement>,
+      uploads: Map<String, Upload>,
+  ) : this(query, operationName, variables, extensions, uploads, null)
+}
 
 fun <D : Operation.Data> ApolloRequest<D>.toRequestParameters(): RequestParameters {
   val sendApqExtensions = sendApqExtensions ?: false
@@ -51,13 +62,15 @@ fun <D : Operation.Data> ApolloRequest<D>.toRequestParameters(): RequestParamete
     ext.put("persistedQuery", mapOf(
         "version" to 1,
         "sha256Hash" to operation.id()
-    ))
+    )
+    )
   }
   if (sendEnhancedClientAwarenessExtensions) {
     ext.put("clientLibrary", mapOf(
         "name" to "apollo-kotlin",
         "version" to apolloApiVersion
-    ))
+    )
+    )
   }
   if (extensions != null) {
     ext.putAll(extensions)
@@ -74,7 +87,8 @@ fun <D : Operation.Data> ApolloRequest<D>.toRequestParameters(): RequestParamete
          * The map path should start at the root and contain the "variables" part.
          */
         "variables." + it.key
-      }
+      },
+      onError = onError
   )
 }
 
@@ -115,6 +129,9 @@ internal fun RequestParameters.toMapUnsafe(): Map<String, Any?> {
     }
     if (extensions.isNotEmpty()) {
       put("extensions", extensions)
+    }
+    if (onError != null) {
+      put("onError", onError.toString())
     }
   }
 }
