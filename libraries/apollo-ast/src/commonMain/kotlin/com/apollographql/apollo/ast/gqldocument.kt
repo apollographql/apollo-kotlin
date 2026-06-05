@@ -184,7 +184,7 @@ fun nullabilityDefinitions(version: String): List<GQLDefinition> {
 
 private fun definitionsFromString(string: String): List<GQLDefinition> {
   return string
-      .parseAsGQLDocument(options = ParserOptions.Builder().allowDirectivesOnDirectives(true).build())
+      .parseAsGQLDocument()
       .getOrThrow()
       .definitions
 }

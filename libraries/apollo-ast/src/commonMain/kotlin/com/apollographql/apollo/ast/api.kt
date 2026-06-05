@@ -3,6 +3,7 @@
 
 package com.apollographql.apollo.ast
 
+import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.internal.ExecutableValidationScope
@@ -72,9 +73,12 @@ private fun <T : Any> String.parseInternal(filePath: String?, options: ParserOpt
   }
 }
 
+@Suppress("DEPRECATION")
 class ParserOptions private constructor(
     val allowEmptyDocuments: Boolean,
     val withSourceLocation: Boolean,
+    @Deprecated("Unused, directives on directives are always allowed")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_1)
     val allowDirectivesOnDirectives: Boolean,
     val allowServiceCapabilities: Boolean,
     @ApolloExperimental
@@ -84,8 +88,9 @@ class ParserOptions private constructor(
     var allowEmptyDocuments = true
     var withSourceLocation = true
 
-    @ApolloExperimental
-    var allowDirectivesOnDirectives = false
+    @Deprecated("Unused, directives on directives are always allowed")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_1)
+    var allowDirectivesOnDirectives = true
 
     @ApolloExperimental
     var allowServiceCapabilities = false
@@ -106,10 +111,9 @@ class ParserOptions private constructor(
       this.allowServiceCapabilities = allowServiceCapabilities
     }
 
-    @ApolloExperimental
-    fun allowDirectivesOnDirectives(allowDirectivesOnDirectives: Boolean) = apply {
-      this.allowDirectivesOnDirectives = allowDirectivesOnDirectives
-    }
+    @Deprecated("Unused, directives on directives are always allowed")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_1)
+    fun allowDirectivesOnDirectives(allowDirectivesOnDirectives: Boolean): Builder = this
 
     @ApolloExperimental
     fun allowFragmentArguments(allowFragmentArguments: Boolean) = apply {
@@ -120,7 +124,7 @@ class ParserOptions private constructor(
       return ParserOptions(
           allowEmptyDocuments = allowEmptyDocuments,
           withSourceLocation = withSourceLocation,
-          allowDirectivesOnDirectives = allowDirectivesOnDirectives,
+          allowDirectivesOnDirectives = true,
           allowServiceCapabilities = allowServiceCapabilities,
           allowFragmentArguments = allowFragmentArguments
       )

@@ -13,7 +13,6 @@ internal class Parser(
   private var lookaheadToken: Token? = null
   private val withSourceLocation = options.withSourceLocation
   private val allowEmptyDocuments = options.allowEmptyDocuments
-  private val allowDirectivesOnDirectives = options.allowDirectivesOnDirectives
   private val allowServiceCapabilities = options.allowServiceCapabilities
   private val allowFragmentArguments = options.allowFragmentArguments
 
@@ -759,15 +758,7 @@ internal class Parser(
     expectToken<Token.At>()
     val name = parseName()
     val arguments = parseArgumentDefinitions()
-    val directives = if (!allowDirectivesOnDirectives) {
-      if (token is Token.At) {
-        throw ParserException("Experimental `allowDirectivesOnDirectives` must be set to true to allow directives on directives", token)
-      } else {
-        emptyList()
-      }
-    } else {
-      parseDirectives(const = true)
-    }
+    val directives = parseDirectives(const = true)
     val repeatable = expectOptionalKeyword("repeatable") != null
     expectKeyword("on")
     val locations = parseDirectiveLocations()
@@ -815,11 +806,7 @@ internal class Parser(
       "union" -> parseUnionTypeExtension()
       "enum" -> parseEnumTypeExtension()
       "input" -> parseInputObjectTypeExtension()
-      "directive" -> if (!allowDirectivesOnDirectives) {
-        throw ParserException("Experimental `allowDirectivesOnDirectives` must be set to true to allow directive extensions", t)
-      } else {
-        parseDirectiveExtension()
-      }
+      "directive" -> parseDirectiveExtension()
       "service" -> {
         if (!allowServiceCapabilities) {
           unexpected(t)
@@ -938,10 +925,6 @@ internal class Parser(
       GQLDirectiveLocation.valueOf(parseName())
     } catch (e: IllegalArgumentException) {
       unexpected(start)
-    }.also {
-      if (!allowDirectivesOnDirectives && it == GQLDirectiveLocation.DIRECTIVE_DEFINITION) {
-        throw ParserException("Experimental `allowDirectivesOnDirectives` must be set to true to allow directives on directives", start)
-      }
     }
   }
 

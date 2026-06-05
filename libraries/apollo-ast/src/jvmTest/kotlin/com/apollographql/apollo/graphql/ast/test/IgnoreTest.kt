@@ -21,7 +21,7 @@ class IgnoreTest  {
       }
       
       directive @nonnull @ignore on FIELD
-    """.trimIndent().toGQLDocument(options = ParserOptions.Builder().allowDirectivesOnDirectives(true).build())
+    """.trimIndent().toGQLDocument()
         .validateAsSchema(
             validationOptions = SchemaValidationOptions.Builder()
             .foreignSchemas(builtinForeignSchemas())

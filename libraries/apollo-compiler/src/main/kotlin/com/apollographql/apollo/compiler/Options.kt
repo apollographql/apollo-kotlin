@@ -163,6 +163,8 @@ class CodegenSchemaOptions(
     val scalarTypeMapping: Map<String, String>,
     val scalarAdapterMapping: Map<String, String>,
     val generateDataBuilders: Boolean,
+    @Deprecated("Unused, directives on directives are always allowed")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_1)
     val allowDirectivesOnDirectives: Boolean,
 ) {
   constructor() : this(emptyMap(), emptyMap(), false, false)
@@ -214,8 +216,8 @@ class IrOptions(
 
     val allowFragmentArguments: Boolean?,
 
-    @Deprecated("Unused, use CodegenSchemaOptions.allowDirectivesOnDirectives instead")
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+    @Deprecated("Unused, directives on directives are always allowed")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_1)
     val allowDirectivesOnDirectives: Boolean?,
 )
 
@@ -229,7 +231,7 @@ fun buildIrOptions(
     codegenModels: String? = null,
     issueSeverity: Map<String, IssueSeverity>? = null,
     allowFragmentArguments: Boolean? = null,
-    allowDirectivesOnDirectives: Boolean? = null,
+    @Suppress("UNUSED_PARAMETER") allowDirectivesOnDirectives: Boolean? = null,
 ): IrOptions = IrOptions(
     decapitalizeFields = decapitalizeFields,
     flattenModels = flattenModels,
@@ -240,7 +242,7 @@ fun buildIrOptions(
     codegenModels = codegenModels,
     issueSeverities = issueSeverity,
     allowFragmentArguments = allowFragmentArguments,
-    allowDirectivesOnDirectives = allowDirectivesOnDirectives
+    allowDirectivesOnDirectives = true
 )
 
 interface CommonCodegenOpt {

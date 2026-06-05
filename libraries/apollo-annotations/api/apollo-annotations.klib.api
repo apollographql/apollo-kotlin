@@ -42,6 +42,7 @@ open annotation class com.apollographql.apollo.annotations/ApolloDeprecatedSince
         enum entry v4_3_1 // com.apollographql.apollo.annotations/ApolloDeprecatedSince.Version.v4_3_1|null[0]
         enum entry v4_3_4 // com.apollographql.apollo.annotations/ApolloDeprecatedSince.Version.v4_3_4|null[0]
         enum entry v5_0_0 // com.apollographql.apollo.annotations/ApolloDeprecatedSince.Version.v5_0_0|null[0]
+        enum entry v5_0_1 // com.apollographql.apollo.annotations/ApolloDeprecatedSince.Version.v5_0_1|null[0]
 
         final val entries // com.apollographql.apollo.annotations/ApolloDeprecatedSince.Version.entries|#static{}entries[0]
             final fun <get-entries>(): kotlin.enums/EnumEntries<com.apollographql.apollo.annotations/ApolloDeprecatedSince.Version> // com.apollographql.apollo.annotations/ApolloDeprecatedSince.Version.entries.<get-entries>|<get-entries>#static(){}[0]

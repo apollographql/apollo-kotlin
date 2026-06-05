@@ -697,10 +697,10 @@ interface Service {
   val allowFragmentArguments: Property<Boolean>
 
   /**
-   * Whether to allow adding directives on directives.
-   * Default: false
+   * Unused, directives on directives are always allowed.
    */
-  @ApolloExperimental
+  @Deprecated("Unused, directives on directives are always allowed")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_1)
   val allowDirectivesOnDirectives: Property<Boolean>
 
   /**

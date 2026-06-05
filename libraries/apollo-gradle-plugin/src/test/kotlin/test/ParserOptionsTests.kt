@@ -14,19 +14,4 @@ class ParserOptionsTests {
       TestUtils.executeTask("generateApolloSources", dir)
     }
   }
-
-  @Test
-  fun allowDirectivesOnDirectivesNotSetFails() {
-    TestUtils.withTestProject("parser-options") { dir ->
-      File(dir, "build.gradle.kts").apply {
-        replaceInText("@OptIn(ApolloExperimental::class)", "")
-        replaceInText("allowDirectivesOnDirectives.set(true)", "")
-      }
-      try {
-        TestUtils.executeTask("generateApolloSources", dir)
-      } catch (e: UnexpectedBuildFailure) {
-        Truth.assertThat(e.message).contains("Experimental `allowDirectivesOnDirectives` must be set to true")
-      }
-    }
-  }
 }
