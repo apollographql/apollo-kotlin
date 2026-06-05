@@ -32,7 +32,7 @@ public final class com/apollographql/apollo/execution/ExecutableSchema$Builder {
 	public final fun addInstrumentation (Lcom/apollographql/apollo/execution/Instrumentation;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
 	public final fun build ()Lcom/apollographql/apollo/execution/ExecutableSchema;
 	public final fun mutationRoot (Lcom/apollographql/apollo/execution/RootResolver;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
-	public final fun onError (Lcom/apollographql/apollo/execution/OnError;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
+	public final fun onError (Lcom/apollographql/apollo/api/OnError;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
 	public final fun parserOptions (Lcom/apollographql/apollo/ast/ParserOptions;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
 	public final fun persistedDocumentCache (Lcom/apollographql/apollo/execution/PersistedDocumentCache;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
 	public final fun queryRoot (Lcom/apollographql/apollo/execution/RootResolver;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
@@ -60,7 +60,7 @@ public final class com/apollographql/apollo/execution/FloatCoercing : com/apollo
 public final class com/apollographql/apollo/execution/GraphQLRequest {
 	public final fun getDocument ()Ljava/lang/String;
 	public final fun getExtensions ()Ljava/util/Map;
-	public final fun getOnError ()Lcom/apollographql/apollo/execution/OnError;
+	public final fun getOnError ()Lcom/apollographql/apollo/api/OnError;
 	public final fun getOperationName ()Ljava/lang/String;
 	public final fun getVariables ()Ljava/util/Map;
 }
@@ -72,14 +72,14 @@ public final class com/apollographql/apollo/execution/GraphQLRequest$Builder {
 	public final fun extensions (Ljava/util/Map;)Lcom/apollographql/apollo/execution/GraphQLRequest$Builder;
 	public final fun getDocument ()Ljava/lang/String;
 	public final fun getExtensions ()Ljava/util/Map;
-	public final fun getOnError ()Lcom/apollographql/apollo/execution/OnError;
+	public final fun getOnError ()Lcom/apollographql/apollo/api/OnError;
 	public final fun getOperationName ()Ljava/lang/String;
 	public final fun getVariables ()Ljava/util/Map;
-	public final fun onError (Lcom/apollographql/apollo/execution/OnError;)Lcom/apollographql/apollo/execution/GraphQLRequest$Builder;
+	public final fun onError (Lcom/apollographql/apollo/api/OnError;)Lcom/apollographql/apollo/execution/GraphQLRequest$Builder;
 	public final fun operationName (Ljava/lang/String;)Lcom/apollographql/apollo/execution/GraphQLRequest$Builder;
 	public final fun setDocument (Ljava/lang/String;)V
 	public final fun setExtensions (Ljava/util/Map;)V
-	public final fun setOnError (Lcom/apollographql/apollo/execution/OnError;)V
+	public final fun setOnError (Lcom/apollographql/apollo/api/OnError;)V
 	public final fun setOperationName (Ljava/lang/String;)V
 	public final fun setVariables (Ljava/util/Map;)V
 	public final fun variables (Ljava/util/Map;)Lcom/apollographql/apollo/execution/GraphQLRequest$Builder;
@@ -142,15 +142,6 @@ public final class com/apollographql/apollo/execution/JsonCoercing : com/apollog
 	public fun deserialize (Ljava/lang/Object;)Ljava/lang/Object;
 	public fun parseLiteral (Lcom/apollographql/apollo/ast/GQLValue;)Ljava/lang/Object;
 	public fun serialize (Ljava/lang/Object;)Ljava/lang/Object;
-}
-
-public final class com/apollographql/apollo/execution/OnError : java/lang/Enum {
-	public static final field HALT Lcom/apollographql/apollo/execution/OnError;
-	public static final field NULL Lcom/apollographql/apollo/execution/OnError;
-	public static final field PROPAGATE Lcom/apollographql/apollo/execution/OnError;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo/execution/OnError;
-	public static fun values ()[Lcom/apollographql/apollo/execution/OnError;
 }
 
 public abstract interface class com/apollographql/apollo/execution/OperationCallback {

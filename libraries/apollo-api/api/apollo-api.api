@@ -50,7 +50,7 @@ public final class com/apollographql/apollo/api/ApolloOptionalAdapter : com/apol
 }
 
 public final class com/apollographql/apollo/api/ApolloRequest : com/apollographql/apollo/api/ExecutionOptions {
-	public synthetic fun <init> (Lcom/apollographql/apollo/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo/api/ExecutionContext;Ljava/lang/String;Lcom/apollographql/apollo/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;ZLjava/util/Map;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo/api/Operation;Ljava/util/UUID;Ljava/util/Map;Lcom/apollographql/apollo/api/OnError;Lcom/apollographql/apollo/api/ExecutionContext;Ljava/lang/String;Lcom/apollographql/apollo/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo/api/ExecutionContext;
@@ -60,6 +60,7 @@ public final class com/apollographql/apollo/api/ApolloRequest : com/apollographq
 	public fun getHttpMethod ()Lcom/apollographql/apollo/api/http/HttpMethod;
 	public final fun getIgnoreApolloClientHttpHeaders ()Ljava/lang/Boolean;
 	public fun getIgnoreUnknownKeys ()Ljava/lang/Boolean;
+	public final fun getOnError ()Lcom/apollographql/apollo/api/OnError;
 	public final fun getOperation ()Lcom/apollographql/apollo/api/Operation;
 	public final fun getRequestUuid ()Ljava/util/UUID;
 	public final fun getRetryOnError ()Ljava/lang/Boolean;
@@ -94,6 +95,7 @@ public final class com/apollographql/apollo/api/ApolloRequest$Builder : com/apol
 	public fun getHttpMethod ()Lcom/apollographql/apollo/api/http/HttpMethod;
 	public final fun getIgnoreApolloClientHttpHeaders ()Ljava/lang/Boolean;
 	public fun getIgnoreUnknownKeys ()Ljava/lang/Boolean;
+	public final fun getOnError ()Lcom/apollographql/apollo/api/OnError;
 	public final fun getOperation ()Lcom/apollographql/apollo/api/Operation;
 	public final fun getRequestUuid ()Ljava/util/UUID;
 	public final fun getRetryOnError ()Ljava/lang/Boolean;
@@ -108,6 +110,7 @@ public final class com/apollographql/apollo/api/ApolloRequest$Builder : com/apol
 	public final fun ignoreApolloClientHttpHeaders (Ljava/lang/Boolean;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public fun ignoreUnknownKeys (Ljava/lang/Boolean;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public synthetic fun ignoreUnknownKeys (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public final fun onError (Lcom/apollographql/apollo/api/OnError;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public final fun requestUuid (Ljava/util/UUID;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public final fun retryOnError (Ljava/lang/Boolean;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo/api/ApolloRequest$Builder;
@@ -803,6 +806,15 @@ public final class com/apollographql/apollo/api/ObjectType$Builder {
 	public final fun keyFields (Ljava/util/List;)Lcom/apollographql/apollo/api/ObjectType$Builder;
 }
 
+public final class com/apollographql/apollo/api/OnError : java/lang/Enum {
+	public static final field HALT Lcom/apollographql/apollo/api/OnError;
+	public static final field NULL Lcom/apollographql/apollo/api/OnError;
+	public static final field PROPAGATE Lcom/apollographql/apollo/api/OnError;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo/api/OnError;
+	public static fun values ()[Lcom/apollographql/apollo/api/OnError;
+}
+
 public abstract interface class com/apollographql/apollo/api/Operation : com/apollographql/apollo/api/Executable {
 	public abstract fun document ()Ljava/lang/String;
 	public abstract fun id ()Ljava/lang/String;
@@ -904,6 +916,7 @@ public abstract interface class com/apollographql/apollo/api/Query$Data : com/ap
 public final class com/apollographql/apollo/api/RequestParameters {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;)V
 	public final fun getExtensions ()Ljava/util/Map;
+	public final fun getOnError ()Lcom/apollographql/apollo/api/OnError;
 	public final fun getOperationName ()Ljava/lang/String;
 	public final fun getQuery ()Ljava/lang/String;
 	public final fun getUploads ()Ljava/util/Map;

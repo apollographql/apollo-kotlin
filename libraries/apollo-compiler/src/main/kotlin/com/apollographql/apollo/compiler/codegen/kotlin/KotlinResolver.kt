@@ -41,6 +41,7 @@ import com.squareup.kotlinpoet.buildCodeBlock
 internal class KotlinResolver(
     upstreamCodegenMetadata: CodegenMetadata,
     private val requiresOptInAnnotation: String?,
+    private val errorAware: Boolean,
 ) {
   private val upstreamEntries = upstreamCodegenMetadata.entries.associate { it.key to it.className.toKotlinPoetClassName() }
   private val upstreamScalarAdapters = upstreamCodegenMetadata.scalarAdapters
@@ -182,12 +183,14 @@ internal class KotlinResolver(
       is IrCompositeType2 -> null
     }
   }
-
   internal fun adapterInitializer(type: IrType, requiresBuffering: Boolean, jsExport: Boolean): CodeBlock {
+    return adapterInitializer(type, errorAware, requiresBuffering, jsExport)
+  }
+  internal fun adapterInitializer(type: IrType, errorAware: Boolean, requiresBuffering: Boolean, jsExport: Boolean): CodeBlock {
     return when {
       type.optional -> {
         val presentFun = MemberName("com.apollographql.apollo.api", "present")
-        CodeBlock.of("%L.%M()", adapterInitializer(type.optional(false), requiresBuffering, jsExport), presentFun)
+        CodeBlock.of("%L.%M()", adapterInitializer(type.optional(false), false, requiresBuffering, jsExport), presentFun)
       }
 
       type.catchTo != IrCatchTo.NoCatch -> {
@@ -201,14 +204,12 @@ internal class KotlinResolver(
         }
       }
 
-      type.maybeError -> {
-        adapterInitializer(type.maybeError(false), requiresBuffering, jsExport).let {
-          CodeBlock.of("%L.%M()", it, KotlinSymbols.errorAware)
-        }
+      errorAware -> {
+        CodeBlock.of("%L.%M()", adapterInitializer(type, false, requiresBuffering, jsExport), KotlinSymbols.errorAware)
       }
 
       type.nullable -> {
-        val initializer = adapterInitializer(type.nullable(false), requiresBuffering, jsExport)
+        val initializer = adapterInitializer(type.nullable(false), false, requiresBuffering, jsExport)
 
         val nonNullableBuiltin = when (initializer.toString()) {
           KotlinSymbols.StringAdapter.canonicalName -> KotlinSymbols.NullableStringAdapter
@@ -218,7 +219,7 @@ internal class KotlinResolver(
           KotlinSymbols.AnyAdapter.canonicalName -> KotlinSymbols.NullableAnyAdapter
           else -> null
         }
-        return if (nonNullableBuiltin != null) {
+        if (nonNullableBuiltin != null) {
           CodeBlock.of("%M", nonNullableBuiltin)
         } else {
           val nullableFun = MemberName("com.apollographql.apollo.api", "nullable")
@@ -229,7 +230,7 @@ internal class KotlinResolver(
       else -> {
         when (type) {
           is IrListType -> {
-            adapterInitializer(type.ofType, requiresBuffering, jsExport).list(jsExport)
+            adapterInitializer(type.ofType, false, requiresBuffering, jsExport).list(jsExport)
           }
 
           is IrScalarType -> {

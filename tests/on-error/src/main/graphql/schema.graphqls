@@ -12,4 +12,5 @@ type Query {
 type A {
   f: String!
   g: String!
+  h: [String!]!
 }

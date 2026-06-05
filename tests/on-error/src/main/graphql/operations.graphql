@@ -4,3 +4,9 @@ query GetA {
     g
   }
 }
+
+query GetH {
+  a {
+    h @catch(to: NULL, levels: [1])
+  }
+}

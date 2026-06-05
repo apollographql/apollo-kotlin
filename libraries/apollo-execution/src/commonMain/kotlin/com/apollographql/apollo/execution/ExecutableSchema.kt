@@ -1,6 +1,7 @@
 package com.apollographql.apollo.execution
 
 import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.api.OnError
 import com.apollographql.apollo.ast.*
 import com.apollographql.apollo.execution.internal.OperationContext
 import com.apollographql.apollo.execution.internal.PreparedRequest

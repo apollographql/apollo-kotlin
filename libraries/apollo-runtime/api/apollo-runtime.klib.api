@@ -211,6 +211,7 @@ final class <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.
     final fun httpMethod(com.apollographql.apollo.api.http/HttpMethod?): com.apollographql.apollo/ApolloCall<#A> // com.apollographql.apollo/ApolloCall.httpMethod|httpMethod(com.apollographql.apollo.api.http.HttpMethod?){}[0]
     final fun ignoreApolloClientHttpHeaders(kotlin/Boolean?): com.apollographql.apollo/ApolloCall<#A> // com.apollographql.apollo/ApolloCall.ignoreApolloClientHttpHeaders|ignoreApolloClientHttpHeaders(kotlin.Boolean?){}[0]
     final fun ignoreUnknownKeys(kotlin/Boolean?): com.apollographql.apollo/ApolloCall<#A> // com.apollographql.apollo/ApolloCall.ignoreUnknownKeys|ignoreUnknownKeys(kotlin.Boolean?){}[0]
+    final fun onError(com.apollographql.apollo.api/OnError?): com.apollographql.apollo/ApolloCall<#A> // com.apollographql.apollo/ApolloCall.onError|onError(com.apollographql.apollo.api.OnError?){}[0]
     final fun retryOnError(kotlin/Boolean?): com.apollographql.apollo/ApolloCall<#A> // com.apollographql.apollo/ApolloCall.retryOnError|retryOnError(kotlin.Boolean?){}[0]
     final fun sendApqExtensions(kotlin/Boolean?): com.apollographql.apollo/ApolloCall<#A> // com.apollographql.apollo/ApolloCall.sendApqExtensions|sendApqExtensions(kotlin.Boolean?){}[0]
     final fun sendDocument(kotlin/Boolean?): com.apollographql.apollo/ApolloCall<#A> // com.apollographql.apollo/ApolloCall.sendDocument|sendDocument(kotlin.Boolean?){}[0]

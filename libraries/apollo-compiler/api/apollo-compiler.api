@@ -1654,19 +1654,21 @@ public final class com/apollographql/apollo/compiler/ir/IrOperationType$Subscrip
 
 public final class com/apollographql/apollo/compiler/ir/IrOperations {
 	public static final field Companion Lcom/apollographql/apollo/compiler/ir/IrOperations$Companion;
-	public fun <init> (Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo/compiler/UsedCoordinates;ZZLjava/lang/String;Ljava/util/List;)V
+	public fun <init> (Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo/compiler/UsedCoordinates;ZZLjava/lang/String;ZLjava/util/List;)V
 	public final fun component1 ()Ljava/util/List;
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Lcom/apollographql/apollo/compiler/UsedCoordinates;
 	public final fun component4 ()Z
 	public final fun component5 ()Z
 	public final fun component6 ()Ljava/lang/String;
-	public final fun component7 ()Ljava/util/List;
-	public final fun copy (Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo/compiler/UsedCoordinates;ZZLjava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo/compiler/ir/IrOperations;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo/compiler/ir/IrOperations;Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo/compiler/UsedCoordinates;ZZLjava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/compiler/ir/IrOperations;
+	public final fun component7 ()Z
+	public final fun component8 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo/compiler/UsedCoordinates;ZZLjava/lang/String;ZLjava/util/List;)Lcom/apollographql/apollo/compiler/ir/IrOperations;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo/compiler/ir/IrOperations;Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo/compiler/UsedCoordinates;ZZLjava/lang/String;ZLjava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo/compiler/ir/IrOperations;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCodegenModels ()Ljava/lang/String;
 	public final fun getDecapitalizeFields ()Z
+	public final fun getErrorAware ()Z
 	public final fun getFlattenModels ()Z
 	public final fun getFragmentDefinitions ()Ljava/util/List;
 	public final fun getFragments ()Ljava/util/List;

@@ -207,7 +207,8 @@ internal class IrOperationsBuilder(
         flattenModels = flattenModels,
         decapitalizeFields = decapitalizeFields,
         fragmentDefinitions = fragmentDefinitions,
-        codegenModels = codegenModels
+        codegenModels = codegenModels,
+        errorAware = schema.errorAware
     )
   }
 

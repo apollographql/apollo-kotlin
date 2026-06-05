@@ -101,6 +101,7 @@ private constructor(
       private set
     var extensions: Map<String, ApolloJsonElement>? = null
       private set
+    @ApolloExperimental
     var onError: OnError? = null
       private set
 
@@ -176,6 +177,7 @@ private constructor(
       this.extensions = extensions
     }
 
+    @ApolloExperimental
     fun onError(onError: OnError?): Builder<D> = apply {
       this.onError = onError
     }
