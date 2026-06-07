@@ -93,7 +93,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
 
     if (!canBeBatched) {
       // Remove the CAN_BE_BATCHED header and forward directly
-      return chain.proceed(request.newBuilder().addHeaders(headers = request.headers.filter { it.name != ExecutionOptions.CAN_BE_BATCHED }).build())
+      return chain.proceed(request.newBuilder().headers(request.headers.filter { it.name != ExecutionOptions.CAN_BE_BATCHED }).build())
     }
 
     // Keep the chain for later
