@@ -101,7 +101,7 @@ internal fun apolloGenerateOptions(
       scalarTypeMapping = scalarTypeMapping ?: emptyMap(),
       scalarAdapterMapping = scalarAdapterMapping ?: emptyMap(),
       generateDataBuilders = generateDataBuilders ?: false,
-      allowDirectivesOnDirectives = allowDirectivesOnDirectives ?: false,
+      allowDirectivesOnDirectives = true,
   ).writeTo(codegenSchemaOptionsFile)
 
   IrOptions(
@@ -114,7 +114,7 @@ internal fun apolloGenerateOptions(
       alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
       issueSeverities = severities?.convert(),
       allowFragmentArguments = allowFragmentArguments,
-      allowDirectivesOnDirectives = allowDirectivesOnDirectives,
+      allowDirectivesOnDirectives = true,
   ).writeTo(irOptionsFile)
 
   CodegenOptions(

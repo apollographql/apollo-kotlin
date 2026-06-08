@@ -104,10 +104,7 @@ object ApolloCompiler {
       schemaTransform: SchemaDocumentTransform?,
   ): CodegenSchema {
     val schemaDocuments = schemaFiles.map {
-      it.normalizedPath to it.file.toGQLDocument(
-          allowJson = true,
-          options = ParserOptions.Builder().allowDirectivesOnDirectives(codegenSchemaOptions.allowDirectivesOnDirectives).build(),
-      )
+      it.normalizedPath to it.file.toGQLDocument(allowJson = true)
     }
 
     if (schemaDocuments.isEmpty()) {

@@ -71,7 +71,6 @@ internal fun findFiles(path: String): List<File> {
 
 enum class Pragma {
   // Parser
-  allowDirectivesOnDirectives,
   allowServiceCapabilities,
   // Merger
   allowMergingFieldDefinitions,
@@ -91,9 +90,6 @@ fun List<Pragma>.toParserOptions(): ParserOptions {
       .apply {
         if (Pragma.allowServiceCapabilities in this@toParserOptions) {
           allowServiceCapabilities(true)
-        }
-        if (Pragma.allowDirectivesOnDirectives in this@toParserOptions) {
-          allowDirectivesOnDirectives(true)
         }
         if (Pragma.allowFragmentArguments in this@toParserOptions) {
           allowFragmentArguments(true)

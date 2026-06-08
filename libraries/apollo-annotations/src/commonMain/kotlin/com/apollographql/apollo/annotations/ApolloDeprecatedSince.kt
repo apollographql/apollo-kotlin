@@ -37,6 +37,7 @@ annotation class ApolloDeprecatedSince(val version: Version) {
     v4_2_1,
     v4_3_1,
     v4_3_4,
-    v5_0_0
+    v5_0_0,
+    v5_0_1,
   }
 }

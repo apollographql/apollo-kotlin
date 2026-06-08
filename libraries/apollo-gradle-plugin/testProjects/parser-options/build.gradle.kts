@@ -13,9 +13,6 @@ dependencies {
 apollo {
   service("service") {
     packageName.set("test")
-
-    @OptIn(ApolloExperimental::class)
-    allowDirectivesOnDirectives.set(true)
   }
 }
 
