@@ -23,6 +23,18 @@ final enum class com.apollographql.apollo.api.http/HttpMethod : kotlin/Enum<com.
     final fun values(): kotlin/Array<com.apollographql.apollo.api.http/HttpMethod> // com.apollographql.apollo.api.http/HttpMethod.values|values#static(){}[0]
 }
 
+final enum class com.apollographql.apollo.api/OnError : kotlin/Enum<com.apollographql.apollo.api/OnError> { // com.apollographql.apollo.api/OnError|null[0]
+    enum entry HALT // com.apollographql.apollo.api/OnError.HALT|null[0]
+    enum entry NULL // com.apollographql.apollo.api/OnError.NULL|null[0]
+    enum entry PROPAGATE // com.apollographql.apollo.api/OnError.PROPAGATE|null[0]
+
+    final val entries // com.apollographql.apollo.api/OnError.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.apollographql.apollo.api/OnError> // com.apollographql.apollo.api/OnError.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.apollographql.apollo.api/OnError // com.apollographql.apollo.api/OnError.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.apollographql.apollo.api/OnError> // com.apollographql.apollo.api/OnError.values|values#static(){}[0]
+}
+
 abstract interface <#A: com.apollographql.apollo.api/Executable.Data> com.apollographql.apollo.api/Executable { // com.apollographql.apollo.api/Executable|null[0]
     abstract fun adapter(): com.apollographql.apollo.api/Adapter<#A> // com.apollographql.apollo.api/Executable.adapter|adapter(){}[0]
     abstract fun rootField(): com.apollographql.apollo.api/CompiledField // com.apollographql.apollo.api/Executable.rootField|rootField(){}[0]
@@ -317,6 +329,8 @@ final class <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.
         final fun <get-ignoreApolloClientHttpHeaders>(): kotlin/Boolean? // com.apollographql.apollo.api/ApolloRequest.ignoreApolloClientHttpHeaders.<get-ignoreApolloClientHttpHeaders>|<get-ignoreApolloClientHttpHeaders>(){}[0]
     final val ignoreUnknownKeys // com.apollographql.apollo.api/ApolloRequest.ignoreUnknownKeys|{}ignoreUnknownKeys[0]
         final fun <get-ignoreUnknownKeys>(): kotlin/Boolean? // com.apollographql.apollo.api/ApolloRequest.ignoreUnknownKeys.<get-ignoreUnknownKeys>|<get-ignoreUnknownKeys>(){}[0]
+    final val onError // com.apollographql.apollo.api/ApolloRequest.onError|{}onError[0]
+        final fun <get-onError>(): com.apollographql.apollo.api/OnError? // com.apollographql.apollo.api/ApolloRequest.onError.<get-onError>|<get-onError>(){}[0]
     final val operation // com.apollographql.apollo.api/ApolloRequest.operation|{}operation[0]
         final fun <get-operation>(): com.apollographql.apollo.api/Operation<#A> // com.apollographql.apollo.api/ApolloRequest.operation.<get-operation>|<get-operation>(){}[0]
     final val requestUuid // com.apollographql.apollo.api/ApolloRequest.requestUuid|{}requestUuid[0]
@@ -359,6 +373,8 @@ final class <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.
             final fun <get-ignoreApolloClientHttpHeaders>(): kotlin/Boolean? // com.apollographql.apollo.api/ApolloRequest.Builder.ignoreApolloClientHttpHeaders.<get-ignoreApolloClientHttpHeaders>|<get-ignoreApolloClientHttpHeaders>(){}[0]
         final var ignoreUnknownKeys // com.apollographql.apollo.api/ApolloRequest.Builder.ignoreUnknownKeys|{}ignoreUnknownKeys[0]
             final fun <get-ignoreUnknownKeys>(): kotlin/Boolean? // com.apollographql.apollo.api/ApolloRequest.Builder.ignoreUnknownKeys.<get-ignoreUnknownKeys>|<get-ignoreUnknownKeys>(){}[0]
+        final var onError // com.apollographql.apollo.api/ApolloRequest.Builder.onError|{}onError[0]
+            final fun <get-onError>(): com.apollographql.apollo.api/OnError? // com.apollographql.apollo.api/ApolloRequest.Builder.onError.<get-onError>|<get-onError>(){}[0]
         final var requestUuid // com.apollographql.apollo.api/ApolloRequest.Builder.requestUuid|{}requestUuid[0]
             final fun <get-requestUuid>(): com.benasher44.uuid/Uuid? // com.apollographql.apollo.api/ApolloRequest.Builder.requestUuid.<get-requestUuid>|<get-requestUuid>(){}[0]
         final var retryOnError // com.apollographql.apollo.api/ApolloRequest.Builder.retryOnError|{}retryOnError[0]
@@ -384,6 +400,7 @@ final class <#A: com.apollographql.apollo.api/Operation.Data> com.apollographql.
         final fun httpMethod(com.apollographql.apollo.api.http/HttpMethod?): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.httpMethod|httpMethod(com.apollographql.apollo.api.http.HttpMethod?){}[0]
         final fun ignoreApolloClientHttpHeaders(kotlin/Boolean?): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.ignoreApolloClientHttpHeaders|ignoreApolloClientHttpHeaders(kotlin.Boolean?){}[0]
         final fun ignoreUnknownKeys(kotlin/Boolean?): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.ignoreUnknownKeys|ignoreUnknownKeys(kotlin.Boolean?){}[0]
+        final fun onError(com.apollographql.apollo.api/OnError?): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.onError|onError(com.apollographql.apollo.api.OnError?){}[0]
         final fun requestUuid(com.benasher44.uuid/Uuid): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.requestUuid|requestUuid(com.benasher44.uuid.Uuid){}[0]
         final fun retryOnError(kotlin/Boolean?): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.retryOnError|retryOnError(kotlin.Boolean?){}[0]
         final fun sendApqExtensions(kotlin/Boolean?): com.apollographql.apollo.api/ApolloRequest.Builder<#A1> // com.apollographql.apollo.api/ApolloRequest.Builder.sendApqExtensions|sendApqExtensions(kotlin.Boolean?){}[0]
@@ -1157,6 +1174,8 @@ final class com.apollographql.apollo.api/RequestParameters { // com.apollographq
 
     final val extensions // com.apollographql.apollo.api/RequestParameters.extensions|{}extensions[0]
         final fun <get-extensions>(): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.api/RequestParameters.extensions.<get-extensions>|<get-extensions>(){}[0]
+    final val onError // com.apollographql.apollo.api/RequestParameters.onError|{}onError[0]
+        final fun <get-onError>(): com.apollographql.apollo.api/OnError? // com.apollographql.apollo.api/RequestParameters.onError.<get-onError>|<get-onError>(){}[0]
     final val operationName // com.apollographql.apollo.api/RequestParameters.operationName|{}operationName[0]
         final fun <get-operationName>(): kotlin/String // com.apollographql.apollo.api/RequestParameters.operationName.<get-operationName>|<get-operationName>(){}[0]
     final val query // com.apollographql.apollo.api/RequestParameters.query|{}query[0]

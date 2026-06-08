@@ -63,6 +63,7 @@ listOf(
     "no-runtime",
     "normalization-tests",
     "number_scalar",
+    "on-error",
     "optimistic-data",
     "optional-variables",
     "outofbounds",

@@ -1,0 +1,12 @@
+query GetA {
+  a {
+    f @catch(to: NULL)
+    g
+  }
+}
+
+query GetH {
+  a {
+    h @catch(to: NULL, levels: [1])
+  }
+}

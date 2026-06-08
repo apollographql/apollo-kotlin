@@ -39,6 +39,7 @@ data class IrOperations(
     val flattenModels: Boolean,
     val decapitalizeFields: Boolean,
     val codegenModels: String,
+    val errorAware: Boolean,
 
     val fragmentDefinitions: List<@Serializable(with = GQLFragmentDefinitionSerializer::class) GQLFragmentDefinition>,
 )

@@ -75,6 +75,7 @@ private fun buildOutput(
     targetLanguage: TargetLanguage,
     kotlinOutputTransform: Transform<KotlinOutput>?,
     generateAsInternal: Boolean,
+    errorAware: Boolean,
     block: OutputBuilder.(KotlinResolver) -> Unit,
 ): KotlinOutput {
 
@@ -92,6 +93,7 @@ private fun buildOutput(
   val resolver = KotlinResolver(
       upstreamCodegenMetadata = upstreamCodegenMetadata,
       requiresOptInAnnotation = requiresOptInAnnotation,
+      errorAware = errorAware
   )
 
   val outputBuilder = OutputBuilder()
@@ -174,6 +176,7 @@ internal object KotlinCodegen {
         targetLanguage = targetLanguage,
         kotlinOutputTransform = kotlinOutputTransform,
         generateAsInternal = generateAsInternal,
+        errorAware = false // not needed for the schema sources
     ) { resolver ->
       val context = KotlinSchemaContext(
           generateMethods = generateMethods,
@@ -251,7 +254,8 @@ internal object KotlinCodegen {
         requiresOptInAnnotation = requiresOptInAnnotation,
         targetLanguage = targetLanguage,
         kotlinOutputTransform = kotlinOutputTransform,
-        generateAsInternal = generateAsInternal
+        generateAsInternal = generateAsInternal,
+        errorAware = irOperations.errorAware
     ) { resolver ->
       val context = KotlinOperationsContext(
           generateMethods = generateMethods,
@@ -340,7 +344,8 @@ internal object KotlinCodegen {
         requiresOptInAnnotation = requiresOptInAnnotation,
         targetLanguage = targetLanguage,
         kotlinOutputTransform = null,
-        generateAsInternal = generateAsInternal
+        generateAsInternal = generateAsInternal,
+        errorAware = false // not needed for the schema sources
     ) { resolver ->
       val context = KotlinDataBuilderContext(
           generateMethods = generateMethods,

@@ -12,7 +12,7 @@ dependencies {
   implementation(libs.apollo.annotations)
   implementation(libs.kotlinx.coroutines)
   implementation(libs.atomicfu.library)
-  implementation(libs.apollo.execution)
+  implementation(libs.apollo.execution.runtime)
 
   implementation(platform(libs.http4k.bom))
   implementation(libs.http4k.core)

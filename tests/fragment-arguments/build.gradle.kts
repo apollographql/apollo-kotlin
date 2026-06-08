@@ -12,7 +12,7 @@ apolloTest()
 dependencies {
   implementation(libs.apollo.api)
   testImplementation(libs.junit)
-  testImplementation(libs.apollo.execution)
+  testImplementation(libs.apollo.execution.runtime)
   testImplementation(libs.okhttp)
 }
 

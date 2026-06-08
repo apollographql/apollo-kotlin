@@ -31,6 +31,7 @@ public final class com/apollographql/apollo/ApolloCall : com/apollographql/apoll
 	public final fun ignoreApolloClientHttpHeaders (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
 	public fun ignoreUnknownKeys (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
 	public synthetic fun ignoreUnknownKeys (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public final fun onError (Lcom/apollographql/apollo/api/OnError;)Lcom/apollographql/apollo/ApolloCall;
 	public final fun retryOnError (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo/ApolloCall;
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;

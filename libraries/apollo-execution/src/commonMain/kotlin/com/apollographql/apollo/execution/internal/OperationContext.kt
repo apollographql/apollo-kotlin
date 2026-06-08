@@ -2,7 +2,29 @@ package com.apollographql.apollo.execution.internal
 
 import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.ExecutionContext
-import com.apollographql.apollo.ast.*
+import com.apollographql.apollo.api.OnError
+import com.apollographql.apollo.ast.GQLBooleanValue
+import com.apollographql.apollo.ast.GQLDirective
+import com.apollographql.apollo.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo.ast.GQLField
+import com.apollographql.apollo.ast.GQLFragmentDefinition
+import com.apollographql.apollo.ast.GQLFragmentSpread
+import com.apollographql.apollo.ast.GQLInlineFragment
+import com.apollographql.apollo.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo.ast.GQLInterfaceTypeDefinition
+import com.apollographql.apollo.ast.GQLListType
+import com.apollographql.apollo.ast.GQLNamedType
+import com.apollographql.apollo.ast.GQLNonNullType
+import com.apollographql.apollo.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo.ast.GQLOperationDefinition
+import com.apollographql.apollo.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo.ast.GQLSelection
+import com.apollographql.apollo.ast.GQLType
+import com.apollographql.apollo.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo.ast.GQLVariableValue
+import com.apollographql.apollo.ast.Schema
+import com.apollographql.apollo.ast.definitionFromScope
+import com.apollographql.apollo.ast.responseName
 import com.apollographql.apollo.execution.Coercing
 import com.apollographql.apollo.execution.ExternalValue
 import com.apollographql.apollo.execution.ExternalValueOrDeferred
@@ -10,7 +32,6 @@ import com.apollographql.apollo.execution.FieldCallback
 import com.apollographql.apollo.execution.GraphQLResponse
 import com.apollographql.apollo.execution.Instrumentation
 import com.apollographql.apollo.execution.InternalValue
-import com.apollographql.apollo.execution.OnError
 import com.apollographql.apollo.execution.OperationCallback
 import com.apollographql.apollo.execution.OperationInfo
 import com.apollographql.apollo.execution.ResolveInfo
@@ -25,8 +46,19 @@ import com.apollographql.apollo.execution.SubscriptionResponse
 import com.apollographql.apollo.execution.TypeResolver
 import com.apollographql.apollo.execution.finalize
 import com.apollographql.apollo.execution.leafCoercingSerialize
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 
 /**
  * Bags of constant properties used while resolving the operation.

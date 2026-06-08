@@ -97,7 +97,7 @@ dependencies {
   testImplementation(libs.assertj)
   testImplementation(libs.okhttp.mockwebserver)
   testImplementation(libs.okhttp.tls)
-  testImplementation(libs.apollo.execution)
+  testImplementation(libs.apollo.execution.runtime)
   testImplementation(libs.apollo.execution.http4k)
   testImplementation(gradleTestKit())
   testImplementation(platform(libs.http4k.bom))

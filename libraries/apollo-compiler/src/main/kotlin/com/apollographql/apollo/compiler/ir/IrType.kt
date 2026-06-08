@@ -61,9 +61,8 @@ sealed interface IrType {
   val catchTo: IrCatchTo
 
   /**
-   * This type may be an error
-   * true if the type is nullable in the server schema.
-   * Used to generate error aware adapters
+   * Whether this type is nullable in the schema, regardless of semantic nullability.
+   * This is used for `@catchByDefault`
    */
   val maybeError: Boolean
 
@@ -219,31 +218,31 @@ internal fun IrType.replacePlaceholder(newPath: String): IrType {
 internal fun GQLType.toIr(schema: Schema): IrType {
   return when (this) {
     is GQLNonNullType -> type.toIr(schema).copyWith(nullable = false, maybeError = false)
-    is GQLListType -> IrListType(ofType = type.toIr(schema), nullable = true, maybeError = schema.errorAware)
+    is GQLListType -> IrListType(ofType = type.toIr(schema), nullable = true, maybeError = true)
     is GQLNamedType -> {
       when (schema.typeDefinition(name)) {
         is GQLScalarTypeDefinition -> {
-          IrScalarType(name, nullable = true, maybeError = schema.errorAware)
+          IrScalarType(name, nullable = true, maybeError = true)
         }
 
         is GQLEnumTypeDefinition -> {
-          IrEnumType(name, nullable = true, maybeError = schema.errorAware)
+          IrEnumType(name, nullable = true, maybeError = true)
         }
 
         is GQLInputObjectTypeDefinition -> {
-          IrInputObjectType(name, nullable = true, maybeError = schema.errorAware)
+          IrInputObjectType(name, nullable = true, maybeError = true)
         }
 
         is GQLObjectTypeDefinition -> {
-          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = schema.errorAware)
+          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = true)
         }
 
         is GQLInterfaceTypeDefinition -> {
-          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = schema.errorAware)
+          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = true)
         }
 
         is GQLUnionTypeDefinition -> {
-          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = schema.errorAware)
+          IrModelType(MODEL_UNKNOWN, nullable = true, maybeError = true)
         }
       }
     }

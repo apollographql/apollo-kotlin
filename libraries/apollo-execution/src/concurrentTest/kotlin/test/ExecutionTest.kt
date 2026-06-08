@@ -4,10 +4,10 @@ package test
 
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo.api.OnError
 import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.execution.ExecutableSchema
 import com.apollographql.apollo.execution.GraphQLRequest
-import com.apollographql.apollo.execution.OnError
 import com.apollographql.apollo.execution.SubscriptionResponse
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow

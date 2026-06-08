@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.ApolloRequest
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.MutableExecutionOptions
+import com.apollographql.apollo.api.OnError
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.api.http.HttpMethod
@@ -115,6 +116,11 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   fun extensions(extensions: Map<String, ApolloJsonElement>) = apply {
     requestBuilder.extensions(extensions)
+  }
+
+  @ApolloExperimental
+  fun onError(onError: OnError?) = apply {
+    requestBuilder.onError(onError)
   }
 
   fun copy(): ApolloCall<D> {

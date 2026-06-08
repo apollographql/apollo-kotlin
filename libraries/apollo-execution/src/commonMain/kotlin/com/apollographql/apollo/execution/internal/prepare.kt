@@ -5,13 +5,13 @@ package com.apollographql.apollo.execution.internal
 
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.Error
+import com.apollographql.apollo.api.OnError
 import com.apollographql.apollo.ast.*
 import com.apollographql.apollo.execution.Coercing
 import com.apollographql.apollo.execution.ErrorPersistedDocument
 import com.apollographql.apollo.execution.ExternalValue
 import com.apollographql.apollo.execution.GraphQLRequest
 import com.apollographql.apollo.execution.InternalValue
-import com.apollographql.apollo.execution.OnError
 import com.apollographql.apollo.execution.PersistedDocument
 import com.apollographql.apollo.execution.PersistedDocumentCache
 import com.apollographql.apollo.execution.ValidPersistedDocument
