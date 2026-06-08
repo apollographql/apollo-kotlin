@@ -1,0 +1,11 @@
+query GetFoo {
+  foo {
+    bar @catch(to: THROW)
+  }
+}
+
+query GetF {
+  foo {
+    f @catch(to: THROW)
+  }
+}

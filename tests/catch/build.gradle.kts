@@ -32,4 +32,8 @@ apollo {
     srcDir("src/main/graphql/fragments")
     packageName.set("fragments")
   }
+  service("nested") {
+    srcDir("src/main/graphql/nested")
+    packageName.set("nested")
+  }
 }
