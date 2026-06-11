@@ -2,6 +2,7 @@
     "typeToFieldsToArguments": {
         "Character": {},
         "Timestamp": {},
+        "Long": {},
         "CharacterID": {},
         "String": {},
         "Date": {},

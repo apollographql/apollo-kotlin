@@ -13,6 +13,7 @@ import com.example.custom_scalar_type.type.Character
 import com.example.custom_scalar_type.type.CharacterID
 import com.example.custom_scalar_type.type.Date
 import com.example.custom_scalar_type.type.GraphQLString
+import com.example.custom_scalar_type.type.Long
 import com.example.custom_scalar_type.type.Timestamp
 import com.example.custom_scalar_type.type.URL
 import com.example.custom_scalar_type.type.UnsupportedType
@@ -79,6 +80,10 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "nullableListOfNullableTimestamp",
           type = Timestamp.type.list()
+        ).build(),
+        CompiledField.Builder(
+          name = "nullableLong",
+          type = Long.type
         ).build()
       )
 }

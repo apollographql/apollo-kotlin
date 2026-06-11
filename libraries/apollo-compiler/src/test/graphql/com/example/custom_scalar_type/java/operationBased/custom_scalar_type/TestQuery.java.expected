@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.custom_scalar_type.adapter.TestQuery_ResponseAdapter;
 import com.example.custom_scalar_type.selections.TestQuerySelections;
 import java.io.IOException;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -25,7 +26,7 @@ import java.util.List;
 public class TestQuery implements Query<TestQuery.Data> {
   public static ExecutableDefinition<Data> definition = new Definition();
 
-  public static final String OPERATION_ID = "60b4c0088b4e38080bd241601da65e11cc8fedf8a7d91571a4f4d39ccccb084f";
+  public static final String OPERATION_ID = "d84dc611bfd89c2610e876828a73c8cc888caa7e8056e020339919d484be8590";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -47,9 +48,10 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   nonNullListOfNullableTimestamp
    *   nullableListOfNonNullTimestamp
    *   nullableListOfNullableTimestamp
+   *   nullableLong
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { id name birthDate appearanceDates fieldWithUnsupportedType profileLink links } nonNullTimestamp nullableTimestamp nonNullListOfNonNullTimestamp nonNullListOfNullableTimestamp nullableListOfNonNullTimestamp nullableListOfNullableTimestamp }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { id name birthDate appearanceDates fieldWithUnsupportedType profileLink links } nonNullTimestamp nullableTimestamp nonNullListOfNonNullTimestamp nonNullListOfNullableTimestamp nullableListOfNonNullTimestamp nullableListOfNullableTimestamp nullableLong }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -175,6 +177,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public List<Object> nullableListOfNullableTimestamp;
 
+    public Long nullableLong;
+
     private transient volatile int $hashCode;
 
     private transient volatile boolean $hashCodeMemoized;
@@ -183,7 +187,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public Data(Hero hero, Object nonNullTimestamp, Object nullableTimestamp,
         List<Object> nonNullListOfNonNullTimestamp, List<Object> nonNullListOfNullableTimestamp,
-        List<Object> nullableListOfNonNullTimestamp, List<Object> nullableListOfNullableTimestamp) {
+        List<Object> nullableListOfNonNullTimestamp, List<Object> nullableListOfNullableTimestamp,
+        Long nullableLong) {
       this.hero = hero;
       this.nonNullTimestamp = nonNullTimestamp;
       this.nullableTimestamp = nullableTimestamp;
@@ -191,6 +196,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       this.nonNullListOfNullableTimestamp = nonNullListOfNullableTimestamp;
       this.nullableListOfNonNullTimestamp = nullableListOfNonNullTimestamp;
       this.nullableListOfNullableTimestamp = nullableListOfNullableTimestamp;
+      this.nullableLong = nullableLong;
     }
 
     @Override
@@ -206,7 +212,8 @@ public class TestQuery implements Query<TestQuery.Data> {
          &&((this.nonNullListOfNonNullTimestamp == null) ? (that.nonNullListOfNonNullTimestamp == null) : this.nonNullListOfNonNullTimestamp.equals(that.nonNullListOfNonNullTimestamp))
          &&((this.nonNullListOfNullableTimestamp == null) ? (that.nonNullListOfNullableTimestamp == null) : this.nonNullListOfNullableTimestamp.equals(that.nonNullListOfNullableTimestamp))
          &&((this.nullableListOfNonNullTimestamp == null) ? (that.nullableListOfNonNullTimestamp == null) : this.nullableListOfNonNullTimestamp.equals(that.nullableListOfNonNullTimestamp))
-         &&((this.nullableListOfNullableTimestamp == null) ? (that.nullableListOfNullableTimestamp == null) : this.nullableListOfNullableTimestamp.equals(that.nullableListOfNullableTimestamp));
+         &&((this.nullableListOfNullableTimestamp == null) ? (that.nullableListOfNullableTimestamp == null) : this.nullableListOfNullableTimestamp.equals(that.nullableListOfNullableTimestamp))
+         &&((this.nullableLong == null) ? (that.nullableLong == null) : this.nullableLong.equals(that.nullableLong));
       }
       return false;
     }
@@ -229,6 +236,8 @@ public class TestQuery implements Query<TestQuery.Data> {
         __h ^= (nullableListOfNonNullTimestamp == null) ? 0 : nullableListOfNonNullTimestamp.hashCode();
         __h *= 1000003;
         __h ^= (nullableListOfNullableTimestamp == null) ? 0 : nullableListOfNullableTimestamp.hashCode();
+        __h *= 1000003;
+        __h ^= (nullableLong == null) ? 0 : nullableLong.hashCode();
         $hashCode = __h;
         $hashCodeMemoized = true;
       }
@@ -245,7 +254,8 @@ public class TestQuery implements Query<TestQuery.Data> {
           + "nonNullListOfNonNullTimestamp=" + nonNullListOfNonNullTimestamp + ", "
           + "nonNullListOfNullableTimestamp=" + nonNullListOfNullableTimestamp + ", "
           + "nullableListOfNonNullTimestamp=" + nullableListOfNonNullTimestamp + ", "
-          + "nullableListOfNullableTimestamp=" + nullableListOfNullableTimestamp
+          + "nullableListOfNullableTimestamp=" + nullableListOfNullableTimestamp + ", "
+          + "nullableLong=" + nullableLong
           + "}";
       }
       return $toString;

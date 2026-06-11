@@ -19,6 +19,7 @@ public final class com/apollographql/apollo/api/Adapters {
 	public static final field NullableBooleanAdapter Lcom/apollographql/apollo/api/NullableAdapter;
 	public static final field NullableDoubleAdapter Lcom/apollographql/apollo/api/NullableAdapter;
 	public static final field NullableIntAdapter Lcom/apollographql/apollo/api/NullableAdapter;
+	public static final field NullableLongAdapter Lcom/apollographql/apollo/api/NullableAdapter;
 	public static final field NullableStringAdapter Lcom/apollographql/apollo/api/NullableAdapter;
 	public static final field StringAdapter Lcom/apollographql/apollo/api/Adapter;
 	public static final field UploadAdapter Lcom/apollographql/apollo/api/Adapter;

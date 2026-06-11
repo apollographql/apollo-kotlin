@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  201290
-aggregate-kotlin-responseBased                                                                  63292
+aggregate-all                                                                                  201367
+aggregate-kotlin-responseBased                                                                  63337
 aggregate-kotlin-operationBased                                                                 41074
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   96924
+aggregate-java-operationBased                                                                   96956
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5747
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3409
@@ -71,9 +71,9 @@ java-operationBased-inline_fragments_with_friends                               
 kotlin-responseBased-multiple_fragments                                                          1029
 kotlin-responseBased-nested_conditional_inline                                                   1029
 java-operationBased-fragment_spread_with_nested_fields                                           1027
+java-operationBased-custom_scalar_type                                                           1025
 java-operationBased-operationbased2_ex8                                                          1017
 kotlin-responseBased-simple_fragment_with_inline_fragments                                       1001
-java-operationBased-custom_scalar_type                                                            993
 kotlin-operationBased-root_query_fragment_with_nested_fragments                                   992
 java-operationBased-decapitalized_fields                                                          953
 kotlin-operationBased-named_fragment_delegate                                                     946
@@ -106,6 +106,7 @@ java-operationBased-operationbased2_ex7                                         
 kotlin-responseBased-two_heroes_with_friends                                                      772
 java-operationBased-fragment_with_multiple_fieldsets                                              763
 java-operationBased-suppressed_warnings                                                           757
+kotlin-responseBased-custom_scalar_type                                                           755
 kotlin-responseBased-inline_fragments_with_friends                                                753
 java-operationBased-reserved_keywords                                                             744
 kotlin-responseBased-target_name                                                                  744
@@ -121,7 +122,6 @@ kotlin-operationBased-inline_fragment_merge_fields                              
 kotlin-responseBased-root_query_inline_fragment                                                   718
 kotlin-responseBased-simple_union                                                                 715
 kotlin-operationBased-target_name                                                                 714
-kotlin-responseBased-custom_scalar_type                                                           710
 java-operationBased-input_object_variable_and_argument                                            709
 java-operationBased-input_object_variable_and_argument_with_generated_methods                     709
 kotlin-operationBased-inline_fragments_with_friends                                               696

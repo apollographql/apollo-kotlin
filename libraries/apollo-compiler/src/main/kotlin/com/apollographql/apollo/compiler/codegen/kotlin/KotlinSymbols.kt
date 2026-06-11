@@ -105,6 +105,7 @@ internal object KotlinSymbols {
   val NullableDoubleAdapter = MemberName(apolloApiPackageName, "NullableDoubleAdapter")
   val NullableIntAdapter = MemberName(apolloApiPackageName, "NullableIntAdapter")
   val NullableStringAdapter = MemberName(apolloApiPackageName, "NullableStringAdapter")
+  val NullableLongAdapter = MemberName(apolloApiPackageName, "NullableLongAdapter")
 
 
   val DataBuilderScope = ClassName(apolloApiPackageName, "DataBuilderScope")

@@ -191,7 +191,7 @@ internal class JavaResolver(
 
   fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
     return if (type.optional) {
-      return CodeBlock.of("new $T<>($L)", getOptionalAdapterClassName(), adapterInitializer(type.optional(false), requiresBuffering))
+      CodeBlock.of("new $T<>($L)", getOptionalAdapterClassName(), adapterInitializer(type.optional(false), requiresBuffering))
     } else if (type.catchTo != IrCatchTo.NoCatch) {
       error("Java codegen does not support @catch")
     } else if (type.nullable) {
