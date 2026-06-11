@@ -1476,6 +1476,8 @@ final val com.apollographql.apollo.api/NullableDoubleAdapter // com.apollographq
     final fun <get-NullableDoubleAdapter>(): com.apollographql.apollo.api/NullableAdapter<kotlin/Double> // com.apollographql.apollo.api/NullableDoubleAdapter.<get-NullableDoubleAdapter>|<get-NullableDoubleAdapter>(){}[0]
 final val com.apollographql.apollo.api/NullableIntAdapter // com.apollographql.apollo.api/NullableIntAdapter|{}NullableIntAdapter[0]
     final fun <get-NullableIntAdapter>(): com.apollographql.apollo.api/NullableAdapter<kotlin/Int> // com.apollographql.apollo.api/NullableIntAdapter.<get-NullableIntAdapter>|<get-NullableIntAdapter>(){}[0]
+final val com.apollographql.apollo.api/NullableLongAdapter // com.apollographql.apollo.api/NullableLongAdapter|{}NullableLongAdapter[0]
+    final fun <get-NullableLongAdapter>(): com.apollographql.apollo.api/NullableAdapter<kotlin/Long> // com.apollographql.apollo.api/NullableLongAdapter.<get-NullableLongAdapter>|<get-NullableLongAdapter>(){}[0]
 final val com.apollographql.apollo.api/NullableStringAdapter // com.apollographql.apollo.api/NullableStringAdapter|{}NullableStringAdapter[0]
     final fun <get-NullableStringAdapter>(): com.apollographql.apollo.api/NullableAdapter<kotlin/String> // com.apollographql.apollo.api/NullableStringAdapter.<get-NullableStringAdapter>|<get-NullableStringAdapter>(){}[0]
 final val com.apollographql.apollo.api/StringAdapter // com.apollographql.apollo.api/StringAdapter|{}StringAdapter[0]

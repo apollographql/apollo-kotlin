@@ -276,6 +276,9 @@ val NullableBooleanAdapter = BooleanAdapter.nullable()
 @JvmField
 val NullableAnyAdapter = AnyAdapter.nullable()
 
+@JvmField
+val NullableLongAdapter = LongAdapter.nullable()
+
 /*
  * Global instances of optional adapters for built-in scalar types
  */

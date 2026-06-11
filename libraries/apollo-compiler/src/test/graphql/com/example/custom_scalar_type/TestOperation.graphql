@@ -15,6 +15,7 @@ query TestQuery {
   nonNullListOfNullableTimestamp
   nullableListOfNonNullTimestamp
   nullableListOfNullableTimestamp
+  nullableLong
 }
 
 query ScalarWithGenericType {

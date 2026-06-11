@@ -217,6 +217,7 @@ internal class KotlinResolver(
           KotlinSymbols.IntAdapter.canonicalName -> KotlinSymbols.NullableIntAdapter
           KotlinSymbols.DoubleAdapter.canonicalName -> KotlinSymbols.NullableDoubleAdapter
           KotlinSymbols.AnyAdapter.canonicalName -> KotlinSymbols.NullableAnyAdapter
+          KotlinSymbols.LongAdapter.canonicalName -> KotlinSymbols.NullableLongAdapter
           else -> null
         }
         if (nonNullableBuiltin != null) {
