@@ -45,16 +45,8 @@ internal class ApolloExecutableDocumentTransform(private val addTypename: String
       addRequiredFields(it, schema, fragmentDefinitions)
     }
 
-    val usesDisableErrorPropagation = schema.directiveDefinitions.containsKey(Schema.DISABLE_ERROR_PROPAGATION)
-        && schema.schemaDefinition?.directives?.any { schema.originalDirectiveName(it.name) == Schema.CATCH_BY_DEFAULT } == true
     val operations = userOperations.map {
-      var operation = addRequiredFields(it, schema, fragmentDefinitions)
-      if (usesDisableErrorPropagation) {
-        operation = operation.copy(
-            directives = operation.directives + GQLDirective(null, Schema.DISABLE_ERROR_PROPAGATION, emptyList())
-        )
-      }
-      operation
+      addRequiredFields(it, schema, fragmentDefinitions)
     }
 
     return document.copy(
