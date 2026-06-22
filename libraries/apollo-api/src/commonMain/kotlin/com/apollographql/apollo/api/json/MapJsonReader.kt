@@ -194,9 +194,8 @@ constructor(
       is Long -> value.toString()
       is Double -> value.toString()
       is String -> value
-      null -> "null"
       is JsonNumber -> value.value
-      else -> error("Expected a String but got $value instead")
+      else -> throw JsonDataException("Expected a String but got $value instead")
     }.also {
       advanceIterator()
     }

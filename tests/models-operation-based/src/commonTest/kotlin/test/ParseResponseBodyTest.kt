@@ -1,16 +1,21 @@
 package test
 
 import codegen.models.AllPlanetsQuery
+import codegen.models.GetFooQuery
 import com.apollographql.apollo.api.composeJsonResponse
+import com.apollographql.apollo.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.json.buildJsonString
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.json.readAny
+import com.apollographql.apollo.api.parseResponse
 import com.apollographql.apollo.api.toApolloResponse
+import com.apollographql.apollo.exception.JsonDataException
 import okio.Buffer
 import testFixtureToJsonReader
 import testFixtureToUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 
 class ParseResponseBodyTest {
   /**
@@ -63,5 +68,29 @@ class ParseResponseBodyTest {
     val actualMap = Buffer().writeUtf8(actual).jsonReader().readAny()
 
     assertEquals(expectedMap, actualMap)
+  }
+
+  @Test
+  @Throws(Exception::class)
+  fun throwsOnInvalidServerResponse() {
+    val reader = BufferedSourceJsonReader(
+        /**
+         * This is an invalid response. `foo` should not be null.
+         */
+        Buffer().writeUtf8(
+            """
+        {
+          "data": {
+            "__typename": "Query",
+            "foo": null
+          }
+        }
+        """.trimIndent()
+        )
+    )
+
+    val response = GetFooQuery().parseResponse(reader)
+    assertEquals(null, response.data)
+    assertIs<JsonDataException>(response.exception)
   }
 }

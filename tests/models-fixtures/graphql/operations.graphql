@@ -151,3 +151,10 @@ query InlineAndNamedFragment {
         }
     }
 }
+
+query GetFoo {
+  foo
+  ...queryDetails
+}
+
+fragment queryDetails on Query { foo }

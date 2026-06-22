@@ -22,6 +22,8 @@ type Query {
     starship ( id: ID!): Starship
 
     allPlanets(after: String, first: Int, before: String, last: Int): PlanetsConnection
+
+    foo: String!
 }
 
 """
