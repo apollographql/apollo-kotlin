@@ -116,7 +116,11 @@ private fun collectFields(
         val fieldDefinition = selection.definitionFromScope(context.schema, parentType)
         val fieldType = fieldDefinition?.type
 
-        fieldMap[responseName]!!.add(FieldAndType(selection, fieldType, parentType))
+        if (fieldType != null) {
+          fieldMap[responseName]!!.add(FieldAndType(selection, fieldType, parentType))
+        } else {
+          // This field cannot be queried on this type, will be caught by other validation rules
+        }
       }
 
       is GQLInlineFragment -> {
@@ -179,7 +183,7 @@ private fun IssuesScope.sameResponseShapeByName(
 private fun mergeSubSelections(sameNameFields: Set<FieldAndType>, context: ValidationContext): Map<String, MutableSet<FieldAndType>> {
   val fieldMap = mutableMapOf<String, MutableSet<FieldAndType>>()
   for (fieldAndType in sameNameFields) {
-    if (fieldAndType.field.selections.isNotEmpty() && fieldAndType.type != null) {
+    if (fieldAndType.field.selections.isNotEmpty()) {
       val unwrappedType = fieldAndType.type.rawType()
       val typeDefinition = context.schema.typeDefinitions[unwrappedType.name]
       if (typeDefinition != null) {
@@ -367,7 +371,7 @@ private fun GQLTypeDefinition.isLeaf(): Boolean {
 
 private data class FieldAndType(
     val field: GQLField,
-    val type: GQLType?,
+    val type: GQLType,
     val parentType: GQLTypeDefinition,
 ) {
   override fun equals(other: Any?): Boolean {
@@ -395,7 +399,6 @@ private fun buildMessage(path: List<String>, message: String): String {
       "$message. Use different aliases on the fields to fetch both if this was intentional."
 }
 
-@OptIn(ApolloExperimental::class)
 private fun GQLSelection.substituteVariables(context: ValidationContext): GQLSelection {
   return when (this) {
     is GQLField -> copy(
