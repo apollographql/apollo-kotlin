@@ -20,6 +20,9 @@ dependencies {
   }
   api(libs.poet.java)
 
+  api(libs.kotlinx.serialization.core) {
+    because("The @Serializable annotation is used in public API")
+  }
   implementation(libs.kotlinx.serialization.json)
 
   testImplementation(libs.kotlin.compiletesting)
