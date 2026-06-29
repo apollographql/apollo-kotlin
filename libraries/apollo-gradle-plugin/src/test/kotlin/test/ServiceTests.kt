@@ -301,4 +301,19 @@ class ServiceTests {
       assertTrue(dir.generatedSource("com/example/fragment/SpeciesInformationImpl.kt").isFile)
     }
   }
+
+  @Test
+  fun `service name is consistent via Named interface`() {
+    val config = """
+      apollo {
+        service("myService") {
+          packageNamesFromFilePaths()
+        }
+      }
+    """.trimIndent()
+    withSimpleProject(config) { dir ->
+      val result = TestUtils.executeTask("generateApolloSources", dir)
+      assertEquals(TaskOutcome.SUCCESS, result.task(":generateMyServiceApolloSources")?.outcome)
+    }
+  }
 }

@@ -10,7 +10,6 @@ import com.apollographql.apollo.gradle.api.Registry
 import com.apollographql.apollo.gradle.api.Service
 import org.gradle.api.Action
 import org.gradle.api.Project
-import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileCollection
@@ -18,7 +17,7 @@ import org.gradle.api.file.RegularFileProperty
 import java.io.File
 import javax.inject.Inject
 
-abstract class DefaultService @Inject constructor(val project: Project, override val name: String) : Service {
+abstract class DefaultService @Inject constructor(val project: Project, private val serviceName: String) : Service {
 
   internal val pluginsArguments = mutableMapOf<String, Any?>()
   internal var hasPlugin: Boolean = false
@@ -273,6 +272,8 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   override fun issueSeverity(name: String, severity: String) {
     issueSeverities.put(name, severity)
   }
+
+  override fun getName(): String = serviceName
 }
 
 internal fun DefaultService.fallbackFiles(project: Project, block: (ConfigurableFileTree) -> Unit): FileCollection {

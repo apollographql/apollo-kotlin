@@ -13,7 +13,13 @@ import javax.inject.Inject
 
 @GPlugin(id = "com.apollographql.apollo")
 fun apolloPlugin(project: Project) {
-  val apolloExtension: DefaultApolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project) as DefaultApolloExtension
+  val apolloExtension: DefaultApolloExtension = project.extensions.create(
+      ApolloExtension::class.java,
+      "apollo",
+      DefaultApolloExtension::class.java,
+      project,
+      project.objects.newInstance(DefaultApolloServicesContainer::class.java)
+  ) as DefaultApolloExtension
 
   project.configureDefaultVersionsResolutionStrategy()
 

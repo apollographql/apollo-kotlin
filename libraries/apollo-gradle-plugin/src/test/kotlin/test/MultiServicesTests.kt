@@ -67,6 +67,33 @@ class MultiServicesTests {
   }
 
   @Test
+  fun `duplicate service names throw an error`() {
+    val apolloConfiguration = """
+      apollo {
+        service("starwars") {
+          packageName.set("starwars")
+          srcDir("src/main/graphql/starwars")
+        }
+        service("starwars") {
+          packageName.set("githunt")
+          srcDir("src/main/graphql/githunt")
+        }
+      }
+    """.trimIndent()
+    withMultipleServicesProject(apolloConfiguration) { dir ->
+      try {
+        TestUtils.executeGradle(dir)
+        fail("expected to fail")
+      } catch (e: UnexpectedBuildFailure) {
+        MatcherAssert.assertThat(
+            e.message,
+            containsString("To configure an existing one, you can use `apollo.services.named(\"starwars\").configure {}`")
+        )
+      }
+    }
+  }
+
+  @Test
   fun `can specify services explicitly`() {
     val apolloConfiguration = """
       apollo {

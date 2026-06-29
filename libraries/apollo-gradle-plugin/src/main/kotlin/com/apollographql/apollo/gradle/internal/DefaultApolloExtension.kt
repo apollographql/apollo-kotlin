@@ -9,6 +9,7 @@ import com.apollographql.apollo.gradle.ComponentFilter
 import com.apollographql.apollo.gradle.api.ApolloDependencies
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import com.apollographql.apollo.gradle.api.ApolloGradleToolingModel
+import com.apollographql.apollo.gradle.api.ApolloServicesContainer
 import com.apollographql.apollo.gradle.api.SchemaConnection
 import com.apollographql.apollo.gradle.api.Service
 import com.apollographql.apollo.gradle.getAgpVersion
@@ -31,6 +32,7 @@ import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloRegisterOperationsTask
 import gratatouille.wiring.capitalizeFirstLetter
 import org.gradle.api.Action
+import org.gradle.api.NamedDomainObjectCollection
 import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -56,10 +58,10 @@ import javax.inject.Inject
 
 abstract class DefaultApolloExtension(
     private val project: Project,
-) : ApolloExtension {
+    private val servicesContainer: ApolloServicesContainer,
+) : ApolloExtension, ApolloServicesContainer by servicesContainer {
 
   private var codegenOnGradleSyncConfigured: Boolean = false
-  private val services = mutableListOf<DefaultService>()
   private val generateApolloSources: TaskProvider<Task>
   private val generateApolloProjectModel: TaskProvider<out Task>
   private var hasExplicitService = false
@@ -91,7 +93,12 @@ abstract class DefaultApolloExtension(
   internal val agp
     get() = agpOrNull ?: error("Apollo: androidComponents extension not found, is the Android Gradle Plugin applied?")
 
-  internal fun getServiceInfos(project: Project): List<ApolloGradleToolingModel.ServiceInfo> = services.map { service ->
+  final override val services: NamedDomainObjectCollection<Service> = servicesContainer.services
+
+  private val defaultServices
+    get() = services.withType(DefaultService::class.java)
+
+  internal fun getServiceInfos(project: Project): List<ApolloGradleToolingModel.ServiceInfo> = defaultServices.map { service ->
     DefaultServiceInfo(
         name = service.name,
         schemaFiles = service.schemaFilesSnapshot(project),
@@ -113,7 +120,7 @@ abstract class DefaultApolloExtension(
     }
   }
 
-  internal fun getServiceTelemetryData(): List<ApolloGradleToolingModel.TelemetryData.ServiceTelemetryData> = services.map { service ->
+  internal fun getServiceTelemetryData(): List<ApolloGradleToolingModel.TelemetryData.ServiceTelemetryData> = defaultServices.map { service ->
     DefaultServiceTelemetryData(
         codegenModels = service.codegenModels.orNull,
         failOnWarnings = service.failOnWarnings.orNull,
@@ -231,7 +238,7 @@ abstract class DefaultApolloExtension(
         taskName = ModelNames.generateApolloProjectModel(),
         taskDescription = "Generate Apollo project model",
 
-        serviceNames = project.provider { services.map { it.name }.toSet() },
+        serviceNames = project.provider { defaultServices.names },
         apolloTasksDependencies = project.provider {
           project.configurations.getByName("apolloTasks").files.map { it.absolutePath }.toSet()
         },
@@ -244,7 +251,7 @@ abstract class DefaultApolloExtension(
         androidAgpVersion = project.provider { agpOrNull?.version },
         apolloGenerateSourcesDuringGradleSync = generateSourcesDuringGradleSync,
         apolloLinkSqlite = linkSqlite,
-        usedServiceOptions = project.provider { services.flatMap { it.telemetryUsedOptions() }.toSet() }
+        usedServiceOptions = project.provider { defaultServices.flatMap { it.telemetryUsedOptions() }.toSet() }
     )
 
     project.afterEvaluate {
@@ -290,9 +297,15 @@ abstract class DefaultApolloExtension(
   override fun service(name: String, action: Action<Service>) {
     hasExplicitService = false
 
-    val service = project.objects.newInstance(DefaultService::class.java, project, name)
-    action.execute(service)
+    check(!services.names.contains(name)) {
+      """Apollo: there is already a service named "$name", please use another name.
+        |To configure an existing one, you can use `apollo.services.named("$name").configure {}`
+      """.trimMargin()
+    }
 
+    val service = project.objects.newInstance(DefaultService::class.java, project, name)
+
+    action.execute(service)
     registerService(service)
     sanityChecks(service)
 
@@ -404,10 +417,10 @@ abstract class DefaultApolloExtension(
   }
 
   private fun registerService(service: DefaultService) {
-    check(services.find { it.name == service.name } == null) {
-      "There is already a service named ${service.name}, please use another name"
+    check(servicesContainer is DefaultApolloServicesContainer) {
+      "Apollo: unexpected ApolloServicesContainer implementation ${servicesContainer::class.java.name}"
     }
-    services.add(service)
+    servicesContainer.mutableServices.add(service)
 
     if (service.graphqlSourceDirectorySet.isReallyEmpty) {
       val dir = File(project.projectDir, "src/${project.mainSourceSet()}/graphql/")

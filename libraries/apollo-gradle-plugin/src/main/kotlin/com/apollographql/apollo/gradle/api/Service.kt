@@ -5,6 +5,7 @@ package com.apollographql.apollo.gradle.api
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo.annotations.ApolloExperimental
 import org.gradle.api.Action
+import org.gradle.api.Named
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.component.SoftwareComponent
@@ -24,9 +25,7 @@ import org.gradle.api.tasks.TaskProvider
  *
  * The queries will be compiled and verified against the schema to generate the models.
  */
-interface Service {
-  val name: String
-
+interface Service : Named {
   /**
    * Operation files to include.
    * The values are interpreted as in [org.gradle.api.tasks.util.PatternFilterable]
