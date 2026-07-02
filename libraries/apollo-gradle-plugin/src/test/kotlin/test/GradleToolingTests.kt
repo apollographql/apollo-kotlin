@@ -59,16 +59,16 @@ class GradleToolingTests {
       Assert.assertEquals(emptyList<String>(), toolingModel.serviceInfos.flatMap { it.upstreamProjectPaths })
 
       val serviceInfo0 = toolingModel.serviceInfos[0]
-      Assert.assertEquals("starwars", serviceInfo0.name)
-      Assert.assertEquals(setOf(File(dir, "src/main/graphql/starwars")), serviceInfo0.graphqlSrcDirs)
-      Assert.assertEquals(setOf(File(dir, "src/main/graphql/starwars/example/schema.json")), serviceInfo0.schemaFiles)
-      Assert.assertEquals("https://example.com", serviceInfo0.endpointUrl)
-      Assert.assertEquals(mapOf("header1" to "value1"), serviceInfo0.endpointHeaders)
+      Assert.assertEquals("githunt", serviceInfo0.name)
+      Assert.assertEquals(setOf(File(dir, "src/main/graphql/githunt")), serviceInfo0.graphqlSrcDirs)
+      Assert.assertEquals(setOf(File(dir, "src/main/graphql/githunt/schema.json")), serviceInfo0.schemaFiles)
 
       val serviceInfo1 = toolingModel.serviceInfos[1]
-      Assert.assertEquals("githunt", serviceInfo1.name)
-      Assert.assertEquals(setOf(File(dir, "src/main/graphql/githunt")), serviceInfo1.graphqlSrcDirs)
-      Assert.assertEquals(setOf(File(dir, "src/main/graphql/githunt/schema.json")), serviceInfo1.schemaFiles)
+      Assert.assertEquals("starwars", serviceInfo1.name)
+      Assert.assertEquals(setOf(File(dir, "src/main/graphql/starwars")), serviceInfo1.graphqlSrcDirs)
+      Assert.assertEquals(setOf(File(dir, "src/main/graphql/starwars/example/schema.json")), serviceInfo1.schemaFiles)
+      Assert.assertEquals("https://example.com", serviceInfo1.endpointUrl)
+      Assert.assertEquals(mapOf("header1" to "value1"), serviceInfo1.endpointHeaders)
     }
   }
 

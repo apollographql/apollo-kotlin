@@ -4,29 +4,89 @@ import util.TestUtils
 import util.generatedSource
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
-import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class KotlinDSLTests {
   @Test
-  fun `generated accessors do not expose DefaultApolloExtension`() {
+  fun `DefaultApolloExtension should expose a NamedDomainObjectCollection`() {
     val apolloConfiguration = """
       apollo {
-        println("apollo has ${'$'}{services.size} services")
+        service("service") {
+          srcDir("src/main/graphql/com/example")
+          schemaFiles.from(file("src/main/graphql/com/example/schema.json"))
+        }
       }
+
+      println("apollo has ${'$'}{apollo.services.size} services")
     """.trimIndent()
 
     TestUtils.withGeneratedAccessorsProject(apolloConfiguration) {dir ->
-      var exception: Exception? = null
-      try {
-        TestUtils.executeGradle(dir)
-      } catch (e: UnexpectedBuildFailure) {
-        exception = e
-        Truth.assertThat(e.message).contains("Unresolved reference 'services'.")
+      val message = TestUtils.executeGradle(dir).output
+      Truth.assertThat(message).contains("apollo has 1 services")
+    }
+  }
+
+  @Test
+  fun `services can be accessed by name via Named interface`() {
+    val apolloConfiguration = """
+      apollo {
+        service("starwars") {
+          srcDir("src/main/graphql/com/example")
+          schemaFiles.from(file("src/main/graphql/com/example/schema.json"))
+        }
       }
-      Assert.assertNotNull(exception)
+
+      println("service schemaFiles count is ${'$'}{apollo.services.named("starwars").get().schemaFiles.count()}")
+    """.trimIndent()
+
+    TestUtils.withGeneratedAccessorsProject(apolloConfiguration) {dir ->
+      val message = TestUtils.executeGradle(dir).output
+      Truth.assertThat(message).contains("service schemaFiles count is 1")
+    }
+  }
+
+  @Test
+  fun `services collection reflects multiple registered services`() {
+    val apolloConfiguration = """
+      apollo {
+        service("starwars") {
+          srcDir("src/main/graphql/com/example")
+          schemaFiles.from(file("src/main/graphql/com/example/schema.json"))
+        }
+        service("githunt") {
+          srcDir("src/main/graphql/com/example")
+          schemaFiles.from(file("src/main/graphql/com/example/schema.json"))
+        }
+      }
+
+      println("apollo has ${'$'}{apollo.services.size} services")
+      println("names: ${'$'}{apollo.services.names}")
+    """.trimIndent()
+
+    TestUtils.withGeneratedAccessorsProject(apolloConfiguration) {dir ->
+      val message = TestUtils.executeGradle(dir).output
+      Truth.assertThat(message).contains("apollo has 2 services")
+      Truth.assertThat(message).contains("names: [githunt, starwars]")
+    }
+  }
+
+  @Test
+  fun `service name is accessible through Named interface after registration`() {
+    val apolloConfiguration = """
+      apollo {
+        service("starwars") {
+          srcDir("src/main/graphql/com/example")
+          schemaFiles.from(file("src/main/graphql/com/example/schema.json"))
+        }
+      }
+      println("name: ${'$'}{apollo.services.named("starwars").get().name}")
+    """.trimIndent()
+
+    TestUtils.withGeneratedAccessorsProject(apolloConfiguration) {dir ->
+      val message = TestUtils.executeGradle(dir).output
+      Truth.assertThat(message).contains("name: starwars")
     }
   }
 

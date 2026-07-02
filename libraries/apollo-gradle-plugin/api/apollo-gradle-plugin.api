@@ -25,7 +25,7 @@ public final class com/apollographql/apollo/gradle/api/ApolloDependencies {
 	public final fun getRuntime ()Lorg/gradle/api/artifacts/Dependency;
 }
 
-public abstract interface class com/apollographql/apollo/gradle/api/ApolloExtension {
+public abstract interface class com/apollographql/apollo/gradle/api/ApolloExtension : com/apollographql/apollo/gradle/api/ApolloServicesContainer {
 	public abstract fun createAllAndroidVariantServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
 	public abstract fun createAllKotlinSourceSetServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
 	public abstract fun getDeps ()Lcom/apollographql/apollo/gradle/api/ApolloDependencies;
@@ -101,6 +101,10 @@ public abstract interface class com/apollographql/apollo/gradle/api/ApolloGradle
 	public abstract fun getWarnOnDeprecatedUsages ()Ljava/lang/Boolean;
 }
 
+public abstract interface class com/apollographql/apollo/gradle/api/ApolloServicesContainer {
+	public abstract fun getServices ()Lorg/gradle/api/NamedDomainObjectCollection;
+}
+
 public abstract interface class com/apollographql/apollo/gradle/api/CompilerPlugin {
 	public abstract fun argument (Ljava/lang/String;Ljava/lang/Object;)V
 }
@@ -133,7 +137,7 @@ public final class com/apollographql/apollo/gradle/api/SchemaConnection {
 	public final fun getTask ()Lorg/gradle/api/tasks/TaskProvider;
 }
 
-public abstract interface class com/apollographql/apollo/gradle/api/Service {
+public abstract interface class com/apollographql/apollo/gradle/api/Service : org/gradle/api/Named {
 	public abstract fun dataBuildersOutputDirConnection (Lorg/gradle/api/Action;)V
 	public abstract fun dependsOn (Ljava/lang/Object;)V
 	public abstract fun dependsOn (Ljava/lang/Object;Z)V
@@ -167,7 +171,6 @@ public abstract interface class com/apollographql/apollo/gradle/api/Service {
 	public abstract fun getIncludes ()Lorg/gradle/api/provider/ListProperty;
 	public abstract fun getJsExport ()Lorg/gradle/api/provider/Property;
 	public abstract fun getLanguageVersion ()Lorg/gradle/api/provider/Property;
-	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getNullableFieldStyle ()Lorg/gradle/api/provider/Property;
 	public abstract fun getOperationManifest ()Lorg/gradle/api/file/RegularFileProperty;
 	public abstract fun getOperationManifestFormat ()Lorg/gradle/api/provider/Property;
