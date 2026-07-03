@@ -1,6 +1,8 @@
 package com.apollographql.apollo.api
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import kotlin.jvm.JvmName
+import kotlin.jvm.JvmSynthetic
 
 /**
  * Represents an error response returned from the GraphQL server
@@ -48,7 +50,21 @@ constructor(
       this.locations = locations
     }
 
+    @JvmName("-locations")
+    @JvmSynthetic
+    @Deprecated("synthetic function for compatibility with the cache linked against Apollo 4", level = DeprecationLevel.HIDDEN)
+    fun locations(locations: List<Location>) = apply {
+      this.locations = locations
+    }
+
     fun path(path: List<Any>?) = apply {
+      this.path = path
+    }
+
+    @JvmName("-path")
+    @JvmSynthetic
+    @Deprecated("synthetic function for compatibility with the cache linked against Apollo 4", level = DeprecationLevel.HIDDEN)
+    fun path(path: List<Any>) = apply {
       this.path = path
     }
 

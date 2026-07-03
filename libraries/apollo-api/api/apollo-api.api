@@ -574,6 +574,8 @@ public final class com/apollographql/apollo/api/Error {
 }
 
 public final class com/apollographql/apollo/api/Error$Builder {
+	public final synthetic fun -locations (Ljava/util/List;)Lcom/apollographql/apollo/api/Error$Builder;
+	public final synthetic fun -path (Ljava/util/List;)Lcom/apollographql/apollo/api/Error$Builder;
 	public fun <init> (Ljava/lang/String;)V
 	public final fun build ()Lcom/apollographql/apollo/api/Error;
 	public final fun extensions (Ljava/util/Map;)Lcom/apollographql/apollo/api/Error$Builder;

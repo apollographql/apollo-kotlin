@@ -1090,8 +1090,10 @@ final class com.apollographql.apollo.api/Error { // com.apollographql.apollo.api
 
         final fun build(): com.apollographql.apollo.api/Error // com.apollographql.apollo.api/Error.Builder.build|build(){}[0]
         final fun extensions(kotlin.collections/Map<kotlin/String, kotlin/Any?>?): com.apollographql.apollo.api/Error.Builder // com.apollographql.apollo.api/Error.Builder.extensions|extensions(kotlin.collections.Map<kotlin.String,kotlin.Any?>?){}[0]
+        final fun locations(kotlin.collections/List<com.apollographql.apollo.api/Error.Location>): com.apollographql.apollo.api/Error.Builder // com.apollographql.apollo.api/Error.Builder.locations|locations(kotlin.collections.List<com.apollographql.apollo.api.Error.Location>){}[0]
         final fun locations(kotlin.collections/List<com.apollographql.apollo.api/Error.Location>?): com.apollographql.apollo.api/Error.Builder // com.apollographql.apollo.api/Error.Builder.locations|locations(kotlin.collections.List<com.apollographql.apollo.api.Error.Location>?){}[0]
         final fun nonStandardFields(kotlin.collections/Map<kotlin/String, kotlin/Any?>?): com.apollographql.apollo.api/Error.Builder // com.apollographql.apollo.api/Error.Builder.nonStandardFields|nonStandardFields(kotlin.collections.Map<kotlin.String,kotlin.Any?>?){}[0]
+        final fun path(kotlin.collections/List<kotlin/Any>): com.apollographql.apollo.api/Error.Builder // com.apollographql.apollo.api/Error.Builder.path|path(kotlin.collections.List<kotlin.Any>){}[0]
         final fun path(kotlin.collections/List<kotlin/Any>?): com.apollographql.apollo.api/Error.Builder // com.apollographql.apollo.api/Error.Builder.path|path(kotlin.collections.List<kotlin.Any>?){}[0]
         final fun putExtension(kotlin/String, kotlin/Any?): com.apollographql.apollo.api/Error.Builder // com.apollographql.apollo.api/Error.Builder.putExtension|putExtension(kotlin.String;kotlin.Any?){}[0]
     }
