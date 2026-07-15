@@ -1,8 +1,14 @@
 package test
 
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Error
+import com.apollographql.apollo.api.FieldResult
+import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.graphQLErrorOrNull
 import com.apollographql.apollo.api.getOrNull
 import com.apollographql.apollo.api.getOrThrow
+import com.apollographql.apollo.api.json.MapJsonWriter
+import com.apollographql.apollo.exception.ApolloGraphQLException
 import result.PriceNullQuery
 import result.ProductIgnoreErrorsQuery
 import result.ProductNullQuery
@@ -10,6 +16,7 @@ import result.ProductQuery
 import result.ProductResultQuery
 import result.UserNullQuery
 import result.UserQuery
+import result.UserResultAndProductQuery
 import result.UserResultQuery
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -107,4 +114,41 @@ class CatchResultTest {
     assertNull(response.data?.product?.getOrNull()?.price)
     assertNull(response.errors)
   }
+
+  @Test
+  fun composeFailureFollowedBySibling() {
+    val data = UserResultAndProductQuery.Data(
+        user = userFailure,
+        product = FieldResult.Success(UserResultAndProductQuery.Product(price = FieldResult.Success("10"))),
+    )
+
+    assertEquals(
+        mapOf("user" to null, "product" to mapOf("price" to "10")),
+        UserResultAndProductQuery().compose(data)
+    )
+  }
+
+  @Test
+  fun composeFailureAsLastField() {
+    val data = UserResultQuery.Data(user = userFailure)
+
+    assertEquals(mapOf("user" to null), UserResultQuery().compose(data))
+  }
+
+  @Test
+  fun composeRoundTripsParsedFailure() {
+    val data = UserResultQuery().parseResponse(userNameError).data!!
+
+    assertEquals(mapOf("user" to mapOf("name" to null)), UserResultQuery().compose(data))
+  }
+}
+
+private val userFailure = FieldResult.Failure(
+    ApolloGraphQLException(Error.Builder("cannot resolve user").path(listOf("user")).build())
+)
+
+private fun <D : Query.Data> Query<D>.compose(data: D): Any? {
+  val writer = MapJsonWriter()
+  adapter().toJson(writer, CustomScalarAdapters.Empty, data)
+  return writer.root()
 }

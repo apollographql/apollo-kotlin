@@ -46,5 +46,14 @@ query PriceNull {
   }
 }
 
+query UserResultAndProduct {
+  user @catch(to: RESULT) {
+    name
+  }
+  product {
+    price
+  }
+}
+
 
 
