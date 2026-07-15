@@ -620,7 +620,7 @@ class MockServerWebSocketTest(
   suspend fun awaitConnectionInit() {
     awaitWebSocketRequest()
 
-    serverReader.awaitMessage()
+    serverReader.awaitMessage(5.seconds)
     serverWriter.enqueueMessage(TextMessage(connectionAckMessage()))
   }
 }
