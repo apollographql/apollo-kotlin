@@ -1,6 +1,64 @@
 Change Log
 ==========
 
+# Version 5.0.1
+_2026-06-25_
+
+A few bugfixes, support for `onError`, and promote ["directives on directives"](https://github.com/graphql/graphql-spec/pull/1206) which was merged in the specification recently.
+
+## Experimental `onError` support
+
+If your server supports the [`onError` request parameter](https://github.com/graphql/graphql-js/pull/4364), you can now use it to control error propagation:
+
+```kotlin
+val response = apolloClient.query(FooQuery())
+                .onError(OnError.NULL)
+                .execute()
+```
+
+When using `OnError.NULL`, error propagation is disabled, meaning you get more partial data:
+
+```graphql
+type Query {
+  user: User
+}
+
+type User {
+  name: String!
+  email: String!
+}
+```
+
+If an error occurs at `user.email`, you will get a partial response with `user.name` but no `user.email`, instead of propagating the error to the parent `user` field:
+
+```json
+{
+  "errors": [{"path": ["user", "email"] }],
+  "data": {
+    "user": {
+      "name": "John Doe",
+      "email": null
+    }
+  }
+}
+```
+
+Coupled with [error aware parsing](https://www.apollographql.com/docs/kotlin/advanced/nullability#enabling-error-aware-parsing), it allows for more granular error handling.
+
+**Note**: `onError` achieves the same functionality as `@experimental_DisableErrorPropagation`. It is expected that `onError` ultimately replaces the directive.
+
+
+## 👷‍♂️ All changes
+* [compiler] Add missing dependency on kotlinx-serialization-core (#6973)
+* [compiler] Exclude invalid fields from field merging validation, fixes validation could hang on some invalid operations (#6972)
+* [runtime] Expose a proper [JsonDataException] in case null is returned in an unexpected position (#6971)
+* [runtime] Add NullableLongAdapter (#6968)
+* [runtime] Add `ApolloClient` support for `onError` (#6963)
+* [runtime] Fix bug with duplicate headers being added when using batching (#6961)
+* [runtime] Deprecate allowDirectivesOnDirectives, it is now merged (#6965)
+* [runtime] Fix `allowDirectivesOnDirectives` not being honored (#6953)
+* [runtime] Workaround introspection for servers that do not support isOneOf despite advertizing it (#6949)
+
 # Version 5.0.0
 _2026-05-12_
 

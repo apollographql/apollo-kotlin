@@ -37,6 +37,10 @@ plugins {
 }
 ```
 
+## `apollo-adapters`
+
+The `apollo-adapters` artifact is moved to a separate repo. You can find it at [apollographql/apollo-kotlin-adapters](https://github.com/apollographql/apollo-kotlin-adapters). Read more in the [Apollo Kotlin Galaxy page](../advanced/galaxy.mdx)
+
 ## `apollo-gradle-plugin`
 
 ### `operationOutputGenerator` and `operationIdGenerator` are removed.
@@ -263,7 +267,7 @@ val apolloClient = ApolloClient.Builder()
                 DefaultHttpEngine {
                   OkHttpClient.Builder()
                       // Make sure to use a different directory for your cache as the format changed
-                      .cache(directory = File(application.cacheDir, "http_cache2"), maxSize = 10_000_000)
+                      .cache(cache = Cache(directory = File(application.cacheDir, "http_cache2"), maxSize = 10_000_000))
                       .build()
                 }
             )

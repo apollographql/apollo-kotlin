@@ -260,7 +260,6 @@ fun Project.rootCommon() {
     }
   }
 
-  configureNode()
   configureTestAggregationConsumer()
 }
 
