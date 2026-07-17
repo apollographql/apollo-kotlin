@@ -14,7 +14,7 @@ androidx-sqlite = "2.6.0"
 # This is used by the Gradle integration tests to get the artifacts locally
 apollo = "5.0.2-SNAPSHOT"
 apollo-execution = "0.1.1"
-apollo-normalizedcache-incubating = "1.0.1"
+apollo-normalizedcache-incubating = "1.0.6"
 # Used by the apollo-tooling project which uses a published version of Apollo
 apollo-published = "4.4.3"
 #noinspection NewerVersionAvailable requires KGP 2.2
