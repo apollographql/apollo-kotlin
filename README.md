@@ -12,7 +12,7 @@
 [![Maven Central](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fcom%2Fapollographql%2Fapollo%2Fapollo-api-jvm%2Fmaven-metadata.xml&style=flat-square&label=maven-central&color=%235C96B2&strategy=latestProperty
 )](https://central.sonatype.com/namespace/com.apollographql.apollo)
 
-[![Revved up by Develocity](https://img.shields.io/badge/Revved%20up%20by-Develocity-06A0CE?logo=Gradle&labelColor=02303A&style=flat-square)](https://ge.apollographql.com/scans)
+[![Revved up by Develocity](https://img.shields.io/badge/Revved%20up%20by-Develocity-06A0CE?logo=Gradle&labelColor=02303A&style=flat-square)](https://community.develocity.cloud/scans?search.rootProjectNames=apollo-kotlin)
 
   </div>
   <h1 align="center">Apollo Kotlin</h1>

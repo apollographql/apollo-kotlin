@@ -2,7 +2,8 @@
 def isCI = System.getenv("CI") != null
 
 develocity {
-  server = "https://ge.apollographql.com"
+  server = "https://community.develocity.cloud"
+  projectId = "apollo"
   allowUntrustedServer = false
 
   buildScan {
