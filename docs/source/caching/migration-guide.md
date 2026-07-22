@@ -69,7 +69,7 @@ apollo {
     // ...
 
     // Add this
-    plugin("com.apollographql.cache:normalized-cache-apollo-compiler-plugin:$cacheVersion") {
+    plugin("com.apollographql.cache:normalized-cache-apollo-compiler-plugin:$cacheVersion")
     pluginArgument("com.apollographql.cache.packageName", packageName.get())
   }
 }
