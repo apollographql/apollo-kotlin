@@ -42,7 +42,7 @@ kotlinx-benchmark = "0.4.17"
 #noinspection NewerVersionAvailable requires KGP 2.2
 kotlinx-serialization-runtime = "1.8.1"
 #noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
-ksp = "2.3.11-SNAPSHOT"
+ksp = "2.3.12-SNAPSHOT"
 ktor = "3.4.0"
 moshix = "0.14.1"
 nmcp = "1.4.4-SNAPSHOT-2ca915cf54be6c4f61da6e62f9fd1ddbf8fa3534"
