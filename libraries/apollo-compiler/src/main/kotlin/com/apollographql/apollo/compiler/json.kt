@@ -8,6 +8,7 @@ import com.apollographql.apollo.compiler.ir.IrSchema
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.pqm.PersistedQueryManifest
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -22,6 +23,10 @@ private val json = Json {
 }
 
 private val prettyPrintJson = Json { prettyPrint = true }
+
+private val lenientJson = Json {
+  ignoreUnknownKeys = true
+}
 
 private inline fun <reified T> T.encodeToJson(file: File) {
   // XXX: use a streaming API when they are not experimental anymore
@@ -83,16 +88,35 @@ internal class MinimalCodegen(
 
 @JvmName("readCodegenMetadata")
 fun File.toCodegenMetadata(): CodegenMetadata {
-  val json = Json {
-    ignoreUnknownKeys = true
-  }
   // XXX: use a streaming API when they are not experimental anymore
-  val version = json.decodeFromString<MinimalCodegen>(readText()).version
-
-  check(version == CODEGEN_METADATA_VERSION) {
-    "Apollo: unsupported metadata version '$version' (expected '$CODEGEN_METADATA_VERSION')"
+  // Read and parse the file only once: the metadata of a large schema is several MB and this is called for every
+  // upstream module. Parse optimistically and only look at the version if that fails: an incompatible version is the
+  // most likely reason for a failure, and the version is a field of CodegenMetadata anyways.
+  val text = readText()
+  val codegenMetadata = try {
+    json.decodeFromString<CodegenMetadata>(text)
+  } catch (e: SerializationException) {
+    val version = try {
+      lenientJson.decodeFromString<MinimalCodegen>(text).version
+    } catch (_: SerializationException) {
+      // Not a metadata file at all, the original error is the most useful one
+      throw e
+    }
+    if (version != CODEGEN_METADATA_VERSION) {
+      throw IllegalStateException(versionMismatchMessage(version), e)
+    }
+    // Same version, this is something else
+    throw e
   }
-  return parseFromJson()
+
+  check(codegenMetadata.version == CODEGEN_METADATA_VERSION) {
+    versionMismatchMessage(codegenMetadata.version)
+  }
+  return codegenMetadata
+}
+
+private fun File.versionMismatchMessage(version: String?): String {
+  return "Apollo: unsupported metadata version '$version' (expected '$CODEGEN_METADATA_VERSION') in '$path'"
 }
 
 @JvmName("readOperationOutput")

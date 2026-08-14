@@ -29,18 +29,25 @@ import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.longOrNull
 
 
-internal object SchemaSerializer: KSerializer<Schema> {
-  override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Schema", PrimitiveKind.STRING)
+/**
+ * Serializes the schema as a Json object.
+ *
+ * Note: this used to encode the schema as a Json **string** containing Json. Because the schema contains the whole SDL,
+ * that meant escaping and unescaping several MB of text twice for large schemas, on top of the buffering required to
+ * turn the nested document into a string. Encoding a [JsonElement] inline avoids all of that.
+ */
+internal object SchemaSerializer : KSerializer<Schema> {
+  override val descriptor: SerialDescriptor = JsonElement.serializer().descriptor
 
   override fun deserialize(decoder: Decoder): Schema {
-    val map = Json.parseToJsonElement(decoder.decodeString()).toAny()
+    val map = decoder.decodeSerializableValue(JsonElement.serializer()).toAny()
 
     @Suppress("UNCHECKED_CAST")
     return Schema.fromMap(map as Map<String, Any>)
   }
 
   override fun serialize(encoder: Encoder, value: Schema) {
-    encoder.encodeString(value.toMap().toJsonElement().toString())
+    encoder.encodeSerializableValue(JsonElement.serializer(), value.toMap().toJsonElement())
   }
 }
 
