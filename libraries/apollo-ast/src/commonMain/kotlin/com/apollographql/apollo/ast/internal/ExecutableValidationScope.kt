@@ -45,6 +45,7 @@ import com.apollographql.apollo.ast.findCatch
 import com.apollographql.apollo.ast.findDeprecationReason
 import com.apollographql.apollo.ast.getArgumentValueOrDefault
 import com.apollographql.apollo.ast.internal.pretty
+import com.apollographql.apollo.ast.internal.validation.hasDeferDirective
 import com.apollographql.apollo.ast.internal.validation.validateDeferLabels
 import com.apollographql.apollo.ast.isInputType
 import com.apollographql.apollo.ast.pretty
@@ -76,6 +77,15 @@ internal class ExecutableValidationScope(
   private val fragmentOperationVariableUsages = mutableMapOf<String, List<VariableUsage>>()
   private val cyclicFragments = mutableSetOf<String>()
   private val usedFragments = mutableSetOf<String>()
+
+  /**
+   * Whether a `@defer` directive occurs anywhere in the document being validated.
+   *
+   * `@defer` validation walks the fully expanded selection set of every operation, which is expensive on documents with
+   * many fragments. If the document has no `@defer` at all then no operation of that document can have one either, so
+   * the whole walk can be skipped.
+   */
+  private var documentHasDeferDirective = false
   private val hasCatchByDefault = schema.directiveDefinitions.any { schema.originalDirectiveName(it.key) == Schema.CATCH_BY_DEFAULT }
 
   /**
@@ -157,6 +167,7 @@ internal class ExecutableValidationScope(
     }
 
     val operations = document.definitions.filterIsInstance<GQLOperationDefinition>()
+    documentHasDeferDirective = operations.any { hasDeferDirective(it.selections) } || fragments.any { hasDeferDirective(it.selections) }
     operations.checkDuplicateOperations()
     operations.forEach {
       it.validate()
@@ -492,7 +503,9 @@ internal class ExecutableValidationScope(
     validateDirectives(directives, this) {
       variableUsages.add(it)
     }
-    issues.addAll(validateDeferLabels(this, rootTypeDefinition.name, schema, fragmentDefinitions))
+    if (documentHasDeferDirective) {
+      issues.addAll(validateDeferLabels(this, rootTypeDefinition.name, schema, fragmentDefinitions))
+    }
 
     val allVariableUsages = selections.collectFragmentSpreads().flatMap { fragmentOperationVariableUsages.get(it) ?: emptyList() } + variableUsages
     validateVariableUsages(variableDefinitions, allVariableUsages, context = this.pretty())

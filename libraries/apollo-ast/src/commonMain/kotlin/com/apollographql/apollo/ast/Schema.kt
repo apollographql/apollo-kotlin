@@ -91,6 +91,33 @@ class Schema internal constructor(
     result
   }
 
+  /**
+   * Maps a type name to its field definitions by name, including the meta fields (see [GQLTypeDefinition.fieldDefinitions]).
+   *
+   * Without this, resolving a field definition rebuilds the field definitions of the parent type and scans them
+   * linearly, and that happens for every field of every selection set.
+   */
+  private val fieldDefinitionsByName: Map<String, Map<String, GQLFieldDefinition>> by lazy {
+    typeDefinitions.mapValues { (_, typeDefinition) ->
+      buildMap {
+        typeDefinition.fieldDefinitions(this@Schema).forEach {
+          // Keep the first one, like the linear scan this replaces: an invalid schema may define a field twice
+          if (!containsKey(it.name)) {
+            put(it.name, it)
+          }
+        }
+      }
+    }
+  }
+
+  internal fun fieldDefinition(parentTypeDefinition: GQLTypeDefinition, name: String): GQLFieldDefinition? {
+    if (typeDefinitions[parentTypeDefinition.name] !== parentTypeDefinition) {
+      // Not a type definition of this schema (a synthetic one, for an example), the index doesn't apply
+      return parentTypeDefinition.fieldDefinitions(this).firstOrNull { it.name == name }
+    }
+    return fieldDefinitionsByName[parentTypeDefinition.name]?.get(name)
+  }
+
   fun toGQLDocument(): GQLDocument = GQLDocument(
       definitions = definitions,
       sourceLocation = null

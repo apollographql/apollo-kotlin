@@ -71,7 +71,7 @@ fun GQLTypeDefinition.fieldDefinitions(schema: Schema): List<GQLFieldDefinition>
 }
 
 fun GQLField.definitionFromScope(schema: Schema, parentTypeDefinition: GQLTypeDefinition): GQLFieldDefinition? {
-  return parentTypeDefinition.fieldDefinitions(schema).firstOrNull { it.name == name }
+  return schema.fieldDefinition(parentTypeDefinition, name)
 }
 
 fun GQLField.responseName() = alias ?: name
