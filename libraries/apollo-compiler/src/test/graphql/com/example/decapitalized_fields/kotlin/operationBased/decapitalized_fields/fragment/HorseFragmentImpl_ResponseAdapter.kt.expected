@@ -19,12 +19,15 @@ public object HorseFragmentImpl_ResponseAdapter {
   public object HorseFragment : Adapter<com.example.decapitalized_fields.fragment.HorseFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("Cow")
 
+    private val __adapter0: Adapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow?> =
+        Cow.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.decapitalized_fields.fragment.HorseFragment {
       var _Cow: com.example.decapitalized_fields.fragment.HorseFragment.Cow? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Cow = Cow.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _Cow = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -40,7 +43,7 @@ public object HorseFragmentImpl_ResponseAdapter {
       `value`: com.example.decapitalized_fields.fragment.HorseFragment,
     ) {
       writer.name("Cow")
-      Cow.obj().nullable().toJson(writer, customScalarAdapters, value.cow)
+      __adapter0.toJson(writer, customScalarAdapters, value.cow)
     }
 
     private object Cow : Adapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow> {

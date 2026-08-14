@@ -86,12 +86,8 @@ public data class InlineMultipleWithDeferWithIf(
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = InlineMultipleWithDeferWithIf_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = InlineMultipleWithDeferWithIfSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "9dc79c78df7375c3d860d16df3ea839ea45c7f8420976f63414610d338f0caf1"
@@ -121,5 +117,14 @@ public data class InlineMultipleWithDeferWithIf(
       get() = "query InlineMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ... on Character @defer(label: \"f_first\", if: false) { id } ... on Character @defer(label: \"f_second\", if: true) { name } ... on Character @defer(label: \"f_third\", if: ${'$'}cond) { name } } }"
 
     public const val OPERATION_NAME: String = "InlineMultipleWithDeferWithIf"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = InlineMultipleWithDeferWithIfSelections.__root)
+          .build()
+    }
   }
 }

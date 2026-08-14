@@ -22,12 +22,14 @@ public object CharacterQuery_ResponseAdapter {
   public object Data : Adapter<CharacterQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("character")
 
+    private val __adapter0: Adapter<CharacterQuery.Data.Character> = Character.obj()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): CharacterQuery.Data {
       var _character: CharacterQuery.Data.Character? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _character = Character.obj().fromJson(reader, customScalarAdapters)
+          0 -> _character = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -43,7 +45,7 @@ public object CharacterQuery_ResponseAdapter {
       `value`: CharacterQuery.Data,
     ) {
       writer.name("character")
-      Character.obj().toJson(writer, customScalarAdapters, value.character)
+      __adapter0.toJson(writer, customScalarAdapters, value.character)
     }
 
     private object Character : Adapter<CharacterQuery.Data.Character> {

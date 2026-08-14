@@ -6,6 +6,8 @@
 package com.example.inline_fragment_type_coercion.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.StringAdapter
 import com.apollographql.apollo.api.evaluate
@@ -23,12 +25,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("foo")
 
+    private val __adapter0: Adapter<TestQuery.Data.Foo?> = Foo.obj(true).nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _foo: TestQuery.Data.Foo? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _foo = Foo.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _foo = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -44,11 +48,13 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("foo")
-      Foo.obj(true).nullable().toJson(writer, customScalarAdapters, value.foo)
+      __adapter0.toJson(writer, customScalarAdapters, value.foo)
     }
 
     private object Foo : Adapter<TestQuery.Data.Foo> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "foo")
+
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("BarObject","FooBar")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Foo {
         var __typename: String? = null
@@ -67,7 +73,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onBar: TestQuery.Data.Foo.OnBar? = null
-        if (possibleTypes("BarObject","FooBar").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Data.Foo.OnBar.fromJson(reader, customScalarAdapters)
         }

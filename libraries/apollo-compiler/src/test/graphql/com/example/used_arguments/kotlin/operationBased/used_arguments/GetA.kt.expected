@@ -72,12 +72,8 @@ public class GetA() : Query<GetA.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = GetA_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = GetASelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "9ea4fe0d8d5f625417b080b65cba65b994059847d59fac8d092ffd51eb6cd39e"
@@ -104,5 +100,14 @@ public class GetA() : Query<GetA.Data> {
       get() = "query GetA { a { __typename ... on B { field(arg: 42) } ... on C { field(arg: 42) } } }"
 
     public const val OPERATION_NAME: String = "GetA"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = GetASelections.__root)
+          .build()
+    }
   }
 }

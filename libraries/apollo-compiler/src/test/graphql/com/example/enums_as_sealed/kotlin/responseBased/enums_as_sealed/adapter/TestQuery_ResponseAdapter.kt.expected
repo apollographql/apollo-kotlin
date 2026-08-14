@@ -20,12 +20,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("enum")
 
+    private val __adapter0: Adapter<Enum?> = Enum_ResponseAdapter.nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _enum: Enum? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _enum = Enum_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
+          0 -> _enum = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -41,7 +43,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("enum")
-      Enum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.`enum`)
+      __adapter0.toJson(writer, customScalarAdapters, value.`enum`)
     }
   }
 }

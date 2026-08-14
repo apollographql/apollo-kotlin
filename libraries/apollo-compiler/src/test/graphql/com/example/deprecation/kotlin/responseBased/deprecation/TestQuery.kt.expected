@@ -62,12 +62,8 @@ public data class TestQuery(
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = TestQuerySelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "966ff95da151b6e5de110e4ef356053da71e83ed39055254fefec22b9c8e15e4"
@@ -91,5 +87,14 @@ public data class TestQuery(
       get() = "query TestQuery(${'$'}episode: Episode) { hero(episode: ${'$'}episode) { name deprecated deprecatedBool deprecatedEmptyReason } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = TestQuerySelections.__root)
+          .build()
+    }
   }
 }

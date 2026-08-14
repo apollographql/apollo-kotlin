@@ -23,12 +23,14 @@ public object GetPage_ResponseAdapter {
   public object Data : Adapter<GetPage.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("collection")
 
+    private val __adapter0: Adapter<GetPage.Data.Collection> = Collection.obj()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetPage.Data {
       var _collection: GetPage.Data.Collection? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _collection = Collection.obj().fromJson(reader, customScalarAdapters)
+          0 -> _collection = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -44,7 +46,7 @@ public object GetPage_ResponseAdapter {
       `value`: GetPage.Data,
     ) {
       writer.name("collection")
-      Collection.obj().toJson(writer, customScalarAdapters, value.collection)
+      __adapter0.toJson(writer, customScalarAdapters, value.collection)
     }
 
     private object Collection : Adapter<GetPage.Data.Collection> {
@@ -73,6 +75,9 @@ public object GetPage_ResponseAdapter {
     public object ParticularCollectionCollection {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
 
+      private val __adapter0: Adapter<List<GetPage.Data.ParticularCollectionCollection.Item>> =
+          Item.obj().list()
+
       public fun fromJson(
         reader: JsonReader,
         @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
@@ -84,7 +89,7 @@ public object GetPage_ResponseAdapter {
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _items = Item.obj().list().fromJson(reader, customScalarAdapters)
+            1 -> _items = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -104,7 +109,7 @@ public object GetPage_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("items")
-        Item.obj().list().toJson(writer, customScalarAdapters, value.items)
+        __adapter0.toJson(writer, customScalarAdapters, value.items)
       }
 
       private object Item : Adapter<GetPage.Data.ParticularCollectionCollection.Item> {
@@ -216,6 +221,8 @@ public object GetPage_ResponseAdapter {
     public object OtherCollection {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
 
+      private val __adapter0: Adapter<List<GetPage.Data.OtherCollection.Item>> = Item.obj().list()
+
       public fun fromJson(
         reader: JsonReader,
         @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
@@ -227,7 +234,7 @@ public object GetPage_ResponseAdapter {
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _items = Item.obj().list().fromJson(reader, customScalarAdapters)
+            1 -> _items = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -247,7 +254,7 @@ public object GetPage_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("items")
-        Item.obj().list().toJson(writer, customScalarAdapters, value.items)
+        __adapter0.toJson(writer, customScalarAdapters, value.items)
       }
 
       private object Item : Adapter<GetPage.Data.OtherCollection.Item> {

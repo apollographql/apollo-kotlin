@@ -30,12 +30,14 @@ public object TestOperation_ResponseAdapter {
   public object Data : Adapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("random")
 
+    private val __adapter0: Adapter<TestOperation.Data.Random> = Random.obj()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data {
       var _random: TestOperation.Data.Random? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _random = Random.obj().fromJson(reader, customScalarAdapters)
+          0 -> _random = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -51,7 +53,7 @@ public object TestOperation_ResponseAdapter {
       `value`: TestOperation.Data,
     ) {
       writer.name("random")
-      Random.obj().toJson(writer, customScalarAdapters, value.random)
+      __adapter0.toJson(writer, customScalarAdapters, value.random)
     }
 
     private object Random : Adapter<TestOperation.Data.Random> {
@@ -84,6 +86,9 @@ public object TestOperation_ResponseAdapter {
       public val RESPONSE_NAMES: List<String> =
           listOf("__typename", "name", "friends", "profilePictureUrl")
 
+      private val __adapter0: Adapter<List<TestOperation.Data.BeingHumanRandom.Friend>> =
+          Friend.obj().list()
+
       public fun fromJson(
         reader: JsonReader,
         @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
@@ -98,7 +103,7 @@ public object TestOperation_ResponseAdapter {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
+            2 -> _friends = __adapter0.fromJson(reader, customScalarAdapters)
             3 -> _profilePictureUrl = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
@@ -124,7 +129,7 @@ public object TestOperation_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("friends")
-        Friend.obj().list().toJson(writer, customScalarAdapters, value.friends)
+        __adapter0.toJson(writer, customScalarAdapters, value.friends)
 
         writer.name("profilePictureUrl")
         NullableStringAdapter.toJson(writer, customScalarAdapters, value.profilePictureUrl)
@@ -258,6 +263,9 @@ public object TestOperation_ResponseAdapter {
     public object BeingWookieRandom {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends", "race")
 
+      private val __adapter0: Adapter<List<TestOperation.Data.BeingWookieRandom.Friend>> =
+          Friend.obj().list()
+
       public fun fromJson(
         reader: JsonReader,
         @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
@@ -272,7 +280,7 @@ public object TestOperation_ResponseAdapter {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
+            2 -> _friends = __adapter0.fromJson(reader, customScalarAdapters)
             3 -> _race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
@@ -298,7 +306,7 @@ public object TestOperation_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("friends")
-        Friend.obj().list().toJson(writer, customScalarAdapters, value.friends)
+        __adapter0.toJson(writer, customScalarAdapters, value.friends)
 
         writer.name("race")
         Race_ResponseAdapter.toJson(writer, customScalarAdapters, value.race)

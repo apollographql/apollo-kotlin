@@ -39,11 +39,16 @@ public class HeroDetailsImpl() : Fragment<HeroDetails> {
     override val ADAPTER: Adapter<HeroDetails> =
         HeroDetailsImpl_ResponseAdapter.HeroDetails.obj(true)
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = Character.type
-        )
-        .selections(selections = HeroDetailsSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = Character.type
+          )
+          .selections(selections = HeroDetailsSelections.__root)
+          .build()
+    }
   }
 }

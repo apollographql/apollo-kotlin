@@ -6,6 +6,8 @@
 package com.example.union_inline_fragments.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableStringAdapter
 import com.apollographql.apollo.api.StringAdapter
@@ -27,12 +29,15 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("search")
 
+    private val __adapter0: Adapter<List<TestQuery.Data.Search?>?> =
+        Search.obj(true).nullable().list().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _search: List<TestQuery.Data.Search?>? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _search = Search.obj(true).nullable().list().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _search = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -48,11 +53,15 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("search")
-      Search.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters, value.search)
+      __adapter0.toJson(writer, customScalarAdapters, value.search)
     }
 
     private object Search : Adapter<TestQuery.Data.Search> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("Droid","Human")
+
+      private val __condition1: BooleanExpression<BTerm> = possibleTypes("Starship")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search {
         var __typename: String? = null
@@ -69,13 +78,13 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onCharacter: TestQuery.Data.Search.OnCharacter? = null
-        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.fromJson(reader, customScalarAdapters)
         }
 
         var _onStarship: TestQuery.Data.Search.OnStarship? = null
-        if (possibleTypes("Starship").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onStarship = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnStarship.fromJson(reader, customScalarAdapters)
         }
@@ -107,6 +116,9 @@ public object TestQuery_ResponseAdapter {
       private object OnCharacter : Adapter<TestQuery.Data.Search.OnCharacter> {
         public val RESPONSE_NAMES: List<String> = listOf("id", "name", "friends")
 
+        private val __adapter0: Adapter<List<TestQuery.Data.Search.OnCharacter.Friend?>?> =
+            Friend.obj(true).nullable().list().nullable()
+
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search.OnCharacter {
           var _id: String? = null
           var _name: String? = null
@@ -116,7 +128,7 @@ public object TestQuery_ResponseAdapter {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> _friends = Friend.obj(true).nullable().list().nullable().fromJson(reader, customScalarAdapters)
+              2 -> _friends = __adapter0.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -140,11 +152,15 @@ public object TestQuery_ResponseAdapter {
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
           writer.name("friends")
-          Friend.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
+          __adapter0.toJson(writer, customScalarAdapters, value.friends)
         }
 
         private object Friend : Adapter<TestQuery.Data.Search.OnCharacter.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+          private val __condition0: BooleanExpression<BTerm> = possibleTypes("Human")
+
+          private val __condition1: BooleanExpression<BTerm> = possibleTypes("Droid")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search.OnCharacter.Friend {
             var __typename: String? = null
@@ -164,13 +180,13 @@ public object TestQuery_ResponseAdapter {
             val _onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnCharacter.fromJson(reader, customScalarAdapters)
 
             var _onHuman: TestQuery.Data.Search.OnCharacter.Friend.OnHuman? = null
-            if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+            if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
               reader.rewind()
               _onHuman = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.fromJson(reader, customScalarAdapters)
             }
 
             var _onDroid: TestQuery.Data.Search.OnCharacter.Friend.OnDroid? = null
-            if (possibleTypes("Droid").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+            if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
               reader.rewind()
               _onDroid = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnDroid.fromJson(reader, customScalarAdapters)
             }
@@ -233,6 +249,10 @@ public object TestQuery_ResponseAdapter {
           private object OnHuman : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnHuman> {
             public val RESPONSE_NAMES: List<String> = listOf("homePlanet", "friends")
 
+            private val __adapter0:
+                Adapter<List<TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend?>?> =
+                Friend.obj(true).nullable().list().nullable()
+
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search.OnCharacter.Friend.OnHuman {
               var _homePlanet: String? = null
               var _friends: List<TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend?>? = null
@@ -240,7 +260,7 @@ public object TestQuery_ResponseAdapter {
               while (true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> _homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-                  1 -> _friends = Friend.obj(true).nullable().list().nullable().fromJson(reader, customScalarAdapters)
+                  1 -> _friends = __adapter0.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
@@ -260,7 +280,7 @@ public object TestQuery_ResponseAdapter {
               NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
 
               writer.name("friends")
-              Friend.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
+              __adapter0.toJson(writer, customScalarAdapters, value.friends)
             }
 
             private object Friend : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend> {
@@ -329,6 +349,10 @@ public object TestQuery_ResponseAdapter {
           private object OnDroid : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnDroid> {
             public val RESPONSE_NAMES: List<String> = listOf("primaryFunction", "friends")
 
+            private val __adapter0:
+                Adapter<List<TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend?>?> =
+                Friend.obj().nullable().list().nullable()
+
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search.OnCharacter.Friend.OnDroid {
               var _primaryFunction: String? = null
               var _friends: List<TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend?>? = null
@@ -336,7 +360,7 @@ public object TestQuery_ResponseAdapter {
               while (true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-                  1 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
+                  1 -> _friends = __adapter0.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
@@ -356,7 +380,7 @@ public object TestQuery_ResponseAdapter {
               NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
 
               writer.name("friends")
-              Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
+              __adapter0.toJson(writer, customScalarAdapters, value.friends)
             }
 
             private object Friend : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend> {

@@ -68,12 +68,8 @@ public data class SpreadMultipleWithDeferWithIf(
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = SpreadMultipleWithDeferWithIf_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = SpreadMultipleWithDeferWithIfSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "ecdac17ca37d6cbf3a6e5059904fabfd96193cbe0720eb27880026b518feec9f"
@@ -109,5 +105,14 @@ public data class SpreadMultipleWithDeferWithIf(
       get() = "query SpreadMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ...CharacterDetails @defer(label: \"c_first\", if: false) ...CharacterDetails2 @defer(label: \"c_second\", if: true) ...CharacterDetails3 @defer(label: \"c_third\", if: ${'$'}cond) } }  fragment CharacterDetails on Droid { name }  fragment CharacterDetails2 on Droid { id }  fragment CharacterDetails3 on Droid { birthDate }"
 
     public const val OPERATION_NAME: String = "SpreadMultipleWithDeferWithIf"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = SpreadMultipleWithDeferWithIfSelections.__root)
+          .build()
+    }
   }
 }

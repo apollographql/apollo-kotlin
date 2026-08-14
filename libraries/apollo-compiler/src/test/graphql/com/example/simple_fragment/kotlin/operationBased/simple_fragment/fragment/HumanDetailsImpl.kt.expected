@@ -42,11 +42,16 @@ internal class HumanDetailsImpl() : Fragment<HumanDetails> {
     override val ADAPTER: Adapter<HumanDetails> =
         HumanDetailsImpl_ResponseAdapter.HumanDetails.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = Human.type
-        )
-        .selections(selections = HumanDetailsSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = Human.type
+          )
+          .selections(selections = HumanDetailsSelections.__root)
+          .build()
+    }
   }
 }

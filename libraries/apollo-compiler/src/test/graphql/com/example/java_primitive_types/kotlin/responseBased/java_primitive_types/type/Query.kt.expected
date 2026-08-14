@@ -12,7 +12,7 @@ import com.apollographql.apollo.api.ObjectType
 public class Query {
   public interface Data : Fragment.Data
 
-  public companion object {
+  public object __Arguments {
     public val __nullableInt_nullableInt: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("nullableInt").build()
 
@@ -48,7 +48,9 @@ public class Query {
 
     public val __nonNullableInt_nonNullableInputWithDefault: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("nonNullableInputWithDefault").build()
+  }
 
+  public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()
   }
 }

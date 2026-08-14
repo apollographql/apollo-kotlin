@@ -39,11 +39,16 @@ public class CharacterNameImpl() : Fragment<CharacterName> {
     override val ADAPTER: Adapter<CharacterName> =
         CharacterNameImpl_ResponseAdapter.CharacterName.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = Character.type
-        )
-        .selections(selections = CharacterNameSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = Character.type
+          )
+          .selections(selections = CharacterNameSelections.__root)
+          .build()
+    }
   }
 }

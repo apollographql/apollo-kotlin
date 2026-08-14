@@ -45,24 +45,24 @@ public object MyQuerySelections {
           name = "nullableInt",
           type = GraphQLInt.type
         ).arguments(listOf(
-          CompiledArgument.Builder(Query.__nullableInt_nonNullableInput).value(CompiledVariable("nonNullableInput")).build(),
-          CompiledArgument.Builder(Query.__nullableInt_nonNullableInputWithDefault).value(CompiledVariable("nonNullableInputWithDefault")).build(),
-          CompiledArgument.Builder(Query.__nullableInt_nonNullableInt).value(CompiledVariable("nonNullableInt")).build(),
-          CompiledArgument.Builder(Query.__nullableInt_nonNullableIntWithDefault).value(CompiledVariable("nonNullableIntWithDefault")).build(),
-          CompiledArgument.Builder(Query.__nullableInt_nullableInput).value(CompiledVariable("nullableInput")).build(),
-          CompiledArgument.Builder(Query.__nullableInt_nullableInt).value(CompiledVariable("nullableInt")).build()
+          CompiledArgument.Builder(Query.__Arguments.__nullableInt_nonNullableInput).value(CompiledVariable("nonNullableInput")).build(),
+          CompiledArgument.Builder(Query.__Arguments.__nullableInt_nonNullableInputWithDefault).value(CompiledVariable("nonNullableInputWithDefault")).build(),
+          CompiledArgument.Builder(Query.__Arguments.__nullableInt_nonNullableInt).value(CompiledVariable("nonNullableInt")).build(),
+          CompiledArgument.Builder(Query.__Arguments.__nullableInt_nonNullableIntWithDefault).value(CompiledVariable("nonNullableIntWithDefault")).build(),
+          CompiledArgument.Builder(Query.__Arguments.__nullableInt_nullableInput).value(CompiledVariable("nullableInput")).build(),
+          CompiledArgument.Builder(Query.__Arguments.__nullableInt_nullableInt).value(CompiledVariable("nullableInt")).build()
         ))
         .build(),
         CompiledField.Builder(
           name = "nonNullableInt",
           type = GraphQLInt.type.notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder(Query.__nonNullableInt_nonNullableInput).value(CompiledVariable("nonNullableInput")).build(),
-          CompiledArgument.Builder(Query.__nonNullableInt_nonNullableInputWithDefault).value(CompiledVariable("nonNullableInputWithDefault")).build(),
-          CompiledArgument.Builder(Query.__nonNullableInt_nonNullableInt).value(CompiledVariable("nonNullableInt")).build(),
-          CompiledArgument.Builder(Query.__nonNullableInt_nonNullableIntWithDefault).value(CompiledVariable("nonNullableIntWithDefault")).build(),
-          CompiledArgument.Builder(Query.__nonNullableInt_nullableInput).value(CompiledVariable("nullableInput")).build(),
-          CompiledArgument.Builder(Query.__nonNullableInt_nullableInt).value(CompiledVariable("nullableInt")).build()
+          CompiledArgument.Builder(Query.__Arguments.__nonNullableInt_nonNullableInput).value(CompiledVariable("nonNullableInput")).build(),
+          CompiledArgument.Builder(Query.__Arguments.__nonNullableInt_nonNullableInputWithDefault).value(CompiledVariable("nonNullableInputWithDefault")).build(),
+          CompiledArgument.Builder(Query.__Arguments.__nonNullableInt_nonNullableInt).value(CompiledVariable("nonNullableInt")).build(),
+          CompiledArgument.Builder(Query.__Arguments.__nonNullableInt_nonNullableIntWithDefault).value(CompiledVariable("nonNullableIntWithDefault")).build(),
+          CompiledArgument.Builder(Query.__Arguments.__nonNullableInt_nullableInput).value(CompiledVariable("nullableInput")).build(),
+          CompiledArgument.Builder(Query.__Arguments.__nonNullableInt_nullableInt).value(CompiledVariable("nullableInt")).build()
         ))
         .build(),
         CompiledField.Builder(

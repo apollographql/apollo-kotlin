@@ -39,11 +39,16 @@ public class DroidDetailsImpl() : Fragment<DroidDetails> {
     override val ADAPTER: Adapter<DroidDetails> =
         DroidDetailsImpl_ResponseAdapter.DroidDetails.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = Droid.type
-        )
-        .selections(selections = DroidDetailsSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = Droid.type
+          )
+          .selections(selections = DroidDetailsSelections.__root)
+          .build()
+    }
   }
 }

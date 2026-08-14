@@ -15,13 +15,15 @@ import com.apollographql.apollo.api.ObjectType
 public class Mutation {
   public interface Data : Fragment.Data
 
-  public companion object {
+  public object __Arguments {
     public val __createReview_episode: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("episode").build()
 
     public val __createReview_review: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("review").build()
+  }
 
+  public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Mutation").build()
   }
 }

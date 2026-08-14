@@ -22,12 +22,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("Horse")
 
+    private val __adapter0: Adapter<TestQuery.Horse?> = Horse.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _Horse: TestQuery.Horse? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Horse = Horse.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _Horse = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -43,12 +45,14 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("Horse")
-      Horse.obj().nullable().toJson(writer, customScalarAdapters, value.Horse)
+      __adapter0.toJson(writer, customScalarAdapters, value.Horse)
     }
   }
 
   public object Horse : Adapter<TestQuery.Horse> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "Donkey", "Cow")
+
+    private val __adapter0: Adapter<TestQuery.Cow?> = Cow.obj().nullable()
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Horse {
       var __typename: String? = null
@@ -59,7 +63,7 @@ public object TestQuery_ResponseAdapter {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _Donkey = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> _Cow = Cow.obj().nullable().fromJson(reader, customScalarAdapters)
+          2 -> _Cow = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -83,7 +87,7 @@ public object TestQuery_ResponseAdapter {
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.Donkey)
 
       writer.name("Cow")
-      Cow.obj().nullable().toJson(writer, customScalarAdapters, value.Cow)
+      __adapter0.toJson(writer, customScalarAdapters, value.Cow)
     }
   }
 

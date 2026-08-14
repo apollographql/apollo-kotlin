@@ -38,11 +38,16 @@ public class Fragment1Impl() : Fragment<Fragment1> {
   public companion object : ExecutableDefinition<Fragment1> {
     override val ADAPTER: Adapter<Fragment1> = Fragment1Impl_ResponseAdapter.Fragment1.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = ANode.type
-        )
-        .selections(selections = Fragment1Selections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = ANode.type
+          )
+          .selections(selections = Fragment1Selections.__root)
+          .build()
+    }
   }
 }

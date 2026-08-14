@@ -78,12 +78,8 @@ public class InlineMultipleWithDefer() : Query<InlineMultipleWithDefer.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = InlineMultipleWithDefer_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = InlineMultipleWithDeferSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "9331f0c719bafb010d29f76c720d4488f45c5196bf3fb8908b2be30bc546e355"
@@ -110,5 +106,14 @@ public class InlineMultipleWithDefer() : Query<InlineMultipleWithDefer.Data> {
       get() = "query InlineMultipleWithDefer { hero { __typename ... on Droid @defer(label: \"d_first\") { name } ... on Droid @defer(label: \"d_second\") { id } } }"
 
     public const val OPERATION_NAME: String = "InlineMultipleWithDefer"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = InlineMultipleWithDeferSelections.__root)
+          .build()
+    }
   }
 }

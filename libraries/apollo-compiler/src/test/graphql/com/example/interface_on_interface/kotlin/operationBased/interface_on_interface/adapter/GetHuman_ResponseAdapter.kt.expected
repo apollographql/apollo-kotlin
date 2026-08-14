@@ -6,6 +6,8 @@
 package com.example.interface_on_interface.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.DoubleAdapter
 import com.apollographql.apollo.api.StringAdapter
@@ -24,14 +26,18 @@ public object GetHuman_ResponseAdapter {
   public object Data : Adapter<GetHuman.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("human", "node")
 
+    private val __adapter0: Adapter<GetHuman.Data.Human> = Human.obj()
+
+    private val __adapter1: Adapter<GetHuman.Data.Node> = Node.obj(true)
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetHuman.Data {
       var _human: GetHuman.Data.Human? = null
       var _node: GetHuman.Data.Node? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _human = Human.obj().fromJson(reader, customScalarAdapters)
-          1 -> _node = Node.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _human = __adapter0.fromJson(reader, customScalarAdapters)
+          1 -> _node = __adapter1.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -48,10 +54,10 @@ public object GetHuman_ResponseAdapter {
       `value`: GetHuman.Data,
     ) {
       writer.name("human")
-      Human.obj().toJson(writer, customScalarAdapters, value.human)
+      __adapter0.toJson(writer, customScalarAdapters, value.human)
 
       writer.name("node")
-      Node.obj(true).toJson(writer, customScalarAdapters, value.node)
+      __adapter1.toJson(writer, customScalarAdapters, value.node)
     }
 
     private object Human : Adapter<GetHuman.Data.Human> {
@@ -97,6 +103,8 @@ public object GetHuman_ResponseAdapter {
     private object Node : Adapter<GetHuman.Data.Node> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("Human")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetHuman.Data.Node {
         var __typename: String? = null
 
@@ -112,7 +120,7 @@ public object GetHuman_ResponseAdapter {
         }
 
         var _onHuman: GetHuman.Data.Node.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.OnHuman.fromJson(reader, customScalarAdapters)
         }

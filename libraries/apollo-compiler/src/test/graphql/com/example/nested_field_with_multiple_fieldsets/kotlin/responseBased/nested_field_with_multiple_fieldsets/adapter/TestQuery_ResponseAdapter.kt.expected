@@ -24,12 +24,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("iface1")
 
+    private val __adapter0: Adapter<TestQuery.Data.Iface1?> = Iface1.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _iface1: TestQuery.Data.Iface1? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _iface1 = Iface1.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _iface1 = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -45,7 +47,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("iface1")
-      Iface1.obj().nullable().toJson(writer, customScalarAdapters, value.iface1)
+      __adapter0.toJson(writer, customScalarAdapters, value.iface1)
     }
 
     private object Iface1 : Adapter<TestQuery.Data.Iface1> {
@@ -74,6 +76,8 @@ public object TestQuery_ResponseAdapter {
     public object Impl1Iface1 {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "iface2")
 
+      private val __adapter0: Adapter<TestQuery.Data.Impl1Iface1.Iface2?> = Iface2.obj().nullable()
+
       public fun fromJson(
         reader: JsonReader,
         @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
@@ -85,7 +89,7 @@ public object TestQuery_ResponseAdapter {
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _iface2 = Iface2.obj().nullable().fromJson(reader, customScalarAdapters)
+            1 -> _iface2 = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -105,7 +109,7 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("iface2")
-        Iface2.obj().nullable().toJson(writer, customScalarAdapters, value.iface2)
+        __adapter0.toJson(writer, customScalarAdapters, value.iface2)
       }
 
       private object Iface2 : Adapter<TestQuery.Data.Impl1Iface1.Iface2> {
@@ -236,6 +240,8 @@ public object TestQuery_ResponseAdapter {
     public object OtherIface1 {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "iface2")
 
+      private val __adapter0: Adapter<TestQuery.Data.OtherIface1.Iface2?> = Iface2.obj().nullable()
+
       public fun fromJson(
         reader: JsonReader,
         @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
@@ -247,7 +253,7 @@ public object TestQuery_ResponseAdapter {
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _iface2 = Iface2.obj().nullable().fromJson(reader, customScalarAdapters)
+            1 -> _iface2 = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -267,7 +273,7 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("iface2")
-        Iface2.obj().nullable().toJson(writer, customScalarAdapters, value.iface2)
+        __adapter0.toJson(writer, customScalarAdapters, value.iface2)
       }
 
       private object Iface2 : Adapter<TestQuery.Data.OtherIface1.Iface2> {

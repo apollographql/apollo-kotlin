@@ -22,12 +22,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
+    private val __adapter0: Adapter<TestQuery.Data.Hero?> = Hero.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -43,11 +45,14 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("hero")
-      Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
+      __adapter0.toJson(writer, customScalarAdapters, value.hero)
     }
 
     private object Hero : Adapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
+
+      private val __adapter0: Adapter<TestQuery.Data.Hero.FriendsConnection?> =
+          FriendsConnection.obj().nullable()
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero {
         var _name: String? = null
@@ -56,7 +61,7 @@ public object TestQuery_ResponseAdapter {
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _friendsConnection = FriendsConnection.obj().nullable().fromJson(reader, customScalarAdapters)
+            1 -> _friendsConnection = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -76,7 +81,7 @@ public object TestQuery_ResponseAdapter {
         NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("friendsConnection")
-        FriendsConnection.obj().nullable().toJson(writer, customScalarAdapters, value.friendsConnection)
+        __adapter0.toJson(writer, customScalarAdapters, value.friendsConnection)
       }
 
       private object FriendsConnection : Adapter<TestQuery.Data.Hero.FriendsConnection> {

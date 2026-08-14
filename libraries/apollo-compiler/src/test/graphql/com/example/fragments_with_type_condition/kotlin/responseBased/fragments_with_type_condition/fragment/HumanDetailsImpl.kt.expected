@@ -52,11 +52,16 @@ public class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = HumanDetailsImpl_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = Human.type
-        )
-        .selections(selections = HumanDetailsSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = Human.type
+          )
+          .selections(selections = HumanDetailsSelections.__root)
+          .build()
+    }
   }
 }

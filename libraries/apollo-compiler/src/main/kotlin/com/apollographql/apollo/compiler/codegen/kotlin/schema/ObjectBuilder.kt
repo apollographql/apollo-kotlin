@@ -30,7 +30,7 @@ internal class ObjectBuilder(
     context.resolver.registerSchemaType(obj.name, ClassName(packageName, simpleName))
     for (fieldDefinition in obj.fieldDefinitions) {
       fieldDefinition.argumentDefinitions.forEach { argumentDefinition ->
-        context.resolver.registerArgumentDefinition(argumentDefinition.id, ClassName(packageName, simpleName))
+        context.resolver.registerArgumentDefinition(argumentDefinition.id, ClassName(packageName, simpleName, argumentsHolder))
       }
     }
   }
@@ -49,20 +49,29 @@ internal class ObjectBuilder(
         .maybeAddDescription(description)
         .maybeAddDeprecation(deprecationReason)
         .addType(dataTypeSpec())
+        .maybeAddArguments(fieldDefinitions)
         .addType(companionTypeSpec())
         .build()
   }
 
   private fun IrObject.companionTypeSpec(): TypeSpec {
     return TypeSpec.companionObjectBuilder()
-        .addProperties(fieldDefinitions.argumentsPropertySpecs())
         .addProperty(typePropertySpec(context.resolver))
         .build()
   }
 }
 
-internal fun List<IrFieldDefinition>.argumentsPropertySpecs(): List<PropertySpec> {
-  return flatMap { fieldDefinition ->
+internal const val argumentsHolder = "__Arguments"
+
+/**
+ * The argument definitions go in their own object rather than in the companion object next to `type`. The two
+ * are independent - `type` is read when building selections and cache keys, the argument definitions only by
+ * the selections of fields that take arguments - but sharing a class initializer means reading either one
+ * builds both. Schema types with many arguments are the expensive case: reading `type` would build every
+ * [KotlinSymbols.CompiledArgumentDefinition] of the type along with it.
+ */
+internal fun TypeSpec.Builder.maybeAddArguments(fieldDefinitions: List<IrFieldDefinition>) = apply {
+  val propertySpecs = fieldDefinitions.flatMap { fieldDefinition ->
     fieldDefinition.argumentDefinitions.map { argumentDefinition ->
       PropertySpec.builder(
           name = argumentDefinition.propertyName,
@@ -71,6 +80,14 @@ internal fun List<IrFieldDefinition>.argumentsPropertySpecs(): List<PropertySpec
           .initializer(argumentDefinition.codeBlock())
           .build()
     }
+  }
+
+  if (propertySpecs.isNotEmpty()) {
+    addType(
+        TypeSpec.objectBuilder(argumentsHolder)
+            .addProperties(propertySpecs)
+            .build()
+    )
   }
 }
 

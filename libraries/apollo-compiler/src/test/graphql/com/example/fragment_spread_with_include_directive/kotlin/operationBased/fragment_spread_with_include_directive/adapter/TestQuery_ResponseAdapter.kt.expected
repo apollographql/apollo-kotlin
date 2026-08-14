@@ -6,6 +6,8 @@
 package com.example.fragment_spread_with_include_directive.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableBooleanAdapter
 import com.apollographql.apollo.api.StringAdapter
@@ -36,13 +38,15 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero", "getBoolean")
 
+    private val __adapter0: Adapter<TestQuery.Data.Hero?> = Hero.obj(true).nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
       var _getBoolean: Boolean? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = __adapter0.fromJson(reader, customScalarAdapters)
           1 -> _getBoolean = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
@@ -60,7 +64,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
+      __adapter0.toJson(writer, customScalarAdapters, value.hero)
 
       writer.name("getBoolean")
       NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.getBoolean)
@@ -68,6 +72,18 @@ public object TestQuery_ResponseAdapter {
 
     private object Hero : Adapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
+
+      private val __condition0: BooleanExpression<BTerm> =
+          and(variable("withDetails"),not(variable("skipHumanDetails")))
+
+      private val __condition1: BooleanExpression<BTerm> =
+          and(possibleTypes("Human"),variable("withDetails"))
+
+      private val __condition2: BooleanExpression<BTerm> =
+          and(possibleTypes("Droid"),not(variable("optionalWithDefaultTrue")))
+
+      private val __condition3: BooleanExpression<BTerm> =
+          and(possibleTypes("Droid"),variable("optionalWithDefaultTrue"))
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero {
         var __typename: String? = null
@@ -86,25 +102,25 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _heroDetails: HeroDetails? = null
-        if (and(variable("withDetails"),not(variable("skipHumanDetails"))).evaluate(customScalarAdapters.falseVariables, null, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, null, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _heroDetails = com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader, customScalarAdapters)
         }
 
         var _humanDetails: HumanDetails? = null
-        if (and(possibleTypes("Human"),variable("withDetails")).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _humanDetails = com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader, customScalarAdapters)
         }
 
         var _droidDetails: DroidDetails? = null
-        if (and(possibleTypes("Droid"),not(variable("optionalWithDefaultTrue"))).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition2.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _droidDetails = com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader, customScalarAdapters)
         }
 
         var _otherDroidDetails: OtherDroidDetails? = null
-        if (and(possibleTypes("Droid"),variable("optionalWithDefaultTrue")).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition3.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _otherDroidDetails = com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.fromJson(reader, customScalarAdapters)
         }

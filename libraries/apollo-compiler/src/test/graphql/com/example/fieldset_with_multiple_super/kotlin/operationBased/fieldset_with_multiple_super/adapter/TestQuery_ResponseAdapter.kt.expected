@@ -6,6 +6,8 @@
 package com.example.fieldset_with_multiple_super.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableStringAdapter
 import com.apollographql.apollo.api.StringAdapter
@@ -23,12 +25,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("c")
 
+    private val __adapter0: Adapter<TestQuery.Data.C?> = C.obj(true).nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _c: TestQuery.Data.C? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _c = C.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _c = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -44,11 +48,15 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("c")
-      C.obj(true).nullable().toJson(writer, customScalarAdapters, value.c)
+      __adapter0.toJson(writer, customScalarAdapters, value.c)
     }
 
     private object C : Adapter<TestQuery.Data.C> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("ABC","AC")
+
+      private val __condition1: BooleanExpression<BTerm> = possibleTypes("ABC","BC")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.C {
         var __typename: String? = null
@@ -65,13 +73,13 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onA: TestQuery.Data.C.OnA? = null
-        if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.fromJson(reader, customScalarAdapters)
         }
 
         var _onB: TestQuery.Data.C.OnB? = null
-        if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.fromJson(reader, customScalarAdapters)
         }
@@ -103,6 +111,8 @@ public object TestQuery_ResponseAdapter {
       private object OnA : Adapter<TestQuery.Data.C.OnA> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1")
 
+        private val __condition0: BooleanExpression<BTerm> = possibleTypes("ABC","BC")
+
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.C.OnA {
           var __typename: String? = null
           var _fieldA1: String? = null
@@ -120,7 +130,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           var _onB: TestQuery.Data.C.OnA.OnB? = null
-          if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+          if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
             reader.rewind()
             _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.OnB.fromJson(reader, customScalarAdapters)
           }
@@ -180,6 +190,8 @@ public object TestQuery_ResponseAdapter {
       private object OnB : Adapter<TestQuery.Data.C.OnB> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldB2")
 
+        private val __condition0: BooleanExpression<BTerm> = possibleTypes("ABC","AC")
+
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.C.OnB {
           var __typename: String? = null
           var _fieldB2: String? = null
@@ -197,7 +209,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           var _onA: TestQuery.Data.C.OnB.OnA? = null
-          if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+          if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
             reader.rewind()
             _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.OnA.fromJson(reader, customScalarAdapters)
           }

@@ -6,6 +6,8 @@
 package com.example.used_arguments.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableIntAdapter
 import com.apollographql.apollo.api.StringAdapter
@@ -24,12 +26,14 @@ public object GetA_ResponseAdapter {
   public object Data : Adapter<GetA.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("a")
 
+    private val __adapter0: Adapter<GetA.Data.A?> = A.obj(true).nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetA.Data {
       var _a: GetA.Data.A? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _a = A.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _a = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -45,11 +49,15 @@ public object GetA_ResponseAdapter {
       `value`: GetA.Data,
     ) {
       writer.name("a")
-      A.obj(true).nullable().toJson(writer, customScalarAdapters, value.a)
+      __adapter0.toJson(writer, customScalarAdapters, value.a)
     }
 
     private object A : Adapter<GetA.Data.A> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("B")
+
+      private val __condition1: BooleanExpression<BTerm> = possibleTypes("C")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetA.Data.A {
         var __typename: String? = null
@@ -66,13 +74,13 @@ public object GetA_ResponseAdapter {
         }
 
         var _onB: GetA.Data.A.OnB? = null
-        if (possibleTypes("B").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onB = com.example.used_arguments.adapter.GetA_ResponseAdapter.Data.A.OnB.fromJson(reader, customScalarAdapters)
         }
 
         var _onC: GetA.Data.A.OnC? = null
-        if (possibleTypes("C").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onC = com.example.used_arguments.adapter.GetA_ResponseAdapter.Data.A.OnC.fromJson(reader, customScalarAdapters)
         }

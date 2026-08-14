@@ -64,12 +64,8 @@ public data class TestSubscription(
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = TestSubscription_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledSubscription.type
-        )
-        .selections(selections = TestSubscriptionSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "f053ee1afe42260f1511e417b6133f1cb8507c185e2e7b4e1e579696dbc8f2af"
@@ -91,5 +87,14 @@ public data class TestSubscription(
       get() = "subscription TestSubscription(${'$'}repo: String!) { commentAdded(repoFullName: ${'$'}repo) { id content } }"
 
     public const val OPERATION_NAME: String = "TestSubscription"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledSubscription.type
+          )
+          .selections(selections = TestSubscriptionSelections.__root)
+          .build()
+    }
   }
 }

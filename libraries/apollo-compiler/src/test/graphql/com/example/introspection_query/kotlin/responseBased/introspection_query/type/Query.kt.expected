@@ -15,10 +15,12 @@ import com.apollographql.apollo.api.ObjectType
 public class Query {
   public interface Data : Fragment.Data
 
-  public companion object {
+  public object __Arguments {
     public val ____type_name: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("name").build()
+  }
 
+  public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()
   }
 }

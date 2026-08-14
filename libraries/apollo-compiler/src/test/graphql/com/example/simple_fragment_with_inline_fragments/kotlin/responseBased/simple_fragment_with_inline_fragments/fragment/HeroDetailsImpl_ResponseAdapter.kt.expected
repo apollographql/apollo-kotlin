@@ -26,6 +26,9 @@ public object HeroDetailsImpl_ResponseAdapter {
   public object Data : Adapter<HeroDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "friends")
 
+    private val __adapter0: Adapter<List<HeroDetailsImpl.Data.Friend?>?> =
+        Friend.obj().nullable().list().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): HeroDetailsImpl.Data {
       var _name: String? = null
       var _friends: List<HeroDetailsImpl.Data.Friend?>? = null
@@ -33,7 +36,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
+          1 -> _friends = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -53,7 +56,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("friends")
-      Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
+      __adapter0.toJson(writer, customScalarAdapters, value.friends)
     }
 
     private object Friend : Adapter<HeroDetailsImpl.Data.Friend> {

@@ -61,12 +61,8 @@ public class SpreadMultipleWithDefer() : Query<SpreadMultipleWithDefer.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = SpreadMultipleWithDefer_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = SpreadMultipleWithDeferSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "7cd4d1b6a14f96cff4bbbdbd3b3ab1aa365ffc65e1515ff6e22935010543ad71"
@@ -93,5 +89,14 @@ public class SpreadMultipleWithDefer() : Query<SpreadMultipleWithDefer.Data> {
       get() = "query SpreadMultipleWithDefer { hero { __typename ...DroidDetails @defer(label: \"a_first\") ...DroidDetails @defer(label: \"a_second\") } }  fragment DroidDetails on Droid { name }"
 
     public const val OPERATION_NAME: String = "SpreadMultipleWithDefer"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = SpreadMultipleWithDeferSelections.__root)
+          .build()
+    }
   }
 }

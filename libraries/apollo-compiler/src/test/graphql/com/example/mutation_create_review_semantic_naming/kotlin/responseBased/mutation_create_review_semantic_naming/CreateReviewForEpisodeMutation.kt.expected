@@ -64,12 +64,8 @@ public data class CreateReviewForEpisodeMutation(
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = CreateReviewForEpisodeMutation_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledMutation.type
-        )
-        .selections(selections = CreateReviewForEpisodeMutationSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "0af665fbb1ccec4fbec377a80b620cb423b737162848a7b16b842c2fa382b54c"
@@ -91,5 +87,14 @@ public data class CreateReviewForEpisodeMutation(
       get() = "mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) { createReview(episode: ${'$'}ep, review: ${'$'}review) { stars commentary } }"
 
     public const val OPERATION_NAME: String = "CreateReviewForEpisode"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledMutation.type
+          )
+          .selections(selections = CreateReviewForEpisodeMutationSelections.__root)
+          .build()
+    }
   }
 }

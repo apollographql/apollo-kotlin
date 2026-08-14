@@ -12,10 +12,12 @@ import com.apollographql.apollo.api.ObjectType
 public class User {
   public interface Data : Fragment.Data
 
-  public companion object {
+  public object __Arguments {
     public val __avatar_size: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("size").build()
+  }
 
+  public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "User").build()
   }
 }

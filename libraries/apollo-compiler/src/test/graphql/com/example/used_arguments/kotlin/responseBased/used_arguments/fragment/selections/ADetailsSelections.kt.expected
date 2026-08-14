@@ -18,7 +18,7 @@ public object ADetailsSelections {
           name = "field",
           type = GraphQLInt.type
         ).arguments(listOf(
-          CompiledArgument.Builder(A.__field_arg).value(42).build()
+          CompiledArgument.Builder(A.__Arguments.__field_arg).value(42).build()
         ))
         .build()
       )

@@ -54,12 +54,8 @@ public data class FindUserQuery(
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = FindUserQuery_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = FindUserQuerySelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "da63c6a7bf79d238f2d6fffd77742ac92c08bd4229714f24a726f773f7567fcc"
@@ -80,5 +76,14 @@ public data class FindUserQuery(
       get() = "query FindUserQuery(${'$'}findUserInput: FindUserInput!) { findUser(findUserInput: ${'$'}findUserInput) { id } }"
 
     public const val OPERATION_NAME: String = "FindUserQuery"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = FindUserQuerySelections.__root)
+          .build()
+    }
   }
 }

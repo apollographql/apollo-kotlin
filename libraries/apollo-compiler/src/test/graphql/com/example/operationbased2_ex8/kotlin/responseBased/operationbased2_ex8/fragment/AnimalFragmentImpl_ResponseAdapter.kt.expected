@@ -23,6 +23,8 @@ public object AnimalFragmentImpl_ResponseAdapter {
   public object Data : Adapter<AnimalFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("species", "parent")
 
+    private val __adapter0: Adapter<AnimalFragmentImpl.Data.Parent> = Parent.obj()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): AnimalFragmentImpl.Data {
       var _species: String? = null
       var _parent: AnimalFragmentImpl.Data.Parent? = null
@@ -30,7 +32,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _parent = Parent.obj().fromJson(reader, customScalarAdapters)
+          1 -> _parent = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -50,7 +52,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
       writer.name("parent")
-      Parent.obj().toJson(writer, customScalarAdapters, value.parent)
+      __adapter0.toJson(writer, customScalarAdapters, value.parent)
     }
 
     private object Parent : Adapter<AnimalFragmentImpl.Data.Parent> {

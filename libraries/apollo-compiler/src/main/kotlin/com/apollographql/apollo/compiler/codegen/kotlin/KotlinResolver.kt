@@ -187,6 +187,8 @@ internal class KotlinResolver(
     return adapterInitializer(type, errorAware, requiresBuffering, jsExport)
   }
   internal fun adapterInitializer(type: IrType, errorAware: Boolean, requiresBuffering: Boolean, jsExport: Boolean): CodeBlock {
+    builtinScalarChain(type, errorAware)?.let { return CodeBlock.of("%M", it) }
+
     return when {
       type.optional -> {
         val presentFun = MemberName("com.apollographql.apollo.api", "present")
@@ -257,6 +259,69 @@ internal class KotlinResolver(
           is IrObjectType -> error("IrObjectType cannot be adapted")
         }
       }
+    }
+  }
+
+  /**
+   * The adapter chains are composed inline in the generated `fromJson`/`toJson`, so each wrapper in a chain is
+   * allocated again on every call - once per field, per object parsed. The built-in scalar adapters are
+   * stateless, so apollo-api ships a pre-composed singleton for the chain shapes that dominate real schemas and
+   * we point at that instead of composing anything. This is the same trick the `type.nullable` branch of
+   * [adapterInitializer] already plays with [KotlinSymbols.NullableStringAdapter], one wrapper further out.
+   *
+   * Returns null - and so leaves the chain composed inline - for anything that isn't a built-in scalar. A
+   * user-mapped scalar may well be stateful, and sharing one instance of it would change behaviour. Lists,
+   * optionals and `@catch(to: RESULT)` fall through too: they are rare enough that a singleton for each
+   * combination would cost more in [Adapters] class initialization than it saves.
+   */
+  private fun builtinScalarChain(type: IrType, errorAware: Boolean): MemberName? {
+    if (type !is IrScalarType || type.optional) {
+      return null
+    }
+    val adapters = builtinScalarAdapters[resolveScalarAdapterInitializer(type.name)?.toString()] ?: return null
+
+    return when (type.catchTo) {
+      IrCatchTo.NoCatch -> when {
+        !errorAware -> null
+        type.nullable -> adapters.errorAwareNullable
+        else -> adapters.errorAware
+      }
+      /**
+       * The `catchTo` branch of [adapterInitializer] composes its inner chain through the overload that reads
+       * [KotlinResolver.errorAware], so an error aware chain is what it builds regardless of the [errorAware]
+       * argument here - which is false for a list element, whose enclosing list carries the wrapper instead.
+       */
+      IrCatchTo.Null -> adapters.catchToNull.takeIf { this.errorAware && type.nullable }
+      IrCatchTo.Result -> null
+    }
+  }
+
+  /**
+   * Whether the adapter chain for [type] can be built once, in the enclosing adapter object's initializer, instead
+   * of being composed again on every `fromJson`/`toJson` call.
+   *
+   * This is limited to the chains rooted at a generated adapter - a model, an input object or an enum - which is
+   * always an `object`, and so always safe to hold on to. The built-in scalars are covered by the pre-composed
+   * singletons of [builtinScalarChain] instead, and everything else is left composed inline:
+   *
+   * - a user-mapped scalar adapter may be an expression that builds a new instance every time, and hoisting it
+   *   would silently turn that into one shared instance.
+   * - a scalar with no adapter mapping compiles to a `customScalarAdapters.responseAdapterFor()` call, which reads
+   *   a function parameter and so cannot move out of the function.
+   * - an optional chain ends in `present()`, whose `Optional.Present` type argument doesn't match the property's
+   *   `Optional`, so there is no type to declare the hoisted property as.
+   * - `jsExport` adapts enums as strings, which likewise doesn't match the property type.
+   */
+  internal fun isAdapterHoistable(type: IrType, jsExport: Boolean): Boolean {
+    if (type.optional || jsExport) {
+      return false
+    }
+    return when (type.rawType()) {
+      is IrModelType, is IrInputObjectType -> true
+      // An enum adapter is only worth hoisting once it is wrapped in something, otherwise the chain is a single
+      // reference to the adapter object and there is nothing to build.
+      is IrEnumType -> type.nullable || type.catchTo != IrCatchTo.NoCatch || errorAware || type is IrListType
+      else -> false
     }
   }
 
@@ -463,3 +528,58 @@ internal class KotlinResolver(
     return scalarIsUserDefined[id] ?: upstreamScalarIsUserDefined.get(id) ?: false
   }
 }
+
+/**
+ * The pre-composed chains apollo-api ships for a built-in scalar adapter. See [KotlinResolver.builtinScalarChain].
+ */
+private class BuiltinScalarChains(
+    /**
+     * `XAdapter.errorAware()`
+     */
+    val errorAware: MemberName,
+    /**
+     * `NullableXAdapter.errorAware()`
+     */
+    val errorAwareNullable: MemberName,
+    /**
+     * `NullableXAdapter.errorAware().catchToNull()`
+     */
+    val catchToNull: MemberName,
+)
+
+/**
+ * Keyed by the canonical name of the built-in adapter a scalar resolves to, so a custom scalar mapped to one of
+ * them - `Url` to `StringAdapter`, say - gets the same treatment as `String` itself.
+ */
+private val builtinScalarAdapters = mapOf(
+    KotlinSymbols.StringAdapter.canonicalName to BuiltinScalarChains(
+        errorAware = KotlinSymbols.ErrorAwareStringAdapter,
+        errorAwareNullable = KotlinSymbols.ErrorAwareNullableStringAdapter,
+        catchToNull = KotlinSymbols.CatchToNullStringAdapter,
+    ),
+    KotlinSymbols.BooleanAdapter.canonicalName to BuiltinScalarChains(
+        errorAware = KotlinSymbols.ErrorAwareBooleanAdapter,
+        errorAwareNullable = KotlinSymbols.ErrorAwareNullableBooleanAdapter,
+        catchToNull = KotlinSymbols.CatchToNullBooleanAdapter,
+    ),
+    KotlinSymbols.IntAdapter.canonicalName to BuiltinScalarChains(
+        errorAware = KotlinSymbols.ErrorAwareIntAdapter,
+        errorAwareNullable = KotlinSymbols.ErrorAwareNullableIntAdapter,
+        catchToNull = KotlinSymbols.CatchToNullIntAdapter,
+    ),
+    KotlinSymbols.DoubleAdapter.canonicalName to BuiltinScalarChains(
+        errorAware = KotlinSymbols.ErrorAwareDoubleAdapter,
+        errorAwareNullable = KotlinSymbols.ErrorAwareNullableDoubleAdapter,
+        catchToNull = KotlinSymbols.CatchToNullDoubleAdapter,
+    ),
+    KotlinSymbols.AnyAdapter.canonicalName to BuiltinScalarChains(
+        errorAware = KotlinSymbols.ErrorAwareAnyAdapter,
+        errorAwareNullable = KotlinSymbols.ErrorAwareNullableAnyAdapter,
+        catchToNull = KotlinSymbols.CatchToNullAnyAdapter,
+    ),
+    KotlinSymbols.LongAdapter.canonicalName to BuiltinScalarChains(
+        errorAware = KotlinSymbols.ErrorAwareLongAdapter,
+        errorAwareNullable = KotlinSymbols.ErrorAwareNullableLongAdapter,
+        catchToNull = KotlinSymbols.CatchToNullLongAdapter,
+    ),
+)

@@ -39,11 +39,16 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragment> {
     override val ADAPTER: Adapter<AnimalFragment> =
         AnimalFragmentImpl_ResponseAdapter.AnimalFragment.obj(true)
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = Animal.type
-        )
-        .selections(selections = AnimalFragmentSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = Animal.type
+          )
+          .selections(selections = AnimalFragmentSelections.__root)
+          .build()
+    }
   }
 }

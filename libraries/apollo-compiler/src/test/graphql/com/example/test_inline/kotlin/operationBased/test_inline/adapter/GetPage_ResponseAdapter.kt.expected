@@ -6,6 +6,8 @@
 package com.example.test_inline.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.StringAdapter
 import com.apollographql.apollo.api.evaluate
@@ -23,12 +25,14 @@ public object GetPage_ResponseAdapter {
   public object Data : Adapter<GetPage.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("collection")
 
+    private val __adapter0: Adapter<GetPage.Data.Collection> = Collection.obj(true)
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetPage.Data {
       var _collection: GetPage.Data.Collection? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _collection = Collection.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _collection = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -44,11 +48,15 @@ public object GetPage_ResponseAdapter {
       `value`: GetPage.Data,
     ) {
       writer.name("collection")
-      Collection.obj(true).toJson(writer, customScalarAdapters, value.collection)
+      __adapter0.toJson(writer, customScalarAdapters, value.collection)
     }
 
     private object Collection : Adapter<GetPage.Data.Collection> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
+
+      private val __adapter0: Adapter<List<GetPage.Data.Collection.Item>> = Item.obj().list()
+
+      private val __condition1: BooleanExpression<BTerm> = possibleTypes("ParticularCollection")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetPage.Data.Collection {
         var __typename: String? = null
@@ -57,7 +65,7 @@ public object GetPage_ResponseAdapter {
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _items = Item.obj().list().fromJson(reader, customScalarAdapters)
+            1 -> _items = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -67,7 +75,7 @@ public object GetPage_ResponseAdapter {
         }
 
         var _onParticularCollection: GetPage.Data.Collection.OnParticularCollection? = null
-        if (possibleTypes("ParticularCollection").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.fromJson(reader, customScalarAdapters)
         }
@@ -88,7 +96,7 @@ public object GetPage_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("items")
-        Item.obj().list().toJson(writer, customScalarAdapters, value.items)
+        __adapter0.toJson(writer, customScalarAdapters, value.items)
 
         if (value.onParticularCollection != null) {
           OnParticularCollection.toJson(writer, customScalarAdapters, value.onParticularCollection)
@@ -126,12 +134,15 @@ public object GetPage_ResponseAdapter {
       private object OnParticularCollection : Adapter<GetPage.Data.Collection.OnParticularCollection> {
         public val RESPONSE_NAMES: List<String> = listOf("items")
 
+        private val __adapter0: Adapter<List<GetPage.Data.Collection.OnParticularCollection.Item>> =
+            Item.obj(true).list()
+
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetPage.Data.Collection.OnParticularCollection {
           var _items: List<GetPage.Data.Collection.OnParticularCollection.Item>? = null
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _items = Item.obj(true).list().fromJson(reader, customScalarAdapters)
+              0 -> _items = __adapter0.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -147,11 +158,13 @@ public object GetPage_ResponseAdapter {
           `value`: GetPage.Data.Collection.OnParticularCollection,
         ) {
           writer.name("items")
-          Item.obj(true).list().toJson(writer, customScalarAdapters, value.items)
+          __adapter0.toJson(writer, customScalarAdapters, value.items)
         }
 
         private object Item : Adapter<GetPage.Data.Collection.OnParticularCollection.Item> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+          private val __condition0: BooleanExpression<BTerm> = possibleTypes("ParticularItem")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetPage.Data.Collection.OnParticularCollection.Item {
             var __typename: String? = null
@@ -168,7 +181,7 @@ public object GetPage_ResponseAdapter {
             }
 
             var _onParticularItem: GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem? = null
-            if (possibleTypes("ParticularItem").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+            if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
               reader.rewind()
               _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.fromJson(reader, customScalarAdapters)
             }

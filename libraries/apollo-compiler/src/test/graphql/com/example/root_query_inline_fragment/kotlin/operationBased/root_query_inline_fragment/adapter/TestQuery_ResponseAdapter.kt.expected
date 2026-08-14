@@ -6,6 +6,8 @@
 package com.example.root_query_inline_fragment.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableDoubleAdapter
 import com.apollographql.apollo.api.NullableStringAdapter
@@ -62,6 +64,10 @@ public object TestQuery_ResponseAdapter {
     private object OnQuery : Adapter<TestQuery.Data.OnQuery> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid")
 
+      private val __adapter0: Adapter<TestQuery.Data.OnQuery.Hero?> = Hero.obj(true).nullable()
+
+      private val __adapter1: Adapter<TestQuery.Data.OnQuery.Droid?> = Droid.obj(true).nullable()
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.OnQuery {
         var __typename: String? = null
         var _hero: TestQuery.Data.OnQuery.Hero? = null
@@ -70,8 +76,8 @@ public object TestQuery_ResponseAdapter {
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
-            2 -> _droid = Droid.obj(true).nullable().fromJson(reader, customScalarAdapters)
+            1 -> _hero = __adapter0.fromJson(reader, customScalarAdapters)
+            2 -> _droid = __adapter1.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -92,14 +98,18 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("hero")
-        Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
+        __adapter0.toJson(writer, customScalarAdapters, value.hero)
 
         writer.name("droid")
-        Droid.obj(true).nullable().toJson(writer, customScalarAdapters, value.droid)
+        __adapter1.toJson(writer, customScalarAdapters, value.droid)
       }
 
       private object Hero : Adapter<TestQuery.Data.OnQuery.Hero> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
+
+        private val __adapter0: Adapter<List<Episode?>> = Episode_ResponseAdapter.nullable().list()
+
+        private val __condition1: BooleanExpression<BTerm> = possibleTypes("Human")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.OnQuery.Hero {
           var __typename: String? = null
@@ -110,7 +120,7 @@ public object TestQuery_ResponseAdapter {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader, customScalarAdapters)
+              2 -> _appearsIn = __adapter0.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -120,7 +130,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           var _onHuman: TestQuery.Data.OnQuery.Hero.OnHuman? = null
-          if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+          if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
             reader.rewind()
             _onHuman = com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.Hero.OnHuman.fromJson(reader, customScalarAdapters)
           }
@@ -145,7 +155,7 @@ public object TestQuery_ResponseAdapter {
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
           writer.name("appearsIn")
-          Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters, value.appearsIn)
+          __adapter0.toJson(writer, customScalarAdapters, value.appearsIn)
 
           if (value.onHuman != null) {
             OnHuman.toJson(writer, customScalarAdapters, value.onHuman)

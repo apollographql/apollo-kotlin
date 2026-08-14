@@ -39,11 +39,16 @@ public class CharacterDetails3Impl() : Fragment<CharacterDetails3> {
     override val ADAPTER: Adapter<CharacterDetails3> =
         CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = Droid.type
-        )
-        .selections(selections = CharacterDetails3Selections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = Droid.type
+          )
+          .selections(selections = CharacterDetails3Selections.__root)
+          .build()
+    }
   }
 }

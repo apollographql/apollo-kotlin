@@ -24,12 +24,14 @@ public object GetUnionA_ResponseAdapter {
   public object Data : Adapter<GetUnionA.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("unionA")
 
+    private val __adapter0: Adapter<GetUnionA.Data.UnionA?> = UnionA.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetUnionA.Data {
       var _unionA: GetUnionA.Data.UnionA? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _unionA = UnionA.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _unionA = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -45,7 +47,7 @@ public object GetUnionA_ResponseAdapter {
       `value`: GetUnionA.Data,
     ) {
       writer.name("unionA")
-      UnionA.obj().nullable().toJson(writer, customScalarAdapters, value.unionA)
+      __adapter0.toJson(writer, customScalarAdapters, value.unionA)
     }
 
     private object UnionA : Adapter<GetUnionA.Data.UnionA> {

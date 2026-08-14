@@ -29,6 +29,10 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid")
 
+    private val __adapter0: Adapter<TestQuery.Data.Hero?> = Hero.obj().nullable()
+
+    private val __adapter1: Adapter<TestQuery.Data.Droid?> = Droid.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var __typename: String? = null
       var _hero: TestQuery.Data.Hero? = null
@@ -37,8 +41,8 @@ public object TestQuery_ResponseAdapter {
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
-          2 -> _droid = Droid.obj().nullable().fromJson(reader, customScalarAdapters)
+          1 -> _hero = __adapter0.fromJson(reader, customScalarAdapters)
+          2 -> _droid = __adapter1.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -59,10 +63,10 @@ public object TestQuery_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("hero")
-      Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
+      __adapter0.toJson(writer, customScalarAdapters, value.hero)
 
       writer.name("droid")
-      Droid.obj().nullable().toJson(writer, customScalarAdapters, value.droid)
+      __adapter1.toJson(writer, customScalarAdapters, value.droid)
     }
 
     private object Hero : Adapter<TestQuery.Data.Hero> {
@@ -91,6 +95,8 @@ public object TestQuery_ResponseAdapter {
     public object HumanHero {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn", "height")
 
+      private val __adapter0: Adapter<List<Episode?>> = Episode_ResponseAdapter.nullable().list()
+
       public fun fromJson(
         reader: JsonReader,
         @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
@@ -105,7 +111,7 @@ public object TestQuery_ResponseAdapter {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader, customScalarAdapters)
+            2 -> _appearsIn = __adapter0.fromJson(reader, customScalarAdapters)
             3 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
@@ -131,7 +137,7 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("appearsIn")
-        Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters, value.appearsIn)
+        __adapter0.toJson(writer, customScalarAdapters, value.appearsIn)
 
         writer.name("height")
         NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
@@ -140,6 +146,8 @@ public object TestQuery_ResponseAdapter {
 
     public object OtherHero {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
+
+      private val __adapter0: Adapter<List<Episode?>> = Episode_ResponseAdapter.nullable().list()
 
       public fun fromJson(
         reader: JsonReader,
@@ -154,7 +162,7 @@ public object TestQuery_ResponseAdapter {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader, customScalarAdapters)
+            2 -> _appearsIn = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -178,7 +186,7 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("appearsIn")
-        Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters, value.appearsIn)
+        __adapter0.toJson(writer, customScalarAdapters, value.appearsIn)
       }
     }
 

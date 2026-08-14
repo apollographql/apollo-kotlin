@@ -67,12 +67,8 @@ public class InlineSingleWithDefer() : Query<InlineSingleWithDefer.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = InlineSingleWithDefer_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = InlineSingleWithDeferSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "70222802c9192f810f19a54d31e039ce0fc3b8baac231841f0a0e8b4200c312b"
@@ -96,5 +92,14 @@ public class InlineSingleWithDefer() : Query<InlineSingleWithDefer.Data> {
       get() = "query InlineSingleWithDefer { hero { __typename ... on Droid @defer { name } } }"
 
     public const val OPERATION_NAME: String = "InlineSingleWithDefer"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = InlineSingleWithDeferSelections.__root)
+          .build()
+    }
   }
 }

@@ -21,6 +21,18 @@ public object QueryFragmentImpl_ResponseAdapter {
   public object QueryFragment : Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid", "human")
 
+    private val __adapter0:
+        Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero?>
+        = Hero.obj(true).nullable()
+
+    private val __adapter1:
+        Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid?>
+        = Droid.obj(true).nullable()
+
+    private val __adapter2:
+        Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human?>
+        = Human.obj(true).nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment {
       var __typename: String? = null
       var _hero: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero? = null
@@ -30,9 +42,9 @@ public object QueryFragmentImpl_ResponseAdapter {
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
-          2 -> _droid = Droid.obj(true).nullable().fromJson(reader, customScalarAdapters)
-          3 -> _human = Human.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          1 -> _hero = __adapter0.fromJson(reader, customScalarAdapters)
+          2 -> _droid = __adapter1.fromJson(reader, customScalarAdapters)
+          3 -> _human = __adapter2.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -54,13 +66,13 @@ public object QueryFragmentImpl_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
+      __adapter0.toJson(writer, customScalarAdapters, value.hero)
 
       writer.name("droid")
-      Droid.obj(true).nullable().toJson(writer, customScalarAdapters, value.droid)
+      __adapter1.toJson(writer, customScalarAdapters, value.droid)
 
       writer.name("human")
-      Human.obj(true).nullable().toJson(writer, customScalarAdapters, value.human)
+      __adapter2.toJson(writer, customScalarAdapters, value.human)
     }
 
     private object Hero : Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero> {

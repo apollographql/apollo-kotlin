@@ -82,12 +82,8 @@ public data class GetUser(
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = GetUser_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = GetUserSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "1314916fa3163a17df2b7a0173e55fef34621507824242308b3006e9ab4740b4"
@@ -123,5 +119,14 @@ public data class GetUser(
       get() = "query GetUser(${'$'}organizationId: String!, ${'$'}query: UserQuery!, ${'$'}size: Int!) { __typename ...QueryFragment }  fragment UserFragment on User { firstName lastName avatar(size: ${'$'}size) }  fragment QueryFragment on Query { organization(id: ${'$'}organizationId) { id user(query: ${'$'}query) { __typename ...UserFragment } } }"
 
     public const val OPERATION_NAME: String = "GetUser"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = GetUserSelections.__root)
+          .build()
+    }
   }
 }

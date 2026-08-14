@@ -44,11 +44,16 @@ public class CatFragmentImpl() : Fragment<CatFragmentImpl.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = CatFragmentImpl_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = Cat.type
-        )
-        .selections(selections = CatFragmentSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = Cat.type
+          )
+          .selections(selections = CatFragmentSelections.__root)
+          .build()
+    }
   }
 }

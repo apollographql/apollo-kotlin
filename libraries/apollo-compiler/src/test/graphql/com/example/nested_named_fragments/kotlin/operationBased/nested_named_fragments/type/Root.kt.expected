@@ -12,10 +12,12 @@ import com.apollographql.apollo.api.ObjectType
 public class Root {
   public interface Data : Fragment.Data
 
-  public companion object {
+  public object __Arguments {
     public val __allStarships_first: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("first").build()
+  }
 
+  public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Root").build()
   }
 }

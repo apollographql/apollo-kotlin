@@ -6,6 +6,8 @@
 package com.example.fragments_with_defer_and_include_directives.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.StringAdapter
 import com.apollographql.apollo.api.and
@@ -27,12 +29,14 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
   public object Data : Adapter<SpreadMultipleWithDefer.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
+    private val __adapter0: Adapter<SpreadMultipleWithDefer.Data.Hero?> = Hero.obj(true).nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): SpreadMultipleWithDefer.Data {
       var _hero: SpreadMultipleWithDefer.Data.Hero? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -48,11 +52,14 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
       `value`: SpreadMultipleWithDefer.Data,
     ) {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
+      __adapter0.toJson(writer, customScalarAdapters, value.hero)
     }
 
     private object Hero : Adapter<SpreadMultipleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+      private val __condition0: BooleanExpression<BTerm> =
+          and(possibleTypes("Droid"),or(label("a_first"),label("a_second")))
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): SpreadMultipleWithDefer.Data.Hero {
         var __typename: String? = null
@@ -70,7 +77,7 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
         }
 
         var _droidDetails: DroidDetails? = null
-        if (and(possibleTypes("Droid"),or(label("a_first"),label("a_second"))).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
           _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader, customScalarAdapters)
         }

@@ -6,6 +6,8 @@
 package com.example.data_builders.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.StringAdapter
 import com.apollographql.apollo.api.evaluate
@@ -26,12 +28,14 @@ public object NodeQuery_ResponseAdapter {
   public object Data : Adapter<NodeQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
+    private val __adapter0: Adapter<NodeQuery.Data.Node> = Node.obj(true)
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): NodeQuery.Data {
       var _node: NodeQuery.Data.Node? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _node = Node.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _node = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -47,11 +51,15 @@ public object NodeQuery_ResponseAdapter {
       `value`: NodeQuery.Data,
     ) {
       writer.name("node")
-      Node.obj(true).toJson(writer, customScalarAdapters, value.node)
+      __adapter0.toJson(writer, customScalarAdapters, value.node)
     }
 
     private object Node : Adapter<NodeQuery.Data.Node> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
+
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("Human")
+
+      private val __condition1: BooleanExpression<BTerm> = possibleTypes("Droid")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): NodeQuery.Data.Node {
         var __typename: String? = null
@@ -70,13 +78,13 @@ public object NodeQuery_ResponseAdapter {
         }
 
         var _humanFragment: HumanFragment? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _humanFragment = com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.fromJson(reader, customScalarAdapters)
         }
 
         var _droidFragment: DroidFragment? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _droidFragment = com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader, customScalarAdapters)
         }

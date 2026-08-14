@@ -74,12 +74,8 @@ public class GetHero() : Query<GetHero.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = GetHero_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = GetHeroSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "9885eef2193cd56885e6e1bacd7f02b712820858880de6fb29b3f3b04458c831"
@@ -113,5 +109,14 @@ public class GetHero() : Query<GetHero.Data> {
       get() = "query GetHero { hero { __typename ... on Character { __typename ...characterName ...characterAppearsIn } } }  fragment characterName on Character { name }  fragment characterAppearsIn on Character { appearsIn }"
 
     public const val OPERATION_NAME: String = "GetHero"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = GetHeroSelections.__root)
+          .build()
+    }
   }
 }

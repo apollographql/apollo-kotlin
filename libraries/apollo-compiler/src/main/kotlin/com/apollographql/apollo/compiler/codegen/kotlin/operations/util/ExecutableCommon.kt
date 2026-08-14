@@ -26,6 +26,9 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
+private const val rootFieldHolder = "__RootField"
+private const val rootFieldHolderProperty = "instance"
+
 internal fun serializeVariablesFunSpec(
     adapterClassName: TypeName?,
     emptyMessage: String,
@@ -74,7 +77,8 @@ internal fun rootFieldFunSpec(): FunSpec {
 internal fun TypeSpec.Builder.executableCompanion(context: KotlinOperationsContext, executable: IrExecutable) = apply {
   return addSuperinterface(KotlinSymbols.ExecutableDefinition.parameterizedBy(context.resolver.resolveModel(executable.dataModelGroup.baseModelId)))
       .addProperty(adadpterPropertySpec(context, executable))
-      .addProperty(rootFieldPropertySpec(context, executable))
+      .addProperty(rootFieldPropertySpec())
+      .addType(rootFieldHolderTypeSpec(context, executable))
 }
 
 
@@ -86,24 +90,47 @@ internal fun adadpterPropertySpec(context: KotlinOperationsContext, executable: 
       .initializer(context.resolver.adapterInitializer(executable.dataProperty.info.type, executable.dataProperty.requiresBuffering, context.jsExport))
       .build()
 }
-internal fun rootFieldPropertySpec(context: KotlinOperationsContext, executable: IrExecutable): PropertySpec {
+/**
+ * [ROOT_FIELD] reads through [rootFieldHolder] instead of being initialized in the companion object so that
+ * reading [ADAPTER] doesn't build the whole selections tree. Both properties live in the same companion
+ * object, so a plain initializer here would make every parse materialize every
+ * [KotlinSymbols.CompiledField] of the executable, including for operations that never hit the normalized
+ * cache. A separate object has its own class initializer, so the tree is only built if [ROOT_FIELD] is
+ * actually read - and unlike `by lazy`, it costs no wrapper allocation and no synchronization per read.
+ */
+internal fun rootFieldPropertySpec(): PropertySpec {
+  return PropertySpec.builder(ROOT_FIELD, KotlinSymbols.CompiledField)
+      .addModifiers(KModifier.OVERRIDE)
+      .getter(
+          FunSpec.getterBuilder()
+              .addCode("return %L.%L\n", rootFieldHolder, rootFieldHolderProperty)
+              .build()
+      )
+      .build()
+}
+
+private fun rootFieldHolderTypeSpec(context: KotlinOperationsContext, executable: IrExecutable): TypeSpec {
   val selectionsClassName = when (executable) {
     is IrOperationDefinition -> context.resolver.resolveOperationSelections(executable.name)
     is IrFragmentDefinition -> context.resolver.resolveFragmentSelections(executable.name)
   }
 
-  return PropertySpec.builder(ROOT_FIELD, KotlinSymbols.CompiledField)
-      .addModifiers(KModifier.OVERRIDE)
-      .initializer(
-          CodeBlock.builder()
-              .add("%T(\n", KotlinSymbols.CompiledFieldBuilder)
-              .indent()
-              .add("name = %S,\n", Identifier.data)
-              .add("type = %L\n", context.resolver.resolveCompiledType(executable.typeCondition))
-              .unindent()
-              .add(")\n")
-              .add(".$selections(selections = %T.$root)\n", selectionsClassName)
-              .add(".build()\n")
+  return TypeSpec.objectBuilder(rootFieldHolder)
+      .addModifiers(KModifier.PRIVATE)
+      .addProperty(
+          PropertySpec.builder(rootFieldHolderProperty, KotlinSymbols.CompiledField)
+              .initializer(
+                  CodeBlock.builder()
+                      .add("%T(\n", KotlinSymbols.CompiledFieldBuilder)
+                      .indent()
+                      .add("name = %S,\n", Identifier.data)
+                      .add("type = %L\n", context.resolver.resolveCompiledType(executable.typeCondition))
+                      .unindent()
+                      .add(")\n")
+                      .add(".$selections(selections = %T.$root)\n", selectionsClassName)
+                      .add(".build()\n")
+                      .build()
+              )
               .build()
       )
       .build()

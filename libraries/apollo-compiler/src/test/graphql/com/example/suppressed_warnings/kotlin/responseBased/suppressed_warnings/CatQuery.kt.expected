@@ -58,12 +58,8 @@ public data class CatQuery(
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = CatQuery_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = CatQuerySelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "a9164e713b135ac6a07ce03604974a833b919eb0ff9099665d8e7ff076c2e2c5"
@@ -85,5 +81,14 @@ public data class CatQuery(
       get() = "query CatQuery(${'$'}filter: Filter) { search(filter: ${'$'}filter) { mustaches } direction }"
 
     public const val OPERATION_NAME: String = "CatQuery"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = CatQuerySelections.__root)
+          .build()
+    }
   }
 }

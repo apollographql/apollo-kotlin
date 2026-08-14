@@ -23,6 +23,10 @@ public object HeroDetailsImpl_ResponseAdapter {
   public object HeroDetails : Adapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
 
+    private val __adapter0:
+        Adapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection>
+        = FriendsConnection.obj()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.fragment_spread_with_nested_fields.fragment.HeroDetails {
       var _name: String? = null
       var _friendsConnection: com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection? = null
@@ -30,7 +34,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+          1 -> _friendsConnection = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -50,11 +54,15 @@ public object HeroDetailsImpl_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("friendsConnection")
-      FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
+      __adapter0.toJson(writer, customScalarAdapters, value.friendsConnection)
     }
 
     private object FriendsConnection : Adapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
+
+      private val __adapter0:
+          Adapter<List<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection.Edge?>?>
+          = Edge.obj().nullable().list().nullable()
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection {
         var _totalCount: Int? = null
@@ -63,7 +71,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> _totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
+            1 -> _edges = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -83,18 +91,22 @@ public object HeroDetailsImpl_ResponseAdapter {
         NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
 
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
+        __adapter0.toJson(writer, customScalarAdapters, value.edges)
       }
 
       private object Edge : Adapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
+
+        private val __adapter0:
+            Adapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection.Edge.Node?>
+            = Node.obj().nullable()
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection.Edge {
           var _node: com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection.Edge.Node? = null
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+              0 -> _node = __adapter0.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -110,7 +122,7 @@ public object HeroDetailsImpl_ResponseAdapter {
           `value`: com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection.Edge,
         ) {
           writer.name("node")
-          Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
+          __adapter0.toJson(writer, customScalarAdapters, value.node)
         }
 
         private object Node : Adapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection.Edge.Node> {

@@ -27,12 +27,15 @@ internal object CreateReviewForEpisode_ResponseAdapter {
   public object Data : Adapter<CreateReviewForEpisode.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("createReview")
 
+    private val __adapter0: Adapter<CreateReviewForEpisode.Data.CreateReview?> =
+        CreateReview.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): CreateReviewForEpisode.Data {
       var _createReview: CreateReviewForEpisode.Data.CreateReview? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _createReview = CreateReview.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _createReview = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -48,12 +51,19 @@ internal object CreateReviewForEpisode_ResponseAdapter {
       `value`: CreateReviewForEpisode.Data,
     ) {
       writer.name("createReview")
-      CreateReview.obj().nullable().toJson(writer, customScalarAdapters, value.createReview)
+      __adapter0.toJson(writer, customScalarAdapters, value.createReview)
     }
 
     private object CreateReview : Adapter<CreateReviewForEpisode.Data.CreateReview> {
       public val RESPONSE_NAMES: List<String> =
           listOf("stars", "commentary", "listOfListOfString", "listOfListOfEnum", "listOfListOfCustom", "listOfListOfObject")
+
+      private val __adapter0: Adapter<List<List<Episode>>?> =
+          Episode_ResponseAdapter.list().list().nullable()
+
+      private val __adapter1:
+          Adapter<List<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>?> =
+          ListOfListOfObject.obj().list().list().nullable()
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): CreateReviewForEpisode.Data.CreateReview {
         var _stars: Int? = null
@@ -68,9 +78,9 @@ internal object CreateReviewForEpisode_ResponseAdapter {
             0 -> _stars = IntAdapter.fromJson(reader, customScalarAdapters)
             1 -> _commentary = com.example.MyStringAdapter().nullable().fromJson(reader, customScalarAdapters)
             2 -> _listOfListOfString = com.example.MyStringAdapter().list().list().nullable().fromJson(reader, customScalarAdapters)
-            3 -> _listOfListOfEnum = Episode_ResponseAdapter.list().list().nullable().fromJson(reader, customScalarAdapters)
+            3 -> _listOfListOfEnum = __adapter0.fromJson(reader, customScalarAdapters)
             4 -> _listOfListOfCustom = customScalarAdapters.responseAdapterFor<UtilDate>(TypeDate.type).list().list().nullable().fromJson(reader, customScalarAdapters)
-            5 -> _listOfListOfObject = ListOfListOfObject.obj().list().list().nullable().fromJson(reader, customScalarAdapters)
+            5 -> _listOfListOfObject = __adapter1.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -100,13 +110,13 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         com.example.MyStringAdapter().list().list().nullable().toJson(writer, customScalarAdapters, value.listOfListOfString)
 
         writer.name("listOfListOfEnum")
-        Episode_ResponseAdapter.list().list().nullable().toJson(writer, customScalarAdapters, value.listOfListOfEnum)
+        __adapter0.toJson(writer, customScalarAdapters, value.listOfListOfEnum)
 
         writer.name("listOfListOfCustom")
         customScalarAdapters.responseAdapterFor<UtilDate>(TypeDate.type).list().list().nullable().toJson(writer, customScalarAdapters, value.listOfListOfCustom)
 
         writer.name("listOfListOfObject")
-        ListOfListOfObject.obj().list().list().nullable().toJson(writer, customScalarAdapters, value.listOfListOfObject)
+        __adapter1.toJson(writer, customScalarAdapters, value.listOfListOfObject)
       }
 
       private object ListOfListOfObject : Adapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {

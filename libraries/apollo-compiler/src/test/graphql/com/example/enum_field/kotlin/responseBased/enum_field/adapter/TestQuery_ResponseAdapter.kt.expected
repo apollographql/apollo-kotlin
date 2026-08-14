@@ -22,14 +22,18 @@ internal object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("gravity", "gravityAsEnum")
 
+    private val __adapter0: Adapter<Gravity?> = Gravity_ResponseAdapter.nullable()
+
+    private val __adapter1: Adapter<GravityAsEnum?> = GravityAsEnum_ResponseAdapter.nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _gravity: Gravity? = null
       var _gravityAsEnum: GravityAsEnum? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _gravity = Gravity_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
-          1 -> _gravityAsEnum = GravityAsEnum_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
+          0 -> _gravity = __adapter0.fromJson(reader, customScalarAdapters)
+          1 -> _gravityAsEnum = __adapter1.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -46,10 +50,10 @@ internal object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("gravity")
-      Gravity_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.gravity)
+      __adapter0.toJson(writer, customScalarAdapters, value.gravity)
 
       writer.name("gravityAsEnum")
-      GravityAsEnum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.gravityAsEnum)
+      __adapter1.toJson(writer, customScalarAdapters, value.gravityAsEnum)
     }
   }
 }

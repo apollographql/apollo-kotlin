@@ -72,12 +72,8 @@ public class GetHuman() : Query<GetHuman.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = GetHuman_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = GetHumanSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "b5ec6431463438b91c2cf1c33eb4b6a1f9e2580b51fcf5150ef3685b9108a12c"
@@ -106,5 +102,14 @@ public class GetHuman() : Query<GetHuman.Data> {
       get() = "query GetHuman { human { id name height } node { __typename ... on Human { height } } }"
 
     public const val OPERATION_NAME: String = "GetHuman"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = GetHumanSelections.__root)
+          .build()
+    }
   }
 }

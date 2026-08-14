@@ -280,6 +280,77 @@ val NullableAnyAdapter = AnyAdapter.nullable()
 val NullableLongAdapter = LongAdapter.nullable()
 
 /*
+ * Global instances of error aware adapters for built-in scalar types
+ *
+ * The generated adapters compose their adapter chains inline in `fromJson`/`toJson`, so without these every
+ * `errorAware()` in a chain allocates a new wrapper on every call - once per field, per object parsed. The
+ * built-in scalar adapters are stateless, so a single shared instance works for all of them.
+ */
+@JvmField
+val ErrorAwareStringAdapter = StringAdapter.errorAware()
+
+@JvmField
+val ErrorAwareDoubleAdapter = DoubleAdapter.errorAware()
+
+@JvmField
+val ErrorAwareIntAdapter = IntAdapter.errorAware()
+
+@JvmField
+val ErrorAwareBooleanAdapter = BooleanAdapter.errorAware()
+
+@JvmField
+val ErrorAwareAnyAdapter = AnyAdapter.errorAware()
+
+@JvmField
+val ErrorAwareLongAdapter = LongAdapter.errorAware()
+
+/*
+ * Global instances of error aware adapters for nullable built-in scalar types
+ *
+ * Same rationale as the error aware adapters above, for a nullable field.
+ */
+@JvmField
+val ErrorAwareNullableStringAdapter = NullableStringAdapter.errorAware()
+
+@JvmField
+val ErrorAwareNullableDoubleAdapter = NullableDoubleAdapter.errorAware()
+
+@JvmField
+val ErrorAwareNullableIntAdapter = NullableIntAdapter.errorAware()
+
+@JvmField
+val ErrorAwareNullableBooleanAdapter = NullableBooleanAdapter.errorAware()
+
+@JvmField
+val ErrorAwareNullableAnyAdapter = NullableAnyAdapter.errorAware()
+
+@JvmField
+val ErrorAwareNullableLongAdapter = NullableLongAdapter.errorAware()
+
+/*
+ * Global instances of the adapters generated for `@catch(to: NULL)` on a nullable built-in scalar type
+ *
+ * Same rationale as the error aware adapters above, for the two-wrapper chain.
+ */
+@JvmField
+val CatchToNullStringAdapter = NullableStringAdapter.errorAware().catchToNull()
+
+@JvmField
+val CatchToNullDoubleAdapter = NullableDoubleAdapter.errorAware().catchToNull()
+
+@JvmField
+val CatchToNullIntAdapter = NullableIntAdapter.errorAware().catchToNull()
+
+@JvmField
+val CatchToNullBooleanAdapter = NullableBooleanAdapter.errorAware().catchToNull()
+
+@JvmField
+val CatchToNullAnyAdapter = NullableAnyAdapter.errorAware().catchToNull()
+
+@JvmField
+val CatchToNullLongAdapter = NullableLongAdapter.errorAware().catchToNull()
+
+/*
  * Global instances of optional adapters for built-in scalar types
  */
 @JvmField

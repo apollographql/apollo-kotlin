@@ -60,11 +60,16 @@ public class IFragmentImpl() : Fragment<IFragmentImpl.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = IFragmentImpl_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = I.type
-        )
-        .selections(selections = IFragmentSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = I.type
+          )
+          .selections(selections = IFragmentSelections.__root)
+          .build()
+    }
   }
 }

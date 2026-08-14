@@ -29,6 +29,14 @@ public object TestQuery_ResponseAdapter {
     public val RESPONSE_NAMES: List<String> =
         listOf("object", "interface", "union", "scalar", "enum")
 
+    private val __adapter0: Adapter<TestQuery.Data.Object?> = Object.obj().nullable()
+
+    private val __adapter1: Adapter<TestQuery.Data.Interface?> = Interface.obj().nullable()
+
+    private val __adapter2: Adapter<TestQuery.Data.Union?> = Union.obj().nullable()
+
+    private val __adapter3: Adapter<RenamedEnum?> = RenamedEnum_ResponseAdapter.nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _object: TestQuery.Data.Object? = null
       var _interface: TestQuery.Data.Interface? = null
@@ -38,11 +46,11 @@ public object TestQuery_ResponseAdapter {
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _object = Object.obj().nullable().fromJson(reader, customScalarAdapters)
-          1 -> _interface = Interface.obj().nullable().fromJson(reader, customScalarAdapters)
-          2 -> _union = Union.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _object = __adapter0.fromJson(reader, customScalarAdapters)
+          1 -> _interface = __adapter1.fromJson(reader, customScalarAdapters)
+          2 -> _union = __adapter2.fromJson(reader, customScalarAdapters)
           3 -> _scalar = NullableAnyAdapter.fromJson(reader, customScalarAdapters)
-          4 -> _enum = RenamedEnum_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
+          4 -> _enum = __adapter3.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -62,19 +70,19 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("object")
-      Object.obj().nullable().toJson(writer, customScalarAdapters, value.`object`)
+      __adapter0.toJson(writer, customScalarAdapters, value.`object`)
 
       writer.name("interface")
-      Interface.obj().nullable().toJson(writer, customScalarAdapters, value.`interface`)
+      __adapter1.toJson(writer, customScalarAdapters, value.`interface`)
 
       writer.name("union")
-      Union.obj().nullable().toJson(writer, customScalarAdapters, value.union)
+      __adapter2.toJson(writer, customScalarAdapters, value.union)
 
       writer.name("scalar")
       NullableAnyAdapter.toJson(writer, customScalarAdapters, value.scalar)
 
       writer.name("enum")
-      RenamedEnum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.`enum`)
+      __adapter3.toJson(writer, customScalarAdapters, value.`enum`)
     }
 
     private object Object : Adapter<TestQuery.Data.Object> {

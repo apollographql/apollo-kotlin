@@ -22,14 +22,20 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("amenityCategories", "category")
 
+    private val __adapter0: Adapter<List<TestQuery.Data.AmenityCategory?>?> =
+        AmenityCategory.obj().nullable().list().nullable()
+
+    private val __adapter1: Adapter<com.example.list_field_clash.type.AmenityCategory?> =
+        AmenityCategory_ResponseAdapter.nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _amenityCategories: List<TestQuery.Data.AmenityCategory?>? = null
       var _category: com.example.list_field_clash.type.AmenityCategory? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _amenityCategories = AmenityCategory.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
-          1 -> _category = AmenityCategory_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
+          0 -> _amenityCategories = __adapter0.fromJson(reader, customScalarAdapters)
+          1 -> _category = __adapter1.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -46,10 +52,10 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("amenityCategories")
-      AmenityCategory.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.amenityCategories)
+      __adapter0.toJson(writer, customScalarAdapters, value.amenityCategories)
 
       writer.name("category")
-      AmenityCategory_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.category)
+      __adapter1.toJson(writer, customScalarAdapters, value.category)
     }
 
     private object AmenityCategory : Adapter<TestQuery.Data.AmenityCategory> {

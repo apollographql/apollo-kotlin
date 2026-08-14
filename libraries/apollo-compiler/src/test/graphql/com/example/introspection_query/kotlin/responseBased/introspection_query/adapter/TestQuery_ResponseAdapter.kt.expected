@@ -23,14 +23,18 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__schema", "__type")
 
+    private val __adapter0: Adapter<TestQuery.Data.__Schema> = __Schema.obj()
+
+    private val __adapter1: Adapter<TestQuery.Data.__Type> = __Type.obj()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var ___schema: TestQuery.Data.__Schema? = null
       var ___type: TestQuery.Data.__Type? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___schema = __Schema.obj().fromJson(reader, customScalarAdapters)
-          1 -> ___type = __Type.obj().fromJson(reader, customScalarAdapters)
+          0 -> ___schema = __adapter0.fromJson(reader, customScalarAdapters)
+          1 -> ___type = __adapter1.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -47,14 +51,18 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("__schema")
-      __Schema.obj().toJson(writer, customScalarAdapters, value.__schema)
+      __adapter0.toJson(writer, customScalarAdapters, value.__schema)
 
       writer.name("__type")
-      __Type.obj().toJson(writer, customScalarAdapters, value.__type)
+      __adapter1.toJson(writer, customScalarAdapters, value.__type)
     }
 
     private object __Schema : Adapter<TestQuery.Data.__Schema> {
       public val RESPONSE_NAMES: List<String> = listOf("queryType", "types")
+
+      private val __adapter0: Adapter<TestQuery.Data.__Schema.QueryType> = QueryType.obj()
+
+      private val __adapter1: Adapter<List<TestQuery.Data.__Schema.Type>> = Type.obj().list()
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.__Schema {
         var _queryType: TestQuery.Data.__Schema.QueryType? = null
@@ -62,8 +70,8 @@ public object TestQuery_ResponseAdapter {
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _queryType = QueryType.obj().fromJson(reader, customScalarAdapters)
-            1 -> _types = Type.obj().list().fromJson(reader, customScalarAdapters)
+            0 -> _queryType = __adapter0.fromJson(reader, customScalarAdapters)
+            1 -> _types = __adapter1.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -80,10 +88,10 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.__Schema,
       ) {
         writer.name("queryType")
-        QueryType.obj().toJson(writer, customScalarAdapters, value.queryType)
+        __adapter0.toJson(writer, customScalarAdapters, value.queryType)
 
         writer.name("types")
-        Type.obj().list().toJson(writer, customScalarAdapters, value.types)
+        __adapter1.toJson(writer, customScalarAdapters, value.types)
       }
 
       private object QueryType : Adapter<TestQuery.Data.__Schema.QueryType> {

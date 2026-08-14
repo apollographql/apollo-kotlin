@@ -6,6 +6,8 @@
 package com.example.fragments_with_defer_and_include_directives.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.StringAdapter
 import com.apollographql.apollo.api.and
@@ -33,12 +35,15 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
   public object Data : Adapter<SpreadMultipleWithDeferWithIf.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
+    private val __adapter0: Adapter<SpreadMultipleWithDeferWithIf.Data.Hero?> =
+        Hero.obj(true).nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): SpreadMultipleWithDeferWithIf.Data {
       var _hero: SpreadMultipleWithDeferWithIf.Data.Hero? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -54,11 +59,19 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
       `value`: SpreadMultipleWithDeferWithIf.Data,
     ) {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
+      __adapter0.toJson(writer, customScalarAdapters, value.hero)
     }
 
     private object Hero : Adapter<SpreadMultipleWithDeferWithIf.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("Droid")
+
+      private val __condition1: BooleanExpression<BTerm> =
+          and(possibleTypes("Droid"),label("c_second"))
+
+      private val __condition2: BooleanExpression<BTerm> =
+          and(possibleTypes("Droid"),or(not(variable("cond")),label("c_third")))
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): SpreadMultipleWithDeferWithIf.Data.Hero {
         var __typename: String? = null
@@ -76,19 +89,19 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
         }
 
         var _characterDetails: CharacterDetails? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
           _characterDetails = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.fromJson(reader, customScalarAdapters)
         }
 
         var _characterDetails2: CharacterDetails2? = null
-        if (and(possibleTypes("Droid"),label("c_second")).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
+        if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
           _characterDetails2 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.fromJson(reader, customScalarAdapters)
         }
 
         var _characterDetails3: CharacterDetails3? = null
-        if (and(possibleTypes("Droid"),or(not(variable("cond")),label("c_third"))).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
+        if (__condition2.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
           _characterDetails3 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.fromJson(reader, customScalarAdapters)
         }

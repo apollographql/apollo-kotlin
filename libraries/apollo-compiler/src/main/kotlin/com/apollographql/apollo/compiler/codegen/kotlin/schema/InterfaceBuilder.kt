@@ -28,7 +28,7 @@ internal class InterfaceBuilder(
     context.resolver.registerSchemaType(iface.name, ClassName(packageName, simpleName))
     for (fieldDefinition in iface.fieldDefinitions) {
       fieldDefinition.argumentDefinitions.forEach { argumentDefinition ->
-        context.resolver.registerArgumentDefinition(argumentDefinition.id, ClassName(packageName, simpleName))
+        context.resolver.registerArgumentDefinition(argumentDefinition.id, ClassName(packageName, simpleName, argumentsHolder))
       }
     }
   }
@@ -49,13 +49,13 @@ internal class InterfaceBuilder(
         .maybeAddDescription(description)
         .maybeAddDeprecation(deprecationReason)
         .addType(dataTypeSpec())
+        .maybeAddArguments(fieldDefinitions)
         .addType(companionTypeSpec())
         .build()
   }
 
   private fun IrInterface.companionTypeSpec(): TypeSpec {
     return TypeSpec.companionObjectBuilder()
-        .addProperties(fieldDefinitions.argumentsPropertySpecs())
         .addProperty(typePropertySpec(context.resolver))
         .build()
   }
