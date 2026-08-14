@@ -218,7 +218,7 @@ fun runTest(projectId: String, testApk: String): String {
 fun getTestResult(output: String, storage: Storage): TestResult {
   val gsUrl = output.lines().mapNotNull {
     val matchResult =
-        Regex(".*\\[https://console.developers.google.com/storage/browser/([^\\]]*).*").matchEntire(it)
+      Regex(".*\\[https://console.developers.google.com/storage/browser/([^\\]]*).*").matchEntire(it)
     matchResult?.groupValues?.get(1)
   }.single()
       .split("/")
@@ -469,75 +469,40 @@ fun formattedTestResult(title: String, testResult: TestResult): String {
 }
 
 val issueTitle = "Benchmarks dashboard"
+val BENCHMARKS_DAHSBOARD_ISSUE_ID = "I_kwDOBCQEc85Mw07L"
 fun updateOrCreateGithubIssue(testResult: TestResult, githubToken: String) {
-  val ghRepo = getRequiredEnvVariable("GITHUB_REPOSITORY")
-  val ghRepositoryOwner = ghRepo.split("/")[0]
-  val ghRepositoryName = ghRepo.split("/")[1]
-
-  val query = """
-{
-  search(query: "$issueTitle repo:$ghRepo", type: ISSUE, first: 100) {
-    edges {
-      node {
-        ... on Issue {
-          title
-          id
-        }
-      }
-    }
-  }
-  repository(owner: "$ghRepositoryOwner", name: "$ghRepositoryName") {
-    id
-  }
-}
-""".trimIndent()
-
-
-  val response = ghGraphQL(query, githubToken)
-  val existingIssues = response.get("search").asMap.get("edges").asList
-
   val body = formattedTestResult("Micro benchmarks", testResult)
   val mutation: String
   val variables: Map<String, String>
-  if (existingIssues.isEmpty()) {
-    mutation = """
-mutation createIssue(${'$'}repositoryId: ID!, ${'$'}title: String!, ${'$'}body: String!) {
-  createIssue(input: {repositoryId: ${'$'}repositoryId, title: ${'$'}title, body: ${'$'}body} ){
-    clientMutationId
-  }
-}
+
+  mutation = """
+    mutation updateIssue(${'$'}id: ID!, ${'$'}body: String!) {
+      updateIssue(input: {id: ${'$'}id, body: ${'$'}body} ){
+        clientMutationId
+      }
+    }
     """.trimIndent()
-    variables = mapOf(
-        "title" to issueTitle,
-        "body" to body,
-        "repositoryId" to response.get("repository").asMap["id"].cast<String>()
-    )
-    println("creating issue")
-  } else {
-    mutation = """
-mutation updateIssue(${'$'}id: ID!, ${'$'}body: String!) {
-  updateIssue(input: {id: ${'$'}id, body: ${'$'}body} ){
-    clientMutationId
-  }
-}
-    """.trimIndent()
-    variables = mapOf(
-        "id" to existingIssues.first().asMap["node"].asMap["id"].cast<String>(),
-        "body" to body
-    )
-    println("updating issue")
-  }
+  variables = mapOf(
+      "id" to BENCHMARKS_DAHSBOARD_ISSUE_ID,
+      "body" to body
+  )
+  println("updating issue $BENCHMARKS_DAHSBOARD_ISSUE_ID....")
+
   ghGraphQL(mutation, githubToken, variables)
 }
 
 fun ghGraphQL(operation: String, ghToken: String, variables: Map<String, String> = emptyMap()): Map<String, Any?> {
   val headers = mapOf("Authorization" to "bearer $ghToken")
-  return graphQL(
+  val response = graphQL(
       url = "https://api.github.com/graphql",
       operation = operation,
       headers = headers,
       variables = variables
-  ).get("data").asMap
+  )
+
+  val data = response.get("data")
+
+  return data.asMap
 }
 
 fun Serie(name: String, value: Long, tags: List<String>, now: Long): Map<String, Any> {
@@ -612,6 +577,7 @@ fun main() = runBlocking {
   if (githubToken != null) {
     updateOrCreateGithubIssue(testResult, githubToken)
   }
+
   val datadogApiKey = getOptionalEnvVariable("DD_API_KEY")
   if (datadogApiKey != null) {
     uploadToDatadog(datadogApiKey, testResult.cases, testResult.extraMetrics)
