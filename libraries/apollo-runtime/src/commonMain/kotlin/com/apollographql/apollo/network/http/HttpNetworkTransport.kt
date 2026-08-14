@@ -53,12 +53,17 @@ private constructor(
   private val engineInterceptor = EngineInterceptor()
   private val incrementalDeliveryProtocolImpl: IncrementalDeliveryProtocolImpl = incrementalDeliveryProtocol.impl
 
+  /**
+   * [interceptors] is immutable, compute the chain interceptors once instead of on every request
+   */
+  private val chainInterceptors: List<HttpInterceptor> = interceptors + engineInterceptor
+
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
     val customScalarAdapters = request.executionContext[CustomScalarAdapters]!!
 
-    val request = if (request.httpHeaders.orEmpty().none { it.name.lowercase() == "accept" }) {
+    val request = if (request.httpHeaders.orEmpty().none { it.name.equals("accept", ignoreCase = true) }) {
       val accept = if (request.operation is Subscription<*>) {
         "multipart/mixed;subscriptionSpec=1.0, application/graphql-response+json, application/json"
       } else {
@@ -83,7 +88,7 @@ private constructor(
       var throwable: Throwable? = null
       val httpResponse: HttpResponse? = try {
         DefaultHttpInterceptorChain(
-            interceptors = interceptors + engineInterceptor,
+            interceptors = chainInterceptors,
             index = 0
         ).proceed(httpRequest)
       } catch (t: Throwable) {
@@ -177,9 +182,14 @@ private constructor(
             operation,
             customScalarAdapters = customScalarAdapters,
             deferredFragmentIdentifiers = null,
-        ).newBuilder().addExecutionContext(httpResponse.executionContext).build()
+        )
+        // Only rebuild the response once
+        .newBuilder()
+        .addExecutionContext(httpResponse.executionContext)
+        .isLast(true)
+        .build()
 
-    return flowOf(response.newBuilder().isLast(true).build())
+    return flowOf(response)
   }
 
   private fun <D : Operation.Data> multipleResponses(

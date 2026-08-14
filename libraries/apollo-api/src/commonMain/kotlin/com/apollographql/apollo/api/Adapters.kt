@@ -409,7 +409,8 @@ class ObjectAdapter<T>(
 
 private class ErrorAwareAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<T> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
-    if (reader.peek() == JsonReader.Token.NULL) {
+    // reader.getPath() allocates, only compute it if there are errors that could match
+    if (!customScalarAdapters.errors.isNullOrEmpty() && reader.peek() == JsonReader.Token.NULL) {
       val error = customScalarAdapters.firstErrorStartingWith(reader.getPath())
       if (error != null) {
         reader.skipValue()

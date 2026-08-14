@@ -38,46 +38,25 @@ class CustomScalarAdapters private constructor(
   }
 
   fun <T : Any> responseAdapterFor(customScalar: CustomScalarType): Adapter<T> {
+    val registered = adaptersMap[customScalar.name]
+    if (registered != null) {
+      @Suppress("UNCHECKED_CAST")
+      return registered as Adapter<T>
+    }
+
+    /**
+     * Below are shortcuts to save the users a call to `registerCustomScalarAdapter`
+     */
     @Suppress("UNCHECKED_CAST")
-    return when {
-      adaptersMap[customScalar.name] != null -> {
-        adaptersMap[customScalar.name]
-      }
-      /**
-       * Below are shortcuts to save the users a call to `registerCustomScalarAdapter`
-       */
-      customScalar.className == "com.apollographql.apollo.api.Upload" -> {
-        UploadAdapter
-      }
-
-      customScalar.className in listOf("kotlin.String", "java.lang.String") -> {
-        StringAdapter
-      }
-
-      customScalar.className in listOf("kotlin.Boolean", "java.lang.Boolean") -> {
-        BooleanAdapter
-      }
-
-      customScalar.className in listOf("kotlin.Int", "java.lang.Int") -> {
-        IntAdapter
-      }
-
-      customScalar.className in listOf("kotlin.Double", "java.lang.Double") -> {
-        DoubleAdapter
-      }
-
-      customScalar.className in listOf("kotlin.Long", "java.lang.Long") -> {
-        LongAdapter
-      }
-
-      customScalar.className in listOf("kotlin.Float", "java.lang.Float") -> {
-        FloatAdapter
-      }
-
-      customScalar.className in listOf("kotlin.Any", "java.lang.Object") -> {
-        AnyAdapter
-      }
-
+    return when (customScalar.className) {
+      "com.apollographql.apollo.api.Upload" -> UploadAdapter
+      "kotlin.String", "java.lang.String" -> StringAdapter
+      "kotlin.Boolean", "java.lang.Boolean" -> BooleanAdapter
+      "kotlin.Int", "java.lang.Int" -> IntAdapter
+      "kotlin.Double", "java.lang.Double" -> DoubleAdapter
+      "kotlin.Long", "java.lang.Long" -> LongAdapter
+      "kotlin.Float", "java.lang.Float" -> FloatAdapter
+      "kotlin.Any", "java.lang.Object" -> AnyAdapter
       else -> error("Can't map GraphQL type: `${customScalar.name}` to: `${customScalar.className}`. Did you forget to add a scalar Adapter?")
     } as Adapter<T>
   }
@@ -120,6 +99,33 @@ class CustomScalarAdapters private constructor(
       }
     }
     return true
+  }
+
+  /**
+   * Returns a copy of this [CustomScalarAdapters] with the given parsing context. The adapters are
+   * shared with this instance, making this much cheaper than going through [newBuilder], which
+   * copies the whole adapters map.
+   */
+  internal fun copyWithParsingContext(
+      falseVariables: Set<String>?,
+      deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?,
+      errors: List<Error>?,
+  ): CustomScalarAdapters {
+    if (falseVariables == null &&
+        deferredFragmentIdentifiers == null &&
+        errors == null &&
+        this.falseVariables == null &&
+        this.deferredFragmentIdentifiers == null &&
+        this.errors == null
+    ) {
+      return this
+    }
+    return CustomScalarAdapters(
+        adaptersMap,
+        falseVariables,
+        deferredFragmentIdentifiers,
+        errors,
+    )
   }
 
   fun newBuilder(): Builder {

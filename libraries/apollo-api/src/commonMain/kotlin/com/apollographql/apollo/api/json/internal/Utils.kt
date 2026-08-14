@@ -38,3 +38,25 @@ internal fun Double.toLongExact(): Long {
   }
   return result
 }
+
+/**
+ * Same as [toIntExact] but returns null instead of throwing. Useful in hot paths where the
+ * conversion is expected to fail routinely.
+ */
+@JvmName("-LongToIntExactOrNull")
+internal fun Long.toIntExactOrNull(): Int? {
+  val result = toInt()
+  return if (result.toLong() == this) result else null
+}
+
+@JvmName("-DoubleToIntExactOrNull")
+internal fun Double.toIntExactOrNull(): Int? {
+  val result = toInt()
+  return if (result.toDouble() == this) result else null
+}
+
+@JvmName("-DoubleToLongExactOrNull")
+internal fun Double.toLongExactOrNull(): Long? {
+  val result = toLong()
+  return if (result.toDouble() == this) result else null
+}
