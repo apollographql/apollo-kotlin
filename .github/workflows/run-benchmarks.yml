@@ -30,8 +30,8 @@ jobs:
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.APOLLO_KOTLIN_GOOGLE_SERVICES_JSON }}
       - run: |
-          # Run the native benchmarks and write the results to tests/native-benchmarks/build/measurements.json
-          ./gradlew -p tests :native-benchmarks:allTests
+          # Run the native, ast and compiler benchmarks
+          ./gradlew -p tests :native-benchmarks:allTests :ast-benchmark:jmhBenchmark :compiler-benchmark:jmhBenchmark
       - run: |
           # Upload all the results to Datadog and update the benchmarks issue
           ./scripts/upload-benchmarks.main.kts

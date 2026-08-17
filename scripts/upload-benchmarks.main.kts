@@ -22,10 +22,12 @@ import java.util.Date
 /**
  * Uploads the benchmarks results to Datadog and updates the benchmarks dashboard issue.
  *
- * Two kinds of results are read:
+ * Several kinds of results are read:
  *
  * - the micro benchmarks written by `scripts/run-firebase-benchmarks.main.kts` in [firebaseResultsFile]
  * - the native benchmarks written by `./gradlew -p tests :native-benchmarks:allTests` in [nativeResultsFile]
+ * - the AST (JMH) benchmarks written by `./gradlew -p tests :ast-benchmark:jmhBenchmark` in [astBenchmarkReportsDir]
+ * - the compiler (JMH) benchmarks written by `./gradlew -p tests :compiler-benchmark:jmhBenchmark` in [compilerBenchmarkReportsDir]
  *
  * This script expects:
  *
@@ -50,6 +52,13 @@ val firebaseResultsFile = File("benchmark/build/firebase-benchmarks.json")
  * Must be kept in sync with `tests/native-benchmarks/src/appleTest/kotlin/benchmarks/BenchmarksTest.kt`
  */
 val nativeResultsFile = File("tests/native-benchmarks/build/measurements.json")
+
+/**
+ * Where the `kotlinx.benchmark` (JMH) reports are written to by `./gradlew :ast-benchmark:jmhBenchmark`
+ * and `./gradlew :compiler-benchmark:jmhBenchmark`. Each run creates a new timestamped subdirectory.
+ */
+val astBenchmarkReportsDir = File("tests/ast-benchmark/build/reports/benchmarks/main")
+val compilerBenchmarkReportsDir = File("tests/compiler-benchmark/build/reports/benchmarks/main")
 
 val now = System.currentTimeMillis() / 1000
 
@@ -87,6 +96,17 @@ data class NativeBenchmark(
      */
     val name: String,
     val measurements: List<Long>,
+)
+
+data class JmhBenchmark(
+    /**
+     * The JMH benchmark name, e.g. `benchmark.ApolloValidationBenchmark.apollo`.
+     */
+    val name: String,
+    val scoreUnit: String,
+    val score: Double,
+    val scoreError: Double,
+    val measurements: List<Double>,
 )
 
 fun readJson(file: File, producedBy: String): Any {
@@ -149,6 +169,39 @@ fun readNativeBenchmarks(): List<NativeBenchmark> {
   }
 }
 
+/**
+ * Finds the `jmh.json` report written by the most recent run of the `kotlinx.benchmark` `jmhBenchmark`
+ * task in [reportsDir] (each run creates a new timestamped subdirectory).
+ */
+fun findLatestJmhReportFile(reportsDir: File, producedBy: String): File {
+  check(reportsDir.exists()) {
+    "Cannot find '${reportsDir.absolutePath}'. Did you run '$producedBy' first?"
+  }
+  val latestRunDir = reportsDir.listFiles { file -> file.isDirectory }?.maxByOrNull { it.name }
+  checkNotNull(latestRunDir) {
+    "Cannot find any report in '${reportsDir.absolutePath}'. Did you run '$producedBy' first?"
+  }
+  return File(latestRunDir, "jmh.json")
+}
+
+/**
+ * Reads a `kotlinx.benchmark` (JMH) JSON report from [reportsDir].
+ */
+fun readJmhBenchmarks(reportsDir: File, producedBy: String): List<JmhBenchmark> {
+  val file = findLatestJmhReportFile(reportsDir, producedBy)
+
+  return readJson(file, producedBy).asList.map { it.asMap }.map {
+    val primaryMetric = it["primaryMetric"].asMap
+    JmhBenchmark(
+        name = it["benchmark"].asString,
+        scoreUnit = primaryMetric["scoreUnit"].asString,
+        score = primaryMetric["score"].asNumber.toDouble(),
+        scoreError = primaryMetric["scoreError"].asNumber.toDouble(),
+        measurements = primaryMetric["rawData"].asList.flatMap { fork -> fork.asList.map { measurement -> measurement.asNumber.toDouble() } },
+    )
+  }
+}
+
 fun formattedTestResult(title: String, testResult: TestResult): String {
   return buildString {
     appendLine("## $title")
@@ -156,18 +209,69 @@ fun formattedTestResult(title: String, testResult: TestResult): String {
     appendLine("* Firebase console: [link](${testResult.firebaseUrl})")
     appendLine("* Datadog dashboard: [link](${ddDashboardUrl})")
     appendLine()
-    appendLine("### Test Cases:")
+    appendLine("<details>")
+    appendLine("<summary>Test Cases</summary>")
+    appendLine()
     appendLine("| Test Case | Nanos | Allocs |")
     appendLine("|-----------|-------|--------|")
     testResult.cases.forEach {
       appendLine("|${it.fqName}|${it.nanos}|${it.allocs}|")
     }
+    appendLine()
+    appendLine("</details>")
+  }
+}
+
+fun formattedNativeBenchmarks(title: String, nativeBenchmarks: List<NativeBenchmark>): String {
+  return buildString {
+    appendLine("## $title")
+    appendLine("### Last Run: ${Date()}")
+    appendLine("* Datadog dashboard: [link](${ddDashboardUrl})")
+    appendLine()
+    appendLine("<details>")
+    appendLine("<summary>Test Cases</summary>")
+    appendLine()
+    appendLine("| Test Case | Measurements (ns) |")
+    appendLine("|-----------|--------------------|")
+    nativeBenchmarks.forEach {
+      appendLine("|${it.name}|${it.measurements.joinToString(", ")}|")
+    }
+    appendLine()
+    appendLine("</details>")
+  }
+}
+
+fun formattedJmhBenchmarks(title: String, benchmarks: List<JmhBenchmark>): String {
+  return buildString {
+    appendLine("## $title")
+    appendLine("### Last Run: ${Date()}")
+    appendLine("* Datadog dashboard: [link](${ddDashboardUrl})")
+    appendLine()
+    appendLine("<details>")
+    appendLine("<summary>Test Cases</summary>")
+    appendLine()
+    appendLine("| Test Case | Score | Error | Unit |")
+    appendLine("|-----------|-------|-------|------|")
+    benchmarks.forEach {
+      appendLine("|${it.name}|${"%.3f".format(it.score)}|± ${"%.3f".format(it.scoreError)}|${it.scoreUnit}|")
+    }
+    appendLine()
+    appendLine("</details>")
   }
 }
 
 val BENCHMARKS_DAHSBOARD_ISSUE_ID = "I_kwDOBCQEc85Mw07L"
-fun updateGithubIssue(testResult: TestResult, githubToken: String) {
-  val body = formattedTestResult("Micro benchmarks", testResult)
+fun updateGithubIssue(
+    testResult: TestResult,
+    nativeBenchmarks: List<NativeBenchmark>,
+    astBenchmarks: List<JmhBenchmark>,
+    compilerBenchmarks: List<JmhBenchmark>,
+    githubToken: String,
+) {
+  val body = formattedTestResult("Micro benchmarks", testResult) + "\n" +
+      formattedNativeBenchmarks("Native benchmarks", nativeBenchmarks) + "\n" +
+      formattedJmhBenchmarks("AST benchmarks", astBenchmarks) + "\n" +
+      formattedJmhBenchmarks("Compiler benchmarks", compilerBenchmarks)
 
   val mutation = """
     mutation updateIssue(${'$'}id: ID!, ${'$'}body: String!) {
@@ -202,7 +306,7 @@ fun ghGraphQL(operation: String, ghToken: String, variables: Map<String, String>
 /**
  * A Datadog serie. [metric] is used as-is, see the [PrefixedSerie] overloads to prepend [ddMetricPrefix].
  */
-fun Serie(metric: String, values: List<Long>, tags: List<String>): Map<String, Any> {
+fun Serie(metric: String, values: List<Number>, tags: List<String>): Map<String, Any> {
   return mapOf(
       "metric" to metric,
       "type" to 0,
@@ -248,6 +352,16 @@ fun List<NativeBenchmark>.toSeries(): List<Map<String, Any>> {
   }
 }
 
+/**
+ * [module] is prepended to the metric name since, unlike native benchmarks, JMH benchmark names
+ * (e.g. `benchmark.ApolloValidationBenchmark.apollo`) are not already fully qualified.
+ */
+fun List<JmhBenchmark>.toSeries(module: String): List<Map<String, Any>> {
+  return map {
+    Serie("$ddMetricPrefix.jmh.$module.${it.name}", it.measurements, listOf("unit:${it.scoreUnit}"))
+  }
+}
+
 fun uploadToDatadog(datadogApiKey: String, series: List<Map<String, Any>>) {
   val body = mapOf("series" to series)
 
@@ -272,15 +386,23 @@ fun uploadToDatadog(datadogApiKey: String, series: List<Map<String, Any>>) {
 fun main() {
   val testResult = readTestResult()
   val nativeBenchmarks = readNativeBenchmarks()
+  val astBenchmarks = readJmhBenchmarks(astBenchmarkReportsDir, "./gradlew -p tests :ast-benchmark:jmhBenchmark")
+  val compilerBenchmarks = readJmhBenchmarks(compilerBenchmarkReportsDir, "./gradlew -p tests :compiler-benchmark:jmhBenchmark")
 
   val datadogApiKey = getOptionalEnvVariable("DD_API_KEY")
   if (datadogApiKey != null) {
-    uploadToDatadog(datadogApiKey, testResult.toSeries() + nativeBenchmarks.toSeries())
+    uploadToDatadog(
+        datadogApiKey,
+        testResult.toSeries() +
+            nativeBenchmarks.toSeries() +
+            astBenchmarks.toSeries("ast-benchmark") +
+            compilerBenchmarks.toSeries("compiler-benchmark")
+    )
   }
 
   val githubToken = getOptionalEnvVariable("GITHUB_TOKEN")
   if (githubToken != null) {
-    updateGithubIssue(testResult, githubToken)
+    updateGithubIssue(testResult, nativeBenchmarks, astBenchmarks, compilerBenchmarks, githubToken)
   }
 }
 
