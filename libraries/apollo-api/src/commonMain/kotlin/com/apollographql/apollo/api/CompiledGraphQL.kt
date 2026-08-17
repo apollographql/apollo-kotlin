@@ -86,7 +86,10 @@ class CompiledField internal constructor(
    */
   @ApolloExperimental
   fun argumentValues(variables: Executable.Variables, filter: (CompiledArgument) -> Boolean = { true }): Map<String, ApolloJsonElement> {
-    val arguments = arguments.filter(filter).filter { it.value is Optional.Present<*> }
+    if (this.arguments.isEmpty()) {
+      return emptyMap()
+    }
+    val arguments = arguments.filter { filter(it) && it.value is Optional.Present<*> }
     if (arguments.isEmpty()) {
       return emptyMap()
     }
@@ -147,6 +150,11 @@ class CompiledField internal constructor(
    * CacheKey1: `users({"ids": 42})`
    */
   fun nameWithArguments(variables: Executable.Variables): String {
+    if (this.arguments.isEmpty()) {
+      // A field that takes no arguments is its own key, whatever the variables are. Checked here as
+      // well as in `argumentValues` so that the common case does not reach a call at all.
+      return name
+    }
     val arguments = argumentValues(variables)
     if (arguments.isEmpty()) {
       return name
