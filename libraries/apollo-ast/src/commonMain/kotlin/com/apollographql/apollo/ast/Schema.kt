@@ -114,7 +114,7 @@ class Schema internal constructor(
       "query" -> queryTypeDefinition.name
       "mutation" -> mutationTypeDefinition?.name
       "subscription" -> subscriptionTypeDefinition?.name
-      else -> rootOperationTypeDefinition(operationType, definitions)?.name
+      else -> error("Unknown operation type: '$operationType'")
     }
   }
 
