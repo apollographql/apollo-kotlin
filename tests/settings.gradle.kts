@@ -12,6 +12,7 @@ listOf(
     "cache-variables-arguments",
     "catch",
     "catch-responseBased",
+    "compiler-benchmark",
     "compiler-plugins/add-field",
     "compiler-plugins/app",
     "compiler-plugins/capitalize-enum-values",
