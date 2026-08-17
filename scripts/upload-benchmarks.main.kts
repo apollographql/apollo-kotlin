@@ -17,6 +17,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import java.lang.management.ManagementFactory
 import java.util.Date
 
 /**
@@ -90,24 +91,46 @@ data class ExtraMetric(
 )
 
 data class NativeBenchmark(
-    /**
-     * The metric name. Native benchmarks use fully qualified names like
-     * `apollo.kotlin.native.simplequery.nocache` so [ddMetricPrefix] is not prepended.
-     */
-    val name: String,
-    val measurements: List<Long>,
+    val `class`: String,
+    val test: String,
+    val nanos: Double,
 )
 
 data class JmhBenchmark(
-    /**
-     * The JMH benchmark name, e.g. `benchmark.ApolloValidationBenchmark.apollo`.
-     */
-    val name: String,
-    val scoreUnit: String,
+    val `class`: String,
+    val test: String,
     val score: Double,
-    val scoreError: Double,
-    val measurements: List<Double>,
 )
+
+data class MachineInfo(
+    val os: String,
+    val cores: Int,
+    val totalMemoryBytes: Long,
+)
+
+/**
+ * Reads information about the machine running this script, to help interpret benchmark results
+ * that may vary between different CI runners.
+ */
+fun readMachineInfo(): MachineInfo {
+  val osMxBean = ManagementFactory.getOperatingSystemMXBean()
+  // Reflection is used against the public `com.sun.management.OperatingSystemMXBean` interface (rather
+  // than casting osMxBean and calling the method directly) because the method was renamed between JDK
+  // versions, and against the interface (rather than osMxBean's own hidden implementation class) because
+  // that implementation class lives in a module that doesn't export it.
+  val osMxBeanClass = Class.forName("com.sun.management.OperatingSystemMXBean")
+  val totalMemoryBytes = try {
+    osMxBeanClass.getMethod("getTotalMemorySize").invoke(osMxBean) as Long
+  } catch (_: NoSuchMethodException) {
+    osMxBeanClass.getMethod("getTotalPhysicalMemorySize").invoke(osMxBean) as Long
+  }
+
+  return MachineInfo(
+      os = "${System.getProperty("os.name")} ${System.getProperty("os.version")} (${System.getProperty("os.arch")})",
+      cores = Runtime.getRuntime().availableProcessors(),
+      totalMemoryBytes = totalMemoryBytes,
+  )
+}
 
 fun readJson(file: File, producedBy: String): Any {
   check(file.exists()) {
@@ -146,14 +169,19 @@ fun readTestResult(): TestResult {
 /**
  * Reads the native benchmarks results:
  *
- * ```
+ * ```json
  * {
  *   "benchmarks": [
  *     {
- *       "name": "apollo.kotlin.native.simplequery.nocache",
- *       "measurements": [1234, 1235, ...]
+ *       "class": "okio.RealBufferedSink",
+ *       "test": "benchmarkSimpleQuery",
+ *       "nanos": 3.429887793E8
  *     },
- *     ...
+ *     {
+ *       "class": "okio.RealBufferedSink",
+ *       "test": "benchmarkSimpleQueryWithMemoryCache",
+ *       "nanos": 6.2430175E7
+ *     }
  *   ]
  * }
  * ```
@@ -163,8 +191,9 @@ fun readNativeBenchmarks(): List<NativeBenchmark> {
 
   return map["benchmarks"].asList.map { it.asMap }.map {
     NativeBenchmark(
-        name = it["name"].asString,
-        measurements = it["measurements"].asList.map { measurement -> measurement.asNumber.toLong() },
+        `class` = it["class"].asString,
+        test = it["test"].asString,
+        nanos = it["nanos"].asNumber.toDouble(),
     )
   }
 }
@@ -193,21 +222,30 @@ fun readJmhBenchmarks(reportsDir: File, producedBy: String): List<JmhBenchmark> 
   return readJson(file, producedBy).asList.map { it.asMap }.map {
     val primaryMetric = it["primaryMetric"].asMap
     JmhBenchmark(
-        name = it["benchmark"].asString,
-        scoreUnit = primaryMetric["scoreUnit"].asString,
+        `class` = it["benchmark"].asString.substringBeforeLast('.'),
+        test = it["benchmark"].asString.substringAfterLast('.'),
         score = primaryMetric["score"].asNumber.toDouble(),
-        scoreError = primaryMetric["scoreError"].asNumber.toDouble(),
-        measurements = primaryMetric["rawData"].asList.flatMap { fork -> fork.asList.map { measurement -> measurement.asNumber.toDouble() } },
     )
+  }
+}
+
+/**
+ * The information shared by every kind of benchmark: when they ran, where to find them in Datadog
+ * and Firebase, and the machine that produced them.
+ */
+fun formattedHeader(testResult: TestResult, machineInfo: MachineInfo): String {
+  val ramGb = machineInfo.totalMemoryBytes / 1024.0 / 1024.0 / 1024.0
+  return buildString {
+    appendLine("### Last Run: ${Date()}")
+    appendLine("* Datadog dashboard: [link](${ddDashboardUrl})")
+    appendLine("* Firebase console: [link](${testResult.firebaseUrl})")
+    appendLine("* Machine: ${machineInfo.os}, ${machineInfo.cores} cores, ${"%.1f".format(ramGb)} GB RAM")
   }
 }
 
 fun formattedTestResult(title: String, testResult: TestResult): String {
   return buildString {
     appendLine("## $title")
-    appendLine("### Last Run: ${Date()}")
-    appendLine("* Firebase console: [link](${testResult.firebaseUrl})")
-    appendLine("* Datadog dashboard: [link](${ddDashboardUrl})")
     appendLine()
     appendLine("<details>")
     appendLine("<summary>Test Cases</summary>")
@@ -225,16 +263,14 @@ fun formattedTestResult(title: String, testResult: TestResult): String {
 fun formattedNativeBenchmarks(title: String, nativeBenchmarks: List<NativeBenchmark>): String {
   return buildString {
     appendLine("## $title")
-    appendLine("### Last Run: ${Date()}")
-    appendLine("* Datadog dashboard: [link](${ddDashboardUrl})")
     appendLine()
     appendLine("<details>")
     appendLine("<summary>Test Cases</summary>")
     appendLine()
-    appendLine("| Test Case | Measurements (ns) |")
+    appendLine("| Test Case | nanos |")
     appendLine("|-----------|--------------------|")
     nativeBenchmarks.forEach {
-      appendLine("|${it.name}|${it.measurements.joinToString(", ")}|")
+      appendLine("|${it.`class`}.${it.test}|${it.nanos}|")
     }
     appendLine()
     appendLine("</details>")
@@ -244,31 +280,33 @@ fun formattedNativeBenchmarks(title: String, nativeBenchmarks: List<NativeBenchm
 fun formattedJmhBenchmarks(title: String, benchmarks: List<JmhBenchmark>): String {
   return buildString {
     appendLine("## $title")
-    appendLine("### Last Run: ${Date()}")
-    appendLine("* Datadog dashboard: [link](${ddDashboardUrl})")
     appendLine()
     appendLine("<details>")
     appendLine("<summary>Test Cases</summary>")
     appendLine()
-    appendLine("| Test Case | Score | Error | Unit |")
-    appendLine("|-----------|-------|-------|------|")
+    appendLine("| Test Case | Ops |")
+    appendLine("|-----------|-------|")
     benchmarks.forEach {
-      appendLine("|${it.name}|${"%.3f".format(it.score)}|± ${"%.3f".format(it.scoreError)}|${it.scoreUnit}|")
+      appendLine("|${it.`class`}.${it.test}|${it.score}|")
     }
     appendLine()
     appendLine("</details>")
   }
 }
 
+// The id of https://github.com/apollographql/apollo-kotlin/issues/4231
 val BENCHMARKS_DAHSBOARD_ISSUE_ID = "I_kwDOBCQEc85Mw07L"
+
 fun updateGithubIssue(
     testResult: TestResult,
     nativeBenchmarks: List<NativeBenchmark>,
     astBenchmarks: List<JmhBenchmark>,
     compilerBenchmarks: List<JmhBenchmark>,
+    machineInfo: MachineInfo,
     githubToken: String,
 ) {
-  val body = formattedTestResult("Micro benchmarks", testResult) + "\n" +
+  val body = formattedHeader(testResult, machineInfo) + "\n" +
+      formattedTestResult("Firebase benchmarks", testResult) + "\n" +
       formattedNativeBenchmarks("Native benchmarks", nativeBenchmarks) + "\n" +
       formattedJmhBenchmarks("AST benchmarks", astBenchmarks) + "\n" +
       formattedJmhBenchmarks("Compiler benchmarks", compilerBenchmarks)
@@ -304,11 +342,21 @@ fun ghGraphQL(operation: String, ghToken: String, variables: Map<String, String>
 }
 
 /**
- * A Datadog serie. [metric] is used as-is, see the [PrefixedSerie] overloads to prepend [ddMetricPrefix].
+ * The only metric names benchmarks are allowed to report to Datadog. Everything else that
+ * distinguishes one measurement from another (class, test, module, ...) must be expressed as a tag
+ * instead, so that all benchmarks of a kind live under the same metric in the dashboard.
+ */
+val ddMetricNames = setOf("nanos", "allocs", "bytes", "ops")
+
+/**
+ * A Datadog serie for `$ddMetricPrefix.$metric`. [metric] must be one of [ddMetricNames].
  */
 fun Serie(metric: String, values: List<Number>, tags: List<String>): Map<String, Any> {
+  require(metric in ddMetricNames) {
+    "Unknown metric '$metric', must be one of $ddMetricNames"
+  }
   return mapOf(
-      "metric" to metric,
+      "metric" to "$ddMetricPrefix.$metric",
       "type" to 0,
       "points" to values.map {
         mapOf(
@@ -320,45 +368,35 @@ fun Serie(metric: String, values: List<Number>, tags: List<String>): Map<String,
   )
 }
 
-fun PrefixedSerie(name: String, value: Long, tags: List<String>): Map<String, Any> {
-  return Serie("$ddMetricPrefix.$name", listOf(value), tags)
-}
-
-fun PrefixedSerie(clazz: String, test: String, name: String, value: Long): Map<String, Any> {
-  return PrefixedSerie(
-      name,
-      value,
-      listOf(
-          "class:$clazz",
-          "test:$test"
-      )
+private fun tags(clazz: String, test: String): List<String> {
+  return listOf(
+      "class:$clazz",
+      "test:$test",
   )
 }
 
 fun TestResult.toSeries(): List<Map<String, Any>> {
   return cases.flatMap {
+    val tags = tags(it.clazz, it.test)
     listOf(
-        PrefixedSerie(it.clazz, it.test, "nanos", it.nanos),
-        PrefixedSerie(it.clazz, it.test, "allocs", it.allocs)
+        Serie("nanos", listOf(it.nanos), tags),
+        Serie("allocs", listOf(it.allocs), tags),
     )
   } + extraMetrics.map {
-    PrefixedSerie(it.name, it.value, it.tags)
+    Serie(it.name, listOf(it.value), it.tags)
   }
 }
 
+@JvmName("nativeToSeries")
 fun List<NativeBenchmark>.toSeries(): List<Map<String, Any>> {
   return map {
-    Serie(it.name, it.measurements, emptyList())
+    Serie("nanos", listOf(it.nanos), tags(it.`class`, it.test))
   }
 }
 
-/**
- * [module] is prepended to the metric name since, unlike native benchmarks, JMH benchmark names
- * (e.g. `benchmark.ApolloValidationBenchmark.apollo`) are not already fully qualified.
- */
-fun List<JmhBenchmark>.toSeries(module: String): List<Map<String, Any>> {
+fun List<JmhBenchmark>.toSeries(): List<Map<String, Any>> {
   return map {
-    Serie("$ddMetricPrefix.jmh.$module.${it.name}", it.measurements, listOf("unit:${it.scoreUnit}"))
+    Serie("ops", listOf(it.score), tags(it.`class`, it.test))
   }
 }
 
@@ -395,14 +433,14 @@ fun main() {
         datadogApiKey,
         testResult.toSeries() +
             nativeBenchmarks.toSeries() +
-            astBenchmarks.toSeries("ast-benchmark") +
-            compilerBenchmarks.toSeries("compiler-benchmark")
+            astBenchmarks.toSeries() +
+            compilerBenchmarks.toSeries()
     )
   }
 
   val githubToken = getOptionalEnvVariable("GITHUB_TOKEN")
   if (githubToken != null) {
-    updateGithubIssue(testResult, nativeBenchmarks, astBenchmarks, compilerBenchmarks, githubToken)
+    updateGithubIssue(testResult, nativeBenchmarks, astBenchmarks, compilerBenchmarks, readMachineInfo(), githubToken)
   }
 }
 

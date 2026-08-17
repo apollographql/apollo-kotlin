@@ -72,7 +72,7 @@ class CacheTests {
     }
 
     if (sql) {
-      registerCacheSize("CacheTests", testName, dbFile.length())
+      registerCacheSize(this::class.qualifiedName, testName, dbFile.length())
     }
 
     benchmarkRule.measureRepeated {

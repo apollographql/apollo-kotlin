@@ -1,7 +1,8 @@
 @file:Suppress("DEPRECATION")
 
-package benchmarks
+package benchmark.native
 
+import benchmarks.GetRandomQuery
 import benchmarks.builder.Data
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.toResponseJson
@@ -12,16 +13,18 @@ import com.apollographql.mockserver.enqueueString
 import com.apollographql.apollo.testing.internal.runTest
 import okio.FileSystem
 import okio.Path.Companion.toPath
+import kotlin.collections.mapIndexed
 import kotlin.test.AfterClass
 import kotlin.test.Test
 import kotlin.time.Duration
+import kotlin.time.DurationUnit
 import kotlin.time.measureTime
 
 class BenchmarksTest {
   private val mockServer = MockServer()
   private lateinit var client: ApolloClient
 
-  private fun benchmark(name: String, test: suspend (Int) -> Unit) = runTest {
+  private fun benchmark(testName: String, test: suspend (Int) -> Unit) = runTest {
     val durations = mutableListOf<Duration>()
     repeat(MEASUREMENT_COUNT) {
       durations.add(
@@ -30,7 +33,7 @@ class BenchmarksTest {
           }
       )
     }
-    measurements.add(Measurement(name, durations))
+    testToNanos.put(testName, durations.map { it.toLong(DurationUnit.NANOSECONDS) }.average())
   }
 
   private suspend fun simpleQuery(iteration: Int) {
@@ -72,22 +75,16 @@ class BenchmarksTest {
   }
 
   @Test
-  fun benchmarkSimpleQuery() = benchmark("apollo.kotlin.native.simplequery.nocache") { simpleQuery(it) }
+  fun benchmarkSimpleQuery() = benchmark("benchmarkSimpleQuery") { simpleQuery(it) }
 
   @Test
-  fun benchmarkSimpleQueryWithMemoryCache() = benchmark("apollo.kotlin.native.simplequery.memorycache") { simpleQueryWithMemoryCache(it) }
-
-
-  data class Measurement(
-      val name: String,
-      val durations: List<Duration>,
-  )
+  fun benchmarkSimpleQueryWithMemoryCache() = benchmark("benchmarkSimpleQueryWithMemoryCache") { simpleQueryWithMemoryCache(it) }
 
   companion object {
     private const val EXECUTION_PER_MEASUREMENT = 500
     private const val MEASUREMENT_COUNT = 10
 
-    val measurements = mutableListOf<Measurement>()
+    val testToNanos = mutableMapOf<String, Double>()
 
     @AfterClass
     fun tearDown() {
@@ -96,11 +93,11 @@ class BenchmarksTest {
         delete(filePath)
         write(filePath, true) {
           writeUtf8("""{"benchmarks":[""")
-          for ((i, measurement) in measurements.withIndex()) {
-            writeUtf8("""{"name":"${measurement.name}","measurements":[""")
-            writeUtf8(measurement.durations.map { it.inWholeMilliseconds }.joinToString(","))
-            writeUtf8("]}")
-            if (i != measurements.lastIndex) {
+          testToNanos.toList().mapIndexed { index, it ->
+            writeUtf8("""{"class":"${BenchmarksTest::class.qualifiedName!!}",""")
+            writeUtf8(""""test":"${it.first}",""")
+            writeUtf8(""""nanos":${it.second}} """)
+            if (index != testToNanos.size - 1) {
               writeUtf8(",")
             }
           }
