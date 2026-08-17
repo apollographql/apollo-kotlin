@@ -76,7 +76,7 @@ private fun collect(selections: List<CompiledSelection>, typename: String): List
       }
 
       is CompiledFragment -> {
-        if (typename in compiledSelection.possibleTypes) {
+        if (compiledSelection.isPossibleType(typename)) {
           collect(compiledSelection.selections, typename)
         } else {
           emptyList()

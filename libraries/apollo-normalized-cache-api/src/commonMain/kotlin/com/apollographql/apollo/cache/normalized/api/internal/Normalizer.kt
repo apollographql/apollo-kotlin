@@ -166,7 +166,7 @@ internal class Normalizer(
           state.fields.add(it)
         }
         is CompiledFragment -> {
-          if (typename in it.possibleTypes || it.typeCondition == parentType) {
+          if ((typename != null && it.isPossibleType(typename)) || it.typeCondition == parentType) {
             collectFields(it.selections, parentType, typename, state)
           }
         }

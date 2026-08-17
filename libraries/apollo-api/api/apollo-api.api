@@ -357,6 +357,7 @@ public final class com/apollographql/apollo/api/CompiledFragment : com/apollogra
 	public final fun getPossibleTypes ()Ljava/util/List;
 	public final fun getSelections ()Ljava/util/List;
 	public final fun getTypeCondition ()Ljava/lang/String;
+	public final fun isPossibleType (Ljava/lang/String;)Z
 }
 
 public final class com/apollographql/apollo/api/CompiledFragment$Builder {
