@@ -331,9 +331,9 @@ constructor(
    */
   internal fun nextGuessedNumber(): Any {
     val result = when (val value = peekedData) {
+      is Double -> value.toIntExactOrNull() ?: value.toLongExactOrNull() ?: value
       is Int -> value
       is Long -> value.toIntExactOrNull() ?: value
-      is Double -> value.toIntExactOrNull() ?: value.toLongExactOrNull() ?: value
       is JsonNumber -> {
         // Keep the String based semantics of nextInt()/nextLong()/nextDouble() for JsonNumber
         val asString = value.value
