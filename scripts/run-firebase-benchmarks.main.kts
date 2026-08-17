@@ -47,7 +47,7 @@ val environmentVariables = "clearPackageData=true,additionalTestOutputDir=/sdcar
 /**
  * Where the results are written. Must be kept in sync with `scripts/upload-benchmarks.main.kts`
  */
-val resultsFile = File("benchmark/build/benchmarks.json")
+val resultsFile = File("benchmark/build/firebase-benchmarks.json")
 
 fun getRequiredEnvVariable(name: String): String {
   return getOptionalEnvVariable(name) ?: error("Cannot find env '$name'")

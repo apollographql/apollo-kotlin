@@ -20,8 +20,12 @@ import java.io.File
 import java.util.Date
 
 /**
- * Reads the micro benchmarks results written by `scripts/run-benchmarks.main.kts`, uploads them to
- * Datadog and updates the benchmarks dashboard issue.
+ * Uploads the benchmarks results to Datadog and updates the benchmarks dashboard issue.
+ *
+ * Two kinds of results are read:
+ *
+ * - the micro benchmarks written by `scripts/run-firebase-benchmarks.main.kts` in [firebaseResultsFile]
+ * - the native benchmarks written by `./gradlew -p tests :native-benchmarks:allTests` in [nativeResultsFile]
  *
  * This script expects:
  *
@@ -36,9 +40,16 @@ val ddMetricPrefix = "apollo.kotlin"
 val ddDashboardUrl = "https://p.datadoghq.com/sb/d11002689-48ff7001681977d5a09c3a0775632cfa"
 
 /**
- * Where the results are read from. Must be kept in sync with `scripts/run-benchmarks.main.kts`
+ * Where the micro benchmarks results are read from.
+ * Must be kept in sync with `scripts/run-firebase-benchmarks.main.kts`
  */
-val resultsFile = File("benchmark/build/benchmarks.json")
+val firebaseResultsFile = File("benchmark/build/firebase-benchmarks.json")
+
+/**
+ * Where the native benchmarks results are read from.
+ * Must be kept in sync with `tests/native-benchmarks/src/appleTest/kotlin/benchmarks/BenchmarksTest.kt`
+ */
+val nativeResultsFile = File("tests/native-benchmarks/build/measurements.json")
 
 val now = System.currentTimeMillis() / 1000
 
@@ -69,12 +80,28 @@ data class ExtraMetric(
     val tags: List<String>,
 )
 
-fun readTestResult(file: File): TestResult {
+data class NativeBenchmark(
+    /**
+     * The metric name. Native benchmarks use fully qualified names like
+     * `apollo.kotlin.native.simplequery.nocache` so [ddMetricPrefix] is not prepended.
+     */
+    val name: String,
+    val measurements: List<Long>,
+)
+
+fun readJson(file: File, producedBy: String): Any {
   check(file.exists()) {
-    "Cannot find '${file.absolutePath}'. Did you run 'scripts/run-benchmarks.main.kts' first?"
+    "Cannot find '${file.absolutePath}'. Did you run '$producedBy' first?"
   }
 
-  val map = Json.parseToJsonElement(file.readText()).toAny().asMap
+  return Json.parseToJsonElement(file.readText()).toAny()!!
+}
+
+/**
+ * Reads the micro benchmarks results. See `scripts/run-firebase-benchmarks.main.kts` for the writer.
+ */
+fun readTestResult(): TestResult {
+  val map = readJson(firebaseResultsFile, "scripts/run-firebase-benchmarks.main.kts").asMap
 
   return TestResult(
       firebaseUrl = map["firebaseUrl"].asString,
@@ -94,6 +121,32 @@ fun readTestResult(file: File): TestResult {
         )
       },
   )
+}
+
+/**
+ * Reads the native benchmarks results:
+ *
+ * ```
+ * {
+ *   "benchmarks": [
+ *     {
+ *       "name": "apollo.kotlin.native.simplequery.nocache",
+ *       "measurements": [1234, 1235, ...]
+ *     },
+ *     ...
+ *   ]
+ * }
+ * ```
+ */
+fun readNativeBenchmarks(): List<NativeBenchmark> {
+  val map = readJson(nativeResultsFile, "./gradlew -p tests :native-benchmarks:allTests").asMap
+
+  return map["benchmarks"].asList.map { it.asMap }.map {
+    NativeBenchmark(
+        name = it["name"].asString,
+        measurements = it["measurements"].asList.map { measurement -> measurement.asNumber.toLong() },
+    )
+  }
 }
 
 fun formattedTestResult(title: String, testResult: TestResult): String {
@@ -146,43 +199,57 @@ fun ghGraphQL(operation: String, ghToken: String, variables: Map<String, String>
   return data.asMap
 }
 
-fun Serie(name: String, value: Long, tags: List<String>, now: Long): Map<String, Any> {
+/**
+ * A Datadog serie. [metric] is used as-is, see the [PrefixedSerie] overloads to prepend [ddMetricPrefix].
+ */
+fun Serie(metric: String, values: List<Long>, tags: List<String>): Map<String, Any> {
   return mapOf(
-      "metric" to "$ddMetricPrefix.$name",
+      "metric" to metric,
       "type" to 0,
-      "points" to listOf(
-          mapOf(
-              "timestamp" to now,
-              "value" to value
-          )
-      ),
+      "points" to values.map {
+        mapOf(
+            "timestamp" to now,
+            "value" to it
+        )
+      },
       "tags" to tags
   )
 }
 
-fun Serie(clazz: String, test: String, name: String, value: Long, now: Long): Map<String, Any> {
-  return Serie(
+fun PrefixedSerie(name: String, value: Long, tags: List<String>): Map<String, Any> {
+  return Serie("$ddMetricPrefix.$name", listOf(value), tags)
+}
+
+fun PrefixedSerie(clazz: String, test: String, name: String, value: Long): Map<String, Any> {
+  return PrefixedSerie(
       name,
       value,
       listOf(
           "class:$clazz",
           "test:$test"
-      ),
-      now
+      )
   )
 }
 
-fun uploadToDatadog(datadogApiKey: String, cases: List<Case>, extraMetrics: List<ExtraMetric>) {
-  val body = mapOf(
-      "series" to cases.flatMap {
-        listOf(
-            Serie(it.clazz, it.test, "nanos", it.nanos, now),
-            Serie(it.clazz, it.test, "allocs", it.allocs, now)
-        )
-      } + extraMetrics.map {
-        Serie(it.name, it.value, it.tags, now)
-      }
-  )
+fun TestResult.toSeries(): List<Map<String, Any>> {
+  return cases.flatMap {
+    listOf(
+        PrefixedSerie(it.clazz, it.test, "nanos", it.nanos),
+        PrefixedSerie(it.clazz, it.test, "allocs", it.allocs)
+    )
+  } + extraMetrics.map {
+    PrefixedSerie(it.name, it.value, it.tags)
+  }
+}
+
+fun List<NativeBenchmark>.toSeries(): List<Map<String, Any>> {
+  return map {
+    Serie(it.name, it.measurements, emptyList())
+  }
+}
+
+fun uploadToDatadog(datadogApiKey: String, series: List<Map<String, Any>>) {
+  val body = mapOf("series" to series)
 
   val response = body.toJsonElement().toString().let {
     Request.Builder().url("https://api.datadoghq.com/api/v2/series")
@@ -199,15 +266,16 @@ fun uploadToDatadog(datadogApiKey: String, cases: List<Case>, extraMetrics: List
   check(response.isSuccessful) {
     "Cannot post to Datadog: '${response.code}'\n${response.body?.string()}"
   }
-  println("posted to Datadog")
+  println("posted ${series.size} series to Datadog")
 }
 
 fun main() {
-  val testResult = readTestResult(resultsFile)
+  val testResult = readTestResult()
+  val nativeBenchmarks = readNativeBenchmarks()
 
   val datadogApiKey = getOptionalEnvVariable("DD_API_KEY")
   if (datadogApiKey != null) {
-    uploadToDatadog(datadogApiKey, testResult.cases, testResult.extraMetrics)
+    uploadToDatadog(datadogApiKey, testResult.toSeries() + nativeBenchmarks.toSeries())
   }
 
   val githubToken = getOptionalEnvVariable("GITHUB_TOKEN")
