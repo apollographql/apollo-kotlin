@@ -4,15 +4,10 @@
 @file:DependsOn("com.google.cloud:google-cloud-storage:2.8.1")
 @file:DependsOn("net.mbonnin.bare-graphql:bare-graphql:0.0.2")
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.2")
-@file:DependsOn("com.squareup.okhttp3:okhttp:4.10.0")
-@file:DependsOn("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.storage.Storage
 import com.google.cloud.storage.StorageOptions
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -20,27 +15,25 @@ import net.mbonnin.bare.graphql.asList
 import net.mbonnin.bare.graphql.asMap
 import net.mbonnin.bare.graphql.asNumber
 import net.mbonnin.bare.graphql.asString
-import net.mbonnin.bare.graphql.cast
-import net.mbonnin.bare.graphql.graphQL
 import net.mbonnin.bare.graphql.toAny
 import net.mbonnin.bare.graphql.toJsonElement
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import okio.Buffer
 import okio.buffer
 import okio.source
 import java.io.File
-import java.util.Date
 import kotlin.math.roundToLong
 
 /**
+ * Runs the micro benchmarks on Firebase Test Lab and writes the results to [resultsFile].
+ *
+ * Use `scripts/upload-benchmarks.main.kts` to upload those results to Datadog and update the
+ * benchmarks dashboard issue.
+ *
  * This script expects:
  *
  * - `gcloud` in the path
  * - A Google Cloud Project with "Google Cloud Testing API" and "Cloud Tool Results API" enabled
- * - GITHUB_REPOSITORY env variable: the repository to create the issue into in the form `owner/name`
+ * - GOOGLE_SERVICES_JSON env variable: the service account key used to authenticate
  *
  * This script must be run from the repo root
  */
@@ -50,8 +43,11 @@ val testApk = "benchmark/microbenchmark/build/outputs/apk/androidTest/release/mi
 val deviceModel = "redfin,locale=en,orientation=portrait"
 val directoriesToPull = "/sdcard/Download"
 val environmentVariables = "clearPackageData=true,additionalTestOutputDir=/sdcard/Download,no-isolated-storage=true"
-val ddMetricPrefix = "apollo.kotlin"
-val ddDashboardUrl = "https://p.datadoghq.com/sb/d11002689-48ff7001681977d5a09c3a0775632cfa"
+
+/**
+ * Where the results are written. Must be kept in sync with `scripts/upload-benchmarks.main.kts`
+ */
+val resultsFile = File("benchmark/build/firebase-benchmarks.json")
 
 fun getRequiredEnvVariable(name: String): String {
   return getOptionalEnvVariable(name) ?: error("Cannot find env '$name'")
@@ -62,8 +58,6 @@ fun getOptionalEnvVariable(name: String): String? {
     null
   }
 }
-
-val now = System.currentTimeMillis() / 1000
 
 /**
  * Executes the given command and returns stdout as a String
@@ -229,7 +223,7 @@ fun getTestResult(output: String, storage: Storage): TestResult {
 
   val directory = directoriesToPull.split(",").filter { it.isNotBlank() }.singleOrNull()
   var cases: List<Case>? = null
-  var extraMetrics: List<Map<String, Any>>? = null
+  var extraMetrics: List<ExtraMetric>? = null
   if (directory != null) {
     // A directory was provided, look inside it to check if we can find the test results
     cases = locateBenchmarkData(storage, bucket, "$blobBase/artifacts$directory")
@@ -264,7 +258,7 @@ fun locateBenchmarkData(storage: Storage, bucket: String, prefix: String): List<
   }?.parseCasesFromBenchmarkData()
 }
 
-fun locateExtraMetrics(storage: Storage, bucket: String, prefix: String): List<Map<String, Any>>? {
+fun locateExtraMetrics(storage: Storage, bucket: String, prefix: String): List<ExtraMetric>? {
   val candidates = storage.list(bucket, Storage.BlobListOption.prefix(prefix)).values
   return candidates.singleOrNull {
     it.name.endsWith("extraMetrics.json")
@@ -272,7 +266,7 @@ fun locateExtraMetrics(storage: Storage, bucket: String, prefix: String): List<M
     downloadBlob(storage, bucket, it.name)
   }?.let {
     Json.parseToJsonElement(it).toAny()
-  }?.parseCasesFromExtraMetrics()
+  }?.parseExtraMetrics()
 }
 
 /**
@@ -365,13 +359,12 @@ fun Any.parseCasesFromBenchmarkData(): List<Case> {
  * ]
  * ```
  */
-fun Any.parseCasesFromExtraMetrics(): List<Map<String, Any>> {
+fun Any.parseExtraMetrics(): List<ExtraMetric> {
   return this.asList.map { it.asMap }.map {
-    Serie(
+    ExtraMetric(
         name = it["name"].asString,
         value = it["value"].asNumber.toLong(),
         tags = it["tags"] as List<String>? ?: emptyList(),
-        now = now,
     )
   }
 }
@@ -440,7 +433,7 @@ fun String.parseCases(): List<Case> {
 data class TestResult(
     val firebaseUrl: String,
     val cases: List<Case>,
-    val extraMetrics: List<Map<String, Any>>,
+    val extraMetrics: List<ExtraMetric>,
 )
 
 data class Case(
@@ -448,140 +441,49 @@ data class Case(
     val test: String,
     val nanos: Long,
     val allocs: Long,
-) {
-  val fqName = "${clazz}.$test"
-}
+)
 
-fun formattedTestResult(title: String, testResult: TestResult): String {
-  return buildString {
-    appendLine("## $title")
-    appendLine("### Last Run: ${Date()}")
-    appendLine("* Firebase console: [link](${testResult.firebaseUrl})")
-    appendLine("* Datadog dashboard: [link](${ddDashboardUrl})")
-    appendLine()
-    appendLine("### Test Cases:")
-    appendLine("| Test Case | Nanos | Allocs |")
-    appendLine("|-----------|-------|--------|")
-    testResult.cases.forEach {
-      appendLine("|${it.fqName}|${it.nanos}|${it.allocs}|")
-    }
-  }
-}
+data class ExtraMetric(
+    val name: String,
+    val value: Long,
+    val tags: List<String>,
+)
 
-val issueTitle = "Benchmarks dashboard"
-val BENCHMARKS_DAHSBOARD_ISSUE_ID = "I_kwDOBCQEc85Mw07L"
-fun updateOrCreateGithubIssue(testResult: TestResult, githubToken: String) {
-  val body = formattedTestResult("Micro benchmarks", testResult)
-  val mutation: String
-  val variables: Map<String, String>
-
-  mutation = """
-    mutation updateIssue(${'$'}id: ID!, ${'$'}body: String!) {
-      updateIssue(input: {id: ${'$'}id, body: ${'$'}body} ){
-        clientMutationId
-      }
-    }
-    """.trimIndent()
-  variables = mapOf(
-      "id" to BENCHMARKS_DAHSBOARD_ISSUE_ID,
-      "body" to body
-  )
-  println("updating issue $BENCHMARKS_DAHSBOARD_ISSUE_ID....")
-
-  ghGraphQL(mutation, githubToken, variables)
-}
-
-fun ghGraphQL(operation: String, ghToken: String, variables: Map<String, String> = emptyMap()): Map<String, Any?> {
-  val headers = mapOf("Authorization" to "bearer $ghToken")
-  val response = graphQL(
-      url = "https://api.github.com/graphql",
-      operation = operation,
-      headers = headers,
-      variables = variables
-  )
-
-  val data = response.get("data")
-
-  return data.asMap
-}
-
-fun Serie(name: String, value: Long, tags: List<String>, now: Long): Map<String, Any> {
-  return mapOf(
-      "metric" to "$ddMetricPrefix.$name",
-      "type" to 0,
-      "points" to listOf(
-          mapOf(
-              "timestamp" to now,
-              "value" to value
-          )
-      ),
-      "tags" to tags
-  )
-}
-
-fun Serie(clazz: String, test: String, name: String, value: Long, now: Long): Map<String, Any> {
-  return Serie(
-      name,
-      value,
-      listOf(
-          "class:$clazz",
-          "test:$test"
-      ),
-      now
-  )
-}
-
-fun uploadToDatadog(datadogApiKey: String, cases: List<Case>, extraMetrics: List<Map<String, Any>>) {
-  val body = mapOf(
-      "series" to cases.flatMap {
-        listOf(
-            Serie(it.clazz, it.test, "nanos", it.nanos, now),
-            Serie(it.clazz, it.test, "allocs", it.allocs, now)
+/**
+ * Writes [TestResult] as Json. See `scripts/upload-benchmarks.main.kts` for the reader.
+ */
+fun TestResult.write(file: File) {
+  val map = mapOf(
+      "firebaseUrl" to firebaseUrl,
+      "cases" to cases.map {
+        mapOf(
+            "clazz" to it.clazz,
+            "test" to it.test,
+            "nanos" to it.nanos,
+            "allocs" to it.allocs,
         )
-      } + extraMetrics
+      },
+      "extraMetrics" to extraMetrics.map {
+        mapOf(
+            "name" to it.name,
+            "value" to it.value,
+            "tags" to it.tags,
+        )
+      },
   )
 
-  val response = body.toJsonElement().toString().let {
-    Request.Builder().url("https://api.datadoghq.com/api/v2/series")
-        .post(it.toRequestBody("application/json".toMediaType()))
-        .addHeader("DD-API-KEY", datadogApiKey)
-        .build()
-  }.let {
-    OkHttpClient.Builder()
-        .build()
-        .newCall(it)
-        .execute()
-  }
-
-  check(response.isSuccessful) {
-    "Cannot post to Datadog: '${response.code}'\n${response.body?.string()}"
-  }
-  println("posted to Datadog")
+  file.parentFile?.mkdirs()
+  file.writeText(map.toJsonElement().toString())
+  println("benchmarks written to ${file.absolutePath}")
 }
 
-fun runTest(gcloud: GCloud, testApk: String): TestResult {
-  val testOutput = runTest(gcloud.projectId, testApk)
-  return getTestResult(testOutput, gcloud.storage)
-}
-
-fun main() = runBlocking {
+fun main() {
   val gcloud = authenticate()
 
-  val testResultDeferred = async(Dispatchers.Default) {
-    runTest(gcloud, testApk)
-  }
+  val testOutput = runTest(gcloud.projectId, testApk)
+  val testResult = getTestResult(testOutput, gcloud.storage)
 
-  val testResult = testResultDeferred.await()
-
-  val githubToken = getOptionalEnvVariable("GITHUB_TOKEN")
-  if (githubToken != null) {
-    updateOrCreateGithubIssue(testResult, githubToken)
-  }
-
-  val datadogApiKey = getOptionalEnvVariable("DD_API_KEY")
-  if (datadogApiKey != null) {
-    uploadToDatadog(datadogApiKey, testResult.cases, testResult.extraMetrics)
-  }
+  testResult.write(resultsFile)
 }
 
 
