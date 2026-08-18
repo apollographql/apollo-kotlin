@@ -180,7 +180,7 @@ fun runTest(projectId: String, testApk: String): String {
       "--app",
       appApk,
       "--timeout",
-      "30m"
+      "45m"
   )
 
   directoriesToPull.let {
