@@ -31,7 +31,9 @@ jobs:
           GOOGLE_SERVICES_JSON: ${{ secrets.APOLLO_KOTLIN_GOOGLE_SERVICES_JSON }}
       - run: |
           # Run the native, ast and compiler benchmarks
-          ./gradlew -p tests :native-benchmarks:allTests :ast-benchmark:jmhBenchmark :compiler-benchmark:jmhBenchmark
+          ./gradlew -p tests :native-benchmarks:allTests :ast-benchmark:jmhBenchmark
+          # Cannot run concurrently with the above (see https://github.com/Kotlin/kotlinx-benchmark/issues/391)
+          ./gradlew -p tests :compiler-benchmark:jmhBenchmark
       - run: |
           # Upload all the results to Datadog and update the benchmarks issue
           ./scripts/upload-benchmarks.main.kts
