@@ -54,6 +54,43 @@ class Schema internal constructor(
 
   val subscriptionTypeDefinition: GQLTypeDefinition? = rootOperationTypeDefinition("subscription", definitions)
 
+  /**
+   * Maps an interface name to the object and interface types implementing it directly, in schema declaration order.
+   *
+   * Without this, [possibleTypes] has to scan every type definition of the schema on every call, and again for
+   * every level of the interface hierarchy.
+   */
+  private val directSubtypes: Map<String, List<GQLTypeDefinition>> by lazy {
+    val result = mutableMapOf<String, MutableList<GQLTypeDefinition>>()
+    typeDefinitions.values.forEach { typeDefinition ->
+      val implementsInterfaces = when (typeDefinition) {
+        is GQLObjectTypeDefinition -> typeDefinition.implementsInterfaces
+        is GQLInterfaceTypeDefinition -> typeDefinition.implementsInterfaces
+        else -> return@forEach
+      }
+      implementsInterfaces.forEach {
+        result.getOrPut(it) { mutableListOf() }.add(typeDefinition)
+      }
+    }
+    result
+  }
+
+  /**
+   * Maps a type name to the names of the unions it is a member of, in schema declaration order.
+   *
+   * Without this, [implementedTypes] and [superTypes] have to scan every type definition of the schema on every call.
+   */
+  private val unionsByMember: Map<String, List<String>> by lazy {
+    val result = mutableMapOf<String, MutableList<String>>()
+    typeDefinitions.values.forEach { typeDefinition ->
+      if (typeDefinition !is GQLUnionTypeDefinition) return@forEach
+      typeDefinition.memberTypes.forEach {
+        result.getOrPut(it.name) { mutableListOf() }.add(typeDefinition.name)
+      }
+    }
+    result
+  }
+
   fun toGQLDocument(): GQLDocument = GQLDocument(
       definitions = definitions,
       sourceLocation = null
@@ -69,9 +106,16 @@ class Schema internal constructor(
   }
 
   fun rootTypeNameOrNullFor(operationType: String): String? {
-    return rootOperationTypeDefinition(operationType, definitions)?.name
+    return when (operationType) {
+      "query" -> queryTypeDefinition.name
+      "mutation" -> mutationTypeDefinition?.name
+      "subscription" -> subscriptionTypeDefinition?.name
+      else -> null
+    }
   }
 
+  @Deprecated("Use rootTypeNameOrNullFor instead", ReplaceWith("rootTypeNameOrNullFor(operationType)"))
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_2)
   fun rootTypeNameFor(operationType: String): String {
     return rootTypeNameOrNullFor(operationType) ?: operationType.replaceFirstChar { it.uppercaseChar() }
   }
@@ -92,12 +136,8 @@ class Schema internal constructor(
   fun possibleTypes(typeDefinition: GQLTypeDefinition): Set<String> {
     return when (typeDefinition) {
       is GQLUnionTypeDefinition -> typeDefinition.memberTypes.map { it.name }.toSet()
-      is GQLInterfaceTypeDefinition -> typeDefinitions.values.filter {
-        it is GQLObjectTypeDefinition && it.implementsInterfaces.contains(typeDefinition.name)
-            || it is GQLInterfaceTypeDefinition && it.implementsInterfaces.contains(typeDefinition.name)
-      }.flatMap {
+      is GQLInterfaceTypeDefinition -> directSubtypes[typeDefinition.name].orEmpty().flatMap {
         // Recurse until we reach the concrete types
-        // This could certainly be improved
         possibleTypes(it).toList()
       }.toSet()
 
@@ -143,9 +183,7 @@ class Schema internal constructor(
     val typeDefinition = typeDefinition(name)
     return when (typeDefinition) {
       is GQLObjectTypeDefinition -> {
-        val unions = typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().filter {
-          it.memberTypes.map { it.name }.toSet().contains(typeDefinition.name)
-        }.map { it.name }
+        val unions = unionsByMember[typeDefinition.name].orEmpty()
         typeDefinition.implementsInterfaces.flatMap { implementedTypes(it) }.toSet() + name + unions
       }
 
@@ -169,9 +207,7 @@ class Schema internal constructor(
       is GQLUnionTypeDefinition -> emptyList()
       else -> error("Type '${typeDefinition.name}' cannot have a super type.")
     }
-    val unions = typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().filter {
-      it.memberTypes.map { it.name }.toSet().contains(typeDefinition.name)
-    }.map { it.name }
+    val unions = unionsByMember[typeDefinition.name].orEmpty()
     return (implementsInterfaces + unions).toSet()
   }
 
@@ -256,11 +292,11 @@ class Schema internal constructor(
       )
     }
 
-    internal fun rootOperationTypeDefinition(operationType: String, definitions: List<GQLDefinition>): GQLTypeDefinition? {
+    private fun rootOperationTypeDefinition(operationType: String, definitions: List<GQLDefinition>): GQLTypeDefinition? {
       return rootOperationTypeDefinition(definitions.filterIsInstance<GQLSchemaDefinition>().single(), operationType, definitions.filterIsInstance<GQLObjectTypeDefinition>().associateBy { it.name })
     }
 
-    internal fun rootOperationTypeDefinition(schemaTypeDefinition: GQLSchemaDefinition, operationType: String, typeDefinitions: Map<String, GQLTypeDefinition>): GQLTypeDefinition? {
+    private fun rootOperationTypeDefinition(schemaTypeDefinition: GQLSchemaDefinition, operationType: String, typeDefinitions: Map<String, GQLTypeDefinition>): GQLTypeDefinition? {
       return schemaTypeDefinition
           .rootOperationTypeDefinitions
           .singleOrNull {

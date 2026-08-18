@@ -140,7 +140,7 @@ internal class OperationContext(
         return graphqlErrorResponse("Unknown operation type '${operation.operationType}")
       }
     }
-    val typeDefinition = schema.typeDefinition(schema.rootTypeNameFor(operation.operationType))
+    val typeDefinition = schema.typeDefinition(rootTypename)
 
     val groupedFieldSet = collectFields(typeDefinition.name, operation.selections, variableValues)
 

@@ -17,23 +17,29 @@ import com.apollographql.apollo.compiler.uniqueName
 internal fun checkApolloTargetNameClashes(schema: Schema): List<Issue> {
   val issues = mutableListOf<Issue>()
 
-  val typesWithTargetName: Map<GQLTypeDefinition, String?> = schema
+  /*
+   * A list and not a Map: hashing a GQLTypeDefinition hashes its whole subtree, which is expensive for large schemas.
+   */
+  val typesWithTargetName: List<Pair<GQLTypeDefinition, String?>> = schema
       .typeDefinitions
       .values
       // Sort to ensure consistent results
       .sortedBy { it.name }
-      .associateWith { it.directives.findTargetName(schema) }
-  val usedNames = mutableMapOf<String, GQLTypeDefinition>()
+      .map { it to it.directives.findTargetName(schema) }
+  val usedNames = HashMap<String, GQLTypeDefinition>(2 * typesWithTargetName.size)
 
   // 1. Collect unique names for types without a targetName
-  for ((type, _) in typesWithTargetName.filterValues { it == null }) {
-    val name = uniqueName(type.name, usedNames.keys.toSet())
+  for ((type, targetName) in typesWithTargetName) {
+    if (targetName != null) continue
+    // `usedNames.keys` is only read by `uniqueName`, no need to copy it
+    val name = uniqueName(type.name, usedNames.keys)
     usedNames[name.lowercase()] = type
   }
 
   // 2. Check targetName for types that define it
-  for ((type, targetName) in typesWithTargetName.filterValues { it != null }) {
-    val name = targetName!!.lowercase()
+  for ((type, targetName) in typesWithTargetName) {
+    if (targetName == null) continue
+    val name = targetName.lowercase()
     if (usedNames.containsKey(name)) {
       val typeForUsedName = usedNames[name]!!
       issues.add(
