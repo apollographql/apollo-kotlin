@@ -105,7 +105,6 @@ class TypeHierarchyTest {
     assertNull(schema.rootTypeNameOrNullFor("mutation"))
     assertNull(schema.rootTypeNameOrNullFor("subscription"))
     assertNull(schema.rootTypeNameOrNullFor("somethingElse"))
-    assertEquals("Mutation", schema.rootTypeNameFor("mutation"))
   }
 
   @Test
@@ -129,6 +128,5 @@ class TypeHierarchyTest {
     assertEquals("MyQuery", customRoots.rootTypeNameOrNullFor("query"))
     assertEquals("MyMutation", customRoots.rootTypeNameOrNullFor("mutation"))
     assertNull(customRoots.rootTypeNameOrNullFor("subscription"))
-    assertEquals("Subscription", customRoots.rootTypeNameFor("subscription"))
   }
 }

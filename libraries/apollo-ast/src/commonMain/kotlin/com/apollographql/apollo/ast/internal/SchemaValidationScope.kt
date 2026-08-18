@@ -360,8 +360,7 @@ internal fun syntheticSchemaDefinition(typeDefinitions: Map<String, GQLTypeDefin
     )
   }
 
-  return GQLSchemaDefinition(description = null, directives = emptyList(), rootOperationTypeDefinitions = operationTypeDefinitions
-  )
+  return GQLSchemaDefinition(description = null, directives = emptyList(), rootOperationTypeDefinitions = operationTypeDefinitions)
 }
 
 /**

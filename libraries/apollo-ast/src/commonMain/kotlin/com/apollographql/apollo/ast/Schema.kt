@@ -106,18 +106,16 @@ class Schema internal constructor(
   }
 
   fun rootTypeNameOrNullFor(operationType: String): String? {
-    /*
-     * The root operation types are resolved once in the constructor. Do not resolve them again here, that would
-     * mean filtering all the definitions on every call.
-     */
     return when (operationType) {
       "query" -> queryTypeDefinition.name
       "mutation" -> mutationTypeDefinition?.name
       "subscription" -> subscriptionTypeDefinition?.name
-      else -> error("Unknown operation type: '$operationType'")
+      else -> null
     }
   }
 
+  @Deprecated("Use rootTypeNameOrNullFor instead", ReplaceWith("rootTypeNameOrNullFor(operationType)"))
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_2)
   fun rootTypeNameFor(operationType: String): String {
     return rootTypeNameOrNullFor(operationType) ?: operationType.replaceFirstChar { it.uppercaseChar() }
   }
@@ -294,11 +292,11 @@ class Schema internal constructor(
       )
     }
 
-    internal fun rootOperationTypeDefinition(operationType: String, definitions: List<GQLDefinition>): GQLTypeDefinition? {
+    private fun rootOperationTypeDefinition(operationType: String, definitions: List<GQLDefinition>): GQLTypeDefinition? {
       return rootOperationTypeDefinition(definitions.filterIsInstance<GQLSchemaDefinition>().single(), operationType, definitions.filterIsInstance<GQLObjectTypeDefinition>().associateBy { it.name })
     }
 
-    internal fun rootOperationTypeDefinition(schemaTypeDefinition: GQLSchemaDefinition, operationType: String, typeDefinitions: Map<String, GQLTypeDefinition>): GQLTypeDefinition? {
+    private fun rootOperationTypeDefinition(schemaTypeDefinition: GQLSchemaDefinition, operationType: String, typeDefinitions: Map<String, GQLTypeDefinition>): GQLTypeDefinition? {
       return schemaTypeDefinition
           .rootOperationTypeDefinitions
           .singleOrNull {

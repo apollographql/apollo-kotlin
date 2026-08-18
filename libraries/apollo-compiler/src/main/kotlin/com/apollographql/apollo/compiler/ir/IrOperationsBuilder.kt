@@ -259,7 +259,7 @@ internal class IrOperationsBuilder(
     return IrOperationDefinition(
         name = name!!,
         description = description,
-        operationType = operationType.toIrOperationType(schema.rootTypeNameFor(operationType)),
+        operationType = operationType.toIrOperationType(schema.rootTypeNameOrNullFor(operationType)!!),
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
         selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selections, typeDefinition.name),
