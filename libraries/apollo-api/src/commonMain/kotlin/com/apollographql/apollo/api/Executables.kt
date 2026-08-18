@@ -49,7 +49,14 @@ fun <D : Executable.Data> Executable<D>.variablesJson(customScalarAdapters: Cust
  */
 @ApolloInternal
 fun <D : Executable.Data> Executable<D>.falseVariables(customScalarAdapters: CustomScalarAdapters): Set<String> {
-  return variables(customScalarAdapters, true).valueMap.filter { it.value == false }.keys
+  // Most operations have no boolean variables at all, avoid allocating in that case
+  var falseVariables: MutableSet<String>? = null
+  for ((name, value) in variables(customScalarAdapters, true).valueMap) {
+    if (value == false) {
+      (falseVariables ?: mutableSetOf<String>().also { falseVariables = it }).add(name)
+    }
+  }
+  return falseVariables ?: emptySet()
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -74,12 +81,17 @@ fun <D : Executable.Data> Executable<D>.parseData(
     deferredFragmentIds: Set<DeferredFragmentIdentifier>? = null,
     errors: List<Error>? = null
 ): D? {
-  val customScalarAdapters1 = customScalarAdapters.newBuilder()
-      .falseVariables(falseVariables)
-      .deferredFragmentIdentifiers(deferredFragmentIds)
-      .errors(errors)
-      .build()
-  return adapter().nullable().fromJson(jsonReader, customScalarAdapters1)
+  val customScalarAdapters1 = customScalarAdapters.copyWithParsingContext(
+      falseVariables = falseVariables,
+      deferredFragmentIdentifiers = deferredFragmentIds,
+      errors = errors,
+  )
+  // Same as adapter().nullable() but without allocating a NullableAdapter for every response
+  if (jsonReader.peek() == JsonReader.Token.NULL) {
+    jsonReader.skipValue()
+    return null
+  }
+  return adapter().fromJson(jsonReader, customScalarAdapters1)
 }
 
 

@@ -4,7 +4,9 @@ import com.apollographql.apollo.api.json.BufferedSourceJsonReader.Companion.INIT
 import com.apollographql.apollo.api.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo.api.json.internal.toDoubleExact
 import com.apollographql.apollo.api.json.internal.toIntExact
+import com.apollographql.apollo.api.json.internal.toIntExactOrNull
 import com.apollographql.apollo.api.json.internal.toLongExact
+import com.apollographql.apollo.api.json.internal.toLongExactOrNull
 import com.apollographql.apollo.exception.JsonDataException
 import kotlin.jvm.JvmOverloads
 
@@ -317,6 +319,35 @@ constructor(
     return data.also {
       advanceIterator()
     }
+  }
+
+  /**
+   * Reads the current number, narrowed to `Int`, `Long`, `Double` or [JsonNumber], in that order of
+   * preference.
+   *
+   * This is the same as calling [nextInt], [nextLong], [nextDouble] and [nextNumber] in turn and
+   * keeping the first one that doesn't throw, but without paying for the exceptions. Only call this
+   * when [peek] is [JsonReader.Token.NUMBER] or [JsonReader.Token.LONG].
+   */
+  internal fun nextGuessedNumber(): Any {
+    val result = when (val value = peekedData) {
+      is Double -> value.toIntExactOrNull() ?: value.toLongExactOrNull() ?: value
+      is Int -> value
+      is Long -> value.toIntExactOrNull() ?: value
+      is JsonNumber -> {
+        // Keep the String based semantics of nextInt()/nextLong()/nextDouble() for JsonNumber
+        val asString = value.value
+        asString.toIntOrNull() ?: asString.toLongOrNull() ?: asString.toDoubleOrNull() ?: value
+      }
+      is String -> {
+        val asString = value
+        asString.toIntOrNull() ?: asString.toLongOrNull() ?: asString.toDoubleOrNull() ?: JsonNumber(asString)
+      }
+      else -> error("Expected a Number but got $value instead")
+    }
+
+    advanceIterator()
+    return result
   }
 
   override fun skipValue() {

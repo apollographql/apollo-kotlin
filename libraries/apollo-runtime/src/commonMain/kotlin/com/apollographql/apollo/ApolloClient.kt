@@ -233,6 +233,30 @@ private constructor(
   )
 
   /**
+   * The interceptors are the same for every request, compute the chain once. This is lazy because
+   * [networkInterceptor] is initialized after the constructor.
+   */
+  private val allInterceptors: List<ApolloInterceptor> by lazy {
+    buildList {
+      addAll(builder._beforeCacheInterceptors)
+      if (cacheInterceptor != null) {
+        add(cacheInterceptor)
+      }
+
+      addAll(builder._beforeAutoPersistedQueriesInterceptors)
+      if (autoPersistedQueryInterceptor != null) {
+        add(autoPersistedQueryInterceptor)
+      }
+
+      addAll(builder._beforeRetryOnErrorInterceptors)
+      add(retryOnErrorInterceptor ?: RetryOnErrorInterceptor())
+
+      addAll(builder._beforeNetworkInterceptors)
+      add(networkInterceptor)
+    }
+  }
+
+  /**
    * Low level API to execute the given [apolloRequest] and return a [Flow].
    *
    * Prefer [query], [mutation] or [subscription] when possible.
@@ -303,23 +327,6 @@ private constructor(
       url(url ?: apolloClient.url)
     }.build()
 
-    val allInterceptors = buildList {
-      addAll(builder._beforeCacheInterceptors)
-      if (cacheInterceptor != null) {
-        add(cacheInterceptor)
-      }
-
-      addAll(builder._beforeAutoPersistedQueriesInterceptors)
-      if (autoPersistedQueryInterceptor != null) {
-        add(autoPersistedQueryInterceptor)
-      }
-
-      addAll(builder._beforeRetryOnErrorInterceptors)
-      add(retryOnErrorInterceptor ?: RetryOnErrorInterceptor())
-
-      addAll(builder._beforeNetworkInterceptors)
-      add(networkInterceptor)
-    }
     return DefaultInterceptorChain(allInterceptors, 0)
         .proceed(request)
         .let {
