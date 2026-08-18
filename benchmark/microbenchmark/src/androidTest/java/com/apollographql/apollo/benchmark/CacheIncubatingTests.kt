@@ -75,7 +75,7 @@ class CacheIncubatingTests {
     }
 
     if (sql) {
-      registerCacheSize(this::class.qualifiedName, testName, dbFile.length())
+      registerCacheSize(this::class.qualifiedName!!, testName, dbFile.length())
     }
     benchmarkRule.measureRepeated {
       runBlocking {
