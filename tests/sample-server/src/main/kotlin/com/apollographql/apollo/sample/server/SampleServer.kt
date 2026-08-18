@@ -21,6 +21,7 @@ import okio.Buffer
 import okio.buffer
 import okio.source
 import okio.withLock
+import org.eclipse.jetty.websocket.api.exceptions.WebSocketException
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method
 import org.http4k.core.PolyHandler
@@ -165,7 +166,12 @@ fun ApolloWebsocketHandler(executableSchema: ExecutableSchema, webSocketRegistry
       }
 
       val sendMessage = { webSocketMessage: WebSocketMessage ->
-        ws.send(webSocketMessage.toWsMessage())
+        try {
+          ws.send(webSocketMessage.toWsMessage())
+        } catch (e: WebSocketException) {
+          System.err.println("Error sending message: $webSocketMessage")
+          e.printStackTrace()
+        }
       }
 
       val handler = SubscriptionWebSocketHandler(
