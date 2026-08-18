@@ -38,6 +38,7 @@ kotlin-plugin = "2.3.10"
 kotlin-plugin-latest = "2.3.10"
 kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.7.1"
+kotlinx-benchmark = "0.4.17"
 #noinspection NewerVersionAvailable requires KGP 2.2
 kotlinx-serialization-runtime = "1.8.1"
 #noinspection GradleDependency,NewerVersionAvailable compatibility with native consumers
@@ -144,8 +145,8 @@ kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" } # use sam
 # Please, make sure that the standard library has the version in the range [2.1.0 .. 2.1.255]. Adjust your project's settings if necessary.
 kotlin-stdlib-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-js", version.ref = "kotlin-plugin" }
 kotlin-stdlib-wasm-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-wasm-js", version.ref = "kotlin-plugin" }
-kotlinx-benchmark-runtime = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.14"
-kotlinx-benchmark = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin:0.4.14"
+kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark" }
+kotlinx-benchmark = { module="org.jetbrains.kotlinx:kotlinx-benchmark-plugin", version.ref = "kotlinx-benchmark" }
 kotlinx-browser = "org.jetbrains.kotlinx:kotlinx-browser:0.3"
 androidx-benchmark-macro = "androidx.benchmark:benchmark-macro-junit4:1.4.1"
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
