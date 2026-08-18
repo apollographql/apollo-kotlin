@@ -47,10 +47,10 @@ class RetryWebSocketsTest {
                   .build()
           )
           .build().use { apolloClient ->
+            val serverWriter = mockServer.enqueueWebSocket(keepAlive = false)
             apolloClient.subscription(FooSubscription())
                 .toFlow()
                 .test {
-                  val serverWriter = mockServer.enqueueWebSocket(keepAlive = false)
                   var serverReader = mockServer.awaitWebSocketRequest()
 
                   serverReader.awaitMessage() // connection_init
