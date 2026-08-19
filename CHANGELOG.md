@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+# Version 5.1.0
+
+Version 5.1.0 adds a lot of performance improvements courtesy of @AlexanderGH on top of a couple of bugfixes. Many thanks for the deep dive Alexander!  
+
+## 👷‍♂️ All changes
+
+* [PERFORMANCE] compiler: index the type hierarchy and drop O(n^2) work from the schema checks (#6994)
+* [PERFORMANCE] compiler: skip the @defer walk and index field definitions (#6995)
+* [PERFORMANCE] api: faster enum safeValueOf and cheaper knownEntries (#7009)
+* [PERFORMANCE] api: Test a fragment's type condition against a set, not a list (#7001)
+* [PERFORMANCE] api: stop using exceptions to guess JSON number types (#6996)
+* [UPGRADE] Bump cache to 1.0.6 (#6987)
+* [FIX] Fix CatchToResult toJson (#6984)
+* [FIX] Make it possible to use the new cache with Apollo Kotlin 5 on K/N (#6978)
+
 # Version 5.0.1
 _2026-06-25_
 
