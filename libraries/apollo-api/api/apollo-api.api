@@ -355,6 +355,7 @@ public final class com/apollographql/apollo/api/CompiledField$Builder {
 public final class com/apollographql/apollo/api/CompiledFragment : com/apollographql/apollo/api/CompiledSelection {
 	public final fun getCondition ()Ljava/util/List;
 	public final fun getPossibleTypes ()Ljava/util/List;
+	public final fun getPossibleTypesSet ()Ljava/util/Set;
 	public final fun getSelections ()Ljava/util/List;
 	public final fun getTypeCondition ()Ljava/lang/String;
 	public final fun isPossibleType (Ljava/lang/String;)Z
@@ -362,10 +363,12 @@ public final class com/apollographql/apollo/api/CompiledFragment : com/apollogra
 
 public final class com/apollographql/apollo/api/CompiledFragment$Builder {
 	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/Set;)V
 	public final fun build ()Lcom/apollographql/apollo/api/CompiledFragment;
 	public final fun condition (Ljava/util/List;)Lcom/apollographql/apollo/api/CompiledFragment$Builder;
 	public final fun getCondition ()Ljava/util/List;
 	public final fun getPossibleTypes ()Ljava/util/List;
+	public final fun getPossibleTypesSet ()Ljava/util/Set;
 	public final fun getSelections ()Ljava/util/List;
 	public final fun getTypeCondition ()Ljava/lang/String;
 	public final fun selections (Ljava/util/List;)Lcom/apollographql/apollo/api/CompiledFragment$Builder;

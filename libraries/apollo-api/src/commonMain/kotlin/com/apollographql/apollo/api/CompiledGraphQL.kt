@@ -218,31 +218,29 @@ class CompiledField internal constructor(
  */
 class CompiledFragment internal constructor(
     val typeCondition: String,
-    val possibleTypes: List<String>,
+    val possibleTypesSet: Set<String>,
     val condition: List<CompiledCondition>,
     val selections: List<CompiledSelection>,
 ) : CompiledSelection() {
-  /**
-   * [possibleTypes] as a set, so that [isPossibleType] does not scan it.
-   *
-   * Built on first use: a selection whose type condition is never tested against a concrete type
-   * does not pay for it. [LazyThreadSafetyMode.PUBLICATION] because building it is idempotent and
-   * generated selections are shared, so the cost of contending for a lock outweighs the cost of
-   * occasionally building the set twice.
-   */
-  private val possibleTypesSet: Set<String> by lazy(LazyThreadSafetyMode.PUBLICATION) {
-    possibleTypes.toSet()
+  @Deprecated("Use possibleTypesSet instead")
+  val possibleTypes: List<String> by lazy(LazyThreadSafetyMode.PUBLICATION) {
+    possibleTypesSet.toList()
   }
 
   /**
    * Whether an object of the given `__typename` matches this selection's type condition.
    *
-   * Prefer this over testing [possibleTypes] directly: it is a set lookup rather than a scan, and
-   * this is called for every object of every list a fragment appears in.
+   * This is called for every object of every list a fragment appears in, so the possible types are
+   * held as a set: the lookup does not scan, and reaching it is a field read rather than a call.
    */
   fun isPossibleType(typename: String): Boolean = possibleTypesSet.contains(typename)
 
-  class Builder(val typeCondition: String, val possibleTypes: List<String>) {
+  class Builder(val typeCondition: String, val possibleTypesSet: Set<String>) {
+    constructor(typeCondition: String, possibleTypes: List<String>) : this(typeCondition, possibleTypes.toSet())
+
+    @Deprecated("Use possibleTypesSet instead")
+    val possibleTypes: List<String> get() = possibleTypesSet.toList()
+
     var condition: List<CompiledCondition> = emptyList()
     var selections: List<CompiledSelection> = emptyList()
 
@@ -254,7 +252,7 @@ class CompiledFragment internal constructor(
       this.selections = selections
     }
 
-    fun build() = CompiledFragment(typeCondition, possibleTypes, condition, selections)
+    fun build() = CompiledFragment(typeCondition, possibleTypesSet, condition, selections)
   }
 }
 
