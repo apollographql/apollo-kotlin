@@ -36,7 +36,7 @@ class LanguageVersionTests {
       TestUtils.executeGradleWithVersion(dir, gradleVersion, ":generateApolloSources").apply {
         assertEquals(TaskOutcome.SUCCESS, task(":generateApolloSources")!!.outcome)
       }
-      assertTrue(dir.generatedSource("com/example/type/FeedType.kt").readText().contains("entries.find"))
+      assertTrue(dir.generatedSource("com/example/type/FeedType.kt").readText().contains("entries.subList"))
     }
   }
 
@@ -47,7 +47,7 @@ class LanguageVersionTests {
       TestUtils.executeGradleWithVersion(dir, gradleVersion, ":generateApolloSources").apply {
         assertEquals(TaskOutcome.SUCCESS, task(":generateApolloSources")!!.outcome)
       }
-      assertTrue(dir.generatedSource("com/example/type/FeedType.kt").readText().contains("values().find"))
+      assertTrue(dir.generatedSource("com/example/type/FeedType.kt").readText().contains("values().dropLast"))
     }
   }
 
