@@ -33,13 +33,8 @@ public enum class Enum(
     /**
      * All [Enum] known at compile time
      */
-    @Suppress("DEPRECATION")
     public val knownEntries: List<Enum>
-      get() = listOf(
-        Enum.north,
-        Enum.North,
-        Enum.NORTH,
-        Enum.SOUTH)
+      get() = values().dropLast(1)
 
     /**
      * Returns all [Enum] known at compile time
@@ -54,6 +49,13 @@ public enum class Enum(
      * Returns the [Enum] that represents the specified [rawValue].
      * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
      */
-    public fun safeValueOf(rawValue: String): Enum = values().find { it.rawValue == rawValue } ?: UNKNOWN__
+    @Suppress("DEPRECATION")
+    public fun safeValueOf(rawValue: String): Enum = when(rawValue) {
+      "north" -> north
+      "North" -> North
+      "NORTH" -> NORTH
+      "SOUTH" -> SOUTH
+      else -> UNKNOWN__
+    }
   }
 }

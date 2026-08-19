@@ -29,9 +29,7 @@ public enum class AmenityCategory(
      * All [AmenityCategory] known at compile time
      */
     public val knownEntries: List<AmenityCategory>
-      get() = listOf(
-        AmenityCategory.Category0,
-        AmenityCategory.Category1)
+      get() = values().dropLast(1)
 
     /**
      * Returns all [AmenityCategory] known at compile time
@@ -46,6 +44,10 @@ public enum class AmenityCategory(
      * Returns the [AmenityCategory] that represents the specified [rawValue].
      * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
      */
-    public fun safeValueOf(rawValue: String): AmenityCategory = values().find { it.rawValue == rawValue } ?: UNKNOWN__
+    public fun safeValueOf(rawValue: String): AmenityCategory = when(rawValue) {
+      "Category0" -> Category0
+      "Category1" -> Category1
+      else -> UNKNOWN__
+    }
   }
 }

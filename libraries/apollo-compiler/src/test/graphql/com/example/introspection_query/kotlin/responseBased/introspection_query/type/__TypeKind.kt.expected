@@ -36,15 +36,7 @@ public enum class __TypeKind(
      * All [__TypeKind] known at compile time
      */
     public val knownEntries: List<__TypeKind>
-      get() = listOf(
-        __TypeKind.SCALAR,
-        __TypeKind.OBJECT,
-        __TypeKind.INTERFACE,
-        __TypeKind.UNION,
-        __TypeKind.ENUM,
-        __TypeKind.INPUT_OBJECT,
-        __TypeKind.LIST,
-        __TypeKind.NON_NULL)
+      get() = values().dropLast(1)
 
     /**
      * Returns all [__TypeKind] known at compile time
@@ -59,6 +51,16 @@ public enum class __TypeKind(
      * Returns the [__TypeKind] that represents the specified [rawValue].
      * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
      */
-    public fun safeValueOf(rawValue: String): __TypeKind = values().find { it.rawValue == rawValue } ?: UNKNOWN__
+    public fun safeValueOf(rawValue: String): __TypeKind = when(rawValue) {
+      "SCALAR" -> SCALAR
+      "OBJECT" -> OBJECT
+      "INTERFACE" -> INTERFACE
+      "UNION" -> UNION
+      "ENUM" -> ENUM
+      "INPUT_OBJECT" -> INPUT_OBJECT
+      "LIST" -> LIST
+      "NON_NULL" -> NON_NULL
+      else -> UNKNOWN__
+    }
   }
 }

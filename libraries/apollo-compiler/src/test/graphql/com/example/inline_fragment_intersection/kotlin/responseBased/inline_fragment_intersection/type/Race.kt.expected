@@ -30,10 +30,7 @@ public enum class Race(
      * All [Race] known at compile time
      */
     public val knownEntries: List<Race>
-      get() = listOf(
-        Race.WOOKIE,
-        Race.GUMGAN,
-        Race.EWOK)
+      get() = values().dropLast(1)
 
     /**
      * Returns all [Race] known at compile time
@@ -48,6 +45,11 @@ public enum class Race(
      * Returns the [Race] that represents the specified [rawValue].
      * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
      */
-    public fun safeValueOf(rawValue: String): Race = values().find { it.rawValue == rawValue } ?: UNKNOWN__
+    public fun safeValueOf(rawValue: String): Race = when(rawValue) {
+      "WOOKIE" -> WOOKIE
+      "GUMGAN" -> GUMGAN
+      "EWOK" -> EWOK
+      else -> UNKNOWN__
+    }
   }
 }

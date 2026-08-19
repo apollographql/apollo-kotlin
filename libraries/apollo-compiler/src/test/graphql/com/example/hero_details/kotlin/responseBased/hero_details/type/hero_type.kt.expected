@@ -32,9 +32,7 @@ public enum class Hero_type(
      * All [Hero_type] known at compile time
      */
     public val knownEntries: List<Hero_type>
-      get() = listOf(
-        Hero_type.human,
-        Hero_type.droid)
+      get() = values().dropLast(1)
 
     /**
      * Returns all [Hero_type] known at compile time
@@ -49,6 +47,10 @@ public enum class Hero_type(
      * Returns the [Hero_type] that represents the specified [rawValue].
      * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
      */
-    public fun safeValueOf(rawValue: String): Hero_type = values().find { it.rawValue == rawValue } ?: UNKNOWN__
+    public fun safeValueOf(rawValue: String): Hero_type = when(rawValue) {
+      "human" -> human
+      "droid" -> droid
+      else -> UNKNOWN__
+    }
   }
 }

@@ -30,11 +30,8 @@ public enum class Episode(
     /**
      * All [Episode] known at compile time
      */
-    @Suppress("DEPRECATION")
     public val knownEntries: List<Episode>
-      get() = listOf(
-        Episode.JEDI,
-        Episode.CLONES)
+      get() = values().dropLast(1)
 
     /**
      * Returns all [Episode] known at compile time
@@ -49,6 +46,11 @@ public enum class Episode(
      * Returns the [Episode] that represents the specified [rawValue].
      * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
      */
-    public fun safeValueOf(rawValue: String): Episode = values().find { it.rawValue == rawValue } ?: UNKNOWN__
+    @Suppress("DEPRECATION")
+    public fun safeValueOf(rawValue: String): Episode = when(rawValue) {
+      "JEDI" -> JEDI
+      "CLONES" -> CLONES
+      else -> UNKNOWN__
+    }
   }
 }
