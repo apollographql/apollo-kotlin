@@ -95,50 +95,68 @@ internal class EnumAsEnumBuilder(
         .build()
   }
 
+  /**
+   * `UNKNOWN__`, when present, is always added last, so the known entries are all the entries but the last one.
+   *
+   * Deriving this from `entries` instead of building a `listOf(...)` of every constant keeps the getter a
+   * handful of bytes instead of growing linearly with the number of enum values, and returns a view instead
+   * of allocating a new list on every call.
+   */
   private fun IrEnum.knownEntriesPropertySpec(): PropertySpec {
+    val code = if (withUnknown) {
+      if (context.isTargetLanguageVersionAtLeast(TargetLanguage.KOTLIN_1_9)) {
+        CodeBlock.of("return entries.subList(0, entries.size - 1)\n")
+      } else {
+        CodeBlock.of("return values().dropLast(1)\n")
+      }
+    } else {
+      if (context.isTargetLanguageVersionAtLeast(TargetLanguage.KOTLIN_1_9)) {
+        CodeBlock.of("return entries\n")
+      } else {
+        CodeBlock.of("return values().asList()\n")
+      }
+    }
+
     return PropertySpec.builder(Identifier.knownEntries, KotlinSymbols.List.parameterizedBy(selfClassName))
         .addKdoc("All [%T] known at compile time", selfClassName)
-        .addSuppressions(enum.values.any { it.deprecationReason != null })
-        .maybeAddOptIn(context.resolver, enum.values)
         .getter(
             FunSpec.getterBuilder()
-                .addCode(CodeBlock.builder()
-                    .add("return listOf(\n")
-                    .indent()
-                    .add(
-                        values.map {
-                          CodeBlock.of("%T.%N", ClassName(packageName, simpleName), it.targetName.escapeKotlinReservedWordInEnum())
-                        }.joinToCode(",\n")
-                    )
-                    .unindent()
-                    .add(")\n")
-                    .build()
-                )
+                .addCode(code)
                 .build()
         )
         .build()
   }
 
-
+  /**
+   * A `when` over the raw values instead of a linear `entries.find { }` scan: on the JVM this compiles to a
+   * `hashCode` switch plus a single `equals`, so the lookup no longer walks the entries and no longer
+   * allocates an iterator on every call. This matches what [EnumAsSealedInterfaceBuilder] already generates.
+   */
   private fun IrEnum.safeValueOfFunSpec(): FunSpec {
-    val entries = if (context.isTargetLanguageVersionAtLeast(TargetLanguage.KOTLIN_1_9)) "entries" else "values()"
     return FunSpec.builder("safeValueOf")
         .addKdoc(
             "Returns the [%T] that represents the specified [rawValue].\n" +
                 "Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.\n",
             selfClassName
         )
-        .addParameter("rawValue", String::
-        class)
+        .addSuppressions(enum.values.any { it.deprecationReason != null })
+        .maybeAddOptIn(context.resolver, enum.values)
+        .addParameter("rawValue", KotlinSymbols.String)
         .returns(selfClassName)
-        .addCode("return $entries.find { it.rawValue == rawValue } ?: ")
+        .beginControlFlow("return when(rawValue)")
+        .addCode(
+            values.map {
+              CodeBlock.of("%S -> %N", it.name, it.targetName.escapeKotlinReservedWordInEnum())
+            }.joinToCode(separator = "\n", suffix = "\n")
+        )
         .apply {
           if (withUnknown) {
-            addCode(Identifier.UNKNOWN__)
+            addCode("else -> %N\n", Identifier.UNKNOWN__)
           } else {
-            addCode("error(\"No enum value found '${'$'}rawValue'\")")
+            addCode("else -> error(\"No enum value found '${'$'}rawValue'\")\n")
           }
         }
+        .endControlFlow()
         .build()
   }
 

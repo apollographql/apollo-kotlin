@@ -34,13 +34,8 @@ public enum class Direction(
     /**
      * All [Direction] known at compile time
      */
-    @Suppress("DEPRECATION")
-    @OptIn(ApolloRequiresOptIn::class)
     public val knownEntries: List<Direction>
-      get() = listOf(
-        Direction.South,
-        Direction.North,
-        Direction.East)
+      get() = values().dropLast(1)
 
     /**
      * Returns all [Direction] known at compile time
@@ -55,6 +50,13 @@ public enum class Direction(
      * Returns the [Direction] that represents the specified [rawValue].
      * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
      */
-    public fun safeValueOf(rawValue: String): Direction = values().find { it.rawValue == rawValue } ?: UNKNOWN__
+    @Suppress("DEPRECATION")
+    @OptIn(ApolloRequiresOptIn::class)
+    public fun safeValueOf(rawValue: String): Direction = when(rawValue) {
+      "South" -> South
+      "North" -> North
+      "East" -> East
+      else -> UNKNOWN__
+    }
   }
 }

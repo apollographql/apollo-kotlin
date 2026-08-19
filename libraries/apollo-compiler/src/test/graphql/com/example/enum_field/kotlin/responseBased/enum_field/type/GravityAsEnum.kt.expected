@@ -49,18 +49,8 @@ internal enum class GravityAsEnum(
     /**
      * All [GravityAsEnum] known at compile time
      */
-    @Suppress("DEPRECATION")
     public val knownEntries: List<GravityAsEnum>
-      get() = listOf(
-        GravityAsEnum.TOP,
-        GravityAsEnum.CENTER,
-        GravityAsEnum.BOTTOM,
-        GravityAsEnum.bottom,
-        GravityAsEnum.`is`,
-        GravityAsEnum.`while`,
-        GravityAsEnum.type_,
-        GravityAsEnum.String,
-        GravityAsEnum.`field`)
+      get() = entries.subList(0, entries.size - 1)
 
     /**
      * Returns all [GravityAsEnum] known at compile time
@@ -75,6 +65,18 @@ internal enum class GravityAsEnum(
      * Returns the [GravityAsEnum] that represents the specified [rawValue].
      * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
      */
-    public fun safeValueOf(rawValue: kotlin.String): GravityAsEnum = entries.find { it.rawValue == rawValue } ?: UNKNOWN__
+    @Suppress("DEPRECATION")
+    public fun safeValueOf(rawValue: kotlin.String): GravityAsEnum = when(rawValue) {
+      "TOP" -> TOP
+      "CENTER" -> CENTER
+      "BOTTOM" -> BOTTOM
+      "bottom" -> bottom
+      "is" -> `is`
+      "while" -> `while`
+      "type" -> type_
+      "String" -> String
+      "field" -> `field`
+      else -> UNKNOWN__
+    }
   }
 }

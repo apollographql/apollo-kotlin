@@ -28,8 +28,7 @@ public enum class RenamedEnum(
      * All [RenamedEnum] known at compile time
      */
     public val knownEntries: List<RenamedEnum>
-      get() = listOf(
-        RenamedEnum.VALUE)
+      get() = values().dropLast(1)
 
     /**
      * Returns all [RenamedEnum] known at compile time
@@ -44,6 +43,9 @@ public enum class RenamedEnum(
      * Returns the [RenamedEnum] that represents the specified [rawValue].
      * Note: unknown values of [rawValue] will return [UNKNOWN__]. You may want to update your schema instead of calling this function directly.
      */
-    public fun safeValueOf(rawValue: String): RenamedEnum = values().find { it.rawValue == rawValue } ?: UNKNOWN__
+    public fun safeValueOf(rawValue: String): RenamedEnum = when(rawValue) {
+      "VALUE" -> VALUE
+      else -> UNKNOWN__
+    }
   }
 }
