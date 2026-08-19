@@ -25,6 +25,27 @@ internal fun List<CodeBlock>.toListInitializerCodeblock(withNewLines: Boolean = 
         .build()
   }
 }
+internal fun List<CodeBlock>.toSetInitializerCodeblock(withNewLines: Boolean = false): CodeBlock {
+  if (isEmpty()) {
+    return CodeBlock.of("emptySet()")
+  }
+
+  return if (withNewLines) {
+    CodeBlock.builder()
+        .add("setOf(\n")
+        .indent()
+        .add("%L", joinToCode(",\n"))
+        .unindent()
+        .add("\n)")
+        .build()
+  } else {
+    CodeBlock.builder()
+        .add("setOf(")
+        .add("%L", joinToCode(", "))
+        .add(")")
+        .build()
+  }
+}
 
 internal fun List<Pair<String, CodeBlock>>.toMapInitializerCodeblock(withNewLines: Boolean = false): CodeBlock {
   if (isEmpty()) {

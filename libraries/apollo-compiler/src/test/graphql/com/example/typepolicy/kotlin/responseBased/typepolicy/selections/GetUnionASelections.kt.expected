@@ -50,22 +50,22 @@ public object GetUnionASelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "UnionA",
-          possibleTypes = listOf("A", "B", "C")
+          possibleTypesSet = setOf("A", "B", "C")
         ).selections(__onUnionA)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "A",
-          possibleTypes = listOf("A")
+          possibleTypesSet = setOf("A")
         ).selections(__onA)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "B",
-          possibleTypes = listOf("B")
+          possibleTypesSet = setOf("B")
         ).selections(__onB)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "C",
-          possibleTypes = listOf("C")
+          possibleTypesSet = setOf("C")
         ).selections(__onC)
         .build()
       )

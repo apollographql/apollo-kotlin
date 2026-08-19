@@ -64,7 +64,7 @@ internal class CacheBatchReader(
         }
 
         is CompiledFragment -> {
-          if (((typename != null && compiledSelection.isPossibleType(typename)) || compiledSelection.typeCondition == parentType) && !compiledSelection.shouldSkip(state.variables.valueMap)) {
+          if (((typename in compiledSelection.possibleTypesSet) || compiledSelection.typeCondition == parentType) && !compiledSelection.shouldSkip(state.variables.valueMap)) {
             collect(compiledSelection.selections, parentType, typename, state)
           }
         }

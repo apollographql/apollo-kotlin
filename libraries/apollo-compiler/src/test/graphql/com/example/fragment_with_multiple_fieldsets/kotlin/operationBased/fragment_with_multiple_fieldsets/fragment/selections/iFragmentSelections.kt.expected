@@ -27,7 +27,7 @@ public object IFragmentSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "A",
-          possibleTypes = listOf("A")
+          possibleTypesSet = setOf("A")
         ).selections(__onA)
         .build()
       )

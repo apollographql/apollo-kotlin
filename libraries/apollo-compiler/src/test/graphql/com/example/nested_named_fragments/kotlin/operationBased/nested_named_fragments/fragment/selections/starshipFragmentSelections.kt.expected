@@ -25,7 +25,7 @@ public object StarshipFragmentSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Person",
-          possibleTypes = listOf("Person")
+          possibleTypesSet = setOf("Person")
         ).selections(PilotFragmentSelections.__root)
         .build()
       )

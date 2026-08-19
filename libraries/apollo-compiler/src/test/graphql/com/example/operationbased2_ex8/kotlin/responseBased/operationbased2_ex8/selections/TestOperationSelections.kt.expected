@@ -22,7 +22,7 @@ public object TestOperationSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Animal",
-          possibleTypes = listOf("Lion", "Cat", "Turtle", "Panther")
+          possibleTypesSet = setOf("Lion", "Cat", "Turtle", "Panther")
         ).selections(AnimalFragmentSelections.__root)
         .build()
       )

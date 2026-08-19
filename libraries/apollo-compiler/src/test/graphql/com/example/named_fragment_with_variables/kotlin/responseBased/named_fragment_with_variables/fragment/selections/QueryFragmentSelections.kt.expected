@@ -26,7 +26,7 @@ public object QueryFragmentSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "User",
-          possibleTypes = listOf("User")
+          possibleTypesSet = setOf("User")
         ).selections(UserFragmentSelections.__root)
         .build()
       )

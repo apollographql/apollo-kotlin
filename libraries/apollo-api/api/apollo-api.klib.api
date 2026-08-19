@@ -911,8 +911,6 @@ final class com.apollographql.apollo.api/CompiledFragment : com.apollographql.ap
     final val typeCondition // com.apollographql.apollo.api/CompiledFragment.typeCondition|{}typeCondition[0]
         final fun <get-typeCondition>(): kotlin/String // com.apollographql.apollo.api/CompiledFragment.typeCondition.<get-typeCondition>|<get-typeCondition>(){}[0]
 
-    final fun isPossibleType(kotlin/String): kotlin/Boolean // com.apollographql.apollo.api/CompiledFragment.isPossibleType|isPossibleType(kotlin.String){}[0]
-
     final class Builder { // com.apollographql.apollo.api/CompiledFragment.Builder|null[0]
         constructor <init>(kotlin/String, kotlin.collections/List<kotlin/String>) // com.apollographql.apollo.api/CompiledFragment.Builder.<init>|<init>(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
         constructor <init>(kotlin/String, kotlin.collections/Set<kotlin/String>) // com.apollographql.apollo.api/CompiledFragment.Builder.<init>|<init>(kotlin.String;kotlin.collections.Set<kotlin.String>){}[0]

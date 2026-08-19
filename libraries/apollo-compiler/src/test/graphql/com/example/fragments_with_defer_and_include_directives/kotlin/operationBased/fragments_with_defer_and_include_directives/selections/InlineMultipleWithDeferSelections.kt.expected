@@ -36,12 +36,12 @@ public object InlineMultipleWithDeferSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = listOf("Droid")
+          possibleTypesSet = setOf("Droid")
         ).selections(__onDroid)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = listOf("Droid")
+          possibleTypesSet = setOf("Droid")
         ).selections(__onDroid1)
         .build()
       )

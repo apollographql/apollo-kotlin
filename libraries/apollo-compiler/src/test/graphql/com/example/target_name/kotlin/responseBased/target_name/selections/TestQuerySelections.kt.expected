@@ -49,7 +49,7 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "ReservedObject",
-          possibleTypes = listOf("ReservedObject")
+          possibleTypesSet = setOf("ReservedObject")
         ).selections(__onReservedObject)
         .build()
       )

@@ -124,7 +124,10 @@ fun Project.apolloLibrary(
   )
 
   configurations.configureEach {
-    if (it.name == "apolloPublished" || it.name.matches(Regex("apollo.*Compiler"))) {
+    if (
+        it.name == "compileClasspath"
+        || it.name.matches(Regex("apollo.*Compiler"))
+        ) {
       // Within the 'tests' project (a composite build), dependencies are automatically substituted to use the project's one.
       // apollo-tooling depends on a published version of apollo-api which should not be substituted for both the runtime
       // and compiler classpaths.

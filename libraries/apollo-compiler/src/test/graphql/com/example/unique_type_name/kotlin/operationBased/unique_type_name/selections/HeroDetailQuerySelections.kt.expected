@@ -32,7 +32,7 @@ public object HeroDetailQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
-          possibleTypes = listOf("Droid", "Human")
+          possibleTypesSet = setOf("Droid", "Human")
         ).selections(HeroDetailsSelections.__root)
         .build()
       )
@@ -77,7 +77,7 @@ public object HeroDetailQuerySelections {
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
-          possibleTypes = listOf("Human")
+          possibleTypesSet = setOf("Human")
         ).selections(__onHuman)
         .build()
       )

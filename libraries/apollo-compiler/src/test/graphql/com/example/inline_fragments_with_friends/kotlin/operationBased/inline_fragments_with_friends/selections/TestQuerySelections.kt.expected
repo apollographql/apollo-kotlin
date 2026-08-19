@@ -67,12 +67,12 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
-          possibleTypes = listOf("Human")
+          possibleTypesSet = setOf("Human")
         ).selections(__onHuman)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = listOf("Droid")
+          possibleTypesSet = setOf("Droid")
         ).selections(__onDroid)
         .build()
       )

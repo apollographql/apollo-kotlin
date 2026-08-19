@@ -223,22 +223,19 @@ class CompiledFragment internal constructor(
     val selections: List<CompiledSelection>,
 ) : CompiledSelection() {
   @Deprecated("Use possibleTypesSet instead")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_2)
   val possibleTypes: List<String> by lazy(LazyThreadSafetyMode.PUBLICATION) {
     possibleTypesSet.toList()
   }
 
-  /**
-   * Whether an object of the given `__typename` matches this selection's type condition.
-   *
-   * This is called for every object of every list a fragment appears in, so the possible types are
-   * held as a set: the lookup does not scan, and reaching it is a field read rather than a call.
-   */
-  fun isPossibleType(typename: String): Boolean = possibleTypesSet.contains(typename)
-
   class Builder(val typeCondition: String, val possibleTypesSet: Set<String>) {
+
+    @Deprecated("Use the primary constructor instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_2)
     constructor(typeCondition: String, possibleTypes: List<String>) : this(typeCondition, possibleTypes.toSet())
 
     @Deprecated("Use possibleTypesSet instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_2)
     val possibleTypes: List<String> get() = possibleTypesSet.toList()
 
     var condition: List<CompiledCondition> = emptyList()

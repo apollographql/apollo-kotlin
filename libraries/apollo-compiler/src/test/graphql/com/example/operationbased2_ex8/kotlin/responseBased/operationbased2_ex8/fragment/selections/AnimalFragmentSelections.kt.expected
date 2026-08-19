@@ -40,12 +40,12 @@ public object AnimalFragmentSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Lion",
-          possibleTypes = listOf("Lion")
+          possibleTypesSet = setOf("Lion")
         ).selections(__onLion)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Cat",
-          possibleTypes = listOf("Cat")
+          possibleTypesSet = setOf("Cat")
         ).selections(__onCat)
         .build()
       )

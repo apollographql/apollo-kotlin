@@ -25,7 +25,7 @@ public object AFragment1Selections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "A",
-          possibleTypes = listOf("A")
+          possibleTypesSet = setOf("A")
         ).selections(AFragment2Selections.__root)
         .build(),
         CompiledField.Builder(

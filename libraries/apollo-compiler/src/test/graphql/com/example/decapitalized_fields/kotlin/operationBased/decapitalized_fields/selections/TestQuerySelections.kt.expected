@@ -42,12 +42,12 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Horse",
-          possibleTypes = listOf("Horse")
+          possibleTypesSet = setOf("Horse")
         ).selections(__onHorse)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Horse",
-          possibleTypes = listOf("Horse")
+          possibleTypesSet = setOf("Horse")
         ).selections(HorseFragmentSelections.__root)
         .build()
       )

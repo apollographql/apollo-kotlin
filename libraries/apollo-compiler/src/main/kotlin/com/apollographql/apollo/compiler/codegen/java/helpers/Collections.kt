@@ -23,6 +23,22 @@ internal fun List<CodeBlock>.toListInitializerCodeblock(withNewLines: Boolean = 
       .build()
 }
 
+internal fun List<CodeBlock>.toSetInitializerCodeblock(withNewLines: Boolean = false): CodeBlock {
+  if (isEmpty()) {
+    return CodeBlock.of("$T.emptySet()", JavaClassNames.Collections)
+  }
+
+  val newLine = if (withNewLines) "\n" else ""
+  val space = if (withNewLines) "" else " "
+  return CodeBlock.builder()
+      .add("$T.of($newLine", JavaClassNames.Set)
+      .indent()
+      .add(L, joinToCode(",$newLine$space"))
+      .unindent()
+      .add("$newLine)")
+      .build()
+}
+
 internal fun List<CodeBlock>.toArrayInitializerCodeblock(): CodeBlock {
   return CodeBlock.builder()
       .add("{")

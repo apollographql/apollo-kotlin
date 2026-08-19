@@ -32,7 +32,7 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "B",
-          possibleTypes = listOf("ABC", "BC")
+          possibleTypesSet = setOf("ABC", "BC")
         ).selections(__onB)
         .build()
       )
@@ -55,7 +55,7 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "A",
-          possibleTypes = listOf("ABC", "AC")
+          possibleTypesSet = setOf("ABC", "AC")
         ).selections(__onA1)
         .build()
       )
@@ -67,12 +67,12 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "A",
-          possibleTypes = listOf("ABC", "AC")
+          possibleTypesSet = setOf("ABC", "AC")
         ).selections(__onA)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "B",
-          possibleTypes = listOf("ABC", "BC")
+          possibleTypesSet = setOf("ABC", "BC")
         ).selections(__onB1)
         .build()
       )
