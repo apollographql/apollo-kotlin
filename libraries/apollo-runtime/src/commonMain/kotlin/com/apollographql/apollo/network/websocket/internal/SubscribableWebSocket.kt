@@ -64,7 +64,7 @@ internal class SubscribableWebSocket(
   private var activeListeners = mutableMapOf<String, OperationListener>()
   private var pending = mutableListOf<ApolloRequest<*>>()
 
-  private var webSocket: WebSocket
+  private val webSocket: WebSocket
 
   init {
     val headers = if (httpHeaders.any { it.name.lowercase() == "sec-websocket-protocol" }) {
@@ -72,7 +72,14 @@ internal class SubscribableWebSocket(
     } else {
       httpHeaders + HttpHeader("Sec-WebSocket-Protocol", wsProtocol.name)
     }
-    webSocket = webSocketEngine.newWebSocket(serverUrl, headers, this)
+    /**
+     * Do not pass `this` to the engine: the engine may call the listener from another thread before
+     * [WebSocketEngine.newWebSocket] returns, i.e. before [webSocket] is assigned. [BufferedWebSocketListener]
+     * buffers such early callbacks and replays them below, once this instance is usable.
+     */
+    val listener = BufferedWebSocketListener()
+    webSocket = webSocketEngine.newWebSocket(serverUrl, headers, listener)
+    listener.start(this)
   }
 
   /**
@@ -133,9 +140,6 @@ internal class SubscribableWebSocket(
    * No more calls to listeners are made.
    *
    * Doesn't wait for the peer close. The resources are released asynchronously.
-   *
-   * Must not be called from [onError] as [onError] is called from a different thread and [webSocket] might not be
-   * initialized when this happens.
    */
   fun shutdown(cause: ApolloException, code: Int, reason: String) {
     shutdownInternal(cause)
@@ -296,6 +300,71 @@ private enum class SocketState {
   AwaitAck,
   Connected,
   ShutDown
+}
+
+/**
+ * A [WebSocketListener] that buffers callbacks until [start] is called.
+ *
+ * [WebSocketEngine.newWebSocket] may call its listener from another thread before it returns. Handing it
+ * a not-fully-constructed [SubscribableWebSocket] loses those callbacks (or worse). Instead, the engine gets
+ * a [BufferedWebSocketListener], and the callbacks are replayed to [SubscribableWebSocket] as soon as it is
+ * usable.
+ *
+ * Callbacks are always delivered in the order they were received, and never concurrently:
+ * as long as no target is set, the only possible deliverer is [start].
+ */
+private class BufferedWebSocketListener : WebSocketListener {
+  private val lock = reentrantLock()
+  private var target: WebSocketListener? = null
+  private val buffered = mutableListOf<(WebSocketListener) -> Unit>()
+
+  /**
+   * Sets [target] and replays the buffered callbacks, if any.
+   */
+  fun start(target: WebSocketListener) {
+    while (true) {
+      val callbacks = lock.withLock {
+        if (buffered.isEmpty()) {
+          /**
+           * Nothing left to replay: publish [target] so that subsequent callbacks go to it directly.
+           * This must happen while holding the lock, else a concurrent callback could be buffered and
+           * never replayed.
+           */
+          this.target = target
+          return
+        }
+        buffered.toList().also { buffered.clear() }
+      }
+      /**
+       * Replay outside the lock. More callbacks may come in while we do: they are buffered because
+       * [target] is not set yet, and the next iteration replays them.
+       */
+      callbacks.forEach { it(target) }
+    }
+  }
+
+  private fun dispatch(callback: (WebSocketListener) -> Unit) {
+    val target = lock.withLock {
+      target.also {
+        if (it == null) {
+          buffered.add(callback)
+        }
+      }
+    }
+    if (target != null) {
+      callback(target)
+    }
+  }
+
+  override fun onOpen() = dispatch { it.onOpen() }
+
+  override fun onMessage(text: String) = dispatch { it.onMessage(text) }
+
+  override fun onMessage(data: ByteArray) = dispatch { it.onMessage(data) }
+
+  override fun onError(cause: ApolloException) = dispatch { it.onError(cause) }
+
+  override fun onClosed(code: Int?, reason: String?) = dispatch { it.onClosed(code, reason) }
 }
 
 private fun WebSocket.send(clientMessage: ClientMessage) {
